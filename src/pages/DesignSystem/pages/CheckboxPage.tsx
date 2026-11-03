@@ -86,7 +86,7 @@ function StatesGrid() {
           </Fragment>
         ))}
       </div>
-      <p className="text-body-medium text-textIcon-secondary">Hover shows the planned border (Changelog step 4).</p>
+      <p className="text-body-medium text-textIcon-secondary">Hover shows the accent border (Changelog step 4).</p>
     </div>
   );
 }
@@ -245,7 +245,7 @@ type ComponentChange = { where: string; change: string };
 
 type ChangelogStep = DocsSectionInfo & { intro: string; changes: ComponentChange[] };
 
-// What developers change in components/Checkbox/Checkbox.tsx and where it is used. Nothing here is done yet.
+// What developers change in components/Checkbox/Checkbox.tsx and where it is used.
 const CHANGELOG_STEPS: ChangelogStep[] = [
   {
     id: "checkbox-change-role",
@@ -343,7 +343,7 @@ export function CheckboxChangelog() {
   return (
     <div className="flex flex-col gap-16">
       <p className="text-body-large text-textIcon-secondary">
-        Steps to make the checkbox accessible and consistent with the semantic colors. None of them are done yet.
+        Steps to make the checkbox accessible and consistent with the semantic colors. All of them are applied.
       </p>
       {CHANGELOG_STEPS.map((step) => (
         <DocsSection key={step.id} section={step}>

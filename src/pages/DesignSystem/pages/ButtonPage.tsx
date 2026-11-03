@@ -585,7 +585,7 @@ export function ButtonChangelog() {
   return (
     <DocsChangelog
       title="Button changelog"
-      summary="12 steps for Button, ButtonLink, EmbeddedActionButton and the places that use them. None of them are done yet. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
+      summary="12 steps for Button, ButtonLink, EmbeddedActionButton and the places that use them. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
       notes={BUTTON_CHANGELOG_NOTES}
       steps={BUTTON_CHANGELOG_STEPS}
     />

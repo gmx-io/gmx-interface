@@ -108,7 +108,7 @@ export function SpacingChangelog() {
   return (
     <DocsChangelog
       title="Spacing changelog"
-      summary="8 steps that move the 753 spacing classes off the scale onto it, area by area. None of them are done yet. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
+      summary="8 steps that move the 753 spacing classes off the scale onto it, area by area. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
       notes={SPACING_CHANGELOG_NOTES}
       steps={SPACING_CHANGELOG_STEPS}
     />

@@ -221,7 +221,7 @@ export function TypographyChangelog() {
   return (
     <DocsChangelog
       title="Typography changelog"
-      summary="10 steps that move the app to the text styles: the line-height rule, no 13px, named styles for the hand-typed sizes. None of them are done yet. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead; the renames come as scripts."
+      summary="10 steps that move the app to the text styles: the line-height rule, no 13px, named styles for the hand-typed sizes. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead; the renames come as scripts."
       notes={TYPOGRAPHY_CHANGELOG_NOTES}
       steps={TYPOGRAPHY_CHANGELOG_STEPS}
     />

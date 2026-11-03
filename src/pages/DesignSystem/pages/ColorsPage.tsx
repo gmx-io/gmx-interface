@@ -247,7 +247,7 @@ export function ColorsChangelog() {
   return (
     <DocsChangelog
       title="Colors changelog"
-      summary="5 steps that move src/config/colors.ts and the app to the semantic colors: 62 tokens become 41. None of them are done yet. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead; the renames come as scripts."
+      summary="5 steps that move src/config/colors.ts and the app to the semantic colors: 62 tokens become 41. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead; the renames come as scripts."
       notes={COLORS_CHANGELOG_NOTES}
       steps={COLORS_CHANGELOG_STEPS}
     />
