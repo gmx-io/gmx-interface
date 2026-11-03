@@ -4,10 +4,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { isSolanaNetwork } from "config/chains";
 import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
 import { ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { useChainId } from "lib/chains";
 import { useIsInitialLoadSettled } from "lib/useIsInitialLoadSettled";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
@@ -50,11 +52,13 @@ type TopRightMessage = {
   node: ReactNode;
 };
 
-export function WhatsNewToastContainer() {
-  const { pathname } = useLocation();
-  const isAnnouncementsPage = pathname === "/announcements";
-  const [isScrolled, setIsScrolled] = useState(false);
-
+function EvmAnnouncementToasts({
+  isAnnouncementsPage,
+  appUpdate,
+}: {
+  isAnnouncementsPage: boolean;
+  appUpdate: TopRightMessage | undefined;
+}) {
   const isWalletInitializing = useIsWalletInitializing();
   const { isLoading: isUiFlagsLoading } = useUiFlagsRequest();
   const uiFlagEvents = useUiFlagEvents();
@@ -63,11 +67,7 @@ export function WhatsNewToastContainer() {
   const closingPoolsLp = useClosingPoolsLpNotice();
   const usdgPools = useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
   const balancerProgram = useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
-  const appUpdate = useAppUpdateBanner();
   const whatsNew = useWhatsNewAnnouncements();
-
-  const { applyUpdate } = appUpdate;
-  const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
 
   const isInitialLoadSettled = useIsInitialLoadSettled(
     isWalletInitializing ||
@@ -110,25 +110,7 @@ export function WhatsNewToastContainer() {
   ];
 
   const appHints: TopRightMessage[] = [
-    ...(appUpdate.isVisible
-      ? [
-          {
-            key: "app-update",
-            node: (
-              <AnnouncementBanner
-                className="pointer-events-auto"
-                variant="info"
-                headerLabel={<Trans>Update available</Trans>}
-                headerIcon="info"
-                onClose={appUpdate.dismiss}
-                footerLink={appUpdateFooterLink}
-              >
-                <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
-              </AnnouncementBanner>
-            ),
-          },
-        ]
-      : []),
+    ...(appUpdate ? [appUpdate] : []),
     ...uiFlagEvents.filter((event) => !isOutageWarning(event)).map(toUiFlagEventMessage),
   ];
 
@@ -139,6 +121,34 @@ export function WhatsNewToastContainer() {
 
   const message = isInitialLoadSettled
     ? [...outageWarnings, ...fundsNotices, ...targetedMessages, ...appHints, ...whatsNewMessages][0]
+    : undefined;
+
+  return <TopRightMessageSlot message={message} />;
+}
+
+export function WhatsNewToastContainer() {
+  const { networkId } = useChainId();
+  const { pathname } = useLocation();
+  const isAnnouncementsPage = pathname === "/announcements";
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
+  const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
+  const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
+    ? {
+        key: "app-update",
+        node: (
+          <AnnouncementBanner
+            className="pointer-events-auto"
+            variant="info"
+            headerLabel={<Trans>Update available</Trans>}
+            headerIcon="info"
+            onClose={dismissAppUpdate}
+            footerLink={appUpdateFooterLink}
+          >
+            <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
+          </AnnouncementBanner>
+        ),
+      }
     : undefined;
 
   useEffect(() => {
@@ -170,15 +180,25 @@ export function WhatsNewToastContainer() {
       data-qa="whats-new-toast-container"
     >
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
-        <AnimatePresence initial={false} mode="wait">
-          {message && (
-            <motion.div key={message.key} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
-              {message.node}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isSolanaNetwork(networkId) ? (
+          <TopRightMessageSlot message={appUpdate} />
+        ) : (
+          <EvmAnnouncementToasts isAnnouncementsPage={isAnnouncementsPage} appUpdate={appUpdate} />
+        )}
       </div>
     </div>
+  );
+}
+
+function TopRightMessageSlot({ message }: { message: TopRightMessage | undefined }) {
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      {message && (
+        <motion.div key={message.key} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+          {message.node}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
