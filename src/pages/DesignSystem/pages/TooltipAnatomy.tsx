@@ -25,7 +25,11 @@ const PARTS = [
   { id: "text", name: "Text", description: "Plain words in the main text color." },
   { id: "rows", name: "Rows", description: "Muted label, value on the right. No colons." },
   { id: "total", name: "Total", description: "A divider above it. The label is in the main color." },
-  { id: "footnote", name: "Link or footnote", description: "Always last." },
+  {
+    id: "footnote",
+    name: "Link or footnote",
+    description: "Last. With two topics that have their own links, each link goes under its own paragraph.",
+  },
 ] as const;
 
 type PartId = (typeof PARTS)[number]["id"];
