@@ -2799,6 +2799,10 @@ msgstr "Market Decrease 실패"
 msgid "DefiLlama"
 msgstr "DefiLlama"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "일별 및 누적 PnL"
@@ -9208,6 +9212,10 @@ msgstr "리베이트 수령"
 msgid "View transaction"
 msgstr "트랜잭션 보기"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
@@ -12788,6 +12796,7 @@ msgstr "증거금 입금 실행"
 msgid "Estimate your savings"
 msgstr "예상 절감액 확인하기"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx

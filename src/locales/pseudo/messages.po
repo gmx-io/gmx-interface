@@ -2799,6 +2799,10 @@ msgstr ""
 msgid "DefiLlama"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr ""
@@ -9208,6 +9212,10 @@ msgstr ""
 msgid "View transaction"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
@@ -12788,6 +12796,7 @@ msgstr ""
 msgid "Estimate your savings"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx

@@ -2799,6 +2799,10 @@ msgstr "Market Decrease 失败"
 msgid "DefiLlama"
 msgstr "DefiLlama"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "每日及累计 PnL"
@@ -9208,6 +9212,10 @@ msgstr "领取返佣"
 msgid "View transaction"
 msgstr "查看交易"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
@@ -12788,6 +12796,7 @@ msgstr "执行保证金存入"
 msgid "Estimate your savings"
 msgstr "预估节省金额"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
