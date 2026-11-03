@@ -106,14 +106,12 @@ function WalletBlock({ account }: { account: string }) {
   const isSolanaSelected = isSolanaNetwork(networkId);
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
   const { ensName } = useENS(isSolanaSelected ? undefined : account);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeoutRef = useRef<number | undefined>(undefined);
   const disconnectEvm = useDisconnectAndClose();
   const solanaWallet = useSolanaWalletSession();
-  const { walletUsd } = useAvailableToTradeAssetSettlementChain();
   const { wallets } = useWallets();
   const { exportWallet } = useExportWallet();
   const openWalletReceive = useOpenWalletReceive();
@@ -214,16 +212,25 @@ function WalletBlock({ account }: { account: string }) {
           </StandardTooltip>
         </div>
       </div>
-      {!isSolanaSelected && (
-        <BalanceAmount
-          usd={walletUsd}
-          onClick={() => {
-            setAvailableAssetsFilter("wallet");
-            setIsVisibleOrView("availableToTradeAssets");
-          }}
-        />
-      )}
+      {!isSolanaSelected && <EvmWalletBalance />}
     </div>
+  );
+}
+
+// The wallet balance reads EVM chains, so WalletBlock mounts it only off Solana.
+function EvmWalletBalance() {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
+  const { walletUsd } = useAvailableToTradeAssetSettlementChain();
+
+  return (
+    <BalanceAmount
+      usd={walletUsd}
+      onClick={() => {
+        setAvailableAssetsFilter("wallet");
+        setIsVisibleOrView("availableToTradeAssets");
+      }}
+    />
   );
 }
 

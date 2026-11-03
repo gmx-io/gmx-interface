@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, getChainName, getViemChain } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
+import { getNetworkFeatures } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
@@ -64,7 +64,8 @@ export function TradingSettings({
   numberOfParts,
   onClose,
 }: TradingSettingsProps) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
   const { isConnected } = useAccount();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
@@ -145,7 +146,7 @@ export function TradingSettings({
 
   return (
     <div>
-      {getIsExpressSupported(chainId) && (
+      {features.express && (
         <>
           <SettingsSection>
             <div className="text-14 font-medium text-typography-primary">
@@ -330,15 +331,17 @@ export function TradingSettings({
           suggestions={EMPTY_ARRAY}
         />
 
-        <InputSetting
-          title={t`TWAP number of parts`}
-          description={t`Default parts for TWAP orders`}
-          defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
-          value={numberOfParts}
-          onChange={onChangeTwapNumberOfParts}
-          onBlur={onBlurTwapNumberOfParts}
-          type="number"
-        />
+        {features.twap && (
+          <InputSetting
+            title={t`TWAP number of parts`}
+            description={t`Default parts for TWAP orders`}
+            defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+            value={numberOfParts}
+            onChange={onChangeTwapNumberOfParts}
+            onBlur={onBlurTwapNumberOfParts}
+            type="number"
+          />
+        )}
 
         {settings.shouldUseExecutionFeeBuffer && (
           <InputSetting

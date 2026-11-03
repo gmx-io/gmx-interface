@@ -1,13 +1,15 @@
 import { Trans } from "@lingui/macro";
 import type { CSSProperties, PropsWithChildren } from "react";
-import { isAddressEqual, type Address } from "viem";
 
+import { getNetworkFeatures } from "config/features";
 import {
   usePositionEditorOpenAtPrice,
   usePositionEditorOpenDepositNow,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { parsePositionKey } from "domain/synthetics/positions";
+import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
+import { isSameAddress } from "sdk/utils/address";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { TooltipAction } from "components/Tooltip/TooltipBlocks";
@@ -22,9 +24,7 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
   const { account } = useWallet();
 
   const isRemediable =
-    positionKey !== undefined &&
-    account !== undefined &&
-    isAddressEqual(parsePositionKey(positionKey).account as Address, account);
+    positionKey !== undefined && account !== undefined && isSameAddress(parsePositionKey(positionKey).account, account);
 
   return isRemediable ? positionKey : undefined;
 }
@@ -34,10 +34,11 @@ export function DepositMarginNowAction({
   isTooltipLine,
   children,
 }: PropsWithChildren<{ positionKey: string | undefined; isTooltipLine?: boolean }>) {
+  const { networkId } = useChainId();
   const openDepositNow = usePositionEditorOpenDepositNow();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
 
-  if (remediablePositionKey === undefined) {
+  if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined) {
     return isTooltipLine ? null : <>{children}</>;
   }
 
@@ -54,10 +55,15 @@ export function ReplaceMarginDepositAction({
   isTooltipLine,
   children,
 }: PropsWithChildren<{ positionKey: string | undefined; orderKey: string | undefined; isTooltipLine?: boolean }>) {
+  const { networkId } = useChainId();
   const openAtPrice = usePositionEditorOpenAtPrice();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
 
-  if (remediablePositionKey === undefined || orderKey === undefined) {
+  if (
+    !getNetworkFeatures(networkId).collateralDeposit ||
+    remediablePositionKey === undefined ||
+    orderKey === undefined
+  ) {
     return isTooltipLine ? null : <>{children}</>;
   }
 
