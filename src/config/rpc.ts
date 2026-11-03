@@ -20,6 +20,13 @@ import {
 
 import { isDevelopment } from "./env";
 
+const ALCHEMY_FALLBACK_KEY = "alch_RCUyAwn71kwGwf3IeEyMp";
+
+// The existing fallback app has Solana enabled; the development app does not.
+export function getSolanaRpcUrl(): string {
+  return `https://solana-mainnet.g.alchemy.com/v2/${ALCHEMY_FALLBACK_KEY}`;
+}
+
 export type { RpcConfig } from "lib/rpc/types";
 export * from "sdk/configs/chains";
 export { getChainName } from "sdk/configs/chains";
@@ -366,7 +373,7 @@ function getAlchemyProvider(
   } else {
     switch (purpose) {
       case "fallback":
-        alchemyKey = "alch_RCUyAwn71kwGwf3IeEyMp";
+        alchemyKey = ALCHEMY_FALLBACK_KEY;
         break;
       case "largeAccount":
         alchemyKey = "alch_1xqx9RJJd8BJ9vJaDyrmp";
