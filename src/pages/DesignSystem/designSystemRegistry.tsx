@@ -4,13 +4,7 @@ import { ButtonChangelog, ButtonExamples, ButtonPropsReference } from "./pages/B
 import { CheckboxChangelog, CheckboxExamples, CheckboxPropsReference } from "./pages/CheckboxPage";
 import { ColorsChangelog, ColorsExamples } from "./pages/ColorsPage";
 import { SpacingChangelog, SpacingExamples, SpacingGuidelines } from "./pages/SpacingPage";
-import {
-  TableChangelog,
-  TableExamples,
-  TableExperiment1,
-  TableExperiment2,
-  TablePropsReference,
-} from "./pages/TablePage";
+import { TableChangelog, TableExamples, TablePropsReference } from "./pages/TablePage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
 import { TypographyChangelog, TypographyExamples } from "./pages/TypographyPage";
 
@@ -93,8 +87,6 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
           examples: TableExamples,
           props: TablePropsReference,
           changelog: TableChangelog,
-          experiment1: TableExperiment1,
-          experiment2: TableExperiment2,
         },
         hideSectionNav: true,
       },

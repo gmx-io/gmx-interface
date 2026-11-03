@@ -2,17 +2,13 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 
 import type { SortDirection } from "context/SorterContext/types";
-import PoolsCard from "pages/Pools/PoolsCard";
 
 import AddressView from "components/AddressView/AddressView";
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
-import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -29,14 +25,6 @@ import sparkleIcon from "img/sparkle.svg";
 
 // Example tables for the Table page (/ui/table), built from the shared table parts.
 // All numbers, names and addresses are made up.
-
-// Space above and below the cell content: 12 (rows 44px) or 16 (rows 52px, Experiment tab)
-export type CellPadding = 12 | 16;
-
-const CELL_PADDING_CLASSNAMES: Record<CellPadding, string> = {
-  12: "[&_td]:!py-12",
-  16: "[&_td]:!py-16",
-};
 
 // Made-up addresses: the pattern makes clear they aren't real wallets
 const fakeAddress = (start: string, end: string) => `0x${start}${"0".repeat(32)}${end}`;
@@ -79,38 +67,9 @@ function HeaderCell({ column }: { column: Column }) {
   );
 }
 
-// How the rows look, switched on the Experiment tab
-export type RowStyle = {
-  // TableTr stripes every odd row; off clears that background (hover stays)
-  striped?: boolean;
-  // A 0.5px line between rows
-  lines?: boolean;
-  cellPadding?: CellPadding;
-};
-
-// The line is a 0.5px background at the bottom of the cells, so rows stay 44px (a border would add 0.5px).
-// button-background (the old slate-700) keeps it quiet; in the first and last cell it stops 20px short of the table edge.
-const ROW_LINE_CLASSNAME = cx(
-  "[&:not(:last-child)>td]:bg-[linear-gradient(var(--color-button-background),var(--color-button-background))]",
-  "[&:not(:last-child)>td]:bg-[length:100%_0.5px] [&:not(:last-child)>td]:bg-bottom [&:not(:last-child)>td]:bg-no-repeat",
-  "[&:not(:last-child)>td:first-child]:bg-[length:calc(100%-20px)_0.5px] [&:not(:last-child)>td:first-child]:bg-right-bottom",
-  "[&:not(:last-child)>td:last-child]:bg-[length:calc(100%-20px)_0.5px] [&:not(:last-child)>td:last-child]:bg-left-bottom"
-);
-
-function DemoTable({
-  columns,
-  rows,
-  minWidth,
-  striped = true,
-  lines = false,
-  cellPadding = 12,
-}: {
-  columns: Column[];
-  rows: ReactNode[][];
-  minWidth: string;
-} & RowStyle) {
+function DemoTable({ columns, rows, minWidth }: { columns: Column[]; rows: ReactNode[][]; minWidth: string }) {
   return (
-    <div className={cx("overflow-x-auto", CELL_PADDING_CLASSNAMES[cellPadding])}>
+    <div className="overflow-x-auto">
       <Table className={minWidth}>
         <thead>
           <TableTheadTr>
@@ -121,14 +80,7 @@ function DemoTable({
         </thead>
         <tbody>
           {rows.map((cells, rowIndex) => (
-            <TableTr
-              key={rowIndex}
-              hoverable
-              className={cx({
-                "[&:nth-child(odd):not(:hover)]:!bg-[transparent]": !striped,
-                [ROW_LINE_CLASSNAME]: lines,
-              })}
-            >
+            <TableTr key={rowIndex} hoverable>
               {cells.map((cell, cellIndex) => (
                 <TableTd key={cellIndex} className={columns[cellIndex]?.className}>
                   {cell}
@@ -269,10 +221,9 @@ const TOP_ADDRESSES_COLUMNS: Column[] = [
   { title: "Win / Loss", info: true, sort: "unspecified" },
 ];
 
-export function TopAddressesTable({ rows = TOP_ADDRESS_ROWS, ...rowStyle }: { rows?: AddressRow[] } & RowStyle) {
+export function TopAddressesTable({ rows = TOP_ADDRESS_ROWS }: { rows?: AddressRow[] }) {
   return (
     <DemoTable
-      {...rowStyle}
       minWidth="min-w-[760px]"
       columns={TOP_ADDRESSES_COLUMNS}
       rows={rows.map(([address, pnl, pnlPercent, avgSize, avgLeverage, wins, losses], index) => {
@@ -346,10 +297,9 @@ const TOP_POSITIONS_COLUMNS: Column[] = [
   { title: "Liquidation price" },
 ];
 
-export function TopPositionsTable({ rows = TOP_POSITION_ROWS, ...rowStyle }: { rows?: PositionRow[] } & RowStyle) {
+export function TopPositionsTable({ rows = TOP_POSITION_ROWS }: { rows?: PositionRow[] }) {
   return (
     <DemoTable
-      {...rowStyle}
       minWidth="min-w-[760px]"
       columns={TOP_POSITIONS_COLUMNS}
       rows={rows.map(([address, pnl, symbol, market, isLong, entry, size, leverage, liquidation], index) => [
@@ -665,18 +615,10 @@ const POOL_ROWS: PoolRow[] = [
   ],
 ];
 
-export function PoolsTable({
-  rows = POOL_ROWS,
-  nameColumn = "Pool",
-  ...rowStyle
-}: {
-  rows?: PoolRow[];
-  // "Vault" for the GLV vaults table
-  nameColumn?: string;
-} & RowStyle) {
+export function PoolsTable() {
   const columns = useMemo<Column[]>(
     () => [
-      { title: nameColumn, className: "min-w-[160px]" },
+      { title: "Pool", className: "min-w-[160px]" },
       { title: "TVL (supply)", sort: "unspecified" },
       { title: "Balance", sort: "unspecified" },
       { title: "Fee APY", info: true, sort: "unspecified" },
@@ -684,15 +626,14 @@ export function PoolsTable({
       { title: "Snapshot", tooltip: true },
       { title: "" },
     ],
-    [nameColumn]
+    []
   );
 
   return (
     <DemoTable
-      {...rowStyle}
       minWidth="min-w-[860px]"
       columns={columns}
-      rows={rows.map(([symbol, name, pair, tvl, supply, feeApy, performance, points, badges = []]) => [
+      rows={POOL_ROWS.map(([symbol, name, pair, tvl, supply, feeApy, performance, points, badges = []]) => [
         <div key="pool" className="flex items-center gap-8">
           <TokenIcon symbol={symbol} displaySize={32} className={TOKEN_ICON_CLASSNAME} />
           <TwoLines sub={pair}>
@@ -790,195 +731,5 @@ export function ReferralCodesTable() {
         </div>,
       ])}
     />
-  );
-}
-
-// The full leaderboard card (Experiment tab): 20 made-up rows per page, PnL going down
-const LEADERBOARD_PAGE_SIZE = 20;
-const LEADERBOARD_PAGE_COUNT = 3;
-
-const hex4 = (value: number) => (value % 0x10000).toString(16).padStart(4, "0");
-const usd = (value: number) =>
-  `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-function makeAddressRows(count: number): AddressRow[] {
-  return Array.from({ length: count }, (_, index) => {
-    const wins = 12 + ((index * 53) % 480);
-    return [
-      fakeAddress(hex4(0x3fa1 + index * 0x2b7), hex4(0x7b2e + index * 0x1d3)),
-      `+${usd(8_263_048.3 * 0.84 ** index)}`,
-      `+${(48.17 + ((index * 37) % 320)).toFixed(2)}%`,
-      usd(186_000 + ((index * 734_117) % 15_000_000)),
-      (2 + ((index * 3.71) % 22)).toFixed(2),
-      wins,
-      Math.floor(wins * 0.72),
-    ];
-  });
-}
-
-const POSITION_MARKETS: [string, string, number][] = [
-  ["SOL", "SOL/USD", 237.0092],
-  ["ETH", "ETH/USD", 3425.43],
-  ["LINK", "LINK/USD", 19.2036],
-  ["BTC", "BTC/USD", 84123.22],
-];
-
-function makePositionRows(count: number): PositionRow[] {
-  return Array.from({ length: count }, (_, index) => {
-    const [symbol, market, price] = POSITION_MARKETS[index % POSITION_MARKETS.length];
-    const isLong = index % 3 === 1;
-    const entry = price * (1 + (((index * 7) % 10) - 5) / 100);
-    return [
-      fakeAddress(hex4(0x9b2c + index * 0x31d), hex4(0x4e1d + index * 0x2a9)),
-      `+${usd(1_070_474.66 * 0.8 ** index)}`,
-      symbol,
-      market,
-      isLong,
-      usd(entry),
-      usd(46_000 + ((index * 412_377) % 2_800_000)),
-      (0.6 + ((index * 1.37) % 17)).toFixed(2),
-      usd(entry * (isLong ? 0.8 : 1.2)),
-    ];
-  });
-}
-
-const FULL_ADDRESS_ROWS = makeAddressRows(LEADERBOARD_PAGE_SIZE);
-const FULL_POSITION_ROWS = makePositionRows(LEADERBOARD_PAGE_SIZE);
-
-type LeaderboardView = "addresses" | "positions";
-
-const LEADERBOARD_VIEWS: { label: string; value: LeaderboardView }[] = [
-  { label: "Top addresses", value: "addresses" },
-  { label: "Top positions", value: "positions" },
-];
-
-/**
- * The whole leaderboard card as in the app: tabs and search, 20 rows, pagination. Search filters by address.
- */
-export function LeaderboardCard(rowStyle: RowStyle) {
-  const [view, setView] = useState<LeaderboardView>("addresses");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const query = search.trim().toLowerCase();
-  const matches = ([address]: AddressRow | PositionRow) => address.toLowerCase().includes(query);
-
-  return (
-    <div className="rounded-8 bg-fill-surfaceBase">
-      <div className="flex items-center justify-between gap-16 border-b-1/2 border-stroke-primary p-20 max-md:flex-col">
-        <Tabs
-          type="inline"
-          options={LEADERBOARD_VIEWS}
-          selectedValue={view}
-          onChange={setView}
-          className="max-md:w-full"
-          regularOptionClassname="grow"
-        />
-        <SearchInput
-          placeholder="Search address"
-          className="w-full max-w-[260px]"
-          value={search}
-          setValue={setSearch}
-        />
-      </div>
-      {view === "addresses" ? (
-        <TopAddressesTable rows={FULL_ADDRESS_ROWS.filter(matches)} {...rowStyle} />
-      ) : (
-        <TopPositionsTable rows={FULL_POSITION_ROWS.filter(matches)} {...rowStyle} />
-      )}
-      <BottomTablePagination page={page} pageCount={LEADERBOARD_PAGE_COUNT} onPageChange={setPage} />
-    </div>
-  );
-}
-
-// The Pools page (Experiment 2): TVL header, GLV vaults and GM pools cards with made-up numbers
-
-// A made-up 7-point line for the Snapshot column, rising or falling
-const sparkline = (seed: number, rising: boolean) =>
-  Array.from({ length: 7 }, (_, index) => {
-    const trend = rising ? 26 - index * 3 : 8 + index * 3;
-    const wobble = ((seed * 7 + index * 13) % 7) - 3;
-    return `${index * 20},${Math.max(2, Math.min(30, trend + wobble))}`;
-  }).join(" ");
-
-const GLV_ROWS: PoolRow[] = [
-  ["GLV", "GLV", "[USDG-USDG]", "$13.04m", "(12.96m GLV)", "12.50%", "7.18%", sparkline(13, true), ["launchBoost"]],
-  ["GLV", "GLV", "[WETH-USDC]", "$14.36m", "(10.81m GLV)", "11.96%", "22.79%", sparkline(1, true)],
-  ["GLV", "GLV", "[BTC-USDC]", "$12.51m", "(8.17m GLV)", "8.31%", "14.10%", sparkline(2, true)],
-];
-
-const GM_ROWS: PoolRow[] = [
-  ["BTC", "BTC/USD", "[BTC-USDC]", "$57.50m", "(23.11m GM)", "3.92%", "10.63%", sparkline(3, true)],
-  ["ETH", "ETH/USD", "[WETH-USDC]", "$47.93m", "(26.16m GM)", "6.58%", "14.92%", sparkline(4, true)],
-  ["ETH", "ETH/USD", "[WETH-WETH]", "$14.85m", "(19.11m GM)", "7.71%", "-4.31%", sparkline(5, false)],
-  ["BTC", "BTC/USD", "[USDG-USDG]", "$5.81m", "(5.74m GM)", "5.22%", "2.73%", sparkline(14, true), ["whitelistOnly"]],
-  ["ETH", "ETH/USD", "[USDG-USDG]", "$2.69m", "(2.68m GM)", "5.32%", "3.41%", sparkline(15, true), ["whitelistOnly"]],
-  ["SOL", "SOL/USD", "[SOL-USDC]", "$8.86m", "(4.37m GM)", "7.87%", "25.87%", sparkline(7, true)],
-  ["LTC", "LTC/USD", "[WETH-USDC]", "$6.12m", "(3.95m GM)", "18.51%", "57.29%", sparkline(8, true)],
-  ["UNI", "UNI/USD", "[UNI-USDC]", "$4.48m", "(2.88m GM)", "9.46%", "68.75%", sparkline(9, true)],
-  ["LINK", "LINK/USD", "[LINK-USDC]", "$3.97m", "(2.31m GM)", "8.10%", "34.75%", sparkline(10, true)],
-];
-
-const TIME_RANGES = [
-  { label: "Last 30d", value: "30d" },
-  { label: "Last 90d", value: "90d" },
-  { label: "Last 180d", value: "180d" },
-  { label: "Total", value: "total" },
-];
-
-const POOL_FILTERS = [
-  { label: "All", value: "all" },
-  { label: "Favourites", value: "favourites" },
-  { label: "Crypto", value: "crypto" },
-  { label: "TradFi", value: "tradfi" },
-];
-
-/**
- * The Pools page as in the app, built from the shared table parts. Search filters GM pools by name.
- */
-export function PoolsPage(rowStyle: RowStyle) {
-  const [timeRange, setTimeRange] = useState("90d");
-  const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const query = search.trim().toLowerCase();
-
-  return (
-    <div className="flex flex-col gap-16">
-      <div className="flex items-end justify-between gap-16 max-md:flex-col max-md:items-start">
-        <div className="flex flex-col gap-4">
-          <span className="text-h2 numbers">$155,880,309</span>
-          <span className="text-body-medium text-textIcon-secondary">TVL in vaults and pools</span>
-        </div>
-        <Tabs type="inline" options={TIME_RANGES} selectedValue={timeRange} onChange={setTimeRange} />
-      </div>
-
-      <PoolsCard
-        title="GLV vaults"
-        description="Yield-optimized vaults supplying liquidity across multiple GMX markets"
-      >
-        <PoolsTable rows={GLV_ROWS} nameColumn="Vault" {...rowStyle} />
-      </PoolsCard>
-
-      <PoolsCard
-        title="GM pools"
-        description={
-          <div className="flex flex-col gap-16">
-            Liquidity pools for specific GMX markets with single-asset and native asset options
-            <div className="flex flex-wrap items-center justify-between gap-12">
-              <Tabs type="inline" options={POOL_FILTERS} selectedValue={filter} onChange={setFilter} />
-              <SearchInput
-                className="w-full md:max-w-[260px]"
-                value={search}
-                setValue={setSearch}
-                placeholder="Search pools"
-              />
-            </div>
-          </div>
-        }
-        bottom={<BottomTablePagination page={page} pageCount={4} onPageChange={setPage} className="!p-0" />}
-      >
-        <PoolsTable rows={GM_ROWS.filter(([, name]) => name.toLowerCase().includes(query))} {...rowStyle} />
-      </PoolsCard>
-    </div>
   );
 }

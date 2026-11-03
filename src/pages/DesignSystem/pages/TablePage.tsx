@@ -1,20 +1,15 @@
-import { ComponentType, ReactNode, useState } from "react";
-
-import Tabs from "components/Tabs/Tabs";
+import { ComponentType } from "react";
 
 import { DocsChangelog } from "../DocsChangelog";
 import { DocsProp, DocsPropsTable, DocsSection, DocsSectionInfo } from "../DocsLayout";
 import { TABLE_CHANGELOG_NOTES, TABLE_CHANGELOG_STEPS } from "./tableChangelog";
 import {
   ClaimsTable,
-  LeaderboardCard,
   MarketsTable,
   OrdersTable,
-  PoolsPage,
   PoolsTable,
   PositionsTable,
   ReferralCodesTable,
-  type RowStyle,
   TopAddressesTable,
   TopPositionsTable,
   TradesTable,
@@ -23,7 +18,6 @@ import {
 // Table page of the design system site (/ui/table).
 // Examples: the app's tables built from the shared table parts. Props: the parts' props and the parts → code map.
 // Changelog: what developers change in the table parts.
-// Experiment 1 and 2: design tries on a full table and a full page, not decided yet.
 
 type TableExample = DocsSectionInfo & { table: ComponentType };
 
@@ -46,7 +40,7 @@ type PartRow = { part: string; code: string };
 const PARTS: PartRow[] = [
   { part: "Header cell", code: "TableTh (+ Sorter, TooltipWithPortal)" },
   { part: "… row", code: "TableTr hoverable" },
-  { part: "Striped switch", code: "Automatic: TableTr stripes every odd row" },
+  { part: "Row line", code: "Automatic: a hairline under every TableTr row but the last" },
   { part: "Table cell, Market cell, Position cell", code: "TableTd + the cell content" },
   { part: "Tooltip switch", code: 'TooltipWithPortal variant="underline"' },
   { part: "Pagination", code: "BottomTablePagination" },
@@ -109,7 +103,12 @@ const TABLE_PROPS: DocsProp[] = [
     defaultValue: "false",
     description: "Highlights the row under the pointer.",
   },
-  { name: "TableTr", type: "tr props", description: "Every odd row gets the stripe background." },
+  {
+    name: "TableTr",
+    type: "tr props",
+    description:
+      "Rows have no stripes: a hairline between them, stopping at the cell padding at the table edges (20px, 12px in compact cells).",
+  },
 ];
 
 const CELL_PROPS: DocsProp[] = [
@@ -118,7 +117,7 @@ const CELL_PROPS: DocsProp[] = [
     type: '"all" | "compact" | "compact-one-column"',
     defaultValue: '"all"',
     description:
-      "all: 4px sides, 20px at the table edges. compact: 12px at the edges. compact-one-column: 8px all round.",
+      "all: 16px above and below (rows 52px), 4px sides, 20px at the table edges. compact: 12px above and below, 12px at the edges. compact-one-column: 12px above and below, 8px at the sides.",
   },
   { name: "className", type: "string", description: "Classes for the cell, like a width or right alignment." },
 ];
@@ -153,68 +152,5 @@ export function TableChangelog() {
       notes={TABLE_CHANGELOG_NOTES}
       steps={TABLE_CHANGELOG_STEPS}
     />
-  );
-}
-
-const LEADERBOARD_EXPERIMENT_SECTION: DocsSectionInfo = {
-  id: "table-experiment-leaderboard",
-  title: "Leaderboard · Full table",
-};
-
-const POOLS_EXPERIMENT_SECTION: DocsSectionInfo = { id: "table-experiment-pools", title: "Pools · Full page" };
-
-type RowLook = "current" | "idea1" | "idea2";
-
-// The row looks to compare on both experiments
-const ROW_LOOKS: Record<RowLook, RowStyle> = {
-  current: { striped: true, lines: false, cellPadding: 12 },
-  idea1: { striped: false, lines: false, cellPadding: 12 },
-  idea2: { striped: false, lines: true, cellPadding: 16 },
-};
-
-const ROW_LOOK_OPTIONS: { label: string; value: RowLook }[] = [
-  { label: "Current", value: "current" },
-  { label: "Idea 1", value: "idea1" },
-  { label: "Idea 2", value: "idea2" },
-];
-
-/**
- * The row look switch of both experiments. Current: striped, 12px. Idea 1: no stripes. Idea 2: no stripes,
- * 16px above and below, lines between rows.
- */
-function useRowLook(): { rowStyle: RowStyle; switcher: ReactNode } {
-  const [look, setLook] = useState<RowLook>("current");
-
-  return {
-    rowStyle: ROW_LOOKS[look],
-    switcher: <Tabs type="inline" options={ROW_LOOK_OPTIONS} selectedValue={look} onChange={setLook} />,
-  };
-}
-
-/**
- * Experiment 1 tab: the full leaderboard card.
- */
-export function TableExperiment1() {
-  const { rowStyle, switcher } = useRowLook();
-
-  return (
-    <DocsSection section={LEADERBOARD_EXPERIMENT_SECTION} flush titleAction={switcher}>
-      <LeaderboardCard {...rowStyle} />
-    </DocsSection>
-  );
-}
-
-/**
- * Experiment 2 tab: the Pools page, on the app's page background.
- */
-export function TableExperiment2() {
-  const { rowStyle, switcher } = useRowLook();
-
-  return (
-    <DocsSection section={POOLS_EXPERIMENT_SECTION} flush titleAction={switcher}>
-      <div className="bg-fill-background p-16">
-        <PoolsPage {...rowStyle} />
-      </div>
-    </DocsSection>
   );
 }

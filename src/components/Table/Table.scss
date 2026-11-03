@@ -1,10 +1,43 @@
-.TableTr_hoverable {
-  &:nth-child(even):hover {
-    background: linear-gradient(0deg, var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
-      linear-gradient(0deg, var(--color-fill-surfaceHover), var(--color-fill-surfaceHover));
+// Rows have no stripes: a hairline between them, drawn as a background so rows keep their height. At the table
+// edges the line stops at the cell padding: 20px, 12px in compact cells, 8px in single-column cells.
+.TableTr:not(:last-child) > td {
+  --table-line-inset: 20px;
+  background-image: linear-gradient(var(--color-button-background), var(--color-button-background));
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 1px;
+
+  &.TableTd_compact {
+    --table-line-inset: 12px;
   }
 
-  &:nth-child(odd):hover {
-    background: var(--color-fill-surfaceHover);
+  &.TableTd_compactOneColumn {
+    --table-line-inset: 8px;
   }
+
+  &:first-child {
+    background-position: right bottom;
+    background-size: calc(100% - var(--table-line-inset)) 1px;
+  }
+
+  &:last-child {
+    background-position: left bottom;
+    background-size: calc(100% - var(--table-line-inset)) 1px;
+  }
+
+  &:only-child {
+    background-position: center bottom;
+    background-size: calc(100% - 2 * var(--table-line-inset)) 1px;
+  }
+}
+
+// One device pixel on high-density screens: the lower half of the 1px tile. Chrome doesn't draw a 0.5px tile.
+@media (min-resolution: 2dppx) {
+  .TableTr:not(:last-child) > td {
+    background-image: linear-gradient(to top, var(--color-button-background) 50%, transparent 50%);
+  }
+}
+
+.TableTr_hoverable:hover {
+  background: var(--color-fill-surfaceHover);
 }

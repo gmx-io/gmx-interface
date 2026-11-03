@@ -63,19 +63,9 @@
   opacity: 1;
 }
 
-tbody > tr:nth-child(odd) > .PositionItem-actions-cell {
-  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
-    var(--color-fill-surfaceBase);
-}
-
-.TableTr_hoverable:nth-child(even):hover > .PositionItem-actions-cell {
-  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
-    linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-fill-surfaceBase);
-}
-
-.TableTr_hoverable:nth-child(odd):hover > .PositionItem-actions-cell {
-  background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)),
-    var(--color-fill-surfaceBase);
+// The sticky cell covers the row hover, so it adds the hover tint itself (over its line, which stays visible)
+.TableTr_hoverable:hover > .PositionItem-actions-cell {
+  box-shadow: inset 0 0 0 100vmax var(--color-fill-surfaceHover);
 }
 
 @media (max-width: 800px) {
