@@ -66,7 +66,7 @@ const getOraclePriceLabel = (): ImplicitLabelType => ({
   value: t`Oracle price`,
   fill: "var(--color-textIcon-primary)",
   opacity: 0.7,
-  fontSize: 10,
+  fontSize: 12,
 });
 
 const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
@@ -678,7 +678,7 @@ function Tick(
       textAnchor={textAnchor}
       fill="var(--color-textIcon-primary)"
       opacity={index === marketPriceIndex ? 1 : 0.7}
-      fontWeight={index === marketPriceIndex ? "bold" : "normal"}
+      fontWeight={index === marketPriceIndex ? 500 : "normal"}
       verticalAnchor={verticalAnchor}
       fontSize={12}
     >

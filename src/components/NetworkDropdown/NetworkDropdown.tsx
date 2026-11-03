@@ -166,7 +166,7 @@ function NetworkMenuItems({
       {walletAndGmxAccountNetworks.length > 0 && (
         <>
           <div className="flex items-center gap-4 px-12 pb-4 pt-8">
-            <span className="text-13 font-medium text-textIcon-secondary">
+            <span className="text-body-small font-medium text-textIcon-secondary">
               <Trans>Wallet & GMX Account</Trans>
             </span>
             <TooltipWithPortal
@@ -190,7 +190,7 @@ function NetworkMenuItems({
         <>
           {walletAndGmxAccountNetworks.length > 0 && <div className="network-dropdown-divider" />}
           <div className="flex items-center gap-4 px-12 pb-4 pt-8">
-            <span className="text-13 font-medium text-textIcon-secondary">
+            <span className="text-body-small font-medium text-textIcon-secondary">
               <Trans>Wallet-only</Trans>
             </span>
             <TooltipWithPortal
@@ -249,7 +249,7 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               </div>
               <span
                 className={cx(
-                  "network-dropdown-item-label",
+                  "network-dropdown-item-label font-medium",
                   isSelected ? "text-textIcon-primary" : "text-textIcon-secondary"
                 )}
               >

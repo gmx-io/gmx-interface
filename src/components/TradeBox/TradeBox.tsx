@@ -1443,7 +1443,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-14 text-textIcon-secondary">
+              <span className="text-body-medium text-textIcon-secondary">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>

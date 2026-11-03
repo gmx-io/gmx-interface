@@ -832,7 +832,7 @@ export function PositionSeller() {
           <DecreaseReceiveOutputDisplay
             outputs={receiveOutputs}
             className="max-w-full"
-            secondaryValueClassName="!text-14"
+            secondaryValueClassName="!text-body-medium"
           />
         ) : (
           receiveToken && (
@@ -869,7 +869,7 @@ export function PositionSeller() {
                     symbol={receiveToken.symbol}
                     usd={receiveUsd}
                     isStable={receiveToken.isStable}
-                    secondaryValueClassName="!text-14"
+                    secondaryValueClassName="!text-body-medium"
                   />
                 </span>
               }
@@ -878,7 +878,7 @@ export function PositionSeller() {
                 chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
                   <div className="mb-16">
                     <div className="flex items-center justify-between gap-8">
-                      <span className="text-14 text-textIcon-secondary">
+                      <span className="text-body-medium text-textIcon-secondary">
                         <Trans>Send remaining margin to</Trans>
                       </span>
                       <MarginDestinationSelector
@@ -903,7 +903,7 @@ export function PositionSeller() {
         <DecreaseReceiveOutputDisplay
           outputs={receiveOutputs}
           className="max-w-full"
-          secondaryValueClassName="!text-14"
+          secondaryValueClassName="!text-body-medium"
           layout="stacked"
         />
       }

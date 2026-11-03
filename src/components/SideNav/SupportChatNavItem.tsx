@@ -113,7 +113,7 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
         </span>
       }
       label={
-        <span className="inline-flex items-center gap-6 leading-[1]">
+        <span className="inline-flex items-center gap-6">
           {supportLabel}
           {hasUnreadMessages ? (
             <UnreadCountBadge unreadCount={supportChatUnreadCount} />

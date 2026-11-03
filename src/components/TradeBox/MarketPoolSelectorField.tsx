@@ -47,7 +47,7 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
           positionStats={relatedMarketsPositionStats}
           onSelect={setUserSelectedMarketAddress}
           handleClassName={cx(
-            "inline-block overflow-hidden text-ellipsis whitespace-nowrap text-13",
+            "text-body-small inline-block overflow-hidden text-ellipsis whitespace-nowrap",
             isInteractive && "group-gmx-hover/selector-field:text-blue-strong"
           )}
           chevronClassName={cx(

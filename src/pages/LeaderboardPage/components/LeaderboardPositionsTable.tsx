@@ -319,7 +319,7 @@ const TableRow = memo(
         <>
           <div className="mr-5 inline-flex items-start leading-1">
             <span>{indexName}</span>
-            <span className="subtext">[{poolName}]</span>
+            <span className="subtext !leading-1">[{poolName}]</span>
           </div>
           <span className={cx(position.isLong ? "positive" : "negative")}>{position.isLong ? t`Long` : t`Short`}</span>
         </>

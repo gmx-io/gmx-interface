@@ -12,7 +12,7 @@ import { useLocalizedMap } from "lib/i18n";
 import Tabs from "components/Tabs/Tabs";
 import type { Option } from "components/Tabs/types";
 
-const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-13 leading-[18px]";
+const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-body-small";
 
 export function FavoriteTabs({
   favoritesKey,
@@ -46,7 +46,7 @@ export function FavoriteTabs({
           opt === "recently-listed" && recentlyListedCount > 0 ? (
             <span className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
               {labels[opt]}
-              <span className="flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 text-12 font-medium text-textIcon-secondary">
+              <span className="text-body-small flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 font-medium text-textIcon-secondary">
                 {recentlyListedCount}
               </span>
             </span>

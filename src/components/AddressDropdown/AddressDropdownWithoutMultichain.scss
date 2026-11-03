@@ -22,7 +22,8 @@
     display: flex !important;
     align-items: center;
     color: var(--color-textIcon-secondary);
-    font-size: 13px;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     padding: 8px 12px;
     font-weight: 500;
 

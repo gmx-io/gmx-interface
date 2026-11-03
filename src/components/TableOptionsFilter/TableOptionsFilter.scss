@@ -9,7 +9,8 @@
   }
 
   &-group-name {
-    font-size: 13px;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     color: var(--color-textIcon-primary);
     display: flex;
     align-items: center;
@@ -19,7 +20,8 @@
   }
 
   &-option {
-    font-size: 13px;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     font-weight: 500;
 
     display: flex;
@@ -35,23 +37,5 @@
 
   &-search {
     margin: 1rem;
-  }
-
-  &-clear {
-    font-size: 13px;
-    padding: 0.5rem 1rem;
-    padding-top: 1rem;
-
-    color: var(--color-textIcon-secondary);
-
-    cursor: pointer;
-
-    &:hover {
-      color: var(--color-textIcon-primary);
-    }
-
-    &:last-child {
-      padding-bottom: 1rem;
-    }
   }
 }

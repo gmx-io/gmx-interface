@@ -88,7 +88,7 @@ export default function DesignSystemPage() {
                 <div className="flex min-w-0 flex-1 flex-col gap-24">
                   <DesignSystemMobileNav activeSlug={page.slug} />
                   <div className="flex flex-col gap-12">
-                    <h1 className="text-h1 font-medium">{page.title}</h1>
+                    <h1 className="text-h2 font-medium">{page.title}</h1>
                     {page.description && <p className="text-body-large text-textIcon-secondary">{page.description}</p>}
                     {/* Pages with a single tab skip the tab row */}
                     {tabs.length > 1 && (

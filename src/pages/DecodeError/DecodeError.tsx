@@ -162,8 +162,8 @@ export function DecodeError() {
                 <div className="space-y-8">
                   {formattedArgs.map(({ key, value }) => (
                     <div key={key} className="rounded-4 bg-fill-surfaceElevated p-12">
-                      <div className="mb-4 text-12 font-medium text-textIcon-secondary">{key}:</div>
-                      <div className="break-all font-mono text-12 text-textIcon-primary">{value}</div>
+                      <div className="text-body-small mb-4 font-medium text-textIcon-secondary">{key}:</div>
+                      <div className="text-body-small break-all font-mono text-textIcon-primary">{value}</div>
                     </div>
                   ))}
                 </div>

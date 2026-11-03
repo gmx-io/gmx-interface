@@ -14,11 +14,13 @@ export function ShareCardPnlValue({ pnlPercentage, pnlUsd, showPnlAmounts, zeroC
 
   return (
     <div className="flex items-end gap-6">
-      <h3 className={cx("text-[40px] font-medium max-md:text-[32px]", pnlClassName)}>
+      <h3 className={cx("text-h2 max-md:text-h3", pnlClassName)}>
         {formatPercentage(pnlPercentage, { signed: true })}
       </h3>
       {showPnlAmounts && (
-        <p className={cx("pb-8 text-14 font-medium", pnlClassName)}>{formatUsd(pnlUsd, { displayPlus: true })}</p>
+        <p className={cx("text-body-medium pb-8 font-medium", pnlClassName)}>
+          {formatUsd(pnlUsd, { displayPlus: true })}
+        </p>
       )}
     </div>
   );

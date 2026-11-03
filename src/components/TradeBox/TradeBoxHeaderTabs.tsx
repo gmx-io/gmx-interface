@@ -146,7 +146,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
                 last:after:block last:after:h-20 last:after:w-2 last:after:-translate-y-1/2 last:after:rounded-full
                 last:after:bg-stroke-primary last:after:content-[''] max-md:last:after:h-16`,
               {
-                "!py-6 text-13": isInCurtain && !isCurtainOpen,
+                "text-body-small !py-6": isInCurtain && !isCurtainOpen,
               }
             )}
           />
@@ -156,7 +156,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             onChange={onTradeTypeChange}
             qa="trade-direction-swap"
             className="flex-none overflow-hidden rounded-8 !border-0 bg-fill-surfaceElevated p-0"
-            regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
+            regularOptionClassname={cx("mb-0", { "text-body-small !py-6": isInCurtain && !isCurtainOpen })}
           />
         </div>
         {isInCurtain && (

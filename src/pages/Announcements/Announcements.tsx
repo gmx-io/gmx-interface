@@ -215,10 +215,10 @@ export default function AnnouncementsPage() {
     >
       <div className="flex flex-col gap-12 max-lg:gap-8">
         <div>
-          <h1 className="text-h1 font-medium text-textIcon-primary">
+          <h1 className="text-h2 font-medium text-textIcon-primary">
             <Trans>Announcements</Trans>
           </h1>
-          <p className="text-body-medium mt-8 max-w-[440px] text-textIcon-secondary max-lg:text-12 max-lg:font-medium max-lg:leading-[1.25] max-lg:tracking-[-0.012em]">
+          <p className="text-body-medium mt-8 max-w-[440px] text-textIcon-secondary max-lg:text-body-small max-lg:font-medium">
             <Trans>Stay up to date with the latest listings, updates and maintenance notices.</Trans>
           </p>
         </div>
@@ -380,7 +380,7 @@ function FiltersBar({
                 event.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
               }}
               className={cx(
-                "inline-flex h-32 shrink-0 scroll-mx-32 items-center whitespace-nowrap rounded-8 px-12 text-13 font-medium transition-colors",
+                "text-body-small inline-flex h-32 shrink-0 scroll-mx-32 items-center whitespace-nowrap rounded-8 px-12 font-medium transition-colors",
                 activeTab === opt.value
                   ? "bg-button-secondary text-textIcon-primary"
                   : "text-textIcon-secondary hover:text-textIcon-primary"
@@ -405,7 +405,7 @@ function FiltersBar({
             renderHandle={({ buttonText, open }) => (
               <span
                 className={cx(
-                  "relative inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium transition-colors",
+                  "text-body-small relative inline-flex h-32 items-center gap-4 rounded-8 px-12 font-medium transition-colors",
                   "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
                   isCompact && "lg:w-32 lg:justify-center lg:px-0",
                   open ? "text-textIcon-primary" : "text-textIcon-secondary hover:text-textIcon-primary"
@@ -468,7 +468,7 @@ function ChainDropdown({
         <>
           <Popover.Button
             className={cx(
-              "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium outline-none transition-colors",
+              "text-body-small inline-flex h-32 items-center gap-4 rounded-8 px-12 font-medium outline-none transition-colors",
               "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
               isCompact && "lg:w-32 lg:justify-center lg:px-0",
               open ? "text-textIcon-primary" : "text-textIcon-secondary hover:text-textIcon-primary"

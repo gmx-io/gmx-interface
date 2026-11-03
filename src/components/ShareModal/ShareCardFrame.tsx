@@ -28,7 +28,7 @@ export const ShareCardFrame = forwardRef<HTMLDivElement, Props>(
           {children}
         </div>
         {loading && (
-          <div className="absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 rounded-b-8 bg-[#22243a] px-8 py-6 text-12">
+          <div className="text-body-small absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 rounded-b-8 bg-[#22243a] px-8 py-6">
             <SpinningLoader className="size-14" />
             <p className="font-medium text-textIcon-onButton">
               <Trans>Generating shareable image...</Trans>

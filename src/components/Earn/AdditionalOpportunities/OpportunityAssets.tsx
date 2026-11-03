@@ -58,7 +58,7 @@ export function OpportunityAssets({
               <span
                 className={cx(
                   "flex size-24 items-center justify-center rounded-full border-2 border-button-background",
-                  "bg-button-background text-[11px] font-medium normal-nums text-textIcon-secondary"
+                  "text-body-small bg-button-background font-medium text-textIcon-secondary"
                 )}
               >
                 +{remainingCount}

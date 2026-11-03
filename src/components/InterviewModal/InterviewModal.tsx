@@ -23,7 +23,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">
-            <div className="flex items-center gap-12 text-14">
+            <div className="text-body-medium flex items-center gap-12">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
                 <Trans>Telegram account</Trans>
@@ -44,7 +44,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
             Provider" to our official Telegram account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">
-            <div className="flex items-center gap-12 text-14">
+            <div className="text-body-medium flex items-center gap-12">
               <ArrowBulletIcon />
               <ExternalLink href="https://t.me/GMXPartners">
                 <Trans>Telegram account</Trans>

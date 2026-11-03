@@ -79,7 +79,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   className="ClaimHistoryRow-tooltip-row inline-flex items-start text-textIcon-primary"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext !leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -112,7 +112,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                   className="ClaimHistoryRow-tooltip-row inline-flex items-start text-textIcon-primary"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext !leading-1">[{poolName}]</span>
                 </div>
               );
             });

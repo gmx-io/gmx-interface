@@ -462,7 +462,7 @@ export function TPSLInputRow({
           >
             <div
               className={cx(
-                "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-fill-surfaceElevated px-8 py-3 text-13",
+                "text-body-small flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-fill-surfaceElevated px-8 py-3",
                 priceError
                   ? "border-red-strong"
                   : priceWarning
@@ -476,7 +476,7 @@ export function TPSLInputRow({
                 <div className="relative grow">
                   <NumberInput
                     value={priceValue}
-                    className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", {
+                    className={cx("text-body-small h-18 w-full min-w-0 p-0 outline-none", {
                       "text-red-strong": priceError,
                     })}
                     inputRef={priceInputRef}
@@ -484,7 +484,7 @@ export function TPSLInputRow({
                     placeholder={priceLabel}
                   />
                 </div>
-                <span className="text-13 text-textIcon-secondary">USD</span>
+                <span className="text-body-small text-textIcon-secondary">USD</span>
               </div>
             </div>
           </TooltipWithPortal>
@@ -502,7 +502,7 @@ export function TPSLInputRow({
               <div className="relative grow">
                 <NumberInput
                   value={secondFieldValue}
-                  className="h-18 w-full min-w-0 p-0 text-13 outline-none"
+                  className="text-body-small h-18 w-full min-w-0 p-0 outline-none"
                   inputRef={secondInputRef}
                   onValueChange={handleGainLossChange}
                   placeholder={secondLabel}
@@ -547,7 +547,10 @@ export function TPSLInputRow({
             <div className="flex items-center justify-between">
               <div className="text-body-small text-textIcon-secondary">{priceLabel}</div>
               {referencePrice !== undefined && (
-                <div className="cursor-pointer text-12 text-textIcon-secondary numbers" onClick={handleMarkPriceClick}>
+                <div
+                  className="text-body-small cursor-pointer text-textIcon-secondary numbers"
+                  onClick={handleMarkPriceClick}
+                >
                   <Trans>Mark:</Trans>{" "}
                   <UsdPriceValue
                     price={referencePrice}
@@ -567,7 +570,7 @@ export function TPSLInputRow({
                 onValueChange={handlePriceChange}
                 placeholder="0.00"
               />
-              <span className="text-14 text-textIcon-secondary">USD</span>
+              <span className="text-body-medium text-textIcon-secondary">USD</span>
             </div>
           </div>
         </TooltipWithPortal>
@@ -659,7 +662,7 @@ function DisplayModeSelector({
           <Popover.Button
             className={cx(
               "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-textIcon-secondary outline-none hover:text-textIcon-primary",
-              size === "small" ? "text-13" : "text-14"
+              size === "small" ? "text-body-small" : "text-body-medium"
             )}
             ref={setPopoverButtonRef}
           >
@@ -679,7 +682,7 @@ function DisplayModeSelector({
                     <button
                       type="button"
                       className={cx(
-                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-button-background",
+                        "text-body-small flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 hover:bg-button-background",
                         mode === "percentage" ? "bg-button-background text-textIcon-primary" : "text-textIcon-secondary"
                       )}
                       onClick={() => {
@@ -692,7 +695,7 @@ function DisplayModeSelector({
                     <button
                       type="button"
                       className={cx(
-                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-button-background",
+                        "text-body-small flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 hover:bg-button-background",
                         mode === "usd" ? "bg-button-background text-textIcon-primary" : "text-textIcon-secondary"
                       )}
                       onClick={() => {

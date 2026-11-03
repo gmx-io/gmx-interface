@@ -453,7 +453,7 @@ export function SyntheticsPage(p: Props) {
     <div className="flex shrink-0 items-center gap-16 px-12">
       {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
         <button
-          className="text-[13px] font-medium text-textIcon-secondary hover:text-slate-400"
+          className="text-body-small font-medium text-textIcon-secondary hover:text-slate-400"
           disabled={isCancelOrdersProcessing}
           type="button"
           onClick={onCancelSelectedOrders}
@@ -465,7 +465,7 @@ export function SyntheticsPage(p: Props) {
         <Checkbox
           isChecked={shouldShowPositionLines}
           setIsChecked={setShouldShowPositionLines}
-          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
+          className={cx("muted chart-positions text-body-small", { active: shouldShowPositionLines })}
         >
           <span className="font-medium">
             <Trans>Chart positions</Trans>

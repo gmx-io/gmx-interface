@@ -109,7 +109,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
         variant="iconStroke"
         disabled={disabled}
         handleClassName={cx(
-          "whitespace-nowrap text-12 font-medium",
+          "text-body-small whitespace-nowrap font-medium",
           disabled ? "text-textIcon-disabled" : "text-textIcon-secondary"
         )}
         content={
@@ -168,7 +168,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
                 value={customValue}
                 onChange={handleCustomChange}
                 onBlur={handleCustomBlur}
-                className="bg-transparent mr-2 w-24 p-0 text-right text-12 outline-none placeholder:text-textIcon-secondary"
+                className="bg-transparent text-body-small mr-2 w-24 p-0 text-right outline-none placeholder:text-textIcon-secondary"
               />
               <span>%</span>
             </>

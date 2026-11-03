@@ -31,7 +31,7 @@ import {
 
 const DOCS_URL = "https://docs.gmx.io/docs/trading/fees/";
 
-// Preview of Typography step 5: text-[13px] in Button.tsx wins over a plain class, so the 12px label is forced
+// Preview of Typography step 5: text-body-small in Button.tsx wins over a plain class, so the 12px label is forced
 const LABEL_PREVIEW_CLASSNAME = "!text-body-small";
 
 // Preview of Colors step 4: the gray of EmbeddedActionButton (gray-400 today) becomes textIcon-secondary

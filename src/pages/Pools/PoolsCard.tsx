@@ -20,7 +20,7 @@ export default function PoolsCard({
     <div className={cx("overflow-hidden rounded-6 bg-fill-surfaceBase", className)}>
       <div className="flex h-full flex-col">
         <div className="flex flex-col gap-8 border-b-1/2 border-stroke-primary p-16">
-          <span className="text-h3 font-medium max-md:text-body-medium">{title}</span>
+          <span className="text-h4 font-medium max-md:text-body-medium">{title}</span>
           <span className="text-body-medium text-textIcon-secondary max-md:text-body-small">{description}</span>
         </div>
         {contentHeader}

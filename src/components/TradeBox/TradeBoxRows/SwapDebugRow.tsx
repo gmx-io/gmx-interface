@@ -53,7 +53,7 @@ function SwapDebugRowContent() {
           </span>
         }
         renderContent={() => (
-          <div className="text-13">
+          <div className="text-body-small">
             {/* Comparison table: same metrics for both routes */}
             <div className="mb-8">
               <table className="w-full">
@@ -146,7 +146,7 @@ function SwapDebugRowContent() {
             <div className="my-8 border-t border-button-background" />
 
             {/* Decision */}
-            <div className="mb-4 font-bold text-textIcon-primary">Decision</div>
+            <div className="mb-4 font-medium text-textIcon-primary">Decision</div>
             <StatsTooltipRow label="Direction" value={comparison.direction} showDollar={false} />
             <StatsTooltipRow
               label="External quote"
@@ -205,7 +205,7 @@ function SwapDebugRowContent() {
             <div className="my-8 border-t border-button-background" />
 
             {/* Final result */}
-            <div className="mb-4 font-bold text-textIcon-primary">Final</div>
+            <div className="mb-4 font-medium text-textIcon-primary">Final</div>
             {isSwap && swapAmounts && (
               <>
                 <StatsTooltipRow

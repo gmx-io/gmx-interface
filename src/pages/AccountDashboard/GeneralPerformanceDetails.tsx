@@ -57,7 +57,7 @@ export function GeneralPerformanceDetails({
 
   return (
     <div className="overflow-hidden rounded-8 bg-fill-surfaceBase">
-      <div className="flex items-center gap-8 border-b-1/2 border-stroke-primary p-20 text-20 font-medium">
+      <div className="text-h4 flex items-center gap-8 border-b-1/2 border-stroke-primary p-20">
         <Trans>General performance details</Trans>
         <TooltipWithPortal content={t`Performance and chart data are based on UTC times`} variant="none">
           <InfoIconStroke className="h-16 w-16 cursor-help text-textIcon-secondary" />
@@ -215,7 +215,7 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
           shouldStopPropagation
           content={t`Rank among accounts for this metric and period`}
           handle={
-            <span className="cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 text-12 font-medium text-textIcon-secondary numbers">
+            <span className="text-body-small cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 font-medium text-textIcon-secondary numbers">
               #{rank}
             </span>
           }
@@ -238,7 +238,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
   const feeRows = getPnlBreakdownFeeAndImpactRows(row);
 
   return (
-    <div className="text-body-medium leading-[1.35]">
+    <div className="text-body-medium">
       <BreakdownTooltipTotalRow value={row.pnlUsd} />
 
       <div className="mt-8 flex flex-col gap-8">
@@ -257,7 +257,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
           <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
       </div>
-      <div className="text-body-small mt-8 leading-[1.35] text-textIcon-secondary">
+      <div className="text-body-small mt-8 text-textIcon-secondary">
         <Trans>Outstanding claimable amounts are not included</Trans>.
       </div>
     </div>

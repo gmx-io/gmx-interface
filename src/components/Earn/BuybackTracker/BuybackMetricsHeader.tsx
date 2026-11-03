@@ -87,9 +87,9 @@ function MetricItem({
         content={tooltip}
       />
       <div className="flex flex-wrap items-baseline gap-x-8">
-        <span className="text-h2 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
+        <span className="text-h3 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
         {subtitle && !isLoading && !isUnavailable && (
-          <span className="text-14 font-medium text-textIcon-secondary numbers">{subtitle}</span>
+          <span className="text-body-medium font-medium text-textIcon-secondary numbers">{subtitle}</span>
         )}
       </div>
     </div>

@@ -143,7 +143,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                   <Trans>Referral codes</Trans>
                 </div>
                 {affiliateTierInfo && tierId !== undefined && (
-                  <div className="rounded-full bg-blue-background px-8 py-[2.5px] text-12 font-medium leading-[1.25] text-blue-strong">
+                  <div className="text-body-small rounded-full bg-blue-background px-8 py-[2.5px] font-medium text-blue-strong">
                     {t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                   </div>
                 )}
@@ -436,7 +436,7 @@ function ReferralCodesMobileTable({
           <AnimatePresence initial={false}>
             {selectedCode === stat.referralCode && (
               <motion.div
-                className="col-span-full overflow-hidden rounded-b-8 px-adaptive text-[13px]"
+                className="text-body-small col-span-full overflow-hidden rounded-b-8 px-adaptive"
                 variants={DETAIL_ROW_VARIANTS}
                 initial="collapsed"
                 animate="expanded"

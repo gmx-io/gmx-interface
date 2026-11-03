@@ -29,7 +29,7 @@ enum CreateAffiliateWizardStep {
 function AffiliatePromos() {
   return (
     <>
-      <h2 className="text-[40px] font-medium max-md:text-[32px]">
+      <h2 className="text-h2 max-md:text-h3">
         <Trans>
           Earn up to 25% in
           <br className="max-md:hidden" /> rebates as an affiliate
@@ -131,7 +131,7 @@ export function CreateAffiliateWizard({
             <>
               <div className="flex flex-col items-center gap-12">
                 <LabelWithIcon icon={CheckIcon} label={<Trans>Done!</Trans>} />
-                <h2 className="text-[40px] font-medium">
+                <h2 className="text-h2">
                   <Trans>Your code is ready. Share it!</Trans>
                 </h2>
                 <p className="text-body-medium text-textIcon-secondary">

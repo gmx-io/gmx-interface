@@ -28,7 +28,8 @@
 .ShareBar-fill__percentage {
   display: flex;
   height: 1.6rem;
-  font-size: 1.2rem;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
 
   .ShareBar-fill__left,
   .ShareBar-fill__right {

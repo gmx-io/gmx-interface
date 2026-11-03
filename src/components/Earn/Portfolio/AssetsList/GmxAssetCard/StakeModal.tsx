@@ -340,7 +340,7 @@ export function StakeModal(props: {
   const showResetToast = useCallback(() => {
     helperToast.info(
       <div>
-        <span className="font-bold" style={RESET_TOAST_HEADER_STYLE}>
+        <span className="font-medium" style={RESET_TOAST_HEADER_STYLE}>
           <Trans>Rewards reset</Trans>
         </span>
         <br />
@@ -594,7 +594,7 @@ export function StakeModal(props: {
                   style={unstakeBarStyle}
                 />
               </div>
-              <div className="flex justify-between text-12">
+              <div className="text-body-small flex justify-between">
                 <TooltipWithPortal
                   handleClassName={cx(
                     "font-medium",
@@ -728,7 +728,7 @@ export function StakeModal(props: {
                 <span className="text-body-small text-textIcon-secondary">
                   <Trans>
                     I acknowledge that I will lose{" "}
-                    <span className="font-bold text-textIcon-primary">
+                    <span className="font-medium text-textIcon-primary">
                       {rewardsLossUsd !== null ? formatUsd(rewardsLossUsd) : "all accrued"} in rewards
                     </span>{" "}
                     if I proceed

@@ -24,7 +24,7 @@ import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-textIcon-secondary)",
-  fontSize: 11,
+  fontSize: 12,
   fontWeight: 500,
 };
 
@@ -118,10 +118,10 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap items-center gap-24 px-20 text-textIcon-secondary">
-        <div className="flex items-center gap-8 text-13 font-medium">
+        <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-6 rounded-full bg-blue-strong" /> <Trans>Monthly bought</Trans>
         </div>
-        <div className="flex items-center gap-8 text-13 font-medium">
+        <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-6 rounded-full bg-textIcon-secondary" /> <Trans>Cumulative</Trans>
         </div>
         <TooltipWithPortal

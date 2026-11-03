@@ -6,13 +6,10 @@
 .card-header {
   font-size: var(--font-size-body-large);
   line-height: var(--line-height-body-large);
-  font-weight: normal;
-  letter-spacing: 0px;
   color: var(--color-textIcon-primary);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: 500;
 }
 
 .card-divider {

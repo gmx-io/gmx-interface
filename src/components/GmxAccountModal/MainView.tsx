@@ -79,7 +79,7 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
   return (
     <button className="flex min-h-32 items-center gap-4" onClick={onClick}>
       {usd !== undefined ? (
-        <UsdValue usd={usd} className="text-h2 normal-nums leading-[30px]" />
+        <UsdValue usd={usd} className="text-h3" />
       ) : (
         <Skeleton
           baseColor="var(--color-fill-skeleton)"
@@ -169,7 +169,7 @@ function WalletBlock({ account }: { account: string }) {
           onClick={handleCopyAddress}
         >
           <WalletIcon className="size-20" />
-          <span className="text-12 font-medium">{shortenAddressOrEns(ensName || account, 13)}</span>
+          <span className="text-body-small font-medium">{shortenAddressOrEns(ensName || account, 13)}</span>
           {isCopied ? <CheckIcon className="size-16 text-green-strong" /> : <CopyIcon className="size-16" />}
         </button>
         <div className="flex items-center gap-8">
@@ -394,7 +394,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         onClick={() => setIsVisibleOrView("transferHistory")}
       >
         <ClockIcon className="size-16" />
-        <span className="text-13 font-medium">
+        <span className="text-body-small font-medium">
           <Trans>Transfer history</Trans>
         </span>
       </button>

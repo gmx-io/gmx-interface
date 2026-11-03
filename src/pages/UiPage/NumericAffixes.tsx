@@ -109,7 +109,7 @@ export function NumericAffixes() {
 
   return (
     <div className="px-20">
-      <h2 className="mb-16 mt-24 text-24 font-medium">Numeric affixes</h2>
+      <h2 className="text-h4 mb-16 mt-24">Numeric affixes</h2>
       <p className="max-w-prose">
         The $ prefix and the leverage x are separated from the number by a hair space. Inside primary text they are
         drawn in the secondary colour; inside a coloured value they keep the colour of the number. The k / m / b
@@ -131,7 +131,7 @@ export function NumericAffixes() {
       <div className="flex flex-wrap gap-8">
         {CONTEXTS.map((context) => (
           <div key={context.id} className={cx("!w-[260px] shrink-0", surfaceClassName)}>
-            <div className="mb-4 text-12 text-textIcon-secondary">{context.title}</div>
+            <div className="text-body-small mb-4 text-textIcon-secondary">{context.title}</div>
             {context.rows.map((row) => (
               <div key={row.label} className="flex justify-between gap-12">
                 <span className="whitespace-nowrap text-textIcon-secondary">{row.label}</span>

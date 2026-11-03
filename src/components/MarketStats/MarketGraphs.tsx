@@ -187,7 +187,7 @@ export function MarketGraphs({
                 marketTokensData,
               })}
               label={graphTitleLabelMap[marketGraphType]}
-              valueClassName={cx("normal-nums", {
+              valueClassName={cx({
                 "text-green-strong": marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
@@ -447,7 +447,7 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <NumericText text={value ?? "N/A"} className={cx("text-h2", valueClassName)} />
+      <NumericText text={value ?? "N/A"} className={cx("text-h3", valueClassName)} />
       <span className="text-body-small text-textIcon-secondary">{label}</span>
     </div>
   );

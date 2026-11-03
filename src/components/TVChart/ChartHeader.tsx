@@ -164,8 +164,8 @@ function ChartHeaderMobile() {
           onClick={toggleDetailsVisible}
         >
           <div className="flex flex-col items-end gap-2">
-            <div className="mr-4 text-14 leading-[1.25] numbers">{avgPrice}</div>
-            <div className="ExchangeChart-daily-change text-12 leading-[1.25] numbers">{dayPriceDelta}</div>
+            <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
           <span className="shrink-0 cursor-pointer rounded-full border-1/2 border-stroke-primary p-8 text-textIcon-secondary">
             <DocsIcon className="size-16" />
@@ -437,9 +437,7 @@ function ChartHeaderDesktop() {
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
     <div className="flex flex-col justify-center gap-2">
-      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-textIcon-secondary">
-        {label}
-      </div>
+      <div className="text-caption whitespace-nowrap text-textIcon-secondary">{label}</div>
       <div className="text-body-medium numbers">{value}</div>
     </div>
   );
@@ -447,7 +445,7 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
 
 const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex flex-col gap-8 text-12 leading-[1.25]">
+    <div className="text-body-small flex flex-col gap-8">
       <div className="font-medium capitalize text-textIcon-secondary">{label}</div>
       <div className="flex items-center text-textIcon-primary numbers">{value}</div>
     </div>

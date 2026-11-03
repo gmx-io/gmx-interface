@@ -78,7 +78,7 @@ export function TradeInputField({
           label={displayModeLabel}
           modalLabel="Display Mode"
           qa={qa ? `${qa}-display-mode` : "display-mode"}
-          handleClassName="text-14"
+          handleClassName="text-body-medium"
           chevronClassName="w-16"
         >
           {isMobile ? (
@@ -97,7 +97,7 @@ export function TradeInputField({
         </SelectorBase>
       </div>
     ) : unitLabel ? (
-      <div className="flex shrink-0 items-center text-13 text-textIcon-secondary">{unitLabel}</div>
+      <div className="text-body-small flex shrink-0 items-center text-textIcon-secondary">{unitLabel}</div>
     ) : null;
 
   return (
@@ -117,7 +117,7 @@ export function TradeInputField({
             maxDecimals={maxDecimals}
           />
           {alternateValue && (
-            <span className="shrink-0 text-12 text-textIcon-secondary numbers">≈{alternateValue}</span>
+            <span className="text-body-small shrink-0 text-textIcon-secondary numbers">≈{alternateValue}</span>
           )}
         </>
       }

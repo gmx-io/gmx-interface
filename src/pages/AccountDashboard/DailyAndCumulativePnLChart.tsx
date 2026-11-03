@@ -53,7 +53,7 @@ const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-textIcon-secondary)",
-  fontSize: 11,
+  fontSize: 12,
   fontWeight: 500,
 };
 
@@ -748,13 +748,13 @@ export function DailyAndCumulativePnLChart({
   return (
     <>
       <div className="flex flex-wrap gap-24 px-16 pb-8 pt-16 text-textIcon-secondary">
-        <div className="flex items-center gap-8 text-13 font-medium">
+        <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-4 rounded-full bg-green-strong" /> <Trans>Period profit</Trans>
         </div>
-        <div className="flex items-center gap-8 text-13 font-medium">
+        <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-4 rounded-full bg-red-strong" /> <Trans>Period loss</Trans>
         </div>
-        <div className="flex items-center gap-8 text-13 font-medium">
+        <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-4 rounded-full bg-blue-strong" /> <Trans>Cumulative PnL</Trans>{" "}
           <UsdValue
             usd={groupedPnlData.at(-1)?.cumulativePnl}

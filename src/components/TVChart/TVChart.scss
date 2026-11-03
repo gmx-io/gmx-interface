@@ -1,33 +1,3 @@
-.chart-token-selector {
-  padding-left: 0.4rem;
-  margin-right: 0.5rem;
-
-  .Dropdown-current {
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: var(--color-textIcon-primary);
-  }
-
-  .Dropdown-current-arrow {
-    font-size: var(--font-size-body-small);
-    color: var(--color-textIcon-secondary);
-    margin-left: 1rem;
-    margin-top: -2px;
-  }
-
-  .Dropdown-options {
-    width: 15.8rem;
-    top: 4.6rem;
-    left: -0.6rem;
-  }
-
-  .Dropdown-option {
-    font-size: var(--font-size-body-small);
-    height: 3.4rem;
-    font-weight: 700;
-  }
-}
-
 .TVChart-top-card {
   height: 58px;
   display: flex;

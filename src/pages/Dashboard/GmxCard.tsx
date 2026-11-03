@@ -116,7 +116,7 @@ export function GmxCard({
                   <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
                 </div>
               </div>
-              <div className="text-13 text-textIcon-secondary">
+              <div className="text-body-small text-textIcon-secondary">
                 <Trans>
                   GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX
                   buybacks and will be distributed to stakers when GMX reaches $90.

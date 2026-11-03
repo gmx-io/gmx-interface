@@ -92,8 +92,8 @@
 
 .Toastify__toast-body {
   padding: 12px 40px 12px 12px;
-  font: normal normal normal 1.4rem/1.6rem "TTHoves";
-  line-height: 2rem;
+  font: normal normal normal var(--font-size-body-medium) / var(--line-height-body-medium) "TTHoves";
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 .Toastify__toast-body:has(.StatusNotification) {

@@ -35,13 +35,13 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlig
           {event.chains?.map((chainId) => <ChainBadge key={chainId} chainId={chainId} />)}
           <TypeTag type={event.type} />
         </div>
-        <h3 className="text-h2 max-w-[660px] text-textIcon-primary">
+        <h3 className="text-h3 max-w-[660px] text-textIcon-primary">
           <HighlightedText text={titleText} tokens={searchTokens} />
         </h3>
       </div>
 
       <div className="flex max-w-[660px] flex-col gap-16">
-        <div className="text-body-medium flex flex-col gap-12 leading-[1.3] text-textIcon-secondary [&_a:hover]:!underline [&_a]:!text-blue-strong [&_a]:!no-underline">
+        <div className="text-body-medium flex flex-col gap-12 text-textIcon-secondary [&_a:hover]:!underline [&_a]:!text-blue-strong [&_a]:!no-underline">
           {event.summary !== undefined && <div>{highlightNode(event.summary, searchTokens)}</div>}
           <div>{highlightNode(event.description, searchTokens)}</div>
         </div>

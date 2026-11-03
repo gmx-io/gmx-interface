@@ -129,7 +129,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleShareOnX}
             size="medium"
-            className="grow !text-14"
+            className="!text-body-medium grow"
             disabled={isUploading || isCapturing}
           >
             {isUploading ? <Trans>Uploading...</Trans> : <Trans>Share on</Trans>}
@@ -139,7 +139,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyImage}
             size="medium"
-            className="grow !text-14"
+            className="!text-body-medium grow"
             disabled={isUploading || isCapturing}
           >
             {isCapturing ? (
@@ -160,7 +160,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyLink}
             size="medium"
-            className="grow !text-14"
+            className="!text-body-medium grow"
             disabled={isUploading || isCapturing}
           >
             <Trans>Copy link</Trans>
@@ -232,7 +232,7 @@ function ScaledReferralCard({
             <div className="mb-8 inline-block rounded-full bg-blue-backgroundOpacity px-6 py-2 text-16 font-medium leading-[20px] text-blue-strong">
               <AnimatedGradientText className="block">{referralCode}</AnimatedGradientText>
             </div>
-            <h3 className="text-32 font-medium leading-1 text-textIcon-onButton">
+            <h3 className="text-h3 text-textIcon-onButton">
               <Trans>
                 <AnimatedGradientText>Save up to {traderDiscountPercentageLabel}</AnimatedGradientText> on every
                 <br /> trade on GMX

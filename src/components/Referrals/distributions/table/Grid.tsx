@@ -23,7 +23,7 @@ export function GridCell({ children, className }: GridCellProps) {
     <div
       role="cell"
       className={cx(
-        "text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "text-body-small last-of-type:[&:not(:first-of-type)]:text-right",
         "bg-fill-surfaceElevated50 px-4 py-8 first-of-type:rounded-l-8 first-of-type:pl-adaptive last-of-type:rounded-r-8 last-of-type:pr-adaptive",
         "group-hover/row:bg-fill-surfaceHover",
         className

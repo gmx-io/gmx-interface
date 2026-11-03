@@ -97,7 +97,7 @@ export const DepositStatusView = () => {
                 decimals={token.decimals}
                 isStable={token.isStable}
                 symbol={token.symbol}
-                className="text-24 font-medium text-textIcon-primary"
+                className="text-h4 text-textIcon-primary"
               />
             </div>
           </div>
@@ -111,25 +111,25 @@ export const DepositStatusView = () => {
 
       <div className="mt-12 flex justify-between rounded-8 border-1/2 border-stroke-primary bg-fill-background/50">
         <div className="flex flex-col gap-4 p-12">
-          <h4 className="text-14 font-medium">
+          <h4 className="text-body-medium font-medium">
             <Trans>Want to trade faster with One-Click Trading?</Trans>
           </h4>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-8">
               <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
-              <span className="text-12 text-textIcon-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>No repeated wallet confirmations</Trans>
               </span>
             </div>
             <div className="flex items-center gap-8">
               <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
-              <span className="text-12 text-textIcon-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>Faster execution with GMX premium RPCs</Trans>
               </span>
             </div>
             <div className="flex items-center gap-8">
               <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
-              <span className="text-12 text-textIcon-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>Reliable GMX-powered transactions</Trans>
               </span>
             </div>

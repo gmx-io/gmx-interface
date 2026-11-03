@@ -289,7 +289,7 @@ export function AccountEvents() {
                 <AddressView noLink address={account} size={20} />
               </div>
               {fromBlock !== null && fromTimestamp !== null && (
-                <div className="text-12 text-textIcon-secondary">
+                <div className="text-body-small text-textIcon-secondary">
                   <Trans>
                     From: block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
                   </Trans>
@@ -372,7 +372,7 @@ export function AccountEvents() {
                       <div className="font-medium">{event.eventName}</div>
                     </TableTd>
                     <TableTd>
-                      <div className="text-12 text-textIcon-secondary">{event.eventType}</div>
+                      <div className="text-body-small text-textIcon-secondary">{event.eventType}</div>
                     </TableTd>
                     <TableTd>
                       <div>
@@ -390,7 +390,7 @@ export function AccountEvents() {
                     </TableTd>
                     <TableTd>
                       <div
-                        className="max-w-400 overflow-hidden text-ellipsis text-12"
+                        className="max-w-400 text-body-small overflow-hidden text-ellipsis"
                         title={formatEventData(event.eventData)}
                       >
                         {formatEventData(event.eventData)}

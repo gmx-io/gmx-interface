@@ -14,7 +14,8 @@
 }
 
 .ClaimHistoryRow-time {
-  font-size: 1.25rem;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
 }
 
 .ClaimHistoryRow-action-handle {

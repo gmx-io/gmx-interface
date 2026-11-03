@@ -727,7 +727,7 @@ function OrderItemLarge({
                   <span key={market.indexName}>
                     {index > 0 && " → "}
                     <span>{market.indexName}</span>
-                    <span className="subtext leading-1">[{market.poolName}]</span>
+                    <span className="subtext !leading-1">[{market.poolName}]</span>
                   </span>
                 ))}
               </>
@@ -750,7 +750,7 @@ function OrderItemLarge({
                 value={
                   <div className="flex items-center">
                     <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    <span className="subtext !leading-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
                 showDollar={false}
@@ -1060,7 +1060,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
       <TooltipWithPortal
         as="span"
         variant="none"
-        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-backgroundOpacity px-4 py-2 text-12 font-medium text-yellow-strong"
+        className="text-body-small min-w-0 cursor-help truncate rounded-4 bg-yellow-backgroundOpacity px-4 py-2 font-medium text-yellow-strong"
         handle={<Trans>Frozen</Trans>}
         content={<span className={cx({ "text-red-strong": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />

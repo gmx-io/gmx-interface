@@ -242,7 +242,7 @@ export function GmGlvAssetCard({
             variant="none"
             maxAllowedWidth={350}
             handle={
-              <span className="inline-flex w-fit items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 text-12 font-medium text-blue-strong">
+              <span className="text-body-small inline-flex w-fit items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 font-medium text-blue-strong">
                 <img className="h-10" src={sparkleIcon} alt="" />
                 <Trans>Earns MegaETH points</Trans>
               </span>

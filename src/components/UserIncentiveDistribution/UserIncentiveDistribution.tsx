@@ -257,7 +257,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
             <div className="flex flex-col gap-2">
               <div
                 className={cx("flex items-center justify-between font-medium text-textIcon-secondary", {
-                  "text-13": isMobile,
+                  "text-body-small": isMobile,
                   "h-28": !isMobile,
                 })}
               >
@@ -266,26 +266,26 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
               </div>
               <div
                 className={cx("flex font-medium text-textIcon-secondary", {
-                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "text-body-small flex-col justify-center gap-2": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Type</Trans>
 
-                {isMobile && <span className="text-14 text-textIcon-primary">{type}</span>}
+                {isMobile && <span className="text-body-medium text-textIcon-primary">{type}</span>}
               </div>
               {tokenIncentiveDetails.map((tokenInfo) => (
                 <div
                   key={tokenInfo.id}
                   className={cx("flex font-medium text-textIcon-secondary", {
-                    "flex-col justify-center gap-2 text-13": isMobile,
+                    "text-body-small flex-col justify-center gap-2": isMobile,
                     "h-28 items-center": !isMobile,
                   })}
                 >
                   <Trans>{tokenInfo.symbol} amount</Trans>
 
                   {isMobile && (
-                    <span className="text-14 text-textIcon-primary">
+                    <span className="text-body-medium text-textIcon-primary">
                       {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}{" "}
                       <span className="text-textIcon-secondary">{tokenInfo.symbol}</span>
                     </span>
@@ -294,21 +294,21 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
               ))}
               <div
                 className={cx("flex font-medium text-textIcon-secondary", {
-                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "text-body-small flex-col justify-center gap-2": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Transaction</Trans>
-                {isMobile && <span className="text-14 text-textIcon-primary">{txnLink}</span>}
+                {isMobile && <span className="text-body-medium text-textIcon-primary">{txnLink}</span>}
               </div>
               <div
                 className={cx("flex font-medium text-textIcon-secondary", {
-                  "flex-col justify-center gap-2 text-13": isMobile,
+                  "text-body-small flex-col justify-center gap-2": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Timestamp</Trans>
-                {isMobile && <span className="text-14 text-textIcon-primary">{txnTimestamp}</span>}
+                {isMobile && <span className="text-body-medium text-textIcon-primary">{txnTimestamp}</span>}
               </div>
             </div>
           </td>

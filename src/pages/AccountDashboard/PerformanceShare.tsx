@@ -146,7 +146,7 @@ export function PerformanceShare({
               {isDataLoading ? (
                 <Loader />
               ) : error ? (
-                <div className="max-h-full overflow-auto whitespace-pre-wrap font-mono text-12 text-red-strong">
+                <div className="text-body-small max-h-full overflow-auto whitespace-pre-wrap font-mono text-red-strong">
                   {JSON.stringify(error, null, 2)}
                 </div>
               ) : (
@@ -170,7 +170,7 @@ export function PerformanceShare({
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
-          <span className="text-14 font-medium text-textIcon-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Show PnL amounts</Trans>
           </span>
         </ToggleSwitch>

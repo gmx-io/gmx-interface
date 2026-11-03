@@ -20,7 +20,7 @@ export function ToastifyDebug(props: { error: string }) {
   }, [props.error]);
 
   return (
-    <div className="text-12 opacity-70">
+    <div className="text-body-small opacity-70">
       <div className="flex gap-10">
         <span className="inline-block cursor-pointer border-b border-dashed" onClick={() => setOpen((old) => !old)}>
           {open ? <Trans>Hide error</Trans> : <Trans>Show error</Trans>}

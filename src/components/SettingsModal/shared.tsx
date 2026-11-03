@@ -47,9 +47,14 @@ export function InputSetting({
   type?: "percentage" | "number";
 }) {
   const titleWithDescription = description ? (
-    <LabelWithTooltip label={title} tooltip={description} position="bottom" labelClassName="text-14 font-medium" />
+    <LabelWithTooltip
+      label={title}
+      tooltip={description}
+      position="bottom"
+      labelClassName="text-body-medium font-medium"
+    />
   ) : (
-    <span className="text-14 font-medium">{title}</span>
+    <span className="text-body-medium font-medium">{title}</span>
   );
 
   const Input =
@@ -154,7 +159,7 @@ export function Chip({ children, variant }: { children: ReactNode; variant: "blu
   }[variant];
 
   return (
-    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
+    <div className={cx(`text-body-small whitespace-nowrap rounded-full px-8 py-4 pb-3 font-medium`, variantClass)}>
       {children}
     </div>
   );

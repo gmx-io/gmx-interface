@@ -682,7 +682,7 @@ export function PositionEditor() {
                     maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
                   />
                   {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
-                    <span className="shrink-0 text-12 text-textIcon-secondary numbers">
+                    <span className="text-body-small shrink-0 text-textIcon-secondary numbers">
                       ≈<UsdValue usd={collateralDeltaUsd} />
                     </span>
                   )}
@@ -750,7 +750,7 @@ export function PositionEditor() {
                       variant={isDeposit ? "balance" : "destination"}
                     />
                   ) : (
-                    <span className="text-14">{collateralToken?.symbol}</span>
+                    <span className="text-body-medium">{collateralToken?.symbol}</span>
                   )}
                 </div>
               }
@@ -790,7 +790,7 @@ export function PositionEditor() {
                     {conditionalDepositWarning}
                   </AlertInfoCard>
                 ) : (
-                  <p className="text-12 text-textIcon-secondary">
+                  <p className="text-body-small text-textIcon-secondary">
                     <Trans>Adds margin without increasing your position size when the trigger price is reached.</Trans>
                   </p>
                 ))}
@@ -840,7 +840,7 @@ export function PositionEditor() {
                       qa="deposit-max-instant"
                     >
                       <Trans>Deposit {maxInstantAmountText} now</Trans>
-                      <span className="text-13 font-normal opacity-80">
+                      <span className="text-body-small font-normal opacity-80">
                         <Trans>Instant</Trans>
                       </span>
                     </Button>
@@ -854,17 +854,17 @@ export function PositionEditor() {
                       qa="convert-rest-with-paxos"
                     >
                       <Trans>Convert the rest with Paxos</Trans>
-                      <span className="text-12 font-normal text-textIcon-secondary">
+                      <span className="text-body-small font-normal text-textIcon-secondary">
                         <Trans>In the Swap tab · arrives separately</Trans>
                       </span>
                     </Button>
                   ) : isPaxosWalletOnly ? (
-                    <div className="text-12 text-textIcon-secondary">
+                    <div className="text-body-small text-textIcon-secondary">
                       <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
                     </div>
                   ) : (
                     paxosMinimumText && (
-                      <div className="text-12 text-textIcon-secondary">
+                      <div className="text-body-small text-textIcon-secondary">
                         <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
                       </div>
                     )

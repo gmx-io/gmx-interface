@@ -37,7 +37,7 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Oracle endpoints</Trans>
         </h3>
       </div>
@@ -67,7 +67,7 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
               {allEndpointStats.map((endpoint) => (
                 <TableTr key={endpoint.endpoint}>
                   <TableTd padding="compact">
-                    <div className="text-sm font-semibold text-textIcon-onButton">{endpoint.endpoint}</div>
+                    <div className="text-sm font-medium text-textIcon-onButton">{endpoint.endpoint}</div>
                   </TableTd>
                   <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
@@ -84,11 +84,11 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
                     </div>
                   </TableTd>
                   <TableTd padding="compact">
-                    <span className="text-orange-500 text-sm font-semibold">{endpoint.failureCount}</span>
+                    <span className="text-orange-500 text-sm font-medium">{endpoint.failureCount}</span>
                   </TableTd>
                   <TableTd padding="compact">
                     {endpoint.bannedTimestamp ? (
-                      <span className="text-xs font-semibold text-red-strong">
+                      <span className="text-xs font-medium text-red-strong">
                         {new Date(endpoint.bannedTimestamp).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -127,7 +127,7 @@ export function EventsPanel({
   return (
     <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Oracle keeper events</Trans>
         </h3>
         <Button variant="secondary" onClick={onClearEvents}>
@@ -140,7 +140,7 @@ export function EventsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold">
+                  <div className="text-sm font-medium">
                     <Trans>No events</Trans>
                   </div>
                 </TableTd>
@@ -163,7 +163,7 @@ export function EventsPanel({
                     <TableTr key={index}>
                       <TableTd padding="compact">
                         <div className="flex flex-col items-start gap-2">
-                          <div className={`text-xs font-semibold ${getEventColor(event.type)}`}>
+                          <div className={`text-xs font-medium ${getEventColor(event.type)}`}>
                             {formatEventType(event.type)}
                           </div>
                           {event.endpoint && <div className="text-xs text-textIcon-disabled">{event.endpoint}</div>}
@@ -203,7 +203,7 @@ export function DebugControlsPanel({
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Debug controls</Trans>
         </h3>
       </div>
@@ -214,7 +214,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
+                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
                       <Trans>Force failures</Trans>
                     </div>
                     <div className="space-y-4">
@@ -241,7 +241,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
+                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
                       <Trans>Tickers simulation</Trans>
                     </div>
                     <div className="space-y-6">

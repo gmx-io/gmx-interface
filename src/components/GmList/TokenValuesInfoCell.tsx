@@ -27,7 +27,7 @@ export function TokenValuesInfoCell({
         </div>
       )}
       {value && (
-        <div className="whitespace-nowrap text-12 text-textIcon-secondary numbers">
+        <div className="text-body-small whitespace-nowrap text-textIcon-secondary numbers">
           ({symbol && isNumber ? `${value} ${symbol}` : value})
         </div>
       )}

@@ -110,7 +110,7 @@ export default memo(function UiPage() {
 
         <p>This page demonstrates the UI components in the app</p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Fill colors</h2>
+        <h2 className="text-h4 mb-16 mt-24">Fill colors</h2>
         <div className="overflow-auto">
           {Object.entries(colors).map(([key, value]) => {
             const colors = isColor(value) ? flattenColors({ [key]: value }) : flattenColors(value, key);
@@ -127,7 +127,7 @@ export default memo(function UiPage() {
             );
           })}
         </div>
-        <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
+        <h2 className="text-h4 mb-16 mt-24">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
           <p className="text-button-primary">Button primary</p>
@@ -141,15 +141,15 @@ export default memo(function UiPage() {
           Decoration is textIcon-secondary
         </p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Font sizes</h2>
+        <h2 className="text-h4 mb-16 mt-24">Font sizes</h2>
         <div className="flex flex-col gap-16">
-          <div className="flex items-baseline gap-8">
-            <div>h1</div>
-            <p className="text-h1">H1 text size</p>
-          </div>
           <div className="flex items-baseline gap-8">
             <div>h2</div>
             <p className="text-h2">H2 text size</p>
+          </div>
+          <div className="flex items-baseline gap-8">
+            <div>h3</div>
+            <p className="text-h3">H3 text size</p>
           </div>
           <div className="flex items-baseline gap-8">
             <div>Body large</div>
@@ -174,7 +174,7 @@ export default memo(function UiPage() {
           </div>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Line heights</h2>
+        <h2 className="text-h4 mb-16 mt-24">Line heights</h2>
         <div className="flex flex-col gap-16">
           <p className="leading-1">
             leading-1
@@ -200,7 +200,7 @@ export default memo(function UiPage() {
           </p>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Tooltips</h2>
+        <h2 className="text-h4 mb-16 mt-24">Tooltips</h2>
 
         <Tooltip
           content={
@@ -218,15 +218,15 @@ export default memo(function UiPage() {
           closeDelay={100000000000}
         />
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Token categories</h2>
+        <h2 className="text-h4 mb-16 mt-24">Token categories</h2>
 
         <div className="flex flex-col gap-16">
           {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
             <div key={chainId}>
-              <h3 className="text-h3">{getChainName(chainId)}</h3>
+              <h3 className="text-h4">{getChainName(chainId)}</h3>
               {["meme", "layer1", "layer2", "defi"].map((category) => (
                 <div key={category}>
-                  <h3 className="text-h3">{category}</h3>
+                  <h3 className="text-h4">{category}</h3>
                   <div className="flex flex-wrap gap-4">
                     {getCategoryTokenAddresses(chainId, category as TokenCategory).map((tokenAddress) => (
                       <div key={tokenAddress}>{getToken(chainId, tokenAddress)?.symbol}</div>
@@ -267,7 +267,7 @@ function IconsAndImages() {
   return (
     <>
       <div className="mx-auto max-w-prose p-20">
-        <h2 className="mb-16 mt-24 text-24 font-medium">Icons & images</h2>
+        <h2 className="text-h4 mb-16 mt-24">Icons & images</h2>
       </div>
 
       <div className="mb-16 px-20">
@@ -280,7 +280,7 @@ function IconsAndImages() {
         />
       </div>
 
-      <h3 className="mb-16 px-20 text-20 font-medium">Icons ({filteredIcons.length})</h3>
+      <h3 className="text-h4 mb-16 px-20">Icons ({filteredIcons.length})</h3>
       <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredIcons.map((icon) => (
@@ -331,7 +331,7 @@ function IconsAndImages() {
         ))}
       </div>
 
-      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">Images ({filteredImages.length})</h3>
+      <h3 className="text-h4 mb-16 mt-24 px-20">Images ({filteredImages.length})</h3>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredImages.map((src) => (
           <Tooltip

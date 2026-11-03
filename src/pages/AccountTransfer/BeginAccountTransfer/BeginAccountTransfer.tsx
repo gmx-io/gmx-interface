@@ -500,7 +500,7 @@ export default function BeginAccountTransfer() {
             <input type="text" value={receiver} onChange={(e) => setReceiver(e.target.value)} className="text-input" />
           </div>
         </div>
-        <div className="flex flex-col gap-8 text-14 font-medium">
+        <div className="text-body-medium flex flex-col gap-8 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
             <Trans>Sender has withdrawn all tokens from the GMX vesting vault</Trans>
           </ValidationRow>

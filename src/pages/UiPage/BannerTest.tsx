@@ -14,7 +14,9 @@ import WarnIcon from "img/ic_warn.svg?react";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-4 mt-16 border-b border-stroke-primary pb-4 text-14 text-textIcon-secondary">{title}</div>
+      <div className="text-body-medium mb-4 mt-16 border-b border-stroke-primary pb-4 text-textIcon-secondary">
+        {title}
+      </div>
       <div className="flex flex-col gap-8">{children}</div>
     </div>
   );

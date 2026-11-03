@@ -71,10 +71,6 @@
   width: 20px;
 }
 
-.network-dropdown-item-label {
-  font-weight: 500;
-}
-
 .network-dropdown-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -126,7 +122,8 @@
     display: flex !important;
     align-items: center;
     color: var(--color-textIcon-secondary);
-    font-size: 13px;
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     cursor: pointer;
 
     &:not(.disabled):hover {

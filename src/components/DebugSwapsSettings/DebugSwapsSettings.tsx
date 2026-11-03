@@ -100,7 +100,7 @@ export function DebugSwapsSettings() {
               maxDecimals={2}
             />
           </div>
-          <div className="text-12 text-textIcon-secondary">
+          <div className="text-body-small text-textIcon-secondary">
             <Trans>
               Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin.
             </Trans>

@@ -35,10 +35,10 @@ export function OverviewChartCard({
             )}
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div className="text-24 font-medium text-textIcon-primary numbers">{value}</div>
+            <div className="text-h4 text-textIcon-primary numbers">{value}</div>
             {valueChange && (
               <div
-                className={cx("rounded-full px-6 py-2 text-12 font-medium numbers", {
+                className={cx("text-body-small rounded-full px-6 py-2 font-medium numbers", {
                   "bg-green-background text-green-strong": isValueChangePositive !== false,
                   "bg-red-background text-red-strong": isValueChangePositive === false,
                 })}

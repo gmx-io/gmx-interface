@@ -27,7 +27,7 @@ export function SolanaNetworkItem({ onSelect }: { onSelect: () => void }) {
             <div className="menu-item-icon">
               <img className="network-dropdown-icon" src={solanaIcon} alt={t`Solana`} />
             </div>
-            <span className="network-dropdown-item-label">
+            <span className="network-dropdown-item-label font-medium">
               <Trans>Solana</Trans>
             </span>
           </div>
@@ -55,7 +55,7 @@ export function GmTradeModal({
       contentClassName="!max-w-[420px]"
     >
       <div className="flex flex-col gap-16">
-        <p className="mb-8 text-15 text-textIcon-secondary">
+        <p className="text-body-medium mb-8 text-textIcon-secondary">
           <Trans>GMX on Solana (known as GMTrade) is served from a separate domain</Trans>
         </p>
 

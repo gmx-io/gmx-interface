@@ -32,7 +32,8 @@
         color: var(--color-textIcon-secondary);
         min-width: 32px;
         background: transparent;
-        font-size: 14px;
+        font-size: var(--font-size-body-medium);
+        line-height: var(--line-height-body-medium);
         font-weight: 500;
         width: 32px;
         height: 32px;
@@ -58,7 +59,9 @@
     .react-calendar__month-view__weekdays {
       text-transform: uppercase;
       font-weight: 500;
-      font-size: 11px;
+      font-size: var(--font-size-caption);
+      line-height: var(--line-height-caption);
+      letter-spacing: 0.08em;
       color: var(--color-textIcon-secondary);
       padding: 0 12px;
 
@@ -134,7 +137,8 @@
       z-index: 2;
       padding: 0;
       min-height: 36px;
-      font-size: 13px;
+      font-size: var(--font-size-body-small);
+      line-height: var(--line-height-body-small);
 
       &:enabled:hover,
       &:enabled:focus {

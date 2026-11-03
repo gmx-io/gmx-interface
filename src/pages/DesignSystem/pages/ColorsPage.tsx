@@ -184,7 +184,7 @@ function ColorSwatch({ name, value, theme }: { name: string; value: string; them
           isDarkLabel ? "text-black" : "text-textIcon-onButton"
         )}
       >
-        <span className="text-15">{name}</span>
+        <span className="text-body-medium">{name}</span>
         <span className="text-body-small">{formatColor(value)}</span>
       </div>
     </div>

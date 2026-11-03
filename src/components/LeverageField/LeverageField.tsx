@@ -176,7 +176,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
           <NumericValue
             parts={displayParts}
-            className={cx("text-13", isOpen ? "text-blue-strong" : "text-textIcon-primary", {
+            className={cx("text-body-small", isOpen ? "text-blue-strong" : "text-textIcon-primary", {
               "group-hover:text-blue-strong": !disabled && !isOpen,
             })}
             affixClassName={cx(isOpen ? "text-blue-strong" : "text-textIcon-secondary", {
@@ -210,7 +210,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
                   setValue={handleInputChange}
                   onBlur={() => commitValue()}
                   suffix={`${HAIR_SPACE}x`}
-                  inputClassName="w-32 !pr-0 text-13"
+                  inputClassName="w-32 !pr-0 text-body-small"
                   className="!rounded-4 border border-stroke-primary bg-fill-surfaceElevated !py-6"
                 />
               </div>

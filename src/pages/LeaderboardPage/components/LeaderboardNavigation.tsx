@@ -139,7 +139,7 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
     <Link
       to={item.href}
       className={cx(
-        "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-textIcon-secondary hover:text-textIcon-primary",
+        "text-h2 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-textIcon-secondary hover:text-textIcon-primary",
         {
           "!text-textIcon-primary": item.isSelected,
           "border-l-1/2 border-l-stroke-primary pl-18": item.key === "concluded",

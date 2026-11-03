@@ -141,9 +141,9 @@ function RouteOptionItem({
       data-qa={`swap-route-${preference}`}
     >
       <div className="flex items-baseline justify-between gap-8">
-        <span className="text-14">{label}</span>
+        <span className="text-body-medium">{label}</span>
         {amountOut !== undefined && toToken && (
-          <span className="text-14 numbers">
+          <span className="text-body-medium numbers">
             {formatBalanceAmount(amountOut, toToken.decimals, undefined, { isStable: true })}
           </span>
         )}

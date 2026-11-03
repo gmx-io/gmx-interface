@@ -216,10 +216,10 @@ function PoolListItemMobile({
         </div>
         <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
       </div>
-      <dl className="PoolSelector2-mobile-info">
+      <dl className="PoolSelector2-mobile-info font-medium">
         <dt>{isLong ? <Trans>Long liquidity</Trans> : <Trans>Short liquidity</Trans>}</dt>
         <dd
-          className={cx({
+          className={cx("font-normal", {
             "text-red-strong": !isEnoughLiquidity,
           })}
         >
@@ -229,7 +229,7 @@ function PoolListItemMobile({
           <Trans>Net rate</Trans>
         </dt>
         <dd
-          className={cx({
+          className={cx("font-normal", {
             "text-red-strong": netRateState === "error",
             "text-green-strong": netRateState === "success",
           })}

@@ -51,7 +51,7 @@ export function MarginDestinationDialog({
       zIndex={1002}
     >
       <div className="flex flex-col gap-16">
-        <div className="text-14 text-textIcon-secondary">
+        <div className="text-body-medium text-textIcon-secondary">
           <Trans>
             You chose to send the remaining margin to your{" "}
             <span className="font-medium text-textIcon-primary">{chosenLabel}</span>. Make this the default destination
@@ -61,7 +61,7 @@ export function MarginDestinationDialog({
 
         <TooltipWithPortal
           handle={<Trans>How do I choose?</Trans>}
-          handleClassName="text-14 text-textIcon-secondary"
+          handleClassName="text-body-medium text-textIcon-secondary"
           variant="iconStroke"
           content={
             <div>
@@ -71,10 +71,10 @@ export function MarginDestinationDialog({
                 <br />
                 <br />
                 Choose:
-                <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
+                <br />• <span className="font-medium">Wallet</span> if you mostly trade from your personal wallet on
                 Arbitrum
-                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin on
-                GMX
+                <br />• <span className="font-medium">GMX Account</span> if you plan to keep trading or reusing margin
+                on GMX
                 <br />
                 <br />
                 You can change this preference anytime in settings or when closing a position.
@@ -93,7 +93,7 @@ export function MarginDestinationDialog({
         </div>
 
         <Checkbox isChecked={dontAskAgain} setIsChecked={setDontAskAgain}>
-          <span className="text-14 text-textIcon-secondary">
+          <span className="text-body-medium text-textIcon-secondary">
             <Trans>Don't ask again</Trans>
           </span>
         </Checkbox>

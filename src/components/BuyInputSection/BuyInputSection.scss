@@ -69,7 +69,8 @@
     border-radius: var(--border-radius-sm);
     width: 4.5rem;
     text-align: center;
-    font-size: 1.4rem;
+    font-size: var(--font-size-body-medium);
+    line-height: var(--line-height-body-medium);
 
     &:hover {
       background: var(--color-textIcon-secondary);

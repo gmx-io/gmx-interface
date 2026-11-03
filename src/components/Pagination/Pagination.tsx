@@ -53,7 +53,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         "mt-25": topMargin,
       })}
     >
-      <div className="text-body-medium flex gap-8 max-md:text-[13px]">
+      <div className="text-body-medium flex gap-8 max-md:text-body-small">
         <Button variant="secondary" onClick={() => onPageChange(1)} className="h-32 w-32 !p-0" disabled={page <= 1}>
           <div className="size-14">
             <ChevronEdgeLeft />

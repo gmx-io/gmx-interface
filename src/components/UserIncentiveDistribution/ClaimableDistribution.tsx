@@ -65,7 +65,7 @@ export function ClaimableDistribution({
                 <div key={token}>
                   <div className="flex justify-between">
                     <div className="text-body-small font-medium text-textIcon-secondary">{data.title}</div>
-                    <div className="flex gap-2 text-12">
+                    <div className="text-body-small flex gap-2">
                       <span>{formatBalanceAmount(data.amount, data.token.decimals)}</span>
                       <span className="text-body-small whitespace-nowrap text-textIcon-secondary">
                         (<UsdValue usd={data?.usd ?? 0n} />)

@@ -67,7 +67,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>RPC endpoints</Trans>
         </h3>
       </div>
@@ -106,7 +106,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
               {allRpcStats.map((rpc, index) => (
                 <TableTr key={`${rpc.endpoint}-${rpc.purpose}-${index}`}>
                   <TableTd padding="compact">
-                    <div className="text-sm font-semibold text-textIcon-onButton">{rpc.providerName}</div>
+                    <div className="text-sm font-medium text-textIcon-onButton">{rpc.providerName}</div>
                   </TableTd>
                   <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
@@ -123,11 +123,11 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                     </div>
                   </TableTd>
                   <TableTd padding="compact">
-                    <span className="text-orange-500 text-sm font-semibold">{rpc.failureCount}</span>
+                    <span className="text-orange-500 text-sm font-medium">{rpc.failureCount}</span>
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.banTime ? (
-                      <span className="text-xs font-semibold text-red-strong">
+                      <span className="text-xs font-medium text-red-strong">
                         {new Date(rpc.banTime).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -189,7 +189,7 @@ export function EventsPanel({
   return (
     <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Multicall events</Trans>
         </h3>
         <Button variant="secondary" onClick={onClearEvents}>
@@ -202,7 +202,7 @@ export function EventsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="text-sm font-semibold">
+                  <div className="text-sm font-medium">
                     <Trans>Multicall idle</Trans>
                   </div>
                   <div className="text-xs text-textIcon-disabled">{t`${idleSeconds}s`}</div>
@@ -235,14 +235,14 @@ export function EventsPanel({
                       <TableTr key={`${groupIndex}-${eventIndex}`}>
                         <TableTd padding="compact">
                           {eventIndex === 0 && (
-                            <div className="text-xs font-semibold">
+                            <div className="text-xs font-medium">
                               {threadName} ({group.events.length})
                             </div>
                           )}
                         </TableTd>
                         <TableTd padding="compact">
                           <div className="flex flex-col items-start gap-2">
-                            <div className={`text-xs font-semibold ${getEventColor(event.type)}`}>
+                            <div className={`text-xs font-medium ${getEventColor(event.type)}`}>
                               {formatEventType(event.type)}
                             </div>
                             {chainAndProvider && (
@@ -279,7 +279,7 @@ export function DebugControlsPanel({
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Debug controls</Trans>
         </h3>
       </div>
@@ -290,7 +290,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
+                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
                       <Trans>Account type</Trans>
                     </div>
                     <div className="text-base text-textIcon-onButton">
@@ -302,7 +302,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
+                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
                       <Trans>Force failures</Trans>
                     </div>
                     <div className="space-y-4">
@@ -328,12 +328,12 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
+                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
                       <Trans>Multicall simulation</Trans>
                     </div>
                     <div className="space-y-8">
                       <div>
-                        <h4 className="text-sm mb-6 font-semibold text-textIcon-secondary">
+                        <h4 className="text-sm mb-6 font-medium text-textIcon-secondary">
                           <Trans>Worker thread</Trans>
                         </h4>
                         <div className="space-y-6">
@@ -354,7 +354,7 @@ export function DebugControlsPanel({
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-sm mb-6 font-semibold text-textIcon-secondary">
+                        <h4 className="text-sm mb-6 font-medium text-textIcon-secondary">
                           <Trans>Main thread</Trans>
                         </h4>
                         <div className="space-y-6">
@@ -408,7 +408,7 @@ export function NetworkStatusSection({
   return (
     <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Network status</Trans>
         </h3>
       </div>
@@ -428,13 +428,13 @@ export function NetworkStatusSection({
             <tbody>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold text-textIcon-onButton">
+                  <div className="text-sm font-medium text-textIcon-onButton">
                     <Trans>Global network</Trans>
                   </div>
                 </TableTd>
                 <TableTd padding="compact">
                   <span
-                    className={`text-xs font-semibold ${isGlobalNetworkDown ? "text-red-strong" : "text-green-secondary"}`}
+                    className={`text-xs font-medium ${isGlobalNetworkDown ? "text-red-strong" : "text-green-secondary"}`}
                   >
                     {isGlobalNetworkDown ? t`Down` : t`Up`}
                   </span>
@@ -442,7 +442,7 @@ export function NetworkStatusSection({
               </TableTr>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold text-textIcon-onButton">
+                  <div className="text-sm font-medium text-textIcon-onButton">
                     <Trans>Summary</Trans>
                   </div>
                 </TableTd>
@@ -470,7 +470,7 @@ export function NetworkStatusSection({
                       <div className="text-xs text-textIcon-onButton">{trackerKey}</div>
                     </TableTd>
                     <TableTd padding="compact">
-                      <span className={`text-xs font-semibold ${getStatusColor(state.trackingFailed, state.isActive)}`}>
+                      <span className={`text-xs font-medium ${getStatusColor(state.trackingFailed, state.isActive)}`}>
                         {getStatusText(state.trackingFailed, state.isActive)}
                       </span>
                     </TableTd>
@@ -488,7 +488,7 @@ export function NetworkStatusSection({
 export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
   return (
     <div className="mt-6">
-      <h3 className="text-xl mb-4 font-bold">
+      <h3 className="text-xl mb-4 font-medium">
         <Trans>Markets info</Trans>
       </h3>
       <div className="max-h-[400px] overflow-y-auto">
@@ -515,7 +515,7 @@ export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
                 Object.values(marketsInfoData || {}).map((marketInfo: any) => (
                   <TableTr key={marketInfo.name}>
                     <TableTd padding="compact">
-                      <div className="font-semibold">{marketInfo.name}</div>
+                      <div className="font-medium">{marketInfo.name}</div>
                     </TableTd>
                     <TableTd padding="compact">
                       <div className="text-sm">

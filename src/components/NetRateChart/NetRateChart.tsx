@@ -377,7 +377,7 @@ export function NetRateChart() {
         ) : error && chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-textIcon-secondary" />
-            <p className="text-body-medium font-bold text-textIcon-primary">
+            <p className="text-body-medium font-medium text-textIcon-primary">
               <Trans>Unable to load rate history</Trans>
             </p>
             <p className="text-body-small text-textIcon-secondary">
@@ -387,7 +387,7 @@ export function NetRateChart() {
         ) : chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-textIcon-secondary" />
-            <p className="text-body-medium font-bold text-textIcon-primary">
+            <p className="text-body-medium font-medium text-textIcon-primary">
               <Trans>No net rate history for this market</Trans>
             </p>
             <p className="text-body-small text-textIcon-secondary">
@@ -632,11 +632,11 @@ function NetRateBreakdownTooltip({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
+        <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-green-strong" />
           <Trans>Long net rate</Trans>
         </span>
-        <span className={cx("font-bold numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
+        <span className={cx("font-medium numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
           {formatRate(longNet, decimals)}
           {suffix}
         </span>
@@ -651,11 +651,11 @@ function NetRateBreakdownTooltip({
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
+        <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-red-strong" />
           <Trans>Short net rate</Trans>
         </span>
-        <span className={cx("font-bold numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
+        <span className={cx("font-medium numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
           {formatRate(shortNet, decimals)}
           {suffix}
         </span>
@@ -688,7 +688,7 @@ function SimpleRateTooltip({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
+        <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-green-strong" />
           {getRateDirectionLabel(rateType, "long")}
         </span>
@@ -698,7 +698,7 @@ function SimpleRateTooltip({
         </span>
       </div>
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
+        <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-red-strong" />
           {getRateDirectionLabel(rateType, "short")}
         </span>

@@ -18,7 +18,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
             <div key={market.marketTokenAddress} className="flex flex-col gap-4">
               <div className="flex flex-wrap items-start text-textIcon-primary">
                 <span>{getMarketIndexName(market)}</span>
-                <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+                <span className="subtext !leading-1">[{getMarketPoolName(market)}]</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-textIcon-secondary">
@@ -77,7 +77,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
               <td>
                 <div className="inline-flex flex-wrap items-start text-textIcon-primary">
                   <span>{getMarketIndexName(market)}</span>
-                  <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+                  <span className="subtext !leading-1">[{getMarketPoolName(market)}]</span>
                 </div>
               </td>
               <td

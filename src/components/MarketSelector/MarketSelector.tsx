@@ -208,14 +208,14 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="px-20 text-14 text-textIcon-secondary">
+          <div className="text-body-medium px-20 text-textIcon-secondary">
             <Trans>No markets found</Trans>
           </div>
         )}
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-strong"
+          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         )}
         onClick={handleClick}
         data-qa="market-selector"

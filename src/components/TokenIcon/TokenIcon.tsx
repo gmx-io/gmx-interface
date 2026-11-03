@@ -35,7 +35,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       sub = (
         <span
           className={cx(
-            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-button-background px-6 py-2 text-12 font-medium text-textIcon-secondary",
+            "text-body-small pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-button-background px-6 py-2 font-medium text-textIcon-secondary",
             badgeClassName
           )}
         >

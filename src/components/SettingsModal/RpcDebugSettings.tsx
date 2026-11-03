@@ -72,7 +72,7 @@ export function RpcDebugSettings() {
             <DebugRpcEndpointForm chainId={chainId} onUpdate={() => forceUpdate((prev) => prev + 1)} />
             {debugEndpoints.length > 0 && (
               <div className="flex flex-col gap-8">
-                <div className="text-sm font-semibold text-textIcon-onButton">
+                <div className="text-sm font-medium text-textIcon-onButton">
                   <Trans>Current endpoints ({debugEndpoints.length})</Trans>
                 </div>
                 {debugEndpoints.map((endpoint, index) => (
@@ -144,7 +144,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
             type="text"
             value={url}
             onChange={handleUrlChange}
-            className="border-1 w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-12 text-textIcon-onButton"
+            className="border-1 text-body-small w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-textIcon-onButton"
           />
         </div>
         <div className="flex items-center justify-between gap-8">
@@ -154,7 +154,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
           <select
             value={purpose}
             onChange={handlePurposeChange}
-            className="border-1 w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-12 text-textIcon-onButton"
+            className="border-1 text-body-small w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-textIcon-onButton"
           >
             {PURPOSE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

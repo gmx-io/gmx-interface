@@ -532,26 +532,30 @@ export const appEventsData: EventData[] = [
         <img className="mt-3 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trading activity</span>
-          <span className="block text-12 text-textIcon-secondary">Based on cumulative trading volume</span>
+          <span className="text-body-small block text-textIcon-secondary">Based on cumulative trading volume</span>
         </span>
         <img className="mt-3 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Referral volume</span>
-          <span className="block text-12 text-textIcon-secondary">
+          <span className="text-body-small block text-textIcon-secondary">
             Trading volume from wallets using your referral code
           </span>
         </span>
         <img className="mt-3 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trader PnL</span>
-          <span className="block text-12 text-textIcon-secondary">Net positive realized PnL only, to reward skill</span>
+          <span className="text-body-small block text-textIcon-secondary">
+            Net positive realized PnL only, to reward skill
+          </span>
         </span>
         <img className="mt-3 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">
             GLV <span className="text-textIcon-secondary">[USDM-USDM]</span> liquidity
           </span>
-          <span className="block text-12 text-textIcon-secondary">Time-weighted share of the vault over the epoch</span>
+          <span className="text-body-small block text-textIcon-secondary">
+            Time-weighted share of the vault over the epoch
+          </span>
         </span>
       </span>
     ),

@@ -141,7 +141,7 @@ export function NavItem({
         )}
       >
         <div className="flex size-20 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
-        <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
+        <span className={cx("text-body-medium font-medium", { hidden: isCollapsed })}>{label}</span>
 
         <div
           className={cx(
@@ -152,7 +152,7 @@ export function NavItem({
         >
           <div className="flex items-center gap-8 rounded-8 bg-button-primary/20 px-12 py-10 dark:bg-button-background">
             <div className="flex size-20 shrink-0 items-center justify-center">{icon}</div>
-            <span className={cx("text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]")}>{label}</span>
+            <span className={cx("text-body-medium whitespace-nowrap font-medium")}>{label}</span>
           </div>
         </div>
       </div>

@@ -950,7 +950,7 @@ export function PoolsPage(rowStyle: RowStyle) {
     <div className="flex flex-col gap-16">
       <div className="flex items-end justify-between gap-16 max-md:flex-col max-md:items-start">
         <div className="flex flex-col gap-4">
-          <span className="text-h1 numbers">$155,880,309</span>
+          <span className="text-h2 numbers">$155,880,309</span>
           <span className="text-body-medium text-textIcon-secondary">TVL in vaults and pools</span>
         </div>
         <Tabs type="inline" options={TIME_RANGES} selectedValue={timeRange} onChange={setTimeRange} />

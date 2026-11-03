@@ -1,9 +1,10 @@
 .button {
   cursor: pointer;
-  line-height: 1;
+  line-height: var(--line-height-body-small);
   display: inline-flex;
   align-items: center;
   font-weight: 500;
+  letter-spacing: 0;
   border: none;
   user-select: none;
 
@@ -54,7 +55,6 @@
     border-radius: 8px;
     color: var(--color-textIcon-secondary);
     position: relative;
-    letter-spacing: 0;
 
     > .btn-image {
       display: inline-flex;
@@ -88,7 +88,6 @@
     border-radius: 8px;
     color: var(--color-textIcon-secondary);
     position: relative;
-    letter-spacing: 0;
 
     > .btn-image {
       display: inline-flex;

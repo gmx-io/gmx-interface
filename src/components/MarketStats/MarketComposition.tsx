@@ -15,7 +15,7 @@ export function MarketComposition({ title, label, composition, type }: Props) {
   return (
     <div className="flex size-full grow flex-col items-center rounded-8 bg-fill-surfaceBase">
       <div className="flex w-full flex-col gap-20 border-b-1/2 border-stroke-primary p-20">
-        <h5 className="text-[20px] font-medium max-md:text-14">{title}</h5>
+        <h5 className="text-h4 max-md:text-body-medium max-md:tracking-normal">{title}</h5>
         <div className="w-full">
           <CompositionDiagram data={composition} label={label} />
         </div>

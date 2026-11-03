@@ -295,16 +295,16 @@ function DataFreshnessSection({
     return (
       <TableTr>
         <TableTd padding="compact">
-          <div className="text-sm font-semibold text-textIcon-onButton">{label}</div>
+          <div className="text-sm font-medium text-textIcon-onButton">{label}</div>
         </TableTd>
         <TableTd padding="compact">
-          <span className={`text-xs font-semibold ${getFreshnessColor(current)}`}>{formatFreshness(current)}</span>
+          <span className={`text-xs font-medium ${getFreshnessColor(current)}`}>{formatFreshness(current)}</span>
         </TableTd>
         <TableTd padding="compact">
           <div className="flex items-center justify-end gap-16">
             {previousValues.map((value, index) =>
               value !== undefined ? (
-                <span key={index} className={`text-xs font-semibold ${getFreshnessColor(value)}`}>
+                <span key={index} className={`text-xs font-medium ${getFreshnessColor(value)}`}>
                   {formatFreshness(value)}
                 </span>
               ) : null
@@ -318,7 +318,7 @@ function DataFreshnessSection({
   return (
     <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Data freshness</Trans>
         </h3>
       </div>

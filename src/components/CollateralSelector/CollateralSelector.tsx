@@ -48,7 +48,7 @@ export function CollateralSelector(props: Props) {
       modalLabel={t`Collateral in`}
       qa="collateral-in-selector"
       chevronClassName="w-12 text-textIcon-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-strong"
-      handleClassName="text-13 group-gmx-hover/selector-field:text-blue-strong"
+      handleClassName="text-body-small group-gmx-hover/selector-field:text-blue-strong"
       popoverReferenceRef={props.popoverReferenceRef}
       disabled={props.disabled}
     >

@@ -160,7 +160,7 @@ function CompetitionPrize({ prize }: { prize: Prize }) {
 
         <div>
           <div className="text-body-medium font-medium text-textIcon-secondary">{prize.title}</div>
-          <div className="text-20 font-medium">{prize.description}</div>
+          <div className="text-h4">{prize.description}</div>
         </div>
       </div>
       <CompetitionPrizeWinners winners={prize.winners} />
@@ -179,7 +179,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
       className="flex items-center gap-6 rounded-full bg-button-background px-12 py-8 hover:bg-fill-accent"
     >
-      <div className="text-13 font-medium">{shortenAddress(winner.account, 8)}</div>
+      <div className="text-body-small font-medium">{shortenAddress(winner.account, 8)}</div>
       <Jazzicon diameter={16} seed={jsNumberForAddress(winner.account)} />
     </Link>
   ) : null;

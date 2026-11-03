@@ -148,7 +148,7 @@ export function TradingSettings({
       {getIsExpressSupported(chainId) && (
         <>
           <SettingsSection>
-            <div className="text-14 font-medium text-textIcon-primary">
+            <div className="text-body-medium font-medium text-textIcon-primary">
               <Trans>Trading mode</Trans>
             </div>
             {!srcChainId && (
@@ -230,10 +230,10 @@ export function TradingSettings({
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">
-                <div className="text-14 font-medium text-textIcon-secondary">
+                <div className="text-body-medium font-medium text-textIcon-secondary">
                   <Trans>Gas payment token</Trans>
                 </div>
-                <div className="text-12 text-textIcon-secondary">
+                <div className="text-body-small text-textIcon-secondary">
                   {srcChainId === undefined ? (
                     <Trans>
                       Used for Express and One-Click fees only, paid from the balance the action uses. Classic
@@ -380,10 +380,10 @@ export function TradingSettings({
                     <br />
                     <br />
                     Choose:
-                    <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
+                    <br />• <span className="font-medium">Wallet</span> if you mostly trade from your personal wallet on
                     Arbitrum
-                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX
+                    <br />• <span className="font-medium">GMX Account</span> if you plan to keep trading or reusing
+                    margin on GMX
                     <br />
                     <br />
                     You can change this preference anytime in settings or when closing a position.

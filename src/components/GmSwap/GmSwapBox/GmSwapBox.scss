@@ -16,10 +16,6 @@
   margin-top: 1.5rem;
   margin-left: -0.5rem;
 
-  .Dropdown-current {
-    font-size: 1.5rem;
-  }
-
   .menu-items {
     top: 3.3rem;
   }
@@ -43,7 +39,7 @@
 }
 
 .gm-toast {
-  line-height: 1.4;
+  line-height: var(--line-height-body-small);
 }
 
 @media (max-width: 900px) {

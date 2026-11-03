@@ -64,7 +64,7 @@ export function DocsSection({
           </span>
         )}
         <div className="flex flex-wrap items-baseline gap-8">
-          <h2 className="text-h3 font-medium">{section.title}</h2>
+          <h2 className="text-h4 font-medium">{section.title}</h2>
           {titleMeta && <span className="text-body-medium text-textIcon-secondary">{titleMeta}</span>}
         </div>
         {titleAction && <div className="ml-auto">{titleAction}</div>}
@@ -140,7 +140,7 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
         className="relative overflow-hidden transition-[max-height] duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none"
         style={foldStyle}
       >
-        <pre ref={preRef} className="overflow-x-auto p-24 font-mono text-13 leading-[1.6] max-md:p-16">
+        <pre ref={preRef} className="text-body-small overflow-x-auto p-24 font-mono leading-[1.6] max-md:p-16">
           <code>
             <CodeHighlight code={code} />
           </code>
@@ -244,7 +244,7 @@ export function DocsExample({
 }) {
   return (
     <section id={section.id} data-docs-section={section.title} className="flex scroll-mt-16 flex-col gap-12">
-      <h2 className="text-h3 font-medium">{section.title}</h2>
+      <h2 className="text-h4 font-medium">{section.title}</h2>
       {description && <p className="text-body-large text-textIcon-secondary">{description}</p>}
       <div className="mt-4">{children}</div>
     </section>
@@ -337,9 +337,11 @@ export function DocsPropsTable({ props }: { props: DocsProp[] }) {
         <tbody>
           {props.map((prop) => (
             <tr key={prop.name} className="border-t-1/2 border-stroke-primary align-top">
-              <td className="py-10 pr-16 font-mono text-15">{prop.name}</td>
-              <td className="py-10 pr-16 font-mono text-15 text-textIcon-secondary">{prop.type}</td>
-              <td className="py-10 pr-16 font-mono text-15 text-textIcon-secondary">{prop.defaultValue ?? "—"}</td>
+              <td className="text-body-medium py-10 pr-16 font-mono">{prop.name}</td>
+              <td className="text-body-medium py-10 pr-16 font-mono text-textIcon-secondary">{prop.type}</td>
+              <td className="text-body-medium py-10 pr-16 font-mono text-textIcon-secondary">
+                {prop.defaultValue ?? "—"}
+              </td>
               <td className="py-10">{prop.description}</td>
             </tr>
           ))}

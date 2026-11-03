@@ -54,7 +54,7 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
 
   return (
     <motion.div
-      className="col-span-full grid grid-cols-subgrid overflow-hidden rounded-b-8 text-[13px]"
+      className="text-body-small col-span-full grid grid-cols-subgrid overflow-hidden rounded-b-8"
       variants={DETAIL_ROW_VARIANTS}
       initial="collapsed"
       animate="expanded"

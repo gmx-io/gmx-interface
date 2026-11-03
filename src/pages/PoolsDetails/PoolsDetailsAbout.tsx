@@ -90,8 +90,8 @@ export function PoolsDetailsAbout({
               "..."
             )
           }
-          valueClassName="text-13"
-          secondaryValueClassName="text-12"
+          valueClassName="text-body-small"
+          secondaryValueClassName="text-body-small"
           secondaryValue={
             mintable ? (
               <AmountHumanValue amount={mintable.mintableUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
@@ -114,8 +114,8 @@ export function PoolsDetailsAbout({
               "..."
             )
           }
-          valueClassName="text-13"
-          secondaryValueClassName="text-12"
+          valueClassName="text-body-small"
+          secondaryValueClassName="text-body-small"
           secondaryValue={
             sellable ? (
               <AmountHumanValue amount={sellable.totalUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
@@ -136,8 +136,8 @@ export function PoolsDetailsAbout({
                   : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
-            valueClassName="text-13"
-            secondaryValueClassName="text-12"
+            valueClassName="text-body-small"
+            secondaryValueClassName="text-body-small"
           />
         )}
       </div>

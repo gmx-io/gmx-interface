@@ -36,7 +36,7 @@ export function ClaimableRebatesCard() {
           <Trans>Claimable rebates</Trans>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <div className="text-24 font-medium text-textIcon-primary numbers">
+          <div className="text-h4 text-textIcon-primary numbers">
             <UsdValue usd={totalClaimableRewardsUsd} />
           </div>
           <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0n}>

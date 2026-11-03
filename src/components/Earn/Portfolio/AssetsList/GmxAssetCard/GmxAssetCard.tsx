@@ -237,13 +237,13 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
                 className="leading-base"
               />
             ) : !stakingPowerData ? (
-              <span className="text-h3 font-bold text-textIcon-secondary">—</span>
+              <span className="text-h4 text-textIcon-secondary">—</span>
             ) : stakingPowerData.treasuryGmxBalance === null ? (
-              <span className="text-h3 font-bold text-textIcon-secondary">
+              <span className="text-h4 text-textIcon-secondary">
                 <Trans>Accumulating...</Trans>
               </span>
             ) : displayProjectedRewardGmx !== undefined ? (
-              <span className="text-h3 block font-bold numbers">
+              <span className="text-h4 block numbers">
                 {formatAmount(displayProjectedRewardGmx, 18, 2, true)} GMX{" "}
                 {accumulatedGmxUsd !== undefined && (
                   <span className="text-body-medium relative -top-2 whitespace-nowrap font-normal text-textIcon-secondary">
@@ -252,7 +252,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
                 )}
               </span>
             ) : (
-              <span className="text-h3 font-bold text-textIcon-secondary">—</span>
+              <span className="text-h4 text-textIcon-secondary">—</span>
             )}
           </div>
           <div className="mt-8">

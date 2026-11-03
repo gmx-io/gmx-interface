@@ -1,6 +1,6 @@
 .NotifyModal {
   max-width: 31rem;
-  line-height: 1.5;
+  line-height: var(--line-height-body-medium);
   font-size: var(--font-size-body-medium);
   display: flex;
   flex-direction: column;

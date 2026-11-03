@@ -9,7 +9,6 @@
       margin-top: 1rem;
       display: grid;
       font-size: var(--font-size-body-medium);
-      font-weight: 500;
 
       grid-template-columns: 1fr 1fr;
       row-gap: 0.8rem;
@@ -21,7 +20,6 @@
       dd {
         margin: 0;
         text-align: right;
-        font-weight: 400;
       }
     }
 

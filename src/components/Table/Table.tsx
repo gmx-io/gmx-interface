@@ -63,7 +63,7 @@ export const TableTdActionable = forwardRef<
       {...props}
       ref={ref}
       className={cx(
-        "relative select-none text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
+        "text-body-small relative select-none last-of-type:[&:not(:first-of-type)]:text-right",
         "px-4 py-12 pb-8 first-of-type:pl-20 first-of-type:before:rounded-l-8",
         "last-of-type:pr-20 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
         "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
@@ -81,7 +81,7 @@ export function TableTd(props: TableTdThProps) {
   return (
     <td
       {...rest}
-      className={cx("text-[13px] last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
+      className={cx("text-body-small last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
         "px-4 py-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",

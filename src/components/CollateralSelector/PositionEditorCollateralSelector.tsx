@@ -105,7 +105,7 @@ function CollateralSelectorDesktop(props: Props) {
 function ConversionGroupHeaderRow({ children }: { children: React.ReactNode }) {
   return (
     <tr>
-      <td colSpan={2} className="px-16 pb-4 pt-12 text-12 text-textIcon-secondary">
+      <td colSpan={2} className="text-body-small px-16 pb-4 pt-12 text-textIcon-secondary">
         {children}
       </td>
     </tr>
@@ -212,13 +212,13 @@ function CollateralSelectorMobile(props: Props) {
   return (
     <SelectorBaseMobileList>
       {props.conversionOptions?.length ? (
-        <div className="text-12 text-textIcon-secondary">
+        <div className="text-body-small text-textIcon-secondary">
           <Trans>Margin token: {marginTokenSymbol}</Trans>
         </div>
       ) : null}
       {renderOptions(props.options)}
       {props.conversionOptions?.length ? (
-        <div className="pt-8 text-12 text-textIcon-secondary">
+        <div className="text-body-small pt-8 text-textIcon-secondary">
           <Trans>Converted to {marginTokenSymbol} in the same order</Trans>
         </div>
       ) : null}

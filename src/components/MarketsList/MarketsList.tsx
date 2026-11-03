@@ -59,7 +59,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   return (
     <div className="my-15 rounded-4 bg-fill-surfaceBase text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
-        <span className="text-h2">
+        <span className="text-h3">
           <Trans>GM pools</Trans>
         </span>
 
@@ -243,7 +243,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext !leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={
@@ -273,7 +273,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext !leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={

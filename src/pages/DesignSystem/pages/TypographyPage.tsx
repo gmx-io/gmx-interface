@@ -33,7 +33,7 @@ const TEXT_STYLES: TextStyleGroup[] = [
     title: "Headings",
     styles: [
       {
-        name: "text-h1",
+        name: "text-h2",
         className: "font-medium",
         fontSize: "40px",
         letterSpacing: "-0.016em",
@@ -42,22 +42,22 @@ const TEXT_STYLES: TextStyleGroup[] = [
         sample: "Create a code",
       },
       {
-        name: "text-h2",
-        className: "text-h1",
+        name: "text-h3",
+        className: "text-h2",
         line: "40px",
         spec: "32px · line 40px · −1.6% · Medium",
         sample: "Open a position",
       },
       {
-        name: "text-h3",
-        className: "text-h2",
+        name: "text-h4",
+        className: "text-h3",
         line: "32px",
         spec: "24px · line 32px · −1.6% · Medium",
         sample: "Your positions",
       },
       {
         name: "text-h4",
-        className: "text-h3",
+        className: "text-h4",
         line: "28px",
         spec: "20px · line 28px · −1.6% · Medium",
         sample: "Order details",
@@ -177,7 +177,7 @@ function TextStyleRow({ style }: { style: TextStyle }) {
         {style.sample}
       </div>
       <div className="flex min-w-0 flex-col gap-2">
-        <span className="break-words font-mono text-15">{style.name}</span>
+        <span className="text-body-medium break-words font-mono">{style.name}</span>
         <span className="text-body-small text-textIcon-secondary">{style.spec}</span>
       </div>
     </div>

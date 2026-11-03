@@ -47,8 +47,8 @@ export default function Button({
 }: ButtonProps) {
   const classNames = cx("button", variant, className, textAlign, {
     "px-24 py-18 text-16": variant === "primary-action",
-    "px-12 py-8 text-[13px] max-md:px-10 max-md:py-6": variant !== "primary-action",
-    "min-h-32 gap-4 px-12 py-8 text-[13px]": size === "small" && variant !== "primary-action",
+    "text-body-small px-12 py-8 max-md:px-10 max-md:py-6": variant !== "primary-action",
+    "text-body-small min-h-32 gap-4 px-12 py-8": size === "small" && variant !== "primary-action",
     "min-h-40 gap-6": size === "medium" && variant !== "primary-action",
   });
   const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";

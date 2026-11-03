@@ -167,7 +167,7 @@ function DropdownActionRow({ icon, label, onClick }: { icon: ReactNode; label: R
   const content = (
     <div className="flex items-center gap-8 rounded-8 px-8 py-7 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary">
       <div className="flex size-16 shrink-0 items-center justify-center">{icon}</div>
-      <span className="text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]">{label}</span>
+      <span className="text-body-medium whitespace-nowrap font-medium">{label}</span>
     </div>
   );
 

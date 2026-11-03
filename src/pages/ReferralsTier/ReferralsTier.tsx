@@ -51,7 +51,9 @@ export default function ReferralsTier() {
               <label className="ReferralsTier-label">
                 <Trans>Current tier:</Trans>
               </label>
-              <strong>{currentAffiliateTier === undefined ? undefined : String(currentAffiliateTier + 1n)}</strong>
+              <strong className="font-medium">
+                {currentAffiliateTier === undefined ? undefined : String(currentAffiliateTier + 1n)}
+              </strong>
             </div>
             <div className="ReferralsTier-row">
               <label className="ReferralsTier-label">

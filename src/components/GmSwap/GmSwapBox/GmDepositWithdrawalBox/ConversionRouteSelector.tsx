@@ -139,7 +139,7 @@ function RoutePreferenceOption({
         close();
       }}
     >
-      <span className="text-14">{getRoutePreferenceLabel(option)}</span>
+      <span className="text-body-medium">{getRoutePreferenceLabel(option)}</span>
       <span className="text-body-small text-textIcon-secondary">
         {getRoutePreferenceDescription(option, isZeroFee)}
       </span>

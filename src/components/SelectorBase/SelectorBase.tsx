@@ -84,7 +84,7 @@ export function SelectorBaseMobileButton(
 ) {
   return (
     <button
-      className={cx("SelectorBaseUtils-mobile-row", props.rowClassName, {
+      className={cx("SelectorBaseUtils-mobile-row font-medium", props.rowClassName, {
         "SelectorBaseUtils-mobile-row-disabled": props.disabled,
       })}
       onClick={props.onSelect}
@@ -216,14 +216,14 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
           <Popover.Button
             as="div"
             className={cx(
-              "SelectorBase-button group/selector-base group gap-5 tracking-wide gmx-hover:text-blue-strong",
+              "SelectorBase-button group/selector-base group gap-5 gmx-hover:text-blue-strong",
               popoverProps.open && "text-blue-strong",
               props.handleClassName
             )}
             ref={setPopoverButtonRef}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
-            <span className="grow overflow-hidden text-ellipsis leading-[20px]">{props.label}</span>
+            <span className="grow overflow-hidden text-ellipsis">{props.label}</span>
             <ChevronDownIcon
               className={cx(
                 "inline-block size-16 group-gmx-hover/selector-base:text-blue-strong",

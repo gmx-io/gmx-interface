@@ -45,7 +45,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
-        <div className="text-center text-20 font-medium">
+        <div className="text-h4 text-center">
           <Trans>
             Claim <UsdValue usd={state.totalClaimableFundingUsd} />
           </Trans>
@@ -93,7 +93,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
         {state.hiddenMainRewards.length > 0 && (
           <Button
             variant="ghost"
-            className="w-full text-13 text-textIcon-secondary"
+            className="text-body-small w-full text-textIcon-secondary"
             onClick={() => state.setShowOtherMainRewards((v) => !v)}
           >
             {state.showOtherMainRewards ? (
@@ -119,7 +119,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
         {state.smallRewardsWithUsd.length > 0 && state.shouldShowSmallRewardsToggle && (
           <Button
             variant="ghost"
-            className="w-full text-13 text-textIcon-secondary"
+            className="text-body-small w-full text-textIcon-secondary"
             onClick={() => state.setShowSmallRewards((v) => !v)}
           >
             {state.showSmallRewards ? (

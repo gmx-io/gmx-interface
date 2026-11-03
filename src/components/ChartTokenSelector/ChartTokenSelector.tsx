@@ -127,7 +127,7 @@ export default function ChartTokenSelector(props: Props) {
         <Button variant="secondary">
           {selectedToken ? (
             <span
-              className={cx("inline-flex gap-12 whitespace-nowrap pl-0 text-[13px]", {
+              className={cx("text-body-small inline-flex gap-12 whitespace-nowrap pl-0", {
                 "items-start": !oneRowLabels,
                 "items-center": oneRowLabels,
               })}
@@ -147,14 +147,14 @@ export default function ChartTokenSelector(props: Props) {
                       "flex-row items-center": oneRowLabels,
                     })}
                   >
-                    <span className="text-start text-[13px] font-medium text-textIcon-primary">
+                    <span className="text-body-small text-start font-medium text-textIcon-primary">
                       {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                       {selectedToken.symbol}
                       {t`/USD`}
                     </span>
                     {poolName && (
                       <span
-                        className={cx("text-12 font-normal text-textIcon-secondary", {
+                        className={cx("text-body-small font-normal text-textIcon-secondary", {
                           "ml-4": oneRowLabels,
                         })}
                       >
@@ -399,7 +399,7 @@ function MarketsList() {
   });
   const rowHorizontalPadding = cx("pr-8");
   const thClassName = cx(
-    "sticky top-0 z-10 whitespace-nowrap bg-fill-surfaceBase text-left text-[11px] font-medium uppercase text-textIcon-secondary",
+    "text-caption sticky top-0 z-10 whitespace-nowrap bg-fill-surfaceBase text-left text-textIcon-secondary",
     "first-of-type:text-left",
     rowVerticalPadding,
     rowHorizontalPadding,
@@ -476,7 +476,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-body-small"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -489,7 +489,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-body-small"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -590,7 +590,7 @@ function MarketsList() {
             emptyText={
               query ? (
                 <div className="flex w-full flex-col items-center gap-12 px-16">
-                  <span className="w-full min-w-0 text-center text-12 text-textIcon-secondary [overflow-wrap:anywhere]">
+                  <span className="text-body-small w-full min-w-0 text-center text-textIcon-secondary [overflow-wrap:anywhere]">
                     {shouldOfferSearchAll ? (
                       <Trans>No results with the selected filters</Trans>
                     ) : (
@@ -607,7 +607,7 @@ function MarketsList() {
                   )}
                   {shouldOfferOtherMode && (
                     <>
-                      <span className="text-12 text-textIcon-secondary">
+                      <span className="text-body-small text-textIcon-secondary">
                         {isSwap ? (
                           <Trans>Results are available in Perpetuals</Trans>
                         ) : (
@@ -852,14 +852,14 @@ function MarketListItem({
           <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
         </Button>
       </td>
-      <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
+      <td className={cx("text-body-small pl-12", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
-            <span className="rounded-full bg-button-background px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-textIcon-secondary numbers">
+            <span className="text-body-small rounded-full bg-button-background px-6 py-[1.5px] font-medium text-textIcon-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>

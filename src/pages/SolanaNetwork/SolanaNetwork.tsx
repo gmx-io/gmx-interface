@@ -8,8 +8,8 @@ function SolanaNetworkMessage({ title, children }: { title: string; children: Re
   return (
     <AppPageLayout title={title}>
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-12 px-16 text-center">
-        <h2 className="text-h2 text-textIcon-primary">{title}</h2>
-        <div className="text-14 text-textIcon-secondary">{children}</div>
+        <h2 className="text-h3 text-textIcon-primary">{title}</h2>
+        <div className="text-body-medium text-textIcon-secondary">{children}</div>
       </div>
     </AppPageLayout>
   );

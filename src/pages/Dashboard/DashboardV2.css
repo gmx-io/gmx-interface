@@ -67,7 +67,6 @@
   line-height: var(--line-height-body-medium);
   border-radius: 0.4rem;
   padding: 1.05rem;
-  letter-spacing: 0.4px;
   text-align: left;
   z-index: 1;
   background: var(--color-fill-accent);
@@ -121,10 +120,6 @@
 .mobile-token-card {
   display: flex;
   align-items: center;
-}
-
-.token-symbol-text {
-  line-height: 1;
 }
 
 .mobile-token-card > img {

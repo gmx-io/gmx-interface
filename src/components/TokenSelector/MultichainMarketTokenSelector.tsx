@@ -170,7 +170,7 @@ export function MultichainMarketTokenSelector({
 
   return (
     <div
-      className={cx("TokenSelector text-20 leading-1 tracking-wide", className)}
+      className={cx("TokenSelector text-body-xlarge leading-1", className)}
       onClick={(event) => event.stopPropagation()}
     >
       <SlideModal

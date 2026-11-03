@@ -406,21 +406,21 @@ function TPSLOrderCard({
   return (
     <div className="flex flex-col gap-10 border-b-1/2 border-stroke-primary p-16 last:border-b-0">
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-textIcon-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Type</Trans>
         </span>
         <span className="text-body-medium">{orderType}</span>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-textIcon-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Size (% of position)</Trans>
         </span>
         <span className="text-body-medium numbers">{sizeDisplay}</span>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-textIcon-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Trigger price</Trans>
         </span>
         <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
@@ -428,7 +428,7 @@ function TPSLOrderCard({
 
       {estimatedPnl && (
         <div className="flex items-center justify-between">
-          <span className="text-14 font-medium text-textIcon-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Est. PnL</Trans>
           </span>
           <DeltaUsdValue
@@ -441,7 +441,7 @@ function TPSLOrderCard({
 
       {estimatedPnl && (
         <div className="flex items-center justify-between">
-          <span className="text-14 font-medium text-textIcon-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Receive</Trans>
           </span>
           <span className="text-body-medium numbers">{receiveDisplay}</span>

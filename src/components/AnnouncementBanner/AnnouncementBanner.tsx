@@ -135,7 +135,7 @@ export function AnnouncementBanner({
       </div>
 
       <div className="flex flex-col gap-4 p-12">
-        <div className="text-body-medium leading-[1.3] text-textIcon-primary [&_a:hover]:!underline [&_a]:!text-blue-strong [&_a]:!no-underline">
+        <div className="text-body-medium text-textIcon-primary [&_a:hover]:!underline [&_a]:!text-blue-strong [&_a]:!no-underline">
           {children}
         </div>
 

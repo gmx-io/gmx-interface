@@ -48,7 +48,7 @@ export function HistoryExportModal({
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={title}
-      contentClassName="w-[480px] text-13"
+      contentClassName="w-[480px] text-body-small"
     >
       <div className="flex flex-col gap-12">
         <div className="flex min-h-[44px] flex-col justify-center">

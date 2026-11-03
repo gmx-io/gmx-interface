@@ -188,10 +188,10 @@ export function TestPermits() {
                       <span className="text-lg truncate font-medium">{token.symbol}</span>
                       <span className="text-xs truncate text-slate-400">{token.name}</span>
                     </div>
-                    <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-400">
+                    <div className="text-body-small mt-2 flex flex-col gap-1 text-slate-400">
                       <span className="text-xs text-slate-400 ">{token.address}</span>
                       <div>
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           <Trans>Permit supported:</Trans>
                         </span>{" "}
                         {token.isPermitSupported === true ? (
@@ -201,7 +201,7 @@ export function TestPermits() {
                         )}
                       </div>
                       <div>
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           <Trans>Permit disabled:</Trans>
                         </span>{" "}
                         {token.isPermitDisabled === true ? (
@@ -211,26 +211,26 @@ export function TestPermits() {
                         )}
                       </div>
                       <div>
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           <Trans>Version:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.version ?? t`-`}
                       </div>
                       <div>
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           <Trans>Onchain name:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.name ?? t`-`}
                       </div>
                       <div>
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           <Trans>Nonce:</Trans>
                         </span>{" "}
                         {loading ? t`...` : params?.nonce?.toString() ?? t`-`}
                       </div>
                       {params?.error && (
                         <div>
-                          <span className="font-semibold text-red-strong">
+                          <span className="font-medium text-red-strong">
                             <Trans>Onchain data error</Trans>
                           </span>
                         </div>
@@ -248,14 +248,14 @@ export function TestPermits() {
               <div className="mb-6 flex flex-col space-x-4">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={40} />
                 <div>
-                  <h2 className="text-2xl font-semibold text-textIcon-primary">{selectedToken.symbol}</h2>
+                  <h2 className="text-2xl font-medium text-textIcon-primary">{selectedToken.symbol}</h2>
                   <div>
                     <div className="text-xs text-slate-400">{selectedToken.address}</div>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <span className="font-semibold">
+                    <span className="font-medium">
                       <Trans>Permit supported:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
@@ -265,7 +265,7 @@ export function TestPermits() {
                     )}
                   </div>
                   <div>
-                    <span className="font-semibold">
+                    <span className="font-medium">
                       <Trans>Permit disabled:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
@@ -275,26 +275,26 @@ export function TestPermits() {
                     )}
                   </div>
                   <div>
-                    <span className="font-semibold">
+                    <span className="font-medium">
                       <Trans>Version:</Trans>
                     </span>{" "}
                     {selectedToken.contractVersion}
                   </div>
                   <div>
-                    <span className="font-semibold">
+                    <span className="font-medium">
                       <Trans>Onchain name:</Trans>
                     </span>{" "}
                     {selectedToken.name}
                   </div>
                   <div>
-                    <span className="font-semibold">
+                    <span className="font-medium">
                       <Trans>Nonce:</Trans>
                     </span>{" "}
                     {onchainParams[selectedToken.address]?.nonce?.toString() ?? t`-`}
                   </div>
                   {selectedToken.isPermitDisabled && (
                     <div>
-                      <span className="font-semibold text-red-strong">
+                      <span className="font-medium text-red-strong">
                         <Trans>Onchain data error</Trans>
                       </span>
                     </div>
@@ -304,23 +304,23 @@ export function TestPermits() {
 
               {permitData && (
                 <div className="rounded-xl text-slate-200 text-base bg-fill-surfaceElevated p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-medium tracking-wide text-textIcon-secondary">
+                  <h2 className="text-lg mb-4 font-medium text-textIcon-secondary">
                     <Trans>Permit details</Trans>
                   </h2>
                   <div className="space-y-2">
                     <div>
-                      <span className="font-semibold">
+                      <span className="font-medium">
                         <Trans>Deadline:</Trans>
                       </span>{" "}
                       {new Date(Number(permitData.deadline) * 1000).toLocaleString()}
                     </div>
                     <div>
-                      <span className="font-semibold">
+                      <span className="font-medium">
                         <Trans>Value:</Trans>
                       </span>{" "}
                       {permitData.value.toString()}
                     </div>
-                    <div className="mb-1 mt-16 font-semibold">
+                    <div className="mb-1 mt-16 font-medium">
                       <Trans>Signature:</Trans>
                     </div>
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">

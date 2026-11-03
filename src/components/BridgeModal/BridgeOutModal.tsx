@@ -467,7 +467,7 @@ export function BridgeOutModal({
           }}
           placeholder={t`Select network`}
           button={
-            <div className="flex items-center gap-8 text-14">
+            <div className="text-body-medium flex items-center gap-8">
               {bridgeOutChain !== undefined ? (
                 <>
                   <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />

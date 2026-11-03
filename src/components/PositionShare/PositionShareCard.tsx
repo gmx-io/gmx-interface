@@ -60,7 +60,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
             <div className="flex gap-8">
               <div
                 className={cx(
-                  "inline-flex items-center gap-4 text-13 font-medium",
+                  "text-body-small inline-flex items-center gap-4 font-medium",
                   isLong ? "text-[#0FDE8D]" : "text-[#FF506A]"
                 )}
               >

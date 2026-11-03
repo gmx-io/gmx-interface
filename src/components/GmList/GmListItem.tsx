@@ -198,7 +198,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-textIcon-secondary">
+              <div className="text-body-small tracking-normal text-textIcon-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -338,7 +338,7 @@ export function GmListItem({
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-textIcon-secondary">
+            <div className="text-body-small tracking-normal text-textIcon-secondary">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>

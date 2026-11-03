@@ -548,10 +548,10 @@ function CreateReferralCodeLayout({
   return (
     <div className="flex flex-col gap-16 rounded-12 border border-stroke-primary/60 bg-fill-surfaceBase/60 p-16">
       <div className="flex flex-col gap-4">
-        <p className="text-13 font-medium text-textIcon-primary">
+        <p className="text-body-small font-medium text-textIcon-primary">
           <Trans>Earn rewards by sharing your code!</Trans>
         </p>
-        <p className="text-13 text-textIcon-secondary">
+        <p className="text-body-small text-textIcon-secondary">
           <Trans>
             Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more.{" "}
             <ExternalLink className="font-medium text-blue-strong !no-underline" href={REFERRAL_DOCS_LINK} newTab>
@@ -580,7 +580,7 @@ function CreateReferralCodeLayout({
             value={referralCode}
             disabled={isProcessing || !isConnected}
             placeholder={t`Enter referral code`}
-            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-textIcon-secondary"
+            className="text-body-small grow p-0 py-2 placeholder:text-textIcon-secondary"
             onChange={(event) => {
               const { value } = event.target;
               setReferralCode(value);
@@ -588,7 +588,7 @@ function CreateReferralCodeLayout({
           />
         </label>
         {srcChainId !== undefined && networkFee !== undefined && (
-          <div className="flex justify-between text-12 text-textIcon-secondary">
+          <div className="text-body-small flex justify-between text-textIcon-secondary">
             <span className="whitespace-nowrap">
               <Trans>Network fee</Trans>
             </span>
