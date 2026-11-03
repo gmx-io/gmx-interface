@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-import { datedChainAnnouncements, dismissOutageWarning } from "../fixtures/announcements";
+import { datedChainAnnouncements, dismissOutageWarning, showWhatsNewSlide } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 import { openTooltip } from "../fixtures/marketData";
 
@@ -126,14 +126,6 @@ function visitedAnnouncements(page: Page) {
   return page.evaluate(() => JSON.parse(localStorage.getItem("visited-announcements") ?? "[]"));
 }
 
-// Dot clicks also park the pointer on the card, which pauses the rotation.
-async function showWhatsNewSlide(whatsNew: Locator, title: string) {
-  const slideTitle = whatsNew.getByTestId("whats-new-slide").getByText(title, { exact: true });
-  const dots = whatsNew.getByRole("button", { name: /^Go to slide/ });
-  for (let i = 0; i < (await dots.count()) && !(await slideTitle.isVisible()); i++) await dots.nth(i).click();
-  await expect(slideTitle).toBeVisible();
-}
-
 test("2.24 the What's new card shows the announcement title, and closing it marks only that announcement as seen", async ({
   page,
   chainId,
@@ -151,7 +143,6 @@ test("2.24 the What's new card shows the announcement title, and closing it mark
   await page.goto("/pools");
   const whatsNew = page.getByRole("region", { name: "What's new" });
   await expect(whatsNew).toBeVisible();
-  await whatsNew.hover();
   await showWhatsNewSlide(whatsNew, latest.title!);
   await expect(whatsNew.getByRole("link", { name: "See more" })).toHaveAttribute(
     "href",

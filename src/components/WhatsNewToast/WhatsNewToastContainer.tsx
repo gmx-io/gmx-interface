@@ -10,7 +10,7 @@ import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPool
 import { ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
-import { useIsInitialLoadSettled } from "lib/useIsInitialLoadSettled";
+import { useSettled } from "lib/useSettled";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
@@ -69,17 +69,16 @@ function EvmAnnouncementToasts({
   const balancerProgram = useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
   const whatsNew = useWhatsNewAnnouncements();
 
-  const isInitialLoadSettled = useIsInitialLoadSettled(
+  const isAnySourceLoading =
     isWalletInitializing ||
-      isUiFlagsLoading ||
-      delisting.isLoading ||
-      closingPools.isLoading ||
-      closingPoolsLp.isLoading ||
-      whatsNew.isLoading,
-    INITIAL_LOAD_MAX_WAIT_MS
-  );
+    delisting.isLoading ||
+    closingPools.isLoading ||
+    closingPoolsLp.isLoading ||
+    whatsNew.isLoading;
+  const isInitialLoadSettled = useSettled(!isAnySourceLoading, INITIAL_LOAD_MAX_WAIT_MS);
 
   const outageWarnings: TopRightMessage[] = uiFlagEvents.filter(isOutageWarning).map(toUiFlagEventMessage);
+  const isOutageWarningReady = !isUiFlagsLoading && outageWarnings.length > 0;
 
   const fundsNotices: TopRightMessage[] = [
     ...delisting.announcements.map((item) => ({
@@ -119,9 +118,10 @@ function EvmAnnouncementToasts({
       ? [{ key: "whats-new", node: <WhatsNewToast cards={whatsNew.cards} onDismiss={whatsNew.dismiss} /> }]
       : [];
 
-  const message = isInitialLoadSettled
-    ? [...outageWarnings, ...fundsNotices, ...targetedMessages, ...appHints, ...whatsNewMessages][0]
-    : undefined;
+  const message =
+    isInitialLoadSettled || isOutageWarningReady
+      ? [...outageWarnings, ...fundsNotices, ...targetedMessages, ...appHints, ...whatsNewMessages][0]
+      : undefined;
 
   return <TopRightMessageSlot message={message} />;
 }
@@ -131,23 +131,11 @@ export function WhatsNewToastContainer() {
   const { pathname } = useLocation();
   const isAnnouncementsPage = pathname === "/announcements";
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
-  const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
+  const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
   const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
     ? {
         key: "app-update",
-        node: (
-          <AnnouncementBanner
-            className="pointer-events-auto"
-            variant="info"
-            headerLabel={<Trans>Update available</Trans>}
-            headerIcon="info"
-            onClose={dismissAppUpdate}
-            footerLink={appUpdateFooterLink}
-          >
-            <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
-          </AnnouncementBanner>
-        ),
+        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
       }
     : undefined;
 
@@ -187,6 +175,35 @@ export function WhatsNewToastContainer() {
         )}
       </div>
     </div>
+  );
+}
+
+function AppUpdateCard({
+  onShow,
+  onClose,
+  onReload,
+}: {
+  onShow: () => void;
+  onClose: () => void;
+  onReload: () => void;
+}) {
+  const footerLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: onReload }), [onReload]);
+
+  useEffect(() => {
+    onShow();
+  }, [onShow]);
+
+  return (
+    <AnnouncementBanner
+      className="pointer-events-auto"
+      variant="info"
+      headerLabel={<Trans>Update available</Trans>}
+      headerIcon="info"
+      onClose={onClose}
+      footerLink={footerLink}
+    >
+      <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
+    </AnnouncementBanner>
   );
 }
 
