@@ -116,7 +116,7 @@ export function DisplaySettings() {
             desktopPanelClassName="!z-[10000] w-[180px] !top-[10px]"
             chevronClassName="hidden"
             label={
-              <Button variant="secondary" className="whitespace-nowrap">
+              <Button variant="secondary" className="whitespace-nowrap focus-visible:outline-offset-[-2px]">
                 {buySellIconsOptions.find((o) => o.value === settings.buySellIconsMode)?.label}
                 <ChevronDownIcon className="inline-block size-14" />
               </Button>

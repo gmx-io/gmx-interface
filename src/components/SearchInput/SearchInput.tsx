@@ -101,6 +101,7 @@ export default function SearchInput({
       {value && (
         <Button
           onClick={handleClear}
+          aria-label={t`Clear search`}
           variant="ghost"
           className="!absolute right-8 top-[50%] !h-24 !min-h-0 !w-24 -translate-y-1/2 !p-0"
         >

@@ -52,7 +52,6 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS, isHighlig
             className="self-start"
             to={event.link.href}
             newTab={event.link.newTab}
-            showExternalLinkArrow={false}
           >
             {event.link.text}
             <UpRightArrowIcon className="size-16" />

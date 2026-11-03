@@ -1,14 +1,13 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
-
-import OpenInNewTabIcon from "img/open-new-tab.svg?react";
 
 type ButtonProps = {
   children: ReactNode;
   className?: string;
   to: string;
-  showExternalLinkArrow?: boolean;
+
   onClick?: (event: React.MouseEvent<HTMLElement>) => void;
   newTab?: boolean;
   disabled?: boolean;
@@ -24,7 +23,7 @@ export default function ButtonLink({
   to,
   children,
   onClick,
-  showExternalLinkArrow,
+
   newTab = false,
   disabled = false,
   qa,
@@ -35,8 +34,9 @@ export default function ButtonLink({
     const anchorProps = {
       href: disabled ? undefined : to,
       className: classNames,
-      onClick,
+      onClick: disabled ? undefined : onClick,
       ...rest,
+      ...(disabled ? { role: "link", "aria-disabled": true } : {}),
       ...(newTab
         ? {
             target: "_blank",
@@ -46,13 +46,13 @@ export default function ButtonLink({
     };
     return (
       <a data-qa={qa} {...anchorProps}>
-        {showExternalLinkArrow && <OpenInNewTabIcon className="arrow-icon" />}
         {children}
+        {newTab && <span className="sr-only"> {t`(opens in a new tab)`}</span>}
       </a>
     );
   }
   return (
-    <Link data-qa={qa} className={classNames} to={to} onClick={disabled ? preventClick : onClick}>
+    <Link data-qa={qa} className={classNames} to={to} onClick={disabled ? preventClick : onClick} {...rest}>
       {children}
     </Link>
   );

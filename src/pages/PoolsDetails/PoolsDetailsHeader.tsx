@@ -158,6 +158,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
                   className="flex h-32 w-32 items-center justify-center"
                   variant="secondary"
                   onClick={handleToggle}
+                  aria-label={isOpen ? t`Hide details` : t`Show details`}
                 >
                   <ChevronDownIcon className={cx({ "rotate-180": isOpen })} />
                 </Button>

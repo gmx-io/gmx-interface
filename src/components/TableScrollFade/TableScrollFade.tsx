@@ -335,7 +335,7 @@ export function ButtonRowScrollFadeContainer({
   return (
     <div className={cx("relative", className)}>
       <ScrollFadeControls {...scrollFade} gradientColor={gradientColor} />
-      <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.setScrollableRef}>
+      <div className="-my-4 overflow-x-auto py-4 scrollbar-hide" ref={scrollFade.setScrollableRef}>
         {children}
       </div>
     </div>

@@ -37,8 +37,7 @@ test("2.13 header menu links navigate without a not-found page", async ({ page }
   await page.goto("/trade");
   for (const { label, path } of [{ label: "Trade", path: /\/trade$/ }, ...navLinks]) {
     await test.step(label, async () => {
-      // The menu button has no accessible name; it is the header's last button.
-      await page.getByRole("banner").getByRole("button").last().click();
+      await page.getByRole("banner").getByRole("button", { name: "Menu", exact: true }).click();
       await page.getByRole("link", { name: label, exact: true }).filter({ visible: true }).click();
       await expect(page).toHaveURL(path);
       await expect(page.getByRole("heading", { name: "Page not found" })).toHaveCount(0);

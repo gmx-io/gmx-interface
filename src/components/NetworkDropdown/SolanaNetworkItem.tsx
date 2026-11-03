@@ -64,6 +64,7 @@ export function GmTradeModal({
           className="w-full"
           to="https://gmtrade.xyz"
           newTab
+          aria-label={t`Open GMTrade in a new tab`}
           onClick={() => setIsVisible(false)}
         >
           <Trans>Open GMTrade in a new tab</Trans>

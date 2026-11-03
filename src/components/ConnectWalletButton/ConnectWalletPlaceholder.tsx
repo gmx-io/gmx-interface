@@ -8,7 +8,7 @@ export default function ConnectWalletPlaceholder() {
     <SkeletonTheme baseColor="#B4BBFF0D" highlightColor="#B4BBFF0D">
       <span
         data-qa="wallet-initializing"
-        className="flex h-40 items-center gap-8 rounded-8 bg-button-secondary px-12 max-md:h-32 max-md:px-10"
+        className="flex h-40 items-center gap-8 rounded-8 bg-button-secondary px-12 max-md:h-32"
       >
         <Skeleton circle inline width="100%" height="100%" containerClassName="flex size-24 max-md:size-16" />
         <Skeleton

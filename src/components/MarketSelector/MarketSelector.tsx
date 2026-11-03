@@ -324,7 +324,13 @@ function MarketListItem(props: {
             null}
         </span>
       </div>
-      <Button variant="ghost" onClick={handleFavoriteClick}>
+      <Button
+        variant="ghost"
+        size="controlled"
+        className="size-32 !p-0"
+        onClick={handleFavoriteClick}
+        aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+      >
         <FavoriteStar isFavorite={isFavorite} />
       </Button>
     </div>

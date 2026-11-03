@@ -89,7 +89,9 @@ export function AddressDropdownWithMultichain({ account }: Props) {
           <div className="flex items-center gap-8">
             <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
-            {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
+            <span className={cx({ "sr-only": isSmallMobile })}>
+              {shortenAddressOrEns(ensName || account, displayAddressLength)}
+            </span>
           </div>
 
           {showSideButton && !shouldShowDepositButton && (

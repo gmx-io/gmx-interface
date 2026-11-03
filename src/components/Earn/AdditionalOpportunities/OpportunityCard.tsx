@@ -53,11 +53,10 @@ function OpportunityCard({ opportunity, marketsInfoData }: Props) {
             variant="secondary"
             to={link}
             newTab
-            showExternalLinkArrow={false}
             onClick={() => sendEarnOpportunityClickedEvent(name)}
             className="max-sm:p-8"
           >
-            <span className="max-sm:hidden">
+            <span className="max-sm:sr-only">
               <Trans>Explore</Trans>
             </span>
             <UpRightArrowIcon className="size-16" />

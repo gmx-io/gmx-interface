@@ -129,7 +129,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleShareOnX}
             size="medium"
-            className="!text-body-medium grow"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             {isUploading ? <Trans>Uploading...</Trans> : <Trans>Share on</Trans>}
@@ -139,7 +139,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyImage}
             size="medium"
-            className="!text-body-medium grow"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             {isCapturing ? (
@@ -160,7 +160,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyLink}
             size="medium"
-            className="!text-body-medium grow"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             <Trans>Copy link</Trans>

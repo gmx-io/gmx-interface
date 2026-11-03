@@ -689,8 +689,10 @@ function OrderItemLarge({
   const cancelButton = (
     <Button
       variant="ghost"
-      className="max-2xl:px-4"
+      size="controlled"
+      className="size-32 !p-0"
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      aria-label={t`Cancel order`}
       onClick={onCancelOrder}
     >
       <CloseIcon className="size-14" />
@@ -786,7 +788,7 @@ function OrderItemLarge({
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
             {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
+              <Button variant="ghost" size="controlled" onClick={setEditingOrderKey} className="size-32 !p-0">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}

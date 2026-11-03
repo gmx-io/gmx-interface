@@ -237,7 +237,7 @@ export function OrderList({
           <div className="flex flex-wrap items-center justify-between gap-8">
             {isContainerSmall ? (
               <div className="flex gap-8">
-                <Button variant="secondary" onClick={onSelectAllOrders}>
+                <Button variant="secondary" size="controlled" className="size-32 !p-0" onClick={onSelectAllOrders}>
                   <Checkbox
                     isPartialChecked={onlySomeOrdersSelected}
                     isChecked={areAllOrdersSelected}

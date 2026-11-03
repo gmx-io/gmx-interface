@@ -34,7 +34,8 @@ export function PositionLifecycleFilterHeader({
         ) : null}
       </div>
       <Button
-        className="!h-22 !min-h-22 !p-0 !px-4"
+        className="size-24 !p-0"
+        size="controlled"
         variant="ghost"
         onClick={onClear}
         aria-label={t`Clear position history filter`}

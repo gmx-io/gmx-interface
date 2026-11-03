@@ -849,7 +849,6 @@ export function PositionEditor() {
                     <Button
                       className="w-full flex-col !items-start"
                       variant="secondary"
-                      showExternalLinkArrow={false}
                       onClick={handleConvertRestWithPaxos}
                       qa="convert-rest-with-paxos"
                     >

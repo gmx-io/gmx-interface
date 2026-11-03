@@ -95,7 +95,7 @@ function PnlChartGroupingSelect({
       modalLabel={_(msg`Grouping`)}
       popoverPlacement="bottom-end"
       desktopPanelClassName="mt-8 !border !border-stroke-primary !bg-fill-surfaceBase !outline-none"
-      handleClassName="button ghost center text-body-small flex min-h-32 gap-4 px-12 py-6 max-md:px-10 max-md:py-6"
+      handleClassName="button ghost center text-body-small flex min-h-32 gap-4 px-12 py-8"
       chevronClassName="!text-textIcon-secondary group-hover:!text-textIcon-primary"
       label={
         <span className={buttonTextClassName ?? "text-body-small whitespace-nowrap font-medium"}>

@@ -5,7 +5,7 @@ import ButtonLink from "./ButtonLink";
 
 import "./Button.scss";
 
-type ButtonVariant = "primary" | "primary-action" | "secondary" | "link" | "ghost";
+type ButtonVariant = "primary" | "primary-action" | "secondary" | "ghost";
 
 type ButtonProps = Omit<HTMLProps<HTMLButtonElement>, "size"> & {
   children: ReactNode;
@@ -20,11 +20,15 @@ type ButtonProps = Omit<HTMLProps<HTMLButtonElement>, "size"> & {
   imgAlt?: string;
   imgClassName?: string;
   newTab?: boolean;
-  showExternalLinkArrow?: boolean;
+
   buttonRef?: RefObject<HTMLButtonElement>;
   size?: "small" | "medium" | "controlled";
+  tone?: "default" | "destructive";
   qa?: string;
 };
+
+const FOCUS_RING_CLASSNAME =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong";
 
 export default function Button({
   variant,
@@ -40,18 +44,19 @@ export default function Button({
   type = "button",
   newTab,
   buttonRef,
-  showExternalLinkArrow: showExternalLinkArrowOverride,
+
   size = "small",
+  tone = "default",
   qa,
   ...rest
 }: ButtonProps) {
-  const classNames = cx("button", variant, className, textAlign, {
-    "px-24 py-18 text-16": variant === "primary-action",
-    "text-body-small px-12 py-8 max-md:px-10 max-md:py-6": variant !== "primary-action",
+  const classNames = cx("button", FOCUS_RING_CLASSNAME, variant, className, textAlign, {
+    "text-body-large px-24 py-16": variant === "primary-action",
+    "text-body-small px-12 py-8": variant !== "primary-action",
     "text-body-small min-h-32 gap-4 px-12 py-8": size === "small" && variant !== "primary-action",
-    "min-h-40 gap-6": size === "medium" && variant !== "primary-action",
+    "min-h-40 gap-8": size === "medium" && variant !== "primary-action",
+    destructive: tone === "destructive",
   });
-  const showExternalLinkArrow = showExternalLinkArrowOverride ?? variant === "secondary";
 
   const img = useMemo(() => {
     if (!imgSrc) {
@@ -78,7 +83,6 @@ export default function Button({
         to={to}
         onClick={onClick}
         newTab={newTab}
-        showExternalLinkArrow={showExternalLinkArrow}
         disabled={disabled}
         ref={buttonRef}
         qa={qa}

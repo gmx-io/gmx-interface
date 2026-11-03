@@ -456,7 +456,8 @@ function TPSLOrderCard({
         )}
         <Button
           variant="secondary"
-          className="hover:!text-red-300 flex-1 !bg-red-background !text-red-strong hover:!bg-red-strong/25"
+          tone="destructive"
+          className="flex-1"
           onClick={handleCancel}
           disabled={isCancelling}
         >
@@ -519,11 +520,18 @@ export function TPSLOrderRow({
       <TableTd>
         <div className="flex items-center justify-end gap-4">
           {isEditable && (
-            <Button variant="ghost" className="!p-8" onClick={handleEdit}>
+            <Button variant="ghost" className="!p-8" onClick={handleEdit} aria-label={t`Edit order`}>
               <EditIcon className="size-16" />
             </Button>
           )}
-          <Button variant="ghost" className="!p-8" onClick={handleCancel} disabled={isCancelling}>
+          <Button
+            variant="ghost"
+            tone="destructive"
+            className="!p-8"
+            onClick={handleCancel}
+            disabled={isCancelling}
+            aria-label={t`Cancel order`}
+          >
             <CloseIcon className="size-16" />
           </Button>
         </div>

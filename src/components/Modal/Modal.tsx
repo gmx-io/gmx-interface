@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
@@ -180,7 +181,7 @@ export default function Modal({
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (
-                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label="Back">
+                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label={t`Back`}>
                         <ChevronLeftIcon className="size-16" />
                       </Button>
                     )}

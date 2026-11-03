@@ -70,7 +70,7 @@ export function ThemeSelector() {
           <div className="text-textIcon-secondary">
             <Trans>Theme</Trans>
           </div>
-          <Button variant="secondary">
+          <Button variant="secondary" className="focus-visible:outline-offset-[-2px]">
             {currentTheme?.label}
             <ChevronDownIcon className="inline-block size-14" />
           </Button>

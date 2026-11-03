@@ -124,7 +124,7 @@ export default function ChartTokenSelector(props: Props) {
       })}
       chevronClassName="hidden"
       label={
-        <Button variant="secondary">
+        <Button variant="secondary" className="focus-visible:outline-offset-[-2px]">
           {selectedToken ? (
             <span
               className={cx("text-body-small inline-flex gap-12 whitespace-nowrap pl-0", {
@@ -810,7 +810,12 @@ function MarketListItem({
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
         <td className={cx("pl-12 pr-0 text-center text-textIcon-secondary", rowVerticalPadding)}>
-          <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+          <Button
+            variant="ghost"
+            className="!h-20 !min-h-32 !w-32 !p-0"
+            onClick={handleFavoriteClick}
+            aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+          >
             <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
           </Button>
         </td>
@@ -848,7 +853,12 @@ function MarketListItem({
       onClick={handleSelectLargePosition}
     >
       <td className={cx("w-0 px-12 pr-0 text-center text-textIcon-secondary", rowVerticalPadding)}>
-        <Button variant="ghost" className="!h-32 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+        <Button
+          variant="ghost"
+          className="!h-32 !min-h-32 !w-32 !p-0"
+          onClick={handleFavoriteClick}
+          aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+        >
           <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
         </Button>
       </td>

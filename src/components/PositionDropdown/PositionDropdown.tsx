@@ -1,6 +1,6 @@
 import { autoUpdate, useFloating, flip, offset, shift, FloatingPortal } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import Button from "components/Button/Button";
 
@@ -49,7 +49,7 @@ export default function PositionDropdown({
 
   if (disabled) {
     return (
-      <Button variant="ghost" disabled>
+      <Button variant="ghost" size="controlled" className="size-32 !p-0" disabled aria-label={t`More actions`}>
         <MenuDotsIcon fontSize={14} fontWeight={500} className="text-textIcon-secondary" />
       </Button>
     );
@@ -58,7 +58,7 @@ export default function PositionDropdown({
   return (
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
-        <Button variant="ghost">
+        <Button variant="ghost" size="controlled" className="size-32 !p-0" aria-label={t`More actions`}>
           <MenuDotsIcon
             fontSize={14}
             fontWeight={500}

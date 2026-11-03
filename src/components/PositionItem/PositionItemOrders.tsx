@@ -151,7 +151,7 @@ function PositionItemOrder({
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
   const cancelButton = (
-    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
+    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8" aria-label={t`Cancel order`}>
       <CloseIcon className="size-16" />
     </Button>
   );
@@ -166,7 +166,7 @@ function PositionItemOrder({
           </div>
         </Button>
         {!hideActions && !isSizeOrderInClosedPool && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button variant="secondary" onClick={handleEditClick} className="px-8">
+          <Button variant="secondary" onClick={handleEditClick} className="px-8" aria-label={t`Edit order`}>
             <EditIcon className="size-16" />
           </Button>
         )}

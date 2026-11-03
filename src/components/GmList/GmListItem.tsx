@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import React, { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
@@ -211,7 +211,13 @@ export function GmListItem({
 
             {onFavoriteClick ? (
               <div>
-                <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
+                <Button
+                  variant="secondary"
+                  size="controlled"
+                  className="size-32 shrink-0 !p-0"
+                  onClick={handleFavoriteClick}
+                  aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+                >
                   <FavoriteStar isFavorite={isFavorite} />
                 </Button>
               </div>
@@ -307,7 +313,13 @@ export function GmListItem({
       <TableTdActionable className="w-[220px] pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (
-            <Button variant="ghost" className="!h-32 !min-h-32 !w-40 !p-0" onClick={handleFavoriteClick}>
+            <Button
+              variant="ghost"
+              size="controlled"
+              className="size-32 !p-0"
+              onClick={handleFavoriteClick}
+              aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+            >
               <RecentlyListedFavoriteSlot isRecentlyListed={showRecentlyListedBadge} isFavorite={isFavorite} />
             </Button>
           )}

@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useState } from "react";
 
 import Button from "components/Button/Button";
@@ -21,7 +22,13 @@ export function MobileSideNav() {
 
   return (
     <div>
-      <Button variant="secondary" size="controlled" className="size-32 !p-0 md:size-40" onClick={handleToggle}>
+      <Button
+        variant="secondary"
+        size="controlled"
+        className="size-32 !p-0 md:size-40"
+        onClick={handleToggle}
+        aria-label={t`Menu`}
+      >
         <BurgerMenuIcon className="size-20" />
       </Button>
       {isOpen ? (

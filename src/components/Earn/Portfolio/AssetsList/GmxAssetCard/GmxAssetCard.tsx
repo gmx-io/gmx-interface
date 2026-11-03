@@ -1,6 +1,6 @@
 import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -521,7 +521,7 @@ function GmxAssetCardOptionsDropdown() {
   return (
     <Menu>
       <Menu.Button as="div" ref={refs.setReference}>
-        <Button variant="secondary" className="w-32 !p-0">
+        <Button variant="secondary" className="w-32 !p-0" aria-label={t`More actions`}>
           <MenuDotsIcon className="size-16" />
         </Button>
       </Menu.Button>

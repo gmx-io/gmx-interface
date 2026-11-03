@@ -79,7 +79,7 @@ export default function NetworkDropdown({
               <Button
                 variant="secondary"
                 size="controlled"
-                className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:p-6"
+                className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:px-10 max-md:py-6"
               >
                 <NavIcons chainId={chainId} open={open} />
               </Button>

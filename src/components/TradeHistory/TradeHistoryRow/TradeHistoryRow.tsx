@@ -35,6 +35,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";
@@ -518,25 +519,26 @@ export function TradeHistoryRow({
               </Button>
             ) : null}
             {shouldDisplayPositionLifecycleButton ? (
-              <TooltipWithPortal
+              <StandardTooltip
                 variant="none"
+                type="label"
                 position="bottom-end"
                 shouldPreventDefault={false}
-                handle={
-                  <Button
-                    variant="ghost"
-                    onClick={handleSelectPositionLifecycleClick}
-                    className="!min-h-28 !px-8 !py-6"
-                    aria-label={t`View position history`}
-                  >
-                    <FilterHistoryIcon className="size-14" />
-                  </Button>
-                }
                 content={<Trans>View position history</Trans>}
-              />
+              >
+                <Button
+                  variant="ghost"
+                  onClick={handleSelectPositionLifecycleClick}
+                  size="controlled"
+                  className="size-32 !p-0"
+                  aria-label={t`View position history`}
+                >
+                  <FilterHistoryIcon className="size-14" />
+                </Button>
+              </StandardTooltip>
             ) : (
               // Reserve the button's space so the Share button and layout don't shift between rows/states.
-              <Button variant="ghost" className="invisible !min-h-28 !px-8 !py-6">
+              <Button variant="ghost" size="controlled" className="invisible size-32 !p-0">
                 <FilterHistoryIcon className="size-14" />
               </Button>
             )}

@@ -249,7 +249,7 @@ export const SelectAssetToDepositView = () => {
                 })}
                 onClick={() => setSelectedNetwork(network.id as number | "all")}
                 imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
-                imgClassName="size-16 !mr-4"
+                imgClassName="size-16"
               >
                 {network.name}
               </Button>

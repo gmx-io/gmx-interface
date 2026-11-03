@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -213,7 +213,13 @@ export function GmGlvAssetCard({
       title={title}
       subtitle={subtitle}
       headerButton={
-        <Button variant="secondary" className="w-32 !p-0" to={detailsPath} onClick={makeHandleClick("details")}>
+        <Button
+          variant="secondary"
+          className="w-32 !p-0"
+          to={detailsPath}
+          onClick={makeHandleClick("details")}
+          aria-label={t`View details`}
+        >
           <NewLinkIcon className="size-16" />
         </Button>
       }
