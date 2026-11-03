@@ -148,7 +148,7 @@ export function TableChangelog() {
   return (
     <DocsChangelog
       title="Table changelog"
-      summary="3 steps for the table parts and the places that use them. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
+      summary="4 steps for the table parts and the places that use them. All of them are applied. Each edit gives the file, the exact text to find at release 0f9e06e991 and the text to put instead."
       notes={TABLE_CHANGELOG_NOTES}
       steps={TABLE_CHANGELOG_STEPS}
     />

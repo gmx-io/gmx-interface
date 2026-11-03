@@ -3,7 +3,7 @@ import type { ChangelogStep } from "../DocsChangelog";
 
 // Rules for all steps
 export const TABLE_CHANGELOG_NOTES: string[] = [
-  "Scope: Table.tsx (TableTd, TableTdActionable), the two leaderboard tables, LeaderboardPage.scss, Tooltip.tsx and Tooltip.scss; nothing here is done at origin/release 0f9e06e991.",
+  "Scope: Table.tsx (TableTr, TableTd, TableTdActionable), Table.scss, PositionItem.scss, the two leaderboard tables, LeaderboardPage.scss, Tooltip.tsx and Tooltip.scss; nothing here is done at origin/release 0f9e06e991.",
   "Each edit: replace the find text with the replace text (DELETE removes it); line numbers are from origin/release, so after earlier steps match the find text.",
   "Do Typography step 1 with Table step 1: it makes text-body-medium 14px on a 20px line and text-caption 12px on a 16px line.",
   "Merge the Tooltip PR before Table step 3: the Tooltip.scss rule it deletes comes with that PR.",
@@ -106,5 +106,66 @@ export const TABLE_CHANGELOG_STEPS: ChangelogStep[] = [
       "Compare a PnL value with a tooltip in the positions table (green and red) and a standard tooltip: the dotted line is the value's color at 50%, with whole dots.",
     ],
     visible: "The dotted line under values with a tooltip is lighter and draws whole dots.",
+  },
+  {
+    id: "table-change-no-stripes",
+    title: "4. Rows without stripes",
+    goal: "Every table gets the row look of the Experiment 2 test: no stripes, 16px above and below the content (one-line rows 52px), a hairline between rows that stops at the cell padding at the table edges, and the same hover tint on every row. The Pools rows (TableTdActionable) become plain rows too. Names and line numbers are the ones after the Colors changelog and steps 1-3.",
+    dependsOn: ["Table steps 1-3", "Colors changelog"],
+    edits: [
+      {
+        file: "src/components/Table/Table.tsx",
+        line: "42",
+        find: '      className={cx("odd:bg-fill-surfaceElevated50", className, {',
+        replace: '      className={cx("TableTr", className, {',
+        note: "TableTr: no stripe. The TableTr class gets the line from Table.scss.",
+      },
+      {
+        file: "src/components/Table/Table.tsx",
+        line: "54",
+        find: '  return <tr {...props} ref={ref} className={cx("group/tr", className)} />;',
+        replace: '  return <tr {...props} ref={ref} className={cx("TableTr group/tr", className)} />;',
+        note: "TableTrActionable gets the line too.",
+      },
+      {
+        file: "src/components/Table/Table.tsx",
+        line: "67-70",
+        find: '        "px-4 py-12 pb-8 first-of-type:pl-20 first-of-type:before:rounded-l-8",\n        "last-of-type:pr-20 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",\n        "before:absolute before:bottom-4 before:left-0 before:top-4 before:z-0 before:bg-fill-surfaceElevated50",\n        "before:h-[calc(100%-4px)] before:w-full before:content-[\'\']",',
+        replace:
+          '        "px-4 py-16 first-of-type:pl-20 last-of-type:pr-20",\n        "before:absolute before:inset-0 before:z-0 before:content-[\'\'] group-hover/tr:before:bg-fill-surfaceHover",',
+        note: "TableTdActionable: a plain cell. No resting background or 4px gaps; the hover fills the whole cell.",
+      },
+      {
+        file: "src/components/Table/Table.tsx",
+        line: "85-87",
+        find: '        "px-4 py-12 first-of-type:pl-20 last-of-type:pr-20": padding === "all",\n        "px-4 py-12 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",\n        "px-8 py-12": padding === "compact-one-column",',
+        replace:
+          '        "px-4 py-16 first-of-type:pl-20 last-of-type:pr-20": padding === "all",\n        "TableTd_compact px-4 py-12 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",\n        "TableTd_compactOneColumn px-8 py-12": padding === "compact-one-column",',
+        note: 'TableTd: 16px above and below in padding "all" (one-line rows 52px). Compact cells keep 12px and get a class for the line inset.',
+      },
+      {
+        file: "src/components/Table/Table.scss",
+        line: "1-11",
+        find: ".TableTr_hoverable {\n  &:nth-child(even):hover {\n    background: linear-gradient(0deg, var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),\n      linear-gradient(0deg, var(--color-fill-surfaceHover), var(--color-fill-surfaceHover));\n  }\n\n  &:nth-child(odd):hover {\n    background: var(--color-fill-surfaceHover);\n  }\n}\n",
+        replace:
+          "// Rows have no stripes: a hairline between them, drawn as a background so rows keep their height. At the table\n// edges the line stops at the cell padding: 20px, 12px in compact cells, 8px in single-column cells.\n.TableTr:not(:last-child) > td {\n  --table-line-inset: 20px;\n  background-image: linear-gradient(var(--color-button-background), var(--color-button-background));\n  background-repeat: no-repeat;\n  background-position: bottom;\n  background-size: 100% 1px;\n\n  &.TableTd_compact {\n    --table-line-inset: 12px;\n  }\n\n  &.TableTd_compactOneColumn {\n    --table-line-inset: 8px;\n  }\n\n  &:first-child {\n    background-position: right bottom;\n    background-size: calc(100% - var(--table-line-inset)) 1px;\n  }\n\n  &:last-child {\n    background-position: left bottom;\n    background-size: calc(100% - var(--table-line-inset)) 1px;\n  }\n\n  &:only-child {\n    background-position: center bottom;\n    background-size: calc(100% - 2 * var(--table-line-inset)) 1px;\n  }\n}\n\n// One device pixel on high-density screens: the lower half of the 1px tile. Chrome doesn't draw a 0.5px tile.\n@media (min-resolution: 2dppx) {\n  .TableTr:not(:last-child) > td {\n    background-image: linear-gradient(to top, var(--color-button-background) 50%, transparent 50%);\n  }\n}\n\n.TableTr_hoverable:hover {\n  background: var(--color-fill-surfaceHover);\n}\n",
+        note: "The hairline between rows, inset to the cell padding at the table edges, and one hover for every row. Chrome draws nothing for a 0.5px tile, so it is a 1px tile, its lower half on high-density screens.",
+      },
+      {
+        file: "src/components/PositionItem/PositionItem.scss",
+        line: "66-78",
+        find: "tbody > tr:nth-child(odd) > .PositionItem-actions-cell {\n  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),\n    var(--color-fill-surfaceBase);\n}\n\n.TableTr_hoverable:nth-child(even):hover > .PositionItem-actions-cell {\n  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),\n    linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-fill-surfaceBase);\n}\n\n.TableTr_hoverable:nth-child(odd):hover > .PositionItem-actions-cell {\n  background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)),\n    var(--color-fill-surfaceBase);",
+        replace:
+          "// The sticky cell covers the row hover, so it adds the hover tint itself (over its line, which stays visible)\n.TableTr_hoverable:hover > .PositionItem-actions-cell {\n  box-shadow: inset 0 0 0 100vmax var(--color-fill-surfaceHover);",
+        note: "The sticky actions cell of the positions table: no stripe; the hover tint as an inset shadow over its line.",
+      },
+    ],
+    verify: [
+      "git grep -n 'odd:bg' src/components/Table prints nothing",
+      "yarn tscheck && yarn lint:ci && yarn test:ci",
+      "On /leaderboard and /pools, in both themes: no stripes, one-line rows 52px, a hairline between rows that stops 20px from the table edges, and hovering a row tints it.",
+    ],
+    visible:
+      "Tables lose their stripes: rows grow from 44px to 52px with a thin line between them, and the Pools rows lose their rounded card backgrounds.",
   },
 ];
