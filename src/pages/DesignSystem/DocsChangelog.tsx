@@ -1,13 +1,24 @@
 import { ReactNode } from "react";
 
-import { DocsCopyButton, DocsSection } from "./DocsLayout";
+import { DocsCode, DocsCopyButton, DocsSection } from "./DocsLayout";
 
 // Changelog tabs as exact edits for the product repo: each step gives files, the text to find and the text to put
-// instead. Line numbers are from one release commit, so the text is what to match.
+// instead. Line numbers are from one release commit, so the text is what to match. Mass renames come as a script
+// that runs after the step's edits.
 
 export const CHANGELOG_RELEASE = "0f9e06e991";
 
 export type ChangelogEdit = { file: string; line: string; find: string; replace: string; note?: string };
+
+export type ChangelogScript = {
+  title: string;
+  // Saved in the repo root, run, then deleted
+  file: string;
+  run: string;
+  code: string;
+  // What the run prints when it works
+  expect: string;
+};
 
 export type ChangelogStep = {
   id: string;
@@ -15,6 +26,7 @@ export type ChangelogStep = {
   goal: string;
   dependsOn: string[];
   edits: ChangelogEdit[];
+  scripts?: ChangelogScript[];
   verify: string[];
   visible: string;
 };
@@ -41,12 +53,23 @@ export function changelogMarkdown(title: string, notes: string[], steps: Changel
     if (step.dependsOn.length > 0) {
       out.push(`Depends on: ${step.dependsOn.join("; ")}`);
     }
-    out.push(`Users see: ${step.visible}`, "", "Edits:");
+    out.push(`Users see: ${step.visible}`);
+    if (step.edits.length > 0) {
+      out.push("", "Edits:");
+    }
     step.edits.forEach((edit, index) => {
       const where = edit.line ? `${edit.file}:${edit.line}` : edit.file;
       out.push("", `${index + 1}. ${where}${edit.note ? ` (${edit.note})` : ""}`, "Find:", fence(edit.find));
       out.push(edit.replace === "DELETE" ? "Delete it." : ["Replace with:", fence(edit.replace)].join("\n"));
     });
+    for (const script of step.scripts ?? []) {
+      out.push(
+        "",
+        `${step.edits.length > 0 ? "Then run the script" : "Run the script"}: ${script.title}`,
+        `Save it as ${script.file} in the repo root, run \`${script.run}\`, then delete the file. It prints: ${script.expect}`,
+        fence(script.code)
+      );
+    }
     if (step.verify.length > 0) {
       out.push("", "Verify:", ...step.verify.map((item) => `- ${item}`));
     }
@@ -68,36 +91,50 @@ function ChangelogStepBody({ step }: { step: ChangelogStep }) {
         <dt className="text-typography-secondary">Users see</dt>
         <dd>{step.visible}</dd>
       </dl>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] border-collapse text-left">
-          <thead>
-            <tr className={LABEL_CLASSNAME}>
-              <th className="w-[240px] pb-8 pr-16 font-normal">File</th>
-              <th className="pb-8 pr-16 font-normal">Find</th>
-              <th className="pb-8 font-normal">Replace with</th>
-            </tr>
-          </thead>
-          <tbody>
-            {step.edits.map((edit, index) => (
-              <tr key={index} className="border-t-1/2 border-slate-600 align-top">
-                <td className="py-8 pr-16">
-                  <span className="text-body-small break-all font-mono">
-                    {edit.file}
-                    {edit.line && <span className="text-typography-secondary">:{edit.line}</span>}
-                  </span>
-                  {edit.note && <p className="text-body-small mt-4 text-typography-secondary">{edit.note}</p>}
-                </td>
-                <td className="py-8 pr-16">
-                  <pre className={CODE_CLASSNAME}>{edit.find}</pre>
-                </td>
-                <td className="py-8">
-                  <pre className={CODE_CLASSNAME}>{edit.replace === "DELETE" ? "Delete it." : edit.replace}</pre>
-                </td>
+      {step.edits.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[720px] border-collapse text-left">
+            <thead>
+              <tr className={LABEL_CLASSNAME}>
+                <th className="w-[240px] pb-8 pr-16 font-normal">File</th>
+                <th className="pb-8 pr-16 font-normal">Find</th>
+                <th className="pb-8 font-normal">Replace with</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {step.edits.map((edit, index) => (
+                <tr key={index} className="border-t-1/2 border-slate-600 align-top">
+                  <td className="py-8 pr-16">
+                    <span className="text-body-small break-all font-mono">
+                      {edit.file}
+                      {edit.line && <span className="text-typography-secondary">:{edit.line}</span>}
+                    </span>
+                    {edit.note && <p className="text-body-small mt-4 text-typography-secondary">{edit.note}</p>}
+                  </td>
+                  <td className="py-8 pr-16">
+                    <pre className={CODE_CLASSNAME}>{edit.find}</pre>
+                  </td>
+                  <td className="py-8">
+                    <pre className={CODE_CLASSNAME}>{edit.replace === "DELETE" ? "Delete it." : edit.replace}</pre>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {step.scripts?.map((script) => (
+        <div key={script.file} className="flex flex-col gap-6">
+          <span className={LABEL_CLASSNAME}>{step.edits.length > 0 ? "Then run the script" : "Run the script"}</span>
+          <p className="text-body-medium">
+            {script.title}. Save it as <code className="font-mono">{script.file}</code> in the repo root, run{" "}
+            <code className="font-mono">{script.run}</code>, then delete the file. It prints: {script.expect}
+          </p>
+          <div className="overflow-hidden rounded-8 border border-slate-700">
+            <DocsCode code={script.code} collapsedHeight={200} />
+          </div>
+        </div>
+      ))}
       {step.verify.length > 0 && (
         <div className="flex flex-col gap-6">
           <span className={LABEL_CLASSNAME}>Verify</span>
