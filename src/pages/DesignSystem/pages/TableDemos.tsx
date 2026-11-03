@@ -30,10 +30,6 @@ import sparkleIcon from "img/sparkle.svg";
 // Example tables for the Table page (/ui/table), built from the shared table parts.
 // All numbers, names and addresses are made up.
 
-// Preview of Changelog step 1 (TableTd and the 12px caption), only on this page: 14px text, 12px above and below
-// (rows 44px with one line, 60px with two), header 36px.
-const PLANNED_LOOK_CLASSNAME = "[&_td]:!text-[14px] [&_td]:!leading-[20px] [&_th]:!text-[12px] [&_th]:!leading-[16px]";
-
 // Space above and below the cell content: 12 (rows 44px) or 16 (rows 52px, Experiment tab)
 export type CellPadding = 12 | 16;
 
@@ -93,7 +89,7 @@ export type RowStyle = {
 };
 
 // The line is a 0.5px background at the bottom of the cells, so rows stay 44px (a border would add 0.5px).
-// slate-700 keeps it quiet; in the first and last cell it stops 20px short of the table edge.
+// button-background (the old slate-700) keeps it quiet; in the first and last cell it stops 20px short of the table edge.
 const ROW_LINE_CLASSNAME = cx(
   "[&:not(:last-child)>td]:bg-[linear-gradient(var(--color-button-background),var(--color-button-background))]",
   "[&:not(:last-child)>td]:bg-[length:100%_0.5px] [&:not(:last-child)>td]:bg-bottom [&:not(:last-child)>td]:bg-no-repeat",
@@ -114,7 +110,7 @@ function DemoTable({
   minWidth: string;
 } & RowStyle) {
   return (
-    <div className={cx("overflow-x-auto", PLANNED_LOOK_CLASSNAME, CELL_PADDING_CLASSNAMES[cellPadding])}>
+    <div className={cx("overflow-x-auto", CELL_PADDING_CLASSNAMES[cellPadding])}>
       <Table className={minWidth}>
         <thead>
           <TableTheadTr>

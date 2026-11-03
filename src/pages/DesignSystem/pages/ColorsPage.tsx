@@ -33,7 +33,7 @@ const SEMANTIC_COLORS: SemanticColorGroup[] = [
       { code: "fill-surfaceElevated50", dark: "#1E203380", light: "#EDEDF280" },
       { code: "fill-surfaceHover", dark: "#A0A3C41A", light: "#A0A3C41A" },
       { code: "fill-accent", dark: "#363A59", light: "#D4D4E2" },
-      { code: "fill-skeleton", dark: "var(--color-fill-skeleton)", light: "#696D961F" },
+      { code: "fill-skeleton", dark: "#B4BBFF1A", light: "#696D961F" },
     ],
   },
   {
@@ -215,8 +215,7 @@ export function ColorsExamples() {
       titleAction={<ThemeTabs selected={theme} setSelected={setThemeMode} />}
     >
       <p className="text-body-large px-24 pt-24 text-textIcon-secondary max-md:px-16 max-md:pt-16">
-        The semantic color tokens. Most of these names are not in src/config/colors.ts yet: the Changelog tab lists the
-        steps.
+        The semantic color tokens in src/config/colors.ts.
       </p>
       {SEMANTIC_COLORS.map((group, index) => (
         // data-docs-section also lists each group in the "On this page" menu

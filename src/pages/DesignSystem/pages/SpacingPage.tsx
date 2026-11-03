@@ -11,7 +11,7 @@ import { SPACING_CHANGELOG_NOTES, SPACING_CHANGELOG_STEPS } from "./spacingChang
 
 // Spacing page of the design system site (/ui/spacing).
 // Examples: the spacing scale.
-// Guidelines: how to use spacing in code, and what the app uses each step for today.
+// Guidelines: how to use spacing in code, and what the app uses each step for.
 // Changelog: exact edits that move the values off the scale onto it.
 
 const SECTIONS = {
@@ -24,26 +24,26 @@ const SECTIONS = {
 type SpacingStep = { px: number; uses: number; usedFor: string };
 
 // 0–24 in 4px steps inside components, then layout steps for pages and sections. uses counts the spacing classes
-// (padding, margin, gap, space, inset) in src and landing.
+// (padding, margin, gap, space, inset, top, right, bottom, left) in src and landing.
 const COMPONENT_SCALE: SpacingStep[] = [
-  { px: 0, uses: 194, usedFor: "Resets: p-0, m-0, inset-0" },
-  { px: 4, uses: 413, usedFor: "An icon next to text, small buttons (gap-4)" },
-  { px: 8, uses: 668, usedFor: "The default gap between items in a row or list; button and tooltip padding (py-8)" },
-  { px: 12, uses: 370, usedFor: "Button side padding (px-12), small cards and fields (p-12), stacked blocks (gap-12)" },
-  { px: 16, uses: 283, usedFor: "Card and modal padding on phones (p-adaptive), sections inside a card (gap-16)" },
-  { px: 20, uses: 200, usedFor: "Card and modal padding from 768px up (p-adaptive, px-20)" },
-  { px: 24, uses: 170, usedFor: "Space under headings on long text pages (mb-24); primary action side padding" },
+  { px: 0, uses: 210, usedFor: "Resets: p-0, m-0, inset-0" },
+  { px: 4, uses: 785, usedFor: "An icon next to text, small buttons (gap-4)" },
+  { px: 8, uses: 764, usedFor: "The default gap between items in a row or list; button and tooltip padding (py-8)" },
+  { px: 12, uses: 460, usedFor: "Button side padding (px-12), small cards and fields (p-12), stacked blocks (gap-12)" },
+  { px: 16, uses: 297, usedFor: "Card and modal padding on phones (p-adaptive), sections inside a card (gap-16)" },
+  { px: 20, uses: 209, usedFor: "Card and modal padding from 768px up (p-adaptive, px-20)" },
+  { px: 24, uses: 217, usedFor: "Space under headings on long text pages (mb-24); primary action side padding" },
 ];
 
 const LAYOUT_SCALE: SpacingStep[] = [
-  { px: 32, uses: 18, usedFor: "Page-level spacing" },
-  { px: 40, uses: 32, usedFor: "Landing section padding (px-40)" },
-  { px: 48, uses: 1, usedFor: "Large layout spacing" },
-  { px: 56, uses: 3, usedFor: "Large layout spacing" },
-  { px: 64, uses: 1, usedFor: "Large layout spacing" },
-  { px: 80, uses: 10, usedFor: "Landing section padding (py-80)" },
-  { px: 96, uses: 3, usedFor: "Large layout spacing" },
-  { px: 120, uses: 18, usedFor: "Landing page sections (today py-[120px])" },
+  { px: 32, uses: 38, usedFor: "Page-level spacing" },
+  { px: 40, uses: 42, usedFor: "Landing section padding (px-40)" },
+  { px: 48, uses: 2, usedFor: "Large layout spacing" },
+  { px: 56, uses: 21, usedFor: "Large layout spacing" },
+  { px: 64, uses: 7, usedFor: "Large layout spacing" },
+  { px: 80, uses: 12, usedFor: "Landing section padding (py-80)" },
+  { px: 96, uses: 8, usedFor: "Large layout spacing" },
+  { px: 120, uses: 18, usedFor: "Landing page sections (sm:py-120)" },
 ];
 
 const SCALE_GROUPS = [
@@ -121,8 +121,8 @@ const RULES: DocsRule[] = [
     "0–24 in 4px steps inside components, plus 32 to 120 for page and section layout: 15 values. The number is the size in px, and the Tailwind class uses the same number (space/8 = p-8, gap-8, m-8). Uses under Steps counts the spacing classes in the app and the landing page today.",
   ],
   [
-    "Off the scale today",
-    "About 775 classes in 255 files use values off the scale: mostly the 2px steps (2, 6, 10, 14), 28, 36 and 1px nudges. The Changelog moves them onto the scale: 1 goes to 0, 2 and 3 go to 4, any other value rounds down to the step below, a padding pair keeps its total where it can (11 above and 9 below become 12 and 8), and a control with a fixed height keeps it.",
+    "Moved onto the scale",
+    "About 775 classes in 255 files used values off the scale: mostly the 2px steps (2, 6, 10, 14), 28, 36 and 1px nudges. The Changelog moved them onto the scale: 1 went to 0, 2 and 3 to 4, any other value rounded down to the step below, a padding pair kept its total where it could (11 above and 9 below became 12 and 8), and a control with a fixed height kept it.",
   ],
   [
     "Use the scale",

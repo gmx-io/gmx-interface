@@ -325,7 +325,7 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
   backdrop-filter: blur(12px);
   // DS TextIcon/Primary
   color: var(--color-textIcon-primary);
-  // Light theme: a soft shadow tinted with slate-950; the dark theme keeps today's shadow
+  // Light theme: a soft shadow tinted with #090A14; the dark theme keeps the older shadow
   --tooltip-shadow: #{$tooltip-shadow-light};
   line-height: var(--line-height-body-medium);
   letter-spacing: normal;
@@ -478,7 +478,7 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
 }
 
 .dark .Tooltip-popup--standard {
-  // Dark theme: DS Fill/SurfaceElevated + Fill/SurfaceHover (slate-100 at 10%), flattened, at 70%
+  // Dark theme: DS Fill/SurfaceElevated + Fill/SurfaceHover (textIcon-secondary at 10%), flattened, at 70%
   --tooltip-solid: color-mix(in srgb, var(--color-fill-surfaceElevated), var(--color-textIcon-secondary) 10%);
   --tooltip-opacity: 70%;
   --tooltip-shadow: #{$tooltip-shadow-dark};

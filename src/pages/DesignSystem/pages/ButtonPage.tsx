@@ -31,27 +31,6 @@ import {
 
 const DOCS_URL = "https://docs.gmx.io/docs/trading/fees/";
 
-// Preview of Typography step 5: text-body-small in Button.tsx wins over a plain class, so the 12px label is forced
-const LABEL_PREVIEW_CLASSNAME = "!text-body-small";
-
-// Preview of Colors step 4: the gray of EmbeddedActionButton (gray-400 today) becomes textIcon-secondary
-const EMBEDDED_DEFAULT_PREVIEW_CLASSNAME =
-  "!text-textIcon-secondary !decoration-textIcon-secondary hover:!text-textIcon-primary hover:!decoration-textIcon-primary focus-visible:!text-textIcon-primary focus-visible:!decoration-textIcon-primary";
-
-// The blue tone of EmbeddedActionButton (tone="link"), drawn with its classes: this copy of the component predates it
-const LINK_TONE_PREVIEW_CLASSNAME =
-  "!text-blue-strong !decoration-blue-strong hover:!text-blue-secondary hover:!decoration-blue-secondary";
-
-// tone="destructive" comes with Changelog step 12, so it's drawn with its colors by today's names: red-900 is
-// red-background and red-500 is red-strong after the Colors renames
-const DESTRUCTIVE_PREVIEW_CLASSNAME = {
-  secondary: "!bg-red-background !text-red-strong hover:!bg-red-strong/25 active:!bg-red-background",
-  ghost: "!text-red-strong hover:!bg-red-background active:!bg-red-strong/25",
-};
-
-// Preview of Changelog step 8: a logo as close to the label as an icon
-const IMAGE_PREVIEW_CLASSNAME = "!mr-0";
-
 // The two selected looks, as the product sets them today
 const SELECTED_GRAY_CLASSNAME = "!bg-button-secondary !text-textIcon-primary";
 const SELECTED_BLUE_CLASSNAME = "!bg-button-primary !text-textIcon-onButton";
@@ -78,7 +57,7 @@ const SIZE_EXAMPLES = [
   {
     label: "Small",
     button: (
-      <Button variant="primary" size="small" className={LABEL_PREVIEW_CLASSNAME}>
+      <Button variant="primary" size="small">
         Trade
       </Button>
     ),
@@ -86,7 +65,7 @@ const SIZE_EXAMPLES = [
   {
     label: "Medium",
     button: (
-      <Button variant="primary" size="medium" className={LABEL_PREVIEW_CLASSNAME}>
+      <Button variant="primary" size="medium">
         Trade
       </Button>
     ),
@@ -124,8 +103,7 @@ const GHOST_CODE = `<Button variant="ghost" onClick={edit}>
   Edit
 </Button>`;
 
-const DESTRUCTIVE_CODE = `// After Changelog step 12
-<Button variant="secondary" tone="destructive" onClick={cancelOrder}>
+const DESTRUCTIVE_CODE = `<Button variant="secondary" tone="destructive" onClick={cancelOrder}>
   Cancel
   <CloseIcon className="size-16" />
 </Button>
@@ -238,38 +216,33 @@ export function ButtonExamples() {
 
       <DocsExample section={EXAMPLES.primary}>
         <DocsPreview>
-          <Button variant="primary" className={LABEL_PREVIEW_CLASSNAME}>
-            Deposit
-          </Button>
+          <Button variant="primary">Deposit</Button>
         </DocsPreview>
       </DocsExample>
 
       <DocsExample section={EXAMPLES.secondary}>
         <DocsPreview>
-          <Button variant="secondary" className={LABEL_PREVIEW_CLASSNAME}>
-            Share
-          </Button>
+          <Button variant="secondary">Share</Button>
         </DocsPreview>
       </DocsExample>
 
       <DocsExample section={EXAMPLES.ghost}>
         <DocsPreview>
-          <Button variant="ghost" className={LABEL_PREVIEW_CLASSNAME}>
-            Edit
-          </Button>
+          <Button variant="ghost">Edit</Button>
         </DocsPreview>
       </DocsExample>
 
       <DocsExample section={EXAMPLES.destructive}>
         <DocsPreview>
-          <Button variant="secondary" className={cx(LABEL_PREVIEW_CLASSNAME, DESTRUCTIVE_PREVIEW_CLASSNAME.secondary)}>
+          <Button variant="secondary" tone="destructive">
             Cancel
             <CloseIcon className="size-16" />
           </Button>
           <Button
             variant="ghost"
+            tone="destructive"
             size="controlled"
-            className={cx("size-32 !p-0", DESTRUCTIVE_PREVIEW_CLASSNAME.ghost)}
+            className="size-32 !p-0"
             aria-label="Cancel order"
           >
             <CloseIcon className="size-16" />
@@ -295,11 +268,11 @@ export function ButtonExamples() {
 
       <DocsExample section={EXAMPLES.withIcon}>
         <DocsPreview>
-          <Button variant="secondary" className={LABEL_PREVIEW_CLASSNAME}>
+          <Button variant="secondary">
             <PlusCircleIcon className="size-16" />
             Deposit
           </Button>
-          <Button variant="secondary" className={LABEL_PREVIEW_CLASSNAME}>
+          <Button variant="secondary">
             Copy
             <CopyStrokeIcon className="size-16" />
           </Button>
@@ -308,12 +281,7 @@ export function ButtonExamples() {
 
       <DocsExample section={EXAMPLES.image}>
         <DocsPreview>
-          <Button
-            variant="secondary"
-            className={LABEL_PREVIEW_CLASSNAME}
-            imgSrc={gmxIcon}
-            imgClassName={cx("size-16", IMAGE_PREVIEW_CLASSNAME)}
-          >
+          <Button variant="secondary" imgSrc={gmxIcon} imgClassName="size-16">
             GMX
           </Button>
         </DocsPreview>
@@ -322,11 +290,7 @@ export function ButtonExamples() {
       <DocsExample section={EXAMPLES.selectedGhost}>
         <DocsPreview previewClassName="flex-wrap items-center justify-center gap-4">
           {["1H", "1D", "1W"].map((label, index) => (
-            <Button
-              key={label}
-              variant="ghost"
-              className={cx(LABEL_PREVIEW_CLASSNAME, { [SELECTED_GRAY_CLASSNAME]: index === 1 })}
-            >
+            <Button key={label} variant="ghost" className={cx({ [SELECTED_GRAY_CLASSNAME]: index === 1 })}>
               {label}
             </Button>
           ))}
@@ -340,7 +304,7 @@ export function ButtonExamples() {
               key={pageNumber}
               variant="secondary"
               size="controlled"
-              className={cx(LABEL_PREVIEW_CLASSNAME, "size-32 !p-0", {
+              className={cx("size-32 !p-0", {
                 [SELECTED_BLUE_CLASSNAME]: pageNumber === 2,
               })}
             >
@@ -371,16 +335,10 @@ export function ButtonExamples() {
       <DocsExample section={EXAMPLES.embedded}>
         <DocsPreview previewClassName="flex-col items-center justify-center gap-16">
           <p className="text-body-small text-textIcon-secondary">
-            Leverage is above the market limit.{" "}
-            <EmbeddedActionButton className={cx(LABEL_PREVIEW_CLASSNAME, EMBEDDED_DEFAULT_PREVIEW_CLASSNAME)}>
-              Set max leverage
-            </EmbeddedActionButton>
+            Leverage is above the market limit. <EmbeddedActionButton>Set max leverage</EmbeddedActionButton>
           </p>
           <p className="text-body-small text-textIcon-secondary">
-            Not enough balance.{" "}
-            <EmbeddedActionButton className={cx(LABEL_PREVIEW_CLASSNAME, LINK_TONE_PREVIEW_CLASSNAME)}>
-              Use max
-            </EmbeddedActionButton>
+            Not enough balance. <EmbeddedActionButton tone="link">Use max</EmbeddedActionButton>
           </p>
         </DocsPreview>
       </DocsExample>
@@ -402,33 +360,32 @@ const BUTTON_PROPS: DocsProp[] = [
     type: '"primary" | "primary-action" | "secondary" | "ghost"',
     defaultValue: "required",
     description:
-      "primary: the main action, one per area. primary-action: the large main button at the bottom of a form or modal, 56px tall: 16px text, 24px side padding, 18px top and bottom padding (16px on the 24px line after Changelog step 7); the w-full class makes it as wide as its box. secondary: other actions. ghost: no fill until hover. For an underlined action inside text, use EmbeddedActionButton.",
+      "primary: the main action, one per area. primary-action: the large main button at the bottom of a form or modal, 56px tall: 16px text, 24px side padding, 16px top and bottom padding on a 24px line; the w-full class makes it as wide as its box. secondary: other actions. ghost: no fill until hover. For an underlined action inside text, use EmbeddedActionButton.",
   },
   {
     name: "size",
     type: '"small" | "medium" | "controlled"',
     defaultValue: '"small"',
     description:
-      "Large (56px) isn't a size: it's variant=\"primary-action\". small: at least 32px high, 4px gap. medium: at least 40px high, 6px gap (8px after Changelog step 9). controlled: no minimum height or gap (the padding stays); set them with className. primary-action ignores it. A button with only an icon is controlled with !p-0 and size-24 inside fields and filter rows, size-32 by default or size-40 in the header, plus an aria-label (Changelog steps 11 and 4).",
+      "Large (56px) isn't a size: it's variant=\"primary-action\". small: at least 32px high, 4px gap. medium: at least 40px high, 8px gap. controlled: no minimum height or gap (the padding stays); set them with className. primary-action ignores it. A button with only an icon is controlled with !p-0 and size-24 inside fields and filter rows, size-32 by default or size-40 in the header, plus an aria-label.",
   },
   {
     name: "tone",
     type: '"default" | "destructive"',
     defaultValue: '"default"',
     description:
-      "destructive: a red label, for an action that cancels or deletes. Secondary gets a red fill; ghost shows it on hover. For secondary and ghost only. Comes with Changelog step 12.",
+      "destructive: a red label, for an action that cancels or deletes. Secondary gets a red fill; ghost shows it on hover. For secondary and ghost only.",
   },
   {
     name: "children",
     type: "ReactNode",
     defaultValue: "required",
-    description:
-      "The label, with icons before or after it. 12px after Typography step 5 (13px in the code today); the previews on this page show 12px.",
+    description: "The label, 12px, with icons before or after it.",
   },
   {
     name: "onClick",
     type: "(event) => void",
-    description: "Not called while disabled. Exception: a disabled http(s) link still calls it (Changelog step 5).",
+    description: "Not called while disabled.",
   },
   {
     name: "disabled",
@@ -459,7 +416,7 @@ const BUTTON_PROPS: DocsProp[] = [
     name: "imgSrc, imgAlt, imgClassName",
     type: "string",
     description:
-      "An image before the label. Secondary and ghost add 11.5px after it, on top of the gap, until Changelog step 8 (then it sits like an icon). imgAlt defaults to an empty string.",
+      "An image before the label. It sits like an icon: only the gap is between it and the label. imgAlt defaults to an empty string.",
   },
   {
     name: "className",
@@ -476,8 +433,7 @@ const BUTTON_PROPS: DocsProp[] = [
   {
     name: "...rest",
     type: "button attributes",
-    description:
-      "Any other HTML attribute, for example aria-label. Links inside the app (a to prop without http) drop them today (Changelog step 4).",
+    description: "Any other HTML attribute, for example aria-label. Links get them too.",
   },
 ];
 
@@ -486,14 +442,14 @@ const EMBEDDED_PROPS: DocsProp[] = [
     name: "children",
     type: "ReactNode",
     description:
-      "The label of an underlined action inside a message, tooltip, alert or toast, for example Set max leverage. Gray (gray-400) today, textIcon-secondary after Colors step 4; primary text color on hover and keyboard focus.",
+      "The label of an underlined action inside a message, tooltip, alert or toast, for example Set max leverage. textIcon-secondary; textIcon-primary on hover and keyboard focus.",
   },
   {
     name: "tone",
     type: '"default" | "link"',
     defaultValue: '"default"',
     description:
-      "link: blue text and underline (blue-300), lighter blue on hover (blue-100), for an action that reads as a link, like the USDG conversion messages of the trade box. After the Colors steps both blues are #2D42FC in light theme, so there the hover keeps the same color.",
+      "link: blue text and underline (blue-strong), lighter blue on hover (blue-secondary), for an action that reads as a link, like the USDG conversion messages of the trade box. In light theme both blues are #2D42FC, so there the hover keeps the same color.",
   },
   { name: "onClick", type: "(event) => void", description: "The action." },
   { name: "className", type: "string", description: "Extra classes." },
@@ -512,7 +468,8 @@ const LINK_PROPS: DocsProp[] = [
     name: "children",
     type: "ReactNode",
     defaultValue: "required",
-    description: "The link text. It takes the size and color of the text around it and turns blue (blue-300) on hover.",
+    description:
+      "The link text. It takes the size and color of the text around it and turns blue (blue-strong) on hover.",
   },
   {
     name: "variant",

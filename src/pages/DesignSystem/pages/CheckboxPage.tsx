@@ -208,7 +208,7 @@ const CHECKBOX_PROPS: DocsProp[] = [
     name: "children",
     type: "ReactNode",
     description:
-      "The label, 8px to the right of the box. The checkbox doesn't style it, so give the label a text style, for example text-body-medium text-typography-secondary.",
+      "The label, 8px to the right of the box. The checkbox doesn't style it, so give the label a text style, for example text-body-medium text-textIcon-secondary.",
   },
   {
     name: "className",

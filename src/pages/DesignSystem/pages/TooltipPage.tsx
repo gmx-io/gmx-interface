@@ -217,7 +217,7 @@ const PLACEMENTS: [string, TooltipPosition][] = [
   ["Above · end", "top-end"],
 ];
 
-// "Before" versions, built the way the app builds them today
+// "Before" versions, built the way the app built them before the standard
 const BEFORE_PRICE_IMPACT = (
   <>
     No price impact on increases — orders execute at mark price. <ExternalLink href={DOCS_URL}>Read more</ExternalLink>.
@@ -323,8 +323,8 @@ const SPECS: DocsRule[] = [
     "Text",
     "Main text is TextIcon/Primary in the light theme and gray-100 in the dark theme, slightly softer than white. Muted text for row labels and footnotes.",
   ],
-  ["Type", "14/18 for text, 14/18 medium for titles, 12/16 for footnotes and table headers."],
-  ["Shadow", "0 4 14: 25% black in the dark theme, 8% slate-950 in the light theme."],
+  ["Type", "14/20 for text, 14/20 medium for titles, 12/16 for footnotes and table headers."],
+  ["Shadow", "0 4 14: 25% black in the dark theme, 8% #090A14 in the light theme."],
   ["Pointer", "14 × 7px, the panel color."],
 ];
 
