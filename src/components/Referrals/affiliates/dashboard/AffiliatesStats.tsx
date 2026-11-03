@@ -401,7 +401,7 @@ function ReferralCodesMobileTable({
   }, []);
 
   return (
-    <div role="table" className="grid grid-cols-[1fr_1fr_auto] gap-y-4 px-4">
+    <div role="table" className="grid grid-cols-[1fr_1fr_auto] px-4">
       <GridRow>
         <GridHeaderCell>
           <Trans>CODE</Trans>

@@ -145,7 +145,7 @@ $tabs-threshold: 990px;
   margin-left: 0.5rem;
   position: absolute;
   left: 31px;
-  top: 10px;
+  top: calc(50% - 1.2rem);
   z-index: 111;
   height: 2.4rem;
 }

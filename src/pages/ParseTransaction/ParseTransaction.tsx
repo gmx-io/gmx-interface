@@ -743,10 +743,12 @@ const ParseTransactionEvents = ({
             allEvents={events}
           />
         ))}
+      </tbody>
+      <tfoot>
         <TableTr>
           <TableTd padding="compact" className="bg-fill-surfaceBase" colSpan={3}></TableTd>
         </TableTr>
-      </tbody>
+      </tfoot>
     </Table>
   ));
 };

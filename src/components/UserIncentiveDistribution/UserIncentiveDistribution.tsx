@@ -252,7 +252,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         </TableTdActionable>
       </TableTrActionable>
       {isExpanded && (
-        <tr>
+        <tr className="TableTr">
           <td colSpan={isMobile ? 4 : 1} className="px-4 py-8 pl-20">
             <div className="flex flex-col gap-4">
               <div

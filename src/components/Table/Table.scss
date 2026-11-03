@@ -1,6 +1,7 @@
 // Rows have no stripes: a hairline between them, drawn as a background so rows keep their height. At the table
 // edges the line stops at the cell padding: 20px, 12px in compact cells, 8px in single-column cells.
-.TableTr:not(:last-child) > td {
+.TableTr:not(:last-child) > td,
+.TableTr:not(:last-child) > [role="cell"] {
   --table-line-inset: 20px;
   background-image: linear-gradient(var(--color-button-background), var(--color-button-background));
   background-repeat: no-repeat;
@@ -13,6 +14,11 @@
 
   &.TableTd_compactOneColumn {
     --table-line-inset: 8px;
+  }
+
+  // Div grid cells (GridCell, Referrals tables) are padded with the adaptive padding: 16px, 20px from 768px
+  &[role="cell"] {
+    --table-line-inset: var(--padding-adaptive);
   }
 
   &:first-child {
@@ -33,7 +39,8 @@
 
 // One device pixel on high-density screens: the lower half of the 1px tile. Chrome doesn't draw a 0.5px tile.
 @media (min-resolution: 2dppx) {
-  .TableTr:not(:last-child) > td {
+  .TableTr:not(:last-child) > td,
+  .TableTr:not(:last-child) > [role="cell"] {
     background-image: linear-gradient(to top, var(--color-button-background) 50%, transparent 50%);
   }
 }

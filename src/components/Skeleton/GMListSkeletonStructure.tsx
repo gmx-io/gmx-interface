@@ -6,8 +6,8 @@ export default function GMListSkeletonStructure({ withFavorite = true }: { withF
   return (
     <TableTr>
       <TableTd>
-        <div className="flex items-center">
-          {withFavorite && <Skeleton width={32} height={32} borderRadius={4} className="-ml-8 mr-4" />}
+        <div className="flex items-center gap-8">
+          {withFavorite && <Skeleton width={32} height={32} borderRadius={4} />}
           <Skeleton className="mr-12 !block" height={40} width={40} circle inline />
           <div>
             <Skeleton width={100} height={12} />

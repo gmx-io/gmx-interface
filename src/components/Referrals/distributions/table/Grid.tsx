@@ -8,7 +8,7 @@ export function GridRow({ children, className, onClick }: GridRowProps) {
   return (
     <div
       role="row"
-      className={cx("group/row col-span-full grid grid-cols-subgrid", className, {
+      className={cx("TableTr group/row col-span-full grid grid-cols-subgrid", className, {
         "cursor-pointer": !!onClick,
       })}
       onClick={onClick}
@@ -24,7 +24,7 @@ export function GridCell({ children, className }: GridCellProps) {
       role="cell"
       className={cx(
         "text-body-small last-of-type:[&:not(:first-of-type)]:text-right",
-        "bg-fill-surfaceElevated50 px-4 py-8 first-of-type:rounded-l-8 first-of-type:pl-adaptive last-of-type:rounded-r-8 last-of-type:pr-adaptive",
+        "px-4 py-16 first-of-type:pl-adaptive last-of-type:pr-adaptive",
         "group-hover/row:bg-fill-surfaceHover",
         className
       )}
