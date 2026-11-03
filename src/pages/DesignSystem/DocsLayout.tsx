@@ -59,7 +59,7 @@ export function DocsSection({
     >
       <div className="flex min-h-56 items-center gap-10 border-b border-fill-surfaceElevated px-24 py-12 max-md:px-16">
         {Icon && (
-          <span className="flex size-28 shrink-0 items-center justify-center rounded-6 bg-button-primary/10 text-blue-strong dark:bg-blue-strong/10 dark:text-blue-strong">
+          <span className="flex size-28 shrink-0 items-center justify-center rounded-6 bg-button-primary/10 text-blue-strong dark:bg-blue-strong/10">
             <Icon className="size-16" />
           </span>
         )}

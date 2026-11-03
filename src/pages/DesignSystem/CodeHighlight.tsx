@@ -8,7 +8,7 @@ const TOKEN =
 const GROUP_CLASSNAMES = [
   "text-textIcon-secondary",
   "text-green-strong",
-  "text-blue-strong dark:text-blue-strong",
+  "text-blue-strong",
   "text-yellow-strong",
   "text-red-strong",
   "text-yellow-strong",

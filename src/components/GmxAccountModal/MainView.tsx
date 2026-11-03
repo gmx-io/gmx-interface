@@ -96,7 +96,7 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
 }
 
 const WALLET_ICON_BUTTON_BLUE =
-  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-strong gmx-hover:bg-button-primary/20 dark:text-blue-strong dark:gmx-hover:bg-blue-backgroundOpacity";
+  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-strong gmx-hover:bg-button-primary/20 dark:gmx-hover:bg-blue-backgroundOpacity";
 const WALLET_ICON_BUTTON_GRAY =
   "flex size-28 -m-4 items-center justify-center rounded-8 text-textIcon-secondary gmx-hover:bg-fill-surfaceHover gmx-hover:text-textIcon-primary";
 

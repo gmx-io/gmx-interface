@@ -88,7 +88,7 @@ function SectionNavItem({
         "text-body-medium -ml-1 border-l-2 py-6 pl-14 pr-8 text-left transition-colors duration-150",
         DOCS_FOCUS_CLASSNAME,
         {
-          "border-button-primary text-blue-strong dark:border-blue-strong dark:text-blue-strong": isActive,
+          "border-button-primary text-blue-strong dark:border-blue-strong": isActive,
           "border-[transparent] text-textIcon-secondary hover:text-textIcon-primary": !isActive,
         }
       )}

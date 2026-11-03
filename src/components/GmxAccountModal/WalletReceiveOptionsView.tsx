@@ -61,7 +61,7 @@ function FundingOptionRow({
       disabled={disabled}
     >
       <div className="flex items-center gap-12">
-        <div className="flex size-36 shrink-0 items-center justify-center rounded-8 bg-fill-surfaceElevated50 text-blue-strong dark:text-blue-strong">
+        <div className="flex size-36 shrink-0 items-center justify-center rounded-8 bg-fill-surfaceElevated50 text-blue-strong">
           {icon}
         </div>
         <div className="flex flex-col gap-4">

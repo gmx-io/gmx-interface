@@ -55,7 +55,7 @@ const ANATOMY_LOOK: TooltipLook = {
 };
 
 const MARKER_CLASSNAME = `text-body-small flex size-20 shrink-0 items-center justify-center rounded-full border
-  border-button-primary font-medium text-blue-strong dark:border-blue-strong dark:text-blue-strong`;
+  border-button-primary font-medium text-blue-strong dark:border-blue-strong`;
 const LINE_CLASSNAME = "h-1 shrink-0 bg-button-primary dark:bg-blue-strong";
 
 function Marker({ id }: { id: PartId }) {
