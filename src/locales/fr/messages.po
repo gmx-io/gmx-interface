@@ -2799,6 +2799,10 @@ msgstr "Market Decrease échoué"
 msgid "DefiLlama"
 msgstr "DefiLlama"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "PnL quotidien et cumulé"
@@ -9208,6 +9212,10 @@ msgstr "Récupérer les rétrocommissions"
 msgid "View transaction"
 msgstr "Voir la transaction"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
@@ -12788,6 +12796,7 @@ msgstr "Exécuter le dépôt de marge"
 msgid "Estimate your savings"
 msgstr "Estimez vos économies"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
