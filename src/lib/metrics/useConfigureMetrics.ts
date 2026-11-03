@@ -30,6 +30,7 @@ export function useConfigureMetrics() {
   const apiSdkMarkets = useIsApiSdkEnabled(API_UI_FLAGS.markets);
   const apiSdkPositions = useIsApiSdkEnabled(API_UI_FLAGS.positions);
   const apiSdkOrders = useIsApiSdkEnabled(API_UI_FLAGS.orders);
+  const wsPrices = useIsApiSdkEnabled(API_UI_FLAGS.wsPrices);
   const displayMode = getDisplayMode();
   const launchSource = getLaunchSource();
 
@@ -54,7 +55,7 @@ export function useConfigureMetrics() {
       isMobileMetamask,
       isWindowVisible,
       isAuthorised: active,
-      abFlags: getAbFlags(),
+      abFlags: { ...getAbFlags(), wsPrices },
       apiSdkMarkets,
       apiSdkPositions,
       apiSdkOrders,
@@ -79,6 +80,7 @@ export function useConfigureMetrics() {
     apiSdkMarkets,
     apiSdkPositions,
     apiSdkOrders,
+    wsPrices,
     displayMode,
     launchSource,
   ]);
