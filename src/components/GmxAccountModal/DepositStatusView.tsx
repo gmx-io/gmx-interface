@@ -97,7 +97,7 @@ export const DepositStatusView = () => {
                 decimals={token.decimals}
                 isStable={token.isStable}
                 symbol={token.symbol}
-                className="text-h4 text-textIcon-primary"
+                className="text-h3 text-textIcon-primary"
               />
             </div>
           </div>

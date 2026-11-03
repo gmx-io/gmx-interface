@@ -36,7 +36,7 @@ enum JoinReferralWizardStep {
 function DiscountPromos() {
   return (
     <>
-      <h2 className="text-h2 max-md:text-h3">
+      <h2 className="text-h1 max-md:text-h2">
         <Trans>
           Trade smarter with up
           <br className="max-md:hidden" /> to 10% fee savings
@@ -135,7 +135,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
             <>
               <div className="flex flex-col items-center gap-12">
                 <LabelWithIcon icon={ReferralsFilledIcon} label={<Trans>Success</Trans>} />
-                <h2 className="text-h2">
+                <h2 className="text-h1">
                   {currentTierDiscount !== undefined ? (
                     <Trans>Your {currentTierDiscount}% discount is now active!</Trans>
                   ) : (

@@ -232,7 +232,7 @@ function ScaledReferralCard({
             <div className="mb-8 inline-block rounded-full bg-blue-backgroundOpacity px-4 py-4 text-16 font-medium leading-[20px] text-blue-strong">
               <AnimatedGradientText className="block">{referralCode}</AnimatedGradientText>
             </div>
-            <h3 className="text-h3 text-textIcon-onButton">
+            <h3 className="text-h2 text-textIcon-onButton">
               <Trans>
                 <AnimatedGradientText>Save up to {traderDiscountPercentageLabel}</AnimatedGradientText> on every
                 <br /> trade on GMX

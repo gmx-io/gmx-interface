@@ -358,7 +358,7 @@ export function GmList({
                         <FeeApyLabel upperCase variant="iconStroke" />
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="whitespace-nowrap">
                       <Sorter {...getSorterProps("performance")}>
                         <PerformanceLabel upperCase variant="iconStroke" />
                       </Sorter>

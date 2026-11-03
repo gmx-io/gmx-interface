@@ -35,7 +35,7 @@ export function OverviewChartCard({
             )}
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div className="text-h4 text-textIcon-primary numbers">{value}</div>
+            <div className="text-h3 text-textIcon-primary numbers">{value}</div>
             {valueChange && (
               <div
                 className={cx("text-body-small rounded-full px-4 py-4 font-medium numbers", {

@@ -114,7 +114,7 @@ test("15.10 live affiliate: overview stats match the unmodified indexer response
       .locator(
         "xpath=ancestor::div[contains(concat(' ', @class, ' '), ' text-body-small ')][1]/following-sibling::div[1]"
       )
-      .locator(".text-h4");
+      .locator(".text-h3");
   await expect(card("Trading volume")).toHaveText(formatBigUsd(BigInt(summary.volumeUsd)));
   await expect(card("Number of trades from referrals")).toHaveText(String(summary.tradesCount));
   await expect(card("Traders referred")).toHaveText(String(summary.tradersNet));

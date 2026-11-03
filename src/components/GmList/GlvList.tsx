@@ -138,7 +138,7 @@ export function GlvList({
                   <TableTh>
                     <FeeApyLabel upperCase variant="iconStroke" />
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="whitespace-nowrap">
                     <PerformanceLabel upperCase variant="iconStroke" />
                   </TableTh>
                   <TableTh>

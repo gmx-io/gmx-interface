@@ -162,7 +162,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
                     helperToast.success(t`Referral link copied to clipboard`);
                   }}
                 >
-                  <ScaledText className="text-h4">{userReferralCodeString}</ScaledText>
+                  <ScaledText className="text-h3">{userReferralCodeString}</ScaledText>
                   <CopyStrokeIcon className="size-20 shrink-0 text-textIcon-secondary" />
                 </div>
                 {isAccountOwner && (

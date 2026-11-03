@@ -109,7 +109,7 @@ export function NumericAffixes() {
 
   return (
     <div className="px-20">
-      <h2 className="text-h4 mb-16 mt-24">Numeric affixes</h2>
+      <h2 className="text-h3 mb-16 mt-24">Numeric affixes</h2>
       <p className="max-w-prose">
         The $ prefix and the leverage x are separated from the number by a hair space. Inside primary text they are
         drawn in the secondary colour; inside a coloured value they keep the colour of the number. The k / m / b

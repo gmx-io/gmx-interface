@@ -110,7 +110,7 @@ export default memo(function UiPage() {
 
         <p>This page demonstrates the UI components in the app</p>
 
-        <h2 className="text-h4 mb-16 mt-24">Fill colors</h2>
+        <h2 className="text-h3 mb-16 mt-24">Fill colors</h2>
         <div className="overflow-auto">
           {Object.entries(colors).map(([key, value]) => {
             const colors = isColor(value) ? flattenColors({ [key]: value }) : flattenColors(value, key);
@@ -127,7 +127,7 @@ export default memo(function UiPage() {
             );
           })}
         </div>
-        <h2 className="text-h4 mb-16 mt-24">Text colors</h2>
+        <h2 className="text-h3 mb-16 mt-24">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
           <p className="text-button-primary">Button primary</p>
@@ -141,7 +141,7 @@ export default memo(function UiPage() {
           Decoration is textIcon-secondary
         </p>
 
-        <h2 className="text-h4 mb-16 mt-24">Font sizes</h2>
+        <h2 className="text-h3 mb-16 mt-24">Font sizes</h2>
         <div className="flex flex-col gap-16">
           <div className="flex items-baseline gap-8">
             <div>h2</div>
@@ -174,7 +174,7 @@ export default memo(function UiPage() {
           </div>
         </div>
 
-        <h2 className="text-h4 mb-16 mt-24">Line heights</h2>
+        <h2 className="text-h3 mb-16 mt-24">Line heights</h2>
         <div className="flex flex-col gap-16">
           <p className="leading-1">
             leading-1
@@ -200,7 +200,7 @@ export default memo(function UiPage() {
           </p>
         </div>
 
-        <h2 className="text-h4 mb-16 mt-24">Tooltips</h2>
+        <h2 className="text-h3 mb-16 mt-24">Tooltips</h2>
 
         <Tooltip
           content={
@@ -218,7 +218,7 @@ export default memo(function UiPage() {
           closeDelay={100000000000}
         />
 
-        <h2 className="text-h4 mb-16 mt-24">Token categories</h2>
+        <h2 className="text-h3 mb-16 mt-24">Token categories</h2>
 
         <div className="flex flex-col gap-16">
           {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
@@ -267,7 +267,7 @@ function IconsAndImages() {
   return (
     <>
       <div className="mx-auto max-w-prose p-20">
-        <h2 className="text-h4 mb-16 mt-24">Icons & images</h2>
+        <h2 className="text-h3 mb-16 mt-24">Icons & images</h2>
       </div>
 
       <div className="mb-16 px-20">
