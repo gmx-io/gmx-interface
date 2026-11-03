@@ -48,6 +48,21 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
+const QA_QQQ_SPY_EVENT: EventData = {
+  id: "qa-qqq-spy-arbitrum-listing",
+  type: "listing",
+  isActive: true,
+  startDate: "3 Nov 2026, 0:00",
+  endDate: "15 Dec 2026, 0:00",
+  title: "QQQ and SPY markets added on Arbitrum",
+  description: (
+    <>
+      <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via GLV{" "}
+      <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market dropdown.
+    </>
+  ),
+};
+
 const QA_EVENTS: EventData[] = [
   {
     id: "qa-1-long-title",
@@ -106,6 +121,7 @@ const QA_EVENTS: EventData[] = [
 ];
 
 export const appEventsData: EventData[] = [
+  ...(isQaMockOn("qqqSpy") ? [QA_QQQ_SPY_EVENT] : []),
   ...(isQaMockOn("whatsNew") ? QA_EVENTS : []),
   {
     id: "gmlabs-003-staking-changes",

@@ -3,15 +3,16 @@
 // ?qaMocks=all (default)  every group: outage, funds, targeted, hints, whatsNew
 // ?qaMocks=whatsNew,hints  only the listed groups; add lateOutage to start the outage warning ~30 s after load,
 //                          slow to delay the KLI flags by 4 s
+// ?qaMocks=qqqSpy          only the QQQ and SPY listing announcement from 25 Aug 2026, live again
 // ?qaMocks=none            real data only
 // ?qaMocks=reset           forget every close of these messages, then all groups
 // The choice is kept in localStorage, so reloads and in-app navigation keep it.
 
-export type QaMock = "outage" | "lateOutage" | "funds" | "targeted" | "hints" | "whatsNew" | "slow";
+export type QaMock = "outage" | "lateOutage" | "funds" | "targeted" | "hints" | "whatsNew" | "slow" | "qqqSpy";
 
 const STORAGE_KEY = "pro-4540-qa-mocks";
 const ALL: QaMock[] = ["outage", "funds", "targeted", "hints", "whatsNew"];
-const KNOWN: QaMock[] = [...ALL, "lateOutage", "slow"];
+const KNOWN: QaMock[] = [...ALL, "lateOutage", "slow", "qqqSpy"];
 
 const DISMISSAL_KEY_PARTS = [
   "visited-announcements",
