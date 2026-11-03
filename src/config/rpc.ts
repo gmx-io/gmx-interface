@@ -6,6 +6,7 @@ import { RpcConfig } from "lib/rpc/types";
 import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
+  SOLANA_NETWORK_ID,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
@@ -19,13 +20,6 @@ import {
 } from "sdk/configs/chains";
 
 import { isDevelopment } from "./env";
-
-const ALCHEMY_FALLBACK_KEY = "alch_RCUyAwn71kwGwf3IeEyMp";
-
-// The existing fallback app has Solana enabled; the development app does not.
-export function getSolanaRpcUrl(): string {
-  return `https://solana-mainnet.g.alchemy.com/v2/${ALCHEMY_FALLBACK_KEY}`;
-}
 
 export type { RpcConfig } from "lib/rpc/types";
 export * from "sdk/configs/chains";
@@ -82,6 +76,10 @@ export const RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS: RpcTrackerConfig = {
 };
 
 const RPC_CONFIGS: Record<number, RpcConfig[]> = {
+  [SOLANA_NETWORK_ID]: [
+    { url: "https://solana-rpc.publicnode.com", isPublic: true, purpose: "default", maxAccountsPerRequest: 10 },
+    getAlchemyProvider(SOLANA_NETWORK_ID, "fallback"),
+  ],
   [ARBITRUM]: [
     ...[
       "https://arb1.arbitrum.io/rpc",
@@ -358,7 +356,7 @@ export function getExpressRpcUrl(chainId: number): string | undefined {
 export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
 
 function getAlchemyProvider(
-  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
+  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI> | typeof SOLANA_NETWORK_ID,
   purpose: RpcPurpose,
   type: "http" | "ws" = "http"
 ): RpcConfig {
@@ -373,7 +371,7 @@ function getAlchemyProvider(
   } else {
     switch (purpose) {
       case "fallback":
-        alchemyKey = ALCHEMY_FALLBACK_KEY;
+        alchemyKey = "alch_RCUyAwn71kwGwf3IeEyMp";
         break;
       case "largeAccount":
         alchemyKey = "alch_1xqx9RJJd8BJ9vJaDyrmp";
@@ -391,6 +389,9 @@ function getAlchemyProvider(
 
   let baseUrl: string;
   switch (chainId) {
+    case SOLANA_NETWORK_ID:
+      baseUrl = `solana-mainnet.g.alchemy.com/v2`;
+      break;
     case ARBITRUM:
       baseUrl = `arb-mainnet.g.alchemy.com/v2`;
       break;

@@ -1,12 +1,13 @@
 import { address, getAddressDecoder, getAddressEncoder, getBase64Decoder } from "@solana/kit";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SOLANA_NETWORK_ID } from "config/chains";
 import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
-import { getSolanaRpcUrl } from "config/rpc";
+import { getRpcProviders } from "config/rpc";
 
 import { fetchSolanaBalances } from "./balances";
-import { fetchSolanaAccounts } from "./rpc";
+import { fetchSolanaAccounts, getSolanaRpcTracker } from "./rpc";
 
 const nativeAbort = vi.hoisted(() => {
   // Kit captures the controller at import time; its Node transport needs the native implementation.
@@ -51,12 +52,17 @@ function mockRpc(account = tokenAccount(), mode?: string) {
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url, init) => {
-      expect(String(url)).toBe(getSolanaRpcUrl());
+      expect(
+        ["default", "fallback"].flatMap((purpose) =>
+          getRpcProviders(SOLANA_NETWORK_ID, purpose as "default" | "fallback").map((provider) => provider.url)
+        )
+      ).toContain(String(url));
       const { id, method, params } = JSON.parse(init.body);
       expect(method).toBe("getMultipleAccounts");
+      const offset = calls.flat().length;
       calls.push(params[0]);
       const value = params[0].map((_: string, index: number) =>
-        mode === "missing" ? null : index === 0 ? native : index === tokenIndex ? encoded : null
+        mode === "missing" ? null : index + offset === 0 ? native : index + offset === tokenIndex ? encoded : null
       );
       const payload =
         mode === "rpc"
@@ -72,7 +78,10 @@ beforeEach(() => {
   vi.stubGlobal("AbortController", nativeAbort.Controller);
   vi.stubGlobal("AbortSignal", nativeAbort.Signal);
 });
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  getSolanaRpcTracker().fallbackTracker.cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("configured Solana balances", () => {
   it.each([
@@ -89,10 +98,10 @@ describe("configured Solana balances", () => {
     expect(Object.values(balances).filter((balance) => balance === 0n)).toHaveLength(
       GMSOL_TOKENS.length - (account.bytes[64] ? 1 : 0)
     );
-    expect(calls[0][0]).toBe(owner);
-    expect(calls[0][1]).toBe("HsaAttyEh3fnaPoVnuogmmoAys5gsTEnHvASxeFKhXBa");
-    expect(calls[0][GMSOL_TOKENS.indexOf(token2022) + 1]).toBe("A3k6WpTFtWMtFfiNGbAKi3Y3WEELwqMXK6bMLaUaH4j5");
-    expect(new Set(calls[0]).size).toBe(GMSOL_TOKENS.length + 1);
+    expect(calls.flat()[0]).toBe(owner);
+    expect(calls.flat()[1]).toBe("HsaAttyEh3fnaPoVnuogmmoAys5gsTEnHvASxeFKhXBa");
+    expect(calls.flat()[GMSOL_TOKENS.indexOf(token2022) + 1]).toBe("A3k6WpTFtWMtFfiNGbAKi3Y3WEELwqMXK6bMLaUaH4j5");
+    expect(new Set(calls.flat()).size).toBe(GMSOL_TOKENS.length + 1);
   });
 
   it.each(["mint", "owner", "program", "state", "size", "extension", "rpc", "nativeOwner"])(
@@ -118,7 +127,7 @@ describe("configured Solana balances", () => {
     expect(Object.values(balances).every((balance) => balance === 0n)).toBe(true);
   });
 
-  it("batches at 100 addresses and rejects missing batch entries", async () => {
+  it("respects provider batch limits and rejects missing batch entries", async () => {
     const calls = mockRpc();
     expect(
       await fetchSolanaAccounts(
@@ -129,7 +138,7 @@ describe("configured Solana balances", () => {
         })
       )
     ).toHaveLength(201);
-    expect(calls.map((batch) => batch.length)).toEqual([100, 100, 1]);
+    expect(calls.map((batch) => batch.length)).toEqual([...Array(20).fill(10), 1]);
     mockRpc(tokenAccount(), "incomplete");
     await expect(fetchSolanaBalances(owner)).rejects.toThrow("incomplete");
   });
