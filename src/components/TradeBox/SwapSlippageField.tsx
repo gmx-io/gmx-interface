@@ -140,7 +140,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
                 disabled
                   ? "cursor-default bg-button-background text-textIcon-disabled"
                   : isSelected
-                    ? "bg-button-primary text-textIcon-primary"
+                    ? "bg-button-primary text-textIcon-onButton"
                     : "bg-button-background text-textIcon-secondary hover:bg-fill-accent"
               )}
             >
@@ -156,7 +156,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
             disabled
               ? "cursor-default bg-button-background text-textIcon-disabled"
               : isCustom || (!isPresetValue && allowedSlippage > 0)
-                ? "bg-button-primary text-textIcon-primary"
+                ? "bg-button-primary text-textIcon-onButton"
                 : "cursor-pointer bg-button-background text-textIcon-secondary hover:bg-fill-accent"
           )}
         >

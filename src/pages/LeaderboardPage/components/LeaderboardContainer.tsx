@@ -158,10 +158,6 @@ export function LeaderboardContainer() {
     return leaderboardDataTypeTabs.map((value) => ({
       value,
       label: leaderboardDataTypeLabels[value],
-      className: {
-        active: "!text-textIcon-onButton !bg-button-primary",
-        regular: "hover:!text-textIcon-primary !bg-button-secondary",
-      },
     }));
   }, [leaderboardDataTypeLabels]);
 
@@ -176,10 +172,6 @@ export function LeaderboardContainer() {
     return competitionsTabs.map((value) => ({
       value,
       label: competitionLabels[value],
-      className: {
-        active: "!text-textIcon-onButton !bg-button-primary",
-        regular: "hover:!text-textIcon-primary !bg-button-secondary",
-      },
     }));
   }, [competitionLabels]);
 
@@ -200,7 +192,7 @@ export function LeaderboardContainer() {
         <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-stroke-primary bg-fill-surfaceBase p-20 max-md:flex-col">
           {!isCompetition ? (
             <Tabs
-              type="inline"
+              type="inline-primary"
               selectedValue={activeLeaderboardDataTypeIndex}
               onChange={handleLeaderboardDataTypeTabChange}
               options={leaderboardDataTypeTabsOptions}
@@ -209,7 +201,7 @@ export function LeaderboardContainer() {
             />
           ) : (
             <Tabs
-              type="inline"
+              type="inline-primary"
               selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}
