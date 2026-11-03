@@ -27,7 +27,11 @@ import {
 } from "sdk/configs/dataStore";
 import { bigMath } from "sdk/utils/bigmath";
 import { ZERO_DATA } from "sdk/utils/hash";
-import { SUBACCOUNT_APPROVAL_TYPES, SUBACCOUNT_APPROVAL_TYPES_V2_2_1 } from "sdk/utils/subaccount";
+import {
+  isSubaccountApprovalRevoked,
+  SUBACCOUNT_APPROVAL_TYPES,
+  SUBACCOUNT_APPROVAL_TYPES_V2_2_1,
+} from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "../express";
@@ -47,6 +51,7 @@ export function getSubaccountValidations({
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
     isNonceExpired: getIsSubaccountNonceExpired(subaccount),
+    isRevoked: getIsSubaccountRevoked(subaccount),
     isApprovalInvalid: getIsSubaccountApprovalInvalid({
       chainId: subaccount.chainId,
       signerChainId: subaccount.signerChainId,
@@ -183,6 +188,23 @@ export function getIsSubaccountNonceExpired({
 /**
  * Returns false for empty subaccount approval
  */
+export function getIsSubaccountRevoked({
+  onchainData,
+  signedApproval,
+}: {
+  onchainData: SubaccountOnchainData;
+  signedApproval: SignedSubaccountApproval;
+}): boolean {
+  if (getIsEmptySubaccountApproval(signedApproval)) {
+    return false;
+  }
+
+  return isSubaccountApprovalRevoked(signedApproval, onchainData.revocationCounter);
+}
+
+/**
+ * Returns false for empty subaccount approval
+ */
 export function getIsSubaccountApprovalInvalid({
   chainId,
   signerChainId,
@@ -263,6 +285,7 @@ export function getIsInvalidSubaccount({
 }): boolean {
   const isExpired = getIsSubaccountExpired(subaccount);
   const isNonceExpired = getIsSubaccountNonceExpired(subaccount);
+  const isRevoked = getIsSubaccountRevoked(subaccount);
   const actionsExceeded = getIsSubaccountActionsExceeded(subaccount, requiredActions);
   const isApprovalInvalid = getIsSubaccountApprovalInvalid({
     chainId: subaccount.chainId,
@@ -272,7 +295,7 @@ export function getIsInvalidSubaccount({
     onchainData: subaccount.onchainData,
   });
 
-  return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
+  return isExpired || isNonceExpired || isRevoked || actionsExceeded || isApprovalInvalid;
 }
 
 function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubaccountApproval {
@@ -382,9 +405,9 @@ function getIsSubaccountApprovalSynced(params: {
   const { signedApproval, onchainData } = params;
 
   /**
-   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser
+   * If nonce is expired or the subaccount was revoked, we believe a newer settings have been applied in some other way e.g. different browser
    */
-  if (getIsSubaccountNonceExpired(params)) {
+  if (getIsSubaccountNonceExpired(params) || getIsSubaccountRevoked(params)) {
     return true;
   }
 

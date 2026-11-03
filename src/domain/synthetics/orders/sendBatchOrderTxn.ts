@@ -285,6 +285,7 @@ const makeBatchOrderSimulation = async ({
           isExpired: expressParams.subaccountValidations.isExpired,
           isActionsExceeded: expressParams.subaccountValidations.isActionsExceeded,
           isNonceExceeded: expressParams.subaccountValidations.isNonceExpired,
+          isRevoked: expressParams.subaccountValidations.isRevoked,
           onchainData: {
             maxAllowedCount: onchainData.maxAllowedCount,
             currentCount: onchainData.currentActionsCount,

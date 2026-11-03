@@ -11,6 +11,7 @@ import {
   getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
   getIsSubaccountNonceExpired,
+  getIsSubaccountRevoked,
 } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -224,6 +225,7 @@ export function SettingsModal({
         const isOneClickActionsExceeded = getIsSubaccountActionsExceeded(subaccountState.subaccount, 1);
         const isOneClickStructurallyInvalid =
           getIsSubaccountNonceExpired(subaccountState.subaccount) ||
+          getIsSubaccountRevoked(subaccountState.subaccount) ||
           getIsSubaccountApprovalInvalid({
             chainId,
             signerChainId: srcChainId ?? chainId,

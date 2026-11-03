@@ -10,6 +10,7 @@ import type {
   SdkSubaccountStatus,
   SignedSubaccountApproval,
   StoredSubaccountApproval,
+  SubaccountApproval,
 } from "./types";
 
 export function parseSubaccountStatus(status: SubaccountStatusResponse): SdkSubaccountStatus {
@@ -57,6 +58,7 @@ export function shouldRefreshExplicitSubaccountApproval(
     status !== undefined &&
     (isSubaccountApprovalSynced(approval, status) ||
       isSubaccountApprovalNonceExpired(approval, status) ||
+      isSubaccountApprovalRevoked(approval, status.revocationCounter) ||
       isSubaccountApprovalExpired(approval))
   );
 }
@@ -66,6 +68,10 @@ export function isSubaccountApprovalNonceExpired(
   status: SdkSubaccountStatus
 ): boolean {
   return toBigInt(approval.nonce) !== status.approvalNonce;
+}
+
+export function isSubaccountApprovalRevoked(approval: SubaccountApproval, revocationCounter: bigint): boolean {
+  return (toBigInt(approval.revocationCounter) ?? 0n) !== revocationCounter;
 }
 
 export function isSubaccountApprovalSynced(approval: SdkSubaccountApproval, status: SdkSubaccountStatus): boolean {
