@@ -433,6 +433,10 @@ msgstr ""
 msgid "Telegram bot"
 msgstr ""
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Next page"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr ""
@@ -1053,6 +1057,7 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr ""
@@ -2232,6 +2237,10 @@ msgstr ""
 msgid "No SL orders"
 msgstr ""
 
+#: src/components/Button/ButtonLink.tsx
+msgid "(opens in a new tab)"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr ""
@@ -2747,6 +2756,10 @@ msgstr ""
 msgid "Max network fee buffer"
 msgstr ""
 
+#: src/components/Footer/Footer.tsx
+msgid "{0} (opens in a new tab)"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr ""
@@ -3235,6 +3248,7 @@ msgid "Max:"
 msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Show details"
 msgstr ""
 
@@ -3937,6 +3951,11 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
+#: src/components/OrderList/OrderList.tsx
+#: src/components/OrderList/OrderList.tsx
+msgid "Select all orders"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -4138,6 +4157,11 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
+msgstr ""
+
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Select order"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4874,6 +4898,12 @@ msgstr ""
 msgid "Multicall idle"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+msgid "More actions"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX"
 msgstr ""
@@ -5458,6 +5488,15 @@ msgstr ""
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
+msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Remove from favourites"
 msgstr ""
 
 #: src/components/ChainDataImage.tsx
@@ -7066,6 +7105,7 @@ msgid "Failed Stop Market"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsButton/SettingsButton.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
@@ -7346,6 +7386,10 @@ msgstr ""
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr ""
 
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Clear search"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr ""
@@ -7411,6 +7455,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
+msgstr ""
+
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Hide details"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -8355,6 +8403,10 @@ msgstr "[!! TradFi !!]"
 msgid "Gas"
 msgstr ""
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Previous page"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr ""
@@ -8518,6 +8570,10 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
+msgstr ""
+
+#: src/components/Pagination/Pagination.tsx
+msgid "First page"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -9112,6 +9168,10 @@ msgstr ""
 #: src/components/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
+msgstr ""
+
+#: src/components/Referrals/shared/modals/ClaimRewardRow.tsx
+msgid "Select {indexName} [{poolName}]"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10185,6 +10245,10 @@ msgstr ""
 msgid "Trading mode"
 msgstr ""
 
+#: src/components/Modal/Modal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr ""
@@ -10970,6 +11034,15 @@ msgstr ""
 msgid "Add RPC"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Add to favourites"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
 msgstr ""
@@ -11120,6 +11193,8 @@ msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
 msgstr ""
@@ -12322,6 +12397,7 @@ msgid "The export could not be completed. No file was downloaded."
 msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade in a new tab"
 msgstr ""
 
@@ -12452,6 +12528,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
+msgstr ""
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Select all markets"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -12670,6 +12750,9 @@ msgstr ""
 msgid "Transfer history"
 msgstr ""
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr ""
@@ -13049,6 +13132,10 @@ msgstr "[!! Indices !!]"
 
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
+msgstr ""
+
+#: src/components/Pagination/Pagination.tsx
+msgid "Last page"
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
@@ -13966,6 +14053,10 @@ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
+msgstr ""
+
+#: src/components/SideNav/MobileSideNav.tsx
+msgid "Menu"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx

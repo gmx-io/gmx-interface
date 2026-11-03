@@ -433,6 +433,10 @@ msgstr "Объем"
 msgid "Telegram bot"
 msgstr "Telegram-бот"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Next page"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap отменён"
@@ -1053,6 +1057,7 @@ msgstr "Неизвестная ошибка"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr "Подробнее"
@@ -2232,6 +2237,10 @@ msgstr "История выплат"
 msgid "No SL orders"
 msgstr "Нет SL-ордеров"
 
+#: src/components/Button/ButtonLink.tsx
+msgid "(opens in a new tab)"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr "Ручная настройка кредитного плеча"
@@ -2747,6 +2756,10 @@ msgstr "Допустимое проскальзывание по умолчан�
 msgid "Max network fee buffer"
 msgstr "Макс. буфер комиссии сети"
 
+#: src/components/Footer/Footer.tsx
+msgid "{0} (opens in a new tab)"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr "Ордер сдвига отменён"
@@ -3235,6 +3248,7 @@ msgid "Max:"
 msgstr "Макс:"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Show details"
 msgstr "Показать детали"
 
@@ -3937,6 +3951,11 @@ msgstr "Средний размер позиции"
 msgid "Theme"
 msgstr "Тема"
 
+#: src/components/OrderList/OrderList.tsx
+#: src/components/OrderList/OrderList.tsx
+msgid "Select all orders"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -4139,6 +4158,11 @@ msgstr "Вывод из стейкинга приостановлен до об�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Для Express нужны {gasPaymentTokensText} в вашем GMX Account. Внесите один из них."
+
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Select order"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4874,6 +4898,12 @@ msgstr "Получить вознаграждения"
 msgid "Multicall idle"
 msgstr "Multicall неактивен"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+msgid "More actions"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX"
 msgstr "<0>Экономьте до {traderDiscountPercentageLabel}</0> на каждой<1/> сделке на GMX"
@@ -5459,6 +5489,15 @@ msgstr "Своп отправлен"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Разница между ожидаемой и фактической ценой исполнения из-за волатильности. Ордера не будут исполнены, если проскальзывание превысит ваш максимум. Настройте значение по умолчанию в настройках.<0/><1/>Низкое значение (например, менее -{0}) может привести к неисполнению ордеров при волатильности.<2/><3/>Проскальзывание отличается от влияния на цену, которое основано на дисбалансе открытого интереса. <4>Подробнее</4>."
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Remove from favourites"
+msgstr ""
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -7066,6 +7105,7 @@ msgid "Failed Stop Market"
 msgstr "Неудачный Стоп-Маркет"
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsButton/SettingsButton.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
@@ -7346,6 +7386,10 @@ msgstr "Подробнее"
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "Возвраты за влияние на цену при закрытии доступны во вкладке «Выплаты». <0>Подробнее</0>."
 
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Clear search"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "Ваши сделки приносят ребейт {currentTierRebate}%, а не скидку"
@@ -7412,6 +7456,10 @@ msgstr "{0, plural, one {Торговля в вашем пуле {markets} пе�
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "Размер ваших ребейтов зависит от вашего уровня, который можно посмотреть <0>здесь</0>. Более высокий уровень увеличивает ваши вознаграждения и скидку для ваших трейдеров."
+
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Hide details"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
@@ -8355,6 +8403,10 @@ msgstr "TradFi"
 msgid "Gas"
 msgstr "Gas"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Previous page"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "Вывод {balanceFormatted} на основной аккаунт…"
@@ -8519,6 +8571,10 @@ msgstr "Панель управления аффилиата"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
 msgstr "Оставшаяся позиция превысит максимально допустимое плечо. Закройте большую часть, выведите меньше или сначала добавьте маржу. Оставшаяся маржа: {remainingCollateralUsdText}, требуется: {minCollateralUsdForLeverageText}"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "First page"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -9113,6 +9169,10 @@ msgstr "Скрыть активы с низкой стоимостью"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (предложение)"
+
+#: src/components/Referrals/shared/modals/ClaimRewardRow.tsx
+msgid "Select {indexName} [{poolName}]"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -10185,6 +10245,10 @@ msgstr "Уведомления"
 msgid "Trading mode"
 msgstr "Режим торговли"
 
+#: src/components/Modal/Modal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Кросс-маржа</0><1>Кросс-обеспечение</1>"
@@ -10970,6 +11034,15 @@ msgstr "Saulius GMX analytics"
 msgid "Add RPC"
 msgstr "Добавить RPC"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Add to favourites"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
 msgstr "Отключите «Сохранить кредитное плечо», закройте позицию полностью, измените цену срабатывания или добавьте маржу."
@@ -11120,6 +11193,8 @@ msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1
 msgstr "Ознакомьтесь с <0>документацией по реферальной программе</0> или задайте вопрос в <1>GMX Telegram</1>"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
 msgstr "Редактировать ордер"
@@ -12322,6 +12397,7 @@ msgid "The export could not be completed. No file was downloaded."
 msgstr "Не удалось завершить экспорт. Файл не был загружен."
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade in a new tab"
 msgstr "Открыть GMTrade в новой вкладке"
 
@@ -12453,6 +12529,10 @@ msgstr "Подходим ли мы друг другу?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "Привлечённые"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Select all markets"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12670,6 +12750,9 @@ msgstr "Ликвидность доступна только на {chainNames} �
 msgid "Transfer history"
 msgstr "История переводов"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "Отменить ордер"
@@ -13050,6 +13133,10 @@ msgstr "Индексы"
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "Скачать как CSV"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "Last page"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Fee discounts up to 25%"
@@ -13967,6 +14054,10 @@ msgstr "Встроенный реферальный доход"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "Увеличить размер (Stop Market)"
+
+#: src/components/SideNav/MobileSideNav.tsx
+msgid "Menu"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction to avoid oversized wallet confirmations."

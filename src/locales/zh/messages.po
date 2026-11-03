@@ -433,6 +433,10 @@ msgstr "交易量"
 msgid "Telegram bot"
 msgstr "Telegram 机器人"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Next page"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap 已取消"
@@ -1053,6 +1057,7 @@ msgstr "未知错误"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr "查看详情"
@@ -2232,6 +2237,10 @@ msgstr "领取历史记录"
 msgid "No SL orders"
 msgstr "无止损订单"
 
+#: src/components/Button/ButtonLink.tsx
+msgid "(opens in a new tab)"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr "手动设置杠杆"
@@ -2747,6 +2756,10 @@ msgstr "默认允许滑点"
 msgid "Max network fee buffer"
 msgstr "最大网络费用缓冲"
 
+#: src/components/Footer/Footer.tsx
+msgid "{0} (opens in a new tab)"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr "Shift 订单已取消"
@@ -3235,6 +3248,7 @@ msgid "Max:"
 msgstr "最大："
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Show details"
 msgstr "显示详情"
 
@@ -3937,6 +3951,11 @@ msgstr "平均仓位规模"
 msgid "Theme"
 msgstr "主题"
 
+#: src/components/OrderList/OrderList.tsx
+#: src/components/OrderList/OrderList.tsx
+msgid "Select all orders"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -4139,6 +4158,11 @@ msgstr "解除质押已暂停，直至质押升级完成"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存入其中一种。"
+
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Select order"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4874,6 +4898,12 @@ msgstr "领取奖励"
 msgid "Multicall idle"
 msgstr "Multicall 空闲"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+msgid "More actions"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX"
 msgstr "<0>最高可节省 {traderDiscountPercentageLabel}</0>，适用于每笔<1/>GMX 交易"
@@ -5459,6 +5489,15 @@ msgstr "兑换已提交"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "由于波动性导致的预期成交价格与实际成交价格之间的差异。如果滑点超过您设置的最大值，订单将不会执行。请在设置中调整默认值。<0/><1/>较低的值（例如低于 -{0}）可能导致在波动期间订单失败。<2/><3/>滑点与价格影响不同，价格影响基于未平仓量的不平衡。<4>了解更多</4>。"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Remove from favourites"
+msgstr ""
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -7066,6 +7105,7 @@ msgid "Failed Stop Market"
 msgstr "止损市价失败"
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsButton/SettingsButton.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
@@ -7346,6 +7386,10 @@ msgstr "查看更多"
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "平仓产生的价格影响返还可在\"领取\"标签页中领取。<0>了解更多</0>。"
 
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Clear search"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "您的交易获得 {currentTierRebate}% 返佣，而非折扣"
@@ -7412,6 +7456,10 @@ msgstr "{0, plural, other {您的 {markets} 池的交易正在迁移至 USDG 池
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "您的返佣取决于您的等级，您可以在<0>此处</0>查看。等级越高，您获得的奖励越多，您的交易者享受的折扣也越大。"
+
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Hide details"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
@@ -8355,6 +8403,10 @@ msgstr "传统金融"
 msgid "Gas"
 msgstr "Gas"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Previous page"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "正在向主账户提取 {balanceFormatted}…"
@@ -8519,6 +8571,10 @@ msgstr "推广仪表盘"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
 msgstr "剩余仓位将超过允许的最大杠杆。请平掉更大部分、减少提取金额，或先增加保证金。剩余保证金：{remainingCollateralUsdText}，所需：{minCollateralUsdForLeverageText}"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "First page"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -9113,6 +9169,10 @@ msgstr "隐藏价值较低的资产"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL（供应量）"
+
+#: src/components/Referrals/shared/modals/ClaimRewardRow.tsx
+msgid "Select {indexName} [{poolName}]"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -10185,6 +10245,10 @@ msgstr "通知"
 msgid "Trading mode"
 msgstr "交易模式"
 
+#: src/components/Modal/Modal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>全仓保证金</0><1>混合抵押品</1>"
@@ -10970,6 +11034,15 @@ msgstr "Saulius GMX 分析"
 msgid "Add RPC"
 msgstr "添加 RPC"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Add to favourites"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
 msgstr "请关闭“保持杠杆”、完全平仓、更改触发价格或增加保证金。"
@@ -11120,6 +11193,8 @@ msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1
 msgstr "访问<0>推荐计划文档</0>或前往 <1>GMX Telegram</1> 咨询"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
 msgstr "编辑订单"
@@ -12322,6 +12397,7 @@ msgid "The export could not be completed. No file was downloaded."
 msgstr "无法完成导出。未下载任何文件。"
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade in a new tab"
 msgstr "在新标签页中打开 GMTrade"
 
@@ -12453,6 +12529,10 @@ msgstr "是否合适？"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "新增"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Select all markets"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12670,6 +12750,9 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 msgid "Transfer history"
 msgstr "转账历史记录"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "取消订单"
@@ -13050,6 +13133,10 @@ msgstr "指数"
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "下载为 CSV"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "Last page"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Fee discounts up to 25%"
@@ -13967,6 +14054,10 @@ msgstr "内置推荐收益"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "增加规模（止损市价单）"
+
+#: src/components/SideNav/MobileSideNav.tsx
+msgid "Menu"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction to avoid oversized wallet confirmations."
