@@ -32,12 +32,7 @@ export const RPC_HOSTS_BY_CHAIN_ID: Record<number, string[]> = {
     "arb-mainnet.g.alchemy.com",
   ],
   [AVALANCHE]: ["api.avax.network", "avax-mainnet.g.alchemy.com"],
-  [AVALANCHE_FUJI]: [
-    "avalanche-fuji-c-chain.publicnode.com",
-    "api.avax-test.network",
-    "endpoints.omniatech.io/v1/avax/fuji",
-    "ava-testnet.public.blastapi.io",
-  ],
+  [AVALANCHE_FUJI]: ["avalanche-fuji-c-chain.publicnode.com", "api.avax-test.network", "avalanche-fuji.drpc.org"],
   [ARBITRUM_SEPOLIA]: [
     "sepolia-rollup.arbitrum.io",
     "arbitrum-sepolia.drpc.org",
@@ -49,10 +44,10 @@ export const RPC_HOSTS_BY_CHAIN_ID: Record<number, string[]> = {
   [SOURCE_OPTIMISM_SEPOLIA]: [
     "sepolia.optimism.io",
     "optimism-sepolia.drpc.org",
-    "optimism-sepolia.therpc.io",
+    "optimism-sepolia-rpc.publicnode.com",
     "opt-sepolia.g.alchemy.com",
   ],
-  [SOURCE_SEPOLIA]: ["sepolia.drpc.org", "eth-sepolia.g.alchemy.com"],
+  [SOURCE_SEPOLIA]: ["sepolia.gateway.tenderly.co", "eth-sepolia.g.alchemy.com"],
   [SOURCE_BSC_MAINNET]: [
     "bsc-dataseed.bnbchain.org",
     "1rpc.io/bnb",

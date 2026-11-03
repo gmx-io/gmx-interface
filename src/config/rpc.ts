@@ -140,11 +140,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    ...[
-      "https://endpoints.omniatech.io/v1/avax/fuji/public",
-      "https://api.avax-test.network/ext/bc/C/rpc",
-      "https://ava-testnet.public.blastapi.io/ext/bc/C/rpc",
-    ].map((url) => ({
+    ...["https://avalanche-fuji.drpc.org", "https://api.avax-test.network/ext/bc/C/rpc"].map((url) => ({
       url,
       isPublic: false,
       purpose: "fallback",
@@ -217,13 +213,15 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_BASE_MAINNET) ?? []),
   ],
   [SOURCE_OPTIMISM_SEPOLIA]: [
-    ...["https://sepolia.optimism.io", "https://optimism-sepolia.drpc.org", "https://optimism-sepolia.therpc.io"].map(
-      (url) => ({
-        url,
-        isPublic: true,
-        purpose: "default",
-      })
-    ),
+    ...[
+      "https://sepolia.optimism.io",
+      "https://optimism-sepolia.drpc.org",
+      "https://optimism-sepolia-rpc.publicnode.com",
+    ].map((url) => ({
+      url,
+      isPublic: true,
+      purpose: "default",
+    })),
 
     // Fallback
     getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback"),
@@ -235,7 +233,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_OPTIMISM_SEPOLIA) ?? []),
   ],
   [SOURCE_SEPOLIA]: [
-    ...["https://sepolia.drpc.org"].map((url) => ({
+    ...["https://sepolia.gateway.tenderly.co"].map((url) => ({
       url,
       isPublic: true,
       purpose: "default",
