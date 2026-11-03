@@ -130,7 +130,8 @@ type TradeboxButtonState = {
   tooltipContent: ReactNode | null;
   bannerErrorContent: ReactNode | null;
   disabled: boolean;
-  onSubmit: () => Promise<void>;
+  /** Resolves to true once a trade is sent, false for steps like connect, deposit or approve */
+  onSubmit: () => Promise<boolean>;
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
   isExpressLoading: boolean;
@@ -558,15 +559,11 @@ export function useTradeboxButtonState({
     );
   }, [tokenChainDataArray, fromToken, srcChainId]);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(async (): Promise<boolean> => {
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
-      return;
-    }
-
-    if (!signer) {
-      return;
+      return false;
     }
 
     if (shouldShowDepositButton) {
@@ -591,11 +588,11 @@ export function useTradeboxButtonState({
 
       setGmxAccountModalOpen("deposit");
 
-      return;
+      return false;
     }
 
     if (isApprovalRequired) {
-      if (!chainId || isApproving || !tokensToApprove[0]) return;
+      if (!chainId || isApproving || !tokensToApprove[0]) return false;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
@@ -609,11 +606,11 @@ export function useTradeboxButtonState({
           }),
       });
 
-      return;
+      return false;
     }
 
     if (isAllowancePending || isApproving) {
-      return;
+      return false;
     }
 
     setStage("processing");
@@ -639,12 +636,14 @@ export function useTradeboxButtonState({
       await sleep(2000);
       setStage("trade");
 
-      return;
+      return true;
     }
 
-    return txnPromise.finally(() => {
+    await txnPromise.finally(() => {
       setStage("trade");
     });
+
+    return true;
   }, [
     account,
     chainId,
