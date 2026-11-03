@@ -33,7 +33,7 @@ const SEMANTIC_COLORS: SemanticColorGroup[] = [
       { code: "fill-surfaceElevated50", dark: "#1E203380", light: "#EDEDF280" },
       { code: "fill-surfaceHover", dark: "#A0A3C41A", light: "#A0A3C41A" },
       { code: "fill-accent", dark: "#363A59", light: "#D4D4E2" },
-      { code: "fill-skeleton", dark: "#B4BBFF1A", light: "#696D961F" },
+      { code: "fill-skeleton", dark: "var(--color-fill-skeleton)", light: "#696D961F" },
     ],
   },
   {
@@ -178,7 +178,12 @@ function ColorSwatch({ name, value, theme }: { name: string; value: string; them
       {isSeeThrough && <div className="absolute inset-x-0 top-0 h-24" style={CHECKERBOARD_STYLE} />}
       {/* The swatch shows the raw value, so it can't use a color token */}
       <div className="absolute inset-0" style={colorStyle} />
-      <div className={cx("relative flex flex-col gap-2 p-12 font-mono", isDarkLabel ? "text-black" : "text-white")}>
+      <div
+        className={cx(
+          "relative flex flex-col gap-2 p-12 font-mono",
+          isDarkLabel ? "text-black" : "text-textIcon-onButton"
+        )}
+      >
         <span className="text-15">{name}</span>
         <span className="text-body-small">{formatColor(value)}</span>
       </div>
@@ -188,7 +193,7 @@ function ColorSwatch({ name, value, theme }: { name: string; value: string; them
 
 function ColorCard({ color, theme }: { color: SemanticColor; theme: Theme }) {
   return (
-    <div className="flex overflow-hidden rounded-8 border border-slate-600">
+    <div className="flex overflow-hidden rounded-8 border border-stroke-primary">
       <ColorSwatch name={color.code} value={color[theme]} theme={theme} />
     </div>
   );
@@ -209,7 +214,7 @@ export function ColorsExamples() {
       flush
       titleAction={<ThemeTabs selected={theme} setSelected={setThemeMode} />}
     >
-      <p className="text-body-large px-24 pt-24 text-typography-secondary max-md:px-16 max-md:pt-16">
+      <p className="text-body-large px-24 pt-24 text-textIcon-secondary max-md:px-16 max-md:pt-16">
         The semantic color tokens. Most of these names are not in src/config/colors.ts yet: the Changelog tab lists the
         steps.
       </p>

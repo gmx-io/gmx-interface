@@ -126,7 +126,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
   return (
     <div
       className={cx(
-        "flex justify-between gap-18 rounded-8 bg-slate-900 px-16 py-20 max-lg:flex-col max-md:px-12 max-md:py-12"
+        "flex justify-between gap-18 rounded-8 bg-fill-surfaceBase px-16 py-20 max-lg:flex-col max-md:px-12 max-md:py-12"
       )}
     >
       <div
@@ -141,7 +141,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
           <>
             <div
               className={cx("flex items-center justify-between ", {
-                "border-b-1/2 border-slate-600 pb-18": isOpen && isMobile,
+                "border-b-1/2 border-stroke-primary pb-18": isOpen && isMobile,
               })}
             >
               <div className="flex items-center gap-20">
@@ -150,7 +150,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
                 )}
                 <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
                   <div className="text-body-large">{marketTitle}</div>
-                  <div className="text-body-small text-typography-secondary">{marketPoolTitle}</div>
+                  <div className="text-body-small text-textIcon-secondary">{marketPoolTitle}</div>
                 </div>
               </div>
               {isMobile && (
@@ -227,11 +227,11 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
                         <div className="relative shrink-0">
                           <Menu>
                             <Menu.Button as="div">
-                              <MenuDotsIcon className="size-20 cursor-pointer text-typography-secondary hover:text-typography-primary" />
+                              <MenuDotsIcon className="size-20 cursor-pointer text-textIcon-secondary hover:text-textIcon-primary" />
                             </Menu.Button>
                             <Menu.Items
                               as="div"
-                              className="absolute right-0 top-full z-10 mt-8 min-w-max overflow-hidden rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
+                              className="absolute right-0 top-full z-10 mt-8 min-w-max overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-fill-surfaceBase outline-none"
                             >
                               {canBridgeInMarket && (
                                 <Menu.Item

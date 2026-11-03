@@ -105,7 +105,7 @@ function CollateralSelectorDesktop(props: Props) {
 function ConversionGroupHeaderRow({ children }: { children: React.ReactNode }) {
   return (
     <tr>
-      <td colSpan={2} className="px-16 pb-4 pt-12 text-12 text-typography-secondary">
+      <td colSpan={2} className="px-16 pb-4 pt-12 text-12 text-textIcon-secondary">
         {children}
       </td>
     </tr>
@@ -157,7 +157,7 @@ function CollateralListItemDesktop({
 
           {variant === "destination" && (
             <>
-              <ArrowRightIcon className="text-slate-100" />
+              <ArrowRightIcon className="text-textIcon-secondary" />
               <div className="flex items-center gap-4">
                 <img
                   src={getChainIcon(
@@ -212,13 +212,13 @@ function CollateralSelectorMobile(props: Props) {
   return (
     <SelectorBaseMobileList>
       {props.conversionOptions?.length ? (
-        <div className="text-12 text-typography-secondary">
+        <div className="text-12 text-textIcon-secondary">
           <Trans>Margin token: {marginTokenSymbol}</Trans>
         </div>
       ) : null}
       {renderOptions(props.options)}
       {props.conversionOptions?.length ? (
-        <div className="pt-8 text-12 text-typography-secondary">
+        <div className="pt-8 text-12 text-textIcon-secondary">
           <Trans>Converted to {marginTokenSymbol} in the same order</Trans>
         </div>
       ) : null}

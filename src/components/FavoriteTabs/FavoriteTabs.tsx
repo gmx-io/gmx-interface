@@ -46,7 +46,7 @@ export function FavoriteTabs({
           opt === "recently-listed" && recentlyListedCount > 0 ? (
             <span className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
               {labels[opt]}
-              <span className="flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 text-12 font-medium text-typography-secondary">
+              <span className="flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 text-12 font-medium text-textIcon-secondary">
                 {recentlyListedCount}
               </span>
             </span>

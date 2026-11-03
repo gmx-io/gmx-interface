@@ -38,7 +38,7 @@
   position: sticky;
   right: 0;
   z-index: 10;
-  background: var(--color-slate-900);
+  background: var(--color-fill-surfaceBase);
 
   &::before {
     content: "";
@@ -48,7 +48,7 @@
     right: 100%;
     width: 16px;
     background: linear-gradient(90deg, rgba(18, 20, 33, 0) 0%, rgba(18, 20, 33, 0.1) 100%);
-    border-right: 1px solid var(--color-slate-600);
+    border-right: 1px solid var(--color-stroke-primary);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.2s;
@@ -65,16 +65,17 @@
 
 tbody > tr:nth-child(odd) > .PositionItem-actions-cell {
   background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
-    var(--color-slate-900);
+    var(--color-fill-surfaceBase);
 }
 
 .TableTr_hoverable:nth-child(even):hover > .PositionItem-actions-cell {
   background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
-    linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-slate-900);
+    linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-fill-surfaceBase);
 }
 
 .TableTr_hoverable:nth-child(odd):hover > .PositionItem-actions-cell {
-  background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-slate-900);
+  background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)),
+    var(--color-fill-surfaceBase);
 }
 
 @media (max-width: 800px) {

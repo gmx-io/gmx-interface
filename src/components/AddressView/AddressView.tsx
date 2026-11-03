@@ -49,7 +49,7 @@ export default function AddressView({
     if (account === address) {
       return (
         <span className="flex items-center gap-4">
-          <Trans>You</Trans> <span className="text-typography-secondary">{trader}</span>
+          <Trans>You</Trans> <span className="text-textIcon-secondary">{trader}</span>
         </span>
       );
     }

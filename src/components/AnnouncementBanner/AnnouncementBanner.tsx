@@ -34,10 +34,10 @@ type AnnouncementBannerProps = {
 };
 
 const variantContainerClass: Record<AnnouncementVariant, string> = {
-  info: "bg-cold-blue-900/90",
-  warning: "bg-yellow-900/90",
-  error: "bg-red-900/90",
-  success: "bg-green-900/90",
+  info: "bg-blue-background/90",
+  warning: "bg-yellow-background/90",
+  error: "bg-red-background/90",
+  success: "bg-green-background/90",
 };
 
 const variantDividerClass: Record<AnnouncementVariant, string> = {
@@ -55,24 +55,24 @@ const variantBorderClass: Record<AnnouncementVariant, string> = {
 };
 
 const variantAccentTextClass: Record<AnnouncementVariant, string> = {
-  info: "text-blue-300",
-  warning: "text-yellow-300",
-  error: "text-red-100",
-  success: "text-green-300",
+  info: "text-blue-strong",
+  warning: "text-yellow-strong",
+  error: "text-red-secondary",
+  success: "text-green-strong",
 };
 
 const variantDotActiveClass: Record<AnnouncementVariant, string> = {
-  info: "bg-blue-300",
-  warning: "bg-yellow-300",
-  error: "bg-red-100",
-  success: "bg-green-300",
+  info: "bg-blue-strong",
+  warning: "bg-yellow-strong",
+  error: "bg-red-secondary",
+  success: "bg-green-strong",
 };
 
 const variantDotInactiveClass: Record<AnnouncementVariant, string> = {
-  info: "bg-blue-300/30 group-hover:bg-blue-300/60",
-  warning: "bg-yellow-300/30 group-hover:bg-yellow-300/60",
-  error: "bg-red-100/30 group-hover:bg-red-100/60",
-  success: "bg-green-300/30 group-hover:bg-green-300/60",
+  info: "bg-blue-strong/30 group-hover:bg-blue-strong/60",
+  warning: "bg-yellow-strong/30 group-hover:bg-yellow-strong/60",
+  error: "bg-red-secondary/30 group-hover:bg-red-secondary/60",
+  success: "bg-green-strong/30 group-hover:bg-green-strong/60",
 };
 
 function HeaderIcon({ kind, className }: { kind: "info" | "alert" | "success" | ReactNode; className: string }) {
@@ -114,7 +114,7 @@ export function AnnouncementBanner({
           {headerIcon !== undefined && <HeaderIcon kind={headerIcon} className={cx("size-20 shrink-0", accentText)} />}
           <p
             className={cx(
-              "text-body-medium font-medium text-typography-primary",
+              "text-body-medium font-medium text-textIcon-primary",
               truncateHeader ? "truncate" : "break-words"
             )}
           >
@@ -125,7 +125,7 @@ export function AnnouncementBanner({
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 cursor-pointer text-typography-secondary hover:text-typography-primary"
+            className="shrink-0 cursor-pointer text-textIcon-secondary hover:text-textIcon-primary"
             data-qa="announcement-banner-close"
             aria-label={t`Close`}
           >
@@ -135,7 +135,7 @@ export function AnnouncementBanner({
       </div>
 
       <div className="flex flex-col gap-4 p-12">
-        <div className="text-body-medium leading-[1.3] text-typography-primary [&_a:hover]:!underline [&_a]:!text-blue-300 [&_a]:!no-underline">
+        <div className="text-body-medium leading-[1.3] text-textIcon-primary [&_a:hover]:!underline [&_a]:!text-blue-strong [&_a]:!no-underline">
           {children}
         </div>
 

@@ -270,7 +270,7 @@ export function GmShiftBox({
     <>
       <form className="flex flex-col gap-12" onSubmit={handleFormSubmit}>
         <div>
-          <div className="bg-slate-900 p-12">
+          <div className="bg-fill-surfaceBase p-12">
             <div className="flex flex-col gap-4">
               <BuyInputSection
                 topLeftLabel={t`Pay`}
@@ -338,7 +338,7 @@ export function GmShiftBox({
             />
           </div>
 
-          <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
+          <div className="rounded-b-8 border-t border-stroke-primary bg-fill-surfaceBase p-12">
             <SwitchToSettlementChainWarning topic="shift" />
             <SwitchToSettlementChainButtons>
               <ButtonTooltipWrapper content={submitState.errorDescription}>
@@ -350,7 +350,7 @@ export function GmShiftBox({
           </div>
         </div>
 
-        <div className="flex flex-col gap-14 rounded-8 bg-slate-900 p-12">
+        <div className="flex flex-col gap-14 rounded-8 bg-fill-surfaceBase p-12">
           <GmFees
             operation={Operation.Shift}
             totalFees={fees?.totalFees}

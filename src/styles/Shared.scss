@@ -9,7 +9,7 @@ body,
   height: 100%;
   width: 100%;
   background-color: var(--main-bg-color);
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 :root {
@@ -74,7 +74,7 @@ code {
 }
 
 :root {
-  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
+  scrollbar-color: var(--color-textIcon-disabled) var(--color-fill-surfaceBase);
 }
 
 @supports selector(::-webkit-scrollbar) {
@@ -91,35 +91,31 @@ code {
 
     /* Track */
     ::-webkit-scrollbar-track {
-      background-color: var(--color-slate-900);
+      background-color: var(--color-fill-surfaceBase);
     }
 
     /* Handle */
     ::-webkit-scrollbar-thumb {
-      background-color: var(--color-slate-500);
+      background-color: var(--color-textIcon-disabled);
       border-radius: 15px;
     }
   }
 }
 
 :root {
-  --main-bg-color: var(--color-slate-950);
-  --dark-blue: var(--color-slate-900);
-  --dark-blue-bg: var(--color-slate-900);
-  --dark-blue-accent: var(--color-slate-100);
-  --primary-btn-bg: var(--color-blue-600);
-  --primary-btn-hover: var(--color-blue-400);
-  --primary-btn-active: color-mix(in srgb, var(--color-blue-300), var(--color-blue-400) 90%);
-  --dark-blue-hover: var(--color-cold-blue-900);
-  --dark-blue-border: var(--color-gray-800);
-  --dark-blue-active: var(--color-cold-blue-700);
-  --warning-yellow: var(--color-yellow-300);
+  --main-bg-color: var(--color-fill-background);
+  --dark-blue: var(--color-fill-surfaceBase);
+  --dark-blue-bg: var(--color-fill-surfaceBase);
+  --dark-blue-accent: var(--color-textIcon-secondary);
+  --primary-btn-bg: var(--color-button-primary);
+  --dark-blue-hover: var(--color-blue-background);
+  --warning-yellow: var(--color-yellow-strong);
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 8px;
-  --error-red: var(--color-red-500);
-  --error-red-hover: var(--color-red-400);
-  --green: var(--color-green-500);
+  --error-red: var(--color-red-strong);
+  --error-red-hover: var(--color-red-strong);
+  --green: var(--color-green-strong);
 
   --default-container-padding: 3.2rem;
   --default-container-padding-mobile: 1rem;
@@ -145,7 +141,7 @@ input[type="number"] {
 // TODO: remove this
 input {
   font-size: var(--font-size-body-medium);
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   outline: none;
   background: none;
   padding: 1.25rem;
@@ -183,7 +179,7 @@ tr {
 }
 
 .muted {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
 }
 
 .strong {
@@ -217,13 +213,13 @@ a.plain {
 }
 
 .default-btn {
-  background: var(--color-blue-600);
+  background: var(--color-button-primary);
   border-radius: 4px;
   font-size: var(--font-size-body-medium);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: var(--color-white) !important;
+  color: var(--color-textIcon-onButton) !important;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
   /* padding: 9px 16px!important; */
@@ -346,7 +342,7 @@ s .default-btn:active {
 button.btn-link {
   margin-top: 1.5rem;
   background: none;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   border: none;
   padding: 0;
   font-size: var(--font-size-body-medium);
@@ -400,7 +396,7 @@ button.btn-link:hover .logout-icon {
 
 .subtext {
   font-size: 1.2rem;
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   margin-left: 0.25rem;
 }
 

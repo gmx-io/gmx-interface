@@ -44,32 +44,32 @@ export default function NestedTab<V extends string | number>({
             type="button"
             className={cx(
               `-mb-[0.5px] flex items-center justify-center gap-4 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11
-              font-medium hover:text-typography-primary`,
+              font-medium hover:text-textIcon-primary`,
               commonOptionClassname,
               {
-                "border-b-blue-300 !text-typography-primary": selectedSubOption,
-                "text-typography-secondary": !selectedSubOption,
+                "border-b-blue-strong !text-textIcon-primary": selectedSubOption,
+                "text-textIcon-secondary": !selectedSubOption,
               }
             )}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="size-16 px-2 text-typography-secondary" />
+            <ChevronDownIcon className="size-16 px-2 text-textIcon-secondary" />
           </button>
         ) : (
           <Button
             type="button"
             variant="ghost"
-            className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}
+            className={cx({ "!bg-button-secondary !text-textIcon-primary": selectedSubOption })}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="mt-1 size-16 px-2 text-typography-secondary" />
+            <ChevronDownIcon className="mt-1 size-16 px-2 text-textIcon-secondary" />
           </Button>
         )}
       </Menu.Button>
       <FloatingPortal>
         <Menu.Items
           as="div"
-          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-slate-600 bg-slate-900 outline-none"
+          className="z-[1000] mt-8 overflow-hidden rounded-8 border border-stroke-primary bg-fill-surfaceBase outline-none"
           ref={refs.setFloating}
           style={floatingStyles}
         >
@@ -79,8 +79,8 @@ export default function NestedTab<V extends string | number>({
                 as="div"
                 key={subOpt.value}
                 className={cx(
-                  "text-body-medium cursor-pointer p-8 font-medium text-typography-secondary hover:bg-fill-surfaceHover hover:text-typography-primary",
-                  { "text-typography-primary": subOpt.value === selectedValue }
+                  "text-body-medium cursor-pointer p-8 font-medium text-textIcon-secondary hover:bg-fill-surfaceHover hover:text-textIcon-primary",
+                  { "text-textIcon-primary": subOpt.value === selectedValue }
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}
               >

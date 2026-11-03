@@ -42,7 +42,7 @@ const getPurposeColor = (purpose: string) => {
     case "express":
       return "text-pink-400";
     default:
-      return "text-gray-400";
+      return "text-textIcon-secondary";
   }
 };
 
@@ -51,12 +51,12 @@ const formatEventType = (type: string) => {
 };
 
 const getEventColor = (type: string) => {
-  if (type.includes("success")) return "text-green-500";
-  if (type.includes("failed")) return "text-red-500";
+  if (type.includes("success")) return "text-green-strong";
+  if (type.includes("failed")) return "text-red-strong";
   if (type.includes("timeout")) return "text-orange-500";
-  if (type.includes("start")) return "text-blue-500";
+  if (type.includes("start")) return "text-button-primary";
   if (type.includes("fallback")) return "text-purple-500";
-  return "text-gray-500";
+  return "text-textIcon-disabled";
 };
 
 const getThreadName = (isInWorker: boolean) => {
@@ -74,7 +74,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="overflow-x-auto">
           <Table>
-            <thead className="sticky top-0 z-10 bg-slate-900">
+            <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
               <TableTheadTr>
                 <TableTh padding="compact">
                   <Trans>PROVIDER</Trans>
@@ -106,17 +106,17 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
               {allRpcStats.map((rpc, index) => (
                 <TableTr key={`${rpc.endpoint}-${rpc.purpose}-${index}`}>
                   <TableTd padding="compact">
-                    <div className="text-sm font-semibold text-white">{rpc.providerName}</div>
+                    <div className="text-sm font-semibold text-textIcon-onButton">{rpc.providerName}</div>
                   </TableTd>
                   <TableTd padding="compact">
                     <div className="text-xs flex flex-wrap gap-1">
                       {rpc.isPrimary && (
-                        <span className="text-green-400">
+                        <span className="text-green-secondary">
                           <Trans>Primary</Trans>
                         </span>
                       )}
                       {rpc.isSecondary && (
-                        <span className="text-yellow-300">
+                        <span className="text-yellow-strong">
                           <Trans>Secondary</Trans>
                         </span>
                       )}
@@ -127,7 +127,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.banTime ? (
-                      <span className="text-xs font-semibold text-red-500">
+                      <span className="text-xs font-semibold text-red-strong">
                         {new Date(rpc.banTime).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -136,7 +136,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                         })}
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-500">—</span>
+                      <span className="text-xs text-textIcon-disabled">—</span>
                     )}
                   </TableTd>
                   <TableTd padding="compact">
@@ -144,27 +144,27 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.isPublic ? (
-                      <span className="text-xs text-green-400">
+                      <span className="text-xs text-green-secondary">
                         <Trans>Public</Trans>
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-textIcon-secondary">
                         <Trans>Private</Trans>
                       </span>
                     )}
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.responseTime !== undefined ? (
-                      <span className="text-xs text-white">{t`${rpc.responseTime}ms`}</span>
+                      <span className="text-xs text-textIcon-onButton">{t`${rpc.responseTime}ms`}</span>
                     ) : (
-                      <span className="text-xs text-gray-500">—</span>
+                      <span className="text-xs text-textIcon-disabled">—</span>
                     )}
                   </TableTd>
                   <TableTd padding="compact">
                     {rpc.blockNumber !== undefined ? (
-                      <span className="text-xs text-white">{rpc.blockNumber}</span>
+                      <span className="text-xs text-textIcon-onButton">{rpc.blockNumber}</span>
                     ) : (
-                      <span className="text-xs text-gray-500">—</span>
+                      <span className="text-xs text-textIcon-disabled">—</span>
                     )}
                   </TableTd>
                 </TableTr>
@@ -205,7 +205,7 @@ export function EventsPanel({
                   <div className="text-sm font-semibold">
                     <Trans>Multicall idle</Trans>
                   </div>
-                  <div className="text-xs text-gray-500">{t`${idleSeconds}s`}</div>
+                  <div className="text-xs text-textIcon-disabled">{t`${idleSeconds}s`}</div>
                 </TableTd>
               </TableTr>
             </tbody>
@@ -213,7 +213,7 @@ export function EventsPanel({
         ) : (
           <div className="overflow-x-auto">
             <Table>
-              <thead className="sticky top-0 z-10 bg-slate-900">
+              <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
                 <TableTheadTr>
                   <TableTh padding="compact" className="text-left">
                     <Trans>THREAD</Trans>
@@ -245,7 +245,9 @@ export function EventsPanel({
                             <div className={`text-xs font-semibold ${getEventColor(event.type)}`}>
                               {formatEventType(event.type)}
                             </div>
-                            {chainAndProvider && <div className="text-xs text-gray-500">{chainAndProvider}</div>}
+                            {chainAndProvider && (
+                              <div className="text-xs text-textIcon-disabled">{chainAndProvider}</div>
+                            )}
                           </div>
                         </TableTd>
                       </TableTr>
@@ -288,10 +290,10 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
+                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
                       <Trans>Account type</Trans>
                     </div>
-                    <div className="text-base text-white">
+                    <div className="text-base text-textIcon-onButton">
                       {getIsLargeAccount() ? t`Large account` : t`Regular account`}
                     </div>
                   </div>
@@ -300,7 +302,7 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
+                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
                       <Trans>Force failures</Trans>
                     </div>
                     <div className="space-y-4">
@@ -326,40 +328,40 @@ export function DebugControlsPanel({
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
+                    <div className="text-base mb-6 font-semibold text-textIcon-secondary">
                       <Trans>Multicall simulation</Trans>
                     </div>
                     <div className="space-y-8">
                       <div>
-                        <h4 className="text-sm mb-6 font-semibold text-gray-400">
+                        <h4 className="text-sm mb-6 font-semibold text-textIcon-secondary">
                           <Trans>Worker thread</Trans>
                         </h4>
                         <div className="space-y-6">
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
-                            textClassName="text-base text-white"
+                            textClassName="text-base text-textIcon-onButton"
                           >
                             <Trans>Primary failed</Trans>
                           </ToggleSwitch>
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
-                            textClassName="text-base text-white"
+                            textClassName="text-base text-textIcon-onButton"
                           >
                             <Trans>Primary timeout</Trans>
                           </ToggleSwitch>
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-sm mb-6 font-semibold text-gray-400">
+                        <h4 className="text-sm mb-6 font-semibold text-textIcon-secondary">
                           <Trans>Main thread</Trans>
                         </h4>
                         <div className="space-y-6">
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
-                            textClassName="text-base text-white"
+                            textClassName="text-base text-textIcon-onButton"
                           >
                             <Trans>Primary failed</Trans>
                           </ToggleSwitch>
@@ -391,9 +393,9 @@ export function NetworkStatusSection({
 
   const getStatusColor = (trackingFailed: boolean, isActive: boolean) => {
     if (!isActive) {
-      return "text-gray-400";
+      return "text-textIcon-secondary";
     }
-    return trackingFailed ? "text-red-400" : "text-green-400";
+    return trackingFailed ? "text-red-strong" : "text-green-secondary";
   };
 
   const getStatusText = (trackingFailed: boolean, isActive: boolean) => {
@@ -413,7 +415,7 @@ export function NetworkStatusSection({
       <div className="max-h-[400px] min-h-0 flex-1 overflow-y-auto">
         <div className="overflow-x-auto">
           <Table>
-            <thead className="sticky top-0 z-10 bg-slate-900">
+            <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
               <TableTheadTr>
                 <TableTh padding="compact">
                   <Trans>TRACKER</Trans>
@@ -426,24 +428,26 @@ export function NetworkStatusSection({
             <tbody>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold text-white">
+                  <div className="text-sm font-semibold text-textIcon-onButton">
                     <Trans>Global network</Trans>
                   </div>
                 </TableTd>
                 <TableTd padding="compact">
-                  <span className={`text-xs font-semibold ${isGlobalNetworkDown ? "text-red-400" : "text-green-400"}`}>
+                  <span
+                    className={`text-xs font-semibold ${isGlobalNetworkDown ? "text-red-strong" : "text-green-secondary"}`}
+                  >
                     {isGlobalNetworkDown ? t`Down` : t`Up`}
                   </span>
                 </TableTd>
               </TableTr>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold text-white">
+                  <div className="text-sm font-semibold text-textIcon-onButton">
                     <Trans>Summary</Trans>
                   </div>
                 </TableTd>
                 <TableTd padding="compact">
-                  <span className="text-xs text-white">
+                  <span className="text-xs text-textIcon-onButton">
                     <Trans>
                       {failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount}{" "}
                       total)
@@ -454,7 +458,7 @@ export function NetworkStatusSection({
               {trackerEntries.length === 0 ? (
                 <TableTr>
                   <TableTd padding="compact" colSpan={2}>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-textIcon-disabled">
                       <Trans>No trackers registered</Trans>
                     </span>
                   </TableTd>
@@ -463,7 +467,7 @@ export function NetworkStatusSection({
                 trackerEntries.map(([trackerKey, state]) => (
                   <TableTr key={trackerKey}>
                     <TableTd padding="compact">
-                      <div className="text-xs text-white">{trackerKey}</div>
+                      <div className="text-xs text-textIcon-onButton">{trackerKey}</div>
                     </TableTd>
                     <TableTd padding="compact">
                       <span className={`text-xs font-semibold ${getStatusColor(state.trackingFailed, state.isActive)}`}>
@@ -490,7 +494,7 @@ export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
       <div className="max-h-[400px] overflow-y-auto">
         <div className="overflow-x-auto">
           <Table>
-            <thead className="sticky top-0 z-10 bg-slate-900">
+            <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
               <TableTheadTr>
                 <TableTh padding="compact">
                   <Trans>MARKET</Trans>

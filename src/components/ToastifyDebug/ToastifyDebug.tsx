@@ -27,7 +27,7 @@ export function ToastifyDebug(props: { error: string }) {
         </span>
         <span
           className={cx("inline-block cursor-pointer border-b border-dashed", {
-            "text-green-500": hasCopied,
+            "text-green-strong": hasCopied,
           })}
           onClick={handleCopy}
         >

@@ -59,7 +59,7 @@ export function NextStoredImpactRows() {
           <SyntheticsInfoRow
             label={t`Estimated impact rebate`}
             value={<DeltaUsdValue deltaUsd={nextPositionValues?.potentialPriceImpactDiffUsd} />}
-            valueClassName="numbers text-green-500"
+            valueClassName="numbers text-green-strong"
           />
         )}
     </>

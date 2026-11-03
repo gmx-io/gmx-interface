@@ -1,9 +1,9 @@
 export function getPositiveOrNegativeClass(
   value?: bigint,
-  zeroValue: "" | "text-red-500" | "text-green-500" = ""
+  zeroValue: "" | "text-red-strong" | "text-green-strong" = ""
 ): string {
   if (value === undefined) {
     return "";
   }
-  return value === 0n ? zeroValue : value < 0n ? "text-red-500" : "text-green-500";
+  return value === 0n ? zeroValue : value < 0n ? "text-red-strong" : "text-green-strong";
 }

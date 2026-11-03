@@ -64,12 +64,12 @@ export function ModeTabs({ mode, setMode }: Props) {
   return (
     <div
       ref={containerRef}
-      className="relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-slate-800 p-2 max-md:w-full"
+      className="relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-fill-surfaceElevated p-2 max-md:w-full"
     >
       {thumbStyle && (
         <div
           aria-hidden
-          className="absolute bottom-2 top-2 rounded-6 bg-slate-600 transition-all duration-200 ease-out"
+          className="absolute bottom-2 top-2 rounded-6 bg-fill-accent transition-all duration-200 ease-out"
           style={thumbStyle}
         />
       )}
@@ -77,8 +77,8 @@ export function ModeTabs({ mode, setMode }: Props) {
         ref={perpRef}
         type="button"
         className={cx(itemClass, {
-          "text-typography-primary": mode === "perp",
-          "text-typography-secondary hover:text-typography-primary": mode !== "perp",
+          "text-textIcon-primary": mode === "perp",
+          "text-textIcon-secondary hover:text-textIcon-primary": mode !== "perp",
         })}
         onClick={() => setMode("perp")}
         data-selected={mode === "perp"}
@@ -89,8 +89,8 @@ export function ModeTabs({ mode, setMode }: Props) {
         ref={swapRef}
         type="button"
         className={cx(itemClass, {
-          "text-typography-primary": mode === "swap",
-          "text-typography-secondary hover:text-typography-primary": mode !== "swap",
+          "text-textIcon-primary": mode === "swap",
+          "text-textIcon-secondary hover:text-textIcon-primary": mode !== "swap",
         })}
         onClick={() => setMode("swap")}
         data-selected={mode === "swap"}

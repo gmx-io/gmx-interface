@@ -77,8 +77,8 @@ function LineSpan({ span }: { span: TooltipString }) {
     <NumericText
       text={span.text}
       className={cx({
-        "text-red-500": span.state === "error",
-        "text-green-500": span.state === "success",
+        "text-red-strong": span.state === "error",
+        "text-green-strong": span.state === "success",
         muted: span.state === "muted",
       })}
     />
@@ -376,7 +376,7 @@ export function TradeHistoryRow({
                 <TooltipWithPortal
                   className={cx("TradeHistoryRow-action-handle")}
                   handleClassName={cx("TradeHistoryRow-action-handle", {
-                    "text-red-500 !decoration-red-500/50": msg.isActionError,
+                    "text-red-strong !decoration-red-strong/50": msg.isActionError,
                   })}
                   handle={<span className="font-medium">{msg.action}</span>}
                   renderContent={renderActionTooltipContent}
@@ -384,7 +384,7 @@ export function TradeHistoryRow({
               ) : (
                 <span
                   className={cx("TradeHistoryRow-action-handle font-medium", {
-                    "text-red-500": msg.isActionError,
+                    "text-red-strong": msg.isActionError,
                   })}
                 >
                   {msg.action}
@@ -401,7 +401,7 @@ export function TradeHistoryRow({
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transactionHash}`}
-                  className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
+                  className="text-body-small ml-5 text-textIcon-secondary hover:text-textIcon-primary"
                 >
                   <Trans>Events</Trans>
                 </Link>
@@ -466,15 +466,15 @@ export function TradeHistoryRow({
         </TableTd>
         <TableTd>
           {!msg.pnl ? (
-            <span className="text-typography-secondary">-</span>
+            <span className="text-textIcon-secondary">-</span>
           ) : msg.pnlTooltip ? (
             <TooltipWithPortal
               handle={
                 <NumericText
                   text={msg.pnl}
                   className={cx("numbers", {
-                    "text-red-500": msg.pnlState === "error",
-                    "text-green-500": msg.pnlState === "success",
+                    "text-red-strong": msg.pnlState === "error",
+                    "text-green-strong": msg.pnlState === "success",
                   })}
                 />
               }
@@ -484,8 +484,8 @@ export function TradeHistoryRow({
             <NumericText
               text={msg.pnl}
               className={cx("numbers", {
-                "text-red-500": msg.pnlState === "error",
-                "text-green-500": msg.pnlState === "success",
+                "text-red-strong": msg.pnlState === "error",
+                "text-green-strong": msg.pnlState === "success",
               })}
             />
           )}
@@ -497,14 +497,14 @@ export function TradeHistoryRow({
                 msg.fees ? (
                   <NumericText text={msg.fees} className="numbers" />
                 ) : (
-                  <span className="text-typography-secondary">-</span>
+                  <span className="text-textIcon-secondary">-</span>
                 )
               }
               maxAllowedWidth={FEES_TOOLTIP_WIDTH}
               renderContent={renderFeesTooltipContent}
             />
           ) : !msg.fees ? (
-            <span className="text-typography-secondary">-</span>
+            <span className="text-textIcon-secondary">-</span>
           ) : (
             <NumericText text={msg.fees} className="numbers" />
           )}

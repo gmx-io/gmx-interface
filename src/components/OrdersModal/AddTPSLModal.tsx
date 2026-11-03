@@ -1206,7 +1206,7 @@ export function AddTPSLModal({
               rightHeadline={
                 <button
                   type="button"
-                  className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                  className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
                   onClick={(e) => {
                     e.stopPropagation();
                     closeSize.setMaxCloseSize();
@@ -1309,7 +1309,7 @@ export function AddTPSLModal({
                       <>
                         <span
                           className={cx({
-                            "text-green-500": netPriceImpactAndFeesDisplay.isPriceImpactPositive,
+                            "text-green-strong": netPriceImpactAndFeesDisplay.isPriceImpactPositive,
                           })}
                         >
                           {netPriceImpactAndFeesDisplay.formattedPriceImpactPercentage}
@@ -1317,7 +1317,7 @@ export function AddTPSLModal({
                         /{" "}
                         <span
                           className={cx({
-                            "text-green-500": netPriceImpactAndFeesDisplay.isTotalFeePositive,
+                            "text-green-strong": netPriceImpactAndFeesDisplay.isTotalFeePositive,
                           })}
                         >
                           {netPriceImpactAndFeesDisplay.formattedTotalFeePercentage}

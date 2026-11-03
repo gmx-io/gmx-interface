@@ -14,11 +14,11 @@ export const ReferralCodeInput = forwardRef(function ReferralCodeInput(
         disabled={disabled}
         type="text"
         placeholder={t`Enter referral code`}
-        className="text-input peer pl-40 !text-typography-primary"
+        className="text-input peer pl-40 !text-textIcon-primary"
         value={value}
         onChange={({ target }) => onChange(target.value)}
       />
-      <ReferralsIcon className="absolute left-12 size-20 shrink-0 text-typography-secondary peer-focus:text-blue-300" />
+      <ReferralsIcon className="absolute left-12 size-20 shrink-0 text-textIcon-secondary peer-focus:text-blue-strong" />
     </div>
   );
 });

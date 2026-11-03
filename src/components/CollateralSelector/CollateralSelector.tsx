@@ -47,8 +47,8 @@ export function CollateralSelector(props: Props) {
       label={props.selectedTokenSymbol}
       modalLabel={t`Collateral in`}
       qa="collateral-in-selector"
-      chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
-      handleClassName="text-13 group-gmx-hover/selector-field:text-blue-300"
+      chevronClassName="w-12 text-textIcon-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-strong"
+      handleClassName="text-13 group-gmx-hover/selector-field:text-blue-strong"
       popoverReferenceRef={props.popoverReferenceRef}
       disabled={props.disabled}
     >
@@ -145,7 +145,7 @@ function CollateralSelectorMobile(props: Props) {
               }}
               tokenData={option}
             />
-            <p className="text-body-small text-typography-secondary last:mb-0">{description}</p>
+            <p className="text-body-small text-textIcon-secondary last:mb-0">{description}</p>
           </>
         );
       })}

@@ -14,7 +14,7 @@ import WarnIcon from "img/ic_warn.svg?react";
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="mb-4 mt-16 border-b border-slate-600 pb-4 text-14 text-slate-100">{title}</div>
+      <div className="mb-4 mt-16 border-b border-stroke-primary pb-4 text-14 text-textIcon-secondary">{title}</div>
       <div className="flex flex-col gap-8">{children}</div>
     </div>
   );
@@ -31,8 +31,8 @@ export function BannerTest() {
         <Section title="Inline span + text">
           <AlertInfoCard onClose={noop}>
             <Trans>
-              <span className="cursor-pointer font-medium text-blue-300 underline">Switch to TBTC-TBTC pool</span> for
-              potentially lower price impact
+              <span className="cursor-pointer font-medium text-blue-strong underline">Switch to TBTC-TBTC pool</span>{" "}
+              for potentially lower price impact
             </Trans>
           </AlertInfoCard>
         </Section>
@@ -77,10 +77,10 @@ export function BannerTest() {
         <Section title="Stacked spans">
           <ColorfulBanner color="blue" icon={AlertIcon} onClose={noop}>
             <div className="flex flex-col gap-4">
-              <span className="font-medium text-blue-300">
+              <span className="font-medium text-blue-strong">
                 <Trans>Skip creating a referral code?</Trans>
               </span>
-              <span className="text-blue-100">
+              <span className="text-blue-secondary">
                 <Trans>Earn rewards by sharing your referral code</Trans>
               </span>
             </div>
@@ -172,7 +172,7 @@ export function BannerTest() {
           <ColorfulBanner color="blue" icon={InfoIcon} onClose={noop}>
             <div className="flex flex-col gap-8">
               <span>
-                <span className="cursor-pointer font-medium text-blue-300">
+                <span className="cursor-pointer font-medium text-blue-strong">
                   <Trans>Use a TWAP order</Trans>
                 </span>{" "}
                 <Trans>for lower net price impact</Trans>
@@ -208,25 +208,25 @@ export function BannerTest() {
             <div className="flex flex-col gap-4">
               <div className="flex justify-between gap-4">
                 <div>Price impact</div>
-                <div className="font-medium text-yellow-300">-2.50%</div>
+                <div className="font-medium text-yellow-strong">-2.50%</div>
               </div>
               <div className="flex justify-between gap-4">
                 <div>Execution fee</div>
-                <div className="font-medium text-yellow-300">$1.25</div>
+                <div className="font-medium text-yellow-strong">$1.25</div>
               </div>
             </div>
           </AlertInfoCard>
         </Section>
 
         <Section title="Error messages">
-          <ColorfulBanner color="red" className="text-red-100">
+          <ColorfulBanner color="red" className="text-red-secondary">
             <Trans>
               GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the
               bridge or go to the ETH/USD pool to withdraw your GM tokens.
             </Trans>
           </ColorfulBanner>
 
-          <ColorfulBanner color="red" className="text-red-100">
+          <ColorfulBanner color="red" className="text-red-secondary">
             <Trans>Buy GM failed</Trans>
           </ColorfulBanner>
         </Section>

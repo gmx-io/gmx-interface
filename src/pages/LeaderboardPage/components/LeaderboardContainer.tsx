@@ -159,8 +159,8 @@ export function LeaderboardContainer() {
       value,
       label: leaderboardDataTypeLabels[value],
       className: {
-        active: "!text-white !bg-blue-400",
-        regular: "hover:!text-typography-primary !bg-button-secondary",
+        active: "!text-textIcon-onButton !bg-button-primary",
+        regular: "hover:!text-textIcon-primary !bg-button-secondary",
       },
     }));
   }, [leaderboardDataTypeLabels]);
@@ -177,8 +177,8 @@ export function LeaderboardContainer() {
       value,
       label: competitionLabels[value],
       className: {
-        active: "!text-white !bg-blue-400",
-        regular: "hover:!text-typography-primary !bg-button-secondary",
+        active: "!text-textIcon-onButton !bg-button-primary",
+        regular: "hover:!text-textIcon-primary !bg-button-secondary",
       },
     }));
   }, [competitionLabels]);
@@ -193,11 +193,11 @@ export function LeaderboardContainer() {
             <LeaderboardNavigation />
           </div>
         </BodyScrollFadeContainer>
-        <div className="text-body-medium font-medium text-typography-secondary">{description}</div>
+        <div className="text-body-medium font-medium text-textIcon-secondary">{description}</div>
       </div>
 
       <div>
-        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-slate-600 bg-slate-900 p-20 max-md:flex-col">
+        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-stroke-primary bg-fill-surfaceBase p-20 max-md:flex-col">
           {!isCompetition ? (
             <Tabs
               type="inline"

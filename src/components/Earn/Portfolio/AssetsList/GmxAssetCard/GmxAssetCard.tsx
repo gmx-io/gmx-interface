@@ -195,17 +195,17 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   return (
     <div className="h-full">
-      <div className="flex h-full flex-col rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
+      <div className="flex h-full flex-col rounded-8 border-1/2 border-stroke-primary bg-fill-background/50 p-16">
         <div className="flex items-start justify-between gap-12">
           <div className="flex items-center gap-12">
             <img src={gmxIcon} alt="GMX" className="size-40" />
-            <span className="text-body-large font-medium text-typography-primary">GMX</span>
+            <span className="text-body-large font-medium text-textIcon-primary">GMX</span>
           </div>
           <GmxAssetCardOptionsDropdown />
         </div>
 
         <div className="mt-12">
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-body-small text-textIcon-secondary">
             <Tooltip
               variant="iconStroke"
               handle={<Trans>Accumulated rewards</Trans>}
@@ -230,29 +230,29 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
           <div className="mt-2">
             {isStakingPowerLoading ? (
               <Skeleton
-                baseColor="#B4BBFF1A"
-                highlightColor="#B4BBFF1A"
+                baseColor="var(--color-fill-skeleton)"
+                highlightColor="var(--color-fill-skeleton)"
                 width={220}
                 height={28}
                 className="leading-base"
               />
             ) : !stakingPowerData ? (
-              <span className="text-h3 font-bold text-typography-secondary">—</span>
+              <span className="text-h3 font-bold text-textIcon-secondary">—</span>
             ) : stakingPowerData.treasuryGmxBalance === null ? (
-              <span className="text-h3 font-bold text-typography-secondary">
+              <span className="text-h3 font-bold text-textIcon-secondary">
                 <Trans>Accumulating...</Trans>
               </span>
             ) : displayProjectedRewardGmx !== undefined ? (
               <span className="text-h3 block font-bold numbers">
                 {formatAmount(displayProjectedRewardGmx, 18, 2, true)} GMX{" "}
                 {accumulatedGmxUsd !== undefined && (
-                  <span className="text-body-medium relative -top-2 whitespace-nowrap font-normal text-typography-secondary">
+                  <span className="text-body-medium relative -top-2 whitespace-nowrap font-normal text-textIcon-secondary">
                     (<UsdValue usd={accumulatedGmxUsd} />)
                   </span>
                 )}
               </span>
             ) : (
-              <span className="text-h3 font-bold text-typography-secondary">—</span>
+              <span className="text-h3 font-bold text-textIcon-secondary">—</span>
             )}
           </div>
           <div className="mt-8">
@@ -272,8 +272,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               value={
                 isUserEstimatedAprLoading ? (
                   <Skeleton
-                    baseColor="#B4BBFF1A"
-                    highlightColor="#B4BBFF1A"
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
                     width={50}
                     height={16}
                     className="leading-base"
@@ -288,7 +288,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
           </div>
         </div>
 
-        <div className="mt-12 border-t-1/2 border-slate-600" />
+        <div className="mt-12 border-t-1/2 border-stroke-primary" />
 
         <div className="mt-12 flex flex-col gap-8">
           <SyntheticsInfoRow label={<Trans>Price</Trans>} value={priceRowValue} />
@@ -296,7 +296,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
 
-        <div className="mt-12 border-t-1/2 border-slate-600" />
+        <div className="mt-12 border-t-1/2 border-stroke-primary" />
 
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
@@ -346,7 +346,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         {hasEsGmx && (
           <>
-            <div className="mt-12 border-t-1/2 border-slate-600" />
+            <div className="mt-12 border-t-1/2 border-stroke-primary" />
             <div className="mt-12 flex flex-col gap-8">
               <SyntheticsInfoRow
                 label={<Trans>Staked esGMX</Trans>}
@@ -466,7 +466,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
             />
           }
           value={
-            <span className={cx("numbers", { "text-red-500": stakingPowerData.loyaltyRatio! < 0.85 })}>
+            <span className={cx("numbers", { "text-red-strong": stakingPowerData.loyaltyRatio! < 0.85 })}>
               {(Math.min(stakingPowerData.loyaltyRatio!, 1) * 100).toFixed(1)}%
             </span>
           }
@@ -530,7 +530,7 @@ function GmxAssetCardOptionsDropdown() {
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="menu-items max-w-[160px] rounded-8 border-1/2 border-slate-600 bg-slate-900 !pb-0"
+          className="menu-items max-w-[160px] rounded-8 border-1/2 border-stroke-primary bg-fill-surfaceBase !pb-0"
         >
           <Menu.Item>
             {() => (

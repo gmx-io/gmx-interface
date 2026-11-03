@@ -109,7 +109,7 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
           const poolName = getMarketPoolName(market);
           return (
             <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-              <div className="flex items-baseline text-typography-primary">
+              <div className="flex items-baseline text-textIcon-primary">
                 <span>{indexName}</span>
                 <span className="subtext">[{poolName}]</span>
               </div>

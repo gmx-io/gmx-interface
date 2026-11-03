@@ -91,7 +91,7 @@ function ErrorBoundaryDebugWrapper({ children }: { children: ReactNode }) {
       <button
         type="button"
         aria-label={t`Trigger error boundary`}
-        className="absolute z-[11000] size-8 rounded-full bg-red-700 hover:bg-red-500"
+        className="absolute z-[11000] size-8 rounded-full bg-red-strong"
         style={debugButtonStyle}
         onClick={() => setShouldThrow(true)}
       />,
@@ -125,18 +125,18 @@ function ErrorBoundaryDebugGate({ children }: { children: ReactNode }) {
 
 function ErrorFallback({ variant = "page", onReload, wrapperClassName: wrapperClassNameProp }: ErrorFallbackProps) {
   const wrapperClassName = cx("flex w-full flex-col items-center justify-center text-center", wrapperClassNameProp, {
-    "min-h-screen bg-slate-950 px-24 py-24 max-md:px-16": variant === "app",
+    "min-h-screen bg-fill-background px-24 py-24 max-md:px-16": variant === "app",
     "min-h-[360px] grow px-24 py-24 max-md:px-16": variant === "page",
-    "h-full rounded-b-8 bg-slate-900 px-24 py-24 max-md:px-16": variant === "block",
+    "h-full rounded-b-8 bg-fill-surfaceBase px-24 py-24 max-md:px-16": variant === "block",
   });
 
   return (
     <div className={wrapperClassName}>
       <div className="flex max-w-[420px] flex-col items-center gap-12">
-        <div className="text-20 font-medium text-typography-primary">
+        <div className="text-20 font-medium text-textIcon-primary">
           <Trans>Something went wrong</Trans>
         </div>
-        <div className="text-body-medium text-typography-secondary">
+        <div className="text-body-medium text-textIcon-secondary">
           <Trans>
             Reload the page or report the issue if the <br /> problem persists
           </Trans>

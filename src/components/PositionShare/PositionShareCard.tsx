@@ -70,7 +70,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                   {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>} {formatAmount(leverage, 4, 2, true)}x
                 </span>
               </div>
-              <div className="flex items-center gap-4 font-medium text-white">
+              <div className="flex items-center gap-4 font-medium text-textIcon-onButton">
                 <TokenIcon symbol={indexToken.symbol} displaySize={14} />
                 <span>
                   {getTokenVisualMultiplier(indexToken)}

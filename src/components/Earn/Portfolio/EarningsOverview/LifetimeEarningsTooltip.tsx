@@ -41,7 +41,7 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
 function Group({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-8">
-      <span className="text-body-medium font-medium text-typography-secondary">{title}</span>
+      <span className="text-body-medium font-medium text-textIcon-secondary">{title}</span>
       <div className="flex flex-col">{children}</div>
     </div>
   );
@@ -71,7 +71,7 @@ export function LifetimeEarningsTooltipContent({
         <LeafRow label={<Trans>GLV vaults</Trans>} usd={breakdown.glvUsd} />
       </Group>
 
-      <div className="border-t-1/2 border-slate-600" />
+      <div className="border-t-1/2 border-stroke-primary" />
 
       <StatsTooltipRow
         label={<Trans>Total</Trans>}

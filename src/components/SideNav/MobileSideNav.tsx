@@ -26,24 +26,24 @@ export function MobileSideNav() {
       </Button>
       {isOpen ? (
         <Portal>
-          <div className="fixed inset-0 z-[999] bg-[#090A1480]" onClick={handleToggle} />
-          <div className="fixed right-0 top-0 z-[1000] flex h-full w-[360px] flex-col border-l-1/2 border-slate-600 bg-slate-900 pb-[var(--safe-area-inset-bottom)] pr-[var(--safe-area-inset-right)] pt-[var(--safe-area-inset-top)] max-md:w-[min(320px,100dvw)]">
+          <div className="fixed inset-0 z-[999] bg-overlay-50" onClick={handleToggle} />
+          <div className="fixed right-0 top-0 z-[1000] flex h-full w-[360px] flex-col border-l-1/2 border-stroke-primary bg-fill-surfaceBase pb-[var(--safe-area-inset-bottom)] pr-[var(--safe-area-inset-right)] pt-[var(--safe-area-inset-top)] max-md:w-[min(320px,100dvw)]">
             <div className="flex grow flex-col overflow-y-auto">
               <div className="flex items-center justify-between p-8 pb-0">
                 <LogoSection isCollapsed={false} />
 
                 <button
                   onClick={handleToggle}
-                  className="p-8 text-typography-secondary hover:text-typography-primary active:text-typography-primary"
+                  className="p-8 text-textIcon-secondary hover:text-textIcon-primary active:text-textIcon-primary"
                 >
                   <CloseIcon className="size-20" />
                 </button>
               </div>
-              <div className="grow border-b-1/2 border-slate-600 p-8">
+              <div className="grow border-b-1/2 border-stroke-primary p-8">
                 <MenuSection isCollapsed={false} onMenuItemClick={handleToggle} />
               </div>
 
-              <div className="border-b-1/2 border-slate-600 p-8">
+              <div className="border-b-1/2 border-stroke-primary p-8">
                 <ul className="flex list-none flex-col px-0">
                   <SupportChatNavItem isCollapsed={false} onClick={handleToggle} />
                   <SettingsNavItem isCollapsed={false} onClick={handleToggle} />

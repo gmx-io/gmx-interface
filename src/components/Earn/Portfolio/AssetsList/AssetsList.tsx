@@ -128,8 +128,8 @@ function AssetsList({
   }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
 
   return (
-    <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
-      <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
+    <section className={cx("flex flex-col rounded-8 bg-fill-surfaceBase", { grow: !hasAnyAssets })}>
+      <h2 className="text-body-large p-20 pb-2 font-medium text-textIcon-primary">
         <Trans>My assets</Trans>
       </h2>
 
@@ -185,8 +185,8 @@ function AssetsList({
 
       {!hasAnyAssets && (
         <div className="flex h-full flex-col items-center justify-center gap-12 p-20">
-          <EarnIcon className="size-20 text-blue-300" />
-          <span className="text-body-small text-center font-medium text-typography-secondary">
+          <EarnIcon className="size-20 text-blue-strong" />
+          <span className="text-body-small text-center font-medium text-textIcon-secondary">
             {account ? <Trans>No assets yet</Trans> : <Trans>Connect wallet to see your assets</Trans>}
           </span>
           {!account && openConnectModal && (

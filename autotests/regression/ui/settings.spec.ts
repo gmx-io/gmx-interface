@@ -43,14 +43,14 @@ for (const { tab, labels } of [
         .getByText(label, { exact: true })
         .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
         .locator("div.cursor-pointer");
-      const wasEnabled = (await toggle.getAttribute("class"))!.includes("bg-blue-400");
+      const wasEnabled = (await toggle.getAttribute("class"))!.includes("bg-button-primary");
       await toggle.click();
-      if (wasEnabled) await expect(toggle).not.toHaveClass(/bg-blue-400/);
-      else await expect(toggle).toHaveClass(/bg-blue-400/);
+      if (wasEnabled) await expect(toggle).not.toHaveClass(/bg-button-primary/);
+      else await expect(toggle).toHaveClass(/bg-button-primary/);
       await page.reload();
       await openSettings(page, tab);
-      if (wasEnabled) await expect(toggle).not.toHaveClass(/bg-blue-400/);
-      else await expect(toggle).toHaveClass(/bg-blue-400/);
+      if (wasEnabled) await expect(toggle).not.toHaveClass(/bg-button-primary/);
+      else await expect(toggle).toHaveClass(/bg-button-primary/);
     });
   }
 }
@@ -94,7 +94,7 @@ test("19.04 default allowed slippage preselects the swap preset and is disabled 
   await page.reload();
   await selectTradeDirection(page, "Swap");
   const preset = page.getByTestId("tradebox").getByRole("button", { name: "1.5%", exact: true });
-  await expect(preset).toHaveClass(/bg-blue-500/);
+  await expect(preset).toHaveClass(/bg-button-primary/);
   await expect(preset).toBeEnabled();
   for (const mode of ["Limit", "TWAP"] as const) {
     await selectTradeMode(page, mode);
@@ -102,5 +102,5 @@ test("19.04 default allowed slippage preselects the swap preset and is disabled 
   }
   await selectTradeMode(page, "Market");
   await expect(preset).toBeEnabled();
-  await expect(preset).toHaveClass(/bg-blue-500/);
+  await expect(preset).toHaveClass(/bg-button-primary/);
 });

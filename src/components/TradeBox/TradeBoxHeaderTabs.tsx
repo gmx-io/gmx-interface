@@ -116,7 +116,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const swapFields = <SwapSlippageField disabled={isLimit || isTwap} />;
 
   const fieldsRow = (
-    <div className="h-42 rounded-t-8 bg-slate-900 px-12 py-8 pb-12">
+    <div className="h-42 rounded-t-8 bg-fill-surfaceBase px-12 py-8 pb-12">
       {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );
@@ -131,20 +131,20 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
-      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "px-12")}>
+      <div className={cx("flex gap-8 bg-fill-surfaceBase", isInCurtain && !isCurtainOpen ? "p-8" : "px-12")}>
         <div className="flex grow items-stretch gap-12">
           <Tabs
             options={longShortTabsOptions}
             selectedValue={tradeType === TradeType.Swap ? undefined : tradeType}
             onChange={onTradeTypeChange}
             qa="trade-direction"
-            className="grow overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+            className="grow overflow-hidden rounded-8 !border-0 bg-fill-surfaceElevated p-0"
             regularOptionClassname={cx(
               "mb-0 grow",
               isSwap &&
                 `last:relative last:after:absolute last:after:left-0 last:after:top-[calc(50%+1px)]
                 last:after:block last:after:h-20 last:after:w-2 last:after:-translate-y-1/2 last:after:rounded-full
-                last:after:bg-slate-600 last:after:content-[''] max-md:last:after:h-16`,
+                last:after:bg-stroke-primary last:after:content-[''] max-md:last:after:h-16`,
               {
                 "!py-6 text-13": isInCurtain && !isCurtainOpen,
               }
@@ -155,7 +155,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
             onChange={onTradeTypeChange}
             qa="trade-direction-swap"
-            className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+            className="flex-none overflow-hidden rounded-8 !border-0 bg-fill-surfaceElevated p-0"
             regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
           />
         </div>
@@ -163,7 +163,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           <button onClick={handleToggleCurtain} className="group shrink-0 px-10">
             <ChevronDownIcon
               className={cx(
-                "size-18 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                "size-18 text-textIcon-secondary transition-transform duration-500 ease-out group-hover:text-textIcon-primary",
                 isCurtainOpen ? undefined : "rotate-180"
               )}
             />

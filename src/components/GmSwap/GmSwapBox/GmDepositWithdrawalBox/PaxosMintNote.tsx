@@ -13,7 +13,7 @@ export function PaxosMintNote() {
     <ExternalLink
       href={PAXOS_SIGNUP_URL}
       variant="icon"
-      className={cx("text-body-small self-start font-medium text-typography-secondary", { "px-12": isInCurtain })}
+      className={cx("text-body-small self-start font-medium text-textIcon-secondary", { "px-12": isInCurtain })}
     >
       <Trans>Business? Mint USDG 1:1 with Paxos</Trans>
     </ExternalLink>

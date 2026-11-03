@@ -53,7 +53,7 @@ import "./Tooltip.scss";
 
 export type TooltipPosition = Placement;
 
-export const DEFAULT_TOOLTIP_ARROW_CLASSNAME = "scale-3 fill-slate-700 dark:fill-[#2b2d41]";
+export const DEFAULT_TOOLTIP_ARROW_CLASSNAME = "scale-3 fill-button-background dark:fill-[#2b2d41]";
 // Gap between the trigger and the panel, in px
 export const TOOLTIP_OFFSET = 10;
 export const DEFAULT_TOOLTIP_MAX_WIDTH = 350;

@@ -42,7 +42,13 @@ export function GmFees(p: Props) {
 
     if (p.isLoading) {
       return (
-        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={120} className="leading-base" inline={true} />
+        <Skeleton
+          baseColor="var(--color-fill-skeleton)"
+          highlightColor="var(--color-fill-skeleton)"
+          width={120}
+          className="leading-base"
+          inline={true}
+        />
       );
     }
 
@@ -62,7 +68,7 @@ export function GmFees(p: Props) {
             <span>
               <span
                 className={cx("numbers", {
-                  "text-green-300": p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0,
+                  "text-green-strong": p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0,
                 })}
               >
                 {p.swapPriceImpact?.deltaUsd !== undefined && p.swapPriceImpact.deltaUsd > 0 ? "+" : "-"}
@@ -74,7 +80,7 @@ export function GmFees(p: Props) {
               {" / "}
               <span
                 className={cx("numbers", {
-                  "text-green-300": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0,
+                  "text-green-strong": p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0,
                 })}
               >
                 {p.totalFees?.deltaUsd !== undefined && p.totalFees.deltaUsd > 0 ? "+" : "-"}
@@ -92,7 +98,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Price impact`}:</div>
+                      <div className="text-textIcon-primary">{t`Price impact`}:</div>
                       <div>
                         <Trans>
                           (
@@ -121,7 +127,7 @@ export function GmFees(p: Props) {
                   <StatsTooltipRow
                     label={
                       <div>
-                        <div className="text-typography-primary">
+                        <div className="text-textIcon-primary">
                           {p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:
                         </div>
                         <div>
@@ -150,7 +156,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Swap fee`}:</div>
+                      <div className="text-textIcon-primary">{t`Swap fee`}:</div>
                       <div>
                         <Trans>
                           (
@@ -176,7 +182,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Conversion fee`}:</div>
+                      <div className="text-textIcon-primary">{t`Conversion fee`}:</div>
                       <div>
                         <Trans>
                           (
@@ -202,7 +208,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`UI fee`}:</div>
+                      <div className="text-textIcon-primary">{t`UI fee`}:</div>
                       <div>
                         <Trans>
                           (
@@ -220,7 +226,7 @@ export function GmFees(p: Props) {
                   value={<DeltaUsdValue deltaUsd={p.uiFee?.deltaUsd} />}
                   valueClassName="numbers"
                   showDollar={false}
-                  textClassName="text-red-500"
+                  textClassName="text-red-strong"
                 />
               )}
 
@@ -228,7 +234,7 @@ export function GmFees(p: Props) {
                 <StatsTooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Shift fee`}:</div>
+                      <div className="text-textIcon-primary">{t`Shift fee`}:</div>
                       <div>
                         <Trans>
                           (

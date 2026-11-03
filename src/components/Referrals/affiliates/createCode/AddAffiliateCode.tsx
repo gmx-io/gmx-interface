@@ -332,7 +332,7 @@ function AffiliateCodeFormMultichain({
           setError(getCodeError(value));
         }}
       />
-      {error && <p className="text-body-small m-0 pb-24 pt-8 text-red-500">{error}</p>}
+      {error && <p className="text-body-small m-0 pb-24 pt-8 text-red-strong">{error}</p>}
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
@@ -561,7 +561,7 @@ function AffiliateCodeForm({
           setError(getCodeError(value));
         }}
       />
-      {error && <p className="text-body-small m-0 pb-24 pt-8 text-red-500">{error}</p>}
+      {error && <p className="text-body-small m-0 pb-24 pt-8 text-red-strong">{error}</p>}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
         <AlertInfoCard type="warning" className="mb-15 text-left" hideClose>
           {rpcFailedChains.length === 1 ? (

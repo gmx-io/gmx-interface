@@ -110,7 +110,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
         disabled={disabled}
         handleClassName={cx(
           "whitespace-nowrap text-12 font-medium",
-          disabled ? "text-slate-500" : "text-typography-secondary"
+          disabled ? "text-textIcon-disabled" : "text-textIcon-secondary"
         )}
         content={
           <Trans>
@@ -138,10 +138,10 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
               className={cx(
                 "text-body-small rounded-4 px-6 py-4 transition-colors",
                 disabled
-                  ? "cursor-default bg-slate-700 text-slate-500"
+                  ? "cursor-default bg-button-background text-textIcon-disabled"
                   : isSelected
-                    ? "bg-blue-500 text-typography-primary"
-                    : "bg-slate-700 text-typography-secondary hover:bg-slate-600"
+                    ? "bg-button-primary text-textIcon-primary"
+                    : "bg-button-background text-textIcon-secondary hover:bg-fill-accent"
               )}
             >
               {(option / 100).toFixed(1)}%
@@ -154,10 +154,10 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
           className={cx(
             "text-body-small flex w-54 items-center justify-center rounded-4 px-6 py-4 transition-colors",
             disabled
-              ? "cursor-default bg-slate-700 text-slate-500"
+              ? "cursor-default bg-button-background text-textIcon-disabled"
               : isCustom || (!isPresetValue && allowedSlippage > 0)
-                ? "bg-blue-500 text-typography-primary"
-                : "cursor-pointer bg-slate-700 text-typography-secondary hover:bg-slate-600"
+                ? "bg-button-primary text-textIcon-primary"
+                : "cursor-pointer bg-button-background text-textIcon-secondary hover:bg-fill-accent"
           )}
         >
           {isCustom ? (
@@ -168,7 +168,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
                 value={customValue}
                 onChange={handleCustomChange}
                 onBlur={handleCustomBlur}
-                className="bg-transparent mr-2 w-24 p-0 text-right text-12 outline-none placeholder:text-typography-secondary"
+                className="bg-transparent mr-2 w-24 p-0 text-right text-12 outline-none placeholder:text-textIcon-secondary"
               />
               <span>%</span>
             </>

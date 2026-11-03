@@ -73,7 +73,7 @@ export function PositionSellerPriceImpactFeesRow() {
         <>
           <span
             className={cx({
-              "text-green-500": isPriceImpactPositive,
+              "text-green-strong": isPriceImpactPositive,
             })}
           >
             {formattedPriceImpactPercentage}
@@ -81,7 +81,7 @@ export function PositionSellerPriceImpactFeesRow() {
           /{" "}
           <span
             className={cx({
-              "text-green-500": isTotalFeePositive,
+              "text-green-strong": isTotalFeePositive,
             })}
           >
             {formattedTotalFeePercentage}

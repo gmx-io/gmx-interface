@@ -52,7 +52,7 @@ export function TooltipRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-16">
-      <span className={isTotal ? undefined : "text-typography-secondary"}>{label}</span>
+      <span className={isTotal ? undefined : "text-textIcon-secondary"}>{label}</span>
       <span className={cx("shrink-0 text-right numbers", valueClassName)}>{value}</span>
     </div>
   );
@@ -99,7 +99,7 @@ export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[];
   return (
     <div className={cx("grid gap-x-24 gap-y-8", GRID_COLUMNS[columns.length] ?? GRID_COLUMNS[3])}>
       {columns.map((column, index) => (
-        <div key={index} className={cx("text-body-small uppercase text-typography-secondary", alignClass(index))}>
+        <div key={index} className={cx("text-body-small uppercase text-textIcon-secondary", alignClass(index))}>
           {column.label}
         </div>
       ))}
@@ -127,5 +127,5 @@ export function TooltipLink({ href, children }: { href: string; children: ReactN
 }
 
 export function TooltipFootnote({ children }: { children: ReactNode }) {
-  return <div className="text-body-small text-typography-secondary">{children}</div>;
+  return <div className="text-body-small text-textIcon-secondary">{children}</div>;
 }

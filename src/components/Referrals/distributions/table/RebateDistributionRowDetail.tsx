@@ -61,19 +61,19 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
       exit="collapsed"
       transition={DETAIL_ROW_TRANSITION}
     >
-      <div className="py-8 pl-adaptive text-typography-secondary">
+      <div className="py-8 pl-adaptive text-textIcon-secondary">
         <Trans>Status</Trans>
       </div>
       <div className="col-span-4 flex h-38 items-center py-8 pr-adaptive">
         {status === "success" && (
-          <span className="inline-flex items-center gap-2 rounded-full bg-green-900 py-2 pl-4 pr-6 text-green-500">
-            <NewCheckedIcon className="size-16 text-green-500" />
+          <span className="inline-flex items-center gap-2 rounded-full bg-green-background py-2 pl-4 pr-6 text-green-strong">
+            <NewCheckedIcon className="size-16 text-green-strong" />
             <Trans>Success</Trans>
           </span>
         )}
         {status === "failed" && (
-          <span className="inline-flex items-center gap-2 rounded-full bg-red-900 py-2 pl-4 pr-6 text-red-500">
-            <CloseIcon className="size-16 text-red-500" />
+          <span className="inline-flex items-center gap-2 rounded-full bg-red-background py-2 pl-4 pr-6 text-red-strong">
+            <CloseIcon className="size-16 text-red-strong" />
             <Trans>Failed</Trans>
           </span>
         )}
@@ -84,7 +84,7 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
         const token = getToken(chainId, tokenAddress);
         return (
           <Fragment key={tokenAddress}>
-            <div className="py-8 pl-adaptive text-typography-secondary">
+            <div className="py-8 pl-adaptive text-textIcon-secondary">
               <Trans>{token.symbol} amount</Trans>
             </div>
             <div className="col-span-4 py-8 pr-adaptive">
@@ -93,14 +93,14 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
                 decimals={token.decimals}
                 isStable={token.isStable}
                 symbol={token.symbol}
-                symbolClassName="text-typography-secondary"
+                symbolClassName="text-textIcon-secondary"
               />
             </div>
           </Fragment>
         );
       })}
 
-      <div className="py-8 pl-adaptive text-typography-secondary">
+      <div className="py-8 pl-adaptive text-textIcon-secondary">
         <Trans>Transaction hash</Trans>
       </div>
       <div className="col-span-4 flex items-center gap-8 py-8 pr-adaptive">
@@ -111,13 +111,13 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
             e.stopPropagation();
             handleCopyTxHash(rebate.transactionHash);
           }}
-          className="text-typography-secondary hover:text-typography-primary"
+          className="text-textIcon-secondary hover:text-textIcon-primary"
         >
           <CopyStrokeIcon className="size-16" />
         </button>
       </div>
 
-      <div className="py-8 pl-adaptive text-typography-secondary">
+      <div className="py-8 pl-adaptive text-textIcon-secondary">
         <Trans>Timestamp</Trans>
       </div>
       <div className="col-span-4 py-8 pr-adaptive">

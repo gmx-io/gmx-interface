@@ -80,7 +80,7 @@ export function BuyGmxModal({
           <Trans>Buy GMX on GMX swap</Trans>
         </BuyGmxModalButton>
         <div className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-14 font-medium text-textIcon-secondary">
             <Trans>Buy on other platforms</Trans>
           </span>
           <div className="grid grid-cols-2 gap-12">

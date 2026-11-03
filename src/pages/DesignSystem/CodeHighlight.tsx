@@ -6,12 +6,12 @@ const TOKEN =
   /(\{\/\*[\s\S]*?\*\/\}|\/\*[\s\S]*?\*\/|\/\/[^\n]*)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|(<\/?>|<\/?[A-Za-z][\w.]*)|\b([a-zA-Z][\w-]*)(?==)|\b(const|let|function|return|export|import|from|if|else|true|false|null|undefined|new|typeof|as|satisfies)\b|\b(\d+(?:\.\d+)?)\b/g;
 
 const GROUP_CLASSNAMES = [
-  "text-typography-secondary",
-  "text-green-500",
-  "text-blue-400 dark:text-blue-300",
-  "text-yellow-300",
-  "text-red-400",
-  "text-yellow-300",
+  "text-textIcon-secondary",
+  "text-green-strong",
+  "text-blue-strong dark:text-blue-strong",
+  "text-yellow-strong",
+  "text-red-strong",
+  "text-yellow-strong",
 ];
 
 export function CodeHighlight({ code }: { code: string }) {

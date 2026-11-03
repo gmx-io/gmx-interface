@@ -97,7 +97,7 @@ export function TradeInputField({
         </SelectorBase>
       </div>
     ) : unitLabel ? (
-      <div className="flex shrink-0 items-center text-13 text-typography-secondary">{unitLabel}</div>
+      <div className="flex shrink-0 items-center text-13 text-textIcon-secondary">{unitLabel}</div>
     ) : null;
 
   return (
@@ -117,7 +117,7 @@ export function TradeInputField({
             maxDecimals={maxDecimals}
           />
           {alternateValue && (
-            <span className="shrink-0 text-12 text-typography-secondary numbers">≈{alternateValue}</span>
+            <span className="shrink-0 text-12 text-textIcon-secondary numbers">≈{alternateValue}</span>
           )}
         </>
       }
@@ -150,13 +150,13 @@ function DisplayModeSelectorDesktop({ tokenLabel, displayMode, onDisplayModeChan
       <tbody>
         <SelectorBaseDesktopRow
           onClick={() => handleSelect("usd")}
-          className={cx({ "text-blue-300": displayMode === "usd" })}
+          className={cx({ "text-blue-strong": displayMode === "usd" })}
         >
           <TableTd padding="compact-one-column">USD</TableTd>
         </SelectorBaseDesktopRow>
         <SelectorBaseDesktopRow
           onClick={() => handleSelect("token")}
-          className={cx({ "text-blue-300": displayMode === "token" })}
+          className={cx({ "text-blue-strong": displayMode === "token" })}
         >
           <TableTd padding="compact-one-column">{tokenLabel}</TableTd>
         </SelectorBaseDesktopRow>
@@ -179,10 +179,10 @@ function DisplayModeSelectorMobile({ tokenLabel, displayMode, onDisplayModeChang
   return (
     <SelectorBaseMobileList>
       <SelectorBaseMobileButton onSelect={() => handleSelect("usd")}>
-        <div className={cx("py-4", { "text-blue-300": displayMode === "usd" })}>USD</div>
+        <div className={cx("py-4", { "text-blue-strong": displayMode === "usd" })}>USD</div>
       </SelectorBaseMobileButton>
       <SelectorBaseMobileButton onSelect={() => handleSelect("token")}>
-        <div className={cx("py-4", { "text-blue-300": displayMode === "token" })}>{tokenLabel}</div>
+        <div className={cx("py-4", { "text-blue-strong": displayMode === "token" })}>{tokenLabel}</div>
       </SelectorBaseMobileButton>
     </SelectorBaseMobileList>
   );

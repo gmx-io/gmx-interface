@@ -28,7 +28,7 @@ const TAB_LABELS: Record<DesignSystemTab, string> = {
 const TAB_ORDER: DesignSystemTab[] = ["examples", "props", "guidelines", "changelog", "experiment1", "experiment2"];
 
 // Top bar and the top of the side menu share one height, so their lines meet
-const BAR_CLASSNAME = "flex h-56 shrink-0 items-center border-b border-slate-700";
+const BAR_CLASSNAME = "flex h-56 shrink-0 items-center border-b border-button-background";
 
 // A little more room between the tabs than in the app's underline tabs
 const TAB_CLASSNAME = "mr-8";
@@ -66,7 +66,7 @@ export default function DesignSystemPage() {
     <SEO title={getPageTitle(`${page.title} · Design system`)}>
       <div className="flex h-full w-full">
         {/* Side menu, full height: the logo on top, the pages below */}
-        <aside className="hidden w-[248px] shrink-0 flex-col border-r border-slate-700 lg:flex">
+        <aside className="hidden w-[248px] shrink-0 flex-col border-r border-button-background lg:flex">
           <div className={cx(BAR_CLASSNAME, "px-20")}>
             <DesignSystemBrand />
           </div>
@@ -89,9 +89,7 @@ export default function DesignSystemPage() {
                   <DesignSystemMobileNav activeSlug={page.slug} />
                   <div className="flex flex-col gap-12">
                     <h1 className="text-h1 font-medium">{page.title}</h1>
-                    {page.description && (
-                      <p className="text-body-large text-typography-secondary">{page.description}</p>
-                    )}
+                    {page.description && <p className="text-body-large text-textIcon-secondary">{page.description}</p>}
                     {/* Pages with a single tab skip the tab row */}
                     {tabs.length > 1 && (
                       <Tabs<DesignSystemTab>
@@ -99,7 +97,7 @@ export default function DesignSystemPage() {
                         options={tabs}
                         selectedValue={activeTab}
                         onChange={setActiveTab}
-                        className="border-b-1/2 border-b-slate-600"
+                        className="border-b-1/2 border-b-stroke-primary"
                         regularOptionClassname={TAB_CLASSNAME}
                       />
                     )}
@@ -128,12 +126,12 @@ export default function DesignSystemPage() {
  */
 function DesignSystemBrand({ className }: { className?: string }) {
   return (
-    <div className={cx("flex items-center gap-10 text-typography-primary", className)}>
+    <div className={cx("flex items-center gap-10 text-textIcon-primary", className)}>
       <div className="flex items-center gap-5">
         <img src={logoIcon} alt="GMX logo" />
         <LogoText />
       </div>
-      <span className="h-16 w-1 bg-slate-600 max-md:hidden" />
+      <span className="h-16 w-1 bg-fill-accent max-md:hidden" />
       <span className="text-body-medium font-medium max-md:hidden">Design system</span>
     </div>
   );

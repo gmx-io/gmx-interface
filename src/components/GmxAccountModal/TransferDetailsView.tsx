@@ -37,8 +37,8 @@ import "components/Skeleton/Skeleton.scss";
 
 const labelSkeleton = (
   <Skeleton
-    baseColor="#B4BBFF1A"
-    highlightColor="#B4BBFF1A"
+    baseColor="var(--color-fill-skeleton)"
+    highlightColor="var(--color-fill-skeleton)"
     width={64}
     height={14}
     borderRadius={4}
@@ -49,8 +49,8 @@ const labelSkeleton = (
 
 const valueSkeleton = (
   <Skeleton
-    baseColor="#B4BBFF1A"
-    highlightColor="#B4BBFF1A"
+    baseColor="var(--color-fill-skeleton)"
+    highlightColor="var(--color-fill-skeleton)"
     width={96}
     height={14}
     borderRadius={4}
@@ -77,7 +77,7 @@ function TransferDetailsPlaceholder({ isLoading, hasError }: { isLoading: boolea
   }
 
   return (
-    <div className="flex grow items-center justify-center text-center text-typography-secondary">
+    <div className="flex grow items-center justify-center text-center text-textIcon-secondary">
       {hasError ? <Trans>Failed to load transfer details</Trans> : <Trans>Transfer not found</Trans>}
     </div>
   );
@@ -197,7 +197,7 @@ export const TransferDetailsView = () => {
                 >
                   <div className="flex items-center gap-4">
                     {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                    <ExternalLinkIcon className="size-20 text-typography-secondary" />
+                    <ExternalLinkIcon className="size-20 text-textIcon-secondary" />
                   </div>
                 </ExternalLink>
               }
@@ -217,7 +217,7 @@ export const TransferDetailsView = () => {
                 >
                   <div className="flex items-center gap-4">
                     {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
-                    <ExternalLinkIcon className="size-20 text-typography-secondary" />
+                    <ExternalLinkIcon className="size-20 text-textIcon-secondary" />
                   </div>
                 </ExternalLink>
               }
@@ -232,7 +232,7 @@ export const TransferDetailsView = () => {
                   decimals={token.decimals}
                   isStable={token.isStable}
                   symbol={token.symbol}
-                  symbolClassName="text-typography-secondary"
+                  symbolClassName="text-textIcon-secondary"
                 />
               ) : undefined
             }
@@ -247,7 +247,7 @@ export const TransferDetailsView = () => {
                     decimals={token.decimals}
                     isStable={token.isStable}
                     symbol={token.symbol}
-                    symbolClassName="text-typography-secondary"
+                    symbolClassName="text-textIcon-secondary"
                   />
                 ) : undefined
               }

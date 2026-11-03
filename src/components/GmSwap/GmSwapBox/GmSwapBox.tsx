@@ -79,7 +79,7 @@ export function GmSwapBox() {
         options={availableModesTabsOptions}
         selectedValue={mode}
         onChange={setMode}
-        className="bg-slate-900 p-12 pb-0"
+        className="bg-fill-surfaceBase p-12 pb-0"
         type="inline"
       />
 

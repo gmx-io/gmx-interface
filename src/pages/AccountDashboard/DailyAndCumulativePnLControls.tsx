@@ -94,9 +94,9 @@ function PnlChartGroupingSelect({
     <SelectorBase
       modalLabel={_(msg`Grouping`)}
       popoverPlacement="bottom-end"
-      desktopPanelClassName="mt-8 !border !border-slate-600 !bg-slate-900 !outline-none"
+      desktopPanelClassName="mt-8 !border !border-stroke-primary !bg-fill-surfaceBase !outline-none"
       handleClassName="button ghost center flex min-h-32 gap-4 px-12 py-6 text-[13px] max-md:px-10 max-md:py-6"
-      chevronClassName="!text-typography-secondary group-hover:!text-typography-primary"
+      chevronClassName="!text-textIcon-secondary group-hover:!text-textIcon-primary"
       label={
         <span className={buttonTextClassName ?? "text-body-small whitespace-nowrap font-medium"}>
           {selectedOption.label}
@@ -131,9 +131,9 @@ function PnlChartGroupingOption({
   return (
     <div
       className={cx(
-        "text-body-medium cursor-pointer p-8 font-medium text-typography-secondary hover:bg-fill-surfaceHover hover:text-typography-primary",
+        "text-body-medium cursor-pointer p-8 font-medium text-textIcon-secondary hover:bg-fill-surfaceHover hover:text-textIcon-primary",
         {
-          "!text-typography-primary": isSelected,
+          "!text-textIcon-primary": isSelected,
         }
       )}
       onClick={() => {

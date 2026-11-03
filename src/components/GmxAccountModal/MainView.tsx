@@ -82,23 +82,23 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
         <UsdValue usd={usd} className="text-h2 normal-nums leading-[30px]" />
       ) : (
         <Skeleton
-          baseColor="#B4BBFF1A"
-          highlightColor="#B4BBFF1A"
+          baseColor="var(--color-fill-skeleton)"
+          highlightColor="var(--color-fill-skeleton)"
           width={100}
           height={30}
           className="!block"
           inline={true}
         />
       )}
-      <ChevronLeftIcon className="size-16 rotate-180 text-typography-secondary" />
+      <ChevronLeftIcon className="size-16 rotate-180 text-textIcon-secondary" />
     </button>
   );
 }
 
 const WALLET_ICON_BUTTON_BLUE =
-  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-400 gmx-hover:bg-blue-400/20 dark:text-blue-300 dark:gmx-hover:bg-blue-300/20";
+  "flex size-28 -m-4 items-center justify-center rounded-8 text-blue-strong gmx-hover:bg-button-primary/20 dark:text-blue-strong dark:gmx-hover:bg-blue-backgroundOpacity";
 const WALLET_ICON_BUTTON_GRAY =
-  "flex size-28 -m-4 items-center justify-center rounded-8 text-typography-secondary gmx-hover:bg-fill-surfaceHover gmx-hover:text-typography-primary";
+  "flex size-28 -m-4 items-center justify-center rounded-8 text-textIcon-secondary gmx-hover:bg-fill-surfaceHover gmx-hover:text-textIcon-primary";
 
 function WalletBlock({ account }: { account: string }) {
   const { chainId: settlementChainId, srcChainId, networkId } = useChainId();
@@ -162,15 +162,15 @@ function WalletBlock({ account }: { account: string }) {
   };
 
   return (
-    <div className="flex flex-col gap-6 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
+    <div className="flex flex-col gap-6 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12">
       <div className="flex items-center justify-between gap-8">
         <button
-          className="flex items-center gap-8 text-typography-secondary gmx-hover:text-typography-primary"
+          className="flex items-center gap-8 text-textIcon-secondary gmx-hover:text-textIcon-primary"
           onClick={handleCopyAddress}
         >
           <WalletIcon className="size-20" />
           <span className="text-12 font-medium">{shortenAddressOrEns(ensName || account, 13)}</span>
-          {isCopied ? <CheckIcon className="size-16 text-green-500" /> : <CopyIcon className="size-16" />}
+          {isCopied ? <CheckIcon className="size-16 text-green-strong" /> : <CopyIcon className="size-16" />}
         </button>
         <div className="flex items-center gap-8">
           {!isSolanaSelected && (
@@ -195,7 +195,7 @@ function WalletBlock({ account }: { account: string }) {
                   <SendIcon className="size-16" />
                 </button>
               </TooltipWithPortal>
-              <div className="h-16 border-l-1/2 border-slate-600" />
+              <div className="h-16 border-l-1/2 border-stroke-primary" />
             </>
           )}
           {canExport && (
@@ -281,14 +281,14 @@ function ConnectedToSourceChainBanner({
           <div className="font-medium">
             <Trans>Connected to {sourceChainName}</Trans>
           </div>
-          <div className="font-medium text-typography-secondary dark:text-blue-100">
+          <div className="font-medium text-textIcon-secondary dark:text-blue-secondary">
             <Trans>
               Wallet funds on this network can be deposited to GMX Account for {settlementChainName} trading. To trade
               directly with {settlementChainName} wallet balance,{" "}
               <span
                 role="button"
                 tabIndex={0}
-                className="cursor-pointer font-medium text-blue-300 underline decoration-dotted"
+                className="cursor-pointer font-medium text-blue-strong underline decoration-dotted"
                 onClick={handleSwitch}
               >
                 switch to {settlementChainName}
@@ -329,10 +329,10 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   };
 
   return (
-    <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
+    <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12">
       <div className="flex items-start justify-between gap-8">
         <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
-          <span className="text-body-small font-medium text-typography-secondary">
+          <span className="text-body-small font-medium text-textIcon-secondary">
             <Trans>GMX Account balance</Trans>
           </span>
           <BalanceAmount
@@ -357,19 +357,19 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           <Button
             variant="secondary"
             size="medium"
-            className="flex-grow basis-1/2 !text-typography-primary"
+            className="flex-grow basis-1/2 !text-textIcon-primary"
             onClick={handleStartDeposit}
           >
-            <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
+            <DepositIcon className="size-20 text-blue-strong dark:text-blue-secondary" />
             <Trans>Deposit</Trans>
           </Button>
           <Button
             variant="secondary"
             size="medium"
-            className="flex-grow basis-1/2 !text-typography-primary"
+            className="flex-grow basis-1/2 !text-textIcon-primary"
             onClick={() => setIsVisibleOrView("withdraw")}
           >
-            <WithdrawIcon className="size-20 text-blue-400 dark:text-blue-100" />
+            <WithdrawIcon className="size-20 text-blue-strong dark:text-blue-secondary" />
             <Trans>Withdraw</Trans>
           </Button>
         </div>
@@ -377,10 +377,10 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
         <Button
           variant="secondary"
           size="medium"
-          className="w-full !text-typography-primary"
+          className="w-full !text-textIcon-primary"
           onClick={handleStartDeposit}
         >
-          <DepositIcon className="size-20 text-blue-400 dark:text-blue-100" />
+          <DepositIcon className="size-20 text-blue-strong dark:text-blue-secondary" />
           <Trans>Deposit to GMX Account</Trans>
         </Button>
       )}
@@ -390,7 +390,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
       )}
 
       <button
-        className="flex items-center gap-8 py-4 text-typography-secondary gmx-hover:text-typography-primary"
+        className="flex items-center gap-8 py-4 text-textIcon-secondary gmx-hover:text-textIcon-primary"
         onClick={() => setIsVisibleOrView("transferHistory")}
       >
         <ClockIcon className="size-16" />
@@ -408,11 +408,11 @@ function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; 
       className="-mx-12 flex items-center justify-between rounded-8 p-12 -outline-offset-4 gmx-hover:bg-fill-surfaceElevated50"
       onClick={onClick}
     >
-      <div className="text-body-medium flex items-center gap-8 font-medium text-typography-secondary">
+      <div className="text-body-medium flex items-center gap-8 font-medium text-textIcon-secondary">
         {icon}
         {label}
       </div>
-      <ArrowRightIcon className="size-16 text-typography-secondary" />
+      <ArrowRightIcon className="size-16 text-textIcon-secondary" />
     </button>
   );
 }
@@ -499,16 +499,16 @@ function FundingHistoryItemLabel({
 
   if (isLoading) {
     return (
-      <div className="text-body-small flex items-center gap-4 text-slate-100">
+      <div className="text-body-small flex items-center gap-4 text-textIcon-secondary">
         <SpinnerIcon className="size-16 animate-spin" />
         {text}
       </div>
     );
   } else if (isExecutionError) {
-    return <div className="text-body-small text-red-500">{text}</div>;
+    return <div className="text-body-small text-red-strong">{text}</div>;
   }
 
-  return <div className="text-body-small text-slate-100">{text}</div>;
+  return <div className="text-body-small text-textIcon-secondary">{text}</div>;
 }
 
 type DisplayFundingHistoryItem = Omit<MultichainFundingHistoryItem, "token"> & {
@@ -585,7 +585,7 @@ export function TransferHistoryView() {
                 isStable={transfer.token.isStable}
                 signed
               />
-              <div className="text-body-small text-slate-100">
+              <div className="text-body-small text-textIcon-secondary">
                 {formatRelativeDateWithComma(transfer.sentTimestamp)}
               </div>
             </div>
@@ -593,17 +593,17 @@ export function TransferHistoryView() {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-textIcon-secondary">
             <Trans>No transfer history</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-textIcon-secondary">
             <Trans>No transfer history matching search</Trans>
           </div>
         )}
         {isLoading && (
-          <div className="flex grow items-center justify-center p-adaptive text-slate-100">
+          <div className="flex grow items-center justify-center p-adaptive text-textIcon-secondary">
             <SpinnerIcon className="size-24 animate-spin" />
           </div>
         )}

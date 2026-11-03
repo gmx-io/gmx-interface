@@ -22,10 +22,10 @@ export function OverviewChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-24 rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 px-adaptive pb-10 pt-adaptive">
+    <div className="flex flex-col gap-24 rounded-8 border-1/2 border-stroke-primary bg-fill-background/50 px-adaptive pb-10 pt-adaptive">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-body-small mb-4 font-medium text-typography-secondary">
+          <div className="text-body-small mb-4 font-medium text-textIcon-secondary">
             {tooltipContent ? (
               <Tooltip variant="iconStroke" position="right" content={tooltipContent}>
                 {label}
@@ -35,12 +35,12 @@ export function OverviewChartCard({
             )}
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div className="text-24 font-medium text-typography-primary numbers">{value}</div>
+            <div className="text-24 font-medium text-textIcon-primary numbers">{value}</div>
             {valueChange && (
               <div
                 className={cx("rounded-full px-6 py-2 text-12 font-medium numbers", {
-                  "bg-green-900 text-green-500": isValueChangePositive !== false,
-                  "bg-red-900 text-red-500": isValueChangePositive === false,
+                  "bg-green-background text-green-strong": isValueChangePositive !== false,
+                  "bg-red-background text-red-strong": isValueChangePositive === false,
                 })}
               >
                 {valueChange}

@@ -176,7 +176,7 @@ function PositionShare({
       contentPadding={false}
       withMobileBottomPosition
     >
-      <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
+      <div className="flex flex-col gap-20 border-b-1/2 border-stroke-primary p-20">
         <div className="flex justify-center">
           {cachedPositionData && (
             <PositionShareCard
@@ -200,13 +200,13 @@ function PositionShare({
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-14 font-medium text-textIcon-secondary">
             {isRpnl ? <Trans>Show rPnL after fees</Trans> : <Trans>Show PnL after fees</Trans>}
           </span>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-14 font-medium text-textIcon-secondary">
             {isRpnl ? <Trans>Include rPnL in leverage display</Trans> : <Trans>Include PnL in leverage display</Trans>}
           </span>
         </ToggleSwitch>
@@ -229,7 +229,7 @@ function PositionShare({
         {Boolean(onDoNotShowAgainChange) && (
           <div className="flex justify-center">
             <Checkbox isChecked={doNotShowAgain} setIsChecked={handleDoNotShowAgainToggle}>
-              <span className="text-14 font-medium text-typography-secondary">
+              <span className="text-14 font-medium text-textIcon-secondary">
                 <Trans>Don't show this again</Trans>
               </span>
             </Checkbox>

@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({
   );
 
   return (
-    <div className="rounded-b-8 bg-slate-900">
+    <div className="rounded-b-8 bg-fill-surfaceBase">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
@@ -503,14 +503,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return (
       <TooltipWithPortal
-        handleClassName="text-typography-secondary"
+        handleClassName="text-textIcon-secondary"
         handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
     );
 
-  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
+  return <span className="font-medium text-textIcon-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {

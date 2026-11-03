@@ -85,10 +85,10 @@ type ClaimNetworkFee = {
 export function getClaimingFundingToastContent() {
   return (
     <div className="flex items-center justify-between gap-6">
-      <div className="text-typography-secondary">
+      <div className="text-textIcon-secondary">
         <Trans>Claiming...</Trans>
       </div>
-      <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />
+      <SpinnerIcon className="spin size-15 shrink-0 text-textIcon-primary" />
     </div>
   );
 }
@@ -97,7 +97,7 @@ export function getClaimFundingSuccessToastContent() {
   return (
     <div className="flex items-center justify-between gap-6">
       <div>{t`Funding fees claimed`}</div>
-      <CheckCircleIcon className="size-15 shrink-0 text-green-500" />
+      <CheckCircleIcon className="size-15 shrink-0 text-green-strong" />
     </div>
   );
 }
@@ -106,7 +106,7 @@ export function getClaimFundingFailureToastContent() {
   return (
     <div className="flex items-center justify-between gap-6">
       <div>{t`Claiming funding fees failed`}</div>
-      <CloseCircleIcon className="size-15 shrink-0 text-red-500" />
+      <CloseCircleIcon className="size-15 shrink-0 text-red-strong" />
     </div>
   );
 }
@@ -598,7 +598,7 @@ function ClaimModalComponent(p: {
             handle={
               <DeltaUsdValue
                 deltaUsd={totalFundingUsd}
-                className={isMarketInsufficient ? "text-yellow-500" : undefined}
+                className={isMarketInsufficient ? "text-yellow-strong" : undefined}
               />
             }
             renderContent={() => (
@@ -607,7 +607,7 @@ function ClaimModalComponent(p: {
                   <div key={item}>{item}</div>
                 ))}
                 {isMarketInsufficient && (
-                  <div className="mt-5 text-yellow-500">
+                  <div className="mt-5 text-yellow-strong">
                     <Trans>Insufficient pool balance to claim this funding fee</Trans>
                   </div>
                 )}
@@ -640,7 +640,7 @@ function ClaimModalComponent(p: {
       <div className="ConfirmationBox-main">
         <div className="text-center">{claimAmountText}</div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-slate-700" />
+      <div className="mb-20 mt-15 h-1 bg-button-background" />
       {selection.isLimitReached && (
         <AlertInfoCard type="info" hideClose className="mb-15">
           <Trans>
@@ -664,7 +664,7 @@ function ClaimModalComponent(p: {
             handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
-                <span className="text-typography-primary">Positive funding fees accrued from your positions</span>
+                <span className="text-textIcon-primary">Positive funding fees accrued from your positions</span>
               </Trans>
             )}
           />

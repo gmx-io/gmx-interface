@@ -56,13 +56,13 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
   return (
     <div>
       {children}
-      <hr className="my-8 -ml-12 -mr-32 h-[0.5px] border-none bg-red-100/20" />
+      <hr className="my-8 -ml-12 -mr-32 h-[0.5px] border-none bg-red-secondary/20" />
       <div>
-        <div className="text-body-medium text-typography-primary">
+        <div className="text-body-medium text-textIcon-primary">
           <Trans>If you're having trouble completing this action, our team can help</Trans>
         </div>
         <div
-          className="mt-4 inline-flex cursor-pointer items-center gap-4 text-red-100 hover:text-red-400"
+          className="mt-4 inline-flex cursor-pointer items-center gap-4 text-red-secondary hover:text-red-strong"
           onClick={handleContactSupport}
         >
           <Trans>Contact support</Trans>

@@ -35,7 +35,7 @@ export function SymbolSortDropdown({ direction, onChange }: Props) {
         as="button"
         ref={refs.setReference}
         className={cx("group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
-          "text-blue-300": isActive,
+          "text-blue-strong": isActive,
         })}
         onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
@@ -53,7 +53,7 @@ export function SymbolSortDropdown({ direction, onChange }: Props) {
             return (
               <Menu.Item key={opt.direction}>
                 <div
-                  className={cx("menu-item", { "!text-blue-300": direction === opt.direction })}
+                  className={cx("menu-item", { "!text-blue-strong": direction === opt.direction })}
                   onClick={() => onChange(opt.direction)}
                 >
                   <OptIcon className="h-16 w-12" />

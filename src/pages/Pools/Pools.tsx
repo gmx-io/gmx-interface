@@ -106,7 +106,7 @@ function PoolsTvl() {
   return (
     <div className="flex flex-col gap-8">
       <UsdValue usd={tvl} displayDecimals={0} className="text-h1 normal-nums" />
-      <span className="text-body-medium font-medium text-typography-secondary">
+      <span className="text-body-medium font-medium text-textIcon-secondary">
         <Trans>TVL in vaults and pools</Trans>
       </span>
     </div>

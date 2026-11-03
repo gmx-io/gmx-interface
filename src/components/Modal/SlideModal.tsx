@@ -272,23 +272,23 @@ function MobileSlideModal({
           data-qa={qa}
           ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900 pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]",
+            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-button-background bg-fill-surfaceBase pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]",
             className
           )}
           style={curtainStyle}
           onClick={stopPropagation}
         >
           <div
-            className={cx("pb-12", hideHeaderBorder ? "" : "border-b-1/2 border-slate-600")}
+            className={cx("pb-12", hideHeaderBorder ? "" : "border-b-1/2 border-stroke-primary")}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
             <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
-              <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
+              <div className="text-body-medium grow font-medium text-textIcon-primary">{label}</div>
 
               <CloseIcon
-                className="size-20 cursor-pointer text-typography-secondary hover:opacity-90"
+                className="size-20 cursor-pointer text-textIcon-secondary hover:opacity-90"
                 onClick={handleClose}
               />
             </div>
@@ -311,7 +311,7 @@ function MobileSlideModal({
           </div>
           {footerContent && (
             <>
-              <div className="border-b-1/2 border-slate-600" />
+              <div className="border-b-1/2 border-stroke-primary" />
               <div>{footerContent}</div>
             </>
           )}

@@ -130,7 +130,7 @@ export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange
           selectedValue={tabKey}
           onChange={setTabKey}
           type="block"
-          className={cx("w-[max(100%,600px)] bg-slate-900 max-md:w-[max(100%,420px)]", {
+          className={cx("w-[max(100%,600px)] bg-fill-surfaceBase max-md:w-[max(100%,420px)]", {
             "max-lg:mb-8 max-lg:rounded-b-8": [TabKey.Positions, TabKey.Orders].includes(tabKey as TabKey),
           })}
           regularOptionClassname={cx({

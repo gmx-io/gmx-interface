@@ -22,7 +22,7 @@ const StatusBadge = ({ variant }: { variant: "loading" | "success" }) => {
   return variant === "loading" ? (
     <SpinnerBlueIcon className="size-16 animate-spin" />
   ) : (
-    <CheckCircleIcon className="size-16 text-green-500" />
+    <CheckCircleIcon className="size-16 text-green-strong" />
   );
 };
 
@@ -86,7 +86,7 @@ export const DepositStatusView = () => {
   return (
     <div className="flex grow flex-col gap-12 !py-12 px-adaptive pb-adaptive">
       <div className="flex flex-col gap-4">
-        <div className="text-body-medium text-typography-secondary">{description}</div>
+        <div className="text-body-medium text-textIcon-secondary">{description}</div>
 
         {token && transfer && (
           <div className="flex items-center gap-8">
@@ -97,7 +97,7 @@ export const DepositStatusView = () => {
                 decimals={token.decimals}
                 isStable={token.isStable}
                 symbol={token.symbol}
-                className="text-24 font-medium text-typography-primary"
+                className="text-24 font-medium text-textIcon-primary"
               />
             </div>
           </div>
@@ -106,30 +106,30 @@ export const DepositStatusView = () => {
 
       <div className="text-body-medium flex items-center gap-6 font-medium">
         <StatusBadge variant={statusVariant} />
-        <div className={cx(isCompleted ? "text-green-500" : "text-typography-secondary")}>{statusLabel}</div>
+        <div className={cx(isCompleted ? "text-green-strong" : "text-textIcon-secondary")}>{statusLabel}</div>
       </div>
 
-      <div className="mt-12 flex justify-between rounded-8 border-1/2 border-slate-600 bg-slate-950/50">
+      <div className="mt-12 flex justify-between rounded-8 border-1/2 border-stroke-primary bg-fill-background/50">
         <div className="flex flex-col gap-4 p-12">
           <h4 className="text-14 font-medium">
             <Trans>Want to trade faster with One-Click Trading?</Trans>
           </h4>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-8">
-              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-300" />
-              <span className="text-12 text-typography-secondary">
+              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
+              <span className="text-12 text-textIcon-secondary">
                 <Trans>No repeated wallet confirmations</Trans>
               </span>
             </div>
             <div className="flex items-center gap-8">
-              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-300" />
-              <span className="text-12 text-typography-secondary">
+              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
+              <span className="text-12 text-textIcon-secondary">
                 <Trans>Faster execution with GMX premium RPCs</Trans>
               </span>
             </div>
             <div className="flex items-center gap-8">
-              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-300" />
-              <span className="text-12 text-typography-secondary">
+              <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
+              <span className="text-12 text-textIcon-secondary">
                 <Trans>Reliable GMX-powered transactions</Trans>
               </span>
             </div>

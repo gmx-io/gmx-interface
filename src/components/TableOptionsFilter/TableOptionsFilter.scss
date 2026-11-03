@@ -5,12 +5,12 @@
 
     overscroll-behavior: contain;
 
-    border-top: 1px solid var(--color-slate-600);
+    border-top: 1px solid var(--color-stroke-primary);
   }
 
   &-group-name {
     font-size: 13px;
-    color: var(--color-typography-primary);
+    color: var(--color-textIcon-primary);
     display: flex;
     align-items: center;
     padding: 0.5rem 1rem;
@@ -42,12 +42,12 @@
     padding: 0.5rem 1rem;
     padding-top: 1rem;
 
-    color: var(--color-gray-300);
+    color: var(--color-textIcon-secondary);
 
     cursor: pointer;
 
     &:hover {
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
     }
 
     &:last-child {

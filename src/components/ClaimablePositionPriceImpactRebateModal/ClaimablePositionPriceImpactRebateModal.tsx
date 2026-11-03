@@ -322,10 +322,10 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
         helperToast.info(
           <div className="flex items-center justify-between">
-            <div className="text-white/50">
+            <div className="text-textIcon-onButton/50">
               <Trans>Claiming price impact rebates...</Trans>
             </div>
-            <SpinnerIcon className="spin size-15 text-white" />
+            <SpinnerIcon className="spin size-15 text-textIcon-onButton" />
           </div>,
           {
             autoClose: false,
@@ -447,7 +447,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
           </Trans>
         </div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-slate-700" />
+      <div className="mb-20 mt-15 h-1 bg-button-background" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-header">
@@ -499,7 +499,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const poolName = getMarketPoolName(market);
     return (
       <div className="flex items-center">
-        <span className="text-typography-primary">{indexName}</span>
+        <span className="text-textIcon-primary">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
     );

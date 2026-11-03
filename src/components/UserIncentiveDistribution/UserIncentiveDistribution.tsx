@@ -73,14 +73,14 @@ export default function UserIncentiveDistribution() {
   const { isMobile, isTablet } = useBreakpoints();
 
   const claimableBalance = account ? (
-    <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
-      <div className="text-body-large font-medium text-typography-primary">
+    <div className="flex flex-col gap-20 rounded-8 bg-fill-surfaceBase p-20">
+      <div className="text-body-large font-medium text-textIcon-primary">
         <Trans>Claimable balance</Trans>
       </div>
       {chainId !== AVALANCHE_FUJI ? (
         <ClaimableAmounts />
       ) : (
-        <p className="p-18 text-gray-500">
+        <p className="p-18 text-textIcon-disabled">
           <Trans>Claims unavailable on Avalanche Fuji</Trans>
         </p>
       )}
@@ -91,7 +91,7 @@ export default function UserIncentiveDistribution() {
     <div className={cx("grid grid-cols-[1fr_400px] gap-8 max-xl:grid-cols-[1fr]")}>
       <div className="flex grow flex-col gap-8">
         {isTablet && claimableBalance}
-        <div className="flex grow flex-col gap-8 overflow-hidden rounded-8 bg-slate-900">
+        <div className="flex grow flex-col gap-8 overflow-hidden rounded-8 bg-fill-surfaceBase">
           {!userIncentiveData?.data?.length ? (
             <EmptyTableContent
               emptyText={
@@ -147,7 +147,7 @@ export default function UserIncentiveDistribution() {
             page={currentPage}
             pageCount={pageCount}
             onPageChange={setCurrentPage}
-            className="border-t-1/2 border-slate-600"
+            className="border-t-1/2 border-stroke-primary"
           />
         </div>
       </div>
@@ -211,7 +211,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const txnTimestamp = (
     <span>
       {formatDateTime(timestamp)}{" "}
-      <span className="text-typography-secondary">
+      <span className="text-textIcon-secondary">
         <Trans>({getDaysAgo(timestamp)} days ago)</Trans>
       </span>
     </span>
@@ -239,7 +239,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         {!isMobile && (
           <TableTdActionable data-label={t`TRANSACTION`} className="text-right">
             <ExternalLink
-              className="font-medium text-typography-secondary"
+              className="font-medium text-textIcon-secondary"
               href={`${explorerURL}tx/${transactionHash}`}
               variant="icon"
             >
@@ -248,7 +248,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           </TableTdActionable>
         )}
         <TableTdActionable className="w-24">
-          <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
+          <ChevronDownIcon className={cx("size-16 text-textIcon-secondary", { "rotate-180": isExpanded })} />
         </TableTdActionable>
       </TableTrActionable>
       {isExpanded && (
@@ -256,7 +256,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           <td colSpan={isMobile ? 4 : 1} className="px-4 py-10 pl-20">
             <div className="flex flex-col gap-2">
               <div
-                className={cx("flex items-center justify-between font-medium text-typography-secondary", {
+                className={cx("flex items-center justify-between font-medium text-textIcon-secondary", {
                   "text-13": isMobile,
                   "h-28": !isMobile,
                 })}
@@ -265,19 +265,19 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                 {isMobile && txnStatus}
               </div>
               <div
-                className={cx("flex font-medium text-typography-secondary", {
+                className={cx("flex font-medium text-textIcon-secondary", {
                   "flex-col justify-center gap-2 text-13": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Type</Trans>
 
-                {isMobile && <span className="text-14 text-typography-primary">{type}</span>}
+                {isMobile && <span className="text-14 text-textIcon-primary">{type}</span>}
               </div>
               {tokenIncentiveDetails.map((tokenInfo) => (
                 <div
                   key={tokenInfo.id}
-                  className={cx("flex font-medium text-typography-secondary", {
+                  className={cx("flex font-medium text-textIcon-secondary", {
                     "flex-col justify-center gap-2 text-13": isMobile,
                     "h-28 items-center": !isMobile,
                   })}
@@ -285,46 +285,46 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                   <Trans>{tokenInfo.symbol} amount</Trans>
 
                   {isMobile && (
-                    <span className="text-14 text-typography-primary">
+                    <span className="text-14 text-textIcon-primary">
                       {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}{" "}
-                      <span className="text-typography-secondary">{tokenInfo.symbol}</span>
+                      <span className="text-textIcon-secondary">{tokenInfo.symbol}</span>
                     </span>
                   )}
                 </div>
               ))}
               <div
-                className={cx("flex font-medium text-typography-secondary", {
+                className={cx("flex font-medium text-textIcon-secondary", {
                   "flex-col justify-center gap-2 text-13": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Transaction</Trans>
-                {isMobile && <span className="text-14 text-typography-primary">{txnLink}</span>}
+                {isMobile && <span className="text-14 text-textIcon-primary">{txnLink}</span>}
               </div>
               <div
-                className={cx("flex font-medium text-typography-secondary", {
+                className={cx("flex font-medium text-textIcon-secondary", {
                   "flex-col justify-center gap-2 text-13": isMobile,
                   "h-28 items-center": !isMobile,
                 })}
               >
                 <Trans>Timestamp</Trans>
-                {isMobile && <span className="text-14 text-typography-primary">{txnTimestamp}</span>}
+                {isMobile && <span className="text-14 text-textIcon-primary">{txnTimestamp}</span>}
               </div>
             </div>
           </td>
           {!isMobile && (
             <td colSpan={4} className="px-4 py-10">
               <div className="flex flex-col gap-2">
-                <div className="flex h-28 items-center font-medium text-typography-primary">{txnStatus}</div>
-                <div className="flex h-28 items-center font-medium text-typography-primary">{type}</div>
+                <div className="flex h-28 items-center font-medium text-textIcon-primary">{txnStatus}</div>
+                <div className="flex h-28 items-center font-medium text-textIcon-primary">{type}</div>
                 {tokenIncentiveDetails.map((tokenInfo) => (
-                  <div key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-typography-primary">
+                  <div key={tokenInfo.id} className="flex h-28 items-center gap-2 font-medium text-textIcon-primary">
                     {formatBalanceAmount(tokenInfo.amount, tokenInfo.decimals)}
-                    <span className="text-typography-secondary">{tokenInfo.symbol}</span>
+                    <span className="text-textIcon-secondary">{tokenInfo.symbol}</span>
                   </div>
                 ))}
-                <div className="flex h-28 items-center font-medium text-typography-primary">{txnLink}</div>
-                <div className="flex h-28 items-center gap-2 font-medium text-typography-primary">{txnTimestamp}</div>
+                <div className="flex h-28 items-center font-medium text-textIcon-primary">{txnLink}</div>
+                <div className="flex h-28 items-center gap-2 font-medium text-textIcon-primary">{txnTimestamp}</div>
               </div>
             </td>
           )}
@@ -346,16 +346,16 @@ const TxnStatus = ({ chainId, hash }: { chainId: number; hash: Hash }) => {
   }, [chainId, hash]);
 
   return (
-    <div className="flex h-28 items-center font-medium text-typography-primary">
+    <div className="flex h-28 items-center font-medium text-textIcon-primary">
       {!status && <span>...</span>}
       {status === "success" && (
-        <div className="flex items-center gap-2 rounded-full bg-green-100/20 px-8 py-2 text-green-500">
+        <div className="flex items-center gap-2 rounded-full bg-green-secondary/20 px-8 py-2 text-green-strong">
           <CheckIcon className="size-16" />
           <Trans>Success</Trans>
         </div>
       )}
       {status === "failed" && (
-        <div className="flex items-center gap-2 rounded-full bg-red-100/20 px-8 py-2 text-red-500">
+        <div className="flex items-center gap-2 rounded-full bg-red-secondary/20 px-8 py-2 text-red-strong">
           <CloseIcon className="size-16" />
           <Trans>Failed</Trans>
         </div>

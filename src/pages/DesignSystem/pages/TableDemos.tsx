@@ -95,7 +95,7 @@ export type RowStyle = {
 // The line is a 0.5px background at the bottom of the cells, so rows stay 44px (a border would add 0.5px).
 // slate-700 keeps it quiet; in the first and last cell it stops 20px short of the table edge.
 const ROW_LINE_CLASSNAME = cx(
-  "[&:not(:last-child)>td]:bg-[linear-gradient(var(--color-slate-700),var(--color-slate-700))]",
+  "[&:not(:last-child)>td]:bg-[linear-gradient(var(--color-button-background),var(--color-button-background))]",
   "[&:not(:last-child)>td]:bg-[length:100%_0.5px] [&:not(:last-child)>td]:bg-bottom [&:not(:last-child)>td]:bg-no-repeat",
   "[&:not(:last-child)>td:first-child]:bg-[length:calc(100%-20px)_0.5px] [&:not(:last-child)>td:first-child]:bg-right-bottom",
   "[&:not(:last-child)>td:last-child]:bg-[length:calc(100%-20px)_0.5px] [&:not(:last-child)>td:last-child]:bg-left-bottom"
@@ -151,7 +151,7 @@ type Tone = "positive" | "negative" | "secondary";
 const TONE_CLASSNAMES: Record<Tone, string> = {
   positive: "positive",
   negative: "negative",
-  secondary: "text-typography-secondary",
+  secondary: "text-textIcon-secondary",
 };
 
 // A number, with the dotted tooltip line when tip is set
@@ -198,7 +198,7 @@ function Market({
         <div className="flex flex-col">
           <span className="font-medium">{name}</span>
           <span className="text-body-small">
-            <span className="text-typography-secondary">{leverage} </span>
+            <span className="text-textIcon-secondary">{leverage} </span>
             {isLong !== undefined && <Direction isLong={isLong} />}
           </span>
         </div>
@@ -215,7 +215,7 @@ function Leverage({ value }: { value: string }) {
   return (
     <span className="numbers">
       {value}
-      <span className="text-typography-secondary">x</span>
+      <span className="text-textIcon-secondary">x</span>
     </span>
   );
 }
@@ -226,7 +226,7 @@ const MEDALS: Record<number, string> = { 1: rank1Icon, 2: rank2Icon, 3: rank3Ico
 function Rank({ rank }: { rank: number }) {
   return (
     <>
-      <span className="text-typography-secondary numbers">{rank}</span>
+      <span className="text-textIcon-secondary numbers">{rank}</span>
       {MEDALS[rank] && <img src={MEDALS[rank]} alt="" className="absolute left-36 top-1/2 size-24 -translate-y-1/2" />}
     </>
   );
@@ -243,7 +243,7 @@ function Address({ address }: { address: string }) {
 
 function IconAction({ label, icon: Icon }: { label: string; icon: typeof EditIcon }) {
   return (
-    <button type="button" aria-label={label} className="text-typography-secondary hover:text-typography-primary">
+    <button type="button" aria-label={label} className="text-textIcon-secondary hover:text-textIcon-primary">
       <Icon className="size-16" />
     </button>
   );
@@ -293,7 +293,7 @@ export function TopAddressesTable({ rows = TOP_ADDRESS_ROWS, ...rowStyle }: { ro
           <Value key="avgSize">{avgSize}</Value>,
           <Leverage key="avgLeverage" value={avgLeverage} />,
           <Value key="winLoss" tip="Total trades and win rate">
-            {wins} <span className="text-typography-secondary">/</span> {losses}
+            {wins} <span className="text-textIcon-secondary">/</span> {losses}
           </Value>,
         ];
       })}
@@ -589,7 +589,7 @@ function Snapshot({ points, negative }: { points: string; negative?: boolean }) 
       height="32"
       viewBox="0 0 120 32"
       preserveAspectRatio="none"
-      className={negative ? "text-red-500" : "text-green-500"}
+      className={negative ? "text-red-strong" : "text-green-strong"}
       aria-hidden
     >
       <polyline points={points} fill="none" stroke="currentColor" strokeWidth="1.5" />
@@ -609,7 +609,7 @@ function LaunchBoostBadge() {
     <TooltipWithPortal
       as="span"
       variant="none"
-      className="text-body-small inline-flex items-center gap-4 rounded-4 bg-blue-300/20 px-6 py-2 font-medium text-blue-300"
+      className="text-body-small inline-flex items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-6 py-2 font-medium text-blue-strong"
       content="Extra yield for liquidity providers during the launch, paid into the vault price, so there's nothing to claim."
     >
       <img className="h-10" src={sparkleIcon} alt="" />
@@ -751,7 +751,7 @@ export function MarketsTable() {
         <Value key="liquidity">{liquidity}</Value>,
         <span key="netRate" className="numbers">
           <span className={longRate.startsWith("-") ? "negative" : "positive"}>{longRate}</span>
-          <span className="text-typography-secondary"> / </span>
+          <span className="text-textIcon-secondary"> / </span>
           <span className={shortRate.startsWith("-") ? "negative" : "positive"}>{shortRate}</span>
         </span>,
         <Value key="utilization">{utilization}</Value>,
@@ -785,16 +785,10 @@ export function ReferralCodesTable() {
         <Value key="traders">{traders}</Value>,
         <Value key="rebates">{rebates}</Value>,
         <div key="actions" className="flex justify-end gap-16">
-          <button
-            type="button"
-            className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
-          >
+          <button type="button" className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary">
             Copy <CopyIcon className="size-16" />
           </button>
-          <button
-            type="button"
-            className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
-          >
+          <button type="button" className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary">
             Share <ShareIcon className="size-16" />
           </button>
         </div>,
@@ -873,8 +867,8 @@ export function LeaderboardCard(rowStyle: RowStyle) {
   const matches = ([address]: AddressRow | PositionRow) => address.toLowerCase().includes(query);
 
   return (
-    <div className="rounded-8 bg-slate-900">
-      <div className="flex items-center justify-between gap-16 border-b-1/2 border-slate-600 p-20 max-md:flex-col">
+    <div className="rounded-8 bg-fill-surfaceBase">
+      <div className="flex items-center justify-between gap-16 border-b-1/2 border-stroke-primary p-20 max-md:flex-col">
         <Tabs
           type="inline"
           options={LEADERBOARD_VIEWS}
@@ -957,7 +951,7 @@ export function PoolsPage(rowStyle: RowStyle) {
       <div className="flex items-end justify-between gap-16 max-md:flex-col max-md:items-start">
         <div className="flex flex-col gap-4">
           <span className="text-h1 numbers">$155,880,309</span>
-          <span className="text-body-medium text-typography-secondary">TVL in vaults and pools</span>
+          <span className="text-body-medium text-textIcon-secondary">TVL in vaults and pools</span>
         </div>
         <Tabs type="inline" options={TIME_RANGES} selectedValue={timeRange} onChange={setTimeRange} />
       </div>

@@ -79,9 +79,9 @@ function MetricItem({
       <TooltipWithPortal
         variant="none"
         handle={
-          <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
+          <span className="text-body-small inline-flex items-center gap-4 font-medium text-textIcon-secondary">
             {label}
-            <InfoIcon className="size-16 text-typography-secondary" />
+            <InfoIcon className="size-16 text-textIcon-secondary" />
           </span>
         }
         content={tooltip}
@@ -89,7 +89,7 @@ function MetricItem({
       <div className="flex flex-wrap items-baseline gap-x-8">
         <span className="text-h2 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
         {subtitle && !isLoading && !isUnavailable && (
-          <span className="text-14 font-medium text-typography-secondary numbers">{subtitle}</span>
+          <span className="text-14 font-medium text-textIcon-secondary numbers">{subtitle}</span>
         )}
       </div>
     </div>

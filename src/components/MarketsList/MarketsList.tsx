@@ -57,7 +57,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="my-15 rounded-4 bg-slate-900 text-left">
+    <div className="my-15 rounded-4 bg-fill-surfaceBase text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
         <span className="text-h2">
           <Trans>GM pools</Trans>
@@ -115,7 +115,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
 
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr className="h-[64.5px]">
-                <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
+                <TableTd colSpan={6} className="text-body-medium align-top text-textIcon-secondary">
                   <Trans>No markets found</Trans>
                 </TableTd>
               </TableTr>

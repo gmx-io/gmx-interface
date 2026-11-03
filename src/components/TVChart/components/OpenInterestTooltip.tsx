@@ -35,7 +35,7 @@ export function OpenInterestTooltip() {
       longOIFormatted: (
         <>
           {longTokens} {indexTokenSymbol}{" "}
-          <span className="whitespace-nowrap text-typography-secondary">
+          <span className="whitespace-nowrap text-textIcon-secondary">
             (<UsdValue usd={openInterestLong} displayDecimals={0} />)
           </span>
         </>
@@ -43,7 +43,7 @@ export function OpenInterestTooltip() {
       shortOIFormatted: (
         <>
           {shortTokens} {indexTokenSymbol}{" "}
-          <span className="whitespace-nowrap text-typography-secondary">
+          <span className="whitespace-nowrap text-textIcon-secondary">
             (<UsdValue usd={openInterestShort} displayDecimals={0} />)
           </span>
         </>

@@ -23,25 +23,30 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
-  fill: "var(--color-slate-100)",
+  fill: "var(--color-textIcon-secondary)",
   fontSize: 11,
   fontWeight: 500,
 };
 
 const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
-  stroke: "var(--color-slate-600)",
+  stroke: "var(--color-stroke-primary)",
   strokeWidth: 0.5,
 };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "var(--color-slate-500)",
+  stroke: "var(--color-textIcon-disabled)",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
-const CHART_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: "var(--color-slate-100)", fill: "var(--color-slate-900)" };
+const CHART_ACTIVE_DOT = {
+  r: 4,
+  strokeWidth: 2,
+  stroke: "var(--color-textIcon-secondary)",
+  fill: "var(--color-fill-surfaceBase)",
+};
 
 function formatCompactNumber(value: number): string {
   if (value >= 1_000_000) {
@@ -75,7 +80,7 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
     );
 
   return (
-    <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
+    <div className="text-body-small z-50 flex flex-col rounded-4 bg-fill-surfaceElevated px-12 pt-8 shadow-lg backdrop-blur-sm">
       <StatsTooltipRow label={t`Month`} value={monthRange} showDollar={false} />
       <StatsTooltipRow
         label={t`Monthly bought`}
@@ -104,7 +109,7 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
 
   if (chartData.length === 0) {
     return (
-      <div className="flex min-h-[250px] items-center justify-center text-typography-secondary">
+      <div className="flex min-h-[250px] items-center justify-center text-textIcon-secondary">
         <Trans>No data available</Trans>
       </div>
     );
@@ -112,20 +117,20 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap items-center gap-24 px-20 text-typography-secondary">
+      <div className="flex flex-wrap items-center gap-24 px-20 text-textIcon-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Monthly bought</Trans>
+          <div className="inline-block size-6 rounded-full bg-blue-strong" /> <Trans>Monthly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>
+          <div className="inline-block size-6 rounded-full bg-textIcon-secondary" /> <Trans>Cumulative</Trans>
         </div>
         <TooltipWithPortal
           variant="none"
           className="ml-auto"
           handle={
-            <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
+            <span className="text-body-small inline-flex items-center gap-4 font-medium text-textIcon-secondary">
               <Trans>USD estimate</Trans>
-              <InfoIcon className="size-16 text-typography-secondary" />
+              <InfoIcon className="size-16 text-textIcon-secondary" />
             </span>
           }
           content={
@@ -146,12 +151,18 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
                 content={<ChartTooltip />}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
-              <Bar yAxisId="left" dataKey="monthlyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
+              <Bar
+                yAxisId="left"
+                dataKey="monthlyAccrued"
+                fill="var(--color-blue-strong)"
+                radius={2}
+                minPointSize={1}
+              />
               <Line
                 yAxisId="right"
                 type="monotone"
                 dataKey="cumulativeAccrued"
-                stroke="var(--color-slate-100)"
+                stroke="var(--color-textIcon-secondary)"
                 strokeWidth={2}
                 dot={false}
                 activeDot={CHART_ACTIVE_DOT}

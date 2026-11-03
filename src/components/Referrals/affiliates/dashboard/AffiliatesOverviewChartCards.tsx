@@ -61,7 +61,7 @@ export function TradingVolumeChartCard({
               variant="none"
               maxAllowedWidth={350}
               handle={
-                <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
+                <span className="inline-flex items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 text-12 font-medium text-blue-strong">
                   <img className="h-10" src={sparkleIcon} alt="" />
                   <Trans>Earns MegaETH points</Trans>
                 </span>
@@ -86,7 +86,7 @@ export function TradingVolumeChartCard({
         topRightContent={
           <button
             type="button"
-            className="text-body-small flex items-center gap-3 font-medium text-typography-secondary hover:text-typography-primary"
+            className="text-body-small flex items-center gap-3 font-medium text-textIcon-secondary hover:text-textIcon-primary"
             onClick={() => setIsShareModalVisible(true)}
           >
             <Trans>Share</Trans> <ShareArrowFilledIcon className="size-12" />
@@ -141,7 +141,7 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
           Net referred traders in the selected period (gained - graduated - lost). Graduated traders reached the
           referral program's graduation threshold and were moved to a GMX protocol code: they keep their fee discount
           but no longer generate affiliate rewards.{" "}
-          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-strong">
             Read more
           </ExternalLink>
           .
@@ -151,19 +151,19 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
       valueChange={formatCountDelta(stats?.summary.tradersNetDelta)}
       isValueChangePositive={(stats?.summary.tradersNetDelta ?? 0) >= 0}
       topRightContent={
-        <div className="text-body-small flex items-center gap-[13px] font-medium text-typography-secondary">
+        <div className="text-body-small flex items-center gap-[13px] font-medium text-textIcon-secondary">
           <span className="flex items-center gap-[9px]">
-            <span className="size-[6px] shrink-0 rounded-full bg-green-500" />
+            <span className="size-[6px] shrink-0 rounded-full bg-green-strong" />
             <Trans>Gained</Trans>
           </span>
           {hasGraduatedTraders && (
             <span className="flex items-center gap-[9px]">
-              <span className="size-[6px] shrink-0 rounded-full bg-yellow-500" />
+              <span className="size-[6px] shrink-0 rounded-full bg-yellow-strong" />
               <Trans>Graduated</Trans>
             </span>
           )}
           <span className="flex items-center gap-[9px]">
-            <span className="size-[6px] shrink-0 rounded-full bg-red-500" />
+            <span className="size-[6px] shrink-0 rounded-full bg-red-strong" />
             <Trans>Lost</Trans>
           </span>
         </div>

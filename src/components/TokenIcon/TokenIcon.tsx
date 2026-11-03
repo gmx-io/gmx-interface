@@ -35,7 +35,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       sub = (
         <span
           className={cx(
-            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-slate-700 px-6 py-2 text-12 font-medium text-typography-secondary",
+            "pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-button-background px-6 py-2 text-12 font-medium text-textIcon-secondary",
             badgeClassName
           )}
         >
@@ -47,13 +47,13 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       sub = (
         <span
           className={cx(
-            "absolute -bottom-8 -right-8 flex flex-row items-center justify-center text-typography-secondary",
+            "absolute -bottom-8 -right-8 flex flex-row items-center justify-center text-textIcon-secondary",
             badgeClassName
           )}
         >
           {topIconUrl ? (
             <img
-              className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
+              className="z-20 -mr-10 rounded-[100%] border-2 border-fill-surfaceBase bg-fill-surfaceBase"
               src={topIconUrl}
               alt={badge[0]}
               width={20}
@@ -62,7 +62,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
           ) : null}
           {bottomIconUrl ? (
             <img
-              className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
+              className="z-10 rounded-[100%] border-2 border-fill-surfaceBase bg-fill-surfaceBase"
               src={bottomIconUrl}
               alt={badge[1]}
               width={20}
@@ -90,7 +90,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge as AnyChainId]}
         width={size}
         height={size}
-        className={cx("absolute z-10 box-content rounded-full bg-slate-900", offset)}
+        className={cx("absolute z-10 box-content rounded-full bg-fill-surfaceBase", offset)}
       />
     );
   }

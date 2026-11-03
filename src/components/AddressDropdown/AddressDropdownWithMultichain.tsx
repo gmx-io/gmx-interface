@@ -65,7 +65,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
 
   return (
     <div
-      className={cx("text-body-medium relative flex font-medium text-typography-primary", {
+      className={cx("text-body-medium relative flex font-medium text-textIcon-primary", {
         "z-[1002]": isElevated,
       })}
     >
@@ -81,7 +81,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
       >
         <div
           className={cx(
-            "text-body-medium flex items-center font-medium text-typography-primary",
+            "text-body-medium flex items-center font-medium text-textIcon-primary",
             !isMobile && (!shouldShowDepositButton ? "gap-16" : "gap-20"),
             isMobile && "gap-8"
           )}
@@ -94,10 +94,15 @@ export function AddressDropdownWithMultichain({ account }: Props) {
 
           {showSideButton && !shouldShowDepositButton && (
             <>
-              {!isSmallMobile && <div className="h-20 w-1 shrink-0 bg-slate-600" />}
+              {!isSmallMobile && <div className="h-20 w-1 shrink-0 bg-stroke-primary" />}
 
               {isGmxAccountLoading ? (
-                <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={55} height={18} />
+                <Skeleton
+                  baseColor="var(--color-fill-skeleton)"
+                  highlightColor="var(--color-fill-skeleton)"
+                  width={55}
+                  height={18}
+                />
               ) : (
                 <UsdValue usd={srcChainId ? gmxAccountUsd : totalUsd} displayDecimals={0} />
               )}

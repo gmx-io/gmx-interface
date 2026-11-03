@@ -83,7 +83,7 @@ export function UsdgClosePayoutStatus({
   return (
     <div className="mt-8 flex flex-col gap-4">
       {payout.isConversionFailed && (
-        <div className="text-yellow-300">
+        <div className="text-yellow-strong">
           <Trans>
             Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill
           </Trans>
@@ -94,7 +94,7 @@ export function UsdgClosePayoutStatus({
       </div>
       {convertToToken && (
         <Link
-          className="text-blue-300 underline"
+          className="text-blue-strong underline"
           to={`/trade/swap?mode=market&from=${receivedToken.symbol}&to=${convertToToken.symbol}&amount=${formatAmountFree(
             payout.receivedAmount,
             receivedToken.decimals

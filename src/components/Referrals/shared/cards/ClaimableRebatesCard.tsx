@@ -31,12 +31,12 @@ export function ClaimableRebatesCard() {
 
   return (
     <>
-      <div className="rounded-8 bg-slate-900 p-adaptive max-md:fixed max-md:bottom-[var(--safe-area-inset-bottom)] max-md:left-[var(--safe-area-inset-left)] max-md:right-[var(--safe-area-inset-right)] max-md:z-50 max-md:rounded-0 max-md:border-t-1/2 max-md:border-stroke-primary">
-        <div className="text-body-medium mb-8 font-medium text-typography-secondary">
+      <div className="rounded-8 bg-fill-surfaceBase p-adaptive max-md:fixed max-md:bottom-[var(--safe-area-inset-bottom)] max-md:left-[var(--safe-area-inset-left)] max-md:right-[var(--safe-area-inset-right)] max-md:z-50 max-md:rounded-0 max-md:border-t-1/2 max-md:border-stroke-primary">
+        <div className="text-body-medium mb-8 font-medium text-textIcon-secondary">
           <Trans>Claimable rebates</Trans>
         </div>
         <div className="flex items-center justify-between gap-4">
-          <div className="text-24 font-medium text-typography-primary numbers">
+          <div className="text-24 font-medium text-textIcon-primary numbers">
             <UsdValue usd={totalClaimableRewardsUsd} />
           </div>
           <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0n}>

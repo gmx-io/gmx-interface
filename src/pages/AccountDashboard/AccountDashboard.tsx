@@ -68,7 +68,7 @@ export function AccountDashboard() {
       <AppPageLayout title={t`Trader profile`} header={header}>
         <div className="default-container page-layout">
           <PageTitle title={t`Trader profile`} className="p-12" />
-          <div className="text-center text-red-500">
+          <div className="text-center text-red-strong">
             <Trans>Invalid Ethereum address</Trans>
           </div>
         </div>

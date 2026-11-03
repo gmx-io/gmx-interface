@@ -270,7 +270,7 @@ export function SettingsModal({
       setIsVisible={setIsSettingsVisible}
       label={t`Settings`}
       qa="settings-modal"
-      className="text-body-medium text-typography-secondary"
+      className="text-body-medium text-textIcon-secondary"
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
       desktopZIndex={1002}
     >

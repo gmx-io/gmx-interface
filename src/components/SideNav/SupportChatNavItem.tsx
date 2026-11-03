@@ -35,9 +35,9 @@ function UnreadCountBadge({ unreadCount, isCollapsed = false }: { unreadCount: n
     <span
       aria-hidden={isCollapsed || undefined}
       className={cx(
-        "text-body-small flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-300 font-medium text-white dark:text-black",
+        "text-body-small flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-secondary to-blue-strong font-medium text-textIcon-onButton dark:text-black",
         isCollapsed
-          ? "absolute -right-10 -top-8 size-16 outline outline-2 outline-[var(--color-slate-950)] group-hover:hidden"
+          ? "absolute -right-10 -top-8 size-16 outline outline-2 outline-[var(--color-fill-background)] group-hover:hidden"
           : "size-20"
       )}
     >
@@ -119,7 +119,7 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
             <UnreadCountBadge unreadCount={supportChatUnreadCount} />
           ) : (
             shouldShowNewBadge && (
-              <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
+              <span className="text-body-small rounded-full bg-blue-backgroundOpacity px-6 py-1">
                 <AnimatedGradientText className="inline-block font-medium">{newLabel}</AnimatedGradientText>
               </span>
             )

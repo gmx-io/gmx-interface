@@ -48,7 +48,7 @@ export function DesignSystemSectionNav({ contentRef, contentKey }: Props) {
   }
 
   return (
-    <nav aria-label="On this page" className="flex flex-col border-l border-slate-700">
+    <nav aria-label="On this page" className="flex flex-col border-l border-button-background">
       {sections.map((section) => (
         <SectionNavItem
           key={section.id}
@@ -88,8 +88,8 @@ function SectionNavItem({
         "text-body-medium -ml-1 border-l-2 py-6 pl-14 pr-8 text-left transition-colors duration-150",
         DOCS_FOCUS_CLASSNAME,
         {
-          "border-blue-400 text-blue-400 dark:border-blue-300 dark:text-blue-300": isActive,
-          "border-[transparent] text-typography-secondary hover:text-typography-primary": !isActive,
+          "border-button-primary text-blue-strong dark:border-blue-strong dark:text-blue-strong": isActive,
+          "border-[transparent] text-textIcon-secondary hover:text-textIcon-primary": !isActive,
         }
       )}
     >

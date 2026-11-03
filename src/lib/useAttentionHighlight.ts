@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const ATTENTION_HIGHLIGHT_CLASSNAME = "ring-2 ring-blue-300";
+const ATTENTION_HIGHLIGHT_CLASSNAME = "ring-2 ring-blue-strong";
 const HIGHLIGHT_MS = 2000;
 
 export function useAttentionHighlight<T extends HTMLElement>(trigger: number) {

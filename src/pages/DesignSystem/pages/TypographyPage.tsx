@@ -178,7 +178,7 @@ function TextStyleRow({ style }: { style: TextStyle }) {
       </div>
       <div className="flex min-w-0 flex-col gap-2">
         <span className="break-words font-mono text-15">{style.name}</span>
-        <span className="text-body-small text-typography-secondary">{style.spec}</span>
+        <span className="text-body-small text-textIcon-secondary">{style.spec}</span>
       </div>
     </div>
   );
@@ -191,7 +191,7 @@ function TextStyleRow({ style }: { style: TextStyle }) {
 export function TypographyExamples() {
   return (
     <DocsSection section={EXAMPLES_SECTION} flush>
-      <p className="text-body-large px-24 pt-24 text-typography-secondary max-md:px-16 max-md:pt-16">
+      <p className="text-body-large px-24 pt-24 text-textIcon-secondary max-md:px-16 max-md:pt-16">
         Names and values after the Changelog steps.
       </p>
       {TEXT_STYLES.map((group, index) => (

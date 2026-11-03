@@ -30,7 +30,7 @@ function CrosshairPercentageLabelComponent({ state }: CrosshairPercentageLabelPr
 
   return (
     <div
-      className="leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center gap-2 whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-white dark:bg-[#363a45]"
+      className="leading-none pointer-events-none absolute z-10 box-border flex flex-col items-center gap-2 whitespace-nowrap rounded-2 bg-[#131722] px-8 py-4 text-11 font-medium text-textIcon-onButton dark:bg-[#363a45]"
       style={style}
     >
       <div className="text-14 leading-[16px]">{formattedPrice}</div>

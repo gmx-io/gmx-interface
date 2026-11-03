@@ -50,7 +50,7 @@ export default function PositionDropdown({
   if (disabled) {
     return (
       <Button variant="ghost" disabled>
-        <MenuDotsIcon fontSize={14} fontWeight={500} className="text-typography-secondary" />
+        <MenuDotsIcon fontSize={14} fontWeight={500} className="text-textIcon-secondary" />
       </Button>
     );
   }
@@ -62,7 +62,7 @@ export default function PositionDropdown({
           <MenuDotsIcon
             fontSize={14}
             fontWeight={500}
-            className="text-typography-secondary hover:text-typography-primary"
+            className="text-textIcon-secondary hover:text-textIcon-primary"
           />
         </Button>
       </Menu.Button>

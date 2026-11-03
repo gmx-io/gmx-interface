@@ -198,12 +198,12 @@ function useButtonRowScrollFade() {
   return controls;
 }
 
-type ScrollFadeGradientColor = "slate-800" | "slate-900" | "slate-950";
+type ScrollFadeGradientColor = "fill-surfaceElevated" | "fill-surfaceBase" | "fill-background";
 
 const GRADIENT_TO_CLASS: Record<ScrollFadeGradientColor, string> = {
-  "slate-800": "to-slate-800",
-  "slate-900": "to-slate-900",
-  "slate-950": "to-slate-950",
+  "fill-surfaceElevated": "to-fill-surfaceElevated",
+  "fill-surfaceBase": "to-fill-surfaceBase",
+  "fill-background": "to-fill-background",
 };
 
 function ScrollFadeControls({
@@ -213,7 +213,7 @@ function ScrollFadeControls({
   rightStyles,
   scrollToLeft,
   scrollToRight,
-  gradientColor = "slate-900",
+  gradientColor = "fill-surfaceBase",
 }: {
   scrollLeft: number;
   scrollRight: number;
@@ -222,7 +222,7 @@ function ScrollFadeControls({
   scrollToLeft: () => void;
   scrollToRight: () => void;
   /**
-   * @default "slate-900"
+   * @default "fill-surfaceBase"
    */
   gradientColor?: ScrollFadeGradientColor;
 }) {
@@ -317,7 +317,7 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
 
   return (
     <div className="relative">
-      <ScrollFadeControls {...scrollFade} gradientColor="slate-900" />
+      <ScrollFadeControls {...scrollFade} gradientColor="fill-surfaceBase" />
       <div className={cx("overflow-x-auto scrollbar-hide", className)} ref={scrollFade.setScrollableRef}>
         {children}
       </div>

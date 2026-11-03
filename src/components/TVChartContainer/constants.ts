@@ -39,9 +39,9 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "rgba(139, 148, 182, 0.67)",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].dark,
+  "scalesProperties.textColor": colors.textIcon["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].dark, colors.red[500].dark),
+  ...createChartStyleOverrides(colors.green.strong.dark, colors.red.strong.dark),
 };
 
 export const chartOverridesLight: Partial<WidgetOverrides> = {
@@ -56,9 +56,9 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "rgba(107, 114, 128, 0.67)",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].light,
+  "scalesProperties.textColor": colors.textIcon["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].light, colors.red[500].light),
+  ...createChartStyleOverrides(colors.green.strong.light, colors.red.strong.light),
 };
 
 export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];

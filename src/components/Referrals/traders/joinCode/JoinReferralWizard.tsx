@@ -42,7 +42,7 @@ function DiscountPromos() {
           <br className="max-md:hidden" /> to 10% fee savings
         </Trans>
       </h2>
-      <p className="text-body-medium text-typography-secondary">
+      <p className="text-body-medium text-textIcon-secondary">
         <Trans>
           Enter a referral code to receive a trading fee discount.
           <br /> Depending on the referral tier, you can save up to 10% on all
@@ -100,7 +100,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
                   <Trans>Connect wallet</Trans>
                 </Button>
-                <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-300">
+                <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-strong">
                   <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
@@ -119,10 +119,10 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />
-                <p className="text-body-small text-typography-secondary">
+                <p className="text-body-small text-textIcon-secondary">
                   <Trans>
                     You can find a referral code in{" "}
-                    <ExternalLink href="https://x.com/search?q=$GMX" className="text-blue-300">
+                    <ExternalLink href="https://x.com/search?q=$GMX" className="text-blue-strong">
                       X
                     </ExternalLink>{" "}
                     or on other social media platforms
@@ -142,7 +142,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                     <Trans>Your discount is now active!</Trans>
                   )}
                 </h2>
-                <p className="text-body-medium text-typography-secondary">
+                <p className="text-body-medium text-textIcon-secondary">
                   <Trans>
                     You have activated the referral code {userReferralCodeString}. Your reduced rate applies
                     automatically to every position you open or close — no extra steps needed.
@@ -165,7 +165,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 </Button>
                 <button
                   type="button"
-                  className="text-body-small font-medium text-blue-300"
+                  className="text-body-small font-medium text-blue-strong"
                   onClick={onGoToTraderDashboard}
                 >
                   <Trans>Go to trader dashboard</Trans>

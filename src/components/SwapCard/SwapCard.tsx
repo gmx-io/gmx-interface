@@ -44,7 +44,7 @@ export function SwapCard(p: Props) {
   }, [fromToken, toToken]);
 
   return (
-    <div className="text-body-medium relative rounded-4 bg-slate-900 p-15 max-[1024px]:mt-0">
+    <div className="text-body-medium relative rounded-4 bg-fill-surfaceBase p-15 max-[1024px]:mt-0">
       <div className="text-body-medium mb-14 font-medium">
         <Trans>Swap</Trans>
       </div>

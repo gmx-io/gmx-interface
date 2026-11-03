@@ -56,11 +56,11 @@ export function GeneralPerformanceDetails({
   }, [data, error]);
 
   return (
-    <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="flex items-center gap-8 border-b-1/2 border-slate-600 p-20 text-20 font-medium">
+    <div className="overflow-hidden rounded-8 bg-fill-surfaceBase">
+      <div className="flex items-center gap-8 border-b-1/2 border-stroke-primary p-20 text-20 font-medium">
         <Trans>General performance details</Trans>
         <TooltipWithPortal content={t`Performance and chart data are based on UTC times`} variant="none">
-          <InfoIconStroke className="h-16 w-16 cursor-help text-typography-secondary" />
+          <InfoIconStroke className="h-16 w-16 cursor-help text-textIcon-secondary" />
         </TooltipWithPortal>
       </div>
 
@@ -127,7 +127,7 @@ function GeneralPerformanceDetailsRow({
         {onBucketClick ? (
           <button
             type="button"
-            className="cursor-pointer text-left text-typography-secondary underline decoration-dashed decoration-[0.5px] underline-offset-2 hover:text-typography-primary"
+            className="cursor-pointer text-left text-textIcon-secondary underline decoration-dashed decoration-[0.5px] underline-offset-2 hover:text-textIcon-primary"
             onClick={() => onBucketClick(row.bucketLabel)}
           >
             {bucketLabel}
@@ -150,9 +150,9 @@ function GeneralPerformanceDetailsRow({
             })}
             maxAllowedWidth={showDebugValues ? 350 : 420}
             className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-              "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
-              "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
-              "decoration-gray-400": row.pnlUsd === 0n,
+              "text-green-strong decoration-green-strong/50": row.pnlUsd > 0n,
+              "text-red-strong decoration-red-strong/50": row.pnlUsd < 0n,
+              "decoration-textIcon-secondary": row.pnlUsd === 0n,
             })}
             content={
               showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
@@ -168,9 +168,9 @@ function GeneralPerformanceDetailsRow({
             tooltipClassName="cursor-help !p-0 *:cursor-auto"
             maxAllowedWidth={420}
             className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-              "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
-              "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
-              "decoration-gray-400": row.pnlBps === 0n,
+              "text-green-strong decoration-green-strong/50": row.pnlBps > 0n,
+              "text-red-strong decoration-red-strong/50": row.pnlBps < 0n,
+              "decoration-textIcon-secondary": row.pnlBps === 0n,
             })}
             content={<PnlPercentageTooltip row={row} />}
             handle={<span className="numbers">{formatPercentage(row.pnlBps, { signed: true, useCommas: true })}</span>}
@@ -215,7 +215,7 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
           shouldStopPropagation
           content={t`Rank among accounts for this metric and period`}
           handle={
-            <span className="cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 text-12 font-medium text-typography-secondary numbers">
+            <span className="cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 text-12 font-medium text-textIcon-secondary numbers">
               #{rank}
             </span>
           }
@@ -247,9 +247,9 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
         ))}
       </div>
 
-      <div className="my-12 h-[0.5px] bg-slate-600" />
+      <div className="my-12 h-[0.5px] bg-stroke-primary" />
 
-      <div className="mb-10 font-medium text-typography-primary">
+      <div className="mb-10 font-medium text-textIcon-primary">
         <Trans>Fees and impacts</Trans>
       </div>
       <div className="flex flex-col gap-8">
@@ -257,7 +257,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
           <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
       </div>
-      <div className="text-body-small mt-8 leading-[1.35] text-typography-secondary">
+      <div className="text-body-small mt-8 leading-[1.35] text-textIcon-secondary">
         <Trans>Outstanding claimable amounts are not included</Trans>.
       </div>
     </div>
@@ -272,12 +272,12 @@ function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
         showDollar={false}
         value={<UsdValue usd={row.usedCapitalUsd} />}
         valueClassName="numbers"
-        labelClassName="text-typography-primary font-medium"
+        labelClassName="text-textIcon-primary font-medium"
       />
-      <div className="text-body-small text-typography-secondary">
+      <div className="text-body-small text-textIcon-secondary">
         <Trans>Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL).</Trans>
       </div>
-      <div className="my-12 h-[0.5px] bg-slate-600" />
+      <div className="my-12 h-[0.5px] bg-stroke-primary" />
       <PnlBreakdownTooltipContent row={row} />
     </div>
   );
@@ -286,7 +286,7 @@ function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
 function BreakdownTooltipTotalRow({ value }: { value: bigint }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
-      <span className="min-w-0 break-words font-medium text-typography-primary">{t`PnL`}</span>
+      <span className="min-w-0 break-words font-medium text-textIcon-primary">{t`PnL`}</span>
       <UsdValue usd={value} className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))} />
     </div>
   );
@@ -328,7 +328,7 @@ function getPnlBreakdownFieldLabel(key: PnlBreakdownFieldKey) {
 function BreakdownTooltipRow({ row, labelClassName }: { row: PnlBreakdownRow; labelClassName?: string }) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
-      <span className={cx("min-w-0 break-words font-medium text-typography-secondary", labelClassName)}>
+      <span className={cx("min-w-0 break-words font-medium text-textIcon-secondary", labelClassName)}>
         {getPnlBreakdownFieldLabel(row.key)}
       </span>
       <UsdValue

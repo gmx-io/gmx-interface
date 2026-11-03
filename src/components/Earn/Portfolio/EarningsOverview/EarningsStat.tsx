@@ -22,7 +22,7 @@ export function EarningsStat({
 }) {
   return (
     <div className={cx("flex flex-col gap-2", className)}>
-      <span className="text-body-small flex items-center gap-6 font-medium text-typography-secondary">{label}</span>
+      <span className="text-body-small flex items-center gap-6 font-medium text-textIcon-secondary">{label}</span>
       <span className="text-body-large font-medium numbers">{children}</span>
     </div>
   );
@@ -74,8 +74,8 @@ export function UsdStatValue({
         <UsdText
           usd={value}
           className={cx({
-            "text-typography-secondary": value === 0n,
-            "text-green-500": highlightPositive && value > 0n,
+            "text-textIcon-secondary": value === 0n,
+            "text-green-strong": highlightPositive && value > 0n,
           })}
         />
       )}

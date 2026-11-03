@@ -123,7 +123,7 @@ export function SelectorBaseDesktopRow(
       <TooltipWithPortal
         as={TableTr}
         className={cx(
-          "SelectorBaseUtils-row underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-4",
+          "SelectorBaseUtils-row underline decoration-textIcon-secondary decoration-dashed decoration-1 underline-offset-4",
           props.className
         )}
         content={props.message}
@@ -216,8 +216,8 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
           <Popover.Button
             as="div"
             className={cx(
-              "SelectorBase-button group/selector-base group gap-5 tracking-wide gmx-hover:text-blue-300",
-              popoverProps.open && "text-blue-300",
+              "SelectorBase-button group/selector-base group gap-5 tracking-wide gmx-hover:text-blue-strong",
+              popoverProps.open && "text-blue-strong",
               props.handleClassName
             )}
             ref={setPopoverButtonRef}
@@ -226,8 +226,8 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             <span className="grow overflow-hidden text-ellipsis leading-[20px]">{props.label}</span>
             <ChevronDownIcon
               className={cx(
-                "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",
-                popoverProps.open ? "text-blue-300" : "text-typography-secondary",
+                "inline-block size-16 group-gmx-hover/selector-base:text-blue-strong",
+                popoverProps.open ? "text-blue-strong" : "text-textIcon-secondary",
                 props.chevronClassName
               )}
             />
@@ -288,7 +288,7 @@ function SelectorBaseMobile(props: Props) {
       >
         <span className="overflow-hidden text-ellipsis">{props.label}</span>
         {!props.disabled && (
-          <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
+          <ChevronDownIcon className={cx("inline-block size-16 text-textIcon-secondary", props.chevronClassName)} />
         )}
       </div>
 

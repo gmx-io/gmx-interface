@@ -48,7 +48,7 @@ test("0.10 0.11 4.59 4.61 live GMX Account: indexed cross-chain deposit and with
       const date = utcParts(transfer.sentTimestamp);
       await expect(row).toHaveCount(1, { timeout: 45_000 });
       await expect(row.locator("svg.animate-spin")).toHaveCount(0);
-      await expect(row.getByText(label, { exact: true })).not.toHaveClass(/text-red-500/);
+      await expect(row.getByText(label, { exact: true })).not.toHaveClass(/text-red-strong/);
       await row.click();
 
       const title = page.getByText(isDeposit ? "Deposit to GMX Account" : "Withdrawal from GMX Account", {

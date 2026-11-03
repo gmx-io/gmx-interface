@@ -198,7 +198,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-typography-secondary">
+              <div className="text-12 tracking-normal text-textIcon-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -219,7 +219,7 @@ export function GmListItem({
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
+        <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
           <SyntheticsInfoRow
             label={<Trans>TVL (supply)</Trans>}
             value={
@@ -338,7 +338,7 @@ export function GmListItem({
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-typography-secondary">
+            <div className="text-12 tracking-normal text-textIcon-secondary">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>
@@ -356,7 +356,12 @@ export function GmListItem({
             usdOnTop
           />
         ) : (
-          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
         )}
       </TableTdActionable>
       <TableTdActionable className="w-[11%]">
@@ -378,14 +383,28 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[11%]">
-        {!apyLoading ? apyValue : <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />}
+        {!apyLoading ? (
+          apyValue
+        ) : (
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
         {!performanceLoading ? (
           <div className="numbers">{performanceValue}</div>
         ) : (
-          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
         )}
       </TableTdActionable>
 
@@ -446,17 +465,17 @@ const SnapshotGraph = ({
       <AreaChart width={size.width} height={size.height} data={chartData}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-green-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="var(--color-green-strong)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-green-strong)" stopOpacity={0}></stop>
           </linearGradient>
           <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-red-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="var(--color-red-strong)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-red-strong)" stopOpacity={0}></stop>
           </linearGradient>
         </defs>
         <Area
           dataKey="performance"
-          stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
+          stroke={isNegative ? "var(--color-red-strong)" : "var(--color-green-strong)"}
           dot={false}
           fill={isNegative ? "url(#snapshot-graph-gradient-red)" : "url(#snapshot-graph-gradient-green)"}
           baseValue="dataMin"

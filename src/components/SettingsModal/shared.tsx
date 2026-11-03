@@ -110,23 +110,23 @@ export function SettingButton({
     <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
       <div
         className={cx(
-          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
-          active ? "border-slate-100 text-typography-primary" : "border-slate-600",
+          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-textIcon-secondary`,
+          active ? "border-textIcon-secondary text-textIcon-primary" : "border-stroke-primary",
           disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}
         onClick={disabled ? undefined : onClick}
       >
         <div
           className={cx(
-            "flex items-center justify-center text-typography-secondary",
+            "flex items-center justify-center text-textIcon-secondary",
             disabled && "opacity-50",
-            active && "text-typography-primary"
+            active && "text-textIcon-primary"
           )}
         >
           {icon}
         </div>
         <div className="flex gap-4 py-6">
-          <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
+          <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
             <div className="flex items-center gap-4">
               <div>{title}</div>
               {info && (
@@ -149,8 +149,8 @@ export function SettingButton({
 
 export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
   const variantClass = {
-    blue: "bg-blue-600 text-white",
-    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+    blue: "bg-button-primary text-textIcon-onButton",
+    outline: "text-textIcon-primary ring-1 ring-inset ring-stroke-accent",
   }[variant];
 
   return (

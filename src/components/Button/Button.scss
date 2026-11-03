@@ -21,7 +21,7 @@
 
   &.primary {
     background: var(--primary-btn-bg);
-    color: var(--color-white);
+    color: var(--color-textIcon-onButton);
     border-radius: 8px;
 
     &:not([disabled]):hover {
@@ -35,7 +35,7 @@
 
   &.primary-action {
     background: var(--primary-btn-bg);
-    color: var(--color-white);
+    color: var(--color-textIcon-onButton);
     border-radius: 8px;
     min-height: 40px;
     line-height: normal;
@@ -52,7 +52,7 @@
   &.secondary {
     background: var(--color-button-secondary);
     border-radius: 8px;
-    color: var(--color-typography-secondary);
+    color: var(--color-textIcon-secondary);
     position: relative;
     letter-spacing: 0;
 
@@ -74,19 +74,19 @@
 
     &:not([disabled], .disabled):hover {
       background-color: var(--color-button-secondaryHover);
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
     }
 
     &:not([disabled], .disabled):active {
       background: var(--color-button-secondary);
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
     }
   }
 
   &.ghost {
     background-color: transparent;
     border-radius: 8px;
-    color: var(--color-slate-100);
+    color: var(--color-textIcon-secondary);
     position: relative;
     letter-spacing: 0;
 
@@ -107,18 +107,18 @@
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
       background-color: var(--color-fill-surfaceHover);
     }
 
     &:not([disabled], .disabled):active {
-      color: var(--color-typography-primary);
-      background: var(--color-slate-800);
+      color: var(--color-textIcon-primary);
+      background: var(--color-fill-surfaceElevated);
     }
   }
 
   &.link {
-    color: var(--color-slate-100);
+    color: var(--color-textIcon-secondary);
     text-decoration: underline;
     padding: 0;
 
@@ -127,7 +127,7 @@
     }
 
     &:not([disabled], .disabled):hover {
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
     }
   }
 
@@ -135,11 +135,11 @@
   &:disabled {
     box-shadow: none;
     cursor: not-allowed;
-    color: var(--color-slate-500);
+    color: var(--color-textIcon-disabled);
 
     &.primary-action,
     &.primary {
-      background-color: var(--color-slate-800);
+      background-color: var(--color-button-primaryDisabled);
     }
 
     &.secondary {

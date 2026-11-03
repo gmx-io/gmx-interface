@@ -117,7 +117,7 @@ export default function EarnProductCard({
   return (
     <div
       className={cx(
-        "relative flex h-full flex-col gap-16 rounded-8 bg-slate-900 p-20 transition-[max-height] duration-300 ease-in-out",
+        "relative flex h-full flex-col gap-16 rounded-8 bg-fill-surfaceBase p-20 transition-[max-height] duration-300 ease-in-out",
         className
       )}
     >
@@ -128,26 +128,26 @@ export default function EarnProductCard({
         </div>
 
         <div className="flex flex-col gap-12">
-          <h3 className="text-body-large font-medium text-typography-primary">{content.title}</h3>
-          <p className="text-body-medium text-typography-secondary">{content.description}</p>
+          <h3 className="text-body-large font-medium text-textIcon-primary">{content.title}</h3>
+          <p className="text-body-medium text-textIcon-secondary">{content.description}</p>
           <ExternalLink href={content.readMoreUrl} variant="icon" className="text-body-small font-medium">
             {t`Read more`}
           </ExternalLink>
         </div>
 
-        <div className="border-t-1/2 border-t-slate-600" />
+        <div className="border-t-1/2 border-t-stroke-primary" />
 
-        <div className="text-body-medium flex flex-col gap-8 text-typography-secondary">
+        <div className="text-body-medium flex flex-col gap-8 text-textIcon-secondary">
           {content.bullets.map((bullet, index) => (
             <div key={index} className="flex items-center gap-8">
               <span className="size-8 shrink-0 rotate-[45deg]" style={BULLET_GRADIENT_STYLE} />
-              <span className="text-body-small font-medium text-typography-primary">{bullet}</span>
+              <span className="text-body-small font-medium text-textIcon-primary">{bullet}</span>
             </div>
           ))}
         </div>
 
         {shouldCollapse && (
-          <div className="to-transparent pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-900" />
+          <div className="to-transparent pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-fill-surfaceBase" />
         )}
       </div>
 

@@ -30,7 +30,7 @@ function BuySellIconsOption({
   return (
     <div
       className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
+        "bg-button-background": isSelected,
       })}
       onClick={() => {
         onClick();

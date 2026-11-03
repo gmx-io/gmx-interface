@@ -23,7 +23,7 @@ import { CodeHighlight } from "./CodeHighlight";
 
 // Keyboard focus ring for links and small buttons, the same as EmbeddedActionButton's
 export const DOCS_FOCUS_CLASSNAME =
-  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-blue-300";
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-0 focus-visible:outline-blue-strong";
 
 export type DocsSectionInfo = {
   id: string;
@@ -55,17 +55,17 @@ export function DocsSection({
     <section
       id={section.id}
       data-docs-section={section.title}
-      className="scroll-mt-16 overflow-hidden rounded-8 border border-slate-700 bg-slate-900"
+      className="scroll-mt-16 overflow-hidden rounded-8 border border-button-background bg-fill-surfaceBase"
     >
       <div className="flex min-h-56 items-center gap-10 border-b border-fill-surfaceElevated px-24 py-12 max-md:px-16">
         {Icon && (
-          <span className="flex size-28 shrink-0 items-center justify-center rounded-6 bg-blue-400/10 text-blue-400 dark:bg-blue-300/10 dark:text-blue-300">
+          <span className="flex size-28 shrink-0 items-center justify-center rounded-6 bg-button-primary/10 text-blue-strong dark:bg-blue-strong/10 dark:text-blue-strong">
             <Icon className="size-16" />
           </span>
         )}
         <div className="flex flex-wrap items-baseline gap-8">
           <h2 className="text-h3 font-medium">{section.title}</h2>
-          {titleMeta && <span className="text-body-medium text-typography-secondary">{titleMeta}</span>}
+          {titleMeta && <span className="text-body-medium text-textIcon-secondary">{titleMeta}</span>}
         </div>
         {titleAction && <div className="ml-auto">{titleAction}</div>}
       </div>
@@ -76,7 +76,7 @@ export function DocsSection({
 
 // One step smaller and quieter than labels: DS TextIcon/Disabled (#646A8F dark, #9FA3BC light)
 const CODE_ACTION_CLASSNAME = cx(
-  "text-body-small flex items-center gap-4 rounded-4 text-slate-400 transition-colors duration-200 ease-out hover:text-typography-primary dark:text-slate-500 dark:hover:text-typography-primary",
+  "text-body-small flex items-center gap-4 rounded-4 text-slate-400 transition-colors duration-200 ease-out hover:text-textIcon-primary dark:text-textIcon-disabled dark:hover:text-textIcon-primary",
   DOCS_FOCUS_CLASSNAME
 );
 
@@ -130,7 +130,7 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
         type="button"
         onClick={copy}
         className={cx(CODE_ACTION_CLASSNAME, "absolute right-24 top-24 z-10 max-md:right-16 max-md:top-16", {
-          "!text-green-500": isCopied,
+          "!text-green-strong": isCopied,
         })}
       >
         {isCopied ? <CheckIcon className="size-14" /> : <CopyIcon className="size-14" />}
@@ -148,7 +148,7 @@ export function DocsCode({ code, collapsedHeight }: { code: string; collapsedHei
         {isFoldable && (
           <div
             className={cx(
-              "to-transparent pointer-events-none absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-slate-900 transition-opacity duration-300",
+              "to-transparent pointer-events-none absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-fill-surfaceBase transition-opacity duration-300",
               isExpanded ? "opacity-0" : "opacity-100"
             )}
           />
@@ -204,7 +204,7 @@ export function DocsCopyButton({
     <button
       type="button"
       onClick={copy}
-      className={cx(CODE_ACTION_CLASSNAME, className, { "!text-green-500": isCopied })}
+      className={cx(CODE_ACTION_CLASSNAME, className, { "!text-green-strong": isCopied })}
     >
       {isCopied ? <CheckIcon className="size-14" /> : <CopyIcon className="size-14" />}
       {isCopied ? "Copied" : label}
@@ -217,10 +217,10 @@ export function DocsCopyButton({
  */
 export function DocsPreview({ previewClassName, children }: { previewClassName?: string; children: ReactNode }) {
   return (
-    <div className="overflow-hidden rounded-12 border border-slate-700">
+    <div className="overflow-hidden rounded-12 border border-button-background">
       <div
         className={cx(
-          "flex min-h-[200px] bg-slate-900 p-40 max-md:p-24",
+          "flex min-h-[200px] bg-fill-surfaceBase p-40 max-md:p-24",
           previewClassName ?? "flex-wrap items-center justify-center gap-16"
         )}
       >
@@ -245,7 +245,7 @@ export function DocsExample({
   return (
     <section id={section.id} data-docs-section={section.title} className="flex scroll-mt-16 flex-col gap-12">
       <h2 className="text-h3 font-medium">{section.title}</h2>
-      {description && <p className="text-body-large text-typography-secondary">{description}</p>}
+      {description && <p className="text-body-large text-textIcon-secondary">{description}</p>}
       <div className="mt-4">{children}</div>
     </section>
   );
@@ -270,7 +270,7 @@ export function DocsCard({
         className
       )}
     >
-      {label && <div className="text-body-medium text-typography-secondary">{label}</div>}
+      {label && <div className="text-body-medium text-textIcon-secondary">{label}</div>}
       {children}
     </div>
   );
@@ -307,7 +307,7 @@ export function DocsRules({ rules }: { rules: DocsRule[] }) {
     <dl className="text-body-large grid grid-cols-1 gap-x-24 gap-y-12 md:grid-cols-[200px_1fr]">
       {rules.map(([term, description]) => (
         <Fragment key={term}>
-          <dt className="text-typography-secondary">{term}</dt>
+          <dt className="text-textIcon-secondary">{term}</dt>
           <dd className="max-md:mb-8">{description}</dd>
         </Fragment>
       ))}
@@ -336,10 +336,10 @@ export function DocsPropsTable({ props }: { props: DocsProp[] }) {
         </thead>
         <tbody>
           {props.map((prop) => (
-            <tr key={prop.name} className="border-t-1/2 border-slate-600 align-top">
+            <tr key={prop.name} className="border-t-1/2 border-stroke-primary align-top">
               <td className="py-10 pr-16 font-mono text-15">{prop.name}</td>
-              <td className="py-10 pr-16 font-mono text-15 text-typography-secondary">{prop.type}</td>
-              <td className="py-10 pr-16 font-mono text-15 text-typography-secondary">{prop.defaultValue ?? "—"}</td>
+              <td className="py-10 pr-16 font-mono text-15 text-textIcon-secondary">{prop.type}</td>
+              <td className="py-10 pr-16 font-mono text-15 text-textIcon-secondary">{prop.defaultValue ?? "—"}</td>
               <td className="py-10">{prop.description}</td>
             </tr>
           ))}
@@ -363,7 +363,7 @@ export function DocsChangelog({ entries }: { entries: DocsChangelogEntry[] }) {
     <div className="flex flex-col gap-16">
       {entries.map((entry) => (
         <DocsSection key={entry.id} section={entry} titleMeta={entry.date}>
-          <ul className="text-body-large flex list-disc flex-col gap-8 pl-20 marker:text-typography-secondary">
+          <ul className="text-body-large flex list-disc flex-col gap-8 pl-20 marker:text-textIcon-secondary">
             {entry.changes.map((change) => (
               // pb-0 resets the padding that Shared.scss adds under every li
               <li key={change} className="pb-0">

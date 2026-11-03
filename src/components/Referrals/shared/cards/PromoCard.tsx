@@ -22,19 +22,19 @@ export function PromoCard({ title, subtitle, imgSrc, imgClassName, onClose }: Pr
   );
 
   return (
-    <div className="relative overflow-hidden rounded-8 border-1/2 border-blue-300/20 border-stroke-primary bg-slate-950/50 p-12">
+    <div className="relative overflow-hidden rounded-8 border-1/2 border-blue-strong/20 border-stroke-primary bg-fill-background/50 p-12">
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-8">
           <div className="min-w-0 flex-1">
-            <div className="text-body-medium mb-2 font-medium text-typography-primary">{title}</div>
-            <div className="text-body-small text-typography-secondary">{subtitle}</div>
+            <div className="text-body-medium mb-2 font-medium text-textIcon-primary">{title}</div>
+            <div className="text-body-small text-textIcon-secondary">{subtitle}</div>
           </div>
         </div>
       </div>
       {onClose && (
         <button
           type="button"
-          className="absolute right-8 top-8 z-10 text-blue-300 transition-colors hover:text-white"
+          className="absolute right-8 top-8 z-10 text-blue-strong transition-colors hover:text-textIcon-onButton"
           onClick={handleClose}
         >
           <CloseIcon className="size-16" />

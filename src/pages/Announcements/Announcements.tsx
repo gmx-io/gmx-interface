@@ -215,16 +215,16 @@ export default function AnnouncementsPage() {
     >
       <div className="flex flex-col gap-12 max-lg:gap-8">
         <div>
-          <h1 className="text-h1 font-medium text-typography-primary">
+          <h1 className="text-h1 font-medium text-textIcon-primary">
             <Trans>Announcements</Trans>
           </h1>
-          <p className="text-body-medium mt-8 max-w-[440px] text-typography-secondary max-lg:text-12 max-lg:font-medium max-lg:leading-[1.25] max-lg:tracking-[-0.012em]">
+          <p className="text-body-medium mt-8 max-w-[440px] text-textIcon-secondary max-lg:text-12 max-lg:font-medium max-lg:leading-[1.25] max-lg:tracking-[-0.012em]">
             <Trans>Stay up to date with the latest listings, updates and maintenance notices.</Trans>
           </p>
         </div>
 
         <div className="flex flex-col">
-          <div ref={toolbarRef} className="sticky top-0 z-10 bg-slate-950">
+          <div ref={toolbarRef} className="sticky top-0 z-10 bg-fill-background">
             <FiltersBar
               search={search}
               setSearch={handleSetSearch}
@@ -245,11 +245,11 @@ export default function AnnouncementsPage() {
                 <Loader />
               </div>
             ) : error && !uiFlags ? (
-              <div className="flex flex-1 items-center justify-center p-32 text-center text-typography-secondary">
+              <div className="flex flex-1 items-center justify-center p-32 text-center text-textIcon-secondary">
                 <Trans>Failed to load announcements. Please try again later.</Trans>
               </div>
             ) : list.length === 0 ? (
-              <div className="flex flex-1 items-center justify-center p-32 text-center text-typography-secondary">
+              <div className="flex flex-1 items-center justify-center p-32 text-center text-textIcon-secondary">
                 <Trans>No announcements found</Trans>
               </div>
             ) : (
@@ -261,7 +261,7 @@ export default function AnnouncementsPage() {
                   style={rowStyle}
                 >
                   <p
-                    className="text-body-small pt-12 font-medium text-blue-400 dark:text-blue-100 lg:sticky lg:self-start lg:pt-21"
+                    className="text-body-small pt-12 font-medium text-blue-strong dark:text-blue-secondary lg:sticky lg:self-start lg:pt-21"
                     style={dateStyle}
                   >
                     {formatEventDate(getEventSortDate(event, uiFlags))}
@@ -369,7 +369,7 @@ function FiltersBar({
       ref={containerRef}
       className="flex flex-wrap items-center gap-12 border-b-1/2 border-stroke-primary pb-12 pt-8 max-md:gap-8 lg:flex-nowrap"
     >
-      <ButtonRowScrollFadeContainer className="min-w-0 grow max-lg:basis-full" gradientColor="slate-950">
+      <ButtonRowScrollFadeContainer className="min-w-0 grow max-lg:basis-full" gradientColor="fill-background">
         <div ref={tabsContentRef} className="flex w-max items-center gap-4">
           {tabOptions.map((opt) => (
             <button
@@ -382,8 +382,8 @@ function FiltersBar({
               className={cx(
                 "inline-flex h-32 shrink-0 scroll-mx-32 items-center whitespace-nowrap rounded-8 px-12 text-13 font-medium transition-colors",
                 activeTab === opt.value
-                  ? "bg-button-secondary text-typography-primary"
-                  : "text-typography-secondary hover:text-typography-primary"
+                  ? "bg-button-secondary text-textIcon-primary"
+                  : "text-textIcon-secondary hover:text-textIcon-primary"
               )}
               data-qa={`announcements-tab-${opt.value}`}
             >
@@ -408,13 +408,13 @@ function FiltersBar({
                   "relative inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium transition-colors",
                   "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
                   isCompact && "lg:w-32 lg:justify-center lg:px-0",
-                  open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
+                  open ? "text-textIcon-primary" : "text-textIcon-secondary hover:text-textIcon-primary"
                 )}
               >
                 {(startDate || endDate) && (
                   <span
                     className={cx(
-                      "absolute right-6 top-6 size-6 rounded-full bg-blue-300 md:hidden",
+                      "absolute right-6 top-6 size-6 rounded-full bg-blue-strong md:hidden",
                       isCompact && "lg:block"
                     )}
                   />
@@ -440,7 +440,7 @@ function FiltersBar({
           setValue={setSearch}
           placeholder={t`Search`}
           autoFocus={false}
-          className="min-w-0 max-md:order-first lg:!w-[260px] lg:!grow-0 lg:shrink-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
+          className="min-w-0 max-md:order-first lg:!w-[260px] lg:shrink-0 lg:!grow-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
         />
       </div>
     </div>
@@ -471,7 +471,7 @@ function ChainDropdown({
               "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium outline-none transition-colors",
               "max-md:w-32 max-md:justify-center max-md:bg-button-secondary max-md:px-0",
               isCompact && "lg:w-32 lg:justify-center lg:px-0",
-              open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
+              open ? "text-textIcon-primary" : "text-textIcon-secondary hover:text-textIcon-primary"
             )}
           >
             {selected !== null ? (
@@ -494,7 +494,7 @@ function ChainDropdown({
             <Popover.Panel
               ref={refs.setFloating}
               style={floatingStyles}
-              className="z-50 min-w-[200px] rounded-8 border border-stroke-primary bg-slate-900 p-4 shadow-lg outline-none"
+              className="z-50 min-w-[200px] rounded-8 border border-stroke-primary bg-fill-surfaceBase p-4 shadow-lg outline-none"
             >
               <DropdownItem
                 isActive={selected === null}
@@ -540,8 +540,8 @@ function DropdownItem({
       type="button"
       onClick={onClick}
       className={cx(
-        "text-body-medium flex w-full items-center gap-8 rounded-4 px-8 py-6 text-left text-typography-primary hover:bg-slate-800",
-        isActive && "bg-slate-800"
+        "text-body-medium flex w-full items-center gap-8 rounded-4 px-8 py-6 text-left text-textIcon-primary hover:bg-fill-surfaceElevated",
+        isActive && "bg-fill-surfaceElevated"
       )}
     >
       {children}

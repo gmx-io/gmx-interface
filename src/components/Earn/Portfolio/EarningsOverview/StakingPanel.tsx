@@ -21,7 +21,7 @@ function RewardsPausedBadge() {
     <TooltipWithPortal
       variant="none"
       handle={
-        <Badge className="!bg-transparent -my-1 border-1/2 border-dashed border-slate-600">
+        <Badge className="!bg-transparent -my-1 border-1/2 border-dashed border-stroke-primary">
           <Trans>Rewards paused</Trans>
         </Badge>
       }
@@ -56,19 +56,26 @@ function TreasuryProjectionValue({ skeletonWidth = 65 }: { skeletonWidth?: numbe
   const { projectedRewardGmx, projectedRewardUsd, isTreasuryAccumulating, isLoading } = useTreasuryProjection(chainId);
 
   if (isLoading) {
-    return <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={skeletonWidth} className="leading-base" />;
+    return (
+      <Skeleton
+        baseColor="var(--color-fill-skeleton)"
+        highlightColor="var(--color-fill-skeleton)"
+        width={skeletonWidth}
+        className="leading-base"
+      />
+    );
   }
 
   if (isTreasuryAccumulating) {
     return (
-      <span className="text-typography-secondary">
+      <span className="text-textIcon-secondary">
         <Trans>Accumulating...</Trans>
       </span>
     );
   }
 
   if (projectedRewardUsd === undefined || projectedRewardGmx === undefined) {
-    return <span className="text-typography-secondary">—</span>;
+    return <span className="text-textIcon-secondary">—</span>;
   }
 
   const isAbbreviated = isAbbreviatedUsd(projectedRewardUsd);
@@ -76,7 +83,7 @@ function TreasuryProjectionValue({ skeletonWidth = 65 }: { skeletonWidth?: numbe
   return (
     <TooltipWithPortal
       handle={
-        <span className="text-blue-100 numbers">
+        <span className="text-blue-secondary numbers">
           {isAbbreviated ? "" : "~"}
           <UsdValue usd={projectedRewardUsd} />
         </span>
@@ -121,7 +128,7 @@ function StakingRewardRow({
         isLoading ? (
           <UsdStatValue usd={undefined} isLoading skeletonWidth={60} />
         ) : isZero ? (
-          <UsdValue usd={0n} className="text-slate-500 numbers" />
+          <UsdValue usd={0n} className="text-textIcon-disabled numbers" />
         ) : (
           <TooltipWithPortal
             handle={<UsdValue usd={usd} className="numbers" />}
@@ -148,10 +155,10 @@ export function StakingPanel({
   const isPaused = processedData?.isRewardsSuspended === true;
 
   return (
-    <div className="flex h-full flex-col rounded-8 bg-slate-900">
+    <div className="flex h-full flex-col rounded-8 bg-fill-surfaceBase">
       <div className="flex flex-col gap-12 p-20">
         <div className="flex items-center gap-8">
-          <h3 className="text-body-large font-medium text-typography-primary">
+          <h3 className="text-body-large font-medium text-textIcon-primary">
             <Trans>Staking</Trans>
           </h3>
           {isPaused && <RewardsPausedBadge />}
@@ -173,7 +180,7 @@ export function StakingPanel({
         </div>
       </div>
 
-      <div className="border-t-1/2 border-slate-600" />
+      <div className="border-t-1/2 border-stroke-primary" />
 
       <div className="flex flex-col gap-8 p-20">
         <StakingRewardRow
@@ -213,7 +220,7 @@ export function StakingPanel({
 
       {!isPaused && (
         <div className="mt-auto">
-          <div className="border-t-1/2 border-slate-600" />
+          <div className="border-t-1/2 border-stroke-primary" />
           <div className="flex flex-col gap-8 p-20">
             <SyntheticsInfoRow
               label={<TreasuryProjectionLabel />}

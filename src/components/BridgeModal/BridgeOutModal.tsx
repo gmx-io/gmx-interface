@@ -473,15 +473,26 @@ export function BridgeOutModal({
                   <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />
                   <div>
                     <Trans comment="to network">
-                      <span className="text-typography-secondary">To </span>
+                      <span className="text-textIcon-secondary">To </span>
                       <span>{getChainName(bridgeOutChain)}</span>
                     </Trans>
                   </div>
                 </>
               ) : (
                 <>
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                  <Skeleton
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
+                    width={20}
+                    height={20}
+                    borderRadius={10}
+                  />
+                  <Skeleton
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
+                    width={40}
+                    height={16}
+                  />
                 </>
               )}
             </div>

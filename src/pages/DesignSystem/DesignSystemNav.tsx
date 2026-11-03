@@ -10,9 +10,10 @@ type Props = {
 
 // The colours of the app's side menu items (components/SideNav), in compact rows
 const ITEM_CLASSNAME = `flex h-32 shrink-0 items-center rounded-8 px-8 text-left text-body-medium font-medium
-  text-typography-secondary transition-colors duration-150 hover:bg-blue-400/20 hover:text-blue-400
-  dark:hover:bg-slate-700 dark:hover:text-typography-primary`;
-const ITEM_ACTIVE_CLASSNAME = "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary";
+  text-textIcon-secondary transition-colors duration-150 hover:bg-button-primary/20 hover:text-blue-strong
+  dark:hover:bg-button-background dark:hover:text-textIcon-primary`;
+const ITEM_ACTIVE_CLASSNAME =
+  "bg-button-primary/20 !text-blue-strong dark:bg-button-background dark:!text-textIcon-primary";
 
 export function DesignSystemNav({ activeSlug }: Props) {
   return (
@@ -46,8 +47,8 @@ export function DesignSystemMobileNav({ activeSlug }: Props) {
             "text-body-medium flex h-32 shrink-0 items-center rounded-8 px-12 font-medium transition-colors duration-150",
             DOCS_FOCUS_CLASSNAME,
             {
-              "bg-slate-700 text-typography-primary": page.slug === activeSlug,
-              "text-typography-secondary hover:text-typography-primary": page.slug !== activeSlug,
+              "bg-button-background text-textIcon-primary": page.slug === activeSlug,
+              "text-textIcon-secondary hover:text-textIcon-primary": page.slug !== activeSlug,
             }
           )}
         >

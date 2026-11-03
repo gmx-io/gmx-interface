@@ -38,10 +38,10 @@ const INTERACTIONS: { value: CheckboxInteraction; label: string }[] = [
 
 // Preview of the Changelog step 4 hover border. stroke-accent doesn't exist until the Colors steps add it, so
 // typography-primary stands in.
-const HOVER_LOOK_CLASSNAME = "[&>span:first-child]:border-typography-primary";
+const HOVER_LOOK_CLASSNAME = "[&>span:first-child]:border-textIcon-primary";
 
 // The checkbox doesn't style its label, so each screen sets its own text style. These examples use body text.
-const LABEL_CLASSNAME = "text-body-medium text-typography-secondary";
+const LABEL_CLASSNAME = "text-body-medium text-textIcon-secondary";
 
 function StateCell({ state, interaction }: { state: CheckboxState; interaction: CheckboxInteraction }) {
   return (
@@ -56,7 +56,7 @@ function StateCell({ state, interaction }: { state: CheckboxState; interaction: 
   );
 }
 
-const GRID_LABEL_CLASSNAME = "text-body-small text-typography-secondary";
+const GRID_LABEL_CLASSNAME = "text-body-small text-textIcon-secondary";
 
 function StatesGrid() {
   const gridRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ function StatesGrid() {
           </Fragment>
         ))}
       </div>
-      <p className="text-body-medium text-typography-secondary">Hover shows the planned border (Changelog step 4).</p>
+      <p className="text-body-medium text-textIcon-secondary">Hover shows the planned border (Changelog step 4).</p>
     </div>
   );
 }
@@ -112,7 +112,7 @@ function BoxAloneExample() {
 // filter in the app, the items sit 15px in from the group.
 const TRIGGER_ORDERS = ["Limit", "Stop Market", "Take-Profit", "Stop-Loss"];
 
-const FILTER_LABEL_CLASSNAME = "text-body-small font-medium text-typography-primary";
+const FILTER_LABEL_CLASSNAME = "text-body-small font-medium text-textIcon-primary";
 
 function FilterGroupExample() {
   const [selected, setSelected] = useState<string[]>([TRIGGER_ORDERS[0]]);
@@ -174,7 +174,7 @@ const USAGE_CODE = `import Checkbox from "components/Checkbox/Checkbox";
 
 // With a label: the checkbox doesn't style the label, so give the label its own text style
 <Checkbox isChecked={dontAskAgain} setIsChecked={setDontAskAgain}>
-  <span className="text-body-medium text-typography-secondary">Don't ask again</span>
+  <span className="text-body-medium text-textIcon-secondary">Don't ask again</span>
 </Checkbox>
 
 // Box alone, e.g. in a table row
@@ -343,24 +343,24 @@ const TH_CLASSNAME = "pb-8 pr-16 font-normal";
 export function CheckboxChangelog() {
   return (
     <div className="flex flex-col gap-16">
-      <p className="text-body-large text-typography-secondary">
+      <p className="text-body-large text-textIcon-secondary">
         Steps to make the checkbox accessible and consistent with the semantic colors. None of them are done yet.
       </p>
       {CHANGELOG_STEPS.map((step) => (
         <DocsSection key={step.id} section={step}>
           <div className="flex flex-col gap-16">
-            <p className="text-body-large text-typography-secondary">{step.intro}</p>
+            <p className="text-body-large text-textIcon-secondary">{step.intro}</p>
             <div className="overflow-x-auto">
               <table className="text-body-large w-full min-w-[560px] border-collapse text-left">
                 <thead>
-                  <tr className="text-body-medium uppercase text-typography-secondary">
+                  <tr className="text-body-medium uppercase text-textIcon-secondary">
                     <th className={TH_CLASSNAME}>Where</th>
                     <th className="pb-8 font-normal">Change</th>
                   </tr>
                 </thead>
                 <tbody>
                   {step.changes.map((change) => (
-                    <tr key={change.where} className="border-t-1/2 border-slate-600 align-top">
+                    <tr key={change.where} className="border-t-1/2 border-stroke-primary align-top">
                       <td className="w-[240px] py-10 pr-16">{change.where}</td>
                       <td className="text-body-medium py-10 font-mono">{change.change}</td>
                     </tr>

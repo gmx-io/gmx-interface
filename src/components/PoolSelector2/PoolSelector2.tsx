@@ -138,7 +138,7 @@ function PoolListItemDesktop({
       <TableTd
         padding="compact"
         className={cx({
-          "text-red-500": !isEnoughLiquidity,
+          "text-red-strong": !isEnoughLiquidity,
         })}
       >
         <AmountHumanValue amount={liquidity} decimals={USD_DECIMALS} />
@@ -146,8 +146,8 @@ function PoolListItemDesktop({
       <TableTd
         padding="compact"
         className={cx({
-          "text-red-500": netRateState === "error",
-          "text-green-500": netRateState === "success",
+          "text-red-strong": netRateState === "error",
+          "text-green-strong": netRateState === "success",
         })}
       >
         <Trans>{formattedNetRate} / 1h</Trans>
@@ -220,7 +220,7 @@ function PoolListItemMobile({
         <dt>{isLong ? <Trans>Long liquidity</Trans> : <Trans>Short liquidity</Trans>}</dt>
         <dd
           className={cx({
-            "text-red-500": !isEnoughLiquidity,
+            "text-red-strong": !isEnoughLiquidity,
           })}
         >
           <UsdValue usd={liquidity} />
@@ -230,8 +230,8 @@ function PoolListItemMobile({
         </dt>
         <dd
           className={cx({
-            "text-red-500": netRateState === "error",
-            "text-green-500": netRateState === "success",
+            "text-red-strong": netRateState === "error",
+            "text-green-strong": netRateState === "success",
           })}
         >
           <Trans>{formattedNetRate} / 1h</Trans>

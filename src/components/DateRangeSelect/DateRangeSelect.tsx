@@ -205,7 +205,7 @@ export function DateRangeSelect({
                 prev2Label={<ChevronEdgeLeft className="size-20" />}
                 next2Label={<ChevronEdgeLeft className="size-20 rotate-180" />}
               />
-              <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
+              <div className="flex justify-between gap-4 border-t border-stroke-primary p-12">
                 {DATE_RANGE_SELECT_PRESETS.map((preset) => (
                   <Button
                     key={preset}
@@ -328,7 +328,7 @@ export function DateSelect({
             minDetail="decade"
             formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
           />
-          <div className="flex gap-4 border-t border-slate-600 p-12">
+          <div className="flex gap-4 border-t border-stroke-primary p-12">
             {DATE_SELECT_PRESETS.map((preset) => (
               <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
                 {_(PRESET_LABELS[preset])}

@@ -335,7 +335,7 @@ export function OrdersModal({
         {position && (
           <div className="flex gap-32 px-20 py-12 max-md:gap-16 max-md:px-16">
             <div className="flex flex-col">
-              <span className="text-body-small text-typography-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>Entry price</Trans>
               </span>
               <UsdValue
@@ -346,7 +346,7 @@ export function OrdersModal({
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-body-small text-typography-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>Mark price</Trans>
               </span>
               <UsdValue
@@ -357,7 +357,7 @@ export function OrdersModal({
               />
             </div>
             <div className="flex flex-col">
-              <span className="text-body-small text-typography-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 <Trans>Liquidation price</Trans>
               </span>
               <LiquidationPriceValue
@@ -365,7 +365,7 @@ export function OrdersModal({
                 displayDecimals={marketDecimals}
                 visualMultiplier={position.indexToken.visualMultiplier}
                 className={cx("text-body-medium numbers", {
-                  "text-yellow-300":
+                  "text-yellow-strong":
                     (estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7) ||
                     (showOffHoursWarning && !(estimatedLiquidationHours && estimatedLiquidationHours < 24)),
                   "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
@@ -375,7 +375,7 @@ export function OrdersModal({
           </div>
         )}
 
-        <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50">
+        <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-stroke-primary bg-fill-surfaceElevated/50">
           <Tabs
             options={tabOptions}
             selectedValue={activeTab}
@@ -414,7 +414,7 @@ export function OrdersModal({
         />
 
         {isMobile && position && (
-          <div className="fixed bottom-[var(--safe-area-inset-bottom)] left-[var(--safe-area-inset-left)] right-[var(--safe-area-inset-right)] border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
+          <div className="fixed bottom-[var(--safe-area-inset-bottom)] left-[var(--safe-area-inset-left)] right-[var(--safe-area-inset-right)] border-t-1/2 border-stroke-primary bg-fill-surfaceBase px-16 py-12">
             <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen} disabled={hasPendingTpSlOrders}>
               <Trans>Add TP/SL</Trans>
             </Button>

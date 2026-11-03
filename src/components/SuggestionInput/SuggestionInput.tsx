@@ -137,7 +137,7 @@ export default function SuggestionInput({
         ref={refs.setReference}
         {...getReferenceProps({ onPointerDown: handleReferencePointerDown })}
       >
-        {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
+        {label ? <span className="pl-7 pr-7 text-textIcon-secondary">{label}</span> : null}
         <NumberInput
           inputId={inputId}
           inputRef={inputRef}
@@ -152,7 +152,7 @@ export default function SuggestionInput({
           stripLeadingZeros={stripLeadingZeros}
         />
         {suffix && (
-          <div className="pr-7 text-typography-secondary">
+          <div className="pr-7 text-textIcon-secondary">
             <span>{suffix}</span>
           </div>
         )}

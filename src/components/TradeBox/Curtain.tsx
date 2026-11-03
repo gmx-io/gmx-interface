@@ -293,15 +293,15 @@ export function Curtain({
         <div
           data-qa={dataQa}
           ref={curtainRef}
-          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[var(--safe-area-inset-bottom)] after:bg-slate-900 after:content-['']"
+          className="text-body-medium fixed z-[901] flex flex-col rounded-t-4 after:pointer-events-none after:absolute after:inset-x-0 after:top-full after:h-[var(--safe-area-inset-bottom)] after:bg-fill-surfaceBase after:content-['']"
           style={curtainStyle}
         >
           <div
             className={cx(
-              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600",
-              "translate-y-2 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+              "flex touch-none select-none items-stretch justify-between gap-4 border-stroke-primary",
+              "translate-y-2 bg-fill-surfaceElevated shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
-                "mb-2 border-t-1/2 bg-slate-900": isOpen,
+                "mb-2 border-t-1/2 bg-fill-surfaceBase": isOpen,
                 "pr-8": !hideChevron,
               }
             )}
@@ -317,7 +317,7 @@ export function Curtain({
               <button onClick={handleToggle} className="group p-10">
                 <ChevronDownIcon
                   className={cx(
-                    "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                    "size-16 text-textIcon-secondary transition-transform duration-500 ease-out group-hover:text-textIcon-primary",
                     isOpen ? undefined : "rotate-180"
                   )}
                 />
@@ -326,7 +326,7 @@ export function Curtain({
           </div>
 
           <div
-            className={cx("flex grow flex-col overflow-y-auto bg-slate-900", {
+            className={cx("flex grow flex-col overflow-y-auto bg-fill-surfaceBase", {
               "mt-1": !isOpen,
             })}
             ref={scrollableContainerRef}

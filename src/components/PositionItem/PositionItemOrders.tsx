@@ -85,8 +85,8 @@ export function PositionItemOrdersLarge({
             {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
               <div
                 className={cx("relative top-3 size-6 rounded-full", {
-                  "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
-                  "bg-red-500": ordersErrorList.length > 0,
+                  "bg-yellow-strong": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                  "bg-red-strong": ordersErrorList.length > 0,
                 })}
               />
             ) : null}
@@ -97,7 +97,7 @@ export function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-typography-secondary",
+          "text-textIcon-secondary",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"
@@ -184,8 +184,8 @@ function PositionItemOrder({
             <div
               key={err.key}
               className={cx("hyphens-auto [overflow-wrap:anywhere]", {
-                "text-red-500": err.level === "error",
-                "text-yellow-300": err.level === "warning",
+                "text-red-strong": err.level === "error",
+                "text-yellow-strong": err.level === "warning",
               })}
             >
               {err.msg}

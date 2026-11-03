@@ -23,7 +23,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         <br />
         <Trans>
           Reward:{" "}
-          <span className="font-400 text-green-500">
+          <span className="font-400 text-green-strong">
             100 <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("USDC")} />
           </span>
         </Trans>
@@ -39,7 +39,7 @@ export function InterviewToast({ type, onButtonClick }: Props) {
         <br />
         <Trans>
           Reward:{" "}
-          <span className="font-400 text-green-500">
+          <span className="font-400 text-green-strong">
             100 <TokenSymbolWithIcon symbol={getNormalizedTokenSymbol("USDC")} />
           </span>
         </Trans>

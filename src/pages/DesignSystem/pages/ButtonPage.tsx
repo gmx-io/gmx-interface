@@ -36,27 +36,27 @@ const LABEL_PREVIEW_CLASSNAME = "!text-body-small";
 
 // Preview of Colors step 4: the gray of EmbeddedActionButton (gray-400 today) becomes textIcon-secondary
 const EMBEDDED_DEFAULT_PREVIEW_CLASSNAME =
-  "!text-typography-secondary !decoration-typography-secondary hover:!text-typography-primary hover:!decoration-typography-primary focus-visible:!text-typography-primary focus-visible:!decoration-typography-primary";
+  "!text-textIcon-secondary !decoration-textIcon-secondary hover:!text-textIcon-primary hover:!decoration-textIcon-primary focus-visible:!text-textIcon-primary focus-visible:!decoration-textIcon-primary";
 
 // The blue tone of EmbeddedActionButton (tone="link"), drawn with its classes: this copy of the component predates it
 const LINK_TONE_PREVIEW_CLASSNAME =
-  "!text-blue-300 !decoration-blue-300 hover:!text-blue-100 hover:!decoration-blue-100";
+  "!text-blue-strong !decoration-blue-strong hover:!text-blue-secondary hover:!decoration-blue-secondary";
 
 // tone="destructive" comes with Changelog step 12, so it's drawn with its colors by today's names: red-900 is
 // red-background and red-500 is red-strong after the Colors renames
 const DESTRUCTIVE_PREVIEW_CLASSNAME = {
-  secondary: "!bg-red-900 !text-red-500 hover:!bg-red-500/25 active:!bg-red-900",
-  ghost: "!text-red-500 hover:!bg-red-900 active:!bg-red-500/25",
+  secondary: "!bg-red-background !text-red-strong hover:!bg-red-strong/25 active:!bg-red-background",
+  ghost: "!text-red-strong hover:!bg-red-background active:!bg-red-strong/25",
 };
 
 // Preview of Changelog step 8: a logo as close to the label as an icon
 const IMAGE_PREVIEW_CLASSNAME = "!mr-0";
 
 // The two selected looks, as the product sets them today
-const SELECTED_GRAY_CLASSNAME = "!bg-button-secondary !text-typography-primary";
-const SELECTED_BLUE_CLASSNAME = "!bg-blue-400 !text-white";
+const SELECTED_GRAY_CLASSNAME = "!bg-button-secondary !text-textIcon-primary";
+const SELECTED_BLUE_CLASSNAME = "!bg-button-primary !text-textIcon-onButton";
 
-const GRID_LABEL_CLASSNAME = "text-body-small text-typography-secondary";
+const GRID_LABEL_CLASSNAME = "text-body-small text-textIcon-secondary";
 
 const EXAMPLES = {
   size: { id: "button-size", title: "Size" },
@@ -186,7 +186,7 @@ const IMAGE_CODE = `import gmxIcon from "img/tokens/ic_gmx.svg";
 const SELECTED_GHOST_CODE = `// A tab row of ghost buttons: the selected one gets the secondary fill and the primary text color
 <Button
   variant="ghost"
-  className={cx({ "!bg-button-secondary !text-typography-primary": isSelected })}
+  className={cx({ "!bg-button-secondary !text-textIcon-primary": isSelected })}
   onClick={select}
 >
   1D
@@ -196,7 +196,7 @@ const SELECTED_SECONDARY_CODE = `// Page numbers: secondary squares, the current
 <Button
   variant="secondary"
   size="controlled"
-  className={cx("size-32 !p-0", { "!bg-blue-400 !text-white": isCurrent })}
+  className={cx("size-32 !p-0", { "!bg-button-primary !text-textIcon-onButton": isCurrent })}
   onClick={openPage}
 >
   2
@@ -352,15 +352,15 @@ export function ButtonExamples() {
 
       <DocsExample section={EXAMPLES.asLink}>
         <DocsPreview previewClassName="flex-wrap items-center justify-center gap-x-24 gap-y-16">
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-body-small text-textIcon-secondary">
             <ExternalLink href={DOCS_URL}>Read more</ExternalLink>
           </span>
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-body-small text-textIcon-secondary">
             <ExternalLink href={DOCS_URL} variant="icon">
               Read more
             </ExternalLink>
           </span>
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-body-small text-textIcon-secondary">
             <ExternalLink href={DOCS_URL} variant="icon-arrow">
               Read more
             </ExternalLink>
@@ -370,13 +370,13 @@ export function ButtonExamples() {
 
       <DocsExample section={EXAMPLES.embedded}>
         <DocsPreview previewClassName="flex-col items-center justify-center gap-16">
-          <p className="text-body-small text-typography-secondary">
+          <p className="text-body-small text-textIcon-secondary">
             Leverage is above the market limit.{" "}
             <EmbeddedActionButton className={cx(LABEL_PREVIEW_CLASSNAME, EMBEDDED_DEFAULT_PREVIEW_CLASSNAME)}>
               Set max leverage
             </EmbeddedActionButton>
           </p>
-          <p className="text-body-small text-typography-secondary">
+          <p className="text-body-small text-textIcon-secondary">
             Not enough balance.{" "}
             <EmbeddedActionButton className={cx(LABEL_PREVIEW_CLASSNAME, LINK_TONE_PREVIEW_CLASSNAME)}>
               Use max
@@ -549,7 +549,7 @@ export function ButtonPropsReference() {
   return (
     <div className="flex flex-col gap-16">
       <DocsSection section={SECTIONS.usage}>
-        <div className="overflow-hidden rounded-12 border border-slate-700 bg-slate-950">
+        <div className="overflow-hidden rounded-12 border border-button-background bg-fill-background">
           <DocsCode code={USAGE_CODE} />
         </div>
       </DocsSection>
@@ -567,7 +567,7 @@ export function ButtonPropsReference() {
           {CODE_SNIPPETS.map((snippet) => (
             <div key={snippet.title} className="flex flex-col gap-8">
               <span className="text-body-medium font-medium">{snippet.title}</span>
-              <div className="overflow-hidden rounded-12 border border-slate-700 bg-slate-950">
+              <div className="overflow-hidden rounded-12 border border-button-background bg-fill-background">
                 <DocsCode code={snippet.code} />
               </div>
             </div>

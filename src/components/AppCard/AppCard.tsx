@@ -4,7 +4,7 @@ import { forwardRef, useCallback } from "react";
 export const AppCard = forwardRef<HTMLDivElement, { children: React.ReactNode; dataQa?: string }>(
   ({ children, dataQa }, ref) => {
     return (
-      <div className="rounded-8 bg-slate-900" data-qa={dataQa} ref={ref}>
+      <div className="rounded-8 bg-fill-surfaceBase" data-qa={dataQa} ref={ref}>
         {children}
       </div>
     );
@@ -24,7 +24,7 @@ export function AppCardSection({
 
   return (
     <div
-      className={cx("flex flex-col gap-12 border-b-1/2 border-slate-600 px-20 py-13 last:border-b-0", className)}
+      className={cx("flex flex-col gap-12 border-b-1/2 border-stroke-primary px-20 py-13 last:border-b-0", className)}
       onClick={handleClick}
     >
       {children}
@@ -44,8 +44,8 @@ export const AppCardSplit = ({
   className?: string;
 }) => {
   return (
-    <div className={cx("flex border-b-1/2 border-slate-600 last:border-b-0", className)}>
-      <div className={cx("flex-1 border-r-1/2 border-slate-600", leftClassName)}>{left}</div>
+    <div className={cx("flex border-b-1/2 border-stroke-primary last:border-b-0", className)}>
+      <div className={cx("flex-1 border-r-1/2 border-stroke-primary", leftClassName)}>{left}</div>
       <div className="flex-1">{right}</div>
     </div>
   );

@@ -56,23 +56,23 @@ function FundingOptionRow({
 }) {
   return (
     <button
-      className="flex w-full items-center justify-between gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12 text-left -outline-offset-4 disabled:cursor-default disabled:opacity-70 gmx-hover:bg-fill-surfaceElevated50"
+      className="flex w-full items-center justify-between gap-12 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12 text-left -outline-offset-4 disabled:cursor-default disabled:opacity-70 gmx-hover:bg-fill-surfaceElevated50"
       onClick={onClick}
       disabled={disabled}
     >
       <div className="flex items-center gap-12">
-        <div className="flex size-36 shrink-0 items-center justify-center rounded-8 bg-fill-surfaceElevated50 text-blue-400 dark:text-blue-300">
+        <div className="flex size-36 shrink-0 items-center justify-center rounded-8 bg-fill-surfaceElevated50 text-blue-strong dark:text-blue-strong">
           {icon}
         </div>
         <div className="flex flex-col gap-2">
-          <span className="text-body-medium font-medium text-typography-primary">{title}</span>
-          <span className="text-body-small text-typography-secondary">{description}</span>
+          <span className="text-body-medium font-medium text-textIcon-primary">{title}</span>
+          <span className="text-body-small text-textIcon-secondary">{description}</span>
         </div>
       </div>
       {isPending ? (
-        <SpinnerIcon className="size-16 shrink-0 animate-spin text-typography-secondary" />
+        <SpinnerIcon className="size-16 shrink-0 animate-spin text-textIcon-secondary" />
       ) : (
-        <ArrowRightIcon className="size-16 shrink-0 text-typography-secondary" />
+        <ArrowRightIcon className="size-16 shrink-0 text-textIcon-secondary" />
       )}
     </button>
   );
@@ -137,7 +137,7 @@ export function WalletReceiveOptionsView() {
 
   return (
     <div className="flex grow flex-col gap-12 p-adaptive">
-      <div className="text-body-medium text-typography-secondary">
+      <div className="text-body-medium text-textIcon-secondary">
         <Trans>How would you like to add funds?</Trans>
       </div>
 

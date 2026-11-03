@@ -38,7 +38,7 @@ export function Sorter(
   return (
     <button
       className={cx("group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
-        "text-blue-300": isActive,
+        "text-blue-strong": isActive,
       })}
       onClickCapture={handleClick}
     >

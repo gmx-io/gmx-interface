@@ -32,7 +32,7 @@ export function SolanaNetworkItem({ onSelect }: { onSelect: () => void }) {
             </span>
           </div>
           {isSelected && (
-            <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
+            <div className="mr-[2.5px] size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
           )}
         </div>
       )}
@@ -55,7 +55,7 @@ export function GmTradeModal({
       contentClassName="!max-w-[420px]"
     >
       <div className="flex flex-col gap-16">
-        <p className="mb-8 text-15 text-typography-secondary">
+        <p className="mb-8 text-15 text-textIcon-secondary">
           <Trans>GMX on Solana (known as GMTrade) is served from a separate domain</Trans>
         </p>
 

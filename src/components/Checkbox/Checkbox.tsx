@@ -35,10 +35,10 @@ export default function Checkbox(props: Props) {
       <span
         className={cx(
           `flex h-14 w-14 shrink-0 items-center justify-center rounded-4 border
-          border-slate-100 text-14 group-hover:border-slate-400`,
+          border-textIcon-secondary text-14 group-hover:border-slate-400`,
           {
             "opacity-50": disabled,
-            "border-none bg-blue-400 text-white": isChecked || isPartialChecked,
+            "border-none bg-button-primary text-textIcon-onButton": isChecked || isPartialChecked,
           }
         )}
       >

@@ -46,7 +46,7 @@ export function AmountWithUsdHuman({
       <span className={cx("numbers", className)}>{topValue} </span>
       {multiline && <br />}
       <span
-        className={cx("text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]", {
+        className={cx("text-12 text-textIcon-secondary numbers group-hover/hoverable:text-[inherit]", {
           "ml-2": multiline,
         })}
       >
@@ -107,7 +107,7 @@ export function AmountWithUsdBalance({
   const secondaryPart = (
     <span
       className={cx(
-        "text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]",
+        "text-12 text-textIcon-secondary numbers group-hover/hoverable:text-[inherit]",
         secondaryValueClassName,
         {
           "ml-2": multiline,

@@ -13,9 +13,9 @@ export function ChainDataImage({ chainId }: { chainId?: number }) {
   return (
     <div
       className={`relative  inline-flex items-center gap-8 rounded-full
-         bg-blue-300 px-8 py-6 pr-16 text-13 text-typography-primary`}
+         bg-blue-strong px-8 py-6 pr-16 text-13 text-textIcon-primary`}
     >
-      <div className="absolute left-[2px] top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-slate-950/80 px-8 py-6 pr-16">
+      <div className="absolute left-[2px] top-0 inline-flex h-full w-full items-center gap-8 rounded-full bg-fill-background/80 px-8 py-6 pr-16">
         {chainIcon && <img src={chainIcon} alt={chainName} className="h-20 w-20" />}
         <span className="font-medium">{t`${chainName} data`}</span>
       </div>

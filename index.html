@@ -22,16 +22,16 @@
     <meta name="theme-color" content="#090A14" />
     <style>
       :root {
-        --color-slate-950: #090a14;
+        --color-fill-background: #090a14;
       }
       :root:not(.dark) {
-        --color-slate-950: #eeeef4;
+        --color-fill-background: #eeeef4;
       }
       html,
       body {
         min-height: 100%;
         margin: 0;
-        background: var(--color-slate-950);
+        background: var(--color-fill-background);
       }
       #app-splash {
         position: fixed;
@@ -39,7 +39,7 @@
         z-index: 9999;
         display: grid;
         place-items: center;
-        background: var(--color-slate-950);
+        background: var(--color-fill-background);
       }
       #app-loading:not([hidden]) {
         min-height: 100vh;

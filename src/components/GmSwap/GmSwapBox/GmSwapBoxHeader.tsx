@@ -30,13 +30,13 @@ const OPERATION_LABELS_GLV = {
 
 const operationClassNames = {
   [Operation.Deposit]: {
-    active: "!bg-green-500/20 border-b-2 border-b-green-500",
+    active: "!bg-green-strong/20 border-b-2 border-b-green-strong",
   },
   [Operation.Withdrawal]: {
-    active: "!bg-red-500/20 border-b-2 border-b-red-500",
+    active: "!bg-red-strong/20 border-b-2 border-b-red-strong",
   },
   [Operation.Shift]: {
-    active: "!bg-blue-300/20 border-b-2 border-b-blue-300",
+    active: "!bg-blue-backgroundOpacity border-b-2 border-b-blue-strong",
   },
 };
 
@@ -78,7 +78,7 @@ export function GmSwapBoxHeader({ isInCurtain }: Props) {
       selectedValue={operation}
       onChange={setOperation}
       regularOptionClassname={isInCurtain ? "grow !rounded-t-0" : "grow"}
-      className={!isInCurtain ? "bg-slate-900" : undefined}
+      className={!isInCurtain ? "bg-fill-surfaceBase" : undefined}
     />
   );
 }

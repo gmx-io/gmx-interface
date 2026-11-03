@@ -52,7 +52,7 @@ export function PaxosRouteSelectorRow({
           position="left-start"
           variant="iconStroke"
           content={
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>
                 Auto picks the best return after all fees, or the instant route when Paxos saves less than {minSaving}.
                 Paxos converts {fromToken.symbol} to {toToken.symbol} in a separate transaction, and {toToken.symbol}{" "}
@@ -67,7 +67,7 @@ export function PaxosRouteSelectorRow({
         <SelectorBase
           modalLabel={t`Route`}
           desktopPanelClassName="w-[320px]"
-          wrapperClassName="text-typography-primary"
+          wrapperClassName="text-textIcon-primary"
           label={selectedLabel}
           qa="swap-route"
         >
@@ -129,7 +129,7 @@ function RouteOptionItem({
   return (
     <div
       className={cx("flex flex-col px-12 py-6", {
-        "bg-slate-700": isSelected,
+        "bg-button-background": isSelected,
         "cursor-pointer hover:bg-fill-surfaceHover": !isDisabled,
         "cursor-not-allowed opacity-50": isDisabled,
       })}
@@ -149,16 +149,16 @@ function RouteOptionItem({
         )}
       </div>
       <div className="flex items-baseline justify-between gap-8">
-        <span className="text-body-small text-typography-secondary">{description}</span>
+        <span className="text-body-small text-textIcon-secondary">{description}</span>
         {(isBestReturn || isFastest) && (
           <span className="text-body-small flex shrink-0 gap-6">
             {isBestReturn && (
-              <span className="text-green-500">
+              <span className="text-green-strong">
                 <Trans>Best return</Trans>
               </span>
             )}
             {isFastest && (
-              <span className="text-blue-300">
+              <span className="text-blue-strong">
                 <Trans>Fastest</Trans>
               </span>
             )}
@@ -173,7 +173,7 @@ export function PaxosPendingLabel({ amount, token }: { amount: bigint; token: To
   return (
     <TooltipWithPortal
       className="ml-4"
-      handleClassName="text-typography-secondary"
+      handleClassName="text-textIcon-secondary"
       handle={<Trans>· {formatBalanceAmount(amount, token.decimals, undefined, { isStable: true })} pending</Trans>}
       content={
         <Trans>
@@ -208,7 +208,7 @@ export function PaxosRouteDetailsRows({
     <>
       <SyntheticsInfoRow
         label={t`Paxos fee`}
-        valueClassName={cx("numbers", { "text-green-500": feeAmount === 0n })}
+        valueClassName={cx("numbers", { "text-green-strong": feeAmount === 0n })}
         value={
           feeAmount !== undefined
             ? formatBalanceAmount(feeAmount, fromToken.decimals, fromToken.symbol, { isStable: true, showZero: true })
@@ -228,14 +228,14 @@ export function PaxosRouteDetailsRows({
       {instantAmountOut !== undefined && (
         <SyntheticsInfoRow
           label={t`Instant via ${instantLabel}`}
-          valueClassName="numbers text-typography-secondary"
+          valueClassName="numbers text-textIcon-secondary"
           value={formatBalanceAmount(instantAmountOut, toToken.decimals, toToken.symbol, { isStable: true })}
         />
       )}
       {saving !== undefined && saving > 0n && (
         <SyntheticsInfoRow
           label={t`You save vs instant`}
-          valueClassName="numbers text-green-500"
+          valueClassName="numbers text-green-strong"
           value={`+${formatBalanceAmount(saving, toToken.decimals, toToken.symbol, { isStable: true })}`}
         />
       )}

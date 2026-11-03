@@ -36,7 +36,7 @@ export function TooltipUsage() {
         handle="PnL"
         content={
           <TooltipContent>
-            <TooltipTitle value="$967.71" valueClassName="text-green-500">
+            <TooltipTitle value="$967.71" valueClassName="text-green-strong">
               PnL
             </TooltipTitle>
             <TooltipText>Total PnL after fees and price impact.</TooltipText>
@@ -75,7 +75,7 @@ export function TooltipUsage() {
           <TooltipContent>
             <TooltipRows>
               <TooltipRow label="Max network fee" value="$0.29" />
-              <TooltipRow label="Estimated fee refund" value="$0.08" valueClassName="text-green-500" />
+              <TooltipRow label="Estimated fee refund" value="$0.08" valueClassName="text-green-strong" />
             </TooltipRows>
             <TooltipFootnote>Unused network fees are refunded after execution.</TooltipFootnote>
           </TooltipContent>

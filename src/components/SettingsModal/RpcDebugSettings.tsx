@@ -52,7 +52,7 @@ export function RpcDebugSettings() {
 
   return (
     <ExpandableRow title={<Trans>RPC debug</Trans>} open={open} onToggle={setOpen}>
-      <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
+      <div className="flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated p-12 pr-16">
         {Object.entries(FLAG_LABELS).map(([flag, label]) => (
           <ToggleSwitch
             key={flag}
@@ -68,20 +68,20 @@ export function RpcDebugSettings() {
           open={debugEndpointsOpen}
           onToggle={setDebugEndpointsOpen}
         >
-          <div className="flex flex-col gap-16 rounded-8 bg-slate-700 p-12">
+          <div className="flex flex-col gap-16 rounded-8 bg-button-background p-12">
             <DebugRpcEndpointForm chainId={chainId} onUpdate={() => forceUpdate((prev) => prev + 1)} />
             {debugEndpoints.length > 0 && (
               <div className="flex flex-col gap-8">
-                <div className="text-sm font-semibold text-white">
+                <div className="text-sm font-semibold text-textIcon-onButton">
                   <Trans>Current endpoints ({debugEndpoints.length})</Trans>
                 </div>
                 {debugEndpoints.map((endpoint, index) => (
                   <div
                     key={index}
-                    className="relative flex items-center justify-between rounded-4 bg-slate-600 p-8 pr-32"
+                    className="relative flex items-center justify-between rounded-4 bg-fill-accent p-8 pr-32"
                   >
                     <div className="flex flex-col gap-4">
-                      <div className="text-xs text-white">{endpoint.url}</div>
+                      <div className="text-xs text-textIcon-onButton">{endpoint.url}</div>
                       <div className="text-xs text-slate-400">
                         <Trans>
                           Purpose: {endpoint.purpose} | public: {endpoint.isPublic ? t`Yes` : t`No`}
@@ -89,7 +89,7 @@ export function RpcDebugSettings() {
                       </div>
                     </div>
                     <button
-                      className="absolute right-8 top-8 flex h-20 w-20 items-center justify-center rounded-4 text-slate-400 hover:bg-slate-500 hover:text-white"
+                      className="absolute right-8 top-8 flex h-20 w-20 items-center justify-center rounded-4 text-slate-400 hover:bg-textIcon-disabled hover:text-textIcon-onButton"
                       onClick={() => handleRemoveEndpoint(endpoint.url)}
                       aria-label={t`Remove endpoint`}
                     >
@@ -132,7 +132,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="text-sm text-white">
+      <div className="text-sm text-textIcon-onButton">
         <Trans>Add RPC</Trans>
       </div>
       <div className="flex flex-col gap-8">
@@ -144,7 +144,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
             type="text"
             value={url}
             onChange={handleUrlChange}
-            className="border-1 w-[400px] border border-slate-600 bg-slate-800 px-8 py-4 text-12 text-white"
+            className="border-1 w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-12 text-textIcon-onButton"
           />
         </div>
         <div className="flex items-center justify-between gap-8">
@@ -154,7 +154,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
           <select
             value={purpose}
             onChange={handlePurposeChange}
-            className="border-1 w-[400px] border border-slate-600 bg-slate-800 px-8 py-4 text-12 text-white"
+            className="border-1 w-[400px] border border-stroke-primary bg-fill-surfaceElevated px-8 py-4 text-12 text-textIcon-onButton"
           >
             {PURPOSE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>

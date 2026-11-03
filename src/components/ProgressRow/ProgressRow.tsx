@@ -30,11 +30,11 @@ export function ProgressRow({ label, value, currentValue, totalValue }: Progress
   return (
     <div className={cx("flex flex-col gap-6")}>
       <div className="flex justify-between">
-        <div className="font-medium text-typography-secondary">{label}</div>
+        <div className="font-medium text-textIcon-secondary">{label}</div>
         {value}
       </div>
-      <div className="h-4 w-full rounded-full bg-slate-700">
-        <div className="h-full rounded-full bg-blue-300" style={barFillStyle} />
+      <div className="h-4 w-full rounded-full bg-button-background">
+        <div className="h-full rounded-full bg-blue-strong" style={barFillStyle} />
       </div>
     </div>
   );

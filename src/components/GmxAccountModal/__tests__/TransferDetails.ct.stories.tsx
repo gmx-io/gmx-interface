@@ -24,7 +24,7 @@ function TransferHistoryStand({ openGuid }: { openGuid?: string }) {
   }
 
   return (
-    <div className="flex h-[560px] w-[420px] flex-col bg-slate-900" data-qa="transfer-history-stand">
+    <div className="flex h-[560px] w-[420px] flex-col bg-fill-surfaceBase" data-qa="transfer-history-stand">
       <TransferHistoryScreen showDetails={view === "transferDetails"} />
     </div>
   );

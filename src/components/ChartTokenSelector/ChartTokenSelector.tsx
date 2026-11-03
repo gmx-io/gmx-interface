@@ -133,7 +133,7 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               {isSwap && oneRowLabels ? (
-                <div className="rounded-4 bg-blue-300 bg-opacity-[20%] px-7 py-4 text-blue-300">
+                <div className="rounded-4 bg-blue-backgroundOpacity px-7 py-4 text-blue-strong">
                   <Trans>Swap</Trans>
                 </div>
               ) : null}
@@ -147,14 +147,14 @@ export default function ChartTokenSelector(props: Props) {
                       "flex-row items-center": oneRowLabels,
                     })}
                   >
-                    <span className="text-start text-[13px] font-medium text-typography-primary">
+                    <span className="text-start text-[13px] font-medium text-textIcon-primary">
                       {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
                       {selectedToken.symbol}
                       {t`/USD`}
                     </span>
                     {poolName && (
                       <span
-                        className={cx("text-12 font-normal text-typography-secondary", {
+                        className={cx("text-12 font-normal text-textIcon-secondary", {
                           "ml-4": oneRowLabels,
                         })}
                       >
@@ -163,7 +163,7 @@ export default function ChartTokenSelector(props: Props) {
                     )}
 
                     {isSwap && !oneRowLabels ? (
-                      <div className="text-blue-300">
+                      <div className="text-blue-strong">
                         <Trans>Swap</Trans>
                       </div>
                     ) : null}
@@ -399,7 +399,7 @@ function MarketsList() {
   });
   const rowHorizontalPadding = cx("pr-8");
   const thClassName = cx(
-    "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
+    "sticky top-0 z-10 whitespace-nowrap bg-fill-surfaceBase text-left text-[11px] font-medium uppercase text-textIcon-secondary",
     "first-of-type:text-left",
     rowVerticalPadding,
     rowHorizontalPadding,
@@ -474,7 +474,7 @@ function MarketsList() {
               selectedValue={subCategoryTab}
               onChange={setSubCategoryTab}
               type="block"
-              className="bg-slate-800/50 px-16"
+              className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
               regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
@@ -487,7 +487,7 @@ function MarketsList() {
               selectedValue={subCategoryTab}
               onChange={setSubCategoryTab}
               type="block"
-              className="bg-slate-800/50 px-16"
+              className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
               regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
@@ -590,7 +590,7 @@ function MarketsList() {
             emptyText={
               query ? (
                 <div className="flex w-full flex-col items-center gap-12 px-16">
-                  <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
+                  <span className="w-full min-w-0 text-center text-12 text-textIcon-secondary [overflow-wrap:anywhere]">
                     {shouldOfferSearchAll ? (
                       <Trans>No results with the selected filters</Trans>
                     ) : (
@@ -607,7 +607,7 @@ function MarketsList() {
                   )}
                   {shouldOfferOtherMode && (
                     <>
-                      <span className="text-12 text-typography-secondary">
+                      <span className="text-12 text-textIcon-secondary">
                         {isSwap ? (
                           <Trans>Results are available in Perpetuals</Trans>
                         ) : (
@@ -714,8 +714,8 @@ function useFilterSortTokens({
 
 const MarketLabel = ({ token }: { token: Token }) => {
   return (
-    <span className="text-typography-secondary">
-      <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
+    <span className="text-textIcon-secondary">
+      <span className="text-textIcon-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
       {t`/USD`}
     </span>
   );
@@ -809,7 +809,7 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td className={cx("pl-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+        <td className={cx("pl-12 pr-0 text-center text-textIcon-secondary", rowVerticalPadding)}>
           <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
             <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
           </Button>
@@ -821,7 +821,7 @@ function MarketListItem({
           <span className="flex items-center gap-4">
             <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
             <span>{token.name}</span>
-            <span className="font-medium text-typography-secondary">{token.symbol}</span>
+            <span className="font-medium text-textIcon-secondary">{token.symbol}</span>
           </span>
         </td>
         <td className={tdClassName}>
@@ -847,7 +847,7 @@ function MarketListItem({
       className="group/row cursor-pointer hover:bg-fill-surfaceHover"
       onClick={handleSelectLargePosition}
     >
-      <td className={cx("w-0 px-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+      <td className={cx("w-0 px-12 pr-0 text-center text-textIcon-secondary", rowVerticalPadding)}>
         <Button variant="ghost" className="!h-32 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
           <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
         </Button>
@@ -859,7 +859,7 @@ function MarketListItem({
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
-            <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
+            <span className="rounded-full bg-button-background px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-textIcon-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -901,13 +901,19 @@ function MarketListItem({
 
       {!isMobile ? (
         <>
-          <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
+          <td
+            className={cx(tdClassName, "group pr-4 numbers hover:bg-fill-surfaceElevated")}
+            onClick={handleSelectLong}
+          >
             <div className="inline-flex items-center justify-end gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
               <AmountHumanValue amount={maxLongLiquidityPool?.maxLongLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
-          <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
+          <td
+            className={cx(tdClassName, "group pl-4 numbers hover:bg-fill-surfaceElevated")}
+            onClick={handleSelectShort}
+          >
             <div className="inline-flex items-center justify-end gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
               <AmountHumanValue amount={maxShortLiquidityPool?.maxShortLiquidity} decimals={USD_DECIMALS} showDollar />

@@ -64,8 +64,8 @@ const NATIVE_TOKEN_TRANSFER_GAS_LIMIT = 21_000n;
 
 const valueSkeleton = (
   <Skeleton
-    baseColor="#B4BBFF1A"
-    highlightColor="#B4BBFF1A"
+    baseColor="var(--color-fill-skeleton)"
+    highlightColor="var(--color-fill-skeleton)"
     width={96}
     height={14}
     borderRadius={4}
@@ -699,7 +699,7 @@ export function WalletSendView() {
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
       <div className="flex flex-col gap-[--padding-adaptive]">
         <div className="flex flex-col gap-6">
-          <div className="text-body-medium text-typography-secondary">
+          <div className="text-body-medium text-textIcon-secondary">
             <Trans>Asset</Trans>
           </div>
           <DropdownSelector
@@ -721,7 +721,7 @@ export function WalletSendView() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <div className="text-body-medium text-typography-secondary">
+          <div className="text-body-medium text-textIcon-secondary">
             <Trans>Network</Trans>
           </div>
           <DropdownSelector
@@ -747,7 +747,7 @@ export function WalletSendView() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <div className="text-body-medium text-typography-secondary">
+          <div className="text-body-medium text-textIcon-secondary">
             <Trans>Recipient address</Trans>
           </div>
           <input
@@ -757,13 +757,13 @@ export function WalletSendView() {
             spellCheck={false}
             autoComplete="off"
             placeholder="0x..."
-            className="w-full rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 text-16 leading-base
-                       outline-none placeholder:text-typography-secondary focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+            className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-14 py-13 text-16 leading-base
+                       outline-none placeholder:text-textIcon-secondary focus-within:border-blue-strong hover:bg-fill-surfaceHover"
           />
         </div>
 
         <div className="flex flex-col gap-6">
-          <div className="text-body-medium flex items-center justify-between text-typography-secondary">
+          <div className="text-body-medium flex items-center justify-between text-textIcon-secondary">
             <Trans>Amount</Trans>
             {selectedToken !== undefined && walletBalance !== undefined && (
               <div className="flex items-center gap-8">
@@ -773,7 +773,7 @@ export function WalletSendView() {
                 <button type="button" onClick={handleMaxClick}>
                   <Trans>Available:</Trans>{" "}
                   <Amount
-                    className="text-typography-primary"
+                    className="text-textIcon-primary"
                     amount={walletBalance}
                     decimals={selectedToken.decimals}
                     isStable={selectedToken.isStable}
@@ -787,16 +787,16 @@ export function WalletSendView() {
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-14 pr-96 text-16 leading-base
-                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-13 pl-14 pr-96 text-16 leading-base
+                         focus-within:border-blue-strong hover:bg-fill-surfaceHover"
               placeholder="0.00"
               maxDecimals={selectedToken?.decimals}
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
-              <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <span className="text-textIcon-secondary">{selectedToken?.symbol}</span>
             </div>
           </div>
-          <div className="text-body-medium text-typography-secondary numbers">
+          <div className="text-body-medium text-textIcon-secondary numbers">
             <UsdValue usd={amountUsd ?? 0n} />
           </div>
         </div>
@@ -869,11 +869,11 @@ function SendAssetItem({ option }: { option: TokenData }) {
       <div className="flex gap-8">
         <TokenIcon symbol={option.symbol} displaySize={20} />
         <span>
-          {option.symbol} <span className="text-body-small text-typography-secondary">{option.name}</span>
+          {option.symbol} <span className="text-body-small text-textIcon-secondary">{option.name}</span>
         </span>
       </div>
       <Amount
-        className="text-typography-primary"
+        className="text-textIcon-primary"
         amount={option.walletBalance !== undefined && option.walletBalance > 0n ? option.walletBalance : undefined}
         decimals={option.decimals}
         isStable={option.isStable}

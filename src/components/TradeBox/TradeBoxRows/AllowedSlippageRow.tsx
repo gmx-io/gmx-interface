@@ -38,7 +38,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           position="left-start"
           variant="iconStroke"
           content={
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>
                 The difference between expected and actual execution price due to volatility. Orders won't execute if
                 slippage exceeds your maximum. Adjust the default in settings.

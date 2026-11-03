@@ -13,7 +13,7 @@ export function EmptyTableContent({
   if (!isLoading && !isEmpty) return null;
 
   return (
-    <div className="flex min-h-[164px] w-full grow items-center justify-center bg-slate-900 text-[13px] text-typography-secondary">
+    <div className="flex min-h-[164px] w-full grow items-center justify-center bg-fill-surfaceBase text-[13px] text-textIcon-secondary">
       {isLoading ? <Trans>Loading...</Trans> : isEmpty ? emptyText : null}
     </div>
   );

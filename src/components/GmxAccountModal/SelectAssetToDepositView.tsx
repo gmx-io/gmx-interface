@@ -49,7 +49,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
         <TokenIcon symbol={tokenChainData.symbol} displaySize={40} chainIdBadge={tokenChainData.sourceChainId} />
         <div>
           <div className="text-body-large">{tokenChainData.symbol}</div>
-          <div className="text-body-small text-typography-secondary">{getChainName(tokenChainData.sourceChainId)}</div>
+          <div className="text-body-small text-textIcon-secondary">{getChainName(tokenChainData.sourceChainId)}</div>
         </div>
       </div>
       <div className="text-right">
@@ -59,7 +59,7 @@ const TokenListItem = ({ tokenChainData, onClick, className }: TokenListItemProp
           decimals={tokenChainData.sourceChainDecimals}
           isStable={tokenChainData.isStable}
         />
-        <div className="text-body-small text-typography-secondary">
+        <div className="text-body-small text-textIcon-secondary">
           {tokenChainData.sourceChainBalanceUsd > 0n ? <UsdValue usd={tokenChainData.sourceChainBalanceUsd} /> : "-"}
         </div>
       </div>
@@ -245,7 +245,7 @@ export const SelectAssetToDepositView = () => {
                 variant={selectedNetwork === network.id ? "secondary" : "ghost"}
                 size="small"
                 className={cx("whitespace-nowrap", {
-                  "!text-typography-primary": selectedNetwork === network.id,
+                  "!text-textIcon-primary": selectedNetwork === network.id,
                 })}
                 onClick={() => setSelectedNetwork(network.id as number | "all")}
                 imgSrc={network.id !== "all" ? getChainIcon(network.id) : undefined}
@@ -272,7 +272,7 @@ export const SelectAssetToDepositView = () => {
           />
         ))}
         {filteredTokens.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-typography-secondary">
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-textIcon-secondary">
             {selectedNetwork === "all" ? (
               <Trans>No assets available for deposit</Trans>
             ) : (

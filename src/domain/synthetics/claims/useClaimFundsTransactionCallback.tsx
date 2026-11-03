@@ -21,9 +21,9 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
               <div className="text-body-medium font-medium">
                 <Trans>Processing claim...</Trans>
               </div>
-              <div className="flex flex-row gap-10 text-gray-200">
+              <div className="flex flex-row gap-10 text-textIcon-secondary">
                 <Trans>May take a few minutes</Trans>
-                <SpinnerIcon className="spin size-15 text-typography-primary" />
+                <SpinnerIcon className="spin size-15 text-textIcon-primary" />
               </div>
             </div>
           );

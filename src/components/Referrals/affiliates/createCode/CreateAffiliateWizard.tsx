@@ -35,7 +35,7 @@ function AffiliatePromos() {
           <br className="max-md:hidden" /> rebates as an affiliate
         </Trans>
       </h2>
-      <p className="text-body-medium text-typography-secondary">
+      <p className="text-body-medium text-textIcon-secondary">
         <Trans>
           Share your referral code with friends or your community —<br /> every trade made with your code earns you
           $-rewards
@@ -96,7 +96,7 @@ export function CreateAffiliateWizard({
                 <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
                   <Trans>Connect wallet</Trans>
                 </Button>
-                <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
+                <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-strong">
                   <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
@@ -120,7 +120,7 @@ export function CreateAffiliateWizard({
                 <ExternalLink
                   variant="icon"
                   href="https://docs.gmx.io/docs/referrals"
-                  className="text-body-small self-center text-blue-300"
+                  className="text-body-small self-center text-blue-strong"
                 >
                   <Trans>Read more</Trans>
                 </ExternalLink>
@@ -134,7 +134,7 @@ export function CreateAffiliateWizard({
                 <h2 className="text-[40px] font-medium">
                   <Trans>Your code is ready. Share it!</Trans>
                 </h2>
-                <p className="text-body-medium text-typography-secondary">
+                <p className="text-body-medium text-textIcon-secondary">
                   <Trans>
                     Your referral code {createdReferralCode} is now active. Share it with friends or your community.
                   </Trans>
@@ -154,7 +154,7 @@ export function CreateAffiliateWizard({
                 </Button>
                 <button
                   type="button"
-                  className="text-body-small font-medium text-blue-300 transition-colors hover:text-typography-primary"
+                  className="text-body-small font-medium text-blue-strong transition-colors hover:text-textIcon-primary"
                   onClick={onGoToAffiliateDashboard}
                 >
                   <Trans>Go to affiliate dashboard</Trans>

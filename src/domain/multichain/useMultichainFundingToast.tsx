@@ -57,13 +57,13 @@ export function getMultichainFundingToastContent({
 
         return (
           <div key={staticId} className="flex items-center justify-between gap-6">
-            <div className="text-typography-secondary">
+            <div className="text-textIcon-secondary">
               {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
               {array.length > 1 && <> {formattedAmount}</>}
             </div>
-            {isLoading && <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />}
-            {isSuccess && <CheckCircleIcon className="size-15 shrink-0 text-green-500" />}
-            {isError && <CloseCircleIcon className="size-15 shrink-0 text-red-500" />}
+            {isLoading && <SpinnerIcon className="spin size-15 shrink-0 text-textIcon-primary" />}
+            {isSuccess && <CheckCircleIcon className="size-15 shrink-0 text-green-strong" />}
+            {isError && <CloseCircleIcon className="size-15 shrink-0 text-red-strong" />}
           </div>
         );
       })}

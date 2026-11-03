@@ -111,7 +111,7 @@ export default function GmAssetDropdown({ token, marketsInfoData, tokensData, po
           as="div"
           ref={refs.setFloating}
           style={floatingStyles}
-          className="z-30 rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
+          className="z-30 rounded-8 border-1/2 border-stroke-primary bg-fill-surfaceBase outline-none"
           onClick={handleMenuItemsClick}
         >
           {market && (
@@ -188,7 +188,7 @@ function AddToWalletButton({
         }}
         className="asset-item group"
       >
-        <WalletIcon className="size-16 text-typography-secondary group-hover:text-typography-primary" />
+        <WalletIcon className="size-16 text-textIcon-secondary group-hover:text-textIcon-primary" />
         <p>
           <Trans>Add {marketName} to wallet</Trans>
         </p>

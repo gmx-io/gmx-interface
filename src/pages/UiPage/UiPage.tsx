@@ -130,15 +130,15 @@ export default memo(function UiPage() {
         <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
-          <p className="text-blue-500">Blue 500</p>
-          <p className="text-yellow-300">Yellow 300</p>
-          <p className="text-red-500">Red 500</p>
-          <p className="text-green-500">Green 500</p>
-          <p className="text-typography-primary">Typography primary</p>
-          <p className="text-typography-secondary">Typography secondary</p>
+          <p className="text-button-primary">Button primary</p>
+          <p className="text-yellow-strong">Yellow strong</p>
+          <p className="text-red-strong">Red strong</p>
+          <p className="text-green-strong">Green strong</p>
+          <p className="text-textIcon-primary">TextIcon primary</p>
+          <p className="text-textIcon-secondary">TextIcon secondary</p>
         </div>
-        <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
-          Decoration is gray-400
+        <p className="mt-8 text-textIcon-primary underline decoration-textIcon-secondary decoration-dashed decoration-8">
+          Decoration is textIcon-secondary
         </p>
 
         <h2 className="mb-16 mt-24 text-24 font-medium">Font sizes</h2>
@@ -303,7 +303,7 @@ function IconsAndImages() {
                         copyToClipboard(icon.importUrl);
                       }}
                       className={cx({
-                        "text-green-500": clipboardState.value === icon.importUrl,
+                        "text-green-strong": clipboardState.value === icon.importUrl,
                       })}
                     >
                       Import URL: {icon.importUrl}
@@ -314,7 +314,7 @@ function IconsAndImages() {
                         copyToClipboard(icon.importSvg);
                       }}
                       className={cx({
-                        "text-green-500": clipboardState.value === icon.importSvg,
+                        "text-green-strong": clipboardState.value === icon.importSvg,
                       })}
                     >
                       Import SVG: {icon.importSvg}
@@ -324,7 +324,7 @@ function IconsAndImages() {
               </div>
             }
           >
-            <div className="max-w-[50px] border-1/2 border-black dark:border-white">
+            <div className="max-w-[50px] border-1/2 border-black dark:border-textIcon-onButton">
               <icon.component className="h-full w-full" />
             </div>
           </Tooltip>

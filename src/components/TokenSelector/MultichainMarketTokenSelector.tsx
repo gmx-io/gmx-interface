@@ -175,7 +175,7 @@ export function MultichainMarketTokenSelector({
     >
       <SlideModal
         qa={"market-token-selector-modal"}
-        className="TokenSelector-modal text-body-medium text-typography-primary"
+        className="TokenSelector-modal text-body-medium text-textIcon-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={label}
@@ -198,7 +198,7 @@ export function MultichainMarketTokenSelector({
         contentPadding={false}
       >
         {filteredTokens.length === 0 && marketInfo ? (
-          <div className="flex grow items-center justify-center p-adaptive text-center text-typography-secondary">
+          <div className="flex grow items-center justify-center p-adaptive text-center text-textIcon-secondary">
             <Trans>No {glvOrGm} in your wallet or GMX Account</Trans>
           </div>
         ) : (
@@ -211,7 +211,7 @@ export function MultichainMarketTokenSelector({
       </SlideModal>
       <div
         data-qa={"market-token-selector"}
-        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable flex cursor-pointer items-center whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {marketInfo && (
@@ -232,7 +232,7 @@ export function MultichainMarketTokenSelector({
           </span>
         )}
 
-        <ChevronDownIcon className="text-body-large size-16 text-typography-secondary group-hover/hoverable:text-blue-300" />
+        <ChevronDownIcon className="text-body-large size-16 text-textIcon-secondary group-hover/hoverable:text-blue-strong" />
       </div>
     </div>
   );
@@ -280,11 +280,11 @@ function AvailableToTradeTokenList({
                   ) : (
                     <>
                       {getTokenSymbolByMarket(chainId, token.address, "index")}
-                      <span className="text-slate-100">{t`/USD`}</span>
+                      <span className="text-textIcon-secondary">{t`/USD`}</span>
                     </>
                   )}
                 </div>
-                <div className="text-body-small text-slate-100">
+                <div className="text-body-small text-textIcon-secondary">
                   [
                   {getMarketPoolName({
                     longToken: getToken(chainId, token.longTokenAddress),
@@ -308,7 +308,7 @@ function AvailableToTradeTokenList({
                 {token.balance == 0n && "-"}
               </div>
 
-              <span className="text-body-small text-slate-100">
+              <span className="text-body-small text-textIcon-secondary">
                 {token.balanceUsd > 0n && (
                   <div>
                     (<UsdValue usd={token.balanceUsd} displayDecimals={2} />)

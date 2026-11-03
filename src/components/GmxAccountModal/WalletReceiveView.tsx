@@ -45,20 +45,20 @@ export function WalletReceiveView() {
   return (
     <div className="flex grow flex-col items-center gap-[--padding-adaptive] p-adaptive">
       <div className="flex flex-col items-center gap-12">
-        <div className="text-body-small font-medium text-typography-secondary">
+        <div className="text-body-small font-medium text-textIcon-secondary">
           <Trans>{chainName} address</Trans>
         </div>
 
-        <div className="flex size-[160px] items-center justify-center rounded-12 bg-white">
+        <div className="flex size-[160px] items-center justify-center rounded-12 bg-textIcon-onButton">
           <QRCodeSVG value={address} size={140} level="H" imageSettings={imageSettings} />
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-12 self-stretch">
         <div className="text-body-large self-stretch break-all px-28 text-center font-medium">
-          <span className="text-typography-primary">{address.slice(0, 5)}</span>
-          <span className="text-typography-secondary">{address.slice(5, -4)}</span>
-          <span className="text-typography-primary">{address.slice(-4)}</span>
+          <span className="text-textIcon-primary">{address.slice(0, 5)}</span>
+          <span className="text-textIcon-secondary">{address.slice(5, -4)}</span>
+          <span className="text-textIcon-primary">{address.slice(-4)}</span>
         </div>
 
         <Button variant="secondary" size="small" textAlign="center" className="w-full" onClick={handleCopy}>

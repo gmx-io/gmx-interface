@@ -23,7 +23,7 @@ for (const direction of ["Long", "Short"] as const) {
   }) => {
     await selectTradeDirection(page, direction);
     const tab = page.getByTestId("trade-direction").getByRole("button", { name: direction, exact: true });
-    await expect(tab).toHaveClass(direction === "Long" ? /bg-green-900/ : /bg-red-900/);
+    await expect(tab).toHaveClass(direction === "Long" ? /bg-green-background/ : /bg-red-background/);
     const margin = page.getByTestId("margin-input");
     const size = page.getByTestId("position-size-input");
     await margin.fill("100");

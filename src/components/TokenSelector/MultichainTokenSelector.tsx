@@ -189,8 +189,8 @@ export function MultichainTokenSelector({
     isConnected === false ? (
       footerContent
     ) : (
-      <Button variant="secondary" size="medium" className="w-full !text-typography-primary" onClick={handleFooterClick}>
-        <ArrowDownIcon className="size-20 text-blue-300" />
+      <Button variant="secondary" size="medium" className="w-full !text-textIcon-primary" onClick={handleFooterClick}>
+        <ArrowDownIcon className="size-20 text-blue-strong" />
         {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Receive to wallet</Trans>}
       </Button>
     );
@@ -251,7 +251,7 @@ export function MultichainTokenSelector({
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {!token.isPlatformToken || token.isPlatformTradingToken ? (
@@ -274,7 +274,7 @@ export function MultichainTokenSelector({
             })}
           </span>
         )}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );
@@ -480,7 +480,7 @@ export function AvailableToTradeTokenList({
                         ]
                       </span>
                     </div>
-                    <span className="text-body-small text-typography-secondary">
+                    <span className="text-body-small text-textIcon-secondary">
                       <Trans>From</Trans>{" "}
                       {token.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID ? (
                         <Trans>GMX Account</Trans>
@@ -495,7 +495,7 @@ export function AvailableToTradeTokenList({
                   <TokenIcon symbol={token.symbol} className="size-40" displaySize={40} chainIdBadge={token.chainId} />
                   <div>
                     <div className="text-body-large">{token.symbol}</div>
-                    <span className="text-body-small text-typography-secondary">{token.name}</span>
+                    <span className="text-body-small text-textIcon-secondary">{token.name}</span>
                   </div>
                 </>
               )}
@@ -509,7 +509,7 @@ export function AvailableToTradeTokenList({
                 {token.balance == 0n && "-"}
               </div>
 
-              <span className="text-body-small text-typography-secondary">
+              <span className="text-body-small text-textIcon-secondary">
                 {token.balanceUsd > 0n && <UsdValue usd={token.balanceUsd} />}
               </span>
             </div>

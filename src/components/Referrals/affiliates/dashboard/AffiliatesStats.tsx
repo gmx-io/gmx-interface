@@ -136,20 +136,20 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     <div className="flex gap-8 max-md:flex-col max-md:pb-[100px]">
       <div className="flex grow flex-col gap-8 max-md:order-2">
         <div className="flex flex-col gap-8">
-          <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900 pb-4">
+          <div className="flex w-full flex-col gap-8 rounded-8 bg-fill-surfaceBase pb-4">
             <div className="flex flex-wrap items-center justify-between px-adaptive pt-adaptive">
               <div className="flex flex-wrap items-center gap-8">
                 <div className="text-body-large max-md:text-body-medium">
                   <Trans>Referral codes</Trans>
                 </div>
                 {affiliateTierInfo && tierId !== undefined && (
-                  <div className="rounded-full bg-cold-blue-900 px-8 py-[2.5px] text-12 font-medium leading-[1.25] text-blue-300">
+                  <div className="rounded-full bg-blue-background px-8 py-[2.5px] text-12 font-medium leading-[1.25] text-blue-strong">
                     {t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                   </div>
                 )}
               </div>
               <button
-                className="text-body-medium flex items-center gap-4 font-medium text-blue-300 transition-colors hover:text-typography-primary"
+                className="text-body-medium flex items-center gap-4 font-medium text-blue-strong transition-colors hover:text-textIcon-primary"
                 onClick={open}
               >
                 {!isMobile ? <Trans>Create new code</Trans> : <Trans>Create</Trans>}
@@ -294,9 +294,9 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             />
           </div>
 
-          <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
+          <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceBase p-adaptive">
             <div className="flex items-center justify-between">
-              <div className="text-body-large font-medium text-typography-primary">
+              <div className="text-body-large font-medium text-textIcon-primary">
                 <Trans>Overview</Trans>
               </div>
               <div className="flex items-center gap-8">
@@ -414,7 +414,7 @@ function ReferralCodesMobileTable({
 
       {data.map((stat) => (
         <Fragment key={stat.referralCode}>
-          <GridRow className="text-typography-primary" onClick={() => toggleSelectedCode(stat.referralCode)}>
+          <GridRow className="text-textIcon-primary" onClick={() => toggleSelectedCode(stat.referralCode)}>
             <GridCell>
               <div className="flex items-center gap-4">
                 <span className="font-mono">{stat.referralCode}</span>
@@ -426,7 +426,7 @@ function ReferralCodesMobileTable({
             </GridCell>
             <GridCell className="flex items-center justify-end">
               <ChevronDownIcon
-                className={cx("size-16 text-typography-secondary", {
+                className={cx("size-16 text-textIcon-secondary", {
                   "rotate-180": selectedCode === stat.referralCode,
                 })}
               />
@@ -444,14 +444,14 @@ function ReferralCodesMobileTable({
                 transition={DETAIL_ROW_TRANSITION}
               >
                 <div className="text-body-small flex items-center justify-between py-4">
-                  <span className="font-medium text-typography-secondary">
+                  <span className="font-medium text-textIcon-secondary">
                     <Trans>Traders referred</Trans>
                   </span>
                   <span className="numbers">{stat.registeredReferralsCount}</span>
                 </div>
 
                 <div className="text-body-small flex items-center justify-between py-4">
-                  <span className="font-medium text-typography-secondary">
+                  <span className="font-medium text-textIcon-secondary">
                     <Trans>Total rebates</Trans>
                   </span>
                   <NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} className="numbers" />

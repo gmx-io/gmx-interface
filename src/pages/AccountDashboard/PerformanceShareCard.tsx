@@ -89,7 +89,7 @@ export const PerformanceShareCard = forwardRef<HTMLDivElement, Props>(
             pnlPercentage={pnlBps}
             pnlUsd={pnlUsd}
             showPnlAmounts={showPnlAmounts}
-            zeroClassName="text-white"
+            zeroClassName="text-textIcon-onButton"
           />
           <div className="flex gap-20 max-md:gap-10">
             <ShareCardStat label={<Trans>Period</Trans>}>{periodLabel}</ShareCardStat>

@@ -59,19 +59,19 @@ const BAR_STYLES: Record<number, { width: number }> = Object.fromEntries(
 );
 
 const STEPS_COLUMNS_CLASSNAME = "grid grid-cols-[120px_1fr] items-center gap-x-16 md:grid-cols-[160px_56px_1fr]";
-const HEADER_CLASSNAME = "text-body-small text-typography-secondary";
+const HEADER_CLASSNAME = "text-body-small text-textIcon-secondary";
 
 function StepRow({ step }: { step: SpacingStep }) {
   return (
-    <div className={cx(STEPS_COLUMNS_CLASSNAME, "gap-y-4 border-t-1/2 border-slate-600 py-10")}>
+    <div className={cx(STEPS_COLUMNS_CLASSNAME, "gap-y-4 border-t-1/2 border-stroke-primary py-10")}>
       <span className="flex flex-col">
         <span className="text-body-medium font-medium">space/{step.px}</span>
-        <span className="text-body-small font-mono text-typography-secondary">
+        <span className="text-body-small font-mono text-textIcon-secondary">
           p-{step.px} · gap-{step.px}
         </span>
       </span>
-      <span className="text-body-medium text-typography-secondary max-md:hidden">{step.uses}</span>
-      <span className="text-body-medium text-typography-secondary">{step.usedFor}</span>
+      <span className="text-body-medium text-textIcon-secondary max-md:hidden">{step.uses}</span>
+      <span className="text-body-medium text-textIcon-secondary">{step.usedFor}</span>
     </div>
   );
 }
@@ -87,12 +87,12 @@ export function SpacingExamples() {
           <div
             key={step.px}
             className={cx("grid grid-cols-[160px_104px] items-center gap-x-16 py-10", {
-              "border-t-1/2 border-slate-600": index > 0,
+              "border-t-1/2 border-stroke-primary": index > 0,
             })}
           >
             <span className="text-body-medium font-medium">space/{step.px}</span>
             <span className="flex h-16 items-center">
-              <span className="h-16 rounded-2 bg-blue-300" style={BAR_STYLES[step.px]} />
+              <span className="h-16 rounded-2 bg-blue-strong" style={BAR_STYLES[step.px]} />
             </span>
           </div>
         ))}
@@ -144,7 +144,7 @@ const USAGE_CODE = `// A row: gap on the parent
 </div>
 
 // A card: adaptive padding, sections 16px apart
-<div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-adaptive">
+<div className="flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated p-adaptive">
   …
 </div>`;
 
@@ -166,7 +166,7 @@ export function SpacingGuidelines() {
           </div>
           {SCALE_GROUPS.map((group) => (
             <Fragment key={group.title}>
-              <span className="text-body-small border-t-1/2 border-slate-600 pb-4 pt-16 font-medium text-typography-secondary">
+              <span className="text-body-small border-t-1/2 border-stroke-primary pb-4 pt-16 font-medium text-textIcon-secondary">
                 {group.title}
               </span>
               {group.steps.map((step) => (

@@ -283,7 +283,7 @@ export function GmList({
                   selectedValue={subCategoryTab}
                   onChange={setSubCategoryTab}
                   type="block"
-                  className="bg-slate-800/50 px-20"
+                  className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
                   regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
                 />
@@ -298,7 +298,7 @@ export function GmList({
                   selectedValue={subCategoryTab}
                   onChange={setSubCategoryTab}
                   type="block"
-                  className="bg-slate-800/50 px-20"
+                  className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
                   regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
                 />

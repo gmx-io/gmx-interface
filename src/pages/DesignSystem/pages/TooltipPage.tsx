@@ -72,13 +72,13 @@ function Usd({ value, negative }: { value: string; negative?: boolean }) {
 }
 
 function Rate({ value }: { value: string }) {
-  return <span className={value.startsWith("-") ? "text-red-500" : "text-green-500"}>{value}</span>;
+  return <span className={value.startsWith("-") ? "text-red-strong" : "text-green-strong"}>{value}</span>;
 }
 
 function Market({ name, pool }: { name: string; pool: string }) {
   return (
     <>
-      {name} <span className="whitespace-nowrap text-typography-secondary">{pool}</span>
+      {name} <span className="whitespace-nowrap text-textIcon-secondary">{pool}</span>
     </>
   );
 }
@@ -154,7 +154,7 @@ const FEE_ROWS: [string, ReactNode, string?][] = [
   ["Borrow fees", <Usd key="v" value="0.00" />],
   ["Negative funding fees", <Usd key="v" value="0.00" />],
   ["Other realized fees", <Usd key="v" value="0.00" />],
-  ["Unrealized fee contribution", <Usd key="v" value="70.44" negative />, "text-red-500"],
+  ["Unrealized fee contribution", <Usd key="v" value="70.44" negative />, "text-red-strong"],
   ["Net price impact", <Usd key="v" value="0.00" />],
   ["Swap fees", <Usd key="v" value="0.00" />],
   ["Swap price impact", <Usd key="v" value="0.00" />],
@@ -170,19 +170,19 @@ const PNL_BREAKDOWN = (
     </TooltipRows>
     <TooltipDivider />
     <TooltipRows>
-      <TooltipTitle value={<Usd value="967.71" />} valueClassName="text-green-500">
+      <TooltipTitle value={<Usd value="967.71" />} valueClassName="text-green-strong">
         PnL
       </TooltipTitle>
       <TooltipRow label="Realized PnL before fees" value={<Usd value="0.00" />} />
       <TooltipRow
         label="Live unrealized PnL before fees"
         value={<Usd value="159,962.05" />}
-        valueClassName="text-green-500"
+        valueClassName="text-green-strong"
       />
       <TooltipRow
         label="Start unrealized PnL before fees"
         value={<Usd value="158,923.89" negative />}
-        valueClassName="text-red-500"
+        valueClassName="text-red-strong"
       />
     </TooltipRows>
     <TooltipDivider />
@@ -200,7 +200,7 @@ const FOOTNOTE_EXAMPLE = (
   <TooltipContent>
     <TooltipRows>
       <TooltipRow label="Max network fee" value={<Usd value="0.29" />} />
-      <TooltipRow label="Estimated fee refund" value={<Usd value="0.08" />} valueClassName="text-green-500" />
+      <TooltipRow label="Estimated fee refund" value={<Usd value="0.08" />} valueClassName="text-green-strong" />
     </TooltipRows>
     <TooltipFootnote>Unused network fees are refunded after execution.</TooltipFootnote>
   </TooltipContent>
@@ -236,13 +236,13 @@ const BEFORE_FEES = (
 );
 
 const BEFORE_WALLET = (
-  <div className="flex flex-col gap-16 text-typography-secondary">
+  <div className="flex flex-col gap-16 text-textIcon-secondary">
     <div className="flex flex-col gap-12">
       {WALLET_PARAGRAPHS.map((paragraph) => (
         <div key={paragraph}>{paragraph}</div>
       ))}
     </div>
-    <ExternalLink href={DOCS_URL} variant="icon-arrow" className="font-medium text-blue-300">
+    <ExternalLink href={DOCS_URL} variant="icon-arrow" className="font-medium text-blue-strong">
       Read more
     </ExternalLink>
   </div>
@@ -250,7 +250,7 @@ const BEFORE_WALLET = (
 
 const BEFORE_NET_RATE = (
   <div className="flex flex-col gap-4">
-    <div className="text-body-small grid grid-cols-[1fr_auto_auto] gap-x-20 uppercase text-typography-secondary">
+    <div className="text-body-small grid grid-cols-[1fr_auto_auto] gap-x-20 uppercase text-textIcon-secondary">
       <span>Pool</span>
       <span className="text-right">Longs net rate / 1h</span>
       <span className="text-right">Shorts net rate / 1h</span>
@@ -279,9 +279,9 @@ function BlurBackdrop() {
     <div className="text-body-medium grid w-fit grid-cols-[repeat(3,auto)] gap-x-16 gap-y-4" aria-hidden>
       {BACKDROP_ROWS.map(([market, price, change]) => (
         <Fragment key={market}>
-          <span className="text-typography-secondary">{market}</span>
+          <span className="text-textIcon-secondary">{market}</span>
           <span>{price}</span>
-          <span className={change.startsWith("-") ? "text-red-500" : "text-green-500"}>{change}</span>
+          <span className={change.startsWith("-") ? "text-red-strong" : "text-green-strong"}>{change}</span>
         </Fragment>
       ))}
     </div>
@@ -408,7 +408,7 @@ export function TooltipExamples() {
               <StandardTooltip handle="+0.0001% / +0.0036%" size="wide" content={NET_RATE} />
             </DocsCard>
             <DocsCard label="Trader page · PnL breakdown">
-              <StandardTooltip handle={<span className="text-green-500">$967.71</span>} content={PNL_BREAKDOWN} />
+              <StandardTooltip handle={<span className="text-green-strong">$967.71</span>} content={PNL_BREAKDOWN} />
             </DocsCard>
             <DocsCard label="Wallet & GMX Account">
               <StandardTooltip
@@ -430,7 +430,7 @@ export function TooltipExamples() {
                 <button
                   type="button"
                   aria-label="Disconnect"
-                  className="flex size-28 items-center justify-center rounded-8 text-typography-secondary hover:bg-fill-surfaceHover hover:text-typography-primary"
+                  className="flex size-28 items-center justify-center rounded-8 text-textIcon-secondary hover:bg-fill-surfaceHover hover:text-textIcon-primary"
                 >
                   <DisconnectIcon className="size-16" />
                 </button>
@@ -684,16 +684,16 @@ function BeforeAfter({
   return (
     <div className="flex flex-col gap-16 p-24 max-md:p-16">
       <div className="flex flex-col gap-4">
-        <span className="text-body-large font-medium text-typography-primary">{label}</span>
-        <span className="text-body-medium text-typography-secondary">{change}</span>
+        <span className="text-body-large font-medium text-textIcon-primary">{label}</span>
+        <span className="text-body-medium text-textIcon-secondary">{change}</span>
       </div>
       <div className="grid grid-cols-1 gap-24 lg:grid-cols-2">
         <div className="flex min-w-0 flex-col items-start gap-8">
-          <span className="text-body-medium text-typography-secondary">Before</span>
+          <span className="text-body-medium text-textIcon-secondary">Before</span>
           {before}
         </div>
         <div className="flex min-w-0 flex-col items-start gap-8">
-          <span className="text-body-medium font-medium text-typography-primary">After</span>
+          <span className="text-body-medium font-medium text-textIcon-primary">After</span>
           {after}
         </div>
       </div>

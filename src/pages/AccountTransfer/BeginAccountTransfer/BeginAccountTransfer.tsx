@@ -29,7 +29,11 @@ import CloseIcon from "img/ic_close.svg?react";
 function ValidationRow({ isValid, children }: { isValid: boolean; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4">
-      {isValid ? <CheckIcon className="size-16 text-green-500" /> : <CloseIcon className="size-16 text-red-500" />}
+      {isValid ? (
+        <CheckIcon className="size-16 text-green-strong" />
+      ) : (
+        <CloseIcon className="size-16 text-red-strong" />
+      )}
 
       <div>{children}</div>
     </div>
@@ -486,7 +490,7 @@ export default function BeginAccountTransfer() {
         )}
       </div>
 
-      <div className="mx-auto flex max-w-[700px] flex-col gap-20 rounded-8 bg-slate-900 p-20 md:w-[620px]">
+      <div className="mx-auto flex max-w-[700px] flex-col gap-20 rounded-8 bg-fill-surfaceBase p-20 md:w-[620px]">
         {isTransferPaused && <ColorfulBanner color="yellow">{getAccountTransfersPausedMessage()}</ColorfulBanner>}
         <div className="flex flex-col gap-8">
           <label className="text-16 font-medium">
@@ -518,7 +522,7 @@ export default function BeginAccountTransfer() {
                 isChecked={isAffiliateVesterSkipValidation}
                 setIsChecked={setIsAffiliateVesterSkipValidation}
               >
-                <span className="text-body-small text-yellow-300">
+                <span className="text-body-small text-yellow-strong">
                   <Trans>I do not want to transfer the Affiliate esGMX tokens</Trans>
                 </span>
               </Checkbox>
@@ -533,7 +537,7 @@ export default function BeginAccountTransfer() {
           </ValidationRow>
 
           <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
-            <span className="text-body-small text-yellow-300">
+            <span className="text-body-small text-yellow-strong">
               <Trans>
                 I understand that staking power does not transfer. The receiving wallet will start with zero staking
                 power and a fresh historical max.

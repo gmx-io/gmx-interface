@@ -165,10 +165,10 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         className={cx(
           "user-select-none flex w-56 items-center justify-between gap-10 rounded-4 px-8",
           disabled
-            ? "cursor-default bg-slate-800"
+            ? "cursor-default bg-fill-surfaceElevated"
             : isOpen
-              ? "cursor-pointer bg-slate-700"
-              : "group cursor-pointer bg-slate-800"
+              ? "cursor-pointer bg-button-background"
+              : "group cursor-pointer bg-fill-surfaceElevated"
         )}
         onClick={handleFieldClick}
         {...getReferenceProps()}
@@ -176,11 +176,11 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
           <NumericValue
             parts={displayParts}
-            className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
-              "group-hover:text-blue-300": !disabled && !isOpen,
+            className={cx("text-13", isOpen ? "text-blue-strong" : "text-textIcon-primary", {
+              "group-hover:text-blue-strong": !disabled && !isOpen,
             })}
-            affixClassName={cx(isOpen ? "text-blue-300" : "text-typography-secondary", {
-              "group-hover:text-blue-300": !disabled && !isOpen,
+            affixClassName={cx(isOpen ? "text-blue-strong" : "text-textIcon-secondary", {
+              "group-hover:text-blue-strong": !disabled && !isOpen,
             })}
           />
         </TooltipWithPortal>
@@ -191,12 +191,12 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-[1000] w-[376px] max-w-[calc(100vw-24px)] rounded-8 border-1/2 border-slate-600 bg-slate-900 p-16 max-md:px-12"
+            className="z-[1000] w-[376px] max-w-[calc(100vw-24px)] rounded-8 border-1/2 border-stroke-primary bg-fill-surfaceBase p-16 max-md:px-12"
             {...getFloatingProps()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-16 font-medium text-typography-primary">{t`Adjust leverage`}</span>
-              <button onClick={handleClose} className="text-typography-secondary hover:text-typography-primary">
+              <span className="text-16 font-medium text-textIcon-primary">{t`Adjust leverage`}</span>
+              <button onClick={handleClose} className="text-textIcon-secondary hover:text-textIcon-primary">
                 <CloseIcon className="size-20" />
               </button>
             </div>
@@ -211,7 +211,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
                   onBlur={() => commitValue()}
                   suffix={`${HAIR_SPACE}x`}
                   inputClassName="w-32 !pr-0 text-13"
-                  className="!rounded-4 border border-slate-600 bg-slate-800 !py-6"
+                  className="!rounded-4 border border-stroke-primary bg-fill-surfaceElevated !py-6"
                 />
               </div>
               <ColorfulBanner color="blue" icon={InfoIcon}>

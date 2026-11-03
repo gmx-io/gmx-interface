@@ -208,20 +208,20 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="px-20 text-14 text-typography-secondary">
+          <div className="px-20 text-14 text-textIcon-secondary">
             <Trans>No markets found</Trans>
           </div>
         )}
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-300"
+          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-strong"
         )}
         onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-blue-strong" />
       </div>
     </div>
   );

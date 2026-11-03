@@ -257,7 +257,7 @@ export function TradeHistory(p: Props) {
   const controls = <div className="flex items-center gap-4">{actions}</div>;
 
   return (
-    <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+    <div className="TradeHistorySynthetics flex grow flex-col bg-fill-surfaceBase">
       <HistoryExportModal
         isVisible={historyExport.isModalVisible}
         setIsVisible={historyExport.setIsModalVisible}

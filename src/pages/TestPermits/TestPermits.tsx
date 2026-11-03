@@ -180,7 +180,7 @@ export function TestPermits() {
               return (
                 <div
                   key={token.address}
-                  className="flex cursor-pointer items-center space-x-6 border-b-1/2 border-slate-600 p-2 pb-4"
+                  className="flex cursor-pointer items-center space-x-6 border-b-1/2 border-stroke-primary p-2 pb-4"
                 >
                   <TokenIcon symbol={token.symbol} displaySize={32} />
                   <div className="flex min-w-0 flex-1 flex-col">
@@ -195,9 +195,9 @@ export function TestPermits() {
                           <Trans>Permit supported:</Trans>
                         </span>{" "}
                         {token.isPermitSupported === true ? (
-                          <span className="text-green-500">{t`True`}</span>
+                          <span className="text-green-strong">{t`True`}</span>
                         ) : (
-                          <span className="text-red-500">{t`False`}</span>
+                          <span className="text-red-strong">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -205,9 +205,9 @@ export function TestPermits() {
                           <Trans>Permit disabled:</Trans>
                         </span>{" "}
                         {token.isPermitDisabled === true ? (
-                          <span className="text-red-500">{t`True`}</span>
+                          <span className="text-red-strong">{t`True`}</span>
                         ) : (
-                          <span className="text-green-500">{t`False`}</span>
+                          <span className="text-green-strong">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -230,7 +230,7 @@ export function TestPermits() {
                       </div>
                       {params?.error && (
                         <div>
-                          <span className="font-semibold text-red-500">
+                          <span className="font-semibold text-red-strong">
                             <Trans>Onchain data error</Trans>
                           </span>
                         </div>
@@ -248,7 +248,7 @@ export function TestPermits() {
               <div className="mb-6 flex flex-col space-x-4">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={40} />
                 <div>
-                  <h2 className="text-2xl font-semibold text-typography-primary">{selectedToken.symbol}</h2>
+                  <h2 className="text-2xl font-semibold text-textIcon-primary">{selectedToken.symbol}</h2>
                   <div>
                     <div className="text-xs text-slate-400">{selectedToken.address}</div>
                   </div>
@@ -259,9 +259,9 @@ export function TestPermits() {
                       <Trans>Permit supported:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
-                      <span className="text-green-500">{t`True`}</span>
+                      <span className="text-green-strong">{t`True`}</span>
                     ) : (
-                      <span className="text-red-500">{t`False`}</span>
+                      <span className="text-red-strong">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -269,9 +269,9 @@ export function TestPermits() {
                       <Trans>Permit disabled:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
-                      <span className="text-red-500">{t`True`}</span>
+                      <span className="text-red-strong">{t`True`}</span>
                     ) : (
-                      <span className="text-green-500">{t`False`}</span>
+                      <span className="text-green-strong">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -294,7 +294,7 @@ export function TestPermits() {
                   </div>
                   {selectedToken.isPermitDisabled && (
                     <div>
-                      <span className="font-semibold text-red-500">
+                      <span className="font-semibold text-red-strong">
                         <Trans>Onchain data error</Trans>
                       </span>
                     </div>
@@ -303,8 +303,8 @@ export function TestPermits() {
               </div>
 
               {permitData && (
-                <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">
+                <div className="rounded-xl text-slate-200 text-base bg-fill-surfaceElevated p-6 shadow-inner">
+                  <h2 className="text-lg mb-4 font-medium tracking-wide text-textIcon-secondary">
                     <Trans>Permit details</Trans>
                   </h2>
                   <div className="space-y-2">

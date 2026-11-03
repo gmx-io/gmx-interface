@@ -59,14 +59,14 @@ function PartsTable() {
     <div className="overflow-x-auto">
       <table className="text-body-large w-full min-w-[480px] border-collapse text-left">
         <thead>
-          <tr className="text-body-medium uppercase text-typography-secondary">
+          <tr className="text-body-medium uppercase text-textIcon-secondary">
             <th className={TH_CLASSNAME}>Part</th>
             <th className="pb-8 font-normal">Code</th>
           </tr>
         </thead>
         <tbody>
           {PARTS.map((part) => (
-            <tr key={part.part} className="border-t-1/2 border-slate-600 align-top">
+            <tr key={part.part} className="border-t-1/2 border-stroke-primary align-top">
               <td className="w-[240px] py-10 pr-16">{part.part}</td>
               <td className="text-body-medium py-10 font-mono">{part.code}</td>
             </tr>
@@ -212,7 +212,7 @@ export function TableExperiment2() {
 
   return (
     <DocsSection section={POOLS_EXPERIMENT_SECTION} flush titleAction={switcher}>
-      <div className="bg-slate-950 p-16">
+      <div className="bg-fill-background p-16">
         <PoolsPage {...rowStyle} />
       </div>
     </DocsSection>

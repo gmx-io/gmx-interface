@@ -648,7 +648,7 @@ export function PositionEditor() {
                 rightHeadline={
                   <button
                     type="button"
-                    className="whitespace-nowrap text-typography-secondary hover:text-typography-primary"
+                    className="whitespace-nowrap text-textIcon-secondary hover:text-textIcon-primary"
                     onClick={() =>
                       setTriggerPriceInputValue(
                         formatMarginDepositPriceInput(markPrice, position.indexToken?.visualMultiplier)
@@ -682,7 +682,7 @@ export function PositionEditor() {
                     maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
                   />
                   {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
-                    <span className="shrink-0 text-12 text-typography-secondary numbers">
+                    <span className="shrink-0 text-12 text-textIcon-secondary numbers">
                       ≈<UsdValue usd={collateralDeltaUsd} />
                     </span>
                   )}
@@ -701,7 +701,7 @@ export function PositionEditor() {
                     )}
                     <button
                       type="button"
-                      className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                      className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCollateralPercentageChange(100);
@@ -716,7 +716,7 @@ export function PositionEditor() {
                     </button>
                   </div>
                 ) : (
-                  <span className="flex items-center gap-6 text-typography-secondary">
+                  <span className="flex items-center gap-6 text-textIcon-secondary">
                     {maxWithdrawAmount > 0n && (
                       <MaxActions
                         qa="amount-input"
@@ -790,7 +790,7 @@ export function PositionEditor() {
                     {conditionalDepositWarning}
                   </AlertInfoCard>
                 ) : (
-                  <p className="text-12 text-typography-secondary">
+                  <p className="text-12 text-textIcon-secondary">
                     <Trans>Adds margin without increasing your position size when the trigger price is reached.</Trans>
                   </p>
                 ))}
@@ -854,17 +854,17 @@ export function PositionEditor() {
                       qa="convert-rest-with-paxos"
                     >
                       <Trans>Convert the rest with Paxos</Trans>
-                      <span className="text-12 font-normal text-typography-secondary">
+                      <span className="text-12 font-normal text-textIcon-secondary">
                         <Trans>In the Swap tab · arrives separately</Trans>
                       </span>
                     </Button>
                   ) : isPaxosWalletOnly ? (
-                    <div className="text-12 text-typography-secondary">
+                    <div className="text-12 text-textIcon-secondary">
                       <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
                     </div>
                   ) : (
                     paxosMinimumText && (
-                      <div className="text-12 text-typography-secondary">
+                      <div className="text-12 text-textIcon-secondary">
                         <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
                       </div>
                     )

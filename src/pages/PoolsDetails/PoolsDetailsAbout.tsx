@@ -54,7 +54,7 @@ export function PoolsDetailsAbout({
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-typography-secondary">
+      <div className="text-body-medium text-textIcon-secondary">
         {isGlv ? (
           <Trans>
             Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by{" "}
@@ -327,7 +327,7 @@ const BuyableTooltipContent = ({
 
   return (
     <>
-      <p className="text-typography-primary">
+      <p className="text-textIcon-primary">
         {marketInfo?.isSameCollaterals ? (
           <Trans>Buy GM with {marketInfo?.longToken?.symbol} up to the caps below</Trans>
         ) : (

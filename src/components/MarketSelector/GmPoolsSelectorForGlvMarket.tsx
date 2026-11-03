@@ -58,14 +58,14 @@ function PoolLabel({
 
   return (
     <div
-      className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300", {
+      className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong", {
         "pointer-events-none": disablePoolSelector,
       })}
       onClick={!disablePoolSelector ? onClick : undefined}
     >
       {getMarketIndexName(marketInfo)} [{getMarketPoolName(marketInfo)}]
       {!disablePoolSelector && (
-        <ChevronDownIcon className="size-16 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="size-16 text-textIcon-secondary group-hover:text-blue-strong" />
       )}
     </div>
   );
@@ -255,7 +255,7 @@ export function GmPoolsSelectorForGlvMarket({
             />
           ))}
           {filteredOptions.length === 0 && (
-            <div className="text-body-medium p-adaptive text-typography-secondary">
+            <div className="text-body-medium p-adaptive text-textIcon-secondary">
               <Trans>No pools matched</Trans>
             </div>
           )}

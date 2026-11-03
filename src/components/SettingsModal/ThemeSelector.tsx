@@ -24,7 +24,7 @@ function ThemeOption({
   return (
     <div
       className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
+        "bg-button-background": isSelected,
       })}
       onClick={() => {
         onClick();
@@ -67,7 +67,7 @@ export function ThemeSelector() {
       handleClassName="max-md:[&>span]:grow"
       label={
         <div className="flex w-full items-center justify-between">
-          <div className="text-typography-secondary">
+          <div className="text-textIcon-secondary">
             <Trans>Theme</Trans>
           </div>
           <Button variant="secondary">

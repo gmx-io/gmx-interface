@@ -4,8 +4,8 @@
   initial-value: 0px;
 }
 
-$white: var(--color-typography-primary);
-$gray: rgba(var(--color-typography-primary-raw) / 0.75);
+$white: var(--color-textIcon-primary);
+$gray: rgba(var(--color-textIcon-primary-raw) / 0.75);
 
 .shimmer-text {
   --offset: 0px;

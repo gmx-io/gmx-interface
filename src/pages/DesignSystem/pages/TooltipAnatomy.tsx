@@ -55,8 +55,8 @@ const ANATOMY_LOOK: TooltipLook = {
 };
 
 const MARKER_CLASSNAME = `text-body-small flex size-20 shrink-0 items-center justify-center rounded-full border
-  border-blue-400 font-medium text-blue-400 dark:border-blue-300 dark:text-blue-300`;
-const LINE_CLASSNAME = "h-1 shrink-0 bg-blue-400 dark:bg-blue-300";
+  border-button-primary font-medium text-blue-strong dark:border-blue-strong dark:text-blue-strong`;
+const LINE_CLASSNAME = "h-1 shrink-0 bg-button-primary dark:bg-blue-strong";
 
 function Marker({ id }: { id: PartId }) {
   return <span className={MARKER_CLASSNAME}>{PARTS.findIndex((part) => part.id === id) + 1}</span>;
@@ -105,7 +105,7 @@ function LeftCallout({
       {group && (
         <span
           aria-hidden
-          className="absolute inset-y-0 border-y border-l border-blue-400 dark:border-blue-300"
+          className="absolute inset-y-0 border-y border-l border-button-primary dark:border-blue-strong"
           style={bracketStyle}
         />
       )}
@@ -233,7 +233,7 @@ export function TooltipAnatomy() {
               <Marker id={part.id} />
               <div className="flex flex-col gap-2">
                 <span className="text-body-large">{part.name}</span>
-                <span className="text-body-medium text-typography-secondary">{part.description}</span>
+                <span className="text-body-medium text-textIcon-secondary">{part.description}</span>
               </div>
             </li>
           ))}

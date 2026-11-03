@@ -77,7 +77,7 @@ function OpportunityFilters({
   );
 
   return (
-    <div className="flex gap-12 overflow-hidden rounded-8 bg-slate-900 p-12 max-md:flex-col">
+    <div className="flex gap-12 overflow-hidden rounded-8 bg-fill-surfaceBase p-12 max-md:flex-col">
       <div className="flex grow overflow-hidden">
         <TableScrollFadeContainer className="w-full grow">
           <Tabs

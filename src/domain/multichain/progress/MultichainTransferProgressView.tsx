@@ -110,7 +110,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
           autoClose: false,
           closeButton: false,
           bodyClassName: "!p-0",
-          className: "!bg-slate-900 border-1/2 border-slate-600 !-ml-64",
+          className: "!bg-fill-surfaceBase border-1/2 border-stroke-primary !-ml-64",
           hideProgressBar: true,
         }
       );
@@ -230,23 +230,23 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
             )}
           </div>
         </div>
-        <div className="text-typography-secondary">
+        <div className="text-textIcon-secondary">
           {finishedState === "pending" && (
             <div className="flex items-center gap-4">
               <img src={SpinnerBlueSrc} alt={t`spinner`} className="size-16 shrink-0 animate-spin" />
-              <div className="text-typography-secondary">
+              <div className="text-textIcon-secondary">
                 <Trans>In progress...</Trans>
               </div>
             </div>
           )}
           {finishedState === "completed" && (
-            <div className="flex items-center gap-4 text-green-700">
+            <div className="flex items-center gap-4 text-green-strong">
               <CheckCircleIcon className="size-16 shrink-0" />
               <Trans>Completed</Trans>
             </div>
           )}
           {finishedState === "error" && (
-            <div className="flex items-center gap-4 text-red-500">
+            <div className="flex items-center gap-4 text-red-strong">
               <AttentionIcon className="size-16 shrink-0" />
               {task.operation === Operation.Deposit ? (
                 <Trans>Buy {gmOrGlvLabel} failed</Trans>
@@ -259,27 +259,27 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
       </div>
 
       <>
-        <hr className="border-t-1/2 border-slate-600" />
+        <hr className="border-t-1/2 border-stroke-primary" />
         <div className="flex flex-col gap-12 p-16">
           <SyntheticsInfoRow
             onClick={() => setIsOpen(!isOpen)}
             className="group"
             label={
-              <div className="flex items-center gap-4 group-gmx-hover:text-blue-300">
+              <div className="flex items-center gap-4 group-gmx-hover:text-blue-strong">
                 {isOpen ? (
                   <>
                     <Trans>Fewer details</Trans>
-                    <ChevronUpIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
+                    <ChevronUpIcon className="w-16 text-textIcon-secondary group-gmx-hover:text-blue-strong" />
                   </>
                 ) : (
                   <>
                     <Trans>More details</Trans>
-                    <ChevronDownIcon className="w-16 text-typography-secondary group-gmx-hover:text-blue-300" />
+                    <ChevronDownIcon className="w-16 text-textIcon-secondary group-gmx-hover:text-blue-strong" />
                   </>
                 )}
               </div>
             }
-            valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
+            valueClassName="text-textIcon-secondary group-gmx-hover:text-blue-strong"
             value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Estimated time: ~5 min</Trans>}
           />
           <AnimatePresence>
@@ -362,7 +362,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                             <ExternalLink
                               href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                             >
-                              <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                              <ExternalLinkIcon className="size-16 text-textIcon-secondary" />
                             </ExternalLink>
                           ) : (
                             "N/A"
@@ -379,7 +379,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                             <ExternalLink
                               href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                             >
-                              <ExternalLinkIcon className="size-16 text-typography-secondary" />
+                              <ExternalLinkIcon className="size-16 text-textIcon-secondary" />
                             </ExternalLink>
                           ) : (
                             "N/A"
@@ -423,7 +423,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         />
                       </>
                     )}
-                    <ColorfulBanner color="red" className="text-red-100">
+                    <ColorfulBanner color="red" className="text-red-secondary">
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeInFailed && (
                         <>
                           {task.operation === Operation.Deposit ? (

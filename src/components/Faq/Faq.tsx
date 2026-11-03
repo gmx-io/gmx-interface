@@ -24,8 +24,8 @@ export function Faq({ items, title }: Props) {
   );
 
   return (
-    <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
-      <div className="text-body-large font-medium text-typography-primary">{title}</div>
+    <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceBase p-adaptive">
+      <div className="text-body-large font-medium text-textIcon-primary">{title}</div>
       <div className="flex flex-col">
         {items.map((item: FaqItem, index: number) => (
           <ExpandableRow
@@ -33,9 +33,9 @@ export function Faq({ items, title }: Props) {
             open={openIndex === index}
             onToggle={toggleHandlers[index]}
             title={item.title}
-            contentClassName="text-body-medium text-typography-primary"
+            contentClassName="text-body-medium text-textIcon-primary"
             handleClassName="text-body-medium pt-16 text-left font-medium"
-            className="border-b-1/2 border-slate-600 pb-16 last:border-b-0 last:pb-0"
+            className="border-b-1/2 border-stroke-primary pb-16 last:border-b-0 last:pb-0"
             chevronClassName="mr-8 mt-12"
           >
             {item.content}

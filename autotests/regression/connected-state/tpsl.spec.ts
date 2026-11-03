@@ -133,9 +133,9 @@ test.describe(() => {
       const beyond = (offset: number) => String(Math.round(liqPrice + (isLong ? -offset : offset)));
 
       await sl.fill(beyond(-10));
-      await expect(box(sl)).not.toHaveClass(/border-(yellow-300|red-500)/);
+      await expect(box(sl)).not.toHaveClass(/border-(yellow-strong|red-strong)/);
       await sl.fill(beyond(10));
-      await expect(box(sl)).toHaveClass(/border-yellow-300/);
+      await expect(box(sl)).toHaveClass(/border-yellow-strong/);
       await expect(tradebox.getByText("Est. PnL", { exact: true }).nth(1).locator("xpath=..")).toContainText(
         "(-100.00%)"
       );
@@ -148,13 +148,13 @@ test.describe(() => {
       ).toBeVisible();
 
       await tp.fill(beyond(10));
-      await expect(box(tp)).toHaveClass(/border-red-500/);
+      await expect(box(tp)).toHaveClass(/border-red-strong/);
       await tp.hover();
       await expect(
         tooltip.filter({ hasText: isLong ? "Set TP price above limit price" : "Set TP price below limit price" })
       ).toBeVisible();
       await tp.fill(isLong ? "1100" : "4500");
-      await expect(box(tp)).not.toHaveClass(/border-(yellow-300|red-500)/);
+      await expect(box(tp)).not.toHaveClass(/border-(yellow-strong|red-strong)/);
     });
   }
 });

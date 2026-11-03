@@ -240,7 +240,7 @@ export function MarketFilterLongShort({
             <div className="inline-flex items-center">
               <span className="subtext">[{poolName}]</span>
             </div>
-            {collateralSymbol && <span className="text-typography-secondary"> ({collateralSymbol})</span>}
+            {collateralSymbol && <span className="text-textIcon-secondary"> ({collateralSymbol})</span>}
           </>
         );
       }

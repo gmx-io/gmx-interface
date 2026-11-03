@@ -102,7 +102,7 @@ export const SettleAccruedFundingFeeRow = ({
           </span>{" "}
           <span className="subtext">[{poolName}]</span>
           {blockedTooltipContent !== undefined && (
-            <WarnIcon className="ml-4 self-center text-yellow-300" aria-label={t`Warning icon`} />
+            <WarnIcon className="ml-4 self-center text-yellow-strong" aria-label={t`Warning icon`} />
           )}
         </div>
       </div>

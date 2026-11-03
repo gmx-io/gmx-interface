@@ -67,14 +67,14 @@ test.describe("Tabs", () => {
     await secondTab.click();
 
     // After clicking "Second", verify it has the active class
-    await expect(secondTab).toHaveClass(/border-b-blue-300/);
+    await expect(secondTab).toHaveClass(/border-b-blue-strong/);
 
     // Click third tab and verify
     const thirdTab = component.getByText("Third");
     await thirdTab.click();
-    await expect(thirdTab).toHaveClass(/border-b-blue-300/);
+    await expect(thirdTab).toHaveClass(/border-b-blue-strong/);
     // Second tab should no longer be active
-    await expect(secondTab).not.toHaveClass(/border-b-blue-300/);
+    await expect(secondTab).not.toHaveClass(/border-b-blue-strong/);
   });
 
   test("renders with data-qa attribute", async ({ mount }) => {
@@ -109,8 +109,8 @@ test.describe("Tabs", () => {
 
       const secondTab = component.getByText("Second");
       await secondTab.click();
-      // Inline active tab gets secondary variant with !text-typography-primary
-      await expect(secondTab).toHaveClass(/!text-typography-primary/);
+      // Inline active tab gets secondary variant with !text-textIcon-primary
+      await expect(secondTab).toHaveClass(/!text-textIcon-primary/);
     });
   });
 

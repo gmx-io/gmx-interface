@@ -9,10 +9,10 @@ export type ChartOverrides = Partial<ChartPropertiesOverrides>;
 export const PRICE_LINE_COLOR_KEY = "mainSeriesProperties.priceLineColor";
 
 const PRICE_LINE_DIRECTION_COLORS = [
-  colors.green[500].dark,
-  colors.green[500].light,
-  colors.red[500].dark,
-  colors.red[500].light,
+  colors.green.strong.dark,
+  colors.green.strong.light,
+  colors.red.strong.dark,
+  colors.red.strong.light,
 ];
 
 export function getChartThemeOverrides(theme: Theme): ChartOverrides {

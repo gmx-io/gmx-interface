@@ -39,7 +39,7 @@ export function BottomMenuSection({
         <SettingsNavItem isCollapsed={isCollapsed} />
       </ul>
 
-      <div className={cx("mt-4 border-t-1/2 border-slate-600", { "mx-12": isCollapsed })} />
+      <div className={cx("mt-4 border-t-1/2 border-stroke-primary", { "mx-12": isCollapsed })} />
 
       {!isCollapsed ? (
         <div className="pl-8 pt-4">
@@ -119,9 +119,10 @@ function CollapsedMoreMenu({
             >
               <div
                 className={cx(
-                  "flex h-32 w-44 items-center justify-center rounded-8 text-typography-secondary hover:bg-blue-400/20 hover:text-blue-400 dark:hover:bg-slate-700 dark:hover:text-typography-primary",
+                  "flex h-32 w-44 items-center justify-center rounded-8 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary",
                   {
-                    "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": open,
+                    "bg-button-primary/20 !text-blue-strong dark:bg-button-background dark:!text-textIcon-primary":
+                      open,
                   }
                 )}
               >
@@ -132,7 +133,7 @@ function CollapsedMoreMenu({
           <Popover.Panel
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-40 w-[160px] rounded-8 border border-slate-600 bg-slate-800 p-4 shadow-2xl"
+            className="z-40 w-[160px] rounded-8 border border-stroke-primary bg-fill-surfaceElevated p-4 shadow-2xl"
           >
             <div className="flex flex-col gap-2">
               <DropdownActionRow
@@ -164,7 +165,7 @@ function CollapsedMoreMenu({
 
 function DropdownActionRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; onClick?: () => void }) {
   const content = (
-    <div className="flex items-center gap-8 rounded-8 px-8 py-7 text-typography-secondary hover:bg-blue-400/20 hover:text-blue-400 dark:hover:bg-slate-700 dark:hover:text-typography-primary">
+    <div className="flex items-center gap-8 rounded-8 px-8 py-7 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary">
       <div className="flex size-16 shrink-0 items-center justify-center">{icon}</div>
       <span className="text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]">{label}</span>
     </div>
@@ -207,7 +208,7 @@ function IconActionButton({
     >
       <div
         className={cx(
-          "flex items-center justify-center rounded-8 text-typography-secondary hover:bg-blue-400/20 hover:text-blue-400 dark:hover:bg-slate-700 dark:hover:text-typography-primary",
+          "flex items-center justify-center rounded-8 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary",
           compact ? "h-32 w-44" : "h-32 w-32"
         )}
       >

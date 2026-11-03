@@ -4,7 +4,7 @@ export function ShareCardStat({ label, children }: { label: ReactNode; children:
   return (
     <div className="flex flex-col gap-4">
       <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">{label}</p>
-      <p className="whitespace-nowrap text-13 font-medium text-white">{children}</p>
+      <p className="whitespace-nowrap text-13 font-medium text-textIcon-onButton">{children}</p>
     </div>
   );
 }

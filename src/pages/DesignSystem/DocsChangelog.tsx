@@ -31,7 +31,7 @@ export type ChangelogStep = {
   visible: string;
 };
 
-const LABEL_CLASSNAME = "text-body-small uppercase text-typography-secondary";
+const LABEL_CLASSNAME = "text-body-small uppercase text-textIcon-secondary";
 const CODE_CLASSNAME = "whitespace-pre-wrap break-all font-mono text-body-small";
 
 const fence = (text: string) => ["```", text, "```"].join("\n");
@@ -84,11 +84,11 @@ function ChangelogStepBody({ step }: { step: ChangelogStep }) {
       <dl className="text-body-medium grid grid-cols-[max-content_1fr] gap-x-16 gap-y-6">
         {step.dependsOn.length > 0 && (
           <>
-            <dt className="text-typography-secondary">Depends on</dt>
+            <dt className="text-textIcon-secondary">Depends on</dt>
             <dd>{step.dependsOn.join("; ")}</dd>
           </>
         )}
-        <dt className="text-typography-secondary">Users see</dt>
+        <dt className="text-textIcon-secondary">Users see</dt>
         <dd>{step.visible}</dd>
       </dl>
       {step.edits.length > 0 && (
@@ -103,13 +103,13 @@ function ChangelogStepBody({ step }: { step: ChangelogStep }) {
             </thead>
             <tbody>
               {step.edits.map((edit, index) => (
-                <tr key={index} className="border-t-1/2 border-slate-600 align-top">
+                <tr key={index} className="border-t-1/2 border-stroke-primary align-top">
                   <td className="py-8 pr-16">
                     <span className="text-body-small break-all font-mono">
                       {edit.file}
-                      {edit.line && <span className="text-typography-secondary">:{edit.line}</span>}
+                      {edit.line && <span className="text-textIcon-secondary">:{edit.line}</span>}
                     </span>
-                    {edit.note && <p className="text-body-small mt-4 text-typography-secondary">{edit.note}</p>}
+                    {edit.note && <p className="text-body-small mt-4 text-textIcon-secondary">{edit.note}</p>}
                   </td>
                   <td className="py-8 pr-16">
                     <pre className={CODE_CLASSNAME}>{edit.find}</pre>
@@ -130,7 +130,7 @@ function ChangelogStepBody({ step }: { step: ChangelogStep }) {
             {script.title}. Save it as <code className="font-mono">{script.file}</code> in the repo root, run{" "}
             <code className="font-mono">{script.run}</code>, then delete the file. It prints: {script.expect}
           </p>
-          <div className="overflow-hidden rounded-8 border border-slate-700">
+          <div className="overflow-hidden rounded-8 border border-button-background">
             <DocsCode code={script.code} collapsedHeight={200} />
           </div>
         </div>
@@ -168,11 +168,11 @@ export function DocsChangelog({
   return (
     <div className="flex flex-col gap-16">
       <div className="flex flex-wrap items-start justify-between gap-12">
-        <p className="text-body-large max-w-[720px] text-typography-secondary">{summary}</p>
+        <p className="text-body-large max-w-[720px] text-textIcon-secondary">{summary}</p>
         <DocsCopyButton code={changelogMarkdown(title, notes, steps)} label="Copy all steps as Markdown" />
       </div>
       {notes.length > 0 && (
-        <ul className="text-body-medium flex list-disc flex-col gap-6 pl-20 text-typography-secondary">
+        <ul className="text-body-medium flex list-disc flex-col gap-6 pl-20 text-textIcon-secondary">
           {notes.map((note) => (
             <li key={note}>{note}</li>
           ))}

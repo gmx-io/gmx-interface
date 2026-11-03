@@ -108,7 +108,7 @@ export function tradingMode(settings: Locator, name: string) {
   return settings.getByText(name, { exact: true }).locator("xpath=ancestor::div[contains(@class, 'grid')][1]");
 }
 
-export const SELECTED_TRADING_MODE = /(?:^|\s)border-slate-100(?:\s|$)/;
+export const SELECTED_TRADING_MODE = /(?:^|\s)border-textIcon-secondary(?:\s|$)/;
 
 export async function chooseMode(page: Page, name: "Classic" | "Express" | "Express + One-Click") {
   const settings = await openSettings(page);
@@ -122,10 +122,10 @@ export async function setSettingsToggle(modal: Locator, label: string, enabled: 
     .getByText(label, { exact: true })
     .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
     .locator("div.cursor-pointer");
-  const current = (await toggle.getAttribute("class"))!.includes("bg-blue-400");
+  const current = (await toggle.getAttribute("class"))!.includes("bg-button-primary");
   if (current !== enabled) await toggle.click();
-  if (enabled) await expect(toggle).toHaveClass(/bg-blue-400/);
-  else await expect(toggle).not.toHaveClass(/bg-blue-400/);
+  if (enabled) await expect(toggle).toHaveClass(/bg-button-primary/);
+  else await expect(toggle).not.toHaveClass(/bg-button-primary/);
 }
 
 // A label/value row such as SyntheticsInfoRow ("Leverage", "Network fee", "Minimum receive").

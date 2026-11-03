@@ -38,10 +38,10 @@ function Card({
           position="bottom-start"
           content={tooltipText}
           variant="icon"
-          iconClassName="text-typography-secondary"
+          iconClassName="text-textIcon-secondary"
         />
       ) : (
-        <div className={cx("card-header border-b-1/2 border-slate-600", slimHeader ? "px-20 py-8" : "p-20")}>
+        <div className={cx("card-header border-b-1/2 border-stroke-primary", slimHeader ? "px-20 py-8" : "p-20")}>
           {title}
         </div>
       )}

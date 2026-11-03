@@ -19,8 +19,8 @@ type StatsTooltipRowProps = {
 export default function StatsTooltipRow({
   label,
   value,
-  textClassName = "text-typography-primary",
-  labelClassName = "text-typography-secondary",
+  textClassName = "text-textIcon-primary",
+  labelClassName = "text-textIcon-secondary",
   valueClassName,
   showDollar = true,
   unit,
@@ -29,7 +29,7 @@ export default function StatsTooltipRow({
   function renderValue() {
     if (Array.isArray(value)) {
       return (
-        <ul className="Tooltip-row-values text-typography-primary">
+        <ul className="Tooltip-row-values text-textIcon-primary">
           {value.map((v, i) => (
             <li className={cx(textClassName, valueClassName)} key={i}>
               {v}

@@ -31,7 +31,7 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
             to={buildAccountDashboardUrl(account, supportedChainId, 2)}
             key={supportedChainId}
             className={cx("flex !min-h-32 items-center gap-4", {
-              "!bg-button-secondary !text-typography-primary": isActive,
+              "!bg-button-secondary !text-textIcon-primary": isActive,
             })}
           >
             <img

@@ -29,7 +29,7 @@ function shownMarket(page: Page) {
 // Tabs expose no selected state to assistive technology; the active tab is only styled.
 function expectActiveTab(page: Page, testId: string, name: string) {
   return expect(page.getByTestId(testId).getByRole("button", { name, exact: true })).toHaveClass(
-    /!text-typography-primary/
+    /!text-textIcon-primary/
   );
 }
 

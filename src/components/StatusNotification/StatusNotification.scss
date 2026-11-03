@@ -5,17 +5,17 @@
     align-items: center;
     margin-top: 1.2rem;
     padding: 1.2rem 0.8rem 0.8rem 0.8rem;
-    border-top: 1px solid var(--color-slate-600);
+    border-top: 1px solid var(--color-stroke-primary);
 
     .StatusNotification-cancel-all {
       background: transparent;
       border: none;
       padding: 0;
-      color: var(--color-gray-300);
+      color: var(--color-textIcon-secondary);
       text-decoration: underline;
 
       &:hover {
-        color: var(--color-typography-primary);
+        color: var(--color-textIcon-primary);
       }
     }
   }
@@ -25,7 +25,7 @@
   .StatusNotification + .StatusNotification {
     margin-top: 1.2rem;
     padding-top: 1.2rem;
-    border-top: 1px solid var(--color-slate-600);
+    border-top: 1px solid var(--color-stroke-primary);
   }
 }
 
@@ -38,16 +38,16 @@
 
 .Toastify__toast--error {
   .StatusNotification-title {
-    color: var(--color-red-500);
+    color: var(--color-red-strong);
   }
 }
 
 .Toastify__toast--success {
   .StatusNotification-title {
-    color: var(--color-green-500);
+    color: var(--color-green-strong);
   }
 }
 
 .StatusNotification-list:has(> .StatusNotification + .StatusNotification) .StatusNotification-title {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }

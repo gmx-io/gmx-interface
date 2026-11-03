@@ -49,7 +49,7 @@ export function OpportunityAssets({
                 asset={token}
                 chainId={chainId}
                 marketsInfoData={marketsInfoData}
-                className="absolute left-0 border-2 border-slate-700 "
+                className="absolute left-0 border-2 border-button-background "
               />
             </span>
           ))}
@@ -57,8 +57,8 @@ export function OpportunityAssets({
             <div className="relative -mr-6 size-24">
               <span
                 className={cx(
-                  "flex size-24 items-center justify-center rounded-full border-2 border-slate-700",
-                  "bg-slate-700 text-[11px] font-medium normal-nums text-typography-secondary"
+                  "flex size-24 items-center justify-center rounded-full border-2 border-button-background",
+                  "bg-button-background text-[11px] font-medium normal-nums text-textIcon-secondary"
                 )}
               >
                 +{remainingCount}
@@ -154,10 +154,10 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(glvInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium text-textIcon-primary">
               <Trans>GLV</Trans>{" "}
             </span>
-            <span className="text-typography-secondary">[{poolName}]</span>
+            <span className="text-textIcon-secondary">[{poolName}]</span>
           </span>
         );
       }
@@ -170,10 +170,10 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(marketInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium text-textIcon-primary">
               <Trans>GM: {indexName}</Trans>{" "}
             </span>
-            <span className="text-typography-secondary">[{poolName}]</span>
+            <span className="text-textIcon-secondary">[{poolName}]</span>
           </span>
         );
       }

@@ -42,7 +42,7 @@ export function PendingTPSLOrder({
     "—"
   );
   const status = (
-    <span role="status" className="inline-flex items-center gap-4 text-typography-secondary">
+    <span role="status" className="inline-flex items-center gap-4 text-textIcon-secondary">
       <SpinnerIcon className="size-16 animate-spin" />
       <Trans>Creating...</Trans>
     </span>
@@ -50,19 +50,19 @@ export function PendingTPSLOrder({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-10 border-b-1/2 border-slate-600 p-16 last:border-b-0" aria-busy="true">
+      <div className="flex flex-col gap-10 border-b-1/2 border-stroke-primary p-16 last:border-b-0" aria-busy="true">
         <div className="flex items-center justify-between">
           <span>{orderType}</span>
           {status}
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-typography-secondary">
+          <span className="text-textIcon-secondary">
             <Trans>Size (% of position)</Trans>
           </span>
           <span className="numbers">{size}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-typography-secondary">
+          <span className="text-textIcon-secondary">
             <Trans>Trigger price</Trans>
           </span>
           <span className="numbers">{triggerPrice}</span>

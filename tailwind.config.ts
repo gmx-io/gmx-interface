@@ -33,16 +33,16 @@ function textColorNames(tree: object, prefix = ""): string[] {
   });
 }
 
-const PRIMARY_TEXT_COLOR_NAMES = ["white", "black", "typography-primary"];
+const PRIMARY_TEXT_COLOR_NAMES = ["textIcon-onButton", "black", "textIcon-primary"];
 
 function affixColor(textColorName: string) {
-  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-typography-secondary)" : "currentColor";
+  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-textIcon-secondary)" : "currentColor";
 }
 
 function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
   addUtilities({
     ".numeric-affix": {
-      color: "var(--affix-color, var(--color-typography-secondary))",
+      color: "var(--affix-color, var(--color-textIcon-secondary))",
     },
     ...fromPairs(textColorNames(colors).map((name) => [`.text-${name}`, { "--affix-color": affixColor(name) }])),
   });
@@ -82,10 +82,10 @@ function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
   addUtilities({
     ".text-input-bg": {
       borderRadius: "8px",
-      background: "var(--color-slate-800)",
+      background: "var(--color-fill-surfaceElevated)",
     },
     ".text-input-bg::placeholder": {
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
     },
   });
 
@@ -173,14 +173,14 @@ function fontComponentsPlugin({ addComponents, addBase }: any) {
       lineHeight: "1.4rem",
       fontWeight: 500,
       letterSpacing: "0.08em",
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
       textTransform: "uppercase",
     },
     ".label": {
       fontWeight: 500,
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
       "& a": {
-        color: "var(--color-slate-100)",
+        color: "var(--color-textIcon-secondary)",
       },
     },
   });

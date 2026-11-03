@@ -546,15 +546,15 @@ function CreateReferralCodeLayout({
   networkFee?: bigint;
 }) {
   return (
-    <div className="flex flex-col gap-16 rounded-12 border border-slate-600/60 bg-slate-900/60 p-16">
+    <div className="flex flex-col gap-16 rounded-12 border border-stroke-primary/60 bg-fill-surfaceBase/60 p-16">
       <div className="flex flex-col gap-4">
-        <p className="text-13 font-medium text-typography-primary">
+        <p className="text-13 font-medium text-textIcon-primary">
           <Trans>Earn rewards by sharing your code!</Trans>
         </p>
-        <p className="text-13 text-typography-secondary">
+        <p className="text-13 text-textIcon-secondary">
           <Trans>
             Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more.{" "}
-            <ExternalLink className="font-medium text-blue-300 !no-underline" href={REFERRAL_DOCS_LINK} newTab>
+            <ExternalLink className="font-medium text-blue-strong !no-underline" href={REFERRAL_DOCS_LINK} newTab>
               <Trans>Read more</Trans>
             </ExternalLink>
             .
@@ -570,17 +570,17 @@ function CreateReferralCodeLayout({
       >
         <label
           className={cx(
-            "flex cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-            error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
+            "flex cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-fill-surfaceElevated p-8",
+            error || referralCodeCheckStatus === "taken" ? "border-red-strong" : "border-fill-surfaceElevated"
           )}
         >
-          <ReferralsIcon className="size-16 text-typography-secondary" />
+          <ReferralsIcon className="size-16 text-textIcon-secondary" />
           <input
             ref={inputRef}
             value={referralCode}
             disabled={isProcessing || !isConnected}
             placeholder={t`Enter referral code`}
-            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
+            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-textIcon-secondary"
             onChange={(event) => {
               const { value } = event.target;
               setReferralCode(value);
@@ -588,7 +588,7 @@ function CreateReferralCodeLayout({
           />
         </label>
         {srcChainId !== undefined && networkFee !== undefined && (
-          <div className="flex justify-between text-12 text-typography-secondary">
+          <div className="flex justify-between text-12 text-textIcon-secondary">
             <span className="whitespace-nowrap">
               <Trans>Network fee</Trans>
             </span>

@@ -148,7 +148,7 @@ export function TradingSettings({
       {getIsExpressSupported(chainId) && (
         <>
           <SettingsSection>
-            <div className="text-14 font-medium text-typography-primary">
+            <div className="text-14 font-medium text-textIcon-primary">
               <Trans>Trading mode</Trans>
             </div>
             {!srcChainId && (
@@ -230,10 +230,10 @@ export function TradingSettings({
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">
-                <div className="text-14 font-medium text-typography-secondary">
+                <div className="text-14 font-medium text-textIcon-secondary">
                   <Trans>Gas payment token</Trans>
                 </div>
-                <div className="text-12 text-typography-secondary">
+                <div className="text-12 text-textIcon-secondary">
                   {srcChainId === undefined ? (
                     <Trans>
                       Used for Express and One-Click fees only, paid from the balance the action uses. Classic
@@ -288,13 +288,13 @@ export function TradingSettings({
               onChange={setSettlementChainId}
               options={MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
               item={({ option }) => (
-                <div className="flex items-center gap-8 text-typography-primary">
+                <div className="flex items-center gap-8 text-textIcon-primary">
                   <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-20" />
                   <span>{getChainName(option)}</span>
                 </div>
               )}
               button={
-                <div className="flex items-center gap-4 text-typography-primary">
+                <div className="flex items-center gap-4 text-textIcon-primary">
                   <img
                     src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
                     alt={getChainName(settlementChainId)}

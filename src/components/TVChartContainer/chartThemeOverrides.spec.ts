@@ -125,7 +125,7 @@ describe("getThemeOverridesToApply", () => {
   });
 
   it("treats the candle-direction price line colors as app-set", () => {
-    const savedValues = readSavedChartValues(makeSavedState({ priceLineColor: colors.green[500].dark }), darkKeys);
+    const savedValues = readSavedChartValues(makeSavedState({ priceLineColor: colors.green.strong.dark }), darkKeys);
 
     expect(getThemeOverridesToApply({ theme: "light", savedValues })[PRICE_LINE_COLOR_KEY]).toBe(
       chartOverridesLight[PRICE_LINE_COLOR_KEY]
@@ -152,7 +152,7 @@ describe("isAppChartValue", () => {
     expect(isAppChartValue(UP_COLOR_KEY, undefined)).toBe(false);
     expect(isAppChartValue("paneProperties.unknown", undefined)).toBe(false);
 
-    expect(isAppChartValue(PRICE_LINE_COLOR_KEY, colors.red[500].light)).toBe(true);
+    expect(isAppChartValue(PRICE_LINE_COLOR_KEY, colors.red.strong.light)).toBe(true);
     expect(isAppChartValue(PRICE_LINE_COLOR_KEY, "#ff00ff")).toBe(false);
   });
 });

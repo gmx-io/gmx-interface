@@ -67,7 +67,7 @@ export function HistoryExportModal({
               </Button>
             </div>
           ) : error ? (
-            <AlertInfo type="warning" noMargin textColor="text-yellow-300">
+            <AlertInfo type="warning" noMargin textColor="text-yellow-strong">
               {error}
             </AlertInfo>
           ) : (

@@ -92,7 +92,7 @@ export async function activateUiOneClick(session: FundedSession, wallet: UiWalle
   );
   await expect(page.getByText("Approval signed", { exact: true })).toBeVisible();
   await expect(settings.getByText("Gas payment token", { exact: true })).toBeVisible();
-  await expect(activate).toHaveClass(/border-slate-100/);
+  await expect(activate).toHaveClass(/border-textIcon-secondary/);
   inventory.uiOneClickAuthorized = "true";
   await session.save();
   await closeSettings(page, settings);

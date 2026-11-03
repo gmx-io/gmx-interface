@@ -23,7 +23,7 @@ export function BridgingInfo(props: Props) {
   return bridgingOptions.map((option, i) => {
     if (option.render) {
       return (
-        <p key={i} className={textOpaque ? undefined : "text-typography-secondary"}>
+        <p key={i} className={textOpaque ? undefined : "text-textIcon-secondary"}>
           {option.render()}
         </p>
       );
@@ -36,7 +36,7 @@ export function BridgingInfo(props: Props) {
     const bridgeLink = isMegaEth ? JUMPER_EXCHANGE_URL : option.generateLink(chainId);
     const optionName = isMegaEth ? "Jumper" : option.name;
     return (
-      <p key={i} className={textOpaque ? undefined : "text-typography-secondary"}>
+      <p key={i} className={textOpaque ? undefined : "text-textIcon-secondary"}>
         <Trans>
           Bridge {tokenSymbol} to {chainName} with
         </Trans>{" "}
