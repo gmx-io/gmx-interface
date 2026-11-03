@@ -31,11 +31,14 @@ import {
   LoadingSuccessEvent,
   metrics,
 } from "lib/metrics";
+import { DeferredLoadFailure, deferLoadFailure } from "lib/metrics/deferLoadFailure";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import type { FailedDataSource } from "lib/metrics/types";
 import { calculateDisplayDecimals } from "lib/numbers";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
+import { getUrlHost } from "lib/url";
 import { watchPageHidden } from "lib/watchPageHidden";
 import type { OhlcvCandle, StreamCandlePeriod, Subscription } from "sdk/clients/v2";
 import {
@@ -46,11 +49,13 @@ import {
 } from "sdk/configs/tokens";
 
 // The chart only reads candles; on Solana an adapter maps the chart symbol to its Arbitrum token.
-export type CandlesFetcher = Pick<OracleFetcher, "fetchOracleCandles">;
+export type CandlesFetcher = Pick<OracleFetcher, "fetchOracleCandles"> & Partial<Pick<OracleFetcher, "url">>;
 
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 let metricsIsFirstDrawTime = true;
+const pendingCandlesLoadFailures = new Set<DeferredLoadFailure>();
+const pendingCandlesDisplayFailures = new Set<DeferredLoadFailure>();
 
 const V2_UPDATE_INTERVAL = 1000;
 
@@ -216,6 +221,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const token = getTokenBySymbol(this.chainId, symbolInfo.name);
     const isStable = token.isStable;
+    const failedDataSource = getCandlesFailedDataSource(this.oracleFetcher);
 
     let bars: FromOldToNewArray<Bar> = [];
     try {
@@ -227,7 +233,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       }
     } catch (e) {
       onError(String(e));
-      onCandlesDisplayFailed(isFirstDraw);
+      onCandlesDisplayFailed(isFirstDraw, failedDataSource);
       return;
     }
 
@@ -245,8 +251,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onResult(barsToReturn, { noData: offset + countBack >= 10_000 || barsToReturn.length < countBack });
 
     if (isFirstDraw && barsToReturn.length === 0) {
-      onCandlesDisplayFailed(true);
+      onCandlesDisplayFailed(true, failedDataSource);
       return;
+    }
+
+    if (barsToReturn.length > 0) {
+      resolvePendingFailures(pendingCandlesDisplayFailures);
     }
 
     if (isFirstDraw) {
@@ -506,6 +516,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     let result: FromOldToNewArray<Bar> = [];
 
     const res = resolution as TradingViewResolution;
+    const failedDataSource = getCandlesFailedDataSource(this.oracleFetcher);
 
     result = await Promise.race([
       this.oracleFetcher
@@ -514,13 +525,14 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
     ]).catch((ex) => {
       success = false;
-      onCandlesLoadFailed(ex, isPrefetch);
+      onCandlesLoadFailed({ ex, isPrefetch, failedDataSource });
       // eslint-disable-next-line no-console
       console.warn("Load history candles failed", ex);
       return [];
     });
 
     if (success) {
+      resolvePendingFailures(pendingCandlesLoadFailures);
       freshnessMetrics.reportThrottled(this.chainId, FreshnessMetricId.Candles);
       if (isPrefetch) {
         metrics.pushEvent<LoadingSuccessEvent>({
@@ -559,29 +571,53 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 }
 
-function onCandlesDisplayFailed(isFirstTimeLoad: boolean) {
-  metrics.pushEvent<LoadingFailedEvent>({
+function getCandlesFailedDataSource(candlesFetcher: CandlesFetcher): FailedDataSource {
+  return { id: "oracleCandles", host: getUrlHost(candlesFetcher.url) };
+}
+
+function resolvePendingFailures(pendingFailures: Set<DeferredLoadFailure>) {
+  Array.from(pendingFailures).forEach((pendingFailure) => pendingFailure.onLoaded());
+}
+
+function deferCandlesFailure(pendingFailures: Set<DeferredLoadFailure>, event: LoadingFailedEvent) {
+  const pendingFailure = deferLoadFailure(event, () => pendingFailures.delete(pendingFailure));
+
+  pendingFailures.add(pendingFailure);
+}
+
+function onCandlesDisplayFailed(isFirstTimeLoad: boolean, failedDataSource: FailedDataSource) {
+  deferCandlesFailure(pendingCandlesDisplayFailures, {
     event: "candlesDisplay.failed",
     isError: true,
     time: metrics.getTime("candlesDisplay", true),
     data: {
       requestId: metricsRequestId!,
       isFirstTimeLoad,
+      failedSource: failedDataSource.id,
+      failedHost: failedDataSource.host,
     },
   });
 }
 
-function onCandlesLoadFailed(ex: any, isPrefetch: boolean) {
-  const metricData = parseError(ex);
-
-  metrics.pushEvent<LoadingFailedEvent>({
+function onCandlesLoadFailed({
+  ex,
+  isPrefetch,
+  failedDataSource,
+}: {
+  ex: any;
+  isPrefetch: boolean;
+  failedDataSource: FailedDataSource;
+}) {
+  deferCandlesFailure(pendingCandlesLoadFailures, {
     event: "candlesLoad.failed",
     isError: true,
     time: metrics.getTime("candlesLoad", true),
     data: {
       requestId: metricsRequestId!,
       isFirstTimeLoad: isPrefetch,
-      ...metricData,
+      ...parseError(ex),
+      failedSource: failedDataSource.id,
+      failedHost: failedDataSource.host,
     },
   });
 }

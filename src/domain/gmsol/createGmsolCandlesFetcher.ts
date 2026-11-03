@@ -9,6 +9,9 @@ import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
 // from the Arbitrum keeper for its arbitrumTokenAddress.
 export function createGmsolCandlesFetcher(arbitrumFetcher: OracleFetcher): CandlesFetcher {
   return {
+    get url() {
+      return arbitrumFetcher.url;
+    },
     fetchOracleCandles: async (tokenSymbol, period, limit) => {
       const token = getGmsolTokenBySymbol(tokenSymbol);
 

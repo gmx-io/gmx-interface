@@ -104,6 +104,12 @@ const URL_REGEXP =
 
 const MAX_ERRORS_DEPTH = 1;
 
+const EMPTY_ERROR_MESSAGES = ["", "null", "undefined", "[object Object]"];
+
+export function getErrorText(message: unknown): string | undefined {
+  return typeof message === "string" && !EMPTY_ERROR_MESSAGES.includes(message.trim()) ? message : undefined;
+}
+
 export function extendError(
   error: ErrorLike,
   params: {
@@ -155,8 +161,10 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
 
   try {
     errorMessage = hasMessage(errorInfo)
-      ? errorInfo.message ?? (hasMessage(error) ? error.message : String(error))
-      : String(error);
+      ? errorInfo.message
+      : hasMessage(error) && !error.message
+        ? error.message
+        : String(error);
 
     errorStack = hasStack(error) ? error.stack : undefined;
 
@@ -227,6 +235,10 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     }
   } catch (e) {
     //
+  }
+
+  if (typeof errorMessage === "string" && getErrorText(errorMessage) === undefined) {
+    errorMessage = "Unknown error";
   }
 
   if (errorStack) {

@@ -68,13 +68,22 @@ describe("parseError", () => {
       );
     });
 
-    it("should handle undefined errors", () => {
-      const result = parseError(undefined);
-
-      expect(result).toEqual(
+    it.each([
+      ["undefined", undefined],
+      ["null", null as unknown as undefined],
+      ["empty message", new Error("")],
+      [
+        "wallet error without text wrapped by ethers",
+        Object.assign(new Error('could not coalesce error (error={ "message": "null" }, code=UNKNOWN_ERROR)'), {
+          code: "UNKNOWN_ERROR",
+          error: { message: "null" },
+        }),
+      ],
+    ])("reports an error without text as Unknown error TRD-33: %s", (_, error) => {
+      expect(parseError(error)).toEqual(
         expect.objectContaining({
-          errorMessage: "undefined",
-          errorGroup: "undefined",
+          errorMessage: "Unknown error",
+          errorGroup: "Unknown error",
           errorDepth: 0,
         })
       );

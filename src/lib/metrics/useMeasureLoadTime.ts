@@ -4,13 +4,15 @@ import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { parseError } from "lib/errors";
 import { metrics } from "lib/metrics";
 import {
-  LoadingFailedEvent,
+  FailedDataSource,
   LoadingStartEvent,
   LoadingSuccessEvent,
   LoadingTimeoutEvent,
   MeasureMetricType,
 } from "lib/metrics/types";
 import { getRequestId } from "lib/metrics/utils";
+
+import { DeferredLoadFailure, deferLoadFailure } from "./deferLoadFailure";
 
 const measurementByMetricType: {
   [key: string]: {
@@ -19,6 +21,7 @@ const measurementByMetricType: {
     timeoutId?: number;
     location: string;
     isFirstTimeLoading: boolean;
+    pendingFailure?: DeferredLoadFailure;
   };
 } = {};
 const fromLocalStorage = false;
@@ -26,14 +29,18 @@ const fromLocalStorage = false;
 export function useMeasureLoadTime({
   metricType,
   isLoaded,
+  isPageLoaded = isLoaded,
   error,
+  failedDataSource,
   timeout = DATA_LOAD_TIMEOUT_FOR_METRICS,
   skipAfterTimeout,
   skip,
   data,
 }: {
   isLoaded: boolean;
+  isPageLoaded?: boolean;
   error: Error | undefined;
+  failedDataSource?: FailedDataSource;
   metricType: MeasureMetricType;
   timeout?: number;
   skipAfterTimeout?: boolean;
@@ -45,6 +52,9 @@ export function useMeasureLoadTime({
 
   const dataRef = useRef(data);
   dataRef.current = data;
+
+  const failedDataSourceRef = useRef(failedDataSource);
+  failedDataSourceRef.current = failedDataSource;
 
   useEffect(
     function onLocationChangeEff() {
@@ -59,6 +69,7 @@ export function useMeasureLoadTime({
       return () => {
         if (measure.requestId && window.location.pathname !== measure.location) {
           clearTimeout(measure.timeoutId);
+          measure.pendingFailure?.finish("pageLeft");
           measure.done = true;
           // reset timer
           metrics.getTime(metricType, true, fromLocalStorage);
@@ -110,19 +121,26 @@ export function useMeasureLoadTime({
       if (!skip && error && !measure.done && measure.requestId) {
         clearTimeout(measure.timeoutId);
 
-        const errorData = parseError(error);
+        const source = failedDataSourceRef.current;
 
-        metrics.pushEvent<LoadingFailedEvent>({
-          event: `${metricType}.failed`,
-          isError: true,
-          time: metrics.getTime(metricType, true, fromLocalStorage),
-          data: {
-            ...errorData,
-            requestId: measure.requestId,
-            ...dataRef.current,
-          },
-        });
         measure.done = true;
+        measure.pendingFailure = deferLoadFailure(
+          {
+            event: `${metricType}.failed`,
+            isError: true,
+            time: metrics.getTime(metricType, true, fromLocalStorage),
+            data: {
+              ...parseError(error),
+              requestId: measure.requestId,
+              ...dataRef.current,
+              failedSource: source?.id,
+              failedHost: source?.host,
+            },
+          },
+          () => {
+            measure.pendingFailure = undefined;
+          }
+        );
       }
     },
     [error, measure, metricType, skip]
@@ -130,7 +148,19 @@ export function useMeasureLoadTime({
 
   useEffect(
     function successEff() {
-      if (!skip && isLoaded && !measure.done && measure.requestId) {
+      if (measure.pendingFailure) {
+        if (isPageLoaded) {
+          measure.pendingFailure.onLoaded();
+        }
+
+        return;
+      }
+
+      if (!isLoaded) {
+        return;
+      }
+
+      if (!skip && !measure.done && measure.requestId) {
         clearTimeout(measure.timeoutId);
 
         metrics.pushEvent<LoadingSuccessEvent>({
@@ -145,6 +175,6 @@ export function useMeasureLoadTime({
         measure.done = true;
       }
     },
-    [isLoaded, measure.done, measure.timeoutId, measure.requestId, measure, metricType, skip]
+    [isLoaded, isPageLoaded, measure.done, measure.timeoutId, measure.requestId, measure, metricType, skip]
   );
 }

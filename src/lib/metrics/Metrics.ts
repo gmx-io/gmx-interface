@@ -45,6 +45,7 @@ const REPEAT_FOLDED_EVENTS = ["error", "multicall.timeout", "multicall.error"];
 type CachedMetricData = { _metricDataCreated: number; metricId: string };
 type CachedMetricsData = { [key: string]: CachedMetricData };
 type Timers = { [key: string]: number };
+type DeferredEvent = { item: BatchReportItem; isSentInBatch: boolean };
 
 function getRepeatKey({ event, isError, time, data }: MetricEventParams) {
   try {
@@ -61,6 +62,9 @@ class Metrics {
   debug = false;
   globalMetricData: GlobalMetricData = {} as GlobalMetricData;
   queue: BatchReportItem[] = [];
+  deferredEvents = new Map<BatchReportItem, DeferredEvent>();
+  releasedDeferredItems: BatchReportItem[] = [];
+  isSendFailing = false;
   wallets?: WalletNames;
   eventIndex = 0;
   isProcessing = false;
@@ -109,14 +113,23 @@ class Metrics {
     this.queue.push(item);
   };
 
-  sendBatchItems = (items: BatchReportItem[]) => {
+  sendBatchItems = (items: BatchReportItem[], opts?: { keepalive?: boolean }) => {
     _debugMetrics?.logBatchItem(items);
 
     if (!this.fetcher) {
       return Promise.reject(new Error("Metrics: fetcher is not initialized"));
     }
 
-    return this.fetcher.fetchPostBatchReport({ items });
+    return this.fetcher.fetchPostBatchReport({ items }, opts).then(
+      (res) => {
+        this.isSendFailing = !res.ok && res.status !== 400;
+        return res;
+      },
+      (error) => {
+        this.isSendFailing = true;
+        throw error;
+      }
+    );
   };
 
   // Require Generic type to be specified
@@ -149,6 +162,50 @@ class Metrics {
       uiTimestamp: Date.now(),
     },
   });
+
+  deferEvent = (params: MetricEventParams): DeferredEvent => {
+    const payload = this.createEventPayload(params);
+    const deferredEvent: DeferredEvent = { item: { type: "event", payload }, isSentInBatch: false };
+
+    _debugMetrics?.logEvent(payload);
+
+    this.deferredEvents.set(deferredEvent.item, deferredEvent);
+    this.queue.push(deferredEvent.item);
+
+    return deferredEvent;
+  };
+
+  releaseDeferredEvent = (deferredEvent: DeferredEvent, customFields: object) => {
+    const { item } = deferredEvent;
+
+    if (item.type === "event") {
+      item.payload.customFields = { ...item.payload.customFields, ...customFields };
+    }
+
+    this.deferredEvents.delete(item);
+
+    if (deferredEvent.isSentInBatch) {
+      this.releasedDeferredItems.push(item);
+    }
+  };
+
+  sendReleasedDeferredEvents = (opts?: { keepalive?: boolean }) => {
+    const items = this.releasedDeferredItems.splice(0, MAX_BATCH_LENGTH);
+
+    if (items.length === 0) {
+      return;
+    }
+
+    this.sendBatchItems(items, opts)
+      .then((res) => {
+        if (!res.ok && res.status !== 400) {
+          this.releasedDeferredItems.push(...items);
+        }
+      })
+      .catch(() => {
+        this.releasedDeferredItems.push(...items);
+      });
+  };
 
   queueEventPayload = (payload: EventPayload) => {
     _debugMetrics?.logEvent(payload);
@@ -231,7 +288,13 @@ class Metrics {
     }
 
     if (this.queue.length === 0) {
+      this.sendReleasedDeferredEvents();
       _debugMetrics?.logQueueState("Empty");
+
+      if (this.deferredEvents.size > 0) {
+        return sleep(BATCH_INTERVAL_MS).then(() => this._processQueue());
+      }
+
       return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
     }
 
@@ -250,23 +313,34 @@ class Metrics {
     let items = this.queue.slice(0, MAX_BATCH_LENGTH);
 
     if (!this.isGlobalPropsFilled && this.globalMetricData.isInited && this.wallets) {
-      items = items.map(this.fillMissedGlobalProps);
+      items = items.map(this.fillBatchItem);
       this.isGlobalPropsFilled = true;
     }
 
     this.queue = this.queue.slice(MAX_BATCH_LENGTH);
 
-    _debugMetrics?.logSendBatchItems(items);
+    const deferredEvents = items.flatMap((item) => this.deferredEvents.get(item) ?? []);
+    const readyItems = items.filter((item) => !this.deferredEvents.has(item));
+    const releasedItems = this.releasedDeferredItems.splice(0, MAX_BATCH_LENGTH - readyItems.length);
+    const itemsToSend = [...releasedItems, ...readyItems];
 
-    return this.sendBatchItems(items)
+    deferredEvents.forEach((deferredEvent) => {
+      deferredEvent.isSentInBatch = true;
+    });
+
+    this.sendReleasedDeferredEvents();
+
+    _debugMetrics?.logSendBatchItems(itemsToSend);
+
+    return (itemsToSend.length > 0 ? this.sendBatchItems(itemsToSend) : Promise.resolve(undefined))
       .then(async (res) => {
-        if (res.status === 400) {
+        if (res?.status === 400) {
           const error = new Error(await res.text());
           error.name = BAD_REQUEST_ERROR;
           throw error;
         }
 
-        if (!res.ok) {
+        if (res && !res.ok) {
           throw new Error(res.statusText);
         }
 
@@ -275,10 +349,19 @@ class Metrics {
       .catch((error) => {
         _debugMetrics?.warn(`Error sending batch metrics`, error);
 
+        const releasedBatchItems = deferredEvents
+          .filter((deferredEvent) => !this.deferredEvents.has(deferredEvent.item))
+          .map((deferredEvent) => deferredEvent.item);
+
+        deferredEvents.forEach((deferredEvent) => {
+          deferredEvent.isSentInBatch = false;
+        });
+
         if (error.name === BAD_REQUEST_ERROR) {
           this.pushError(error, "Metrics");
         } else {
-          this.queue.push(...items);
+          this.queue.push(...items.filter((item) => !releasedBatchItems.includes(item)));
+          this.releasedDeferredItems.push(...releasedItems);
         }
 
         return sleep(RETRY_DELAY).then(() => this._processQueue(retryNumber + 1));
@@ -382,6 +465,19 @@ class Metrics {
     setStorageItem(CACHED_METRICS_DATA_KEY, this.serializeCachedMetricsData(metricsData));
 
     return cached;
+  };
+
+  fillBatchItem = (item: BatchReportItem) => {
+    const filledItem = this.fillMissedGlobalProps(item);
+    const deferredEvent = this.deferredEvents.get(item);
+
+    if (deferredEvent) {
+      this.deferredEvents.delete(item);
+      this.deferredEvents.set(filledItem, deferredEvent);
+      deferredEvent.item = filledItem;
+    }
+
+    return filledItem;
   };
 
   fillMissedGlobalProps = (item: BatchReportItem) => {

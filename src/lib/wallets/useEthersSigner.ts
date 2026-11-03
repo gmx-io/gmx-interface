@@ -3,9 +3,30 @@ import { useMemo } from "react";
 import type { Account, Chain, Client, Transport } from "viem";
 import { Config, useAccount, useConnectorClient } from "wagmi";
 
+import { getErrorText } from "lib/errors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { WalletSigner } from ".";
+
+type WalletRequestError = Error & { code?: unknown; data?: unknown };
+
+function normalizeWalletRequestError(error: unknown): unknown {
+  if (typeof error !== "object" || error === null) {
+    return new Error(getErrorText(error) ?? "Unknown error");
+  }
+
+  const { message, code, data } = error as { message?: unknown; code?: unknown; data?: { message?: unknown } };
+
+  if (getErrorText(message) !== undefined || getErrorText(data?.message) !== undefined) {
+    return error;
+  }
+
+  const normalized: WalletRequestError = new Error("Unknown error");
+  normalized.code = code;
+  normalized.data = data;
+
+  return normalized;
+}
 
 export function clientToSigner(
   client: Client<Transport, Chain, Account>,
@@ -21,11 +42,16 @@ export function clientToSigner(
 
   const provider = new ethers.BrowserProvider(
     {
-      request: (args) => {
+      request: async (args) => {
         if (args.method === "eth_sendTransaction" || args.method === "eth_signTypedData_v4") {
           validateBeforeRequest?.();
         }
-        return transport.request(args);
+
+        try {
+          return await transport.request(args);
+        } catch (error) {
+          throw normalizeWalletRequestError(error);
+        }
       },
     },
     network

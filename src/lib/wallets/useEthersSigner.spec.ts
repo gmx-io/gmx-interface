@@ -2,6 +2,7 @@ import { createWalletClient, custom } from "viem";
 import { describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { parseError } from "lib/errors";
 import { getViemChain } from "sdk/configs/chains";
 
 import { clientToSigner } from "./useEthersSigner";
@@ -41,6 +42,39 @@ describe("clientToSigner", () => {
     } finally {
       signer.provider.destroy();
       otherSigner.provider.destroy();
+    }
+  });
+
+  it.each([
+    ["null", null, { errorMessage: "Unknown error" }],
+    ["undefined", undefined, { errorMessage: "Unknown error" }],
+    ["an empty object", {}, { errorMessage: "Unknown error" }],
+    ["a code without text", { code: -32603 }, { errorMessage: "Unknown error" }],
+    ["a user rejection without text", { code: 4001 }, { isUserRejectedError: true }],
+    [
+      "text only in data",
+      { code: -32603, data: { message: "wallet text" } },
+      { errorMessage: expect.stringContaining("wallet text") },
+    ],
+  ])("TRD-33 parses the error when the wallet rejects with %s", async (_, rejection, expected) => {
+    const account = "0x1111111111111111111111111111111111111111";
+    const request = vi.fn(async ({ method }: { method: string }) => {
+      if (method === "eth_chainId") return "0xa4b1";
+      throw rejection;
+    });
+    const client = createWalletClient({
+      account,
+      chain: getViemChain(ARBITRUM),
+      transport: custom({ request }, { retryCount: 0 }),
+    });
+    const signer = clientToSigner(client, account);
+
+    try {
+      const error = await signer.provider.send("eth_sendTransaction", [{ from: account, to: account }]).catch((e) => e);
+
+      expect(parseError(error)).toMatchObject(expected);
+    } finally {
+      signer.provider.destroy();
     }
   });
 });

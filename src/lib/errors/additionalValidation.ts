@@ -19,14 +19,16 @@ const UNRECOGNIZED_ERROR_PATTERNS: ErrorPattern[] = [
 function getAdditionalValidationType(error: Error) {
   const errorData = parseError(error);
 
-  const shouldTryCallStatic = UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
-    const isMessageMatch =
-      pattern.msg &&
-      errorData?.errorMessage &&
-      errorData.errorMessage.toLowerCase().includes(pattern.msg.toLowerCase());
+  const shouldTryCallStatic =
+    errorData?.errorMessage === "Unknown error" ||
+    UNRECOGNIZED_ERROR_PATTERNS.some((pattern) => {
+      const isMessageMatch =
+        pattern.msg &&
+        errorData?.errorMessage &&
+        errorData.errorMessage.toLowerCase().includes(pattern.msg.toLowerCase());
 
-    return isMessageMatch;
-  });
+      return isMessageMatch;
+    });
 
   if (shouldTryCallStatic) {
     return "tryCallStatic";
