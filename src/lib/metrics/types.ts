@@ -202,11 +202,6 @@ export type FreshnessTiming = {
   };
 };
 
-export type PriceAgeTiming = {
-  event: "prices.age";
-  data: { chainId: number; source: "ws" };
-};
-
 export type WsPriceAgeAtSendTiming = {
   event: "wsPrices.ageAtSend";
   data: { chainId: number };

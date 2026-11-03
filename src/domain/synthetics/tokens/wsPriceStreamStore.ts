@@ -1,6 +1,5 @@
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type {
-  PriceAgeTiming,
   WsPriceAgeAtSendTiming,
   WsPriceFirstFrameTiming,
   WsPriceInterArrivalTiming,
@@ -76,11 +75,6 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       data: { chainId },
     });
     if (meta.originTs !== undefined) {
-      emitMetricTiming<PriceAgeTiming>({
-        event: "prices.age",
-        time: meta.receivedAt - meta.originTs,
-        data: { chainId, source: "ws" },
-      });
       emitMetricTiming<WsPriceAgeAtSendTiming>({
         event: "wsPrices.ageAtSend",
         time: meta.serverTs - meta.originTs,
