@@ -4,11 +4,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 
+import { isSolanaNetwork } from "config/chains";
 import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
 import { ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
-import { useIsInitialLoadSettled } from "lib/useIsInitialLoadSettled";
+import { useChainId } from "lib/chains";
+import { useSettled } from "lib/useSettled";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
@@ -50,11 +52,13 @@ type TopRightMessage = {
   node: ReactNode;
 };
 
-export function WhatsNewToastContainer() {
-  const { pathname } = useLocation();
-  const isAnnouncementsPage = pathname === "/announcements";
-  const [isScrolled, setIsScrolled] = useState(false);
-
+function EvmAnnouncementToasts({
+  isAnnouncementsPage,
+  appUpdate,
+}: {
+  isAnnouncementsPage: boolean;
+  appUpdate: TopRightMessage | undefined;
+}) {
   const isWalletInitializing = useIsWalletInitializing();
   const { isLoading: isUiFlagsLoading } = useUiFlagsRequest();
   const uiFlagEvents = useUiFlagEvents();
@@ -63,23 +67,18 @@ export function WhatsNewToastContainer() {
   const closingPoolsLp = useClosingPoolsLpNotice();
   const usdgPools = useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
   const balancerProgram = useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
-  const appUpdate = useAppUpdateBanner();
   const whatsNew = useWhatsNewAnnouncements();
 
-  const { applyUpdate } = appUpdate;
-  const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
-
-  const isInitialLoadSettled = useIsInitialLoadSettled(
+  const isAnySourceLoading =
     isWalletInitializing ||
-      isUiFlagsLoading ||
-      delisting.isLoading ||
-      closingPools.isLoading ||
-      closingPoolsLp.isLoading ||
-      whatsNew.isLoading,
-    INITIAL_LOAD_MAX_WAIT_MS
-  );
+    delisting.isLoading ||
+    closingPools.isLoading ||
+    closingPoolsLp.isLoading ||
+    whatsNew.isLoading;
+  const isInitialLoadSettled = useSettled(!isAnySourceLoading, INITIAL_LOAD_MAX_WAIT_MS);
 
   const outageWarnings: TopRightMessage[] = uiFlagEvents.filter(isOutageWarning).map(toUiFlagEventMessage);
+  const isOutageWarningReady = !isUiFlagsLoading && outageWarnings.length > 0;
 
   const fundsNotices: TopRightMessage[] = [
     ...delisting.announcements.map((item) => ({
@@ -110,25 +109,7 @@ export function WhatsNewToastContainer() {
   ];
 
   const appHints: TopRightMessage[] = [
-    ...(appUpdate.isVisible
-      ? [
-          {
-            key: "app-update",
-            node: (
-              <AnnouncementBanner
-                className="pointer-events-auto"
-                variant="info"
-                headerLabel={<Trans>Update available</Trans>}
-                headerIcon="info"
-                onClose={appUpdate.dismiss}
-                footerLink={appUpdateFooterLink}
-              >
-                <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
-              </AnnouncementBanner>
-            ),
-          },
-        ]
-      : []),
+    ...(appUpdate ? [appUpdate] : []),
     ...uiFlagEvents.filter((event) => !isOutageWarning(event)).map(toUiFlagEventMessage),
   ];
 
@@ -137,8 +118,25 @@ export function WhatsNewToastContainer() {
       ? [{ key: "whats-new", node: <WhatsNewToast cards={whatsNew.cards} onDismiss={whatsNew.dismiss} /> }]
       : [];
 
-  const message = isInitialLoadSettled
-    ? [...outageWarnings, ...fundsNotices, ...targetedMessages, ...appHints, ...whatsNewMessages][0]
+  const message =
+    isInitialLoadSettled || isOutageWarningReady
+      ? [...outageWarnings, ...fundsNotices, ...targetedMessages, ...appHints, ...whatsNewMessages][0]
+      : undefined;
+
+  return <TopRightMessageSlot message={message} />;
+}
+
+export function WhatsNewToastContainer() {
+  const { networkId } = useChainId();
+  const { pathname } = useLocation();
+  const isAnnouncementsPage = pathname === "/announcements";
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
+  const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
+    ? {
+        key: "app-update",
+        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
+      }
     : undefined;
 
   useEffect(() => {
@@ -170,15 +168,54 @@ export function WhatsNewToastContainer() {
       data-qa="whats-new-toast-container"
     >
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
-        <AnimatePresence initial={false} mode="wait">
-          {message && (
-            <motion.div key={message.key} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
-              {message.node}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isSolanaNetwork(networkId) ? (
+          <TopRightMessageSlot message={appUpdate} />
+        ) : (
+          <EvmAnnouncementToasts isAnnouncementsPage={isAnnouncementsPage} appUpdate={appUpdate} />
+        )}
       </div>
     </div>
+  );
+}
+
+function AppUpdateCard({
+  onShow,
+  onClose,
+  onReload,
+}: {
+  onShow: () => void;
+  onClose: () => void;
+  onReload: () => void;
+}) {
+  const footerLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: onReload }), [onReload]);
+
+  useEffect(() => {
+    onShow();
+  }, [onShow]);
+
+  return (
+    <AnnouncementBanner
+      className="pointer-events-auto"
+      variant="info"
+      headerLabel={<Trans>Update available</Trans>}
+      headerIcon="info"
+      onClose={onClose}
+      footerLink={footerLink}
+    >
+      <Trans>A new version of GMX is ready. Reload when you are done to switch to it.</Trans>
+    </AnnouncementBanner>
+  );
+}
+
+function TopRightMessageSlot({ message }: { message: TopRightMessage | undefined }) {
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      {message && (
+        <motion.div key={message.key} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+          {message.node}
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 

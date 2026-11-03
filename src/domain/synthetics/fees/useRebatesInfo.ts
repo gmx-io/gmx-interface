@@ -1,12 +1,12 @@
 import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
-import { getAddress } from "viem";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 import { expandDecimals, PRECISION } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { ClaimableCollateral } from "sdk/codegen/subsquid";
+import { normalizeAddress } from "sdk/utils/address";
 import { queryPaginated } from "sdk/utils/indexers";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -121,8 +121,8 @@ export function useRebatesInfoRequest(
         value,
         valueByFactor,
         timeKey: rawRebateInfo.timeKey.toString(),
-        marketAddress: getAddress(rawRebateInfo.marketAddress),
-        tokenAddress: getAddress(rawRebateInfo.tokenAddress),
+        marketAddress: normalizeAddress(rawRebateInfo.marketAddress),
+        tokenAddress: normalizeAddress(rawRebateInfo.tokenAddress),
         reductionFactor,
         id: rawRebateInfo.id,
       };

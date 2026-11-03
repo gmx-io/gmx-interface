@@ -1,9 +1,10 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { isSolanaNetwork } from "config/chains";
 import { QA_STARTED_AT, isQaMockOn } from "config/qaMocks";
 import { useChainId } from "lib/chains";
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { getOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -29,16 +30,16 @@ function withQaFlags(flags: UiFlags): UiFlags {
 }
 
 export function useUiFlagsRequest() {
-  const { chainId } = useChainId();
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const { chainId, networkId } = useChainId();
 
   const fallbackData = useMemo(() => readPersistedUiFlags(chainId), [chainId]);
 
+  // These are the EVM flags, Solana reads its own. The fetcher is created lazily, as creating it starts endpoint probes
   const { data: uiFlags, isLoading } = useSWR<UiFlags>(
-    ["uiFlags", chainId],
+    isSolanaNetwork(networkId) ? null : ["uiFlags", chainId],
     async () => {
       if (isQaMockOn("slow")) await sleep(4_000);
-      const result = await confirmRelayControlFlags(chainId, await oracleKeeperFetcher.fetchUiFlags());
+      const result = await confirmRelayControlFlags(chainId, await getOracleKeeperFetcher(chainId).fetchUiFlags());
       persistApiFlags(chainId, result);
       return withQaFlags(result);
     },

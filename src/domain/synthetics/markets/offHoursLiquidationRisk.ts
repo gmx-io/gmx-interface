@@ -1,4 +1,5 @@
 import { ARBITRUM } from "sdk/configs/chainIds";
+import { getAddressKey } from "sdk/utils/address";
 import type { MarketInfo } from "sdk/utils/markets/types";
 
 export const OFF_HOURS_DOCS_URL = "https://docs.gmx.io/docs/trading/tradfi-markets#off-hours-behavior";
@@ -75,13 +76,13 @@ const OFF_HOURS_BORROWING_FACTOR_DENOMINATOR = 45n;
 
 export function isOffHoursMarket(chainId: number, marketTokenAddress: string | undefined): boolean {
   if (chainId !== ARBITRUM || !marketTokenAddress) return false;
-  return marketTokenAddress.toLowerCase() in OFF_HOURS_MARKET_OVERRIDES;
+  return getAddressKey(marketTokenAddress) in OFF_HOURS_MARKET_OVERRIDES;
 }
 
 export function getOffHoursMarketInfo(chainId: number, marketInfo: MarketInfo | undefined): MarketInfo | undefined {
   if (!marketInfo || !isOffHoursMarket(chainId, marketInfo.marketTokenAddress)) return undefined;
 
-  const override = OFF_HOURS_MARKET_OVERRIDES[marketInfo.marketTokenAddress.toLowerCase()];
+  const override = OFF_HOURS_MARKET_OVERRIDES[getAddressKey(marketInfo.marketTokenAddress)];
 
   if (marketInfo.minCollateralFactor >= override.minCollateralFactor) return undefined;
 
