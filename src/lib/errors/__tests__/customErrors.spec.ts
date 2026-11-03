@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import { parseError } from "lib/errors";
-import { getInsufficientFeeError } from "lib/errors/customErrors";
+import { getInsufficientFeeError, getIsOutdatedSubaccountApprovalError } from "lib/errors/customErrors";
 import { abis } from "sdk/abis";
 import { StatusCode } from "sdk/utils/express";
 
@@ -14,8 +14,12 @@ function encodeCustomError(errorName: string, args: unknown[]) {
   return encodeErrorResult({ abi: abis.CustomErrors as Abi, errorName, args });
 }
 
+function getRevertError(errorName: string, args: unknown[]) {
+  return new Error(`data="${encodeCustomError(errorName, args)}"`);
+}
+
 function parseRevert(errorName: string, args: unknown[]) {
-  return parseError(new Error(`data="${encodeCustomError(errorName, args)}"`));
+  return parseError(getRevertError(errorName, args));
 }
 
 describe("getInsufficientFeeError", () => {
@@ -58,5 +62,15 @@ describe("getInsufficientFeeError", () => {
       isErrorMatched: false,
     });
     expect(getInsufficientFeeError(undefined)).toEqual({ isErrorMatched: false });
+  });
+});
+
+describe("getIsOutdatedSubaccountApprovalError", () => {
+  it("matches an old approval nonce and an approval signed before a revocation", () => {
+    expect(getIsOutdatedSubaccountApprovalError(getRevertError("InvalidSubaccountApprovalNonce", [2n, 1n]))).toBe(true);
+    expect(
+      getIsOutdatedSubaccountApprovalError(getRevertError("InvalidSubaccountApprovalRevocationCounter", [2n, 1n]))
+    ).toBe(true);
+    expect(getIsOutdatedSubaccountApprovalError(getRevertError("InvalidSubaccountApprovalSubaccount", []))).toBe(false);
   });
 });

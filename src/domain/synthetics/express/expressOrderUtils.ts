@@ -38,6 +38,7 @@ import {
   getBridgeOutTypedData,
   getReferralCodeTypedData,
 } from "sdk/utils/express";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 import {
   BatchOrderTxnParams,
   getBatchExternalCalls,
@@ -434,7 +435,7 @@ export async function buildAndSignBridgeOutTxn({
       },
       account,
       BigInt(srcChainId),
-      params,
+      { ...params, bridgeFee: params.bridgeFee ?? getEmptyBridgeFeeParams() },
     ],
   });
 

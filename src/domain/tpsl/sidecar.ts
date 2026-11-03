@@ -319,7 +319,7 @@ export function buildTpSlBatchPayloads(p: {
       const order = entry.existingFullCloseOrder;
       const nextSwapType = entry.amounts.decreaseSwapType ?? DecreasePositionSwapType.NoSwap;
 
-      // updateOrder can't change decreasePositionSwapType, so cancel + recreate when it differs.
+      // updateOrder before 2.2.1 can't change decreasePositionSwapType, so cancel + recreate when it differs.
       if (nextSwapType === order.decreasePositionSwapType) {
         updateOrderParams.push(
           buildUpdateOrderPayload({

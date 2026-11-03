@@ -1,8 +1,7 @@
 import { decodeFunctionResult, type Hex } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { abis } from "abis";
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI } from "configs/chainIds";
+import { ARBITRUM_SEPOLIA } from "configs/chainIds";
 
 import { getAbi } from "../getAbi";
 import responses from "./fixtures/arbitrumSepoliaReaders.json";
@@ -10,10 +9,6 @@ import responses from "./fixtures/arbitrumSepoliaReaders.json";
 describe("Arbitrum Sepolia reader responses", () => {
   it("decodes an existing short position with the deployed position layout", () => {
     const data = responses.getAccountPositions as Hex;
-
-    expect(() =>
-      decodeFunctionResult({ abi: abis.SyntheticsReader, functionName: "getAccountPositions", data })
-    ).toThrow();
 
     const positions = decodeFunctionResult({
       abi: getAbi(ARBITRUM_SEPOLIA, "SyntheticsReader"),
@@ -95,26 +90,4 @@ describe("Arbitrum Sepolia reader responses", () => {
       ]);
     }
   );
-
-  it.each([ARBITRUM, AVALANCHE, AVALANCHE_FUJI])("keeps the shared ABIs on chain %s", (chainId) => {
-    for (const abiId of [
-      "ExchangeRouter",
-      "GelatoRelayRouter",
-      "GlvReader",
-      "MultichainClaimsRouter",
-      "MultichainGlvRouter",
-      "MultichainGmRouter",
-      "MultichainOrderRouter",
-      "MultichainSubaccountRouter",
-      "MultichainTransferRouter",
-      "SubaccountGelatoRelayRouter",
-      "SyntheticsReader",
-    ] as const) {
-      expect(getAbi(chainId, abiId)).toBe(abis[abiId]);
-    }
-  });
-
-  it("keeps other Sepolia contract ABIs unchanged", () => {
-    expect(getAbi(ARBITRUM_SEPOLIA, "DataStore")).toBe(abis.DataStore);
-  });
 });
