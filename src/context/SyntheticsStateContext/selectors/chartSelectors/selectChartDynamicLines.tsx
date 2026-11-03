@@ -5,6 +5,7 @@ import {
   selectPositionsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderType,
@@ -137,6 +138,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
         indexTokenVisualMultiplier: tokenVisualMultiplier ?? 1,
         isPartial,
         isMarginDeposit,
+        isEditable: !q(makeSelectIsSizeOrderInClosedPool(positionOrder.key)),
       };
     });
 

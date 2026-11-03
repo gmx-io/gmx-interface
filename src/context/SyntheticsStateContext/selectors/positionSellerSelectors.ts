@@ -1,6 +1,7 @@
 import { QueryFunction } from "@taskworld.com/rereselect";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { getIsUsdgToken, getUsdgConversionTokenAddress } from "config/usdgPools";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import {
@@ -351,7 +352,9 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
   }
 
   const isChanged = q(selectPositionSellerReceiveTokenAddressChanged);
-  const defaultReceiveTokenAddress = q(selectPositionSellerDefaultReceiveToken);
+  // USDG positions start on USDG every time: most traders should stay in USDG
+  const isUsdgCollateral = getIsUsdgToken(q(selectChainId), q(selectPositionSellerPosition)?.collateralTokenAddress);
+  const defaultReceiveTokenAddress = isUsdgCollateral ? undefined : q(selectPositionSellerDefaultReceiveToken);
   const receiveTokenAddress = isChanged
     ? q(selectPositionSellerReceiveTokenAddress)
     : defaultReceiveTokenAddress ?? q(selectPositionSellerReceiveTokenAddress);
@@ -594,6 +597,19 @@ export const selectPositionSellerSwapAmounts = createSelector((q) => {
 
 export const selectPositionSellerIsNotEnoughReceiveTokenLiquidity = createSelector((q) => {
   if (!q(selectPositionSellerShouldSwap)) return false;
+
+  const usdgConversionTokenAddress = getUsdgConversionTokenAddress(
+    q(selectChainId),
+    q(selectPositionSellerPosition)?.collateralTokenAddress
+  );
+
+  // a USDC payout of a USDG position has its own too-large check, which offers USDG instead
+  if (
+    usdgConversionTokenAddress !== undefined &&
+    q(selectPositionSellerReceiveToken)?.address === usdgConversionTokenAddress
+  ) {
+    return false;
+  }
 
   const receiveUsd = q(selectPositionSellerSwapAmounts)?.usdOut || q(selectPositionSellerDecreaseAmounts)?.receiveUsd;
 

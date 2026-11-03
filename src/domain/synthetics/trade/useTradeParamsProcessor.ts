@@ -6,6 +6,7 @@ import { useLatest } from "react-use";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxCollateralTokenAddress,
+  selectTradeboxFormState,
   selectTradeboxFromTokenAddress,
   selectTradeboxMarketAddress,
   selectTradeboxSetTradeConfig,
@@ -15,6 +16,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { limitDecimals } from "lib/numbers";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
 import { convertTokenAddress, getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
@@ -31,7 +33,11 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral"];
+const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral", "amount"];
+
+const AMOUNT_PARAM_REGEX = /^\d+(\.\d+)?$/;
+
+type PendingSwapAmount = { amount: string; fromTokenAddress: string };
 
 // Returns the search without the consumed trade params, or `undefined` when nothing would change:
 // replacing the url with an identical search re-runs the effect and loops into WebKit's replaceState rate limit.
@@ -88,8 +94,13 @@ export function useTradeParamsProcessor() {
   const { chainId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();
-  const searchParams = useSearchParams<TradeSearchParams>();
+  const searchParams = useSearchParams<TradeSearchParams & { amount?: string }>();
   const { indexTokens, swapTokens } = availableTokensOptions;
+  const { setFromTokenInputValue, setFocusedInput } = useSelector(selectTradeboxFormState);
+  const currentTradeType = useSelector(selectTradeboxTradeType);
+  const currentFromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const pendingSwapAmountRef = useRef<PendingSwapAmount>();
+  const armedAmountSearchRef = useRef<string>();
 
   const latestTradeOptions = useLatest({
     fromTokenAddress: useSelector(selectTradeboxFromTokenAddress),
@@ -131,11 +142,16 @@ export function useTradeParamsProcessor() {
     };
 
     const { tradeType } = params;
-    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken } = searchParams;
+    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken, amount } = searchParams;
 
     const toToken = to ?? market;
 
+    if (!amount) {
+      armedAmountSearchRef.current = undefined;
+    }
+
     const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+    let fromTokenDecimals: number | undefined;
 
     const tradeOptions: TradeOptions = {};
 
@@ -160,6 +176,7 @@ export function useTradeParamsProcessor() {
       });
       if (fromTokenInfo) {
         tradeOptions.fromTokenAddress = fromTokenInfo?.address;
+        fromTokenDecimals = fromTokenInfo.decimals;
       }
     }
 
@@ -198,6 +215,21 @@ export function useTradeParamsProcessor() {
       scheduleSearchCleanup();
     }
 
+    // the effect reruns on data refreshes while the link is still in the url: arm each link once
+    if (
+      amount &&
+      AMOUNT_PARAM_REGEX.test(amount) &&
+      linkTradeType === TradeType.Swap &&
+      tradeOptions.fromTokenAddress !== undefined &&
+      armedAmountSearchRef.current !== history.location.search
+    ) {
+      armedAmountSearchRef.current = history.location.search;
+      pendingSwapAmountRef.current = {
+        amount: limitDecimals(amount, fromTokenDecimals),
+        fromTokenAddress: tradeOptions.fromTokenAddress,
+      };
+    }
+
     if (!isMatch(latestTradeOptions.current, tradeOptions)) {
       setTradeConfig(tradeOptions);
     }
@@ -217,4 +249,21 @@ export function useTradeParamsProcessor() {
     availableTokensOptions,
     latestTradeOptions,
   ]);
+
+  useEffect(
+    // the tradebox clears the pay input when it switches to Swap, so the amount waits for the switch
+    function applyPendingSwapAmount() {
+      const pending = pendingSwapAmountRef.current;
+
+      if (!pending || currentTradeType !== TradeType.Swap || currentFromTokenAddress !== pending.fromTokenAddress) {
+        return;
+      }
+
+      pendingSwapAmountRef.current = undefined;
+      setFocusedInput("from");
+      // the switch clears the input in this same commit, and the setter would skip a value equal to the stale one
+      setFromTokenInputValue(() => pending.amount);
+    },
+    [currentFromTokenAddress, currentTradeType, searchParams, setFocusedInput, setFromTokenInputValue]
+  );
 }

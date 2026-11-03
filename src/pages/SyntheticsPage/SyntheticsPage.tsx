@@ -3,6 +3,7 @@ import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Address } from "viem";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -47,6 +48,10 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
+import {
+  ClosingPoolOrdersView,
+  useViewClosingPoolOrdersByQueryParams,
+} from "domain/synthetics/orders/useViewClosingPoolOrdersByQueryParams";
 import { getPositionKey, type PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -223,6 +228,21 @@ export function SyntheticsPage(p: Props) {
   }, []);
 
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
+
+  const handleViewClosingPoolOrders = useCallback(
+    ({ marketAddresses, orderTypes, orderKeys }: ClosingPoolOrdersView) => {
+      setListSection(ListSection.Orders);
+      setMarketsDirectionsFilter(
+        marketAddresses.map((marketAddress) => ({ marketAddress: marketAddress as Address, direction: "any" }))
+      );
+      setOrderTypesFilter(orderTypes);
+      setSelectedOrderKeys(orderKeys);
+      tabsContentTabletRef.current?.scrollIntoView({ behavior: "smooth" });
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
+
+  useViewClosingPoolOrdersByQueryParams(handleViewClosingPoolOrders);
 
   useEffect(() => {
     // Trust Wallet's mobile browser uses the page title as the dApp name when connecting.

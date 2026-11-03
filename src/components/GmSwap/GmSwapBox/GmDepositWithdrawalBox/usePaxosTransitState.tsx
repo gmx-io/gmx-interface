@@ -47,6 +47,7 @@ import {
 } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { usePaxosTransit } from "domain/synthetics/paxosTransit/usePaxosTransit";
 import { useTransitApprovalProposal } from "domain/synthetics/paxosTransit/useTransitApprovalProposal";
+import { getIsZeroFeeRejection } from "domain/synthetics/paxosTransit/utils";
 import type { TokenData } from "domain/synthetics/tokens";
 import type { ERC20Address } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
@@ -220,16 +221,18 @@ export function usePaxosTransitState({
     isBelowMinOrderSize,
     minOrderSize,
     shouldUseTransit,
-    isLargeConversion,
     isWhitelisted,
+    feeTier,
     isQuoteNeeded,
     isFeeTierLoaded,
     feeTierError,
     submitTransit,
     amountOut,
     thresholdUsd,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     zeroFeeCapacity,
+    zeroFeeExpectedReopenAt,
     transitFeesUsd,
   } = transit;
 
@@ -252,7 +255,7 @@ export function usePaxosTransitState({
   const isTransitRoute = isTransitInProgress || isTransitRouteChosen;
 
   const shouldShowRouteSelector = isConversionNeeded && isFeeTierLoaded;
-  const shouldShowWhitelistNote = shouldShowRouteSelector && !isWhitelisted && isLargeConversion;
+  const isZeroFee = feeTier === "zeroFee";
 
   const transitAmountOut = isTransitRoute ? amountOut : undefined;
 
@@ -315,6 +318,11 @@ export function usePaxosTransitState({
           return;
         }
 
+        if (isZeroFee && getIsZeroFeeRejection(error)) {
+          helperToast.error(t`Zero-fee conversion is no longer available. Review the conversion and confirm again.`);
+          return;
+        }
+
         helperToast.error(
           error instanceof TransitApprovalPendingError
             ? t`The approval has not executed yet. Convert again after it executes.`
@@ -327,6 +335,7 @@ export function usePaxosTransitState({
     chainId,
     direction,
     glvOrMarketAddress,
+    isZeroFee,
     startTransitRouteProgress,
     submitTransit,
     transitRouteProgressForDirection,
@@ -506,7 +515,6 @@ export function usePaxosTransitState({
     isRouteSelectable,
     conversionRoutePreference,
     setConversionRoutePreference,
-    shouldShowWhitelistNote,
     isApprovalProposalPending,
     onProposeNewApproval,
     hasUsdgCollateral,
@@ -516,8 +524,11 @@ export function usePaxosTransitState({
     transitFillCount,
     thresholdUsd,
     isWhitelisted,
+    isZeroFee,
+    isZeroFeePaused,
     isZeroFeeCapacityShort,
     zeroFeeCapacity,
+    zeroFeeExpectedReopenAt,
     transitFeesUsd,
   };
 }
