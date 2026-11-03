@@ -710,6 +710,29 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   return <SubaccountContext.Provider value={state}>{children}</SubaccountContext.Provider>;
 }
 
+const DISABLED_SUBACCOUNT_STATE: SubaccountState = {
+  subaccountConfig: undefined,
+  subaccount: undefined,
+  subaccountActivationState: undefined,
+  subaccountActivationError: undefined,
+  subaccountDeactivationState: undefined,
+  subaccountDeactivationFailureReason: undefined,
+  subaccountDeactivationFailureTokenSymbol: undefined,
+  updateSubaccountSettings: async () => false,
+  resetSubaccountApproval: () => undefined,
+  invalidateSubaccountApproval: () => false,
+  tryEnableSubaccount: async () => false,
+  tryDisableSubaccount: async () => false,
+  refreshSubaccountData: () => undefined,
+};
+
+/**
+ * For networks without One-Click trading: consumers that stay mounted there read an inactive subaccount
+ */
+export function DisabledSubaccountContextProvider({ children }: { children: React.ReactNode }) {
+  return <SubaccountContext.Provider value={DISABLED_SUBACCOUNT_STATE}>{children}</SubaccountContext.Provider>;
+}
+
 function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   const { chainId } = useChainId();
   const { subaccountActivationState, subaccountActivationError } = useSubaccountContext();

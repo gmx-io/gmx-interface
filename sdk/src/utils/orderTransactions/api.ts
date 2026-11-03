@@ -108,7 +108,6 @@ export type PrepareOrderError =
 
 export type PrepareOrderResponse = {
   requestId: string;
-  idempotencyKey?: string;
   payloadType: "transaction" | "typed-data";
   mode: TransactionMode;
   payload: Record<string, any>;
@@ -125,7 +124,6 @@ export type SubmitOrderRequest = {
   signature?: string;
   from?: string;
   eip712Data?: Record<string, any>;
-  idempotencyKey?: string;
 };
 
 export type SubmitOrderResponse = {
@@ -148,7 +146,6 @@ export type SubmitOrderResponse = {
 
 export type OrderStatusRequest = {
   requestId?: string;
-  idempotencyKey?: string;
 };
 
 export type OrderStatusResponse = {
@@ -425,7 +422,7 @@ function parsePrepareResponse(raw: any): PrepareOrderResponse {
 
 // the express chain stays on the origin that served it: prepare and submit pin that origin by request id, submit and status reuse it
 function chainKeys(prepared: PrepareOrderResponse) {
-  return [prepared.requestId, prepared.idempotencyKey];
+  return [prepared.requestId];
 }
 
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
@@ -435,12 +432,7 @@ export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderReq
 }
 
 export async function submitOrder(ctx: { api: IHttp }, request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
-  return postJsonPinned<SubmitOrderResponse>(
-    ctx.api,
-    [request.requestId, request.idempotencyKey],
-    "/v1/orders/txns/submit",
-    request
-  );
+  return postJsonPinned<SubmitOrderResponse>(ctx.api, [request.requestId], "/v1/orders/txns/submit", request);
 }
 
 export async function prepareEditOrder(
@@ -471,12 +463,7 @@ export async function prepareCollateral(
 }
 
 export async function fetchOrderStatus(ctx: { api: IHttp }, request: OrderStatusRequest): Promise<OrderStatusResponse> {
-  return postJsonPinned<OrderStatusResponse>(
-    ctx.api,
-    [request.requestId, request.idempotencyKey],
-    "/v1/orders/txns/status",
-    request
-  );
+  return postJsonPinned<OrderStatusResponse>(ctx.api, [request.requestId], "/v1/orders/txns/status", request);
 }
 
 export async function signPreparedOrder(
@@ -523,7 +510,6 @@ export async function executeExpressOrder(
     requestId: prepared.requestId,
     signature,
     from: accountAddress ?? signer.address,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
