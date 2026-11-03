@@ -1,9 +1,9 @@
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
 import type {
+  PriceAgeTiming,
   WsPriceAgeAtSendTiming,
   WsPriceFirstFrameTiming,
   WsPriceInterArrivalTiming,
-  WsPriceLatencyTiming,
   WsStreamStatusCounter,
 } from "lib/metrics/types";
 import { watchPageHidden } from "lib/watchPageHidden";
@@ -75,12 +75,12 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       time: now - previousFrameAt,
       data: { chainId },
     });
-    emitMetricTiming<WsPriceLatencyTiming>({
-      event: "wsPrices.latency",
-      time: meta.receivedAt - meta.serverTs,
-      data: { chainId, tokenCount: Object.keys(snapshot).length, byteLength: meta.byteLength },
-    });
     if (meta.originTs !== undefined) {
+      emitMetricTiming<PriceAgeTiming>({
+        event: "prices.age",
+        time: meta.receivedAt - meta.originTs,
+        data: { chainId, source: "ws" },
+      });
       emitMetricTiming<WsPriceAgeAtSendTiming>({
         event: "wsPrices.ageAtSend",
         time: meta.serverTs - meta.originTs,

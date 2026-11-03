@@ -202,13 +202,9 @@ export type FreshnessTiming = {
   };
 };
 
-export type WsPriceLatencyTiming = {
-  event: "wsPrices.latency";
-  data: {
-    chainId: number;
-    tokenCount: number;
-    byteLength: number;
-  };
+export type PriceAgeTiming = {
+  event: "prices.age";
+  data: { chainId: number; source: "ws" };
 };
 
 export type WsPriceAgeAtSendTiming = {
