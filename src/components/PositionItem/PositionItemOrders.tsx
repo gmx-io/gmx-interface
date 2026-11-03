@@ -95,7 +95,7 @@ export function PositionItemOrdersLarge({
         position="bottom"
         handleClassName={cx(["Exchange-list-info-label", "Exchange-position-list-orders", "text-typography-secondary"])}
         content={
-          <TooltipContent className="max-h-[min(350px,calc(var(--tooltip-available-height,350px)-28px))] overflow-y-auto">
+          <TooltipContent>
             <TooltipTitle>
               <Trans>Active orders</Trans>
             </TooltipTitle>
