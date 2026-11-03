@@ -33,6 +33,7 @@ import {
   getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
   getIsSubaccountNonceExpired,
+  getIsSubaccountRevoked,
   getMaxSubaccountActions,
   getSubaccountExpiresAt,
 } from "domain/synthetics/subaccount";
@@ -141,6 +142,10 @@ export function useExpressTradingWarnings({
       isExpressTransactionAvailable &&
       rawSubaccount &&
       (subaccountValidations?.isNonceExpired ?? getIsSubaccountNonceExpired(rawSubaccount)),
+    shouldShowSubaccountRevokedWarning:
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isRevoked ?? getIsSubaccountRevoked(rawSubaccount)),
     shouldShowAllowedActionsWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&

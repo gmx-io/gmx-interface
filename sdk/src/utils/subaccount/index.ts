@@ -18,6 +18,7 @@ export {
   isSameSubaccountApproval,
   isSubaccountApprovalExpired,
   isSubaccountApprovalNonceExpired,
+  isSubaccountApprovalRevoked,
   isSubaccountApprovalSynced,
   isSubaccountStatusUsable,
   parseSubaccountStatus,

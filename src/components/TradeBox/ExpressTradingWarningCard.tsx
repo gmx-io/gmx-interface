@@ -155,6 +155,7 @@ export function ExpressTradingWarningCard({
     shouldShowWrapOrUnwrapWarning,
     shouldShowExpiredSubaccountWarning,
     shouldShowNonceExpiredWarning,
+    shouldShowSubaccountRevokedWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
     shouldShowSubaccountApprovalInvalidWarning,
     shouldShowSubaccountApprovalForAnotherNetworkWarning,
@@ -352,6 +353,12 @@ export function ExpressTradingWarningCard({
     icon = OneClickIcon;
     color = "blue";
     content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
+    buttonText = <Trans>Re-sign</Trans>;
+  } else if (shouldShowSubaccountRevokedWarning) {
+    onClick = handleUpdateSubaccountSettings;
+    icon = OneClickIcon;
+    color = "blue";
+    content = <Trans>One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
