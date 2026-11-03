@@ -321,7 +321,7 @@ const SPECS: DocsRule[] = [
   ],
   [
     "Text",
-    "Main text is TextIcon/Primary in the light theme and gray-100 in the dark theme, slightly softer than white. Muted text for row labels and footnotes.",
+    "Main text is TextIcon/Primary, at 90% in the dark theme, slightly softer than white. Muted text for row labels and footnotes.",
   ],
   ["Type", "14/20 for text, 14/20 medium for titles, 12/16 for footnotes and table headers."],
   ["Shadow", "0 4 14: 25% black in the dark theme, 8% #090A14 in the light theme."],

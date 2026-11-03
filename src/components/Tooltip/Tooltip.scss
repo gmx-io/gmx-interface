@@ -482,8 +482,8 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
   --tooltip-solid: color-mix(in srgb, var(--color-fill-surfaceElevated), var(--color-textIcon-secondary) 10%);
   --tooltip-opacity: 70%;
   --tooltip-shadow: #{$tooltip-shadow-dark};
-  // One step below the app's primary text: pure white is too strong on the panel
-  color: var(--color-textIcon-primary);
+  // The main text color at 90%, one step below the app's primary text: pure white is too strong on the panel
+  color: rgb(var(--color-textIcon-primary-raw) / 90%);
 }
 
 .Tooltip-handle--standard {
