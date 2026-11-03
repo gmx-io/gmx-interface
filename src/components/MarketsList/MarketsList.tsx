@@ -57,7 +57,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="my-15 rounded-4 bg-fill-surfaceBase text-left">
+    <div className="my-12 rounded-4 bg-fill-surfaceBase text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
         <span className="text-h3">
           <Trans>GM pools</Trans>

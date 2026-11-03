@@ -56,7 +56,7 @@ export default function Pools() {
 
         <div
           className={cx("flex-end flex", {
-            "ml-0 mt-28": isMobile,
+            "ml-0 mt-24": isMobile,
             "ml-auto mt-auto": !isMobile,
           })}
         >

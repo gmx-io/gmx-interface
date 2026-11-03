@@ -133,7 +133,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
   });
 
   return (
-    <div className="flex gap-8 max-md:flex-col max-md:pb-[100px]">
+    <div className="flex gap-8 max-md:flex-col max-md:pb-96">
       <div className="flex grow flex-col gap-8 max-md:order-2">
         <div className="flex flex-col gap-8">
           <div className="flex w-full flex-col gap-8 rounded-8 bg-fill-surfaceBase pb-4">
@@ -143,7 +143,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                   <Trans>Referral codes</Trans>
                 </div>
                 {affiliateTierInfo && tierId !== undefined && (
-                  <div className="text-body-small rounded-full bg-blue-background px-8 py-[2.5px] font-medium text-blue-strong">
+                  <div className="text-body-small rounded-full bg-blue-background px-8 py-4 font-medium text-blue-strong">
                     {t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
                   </div>
                 )}

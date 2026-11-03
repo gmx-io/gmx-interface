@@ -62,8 +62,8 @@ export function DecreaseReceiveOutputDisplay({
     <span
       className={cx(
         isStacked
-          ? "inline-flex flex-col items-end gap-2"
-          : "inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-2",
+          ? "inline-flex flex-col items-end gap-4"
+          : "inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-4",
         className
       )}
     >

@@ -266,7 +266,7 @@ export function GmPoolsSelectorForGlvMarket({
         <div className="inline-flex items-center">
           {showIndexIcon && (
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={
                 marketInfo.isSpotOnly
                   ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

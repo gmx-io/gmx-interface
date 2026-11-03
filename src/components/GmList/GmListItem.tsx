@@ -184,7 +184,7 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex flex-wrap items-center gap-x-6">
+              <div className="text-body-medium flex flex-wrap items-center gap-x-4">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)
@@ -225,7 +225,7 @@ export function GmListItem({
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 border-t border-stroke-primary pt-8">
+        <div className="flex flex-col gap-8 border-t border-stroke-primary pt-8">
           <SyntheticsInfoRow
             label={<Trans>TVL (supply)</Trans>}
             value={
@@ -341,9 +341,9 @@ export function GmListItem({
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
 
-              {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
+              {isUsdgGlv && <LaunchBoostBadge className="ml-4" />}
               {isWhitelistOnly && (
-                <WhitelistOnlyBadge className="ml-6" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
+                <WhitelistOnlyBadge className="ml-4" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
               )}
 
               <div className="inline-block">

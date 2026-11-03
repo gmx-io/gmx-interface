@@ -66,7 +66,7 @@ const getThreadName = (isInWorker: boolean) => {
 export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-medium uppercase">
           <Trans>RPC endpoints</Trans>
         </h3>
@@ -109,7 +109,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                     <div className="text-sm font-medium text-textIcon-onButton">{rpc.providerName}</div>
                   </TableTd>
                   <TableTd padding="compact">
-                    <div className="text-xs flex flex-wrap gap-1">
+                    <div className="text-xs flex flex-wrap">
                       {rpc.isPrimary && (
                         <span className="text-green-secondary">
                           <Trans>Primary</Trans>
@@ -188,7 +188,7 @@ export function EventsPanel({
 }) {
   return (
     <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-medium uppercase">
           <Trans>Multicall events</Trans>
         </h3>
@@ -241,7 +241,7 @@ export function EventsPanel({
                           )}
                         </TableTd>
                         <TableTd padding="compact">
-                          <div className="flex flex-col items-start gap-2">
+                          <div className="flex flex-col items-start gap-4">
                             <div className={`text-xs font-medium ${getEventColor(event.type)}`}>
                               {formatEventType(event.type)}
                             </div>
@@ -278,7 +278,7 @@ export function DebugControlsPanel({
 }) {
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center px-8 py-16">
         <h3 className="text-xl muted font-medium uppercase">
           <Trans>Debug controls</Trans>
         </h3>
@@ -289,8 +289,8 @@ export function DebugControlsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
+                  <div className="py-4">
+                    <div className="text-base mb-4 font-medium text-textIcon-secondary">
                       <Trans>Account type</Trans>
                     </div>
                     <div className="text-base text-textIcon-onButton">
@@ -301,8 +301,8 @@ export function DebugControlsPanel({
               </TableTr>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
+                  <div className="py-4">
+                    <div className="text-base mb-4 font-medium text-textIcon-secondary">
                       <Trans>Force failures</Trans>
                     </div>
                     <div className="space-y-4">
@@ -327,16 +327,16 @@ export function DebugControlsPanel({
               </TableTr>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-medium text-textIcon-secondary">
+                  <div className="py-4">
+                    <div className="text-base mb-4 font-medium text-textIcon-secondary">
                       <Trans>Multicall simulation</Trans>
                     </div>
                     <div className="space-y-8">
                       <div>
-                        <h4 className="text-sm mb-6 font-medium text-textIcon-secondary">
+                        <h4 className="text-sm mb-4 font-medium text-textIcon-secondary">
                           <Trans>Worker thread</Trans>
                         </h4>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
@@ -354,10 +354,10 @@ export function DebugControlsPanel({
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-sm mb-6 font-medium text-textIcon-secondary">
+                        <h4 className="text-sm mb-4 font-medium text-textIcon-secondary">
                           <Trans>Main thread</Trans>
                         </h4>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                           <ToggleSwitch
                             isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
                             setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
@@ -407,7 +407,7 @@ export function NetworkStatusSection({
 
   return (
     <div className="mt-8 flex min-h-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-medium uppercase">
           <Trans>Network status</Trans>
         </h3>
@@ -487,7 +487,7 @@ export function NetworkStatusSection({
 
 export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <h3 className="text-xl mb-4 font-medium">
         <Trans>Markets info</Trans>
       </h3>

@@ -261,7 +261,7 @@ export default function AnnouncementsPage() {
                   style={rowStyle}
                 >
                   <p
-                    className="text-body-small pt-12 font-medium text-blue-strong dark:text-blue-secondary lg:sticky lg:self-start lg:pt-21"
+                    className="text-body-small pt-12 font-medium text-blue-strong dark:text-blue-secondary lg:sticky lg:self-start lg:pt-20"
                     style={dateStyle}
                   >
                     {formatEventDate(getEventSortDate(event, uiFlags))}
@@ -414,7 +414,7 @@ function FiltersBar({
                 {(startDate || endDate) && (
                   <span
                     className={cx(
-                      "absolute right-6 top-6 size-6 rounded-full bg-blue-strong md:hidden",
+                      "absolute right-4 top-4 size-6 rounded-full bg-blue-strong md:hidden",
                       isCompact && "lg:block"
                     )}
                   />
@@ -540,7 +540,7 @@ function DropdownItem({
       type="button"
       onClick={onClick}
       className={cx(
-        "text-body-medium flex w-full items-center gap-8 rounded-4 px-8 py-6 text-left text-textIcon-primary hover:bg-fill-surfaceElevated",
+        "text-body-medium flex w-full items-center gap-8 rounded-4 px-8 py-4 text-left text-textIcon-primary hover:bg-fill-surfaceElevated",
         isActive && "bg-fill-surfaceElevated"
       )}
     >

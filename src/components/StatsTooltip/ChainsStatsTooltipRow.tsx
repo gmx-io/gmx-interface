@@ -42,7 +42,7 @@ export default function ChainsStatsTooltipRow({
           />
         </p>
       ))}
-      <div className="my-5 h-1 bg-stroke-primary" />
+      <div className="my-4 h-1 bg-stroke-primary" />
       <p className="Tooltip-row">
         <span className="label">
           <Trans>Total</Trans>:{" "}

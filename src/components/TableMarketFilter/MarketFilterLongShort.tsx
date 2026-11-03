@@ -247,9 +247,9 @@ export function MarketFilterLongShort({
 
       return (
         <>
-          <TokenIcon symbol={iconName} displaySize={16} className="mr-5" />
+          <TokenIcon symbol={iconName} displaySize={16} className="mr-4" />
           <div className="inline-flex items-center">
-            {longOrShortText && <span className="mr-3">{longOrShortText}</span>}
+            {longOrShortText && <span className="mr-4">{longOrShortText}</span>}
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

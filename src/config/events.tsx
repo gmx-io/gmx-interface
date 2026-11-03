@@ -529,26 +529,26 @@ export const appEventsData: EventData[] = [
     ),
     description: (
       <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trading activity</span>
           <span className="text-body-small block text-textIcon-secondary">Based on cumulative trading volume</span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Referral volume</span>
           <span className="text-body-small block text-textIcon-secondary">
             Trading volume from wallets using your referral code
           </span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trader PnL</span>
           <span className="text-body-small block text-textIcon-secondary">
             Net positive realized PnL only, to reward skill
           </span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">
             GLV <span className="text-textIcon-secondary">[USDM-USDM]</span> liquidity

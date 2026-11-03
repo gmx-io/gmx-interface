@@ -270,7 +270,7 @@ export function TradingSettings({
       )}
 
       {srcChainId && !isAvalancheEmpty && isConnected && (
-        <SettingsSection className="mt-2">
+        <SettingsSection className="mt-4">
           <div className="flex items-center justify-between">
             <LabelWithTooltip
               className="font-medium"
@@ -309,7 +309,7 @@ export function TradingSettings({
         </SettingsSection>
       )}
 
-      <SettingsSection className="mt-2">
+      <SettingsSection className="mt-4">
         <InputSetting
           title={t`Default allowed slippage`}
           description={
@@ -394,7 +394,7 @@ export function TradingSettings({
             <MarginDestinationSelector
               isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
               onChangeDestination={settings.setReceiveToGmxAccount}
-              desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"
+              desktopPanelClassName="!z-[10000] w-[200px] !top-8"
             />
           </div>
         )}

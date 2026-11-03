@@ -23,7 +23,7 @@ function OpportunityCard({ opportunity, marketsInfoData }: Props) {
 
   return (
     <div className="rounded-8 bg-fill-surfaceBase">
-      <div className="flex items-center justify-between gap-12 rounded-t-8 bg-fill-surfaceElevated50 px-20 py-10">
+      <div className="flex items-center justify-between gap-12 rounded-t-8 bg-fill-surfaceElevated50 px-20 py-8">
         <img
           className="flex size-40 shrink-0 items-center justify-center rounded-full bg-fill-surfaceElevated"
           src={opportunity.icon}
@@ -32,7 +32,7 @@ function OpportunityCard({ opportunity, marketsInfoData }: Props) {
         <div className="flex min-w-0 items-center justify-end gap-12">
           <OpportunityAssets assets={tokens} marketsInfoData={marketsInfoData} />
           {tags.length ? (
-            <div className="flex min-w-0 flex-wrap justify-end gap-6">
+            <div className="flex min-w-0 flex-wrap justify-end gap-4">
               {tags.map((tag) => (
                 <Badge key={tag} className="text-body-small !bg-button-background px-8 py-4 text-textIcon-secondary">
                   {opportunityTagLabels[tag]}

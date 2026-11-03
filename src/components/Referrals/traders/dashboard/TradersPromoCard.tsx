@@ -33,7 +33,7 @@ export function TradersPromoCard({ account }: { account: string | undefined }) {
       }
       onClose={close}
       imgSrc={affiliateCodePromoFg}
-      imgClassName="-bottom-34 right-28 max-[1266px]:hidden"
+      imgClassName="-bottom-32 right-24 max-[1266px]:hidden"
     />
   );
 }

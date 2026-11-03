@@ -690,7 +690,7 @@ export function PositionEditor() {
               }
               rightHeadline={
                 isDeposit ? (
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4">
                     {collateralTokenBalance !== undefined && collateralTokenBalance > 0n && (
                       <MaxActions
                         qa="amount-input"
@@ -716,7 +716,7 @@ export function PositionEditor() {
                     </button>
                   </div>
                 ) : (
-                  <span className="flex items-center gap-6 text-textIcon-secondary">
+                  <span className="flex items-center gap-4 text-textIcon-secondary">
                     {maxWithdrawAmount > 0n && (
                       <MaxActions
                         qa="amount-input"
@@ -758,7 +758,7 @@ export function PositionEditor() {
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}
-            <div className="flex flex-col gap-14">
+            <div className="flex flex-col gap-12">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
                 swapPriceImpact={fees?.swapPriceImpact}

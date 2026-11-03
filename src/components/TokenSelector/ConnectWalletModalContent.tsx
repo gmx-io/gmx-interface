@@ -13,7 +13,7 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
   return (
     <div className="flex grow flex-col items-center justify-center gap-20 p-adaptive">
       {walletIconUrls && walletIconUrls.length > 0 && (
-        <div className="flex rounded-full bg-fill-surfaceElevated p-2">
+        <div className="flex rounded-full bg-fill-surfaceElevated p-4">
           {walletIconUrls.map((url, index) => (
             <img
               src={url}

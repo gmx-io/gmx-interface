@@ -117,7 +117,7 @@ export function MarginField({
       }
       rightHeadline={
         formattedBalance !== undefined ? (
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             {fromToken !== undefined && fromToken.balance !== undefined && fromToken.balance > 0n && (
               <MaxActions qa={qa} state={maxActions} onMax={handleMaxClick} onKeepGas={onKeepGasClick} />
             )}

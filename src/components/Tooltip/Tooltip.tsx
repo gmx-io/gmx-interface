@@ -600,7 +600,7 @@ export default function Tooltip<T extends ElementType>({
           onBlur: handleBlur,
         })}
       >
-        <div className={cx("flex grow items-center gap-2", contentClassName)}>
+        <div className={cx("flex grow items-center gap-4", contentClassName)}>
           {/* For onMouseLeave to work on disabled button https://github.com/react-component/tooltip/issues/18#issuecomment-411476678 */}
           {isHandlerDisabled ? (
             <div

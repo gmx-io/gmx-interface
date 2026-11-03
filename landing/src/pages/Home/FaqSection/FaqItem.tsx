@@ -18,10 +18,10 @@ export function FaqItem({ title, defaultOpen, iconClassName = "size-16", childre
   };
 
   return (
-    <div className="flex flex-col border-b-1/2 border-slate-600 py-28">
+    <div className="border-slate-600 flex flex-col border-b-1/2 py-24">
       <div
         onClick={handleClick}
-        className="duration-180 mb-12 flex cursor-pointer items-center justify-between gap-[44px] transition-colors hover:text-blue-400"
+        className="duration-180 hover:text-blue-400 mb-12 flex cursor-pointer items-center justify-between gap-40 transition-colors"
       >
         <h3 className="text-heading-4">{title}</h3>
         <div className="flex size-23 flex-shrink-0 items-center justify-center">

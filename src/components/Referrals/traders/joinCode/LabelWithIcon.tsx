@@ -8,7 +8,7 @@ export function LabelWithIcon({
   label: ReactNode;
 }) {
   return (
-    <div className="text-body-small flex items-center rounded-full bg-blue-backgroundOpacity py-2 pl-4 pr-6 font-medium text-blue-strong">
+    <div className="text-body-small flex items-center rounded-full bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
       <Icon className="mr-4 size-16" />
       {label}
     </div>

@@ -482,7 +482,7 @@ export function SyntheticsPage(p: Props) {
         <AppHeader
           leftContent={
             isTablet ? (
-              <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
+              <Link to="/" className="flex items-center gap-4 p-8 max-md:p-4">
                 <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>

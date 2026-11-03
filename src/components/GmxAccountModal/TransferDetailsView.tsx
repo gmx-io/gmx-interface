@@ -163,7 +163,7 @@ export const TransferDetailsView = () => {
         src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId as SourceChainId]}
         width={20}
         height={20}
-        className="-my-5 inline-block size-20 rounded-full align-baseline"
+        className="-my-4 inline-block size-20 rounded-full align-baseline"
       />{" "}
       {getChainName(sourceChainId)}
     </span>

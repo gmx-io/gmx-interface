@@ -156,7 +156,7 @@ export function TraderAffiliateWidget() {
   return (
     <div className="mx-auto w-full max-w-[1200px]">
       <div className="flex justify-center">
-        <div className="flex rounded-16 border-1/2 border-slate-400 bg-white p-4">
+        <div className="bg-white flex rounded-16 border-1/2 border-slate-400 p-4">
           <button
             type="button"
             onClick={() => setTab("trader")}
@@ -183,14 +183,14 @@ export function TraderAffiliateWidget() {
         </div>
       </div>
 
-      <h2 className="text-heading-2 mt-28 text-center text-slate-900">{content.heading}</h2>
-      <p className="leading-body-sm mx-auto mt-16 max-w-[560px] text-center text-16 -tracking-[0.512px] text-slate-600">
+      <h2 className="text-heading-2 text-slate-900 mt-24 text-center">{content.heading}</h2>
+      <p className="leading-body-sm text-slate-600 mx-auto mt-16 max-w-[560px] text-center text-16 -tracking-[0.512px]">
         {content.subtext}
       </p>
 
-      <div className="mt-[57px] grid grid-cols-1 items-center gap-16 lg:grid-cols-[384px_1fr] lg:gap-20">
-        <div className="rounded-20 border-1/2 border-slate-400 bg-white px-28 pb-28 pt-28">
-          <span className="inline-flex h-24 items-center rounded-full bg-blue-300/20 px-6 text-16 -tracking-[0.512px] text-blue-400">
+      <div className="mt-56 grid grid-cols-1 items-center gap-16 lg:grid-cols-[384px_1fr] lg:gap-20">
+        <div className="bg-white rounded-20 border-1/2 border-slate-400 px-24 pb-24 pt-24">
+          <span className="bg-blue-300/20 text-blue-400 inline-flex h-24 items-center rounded-full px-4 text-16 -tracking-[0.512px]">
             {content.badge}
           </span>
           <div className="mt-24 flex flex-col">
@@ -198,17 +198,17 @@ export function TraderAffiliateWidget() {
               <div
                 key={benefit.title}
                 className={cx({
-                  "border-b-1/2 border-slate-400/50 pb-[21.5px]": index < content.benefits.length - 1,
-                  "pt-22": index > 0,
+                  "border-b-1/2 border-slate-400/50 pb-20": index < content.benefits.length - 1,
+                  "pt-20": index > 0,
                 })}
               >
                 <div className="flex h-60 items-center gap-20">
                   <img src={benefit.icon} alt="" className="size-60 flex-shrink-0" />
-                  <div className="flex flex-col gap-2">
-                    <div className="text-18 font-medium leading-[24px] -tracking-[0.576px] text-slate-900">
+                  <div className="flex flex-col gap-4">
+                    <div className="text-18 text-slate-900 font-medium leading-[24px] -tracking-[0.576px]">
                       {benefit.title}
                     </div>
-                    <div className="text-16 leading-[19px] -tracking-[0.512px] text-slate-600">
+                    <div className="text-slate-600 text-16 leading-[19px] -tracking-[0.512px]">
                       {benefit.description}
                     </div>
                   </div>
@@ -218,11 +218,11 @@ export function TraderAffiliateWidget() {
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-20 bg-slate-900 p-28">
+        <div className="bg-slate-900 relative overflow-hidden rounded-20 p-24">
           <img src={calcBg} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
           <div className="relative">
-            <div className="text-18 font-medium -tracking-[0.576px] text-white">{content.calcTitle}</div>
-            <div className="mt-20 text-12 uppercase tracking-[0.864px] text-slate-500">{content.volumeLabel}</div>
+            <div className="text-18 text-white font-medium -tracking-[0.576px]">{content.calcTitle}</div>
+            <div className="text-12 text-slate-500 mt-20 uppercase tracking-[0.864px]">{content.volumeLabel}</div>
             <div className="mt-8 flex flex-wrap gap-12">
               {volumeTiers.map((tierVolume, index) => (
                 <button
@@ -230,7 +230,7 @@ export function TraderAffiliateWidget() {
                   type="button"
                   onClick={() => setVolumeIndex(index)}
                   className={cx(
-                    "duration-180 flex h-36 items-center rounded-8 px-16 text-16 font-medium -tracking-[0.512px] text-white transition-colors",
+                    "duration-180 text-white flex h-36 items-center rounded-8 px-16 text-16 font-medium -tracking-[0.512px] transition-colors",
                     index === volumeIndex ? "bg-blue-400" : "bg-slate-600/50 hover:bg-slate-600/70"
                   )}
                 >
@@ -238,7 +238,7 @@ export function TraderAffiliateWidget() {
                 </button>
               ))}
             </div>
-            <div className={cx("mt-24 w-fit text-12 tracking-[0.024px]", GRADIENT_TEXT_CLASS)}>
+            <div className={cx("text-12 mt-24 w-fit tracking-[0.024px]", GRADIENT_TEXT_CLASS)}>
               {content.incomeLabel}
             </div>
             <div className="mt-12 flex items-baseline gap-8">
@@ -249,7 +249,7 @@ export function TraderAffiliateWidget() {
                 <Trans>/ mo</Trans>
               </span>
             </div>
-            <p className="mt-4 text-12 leading-[15px] tracking-[0.024px] text-[#646A8F]">{content.disclaimer}</p>
+            <p className="text-12 mt-4 leading-[15px] tracking-[0.024px] text-[#646A8F]">{content.disclaimer}</p>
             <ArrowButton
               label={content.cta}
               variant="primary"

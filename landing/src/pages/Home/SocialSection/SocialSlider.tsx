@@ -129,7 +129,7 @@ function Slides() {
               With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion!
               The integration brings GMX:
             </p>
-            <ul className="list-disc pl-14">
+            <ul className="list-disc pl-12">
               <li>The ability to expand to 125+ chains</li>
               <li>Full ownership of all contracts and security</li>
               <li>Fast, zero-slippage transfers</li>

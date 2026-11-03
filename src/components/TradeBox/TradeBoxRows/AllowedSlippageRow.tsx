@@ -55,7 +55,7 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
           }
         />
       }
-      valueClassName="-my-5"
+      valueClassName="-my-4"
     >
       <PercentageInput
         onChange={setAllowedSlippage}

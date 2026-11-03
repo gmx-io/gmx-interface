@@ -868,7 +868,7 @@ export function GmSwapBoxDepositWithdrawal() {
                     glvOrMarketInfo && (
                       <span className="inline-flex items-center">
                         <TokenIcon
-                          className="mr-5"
+                          className="mr-4"
                           symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)}
                           displaySize={20}
                           chainIdBadge={
@@ -887,7 +887,7 @@ export function GmSwapBoxDepositWithdrawal() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-14">
+            <div className="flex flex-col gap-12">
               <GmSwapBoxPoolRow
                 indexName={indexName}
                 marketAddress={selectedGlvOrMarketAddress}

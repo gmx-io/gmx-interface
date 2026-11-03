@@ -162,7 +162,7 @@ function WalletBlock({ account }: { account: string }) {
   };
 
   return (
-    <div className="flex flex-col gap-6 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12">
+    <div className="flex flex-col gap-4 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12">
       <div className="flex items-center justify-between gap-8">
         <button
           className="flex items-center gap-8 text-textIcon-secondary gmx-hover:text-textIcon-primary"
@@ -331,7 +331,7 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-fill-background/50 p-12">
       <div className="flex items-start justify-between gap-8">
-        <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
+        <div className="flex flex-col gap-4" data-qa="gmx-account-balance">
           <span className="text-body-small font-medium text-textIcon-secondary">
             <Trans>GMX Account balance</Trans>
           </span>

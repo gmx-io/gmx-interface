@@ -140,7 +140,7 @@ function CollateralListItemDesktop({
         data-qa={`collateral-in-selector-row-${tokenData.symbol}`}
       >
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             <TokenIcon
               symbol={tokenData.symbol}
               displaySize={variant === "destination" ? 16 : 28}

@@ -61,7 +61,7 @@ export default function RegularTab<V extends string | number>({
           data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
           disabled={isDisabled}
           className={cx(
-            "text-body-medium flex items-center justify-center gap-6 rounded-full border-1/2 px-12 py-6 font-medium transition-colors",
+            "text-body-medium flex items-center justify-center gap-4 rounded-full border-1/2 px-12 py-4 font-medium transition-colors",
             optionClassName,
             regularOptionClassname,
             {
@@ -89,7 +89,7 @@ export default function RegularTab<V extends string | number>({
           data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
           disabled={isDisabled}
           className={cx(
-            `text-body-medium -mb-[0.5px] flex items-center justify-center gap-4 border-b-2 border-b-[transparent] px-6 py-10
+            `text-body-medium flex items-center justify-center gap-4 border-b-2 border-b-[transparent] px-4 py-8
             font-medium hover:text-textIcon-primary`,
             optionClassName,
             regularOptionClassname,
@@ -134,7 +134,7 @@ export default function RegularTab<V extends string | number>({
       <button
         type="button"
         className={cx(
-          `-mb-[0.5px] flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11 font-medium
+          `flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-8 pt-12 font-medium
         first:rounded-tl-8 last:rounded-tr-8 hover:text-textIcon-primary max-smallMobile:px-12`,
           optionClassName,
           regularOptionClassname,

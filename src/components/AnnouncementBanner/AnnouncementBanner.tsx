@@ -213,7 +213,7 @@ function Dots({
   inactiveClass: string;
 }) {
   return (
-    <div className="-mr-3 flex items-center">
+    <div className="-mr-4 flex items-center">
       {Array.from({ length: count }).map((_, i) => {
         const isActive = i === activeIndex;
         const dotClass = cx("block size-8 rounded-full transition-colors", isActive ? activeClass : inactiveClass);
@@ -223,7 +223,7 @@ function Dots({
               key={i}
               type="button"
               onClick={() => onDotClick(i)}
-              className={cx("group flex p-3", isActive ? "cursor-default" : "cursor-pointer")}
+              className={cx("group flex p-4", isActive ? "cursor-default" : "cursor-pointer")}
               aria-label={t`Go to slide ${i + 1}`}
               aria-current={isActive}
             >
@@ -231,7 +231,7 @@ function Dots({
             </button>
           );
         }
-        return <span key={i} className={cx(dotClass, "mx-3")} aria-hidden />;
+        return <span key={i} className={cx(dotClass, "mx-4")} aria-hidden />;
       })}
     </div>
   );

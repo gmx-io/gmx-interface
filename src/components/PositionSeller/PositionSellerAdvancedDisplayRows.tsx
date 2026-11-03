@@ -117,7 +117,7 @@ export function PositionSellerAdvancedRows({
       open={open}
       onToggle={setOpen}
       wrapped
-      contentClassName="flex flex-col gap-14"
+      contentClassName="flex flex-col gap-12"
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />

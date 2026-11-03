@@ -122,7 +122,7 @@ function BuyGmxModalButton({
   return (
     <Button
       variant={variant}
-      className="w-full !justify-between !py-10 px-16"
+      className="w-full !justify-between !py-8 px-16"
       to={to}
       newTab={newTab}
       onClick={onClick}

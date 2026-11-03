@@ -84,7 +84,7 @@ type ClaimNetworkFee = {
 
 export function getClaimingFundingToastContent() {
   return (
-    <div className="flex items-center justify-between gap-6">
+    <div className="flex items-center justify-between gap-4">
       <div className="text-textIcon-secondary">
         <Trans>Claiming...</Trans>
       </div>
@@ -95,7 +95,7 @@ export function getClaimingFundingToastContent() {
 
 export function getClaimFundingSuccessToastContent() {
   return (
-    <div className="flex items-center justify-between gap-6">
+    <div className="flex items-center justify-between gap-4">
       <div>{t`Funding fees claimed`}</div>
       <CheckCircleIcon className="size-15 shrink-0 text-green-strong" />
     </div>
@@ -104,7 +104,7 @@ export function getClaimFundingSuccessToastContent() {
 
 export function getClaimFundingFailureToastContent() {
   return (
-    <div className="flex items-center justify-between gap-6">
+    <div className="flex items-center justify-between gap-4">
       <div>{t`Claiming funding fees failed`}</div>
       <CloseCircleIcon className="size-15 shrink-0 text-red-strong" />
     </div>
@@ -607,7 +607,7 @@ function ClaimModalComponent(p: {
                   <div key={item}>{item}</div>
                 ))}
                 {isMarketInsufficient && (
-                  <div className="mt-5 text-yellow-strong">
+                  <div className="mt-4 text-yellow-strong">
                     <Trans>Insufficient pool balance to claim this funding fee</Trans>
                   </div>
                 )}
@@ -640,9 +640,9 @@ function ClaimModalComponent(p: {
       <div className="ConfirmationBox-main">
         <div className="text-center">{claimAmountText}</div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-button-background" />
+      <div className="mb-20 mt-12 h-1 bg-button-background" />
       {selection.isLimitReached && (
-        <AlertInfoCard type="info" hideClose className="mb-15">
+        <AlertInfoCard type="info" hideClose className="mb-12">
           <Trans>
             Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction
             to avoid oversized wallet confirmations.
@@ -650,7 +650,7 @@ function ClaimModalComponent(p: {
         </AlertInfoCard>
       )}
       <div className="ClaimSettleModal-info-row">
-        <div className="flex pl-22">
+        <div className="flex pl-20">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
             <div className="flex items-start">
               <Trans>MARKET</Trans>
@@ -672,7 +672,7 @@ function ClaimModalComponent(p: {
       </div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
       {hasInsufficientBalance && (
-        <AlertInfo type="warning" compact className="mb-15">
+        <AlertInfo type="warning" compact className="mb-12">
           <Trans>
             Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this
             claim.
@@ -680,7 +680,7 @@ function ClaimModalComponent(p: {
         </AlertInfo>
       )}
       {errors?.isOutOfTokenError?.isGasPaymentToken && (
-        <AlertInfoCard type="error" hideClose className="mb-15">
+        <AlertInfoCard type="error" hideClose className="mb-12">
           <InsufficientGmxAccountGasTokenBalanceMessage
             chainId={chainId}
             gasPaymentTokenAddress={errors.isOutOfTokenError.tokenAddress}
@@ -689,7 +689,7 @@ function ClaimModalComponent(p: {
         </AlertInfoCard>
       )}
       <SimpleNetworkFeeRow
-        className="mb-15"
+        className="mb-12"
         details={selection.selectedEntries.length > 0 ? networkFee.details : undefined}
         isLoading={networkFee.isLoading}
         source={networkFee.source}

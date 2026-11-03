@@ -11,7 +11,7 @@ export function SocialBackground() {
   return (
     <>
       <div
-        className="absolute -right-6 bottom-0 hidden h-[472px] w-[931px] opacity-70 blur-[46px] sm:block"
+        className="absolute -right-4 bottom-0 hidden h-[472px] w-[931px] opacity-70 blur-[46px] sm:block"
         style={firstBgStyle}
       />
       <div

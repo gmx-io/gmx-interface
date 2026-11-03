@@ -19,7 +19,7 @@ function RevenueCard({
   description: string;
 }) {
   return (
-    <div className="relative flex min-h-[320px] flex-col overflow-hidden rounded-20 bg-slate-900 p-28 shadow-[0_6px_8px_-6px_#BEC0DA]">
+    <div className="bg-slate-900 relative flex min-h-[320px] flex-col overflow-hidden rounded-20 p-24 shadow-[0_6px_8px_-6px_#BEC0DA]">
       <img
         src={revenueCardGlow}
         alt=""
@@ -27,8 +27,8 @@ function RevenueCard({
       />
       <img src={icon} alt="" className="relative size-60 select-none" />
       <div className="relative mt-auto flex flex-col">
-        <span className="text-12 font-medium uppercase tracking-[0.864px] text-blue-300">{label}</span>
-        <h3 className="mt-8 text-[40px] font-medium leading-base -tracking-[1.2px] text-white">{title}</h3>
+        <span className="text-12 text-blue-300 font-medium uppercase tracking-[0.864px]">{label}</span>
+        <h3 className="text-white mt-8 text-[40px] font-medium leading-base -tracking-[1.2px]">{title}</h3>
         <p className="mt-8 text-16 -tracking-[0.512px] text-slate-400">{description}</p>
       </div>
     </div>
@@ -37,7 +37,7 @@ function RevenueCard({
 
 export function RevenueSection() {
   return (
-    <section className="w-full bg-white px-16 py-60 text-slate-900 sm:px-40 sm:py-[120px]">
+    <section className="bg-white text-slate-900 w-full px-16 py-56 sm:px-40 sm:py-120">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow>
           <Trans>How you earn</Trans>
@@ -49,7 +49,7 @@ export function RevenueSection() {
             <Trans>Stack them.</Trans>
           </span>
         </h2>
-        <div className="mt-28 grid grid-cols-1 gap-20 sm:mt-[35px] md:grid-cols-2">
+        <div className="mt-24 grid grid-cols-1 gap-20 sm:mt-32 md:grid-cols-2">
           <RevenueCard
             icon={icBuilderCode}
             label={t`Builder code`}

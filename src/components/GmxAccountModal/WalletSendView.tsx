@@ -698,7 +698,7 @@ export function WalletSendView() {
   return (
     <div className="flex grow flex-col overflow-y-auto p-adaptive">
       <div className="flex flex-col gap-[--padding-adaptive]">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="text-body-medium text-textIcon-secondary">
             <Trans>Asset</Trans>
           </div>
@@ -720,7 +720,7 @@ export function WalletSendView() {
           />
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="text-body-medium text-textIcon-secondary">
             <Trans>Network</Trans>
           </div>
@@ -746,7 +746,7 @@ export function WalletSendView() {
           />
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="text-body-medium text-textIcon-secondary">
             <Trans>Recipient address</Trans>
           </div>
@@ -757,12 +757,12 @@ export function WalletSendView() {
             spellCheck={false}
             autoComplete="off"
             placeholder="0x..."
-            className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-14 py-13 text-16 leading-base
+            className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-12 py-12 text-16 leading-base
                        outline-none placeholder:text-textIcon-secondary focus-within:border-blue-strong hover:bg-fill-surfaceHover"
           />
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="text-body-medium flex items-center justify-between text-textIcon-secondary">
             <Trans>Amount</Trans>
             {selectedToken !== undefined && walletBalance !== undefined && (
@@ -787,12 +787,12 @@ export function WalletSendView() {
             <NumberInput
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
-              className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-13 pl-14 pr-96 text-16 leading-base
+              className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-12 pl-12 pr-96 text-16 leading-base
                          focus-within:border-blue-strong hover:bg-fill-surfaceHover"
               placeholder="0.00"
               maxDecimals={selectedToken?.decimals}
             />
-            <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+            <div className="pointer-events-none absolute right-12 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-textIcon-secondary">{selectedToken?.symbol}</span>
             </div>
           </div>
@@ -830,7 +830,7 @@ export function WalletSendView() {
       <div className="h-32 shrink-0 grow" />
 
       {selectedTokenAddress && (
-        <div className="mb-16 flex flex-col gap-10">
+        <div className="mb-16 flex flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Estimated time</Trans>}
             valueClassName="numbers"

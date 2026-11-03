@@ -17,11 +17,11 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
       switch (event.event) {
         case TxnEventName.Submitted:
           helperToast.info(
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-8">
               <div className="text-body-medium font-medium">
                 <Trans>Processing claim...</Trans>
               </div>
-              <div className="flex flex-row gap-10 text-textIcon-secondary">
+              <div className="flex flex-row gap-8 text-textIcon-secondary">
                 <Trans>May take a few minutes</Trans>
                 <SpinnerIcon className="spin size-15 text-textIcon-primary" />
               </div>
@@ -31,7 +31,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
           return;
         case TxnEventName.Error:
           helperToast.error(
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-8">
               <div className="text-body-medium font-medium">
                 <Trans>Failed to claim funds</Trans>
               </div>
@@ -42,7 +42,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
           return;
         case TxnEventName.Sent:
           helperToast.success(
-            <div className="flex flex-col gap-10">
+            <div className="flex flex-col gap-8">
               <div className="text-body-medium font-medium">
                 <Trans>Funds claimed</Trans>
               </div>

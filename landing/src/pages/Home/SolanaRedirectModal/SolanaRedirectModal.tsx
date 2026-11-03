@@ -24,7 +24,7 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
         </p>
 
         <button
-          className="btn-landing w-full rounded-8 py-18 text-center text-16 tracking-[-0.192px]"
+          className="btn-landing w-full rounded-8 py-16 text-center text-16 tracking-[-0.192px]"
           onClick={onConfirm}
         >
           <Trans>Open GMTrade</Trans>

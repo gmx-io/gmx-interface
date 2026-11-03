@@ -115,5 +115,5 @@ export function GmSwapWarningsRow({
     return null;
   }
 
-  return <div className="flex flex-col gap-14">{warnings}</div>;
+  return <div className="flex flex-col gap-12">{warnings}</div>;
 }

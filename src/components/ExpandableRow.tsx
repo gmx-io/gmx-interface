@@ -149,13 +149,13 @@ export function ExpandableRow({
           key="handle"
           className={cx("transition-[margin] duration-200", {
             "mb-4": open && wrapped,
-            "mb-14": open && !wrapped,
+            "mb-12": open && !wrapped,
           })}
         >
           <SyntheticsInfoRow
             className={cx("group relative !items-center gmx-hover:text-blue-strong", {
               "cursor-not-allowed": disabled,
-              "px-12 py-10": wrapped,
+              "px-12 py-8": wrapped,
             })}
             onClick={disabled ? undefined : handleOnClick}
             label={
@@ -173,7 +173,7 @@ export function ExpandableRow({
             exit="exit"
             onAnimationComplete={handleAnimationComplete}
           >
-            <div className={cx(contentClassName, { "px-12 pb-10": wrapped })}>{children}</div>
+            <div className={cx(contentClassName, { "px-12 pb-8": wrapped })}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

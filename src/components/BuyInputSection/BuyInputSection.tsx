@@ -170,7 +170,7 @@ export default function BuyInputSection(props: Props) {
     <div data-qa={qa}>
       <div
         className={cx(
-          `text-body-small flex cursor-text flex-col justify-between gap-2 rounded-8
+          `text-body-small flex cursor-text flex-col justify-between gap-4 rounded-8
           border border-fill-surfaceElevated bg-fill-surfaceElevated px-12 py-8`,
           {
             "bg-fill-surfaceBase": isDisabled,

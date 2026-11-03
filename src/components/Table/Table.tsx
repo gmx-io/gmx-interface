@@ -66,7 +66,7 @@ export const TableTdActionable = forwardRef<
         "text-body-medium relative select-none last-of-type:[&:not(:first-of-type)]:text-right",
         "px-4 py-12 pb-8 first-of-type:pl-20 first-of-type:before:rounded-l-8",
         "last-of-type:pr-20 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
-        "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
+        "before:absolute before:bottom-4 before:left-0 before:top-4 before:z-0 before:bg-fill-surfaceElevated50",
         "before:h-[calc(100%-4px)] before:w-full before:content-['']",
         className
       )}

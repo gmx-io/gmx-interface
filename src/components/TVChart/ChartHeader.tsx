@@ -163,7 +163,7 @@ function ChartHeaderMobile() {
           role="button"
           onClick={toggleDetailsVisible}
         >
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col items-end gap-4">
             <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
             <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
@@ -423,7 +423,7 @@ function ChartHeaderDesktop() {
           </div>
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
-          <div className="flex flex-col justify-center gap-2">
+          <div className="flex flex-col justify-center gap-4">
             <div className="text-body-medium numbers">{avgPrice}</div>
             <div className="text-body-small numbers">{dayPriceDelta}</div>
           </div>
@@ -436,7 +436,7 @@ function ChartHeaderDesktop() {
 
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex flex-col justify-center gap-2">
+    <div className="flex flex-col justify-center gap-4">
       <div className="text-caption whitespace-nowrap text-textIcon-secondary">{label}</div>
       <div className="text-body-medium numbers">{value}</div>
     </div>

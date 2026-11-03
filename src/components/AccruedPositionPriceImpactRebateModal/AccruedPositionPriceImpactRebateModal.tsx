@@ -37,7 +37,7 @@ export const AccruedPositionPriceImpactRebateModal = memo(
             </Trans>
           </div>
         </div>
-        <div className="mb-20 mt-15 h-1 bg-button-background" />
+        <div className="mb-20 mt-12 h-1 bg-button-background" />
         <div>
           <div className="App-card-content">
             <div className="ClaimSettleModal-header">

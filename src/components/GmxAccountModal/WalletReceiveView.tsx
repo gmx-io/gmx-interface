@@ -55,7 +55,7 @@ export function WalletReceiveView() {
       </div>
 
       <div className="flex flex-col items-center gap-12 self-stretch">
-        <div className="text-body-large self-stretch break-all px-28 text-center font-medium">
+        <div className="text-body-large self-stretch break-all px-24 text-center font-medium">
           <span className="text-textIcon-primary">{address.slice(0, 5)}</span>
           <span className="text-textIcon-secondary">{address.slice(5, -4)}</span>
           <span className="text-textIcon-primary">{address.slice(-4)}</span>

@@ -61,7 +61,7 @@ export function TradingVolumeChartCard({
               variant="none"
               maxAllowedWidth={350}
               handle={
-                <span className="text-body-small inline-flex items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 font-medium text-blue-strong">
+                <span className="text-body-small inline-flex items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
                   <img className="h-10" src={sparkleIcon} alt="" />
                   <Trans>Earns MegaETH points</Trans>
                 </span>
@@ -86,7 +86,7 @@ export function TradingVolumeChartCard({
         topRightContent={
           <button
             type="button"
-            className="text-body-small flex items-center gap-3 font-medium text-textIcon-secondary hover:text-textIcon-primary"
+            className="text-body-small flex items-center gap-4 font-medium text-textIcon-secondary hover:text-textIcon-primary"
             onClick={() => setIsShareModalVisible(true)}
           >
             <Trans>Share</Trans> <ShareArrowFilledIcon className="size-12" />
@@ -151,18 +151,18 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
       valueChange={formatCountDelta(stats?.summary.tradersNetDelta)}
       isValueChangePositive={(stats?.summary.tradersNetDelta ?? 0) >= 0}
       topRightContent={
-        <div className="text-body-small flex items-center gap-[13px] font-medium text-textIcon-secondary">
-          <span className="flex items-center gap-[9px]">
+        <div className="text-body-small flex items-center gap-12 font-medium text-textIcon-secondary">
+          <span className="flex items-center gap-8">
             <span className="size-[6px] shrink-0 rounded-full bg-green-strong" />
             <Trans>Gained</Trans>
           </span>
           {hasGraduatedTraders && (
-            <span className="flex items-center gap-[9px]">
+            <span className="flex items-center gap-8">
               <span className="size-[6px] shrink-0 rounded-full bg-yellow-strong" />
               <Trans>Graduated</Trans>
             </span>
           )}
-          <span className="flex items-center gap-[9px]">
+          <span className="flex items-center gap-8">
             <span className="size-[6px] shrink-0 rounded-full bg-red-strong" />
             <Trans>Lost</Trans>
           </span>

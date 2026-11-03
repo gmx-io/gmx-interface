@@ -6,7 +6,7 @@ export function ApplyReferralCodeButtonContent() {
   return (
     <div className="flex items-center justify-center gap-8">
       <Trans>Apply referral code</Trans>
-      <ArrowRightIcon className="-my-10 size-24" />
+      <ArrowRightIcon className="-my-8 size-24" />
     </div>
   );
 }

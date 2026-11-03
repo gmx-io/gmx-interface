@@ -126,13 +126,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
   return (
     <div
       className={cx(
-        "flex justify-between gap-18 rounded-8 bg-fill-surfaceBase px-16 py-20 max-lg:flex-col max-md:px-12 max-md:py-12"
+        "flex justify-between gap-16 rounded-8 bg-fill-surfaceBase px-16 py-20 max-lg:flex-col max-md:px-12 max-md:py-12"
       )}
     >
       <div
         className={cx("flex", {
-          "flex-col gap-18": isMobile,
-          "items-center gap-28": !isMobile,
+          "flex-col gap-16": isMobile,
+          "items-center gap-24": !isMobile,
         })}
       >
         {!glvOrMarketInfo ? (
@@ -141,7 +141,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
           <>
             <div
               className={cx("flex items-center justify-between ", {
-                "border-b-1/2 border-stroke-primary pb-18": isOpen && isMobile,
+                "border-b-1/2 border-stroke-primary pb-16": isOpen && isMobile,
               })}
             >
               <div className="flex items-center gap-20">
@@ -165,7 +165,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
               )}
             </div>
             {(isOpen || !isMobile) && (
-              <div className="flex gap-14 max-md:flex-col">
+              <div className="flex gap-12 max-md:flex-col">
                 <PoolsDetailsMarketAmount
                   label={<Trans>TVL (supply)</Trans>}
                   value={

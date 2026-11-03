@@ -43,7 +43,7 @@ export function AlertInfo({
       )}
       onClick={onClick}
     >
-      <div className="pr-6 pt-2">
+      <div className="pr-4 pt-4">
         <Icon aria-label={t`Alert icon`} className="block" />
       </div>
       <div className="text-body-small">{children}</div>

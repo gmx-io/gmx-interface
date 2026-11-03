@@ -98,8 +98,8 @@ const CONTEXTS: Context[] = [
 
 const SURFACES: { id: Surface; title: string; className: string }[] = [
   { id: "tooltip", title: "Tooltip", className: "Tooltip-popup" },
-  { id: "card", title: "Card", className: "rounded-8 bg-fill-surfaceBase p-10 text-body-medium" },
-  { id: "page", title: "Page", className: "p-10 text-body-medium" },
+  { id: "card", title: "Card", className: "rounded-8 bg-fill-surfaceBase p-8 text-body-medium" },
+  { id: "page", title: "Page", className: "p-8 text-body-medium" },
 ];
 
 export function NumericAffixes() {

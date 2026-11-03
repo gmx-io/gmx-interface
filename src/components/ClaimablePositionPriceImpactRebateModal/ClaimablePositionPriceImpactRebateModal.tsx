@@ -447,7 +447,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
           </Trans>
         </div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-button-background" />
+      <div className="mb-20 mt-12 h-1 bg-button-background" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-header">
@@ -464,7 +464,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
         </div>
       </div>
       {errors?.isOutOfTokenError?.isGasPaymentToken && (
-        <AlertInfoCard type="error" hideClose className="mb-15">
+        <AlertInfoCard type="error" hideClose className="mb-12">
           <InsufficientGmxAccountGasTokenBalanceMessage
             chainId={chainId}
             gasPaymentTokenAddress={errors.isOutOfTokenError.tokenAddress}
@@ -473,7 +473,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
         </AlertInfoCard>
       )}
       <SimpleNetworkFeeRow
-        className="mb-15"
+        className="mb-12"
         details={networkFee.details}
         isLoading={networkFee.isLoading}
         source={networkFee.source}

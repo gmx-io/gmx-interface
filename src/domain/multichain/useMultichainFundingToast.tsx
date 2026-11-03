@@ -56,7 +56,7 @@ export function getMultichainFundingToastContent({
         const isSuccess = !isLoading && !isError;
 
         return (
-          <div key={staticId} className="flex items-center justify-between gap-6">
+          <div key={staticId} className="flex items-center justify-between gap-4">
             <div className="text-textIcon-secondary">
               {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
               {array.length > 1 && <> {formattedAmount}</>}

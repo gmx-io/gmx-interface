@@ -1096,7 +1096,7 @@ export function OrderEditor(p: Props) {
           )}
         </div>
 
-        <div className="flex flex-col gap-14 px-20 pb-16">
+        <div className="flex flex-col gap-12 px-20 pb-16">
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}

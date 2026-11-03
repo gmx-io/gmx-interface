@@ -122,7 +122,7 @@ function SimpleChartTooltip({
   const item = payload[0].payload;
 
   return (
-    <div className="rounded-8 border border-stroke-primary bg-fill-surfaceBase p-10">
+    <div className="rounded-8 border border-stroke-primary bg-fill-surfaceBase p-8">
       <div className="text-body-small mb-4 text-textIcon-secondary">{item.dateTooltip}</div>
       <div className="text-body-small text-textIcon-primary numbers">
         {isUsd ? <NumericValue parts={formatChartTooltipUsdParts(item[fieldName])} /> : item[fieldName]}
@@ -192,8 +192,8 @@ function TradersReferredChartTooltip({
   const hasGraduated = item.tradersGraduated !== 0;
 
   return (
-    <div className="max-w-[240px] rounded-8 border border-stroke-primary bg-fill-surfaceBase p-10">
-      <div className="text-body-small mb-6 text-textIcon-secondary">{item.dateTooltip}</div>
+    <div className="max-w-[240px] rounded-8 border border-stroke-primary bg-fill-surfaceBase p-8">
+      <div className="text-body-small mb-4 text-textIcon-secondary">{item.dateTooltip}</div>
       <div className="text-body-small flex items-center justify-between gap-12 text-textIcon-primary">
         <span>
           <Trans>Gained</Trans>
@@ -201,27 +201,27 @@ function TradersReferredChartTooltip({
         <span className="text-green-strong numbers">{item.tradersGained}</span>
       </div>
       {hasGraduated && (
-        <div className="text-body-small mt-2 flex items-center justify-between gap-12 text-textIcon-primary">
+        <div className="text-body-small mt-4 flex items-center justify-between gap-12 text-textIcon-primary">
           <span>
             <Trans>Graduated</Trans>
           </span>
           <span className="text-yellow-strong numbers">{item.tradersGraduated}</span>
         </div>
       )}
-      <div className="text-body-small mt-2 flex items-center justify-between gap-12 text-textIcon-primary">
+      <div className="text-body-small mt-4 flex items-center justify-between gap-12 text-textIcon-primary">
         <span>
           <Trans>Lost</Trans>
         </span>
         <span className="text-red-strong numbers">{item.tradersLost}</span>
       </div>
-      <div className="text-body-small mt-6 flex items-center justify-between gap-12 text-textIcon-primary">
+      <div className="text-body-small mt-4 flex items-center justify-between gap-12 text-textIcon-primary">
         <span>
           <Trans>Net</Trans>
         </span>
         <span className="numbers">{item.tradersNet}</span>
       </div>
       {hasGraduated && (
-        <div className="text-body-small mt-6 text-textIcon-secondary">
+        <div className="text-body-small mt-4 text-textIcon-secondary">
           <Trans>
             Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation
             threshold

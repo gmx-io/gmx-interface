@@ -217,7 +217,7 @@ export function MultichainMarketTokenSelector({
         {marketInfo && (
           <span className="inline-flex items-center">
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={getGlvOrMarketIconSymbol(marketInfo)}
               displaySize={20}
               chainIdBadge={

@@ -20,7 +20,7 @@ export const ShareCardFrame = forwardRef<HTMLDivElement, Props>(
         <div
           ref={ref}
           className={cx(
-            "aspect-[460/240] w-full rounded-9 bg-contain bg-no-repeat p-20 pb-28 max-md:p-16",
+            "aspect-[460/240] w-full rounded-9 bg-contain bg-no-repeat px-20 py-24 max-md:p-16",
             cardClassName
           )}
           style={style}
@@ -28,7 +28,7 @@ export const ShareCardFrame = forwardRef<HTMLDivElement, Props>(
           {children}
         </div>
         {loading && (
-          <div className="text-body-small absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 rounded-b-8 bg-[#22243a] px-8 py-6">
+          <div className="text-body-small absolute left-1/2 top-0 z-10 flex -translate-x-1/2 items-center gap-8 rounded-b-8 bg-[#22243a] px-8 py-4">
             <SpinningLoader className="size-14" />
             <p className="font-medium text-textIcon-onButton">
               <Trans>Generating shareable image...</Trans>

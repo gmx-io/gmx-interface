@@ -43,7 +43,7 @@ export default function NestedTab<V extends string | number>({
           <button
             type="button"
             className={cx(
-              `-mb-[0.5px] flex items-center justify-center gap-4 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11
+              `flex items-center justify-center gap-4 border-b-[2.5px] border-b-[transparent] px-20 pb-8 pt-12
               font-medium hover:text-textIcon-primary`,
               commonOptionClassname,
               {
@@ -53,7 +53,7 @@ export default function NestedTab<V extends string | number>({
             )}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="size-16 px-2 text-textIcon-secondary" />
+            <ChevronDownIcon className="size-16 px-4 text-textIcon-secondary" />
           </button>
         ) : (
           <Button
@@ -62,7 +62,7 @@ export default function NestedTab<V extends string | number>({
             className={cx({ "!bg-button-secondary !text-textIcon-primary": selectedSubOption })}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="mt-1 size-16 px-2 text-textIcon-secondary" />
+            <ChevronDownIcon className="size-16 px-4 text-textIcon-secondary" />
           </Button>
         )}
       </Menu.Button>

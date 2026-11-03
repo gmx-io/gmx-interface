@@ -251,7 +251,7 @@ export function MultichainTokenSelector({
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-strong"
+        className="group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {!token.isPlatformToken || token.isPlatformTradingToken ? (

@@ -21,8 +21,8 @@ export function EarningsStat({
   className?: string;
 }) {
   return (
-    <div className={cx("flex flex-col gap-2", className)}>
-      <span className="text-body-small flex items-center gap-6 font-medium text-textIcon-secondary">{label}</span>
+    <div className={cx("flex flex-col gap-4", className)}>
+      <span className="text-body-small flex items-center gap-4 font-medium text-textIcon-secondary">{label}</span>
       <span className="text-body-large font-medium numbers">{children}</span>
     </div>
   );

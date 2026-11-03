@@ -1314,7 +1314,7 @@ export const DepositView = () => {
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
         {!showEmptyState && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <div className="text-body-medium text-textIcon-secondary">
               <Trans>Asset</Trans>
             </div>
@@ -1324,7 +1324,7 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-14 py-13 gmx-hover:bg-fill-surfaceHover"
+              className="flex items-center justify-between rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-12 py-12 gmx-hover:bg-fill-surfaceHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
@@ -1358,7 +1358,7 @@ export const DepositView = () => {
             </div>
           </div>
         )}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div className="text-body-medium text-textIcon-secondary">
             <Trans>From network</Trans>
           </div>
@@ -1382,8 +1382,8 @@ export const DepositView = () => {
         </div>
 
         {!showEmptyState && (
-          <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
-            <div className="text-body-medium flex items-center justify-between gap-6 text-textIcon-secondary">
+          <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
+            <div className="text-body-medium flex items-center justify-between gap-4 text-textIcon-secondary">
               <Trans>Deposit</Trans>
               {selectedToken !== undefined && (
                 <div className="flex items-center gap-8">
@@ -1408,12 +1408,12 @@ export const DepositView = () => {
               <NumberInput
                 value={inputValue}
                 onValueChange={(e) => setInputValue(e.target.value)}
-                className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-13 pl-12 pr-96 text-16 leading-base
+                className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-12 pl-12 pr-96 text-16 leading-base
                          focus-within:border-blue-strong hover:bg-fill-surfaceHover"
                 placeholder="0.00"
                 maxDecimals={selectedTokenSourceChainDecimals}
               />
-              <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
+              <div className="pointer-events-none absolute right-12 top-1/2 flex -translate-y-1/2 items-center gap-8">
                 <span className="text-textIcon-secondary">{selectedToken?.symbol}</span>
               </div>
             </div>
@@ -1474,7 +1474,7 @@ export const DepositView = () => {
       )}
 
       {!showEmptyState && depositViewTokenAddress && (
-        <div className="mb-16 flex flex-col gap-10">
+        <div className="mb-16 flex flex-col gap-8">
           <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
@@ -1498,7 +1498,7 @@ export const DepositView = () => {
         </div>
       )}
 
-      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-10 bg-fill-surfaceBase pt-8">
+      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-8 bg-fill-surfaceBase pt-8">
         {showEmptyState ? (
           <>
             <Button variant="primary-action" className="w-full shrink-0" type="button" onClick={handleReceiveToWallet}>

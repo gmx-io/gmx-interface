@@ -108,7 +108,7 @@ export function TPSLOrdersList({
 
   if (isMobile) {
     return (
-      <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-60 pt-8">
+      <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-56 pt-12">
         {pendingOrders.map((order) => (
           <PendingTPSLOrder
             key={order.id}
@@ -404,7 +404,7 @@ function TPSLOrderCard({
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
-    <div className="flex flex-col gap-10 border-b-1/2 border-stroke-primary p-16 last:border-b-0">
+    <div className="flex flex-col gap-8 border-b-1/2 border-stroke-primary p-16 last:border-b-0">
       <div className="flex items-center justify-between">
         <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Type</Trans>

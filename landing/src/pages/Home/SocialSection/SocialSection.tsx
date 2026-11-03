@@ -36,27 +36,27 @@ export function SocialSection() {
     []
   );
   return (
-    <section className="flex w-full flex-col border-t-0 border-slate-600 bg-slate-900 pt-0 text-white sm:border-t-1/2 sm:pt-[120px]">
-      <div className="mx-auto flex flex-col gap-28 overflow-x-clip sm:gap-44">
+    <section className="border-slate-600 bg-slate-900 text-white flex w-full flex-col border-t-0 pt-0 sm:border-t-1/2 sm:pt-120">
+      <div className="mx-auto flex flex-col gap-24 overflow-x-clip sm:gap-40">
         <SocialSlider />
       </div>
-      <div className="relative flex w-full overflow-clip px-16 pt-60 sm:px-40 sm:pt-[120px]">
+      <div className="relative flex w-full overflow-clip px-16 pt-56 sm:px-40 sm:pt-120">
         <SocialBackground />
-        <div className="relative mx-auto flex w-full flex-col gap-36 sm:w-[1200px]">
+        <div className="relative mx-auto flex w-full flex-col gap-32 sm:w-[1200px]">
           <h2 className="text-heading-1">
             <Trans>
               Driven by <br /> our community
             </Trans>
           </h2>
-          <div className="flex w-full flex-col-reverse items-center justify-between gap-36 border-t-1/2 border-slate-600 md:flex-row">
-            <div className="flex flex-row flex-wrap gap-20 sm:gap-36">
+          <div className="border-slate-600 flex w-full flex-col-reverse items-center justify-between gap-32 border-t-1/2 md:flex-row">
+            <div className="flex flex-row flex-wrap gap-20 sm:gap-32">
               {links.map((link) => (
                 <div
                   key={link.name}
                   onClick={link.onClick}
-                  className="group flex cursor-pointer flex-col justify-center gap-4 py-0 sm:py-28"
+                  className="group flex cursor-pointer flex-col justify-center gap-4 py-0 sm:py-24"
                 >
-                  <div className="leading-body-sm duration-180 flex w-full flex-row gap-4 text-14 -tracking-[0.448px] text-slate-500 transition-colors group-hover:text-blue-300">
+                  <div className="leading-body-sm duration-180 text-14 text-slate-500 group-hover:text-blue-300 flex w-full flex-row gap-4 -tracking-[0.448px] transition-colors">
                     <link.IconComponent className="size-20" />
                     <span className="duration-180 transition-transform group-hover:translate-x-4">{link.name}</span>
                   </div>
@@ -67,7 +67,7 @@ export function SocialSection() {
 
             <form
               action="https://gmxio.substack.com/subscribe"
-              className="flex w-full flex-row items-stretch gap-8 py-28 md:w-auto"
+              className="flex w-full flex-row items-stretch gap-8 py-24 md:w-auto"
               method="GET"
             >
               <input
@@ -75,23 +75,23 @@ export function SocialSection() {
                 name="email"
                 id="email"
                 required
-                className="filled:border-slate-600 filled:bg-[#252635] w-full min-w-0 rounded-8 border-1/2 border-slate-600/0 bg-slate-800 px-16 py-10 text-16 font-medium -tracking-[0.512px] outline-none placeholder:text-slate-500 hover:bg-[#252635] focus:bg-[#252635] sm:min-w-[350px] lg:w-auto"
+                className="filled:border-slate-600 filled:bg-[#252635] border-slate-600/0 bg-slate-800 placeholder:text-slate-500 w-full min-w-0 rounded-8 border-1/2 px-16 py-8 text-16 font-medium -tracking-[0.512px] outline-none hover:bg-[#252635] focus:bg-[#252635] sm:min-w-[350px] lg:w-auto"
                 placeholder="Your e-mail"
               />
               <button
                 type="submit"
-                className="btn-landing rounded-8 px-16 py-10 text-16 font-medium -tracking-[0.512px] text-white"
+                className="btn-landing text-white rounded-8 px-16 py-8 text-16 font-medium -tracking-[0.512px]"
               >
                 <Trans>Subscribe</Trans>
               </button>
             </form>
           </div>
-          <div className="flex w-full flex-row flex-wrap items-center gap-12 py-20 text-12 font-medium tracking-[0.024px] text-slate-500">
+          <div className="text-12 text-slate-500 flex w-full flex-row flex-wrap items-center gap-12 py-20 font-medium tracking-[0.024px]">
             <a
               href="/referral-terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="duration-180 transition-colors hover:text-white active:text-white/80"
+              className="duration-180 hover:text-white active:text-white/80 transition-colors"
             >
               <Trans>Referral terms</Trans>
             </a>
@@ -99,21 +99,21 @@ export function SocialSection() {
               href="https://docs.gmx.io/docs/community/#media-kit"
               target="_blank"
               rel="noopener noreferrer"
-              className="duration-180 transition-colors hover:text-white active:text-white/80"
+              className="duration-180 hover:text-white active:text-white/80 transition-colors"
             >
               <Trans>Media kit</Trans>
             </a>
             <a className="inline sm:hidden" href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
               <Trans>Terms and conditions</Trans>
             </a>
-            <div className="mx-0 flex flex-row items-center gap-8 text-white sm:mx-auto">
+            <div className="text-white mx-0 flex flex-row items-center gap-8 sm:mx-auto">
               <TradingViewIcon className="size-20" />
               <span>
                 <Trans>Charts by TradingView</Trans>
               </span>
             </div>
             <a
-              className="duration-180 hidden transition-colors hover:text-white active:text-white/80 sm:inline"
+              className="duration-180 hover:text-white active:text-white/80 hidden transition-colors sm:inline"
               href="/terms-and-conditions"
               target="_blank"
               rel="noopener noreferrer"

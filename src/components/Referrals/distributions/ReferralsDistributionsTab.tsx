@@ -55,7 +55,7 @@ export function ReferralsDistributionsTab({ isLoading, account, referralsData }:
   }
 
   return (
-    <div className="flex grow gap-8 max-md:flex-col max-md:pb-[100px]">
+    <div className="flex grow gap-8 max-md:flex-col max-md:pb-96">
       <div className="flex grow flex-col gap-8">
         {currentRebateData.length > 0 ? (
           <RebatesDistributionTable

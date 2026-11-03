@@ -23,7 +23,7 @@ function ThemeOption({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
+      className={cx("flex cursor-pointer items-center justify-between px-12 py-8 hover:bg-fill-surfaceHover", {
         "bg-button-background": isSelected,
       })}
       onClick={() => {
@@ -62,7 +62,7 @@ export function ThemeSelector() {
   return (
     <SelectorBase
       modalLabel={t`Theme`}
-      desktopPanelClassName="!z-[10000] w-[140px] !top-[10px]"
+      desktopPanelClassName="!z-[10000] w-[140px] !top-8"
       chevronClassName="hidden"
       handleClassName="max-md:[&>span]:grow"
       label={

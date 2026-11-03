@@ -294,7 +294,7 @@ function ActiveCodeExplanation({
 
   return (
     <Trans>
-      <div className="text-body-medium mb-2 font-medium text-textIcon-primary">
+      <div className="text-body-medium mb-4 font-medium text-textIcon-primary">
         You're now receiving a {currentTierDiscount}% discount on your trades!
       </div>
       <div className="text-body-small text-textIcon-secondary">
@@ -331,7 +331,7 @@ function BalancerProgramExplanation({
 }) {
   return (
     <>
-      <div className="text-body-medium mb-2 font-medium text-textIcon-primary">
+      <div className="text-body-medium mb-4 font-medium text-textIcon-primary">
         <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>
       </div>
       <div className="text-body-small text-textIcon-secondary">

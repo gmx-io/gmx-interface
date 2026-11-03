@@ -22,7 +22,7 @@ export function OverviewChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-24 rounded-8 border-1/2 border-stroke-primary bg-fill-background/50 px-adaptive pb-10 pt-adaptive">
+    <div className="flex flex-col gap-24 rounded-8 border-1/2 border-stroke-primary bg-fill-background/50 px-adaptive pb-8 pt-adaptive">
       <div className="flex items-start justify-between">
         <div>
           <div className="text-body-small mb-4 font-medium text-textIcon-secondary">
@@ -38,7 +38,7 @@ export function OverviewChartCard({
             <div className="text-h4 text-textIcon-primary numbers">{value}</div>
             {valueChange && (
               <div
-                className={cx("text-body-small rounded-full px-6 py-2 font-medium numbers", {
+                className={cx("text-body-small rounded-full px-4 py-4 font-medium numbers", {
                   "bg-green-background text-green-strong": isValueChangePositive !== false,
                   "bg-red-background text-red-strong": isValueChangePositive === false,
                 })}

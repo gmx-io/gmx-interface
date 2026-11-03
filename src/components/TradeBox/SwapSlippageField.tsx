@@ -136,7 +136,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
               disabled={disabled}
               onClick={() => handlePresetClick(option)}
               className={cx(
-                "text-body-small rounded-4 px-6 py-4 transition-colors",
+                "text-body-small rounded-4 px-4 py-4 transition-colors",
                 disabled
                   ? "cursor-default bg-button-background text-textIcon-disabled"
                   : isSelected
@@ -152,7 +152,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
         <div
           onClick={!disabled && !isCustom ? handleCustomClick : undefined}
           className={cx(
-            "text-body-small flex w-54 items-center justify-center rounded-4 px-6 py-4 transition-colors",
+            "text-body-small flex w-54 items-center justify-center rounded-4 px-4 py-4 transition-colors",
             disabled
               ? "cursor-default bg-button-background text-textIcon-disabled"
               : isCustom || (!isPresetValue && allowedSlippage > 0)
@@ -168,7 +168,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
                 value={customValue}
                 onChange={handleCustomChange}
                 onBlur={handleCustomBlur}
-                className="bg-transparent text-body-small mr-2 w-24 p-0 text-right outline-none placeholder:text-textIcon-secondary"
+                className="bg-transparent text-body-small mr-4 w-24 p-0 text-right outline-none placeholder:text-textIcon-secondary"
               />
               <span>%</span>
             </>

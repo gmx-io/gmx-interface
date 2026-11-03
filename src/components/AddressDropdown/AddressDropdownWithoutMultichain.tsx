@@ -43,7 +43,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
       {({ open }) => (
         <>
           <Menu.Button as="div">
-            <Button variant="secondary" size="controlled" className="flex h-32 items-center gap-8 px-15 pr-12 md:h-40">
+            <Button variant="secondary" size="controlled" className="flex h-32 items-center gap-8 px-12 md:h-40">
               <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
               <span className="text-body-medium font-medium text-textIcon-primary">
@@ -87,7 +87,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
             </Menu.Item>
             <Menu.Item>
               <div className="menu-item" onClick={openNotifyModal}>
-                <BellIcon className="ml-2 size-20 pt-2" />
+                <BellIcon className="ml-4 size-20 pt-4" />
                 <p>
                   <Trans>Alerts</Trans>
                 </p>

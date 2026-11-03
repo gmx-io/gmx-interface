@@ -71,7 +71,7 @@ function EarningsStripCell({
 }) {
   return (
     <div
-      className={cx("flex min-w-0 flex-col gap-2 px-8 first:pl-0 last:pr-0", {
+      className={cx("flex min-w-0 flex-col gap-4 px-8 first:pl-0 last:pr-0", {
         "items-start": align === "left",
         "items-center": align === "center",
         "items-end": align === "right",
@@ -98,7 +98,7 @@ function EarningsStrip({
   const attributionNote = attributionScope ? <EarningAttributionNote scope={attributionScope} /> : undefined;
 
   return (
-    <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-stroke-primary rounded-8 border-1/2 border-dashed border-stroke-primary bg-fill-surfaceBase/[0.88] px-12 py-6">
+    <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-stroke-primary rounded-8 border-1/2 border-dashed border-stroke-primary bg-fill-surfaceBase/[0.88] px-12 py-4">
       <EarningsStripCell label={<Trans>7d earnings</Trans>}>
         <EarningValue
           value={earnings?.recent}
@@ -207,7 +207,7 @@ export function GmGlvAssetCard({
           symbol={iconTokenSymbol}
           displaySize={40}
           badge={getMarketBadge(chainId, marketInfo)}
-          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-1" : undefined}
+          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-0" : undefined}
         />
       }
       title={title}
@@ -248,7 +248,7 @@ export function GmGlvAssetCard({
             variant="none"
             maxAllowedWidth={350}
             handle={
-              <span className="text-body-small inline-flex w-fit items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 font-medium text-blue-strong">
+              <span className="text-body-small inline-flex w-fit items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
                 <img className="h-10" src={sparkleIcon} alt="" />
                 <Trans>Earns MegaETH points</Trans>
               </span>

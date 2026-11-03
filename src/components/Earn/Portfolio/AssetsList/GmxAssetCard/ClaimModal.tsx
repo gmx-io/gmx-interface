@@ -460,7 +460,7 @@ function ClaimRewardOption({
         setIsChecked={setPrimaryChecked}
         disabled={isPrimaryDisabled}
         className={cx(
-          "w-full justify-between px-16 py-14 text-left",
+          "w-full justify-between px-16 py-12 text-left",
           isPrimaryDisabled ? "text-textIcon-secondary" : "text-textIcon-primary"
         )}
       >
@@ -477,7 +477,7 @@ function ClaimRewardOption({
       <Checkbox
         isChecked={Boolean(secondaryChecked)}
         setIsChecked={setSecondaryChecked}
-        className="w-full justify-start px-16 py-14 text-left"
+        className="w-full justify-start px-16 py-12 text-left"
       >
         <span className="text-body-medium">
           {nativeTokenSymbol && isNativeTokenToClaim ? (

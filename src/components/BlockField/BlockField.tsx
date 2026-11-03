@@ -97,7 +97,7 @@ export function BlockField({
     <div
       ref={setContainerRef}
       className={cx(
-        "text-body-medium flex items-center justify-between gap-10 rounded-4 bg-fill-surfaceElevated px-8 py-[2px]",
+        "text-body-medium flex items-center justify-between gap-8 rounded-4 bg-fill-surfaceElevated px-8 py-4",
         disabled ? "pointer-events-none cursor-default opacity-50" : "group cursor-pointer",
         className
       )}

@@ -37,7 +37,7 @@ function UnreadCountBadge({ unreadCount, isCollapsed = false }: { unreadCount: n
       className={cx(
         "text-body-small flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-secondary to-blue-strong font-medium text-textIcon-onButton dark:text-black",
         isCollapsed
-          ? "absolute -right-10 -top-8 size-16 outline outline-2 outline-[var(--color-fill-background)] group-hover:hidden"
+          ? "absolute -right-8 -top-8 size-16 outline outline-2 outline-[var(--color-fill-background)] group-hover:hidden"
           : "size-20"
       )}
     >
@@ -113,13 +113,13 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
         </span>
       }
       label={
-        <span className="inline-flex items-center gap-6">
+        <span className="inline-flex items-center gap-4">
           {supportLabel}
           {hasUnreadMessages ? (
             <UnreadCountBadge unreadCount={supportChatUnreadCount} />
           ) : (
             shouldShowNewBadge && (
-              <span className="text-body-small rounded-full bg-blue-backgroundOpacity px-6 py-1">
+              <span className="text-body-small rounded-full bg-blue-backgroundOpacity px-4">
                 <AnimatedGradientText className="inline-block font-medium">{newLabel}</AnimatedGradientText>
               </span>
             )

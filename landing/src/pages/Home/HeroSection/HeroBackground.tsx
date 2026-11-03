@@ -2,7 +2,7 @@ import heroBg from "img/bg_hero_blurred.png";
 
 export function HeroBackground() {
   return (
-    <div className="pointer-events-none absolute -right-[620px] h-[724px] w-[1547px] sm:-bottom-42 sm:left-83">
+    <div className="pointer-events-none absolute -right-[620px] h-[724px] w-[1547px] sm:-bottom-40 sm:left-80">
       {/* Pre-rendered blur with 720px padding preserves the fade without Safari's costly live filters. */}
       <img
         src={heroBg}

@@ -78,7 +78,7 @@ export function LpPanel({
           <Trans>LP</Trans>
         </h3>
 
-        <div className="flex gap-28">
+        <div className="flex gap-24">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
             <UsdStatValue
               usd={lifetimeUsd}

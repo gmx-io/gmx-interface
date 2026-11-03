@@ -71,7 +71,7 @@ export function PaxosRouteSelectorRow({
           label={selectedLabel}
           qa="swap-route"
         >
-          <div className="flex flex-col py-6">
+          <div className="flex flex-col py-4">
             <RouteOptionItem
               preference="auto"
               label={t`Auto`}
@@ -128,7 +128,7 @@ function RouteOptionItem({
 
   return (
     <div
-      className={cx("flex flex-col px-12 py-6", {
+      className={cx("flex flex-col px-12 py-4", {
         "bg-button-background": isSelected,
         "cursor-pointer hover:bg-fill-surfaceHover": !isDisabled,
         "cursor-not-allowed opacity-50": isDisabled,
@@ -151,7 +151,7 @@ function RouteOptionItem({
       <div className="flex items-baseline justify-between gap-8">
         <span className="text-body-small text-textIcon-secondary">{description}</span>
         {(isBestReturn || isFastest) && (
-          <span className="text-body-small flex shrink-0 gap-6">
+          <span className="text-body-small flex shrink-0 gap-4">
             {isBestReturn && (
               <span className="text-green-strong">
                 <Trans>Best return</Trans>
@@ -285,7 +285,7 @@ export function PaxosRouteAlerts({
 
       {zeroFeeCapacity !== undefined && routes.isPaxosOffered && (
         <AlertInfoCard type="warning" hideClose>
-          <div className="flex flex-col gap-6 [overflow-wrap:anywhere]">
+          <div className="flex flex-col gap-4 [overflow-wrap:anywhere]">
             <span>
               <Trans>
                 Not enough zero-fee capacity for this amount. Capacity left now:{" "}

@@ -19,7 +19,7 @@ export function PositionLifecycleFilterHeader({
   onClear: () => void;
 }) {
   return (
-    <div className="m-12 mb-4 flex items-center justify-between gap-8 rounded-8 border border-stroke-primary bg-fill-background/50 px-12 py-6">
+    <div className="m-12 mb-4 flex items-center justify-between gap-8 rounded-8 border border-stroke-primary bg-fill-background/50 px-12 py-4">
       <div className="text-body-small flex items-center gap-8">
         {indexName !== undefined && tokenSymbol !== undefined && isLong !== undefined ? (
           <MarketWithDirectionLabel indexName={indexName} isLong={isLong} tokenSymbol={tokenSymbol} />

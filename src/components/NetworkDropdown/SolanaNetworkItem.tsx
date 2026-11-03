@@ -32,7 +32,7 @@ export function SolanaNetworkItem({ onSelect }: { onSelect: () => void }) {
             </span>
           </div>
           {isSelected && (
-            <div className="mr-[2.5px] size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
+            <div className="mr-4 size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
           )}
         </div>
       )}

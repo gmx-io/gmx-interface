@@ -88,13 +88,13 @@ function TenderlyInput({
   );
 
   return (
-    <p className="mb-12 flex items-center justify-between gap-6">
+    <p className="mb-12 flex items-center justify-between gap-4">
       <span>{name}</span>
       <input
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="border-1 text-body-small w-[280px] border border-stroke-primary px-5 py-4"
+        className="border-1 text-body-small w-[280px] border border-stroke-primary px-4 py-4"
       />
     </p>
   );

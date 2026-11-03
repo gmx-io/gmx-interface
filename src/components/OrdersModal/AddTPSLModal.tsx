@@ -1259,7 +1259,7 @@ export function AddTPSLModal({
             )}
 
             {activeDecreaseAmounts && (
-              <div className="flex flex-col gap-10">
+              <div className="flex flex-col gap-8">
                 <SyntheticsInfoRow
                   label={<Trans>Receive</Trans>}
                   value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} layout="stacked" />}
@@ -1337,7 +1337,7 @@ export function AddTPSLModal({
           title={t`Execution details`}
           open={executionDetailsOpen}
           onToggle={setExecutionDetailsOpen}
-          contentClassName="flex flex-col gap-10"
+          contentClassName="flex flex-col gap-8"
           wrapped
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />

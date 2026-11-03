@@ -9,7 +9,7 @@ export function Eyebrow({ children, gradient }: Props) {
   return (
     <span
       className={cx(
-        "inline-flex h-24 w-fit items-center rounded-full bg-blue-300/20 px-6 text-16 font-medium -tracking-[0.512px]",
+        "bg-blue-300/20 inline-flex h-24 w-fit items-center rounded-full px-4 text-16 font-medium -tracking-[0.512px]",
         !gradient && "text-blue-400"
       )}
     >

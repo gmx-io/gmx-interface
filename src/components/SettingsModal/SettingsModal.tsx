@@ -271,7 +271,7 @@ export function SettingsModal({
       label={t`Settings`}
       qa="settings-modal"
       className="text-body-medium text-textIcon-secondary"
-      desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
+      desktopClassName="!items-start !justify-end !pt-56 !pr-8"
       desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">

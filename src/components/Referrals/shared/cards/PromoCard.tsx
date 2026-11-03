@@ -26,7 +26,7 @@ export function PromoCard({ title, subtitle, imgSrc, imgClassName, onClose }: Pr
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-8">
           <div className="min-w-0 flex-1">
-            <div className="text-body-medium mb-2 font-medium text-textIcon-primary">{title}</div>
+            <div className="text-body-medium mb-4 font-medium text-textIcon-primary">{title}</div>
             <div className="text-body-small text-textIcon-secondary">{subtitle}</div>
           </div>
         </div>

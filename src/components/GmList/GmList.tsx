@@ -285,7 +285,7 @@ export function GmList({
                   type="block"
                   className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
-                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-body-small"
+                  regularOptionClassname="!px-0 !pb-8 !pt-12 text-body-small"
                 />
               </ButtonRowScrollFadeContainer>
             </div>
@@ -300,7 +300,7 @@ export function GmList({
                   type="block"
                   className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
-                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-body-small"
+                  regularOptionClassname="!px-0 !pb-8 !pt-12 text-body-small"
                 />
               </ButtonRowScrollFadeContainer>
             </div>

@@ -883,7 +883,7 @@ function OrderItemSmall({
     <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
-          "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
+          "after:absolute after:left-8 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
             isCurrentMarket,
         })}
       >
@@ -1057,12 +1057,12 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-4">
       {typeLabelWithErrors}
       <TooltipWithPortal
         as="span"
         variant="none"
-        className="text-body-small min-w-0 cursor-help truncate rounded-4 bg-yellow-backgroundOpacity px-4 py-2 font-medium text-yellow-strong"
+        className="text-body-small min-w-0 cursor-help truncate rounded-4 bg-yellow-backgroundOpacity px-4 py-4 font-medium text-yellow-strong"
         handle={<Trans>Frozen</Trans>}
         content={<span className={cx({ "text-red-strong": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />

@@ -91,7 +91,7 @@ export function GlvList({
         variant="none"
         maxAllowedWidth={350}
         handle={
-          <span className="text-body-small inline-flex items-center gap-3 rounded-4 bg-blue-backgroundOpacity px-6 py-2 font-medium text-blue-strong">
+          <span className="text-body-small inline-flex items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
             <img className="h-10" src={sparkleIcon} alt="" />
             <Trans>Earns MegaETH points</Trans>
           </span>

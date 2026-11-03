@@ -31,13 +31,13 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
     <div
       onClick={onClick}
       style={style}
-      className="duration-180 group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-slate-800 bg-cover text-white transition-transform hover:-translate-y-4 lg:h-[380px] lg:w-[384px]"
+      className="duration-180 bg-slate-800 text-white group relative h-[200px] w-full cursor-pointer overflow-hidden rounded-20 bg-cover transition-transform hover:-translate-y-4 lg:h-[380px] lg:w-[384px]"
     >
       <BgPoolsLines className="duration-180 absolute left-0 top-0 h-full w-full transition-transform group-hover:translate-y-4" />
       <img
         src={coinImage}
         alt={name}
-        className="duration-180 absolute -bottom-85 -right-45 aspect-square size-[216px] transition-transform group-hover:z-10 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-[1.019] sm:-bottom-30 sm:-right-63"
+        className="duration-180 absolute -bottom-80 -right-40 aspect-square size-[216px] transition-transform group-hover:z-10 group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:scale-[1.019] sm:-bottom-24 sm:-right-56"
       />
       <div style={style} className="relative z-20 flex h-full w-full flex-col justify-between p-20">
         <div className="flex flex-row items-center gap-20">
@@ -49,14 +49,14 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
         </div>
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
-            <p className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
+            <p className="leading-body-sm text-12 sm:text-14 font-medium tracking-wide text-slate-400">
               <Trans>Rewards</Trans>
             </p>
             {isRewardsSuspended ? (
               <div onClick={(e) => e.stopPropagation()}>
                 <TooltipWithPortal
                   variant="none"
-                  tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !tracking-[-0.448px] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
+                  tooltipClassName="!text-14 !text-white !rounded-16 !p-20 !font-medium !leading-[1.36] !tracking-[-0.448px] ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
                   handle={
                     <p className="leading-heading-lg text-[28px] font-medium underline decoration-[#a4c3f9] decoration-dotted decoration-[4%] sm:text-[40px] sm:-tracking-[2px]">
                       {aprText}
@@ -68,13 +68,13 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
             ) : (
               <p className="leading-heading-lg text-[28px] font-medium sm:text-[50px] sm:-tracking-[2px]">
                 {aprText}{" "}
-                <span className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
+                <span className="leading-body-sm text-12 sm:text-14 font-medium tracking-wide text-slate-400">
                   <Trans>APR</Trans>
                 </span>
               </p>
             )}
           </div>
-          <div className="flex size-36 rounded-8 bg-slate-700 text-slate-500 group-hover:bg-blue-400 group-hover:text-white">
+          <div className="bg-slate-700 text-slate-500 group-hover:bg-blue-400 group-hover:text-white flex size-36 rounded-8">
             <IcLinkArrow className="m-auto size-8 rotate-90" />
           </div>
         </div>

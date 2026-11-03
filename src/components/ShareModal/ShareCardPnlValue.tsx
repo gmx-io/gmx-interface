@@ -13,7 +13,7 @@ export function ShareCardPnlValue({ pnlPercentage, pnlUsd, showPnlAmounts, zeroC
   const pnlClassName = pnlPercentage > 0n ? "text-[#0FDE8D]" : pnlPercentage < 0n ? "text-[#FF506A]" : zeroClassName;
 
   return (
-    <div className="flex items-end gap-6">
+    <div className="flex items-end gap-4">
       <h3 className={cx("text-h2 max-md:text-h3", pnlClassName)}>
         {formatPercentage(pnlPercentage, { signed: true })}
       </h3>

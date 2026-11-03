@@ -14,7 +14,7 @@ export function SwapMarketLabel({
   return (
     <span className={cx("inline-flex items-center", { "cursor-help": bordered })}>
       {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
-      {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
+      {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-8 mr-4" /> : "..."}
       <span className={cx({ "border-b border-dashed border-b-textIcon-secondary font-medium": bordered })}>
         {fromSymbol}/{toSymbol}
       </span>

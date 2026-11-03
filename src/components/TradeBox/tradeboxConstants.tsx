@@ -23,15 +23,15 @@ export const tradeTypeLabels = {
  */
 export const tradeTypeClassNames = {
   [TradeType.Long]: {
-    active: "!bg-green-background border-b-green-strong pb-9",
+    active: "!bg-green-background border-b-green-strong pb-8",
     regular: "border-b-transparent",
   },
   [TradeType.Short]: {
-    active: "!bg-red-background border-b-red-strong pb-9",
+    active: "!bg-red-background border-b-red-strong pb-8",
     regular: "border-b-transparent",
   },
   [TradeType.Swap]: {
-    active: "!bg-blue-strong/10 border-b-blue-strong pb-9",
+    active: "!bg-blue-strong/10 border-b-blue-strong pb-8",
     regular: "border-b-transparent",
   },
 };

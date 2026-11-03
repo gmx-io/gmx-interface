@@ -56,7 +56,7 @@ export function ChartContextMenu({ menuState, onClose }: ChartContextMenuProps) 
         <button
           key={index}
           type="button"
-          className="bg-transparent text-body-small block w-full cursor-pointer whitespace-nowrap border-none px-14 py-10 text-left text-textIcon-primary transition-colors duration-100 hover:bg-button-background"
+          className="bg-transparent text-body-small block w-full cursor-pointer whitespace-nowrap border-none px-12 py-8 text-left text-textIcon-primary transition-colors duration-100 hover:bg-button-background"
           onClick={() => item.click()}
         >
           {item.text}

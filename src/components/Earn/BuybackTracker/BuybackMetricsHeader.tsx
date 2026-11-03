@@ -24,7 +24,7 @@ export function BuybackMetricsHeader({
   const isUnavailable = !isLoading && (!!error || metrics === undefined);
 
   return (
-    <div className="flex gap-28 max-md:flex-col max-md:gap-12">
+    <div className="flex gap-24 max-md:flex-col max-md:gap-12">
       <MetricItem
         label={<Trans>Total bought GMX</Trans>}
         tooltip={

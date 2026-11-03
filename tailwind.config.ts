@@ -203,7 +203,7 @@ const config: Config = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
-    spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
+    spacing: merge(fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])), { 120: "120px" }),
     borderRadius: merge(fromPairs(range(0, 96 + 1).map((borderRadius) => [borderRadius, `${borderRadius}px`])), {
       full: "9999px",
     }),

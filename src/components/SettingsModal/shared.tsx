@@ -130,14 +130,14 @@ export function SettingButton({
         >
           {icon}
         </div>
-        <div className="flex gap-4 py-6">
+        <div className="flex gap-4 py-4">
           <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
             <div className="flex items-center gap-4">
               <div>{title}</div>
               {info && (
                 <TooltipWithPortal
                   content={info}
-                  handleClassName="-mb-6"
+                  handleClassName="-mb-4"
                   handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
                   variant="none"
                 />
@@ -145,7 +145,7 @@ export function SettingButton({
             </div>
             <div>{description}</div>
           </div>
-          {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+          {chip ? <div className="mr-4 mt-4">{chip}</div> : null}
         </div>
       </div>
     </Wrapper>
@@ -159,7 +159,7 @@ export function Chip({ children, variant }: { children: ReactNode; variant: "blu
   }[variant];
 
   return (
-    <div className={cx(`text-body-small whitespace-nowrap rounded-full px-8 py-4 pb-3 font-medium`, variantClass)}>
+    <div className={cx(`text-body-small whitespace-nowrap rounded-full px-8 py-4 font-medium`, variantClass)}>
       {children}
     </div>
   );

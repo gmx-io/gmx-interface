@@ -101,7 +101,7 @@ function ChainBadge({ chainId }: { chainId: number }) {
   const name = getChainName(chainId);
   const icon = getChainIcon(chainId);
   return (
-    <span className="text-body-small inline-flex h-18 items-center gap-2 rounded-full border-1/2 border-stroke-primary pl-[0.5px] pr-6 text-textIcon-secondary">
+    <span className="text-body-small inline-flex h-18 items-center gap-4 rounded-full border-1/2 border-stroke-primary pr-4 text-textIcon-secondary">
       <img src={icon} alt="" className="size-16" />
       {name}
     </span>
@@ -117,7 +117,7 @@ function TypeTag({ type }: { type: AnnouncementType }) {
   };
   return (
     <span
-      className="text-body-small inline-flex h-18 items-center rounded-full border-1/2 border-stroke-primary px-6 text-textIcon-secondary"
+      className="text-body-small inline-flex h-18 items-center rounded-full border-1/2 border-stroke-primary px-4 text-textIcon-secondary"
       data-qa={`announcement-tag-${type}`}
     >
       {labels[type]}

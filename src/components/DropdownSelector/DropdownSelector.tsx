@@ -45,7 +45,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           className={({ open }) =>
             cx(
               "flex w-full items-center justify-between rounded-8",
-              slim ? "text-body-medium p-4" : "px-14 py-13 text-16 leading-base",
+              slim ? "text-body-medium p-4" : "px-12 py-12 text-16 leading-base",
               variant === "ghost"
                 ? "border"
                 : "border bg-fill-surfaceElevated hover:bg-fill-surfaceHover active:bg-fill-surfaceElevated50",
@@ -81,7 +81,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
                     <div
                       className={cx(
                         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
-                        slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
+                        slim ? "text-body-medium p-4" : "text-body-large px-12 py-8",
                         (active || selected) && "bg-fill-surfaceHover"
                       )}
                     >

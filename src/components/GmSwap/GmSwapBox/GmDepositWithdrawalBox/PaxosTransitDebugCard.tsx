@@ -100,7 +100,7 @@ export function PaxosTransitDebugCard({
   };
 
   return (
-    <div className="flex w-full flex-col gap-14 rounded-8 bg-fill-surfaceBase p-12">
+    <div className="flex w-full flex-col gap-12 rounded-8 bg-fill-surfaceBase p-12">
       <ToggleSwitch isChecked={isMocked} setIsChecked={setIsMocked}>
         Mock Transit gateway, no real conversion
       </ToggleSwitch>

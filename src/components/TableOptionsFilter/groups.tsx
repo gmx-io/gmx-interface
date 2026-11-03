@@ -117,7 +117,7 @@ function ItemComponentWrapper<T>({ item, onTogglePair, getIsSelected, ItemCompon
   return (
     <div
       key={item.text}
-      className="TableOptionsFilter-option TableOptionsFilter-option-in-group group-last-of-type/group:last-of-type:pb-10"
+      className="TableOptionsFilter-option TableOptionsFilter-option-in-group group-last-of-type/group:last-of-type:pb-8"
       onClick={handleTogglePair}
     >
       <Checkbox isChecked={getIsSelected(item.data)} setIsChecked={handleTogglePair}>

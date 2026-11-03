@@ -42,7 +42,7 @@ export function TradeInputBox({
       <div
         ref={containerRef}
         className={cx(
-          "flex cursor-text flex-col gap-2 overflow-hidden rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated pb-8 pt-10",
+          "flex cursor-text flex-col gap-4 overflow-hidden rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-8",
           {
             "bg-fill-surfaceBase": isDisabled,
             "focus-within:border-blue-strong hover:bg-fill-surfaceHover active:border-blue-strong": !isDisabled,
@@ -59,7 +59,7 @@ export function TradeInputBox({
         )}
 
         <div className="flex">
-          <div className="flex min-w-0 grow flex-col gap-2 pl-12">
+          <div className="flex min-w-0 grow flex-col gap-4 pl-12">
             <div
               className={cx("flex items-center gap-4 pr-12", { "border-r-1/2 border-r-stroke-primary": !hideDivider })}
             >

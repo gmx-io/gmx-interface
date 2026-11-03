@@ -40,7 +40,7 @@ export function ClaimableDistribution({
     <div className="rounded-8 bg-fill-surfaceElevated50 lg:pl-12">
       <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-stroke-primary p-12 lg:pl-0">
         <div className="flex items-center justify-between gap-4">
-          <Checkbox isChecked={selected} setIsChecked={() => onToggle(distributionId)} className="mr-2" />
+          <Checkbox isChecked={selected} setIsChecked={() => onToggle(distributionId)} className="mr-4" />
           <span className="text-body-medium font-medium text-textIcon-primary">
             {getDistributionTitle(distributionId)}
           </span>
@@ -65,7 +65,7 @@ export function ClaimableDistribution({
                 <div key={token}>
                   <div className="flex justify-between">
                     <div className="text-body-small font-medium text-textIcon-secondary">{data.title}</div>
-                    <div className="text-body-small flex gap-2">
+                    <div className="text-body-small flex gap-4">
                       <span>{formatBalanceAmount(data.amount, data.token.decimals)}</span>
                       <span className="text-body-small whitespace-nowrap text-textIcon-secondary">
                         (<UsdValue usd={data?.usd ?? 0n} />)

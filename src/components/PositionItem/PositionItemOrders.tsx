@@ -84,7 +84,7 @@ export function PositionItemOrdersLarge({
             <Trans>Orders ({ordersWithErrors.length})</Trans>
             {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
               <div
-                className={cx("relative top-3 size-6 rounded-full", {
+                className={cx("relative top-4 size-6 rounded-full", {
                   "bg-yellow-strong": ordersWarningsList.length > 0 && !ordersErrorList.length,
                   "bg-red-strong": ordersErrorList.length > 0,
                 })}
@@ -158,7 +158,7 @@ function PositionItemOrder({
 
   return (
     <div key={order.key}>
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex items-start justify-between gap-4">
         <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />

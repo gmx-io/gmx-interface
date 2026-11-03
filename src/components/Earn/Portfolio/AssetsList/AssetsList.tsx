@@ -129,7 +129,7 @@ function AssetsList({
 
   return (
     <section className={cx("flex flex-col rounded-8 bg-fill-surfaceBase", { grow: !hasAnyAssets })}>
-      <h2 className="text-body-large p-20 pb-2 font-medium text-textIcon-primary">
+      <h2 className="text-body-large p-20 pb-4 font-medium text-textIcon-primary">
         <Trans>My assets</Trans>
       </h2>
 

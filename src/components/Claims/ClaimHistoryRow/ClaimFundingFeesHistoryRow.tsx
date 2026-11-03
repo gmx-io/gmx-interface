@@ -208,7 +208,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle font-medium">{_(eventTitleDescriptor)}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-5"
+            className="ClaimHistoryRow-external-link ml-4"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />

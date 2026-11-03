@@ -57,13 +57,13 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
     <table className="w-full">
       <thead>
         <tr>
-          <th className="pb-10 font-normal uppercase text-textIcon-secondary">
+          <th className="pb-8 font-normal uppercase text-textIcon-secondary">
             <Trans>POOL</Trans>
           </th>
-          <th className="pb-10 pr-10 text-right font-normal uppercase text-textIcon-secondary">
+          <th className="pb-8 pr-8 text-right font-normal uppercase text-textIcon-secondary">
             <Trans>LONGS NET RATE / 1H</Trans>
           </th>
-          <th className="pb-10  text-right font-normal uppercase text-textIcon-secondary">
+          <th className="pb-8  text-right font-normal uppercase text-textIcon-secondary">
             <Trans>SHORTS NET RATE / 1H</Trans>
           </th>
         </tr>
@@ -81,7 +81,7 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
                 </div>
               </td>
               <td
-                className={cx("pr-10 text-right numbers", {
+                className={cx("pr-8 text-right numbers", {
                   "text-green-strong": netFeeLong > 0,
                   "text-red-strong": netFeeLong < 0,
                 })}

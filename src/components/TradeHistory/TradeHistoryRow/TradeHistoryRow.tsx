@@ -402,7 +402,7 @@ export function TradeHistoryRow({
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transactionHash}`}
-                  className="text-body-small ml-5 text-textIcon-secondary hover:text-textIcon-primary"
+                  className="text-body-small ml-4 text-textIcon-secondary hover:text-textIcon-primary"
                 >
                   <Trans>Events</Trans>
                 </Link>

@@ -35,7 +35,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       sub = (
         <span
           className={cx(
-            "text-body-small pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-button-background px-6 py-2 font-medium text-textIcon-secondary",
+            "text-body-small pointer-events-none absolute -bottom-8 -right-8 z-10 rounded-20 bg-button-background px-4 py-4 font-medium text-textIcon-secondary",
             badgeClassName
           )}
         >
@@ -53,7 +53,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         >
           {topIconUrl ? (
             <img
-              className="z-20 -mr-10 rounded-[100%] border-2 border-fill-surfaceBase bg-fill-surfaceBase"
+              className="z-20 -mr-8 rounded-[100%] border-2 border-fill-surfaceBase bg-fill-surfaceBase"
               src={topIconUrl}
               alt={badge[0]}
               width={20}
@@ -82,7 +82,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
       containerClassName = "token-icon-with-badge-large";
     } else {
       size = 10;
-      offset = "-bottom-2 -right-2";
+      offset = "-bottom-4 -right-4";
       containerClassName = "token-icon-with-badge-small";
     }
     sub = (

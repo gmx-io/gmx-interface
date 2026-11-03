@@ -29,7 +29,7 @@ function BuySellIconsOption({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
+      className={cx("flex cursor-pointer items-center justify-between px-12 py-8 hover:bg-fill-surfaceHover", {
         "bg-button-background": isSelected,
       })}
       onClick={() => {
@@ -113,7 +113,7 @@ export function DisplaySettings() {
           />
           <SelectorBase
             modalLabel={t`Show buy/sell icons on chart`}
-            desktopPanelClassName="!z-[10000] w-[180px] !top-[10px]"
+            desktopPanelClassName="!z-[10000] w-[180px] !top-8"
             chevronClassName="hidden"
             label={
               <Button variant="secondary" className="whitespace-nowrap focus-visible:outline-offset-[-2px]">

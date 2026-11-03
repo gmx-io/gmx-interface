@@ -10,14 +10,14 @@ function CodeLine({ children }: { children: React.ReactNode }) {
 
 export function CodeSnippet({ className }: { className?: string }) {
   return (
-    <div className={cx("w-full overflow-hidden rounded-16 border-1/2 border-slate-600/50 bg-slate-900/50", className)}>
-      <div className="mx-4 mt-4 flex h-44 items-center gap-8 rounded-12 bg-blue-300/10 px-16">
-        <span className="size-10 rounded-full bg-slate-600" />
-        <span className="size-10 rounded-full bg-slate-600" />
-        <span className="size-10 rounded-full bg-slate-600" />
-        <span className="ml-8 text-12 font-medium tracking-[0.864px] text-slate-500">ROUTE-TRADE.TS</span>
+    <div className={cx("border-slate-600/50 bg-slate-900/50 w-full overflow-hidden rounded-16 border-1/2", className)}>
+      <div className="bg-blue-300/10 mx-4 mt-4 flex h-44 items-center gap-8 rounded-12 px-16">
+        <span className="bg-slate-600 size-10 rounded-full" />
+        <span className="bg-slate-600 size-10 rounded-full" />
+        <span className="bg-slate-600 size-10 rounded-full" />
+        <span className="text-12 text-slate-500 ml-8 font-medium tracking-[0.864px]">ROUTE-TRADE.TS</span>
       </div>
-      <div className="font-code overflow-x-auto p-20 pb-[22px] pt-12 text-16 leading-[28px] -tracking-[0.8px] text-slate-500">
+      <div className="font-code text-slate-500 overflow-x-auto p-20 pt-12 text-16 leading-[28px] -tracking-[0.8px]">
         <CodeLine>
           <span className={KEYWORD}>import</span> {"{ "}
           <span className={IDENT}>GmxApiSdk</span>

@@ -86,7 +86,7 @@ export function PositionItemTPSLCell({
             isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             hasTpOrSl
               ? "size-20 text-textIcon-secondary hover:text-textIcon-primary"
-              : "text-body-small ml-8 gap-2 rounded-full border border-textIcon-disabled px-8 py-3 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
+              : "text-body-small ml-8 gap-4 rounded-full border border-textIcon-disabled px-8 py-4 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
           )}
         >
           {hasTpOrSl ? (
@@ -103,7 +103,7 @@ export function PositionItemTPSLCell({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-4">
         <span className={cx("numbers", "text-green-strong")}>
           {closestTp ? (
             <>
@@ -112,7 +112,7 @@ export function PositionItemTPSLCell({
                 displayDecimals={marketDecimals}
                 visualMultiplier={visualMultiplier}
               />
-              {tpCount > 1 && <span className="ml-2">({tpCount})</span>}
+              {tpCount > 1 && <span className="ml-4">({tpCount})</span>}
             </>
           ) : (
             "—"
@@ -126,7 +126,7 @@ export function PositionItemTPSLCell({
                 displayDecimals={marketDecimals}
                 visualMultiplier={visualMultiplier}
               />
-              {slCount > 1 && <span className="ml-2">({slCount})</span>}
+              {slCount > 1 && <span className="ml-4">({slCount})</span>}
             </>
           ) : (
             "—"
@@ -141,7 +141,7 @@ export function PositionItemTPSLCell({
           isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
           hasTpOrSl
             ? "size-20 text-textIcon-secondary hover:text-textIcon-primary"
-            : "text-body-small ml-8 gap-2 rounded-full border border-textIcon-disabled px-8 py-3 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
+            : "text-body-small ml-8 gap-4 rounded-full border border-textIcon-disabled px-8 py-4 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
         )}
       >
         {hasTpOrSl ? (

@@ -99,7 +99,7 @@ function GasTokenOption({
 
   return (
     <div
-      className="flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-accent"
+      className="flex cursor-pointer items-center justify-between px-12 py-8 hover:bg-fill-accent"
       onClick={() => {
         onClick();
         close();

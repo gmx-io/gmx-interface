@@ -620,7 +620,7 @@ export function PositionItem(p: Props) {
             <div className="Exchange-list-info-label">
               <LeverageValue
                 leverage={p.position.leverage}
-                className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}
+                className={cx("muted mr-4 rounded-2 px-4 numbers")}
                 fallback="..."
               />
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
@@ -630,7 +630,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens ? (
                 formatBalanceAmount(
@@ -658,7 +658,7 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("text-body-small flex items-center gap-2 numbers", {
+                  className={cx("text-body-small flex items-center gap-4 numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -667,7 +667,7 @@ export function PositionItem(p: Props) {
                   onClick={p.onShareClick}
                 >
                   <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
-                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
+                  {p.onShareClick && <NewLinkThinIcon className="size-14 shrink-0" />}
                 </div>
               )}
             </div>
@@ -756,7 +756,7 @@ export function PositionItem(p: Props) {
           <div className="text-body-medium flex items-center gap-8">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
-                "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
+                "after:absolute after:-left-8 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
                   isCurrentMarket,
               })}
             >
@@ -826,7 +826,7 @@ export function PositionItem(p: Props) {
             </div>
             <div>
               <span
-                className={cx("flex items-center gap-2 numbers", {
+                className={cx("flex items-center gap-4 numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
@@ -835,7 +835,7 @@ export function PositionItem(p: Props) {
                 onClick={p.onShareClick}
               >
                 <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
-                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
+                {p.onShareClick && <NewLinkThinIcon className="mt-4 size-16 shrink-0" />}
               </span>
             </div>
           </div>
@@ -910,7 +910,7 @@ export function PositionItem(p: Props) {
 
         <div ref={closeSentinelRef} />
         {!p.hideActions && (
-          <div className={cx("z-10", isCardTopVisible && "sticky bottom-14 bg-fill-background")}>
+          <div className={cx("z-10", isCardTopVisible && "sticky bottom-12 bg-fill-background")}>
             <AppCardSection
               className={cx(
                 "rounded-b-8 border-t-1/2 border-stroke-primary bg-fill-surfaceBase",

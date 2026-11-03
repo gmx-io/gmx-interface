@@ -187,7 +187,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                         }
                       />
                     }
-                    valueClassName="-my-5"
+                    valueClassName="-my-4"
                   >
                     <PercentageInput
                       onChange={state.setAllowedSlippage}

@@ -378,7 +378,7 @@ function DataFreshnessSection({
 
   return (
     <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
         <h3 className="text-xl muted font-medium uppercase">
           <Trans>Data freshness</Trans>
         </h3>

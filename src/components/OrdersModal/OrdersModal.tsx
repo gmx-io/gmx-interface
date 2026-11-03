@@ -381,7 +381,7 @@ export function OrdersModal({
             selectedValue={activeTab}
             onChange={setActiveTab}
             type="block"
-            className="-mb-1 w-full pr-20 max-md:pr-16"
+            className="w-full pr-20 max-md:pr-16"
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
                 {!isMobile && position && (

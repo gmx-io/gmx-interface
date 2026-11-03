@@ -150,7 +150,7 @@ export default {
   content: [resolve(__dirname, "./index.html"), resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}")],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
-    spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
+    spacing: merge(fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])), { 120: "120px" }),
     borderRadius: merge(fromPairs(range(0, 96 + 1).map((borderRadius) => [borderRadius, `${borderRadius}px`])), {
       full: "9999px",
     }),

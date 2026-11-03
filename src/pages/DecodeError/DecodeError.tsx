@@ -134,7 +134,7 @@ export function DecodeError() {
             value={hexInput}
             onChange={(e) => setHexInput(e.target.value)}
             placeholder={t`0x...`}
-            className="min-h-96 w-full resize-y appearance-none border-none p-15 text-textIcon-primary text-input-bg focus:outline-none focus:ring-0"
+            className="min-h-96 w-full resize-y appearance-none border-none p-12 text-textIcon-primary text-input-bg focus:outline-none focus:ring-0"
           />
         </div>
 

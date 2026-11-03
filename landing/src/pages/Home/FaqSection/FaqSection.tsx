@@ -4,8 +4,8 @@ import { FaqItem } from "./FaqItem";
 
 export function FaqSection() {
   return (
-    <section className="flex w-full bg-slate-900 px-16 py-[120px] text-white sm:px-40">
-      <div className="mx-auto flex w-[1200px] flex-col justify-between gap-36 overflow-hidden sm:flex-row sm:gap-[120px]">
+    <section className="bg-slate-900 text-white flex w-full px-16 py-120 sm:px-40">
+      <div className="mx-auto flex w-[1200px] flex-col justify-between gap-32 overflow-hidden sm:flex-row sm:gap-120">
         <h2 className="text-heading-2">
           <Trans>FAQ</Trans>
         </h2>
@@ -16,7 +16,7 @@ export function FaqSection() {
                 Liquidity providers receive 63% of all trading and liquidation fees. By depositing WBTC, ETH, USDC, or
                 other supported assets, you can earn up to ~35% annualized yield on the largest pools.
               </p>
-              <ul className="list-disc pl-14">
+              <ul className="list-disc pl-12">
                 <li> GM pools – choose single-market exposure for targeted returns</li>
                 <li> GLV vaults – auto-diversify across markets for a hands-off strategy</li>
               </ul>
@@ -28,7 +28,7 @@ export function FaqSection() {
           <FaqItem title={t`How do I get started on GMX?`}>
             <Trans>
               <p>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</p>
-              <ul className="list-decimal pl-14">
+              <ul className="list-decimal pl-12">
                 <li>
                   Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger,
                   etc.)
@@ -65,7 +65,7 @@ export function FaqSection() {
                 Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can
                 interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading,
                 liquidity, or data flows. Check out the{" "}
-                <a href="https://docs.gmx.io/docs/api/overview/" className="cursor-pointer text-blue-400">
+                <a href="https://docs.gmx.io/docs/api/overview/" className="text-blue-400 cursor-pointer">
                   GMX Developer Docs
                 </a>{" "}
                 to get started.

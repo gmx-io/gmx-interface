@@ -1042,7 +1042,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   type="button"
                   disabled={!isSwitchTokensAllowed}
                   className={cx(
-                    `absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
+                    `absolute -top-20 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
                     items-center justify-center rounded-full bg-fill-accent text-textIcon-secondary`,
                     {
                       "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-fill-accent),var(--color-fill-accent))] hover:bg-blend-overlay":
@@ -1368,7 +1368,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
         <div className="flex flex-col gap-12 px-12">
           <UsdgAddMarginReturnBanner isSwap={isSwap} />
-          <div className="text-body-medium flex grow flex-col gap-14">
+          <div className="text-body-medium flex grow flex-col gap-12">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
               {isIncrease && (
@@ -1436,7 +1436,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-14 px-12 pt-12">
+        <div className="flex flex-col gap-12 px-12 pt-12">
           {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
             <ToggleSwitch
               isChecked={keepLeverageChecked}
@@ -1558,7 +1558,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
       </div>
 
-      <div className={cx("flex flex-col gap-14 rounded-8 bg-fill-surfaceBase", isTwap ? "p-4" : "p-12 pb-16")}>
+      <div className={cx("flex flex-col gap-12 rounded-8 bg-fill-surfaceBase", isTwap ? "p-4" : "p-12 pb-16")}>
         {isPaxosRouteActive && fromToken && toToken && (
           <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
         )}

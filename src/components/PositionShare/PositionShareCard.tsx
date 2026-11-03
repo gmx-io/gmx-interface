@@ -66,7 +66,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               >
                 <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
 
-                <span className="ml-2">
+                <span className="ml-4">
                   {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>} {formatAmount(leverage, 4, 2, true)}x
                 </span>
               </div>
@@ -84,7 +84,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               showPnlAmounts={showPnlAmounts}
             />
           </div>
-          <div className="flex gap-20 max-md:gap-10">
+          <div className="flex gap-20 max-md:gap-8">
             <ShareCardStat label={<Trans>Entry price</Trans>}>
               {formatUsd(entryPrice, {
                 displayDecimals: priceDecimals,

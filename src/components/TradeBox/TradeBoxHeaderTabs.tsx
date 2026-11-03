@@ -146,7 +146,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
                 last:after:block last:after:h-20 last:after:w-2 last:after:-translate-y-1/2 last:after:rounded-full
                 last:after:bg-stroke-primary last:after:content-[''] max-md:last:after:h-16`,
               {
-                "text-body-small !py-6": isInCurtain && !isCurtainOpen,
+                "text-body-small !py-4": isInCurtain && !isCurtainOpen,
               }
             )}
           />
@@ -156,11 +156,11 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
             onChange={onTradeTypeChange}
             qa="trade-direction-swap"
             className="flex-none overflow-hidden rounded-8 !border-0 bg-fill-surfaceElevated p-0"
-            regularOptionClassname={cx("mb-0", { "text-body-small !py-6": isInCurtain && !isCurtainOpen })}
+            regularOptionClassname={cx("mb-0", { "text-body-small !py-4": isInCurtain && !isCurtainOpen })}
           />
         </div>
         {isInCurtain && (
-          <button onClick={handleToggleCurtain} className="group shrink-0 px-10">
+          <button onClick={handleToggleCurtain} className="group shrink-0 px-8">
             <ChevronDownIcon
               className={cx(
                 "size-18 text-textIcon-secondary transition-transform duration-500 ease-out group-hover:text-textIcon-primary",

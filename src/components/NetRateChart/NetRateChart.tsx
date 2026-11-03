@@ -357,12 +357,12 @@ export function NetRateChart() {
       </div>
 
       <div className="flex items-center gap-16 px-4 pb-8">
-        <span className="text-body-small flex items-center gap-6 text-textIcon-secondary">
+        <span className="text-body-small flex items-center gap-4 text-textIcon-secondary">
           <span className="inline-block size-8 rounded-full bg-green-strong" />
           <Trans>Long positions</Trans>
           {legendRates && <span className="text-textIcon-primary">{formatRate(legendRates.longRate, decimals)}</span>}
         </span>
-        <span className="text-body-small flex items-center gap-6 text-textIcon-secondary">
+        <span className="text-body-small flex items-center gap-4 text-textIcon-secondary">
           <span className="inline-block size-8 rounded-full bg-red-strong" />
           <Trans>Short positions</Trans>
           {legendRates && <span className="text-textIcon-primary">{formatRate(legendRates.shortRate, decimals)}</span>}
@@ -503,7 +503,7 @@ function ProjectionDropdown({ value, onChange }: { value: RateProjection; onChan
                 key={p}
                 type="button"
                 className={cx(
-                  "text-body-small flex w-full px-12 py-6 text-left hover:bg-button-background",
+                  "text-body-small flex w-full px-12 py-4 text-left hover:bg-button-background",
                   p === value ? "text-textIcon-primary" : "text-textIcon-secondary"
                 )}
                 onClick={() => {
@@ -630,7 +630,7 @@ function NetRateBreakdownTooltip({
   decimals: number;
 }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-green-strong" />
@@ -641,11 +641,11 @@ function NetRateBreakdownTooltip({
           {suffix}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-textIcon-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Funding</Trans>
         <span className="numbers">{formatRate(longFunding, decimals)}</span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-textIcon-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Borrowing</Trans>
         <span className="numbers">{formatRate(longBorrowing, decimals)}</span>
       </div>
@@ -660,11 +660,11 @@ function NetRateBreakdownTooltip({
           {suffix}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-textIcon-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Funding</Trans>
         <span className="numbers">{formatRate(shortFunding, decimals)}</span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-textIcon-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Borrowing</Trans>
         <span className="numbers">{formatRate(shortBorrowing, decimals)}</span>
       </div>
@@ -686,7 +686,7 @@ function SimpleRateTooltip({
   decimals: number;
 }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-medium">
           <span className="inline-block size-6 rounded-full bg-green-strong" />

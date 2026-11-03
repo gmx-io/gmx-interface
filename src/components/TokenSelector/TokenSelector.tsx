@@ -252,7 +252,7 @@ export default function TokenSelector(props: Props) {
                     {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
-                <div className="text-body-large flex flex-col items-end gap-2">
+                <div className="text-body-large flex flex-col items-end gap-4">
                   {(showBalances && balance !== undefined && (
                     <div>
                       {balance > 0 &&
@@ -279,7 +279,7 @@ export default function TokenSelector(props: Props) {
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-strong"
+        className="group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (

@@ -24,7 +24,7 @@ export function AppCardSection({
 
   return (
     <div
-      className={cx("flex flex-col gap-12 border-b-1/2 border-stroke-primary px-20 py-13 last:border-b-0", className)}
+      className={cx("flex flex-col gap-12 border-b-1/2 border-stroke-primary px-20 py-12 last:border-b-0", className)}
       onClick={handleClick}
     >
       {children}

@@ -1157,7 +1157,7 @@ export function PositionSeller() {
               </div>
 
               {isTwap && (
-                <div className="px-20 py-14">
+                <div className="px-20 py-12">
                   <TwapRows
                     duration={duration}
                     numberOfParts={numberOfParts}
@@ -1171,7 +1171,7 @@ export function PositionSeller() {
                 </div>
               )}
 
-              <div className="flex w-full flex-col gap-14 px-20 pb-14">
+              <div className="flex w-full flex-col gap-12 px-20 pb-12">
                 {!isTwap && (
                   <ToggleSwitch
                     textClassName="text-textIcon-secondary"

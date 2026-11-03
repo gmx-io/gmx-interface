@@ -135,7 +135,7 @@ function CollapsedMoreMenu({
             style={floatingStyles}
             className="z-40 w-[160px] rounded-8 border border-stroke-primary bg-fill-surfaceElevated p-4 shadow-2xl"
           >
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-4">
               <DropdownActionRow
                 icon={<LanguageIcon className="size-16" />}
                 label={t`Language`}
@@ -165,7 +165,7 @@ function CollapsedMoreMenu({
 
 function DropdownActionRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; onClick?: () => void }) {
   const content = (
-    <div className="flex items-center gap-8 rounded-8 px-8 py-7 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary">
+    <div className="flex items-center gap-8 rounded-8 px-8 py-4 text-textIcon-secondary hover:bg-button-primary/20 hover:text-blue-strong dark:hover:bg-button-background dark:hover:text-textIcon-primary">
       <div className="flex size-16 shrink-0 items-center justify-center">{icon}</div>
       <span className="text-body-medium whitespace-nowrap font-medium">{label}</span>
     </div>

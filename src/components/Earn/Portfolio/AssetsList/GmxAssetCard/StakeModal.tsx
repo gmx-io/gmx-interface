@@ -584,7 +584,7 @@ export function StakeModal(props: {
           )}
 
           {showSafeUnstakeBar && (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
               <div className="h-4 w-full rounded-full bg-button-background">
                 <div
                   className={cx(

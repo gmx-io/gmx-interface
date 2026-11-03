@@ -202,7 +202,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     return (
       <div
         data-qa={props.qa ? props.qa + "-button-disabled" : undefined}
-        className={cx("SelectorBase-button SelectorBase-button-disabled gap-5", props.handleClassName)}
+        className={cx("SelectorBase-button SelectorBase-button-disabled gap-4", props.handleClassName)}
       >
         <span className="grow overflow-hidden text-ellipsis">{props.label}</span>
       </div>
@@ -216,7 +216,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
           <Popover.Button
             as="div"
             className={cx(
-              "SelectorBase-button group/selector-base group gap-5 gmx-hover:text-blue-strong",
+              "SelectorBase-button group/selector-base group gap-4 gmx-hover:text-blue-strong",
               popoverProps.open && "text-blue-strong",
               props.handleClassName
             )}
@@ -283,7 +283,7 @@ function SelectorBaseMobile(props: Props) {
   return (
     <>
       <div
-        className={cx("SelectorBase-button group/selector-base gap-5", props.handleClassName)}
+        className={cx("SelectorBase-button group/selector-base gap-4", props.handleClassName)}
         onClick={toggleVisibility}
       >
         <span className="overflow-hidden text-ellipsis">{props.label}</span>

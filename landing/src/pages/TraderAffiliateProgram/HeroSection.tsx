@@ -22,7 +22,7 @@ function HeroStat({
 }) {
   return (
     <div className={cx("flex flex-col gap-4", className)}>
-      <span className="text-14 -tracking-[0.448px] text-slate-500">{label}</span>
+      <span className="text-14 text-slate-500 -tracking-[0.448px]">{label}</span>
       <span
         className={cx("text-[40px] font-medium leading-[1] -tracking-[1.2px]", gradient ? GRADIENT_TEXT_CLASS : "")}
       >
@@ -37,7 +37,7 @@ export function HeroSection() {
   const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume.total) : "-";
 
   return (
-    <section className="relative w-full overflow-hidden bg-slate-900 px-16 text-white sm:px-40">
+    <section className="bg-slate-900 text-white relative w-full overflow-hidden px-16 sm:px-40">
       <img
         src={heroBg}
         alt=""
@@ -51,7 +51,7 @@ export function HeroSection() {
         className="pointer-events-none absolute left-[calc(50%+51px)] top-0 hidden h-[688px] w-[813px] max-w-none select-none sm:block"
       />
       <div className="relative mx-auto flex w-full max-w-[1200px] flex-col pt-[140px] sm:pt-[200px] lg:pt-[362px]">
-        <span className="inline-flex h-24 w-fit items-center rounded-full bg-blue-300/20 px-6 backdrop-blur-[10px]">
+        <span className="bg-blue-300/20 inline-flex h-24 w-fit items-center rounded-full px-4 backdrop-blur-[10px]">
           <span className={cx("text-16 -tracking-[0.512px]", GRADIENT_TEXT_CLASS)}>
             <Trans>Trader & Affiliate Program</Trans>
           </span>
@@ -63,14 +63,14 @@ export function HeroSection() {
             Refer, and earn
           </Trans>
         </h1>
-        <p className="leading-body-sm mt-12 text-14 -tracking-[0.448px] text-slate-400">
+        <p className="leading-body-sm text-14 mt-12 -tracking-[0.448px] text-slate-400">
           <Trans>
             Up to 25% off fees for high-volume traders. Up to 25% earnings
             <br className="hidden sm:block" />
             for affiliates. Personal support for both.
           </Trans>
         </p>
-        <div className="mt-32 flex flex-col justify-between gap-32 border-t-1/2 border-slate-600 pb-[77px] pt-32 lg:flex-row">
+        <div className="border-slate-600 mt-32 flex flex-col justify-between gap-32 border-t-1/2 pb-64 pt-32 lg:flex-row">
           <div className="flex flex-col gap-20 sm:flex-row">
             <ArrowButton
               label={<Trans>Contact us</Trans>}

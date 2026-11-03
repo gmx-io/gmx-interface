@@ -64,7 +64,7 @@ function FundingOptionRow({
         <div className="flex size-36 shrink-0 items-center justify-center rounded-8 bg-fill-surfaceElevated50 text-blue-strong dark:text-blue-strong">
           {icon}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           <span className="text-body-medium font-medium text-textIcon-primary">{title}</span>
           <span className="text-body-small text-textIcon-secondary">{description}</span>
         </div>

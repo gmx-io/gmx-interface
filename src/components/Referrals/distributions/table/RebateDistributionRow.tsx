@@ -93,7 +93,7 @@ export function RebateDistributionRow({
             <div className="flex items-center numbers">
               {tokensWithoutPrices.length > 0 && (
                 <>
-                  <WarnIcon className="-my-5 size-20 text-yellow-strong" />
+                  <WarnIcon className="-my-4 size-20 text-yellow-strong" />
                   &nbsp;
                 </>
               )}

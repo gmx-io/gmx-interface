@@ -694,7 +694,7 @@ const ParseTransactionEvents = ({
   }
 
   return events.map((event) => (
-    <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
+    <Table key={`${keyPrefix}-${event.key}`} className="mt-24 overflow-hidden !rounded-8 first:mt-0">
       <tbody>
         <TableTr>
           <TableTd className="w-[25rem] font-medium">

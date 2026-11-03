@@ -163,7 +163,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
         ref={refs.setReference}
         data-qa="leverage-slider"
         className={cx(
-          "user-select-none flex w-56 items-center justify-between gap-10 rounded-4 px-8",
+          "user-select-none flex w-56 items-center justify-between gap-8 rounded-4 px-8",
           disabled
             ? "cursor-default bg-fill-surfaceElevated"
             : isOpen
@@ -211,7 +211,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
                   onBlur={() => commitValue()}
                   suffix={`${HAIR_SPACE}x`}
                   inputClassName="w-32 !pr-0 text-body-small"
-                  className="!rounded-4 border border-stroke-primary bg-fill-surfaceElevated !py-6"
+                  className="!rounded-4 border border-stroke-primary bg-fill-surfaceElevated !py-4"
                 />
               </div>
               <ColorfulBanner color="blue" icon={InfoIcon}>

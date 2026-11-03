@@ -31,7 +31,7 @@ export function MarginDestinationSelector({
         </div>
       }
     >
-      <div className="flex flex-col py-6">
+      <div className="flex flex-col py-4">
         <MarginDestinationOption
           isGmxBalance={false}
           isSelected={!isReceiveToGmxAccount}
@@ -60,7 +60,7 @@ function MarginDestinationOption({
 
   return (
     <div
-      className={cx("text-body-medium flex cursor-pointer items-center gap-6 px-12 py-6 hover:bg-fill-surfaceHover", {
+      className={cx("text-body-medium flex cursor-pointer items-center gap-4 px-12 py-4 hover:bg-fill-surfaceHover", {
         "bg-button-background": isSelected,
       })}
       onClick={() => {

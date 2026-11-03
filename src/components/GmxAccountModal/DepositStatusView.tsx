@@ -104,7 +104,7 @@ export const DepositStatusView = () => {
         )}
       </div>
 
-      <div className="text-body-medium flex items-center gap-6 font-medium">
+      <div className="text-body-medium flex items-center gap-4 font-medium">
         <StatusBadge variant={statusVariant} />
         <div className={cx(isCompleted ? "text-green-strong" : "text-textIcon-secondary")}>{statusLabel}</div>
       </div>
@@ -114,7 +114,7 @@ export const DepositStatusView = () => {
           <h4 className="text-body-medium font-medium">
             <Trans>Want to trade faster with One-Click Trading?</Trans>
           </h4>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center gap-8">
               <div className="size-6 rotate-[45deg] transform rounded-1 bg-blue-strong" />
               <span className="text-body-small text-textIcon-secondary">
@@ -135,7 +135,7 @@ export const DepositStatusView = () => {
             </div>
           </div>
         </div>
-        <img src={OneClickCoinImage} alt={t`One-Click`} className="mr-6 mt-6 h-93 w-92 transform" />
+        <img src={OneClickCoinImage} alt={t`One-Click`} className="mr-4 mt-4 h-93 w-92 transform" />
       </div>
       <Button variant="primary" size="medium" onClick={onEnableOneClickClick} disabled={isSubaccountActivating}>
         {isSubaccountActivating ? <SpinnerIcon className="size-16 animate-spin" /> : null}

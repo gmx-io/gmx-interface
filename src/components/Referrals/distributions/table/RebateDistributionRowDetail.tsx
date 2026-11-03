@@ -66,13 +66,13 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
       </div>
       <div className="col-span-4 flex h-38 items-center py-8 pr-adaptive">
         {status === "success" && (
-          <span className="inline-flex items-center gap-2 rounded-full bg-green-background py-2 pl-4 pr-6 text-green-strong">
+          <span className="inline-flex items-center gap-4 rounded-full bg-green-background px-4 py-4 text-green-strong">
             <NewCheckedIcon className="size-16 text-green-strong" />
             <Trans>Success</Trans>
           </span>
         )}
         {status === "failed" && (
-          <span className="inline-flex items-center gap-2 rounded-full bg-red-background py-2 pl-4 pr-6 text-red-strong">
+          <span className="inline-flex items-center gap-4 rounded-full bg-red-background px-4 py-4 text-red-strong">
             <CloseIcon className="size-16 text-red-strong" />
             <Trans>Failed</Trans>
           </span>

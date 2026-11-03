@@ -79,7 +79,7 @@ export default function NetworkDropdown({
               <Button
                 variant="secondary"
                 size="controlled"
-                className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:px-10 max-md:py-6"
+                className="flex h-40 items-center gap-8 px-12 max-md:h-32 max-md:px-8 max-md:py-4"
               >
                 <NavIcons chainId={chainId} open={open} />
               </Button>
@@ -266,7 +266,7 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               )}
             </div>
             {isSelected && (
-              <div className="mr-[2.5px] size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
+              <div className="mr-4 size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
             )}
           </div>
         </Wrapper>

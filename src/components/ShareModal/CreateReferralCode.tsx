@@ -580,7 +580,7 @@ function CreateReferralCodeLayout({
             value={referralCode}
             disabled={isProcessing || !isConnected}
             placeholder={t`Enter referral code`}
-            className="text-body-small grow p-0 py-2 placeholder:text-textIcon-secondary"
+            className="text-body-small grow p-0 py-4 placeholder:text-textIcon-secondary"
             onChange={(event) => {
               const { value } = event.target;
               setReferralCode(value);

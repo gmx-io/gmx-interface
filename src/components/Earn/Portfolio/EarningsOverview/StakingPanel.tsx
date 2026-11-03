@@ -21,7 +21,7 @@ function RewardsPausedBadge() {
     <TooltipWithPortal
       variant="none"
       handle={
-        <Badge className="!bg-transparent -my-1 border-1/2 border-dashed border-stroke-primary">
+        <Badge className="!bg-transparent border-1/2 border-dashed border-stroke-primary">
           <Trans>Rewards paused</Trans>
         </Badge>
       }
@@ -164,7 +164,7 @@ export function StakingPanel({
           {isPaused && <RewardsPausedBadge />}
         </div>
 
-        <div className="flex gap-28">
+        <div className="flex gap-24">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
             <UsdStatValue usd={lifetimeUsd} isLoading={isLoading} />
           </EarningsStat>

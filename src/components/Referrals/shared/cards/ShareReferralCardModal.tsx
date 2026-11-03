@@ -229,7 +229,7 @@ function ScaledReferralCard({
           </div>
 
           <div>
-            <div className="mb-8 inline-block rounded-full bg-blue-backgroundOpacity px-6 py-2 text-16 font-medium leading-[20px] text-blue-strong">
+            <div className="mb-8 inline-block rounded-full bg-blue-backgroundOpacity px-4 py-4 text-16 font-medium leading-[20px] text-blue-strong">
               <AnimatedGradientText className="block">{referralCode}</AnimatedGradientText>
             </div>
             <h3 className="text-h3 text-textIcon-onButton">

@@ -133,17 +133,17 @@ export default function ChartTokenSelector(props: Props) {
               })}
             >
               {isSwap && oneRowLabels ? (
-                <div className="rounded-4 bg-blue-backgroundOpacity px-7 py-4 text-blue-strong">
+                <div className="rounded-4 bg-blue-backgroundOpacity px-4 py-4 text-blue-strong">
                   <Trans>Swap</Trans>
                 </div>
               ) : null}
 
               <div className="flex items-center gap-8">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} />
-                <div className="flex gap-2 md:items-center md:gap-8">
+                <div className="flex gap-4 md:items-center md:gap-8">
                   <span
                     className={cx("flex justify-start leading-base", {
-                      "flex-col items-baseline gap-2": !oneRowLabels,
+                      "flex-col items-baseline gap-4": !oneRowLabels,
                       "flex-row items-center": oneRowLabels,
                     })}
                   >
@@ -403,7 +403,7 @@ function MarketsList() {
     "first-of-type:text-left",
     rowVerticalPadding,
     rowHorizontalPadding,
-    "!py-10"
+    "!py-8"
   );
   const favoriteThClassName = cx(thClassName, "w-0 !pr-0 text-center");
   const marketThClassName = cx(thClassName, "pl-12");
@@ -476,7 +476,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-9 !pt-11 text-body-small"
+              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-small"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -489,7 +489,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-9 !pt-11 text-body-small"
+              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-small"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -824,7 +824,7 @@ function MarketListItem({
           onClick={handleSelectLargePosition}
         >
           <span className="flex items-center gap-4">
-            <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
+            <TokenIcon className="ChartToken-list-icon -my-4 mr-4" symbol={token.symbol} displaySize={16} />
             <span>{token.name}</span>
             <span className="font-medium text-textIcon-secondary">{token.symbol}</span>
           </span>
@@ -862,14 +862,14 @@ function MarketListItem({
           <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
         </Button>
       </td>
-      <td className={cx("text-body-small pl-12", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
+      <td className={cx("text-body-small pl-12", rowVerticalPadding, isMobile ? "pr-4" : rowHorizontalPadding)}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
-          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
-          <span className={cx("flex flex-wrap items-center gap-6")}>
+          <TokenIcon className="ChartToken-list-icon mr-4" symbol={token.symbol} displaySize={16} />
+          <span className={cx("flex flex-wrap items-center gap-4")}>
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
-            <span className="text-body-small rounded-full bg-button-background px-6 py-[1.5px] font-medium text-textIcon-secondary numbers">
+            <span className="text-body-small rounded-full bg-button-background px-4 font-medium text-textIcon-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
           </span>
@@ -895,14 +895,14 @@ function MarketListItem({
       {!isMobile && (
         <>
           <td className={cx(tdClassName, "pr-4 numbers")}>
-            <span className="inline-flex items-center gap-6">
-              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
+            <span className="inline-flex items-center gap-4">
+              <LongIcon width={12} className="relative opacity-70" />
               <AmountHumanValue amount={openInterestLong ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
           <td className={cx(tdClassName, "pl-4 numbers")}>
-            <span className="inline-flex items-center gap-6">
-              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
+            <span className="inline-flex items-center gap-4">
+              <ShortIcon width={12} className="relative opacity-70" />
               <AmountHumanValue amount={openInterestShort ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
@@ -915,8 +915,8 @@ function MarketListItem({
             className={cx(tdClassName, "group pr-4 numbers hover:bg-fill-surfaceElevated")}
             onClick={handleSelectLong}
           >
-            <div className="inline-flex items-center justify-end gap-6">
-              <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
+            <div className="inline-flex items-center justify-end gap-4">
+              <LongIcon width={12} className="relative opacity-70" />
               <AmountHumanValue amount={maxLongLiquidityPool?.maxLongLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
@@ -924,8 +924,8 @@ function MarketListItem({
             className={cx(tdClassName, "group pl-4 numbers hover:bg-fill-surfaceElevated")}
             onClick={handleSelectShort}
           >
-            <div className="inline-flex items-center justify-end gap-6">
-              <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
+            <div className="inline-flex items-center justify-end gap-4">
+              <ShortIcon width={12} className="relative opacity-70" />
               <AmountHumanValue amount={maxShortLiquidityPool?.maxShortLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>

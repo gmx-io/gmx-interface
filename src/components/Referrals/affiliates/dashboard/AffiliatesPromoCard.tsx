@@ -34,7 +34,7 @@ export function AffiliatesPromoCard({ account }: { account: string | undefined }
       }
       onClose={close}
       imgSrc={referralCodePromoFg}
-      imgClassName="-bottom-22 right-28 max-[1257px]:hidden"
+      imgClassName="-bottom-20 right-24 max-[1257px]:hidden"
     />
   );
 }

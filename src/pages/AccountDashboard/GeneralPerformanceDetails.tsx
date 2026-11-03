@@ -92,7 +92,7 @@ export function GeneralPerformanceDetails({
                   <Trans>PNL (%)</Trans>
                 </TooltipWithPortal>
               </TableTh>
-              <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right">
+              <TableTh className="w-0 whitespace-nowrap py-12 pl-4 pr-16 !text-right">
                 <Trans>WIN/LOSS</Trans>
               </TableTh>
             </TableTheadTr>
@@ -215,7 +215,7 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
           shouldStopPropagation
           content={t`Rank among accounts for this metric and period`}
           handle={
-            <span className="text-body-small cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 font-medium text-textIcon-secondary numbers">
+            <span className="text-body-small cursor-help rounded-full border-1/2 border-stroke-primary px-4 font-medium text-textIcon-secondary numbers">
               #{rank}
             </span>
           }
@@ -227,7 +227,7 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
 
 function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:w-[calc(100vw-24px)] max-md:max-w-[calc(100vw-24px)] max-md:p-14">
+    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:w-[calc(100vw-24px)] max-md:max-w-[calc(100vw-24px)] max-md:p-12">
       <PnlBreakdownTooltipContent row={row} />
     </div>
   );
@@ -249,7 +249,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
 
       <div className="my-12 h-[0.5px] bg-stroke-primary" />
 
-      <div className="mb-10 font-medium text-textIcon-primary">
+      <div className="mb-8 font-medium text-textIcon-primary">
         <Trans>Fees and impacts</Trans>
       </div>
       <div className="flex flex-col gap-8">
@@ -266,7 +266,7 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
 
 function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:max-w-[calc(100vw-24px)] max-md:p-14">
+    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:max-w-[calc(100vw-24px)] max-md:p-12">
       <StatsTooltipRow
         label={t`Capital used`}
         showDollar={false}

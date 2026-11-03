@@ -12,10 +12,10 @@ function CardButton({ href, children }: { href: string; children: React.ReactNod
       href={href}
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-      className="btn-landing mt-[18px] inline-flex h-44 w-fit items-center gap-8 rounded-8 px-16 text-16 -tracking-[0.512px]"
+      className="btn-landing mt-16 inline-flex h-44 w-fit items-center gap-8 rounded-8 px-16 text-16 -tracking-[0.512px]"
     >
       {children}
-      <span className="flex size-16 flex-shrink-0 items-center justify-center rounded-full bg-white">
+      <span className="bg-white flex size-16 flex-shrink-0 items-center justify-center rounded-full">
         <IcLinkArrow className="size-8 text-black" />
       </span>
     </a>
@@ -24,7 +24,7 @@ function CardButton({ href, children }: { href: string; children: React.ReactNod
 
 export function ProgramCards() {
   const cardClassName =
-    "relative flex flex-col overflow-hidden rounded-20 border-1/2 border-slate-600/50 bg-slate-800 p-36 shadow-[0_6px_8px_-6px_#000]";
+    "relative flex flex-col overflow-hidden rounded-20 border-1/2 border-slate-600/50 bg-slate-800 p-32 shadow-[0_6px_8px_-6px_#000]";
 
   return (
     <div className="relative w-full px-16 sm:px-40">
@@ -63,7 +63,7 @@ export function ProgramCards() {
                 Or refer those who do
               </Trans>
             </h3>
-            <p className="relative mt-4 text-16 leading-[20px] -tracking-[0.512px] text-slate-500">
+            <p className="text-slate-500 relative mt-4 text-16 leading-[20px] -tracking-[0.512px]">
               <Trans>
                 Up to 25% off fees for high-volume traders.
                 <br />
@@ -78,7 +78,7 @@ export function ProgramCards() {
           </div>
 
           <div className={cardClassName}>
-            <CodeSnippet className="pointer-events-none absolute left-[456px] top-[-47px] hidden w-[500px] origin-top-left scale-[0.9224] lg:block" />
+            <CodeSnippet className="pointer-events-none absolute -top-40 left-[456px] hidden w-[500px] origin-top-left scale-[0.9224] lg:block" />
             <div className="relative flex flex-wrap gap-8">
               <Eyebrow gradient>
                 <Trans>For developers & teams</Trans>
@@ -94,7 +94,7 @@ export function ProgramCards() {
                 paid on every trade
               </Trans>
             </h3>
-            <p className="relative mt-4 text-16 leading-[20px] -tracking-[0.512px] text-slate-500">
+            <p className="text-slate-500 relative mt-4 text-16 leading-[20px] -tracking-[0.512px]">
               <Trans>
                 Onchain revenue in stablecoins — your own builder
                 <br />

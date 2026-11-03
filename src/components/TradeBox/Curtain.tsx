@@ -301,7 +301,7 @@ export function Curtain({
               "flex touch-none select-none items-stretch justify-between gap-4 border-stroke-primary",
               "translate-y-2 bg-fill-surfaceElevated shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
-                "mb-2 border-t-1/2 bg-fill-surfaceBase": isOpen,
+                "mb-4 border-t-1/2 bg-fill-surfaceBase": isOpen,
                 "pr-8": !hideChevron,
               }
             )}
@@ -314,7 +314,7 @@ export function Curtain({
               {header}
             </div>
             {!hideChevron && (
-              <button onClick={handleToggle} className="group p-10">
+              <button onClick={handleToggle} className="group p-8">
                 <ChevronDownIcon
                   className={cx(
                     "size-16 text-textIcon-secondary transition-transform duration-500 ease-out group-hover:text-textIcon-primary",
@@ -326,9 +326,7 @@ export function Curtain({
           </div>
 
           <div
-            className={cx("flex grow flex-col overflow-y-auto bg-fill-surfaceBase", {
-              "mt-1": !isOpen,
-            })}
+            className="flex grow flex-col overflow-y-auto bg-fill-surfaceBase"
             ref={scrollableContainerRef}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}

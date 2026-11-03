@@ -227,7 +227,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               }
             />
           </span>
-          <div className="mt-2">
+          <div className="mt-4">
             {isStakingPowerLoading ? (
               <Skeleton
                 baseColor="var(--color-fill-skeleton)"
@@ -246,7 +246,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               <span className="text-h4 block numbers">
                 {formatAmount(displayProjectedRewardGmx, 18, 2, true)} GMX{" "}
                 {accumulatedGmxUsd !== undefined && (
-                  <span className="text-body-medium relative -top-2 whitespace-nowrap font-normal text-textIcon-secondary">
+                  <span className="text-body-medium relative -top-4 whitespace-nowrap font-normal text-textIcon-secondary">
                     (<UsdValue usd={accumulatedGmxUsd} />)
                   </span>
                 )}

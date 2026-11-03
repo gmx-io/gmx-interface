@@ -82,7 +82,7 @@ const TwapRows = ({
   }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTwapNumberOfParts, setNumberOfParts]);
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-12">
       <SyntheticsInfoRow label={t`Duration`} className="!items-center">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>

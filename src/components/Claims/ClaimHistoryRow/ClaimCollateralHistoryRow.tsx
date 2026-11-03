@@ -47,7 +47,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
           <React.Fragment key={index}>
             {index !== 0 && ", "}
             <div className="inline-block whitespace-nowrap leading-base">
-              <TokenIcon className="mr-5" symbol={marketInfo.indexToken.symbol} displaySize={20} />
+              <TokenIcon className="mr-4" symbol={marketInfo.indexToken.symbol} displaySize={20} />
               {getMarketIndexName(marketInfo)}
             </div>
           </React.Fragment>
@@ -81,7 +81,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle font-medium">{eventTitle}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-5"
+            className="ClaimHistoryRow-external-link ml-4"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />

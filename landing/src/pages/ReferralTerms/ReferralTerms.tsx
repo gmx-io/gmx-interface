@@ -14,7 +14,7 @@ export default function ReferralTerms() {
             <div className="text-heading-4 my-24">Terms and Conditions</div>
             <div className="text-14">Last modified: August 1st, 2022</div>
           </div>
-          <div className="mt-74 space-y-74">
+          <div className="mt-64 space-y-64">
             <div>
               <p className="text-terms-body mb-24">
                 Welcome to GMX.io ("we," "us," or "our"), the informational resource for GMX Protocol, as defined below.

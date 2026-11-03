@@ -51,7 +51,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
   return (
     <div
       className={cx("pagination", {
-        "mt-25": topMargin,
+        "mt-24": topMargin,
       })}
     >
       <div className="text-body-medium flex gap-8 max-md:text-body-small">
@@ -83,7 +83,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
           className="h-32 w-32 !p-0"
           disabled={page >= pageCount}
         >
-          <ChevronRightIcon className="ml-2 size-14 shrink-0" />
+          <ChevronRightIcon className="ml-4 size-14 shrink-0" />
         </Button>
         <Button
           variant="secondary"

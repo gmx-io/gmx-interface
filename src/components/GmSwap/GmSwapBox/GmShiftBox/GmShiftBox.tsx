@@ -350,7 +350,7 @@ export function GmShiftBox({
           </div>
         </div>
 
-        <div className="flex flex-col gap-14 rounded-8 bg-fill-surfaceBase p-12">
+        <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceBase p-12">
           <GmFees
             operation={Operation.Shift}
             totalFees={fees?.totalFees}

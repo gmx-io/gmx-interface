@@ -7,7 +7,7 @@ type Props = {
 
 export function EmptyMessage({ message = "", tooltipText }: Props) {
   return (
-    <div className="text-body-medium flex flex-col items-center justify-center rounded-8 bg-fill-surfaceBase px-6 py-12 text-textIcon-secondary">
+    <div className="text-body-medium flex flex-col items-center justify-center rounded-8 bg-fill-surfaceBase px-4 py-12 text-textIcon-secondary">
       {tooltipText ? <Tooltip handle={message} position="top" content={tooltipText} /> : <p>{message}</p>}
     </div>
   );

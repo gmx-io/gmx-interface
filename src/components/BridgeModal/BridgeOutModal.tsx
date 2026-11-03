@@ -451,7 +451,7 @@ export function BridgeOutModal({
         >
           <span className="inline-flex items-center">
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken.symbol : glvOrMarketInfo.indexToken.symbol}
               displaySize={20}
               chainIdBadge={0}

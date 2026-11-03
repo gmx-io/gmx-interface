@@ -60,7 +60,7 @@ export function PoolsDetailsMarketAmount({
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       <div className="text-body-medium font-medium text-textIcon-secondary">{label}</div>
       {valueContentWithTooltip}
     </div>

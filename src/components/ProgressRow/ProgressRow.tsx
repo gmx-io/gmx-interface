@@ -28,7 +28,7 @@ export function ProgressRow({ label, value, currentValue, totalValue }: Progress
   }, [progress]);
 
   return (
-    <div className={cx("flex flex-col gap-6")}>
+    <div className={cx("flex flex-col gap-4")}>
       <div className="flex justify-between">
         <div className="font-medium text-textIcon-secondary">{label}</div>
         {value}

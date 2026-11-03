@@ -462,7 +462,7 @@ export function TPSLInputRow({
           >
             <div
               className={cx(
-                "text-body-small flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-fill-surfaceElevated px-8 py-3",
+                "text-body-small flex flex-1 cursor-text flex-col justify-between gap-4 rounded-4 border bg-fill-surfaceElevated px-8 py-4",
                 priceError
                   ? "border-red-strong"
                   : priceWarning
@@ -491,7 +491,7 @@ export function TPSLInputRow({
 
           <div
             className={cx(
-              "text-body-small relative flex grow cursor-text flex-col justify-between gap-2 rounded-4 border bg-fill-surfaceElevated px-8 py-3",
+              "text-body-small relative flex grow cursor-text flex-col justify-between gap-4 rounded-4 border bg-fill-surfaceElevated px-8 py-4",
               "border-fill-surfaceElevated",
               "focus-within:border-blue-strong hover:bg-fill-surfaceHover active:border-blue-strong"
             )}
@@ -534,7 +534,7 @@ export function TPSLInputRow({
         >
           <div
             className={cx(
-              "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-fill-surfaceElevated px-8 py-6",
+              "flex flex-1 cursor-text flex-col gap-4 rounded-8 border bg-fill-surfaceElevated px-8 py-4",
               priceError
                 ? "border-red-strong"
                 : priceWarning
@@ -576,7 +576,7 @@ export function TPSLInputRow({
         </TooltipWithPortal>
         <div
           className={cx(
-            "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-8 py-6",
+            "flex flex-1 cursor-text flex-col gap-4 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-8 py-4",
             "focus-within:border-blue-strong hover:bg-fill-surfaceHover"
           )}
           ref={displayModePopoverReferenceRef}
@@ -661,7 +661,7 @@ function DisplayModeSelector({
         <>
           <Popover.Button
             className={cx(
-              "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-textIcon-secondary outline-none hover:text-textIcon-primary",
+              "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none text-textIcon-secondary outline-none hover:text-textIcon-primary",
               size === "small" ? "text-body-small" : "text-body-medium"
             )}
             ref={setPopoverButtonRef}

@@ -50,7 +50,7 @@ export function PendingTPSLOrder({
 
   if (isMobile) {
     return (
-      <div className="flex flex-col gap-10 border-b-1/2 border-stroke-primary p-16 last:border-b-0" aria-busy="true">
+      <div className="flex flex-col gap-8 border-b-1/2 border-stroke-primary p-16 last:border-b-0" aria-busy="true">
         <div className="flex items-center justify-between">
           <span>{orderType}</span>
           {status}

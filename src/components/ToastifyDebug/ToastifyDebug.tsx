@@ -21,7 +21,7 @@ export function ToastifyDebug(props: { error: string }) {
 
   return (
     <div className="text-body-small opacity-70">
-      <div className="flex gap-10">
+      <div className="flex gap-8">
         <span className="inline-block cursor-pointer border-b border-dashed" onClick={() => setOpen((old) => !old)}>
           {open ? <Trans>Hide error</Trans> : <Trans>Show error</Trans>}
         </span>

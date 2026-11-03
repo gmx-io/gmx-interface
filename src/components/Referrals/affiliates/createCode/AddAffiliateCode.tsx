@@ -317,7 +317,7 @@ function AffiliateCodeFormMultichain({
         event.preventDefault();
         buttonState.onSubmit?.(event);
       }}
-      className="flex flex-col gap-15"
+      className="flex flex-col gap-12"
     >
       <input
         ref={inputRef}
@@ -553,7 +553,7 @@ function AffiliateCodeForm({
         ref={inputRef}
         value={referralCode}
         disabled={isProcessing}
-        className={cx("text-input", { "mb-15": !error })}
+        className={cx("text-input", { "mb-12": !error })}
         placeholder={t`Enter a code`}
         onChange={({ target }) => {
           const { value } = target;
@@ -563,7 +563,7 @@ function AffiliateCodeForm({
       />
       {error && <p className="text-body-small m-0 pb-24 pt-8 text-red-strong">{error}</p>}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-        <AlertInfoCard type="warning" className="mb-15 text-left" hideClose>
+        <AlertInfoCard type="warning" className="mb-12 text-left" hideClose>
           {rpcFailedChains.length === 1 ? (
             <Trans>
               Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,

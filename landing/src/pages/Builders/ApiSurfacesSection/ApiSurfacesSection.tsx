@@ -36,7 +36,7 @@ export function ApiSurfacesSection() {
   ];
 
   return (
-    <section className="bg-light-150 w-full px-16 py-60 text-slate-900 sm:px-40 sm:py-[120px]">
+    <section className="bg-light-150 text-slate-900 w-full px-16 py-56 sm:px-40 sm:py-120">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow>
           <Trans>API surfaces</Trans>
@@ -44,10 +44,10 @@ export function ApiSurfacesSection() {
         <h2 className="text-heading-2 mt-20">
           <Trans>Four ways in</Trans>
         </h2>
-        <p className="text-18 mt-18 text-slate-900">
+        <p className="text-18 text-slate-900 mt-16">
           <Trans>Pick what fits your stack. Everything's documented.</Trans>
         </p>
-        <div className="mt-28 grid grid-cols-1 gap-20 sm:mt-44 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-24 grid grid-cols-1 gap-20 sm:mt-40 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((card) => (
             <a
               key={card.title}
@@ -55,8 +55,8 @@ export function ApiSurfacesSection() {
               target="_blank"
               rel="noopener noreferrer"
               className={cx(
-                "duration-180 relative flex min-h-[216px] flex-col overflow-hidden rounded-20 p-28 shadow-[0_6px_8px_-6px_#BEC0DA] transition-transform hover:-translate-y-4",
-                card.highlighted ? "bg-slate-900 text-white" : "border-1/2 border-slate-400/50 bg-white text-slate-900"
+                "duration-180 relative flex min-h-[216px] flex-col overflow-hidden rounded-20 p-24 shadow-[0_6px_8px_-6px_#BEC0DA] transition-transform hover:-translate-y-4",
+                card.highlighted ? "bg-slate-900 text-white" : "bg-white text-slate-900 border-1/2 border-slate-400/50"
               )}
             >
               {card.highlighted && (

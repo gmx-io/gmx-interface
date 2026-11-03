@@ -92,7 +92,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-textIcon-primary", {
+      className={cx("flex cursor-pointer items-center justify-center gap-4 pb-16 pt-8 text-textIcon-primary", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
@@ -126,13 +126,13 @@ export function NavItem({
   const button = (
     <button
       aria-label={ariaLabel}
-      className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
+      className={cx("group cursor-pointer select-none text-left", { "w-full": !isCollapsed })}
       onClick={onClick}
     >
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-          rounded-8 px-12 py-10 text-textIcon-secondary group-hover:bg-button-primary/20 group-hover:text-blue-strong
+          rounded-8 px-12 py-8 text-textIcon-secondary group-hover:bg-button-primary/20 group-hover:text-blue-strong
           dark:group-hover:bg-button-background dark:group-hover:text-textIcon-primary`,
           {
             "bg-button-primary/20 !text-blue-strong dark:bg-button-background dark:!text-textIcon-primary": isActive,
@@ -150,7 +150,7 @@ export function NavItem({
             { "group-hover:flex": isCollapsed }
           )}
         >
-          <div className="flex items-center gap-8 rounded-8 bg-button-primary/20 px-12 py-10 dark:bg-button-background">
+          <div className="flex items-center gap-8 rounded-8 bg-button-primary/20 px-12 py-8 dark:bg-button-background">
             <div className="flex size-20 shrink-0 items-center justify-center">{icon}</div>
             <span className={cx("text-body-medium whitespace-nowrap font-medium")}>{label}</span>
           </div>

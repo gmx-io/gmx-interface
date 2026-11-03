@@ -142,14 +142,14 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
         "text-h2 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-textIcon-secondary hover:text-textIcon-primary",
         {
           "!text-textIcon-primary": item.isSelected,
-          "border-l-1/2 border-l-stroke-primary pl-18": item.key === "concluded",
+          "border-l-1/2 border-l-stroke-primary pl-16": item.key === "concluded",
         }
       )}
     >
       {item.label}
 
       {timeframeLabel && (
-        <div className="text-body-small inline-flex h-fit whitespace-nowrap rounded-full bg-button-background px-8 py-6 text-textIcon-secondary">
+        <div className="text-body-small inline-flex h-fit whitespace-nowrap rounded-full bg-button-background px-8 py-4 text-textIcon-secondary">
           {timeframeLabel}
         </div>
       )}
