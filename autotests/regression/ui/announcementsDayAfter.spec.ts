@@ -1,6 +1,6 @@
 import { expect, type APIRequestContext, type Page, type TestInfo } from "@playwright/test";
 
-import { announcementTime as time, dismissOutageWarning } from "../fixtures/announcements";
+import { announcementTime as time, dismissOutageWarning, showWhatsNewSlide } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 import { readRegressionAnnouncements, type RegressionAnnouncement } from "../fixtures/deploymentConfig";
 
@@ -99,11 +99,8 @@ for (const event of current) {
     test.skip(!live.includes(event), `${event.flagId} is disabled, so ${event.id} is not live`);
     if (live.indexOf(event) < MAX_TOAST_CARDS && event.title) {
       const banner = page.getByRole("region", { name: "What's new" });
-      // The carousel rotates every 5 seconds through at most four cards.
-      await expect(banner.getByTestId("whats-new-slide").getByText(event.title, { exact: true })).toBeVisible({
-        timeout: 30_000,
-      });
-      await banner.hover();
+      await expect(banner).toBeVisible({ timeout: 30_000 });
+      await showWhatsNewSlide(banner, event.title);
       await expect(banner.getByRole("link", { name: "See more" })).toHaveAttribute(
         "href",
         `/announcements?id=${encodeURIComponent(event.id)}`
