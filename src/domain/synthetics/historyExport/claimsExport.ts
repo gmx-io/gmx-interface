@@ -1,4 +1,4 @@
-import { Address, isAddressEqual, withRetry } from "viem";
+import { withRetry } from "viem";
 
 import { getChainSlug, getExplorerUrl } from "config/chains";
 import { ClaimType } from "domain/synthetics/claimHistory/types";
@@ -7,6 +7,7 @@ import { MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { CsvRow, serializeCsv } from "lib/csv";
 import { getByKey } from "lib/objects";
+import { isSameAddress } from "sdk/utils/address";
 
 import { CLAIMS_CSV_HEADERS, ClaimsCsvHeader, HISTORY_EXPORT_SCHEMA_VERSION } from "./csvSchemas";
 import {
@@ -33,13 +34,7 @@ function getMetadata<T>(data: Record<string, T> | undefined, address: string | u
     return direct;
   }
 
-  const matchingKey = Object.keys(data).find((key) => {
-    try {
-      return isAddressEqual(key as Address, address as Address);
-    } catch {
-      return key === address;
-    }
-  });
+  const matchingKey = Object.keys(data).find((key) => isSameAddress(key, address));
   return matchingKey ? data[matchingKey] : undefined;
 }
 

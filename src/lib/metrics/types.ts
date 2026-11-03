@@ -4,6 +4,7 @@ import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
 import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import type { LaunchSource } from "lib/pwa/getLaunchSource";
+import type { WalletChainCapabilitiesResult } from "lib/wallets/walletCapabilities";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -517,6 +518,10 @@ export type EditCollateralMetricData = {
 export type SwapGmMetricData = {
   metricId: `gm:${string}`;
   metricType: "buyGM" | "sellGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -533,6 +538,10 @@ export type SwapGmMetricData = {
 export type ShiftGmMetricData = {
   metricId: `shift:${string}`;
   metricType: "shiftGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   fromMarketAddress: string | undefined;
   toMarketAddress: string | undefined;
@@ -543,6 +552,10 @@ export type ShiftGmMetricData = {
 export type SwapGLVMetricData = {
   metricId: `glv:${string}`;
   metricType: "buyGLV" | "sellGLV";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -781,9 +794,17 @@ export type WalletCapabilitiesEvent = {
   data: {
     chainId: number;
     walletName: string | undefined;
+    connectorId: string;
+    connectorType: string;
     accountType: string | undefined;
     delegateAddress: string | undefined;
-    capabilitiesStatus: "ok" | "unsupported" | "skipped" | "error" | "timeout";
+    capabilitiesStatus: WalletChainCapabilitiesResult["status"];
+    capabilitiesDurationMs: number | undefined;
+    capabilitiesTimeoutMs: number | undefined;
+    capabilitiesErrorCode: number | undefined;
+    capabilitiesErrorName: string | undefined;
+    capabilitiesErrorMessage: string | undefined;
+    capabilitiesErrorReason: WalletChainCapabilitiesResult["errorReason"];
     atomicStatus: string | undefined;
     hasAlternateGasFees: boolean | undefined;
     hasPaymasterService: boolean | undefined;
