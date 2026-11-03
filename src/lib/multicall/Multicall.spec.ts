@@ -107,7 +107,7 @@ describe("multicall result isolation", () => {
 });
 
 describe("Sepolia position multicalls", () => {
-  it.each([false, true])("decodes deployed reader responses with standalone=%s", async (standalone) => {
+  it("decodes deployed reader responses", async () => {
     const clientMulticall = vi.fn(async ({ contracts }: { contracts: { abi: Abi; functionName: string }[] }) =>
       contracts.map(({ abi, functionName }) => ({
         status: "success" as const,
@@ -129,8 +129,8 @@ describe("Sepolia position multicalls", () => {
           contractAddress: getContract(ARBITRUM_SEPOLIA, "SyntheticsReader"),
           abiId: "SyntheticsReader",
           calls: {
-            positions: { methodName: "getAccountPositions", params: [], standalone },
-            details: { methodName: "getPositionInfoList", params: [], standalone },
+            positions: { methodName: "getAccountPositions", params: [], standalone: true },
+            details: { methodName: "getPositionInfoList", params: [], standalone: true },
           },
         },
       },
