@@ -10,6 +10,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
+import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
 import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
 import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
@@ -72,7 +73,7 @@ export function AppRoutes() {
   useEffect(() => {
     const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
 
-    if (referralCode && referralCode.length <= 20) {
+    if (isReferralCodeQueryParam(referralCode)) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
