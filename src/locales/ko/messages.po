@@ -4532,6 +4532,10 @@ msgstr "지갑 전용"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxos 견적이 변경되었습니다. 새 금액과 수수료를 검토한 후 다시 확인하세요."
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "현재 {fromSymbol}(으)로 네트워크 수수료를 지불할 수 없어, 지불이 가능해질 때까지 트랜잭션은 Express 없이 전송됩니다."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "상장"
@@ -7451,6 +7455,10 @@ msgstr "자금은 목적지 체인의 GMX 컨트랙트에 안전하게 보관되
 msgid "Perpetuals"
 msgstr "무기한 선물"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "현재 {fromSymbol}(으)로 네트워크 수수료를 지불할 수 없습니다. 대신 {toSymbol}(으)로 지불됩니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "영향 지수 (음수)"
@@ -8373,6 +8381,10 @@ msgstr "이 트리거 가격에서는 남은 포지션이 최대 레버리지를
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 업데이트 완료"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "현재 {fromSymbol}(으)로 네트워크 수수료를 지불할 수 없어, 지불이 가능해질 때까지 GMX Account 작업을 전송할 수 없습니다."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts

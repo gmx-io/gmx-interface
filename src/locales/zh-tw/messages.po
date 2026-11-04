@@ -4532,6 +4532,10 @@ msgstr "僅限錢包"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxos 報價已變更。請查看新的金額和費用，然後再次確認。"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前交易將不透過 Express 送出。"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "上架"
@@ -7451,6 +7455,10 @@ msgstr "您的資金安全存放在目標鏈上的 GMX 合約中。請在 LayerZ
 msgid "Perpetuals"
 msgstr "永續合約"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} 目前無法支付網路費用，將改用 {toSymbol} 支付。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "影響指數（負向）"
@@ -8373,6 +8381,10 @@ msgstr "在此觸發價格下，剩餘倉位將超過最大槓桿，訂單可能
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前無法送出 GMX Account 操作。"
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts

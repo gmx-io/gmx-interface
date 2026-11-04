@@ -4532,6 +4532,10 @@ msgstr "Solo monedero"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "La cotización de Paxos cambió. Revisa el nuevo importe y la comisión, y confirma de nuevo."
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento, por lo que las transacciones se envían sin Express hasta que pueda hacerlo."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "Listado"
@@ -7451,6 +7455,10 @@ msgstr "Sus fondos están seguros en los contratos de GMX en la cadena de destin
 msgid "Perpetuals"
 msgstr "Perpetuos"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento. Se pagan en {toSymbol} en su lugar."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Exponente de impacto (negativo)"
@@ -8373,6 +8381,10 @@ msgstr "A este precio de activación, la posición restante excedería el apalan
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}: actualización completada"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento, por lo que las acciones de GMX Account no se pueden enviar hasta que pueda hacerlo."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts

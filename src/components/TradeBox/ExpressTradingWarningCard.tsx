@@ -12,6 +12,7 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTokensData,
@@ -178,6 +179,7 @@ export function ExpressTradingWarningCard({
     () => (payTokenAddress && fromTokenAmount > 0n ? { [payTokenAddress]: fromTokenAmount } : {}),
     [payTokenAddress, fromTokenAmount]
   );
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const gasTokenCandidate = useMemo(() => {
     if (!shouldShowExternalSwapGasConflictRequiredWarning && !shouldShowExternalSwapGasConflictOptionalWarning) {
@@ -193,6 +195,7 @@ export function ExpressTradingWarningCard({
       gasPaymentParams: expressParams?.gasPaymentParams,
       payAmounts,
       isGmxAccount,
+      unavailableTokenAddresses,
     });
 
     return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
@@ -206,6 +209,7 @@ export function ExpressTradingWarningCard({
     chainId,
     tokensData,
     isGmxAccount,
+    unavailableTokenAddresses,
   ]);
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);

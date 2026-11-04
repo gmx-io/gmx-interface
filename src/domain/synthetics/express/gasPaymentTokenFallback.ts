@@ -30,6 +30,7 @@ export function resolveGasPaymentTokenAddress({
   tokensData,
   tokensAllowanceData,
   tokenPermits,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   fallback: GasPaymentTokenFallback;
@@ -41,6 +42,7 @@ export function resolveGasPaymentTokenAddress({
   tokensData: TokensData | undefined;
   tokensAllowanceData: TokensAllowanceData | undefined;
   tokenPermits: SignedTokenPermit[];
+  unavailableTokenAddresses: string[];
 }): string {
   const gasPaymentTokenAddress = gasPaymentToken.address;
 
@@ -65,6 +67,7 @@ export function resolveGasPaymentTokenAddress({
       payTokenAddress,
       feeUsdByToken,
       tokensData,
+      unavailableTokenAddresses,
     });
 
     if (payTokenFeeTokenAddress !== undefined) {
@@ -90,7 +93,9 @@ export function resolveGasPaymentTokenAddress({
       isGmxAccount: false,
       // the pay token was checked above, and payAmounts may leave out the order amount it spends
       excludeTokenAddresses:
-        fallback === "skipApproval" && payTokenAddress !== undefined ? [payTokenAddress] : undefined,
+        fallback === "skipApproval" && payTokenAddress !== undefined
+          ? [...unavailableTokenAddresses, payTokenAddress]
+          : unavailableTokenAddresses,
       tokensAllowanceData,
     }) ?? gasPaymentTokenAddress
   );
@@ -101,13 +106,19 @@ function getPayTokenFeeTokenAddress({
   payTokenAddress,
   feeUsdByToken,
   tokensData,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   payTokenAddress: string | undefined;
   feeUsdByToken: Record<string, bigint>;
   tokensData: TokensData | undefined;
+  unavailableTokenAddresses: string[];
 }): string | undefined {
-  if (payTokenAddress === undefined || !getGasPaymentTokens(chainId).includes(payTokenAddress)) {
+  if (
+    payTokenAddress === undefined ||
+    !getGasPaymentTokens(chainId).includes(payTokenAddress) ||
+    unavailableTokenAddresses.includes(payTokenAddress)
+  ) {
     return undefined;
   }
 
@@ -134,6 +145,7 @@ export async function estimateWithApprovedGasPaymentToken({
   payAmounts,
   estimate,
   getGlobalExpressParamsForGasPaymentToken,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   isGmxAccount: boolean;
@@ -141,6 +153,7 @@ export async function estimateWithApprovedGasPaymentToken({
   payAmounts: Record<string, bigint>;
   estimate: (globalExpressParams: GlobalExpressParams | undefined) => Promise<ExpressTxnParams | undefined>;
   getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress: string) => GlobalExpressParams | undefined;
+  unavailableTokenAddresses: string[];
 }): Promise<ExpressTxnParams | undefined> {
   const expressParams = await estimate(globalExpressParams);
 
@@ -155,6 +168,7 @@ export async function estimateWithApprovedGasPaymentToken({
     gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
     payAmounts,
     isGmxAccount: false,
+    excludeTokenAddresses: unavailableTokenAddresses,
     tokensAllowanceData: globalExpressParams.gasPaymentAllowanceData,
   });
 

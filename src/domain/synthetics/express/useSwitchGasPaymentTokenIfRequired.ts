@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 
+import { selectUnavailableGasPaymentTokenAddresses } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectGasPaymentTokenAllowance,
   selectTokensData,
@@ -180,6 +181,7 @@ function useSwitchGasPaymentTokenIfRequired({
   const savedGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokensAllowanceData = gasPaymentTokenAllowance?.tokensAllowanceData;
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   useEffect(
     function switchGasPaymentToken() {
@@ -200,6 +202,7 @@ function useSwitchGasPaymentTokenIfRequired({
         isGmxAccount,
         savedGasPaymentTokenAddress,
         tokensAllowanceData,
+        excludeTokenAddresses: unavailableTokenAddresses,
       });
 
       if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
@@ -231,6 +234,7 @@ function useSwitchGasPaymentTokenIfRequired({
       tokensData,
       savedGasPaymentTokenAddress,
       tokensAllowanceData,
+      unavailableTokenAddresses,
     ]
   );
 }

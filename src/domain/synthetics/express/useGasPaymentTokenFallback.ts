@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import {
   makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken,
   selectSettlementChainExpressGlobalParams,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
@@ -69,6 +70,7 @@ export function useGasPaymentTokenFallback({
   const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
   const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
   const isPayTokenFallback = fallback === "skipApproval" && payTokenFeeToken !== undefined;
   const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
@@ -88,6 +90,7 @@ export function useGasPaymentTokenFallback({
           tokensData,
           tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
           tokenPermits,
+          unavailableTokenAddresses,
         });
 
   const gasPaymentTokenAddress =
@@ -178,6 +181,7 @@ export function useEstimateBatchExpressParamsWithApprovedGasToken() {
         estimate: (globalExpressParams) => estimateBatchExpressParams({ ...params, globalExpressParams }),
         getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress) =>
           calcSelector(makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)),
+        unavailableTokenAddresses: calcSelector(selectUnavailableGasPaymentTokenAddresses),
       }),
     [calcSelector]
   );

@@ -17,6 +17,8 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
+import type { GasPaymentTokensOnchainState } from "domain/synthetics/express/gasPaymentTokenAvailability";
+import { useGasPaymentTokensOnchainState } from "domain/synthetics/express/useGasPaymentTokensOnchainState";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
@@ -168,6 +170,7 @@ export type SyntheticsState = {
   features: FeaturesSettings | undefined;
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
+  gasPaymentTokensOnchainState: GasPaymentTokensOnchainState | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -386,6 +389,8 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
 
+  const gasPaymentTokensOnchainState = useGasPaymentTokensOnchainState(chainId);
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -455,6 +460,7 @@ export function SyntheticsStateContextProvider({
       features,
       uiFlags,
       gasPaymentTokenAllowance,
+      gasPaymentTokensOnchainState,
       l1ExpressOrderGasReference,
     };
 
@@ -471,6 +477,7 @@ export function SyntheticsStateContextProvider({
     features,
     gasLimits,
     gasPaymentTokenAllowance,
+    gasPaymentTokensOnchainState,
     gasPrice,
     glvInfo,
     isCandlesLoaded,

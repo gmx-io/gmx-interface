@@ -39,12 +39,12 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import {
+  selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectExpressOrdersEnabled,
-  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -551,7 +551,7 @@ export const WithdrawalView = () => {
   const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
   const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
-  const gasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
