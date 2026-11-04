@@ -86,6 +86,7 @@ vi.mock("lib/helperToast", () => ({
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: vi.fn(),
+    pushEvent: vi.fn(),
   },
 }));
 

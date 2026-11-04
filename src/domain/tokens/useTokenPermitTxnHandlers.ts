@@ -10,7 +10,7 @@ import {
   getIsPermitSignatureErrorOnSimulation,
 } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import type { PermitIssueType } from "components/Errors/errorToasts";
@@ -58,7 +58,13 @@ export function useTokenPermitTxnHandlers() {
   const getTokenPermitsExecutedHandler = useCallback(
     (permits: SignedTokenPermit[]) => () =>
       permits.forEach((permit) =>
-        sendTokenPermitMetric({ outcome: "executed", chainId, tokenAddress: permit.token, accountType })
+        sendTokenPermitMetric({
+          outcome: "executed",
+          chainId,
+          tokenAddress: permit.token,
+          accountType,
+          permitId: getTokenPermitId(permit),
+        })
       ),
     [accountType, chainId]
   );
@@ -77,6 +83,7 @@ export function useTokenPermitTxnHandlers() {
             tokenAddress: permit.token,
             accountType,
             reason: "preSendCheck",
+            permitId: getTokenPermitId(permit),
           });
         });
       } else if (issueType === "expiredDeadline") {
@@ -96,6 +103,7 @@ export function useTokenPermitTxnHandlers() {
             tokenAddress: permit.token,
             accountType,
             reason: "simulation",
+            permitId: getTokenPermitId(permit),
           });
           validateTokenPermitSignature(chainId, permit).then((validationResult) => {
             metrics.pushError(

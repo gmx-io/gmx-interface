@@ -59,7 +59,10 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     accountType: "eoa",
   }),
 }));
-vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: vi.fn() }));
+vi.mock("lib/metrics/tokenPermitMetrics", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  sendTokenPermitMetric: vi.fn(),
+}));
 vi.mock("lib/errors/customErrors", async (importOriginal) => ({
   ...(await importOriginal<object>()),
   getIsPermitSignatureErrorOnSimulation: () => state.isPermitSignatureErrorOnSimulation,
@@ -218,7 +221,7 @@ it("tracks the replacement hash when a wallet TP/SL transaction is sped up", () 
 });
 
 describe("token permits", () => {
-  const permit = { token: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831" } as SignedTokenPermit;
+  const permit = { token: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", r: "0x1" } as SignedTokenPermit;
 
   it("sends tokens whose permit failed the pre-send check back to the approval transaction", () => {
     const builder = events("express");
