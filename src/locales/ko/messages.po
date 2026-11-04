@@ -2799,10 +2799,6 @@ msgstr "Market Decrease 실패"
 msgid "DefiLlama"
 msgstr "DefiLlama"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
-msgstr ""
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "일별 및 누적 PnL"
@@ -9214,7 +9210,7 @@ msgstr "트랜잭션 보기"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
-msgstr ""
+msgstr "<0>{walletName}이(가) 아직 {0}에 배포되지 않았습니다</0><1/><2>{1}에서 이 지갑으로 아무 트랜잭션이나 보낸 후 다시 시도하세요</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10316,10 +10312,6 @@ msgstr "새 탭에서 GMTrade를 엽니다"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "상위 주소"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading 승인 nonce가 만료되었습니다. One-Click Trading을 계속 사용하려면 다시 서명하십시오."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12796,8 +12788,6 @@ msgstr "증거금 입금 실행"
 msgid "Estimate your savings"
 msgstr "예상 절감액 확인하기"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

@@ -2799,10 +2799,6 @@ msgstr "Market Decrease 失败"
 msgid "DefiLlama"
 msgstr "DefiLlama"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
-msgstr ""
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "每日及累计 PnL"
@@ -9214,7 +9210,7 @@ msgstr "查看交易"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
-msgstr ""
+msgstr "<0>您的 {walletName} 尚未在 {0} 上部署</0><1/><2>请先用它在 {1} 上发起任意一笔交易，然后重试</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10316,10 +10312,6 @@ msgstr "将在新标签页中打开 GMTrade"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "排名地址"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading 授权 nonce 已过期。请重新签名以继续使用 One-Click Trading。"
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12796,8 +12788,6 @@ msgstr "执行保证金存入"
 msgid "Estimate your savings"
 msgstr "预估节省金额"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
