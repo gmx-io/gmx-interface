@@ -14,7 +14,6 @@ import {
 } from "context/SyntheticsEvents";
 import { selectOrdersInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import {
   TokenBalanceUpdate,
   useTokensBalancesUpdates,
@@ -22,30 +21,23 @@ import {
 import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
-import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
-import { getIsTokenPermitNonceUsed, validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { getTokenPermitIssueType, useTokenPermitTxnHandlers } from "domain/tokens/useTokenPermitTxnHandlers";
 import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
-  getExpiredPermitDeadlineError,
-  getInvalidPermitSignatureError,
   getIsInvalidSubaccountApprovalNonceError,
-  getIsPermitExpiredDeadlineOnSimulation,
-  getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
   getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
-  metrics,
   OrderMetricId,
   sendOrderSimulatedMetric,
   sendOrderTxnSubmittedMetric,
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
@@ -66,9 +58,8 @@ import {
   SwapOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
-import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
-import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
+import { getTxnErrorToast } from "components/Errors/errorToasts";
 
 import { getIsDecreaseBatch } from "./getIsDecreaseBatch";
 import { getIsSizeIncreaseBatch } from "./getIsSizeIncreaseBatch";
@@ -106,7 +97,8 @@ export function useOrderTxnCallbacks() {
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
     useTokensBalancesUpdates();
-  const { removeTokenPermits, disableTokenPermits, accountType: tokenPermitAccountType } = useTokenPermitsContext();
+  const { removeTokenPermits, forgetSentTokenPermits, getTokenPermitsExecutedHandler, handleTokenPermitsError } =
+    useTokenPermitTxnHandlers();
   const { invalidateSubaccountApproval } = useSubaccountContext();
   const tokensData = useSelector(selectTokensData);
   const blockNumber = useBlockNumber(chainId);
@@ -120,21 +112,7 @@ export function useOrderTxnCallbacks() {
 
       const { expressParams, batchParams, batchId } = e.data;
       const isSubaccount = Boolean(expressParams?.subaccount);
-      const sentTokenPermits = expressParams?.relayParamsPayload.tokenPermits ?? [];
-
-      const fallbackFromTokenPermits = (permits: SignedTokenPermit[], reason: string) => {
-        disableTokenPermits(permits.map((permit) => permit.token));
-        removeTokenPermits(permits);
-        permits.forEach((permit) => {
-          sendTokenPermitMetric({
-            outcome: "failedCheck",
-            chainId,
-            tokenAddress: permit.token,
-            accountType: tokenPermitAccountType,
-            reason,
-          });
-        });
-      };
+      const sentTokenPermits = expressParams?.relayParamsPayload.tokenPermits ?? e.data.walletTokenPermits ?? [];
 
       const actionsCount = getBatchRequiredActions(batchParams);
 
@@ -378,6 +356,11 @@ export function useOrderTxnCallbacks() {
                 : undefined,
             };
 
+            if (sentTokenPermits.length > 0) {
+              forgetSentTokenPermits(sentTokenPermits);
+              pendingTxn.onSuccess = getTokenPermitsExecutedHandler(sentTokenPermits);
+            }
+
             setPendingTxns((txns) => [...txns, pendingTxn]);
           }
 
@@ -405,8 +388,12 @@ export function useOrderTxnCallbacks() {
           const isOutdatedSubaccountApproval =
             sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
 
+          const permitIssueType = getTokenPermitIssueType(error, sentTokenPermits);
+
+          // a failed permit also reverts as ExternalCallFailed, which isn't the swap's fault
           const fallbackToInternalSwap =
             !isOutdatedSubaccountApproval &&
+            permitIssueType === undefined &&
             hasExternalSwap(expressParams, batchParams) &&
             getIsPossibleExternalSwapError(error)
               ? ctx.onInternalSwapFallback
@@ -418,18 +405,6 @@ export function useOrderTxnCallbacks() {
             getIsSwapPriceImpactTooLargeError(error)
               ? ctx.onExternalSwapFallback
               : undefined;
-
-          let permitIssueType: PermitIssueType | undefined;
-
-          if (error instanceof TokenPermitsCheckError) {
-            permitIssueType = "failedCheck";
-          } else if (sentTokenPermits.length) {
-            if (getIsPermitExpiredDeadlineOnSimulation(error)) {
-              permitIssueType = "expiredDeadline";
-            } else if (getIsPermitSignatureErrorOnSimulation(error)) {
-              permitIssueType = "invalidSignature";
-            }
-          }
 
           const payAmounts = getOptimisticBatchPayAmounts(e.data);
 
@@ -480,47 +455,7 @@ export function useOrderTxnCallbacks() {
             fallbackToExternalSwap();
           }
 
-          if (error instanceof TokenPermitsCheckError) {
-            fallbackFromTokenPermits(error.failedPermits, "preSendCheck");
-          } else if (permitIssueType === "expiredDeadline") {
-            sentTokenPermits.forEach((permit) => {
-              metrics.pushError(getExpiredPermitDeadlineError({ permit }), "simulation.permitExpiredDeadline");
-            });
-
-            removeTokenPermits(sentTokenPermits);
-          } else if (permitIssueType === "invalidSignature") {
-            // a nonce used by another order in the meantime also reads as an invalid signature, so every sent
-            // permit is dropped now, and only a permit the chain will keep rejecting keeps its token on approvals
-            removeTokenPermits(sentTokenPermits);
-            sentTokenPermits.forEach((permit) => {
-              sendTokenPermitMetric({
-                outcome: "failedCheck",
-                chainId,
-                tokenAddress: permit.token,
-                accountType: tokenPermitAccountType,
-                reason: "simulation",
-              });
-              validateTokenPermitSignature(chainId, permit).then((validationResult) => {
-                metrics.pushError(
-                  getInvalidPermitSignatureError({
-                    isValid: validationResult.isValid,
-                    permit,
-                    error: validationResult.error,
-                  }),
-                  "simulation.permitError"
-                );
-              });
-            });
-
-            sentTokenPermits.forEach((permit) => {
-              getIsTokenPermitNonceUsed(chainId, permit).then((isNonceUsed) => {
-                // the read can finish after a wallet switch, so the token is disabled for the permit's own account
-                if (isNonceUsed === false) {
-                  disableTokenPermits([permit.token], { chainId, account: permit.owner });
-                }
-              });
-            });
-          }
+          handleTokenPermitsError(error, sentTokenPermits);
 
           if (isOutdatedSubaccountApproval) {
             invalidateSubaccountApproval(sentSubaccountApproval);
@@ -553,8 +488,9 @@ export function useOrderTxnCallbacks() {
       orderStatuses,
       setPendingTpSlOrderBatches,
       removeTokenPermits,
-      disableTokenPermits,
-      tokenPermitAccountType,
+      forgetSentTokenPermits,
+      getTokenPermitsExecutedHandler,
+      handleTokenPermitsError,
       setIsSettingsVisible,
       setPendingExpressTxn,
       setPendingFundingFeeSettlement,

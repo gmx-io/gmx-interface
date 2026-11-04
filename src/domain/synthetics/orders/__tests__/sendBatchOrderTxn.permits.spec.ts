@@ -13,6 +13,8 @@ const mocks = vi.hoisted(() => ({
   checkTokenPermits: vi.fn(),
   buildAndSign: vi.fn(),
   sendExpressTransaction: vi.fn(),
+  sendWalletTransaction: vi.fn(),
+  getBatchOrderMulticallPayload: vi.fn(),
   pushError: vi.fn(),
 }));
 
@@ -25,6 +27,11 @@ vi.mock("domain/synthetics/express/expressOrderUtils", () => ({
   buildAndSignExpressBatchOrderTxn: mocks.buildAndSign,
 }));
 vi.mock("lib/transactions/sendExpressTransaction", () => ({ sendExpressTransaction: mocks.sendExpressTransaction }));
+vi.mock("lib/transactions/sendWalletTransaction", () => ({ sendWalletTransaction: mocks.sendWalletTransaction }));
+vi.mock("sdk/utils/orderTransactions", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getBatchOrderMulticallPayload: mocks.getBatchOrderMulticallPayload,
+}));
 vi.mock("lib/metrics", () => ({ metrics: { pushError: mocks.pushError } }));
 vi.mock("../jitOrderUtils", () => ({
   encodeJitBatchOrderMetadata: (batchParams: BatchOrderTxnParams) => batchParams,
@@ -154,5 +161,69 @@ describe("sendBatchOrderTxn pre-send permit check", () => {
 
     expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "expressOrders.tokenPermitsCheck");
     expect(getSentPermits()).toEqual([usdcPermit]);
+  });
+});
+
+describe("sendBatchOrderTxn permits in a wallet transaction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.getBatchOrderMulticallPayload.mockReturnValue({ callData: "0x", value: 0n });
+    mocks.sendWalletTransaction.mockResolvedValue({ transactionHash: "0xhash" });
+  });
+
+  function sendFromWallet(tokenPermits: SignedTokenPermit[], callback = vi.fn()) {
+    return sendBatchOrderTxn({
+      chainId: ARBITRUM,
+      signer: { address: OWNER } as WalletSigner,
+      isGmxAccount: false,
+      provider: {} as any,
+      batchParams: makeBatchParams(100n),
+      expressParams: undefined,
+      simulationParams: undefined,
+      callback,
+      tokenPermits,
+    });
+  }
+
+  it("puts the checked permit of the paid token in front of the orders, and leaves other tokens' permits out", async () => {
+    const usdcPermit = permit(USDC, 100n);
+    mockCheck({ validPermits: [usdcPermit] });
+    const callback = vi.fn();
+
+    await sendFromWallet([usdcPermit, permit(WETH, 100n)], callback);
+
+    expect(mocks.checkTokenPermits).toHaveBeenCalledWith(
+      expect.objectContaining({ permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
+    );
+    expect(mocks.getBatchOrderMulticallPayload).toHaveBeenCalledWith(
+      expect.objectContaining({ tokenPermits: [usdcPermit] })
+    );
+    expect(callback).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: "Submitted",
+        data: expect.objectContaining({ walletTokenPermits: [usdcPermit] }),
+      })
+    );
+  });
+
+  it("sends the order without a permit the allowance already covers", async () => {
+    const usdcPermit = permit(USDC, 100n);
+    mockCheck({ stalePermits: [usdcPermit] });
+    const callback = vi.fn();
+
+    await sendFromWallet([usdcPermit], callback);
+
+    expect(mocks.getBatchOrderMulticallPayload).toHaveBeenCalledWith(expect.objectContaining({ tokenPermits: [] }));
+    expect(callback).toHaveBeenCalledWith(
+      expect.objectContaining({ event: "Submitted", data: expect.objectContaining({ stalePermits: [usdcPermit] }) })
+    );
+  });
+
+  it("doesn't check anything when no stored permit covers a paid token", async () => {
+    await sendFromWallet([permit(WETH, 100n)]);
+
+    expect(mocks.checkTokenPermits).not.toHaveBeenCalled();
+    expect(mocks.getBatchOrderMulticallPayload).toHaveBeenCalledWith(expect.objectContaining({ tokenPermits: [] }));
+    expect(mocks.sendWalletTransaction).toHaveBeenCalledTimes(1);
   });
 });

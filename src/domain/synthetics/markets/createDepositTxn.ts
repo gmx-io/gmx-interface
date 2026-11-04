@@ -4,6 +4,8 @@ import { Abi, encodeFunctionData } from "viem";
 
 import { getContract } from "config/contracts";
 import type { SetPendingDeposit } from "context/SyntheticsEvents";
+import type { WalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
+import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "domain/tokens/walletTxnTokenPermits";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics/types";
 import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
@@ -11,6 +13,7 @@ import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { buildTokenPermitsCall } from "sdk/utils/orderTransactions";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -33,6 +36,7 @@ export async function createDepositTxn({
   blockTimestampData,
   setPendingTxns,
   setPendingDeposit,
+  walletTxnTokenPermits,
 }: {
   chainId: ContractsChainId;
   signer: Signer;
@@ -47,6 +51,7 @@ export async function createDepositTxn({
   setPendingTxns: (txns: any) => void;
   setPendingDeposit?: SetPendingDeposit;
   params: CreateDepositParams;
+  walletTxnTokenPermits?: WalletTxnTokenPermits;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
@@ -98,6 +103,12 @@ export async function createDepositTxn({
     },
   ];
 
+  const tokenPermits = await prepareWalletTxnTokenPermits({ chainId, walletTxnTokenPermits, multicall });
+
+  if (tokenPermits.length > 0) {
+    multicall.unshift(buildTokenPermitsCall(tokenPermits));
+  }
+
   const encodedPayload = multicall.filter(Boolean).map((call) =>
     encodeFunctionData({
       abi: abis.ExchangeRouter as Abi,
@@ -120,27 +131,34 @@ export async function createDepositTxn({
       })
     : undefined;
 
-  const { gasLimit, gasPriceData } = await prepareOrderTxn(
-    chainId,
-    contract,
-    "multicall",
-    [encodedPayload],
-    wntAmount,
-    simulationPromise,
-    metricId
-  );
+  return sendWithWalletTxnTokenPermits({
+    walletTxnTokenPermits,
+    tokenPermits,
+    send: async (onPendingTxnSuccess) => {
+      const { gasLimit, gasPriceData } = await prepareOrderTxn(
+        chainId,
+        contract,
+        "multicall",
+        [encodedPayload],
+        wntAmount,
+        simulationPromise,
+        metricId
+      );
 
-  return callContract(chainId, contract, "multicall", [encodedPayload], {
-    value: wntAmount,
-    hideSentMsg: true,
-    hideSuccessMsg: true,
-    metricId,
-    gasLimit,
-    gasPriceData,
-    setPendingTxns,
-    pendingTransactionData: {
-      estimatedExecutionFee: executionFee,
-      estimatedExecutionGasLimit: executionGasLimit,
+      return callContract(chainId, contract, "multicall", [encodedPayload], {
+        value: wntAmount,
+        hideSentMsg: true,
+        hideSuccessMsg: true,
+        metricId,
+        gasLimit,
+        gasPriceData,
+        setPendingTxns,
+        pendingTransactionData: {
+          estimatedExecutionFee: executionFee,
+          estimatedExecutionGasLimit: executionGasLimit,
+        },
+        onPendingTxnSuccess,
+      });
     },
   }).then((res) => {
     setPendingDeposit?.({

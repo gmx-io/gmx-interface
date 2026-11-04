@@ -46,6 +46,7 @@ export type PendingTransaction = {
   data?: PendingTransactionData;
   actionName?: TradingActionName;
   onError?: () => void;
+  onSuccess?: () => void;
   chainId?: number;
   onReplaced?: (transactionHash: string) => void;
 };
@@ -226,6 +227,10 @@ function PendingTxnsPoller({
                 sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
                 sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
               }
+            }
+
+            if (receipt.status === 1) {
+              pendingTxn.onSuccess?.();
             }
 
             if (receipt.status === 1 && pendingTxn.message) {

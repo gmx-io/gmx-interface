@@ -20,6 +20,7 @@ import {
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { helperToast } from "lib/helperToast";
@@ -62,6 +63,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
   const paySource = useSelector(selectPoolsDetailsPaySource);
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
+  const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
   const secondTokenAddress = useSelector(selectPoolsDetailsSecondTokenAddress);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
@@ -108,6 +110,8 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     chainId,
     spenderAddress: routerAddress,
     tokens,
+    // only buys carry the permit in their multicall
+    allowPermit: isDeposit && isClassicTokenPermitsEnabled,
     skip: paySource !== "settlementChain",
     metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }) },
   });

@@ -39,6 +39,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useUserReferralCode } from "domain/referrals";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -84,6 +85,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
   const { shouldDisableValidationForTesting } = useSettings();
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { classicTokenPermits } = useTokenPermitsContext();
 
   const isFirstOrder = useSelector(selectIsFirstOrder);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -353,6 +355,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       batchParams,
       isGmxAccount: isFromTokenGmxAccount,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      tokenPermits: classicTokenPermits,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -384,6 +387,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
     batchParams,
     blockTimestampData,
     chainId,
+    classicTokenPermits,
     collateralToken?.symbol,
     expressParamsPromise,
     fromToken?.symbol,

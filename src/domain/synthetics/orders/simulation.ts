@@ -9,6 +9,7 @@ import {
   WebSocketRequestError,
   encodeFunctionData,
   withRetry,
+  type Hex,
 } from "viem";
 
 import { getContract, tryGetContract } from "config/contracts";
@@ -25,7 +26,7 @@ import { abis } from "sdk/abis";
 import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
-import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { buildTokenPermitsCall, CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
 import type { GlvShiftParam } from "../jit/utils";
@@ -211,36 +212,13 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   let simulationPayloadData: string[] = [];
 
   if (p.tokenPermits.length > 0) {
-    const externalCalls: ExternalCallsPayload = {
-      sendTokens: [],
-      sendAmounts: [],
-      externalCallTargets: [],
-      externalCallDataList: [],
-      refundTokens: [],
-      refundReceivers: [],
-    };
-
-    for (const permit of p.tokenPermits) {
-      externalCalls.externalCallTargets.push(permit.token);
-      externalCalls.externalCallDataList.push(
-        encodeFunctionData({
-          abi: abis.ERC20PermitInterface,
-          functionName: "permit",
-          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
-        })
-      );
-    }
+    const permitsCall = buildTokenPermitsCall(p.tokenPermits);
 
     simulationPayloadData.push(
       encodeFunctionData({
         abi: abis.ExchangeRouter,
         functionName: "makeExternalCalls",
-        args: [
-          externalCalls.externalCallTargets,
-          externalCalls.externalCallDataList,
-          externalCalls.refundTokens,
-          externalCalls.refundReceivers,
-        ],
+        args: permitsCall.params as [Hex[], Hex[], Hex[], Hex[]],
       })
     );
   }

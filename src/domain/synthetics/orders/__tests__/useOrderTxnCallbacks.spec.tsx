@@ -8,6 +8,7 @@ import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
 import { TokenPermitsCheckError } from "domain/tokens/checkTokenPermits";
 import { buildTpSlBatchPayloads } from "domain/tpsl/sidecar";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
+import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { expandDecimals } from "lib/numbers";
 import { TxnEventBuilder } from "lib/transactions";
 import { OrderType } from "sdk/utils/orders/types";
@@ -126,6 +127,7 @@ function events(mode: "wallet" | "express" | "one-click" | "gmx-account", tokenP
     batchId: "batch",
     batchParams,
     signer: {} as BatchOrderTxnCtx["signer"],
+    walletTokenPermits: mode === "wallet" ? tokenPermits : undefined,
     expressParams:
       mode === "wallet"
         ? undefined
@@ -248,4 +250,28 @@ describe("token permits", () => {
       expect(state.disableTokenPermits.mock.calls).toEqual(disableCalls);
     }
   );
+
+  it("forgets the permits a wallet transaction carried once it is sent, and reports them once it is mined", () => {
+    const builder = events("wallet", [permit]);
+    callback(builder.Submitted());
+    callback(builder.Sent({ type: "wallet", transactionHash: "tx" }));
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([permit]);
+    expect(sendTokenPermitMetric).not.toHaveBeenCalled();
+
+    state.pendingTxns[0].onSuccess?.();
+
+    expect(sendTokenPermitMetric).toHaveBeenCalledWith(
+      expect.objectContaining({ outcome: "executed", tokenAddress: permit.token })
+    );
+  });
+
+  it("drops a wallet transaction's permit the simulation rejects", () => {
+    state.isPermitSignatureErrorOnSimulation = true;
+    const signedPermit = { ...permit, onchainParams: { name: "USD Coin", version: "2", nonce: 0n } };
+    const builder = events("wallet", [signedPermit]);
+    callback(builder.Error(new Error("ExternalCallFailed: invalid signature")));
+
+    expect(state.removeTokenPermits).toHaveBeenCalledWith([signedPermit]);
+  });
 });
