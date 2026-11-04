@@ -49,6 +49,26 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "gmlabs-003-staking-changes",
+    type: "update",
+    isActive: true,
+    startDate: "22 Oct 2026, 00:00",
+    endDate: "28 Oct 2026, 00:00",
+    variant: "info",
+    chains: [ARBITRUM, AVALANCHE],
+    title: "Staking update: 180-day unstaking wait and Solana revenue buybacks",
+    description: (
+      <>
+        From October 28, unstaking GMX or esGMX takes 180 days. Part of GMX's Solana revenue will buy back GMX for
+        staking rewards.{" "}
+        <ExternalLink href="https://gov.gmx.io/t/gmlabs-003-solana-revenue-buybacks-and-180-day-unstaking-timelock/5179">
+          Read more
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
+  {
     id: "glv-usdg-launch",
     type: "listing",
     isActive: true,

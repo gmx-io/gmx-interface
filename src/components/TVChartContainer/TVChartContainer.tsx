@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
-import { isAddressEqual, type Address } from "viem";
+import { type Address } from "viem";
 
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
@@ -35,6 +35,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { getAddressKey, isSameAddress } from "sdk/utils/address";
 import { TradeActionType, isPositionTradeAction, type TradeAction } from "sdk/utils/tradeHistory/types";
 
 import Loader from "components/Loader/Loader";
@@ -72,7 +73,7 @@ const MARKS_PAGE_SIZE = 100;
 const MARKS_CACHE_TTL_MS = 60_000;
 
 function getNormalizedPositionKey(account: string, market: string, collateral: string, isLong: boolean) {
-  return getPositionKey(account.toLowerCase(), market.toLowerCase(), collateral.toLowerCase(), isLong);
+  return getPositionKey(getAddressKey(account), getAddressKey(market), getAddressKey(collateral), isLong);
 }
 
 const OPENED_AT_QUERY_LIMIT = 500;
@@ -99,7 +100,7 @@ async function fetchOpenPositionsOpenedAt(chainId: number, contractKeys: string[
 
   for (const position of res.data?.positions || []) {
     if (position.positionKey && typeof position.openedAt === "number") {
-      result.set(position.positionKey.toLowerCase(), position.openedAt);
+      result.set(getAddressKey(position.positionKey), position.openedAt);
     }
   }
 
@@ -173,7 +174,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return keys;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      keys.push(pos.contractKey.toLowerCase());
+      keys.push(getAddressKey(pos.contractKey));
     }
     return keys;
   }, [positionsInfoData]);
@@ -206,7 +207,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return map;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      const openedAt = openedAtByContractKey.get(pos.contractKey.toLowerCase());
+      const openedAt = openedAtByContractKey.get(getAddressKey(pos.contractKey));
       if (openedAt === undefined) continue;
       map.set(
         getNormalizedPositionKey(pos.account, pos.marketAddress, pos.collateralTokenAddress, pos.isLong),
@@ -321,7 +322,7 @@ export default function TVChartContainer({
           return null;
         }
         const marketIndexWrapped = convertTokenAddress(cid as ContractsChainId, market.indexTokenAddress, "wrapped");
-        if (!isAddressEqual(marketIndexWrapped as Address, wrappedSelected as Address)) {
+        if (!isSameAddress(marketIndexWrapped, wrappedSelected)) {
           return null;
         }
 
@@ -391,10 +392,7 @@ export default function TVChartContainer({
 
         marketAddresses = Object.values(markets)
           .filter((m) =>
-            isAddressEqual(
-              convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped") as Address,
-              wrappedSelected as Address
-            )
+            isSameAddress(convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped"), wrappedSelected)
           )
           .map((m) => m.marketTokenAddress);
 
@@ -464,7 +462,7 @@ export default function TVChartContainer({
       if (mode === "current") {
         (inc || []).forEach((e) => {
           if (e.sizeDeltaUsd === 0n || e.sizeInUsd !== e.sizeDeltaUsd) return;
-          if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+          if (acc && e.account && !isSameAddress(e.account, acc)) return;
           const key = getNormalizedPositionKey(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong);
           const ts = Number(e.increasedAtTime);
           const prev = liveGenesisByKey.get(key);
@@ -518,7 +516,7 @@ export default function TVChartContainer({
 
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.increasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -542,7 +540,7 @@ export default function TVChartContainer({
 
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.decreasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -576,7 +574,10 @@ export default function TVChartContainer({
     }
     setDatafeed(newDatafeed);
 
-    return () => newDatafeed.destroy();
+    // TradingView unsubscribes bars when its iframe unloads. destroy() removes the visibilitychange listener the datafeed adds.
+    return () => {
+      newDatafeed.destroy();
+    };
   }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
@@ -865,9 +866,12 @@ export default function TVChartContainer({
     };
     const widget = new window.TradingView.widget(widgetOptions);
 
+    let disposed = false;
+    let pageHidden = false;
     let didTriggerOnChartReady = { current: false };
 
-    widget.onChartReady(function () {
+    function onChartReady() {
+      if (disposed || pageHidden || didTriggerOnChartReady.current) return;
       didTriggerOnChartReady.current = true;
       tvWidgetRef.current = widget;
       setChartReady(true);
@@ -905,7 +909,7 @@ export default function TVChartContainer({
       });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
-        setChartDataLoading(false);
+        if (!disposed) setChartDataLoading(false);
       });
 
       tvWidgetRef.current?.onContextMenu((_unixTime, price) => {
@@ -919,41 +923,68 @@ export default function TVChartContainer({
       tvWidgetRef.current?.subscribe("mouse_down", () => {
         closeMenuRef.current();
       });
-    });
+    }
 
     /*
     For some reason on prod TV sometimes does not get initialized properly,
     for these cases we wait some fixed amount of time and force TV into initialization
     */
+    let forceInitTimeout: ReturnType<typeof setTimeout> | undefined;
+    const scheduleForceInit = () => {
+      clearTimeout(forceInitTimeout);
+      forceInitTimeout = setTimeout(() => {
+        if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
+          return;
+        }
 
-    const forceInitTimeout = setTimeout(() => {
-      if (didTriggerOnChartReady.current || !chartContainerRef.current) {
-        return;
-      }
+        const iframe = chartContainerRef.current.querySelector("iframe");
 
-      const iframe = chartContainerRef.current.querySelector("iframe");
+        if (!iframe || !iframe.contentWindow) {
+          return;
+        }
+        const iframeWindow = iframe.contentWindow;
+        const iframeDocument = iframeWindow.document;
 
-      if (!iframe || !iframe.contentWindow) {
-        return;
-      }
-      const iframeWindow = iframe.contentWindow;
-      const iframeDocument = iframeWindow.document;
+        if (iframeDocument.readyState !== "complete") {
+          iframeDocument.addEventListener("readystatechange", () => {
+            if (!disposed && iframeDocument.readyState === "complete") {
+              iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+            }
+          });
+        } else {
+          iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        }
+      }, 800);
+    };
 
-      if (iframeDocument.readyState !== "complete") {
-        iframeDocument.addEventListener("readystatechange", () => {
-          if (iframeDocument.readyState === "complete") {
-            iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
-          }
-        });
+    const onPageHide = () => {
+      pageHidden = true;
+      // The browser can destroy the iframe before React unmounts the chart.
+      if (tvWidgetRef.current === widget) tvWidgetRef.current = null;
+    };
+    const onPageShow = () => {
+      pageHidden = false;
+      if (disposed) return;
+      if (didTriggerOnChartReady.current) {
+        tvWidgetRef.current = widget;
       } else {
-        iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        widget.onChartReady(onChartReady);
+        // a timeout that fired while the page was hidden skipped the forced init
+        scheduleForceInit();
       }
-    }, 800);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    widget.onChartReady(onChartReady);
+    scheduleForceInit();
 
     return () => {
+      disposed = true;
       clearTimeout(forceInitTimeout);
-      widget.remove();
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };

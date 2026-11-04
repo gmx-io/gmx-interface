@@ -53,7 +53,7 @@ describe("getApproveButtonText", () => {
 describe("getGasPaymentTokenApprovalTooltip", () => {
   it("names the token twice and points to Settings", () => {
     expect(getGasPaymentTokenApprovalTooltip("USDC")).toBe(
-      "USDC is your Wallet gas payment token. One-time approval so Express fees can be paid in USDC. Change it in Settings."
+      "USDC is your wallet gas payment token. One-time approval so Express fees can be paid in USDC. Change it in settings."
     );
   });
 });

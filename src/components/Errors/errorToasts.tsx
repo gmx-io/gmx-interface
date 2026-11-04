@@ -41,12 +41,13 @@ import {
 } from "./gasErrors";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
-export type PermitIssueType = "invalidSignature" | "expiredDeadline";
+export type PermitIssueType = "invalidSignature" | "expiredDeadline" | "failedCheck";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
@@ -201,6 +202,7 @@ export function getTxnErrorToast(
     additionalContent,
     slippageInputId,
     isSizeIncrease,
+    isDecrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
@@ -294,7 +296,7 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (permitIssueType === "invalidSignature") {
+  if (permitIssueType === "invalidSignature" || permitIssueType === "failedCheck") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
     return toastParams;
   } else if (permitIssueType === "expiredDeadline") {
@@ -312,7 +314,13 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
+  const contractErrorMessage = getContractErrorToastContent({
+    chainId,
+    errorData,
+    slippageInputId,
+    isSizeIncrease,
+    isDecrease,
+  });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;
@@ -388,8 +396,14 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
 }
 
 export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const contractErrorArgs = errorData?.contractErrorArgs;
+  const contractErrorArgValues =
+    contractErrorArgs && typeof contractErrorArgs === "object" && !Array.isArray(contractErrorArgs)
+      ? Object.values(contractErrorArgs)
+      : contractErrorArgs;
+
   const message = errorData?.contractError
-    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    ? `${errorData.contractError} [${contractErrorArgValues}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
   const handles = [
@@ -575,7 +589,7 @@ export function getMultipleWalletsConnectedToastContent(
       <br />
       <Trans>
         Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning,
-        disable other wallet extensions in your browser settings.
+        disable other wallet extensions in your browser settings
       </Trans>
     </div>
   );
@@ -701,6 +715,20 @@ export function getExpiredPermitDeadlineToastContent() {
   return (
     <Trans>
       <div>Permit has expired. Try again</div>
+    </Trans>
+  );
+}
+
+export const SMART_WALLET_SUBACCOUNT_TOAST_ID = "smart-wallet-subaccount";
+
+export function getSmartWalletSubaccountToastContent(onDeactivate: () => void) {
+  return (
+    <Trans>
+      <div>One-Click Trading is not available for smart wallets</div>
+      <br />
+      <div className="clickable underline" onClick={onDeactivate}>
+        Deactivate One-Click Trading
+      </div>
     </Trans>
   );
 }

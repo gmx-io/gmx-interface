@@ -12,6 +12,7 @@ import {
   useTiers,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
 
@@ -66,7 +67,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
   const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
-  const [userReferralCodeString, setUserReferralCodeString] = useState("");
+  const [activatedReferralCodeLabel, setActivatedReferralCodeLabel] = useState("");
 
   useEffect(
     function advanceStep() {
@@ -115,7 +116,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col gap-12">
                 <ReferralCodeEditFormContainer
                   callAfterSuccess={(code: string) => {
-                    setUserReferralCodeString(code);
+                    setActivatedReferralCodeLabel(formatReferralCodeForDisplay(code));
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />
@@ -144,8 +145,8 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    You have activated the referral code {userReferralCodeString}. Every position you open or close will
-                    automatically apply your reduced rate — no extra steps needed.
+                    You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies
+                    automatically to every position you open or close — no extra steps needed.
                   </Trans>
                 </p>
               </div>

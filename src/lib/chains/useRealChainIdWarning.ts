@@ -2,6 +2,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 import { useAccount } from "wagmi";
 
+import { isSolanaNetwork } from "config/chains";
 import { useChainId as useDisplayedChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
@@ -12,6 +13,8 @@ import {
   getSmartWalletChainUnavailableToastContent,
 } from "components/Errors/errorToasts";
 import { needSwitchToSettlementChain } from "components/SwitchToSettlementChain/utils";
+
+const EMPTY_CHAIN_IDS: number[] = [];
 
 const toastSubscribe = (onStoreChange: () => void): (() => void) => {
   const cleanup = toast.onChange(({ id }) => {
@@ -27,12 +30,15 @@ const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function useRealChainIdWarning() {
   const { active: isConnected } = useWallet();
-  const { chainId: settlementChainId, isConnectedToChainId, srcChainId } = useDisplayedChainId();
+  const { chainId: settlementChainId, isConnectedToChainId, srcChainId, networkId } = useDisplayedChainId();
+  const isSolanaNetworkSelected = isSolanaNetwork(networkId);
   const { chainId: walletChainId } = useAccount();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
-  const { unavailableChains, isLoading: isLoadingAvailability } = useWalletUnavailableChains([settlementChainId]);
+  const { unavailableChains, isLoading: isLoadingAvailability } = useWalletUnavailableChains(
+    isSolanaNetworkSelected ? EMPTY_CHAIN_IDS : [settlementChainId]
+  );
 
   const isOnSourceChain = needSwitchToSettlementChain(walletChainId);
   const isSettlementChainUnreachable = isOnSourceChain && Boolean(unavailableChains?.includes(settlementChainId));
@@ -42,7 +48,7 @@ export function useRealChainIdWarning() {
   const showToastTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!isConnectedToChainId && !isActive && isConnected && !isVerdictPending) {
+    if (!isSolanaNetworkSelected && !isConnectedToChainId && !isActive && isConnected && !isVerdictPending) {
       const timeout = setTimeout(
         () =>
           toast.error(
@@ -58,7 +64,7 @@ export function useRealChainIdWarning() {
         2000
       );
       showToastTimeout.current = timeout;
-    } else if (isConnectedToChainId || !isConnected) {
+    } else if (isSolanaNetworkSelected || isConnectedToChainId || !isConnected) {
       if (showToastTimeout.current) {
         clearTimeout(showToastTimeout.current);
       }
@@ -69,6 +75,7 @@ export function useRealChainIdWarning() {
     isActive,
     isConnected,
     isConnectedToChainId,
+    isSolanaNetworkSelected,
     srcChainId,
     isSettlementChainUnreachable,
     isVerdictPending,

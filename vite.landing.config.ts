@@ -4,7 +4,10 @@ import { defineConfig } from "vite";
 import { createViteConfig } from "./vite.config";
 
 export default defineConfig((props) => {
-  const config = createViteConfig(props, { emitAppRedirects: false });
+  const config = createViteConfig(props, {
+    emitAppRedirects: false,
+    requireAppBootstrap: false,
+  });
   return {
     ...config,
     publicDir: resolve(__dirname, "public"),

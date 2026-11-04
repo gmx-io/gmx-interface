@@ -83,7 +83,7 @@ export function DisplaySettings() {
               position="top"
               tooltip={
                 <div>
-                  <Trans>Include all fees, including close fees, in net value and PnL display.</Trans>
+                  <Trans>Include all fees, including close fees, in net value and PnL display</Trans>
                 </div>
               }
             />
@@ -106,7 +106,7 @@ export function DisplaySettings() {
               <div>
                 <Trans>
                   Choose which buy/sell marks appear on the chart: all your past trades, only your current open
-                  position, or none.
+                  position, or none
                 </Trans>
               </div>
             }

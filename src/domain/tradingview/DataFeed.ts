@@ -13,7 +13,6 @@ import {
   SubscribeBarsCallback,
 } from "charting_library";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
-import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
   formatTimeInBarToMs,
@@ -225,17 +224,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       }
     } catch (e) {
       onError(String(e));
-
-      metrics.pushEvent<LoadingFailedEvent>({
-        event: "candlesDisplay.failed",
-        isError: true,
-        time: metrics.getTime("candlesDisplay", true),
-        data: {
-          requestId: metricsRequestId!,
-          isFirstTimeLoad: isFirstDraw,
-        },
-      });
-
+      onCandlesDisplayFailed(isFirstDraw);
       return;
     }
 
@@ -252,7 +241,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     onResult(barsToReturn, { noData: offset + countBack >= 10_000 || barsToReturn.length < countBack });
 
-    if (metricsIsFirstDrawTime) {
+    if (isFirstDraw && barsToReturn.length === 0) {
+      onCandlesDisplayFailed(true);
+      return;
+    }
+
+    if (isFirstDraw) {
       metrics.pushEvent<LoadingSuccessEvent>({
         event: "candlesDisplay.success",
         isError: false,
@@ -515,22 +509,13 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[res], count)
         .then((bars) => bars.slice().reverse()),
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
-    ])
-      .catch((ex) => {
-        // eslint-disable-next-line no-console
-        console.warn(ex, "Switching to graph chainlink data");
-        return Promise.race([
-          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[res]),
-          sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
-        ]);
-      })
-      .catch((ex) => {
-        success = false;
-        onCandlesLoadFailed(ex, isPrefetch);
-        // eslint-disable-next-line no-console
-        console.warn("Load history candles failed", ex);
-        return [];
-      });
+    ]).catch((ex) => {
+      success = false;
+      onCandlesLoadFailed(ex, isPrefetch);
+      // eslint-disable-next-line no-console
+      console.warn("Load history candles failed", ex);
+      return [];
+    });
 
     if (success) {
       freshnessMetrics.reportThrottled(this.chainId, FreshnessMetricId.Candles);
@@ -569,6 +554,18 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     this.closeCandleStreams();
     this.candleStreams = {};
   }
+}
+
+function onCandlesDisplayFailed(isFirstTimeLoad: boolean) {
+  metrics.pushEvent<LoadingFailedEvent>({
+    event: "candlesDisplay.failed",
+    isError: true,
+    time: metrics.getTime("candlesDisplay", true),
+    data: {
+      requestId: metricsRequestId!,
+      isFirstTimeLoad,
+    },
+  });
 }
 
 function onCandlesLoadFailed(ex: any, isPrefetch: boolean) {

@@ -3,9 +3,11 @@ import { useEffect, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { useLatest } from "react-use";
 
+import { getNetworkFeatures } from "config/features";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxCollateralTokenAddress,
+  selectTradeboxFormState,
   selectTradeboxFromTokenAddress,
   selectTradeboxMarketAddress,
   selectTradeboxSetTradeConfig,
@@ -15,12 +17,13 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import { limitDecimals } from "lib/numbers";
 import { getMatchingValueFromObject } from "lib/objects";
 import useSearchParams from "lib/useSearchParams";
-import { getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenBySymbolSafe, isTokenInList } from "sdk/configs/tokens";
 import { TradeMode, TradeSearchParams, TradeType } from "sdk/utils/trade/types";
 
-import { getMarketPoolName } from "../markets";
+import { MarketInfo, getMarketPoolName } from "../markets";
 
 type TradeOptions = {
   fromTokenAddress?: string;
@@ -31,7 +34,11 @@ type TradeOptions = {
   collateralAddress?: string;
 };
 
-const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral"];
+const TRADE_LINK_SEARCH_PARAMS = ["mode", "from", "to", "market", "pool", "collateral", "amount"];
+
+const AMOUNT_PARAM_REGEX = /^\d+(\.\d+)?$/;
+
+type PendingSwapAmount = { amount: string; fromTokenAddress: string };
 
 // Returns the search without the consumed trade params, or `undefined` when nothing would change:
 // replacing the url with an identical search re-runs the effect and loops into WebKit's replaceState rate limit.
@@ -66,15 +73,35 @@ export function getTradeLinkTradeType(
   return currentTradeType;
 }
 
+export function getTradeLinkMarket({
+  markets,
+  toTokenAddress,
+  pool,
+}: {
+  markets: MarketInfo[];
+  toTokenAddress: string | undefined;
+  pool: string;
+}): MarketInfo | undefined {
+  return markets.find(
+    (market) =>
+      market.indexToken.address === toTokenAddress && getMarketPoolName(market).toLowerCase() === pool.toLowerCase()
+  );
+}
+
 export function useTradeParamsProcessor() {
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const markets = availableTokensOptions.sortedAllMarkets;
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const history = useHistory();
   const params = useParams<{ tradeType?: string }>();
-  const searchParams = useSearchParams<TradeSearchParams>();
+  const searchParams = useSearchParams<TradeSearchParams & { amount?: string }>();
   const { indexTokens, swapTokens } = availableTokensOptions;
+  const { setFromTokenInputValue, setFocusedInput } = useSelector(selectTradeboxFormState);
+  const currentTradeType = useSelector(selectTradeboxTradeType);
+  const currentFromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const pendingSwapAmountRef = useRef<PendingSwapAmount>();
+  const armedAmountSearchRef = useRef<string>();
 
   const latestTradeOptions = useLatest({
     fromTokenAddress: useSelector(selectTradeboxFromTokenAddress),
@@ -116,11 +143,22 @@ export function useTradeParamsProcessor() {
     };
 
     const { tradeType } = params;
-    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken } = searchParams;
+    const { mode: tradeMode, from: fromToken, to, market, pool, collateral: collateralToken, amount } = searchParams;
 
     const toToken = to ?? market;
 
-    const linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+    if (!amount) {
+      armedAmountSearchRef.current = undefined;
+    }
+
+    const features = getNetworkFeatures(networkId);
+    let linkTradeType = getTradeLinkTradeType(tradeType, latestTradeOptions.current.tradeType);
+
+    if (linkTradeType === TradeType.Swap && !features.swap) {
+      linkTradeType = TradeType.Long;
+    }
+
+    let fromTokenDecimals: number | undefined;
 
     const tradeOptions: TradeOptions = {};
 
@@ -133,8 +171,13 @@ export function useTradeParamsProcessor() {
         tradeOptions.tradeMode = TradeMode.Trigger;
       } else {
         const validTradeMode = getMatchingValueFromObject(TradeMode, tradeMode);
-        if (validTradeMode) {
-          tradeOptions.tradeMode = validTradeMode as TradeMode;
+        const mode = validTradeMode as TradeMode | undefined;
+        const modeAllowed =
+          mode !== undefined &&
+          (mode !== TradeMode.Twap || features.twap) &&
+          (mode !== TradeMode.StopMarket || features.stopMarket);
+        if (modeAllowed) {
+          tradeOptions.tradeMode = mode;
         }
       }
     }
@@ -145,15 +188,17 @@ export function useTradeParamsProcessor() {
       });
       if (fromTokenInfo) {
         tradeOptions.fromTokenAddress = fromTokenInfo?.address;
+        fromTokenDecimals = fromTokenInfo.decimals;
       }
     }
 
     if (collateralToken) {
       const collateralTokenInfo = getTokenBySymbolSafe(chainId, collateralToken, {
         version: "v2",
+        isSynthetic: false,
       });
       if (collateralTokenInfo) {
-        tradeOptions.collateralAddress = collateralTokenInfo?.address;
+        tradeOptions.collateralAddress = convertTokenAddress(chainId, collateralTokenInfo.address, "wrapped");
       }
     }
 
@@ -174,16 +219,27 @@ export function useTradeParamsProcessor() {
       }
 
       if (pool) {
-        const marketPool = markets.find((market) => {
-          const poolName = getMarketPoolName(market);
-          const isSameMarket = market.indexTokenAddress === tradeOptions.toTokenAddress;
-          return isSameMarket && poolName.toLowerCase() === pool.toLowerCase();
-        });
+        const marketPool = getTradeLinkMarket({ markets, toTokenAddress: tradeOptions.toTokenAddress, pool });
         if (marketPool) {
           tradeOptions.marketAddress = marketPool?.marketTokenAddress;
         }
       }
       scheduleSearchCleanup();
+    }
+
+    // the effect reruns on data refreshes while the link is still in the url: arm each link once
+    if (
+      amount &&
+      AMOUNT_PARAM_REGEX.test(amount) &&
+      linkTradeType === TradeType.Swap &&
+      tradeOptions.fromTokenAddress !== undefined &&
+      armedAmountSearchRef.current !== history.location.search
+    ) {
+      armedAmountSearchRef.current = history.location.search;
+      pendingSwapAmountRef.current = {
+        amount: limitDecimals(amount, fromTokenDecimals),
+        fromTokenAddress: tradeOptions.fromTokenAddress,
+      };
     }
 
     if (!isMatch(latestTradeOptions.current, tradeOptions)) {
@@ -198,6 +254,7 @@ export function useTradeParamsProcessor() {
     searchParams,
     markets,
     chainId,
+    networkId,
     history,
     setTradeConfig,
     swapTokens,
@@ -205,4 +262,21 @@ export function useTradeParamsProcessor() {
     availableTokensOptions,
     latestTradeOptions,
   ]);
+
+  useEffect(
+    // the tradebox clears the pay input when it switches to Swap, so the amount waits for the switch
+    function applyPendingSwapAmount() {
+      const pending = pendingSwapAmountRef.current;
+
+      if (!pending || currentTradeType !== TradeType.Swap || currentFromTokenAddress !== pending.fromTokenAddress) {
+        return;
+      }
+
+      pendingSwapAmountRef.current = undefined;
+      setFocusedInput("from");
+      // the switch clears the input in this same commit, and the setter would skip a value equal to the stale one
+      setFromTokenInputValue(() => pending.amount);
+    },
+    [currentFromTokenAddress, currentTradeType, searchParams, setFocusedInput, setFromTokenInputValue]
+  );
 }

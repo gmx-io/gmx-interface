@@ -53,7 +53,7 @@ describe("toastCustomOrStargateError", () => {
           }),
         ],
       }),
-      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later.",
+      "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to 48.01%, above the 45% limit. Try a smaller amount or try again later",
       "ExternalCallFailed",
     ],
     [

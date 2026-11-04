@@ -224,7 +224,7 @@ function TradersReferredChartTooltip({
         <div className="text-body-small mt-6 text-typography-secondary">
           <Trans>
             Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation
-            threshold.
+            threshold
           </Trans>
         </div>
       )}

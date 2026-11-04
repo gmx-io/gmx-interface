@@ -138,8 +138,8 @@ function DepthChartContainer() {
         <ColorfulBanner color="blue" onClose={() => setIsDepthBannerDismissed(true)}>
           <span>
             <Trans>
-              Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact
-              applies only on closes (capped, usually at 0.5%).{" "}
+              Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price
+              impact applies only on closes (capped, usually at 0.5%).{" "}
               <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                 Read more
               </ExternalLink>

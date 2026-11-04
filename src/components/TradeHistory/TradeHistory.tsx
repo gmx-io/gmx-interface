@@ -16,6 +16,7 @@ import {
   useTradeHistory,
 } from "domain/synthetics/tradeHistory";
 import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
+import { useUsdgPartialCloseSwapLegs } from "domain/synthetics/tradeHistory/useUsdgPartialCloseSwapLegs";
 import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -148,6 +149,8 @@ export function TradeHistory(p: Props) {
     currentData: currentPageData,
     pageCount,
   } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
+
+  const usdgPartialCloseSwapLegsById = useUsdgPartialCloseSwapLegs(chainId, currentPageData);
 
   // Prefetch the next chunk as the user nears the end of the loaded pages.
   useEffect(() => {
@@ -317,7 +320,7 @@ export function TradeHistory(p: Props) {
               <TableTh className="w-[10%]">
                 <TooltipWithPortal
                   variant="iconStroke"
-                  content={<Trans>Realized PnL before fees, discounts and price impact.</Trans>}
+                  content={<Trans>Realized PnL before fees, discounts and price impact</Trans>}
                 >
                   <Trans>RPNL</Trans>
                 </TooltipWithPortal>
@@ -349,6 +352,7 @@ export function TradeHistory(p: Props) {
                   showDebugValues={showDebugValues}
                   shouldDisplayAccount={forAllAccounts}
                   onSelectPositionLifecycle={positionLifecycleId ? undefined : handleSelectPositionLifecycle}
+                  usdgPartialCloseSwapLegsById={usdgPartialCloseSwapLegsById}
                 />
               ))
             )}

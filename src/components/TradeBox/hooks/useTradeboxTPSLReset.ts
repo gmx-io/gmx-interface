@@ -4,6 +4,7 @@ import { usePrevious } from "react-use";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFromTokenAddress,
+  selectTradeboxIsTPSLEnabled,
   selectTradeboxMarketAddress,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
@@ -11,12 +12,13 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
-export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => void) {
+export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => void, isUsdgConversionActive: boolean) {
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralToken = useSelector(selectTradeboxCollateralTokenAddress);
   const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
 
   const previouseFromTokenAddress = usePrevious(fromTokenAddress);
   const previousToTokenAddress = usePrevious(toTokenAddress);
@@ -25,24 +27,38 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
   const previousCollateralToken = usePrevious(collateralToken);
   const previousIsIncrease = usePrevious(isIncrease);
 
-  const { reset } = useSidecarOrders();
+  const { reset, carryOver } = useSidecarOrders();
 
-  const shouldResetLimitOrTPSL =
-    fromTokenAddress !== previouseFromTokenAddress ||
-    toTokenAddress !== previousToTokenAddress ||
-    isLong !== previousIsLong ||
-    isIncrease !== previousIsIncrease;
+  const isRemountDuringConversion = isUsdgConversionActive && previousIsIncrease === undefined;
+  const isMarketChanged = toTokenAddress !== previousToTokenAddress;
+  const shouldResetTPSL = !isRemountDuringConversion && isIncrease !== previousIsIncrease;
+  const shouldCarryOverTPSL = !isRemountDuringConversion && (isMarketChanged || isLong !== previousIsLong);
+  const shouldKeepTypedTPSLPrices = isTpSlEnabled && !isMarketChanged;
 
   const shouldResetPriceImpactWarning =
-    shouldResetLimitOrTPSL || marketAddress !== previousMarketAddress || collateralToken !== previousCollateralToken;
+    shouldResetTPSL ||
+    shouldCarryOverTPSL ||
+    fromTokenAddress !== previouseFromTokenAddress ||
+    marketAddress !== previousMarketAddress ||
+    collateralToken !== previousCollateralToken;
 
   useEffect(() => {
     if (shouldResetPriceImpactWarning) {
       setIsDismissed(false);
     }
 
-    if (shouldResetLimitOrTPSL) {
+    if (shouldResetTPSL) {
       reset();
+    } else if (shouldCarryOverTPSL) {
+      carryOver({ keepTypedPrice: shouldKeepTypedTPSLPrices });
     }
-  }, [reset, setIsDismissed, shouldResetLimitOrTPSL, shouldResetPriceImpactWarning]);
+  }, [
+    carryOver,
+    reset,
+    setIsDismissed,
+    shouldCarryOverTPSL,
+    shouldKeepTypedTPSLPrices,
+    shouldResetPriceImpactWarning,
+    shouldResetTPSL,
+  ]);
 }

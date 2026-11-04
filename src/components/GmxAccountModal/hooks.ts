@@ -2,9 +2,11 @@ import { useCallback, useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, isSolanaNetwork, SettlementChainId, SourceChainId } from "config/chains";
 import { isGmxAccountHoldableToken } from "config/markets";
 import {
+  type AccountModalMode,
+  getAccountModalMode,
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
@@ -487,4 +489,11 @@ export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?
     },
     [setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
   );
+}
+
+// Solana has no GMX Account yet, so its modal is wallet-only.
+export function useAccountModalMode(): AccountModalMode {
+  const { chainId, srcChainId, networkId } = useChainId();
+
+  return isSolanaNetwork(networkId) ? "walletOnly" : getAccountModalMode(chainId, srcChainId);
 }

@@ -5,6 +5,7 @@ import type { Address } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
@@ -30,6 +31,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import { SolanaTradePlaceholder, EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -92,8 +94,57 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+const EVM_ONLY_PAGE_PATHS = [
+  "/dashboard",
+  "/monitor",
+  "/stake",
+  "/buy_gmx",
+  "/price_impact_rebates_stats",
+  "/stats",
+  "/earn",
+  "/pools",
+  "/leaderboard",
+  "/competitions",
+  "/referrals",
+  "/traders",
+  "/accounts",
+  "/actions",
+  "/referrals-tier",
+  "/begin_account_transfer",
+  "/complete_account_transfer",
+  "/rpc-debug",
+  "/oracle-keeper-debug",
+  "/jobs",
+  "/ecosystem",
+  "/announcements",
+  "/parsetx",
+];
+
+function SolanaRoutes() {
+  return (
+    <Switch>
+      <Route exact path="/">
+        <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/trade/:tradeType?">
+        <SolanaTradePlaceholder />
+      </Route>
+      <RedirectWithQuery from="/v2" to="/trade" />
+      <Route exact path="/v1">
+        <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route path={EVM_ONLY_PAGE_PATHS}>
+        <EvmNetworksOnlyNotice />
+      </Route>
+      <Route path="*">
+        <PageNotFound />
+      </Route>
+    </Switch>
+  );
+}
+
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
 
   const { pathname } = useLocation();
 
@@ -101,6 +152,10 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  if (!getNetworkFeatures(networkId).evmOnlyPages) {
+    return <SolanaRoutes />;
+  }
 
   return (
     <Switch>

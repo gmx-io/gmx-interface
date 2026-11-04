@@ -1,22 +1,25 @@
 import { Trans, t } from "@lingui/macro";
-import { ethers } from "ethers";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import { isAddress, zeroAddress } from "viem";
+import { getAddress, isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getIsRewardRouterChanged, getRewardRouterContract } from "domain/stake/rewardRouter";
+import { useRewardRouter } from "domain/stake/useRewardRouter";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
-import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { getAccountTransfersPausedMessage } from "components/Errors/getContractErrorMessage";
+import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -44,8 +47,8 @@ export default function BeginAccountTransfer() {
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
   const [isStakingPowerResetAcknowledged, setIsStakingPowerResetAcknowledged] = useState(false);
   let parsedReceiver: string = zeroAddress;
-  if (isAddress(receiver, { strict: false })) {
-    parsedReceiver = receiver;
+  if (isAddress(receiver)) {
+    parsedReceiver = getAddress(receiver);
   }
   const hasValidReceiver = parsedReceiver !== zeroAddress;
 
@@ -54,7 +57,8 @@ export default function BeginAccountTransfer() {
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
+  const rewardRouterAbiId = rewardRouter?.version === "v3" ? "RewardRouterV3" : "RewardRouter";
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(signer, "Token"),
@@ -82,6 +86,22 @@ export default function BeginAccountTransfer() {
   const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
   const { data: cumulativeBonusGmxTrackerRewards } = useSWR(
     [active, chainId, bonusGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
+  const extendedGmxTrackerAddress = getContract(chainId, "ExtendedGmxTracker");
+  const { data: cumulativeExtendedGmxTrackerRewards } = useSWR(
+    [active, chainId, extendedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
+  const { data: cumulativeFeeGmxTrackerRewards } = useSWR(
+    [active, chainId, feeGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
       fetcher: contractFetcher(signer, "RewardTracker"),
     }
@@ -117,20 +137,48 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const { data: pendingReceiver } = useSWR(
-    active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
+  const { data: transferredAverageStakedGmx } = useSWR(
+    [active, chainId, gmxVesterAddress, "transferredAverageStakedAmounts", parsedReceiver],
     {
-      fetcher: contractFetcher(signer, "RewardRouter"),
+      fetcher: contractFetcher(signer, "Vester"),
     }
   );
+
+  const { data: transferredAverageStakedGlp } = useSWR(
+    [active, chainId, glpVesterAddress, "transferredAverageStakedAmounts", parsedReceiver],
+    {
+      fetcher: contractFetcher(signer, "Vester"),
+    }
+  );
+
+  const { data: receiverGmxVesterBalance } = useSWR([active, chainId, gmxVesterAddress, "balanceOf", parsedReceiver], {
+    fetcher: contractFetcher(signer, "Token"),
+  });
+
+  const { data: receiverGlpVesterBalance } = useSWR([active, chainId, glpVesterAddress, "balanceOf", parsedReceiver], {
+    fetcher: contractFetcher(signer, "Token"),
+  });
+
+  const { data: pendingReceiver } = useSWR(
+    active && rewardRouter && [active, chainId, rewardRouter.address, "pendingReceivers", account],
+    {
+      fetcher: contractFetcher(signer, rewardRouterAbiId),
+    }
+  );
+
+  const { data: designatedVestersLength } = useSWR<bigint>(
+    rewardRouter?.version === "v3" && [active, chainId, rewardRouter.address, "designatedVestersLength"],
+    {
+      fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
+    }
+  );
+  const isTransferPaused = rewardRouter?.version === "v3" && designatedVestersLength === 0n;
 
   const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
     tokenAddresses: [gmxAddress],
   });
   const gmxAllowance = gmxAllowanceData?.[gmxAddress];
-
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
 
   const { tokensAllowanceData: feeGmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: parsedReceiver,
@@ -145,15 +193,37 @@ export default function BeginAccountTransfer() {
     }
   );
 
+  const { data: feeGmxTrackerStakedAmount } = useSWR(
+    active && [active, chainId, feeGmxTrackerAddress, "stakedAmounts", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+      refreshInterval: 1000,
+    }
+  );
+
+  const { data: stakedGlpTrackerBalance } = useSWR(
+    active && [active, chainId, stakedGlpTrackerAddress, "balanceOf", account],
+    {
+      fetcher: contractFetcher(signer, "Token"),
+    }
+  );
+
+  const { data: stakedGlpTrackerStakedAmount } = useSWR(
+    active && [active, chainId, stakedGlpTrackerAddress, "stakedAmounts", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
+
   const needFeeGmxTrackerApproval = useMemo(
     () =>
       Boolean(
         hasValidReceiver &&
-          feeGmxTrackerBalance !== undefined &&
+          feeGmxTrackerStakedAmount !== undefined &&
           feeGmxAllowanceData &&
-          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerBalance, [])
+          getNeedTokenApprove(feeGmxAllowanceData, feeGmxTrackerAddress, feeGmxTrackerStakedAmount, [])
       ),
-    [feeGmxTrackerAddress, feeGmxTrackerBalance, hasValidReceiver, feeGmxAllowanceData]
+    [feeGmxTrackerAddress, feeGmxTrackerStakedAmount, hasValidReceiver, feeGmxAllowanceData]
   );
 
   const { data: gmxStaked } = useSWR(
@@ -163,19 +233,58 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const needApproval = gmxAllowance !== undefined && gmxStaked && gmxStaked > gmxAllowance;
+  const { data: claimableGmxRewards } = useSWR(
+    active && [active, chainId, extendedGmxTrackerAddress, "claimable", account],
+    {
+      fetcher: contractFetcher(signer, "RewardTracker"),
+    }
+  );
 
-  const hasVestedGmx = gmxVesterBalance > 0;
-  const hasVestedGlp = glpVesterBalance > 0;
+  const gmxSpentOnAccept =
+    gmxStaked !== undefined && claimableGmxRewards !== undefined ? gmxStaked + 2n * claimableGmxRewards : undefined;
+  const needApproval = gmxAllowance !== undefined && gmxSpentOnAccept !== undefined && gmxSpentOnAccept > gmxAllowance;
+
+  const hasVestedGmx = gmxVesterBalance > 0 || feeGmxTrackerBalance < feeGmxTrackerStakedAmount;
+  const hasVestedGlp = glpVesterBalance > 0 || stakedGlpTrackerBalance < stakedGlpTrackerStakedAmount;
   const hasVestedAffiliate = affiliateVesterBalance > 0;
-  const hasStakedGmx =
-    (cumulativeGmxRewards && cumulativeGmxRewards > 0) ||
-    (transferredCumulativeGmxRewards && transferredCumulativeGmxRewards > 0) ||
-    (cumulativeBonusGmxTrackerRewards && cumulativeBonusGmxTrackerRewards > 0);
-  const hasStakedGlp =
-    (cumulativeGlpRewards && cumulativeGlpRewards > 0) ||
-    (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards > 0) ||
-    (cumulativeFeeGlpTrackerRewards && cumulativeFeeGlpTrackerRewards > 0);
+  const receiverGmxStakingValues = [
+    cumulativeGmxRewards,
+    cumulativeBonusGmxTrackerRewards,
+    cumulativeExtendedGmxTrackerRewards,
+    cumulativeFeeGmxTrackerRewards,
+    transferredCumulativeGmxRewards,
+    transferredAverageStakedGmx,
+    receiverGmxVesterBalance,
+  ];
+  const receiverGlpStakingValues = [
+    cumulativeGlpRewards,
+    cumulativeFeeGlpTrackerRewards,
+    transferredCumulativeGlpRewards,
+    transferredAverageStakedGlp,
+    receiverGlpVesterBalance,
+  ];
+  const hasStakedGmx = receiverGmxStakingValues.some((value) => value > 0);
+  const hasStakedGlp = receiverGlpStakingValues.some((value) => value > 0);
+  const isSenderCheckLoading = [
+    gmxVesterBalance,
+    glpVesterBalance,
+    affiliateVesterBalance,
+    feeGmxTrackerBalance,
+    feeGmxTrackerStakedAmount,
+    stakedGlpTrackerBalance,
+    stakedGlpTrackerStakedAmount,
+    gmxStaked,
+    claimableGmxRewards,
+    gmxAllowance,
+    pendingReceiver,
+    rewardRouter,
+  ].some((value) => value === undefined);
+  const isTransferPauseLoading = rewardRouter?.version === "v3" && designatedVestersLength === undefined;
+  const isReceiverCheckLoading =
+    hasValidReceiver &&
+    (!feeGmxAllowanceData ||
+      [...receiverGmxStakingValues, ...receiverGlpStakingValues].some((value) => value === undefined));
+  const isCheckLoading = isSenderCheckLoading || isReceiverCheckLoading || isTransferPauseLoading;
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
 
   const getError = () => {
@@ -191,7 +300,7 @@ export default function BeginAccountTransfer() {
     if (!receiver || receiver.length === 0) {
       return t`Enter receiver address`;
     }
-    if (!isAddress(receiver, { strict: false })) {
+    if (!hasValidReceiver) {
       return t`Invalid receiver address`;
     }
 
@@ -203,14 +312,11 @@ export default function BeginAccountTransfer() {
       return t`Receiver has staked GMX/GLP`;
     }
 
-    if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
+    if (parsedReceiver === account) {
       return t`Self-transfer not supported`;
     }
 
-    if (
-      (parsedReceiver || "").length > 0 &&
-      (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()
-    ) {
+    if (parsedReceiver === pendingReceiver) {
       return t`Transfer already initiated`;
     }
   };
@@ -228,13 +334,16 @@ export default function BeginAccountTransfer() {
     if (error) {
       return false;
     }
+    if (isTransferPaused) {
+      return false;
+    }
     if (isApproving) {
       return false;
     }
     if (isTransferring) {
       return false;
     }
-    if (hasValidReceiver && !feeGmxAllowanceData) {
+    if (isCheckLoading) {
       return false;
     }
     if (!isStakingPowerResetAcknowledged) {
@@ -248,8 +357,14 @@ export default function BeginAccountTransfer() {
     if (error) {
       return error;
     }
+    if (isTransferPaused) {
+      return t`Begin transfer`;
+    }
     if (isApproving) {
       return t`Approving...`;
+    }
+    if (isCheckLoading) {
+      return t`Loading...`;
     }
     if (needApproval) {
       return t`Approve GMX`;
@@ -277,6 +392,7 @@ export default function BeginAccountTransfer() {
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        metric: { flow: "accountTransfer" },
       });
       return;
     }
@@ -289,25 +405,41 @@ export default function BeginAccountTransfer() {
         spender: parsedReceiver,
         chainId,
         permitParams: undefined,
-        approveAmount: feeGmxTrackerBalance,
+        approveAmount: feeGmxTrackerStakedAmount,
+        metric: { flow: "accountTransfer", hideSpender: true },
       });
       return;
     }
 
-    setIsTransferring(true);
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+    signalTransfer();
+  };
 
-    callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
-      sentMsg: t`Transfer submitted`,
-      failMsg: t`Transfer failed`,
-      setPendingTxns,
-    })
-      .then(() => {
-        setIsTransferSubmittedModalVisible(true);
-      })
-      .finally(() => {
-        setIsTransferring(false);
+  const signalTransfer = async () => {
+    if (!rewardRouter) {
+      return;
+    }
+
+    setIsTransferring(true);
+
+    try {
+      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
+        mutateRewardRouter();
+        showRewardRouterChangedToast();
+        return;
+      }
+
+      await callContract(chainId, getRewardRouterContract(rewardRouter, signer), "signalTransfer", [parsedReceiver], {
+        sentMsg: t`Transfer submitted`,
+        failMsg: t`Transfer failed`,
+        setPendingTxns,
+        hideErrorMsg: true,
       });
+      setIsTransferSubmittedModalVisible(true);
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg: t`Transfer failed`, action: "transfer" });
+    } finally {
+      setIsTransferring(false);
+    }
   };
 
   const completeTransferLink = `/complete_account_transfer/${account}/${parsedReceiver}`;
@@ -340,7 +472,7 @@ export default function BeginAccountTransfer() {
               <br />
               Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
               <br />
-              Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
+              Transfers are one-way. You cannot transfer staked tokens back to the sending account.
             </Trans>
           }
         />
@@ -355,6 +487,7 @@ export default function BeginAccountTransfer() {
       </div>
 
       <div className="mx-auto flex max-w-[700px] flex-col gap-20 rounded-8 bg-slate-900 p-20 md:w-[620px]">
+        {isTransferPaused && <ColorfulBanner color="yellow">{getAccountTransfersPausedMessage()}</ColorfulBanner>}
         <div className="flex flex-col gap-8">
           <label className="text-16 font-medium">
             <Trans>Receiver address</Trans>

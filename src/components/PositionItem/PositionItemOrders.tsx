@@ -8,6 +8,7 @@ import {
   selectOracleSettings,
   selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderErrors,
@@ -145,6 +146,7 @@ function PositionItemOrder({
 
   const oracleSettings = useSelector(selectOracleSettings);
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+  const isSizeOrderInClosedPool = useSelector(makeSelectIsSizeOrderInClosedPool(order.key));
 
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
@@ -163,7 +165,7 @@ function PositionItemOrder({
             <ChevronRightIcon className="ml-4 size-14" />
           </div>
         </Button>
-        {!hideActions && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+        {!hideActions && !isSizeOrderInClosedPool && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
           <Button variant="secondary" onClick={handleEditClick} className="px-8">
             <EditIcon className="size-16" />
           </Button>

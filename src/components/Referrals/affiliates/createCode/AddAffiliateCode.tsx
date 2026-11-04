@@ -21,7 +21,6 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
@@ -36,7 +35,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -180,7 +179,7 @@ function AffiliateCodeFormMultichain({
             <Trans>Referral code created</Trans>
             <br />
             <br />
-            <Trans>May take a few minutes to reflect. Check back later</Trans>
+            <Trans>May take a few minutes to appear. Check back later</Trans>
           </>
         );
       } else {

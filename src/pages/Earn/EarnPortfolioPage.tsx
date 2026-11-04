@@ -22,6 +22,7 @@ import EarnPageLayout from "pages/Earn/EarnPageLayout";
 import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { EarningsOverview } from "components/Earn/Portfolio/EarningsOverview/EarningsOverview";
+import { UnstakeRequests } from "components/Earn/Portfolio/UnstakeRequests/UnstakeRequests";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
 
@@ -106,6 +107,11 @@ export default function EarnPortfolioPage() {
             isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}
             multichainMarketTokensBalances={multichainMarketTokensBalances}
           />
+        </ErrorBoundary>
+      )}
+      {account && !isWalletInitializing && (
+        <ErrorBoundary id="EarnPortfolio-UnstakeRequests" variant="block" wrapperClassName="rounded-t-8">
+          <UnstakeRequests processedData={processedData} />
         </ErrorBoundary>
       )}
     </EarnPageLayout>

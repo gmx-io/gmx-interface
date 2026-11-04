@@ -1,7 +1,12 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
-import { getLeverageKey, getSyntheticsTradeOptionsKey, TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
+import {
+  getGasPaymentTokenAddressKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  TRADEBOX_SIZE_DENOMINATION_KEY,
+} from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -22,6 +27,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 
+import { useIsCurtainOpen } from "../Curtain";
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
@@ -68,6 +74,17 @@ function ExternalSwapsSettingOff({ children }: { children: ReactNode }) {
   }
 
   return <>{children}</>;
+}
+
+/** Test backdoor: opens the mobile curtain and shows its state; in prod the Curtain around the TradeBox owns it. */
+function MobileCurtainState() {
+  const [isCurtainOpen, setIsCurtainOpen] = useIsCurtainOpen();
+
+  useEffect(() => {
+    setIsCurtainOpen(true);
+  }, [setIsCurtainOpen]);
+
+  return <div data-qa="test-curtain-open">{String(isCurtainOpen)}</div>;
 }
 
 /** Writes localStorage entries synchronously before children mount, so stateful hooks pick them up on init. */
@@ -120,6 +137,8 @@ function AcceptablePriceImpactSetting({ children }: { children: ReactNode }) {
 export type TradeBoxStoryProps = {
   /** Connect the wagmi mock account before mounting */
   connected?: boolean;
+  /** Render the TradeBox as on mobile, inside an open curtain */
+  isMobile?: boolean;
   /** Seed an existing 2x ETH/USD long (1 ETH, 1000 USDC collateral); implies connected */
   withPosition?: boolean;
   /** Make the seeded position a short instead of a long */
@@ -183,6 +202,8 @@ export type TradeBoxStoryProps = {
   seedLeverageOption?: number;
   /** Seed the persisted size display denomination */
   seedSizeDisplayMode?: "token" | "usd";
+  /** Seed the saved wallet gas payment token (e.g. a valid token missing from tokensData) */
+  seedGasPaymentTokenAddress?: string;
 };
 
 /**
@@ -191,6 +212,7 @@ export type TradeBoxStoryProps = {
  */
 export function TradeBoxStory({
   connected = false,
+  isMobile = false,
   withPosition = false,
   positionIsShort = false,
   positionLiqPriceUsd,
@@ -216,6 +238,7 @@ export function TradeBoxStory({
   seedSizeDisplayMode,
   seedTradeMode,
   seedUserSelectedSecondEthPool = false,
+  seedGasPaymentTokenAddress,
 }: TradeBoxStoryProps) {
   const isConnected = connected || withPosition || withWethCollateralPosition;
 
@@ -419,6 +442,13 @@ export function TradeBoxStory({
       entries.push([JSON.stringify(TRADEBOX_SIZE_DENOMINATION_KEY), JSON.stringify(seedSizeDisplayMode)]);
     }
 
+    if (seedGasPaymentTokenAddress !== undefined) {
+      entries.push([
+        JSON.stringify(getGasPaymentTokenAddressKey(ARBITRUM, MOCK_ACCOUNT)),
+        JSON.stringify(seedGasPaymentTokenAddress),
+      ]);
+    }
+
     return entries;
   }, [
     seedSwapPair,
@@ -429,6 +459,7 @@ export function TradeBoxStory({
     seedSizeDisplayMode,
     seedTradeMode,
     seedUserSelectedSecondEthPool,
+    seedGasPaymentTokenAddress,
   ]);
 
   let content = (
@@ -442,10 +473,11 @@ export function TradeBoxStory({
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}
       {withExternalSwapLatchControl && <ExternalSwapLatchControl />}
       {withGasTokenControl && <SetConflictingGasTokenControl />}
+      {isMobile && <MobileCurtainState />}
       <div className="text-body-medium flex flex-col rounded-8">
         <TradeBoxHeaderTabs />
         <ActiveFormScope formId="tradebox">
-          <TradeBox isMobile={false} activeFormId="tradebox" />
+          <TradeBox isMobile={isMobile} activeFormId="tradebox" />
         </ActiveFormScope>
       </div>
     </MockSyntheticsStateProvider>

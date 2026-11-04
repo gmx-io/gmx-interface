@@ -552,7 +552,6 @@ export async function executeExpressOrderWithSubaccount(
     requestId: prepared.requestId,
     signature,
     from: isSubaccountOrder ? request.from : signer.address,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,

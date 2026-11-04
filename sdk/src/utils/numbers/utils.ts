@@ -602,6 +602,13 @@ export function formatBalanceAmount(
   return `${sign}${value}`;
 }
 
+export function truncateToBalanceDisplayDecimals(amount: bigint, tokenDecimals: number, isStable = false): bigint {
+  const displayDecimals = calculateDisplayDecimals(amount, tokenDecimals, 1, isStable);
+  const displayStep = expandDecimals(1, Math.max(tokenDecimals - displayDecimals, 0));
+
+  return amount - (amount % displayStep);
+}
+
 export function formatFactor(factor: bigint) {
   if (factor == 0n) {
     return "0";

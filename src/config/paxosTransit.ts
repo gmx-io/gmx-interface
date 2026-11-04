@@ -9,6 +9,7 @@ type PaxosTransitConfig = {
   usdgAddress: string;
   swapMarketAddress: string;
   thresholdUsd: bigint;
+  autoMinSavingUsd: bigint;
 };
 
 const PAXOS_TRANSIT_CONFIGS: Partial<Record<ContractsChainId, PaxosTransitConfig>> = {
@@ -18,6 +19,7 @@ const PAXOS_TRANSIT_CONFIGS: Partial<Record<ContractsChainId, PaxosTransitConfig
     // SWAP-ONLY [USDC-USDG]
     swapMarketAddress: "0x408E8e83d4b8Ac4BDefFDF896B49268A5FE5Ef44",
     thresholdUsd: expandDecimals(250_000, USD_DECIMALS),
+    autoMinSavingUsd: expandDecimals(25, USD_DECIMALS),
   },
 };
 

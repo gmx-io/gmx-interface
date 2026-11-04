@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, getChainName, getViemChain } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
+import { getNetworkFeatures } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
@@ -21,7 +21,7 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
+import { useIsContractAccount, useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
@@ -63,12 +63,14 @@ export function TradingSettings({
   numberOfParts,
   onClose,
 }: TradingSettingsProps) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
   const { isConnected } = useAccount();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { isWalletOutOfGasPaymentBalance, isGmxAccountOutOfGasPaymentBalance } = useIsOutOfGasPaymentBalance();
   const { canSignTypedData } = useWalletCanSignTypedData();
+  const { isContractAccount } = useIsContractAccount();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
@@ -123,6 +125,10 @@ export function TradingSettings({
     </div>
   ) : undefined;
 
+  const oneClickDisabledTooltip =
+    expressDisabledTooltip ??
+    (isContractAccount ? <Trans>One-Click Trading is unavailable for smart wallets</Trans> : undefined);
+
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
       settings.setGasPaymentTokenAddress(tokenAddress);
@@ -140,7 +146,7 @@ export function TradingSettings({
 
   return (
     <div>
-      {getIsExpressSupported(chainId) && (
+      {features.express && (
         <>
           <SettingsSection>
             <div className="text-14 font-medium text-typography-primary">
@@ -191,8 +197,8 @@ export function TradingSettings({
               title={<Trans>Express + One-Click</Trans>}
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
-              disabled={isExpressTradingDisabled}
-              disabledTooltip={expressDisabledTooltip}
+              disabled={isExpressTradingDisabled || isContractAccount}
+              disabledTooltip={oneClickDisabledTooltip}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
@@ -328,19 +334,21 @@ export function TradingSettings({
           suggestions={EMPTY_ARRAY}
         />
 
-        <InputSetting
-          title={t`TWAP number of parts`}
-          description={
-            <div>
-              <Trans>Default parts for TWAP orders</Trans>
-            </div>
-          }
-          defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
-          value={numberOfParts}
-          onChange={onChangeTwapNumberOfParts}
-          onBlur={onBlurTwapNumberOfParts}
-          type="number"
-        />
+        {features.twap && (
+          <InputSetting
+            title={t`TWAP number of parts`}
+            description={
+              <div>
+                <Trans>Default parts for TWAP orders</Trans>
+              </div>
+            }
+            defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+            value={numberOfParts}
+            onChange={onChangeTwapNumberOfParts}
+            onBlur={onBlurTwapNumberOfParts}
+            type="number"
+          />
+        )}
 
         {settings.shouldUseExecutionFeeBuffer && (
           <InputSetting

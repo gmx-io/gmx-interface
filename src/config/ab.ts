@@ -15,6 +15,7 @@ type AbStorage = {
 const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
+  solanaNetwork: 0,
   abWebsocket: 0,
 };
 
@@ -97,6 +98,10 @@ export function setAbFlagEnabled(flag: AbFlag, enabled: boolean) {
 
 export function getIsFlagEnabled(flag: AbFlag): boolean {
   return Boolean(abStorage[flag]?.enabled);
+}
+
+export function getIsSolanaNetworkEnabled(): boolean {
+  return getIsFlagEnabled("solanaNetwork");
 }
 
 export function getAbFlags(): Record<AbFlag, boolean> {

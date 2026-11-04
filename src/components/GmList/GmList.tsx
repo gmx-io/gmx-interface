@@ -32,7 +32,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
-import { nowInSeconds } from "sdk/utils/time";
+import { getAddressKey } from "sdk/utils/address";
 
 import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -111,7 +111,7 @@ export function GmList({
   const recentlyListedCount = useMemo(() => {
     if (!marketsInfo || recentlyListedAddressesSet.size === 0) return 0;
     return Object.values(marketsInfo).filter(
-      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(m.indexTokenAddress.toLowerCase())
+      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(getAddressKey(m.indexTokenAddress))
     ).length;
   }, [marketsInfo, recentlyListedAddressesSet]);
 
@@ -168,14 +168,14 @@ export function GmList({
     [whitelistsResult]
   );
 
-  const marketsTokensLaunchBoostAprData = useMemo(() => {
-    const nowSeconds = nowInSeconds();
-
-    return mapValues(marketsInfo ?? {}, (market) => {
-      const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult, nowSeconds });
-      return getUsdgLaunchBoostApr(launchBoost);
-    });
-  }, [chainId, marketsInfo, usdgBoostAprResult]);
+  const marketsTokensLaunchBoostAprData = useMemo(
+    () =>
+      mapValues(marketsInfo ?? {}, (market) => {
+        const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult });
+        return getUsdgLaunchBoostApr(launchBoost);
+      }),
+    [chainId, marketsInfo, usdgBoostAprResult]
+  );
 
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
@@ -215,7 +215,7 @@ export function GmList({
         market &&
           !market.isSpotOnly &&
           !market.isDisabled &&
-          recentlyListedAddressesSet.has(market.indexTokenAddress.toLowerCase())
+          recentlyListedAddressesSet.has(getAddressKey(market.indexTokenAddress))
       );
 
       return (

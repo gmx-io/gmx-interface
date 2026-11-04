@@ -15,8 +15,8 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay, getProtocolReferralCodeType } from "domain/referrals/utils/referralCode";
 import {
-  getProtocolReferralCodeType,
   getReferralCodeTradeUrl,
   getSharePercentage,
   isBalancerProgramTier,
@@ -149,7 +149,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           {!userReferralCodeString ? (
             <Card>
               <div className="text-body-small text-typography-secondary">
-                <Trans>This account has no active referral code.</Trans>
+                <Trans>This account has no active referral code</Trans>
               </div>
             </Card>
           ) : (
@@ -162,7 +162,9 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
                     helperToast.success(t`Referral link copied to clipboard`);
                   }}
                 >
-                  <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
+                  <ScaledText className="text-24 font-medium">
+                    {formatReferralCodeForDisplay(userReferralCodeString)}
+                  </ScaledText>
                   <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
                 </div>
                 {isAccountOwner && (
@@ -265,6 +267,7 @@ function ActiveCodeExplanation({
           <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
             Read more
           </ExternalLink>
+          .
         </Trans>
       </div>
     );
@@ -279,6 +282,7 @@ function ActiveCodeExplanation({
           <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
             Read more
           </ExternalLink>
+          .
         </Trans>
       </div>
     );
@@ -305,6 +309,7 @@ function BalancerProgramTooltipContent() {
       <ExternalLink href={BALANCER_PROGRAM_URL} className="text-blue-300">
         Read more
       </ExternalLink>
+      .
     </Trans>
   );
 }
@@ -323,7 +328,7 @@ function BalancerProgramExplanation({
   return (
     <>
       <div className="text-body-medium mb-2 font-medium text-typography-primary">
-        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount.</Trans>
+        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>
       </div>
       <div className="text-body-small text-typography-secondary">
         {isCodeOwnedByAccount ? (

@@ -7,6 +7,7 @@ import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateCo
 import {
   selectTradeboxFees,
   selectTradeboxFeesPercentage,
+  selectTradeboxSwapAmounts,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -33,6 +34,8 @@ export function PriceImpactFeesRow() {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isTrigger, isSwap } = tradeFlags;
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const isExternalSwap = isSwap && swapAmounts?.swapStrategy.type === "externalSwap";
   const tradingIncentives = useTradingIncentives(chainId);
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
   const isMegaethPointsActive = useMegaethPointsActive();
@@ -52,6 +55,10 @@ export function PriceImpactFeesRow() {
   ) : null;
 
   const { formattedPriceImpactPercentage, isPriceImpactPositive } = useMemo(() => {
+    if (isExternalSwap) {
+      return { formattedPriceImpactPercentage: "-", isPriceImpactPositive: false };
+    }
+
     const priceImpactPercentage = isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap }) : 0n;
     return {
       formattedPriceImpactPercentage:
@@ -64,7 +71,7 @@ export function PriceImpactFeesRow() {
             }),
       isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
     };
-  }, [fees, isTrigger, isSwap]);
+  }, [fees, isTrigger, isSwap, isExternalSwap]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";

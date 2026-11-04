@@ -4,7 +4,7 @@ import { Address, zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
-import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
+import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl, isSolanaNetwork } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
@@ -26,7 +26,6 @@ export const MARGIN_FEE_BASIS_POINTS = 10;
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
-export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 // Removed: TOKEN_IMG_DIR (unused)
 
@@ -139,7 +138,8 @@ export function getAccountUrl(chainId: number, account: string) {
   if (!account) {
     return getExplorerUrl(chainId);
   }
-  return getExplorerUrl(chainId) + "address/" + account;
+  // Solscan puts accounts under account/, not address/.
+  return getExplorerUrl(chainId) + (isSolanaNetwork(chainId) ? "account/" : "address/") + account;
 }
 
 // Removed: isMobileDevice (unused)
@@ -695,7 +695,7 @@ const imageStaticMap = mapKeys(
   (_, key) => key.split("/").pop()
 );
 
-export function importImage(name: string) {
+export function findImage(name: string): string | undefined {
   const sizeSuffixRegex = /_(?:24|40)\.svg$/;
   const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
 
@@ -712,7 +712,17 @@ export function importImage(name: string) {
     }
   }
 
-  throw new Error(`Image ${name} not found`);
+  return undefined;
+}
+
+export function importImage(name: string) {
+  const image = findImage(name);
+
+  if (!image) {
+    throw new Error(`Image ${name} not found`);
+  }
+
+  return image;
 }
 
 export function getTwitterIntentURL(text: string | string[], url = "", hashtag = ""): string {

@@ -145,7 +145,7 @@ export function TestPermits() {
       const explorerUrl = getExplorerUrl(chainId) + "tx/" + tx.hash;
       toast.success(
         <div>
-          <Trans>Permit transaction sent for {selectedToken.symbol}!</Trans>{" "}
+          <Trans>Permit transaction sent for {selectedToken.symbol}</Trans>{" "}
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="underline">
             <Trans>View</Trans>
           </a>

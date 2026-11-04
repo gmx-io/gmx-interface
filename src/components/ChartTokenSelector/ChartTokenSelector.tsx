@@ -46,6 +46,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { convertTokenAddress, getTokenVisualMultiplier, isChartAvailableForToken } from "sdk/configs/tokens";
+import { getAddressKey } from "sdk/utils/address";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -255,7 +256,7 @@ function MarketsList() {
 
   const recentlyListedCount = useMemo(() => {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
-    return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
+    return options.filter((t) => recentlyListedAddressesSet.has(getAddressKey(t.address))).length;
   }, [options, recentlyListedAddressesSet]);
 
   const hasAvailableFavorites = useMemo(() => {
@@ -592,10 +593,10 @@ function MarketsList() {
                 <div className="flex w-full flex-col items-center gap-12 px-16">
                   <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
                     {shouldOfferSearchAll ? (
-                      <Trans>No results with the selected filters.</Trans>
+                      <Trans>No results with the selected filters</Trans>
                     ) : (
                       <Trans>
-                        No {marketTypeLabel} match "{query}".
+                        No {marketTypeLabel} match "{query}"
                       </Trans>
                     )}
                   </span>
@@ -609,9 +610,9 @@ function MarketsList() {
                     <>
                       <span className="text-12 text-typography-secondary">
                         {isSwap ? (
-                          <Trans>Results are available in Perpetuals.</Trans>
+                          <Trans>Results are available in Perpetuals</Trans>
                         ) : (
-                          <Trans>Results are available in Swap.</Trans>
+                          <Trans>Results are available in Swap</Trans>
                         )}
                       </span>
                       <Button
@@ -626,7 +627,7 @@ function MarketsList() {
                   )}
                 </div>
               ) : (
-                <Trans>No markets matched.</Trans>
+                <Trans>No markets matched</Trans>
               )
             }
           />

@@ -2,7 +2,15 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  SOLANA_NETWORK_ID,
+  isSolanaNetwork,
+} from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1902,10 +1910,10 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, MEGAETH];
+const NETWORK_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ARBITRUM_SEPOLIA, MEGAETH, SOLANA_NETWORK_ID];
 
-for (let j = 0; j < CHAIN_IDS.length; j++) {
-  const chainId = CHAIN_IDS[j];
+for (let j = 0; j < NETWORK_IDS.length; j++) {
+  const chainId = NETWORK_IDS[j];
 
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
@@ -1913,7 +1921,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   V1_TOKENS[chainId] = [];
   V2_TOKENS[chainId] = [];
 
-  let tokens = TOKENS[chainId];
+  let tokens = getTokens(chainId);
   let wrappedTokenAddress: string | undefined;
 
   for (let i = 0; i < tokens.length; i++) {
@@ -1943,7 +1951,9 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     }
   }
 
-  NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+  if (!isSolanaNetwork(chainId)) {
+    NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
+  }
 }
 
 export function getSyntheticTokens(chainId: number) {
@@ -1958,8 +1968,9 @@ export function getNativeToken(chainId: number) {
   return NATIVE_TOKENS_MAP[chainId];
 }
 
-export function getTokens(chainId: number) {
-  return TOKENS[chainId];
+export function getTokens(chainId: number): Token[] {
+  // Solana tokens stay in the app (src/config/gmsol): SDK configs ship in the EVM main bundle
+  return isSolanaNetwork(chainId) ? [] : TOKENS[chainId];
 }
 
 export function getV1Tokens(chainId: number) {
@@ -2125,7 +2136,9 @@ export function getStableTokens(chainId: number) {
 }
 
 export function getCategoryTokenAddresses(chainId: number, category: TokenCategory) {
-  return TOKENS[chainId].filter((token) => token.categories?.includes(category)).map((token) => token.address);
+  return getTokens(chainId)
+    .filter((token) => token.categories?.includes(category))
+    .map((token) => token.address);
 }
 
 export const createTokensMap = (tokens: Token[]) => {
