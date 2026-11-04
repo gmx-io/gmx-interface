@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { SOLANA_NETWORK_ID } from "config/chains";
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { GmxApiSdk } from "sdk/clients/v2";
 import { mergeMarketsConfigValues } from "sdk/utils/markets";
@@ -22,7 +22,7 @@ const OWNER = "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin";
 const BTC_MARKET = "7RNev94wKusSmFEqo3gvv1d1zMweP6sa2LtjJjroAvym";
 
 async function loadSamples() {
-  const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: createGmsolFixtureHttp() });
+  const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID, api: createGmsolFixtureHttp() });
   const [config, values, positions, orders] = await Promise.all([
     sdk.fetchMarketsConfig(),
     sdk.fetchMarketsValues(),

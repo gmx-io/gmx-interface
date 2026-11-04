@@ -38,13 +38,17 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
 
   const { data: configData, error: configError } = useSWR<RawMarketConfig[], Error>(
     enabled ? getGmsolMarketsConfigKey(apiCacheKey) : null,
-    () => getGmsolApiSdk().fetchMarketsConfig(),
+    ([, , keyApiCacheKey]: ReturnType<typeof getGmsolMarketsConfigKey>) =>
+      getGmsolApiSdk(keyApiCacheKey).fetchMarketsConfig(),
     { refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
   const { data: valuesResponse, error: valuesError } = useSWR<ValuesResponse, Error>(
     enabled ? getGmsolMarketsValuesKey(apiCacheKey) : null,
-    async () => ({ values: await getGmsolApiSdk().fetchMarketsValues(), receivedAt: Date.now() }),
+    async ([, , keyApiCacheKey]: ReturnType<typeof getGmsolMarketsValuesKey>) => ({
+      values: await getGmsolApiSdk(keyApiCacheKey).fetchMarketsValues(),
+      receivedAt: Date.now(),
+    }),
     { refreshInterval: FREQUENT_UPDATE_INTERVAL }
   );
 
