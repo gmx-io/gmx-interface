@@ -30,6 +30,7 @@ export function resolveGasPaymentTokenAddress({
   tokensData,
   tokensAllowanceData,
   tokenPermits,
+  excludeTokenAddresses = [],
 }: {
   chainId: number;
   fallback: GasPaymentTokenFallback;
@@ -41,6 +42,8 @@ export function resolveGasPaymentTokenAddress({
   tokensData: TokensData | undefined;
   tokensAllowanceData: TokensAllowanceData | undefined;
   tokenPermits: SignedTokenPermit[];
+  // tokens never offered as the approved alternative
+  excludeTokenAddresses?: string[];
 }): string {
   const gasPaymentTokenAddress = gasPaymentToken.address;
 
@@ -90,7 +93,9 @@ export function resolveGasPaymentTokenAddress({
       isGmxAccount: false,
       // the pay token was checked above, and payAmounts may leave out the order amount it spends
       excludeTokenAddresses:
-        fallback === "skipApproval" && payTokenAddress !== undefined ? [payTokenAddress] : undefined,
+        fallback === "skipApproval" && payTokenAddress !== undefined
+          ? [...excludeTokenAddresses, payTokenAddress]
+          : excludeTokenAddresses,
       tokensAllowanceData,
     }) ?? gasPaymentTokenAddress
   );
