@@ -22,7 +22,6 @@ import {
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { registerReferralCode } from "domain/referrals";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
@@ -37,7 +36,7 @@ import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";

@@ -1251,10 +1251,6 @@ msgstr "Объём торгов привлечённых вами трейдер
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Можно ли в любое время вывести GMX из стейкинга или вывести ликвидность?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Вы активировали реферальный код {userReferralCodeString}. Сниженная ставка применяется автоматически к каждой позиции, которую вы открываете или закрываете, — дополнительных действий не требуется."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1448,6 +1444,10 @@ msgstr "Комиссия за исполнение слишком низкая �
 msgid "Tiers"
 msgstr "Уровни"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Вы активировали реферальный код {activatedReferralCodeLabel}. Сниженная ставка применяется автоматически к каждой позиции, которую вы открываете или закрываете, — дополнительных действий не требуется."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Фактор комиссии за обмен (отрицательный PI)"
@@ -1501,10 +1501,6 @@ msgstr "Транзакция:"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "Подходящие рынки не найдены"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "Вывести из стейкинга {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -3249,6 +3245,10 @@ msgstr "Отладочные RPC-эндпоинты ({0})"
 msgid "Driven by our community"
 msgstr "Развивается благодаря нашему сообществу"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "Вывести из стейкинга GMX и esGMX"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Перемещение доступно только в {chainNames}. Переключите сеть для продолжения."
@@ -4078,6 +4078,10 @@ msgstr "ТИП ДАННЫХ"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "Высокое влияние на цену при обмене"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "Вывод GMX или esGMX из стейкинга занимает 180 дней. Вы подаёте заявку на вывод, а после окончания ожидания выводите сумму в GMX или esGMX. Заявку можно отменить в любой момент. Если из-за заявки баланс в стейкинге станет меньше 80% от максимальной суммы, которую вы когда-либо размещали в стейкинге, вся накопленная сила стейкинга обнулится, а вы потеряете свою долю в распределении средств казначейства при цене GMX $90. Отмена заявки не вернёт силу стейкинга. Токены GLV и GM можно продать в любое время. В редких случаях, когда вашу ликвидность используют открытые позиции, вы сможете вывести средства сразу после закрытия этих позиций."
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -8421,10 +8425,6 @@ msgstr "Сначала вы конвертируете USDC в USDG в свое�
 msgid "No opportunities match your holdings"
 msgstr "Нет возможностей, соответствующих вашим активам"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Да, GMX можно вывести из стейкинга, а токены GLV/GM можно продать в любое время — протокол никогда не блокирует ваши токены. Однако если баланс GMX в стейкинге станет меньше 80% от максимальной суммы GMX, которую вы когда-либо размещали в стейкинге, вся накопленная сила стейкинга обнулится, а вы потеряете свою долю в распределении средств казначейства при цене GMX $90. В редких случаях, когда ликвидность GLV/GM используется для активных сделок, вы сможете вывести средства сразу после закрытия соответствующих позиций."
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend your tokens or borrow against them"
@@ -9111,6 +9111,10 @@ msgstr "Скрыть активы с низкой стоимостью"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (предложение)"
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} не одобрен для оплаты комиссий. Комиссия сети за этот ордер оплачивается в {toSymbol}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
