@@ -307,10 +307,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <OracleDebugPage />
       </Route>
       {isDevelopment() && [
-        <Route exact path="/ui" key="ui">
+        // The old component test page; /ui itself opens the design system site
+        <Route exact path="/ui-legacy" key="ui-legacy">
           <UiPage />
         </Route>,
-        <Route exact path="/ui/:slug" key="ui-design-system">
+        <Route exact path="/ui/:slug?" key="ui-design-system">
           <DesignSystemPage />
         </Route>,
         <Route exact path="/permits" key="permits">
