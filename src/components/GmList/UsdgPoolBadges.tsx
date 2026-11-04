@@ -34,9 +34,9 @@ export function WhitelistOnlyBadge({
   return (
     <StandardTooltip
       variant="none"
-      className={cx("flex", className)}
+      className={cx("flex shrink-0", className)}
       handle={
-        <Badge>
+        <Badge className="whitespace-nowrap !rounded-4">
           <Trans>Whitelist only</Trans>
         </Badge>
       }

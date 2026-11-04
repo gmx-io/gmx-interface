@@ -477,7 +477,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-small"
+              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-medium"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -490,7 +490,7 @@ function MarketsList() {
               type="block"
               className="bg-fill-surfaceElevated/50 px-16"
               tabsWrapperClassName="!w-fit"
-              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-small"
+              regularOptionClassname="!px-8 !pb-8 !pt-12 text-body-medium"
             />
           </ButtonRowScrollFadeContainer>
         )}

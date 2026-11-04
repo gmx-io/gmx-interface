@@ -39,7 +39,7 @@ export function GridHeaderCell({ children, className }: GridCellProps) {
     <div
       role="columnheader"
       className={cx(
-        "text-caption text-left last-of-type:text-right",
+        "TableTh text-caption text-left last-of-type:text-right",
         "px-4 py-12 pb-8 first-of-type:pl-adaptive last-of-type:pr-adaptive",
         className
       )}

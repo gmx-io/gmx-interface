@@ -12,7 +12,7 @@ import { useLocalizedMap } from "lib/i18n";
 import Tabs from "components/Tabs/Tabs";
 import type { Option } from "components/Tabs/types";
 
-const REGULAR_TAB_CLASS_NAME = "!px-8 !py-12 text-body-small";
+const REGULAR_TAB_CLASS_NAME = "!px-8 !py-12 text-body-medium";
 
 export function FavoriteTabs({
   favoritesKey,
@@ -63,7 +63,7 @@ export function FavoriteTabs({
       onChange={setTopLevelTab}
       type={type}
       className={className}
-      regularOptionClassname={type === "block" ? REGULAR_TAB_CLASS_NAME : undefined}
+      regularOptionClassname={type === "block" ? REGULAR_TAB_CLASS_NAME : "!text-body-medium"}
       tabsWrapperClassName={type === "block" ? "!w-fit" : undefined}
     />
   );

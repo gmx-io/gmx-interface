@@ -107,6 +107,16 @@ function feeValueHandle(row: Locator): Locator {
   return row.locator(".text-right .Tooltip-handle").first();
 }
 
+// The fee value re-renders while its estimate refreshes, which can swallow a single hover: hover again until it opens
+async function hoverFeeValueUntil(row: Locator, text: string) {
+  const page = row.page();
+  await expect(async () => {
+    await page.mouse.move(0, 0);
+    await feeValueHandle(row).hover();
+    await expect(page.getByText(text)).toBeVisible({ timeout: 1_000 });
+  }).toPass({ timeout: 10_000 });
+}
+
 function sourceIcon(locator: Locator, source: string): Locator {
   return locator.getByRole("img", { name: source, exact: true });
 }
@@ -139,8 +149,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       const row = feeRow(page);
       await expectFeeValue(row, "ETH", "Wallet");
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, WALLET_CLASSIC_EXPLANATION);
       const maxFeeLine = page.getByText("Max network fee", { exact: true }).locator("..");
       await expect(maxFeeLine).toBeVisible();
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
@@ -158,8 +167,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       const row = feeRow(page);
       await expectFeeValue(row, "USDC", "Wallet");
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(WALLET_EXPRESS_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, WALLET_EXPRESS_EXPLANATION);
       const maxFeeLine = page.getByText("Max network fee", { exact: true }).locator("..");
       await expect(maxFeeLine).toContainText("USDC");
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
@@ -179,8 +187,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expectFeeValue(row, "USDC", "GMX Account");
       await expect(sourceIcon(row, "Wallet")).toHaveCount(0);
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, GMX_ACCOUNT_EXPLANATION);
     });
 
     test("Express: the Max fill and its selected state survive the express re-run and a second click (FEDEV-3593)", async ({
@@ -283,8 +290,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       const row = feeRow(page);
       await expectFeeValue(row, "ETH", "Wallet");
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, WALLET_CLASSIC_EXPLANATION);
     });
 
     test("Express without any gas token: submission is blocked with the trade box's insufficient-fee state (FEDEV-4283)", async ({
@@ -332,8 +338,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       const row = feeRow(page);
       await expectFeeValue(row, "ETH", "Wallet");
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, WALLET_CLASSIC_EXPLANATION);
     });
   });
 
@@ -432,8 +437,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
       await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, SETTLE_GMX_ACCOUNT_SWITCH_EXPLANATION);
     });
 
     test("Express, both balances funded: the fee follows the remaining-margin preference (FEDEV-3900)", async ({
@@ -446,8 +450,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expectFeeValue(row, "USDC", "GMX Account");
       await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(GMX_ACCOUNT_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, GMX_ACCOUNT_EXPLANATION);
     });
 
     test("Express, no gas token in either balance but ETH in the wallet: a wallet transaction in ETH, no approval (FEDEV-3900)", async ({
@@ -465,8 +468,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expect(page.getByRole("button", { name: "Settle", exact: true })).toBeEnabled();
       await expect(page.getByRole("button", { name: /^Approve/ })).toHaveCount(0);
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(SETTLE_CLASSIC_FALLBACK_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, SETTLE_CLASSIC_FALLBACK_EXPLANATION);
     });
   });
 
@@ -499,8 +501,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await expectFeeValue(row, "ETH", "Wallet");
       await expect(page.getByRole("button", { name: "Claim", exact: true })).toBeEnabled();
 
-      await feeValueHandle(row).hover();
-      await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
+      await hoverFeeValueUntil(row, WALLET_CLASSIC_EXPLANATION);
     });
 
     test("Claim funding fees: a failed gas estimate leaves the row empty and the button usable", async ({
