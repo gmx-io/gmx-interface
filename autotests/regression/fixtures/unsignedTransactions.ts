@@ -21,7 +21,7 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
       const to = getAddress(tx.to);
       if (to === getAddress(getContract(chainId, "RewardRouterV3")) && request.method === "eth_estimateGas") {
         const call = decodeFunctionData({ abi: RewardRouterV3, data: tx.data });
-        if (!["stakeGmx", "unstakeGmx", "handleRewards"].includes(call.functionName)) return;
+        if (!["stakeGmx", "handleRewards"].includes(call.functionName)) return;
         calls.push({ method: request.method, to });
         return { jsonrpc: "2.0", id: request.id, result: toHex(3_000_000n) };
       }
