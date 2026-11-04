@@ -455,6 +455,11 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       return {
         ...gmxSubmitButtonState,
         ...usdgConversion.buttonState,
+        // the order step still follows the conversion, so keep the curtain open for it
+        onSubmit: async () => {
+          await usdgConversion.buttonState?.onSubmit();
+          return false;
+        },
         ...orderStepGasError,
         expressParams: usdgConversion.expressParams,
         isExpressLoading: usdgConversion.isExpressLoading,
@@ -480,15 +485,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const wrappedOnSubmit = useCallback(async () => {
     try {
-      await submitButtonState.onSubmit();
-      // the order step still follows the conversion, so keep the curtain open for it
-      if (isMobile && !isConvertStepShown) {
+      const isTradeSent = await submitButtonState.onSubmit();
+      if (isMobile && isTradeSent) {
         setExternalIsCurtainOpen(false);
       }
     } catch (error) {
       reportHandledRejection("tradebox.submit")(error);
     }
-  }, [submitButtonState, isMobile, isConvertStepShown, setExternalIsCurtainOpen]);
+  }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
   const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
     isArmed: usdgConversion.isOrderAutoSubmitArmed,
