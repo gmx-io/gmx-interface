@@ -273,6 +273,24 @@ describe("estimateWithApprovedGasPaymentToken", () => {
     expect(result?.gasPaymentParams.gasPaymentTokenAddress).toBe(USDC.address);
   });
 
+  it("returns no params while the fee token can't pay, so cancels and edits aren't relayed PRO-4529", async () => {
+    const estimate = vi.fn(async (p: GlobalExpressParams | undefined) => makeExpressParams(p, true));
+
+    for (const isGmxAccount of [false, true]) {
+      const result = await estimateWithApprovedGasPaymentToken({
+        chainId: ARBITRUM,
+        unavailableTokenAddresses: [USDC.address],
+        isGmxAccount,
+        globalExpressParams: savedGlobalExpressParams,
+        payAmounts: {},
+        estimate,
+        getGlobalExpressParamsForGasPaymentToken: () => usdtGlobalExpressParams,
+      });
+
+      expect(result).toBeUndefined();
+    }
+  });
+
   it("estimates with an approved token when the saved token is not approved", async () => {
     const estimate = vi.fn(async (p: GlobalExpressParams | undefined) =>
       makeExpressParams(p, p?.gasPaymentTokenAddress === USDT.address)

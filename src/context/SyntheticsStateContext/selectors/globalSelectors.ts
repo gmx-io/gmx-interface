@@ -48,6 +48,8 @@ const selectFeatures = (s: SyntheticsState) => s.features;
 export const selectSubaccountState = (s: SyntheticsState) => s.subaccountState;
 export const selectGasPaymentTokenAllowance = (s: SyntheticsState) => s.gasPaymentTokenAllowance;
 
+export const selectGasPaymentTokensOnchainState = (s: SyntheticsState) => s.gasPaymentTokensOnchainState;
+
 export const selectUpdateSubaccountSettings = (s: SyntheticsState) => s.subaccountState.updateSubaccountSettings;
 export const selectL1ExpressOrderGasReference = (s: SyntheticsState) => s.l1ExpressOrderGasReference;
 

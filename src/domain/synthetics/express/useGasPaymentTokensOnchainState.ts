@@ -1,5 +1,6 @@
 import useSWR from "swr";
 
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import { fetchGasPaymentTokensOnchainState, type GasPaymentTokensOnchainState } from "./gasPaymentTokenAvailability";
@@ -7,7 +8,7 @@ import { fetchGasPaymentTokensOnchainState, type GasPaymentTokensOnchainState } 
 export function useGasPaymentTokensOnchainState(chainId: ContractsChainId): GasPaymentTokensOnchainState | undefined {
   const { data } = useSWR([chainId, "gasPaymentTokensOnchainState"], {
     fetcher: () => fetchGasPaymentTokensOnchainState(chainId),
-    refreshInterval: 60_000,
+    refreshInterval: CONFIG_UPDATE_INTERVAL,
   });
 
   return data;

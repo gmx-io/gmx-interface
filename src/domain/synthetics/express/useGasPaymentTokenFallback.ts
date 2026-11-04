@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
 
 import {
   makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken,
@@ -32,11 +31,7 @@ const GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID = "gas-payment-token-not-approved"
 const notifyGasPaymentTokenNotApproved = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
   const content = t`${fromSymbol} is not approved for fees. This order pays its network fee in ${toSymbol}.`;
 
-  if (toast.isActive(GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID)) {
-    toast.update(GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID, { render: content });
-  } else {
-    helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID });
-  }
+  helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID);
 };
 
 /**
@@ -49,14 +44,14 @@ export type PayTokenFeeToken = {
 };
 
 export function useGasPaymentTokenFallback({
-  savedGlobalExpressParams,
+  baseGlobalExpressParams,
   fallback,
   isGmxAccount,
   payTokenFeeToken,
   payAmounts,
   canNotify,
 }: {
-  savedGlobalExpressParams: GlobalExpressParams | undefined;
+  baseGlobalExpressParams: GlobalExpressParams | undefined;
   fallback: GasPaymentTokenFallback | undefined;
   isGmxAccount: boolean;
   payTokenFeeToken: PayTokenFeeToken | undefined;
@@ -75,7 +70,7 @@ export function useGasPaymentTokenFallback({
   const isPayTokenFallback = fallback === "skipApproval" && payTokenFeeToken !== undefined;
   const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
 
-  const savedGasPaymentToken = savedGlobalExpressParams?.gasPaymentToken;
+  const baseGasPaymentToken = baseGlobalExpressParams?.gasPaymentToken;
 
   const resolveFallbackTokenAddress = (gasPaymentToken: TokenData) =>
     isPayTokenFallback
@@ -94,12 +89,12 @@ export function useGasPaymentTokenFallback({
         });
 
   const gasPaymentTokenAddress =
-    fallback && !isGmxAccount && savedGasPaymentToken
-      ? resolveFallbackTokenAddress(savedGasPaymentToken)
-      : savedGasPaymentToken?.address;
+    fallback && !isGmxAccount && baseGasPaymentToken
+      ? resolveFallbackTokenAddress(baseGasPaymentToken)
+      : baseGasPaymentToken?.address;
 
   const isFallbackActive =
-    gasPaymentTokenAddress !== undefined && gasPaymentTokenAddress !== savedGasPaymentToken?.address;
+    gasPaymentTokenAddress !== undefined && gasPaymentTokenAddress !== baseGasPaymentToken?.address;
 
   const fallbackGlobalExpressParams = useSelector(
     isFallbackActive
@@ -107,7 +102,7 @@ export function useGasPaymentTokenFallback({
       : selectSettlementChainExpressGlobalParams
   );
 
-  const globalExpressParams = isFallbackActive ? fallbackGlobalExpressParams : savedGlobalExpressParams;
+  const globalExpressParams = isFallbackActive ? fallbackGlobalExpressParams : baseGlobalExpressParams;
 
   const recordExpressParams = useCallback(
     (expressParams: ExpressTxnParams | undefined) => {
@@ -125,7 +120,7 @@ export function useGasPaymentTokenFallback({
   );
 
   useGasPaymentTokenNotApprovedToast({
-    fromToken: savedGasPaymentToken,
+    fromToken: baseGasPaymentToken,
     toToken: isFallbackActive ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
     // the copy is about an order, so only the trade box shows it
     enabled: isPayTokenFallback && canNotify,

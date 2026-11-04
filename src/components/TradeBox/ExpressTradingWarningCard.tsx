@@ -172,7 +172,7 @@ export function ExpressTradingWarningCard({
   });
 
   const conflictToken = tradeFlags?.isSwap ? swapToToken : collateralToken;
-  const savedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
+  const selectedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
 
   const payAmounts = useMemo(
@@ -191,7 +191,7 @@ export function ExpressTradingWarningCard({
       tokensData,
       desirability: shouldShowExternalSwapGasConflictRequiredWarning ? "required" : "optional",
       conflictTokenAddress: conflictToken?.address,
-      savedGasTokenAddress: savedGasPaymentToken?.address,
+      savedGasTokenAddress: selectedGasPaymentToken?.address,
       gasPaymentParams: expressParams?.gasPaymentParams,
       payAmounts,
       isGmxAccount,
@@ -203,7 +203,7 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
     conflictToken,
-    savedGasPaymentToken,
+    selectedGasPaymentToken,
     expressParams,
     payAmounts,
     chainId,
