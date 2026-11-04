@@ -4,7 +4,7 @@ import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipTable,
@@ -50,7 +50,7 @@ export function TooltipUsage() {
         content={
           <TooltipContent>
             <TooltipText>No price impact on increases — orders execute at mark price.</TooltipText>
-            <TooltipLink href="https://docs.gmx.io/docs/trading/fees/">Read more</TooltipLink>
+            <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/" />
           </TooltipContent>
         }
       />

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import type { ReactNode } from "react";
 
@@ -135,8 +135,9 @@ export function TooltipReadMore({ href }: { href: string }) {
   return (
     <div>
       <ExternalLink href={href} className="whitespace-nowrap !no-underline">
-        <Trans>Read more</Trans>
-        {"\u00a0\u2197"}
+        {t`Read more`}
+        {/* The arrow is decoration: screen readers still read the link as "Read more" */}
+        <span aria-hidden="true">{"\u00a0\u2197"}</span>
       </ExternalLink>
     </div>
   );

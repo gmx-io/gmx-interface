@@ -135,7 +135,8 @@ export function ButtonTriggerStory() {
   const [clicks, setClicks] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   return (
-    <div className="flex flex-col items-start gap-40 p-96">
+    // Room for the open tooltip below the first button, so a tap on the second button reaches it
+    <div className="flex flex-col items-start gap-64 p-96">
       <StandardTooltip variant="none" shouldPreventDefault={false} content="Counts clicks" position="bottom">
         <button type="button" onClick={() => setClicks((c) => c + 1)}>
           Count

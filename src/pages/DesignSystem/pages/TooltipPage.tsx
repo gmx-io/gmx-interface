@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipDivider,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipTable,
@@ -37,6 +37,7 @@ import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 import SortableIcon from "img/ic_sortable.svg?react";
 import StarIcon from "img/ic_star.svg?react";
 
+import { DocsChangelog as DocsChangelogSteps } from "../DocsChangelog";
 import {
   DocsCard,
   DocsCards,
@@ -51,6 +52,7 @@ import {
   DocsSectionInfo,
 } from "../DocsLayout";
 import { TooltipAnatomy } from "./TooltipAnatomy";
+import { TOOLTIP_CHANGELOG_NOTES, TOOLTIP_CHANGELOG_STEPS } from "./tooltipChangelog";
 import { LegacyTooltipPreview, StandardTooltipPreview } from "./TooltipPreview";
 import usageSource from "./TooltipUsage.tsx?raw";
 
@@ -87,7 +89,7 @@ const PLAIN_TEXT = "Tooltip text explains one thing in plain words. It stays sho
 const PRICE_IMPACT = (
   <TooltipContent>
     <TooltipText>No price impact on increases — orders execute at mark price.</TooltipText>
-    <TooltipLink href={DOCS_URL}>Read more</TooltipLink>
+    <TooltipReadMore href={DOCS_URL} />
   </TooltipContent>
 );
 
@@ -113,7 +115,7 @@ const WALLET_INFO = (
     {WALLET_PARAGRAPHS.map((paragraph) => (
       <TooltipText key={paragraph}>{paragraph}</TooltipText>
     ))}
-    <TooltipLink href={DOCS_URL}>Read more</TooltipLink>
+    <TooltipReadMore href={DOCS_URL} />
   </TooltipContent>
 );
 
@@ -348,15 +350,21 @@ const CONTENT_RULES: DocsRule[] = [
   ["$ and units", "Always the same color as their number: main text, green, red or yellow."],
   ["Colors", "Green and red only for values, yellow only for warnings."],
   [
-    "Links",
-    'One style: underlined, blue on hover. "Read more" goes on its own line, right under the text it explains: last when there is one link, under each paragraph when two topics have their own links.',
+    "Read more",
+    'No underline, an arrow after the text ("Read more \u2197") that never wraps onto a line alone, blue on hover. It goes on its own line, right under the text it explains; when a tooltip has two, each sits 4px under its own paragraph.',
+  ],
+  ["Other links", "Named links (e.g. View detailed stats) are white and underlined, blue on hover."],
+  ["Actions", "Grey and underlined, the same 14px as the text; main text color on hover."],
+  [
+    "Dividers",
+    "A 1px line above every section title (unless it opens the tooltip), between blocks that have no title, and above the total. Never between rows and the note that explains them.",
   ],
   ["Not a tooltip", "Menus and buttons go in dropdowns. No bullets: use Title + Text pairs."],
 ];
 
 const BEHAVIOR_RULES: DocsRule[] = [
-  ["Delay", "The first tooltip waits 200 ms, so passing over a trigger doesn't open it."],
-  ["Enter", "Fades in, grows from 94% out of the pointer and moves 4px away from the trigger, in 200 ms."],
+  ["Delay", "The first tooltip waits 150 ms, so passing over a trigger doesn't open it."],
+  ["Enter", "Fades in, grows from 96% out of the pointer and moves 4px away from the trigger, in 150 ms."],
   ["Next tooltips", "While one is open, the next ones open instantly, with no animation."],
   ["Exit", "The same way back, in 120 ms."],
   [
@@ -517,7 +525,7 @@ const STANDARD_TOOLTIP_PROPS: DocsProp[] = [
   {
     name: "openDelay",
     type: "number",
-    defaultValue: "200",
+    defaultValue: "150",
     description: "Hover delay in ms. Inside a TooltipGroup only the first tooltip waits.",
   },
   {
@@ -566,9 +574,19 @@ const BLOCK_PROPS: DocsProp[] = [
     description: 'A multi-column table with headers. Use with size="wide".',
   },
   {
+    name: "TooltipReadMore",
+    type: "href",
+    description: 'The "Read more \u2197" link: no underline, on its own line right under the text it explains.',
+  },
+  {
+    name: "TooltipAction",
+    type: "onClick, children",
+    description: "An action inside a tooltip (e.g. Set max leverage): grey and underlined, the same size as the text.",
+  },
+  {
     name: "TooltipLink",
     type: "href, children",
-    description: "A link on its own line, right under the text it explains. Last when the tooltip has one link.",
+    description: "A named link (not Read more): white and underlined, on its own line.",
   },
   {
     name: "TooltipFootnote",
@@ -617,6 +635,18 @@ export function TooltipGuidelines() {
 
 const CHANGELOG: DocsChangelogEntry[] = [
   {
+    id: "tooltip-v1-1",
+    title: "v1.1 \u00b7 Applied in the app",
+    icon: CalendarIcon,
+    date: "Nov 4, 2026",
+    changes: [
+      "Every tooltip in the app uses the standard (the Tooltip PR, #3142).",
+      "Read more: no underline and an arrow that never wraps alone. Actions: grey, the same size as the text.",
+      "Dividers above section titles and between blocks without a title.",
+      "Opens after 150 ms and grows from 96% in 150 ms.",
+    ],
+  },
+  {
     id: "tooltip-v1-0",
     title: "v1.0 · Proposal",
     icon: CalendarIcon,
@@ -634,6 +664,12 @@ const CHANGELOG: DocsChangelogEntry[] = [
 export function TooltipChangelog() {
   return (
     <div className="flex flex-col gap-16">
+      <DocsChangelogSteps
+        title="Tooltip changelog"
+        summary="3 steps on top of the Tooltip PR (#3142). All of them are applied. Each edit gives the file, the exact text to find and the text to put instead."
+        notes={TOOLTIP_CHANGELOG_NOTES}
+        steps={TOOLTIP_CHANGELOG_STEPS}
+      />
       <DocsChangelog entries={CHANGELOG} />
       {/* Both versions are drawn open, so the difference shows without hovering */}
       <DocsSection section={SECTIONS.beforeAfter} flush>
