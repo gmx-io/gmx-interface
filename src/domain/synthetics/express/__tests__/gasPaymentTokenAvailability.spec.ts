@@ -66,6 +66,14 @@ describe("getGasPaymentTokenUnavailableReason", () => {
       expected: undefined,
     },
     {
+      // the fee swap moves USDC between pools
+      name: "USDG with paused USDC on its route",
+      token: USDG,
+      route: feeRoute(USDG_FEE_ROUTE),
+      state: onchain({ pausedTokenAddresses: [USDC] }),
+      expected: "paused",
+    },
+    {
       name: "paused USDG",
       token: USDG,
       route: feeRoute(USDG_FEE_ROUTE),
@@ -86,45 +94,71 @@ describe("getGasPaymentTokenUnavailableReason", () => {
 });
 
 describe("getAvailableGasPaymentTokenAddress", () => {
+  const ONE_USD = 10n ** 30n;
+  const ETH_USD = 3000n * ONE_USD;
+  const usd = (amount: bigint) => amount * 1_000_000n;
+  const MAX_ALLOWANCE = 10n ** 40n;
+
   function tokensData(walletBalances: Record<string, bigint>): TokensData {
     return Object.fromEntries(
-      [USDC, WETH, USDT, USDG].map((address) => [
+      [
+        [USDC, 6, ONE_USD],
+        [WETH, 18, ETH_USD],
+        [USDT, 6, ONE_USD],
+        [USDG, 6, ONE_USD],
+      ].map(([address, decimals, price]) => [
         address,
-        { address, walletBalance: walletBalances[address] ?? 0n } as TokenData,
+        {
+          address,
+          decimals,
+          prices: { minPrice: price, maxPrice: price },
+          walletBalance: walletBalances[address as string] ?? 0n,
+        } as TokenData,
       ])
     );
   }
 
+  const usdgUnavailable = { [USDG]: "price" as const };
+  const allApproved = { [USDC]: MAX_ALLOWANCE, [WETH]: MAX_ALLOWANCE, [USDT]: MAX_ALLOWANCE, [USDG]: MAX_ALLOWANCE };
+
   it.each([
-    { name: "keeps an available saved token", saved: USDG, unavailable: {}, balances: {}, expected: USDG },
+    { name: "keeps an available saved token", unavailable: {}, balances: {}, allowances: {}, expected: USDG },
     {
-      name: "moves to the first listed token with a balance",
-      saved: USDG,
-      unavailable: { [USDG]: "price" as const },
-      balances: { [USDG]: 10n, [USDT]: 5n },
+      name: "picks the largest balance over leftover dust",
+      unavailable: usdgUnavailable,
+      balances: { [USDG]: usd(10n), [USDC]: 1n, [USDT]: usd(50n) },
+      allowances: allApproved,
       expected: USDT,
+    },
+    {
+      name: "picks an approved token over a larger unapproved one",
+      unavailable: usdgUnavailable,
+      balances: { [USDC]: usd(5n), [USDT]: usd(50n) },
+      allowances: { [USDC]: MAX_ALLOWANCE },
+      expected: USDC,
     },
     {
       name: "skips listed tokens that can't pay either",
-      saved: USDG,
-      unavailable: { [USDG]: "price" as const, [USDC]: "price" as const },
-      balances: { [USDC]: 5n, [USDT]: 5n },
-      expected: USDT,
+      unavailable: { ...usdgUnavailable, [USDT]: "price" as const },
+      balances: { [USDC]: usd(5n), [USDT]: usd(50n) },
+      allowances: allApproved,
+      expected: USDC,
     },
     {
       name: "keeps the saved token when nothing else can pay",
-      saved: USDG,
-      unavailable: { [USDG]: "price" as const },
-      balances: { [USDG]: 10n },
+      unavailable: usdgUnavailable,
+      balances: { [USDG]: usd(10n) },
+      allowances: allApproved,
       expected: USDG,
     },
-  ])("$name", ({ saved, unavailable, balances, expected }) => {
+  ])("$name", ({ unavailable, balances, allowances, expected }) => {
     expect(
       getAvailableGasPaymentTokenAddress({
         chainId: ARBITRUM,
-        savedTokenAddress: saved,
+        savedTokenAddress: USDG,
         unavailableTokens: unavailable,
         tokensData: tokensData(balances),
+        tokensAllowanceData: allowances,
         isGmxAccount: false,
       })
     ).toBe(expected);

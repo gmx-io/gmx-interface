@@ -242,6 +242,8 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
     isGmxAccount: srcChainId !== undefined,
+    // the Claims tab keeps this modal mounted while hidden
+    enabled: isVisible,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: srcChainId !== undefined });

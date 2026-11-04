@@ -158,6 +158,11 @@ export async function estimateWithApprovedGasPaymentToken({
   getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress: string) => GlobalExpressParams | undefined;
   unavailableTokenAddresses: string[];
 }): Promise<ExpressTxnParams | undefined> {
+  // the relay would reject it; without params wallet actions go Classic and GMX Account ones are blocked
+  if (globalExpressParams && unavailableTokenAddresses.includes(globalExpressParams.gasPaymentTokenAddress)) {
+    return undefined;
+  }
+
   const expressParams = await estimate(globalExpressParams);
 
   if (isGmxAccount || !globalExpressParams || !expressParams || getIsValidExpressParams(expressParams)) {

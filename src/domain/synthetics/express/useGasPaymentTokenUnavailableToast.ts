@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
 
 import { selectUnavailableGasPaymentTokens } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -49,8 +48,13 @@ export function useGasPaymentTokenUnavailableToast({
   const tokensData = useSelector(selectTokensData);
   const notifiedKeyRef = useRef<string | undefined>(undefined);
 
+  const savedToken = getByKey(tokensData, savedTokenAddress);
   const isSavedTokenUnavailable = unavailableTokens[savedTokenAddress] !== undefined;
-  const fromSymbol = getByKey(tokensData, savedTokenAddress)?.symbol;
+  // the fallback token is only known once the fee params and balances load
+  const isLoaded =
+    feeTokenAddress !== undefined &&
+    (isGmxAccount ? savedToken?.gmxAccountBalance : savedToken?.walletBalance) !== undefined;
+  const fromSymbol = savedToken?.symbol;
   const isFeeTokenAvailable = feeTokenAddress !== undefined && unavailableTokens[feeTokenAddress] === undefined;
   const toSymbol = isFeeTokenAvailable ? getByKey(tokensData, feeTokenAddress)?.symbol : undefined;
 
@@ -61,9 +65,10 @@ export function useGasPaymentTokenUnavailableToast({
         return;
       }
 
-      const notifiedKey = `${fromSymbol}:${toSymbol}`;
+      const notifiedKey = `${isGmxAccount}:${fromSymbol}:${toSymbol}`;
       if (
         !enabled ||
+        !isLoaded ||
         fromSymbol === undefined ||
         (isFeeTokenAvailable && toSymbol === undefined) ||
         notifiedKeyRef.current === notifiedKey
@@ -74,12 +79,8 @@ export function useGasPaymentTokenUnavailableToast({
       notifiedKeyRef.current = notifiedKey;
       const content = getContent({ fromSymbol, toSymbol, isGmxAccount });
 
-      if (toast.isActive(GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID)) {
-        toast.update(GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID, { render: content });
-      } else {
-        helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID });
-      }
+      helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID);
     },
-    [enabled, fromSymbol, isFeeTokenAvailable, isGmxAccount, isSavedTokenUnavailable, toSymbol]
+    [enabled, fromSymbol, isFeeTokenAvailable, isGmxAccount, isLoaded, isSavedTokenUnavailable, toSymbol]
   );
 }

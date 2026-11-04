@@ -1,8 +1,9 @@
 import { type Address, isAddressEqual } from "viem";
 
 import { getContract } from "config/contracts";
+import type { TokensAllowanceData } from "domain/synthetics/tokens";
 import { getIsSwapPathFillable } from "domain/synthetics/usdgPools/usdcConversion";
-import type { TokensData } from "domain/tokens";
+import { convertToUsd, type TokensData } from "domain/tokens";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -29,6 +30,7 @@ export async function fetchGasPaymentTokensOnchainState(
   const tokenAddresses = getGasPaymentTokens(chainId) as Address[];
   const priceFeedProvider = getContract(chainId, "ChainlinkPriceFeedProvider") as Address;
 
+  // a revert is the answer here, and useMulticall throws on any reverted call
   const results = await getPublicClientWithRpc(chainId).multicall({
     allowFailure: true,
     contracts: tokenAddresses.flatMap((tokenAddress) => [
@@ -60,10 +62,6 @@ export function getGasPaymentTokenUnavailableReason({
   findFeeSwapPath: FindSwapPath;
   onchainState: GasPaymentTokensOnchainState | undefined;
 }): GasPaymentTokenUnavailableReason | undefined {
-  if (onchainState?.pausedTokenAddresses.includes(tokenAddress)) {
-    return "paused";
-  }
-
   const relayerFeeTokenAddress = getRelayerFeeToken(chainId).address;
   let feeSwapPath: string[] = [];
 
@@ -84,44 +82,65 @@ export function getGasPaymentTokenUnavailableReason({
     feeSwapPath,
   });
 
-  const isUnpriced = oracleTokenAddresses.some((oracleTokenAddress) =>
-    onchainState?.unpricedTokenAddresses.some((address) =>
-      isAddressEqual(address as Address, oracleTokenAddress as Address)
-    )
-  );
+  const isOnRoute = (addresses: string[] | undefined) =>
+    oracleTokenAddresses.some((oracleTokenAddress) =>
+      addresses?.some((address) => isAddressEqual(address as Address, oracleTokenAddress as Address))
+    );
 
-  return isUnpriced ? "price" : undefined;
+  if (isOnRoute(onchainState?.pausedTokenAddresses)) {
+    return "paused";
+  }
+
+  return isOnRoute(onchainState?.unpricedTokenAddresses) ? "price" : undefined;
 }
 
 /**
- * The saved token, or when it can't pay right now, the first listed token that can and has a balance.
- * Nothing is saved, so the saved token pays again once it can.
+ * The saved token, or when it can't pay right now, the listed token most likely to cover the fee: an approved one
+ * first, then the largest balance. The saved token isn't changed here, so it pays again once it can.
  */
 export function getAvailableGasPaymentTokenAddress({
   chainId,
   savedTokenAddress,
   unavailableTokens,
   tokensData,
+  tokensAllowanceData,
   isGmxAccount,
 }: {
   chainId: number;
   savedTokenAddress: string;
   unavailableTokens: Record<string, GasPaymentTokenUnavailableReason>;
   tokensData: TokensData | undefined;
+  tokensAllowanceData: TokensAllowanceData | undefined;
   isGmxAccount: boolean;
 }): string {
   if (unavailableTokens[savedTokenAddress] === undefined) {
     return savedTokenAddress;
   }
 
-  return (
-    getGasPaymentTokens(chainId).find((tokenAddress) => {
-      if (unavailableTokens[tokenAddress] !== undefined) return false;
+  const candidates = getGasPaymentTokens(chainId).flatMap((tokenAddress) => {
+    const token = getByKey(tokensData, tokenAddress);
+    const balance = isGmxAccount ? token?.gmxAccountBalance : token?.walletBalance;
 
-      const token = getByKey(tokensData, tokenAddress);
-      const balance = isGmxAccount ? token?.gmxAccountBalance : token?.walletBalance;
+    if (unavailableTokens[tokenAddress] !== undefined || !token || balance === undefined || balance === 0n) {
+      return [];
+    }
 
-      return balance !== undefined && balance > 0n;
-    }) ?? savedTokenAddress
+    // GMX Account fees need no approval
+    const isApproved = isGmxAccount || (tokensAllowanceData?.[tokenAddress] ?? 0n) >= balance;
+    const balanceUsd = convertToUsd(balance, token.decimals, token.prices.minPrice) ?? 0n;
+
+    return [{ tokenAddress, isApproved, balanceUsd }];
+  });
+
+  const best = candidates.reduce<(typeof candidates)[number] | undefined>(
+    (acc, candidate) =>
+      !acc ||
+      (candidate.isApproved && !acc.isApproved) ||
+      (candidate.isApproved === acc.isApproved && candidate.balanceUsd > acc.balanceUsd)
+        ? candidate
+        : acc,
+    undefined
   );
+
+  return best?.tokenAddress ?? savedTokenAddress;
 }

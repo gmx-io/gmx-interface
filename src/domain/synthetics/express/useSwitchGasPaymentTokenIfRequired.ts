@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 
 import { selectUnavailableGasPaymentTokenAddresses } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -39,11 +38,7 @@ const notifyGasPaymentTokenSwitched = ({
     ? t`Not enough ${fromSymbol} in your GMX Account for fees. Gas payment token switched to ${toSymbol}`
     : t`Not enough ${fromSymbol} in your wallet for fees. Gas payment token switched to ${toSymbol}`;
 
-  if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
-    toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });
-  } else {
-    helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID });
-  }
+  helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID);
 };
 
 export function findNextGasPaymentToken({

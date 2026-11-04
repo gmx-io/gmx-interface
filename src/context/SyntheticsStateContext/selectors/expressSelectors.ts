@@ -1,3 +1,5 @@
+import isEqual from "lodash/isEqual";
+
 import { isUiApiSupported } from "config/api";
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -20,6 +22,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPaymentTokenAllowance,
+  selectGasPaymentTokensOnchainState,
   selectGasPrice,
   selectIsExpressAvailableFlag,
   selectIsRelayRouterEnabled,
@@ -51,7 +54,8 @@ const makeSelectExpressFindSwapPathForGasPaymentToken = createSelectorFactory((g
   createSelectExpressFindSwapPath(() => gasPaymentTokenAddress)
 );
 
-export const selectGasPaymentTokensOnchainState = (s: SyntheticsState) => s.gasPaymentTokensOnchainState;
+// prices update every second; returning the previous object while nothing changed keeps dependents from re-running
+let lastUnavailableGasPaymentTokens: Record<string, GasPaymentTokenUnavailableReason> = EMPTY_OBJECT;
 
 export const selectUnavailableGasPaymentTokens = createSelector(function selectUnavailableGasPaymentTokens(q): Record<
   string,
@@ -81,7 +85,11 @@ export const selectUnavailableGasPaymentTokens = createSelector(function selectU
     }
   }
 
-  return Object.keys(unavailableTokens).length > 0 ? unavailableTokens : EMPTY_OBJECT;
+  if (!isEqual(unavailableTokens, lastUnavailableGasPaymentTokens)) {
+    lastUnavailableGasPaymentTokens = Object.keys(unavailableTokens).length > 0 ? unavailableTokens : EMPTY_OBJECT;
+  }
+
+  return lastUnavailableGasPaymentTokens;
 });
 
 export const selectUnavailableGasPaymentTokenAddresses = createSelector((q): string[] => {
@@ -100,6 +108,7 @@ function createSelectExpressFeeTokenAddress(
       savedTokenAddress: q(selectSavedGasPaymentTokenAddressSelector),
       unavailableTokens: q(selectUnavailableGasPaymentTokens),
       tokensData: q(selectTokensData),
+      tokensAllowanceData: isGmxAccount ? undefined : q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
       isGmxAccount,
     })
   );

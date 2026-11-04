@@ -95,7 +95,7 @@ export function useExpressOrdersParams({
   const isExpressWanted = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
   const canNotify = canSwitchGasPaymentToken && Boolean(isExpressWanted) && !getIsEmptyBatch(orderParams);
   const { globalExpressParams, recordExpressParams } = useGasPaymentTokenFallback({
-    savedGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
+    baseGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
     fallback: gasPaymentTokenFallback,
     isGmxAccount,
     payTokenFeeToken,

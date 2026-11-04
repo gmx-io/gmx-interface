@@ -1,6 +1,5 @@
 import { t } from "@lingui/macro";
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
 
 import {
   selectGmxAccountGasPaymentToken,
@@ -39,11 +38,7 @@ const EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID = "external-swap-gas-token-switc
 const notifyExternalSwapGasTokenSwitched = (toSymbol: string) => {
   const content = t`Gas token switched to ${toSymbol} to enable external swap routing`;
 
-  if (toast.isActive(EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID)) {
-    toast.update(EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID, { render: content });
-  } else {
-    helperToast.info(content, { toastId: EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID });
-  }
+  helperToast.infoOrUpdate(content, EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID);
 };
 
 export function getExternalSwapGasTokenToSwitchTo({
