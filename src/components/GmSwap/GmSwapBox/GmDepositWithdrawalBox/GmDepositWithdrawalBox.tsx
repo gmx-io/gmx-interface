@@ -75,6 +75,7 @@ import {
   getGlvOrMarketAddress,
   getGlvOrMarketIconSymbol,
   getMarketIndexName,
+  getTokenPoolType,
 } from "domain/synthetics/markets/utils";
 import { convertToTokenAmount, convertToUsd, getBalanceByBalanceType, getMidPrice } from "domain/synthetics/tokens";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
@@ -115,7 +116,6 @@ import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
 import { SelectedPoolLabel } from "../SelectedPool";
 import { useGmWarningState } from "../useGmWarningState";
 import { ConversionRouteSelector } from "./ConversionRouteSelector";
-import { getFocusedCollateralInput } from "./getFocusedCollateralInput";
 import { InfoRows } from "./InfoRows";
 import { PaxosMintNote } from "./PaxosMintNote";
 import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
@@ -428,10 +428,21 @@ export function GmSwapBoxDepositWithdrawal() {
   const onFocusedCollateralInputChange = useCallback(
     (tokenAddress: string) => {
       // until a GLV picks its pool, its own tokens decide the side, so an amount typed meanwhile is not cleared
-      const focusedInput = getFocusedCollateralInput(marketInfo ?? glvInfo, tokenAddress);
+      const pool = marketInfo ?? glvInfo;
 
-      if (focusedInput) {
-        setFocusedInput(focusedInput);
+      if (!pool) {
+        return;
+      }
+
+      if (pool.isSameCollaterals) {
+        setFocusedInput("first");
+        return;
+      }
+
+      if (getTokenPoolType(pool, tokenAddress) === "long") {
+        setFocusedInput("first");
+      } else {
+        setFocusedInput("second");
       }
     },
     [marketInfo, glvInfo, setFocusedInput]
