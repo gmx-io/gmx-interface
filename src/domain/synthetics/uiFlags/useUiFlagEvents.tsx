@@ -37,8 +37,8 @@ function persistDismissal(eventId: string) {
 
 export function useUiFlagEvents(): ActiveUiFlagEvent[] {
   const { uiFlags: evmUiFlags } = useUiFlagsRequest();
-  const { uiFlags: solanaUiFlags } = useSolanaUiFlagsRequest();
   const { networkId } = useChainId();
+  const { uiFlags: solanaUiFlags } = useSolanaUiFlagsRequest({ enabled: isSolanaNetwork(networkId) });
   const uiFlags = isSolanaNetwork(networkId) ? solanaUiFlags : evmUiFlags;
   const [dismissalVersion, setDismissalVersion] = useState(0);
 

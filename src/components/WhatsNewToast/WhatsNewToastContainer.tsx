@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { isSolanaNetwork } from "config/chains";
 import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
-import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
+import { type ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useChainId } from "lib/chains";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
@@ -44,16 +44,37 @@ const MOTION_EXIT = {
   transition: { duration: 0.2, ease: "easeInOut" },
 } as const;
 
+function renderUiFlagEvents(events: ActiveUiFlagEvent[]) {
+  return events.map((event) => (
+    <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
+      <div className="pb-12">
+        <AnnouncementBanner
+          className="pointer-events-auto"
+          variant={event.data.variant}
+          headerLabel={event.data.title}
+          headerIcon="alert"
+          onClose={event.dismiss}
+        >
+          {event.data.content}
+        </AnnouncementBanner>
+      </div>
+    </motion.div>
+  ));
+}
+
 function EvmAnnouncementToasts({
   isAnnouncementsPage,
+  warningUiFlags,
   appUpdate,
+  genericUiFlags,
   walletExtension,
 }: {
   isAnnouncementsPage: boolean;
+  warningUiFlags: ReactNode;
   appUpdate: ReactNode;
+  genericUiFlags: ReactNode;
   walletExtension: ReactNode;
 }) {
-  const activeUiFlagEvents = useUiFlagEvents();
   const { cards, dismiss } = useWhatsNewAnnouncements();
   const { announcements: delistingAnnouncements, dismiss: dismissDelisting } = useDelistingExitAnnouncements();
   const { notices: closingPoolsNotices, markSeen: markClosingPoolsNoticeSeen } = useClosingPoolsNotices();
@@ -63,13 +84,6 @@ function EvmAnnouncementToasts({
   const { isVisible: isBalancerProgramAnnouncementVisible, dismiss: dismissBalancerProgramAnnouncement } =
     useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
   const { notice: closingPoolsLpNotice, dismiss: dismissClosingPoolsLpNotice } = useClosingPoolsLpNotice();
-
-  const warningUiFlagEvents = activeUiFlagEvents.filter(
-    (event) => event.data.variant === "warning" || event.data.variant === "error"
-  );
-  const genericUiFlagEvents = activeUiFlagEvents.filter(
-    (event) => event.data.variant !== "warning" && event.data.variant !== "error"
-  );
 
   useEffect(() => {
     if (isAnnouncementsPage) dismiss();
@@ -97,21 +111,7 @@ function EvmAnnouncementToasts({
             </div>
           </motion.div>
         ))}
-      {warningUiFlagEvents.map((event) => (
-        <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
-          <div className="pb-12">
-            <AnnouncementBanner
-              className="pointer-events-auto"
-              variant={event.data.variant}
-              headerLabel={event.data.title}
-              headerIcon="alert"
-              onClose={event.dismiss}
-            >
-              {event.data.content}
-            </AnnouncementBanner>
-          </div>
-        </motion.div>
-      ))}
+      {warningUiFlags}
       {closingPoolsLpNotice && (
         <motion.div key="closing-pools-lp" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
           <div className="pb-12">
@@ -134,21 +134,7 @@ function EvmAnnouncementToasts({
           </div>
         </motion.div>
       )}
-      {genericUiFlagEvents.map((event) => (
-        <motion.div key={event.data.id} initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
-          <div className="pb-12">
-            <AnnouncementBanner
-              className="pointer-events-auto"
-              variant={event.data.variant}
-              headerLabel={event.data.title}
-              headerIcon="alert"
-              onClose={event.dismiss}
-            >
-              {event.data.content}
-            </AnnouncementBanner>
-          </div>
-        </motion.div>
-      ))}
+      {genericUiFlags}
       {walletExtension}
       {cards.length > 0 && !isAnnouncementsPage && (
         <motion.div key="whats-new" initial={MOTION_INITIAL} animate={MOTION_ANIMATE} exit={MOTION_EXIT}>
@@ -166,6 +152,13 @@ export function WhatsNewToastContainer() {
   const isAnnouncementsPage = pathname === "/announcements";
   const { isVisible: isWalletExtensionBannerVisible, dismiss: dismissWalletExtensionBanner } =
     useWalletExtensionConnectionBanner(pathname);
+  const activeUiFlagEvents = useUiFlagEvents();
+  const warningUiFlags = renderUiFlagEvents(
+    activeUiFlagEvents.filter((event) => event.data.variant === "warning" || event.data.variant === "error")
+  );
+  const genericUiFlags = renderUiFlagEvents(
+    activeUiFlagEvents.filter((event) => event.data.variant !== "warning" && event.data.variant !== "error")
+  );
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate } = useAppUpdateBanner();
   const appUpdateFooterLink = useMemo(() => ({ text: APP_UPDATE_RELOAD_LABEL, onClick: applyUpdate }), [applyUpdate]);
   const appUpdate = isAppUpdateVisible ? (
@@ -231,13 +224,17 @@ export function WhatsNewToastContainer() {
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
         {isSolanaNetwork(networkId) ? (
           <AnimatePresence initial={false}>
+            {warningUiFlags}
             {appUpdate}
+            {genericUiFlags}
             {walletExtension}
           </AnimatePresence>
         ) : (
           <EvmAnnouncementToasts
             isAnnouncementsPage={isAnnouncementsPage}
+            warningUiFlags={warningUiFlags}
             appUpdate={appUpdate}
+            genericUiFlags={genericUiFlags}
             walletExtension={walletExtension}
           />
         )}
