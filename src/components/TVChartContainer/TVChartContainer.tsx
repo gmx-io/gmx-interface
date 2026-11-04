@@ -25,6 +25,7 @@ import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTr
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
+import { useChartCandlesFetcher } from "domain/tradingview/useChartCandlesFetcher";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
@@ -143,6 +144,7 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
+  const candlesFetcher = useChartCandlesFetcher(oracleKeeperFetcher);
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -264,7 +266,11 @@ export default function TVChartContainer({
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
-    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    if (!candlesFetcher) {
+      return;
+    }
+
+    const newDatafeed = new DataFeed(chainId, candlesFetcher);
     newDatafeed.setTokenPriceGetter((symbol) => {
       const data = marksStateRef.current.tokensData;
       if (!data) return undefined;
@@ -570,7 +576,7 @@ export default function TVChartContainer({
     return () => {
       newDatafeed.destroy();
     };
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
+  }, [chainId, candlesFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
