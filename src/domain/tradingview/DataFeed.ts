@@ -42,6 +42,9 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
+// The chart only reads candles; on Solana an adapter maps the chart symbol to its Arbitrum token.
+export type CandlesFetcher = Pick<OracleFetcher, "fetchOracleCandles">;
+
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 let metricsIsFirstDrawTime = true;
@@ -74,7 +77,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   constructor(
     private chainId: number,
-    private oracleFetcher: OracleFetcher
+    private oracleFetcher: CandlesFetcher
   ) {
     super();
 

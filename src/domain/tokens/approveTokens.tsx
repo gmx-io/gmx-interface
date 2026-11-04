@@ -194,6 +194,7 @@ export async function approveTokens({
       const token = getTokenInfo(infoTokens, tokenAddress);
       const pendingTxn = {
         hash: res.hash,
+        chainId,
         message: includeMessage ? t`${token.symbol} approved` : false,
       };
       setPendingTxns([...pendingTxns, pendingTxn]);
