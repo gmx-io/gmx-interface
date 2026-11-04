@@ -1166,6 +1166,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       return () => {
         if (dismissTimerId.current) {
           clearTimeout(dismissTimerId.current);
+          dismissTimerId.current = undefined;
         }
       };
     },
@@ -1284,6 +1285,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
       return () => {
         if (dismissTimerId.current) {
           clearTimeout(dismissTimerId.current);
+          dismissTimerId.current = undefined;
         }
       };
     },

@@ -9136,6 +9136,10 @@ msgstr "포인트는 에폭 동안 GLV [USDM-USDM] 볼트에서 귀하가 보유
 msgid "Telegram group"
 msgstr "Telegram 그룹"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}, 다음 거래 대기 중"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"

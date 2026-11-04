@@ -9136,6 +9136,10 @@ msgstr "積分取決於您在本週期內所持 GLV [USDM-USDM] 金庫份額價�
 msgid "Telegram group"
 msgstr "Telegram 群組"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}，等待下一筆交易"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"

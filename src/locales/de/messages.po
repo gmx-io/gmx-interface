@@ -9136,6 +9136,10 @@ msgstr "Die Punkte basieren auf dem zeitgewichteten Durchschnittswert Ihres Ante
 msgid "Telegram group"
 msgstr "Telegram-Gruppe"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}, wartet auf den nächsten Trade"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"

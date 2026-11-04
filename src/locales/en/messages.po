@@ -9136,6 +9136,10 @@ msgstr "Points are based on the time-weighted average value of your share of the
 msgid "Telegram group"
 msgstr "Telegram group"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}, pending next trade"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"

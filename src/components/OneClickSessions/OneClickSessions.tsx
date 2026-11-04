@@ -39,13 +39,15 @@ function getSessionStatusText(session: SubaccountSession): string {
       return t`Pending first trade, ${actionsText}`;
     }
 
-    if (session.expiresAt >= NO_EXPIRY_TIMESTAMP) {
-      return t`Active, no expiry, ${actionsText}`;
+    let activeText = t`Active, no expiry, ${actionsText}`;
+
+    if (session.expiresAt < NO_EXPIRY_TIMESTAMP) {
+      const expiryDate = formatDate(Number(session.expiresAt));
+
+      activeText = t`Active until ${expiryDate}, ${actionsText}`;
     }
 
-    const expiryDate = formatDate(Number(session.expiresAt));
-
-    return t`Active until ${expiryDate}, ${actionsText}`;
+    return session.hasPendingChanges ? t`${activeText}, pending next trade` : activeText;
   }
 
   if (session.expiresAt === 0n) {

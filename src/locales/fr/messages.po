@@ -9136,6 +9136,10 @@ msgstr "Les points reposent sur la valeur moyenne pondérée dans le temps de vo
 msgid "Telegram group"
 msgstr "Groupe Telegram"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}, en attente du prochain trade"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"

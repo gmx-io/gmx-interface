@@ -9136,6 +9136,10 @@ msgstr ""
 msgid "Telegram group"
 msgstr ""
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr ""

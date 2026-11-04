@@ -29,6 +29,7 @@ export type SubaccountSession = {
   actionsCount: bigint;
   isPending?: boolean;
   isResignNeeded?: boolean;
+  hasPendingChanges?: boolean;
 };
 
 export async function fetchSubaccountSessions(
@@ -102,13 +103,18 @@ export function getCurrentSubaccountSession(subaccount: Subaccount | undefined):
     return undefined;
   }
 
+  const expiresAt = getSubaccountExpiresAt(subaccount);
+  const maxAllowedCount = getMaxSubaccountActions(subaccount);
+
   return {
     address,
-    expiresAt: isPending ? getSubaccountExpiresAt(subaccount) : onchainData.expiresAt,
-    maxAllowedCount: isPending ? getMaxSubaccountActions(subaccount) : onchainData.maxAllowedCount,
+    expiresAt,
+    maxAllowedCount,
     actionsCount: onchainData.currentActionsCount,
     isPending,
     isResignNeeded: isPending && getIsSubaccountNonceExpired(subaccount),
+    hasPendingChanges:
+      !isPending && (expiresAt !== onchainData.expiresAt || maxAllowedCount !== onchainData.maxAllowedCount),
   };
 }
 
