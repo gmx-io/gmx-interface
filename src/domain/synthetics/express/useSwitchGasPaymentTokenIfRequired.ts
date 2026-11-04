@@ -8,6 +8,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -174,6 +175,7 @@ function useSwitchGasPaymentTokenIfRequired({
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
   const savedGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const savedGmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokensAllowanceData = gasPaymentTokenAllowance?.tokensAllowanceData;
   const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
@@ -184,7 +186,11 @@ function useSwitchGasPaymentTokenIfRequired({
         !canSwitchGasPaymentToken ||
         !getIsConfirmedOutOfGasPaymentTokenBalance(gasPaymentValidations) ||
         !gasPaymentToken ||
-        gasPaymentTokenAmount === undefined
+        gasPaymentTokenAmount === undefined ||
+        // another token pays only until the saved one can again; switching would replace the saved token for good
+        unavailableTokenAddresses.includes(
+          isGmxAccount ? savedGmxAccountGasPaymentTokenAddress : savedGasPaymentTokenAddress
+        )
       )
         return;
 
@@ -228,6 +234,7 @@ function useSwitchGasPaymentTokenIfRequired({
       setGasPaymentTokenAddress,
       tokensData,
       savedGasPaymentTokenAddress,
+      savedGmxAccountGasPaymentTokenAddress,
       tokensAllowanceData,
       unavailableTokenAddresses,
     ]

@@ -8,6 +8,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -157,6 +159,9 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
+  const savedGasTokenAddress = useSelector(
+    isFromTokenGmxAccount ? selectGmxAccountGasPaymentTokenAddress : selectGasPaymentTokenAddress
+  );
 
   const attemptedKeysRef = useRef(new Set<string>());
 
@@ -181,7 +186,8 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
         unavailableTokenAddresses,
       });
 
-      if (!targetAddress) return;
+      // like useSwitchGasPaymentTokenIfRequired, never saves over a gas token that can't pay right now
+      if (!targetAddress || unavailableTokenAddresses.includes(savedGasTokenAddress)) return;
 
       const attemptKey = `${chainId}:${fromTokenAddress}:${conflictTokenAddress}`;
       if (attemptedKeysRef.current.has(attemptKey)) return;
@@ -212,6 +218,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
       setGasPaymentTokenAddress,
       setGmxAccountGasPaymentTokenAddress,
       unavailableTokenAddresses,
+      savedGasTokenAddress,
     ]
   );
 }

@@ -1,9 +1,10 @@
 import { type Address, isAddressEqual } from "viem";
 
 import { getContract } from "config/contracts";
-import type { TokensAllowanceData } from "domain/synthetics/tokens";
+import { getNeedTokenApprove, type TokensAllowanceData } from "domain/synthetics/tokens";
 import { getIsSwapPathFillable } from "domain/synthetics/usdgPools/usdcConversion";
-import { convertToUsd, type TokensData } from "domain/tokens";
+import { convertToUsd, type SignedTokenPermit, type TokenData, type TokensData } from "domain/tokens";
+import { isContractRevert } from "lib/multicall/utils";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -44,8 +45,16 @@ export async function fetchGasPaymentTokensOnchainState(
     ]),
   });
 
+  const priceResults = tokenAddresses.map((_, index) => results[index * 2]);
+
+  // viem fails every call of a request the RPC didn't answer; throwing keeps the last known state for SWR
+  // instead of marking every token unpriced
+  if (priceResults.some((result) => result.status === "failure" && !isContractRevert(result.error))) {
+    throw new Error("Gas payment token prices request failed");
+  }
+
   return {
-    unpricedTokenAddresses: tokenAddresses.filter((_, index) => results[index * 2].status === "failure"),
+    unpricedTokenAddresses: tokenAddresses.filter((_, index) => priceResults[index].status === "failure"),
     // tokens without paused() can't be paused
     pausedTokenAddresses: tokenAddresses.filter((_, index) => results[index * 2 + 1].result === true),
   };
@@ -94,9 +103,23 @@ export function getGasPaymentTokenUnavailableReason({
   return isOnRoute(onchainState?.unpricedTokenAddresses) ? "price" : undefined;
 }
 
+type FallbackCandidate = {
+  tokenAddress: string;
+  canPayFee: boolean;
+  isApproved: boolean;
+  balanceUsd: bigint;
+};
+
+function isBetterFallbackCandidate(candidate: FallbackCandidate, best: FallbackCandidate) {
+  if (candidate.canPayFee !== best.canPayFee) return candidate.canPayFee;
+  if (candidate.isApproved !== best.isApproved) return candidate.isApproved;
+  return candidate.balanceUsd > best.balanceUsd;
+}
+
 /**
- * The saved token, or when it can't pay right now, the listed token most likely to cover the fee: an approved one
- * first, then the largest balance. The saved token isn't changed here, so it pays again once it can.
+ * The saved token, or when it can't pay right now, the listed token most likely to cover the fee: one whose balance
+ * covers a minimal fee first, then an approved one, then the largest balance. The saved token isn't changed here,
+ * so it pays again once it can.
  */
 export function getAvailableGasPaymentTokenAddress({
   chainId,
@@ -104,43 +127,48 @@ export function getAvailableGasPaymentTokenAddress({
   unavailableTokens,
   tokensData,
   tokensAllowanceData,
+  tokenPermits,
   isGmxAccount,
+  getMinFeeAmount,
 }: {
   chainId: number;
   savedTokenAddress: string;
   unavailableTokens: Record<string, GasPaymentTokenUnavailableReason>;
   tokensData: TokensData | undefined;
   tokensAllowanceData: TokensAllowanceData | undefined;
+  tokenPermits: SignedTokenPermit[];
   isGmxAccount: boolean;
+  // undefined until gas data loads
+  getMinFeeAmount: (token: TokenData) => bigint | undefined;
 }): string {
   if (unavailableTokens[savedTokenAddress] === undefined) {
     return savedTokenAddress;
   }
 
-  const candidates = getGasPaymentTokens(chainId).flatMap((tokenAddress) => {
+  let best: FallbackCandidate | undefined;
+
+  for (const tokenAddress of getGasPaymentTokens(chainId)) {
     const token = getByKey(tokensData, tokenAddress);
     const balance = isGmxAccount ? token?.gmxAccountBalance : token?.walletBalance;
 
     if (unavailableTokens[tokenAddress] !== undefined || !token || balance === undefined || balance === 0n) {
-      return [];
+      continue;
     }
 
-    // GMX Account fees need no approval
-    const isApproved = isGmxAccount || (tokensAllowanceData?.[tokenAddress] ?? 0n) >= balance;
-    const balanceUsd = convertToUsd(balance, token.decimals, token.prices.minPrice) ?? 0n;
+    const minFeeAmount = getMinFeeAmount(token);
+    const candidate: FallbackCandidate = {
+      tokenAddress,
+      canPayFee: minFeeAmount === undefined || balance >= minFeeAmount,
+      // GMX Account fees need no approval
+      isApproved:
+        isGmxAccount || !getNeedTokenApprove(tokensAllowanceData, tokenAddress, minFeeAmount ?? balance, tokenPermits),
+      balanceUsd: convertToUsd(balance, token.decimals, token.prices.minPrice) ?? 0n,
+    };
 
-    return [{ tokenAddress, isApproved, balanceUsd }];
-  });
-
-  const best = candidates.reduce<(typeof candidates)[number] | undefined>(
-    (acc, candidate) =>
-      !acc ||
-      (candidate.isApproved && !acc.isApproved) ||
-      (candidate.isApproved === acc.isApproved && candidate.balanceUsd > acc.balanceUsd)
-        ? candidate
-        : acc,
-    undefined
-  );
+    if (!best || isBetterFallbackCandidate(candidate, best)) {
+      best = candidate;
+    }
+  }
 
   return best?.tokenAddress ?? savedTokenAddress;
 }
