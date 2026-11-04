@@ -133,6 +133,8 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
   return { to: router, data, value: 0n };
 }
 
+export const DEFAULT_CROSS_CHAIN_WITHDRAW_SLIPPAGE_BPS = 50;
+
 /**
  * `BridgeOutParams.data` for cross-chain delivery is a single `uint32 dstEid`
  * pointing at the destination LayerZero endpoint; the on-chain provider takes
@@ -148,10 +150,16 @@ export function buildCrossChainWithdrawBridgeOutParams(params: {
   dstChainId: AnyChainId;
   /** Settlement-chain Stargate pool address handling this token. */
   stargateAddress: string;
-  /** Slippage tolerance in basis points for `minAmountOut`. Default 0 = no slippage allowed. */
+  /** Slippage tolerance in basis points for `minAmountOut`. Default 50; 0 = no slippage allowed. */
   slippageBps?: number;
 }): BridgeOutParams {
-  const { tokenAddress, amount, dstChainId, stargateAddress, slippageBps = 0 } = params;
+  const {
+    tokenAddress,
+    amount,
+    dstChainId,
+    stargateAddress,
+    slippageBps = DEFAULT_CROSS_CHAIN_WITHDRAW_SLIPPAGE_BPS,
+  } = params;
 
   if (!Number.isInteger(slippageBps) || slippageBps < 0 || slippageBps >= 10_000) {
     throw new Error(`slippageBps must be an integer in range [0, 10000), got ${slippageBps}`);
