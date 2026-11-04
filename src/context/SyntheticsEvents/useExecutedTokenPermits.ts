@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { StatusCode } from "sdk/utils/express";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
@@ -63,6 +63,7 @@ export function useExecutedTokenPermits({
             chainId: taskContext.chainId,
             tokenAddress: permit.token,
             accountType: taskContext.accountType,
+            permitId: getTokenPermitId(permit),
           });
         });
       });

@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import type { AffiliateCodesState } from "domain/referrals";
+import { getReferralCodeLinkParam } from "domain/referrals/utils/referralCode";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getTwitterIntentURL } from "lib/legacy";
@@ -60,7 +61,10 @@ export function useShareCardActions({
     element.classList.add("image-capture-in-progress");
     try {
       const imageInfo = await uploadElementAsShareImage(element);
-      const ref = shareAffiliateCode.success && shareAffiliateCode.code ? shareAffiliateCode.code : undefined;
+      const ref =
+        shareAffiliateCode.success && shareAffiliateCode.code
+          ? getReferralCodeLinkParam(shareAffiliateCode.code)
+          : undefined;
       return getShareURL(imageInfo.id, ref);
     } catch {
       setUploadError(t`Image generation failed. Refresh and try again.`);

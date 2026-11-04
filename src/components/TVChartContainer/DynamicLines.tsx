@@ -20,7 +20,7 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -66,6 +66,7 @@ export function DynamicLines({
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -92,7 +93,7 @@ export function DynamicLines({
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -135,6 +136,7 @@ export function DynamicLines({
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
       hasOutdatedUi,
       makeOrderTxnCallback,

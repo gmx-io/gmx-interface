@@ -1,4 +1,4 @@
-import { Address, getAddress, isAddressEqual, withRetry } from "viem";
+import { withRetry } from "viem";
 
 import { getExplorerUrl, getChainSlug } from "config/chains";
 import { MarketsInfoData, getMarketIndexName } from "domain/synthetics/markets";
@@ -23,6 +23,7 @@ import { CsvRow, serializeCsv } from "lib/csv";
 import { getByKey } from "lib/objects";
 import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { isSameAddress, normalizeAddress } from "sdk/utils/address";
 import { applyFactor } from "sdk/utils/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -88,15 +89,7 @@ function getMetadata<T>(data: Record<string, T> | undefined, address: string | n
 }
 
 function areAddressesEqual(left: string | null | undefined, right: string | null | undefined): boolean {
-  if (!left || !right) {
-    return false;
-  }
-
-  try {
-    return isAddressEqual(left as Address, right as Address);
-  } catch {
-    return left === right;
-  }
+  return isSameAddress(left ?? undefined, right ?? undefined);
 }
 
 function getOrderTypeName(orderType: number): string {
@@ -104,11 +97,7 @@ function getOrderTypeName(orderType: number): string {
 }
 
 function normalizeLookupAddress(address: string): string {
-  try {
-    return getAddress(address);
-  } catch {
-    return address;
-  }
+  return normalizeAddress(address);
 }
 
 function getTradeStatus(eventName: string): string {

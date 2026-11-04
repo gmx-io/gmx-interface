@@ -6,7 +6,7 @@ import { getTokenPermitsAllowlist } from "domain/tokens/tokenPermitsEligibility"
 import { type ErrorLike, parseError } from "lib/errors";
 import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { abis } from "sdk/abis";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
@@ -98,8 +98,10 @@ export async function signActivationTokenPermits({
     const metricParams = { chainId, tokenAddress, accountType, flow: "oneClickActivation" as const };
 
     try {
-      await addTokenPermit(tokenAddress, spender, maxUint256, { deadline: NON_EXPIRING_PERMIT_DEADLINE });
-      sendTokenPermitMetric({ ...metricParams, outcome: "signed" });
+      const permit = await addTokenPermit(tokenAddress, spender, maxUint256, {
+        deadline: NON_EXPIRING_PERMIT_DEADLINE,
+      });
+      sendTokenPermitMetric({ ...metricParams, outcome: "signed", permitId: getTokenPermitId(permit) });
     } catch (error) {
       // the wallet moved on: stop asking, the tokens already found invalid are still saved for this account below
       if (error?.message === PERMIT_WALLET_CHANGED_ERROR) {

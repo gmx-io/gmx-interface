@@ -13,6 +13,7 @@ const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS, WE
     getInitialSubaccountApproval: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
+    pushEvent: vi.fn(),
     getActivationPermitTokenAddresses: vi.fn(),
     signActivationTokenPermits: vi.fn(),
     srcChainId: undefined as number | undefined,
@@ -92,6 +93,7 @@ vi.mock("lib/helperToast", () => ({
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: mocks.pushError,
+    pushEvent: mocks.pushEvent,
   },
 }));
 
@@ -172,6 +174,13 @@ function setup() {
   return captured;
 }
 
+function getActivationEvents() {
+  return mocks.pushEvent.mock.calls
+    .map(([event]) => event)
+    .filter(({ event }) => event === "subaccount.activation")
+    .map(({ data }) => data);
+}
+
 describe("SubaccountContextProvider.tryEnableSubaccount", () => {
   beforeEach(() => {
     mocks.generateSubaccount.mockResolvedValue(generatedConfig);
@@ -199,6 +208,9 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(context.current.subaccountConfig).toBeUndefined();
     expect(context.current.subaccount).toBeUndefined();
     expect(localStorage.getItem(configKey) ?? "").not.toContain(SUBACCOUNT_ADDRESS);
+    expect(getActivationEvents()).toEqual([
+      { outcome: "rejected", failedStep: "approval", isNewKey: true, isGmxAccount: false, chainId: CHAIN_ID },
+    ]);
   });
 
   it("keeps a pre-existing stored config when the approval signature is rejected", async () => {
@@ -235,6 +247,9 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(mocks.getInitialSubaccountApproval).not.toHaveBeenCalled();
     expect(localStorage.getItem(configKey)).toBeNull();
     expect(context.current.subaccountConfig).toBeUndefined();
+    expect(getActivationEvents()).toEqual([
+      { outcome: "rejected", failedStep: "keyGeneration", isNewKey: true, isGmxAccount: false, chainId: CHAIN_ID },
+    ]);
   });
 
   it("enables successfully on retry from a clean state after a rejected approval signature", async () => {
@@ -262,6 +277,7 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(context.current.subaccountConfig?.address).toBe(SUBACCOUNT_ADDRESS);
     expect(localStorage.getItem(configKey)).toContain(SUBACCOUNT_ADDRESS);
     expect(getStoredValues().some((value) => value.includes("0xsignature"))).toBe(true);
+    expect(getActivationEvents().map(({ outcome }) => outcome)).toEqual(["rejected", "activated"]);
   });
 });
 
