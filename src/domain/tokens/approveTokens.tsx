@@ -11,7 +11,7 @@ import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
 import { metrics, type TokenApprovalEvent, type TokenApprovalMetricParams } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getTxnErrorOutcome } from "lib/metrics/txnErrorOutcome";
 import { getProvider } from "lib/rpc";
 import TokenAbi from "sdk/abis/Token";
@@ -116,8 +116,8 @@ export async function approveTokens({
     const permitMetricParams = { chainId, tokenAddress, accountType: permitParams.accountType };
 
     try {
-      await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
-      sendTokenPermitMetric({ ...permitMetricParams, outcome: "signed" });
+      const permit = await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
+      sendTokenPermitMetric({ ...permitMetricParams, outcome: "signed", permitId: getTokenPermitId(permit) });
       sendMetric("permit", "accepted");
       onApproveSubmitted?.({ isPermit: true });
       helperToast.success(
