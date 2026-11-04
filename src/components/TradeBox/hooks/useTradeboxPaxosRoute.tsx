@@ -295,9 +295,9 @@ export function useTradeboxPaxosRoute({
     return { tokenAddress: wantTokenAddress, amount: paxosTransitOrder.remainingAmountDue };
   }, [isConversionInProgress, paxosTransitConfig, paxosTransitOrder, progressForAccount]);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(async (): Promise<boolean> => {
     if (!activePaxosRoute || !activePaxosQuote || !api || !signer || !account || !direction || !fromToken || !toToken) {
-      return;
+      return false;
     }
 
     const shownQuote = activePaxosQuote;
@@ -328,6 +328,8 @@ export function useTradeboxPaxosRoute({
         addMarginPositionKey: direction === "usdcToUsdg" ? addMarginReturnPositionKey : undefined,
       });
       setFromTokenInputValue("", true);
+
+      return true;
     } catch (error) {
       if (error instanceof PaxosQuoteChangedError) {
         helperToast.error(t`The Paxos quote changed. Review the new amount and fee, then confirm again.`);
@@ -335,7 +337,7 @@ export function useTradeboxPaxosRoute({
         refreshFeeTier();
         helperToast.error(t`Paxos zero-fee is no longer available. Review the route options and confirm again.`);
       } else if (error instanceof TransitApprovalClaimedError) {
-        return;
+        return false;
       } else if (error instanceof TransitConversionPendingError) {
         helperToast.error(t`A conversion is already waiting in your wallet. Try again after it executes.`);
       } else if (error instanceof TransitApprovalPendingError) {
@@ -345,6 +347,8 @@ export function useTradeboxPaxosRoute({
       } else {
         helperToast.error(t`Conversion failed: ${(error as Error).message}`);
       }
+
+      return false;
     } finally {
       setStep("idle");
     }

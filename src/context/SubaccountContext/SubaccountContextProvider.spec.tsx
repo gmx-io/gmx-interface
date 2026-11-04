@@ -13,6 +13,7 @@ const { mocks, onchainState, ACCOUNT, CHAIN_ID, LEGACY_SUBACCOUNT_ADDRESS, WETH 
     signUpdatedSubaccountSettings: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
+    pushEvent: vi.fn(),
     getActivationPermitTokenAddresses: vi.fn(),
     signActivationTokenPermits: vi.fn(),
     srcChainId: undefined as number | undefined,
@@ -105,6 +106,7 @@ vi.mock("lib/helperToast", () => ({
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: mocks.pushError,
+    pushEvent: mocks.pushEvent,
   },
 }));
 
@@ -193,6 +195,13 @@ function setup() {
   return captured;
 }
 
+function getActivationEvents() {
+  return mocks.pushEvent.mock.calls
+    .map(([event]) => event)
+    .filter(({ event }) => event === "subaccount.activation")
+    .map(({ data }) => data);
+}
+
 describe("SubaccountContextProvider.tryEnableSubaccount", () => {
   beforeEach(() => {
     onchainState.current = undefined;
@@ -221,6 +230,9 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(localStorage.getItem(configKey)).toBeNull();
     expect(localStorage.getItem(approvalKey)).toBeNull();
     expect(context.current.subaccountConfig).toBeUndefined();
+    expect(getActivationEvents()).toEqual([
+      { outcome: "rejected", failedStep: "approval", isNewKey: true, isGmxAccount: false, chainId: CHAIN_ID },
+    ]);
   });
 
   it("enables on retry after a rejected approval signature", async () => {
@@ -241,6 +253,7 @@ describe("SubaccountContextProvider.tryEnableSubaccount", () => {
     expect(readStoredConfig()?.version).toBe(2);
     expect(readStoredApprovalSubaccount()).toBe(readStoredConfig()?.address);
     expect(context.current.subaccountConfig?.address).toBe(readStoredConfig()?.address);
+    expect(getActivationEvents().map(({ outcome }) => outcome)).toEqual(["rejected", "activated"]);
   });
 
   it("approves a new address every time One-Click is turned on after being turned off PRO-4458", async () => {

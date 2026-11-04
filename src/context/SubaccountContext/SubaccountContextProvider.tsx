@@ -61,6 +61,11 @@ import {
   writeStoredSubaccountConfig,
 } from "domain/synthetics/subaccount/subaccountConfigStorage";
 import {
+  sendSubaccountActivationMetric,
+  sendSubaccountRemovalMetric,
+  sendSubaccountSettingsUpdateMetric,
+} from "domain/synthetics/subaccount/subaccountMetrics";
+import {
   notifySubaccountStorageChanged,
   subscribeSubaccountStorageChanges,
   withSubaccountTabLock,
@@ -82,7 +87,7 @@ import { useChainId } from "lib/chains";
 import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
 import { getInsufficientFeeError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
-import { metrics } from "lib/metrics";
+import { metrics, type SubaccountRemovalEvent } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import type { WalletSigner } from "lib/wallets";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -625,6 +630,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         // eslint-disable-next-line no-console
         console.error(error);
         metrics.pushError(error, "subaccount.signDefaultApproval");
+        sendSubaccountActivationMetric({ failedStep: "approval", isNewKey: true, isGmxAccount, chainId, error });
         return false;
       } finally {
         commitStorageChange();
@@ -635,6 +641,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       unknownResultRemovalKeyRef.current = undefined;
 
       setSubaccountActivationState(SubaccountActivationState.Success);
+      sendSubaccountActivationMetric({ isNewKey: isCreatedInThisTab, isGmxAccount, chainId });
       refreshSubaccountData();
 
       if (isCreatedInThisTab) {
@@ -726,6 +733,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       );
 
       const isGmxAccount = nextIsGmxAccount ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
+      const settingsUpdateMetricParams = {
+        wasExpired: getIsSubaccountExpired(subaccount),
+        wasActionsExceeded: getIsSubaccountActionsExceeded(subaccount, 1),
+        isGmxAccount,
+        chainId,
+      };
 
       try {
         const isUpdated = await withSubaccountTabLock(chainId, account, async () => {
@@ -748,6 +761,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         });
 
         if (isUpdated) {
+          sendSubaccountSettingsUpdateMetric(settingsUpdateMetricParams);
           helperToast.success(
             <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT settings`}>
               <TransactionStatus status="success" text={t`Settings updated`} />
@@ -759,6 +773,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         // eslint-disable-next-line no-console
         console.error(error);
         metrics.pushError(error, "subaccount.updateSubaccountSettings");
+        sendSubaccountSettingsUpdateMetric({ ...settingsUpdateMetricParams, error });
       }
 
       toast.dismiss();
@@ -814,6 +829,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const removalKey = `${chainId}:${subaccount.address}`;
     let settlementChainExpressParams: ExpressTxnParams | undefined;
+    let removalMethod: SubaccountRemovalEvent["data"]["method"];
 
     const finishDeactivation = async () => {
       setSubaccountDeactivationState(SubaccountDeactivationState.Success);
@@ -845,6 +861,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       const isAfterUnknownResult = unknownResultRemovalKeyRef.current === removalKey;
 
       if (!(await getIsSubaccountRemovalRequired({ chainId, subaccount, account, isAfterUnknownResult }))) {
+        sendSubaccountRemovalMetric({ method: "none", chainId });
         await finishDeactivation();
         return true;
       }
@@ -853,15 +870,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         const globalExpressParams = calcSelector(selectExpressGlobalParams);
 
         if (!globalExpressParams) {
-          metrics.pushError(
-            new Error("Missing globalExpressParams for subaccount deactivation"),
-            "subaccount.tryDisableSubaccount"
-          );
+          const error = new Error("Missing globalExpressParams for subaccount deactivation");
+          metrics.pushError(error, "subaccount.tryDisableSubaccount");
+          sendSubaccountRemovalMetric({ method: undefined, chainId, error });
           setSubaccountDeactivationFailureReason(SubaccountDeactivationFailureReason.ExpressParamsNotReady);
           setSubaccountDeactivationState(SubaccountDeactivationState.Error);
           return false;
         }
 
+        removalMethod = "signature";
         await removeSubaccountExpressTxn({
           chainId,
           account,
@@ -882,6 +899,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         }
 
         if (settlementChainExpressParams) {
+          removalMethod = "signature";
           await removeSubaccountSettlementChainExpressTxn({
             chainId,
             signer,
@@ -889,16 +907,19 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             expressParams: settlementChainExpressParams,
           });
         } else {
+          removalMethod = "walletTxn";
           await removeSubaccountWalletTxn(chainId, signer, subaccount.address);
         }
       }
 
+      sendSubaccountRemovalMetric({ method: removalMethod, chainId });
       await finishDeactivation();
       return true;
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
       metrics.pushError(error, "subaccount.tryDisableSubaccount");
+      sendSubaccountRemovalMetric({ method: removalMethod, chainId, error });
 
       const isGmxAccount = srcChainId !== undefined;
       const shouldRetryWithWalletTxn =
