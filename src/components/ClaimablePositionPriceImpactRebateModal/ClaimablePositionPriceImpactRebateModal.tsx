@@ -10,8 +10,10 @@ import {
   selectClaimsGroupedPositionPriceImpactClaimableFees,
   selectClaimsPriceImpactClaimableTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGmxAccountExpressFeeTokenAddress,
+  selectGmxAccountGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ArbitraryExpressError,
@@ -244,7 +246,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: srcChainId !== undefined });
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
 
   const networkFee = useMemo((): ClaimNetworkFee => {
     const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;

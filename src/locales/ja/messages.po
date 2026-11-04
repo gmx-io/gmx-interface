@@ -4532,6 +4532,10 @@ msgstr "ウォレットのみ"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxosの見積もりが変わりました。新しい金額と手数料を確認し、もう一度承認してください。"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができないため、支払えるようになるまでトランザクションはExpressなしで送信されます。"
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "上場"
@@ -7451,6 +7455,10 @@ msgstr "お客様の資金は送信先チェーンのGMXコントラクトに安
 msgid "Perpetuals"
 msgstr "パーペチュアル"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができません。代わりに{toSymbol}で支払われます。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "インパクト指数（マイナス）"
@@ -8373,6 +8381,10 @@ msgstr "このトリガー価格では残りのポジションが最大レバレ
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}が更新されました"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができないため、支払えるようになるまでGMX Accountの操作は送信できません。"
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts

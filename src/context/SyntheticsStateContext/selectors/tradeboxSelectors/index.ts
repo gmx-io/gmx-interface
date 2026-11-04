@@ -82,6 +82,7 @@ import {
   selectGmxAccountGasPaymentToken,
   selectIsExpressTransactionAvailable,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "../expressSelectors";
 import {
   selectAccount,
@@ -313,6 +314,7 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
     tokensData: q(selectTokensData),
     tokensAllowanceData: q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
     tokenPermits: q(selectTokenPermits),
+    unavailableTokenAddresses: q(selectUnavailableGasPaymentTokenAddresses),
   });
 });
 

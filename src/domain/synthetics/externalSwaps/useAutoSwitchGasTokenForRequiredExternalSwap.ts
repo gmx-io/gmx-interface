@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -54,6 +55,7 @@ export function getExternalSwapGasTokenToSwitchTo({
   conflictTokenAddress,
   currentGasTokenAddress,
   isGmxAccount,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -63,6 +65,7 @@ export function getExternalSwapGasTokenToSwitchTo({
   conflictTokenAddress: string | undefined;
   currentGasTokenAddress: string | undefined;
   isGmxAccount: boolean;
+  unavailableTokenAddresses: string[];
 }): string | undefined {
   if (desirability !== "required" || isOneClickActiveByUser || !isBlockedByGasConflict) return undefined;
   if (!conflictTokenAddress) return undefined;
@@ -72,8 +75,8 @@ export function getExternalSwapGasTokenToSwitchTo({
     tokensData,
     isGmxAccount,
     excludeTokenAddresses: currentGasTokenAddress
-      ? [conflictTokenAddress, currentGasTokenAddress]
-      : [conflictTokenAddress],
+      ? [...unavailableTokenAddresses, conflictTokenAddress, currentGasTokenAddress]
+      : [...unavailableTokenAddresses, conflictTokenAddress],
   });
 }
 
@@ -87,6 +90,7 @@ export function getExternalSwapGasTokenCandidate({
   gasPaymentParams,
   payAmounts,
   isGmxAccount,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -97,9 +101,11 @@ export function getExternalSwapGasTokenCandidate({
   gasPaymentParams: Pick<GasPaymentParams, "gasPaymentToken" | "gasPaymentTokenAmount"> | undefined;
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
+  unavailableTokenAddresses: string[];
 }): string | undefined {
   const wrappedTokenAddress = getWrappedToken(chainId).address;
   const excludeTokenAddresses = [
+    ...unavailableTokenAddresses,
     conflictTokenAddress,
     savedGasTokenAddress,
     gasPaymentParams?.gasPaymentToken.address,
@@ -155,6 +161,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const attemptedKeysRef = useRef(new Set<string>());
 
@@ -176,6 +183,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
         conflictTokenAddress,
         currentGasTokenAddress,
         isGmxAccount: isFromTokenGmxAccount,
+        unavailableTokenAddresses,
       });
 
       if (!targetAddress) return;
@@ -208,6 +216,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
       fromTokenAddress,
       setGasPaymentTokenAddress,
       setGmxAccountGasPaymentTokenAddress,
+      unavailableTokenAddresses,
     ]
   );
 }

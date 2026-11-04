@@ -5,8 +5,10 @@ import { useSWRConfig } from "swr";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGasPaymentToken,
+  selectGmxAccountExpressFeeTokenAddress,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
@@ -306,7 +308,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   }, [isAllChecked, isSelectionLimitedBySwapMultichain, selectableMarketAddresses]);
 
   const gasPaymentToken = useSelector(selectGasPaymentToken);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
   const gasPrice = useGasPrice(chainId);
 
   const handleSubmitSettlementChain = useCallback(async () => {

@@ -40,7 +40,7 @@ function createState({
   fromTokenAddress?: string;
 }): SyntheticsState {
   return {
-    globals: { chainId: ARBITRUM, tokensDataResult: { tokensData } },
+    globals: { chainId: ARBITRUM, tokensDataResult: { tokensData }, marketsInfo: { marketsInfoData: undefined } },
     settings: { expressOrdersEnabled: true, gasPaymentTokenAddress: USDC.address },
     features: { relayRouterEnabled: true, subaccountRelayRouterEnabled: true },
     subaccountState: { subaccount: undefined },

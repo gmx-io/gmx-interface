@@ -27,7 +27,9 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import {
+  selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountGasPaymentToken,
+  selectSettlementChainExpressFeeTokenAddress,
   selectSettlementChainGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -35,10 +37,6 @@ import {
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
-} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
@@ -134,8 +132,8 @@ export const useGmSwapSubmitState = ({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tokensData = useSelector(selectTokensData);
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectSettlementChainExpressFeeTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const gasPaymentTokenAddress =
