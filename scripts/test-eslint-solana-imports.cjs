@@ -55,7 +55,7 @@ test("restricts direct runtime imports while allowing internal lazy entry points
   });
 });
 
-test("repository config enables the rule outside the two Solana directories", async () => {
+test("repository config enables the rule outside the Solana directories", async () => {
   const eslint = new ESLint({ cwd: path.resolve(__dirname, "..") });
   for (const file of [
     "src/App/App.tsx",
@@ -63,11 +63,16 @@ test("repository config enables the rule outside the two Solana directories", as
     "landing/src/App.tsx",
     "src/lib/solana-other/probe.ts",
     "src/domain/gmsol-other/probe.ts",
+    "src/config/gmsol-other/probe.ts",
   ]) {
     const config = await eslint.calculateConfigForFile(file);
     assert.equal(config.rules[`local-rules/${ruleName}`][0], "error", file);
   }
-  for (const file of ["src/lib/solana/nested/probe.ts", "src/domain/gmsol/nested/probe.ts"]) {
+  for (const file of [
+    "src/lib/solana/nested/probe.ts",
+    "src/domain/gmsol/nested/probe.ts",
+    "src/config/gmsol/nested/probe.ts",
+  ]) {
     const config = await eslint.calculateConfigForFile(file);
     assert.equal(config.rules[`local-rules/${ruleName}`][0], "off", file);
   }
@@ -89,6 +94,10 @@ test("resolves internal module paths and preserves type-only and lazy imports", 
     ["src/App/probe.ts", "lib/solana/x"],
     ["src/App/probe.ts", "domain/gmsol"],
     ["src/App/probe.ts", "domain/gmsol/x"],
+    ["src/config/probe.ts", "./gmsol/x"],
+    ["src/config/utils/probe.ts", "../gmsol/x"],
+    ["src/App/probe.ts", "config/gmsol"],
+    ["src/App/probe.ts", "config/gmsol/x"],
   ];
   tester.run(ruleName, rules[ruleName], {
     valid: [
@@ -109,6 +118,7 @@ test("resolves internal module paths and preserves type-only and lazy imports", 
       { filename: path.resolve(__dirname, "../src/pages/utils/probe.ts"), code: 'import "../solana/x"' },
       'import "lib/solana-other/x"',
       'import "domain/gmsol-other/x"',
+      'import "config/gmsol-other/x"',
       "export const value = 1",
     ],
     invalid: targets.flatMap(([file, source]) =>

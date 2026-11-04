@@ -47,6 +47,13 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Disable share modal PnL check</Trans>
         </ToggleSwitch>
 
+        <ToggleSwitch
+          isChecked={settings.isTokenPermitsQaOverrideEnabled}
+          setIsChecked={settings.setIsTokenPermitsQaOverrideEnabled}
+        >
+          <Trans>Enable token permits regardless of UI flags</Trans>
+        </ToggleSwitch>
+
         <AbFlagSettings />
 
         <DebugSwapsSettings />

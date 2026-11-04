@@ -2,10 +2,14 @@ import { t } from "@lingui/macro";
 
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
 import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
+import { getIsPositionInfoLoaded, type PositionInfo } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
+import type { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { DUST_USD } from "lib/legacy";
 import { MaxUint256 } from "lib/numbers";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
+import { getTriggerDecreaseRemainingPositionMarginState } from "sdk/utils/trade/decreaseMarginCheck";
 
 export const FULL_POSITION_CLOSE_SIZE_DELTA_USD = MaxUint256;
 
@@ -83,6 +87,76 @@ export function getTpSlLiqPriceWarning({
   }
 
   return t`This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute.`;
+}
+
+export type TpSlRemainingPositionEntry = {
+  decreaseAmounts: DecreasePositionAmounts | undefined;
+  getDecreaseAmountsWithoutKeepLeverage: () => DecreasePositionAmounts | undefined;
+};
+
+export type TpSlRemainingPositionWarning = {
+  isTakeProfitAboveMaxLeverage: boolean;
+  isStopLossAboveMaxLeverage: boolean;
+  isKeepLeverageFix: boolean;
+};
+
+export function getTpSlRemainingPositionWarning(p: {
+  position: PositionInfo;
+  takeProfit: TpSlRemainingPositionEntry | undefined;
+  stopLoss: TpSlRemainingPositionEntry | undefined;
+  keepLeverage: boolean;
+  minCollateralUsd: bigint | undefined;
+  minPositionSizeUsd: bigint | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+}): TpSlRemainingPositionWarning | undefined {
+  const { position, minCollateralUsd, minPositionSizeUsd } = p;
+
+  if (!getIsPositionInfoLoaded(position) || minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
+    return undefined;
+  }
+
+  const getIsAboveMaxLeverage = (decreaseAmounts: DecreasePositionAmounts | undefined) => {
+    if (
+      !decreaseAmounts ||
+      isTriggerBeyondLiquidation({
+        triggerPrice: decreaseAmounts.triggerPrice,
+        liquidationPrice: position.liquidationPrice,
+        isLong: position.isLong,
+      })
+    ) {
+      return false;
+    }
+
+    const marginState = getTriggerDecreaseRemainingPositionMarginState({
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      isLong: position.isLong,
+      position,
+      decreaseAmounts,
+      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      userReferralInfo: p.userReferralInfo,
+      proDiscountFactor: p.proDiscountFactor,
+    });
+
+    return marginState?.isLiquidatable === true;
+  };
+
+  const isTakeProfitAboveMaxLeverage = getIsAboveMaxLeverage(p.takeProfit?.decreaseAmounts);
+  const isStopLossAboveMaxLeverage = getIsAboveMaxLeverage(p.stopLoss?.decreaseAmounts);
+
+  if (!isTakeProfitAboveMaxLeverage && !isStopLossAboveMaxLeverage) {
+    return undefined;
+  }
+
+  const isKeepLeverageFix =
+    p.keepLeverage &&
+    !getIsAboveMaxLeverage(p.takeProfit?.getDecreaseAmountsWithoutKeepLeverage()) &&
+    !getIsAboveMaxLeverage(p.stopLoss?.getDecreaseAmountsWithoutKeepLeverage());
+
+  return { isTakeProfitAboveMaxLeverage, isStopLossAboveMaxLeverage, isKeepLeverageFix };
 }
 
 // You can't lose more than your collateral, so floor a displayed loss at -collateral (-100%).

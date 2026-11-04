@@ -449,6 +449,7 @@ export function AvailableToTradeTokenList({
         return (
           <div
             key={`${token.address}_${token.chainId}`}
+            data-qa={`available-token-${token.address}-${token.chainId}`}
             className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >

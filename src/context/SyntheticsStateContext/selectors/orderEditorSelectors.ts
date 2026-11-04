@@ -8,6 +8,7 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import {
+  getOrderPositionKey,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
@@ -37,7 +38,6 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
-import { getPositionKey } from "lib/legacy";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
@@ -62,6 +62,7 @@ import {
   selectUserReferralInfo,
 } from "./globalSelectors";
 import {
+  makeSelectOrderDecreaseRemainingPositionMarginState,
   makeSelectOrderExistingPosition,
   makeSelectOrderIncreaseNextPositionValues,
   makeSelectOrderIncreaseProjection,
@@ -199,7 +200,7 @@ export const selectOrderEditorPositionKey = createSelector((q) => {
 
   if (!order) return;
 
-  return getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong);
+  return getOrderPositionKey(order);
 });
 
 export const selectOrderEditorExistingPosition = createSelector((q) => {
@@ -712,6 +713,29 @@ export const selectOrderEditorTpSlLiqPriceWarning = createSelector((q) => {
     liquidationPrice: existingPosition?.liquidationPrice,
     isLong: Boolean(existingPosition?.isLong),
   });
+});
+
+export const selectOrderEditorIsRemainingPositionAboveMaxLeverage = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (
+    !order ||
+    !isTriggerDecreaseOrderType(order.orderType) ||
+    order.isTwap ||
+    q(selectOrderEditorTpSlLiqPriceWarning)
+  ) {
+    return false;
+  }
+
+  const marginState = q(
+    makeSelectOrderDecreaseRemainingPositionMarginState(
+      order.key,
+      q(selectOrderEditorTriggerPrice),
+      q(selectOrderEditorSizeDeltaUsd)
+    )
+  );
+
+  return marginState?.isLiquidatable === true;
 });
 
 export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(

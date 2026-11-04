@@ -3,6 +3,7 @@ import {
   ContractFunctionExecutionError,
   ContractFunctionRevertedError,
   decodeFunctionData,
+  encodeErrorResult,
   HttpRequestError,
   InsufficientFundsError,
   InvalidInputRpcError,
@@ -13,6 +14,8 @@ import {
 import type { PublicClient } from "viem";
 import { describe, expect, it, vi } from "vitest";
 
+import "lib/monkeyPatching";
+import { parseError } from "lib/errors";
 import { abis } from "sdk/abis";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
@@ -45,6 +48,47 @@ describe("simulation", () => {
       })
     ).rejects.toThrow("Execution simulation did not revert with EndOfOracleSimulation.");
     expect(simulateContract).toHaveBeenCalledOnce();
+  });
+
+  it("rethrows a contract revert so that the error toast can read the contract error", async () => {
+    const data = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "LiquidatablePosition",
+      args: ["min collateral for leverage", 100n, 5n, 180n],
+    });
+    const simulateContract = vi.fn().mockRejectedValue(
+      new ContractFunctionExecutionError(
+        new ContractFunctionRevertedError({ abi: [], functionName: "multicall", data }),
+        {
+          abi: [],
+          functionName: "multicall",
+        }
+      )
+    );
+
+    const error = await simulateContractWithRetry({
+      client: { simulateContract } as unknown as PublicClient,
+      address: "0x1111111111111111111111111111111111111111",
+      abi: [],
+      args: [[]],
+      value: 0n,
+      account: "0x2222222222222222222222222222222222222222",
+      blockNumber: undefined,
+      isExpress: false,
+    }).catch((e) => e);
+
+    expect(parseError(error)).toEqual(
+      expect.objectContaining({
+        contractError: "LiquidatablePosition",
+        contractErrorArgs: {
+          reason: "min collateral for leverage",
+          remainingCollateralUsd: 100n,
+          minCollateralUsd: 5n,
+          minCollateralUsdForLeverage: 180n,
+        },
+        errorContext: "simulation",
+      })
+    );
   });
 
   describe("isTemporaryError", () => {

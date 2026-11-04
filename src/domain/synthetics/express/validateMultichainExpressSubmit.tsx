@@ -19,6 +19,18 @@ export function isMultichainExpressSubmitBlocked(
   return isGmxAccount && (!expressParams || !getIsValidExpressParams(expressParams));
 }
 
+/**
+ * A permit travels inside the relay call, so it can stand in for an approval only when the order is
+ * going to be relayed. Missing gas token approval doesn't count against it: a permit can cover that too.
+ */
+export function getCanUseTokenPermits(expressParams: ExpressTxnParams | undefined): boolean {
+  return (
+    expressParams !== undefined &&
+    !expressParams.isGmxAccount &&
+    !expressParams.gasPaymentValidations.isOutGasTokenBalance
+  );
+}
+
 export function getExpressParamsForSubmit(expressParams: ExpressTxnParams | undefined): ExpressTxnParams | undefined {
   return expressParams && getIsValidExpressParams(expressParams) ? expressParams : undefined;
 }
@@ -27,10 +39,12 @@ export function getNetworkFeeGasPaymentParams({
   expressParams,
   tokensData,
   canApproveGasPaymentToken = true,
+  canFallBackToClassic,
 }: {
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
   canApproveGasPaymentToken?: boolean;
+  canFallBackToClassic?: boolean;
 }): GasPaymentParams | undefined {
   const isWalletClassicFallback =
     expressParams !== undefined &&
@@ -38,7 +52,7 @@ export function getNetworkFeeGasPaymentParams({
     (canApproveGasPaymentToken
       ? getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)
       : !getIsValidExpressParams(expressParams)) &&
-    getExpressError({ expressParams, tokensData }).buttonErrorMessage === undefined;
+    getExpressError({ expressParams, tokensData, canFallBackToClassic }).buttonErrorMessage === undefined;
 
   return isWalletClassicFallback ? undefined : expressParams?.gasPaymentParams;
 }

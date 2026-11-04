@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import noop from "lodash/noop";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { useLatest } from "react-use";
@@ -115,6 +116,7 @@ import {
   WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
+import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
 import { useTransitRouteEvents } from "./useTransitRouteEvents";
 import { extractRelayTaskError, getPendingOrderKey } from "./utils";
@@ -132,7 +134,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
   const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
-  const { resetTokenPermits } = useTokenPermitsContext();
+  const { removeTokenPermits } = useTokenPermitsContext();
   const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
@@ -198,10 +200,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       refreshSubaccountData();
 
       if (pendingExpressTxn?.tokenPermits?.length) {
-        resetTokenPermits();
+        removeTokenPermits(pendingExpressTxn.tokenPermits);
       }
     },
-    [refreshSubaccountData, resetTokenPermits]
+    [refreshSubaccountData, removeTokenPermits]
   );
 
   const updateNativeTokenBalance = useCallback(() => {
@@ -1105,6 +1107,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     }
   }, [pendingExpressTxnParams, latestRelayTaskStatuses, chainId]);
 
+  useExecutedTokenPermits({ chainId, pendingExpressTxns: pendingExpressTxnParams, relayTaskStatuses });
+
   useEffect(
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
@@ -1531,6 +1535,69 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   ]);
 
   return <SyntheticsEventsContext.Provider value={contextState}>{children}</SyntheticsEventsContext.Provider>;
+}
+
+const DISABLED_SYNTHETICS_EVENTS_STATE: SyntheticsEventsContextType = {
+  multichainSourceChainApprovalStatuses: {},
+  setMultichainSourceChainApprovalsActiveListener: noop,
+  removeMultichainSourceChainApprovalsActiveListener: noop,
+  pendingMultichainFunding: [],
+  setMultichainSubmittedDeposit: () => undefined,
+  setMultichainSubmittedWithdrawal: () => undefined,
+  setMultichainWithdrawalSentTxnHash: noop,
+  setMultichainWithdrawalSentError: noop,
+  updatePendingMultichainFunding: noop,
+  multichainFundingPendingIds: {},
+  removeMultichainFundingPendingIds: noop,
+  setMultichainFundingPendingId: noop,
+  transitRouteProgress: undefined,
+  paxosTransitOrder: undefined,
+  isPaxosTransitOrderStatusUnknown: false,
+  isPaxosTransitOrderLookupExpired: false,
+  startTransitRouteProgress: noop,
+  attachTransitRouteConversion: noop,
+  attachTransitRouteDeposit: noop,
+  setTransitRouteContinueRequested: noop,
+  dismissTransitRouteProgress: noop,
+  orderStatuses: {},
+  depositStatuses: {},
+  withdrawalStatuses: {},
+  shiftStatuses: {},
+  approvalStatuses: {},
+  pendingOrdersUpdates: {},
+  pendingTpSlOrderBatches: [],
+  setPendingTpSlOrderBatches: noop,
+  pendingPositionsUpdates: {},
+  positionIncreaseEvents: undefined,
+  positionDecreaseEvents: undefined,
+  pendingExpressTxns: {},
+  relayTaskStatuses: {},
+  setPendingExpressTxn: noop,
+  updatePendingExpressTxn: noop,
+  setPendingOrder: noop,
+  setPendingOrderUpdate: noop,
+  setPendingFundingFeeSettlement: noop,
+  setPendingPosition: noop,
+  setPendingDeposit: noop,
+  setPendingWithdrawal: noop,
+  setPendingShift: noop,
+  setOrderStatusViewed: noop,
+  setDepositStatusViewed: noop,
+  setWithdrawalStatusViewed: noop,
+  setShiftStatusViewed: noop,
+  setMultichainTransferProgress: noop,
+};
+
+/**
+ * For networks without EVM events. ToastContainer remounts empty on a network switch, so this only
+ * covers toasts that EVM code still in flight creates after the switch.
+ */
+export function DisabledSyntheticsEventsProvider({ children }: { children: ReactNode }) {
+  return (
+    <SyntheticsEventsContext.Provider value={DISABLED_SYNTHETICS_EVENTS_STATE}>
+      {children}
+    </SyntheticsEventsContext.Provider>
+  );
 }
 
 function getPendingPositionKeyFromOrder(
