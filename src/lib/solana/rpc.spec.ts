@@ -2,6 +2,8 @@ import { address } from "@solana/kit";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import { getSolanaRpcUrl } from "config/rpc";
+import { metrics } from "lib/metrics";
+import { registerRpcTracker } from "lib/rpc/registry";
 
 import { SolanaRpcTracker } from "./rpc";
 
@@ -123,3 +125,47 @@ it.each(["network", "slot", "http"])("recovers the same client after a %s probe 
   );
   await expect(tracker.fetchAccounts([owner])).resolves.toEqual([null]);
 });
+
+it.each([true, false])(
+  "reports probe failure and recovery once from initial health %s FESOL-89",
+  async (initiallyHealthy) => {
+    vi.useFakeTimers();
+    const tracker = createTracker();
+    const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
+    if (!initiallyHealthy) probe.mockRejectedValue(new Error("RPC unavailable"));
+    const unregister = registerRpcTracker(tracker);
+    metrics.queue = [];
+    try {
+      tracker.getRpc();
+      await vi.advanceTimersByTimeAsync(5000);
+      probe.mockRejectedValue(new Error("RPC unavailable"));
+      await vi.advanceTimersByTimeAsync(20_000);
+      expect(() => tracker.getRpc()).toThrow("No healthy Solana RPC endpoint available");
+      probe.mockResolvedValue({ responseTime: 20, slot: 124n });
+      await vi.advanceTimersByTimeAsync(20_000);
+      expect(tracker.getRpc()).toBe(tracker.rpc);
+      const healthReports = metrics.queue.flatMap((item) =>
+        item.type === "event" && item.payload.event === "rpcTracker.endpoint.health"
+          ? [{ isError: item.payload.isError, ...item.payload.customFields }]
+          : []
+      );
+      expect(healthReports).toMatchObject([
+        {
+          chainId: tracker.params.chainId,
+          endpoint: new URL(tracker.endpoint).hostname,
+          isHealthy: false,
+          isError: true,
+        },
+        {
+          chainId: tracker.params.chainId,
+          endpoint: new URL(tracker.endpoint).hostname,
+          isHealthy: true,
+          isError: false,
+        },
+      ]);
+    } finally {
+      unregister();
+      metrics.queue = [];
+    }
+  }
+);
