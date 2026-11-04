@@ -58,7 +58,7 @@ it.each([ARBITRUM, SOLANA_NETWORK_ID])(
     const detail = {
       trackerKey: tracker.trackerKey,
       primary: endpoints[0],
-      fallbacks: [endpoints[1]],
+      fallbacks: endpoints.slice(1, 2),
       endpointsStats: stats,
     };
     emitEndpointsUpdated(detail);
@@ -70,7 +70,7 @@ it.each([ARBITRUM, SOLANA_NETWORK_ID])(
     expect(update?.payload.customFields).toMatchObject({
       chainId: networkId,
       primaryBlockGap: 0,
-      secondaryBlockGap: 2,
+      secondaryBlockGap: networkId === SOLANA_NETWORK_ID ? "unknown" : 2,
     });
     if (networkId === SOLANA_NETWORK_ID) expect(update?.payload.customFields?.progressUnit).toBe("slot");
     else expect(update?.payload.customFields).not.toHaveProperty("progressUnit");

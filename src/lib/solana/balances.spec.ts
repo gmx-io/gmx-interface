@@ -156,7 +156,7 @@ describe("configured Solana balances", () => {
         })
       )
     ).toHaveLength(201);
-    expect(calls.map((batch) => batch.length)).toEqual([...Array(20).fill(10), 1]);
+    expect(calls.map((batch) => batch.length)).toEqual([100, 100, 1]);
     mockRpc(tokenAccount(), "incomplete");
     await expect(fetchSolanaBalances(owner)).rejects.toThrow("incomplete");
   });

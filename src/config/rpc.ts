@@ -76,10 +76,7 @@ export const RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS: RpcTrackerConfig = {
 };
 
 const RPC_CONFIGS: Record<number, RpcConfig[]> = {
-  [SOLANA_NETWORK_ID]: [
-    { url: "https://solana-rpc.publicnode.com", isPublic: true, purpose: "default", maxAccountsPerRequest: 10 },
-    getAlchemyProvider(SOLANA_NETWORK_ID, "fallback"),
-  ],
+  [SOLANA_NETWORK_ID]: [{ ...getAlchemyProvider(SOLANA_NETWORK_ID, "fallback"), purpose: "default" }],
   [ARBITRUM]: [
     ...[
       "https://arb1.arbitrum.io/rpc",
@@ -332,6 +329,14 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
   }
 
   return config.filter((rpc) => rpc.purpose === purpose);
+}
+
+export function getSolanaRpcUrl(): string {
+  const provider = getRpcProviders(SOLANA_NETWORK_ID, "default")[0];
+  if (!provider) {
+    throw new Error("No default Solana RPC provider configured");
+  }
+  return provider.url;
 }
 
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
