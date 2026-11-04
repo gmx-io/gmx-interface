@@ -18,6 +18,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -211,6 +212,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     label: "Settle Funding Fee",
     isGmxAccount: isGmxAccountFeeSource,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const isSwitchPending = useMemo(
@@ -266,7 +268,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isGmxAccountFeeSource,
     metric: {
       flow: "settleFundingFees",

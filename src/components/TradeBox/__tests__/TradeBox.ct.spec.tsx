@@ -86,6 +86,22 @@ test.describe("TradeBox", () => {
     });
   });
 
+  test.describe("Mobile curtain", () => {
+    test("keeps the curtain open after a tap that sends no trade PRO-4554", async ({ mount, page }) => {
+      await mount(<TradeBoxStory isMobile />);
+
+      const curtainState = page.locator(getDataQALocator("test-curtain-open"));
+      await expect(curtainState).toHaveText("true");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Connect wallet");
+      await submitButton.click();
+      await page.waitForTimeout(500);
+
+      await expect(curtainState).toHaveText("true");
+    });
+  });
+
   test.describe("Field interactions (Market)", () => {
     test("typing margin computes position size through real selectors", async ({ mount, page }) => {
       await mount(<TradeBoxStory />);

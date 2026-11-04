@@ -1,6 +1,8 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
 export const SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_SOLANA_NETWORK";
+export const SOLANA_WALLET_LOCAL_STORAGE_KEY = "SOLANA_WALLET";
+export const SOLANA_LINKED_EVM_CONNECTORS_LOCAL_STORAGE_KEY = "SOLANA_LINKED_EVM_CONNECTORS";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -37,6 +39,7 @@ export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-
 export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
 export const DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY = "debug-paxos-transit-force-standard";
 export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
+const USDG_ADD_MARGIN_RETURN_POSITION_KEY = "usdg-add-margin-return-position";
 export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
 export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
 export const STATS_API_URL_KEY = "stats-api-url";
@@ -86,11 +89,15 @@ export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
 export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
+export const CLOSING_POOLS_NOTICE_SEEN_KEY_PREFIX = "closing-pools-notice-seen";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
+export const CLOSING_POOLS_LP_NOTICE_DISMISSED_KEY = "closing-pools-lp-notice-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
-export const PERMITS_DISABLED_KEY = "permits-disabled";
+// older builds set it on any permit error and never cleared it
+export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
+export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
@@ -118,6 +125,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
+const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -140,6 +148,11 @@ export function getTokenPermitsKey(chainId: number, account: string | undefined)
   return [chainId, account, TOKEN_PERMITS_KEY];
 }
 
+export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
+}
+
 export function getSyntheticsListSectionKey(chainId: number) {
   return [chainId, SYNTHETICS_LIST_SECTION_KEY];
 }
@@ -158,6 +171,10 @@ export function getSyntheticsTradeOptionsKey(chainId: number) {
 
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY];
+}
+
+export function getUsdgAddMarginReturnPositionKey(chainId: number) {
+  return [chainId, USDG_ADD_MARGIN_RETURN_POSITION_KEY];
 }
 
 export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: number) {

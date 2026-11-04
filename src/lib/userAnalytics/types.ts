@@ -67,6 +67,7 @@ export type DisconnectWalletEvent = {
   event: "ConnectWalletAction";
   data: {
     action: "Disconnect";
+    network?: ChainName;
   };
 };
 

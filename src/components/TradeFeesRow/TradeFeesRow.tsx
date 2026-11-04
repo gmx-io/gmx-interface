@@ -443,7 +443,9 @@ export function TradeFeesRow(p: Props) {
     }
 
     if (p.feesType === "edit") {
-      return [borrowFeeRow, fundingFeeRow].filter(Boolean) as FeeRow[];
+      return [swapPriceImpactRow, ...swapFeeRows, uiSwapFeeRow, borrowFeeRow, fundingFeeRow].filter(
+        Boolean
+      ) as FeeRow[];
     }
 
     return [];

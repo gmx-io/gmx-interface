@@ -84,6 +84,8 @@ msgstr ""
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/MainView.tsx
 msgid "Disconnect"
 msgstr ""
 
@@ -179,6 +181,10 @@ msgstr ""
 msgid "Do I need to create codes on each network?"
 msgstr ""
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr ""
@@ -239,6 +245,10 @@ msgstr ""
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, TWAP orders hold USDG. Your USDC converts first, then you sign the order."
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -427,6 +437,10 @@ msgstr ""
 msgid "Cancel Limit Swap"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Waiting ({0, plural, one {# day left} other {# days left}})"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr ""
@@ -459,6 +473,10 @@ msgstr ""
 msgid "Network fees increased. Additional fee required."
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee."
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance to claim this funding fee"
 msgstr ""
@@ -483,6 +501,10 @@ msgstr ""
 msgid "Missing required parameters"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused for now"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GLV?"
 msgstr ""
@@ -497,6 +519,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
+msgstr ""
+
+#: src/components/ClosingPoolsNotice/ClosingPoolsNotice.tsx
+msgid "View orders"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -581,6 +607,10 @@ msgstr ""
 msgid "decrease"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr ""
@@ -659,6 +689,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max instant margin: {maxInstantText}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -791,6 +825,10 @@ msgstr ""
 msgid "Refer traders to GMX with your unique link and earn a share of the fees they generate"
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the order or <0>increase the position's margin</0>."
+msgstr ""
+
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "You can open isolated positions on GMX using funds directly from your connected wallet."
 msgstr ""
@@ -813,6 +851,10 @@ msgstr ""
 
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
+msgstr ""
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Continue to add margin"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -874,7 +916,6 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
-#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Not enough zero-fee capacity"
 msgstr ""
 
@@ -882,6 +923,10 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Since position opened"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -1030,6 +1075,10 @@ msgstr ""
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr ""
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr ""
@@ -1037,6 +1086,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "A conversion is already waiting in your wallet. Try again after it executes."
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Available from"
 msgstr ""
 
 #: src/components/SwapCard/SwapCard.tsx
@@ -1068,6 +1121,11 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time)."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
@@ -1112,6 +1170,10 @@ msgstr ""
 msgid "Creating code..."
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops soon."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr ""
@@ -1144,10 +1206,6 @@ msgstr ""
 msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "USDG issuer, separate transaction, usually 2–10 min. No Paxos fee for whitelisted addresses."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -1163,6 +1221,10 @@ msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Don't ask again"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel submitted"
 msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
@@ -1189,16 +1251,16 @@ msgstr ""
 msgid "Can I unstake or withdraw anytime?"
 msgstr ""
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
+msgstr ""
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order will stop filling soon.} other {# pending orders will stop filling soon.}}"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1383,6 +1445,10 @@ msgstr ""
 msgid "Tiers"
 msgstr ""
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr ""
@@ -1435,10 +1501,6 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -1620,11 +1682,16 @@ msgid "Use {0} for gas"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+msgid "Paused until {reopenTime}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -1696,8 +1763,16 @@ msgstr ""
 msgid "/ year"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transfer"
+msgstr ""
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet. Ready now: {executableAmountText} GMX / esGMX"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -1872,6 +1947,11 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIME"
+msgstr ""
+
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+msgid "Margin token: {marginTokenSymbol}"
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
@@ -2053,8 +2133,20 @@ msgstr ""
 msgid "Vest"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have {maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request."
+msgstr ""
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Extra yield for GLV [USDG] liquidity providers during the launch, targeting 8% or more on top of trading fees. Paid into the GLV price every 4 hours, so there's nothing to claim."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. You can choose either option."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -2079,6 +2171,10 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
+msgstr ""
+
+#: src/components/Errors/stakingToasts.ts
+msgid "Staking moved to a new contract. Review and try again."
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -2180,6 +2276,7 @@ msgstr ""
 msgid "Canceling {ordersText}..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
@@ -2352,10 +2449,20 @@ msgstr ""
 msgid "VI POSITIONS"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting to unstake more than 20% of your max historical staked GMX will reset your accrued rewards. Cancelling the request does not restore them."
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Stop price"
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Too large to convert instantly"
 msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -2490,10 +2597,6 @@ msgstr ""
 msgid "Swapped {0} for {1}"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Zero-fee capacity dropped below your amount a moment ago. The new capacity shows here within a minute."
-msgstr ""
-
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr ""
@@ -2534,6 +2637,10 @@ msgstr ""
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Auto picks the cheaper option. Direct with Paxos is only offered from {minAmount}."
 msgstr ""
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
@@ -2773,6 +2880,7 @@ msgid "Max open interest {directionLabel}"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
+#: src/components/TradeBox/TradeBox.tsx
 msgid "Steps"
 msgstr ""
 
@@ -2788,6 +2896,7 @@ msgstr ""
 msgid "Annualized rate"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
@@ -2845,6 +2954,10 @@ msgstr ""
 msgid "Job openings at GMX"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {Cancel and re-place it in the USDG pools.} other {Cancel and re-place them in the USDG pools.}}"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -2861,10 +2974,6 @@ msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "How do I choose?"
-msgstr ""
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.<0/><1/>Instant swap goes through the GMX USDC/USDG pool within your buy or sell, in one transaction. You pay its swap fee and price impact.<2/><3/>Direct with Paxos converts with Paxos, the issuer of USDG, in a separate transaction that usually settles in 2–10 min. The converted tokens land in your wallet first.<4/><5/>Auto picks the cheaper option. Whitelisted addresses can choose either option and convert USDC to USDG with no Paxos fee. Other addresses always use Auto, and Direct with Paxos is only offered from {minAmount}.<6/><7/>The choice is fixed when only one option can handle the amount or a conversion is in progress."
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
@@ -3004,6 +3113,10 @@ msgstr ""
 msgid "Loading network fees..."
 msgstr ""
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI SWAPS"
 msgstr ""
@@ -3030,6 +3143,10 @@ msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "The more you trade, the more you keep"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake requests"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -3127,6 +3244,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
 msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
@@ -3278,6 +3399,10 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Convert to {convertToSymbol}"
+msgstr ""
+
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Loading Express params..."
 msgstr ""
@@ -3352,6 +3477,7 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Instant"
 msgstr ""
@@ -3364,6 +3490,14 @@ msgstr ""
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>. Trades paid in USDG need no conversion."
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. Trades paid in USDG need no conversion."
+msgstr ""
+
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Coin"
 msgstr ""
@@ -3374,6 +3508,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {tokenSymbol} on {chainName}"
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Approving USDC..."
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
@@ -3457,6 +3595,10 @@ msgstr ""
 msgid "Claimable collateral reduction factor"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This account is frozen in the esGMX vesting vault"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Slippage too low"
 msgstr ""
@@ -3517,6 +3659,10 @@ msgstr ""
 msgid "Announcements"
 msgstr ""
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool"
+msgstr ""
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -3547,6 +3693,10 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -3646,6 +3796,7 @@ msgstr ""
 msgid "Creating order..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake submitted"
 msgstr ""
@@ -3792,6 +3943,7 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr ""
 
@@ -3928,6 +4080,10 @@ msgstr ""
 msgid "Swap price impact is high"
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr ""
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr ""
@@ -3978,6 +4134,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for Market Swaps"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking is paused until the staking upgrade"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4099,6 +4259,10 @@ msgstr ""
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total borrow fee"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr ""
@@ -4160,6 +4324,10 @@ msgstr ""
 msgid "The program"
 msgstr ""
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Step 2: Add margin"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -4174,12 +4342,24 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake requested"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again."
+msgstr ""
+
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Funds claimed"
+msgstr ""
+
+#: src/components/ClosingPoolsLpNotice/ClosingPoolsLpNoticeBanner.tsx
+msgid "View pools"
 msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
@@ -4197,6 +4377,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancelling..."
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -4290,6 +4474,10 @@ msgstr ""
 msgid "Why should I enter a referral code?"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "Your current positions stay open: hold, add margin, reduce or close any time. New positions open in the USDG pools."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto · {activeLabel}"
 msgstr ""
@@ -4355,6 +4543,14 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
+msgstr ""
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Adding margin to {positionLabel} with {offerAmount}"
+msgstr ""
+
+#: src/lib/i18n.ts
+msgid "{first}, {second} +{restCount} more"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -4428,12 +4624,20 @@ msgstr ""
 msgid "Min collateral factor OI short"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "USDG issuer, separate transaction, usually 2–10 min"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap part"
 msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events in the past {DAYS_BACK} days"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Ready to withdraw"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -4512,6 +4716,10 @@ msgstr ""
 msgid "{fromText} to"
 msgstr ""
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new stop market orders."
+msgstr ""
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
 msgstr ""
@@ -4545,8 +4753,16 @@ msgstr ""
 msgid "Max capacity:"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
+msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Converting USDC to USDG..."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4647,6 +4863,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP part"
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Deposit {maxInstantAmountText} now"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
@@ -4778,7 +4998,13 @@ msgid "Share GMX feedback"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw failed"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused during the staking upgrade."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
@@ -4807,6 +5033,11 @@ msgstr ""
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Close the full position, change the trigger price, or add margin."
+msgstr ""
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr ""
@@ -4828,6 +5059,7 @@ msgstr ""
 msgid "Execution details"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Self-transfer not supported"
 msgstr ""
@@ -4842,6 +5074,10 @@ msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "How do I get started on GMX?"
+msgstr ""
+
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Paid in {receivedSymbol}: the conversion to {convertToSymbol} couldn't fill"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -4978,6 +5214,7 @@ msgid "WIN/LOSS"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing..."
@@ -5001,6 +5238,10 @@ msgstr "[!! perpetual markets !!]"
 
 #: src/components/Footer/constants.tsx
 msgid "V1"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Unstake requests are paused. Try again later."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5087,6 +5328,10 @@ msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Nothing can be converted instantly right now."
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
@@ -5247,10 +5492,6 @@ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
-msgstr ""
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5437,14 +5678,11 @@ msgstr ""
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Or pick Paxos standard with a fee or an instant route in Route. No route is picked for you."
-msgstr ""
-
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr ""
 
+#: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5618,6 +5856,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
 msgstr ""
 
@@ -5742,10 +5981,6 @@ msgstr ""
 msgid "Market Increase"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "This token does not support permit approvals."
-msgstr ""
-
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -5767,6 +6002,10 @@ msgstr ""
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -5848,6 +6087,15 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Paxos converts USDC from your wallet on {settlementChainName}."
+msgstr ""
+
+#: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
+msgid "Paxos zero-fee is paused"
 msgstr ""
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
@@ -5948,8 +6196,16 @@ msgstr ""
 msgid "Margin before pending borrow and funding fees"
 msgstr ""
 
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Convert the rest with Paxos"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel new orders"
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused."
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -6025,6 +6281,10 @@ msgstr ""
 
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
+msgstr ""
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new TWAP orders"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -6215,6 +6475,10 @@ msgstr ""
 msgid "Earn {0}% more rewards with this action"
 msgstr ""
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "USDC-USDG instant conversion limit"
+msgstr ""
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Staked esGMX:"
 msgstr ""
@@ -6225,6 +6489,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
+msgstr ""
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading is moving to USDG pools"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -6339,6 +6607,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6416,11 +6685,17 @@ msgid "Max lendable impact factor for withdrawals"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
 msgstr ""
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Cancel failed"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6441,6 +6716,10 @@ msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable token permits regardless of UI flags"
 msgstr ""
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
@@ -6555,6 +6834,10 @@ msgstr ""
 msgid "Zero-fee capacity left"
 msgstr ""
 
+#: src/components/StatusNotification/UsdgClosePayoutStatus.tsx
+msgid "Received {receivedText}"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr ""
@@ -6598,6 +6881,10 @@ msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Turn your audience<0/>into on-chain income"
+msgstr ""
+
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {We're moving {markets} trading to the new USDG pools, so fees in your current pool will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.} other {We're moving {markets} trading to the new USDG pools, so fees in your current pools will drop. Move your liquidity to {gmPools} or GLV [USDG] to keep earning.}}"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -6698,6 +6985,10 @@ msgstr ""
 msgid "No liquidation price. Margin covers any losses."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr ""
@@ -6710,6 +7001,10 @@ msgstr ""
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code creation failed"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -6963,6 +7258,10 @@ msgstr ""
 msgid "Pending"
 msgstr ""
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new limit orders."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "s:"
 msgstr ""
@@ -6975,6 +7274,8 @@ msgstr ""
 msgid "High execution reliability using premium RPCs"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Stake failed"
 msgstr ""
@@ -6998,6 +7299,10 @@ msgstr ""
 #: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Full history unavailable for this position"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -7104,6 +7409,10 @@ msgstr ""
 msgid "Deposit {gasPaymentTokensText}"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsLpNotice.ts
+msgid "{0, plural, one {Trading in your {markets} pool is moving to USDG pools} other {Trading in your {markets} pools is moving to USDG pools}}"
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
@@ -7121,8 +7430,8 @@ msgstr ""
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX (Portuguese)"
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your staked GMX and esGMX that is not already requested"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7259,6 +7568,7 @@ msgstr ""
 msgid "Yield"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Wallet received"
 msgstr ""
@@ -7280,7 +7590,12 @@ msgstr ""
 msgid "TYPE"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Convert and create order"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdrawn"
 msgstr ""
 
@@ -7292,6 +7607,10 @@ msgstr ""
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -7364,6 +7683,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -7466,8 +7789,17 @@ msgstr ""
 msgid "Harmonix"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking takes {0} days. You can withdraw this amount as GMX or esGMX from {1}. Until then it stays staked but stops counting toward Staking Power. You can cancel the request at any time."
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Paxos converts amounts from {paxosMinimumText}."
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -7531,10 +7863,6 @@ msgstr ""
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Choose a route"
-msgstr ""
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr ""
@@ -7553,6 +7881,10 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
+msgstr ""
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Too large to receive as USDC instantly. <0>Receive {positionCollateralSymbol} instead</0> and convert it in the Swap tab after closing."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7664,6 +7996,10 @@ msgstr ""
 msgid "Close short"
 msgstr ""
 
+#: src/components/TradeBox/UsdgAddMarginReturnBanner.tsx
+msgid "Getting {collateralSymbol} to add margin to {positionLabel}."
+msgstr ""
+
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/TradeHistory/keys.ts
 msgid "Create margin deposit"
@@ -7679,6 +8015,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "You have the maximum number of unstake requests. Withdraw or cancel one to make a new request."
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -7708,6 +8048,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
+msgstr ""
+
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Requested"
 msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
@@ -7843,6 +8187,10 @@ msgstr ""
 msgid "Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.<0/><1/>See the Trades tab for the reason."
 msgstr ""
 
+#: src/domain/synthetics/orders/utils.tsx
+msgid "Too big for the room left in the {poolName} pool. Cancel and re-place it in the {targetPoolName} pool."
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr ""
@@ -7865,6 +8213,10 @@ msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Limit @ {0}"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr ""
 
 #: src/components/GmList/UsdgPoolBadges.tsx
@@ -7922,6 +8274,10 @@ msgstr ""
 msgid "GMX announcements and updates"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Stop Market orders hold USDG. Your USDC converts first, then you sign the order."
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
 msgstr ""
@@ -7932,6 +8288,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max long amount"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -8010,6 +8370,10 @@ msgstr ""
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr ""
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr ""
@@ -8060,10 +8424,6 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
-msgstr ""
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -8126,12 +8486,17 @@ msgstr ""
 msgid "Last year"
 msgstr ""
 
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
+msgstr ""
+
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+msgid "Add margin"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -8148,6 +8513,10 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliate dashboard"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -8269,6 +8638,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "GM and GLV include markets you no longer hold"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8420,6 +8793,8 @@ msgid "Exit price"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer failed"
 msgstr ""
@@ -8516,6 +8891,10 @@ msgstr ""
 msgid "Order submission failed"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Realized PnL before fees"
 msgstr "[!! Realized PnL before fees !!]"
@@ -8575,6 +8954,7 @@ msgstr ""
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Available"
 msgstr ""
@@ -8591,6 +8971,7 @@ msgstr ""
 msgid "Solv Finance"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claim submitted"
@@ -8666,6 +9047,7 @@ msgstr ""
 msgid "Keep more of every trade"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -8729,6 +9111,10 @@ msgstr ""
 #: src/components/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8866,6 +9252,10 @@ msgstr ""
 msgid "Average leverage used"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding paid"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr ""
@@ -8900,11 +9290,16 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
+msgstr ""
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "The choice is fixed when only one option can handle the amount or a conversion is in progress."
 msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
@@ -8961,6 +9356,10 @@ msgstr ""
 msgid "Total supply"
 msgstr ""
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
+msgid "Zero-fee conversion is paused until {reopenTime}."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr ""
@@ -8991,6 +9390,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
+msgstr ""
+
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "The new USDG pools have more room. Your current positions stay open: hold, add margin, reduce or close any time. Adding size is limited now and stops on {date}."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
@@ -9090,6 +9493,10 @@ msgstr ""
 msgid "({0} of {1})"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Request unstake"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Total realized and unrealized PnL including fees and price impact"
 msgstr ""
@@ -9154,6 +9561,10 @@ msgstr ""
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{markets} trading has moved to USDG pools"
+msgstr ""
+
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of reserves"
@@ -9161,6 +9572,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
+msgstr ""
+
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new limit orders"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -9273,6 +9688,10 @@ msgstr ""
 msgid "Order exceeds max leverage. Click to auto-adjust."
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have {count} unstake requests, more than the maximum"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available"
 msgstr ""
@@ -9343,6 +9762,10 @@ msgstr ""
 msgid "Collateral in"
 msgstr ""
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, close the position fully, or add margin first."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT NAME"
 msgstr ""
@@ -9352,6 +9775,7 @@ msgstr ""
 msgid "OPEN INTEREST"
 msgstr ""
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Begin transfer"
 msgstr ""
@@ -9429,6 +9853,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
 msgstr ""
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
@@ -9621,6 +10049,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -9630,6 +10059,14 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Integrate GMX"
+msgstr ""
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position."
+msgstr ""
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
@@ -9735,6 +10172,10 @@ msgstr ""
 msgid "Min receive"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "After the transfer, the receiving account would have more unstake requests than the maximum"
+msgstr ""
+
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr ""
@@ -9770,6 +10211,8 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9780,11 +10223,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter an amount"
-msgstr ""
-
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/TradeBox/TradeBox.tsx
-msgid "Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC)."
 msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -9838,6 +10276,7 @@ msgid "Max funding factor (long)"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient collateral to cover order costs"
 msgstr ""
 
@@ -9864,6 +10303,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Shifting {symbol}..."
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Total funding received"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9927,6 +10370,10 @@ msgstr ""
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Solo, anonymous account"
+msgstr ""
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -10036,10 +10483,6 @@ msgstr ""
 msgid "New tier:"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
-msgid "Zero-fee capacity changed. Review the route options and confirm again."
-msgstr ""
-
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr ""
@@ -10094,6 +10537,7 @@ msgstr "[!! AI !!]"
 msgid "Referral code submitted"
 msgstr ""
 
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion request sent"
@@ -10224,6 +10668,10 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Retry external route"
+msgstr ""
+
+#: src/domain/synthetics/orders/utils.tsx
+msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -10525,6 +10973,10 @@ msgstr ""
 msgid "Add RPC"
 msgstr ""
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a collateral"
 msgstr ""
@@ -10658,6 +11110,10 @@ msgstr ""
 msgid "0x..."
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Conversion failed"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Limit"
 msgstr ""
@@ -10712,6 +11168,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
+msgstr ""
+
+#: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
+msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -10863,6 +11323,10 @@ msgstr ""
 msgid "Quick hits"
 msgstr ""
 
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
+msgid "Closed to new stop market orders"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -10911,6 +11375,10 @@ msgstr ""
 msgid "Transaction sent"
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+msgid "Unstake request cancelled"
+msgstr ""
+
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
 msgid "Referral code"
 msgstr ""
@@ -10935,6 +11403,7 @@ msgid "Pending transfer from {sender}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "{0} tokens reserved for vesting"
 msgstr ""
 
@@ -11018,6 +11487,11 @@ msgstr ""
 msgid "Search type"
 msgstr ""
 
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+#: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
+msgid "Converted to {marginTokenSymbol} in the same order"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr ""
@@ -11028,6 +11502,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request submitted"
 msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -11141,6 +11619,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11171,6 +11650,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Venus"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "This amount is not ready to withdraw yet"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -11382,6 +11865,7 @@ msgstr ""
 msgid "Received on {0}"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
 msgstr ""
@@ -11477,6 +11961,10 @@ msgstr ""
 msgid "Staked"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Up to {maxInstantText} can be converted instantly. <0>Use max instant</0>, or <1>convert with Paxos first</1> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price"
 msgstr ""
@@ -11517,8 +12005,8 @@ msgstr ""
 msgid "Change network"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Telegram group (Portuguese)"
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Requesting unstake..."
 msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
@@ -11580,6 +12068,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
+msgstr ""
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "{poolName} pool is closing and isn't taking new TWAP orders."
 msgstr ""
 
 #: src/components/MarginRemediation/MarginRemediationActions.tsx
@@ -11652,6 +12144,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Liquidation fees"
 msgstr "[!! Liquidation fees !!]"
+
+#: src/components/TradeBox/UsdgAddMarginReturnBanner.tsx
+msgid "Back to position"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects integrated with GMX"
@@ -11844,8 +12340,16 @@ msgstr ""
 msgid "Use the Pay amount"
 msgstr ""
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated off-hours liquidation price"
+msgstr ""
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+msgid "At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders may not execute."
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -11866,6 +12370,10 @@ msgstr ""
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Starts with the first reward round."
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
+msgid "Paxos zero-fee is no longer available. Review the route options and confirm again."
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
@@ -11909,6 +12417,7 @@ msgstr ""
 msgid "Alerts"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading swap path…"
 msgstr ""
@@ -11966,6 +12475,10 @@ msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames}. Switch networks to continue."
+msgstr ""
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Move order to {targetPoolName} pool"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
@@ -12079,6 +12592,10 @@ msgstr ""
 msgid "Time elapsed"
 msgstr ""
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "External routing is temporarily paused after a failed attempt. Retry to check for a better rate."
 msgstr ""
@@ -12168,6 +12685,11 @@ msgstr ""
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr ""
@@ -12244,6 +12766,7 @@ msgstr ""
 msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no longer available, or move it into GLV to keep earning."
 msgstr ""
 
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
@@ -12260,10 +12783,6 @@ msgstr ""
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Direct smart contract integration"
-msgstr ""
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are disabled for this token."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -12346,10 +12865,6 @@ msgstr ""
 msgid "GLP to GM airdrop"
 msgstr ""
 
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
-msgid "Whitelisted addresses convert USDC to USDG with no Paxos fee. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
-msgstr ""
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -12415,6 +12930,14 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
+msgstr ""
+
+#: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
+msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake request failed"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12695,7 +13218,12 @@ msgid "Banners, links and a partner manager"
 msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
+#: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
+msgstr ""
+
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Convert, then place order"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -12870,6 +13398,10 @@ msgstr ""
 msgid "This year"
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
+msgstr ""
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
 msgstr ""
@@ -12884,6 +13416,10 @@ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "In the Swap tab · arrives separately"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
@@ -12911,6 +13447,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Order expired before it could be executed"
+msgstr ""
+
+#: src/components/PositionEditor/PositionEditor.tsx
+msgid "Close to liquidation? Deposit the instant amount first. Paxos can take a while."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
@@ -13120,6 +13660,7 @@ msgid "Invalid receiver address"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr ""
 
@@ -13289,6 +13830,10 @@ msgstr ""
 msgid "Approval submitted<0/><1/><2>View</2>"
 msgstr ""
 
+#: src/domain/synthetics/markets/closingPoolsNotices.ts
+msgid "{ordersCount, plural, one {# pending order won't fill after {date}.} other {# pending orders won't fill after {date}.}}"
+msgstr ""
+
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient {gasPaymentTokensText} in your wallet. Express Trading and One-Click Trading are unavailable."
 msgstr ""
@@ -13318,10 +13863,6 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
-msgid "Large LP or balancer? Ask <0>@GMXPartners</0> about zero-fee access."
 msgstr ""
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx

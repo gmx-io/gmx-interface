@@ -64,6 +64,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -90,6 +91,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
@@ -128,12 +130,18 @@ type TradeboxButtonState = {
   tooltipContent: ReactNode | null;
   bannerErrorContent: ReactNode | null;
   disabled: boolean;
-  onSubmit: () => Promise<void>;
+  /** Resolves to true once a trade is sent, false for steps like connect, deposit or approve */
+  onSubmit: () => Promise<boolean>;
   slippageInputId: string;
   expressParams?: ExpressTxnParams;
   isExpressLoading: boolean;
+  approvalTokenAddress: string | undefined;
+  isApproving: boolean;
+  isAllowanceLoaded: boolean;
   batchParams?: BatchOrderTxnParams;
   totalExecutionFee?: ExecutionFee;
+  expressGasPaymentToken?: TokenData;
+  isFeeInPayToken: boolean;
 };
 
 export function useTradeboxButtonState({
@@ -191,6 +199,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
+    gasPaymentToken: expressGasPaymentToken,
   } = useTradeboxTransactions({
     setPendingTxns,
     canSwitchGasPaymentToken,
@@ -219,11 +228,12 @@ export function useTradeboxButtonState({
     isAllowanceLoading,
     isApproving,
     handleApprove,
+    getIsPermitApproval,
   } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -236,6 +246,7 @@ export function useTradeboxButtonState({
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
+  const isApprovalRequired = !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0;
   // until allowances are known an order could be sent without the approval it needs
   const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
@@ -291,8 +302,10 @@ export function useTradeboxButtonState({
       tokenToApprove: pendingApprovalTokenAddress,
       nativeToken: getByKey(tokensData, zeroAddress),
       gasPrice: expressParams.gasPrice,
+      // every remaining approval has to be a permit, or the user would sign one and still be stopped for gas
+      isPermitApproval: tokensToApprove.length > 0 && tokensToApprove.every(getIsPermitApproval),
     });
-  }, [expressParams, pendingApprovalTokenAddress, tokensData]);
+  }, [expressParams, getIsPermitApproval, pendingApprovalTokenAddress, tokensData, tokensToApprove]);
 
   const hasAlternateGasFees = useHasAlternateGasFees({
     chainId,
@@ -309,7 +322,6 @@ export function useTradeboxButtonState({
     if (
       approvalGasError.bannerErrorName !== ValidationBannerErrorName.insufficientNativeTokenForApproval ||
       !isPendingGasPaymentTokenApproval ||
-      !gasPaymentToken ||
       expressParams?.gasPaymentParams === undefined
     ) {
       return undefined;
@@ -326,7 +338,7 @@ export function useTradeboxButtonState({
     const address = findNextGasPaymentToken({
       chainId,
       tokensData,
-      gasPaymentToken,
+      gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
       gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       payAmounts: fromToken && payAmount !== undefined ? { [fromToken.address]: payAmount } : {},
       isGmxAccount: false,
@@ -338,7 +350,6 @@ export function useTradeboxButtonState({
   }, [
     approvalGasError.bannerErrorName,
     isPendingGasPaymentTokenApproval,
-    gasPaymentToken,
     expressParams?.gasPaymentParams,
     isSwap,
     swapToToken,
@@ -371,6 +382,15 @@ export function useTradeboxButtonState({
 
   const externalSwapBlockReason = useSelector(selectExternalSwapBlockReason);
 
+  // follows the estimate rather than the resolved token, which runs ahead of it while a new estimate loads
+  const isFeeInPayToken =
+    !isFromTokenGmxAccount &&
+    (isSwap || isIncrease) &&
+    expressParams !== undefined &&
+    gasPaymentToken !== undefined &&
+    expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address &&
+    expressParams.gasPaymentParams.gasPaymentTokenAddress === fromToken?.address;
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -385,6 +405,8 @@ export function useTradeboxButtonState({
     const expressError = getExpressError({
       expressParams,
       tokensData,
+      // the fee moved to the pay token to skip an approval; a Classic transaction would bring the native fee back
+      canFallBackToClassic: !isFeeInPayToken,
     });
 
     const validationResult = takeValidationResult(
@@ -461,10 +483,11 @@ export function useTradeboxButtonState({
           break;
         }
 
-        // PositionEditor-only states
+        // PositionEditor-only and PositionSeller-only states
         case ValidationButtonTooltipName.minDeposit:
         case ValidationButtonTooltipName.marginDepositAutoCancelLimit:
         case ValidationButtonTooltipName.marginDepositInsufficient:
+        case ValidationButtonTooltipName.remainingPositionMaxLeverage:
           break;
 
         default:
@@ -510,6 +533,7 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
+    isFeeInPayToken,
     multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockReason,
@@ -548,15 +572,11 @@ export function useTradeboxButtonState({
     );
   }, [tokenChainDataArray, fromToken, srcChainId]);
 
-  const onSubmit = useCallback(async () => {
+  const onSubmit = useCallback(async (): Promise<boolean> => {
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
-      return;
-    }
-
-    if (!signer) {
-      return;
+      return false;
     }
 
     if (shouldShowDepositButton) {
@@ -581,11 +601,11 @@ export function useTradeboxButtonState({
 
       setGmxAccountModalOpen("deposit");
 
-      return;
+      return false;
     }
 
-    if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
-      if (!chainId || isApproving || !tokensToApprove[0]) return;
+    if (isApprovalRequired) {
+      if (!chainId || isApproving || !tokensToApprove[0]) return false;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
@@ -599,11 +619,11 @@ export function useTradeboxButtonState({
           }),
       });
 
-      return;
+      return false;
     }
 
     if (isAllowancePending || isApproving) {
-      return;
+      return false;
     }
 
     setStage("processing");
@@ -621,6 +641,7 @@ export function useTradeboxButtonState({
     }
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("tradebox.submit"));
       /**
        * Wait 2 seconds to prevent double click on button
        * waiting for txnPromise may not be enough because it's sometimes resolves very fast
@@ -628,22 +649,23 @@ export function useTradeboxButtonState({
       await sleep(2000);
       setStage("trade");
 
-      return;
+      return true;
     }
 
-    return txnPromise.finally(() => {
+    await txnPromise.finally(() => {
       setStage("trade");
     });
+
+    return true;
   }, [
     account,
     chainId,
     expressParams?.subaccount,
     fromToken,
     handleApprove,
-    isAllowanceLoaded,
     isAllowancePending,
+    isApprovalRequired,
     isApproving,
-    isFromTokenGmxAccount,
     isIncrease,
     isSwap,
     isWrapOrUnwrap,
@@ -673,6 +695,11 @@ export function useTradeboxButtonState({
       batchParams,
       totalExecutionFee,
       isExpressLoading,
+      expressGasPaymentToken,
+      isFeeInPayToken,
+      approvalTokenAddress: isApprovalRequired ? tokensToApprove[0] : undefined,
+      isApproving,
+      isAllowanceLoaded,
     };
 
     if (!account && isWalletInitializing) {
@@ -854,6 +881,8 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    expressGasPaymentToken,
+    isFeeInPayToken,
     isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
@@ -866,6 +895,7 @@ export function useTradeboxButtonState({
     tokensToApprove,
     isAllowanceLoaded,
     isAllowancePending,
+    isApprovalRequired,
     stage,
     isIncrease,
     sidecarEntries,

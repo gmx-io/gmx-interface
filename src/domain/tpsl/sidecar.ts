@@ -186,6 +186,7 @@ export function getTpSlDecreaseAmounts(p: {
   userReferralInfo: ReturnType<typeof selectUserReferralInfo> | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
   forceDecreaseSwapType?: DecreasePositionSwapType;
+  proDiscountFactor?: bigint;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -218,6 +219,7 @@ export function getTpSlDecreaseAmounts(p: {
     triggerOrderType: p.triggerOrderType,
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: p.forceDecreaseSwapType,
+    proDiscountFactor: p.proDiscountFactor,
   });
 }
 

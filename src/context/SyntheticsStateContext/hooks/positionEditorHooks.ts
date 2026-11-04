@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import type { Address } from "viem";
 
 import type { Operation, PositionEditorDepositMode } from "domain/synthetics/trade/usePositionEditorState";
@@ -6,10 +7,10 @@ import {
   selectPositionEditorAtPriceOpenRequest,
   selectPositionEditorClearAtPriceOpenRequest,
   selectPositionEditorCollateralInputValue,
+  selectPositionEditorDepositConversionTokenAddress,
   selectPositionEditorDepositMode,
   selectPositionEditorEditingPositionKey,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
-  selectPositionEditorMinCollateralFactor,
   selectPositionEditorOpenAtPrice,
   selectPositionEditorOpenDepositNow,
   selectPositionEditorOperation,
@@ -19,6 +20,7 @@ import {
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSetCollateralInputValue,
   selectPositionEditorSetDepositMode,
+  selectPositionEditorSetDepositPayTokenAddress,
   selectPositionEditorSetEditingPositionKey,
   selectPositionEditorSetIsCollateralTokenFromGmxAccount,
   selectPositionEditorSetOperation,
@@ -39,11 +41,23 @@ export const usePositionEditorPositionState = () => {
 
 export const usePositionEditorPosition = () => useSelector(selectPositionEditorPosition);
 
-export const usePositionEditorMinCollateralFactor = () => useSelector(selectPositionEditorMinCollateralFactor);
-
 export const usePositionEditorSelectedCollateralAddress = (): [Address | undefined, (address: Address) => void] => {
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
-  const setSelectedCollateralAddress = useSelector(selectPositionEditorSetSelectedCollateralAddress);
+  const setSavedCollateralAddress = useSelector(selectPositionEditorSetSelectedCollateralAddress);
+  const setDepositPayTokenAddress = useSelector(selectPositionEditorSetDepositPayTokenAddress);
+  const depositConversionTokenAddress = useSelector(selectPositionEditorDepositConversionTokenAddress);
+
+  const setSelectedCollateralAddress = useCallback(
+    (address: Address) => {
+      if (depositConversionTokenAddress !== undefined) {
+        setDepositPayTokenAddress(address);
+        return;
+      }
+
+      setSavedCollateralAddress(address);
+    },
+    [depositConversionTokenAddress, setDepositPayTokenAddress, setSavedCollateralAddress]
+  );
 
   return [selectedCollateralAddress, setSelectedCollateralAddress];
 };

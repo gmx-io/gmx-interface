@@ -11,12 +11,14 @@ export function getContractErrorToastContent({
   errorData,
   slippageInputId,
   isSizeIncrease,
+  isDecrease,
   isLpWithdrawal,
 }: {
   chainId: number;
   errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   isLpWithdrawal?: boolean;
 }): ReactNode | undefined {
   if (!errorData.contractError) {
@@ -56,6 +58,7 @@ export function getContractErrorToastContent({
             },
             slippageInputId,
             isSizeIncrease,
+            isDecrease,
             isLpWithdrawal,
           });
 
@@ -65,10 +68,10 @@ export function getContractErrorToastContent({
         }
       }
 
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isLpWithdrawal });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, isLpWithdrawal });
     }
 
     default:
-      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isLpWithdrawal });
+      return getContractErrorMessage({ chainId, errorData, isSizeIncrease, isDecrease, isLpWithdrawal });
   }
 }

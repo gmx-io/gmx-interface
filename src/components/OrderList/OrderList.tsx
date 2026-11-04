@@ -17,7 +17,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -41,6 +41,7 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { helperToast } from "lib/helperToast";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -100,6 +101,7 @@ export function OrderList({
 
   const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -178,7 +180,7 @@ export function OrderList({
     };
 
     try {
-      const expressParams = await estimateBatchExpressParams({
+      const expressParams = await estimateExpressParams({
         signer,
         chainId,
         batchParams,
@@ -214,7 +216,7 @@ export function OrderList({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
+      }).catch(reportHandledRejection("orderList.cancel"));
     } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);

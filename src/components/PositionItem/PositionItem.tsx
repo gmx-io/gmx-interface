@@ -4,6 +4,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useIntersection } from "react-use";
 
+import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -22,7 +23,9 @@ import {
   getEstimatedLiquidationTimeInHours,
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
+import { getPositionLifetimeFees, type PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { TradeMode } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -55,6 +58,7 @@ import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
+  lifecycleFees: PositionsLifecycleFees | undefined;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
@@ -69,6 +73,11 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
+  const { networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
+  const canEditMargin = Boolean(
+    p.onEditCollateralClick && (features.collateralDeposit || features.collateralWithdrawal)
+  );
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
@@ -231,6 +240,52 @@ export function PositionItem(p: Props) {
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
 
+  function renderLifetimeFees() {
+    const lifetimeFees = getPositionLifetimeFees(p.position, p.lifecycleFees);
+    const totals = lifetimeFees.status === "loaded" ? lifetimeFees : undefined;
+    const fallback = lifetimeFees.status === "unavailable" ? "-" : "...";
+
+    return (
+      <>
+        <div className="mb-4 text-typography-primary">
+          <Trans>Since position opened</Trans>
+        </div>
+        <StatsTooltipRow
+          label={t`Total borrow fee`}
+          showDollar={false}
+          value={<UsdValue usd={totals && -totals.borrowingFeeUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-red-500": totals !== undefined && totals.borrowingFeeUsd !== 0n,
+          })}
+        />
+        <StatsTooltipRow
+          label={t`Total funding paid`}
+          showDollar={false}
+          value={<DeltaUsdValue deltaUsd={totals && -totals.fundingFeePaidUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-red-500": totals !== undefined && totals.fundingFeePaidUsd !== 0n,
+          })}
+        />
+        <StatsTooltipRow
+          label={t`Total funding received`}
+          showDollar={false}
+          value={<DeltaUsdValue deltaUsd={totals?.fundingFeeReceivedUsd} fallback={fallback} />}
+          valueClassName="numbers"
+          textClassName={cx({
+            "text-green-500": totals !== undefined && totals.fundingFeeReceivedUsd > 0,
+          })}
+        />
+        {lifetimeFees.status === "unavailable" && (
+          <div className="text-typography-secondary">
+            <Trans>Full history unavailable for this position</Trans>
+          </div>
+        )}
+      </>
+    );
+  }
+
   function renderCollateral() {
     const isStableCollateral = p.position.collateralToken.isStable;
     const renderMarginValue = (amount: bigint, usd: bigint) =>
@@ -309,6 +364,8 @@ export function PositionItem(p: Props) {
                   })}
                 />
                 <br />
+                {renderLifetimeFees()}
+                <br />
                 <div className="mb-4 text-typography-primary">
                   <Trans>Estimated daily fees</Trans>
                 </div>
@@ -336,7 +393,7 @@ export function PositionItem(p: Props) {
             }
           />
 
-          {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+          {!p.position.isOpening && !p.hideActions && canEditMargin && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
               <EditIcon className="text-typography-secondary" width={16} height={16} />
             </span>
@@ -430,7 +487,7 @@ export function PositionItem(p: Props) {
             </Trans>
             <br />
             <br />
-            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+            <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
             <br />
             <br />
             <StatsTooltipRow
@@ -672,13 +729,15 @@ export function PositionItem(p: Props) {
               </Button>
 
               <PositionDropdown
-                handleEditCollateral={p.onEditCollateralClick}
+                handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                 handleMarketSelect={() => p.onSelectPositionClick?.()}
                 handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
                 handleShare={p.onShareClick}
                 handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
-                handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
+                handleStopMarketIncreaseSize={
+                  features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket) : undefined
+                }
+                handleTwapIncreaseSize={features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap) : undefined}
                 handleTriggerClose={handleOpenAddTPSLModal}
                 handleViewPositionHistory={p.onViewPositionHistory}
                 disabled={isActionsDisabled}
@@ -872,13 +931,17 @@ export function PositionItem(p: Props) {
                 </Button>
                 <div>
                   <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
+                    handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                     handleMarketSelect={() => p.onSelectPositionClick?.()}
                     handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
                     handleShare={p.onShareClick}
                     handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                    handleStopMarketIncreaseSize={
+                      features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket, true) : undefined
+                    }
+                    handleTwapIncreaseSize={
+                      features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap, true) : undefined
+                    }
                     handleTriggerClose={handleOpenAddTPSLModal}
                     handleViewPositionHistory={p.onViewPositionHistory}
                     disabled={isActionsDisabled}

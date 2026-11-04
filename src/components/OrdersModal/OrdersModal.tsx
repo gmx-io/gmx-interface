@@ -18,7 +18,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -39,6 +39,7 @@ import {
 } from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
 import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -103,6 +104,7 @@ export function OrdersModal({
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const effectivePositionKey = position?.key ?? positionKeyProp;
@@ -217,7 +219,7 @@ export function OrdersModal({
 
     try {
       const expressParams = globalExpressParams
-        ? await estimateBatchExpressParams({
+        ? await estimateExpressParams({
             signer,
             chainId,
             batchParams,
@@ -254,7 +256,7 @@ export function OrdersModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
+      }).catch(reportHandledRejection("ordersModal.cancelAll"));
     } finally {
       setIsCancellingAll(false);
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
@@ -264,6 +266,7 @@ export function OrdersModal({
     provider,
     displayedOrders,
     setCancellingOrdersKeys,
+    estimateExpressParams,
     globalExpressParams,
     chainId,
     srcChainId,

@@ -17,6 +17,8 @@ const LIFECYCLE_MAX_PAGES = 10;
 export const LIFECYCLE_MAX_ROWS = LIFECYCLE_PAGE_SIZE * LIFECYCLE_MAX_PAGES;
 /** A window with more settles than this is treated as unreconcilable rather than silently sampled. */
 const CLAIM_PROBE_LIMIT = 200;
+// the orders and swapInfos queries below return at most this many items
+const LIFECYCLE_ID_IN_LIMIT = 1000;
 
 export type LifecycleOrder = {
   orderKey: string;
@@ -79,7 +81,7 @@ const LIFECYCLE_ROWS_COUNT_QUERY = gql`
 
 const LIFECYCLE_ORDERS_QUERY = gql`
   query LifecycleOrders($orderKeys: [String!]!) {
-    orders(where: { id_in: $orderKeys }, limit: 1000) {
+    orders(where: { id_in: $orderKeys }, limit: ${LIFECYCLE_ID_IN_LIMIT}) {
       id
       initialCollateralTokenAddress
       initialCollateralDeltaAmount
@@ -90,7 +92,7 @@ const LIFECYCLE_ORDERS_QUERY = gql`
 
 const LIFECYCLE_SWAP_INFOS_QUERY = gql`
   query LifecycleSwapInfos($swapInfoIds: [String!]!) {
-    swapInfos(where: { id_in: $swapInfoIds }, limit: 1000) {
+    swapInfos(where: { id_in: $swapInfoIds }, limit: ${LIFECYCLE_ID_IN_LIMIT}) {
       id
       orderKey
       marketAddress
@@ -135,6 +137,25 @@ function sortRawRowsByExecution(rows: SubsquidTradeAction[]): SubsquidTradeActio
 
 export function getSwapLegId(orderKey: string, marketAddress: string): string {
   return `${orderKey}:${marketAddress}`;
+}
+
+export async function fetchSwapLegs(
+  client: NonNullable<ReturnType<typeof getSubsquidGraphClient>>,
+  swapInfoIds: string[]
+): Promise<LifecycleSwapLeg[]> {
+  const result = await client.query({ query: LIFECYCLE_SWAP_INFOS_QUERY, variables: { swapInfoIds } });
+  const rawSwapInfos = (result.data?.swapInfos ?? []) as SwapInfo[];
+
+  return rawSwapInfos.map((swapInfo) => ({
+    orderKey: swapInfo.orderKey,
+    marketAddress: swapInfo.marketAddress,
+    tokenInAddress: swapInfo.tokenInAddress,
+    tokenOutAddress: swapInfo.tokenOutAddress,
+    tokenInPrice: BigInt(swapInfo.tokenInPrice),
+    tokenOutPrice: BigInt(swapInfo.tokenOutPrice),
+    amountIn: BigInt(swapInfo.amountIn),
+    amountOut: BigInt(swapInfo.amountOut),
+  }));
 }
 
 export async function fetchLifecycleSettlementData({
@@ -210,11 +231,9 @@ export async function fetchLifecycleSettlementData({
   const fromTimestamp = sortedRows[0].timestamp;
   const toTimestamp = sortedRows[sortedRows.length - 1].timestamp;
 
-  const [ordersResult, swapInfosResult, claimsResult] = await Promise.all([
+  const [ordersResult, swapLegs, claimsResult] = await Promise.all([
     client.query({ query: LIFECYCLE_ORDERS_QUERY, variables: { orderKeys } }),
-    swapInfoIds.length > 0
-      ? client.query({ query: LIFECYCLE_SWAP_INFOS_QUERY, variables: { swapInfoIds } })
-      : undefined,
+    swapInfoIds.length > 0 ? fetchSwapLegs(client, swapInfoIds) : [],
     client.query({
       query: LIFECYCLE_SETTLE_FUNDING_QUERY,
       variables: { account, fromTimestamp, toTimestamp, limit: CLAIM_PROBE_LIMIT },
@@ -222,7 +241,6 @@ export async function fetchLifecycleSettlementData({
   ]);
 
   const rawOrders = (ordersResult.data?.orders ?? []) as Order[];
-  const rawSwapInfos = (swapInfosResult?.data?.swapInfos ?? []) as SwapInfo[];
   const rawClaims = (claimsResult.data?.claimActions ?? []) as ClaimAction[];
 
   const marketDirections = new Set(sortedRows.map((row) => `${row.marketAddress}:${row.isLong}`));
@@ -243,18 +261,10 @@ export async function fetchLifecycleSettlementData({
       initialCollateralDeltaAmount: BigInt(order.initialCollateralDeltaAmount),
       swapPath: order.swapPath ?? [],
     })),
-    swapLegs: rawSwapInfos.map((swapInfo) => ({
-      orderKey: swapInfo.orderKey,
-      marketAddress: swapInfo.marketAddress,
-      tokenInAddress: swapInfo.tokenInAddress,
-      tokenOutAddress: swapInfo.tokenOutAddress,
-      tokenInPrice: BigInt(swapInfo.tokenInPrice),
-      tokenOutPrice: BigInt(swapInfo.tokenOutPrice),
-      amountIn: BigInt(swapInfo.amountIn),
-      amountOut: BigInt(swapInfo.amountOut),
-    })),
+    swapLegs,
     hasFundingSettlement,
-    isTruncated,
+    // a capped query would leave legs missing, and a missing leg reads as a reverted swap
+    isTruncated: isTruncated || orderKeys.length > LIFECYCLE_ID_IN_LIMIT || swapInfoIds.length > LIFECYCLE_ID_IN_LIMIT,
   };
 }
 

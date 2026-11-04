@@ -393,12 +393,6 @@ export const telegramGroups: EcosystemTelegramGroup[] = [
     about: msg`Telegram group (Chinese)`,
   },
   {
-    title: msg`GMX (Portuguese)`,
-    link: "https://t.me/GMX_Portuguese",
-    linkLabel: "t.me",
-    about: msg`Telegram group (Portuguese)`,
-  },
-  {
     title: msg`GMX trading chat`,
     link: "https://t.me/gambittradingchat",
     linkLabel: "t.me",

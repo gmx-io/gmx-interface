@@ -4,6 +4,7 @@ import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
 import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import type { LaunchSource } from "lib/pwa/getLaunchSource";
+import type { WalletChainCapabilitiesResult } from "lib/wallets/walletCapabilities";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -505,7 +506,7 @@ export type EditCollateralMetricData = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
-  swapPath: [];
+  swapPath: string[];
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
@@ -517,6 +518,10 @@ export type EditCollateralMetricData = {
 export type SwapGmMetricData = {
   metricId: `gm:${string}`;
   metricType: "buyGM" | "sellGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -533,6 +538,10 @@ export type SwapGmMetricData = {
 export type ShiftGmMetricData = {
   metricId: `shift:${string}`;
   metricType: "shiftGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   fromMarketAddress: string | undefined;
   toMarketAddress: string | undefined;
@@ -543,6 +552,10 @@ export type ShiftGmMetricData = {
 export type SwapGLVMetricData = {
   metricId: `glv:${string}`;
   metricType: "buyGLV" | "sellGLV";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -555,6 +568,27 @@ export type SwapGLVMetricData = {
   glvTokenAmount: number | undefined;
   glvTokenUsd: number | undefined;
   isFirstBuy: boolean | undefined;
+};
+
+// Token permits
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
+
+/** Unset for permits signed in place of an approval transaction */
+export type TokenPermitFlow = "oneClickActivation";
+
+export type TokenPermitEvent = {
+  event: "tokenPermit";
+  isError: boolean;
+  data: {
+    outcome: TokenPermitOutcome;
+    chainId: number;
+    token: string;
+    accountType: string | undefined;
+    reason?: string;
+    flow?: TokenPermitFlow;
+    /** Links the signed, failedCheck and executed events of one permit */
+    permitId?: string;
+  };
 };
 
 // Missed coins
@@ -688,6 +722,8 @@ export type SignatureProducedEvent = {
   data: {
     /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
     signaturePurpose: string;
+    /** `local` is the One-Click session key or a fee-simulation key: no wallet prompt */
+    signerSource: "wallet" | "local";
     signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
     signatureBytes: number | undefined;
     ecdsaV: number | undefined;
@@ -749,9 +785,45 @@ export type StakingActionEvent = {
   event: "staking.action";
   isError: false;
   data: {
-    action: "stake" | "unstake" | "claim" | "compound";
+    action: "stake" | "unstake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
     tokenSymbol: string | undefined;
     outcome: "sent" | "rejected" | "failed";
+    chainId: number;
+  };
+};
+
+export type SubaccountActivationEvent = {
+  event: "subaccount.activation";
+  isError: false;
+  data: {
+    outcome: "activated" | "rejected" | "failed";
+    failedStep: "keyGeneration" | "approval" | undefined;
+    isNewKey: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountSettingsUpdateEvent = {
+  event: "subaccount.settingsUpdate";
+  isError: false;
+  data: {
+    outcome: "updated" | "rejected" | "failed";
+    wasExpired: boolean;
+    wasActionsExceeded: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountRemovalEvent = {
+  event: "subaccount.removal";
+  isError: false;
+  data: {
+    /** `none` when nothing was left to remove on chain; unset when it failed before a method was chosen */
+    method: "none" | "signature" | "walletTxn" | undefined;
+    /** `unknown`: the relay didn't confirm, the next attempt finds out on chain */
+    outcome: "removed" | "rejected" | "failed" | "unknown";
     chainId: number;
   };
 };
@@ -762,9 +834,17 @@ export type WalletCapabilitiesEvent = {
   data: {
     chainId: number;
     walletName: string | undefined;
+    connectorId: string;
+    connectorType: string;
     accountType: string | undefined;
     delegateAddress: string | undefined;
-    capabilitiesStatus: "ok" | "unsupported" | "skipped" | "error" | "timeout";
+    capabilitiesStatus: WalletChainCapabilitiesResult["status"];
+    capabilitiesDurationMs: number | undefined;
+    capabilitiesTimeoutMs: number | undefined;
+    capabilitiesErrorCode: number | undefined;
+    capabilitiesErrorName: string | undefined;
+    capabilitiesErrorMessage: string | undefined;
+    capabilitiesErrorReason: WalletChainCapabilitiesResult["errorReason"];
     atomicStatus: string | undefined;
     hasAlternateGasFees: boolean | undefined;
     hasPaymasterService: boolean | undefined;
