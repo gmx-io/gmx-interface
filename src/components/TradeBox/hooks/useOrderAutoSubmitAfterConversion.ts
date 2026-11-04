@@ -38,7 +38,7 @@ export function useOrderAutoSubmitAfterConversion({
     isAllowanceLoaded: boolean;
   };
   isDepositButtonShown: boolean;
-  onApprove: () => Promise<void>;
+  onApprove: () => Promise<unknown>;
   onSubmit: () => Promise<void>;
 }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
