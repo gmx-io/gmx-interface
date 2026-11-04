@@ -10,13 +10,16 @@ import {
   metrics,
   RpcTrackerEndpointBannedEvent,
   RpcTrackerEndpointBlockGapTiming,
+  RpcTrackerEndpointHealthEvent,
   RpcTrackerEndpointTiming,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
 import { createEndpointsPairReporter } from "./endpointsPairReporter";
 
 export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
-  const progressFields = isSolanaNetwork(tracker.params.chainId) ? { progressUnit: "slot" as const } : {};
+  const isSolana = isSolanaNetwork(tracker.params.chainId);
+  const progressFields = isSolana ? { progressUnit: "slot" as const } : {};
+  const endpointHealth = new Map<string, boolean>();
   const endpointsPairReporter = createEndpointsPairReporter<RpcTrackerUpdateEndpointsEvent["data"]>((data, repeats) => {
     metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({
       event: "rpcTracker.endpoint.updated",
@@ -85,6 +88,23 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
       const relevantStats = endpointsStats.filter((stat) => relevantEndpoints.includes(stat.endpoint));
 
       relevantStats.forEach((endpointStats) => {
+        const latestCheck = endpointStats.checkResults[0];
+        if (isSolana && latestCheck) {
+          const previousHealth = endpointHealth.get(endpointStats.endpoint);
+          endpointHealth.set(endpointStats.endpoint, latestCheck.success);
+          if (previousHealth !== latestCheck.success && (!latestCheck.success || previousHealth === false)) {
+            metrics.pushEvent<RpcTrackerEndpointHealthEvent>({
+              event: "rpcTracker.endpoint.health",
+              isError: !latestCheck.success,
+              data: {
+                chainId: tracker.params.chainId,
+                chainName: getChainName(tracker.params.chainId),
+                endpoint: getProviderNameFromUrl(endpointStats.endpoint),
+                isHealthy: latestCheck.success,
+              },
+            });
+          }
+        }
         const blockGap = getBlockGap(bestBlock, endpointStats);
         const responseTime = endpointStats.checkResults?.[0]?.stats?.responseTime;
 
