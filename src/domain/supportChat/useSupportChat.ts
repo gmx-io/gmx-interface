@@ -1,5 +1,5 @@
 import Intercom, { boot, onUnreadCountChange, show, shutdown, update } from "@intercom/messenger-js-sdk";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
@@ -29,8 +29,112 @@ const ACCOUNT_TYPE_LABELS: Record<AccountType, string> = {
   [AccountType.EOA]: "EOA",
 };
 
+// Survives the AppRoutes remount on a network switch. After shutdown(), only boot() revives the messenger.
+let wasIntercomInitialized = false;
+
+// Monotonic: shutdown clears the id, the next boot takes the next number. SupportChatEvmAttributes
+// is a child of AppRoutes, so its effect runs before boot and must not reuse an id it already saw.
+let intercomBootCount = 0;
+let intercomBootId: number | undefined;
+const intercomBootListeners = new Set<() => void>();
+
+function setIntercomBootId(bootId: number | undefined) {
+  intercomBootId = bootId;
+  intercomBootListeners.forEach((listener) => listener());
+}
+
+function subscribeIntercomBoot(listener: () => void) {
+  intercomBootListeners.add(listener);
+  return () => {
+    intercomBootListeners.delete(listener);
+  };
+}
+
+function getIntercomBootId() {
+  return intercomBootId;
+}
+
 export function useSupportChat() {
   const { shouldShowSupportChat, shouldOpenChatOnBoot } = useShowSupportChat();
+  const { themeMode } = useTheme();
+  const themeModeRef = useRef(themeMode);
+  themeModeRef.current = themeMode;
+  const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
+
+  const [, setSupportChatUnreadCount] = useSupportChatUnreadCount();
+
+  useEffect(() => {
+    if (!shouldShowSupportChat) {
+      return;
+    }
+
+    const supportChatUserId = getOrCreateSupportChatUserId();
+
+    const intercomSettings = {
+      app_id: INTERCOM_APP_ID,
+      alignment: "left",
+      horizontal_padding: 20,
+      vertical_padding: 20,
+      hide_default_launcher: true,
+      hide_notifications: false,
+      user_id: supportChatUserId,
+      Environment: "EVM",
+      // theme goes into the boot settings: update({ theme_mode }) during the boot window
+      // suppresses the initial unread count delivery in the Intercom widget
+      theme_mode: themeToIntercomTheme(themeModeRef.current),
+    };
+    lastSentIntercomTheme.current = intercomSettings.theme_mode;
+
+    if (wasIntercomInitialized) {
+      // Intercom() is a no-op after the first call; after shutdown() only boot() revives the messenger
+      boot(intercomSettings);
+    } else {
+      Intercom(intercomSettings);
+      wasIntercomInitialized = true;
+    }
+
+    setIntercomBootId(++intercomBootCount);
+
+    onUnreadCountChange((unreadCount: number) => {
+      setSupportChatUnreadCount(unreadCount);
+    });
+
+    if (shouldOpenChatOnBoot) {
+      show();
+    }
+
+    const stopClippingNotificationFrame = clipNotificationFrame();
+
+    return () => {
+      stopClippingNotificationFrame();
+      shutdown();
+      setIntercomBootId(undefined);
+    };
+  }, [shouldShowSupportChat, shouldOpenChatOnBoot, setSupportChatUnreadCount]);
+
+  useEffect(() => {
+    if (!shouldShowSupportChat) {
+      return;
+    }
+
+    const intercomTheme = themeToIntercomTheme(themeMode);
+
+    // only on actual theme switches: an update({ theme_mode }) right after boot suppresses
+    // the initial unread count delivery in the Intercom widget
+    if (lastSentIntercomTheme.current === intercomTheme) {
+      return;
+    }
+
+    lastSentIntercomTheme.current = intercomTheme;
+    update({
+      theme_mode: intercomTheme,
+    });
+  }, [shouldShowSupportChat, themeMode]);
+}
+
+/** Volume, portfolio and GMX Account attributes. Mounted on EVM only, so those queries stay off Solana. */
+export function SupportChatEvmAttributes() {
+  const { shouldShowSupportChat } = useShowSupportChat();
   const { address: account, connector } = useAccount();
   const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
@@ -38,19 +142,13 @@ export function useSupportChat() {
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
   const { expressOrdersEnabled } = useSettings();
   const { subaccount } = useSubaccountContext();
-  const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
-  const initializedAddress = useRef<string | undefined>(undefined);
-  const wasIntercomInitialized = useRef(false);
-  const themeModeRef = useRef(themeMode);
-  themeModeRef.current = themeMode;
-  const lastSentIntercomTheme = useRef<ReturnType<typeof themeToIntercomTheme> | undefined>(undefined);
+  const intercomBootId = useSyncExternalStore(subscribeIntercomBoot, getIntercomBootId);
+  const initialized = useRef<{ account: string | undefined; bootId: number } | undefined>(undefined);
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
   });
-
-  const [, setSupportChatUnreadCount] = useSupportChatUnreadCount();
 
   const customUserAttributes = useMemo(() => {
     if (
@@ -102,79 +200,21 @@ export function useSupportChat() {
   ]);
 
   useEffect(() => {
-    if (!shouldShowSupportChat) {
+    const bootId = getIntercomBootId();
+    if (!shouldShowSupportChat || bootId === undefined) {
+      initialized.current = undefined;
       return;
     }
 
-    const supportChatUserId = getOrCreateSupportChatUserId();
+    const isSent = initialized.current?.account === account && initialized.current?.bootId === bootId;
 
-    const intercomSettings = {
-      app_id: INTERCOM_APP_ID,
-      alignment: "left",
-      horizontal_padding: 20,
-      vertical_padding: 20,
-      hide_default_launcher: true,
-      hide_notifications: false,
-      user_id: supportChatUserId,
-      Environment: "EVM",
-      // theme goes into the boot settings: update({ theme_mode }) during the boot window
-      // suppresses the initial unread count delivery in the Intercom widget
-      theme_mode: themeToIntercomTheme(themeModeRef.current),
-    };
-    lastSentIntercomTheme.current = intercomSettings.theme_mode;
-
-    if (wasIntercomInitialized.current) {
-      // Intercom() is a no-op after the first call; after shutdown() only boot() revives the messenger
-      boot(intercomSettings);
-    } else {
-      Intercom(intercomSettings);
-      wasIntercomInitialized.current = true;
-    }
-
-    onUnreadCountChange((unreadCount: number) => {
-      setSupportChatUnreadCount(unreadCount);
-    });
-
-    if (shouldOpenChatOnBoot) {
-      show();
-    }
-
-    const stopClippingNotificationFrame = clipNotificationFrame();
-
-    return () => {
-      stopClippingNotificationFrame();
-      shutdown();
-      initializedAddress.current = undefined;
-    };
-  }, [shouldShowSupportChat, shouldOpenChatOnBoot, setSupportChatUnreadCount]);
-
-  useEffect(() => {
-    if (!shouldShowSupportChat) {
+    if (isSent || !customUserAttributes) {
       return;
     }
 
-    const intercomTheme = themeToIntercomTheme(themeMode);
-
-    // only on actual theme switches: an update({ theme_mode }) right after boot suppresses
-    // the initial unread count delivery in the Intercom widget
-    if (lastSentIntercomTheme.current === intercomTheme) {
-      return;
-    }
-
-    lastSentIntercomTheme.current = intercomTheme;
-    update({
-      theme_mode: intercomTheme,
-    });
-  }, [shouldShowSupportChat, themeMode]);
-
-  useEffect(() => {
-    if (initializedAddress.current === account || !shouldShowSupportChat || !customUserAttributes) {
-      return;
-    }
-
-    initializedAddress.current = account;
+    initialized.current = { account, bootId };
     update(customUserAttributes);
-  }, [shouldShowSupportChat, customUserAttributes, account]);
+  }, [shouldShowSupportChat, customUserAttributes, account, intercomBootId]);
 
   useEffect(() => {
     tradingErrorTracker.setSupportChatContext({
@@ -183,4 +223,6 @@ export function useSupportChat() {
       network: getChainName(srcChainId ?? chainId),
     });
   }, [account, connector?.name, srcChainId, chainId]);
+
+  return null;
 }

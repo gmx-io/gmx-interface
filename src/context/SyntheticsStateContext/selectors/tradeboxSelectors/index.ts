@@ -815,7 +815,7 @@ export const selectTradeboxLeverageFieldValue = createSelector((q) => {
   return Number(estimatedLeverage) / BASIS_POINTS_DIVISOR;
 });
 
-const selectTradeboxLeverageStrategy = createSelector((q) => {
+export const selectTradeboxLeverageStrategy = createSelector((q) => {
   const isLeverageEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   return isLeverageEnabled ? (focusedInput === "from" ? "leverageByCollateral" : "leverageBySize") : "independent";

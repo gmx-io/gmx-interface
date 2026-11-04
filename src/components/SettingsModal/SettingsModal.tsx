@@ -3,6 +3,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
@@ -49,12 +50,14 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
+  const showTradingSettings = features.express || features.oneClickTrading || features.twap || features.stopMarket;
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
-  const [activeTab, setActiveTab] = useState<SettingsTab>("trading");
+  const [activeTab, setActiveTab] = useState<SettingsTab>(showTradingSettings ? "trading" : "display");
   const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
   const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
 
@@ -257,12 +260,18 @@ export function SettingsModal({
 
   const tabOptions = useMemo(
     () =>
-      SETTINGS_TABS.map((tab) => ({
+      SETTINGS_TABS.filter((tab) => showTradingSettings || tab !== "trading").map((tab) => ({
         value: tab,
         label: tabLabels[tab],
       })),
-    [tabLabels]
+    [showTradingSettings, tabLabels]
   );
+
+  useEffect(() => {
+    if (!tabOptions.some((tab) => tab.value === activeTab)) {
+      setActiveTab(tabOptions[0].value);
+    }
+  }, [activeTab, tabOptions]);
 
   return (
     <SlideModal
@@ -277,18 +286,20 @@ export function SettingsModal({
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
-          <TabWrapper tab="trading" activeTab={activeTab}>
-            <TradingSettings
-              tradingMode={tradingMode}
-              handleTradingModeChange={handleTradingModeChange}
-              onChangeSlippage={onChangeSlippage}
-              onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
-              onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
-              onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
-              numberOfParts={numberOfParts}
-              onClose={onClose}
-            />
-          </TabWrapper>
+          {showTradingSettings && (
+            <TabWrapper tab="trading" activeTab={activeTab}>
+              <TradingSettings
+                tradingMode={tradingMode}
+                handleTradingModeChange={handleTradingModeChange}
+                onChangeSlippage={onChangeSlippage}
+                onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
+                onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
+                onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
+                numberOfParts={numberOfParts}
+                onClose={onClose}
+              />
+            </TabWrapper>
+          )}
           <TabWrapper tab="display" activeTab={activeTab}>
             <DisplaySettings />
           </TabWrapper>
