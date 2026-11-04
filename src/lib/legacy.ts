@@ -26,7 +26,6 @@ export const MARGIN_FEE_BASIS_POINTS = 10;
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
-export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 // Removed: TOKEN_IMG_DIR (unused)
 

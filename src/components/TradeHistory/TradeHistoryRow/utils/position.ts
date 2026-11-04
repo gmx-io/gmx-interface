@@ -934,15 +934,25 @@ export function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: 
   return { totalUsd, lines: breakdownLines };
 }
 
+export type SettlementSource = "wallet" | "gmxAccount" | "mixed";
+
+function getSettlementPayoutLabel(source: SettlementSource) {
+  if (source === "gmxAccount") {
+    return t`Received at close (GMX balance)`;
+  }
+
+  return source === "mixed" ? t`Received at close` : t`Wallet received`;
+}
+
 export function getSettlementTooltipLines({
   tradeAction,
   openRow,
-  isMultichain = false,
+  source = "wallet",
   usdgPayoutCtx,
 }: {
   tradeAction: PositionTradeAction;
   openRow: PositionTradeAction | undefined;
-  isMultichain?: boolean;
+  source?: SettlementSource;
   usdgPayoutCtx?: { chainId: number; swapLegsById: Record<string, LifecycleSwapLeg> };
 }): Line[] {
   const collateralToken = tradeAction.initialCollateralToken;
@@ -996,9 +1006,7 @@ export function getSettlementTooltipLines({
       text: formatDeltaUsdParts(breakdown.totalUsd),
       state: numberToState(breakdown.totalUsd),
     }),
-    walletReceived === undefined
-      ? undefined
-      : infoRow(isMultichain ? t`Received at close (GMX balance)` : t`Wallet received`, walletReceived)
+    walletReceived === undefined ? undefined : infoRow(getSettlementPayoutLabel(source), walletReceived)
   );
 }
 

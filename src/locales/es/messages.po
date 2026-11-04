@@ -1251,10 +1251,6 @@ msgstr "Volumen negociado por los operadores que ha referido"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "¿Puedo unstakear o retirar en cualquier momento?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Ha activado el código de referido {userReferralCodeString}. Su tarifa reducida se aplica automáticamente a cada posición que abra o cierre — sin necesidad de pasos adicionales."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1449,6 +1445,10 @@ msgstr "La comisión de ejecución es demasiado baja para los costes actuales de
 msgid "Tiers"
 msgstr "Niveles"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Ha activado el código de referido {activatedReferralCodeLabel}. Su tarifa reducida se aplica automáticamente a cada posición que abra o cierre — sin necesidad de pasos adicionales."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Factor de comisión de intercambio (PI negativo)"
@@ -1502,10 +1502,6 @@ msgstr "Transacción:"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "No hay mercados coincidentes"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "Unstakear {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -1685,6 +1681,7 @@ msgstr "Resultado neto del monedero"
 msgid "Use {0} for gas"
 msgstr "Usar {0} para gas"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Margen total aportado"
@@ -3249,6 +3246,10 @@ msgstr "Endpoints RPC de depuración ({0})"
 msgid "Driven by our community"
 msgstr "Impulsado por nuestra comunidad"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "Unstakear GMX y esGMX"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "El traspaso de liquidez solo está disponible en {chainNames}. Cambie de red para continuar."
@@ -4078,6 +4079,10 @@ msgstr "TIPO DE DATO"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "El impacto en el precio del intercambio es alto"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "Unstakear GMX o esGMX tarda 180 días. Usted solicita unstakear y, cuando termina la espera, retira el importe como GMX o esGMX. Puede cancelar una solicitud en cualquier momento. Si una solicitud reduce su saldo en staking por debajo del 80 % de su importe máximo histórico en staking, todo el poder de staking acumulado se restablece a cero y usted pierde su parte de la distribución de la Tesorería cuando GMX alcance los 90 $. Cancelar la solicitud no restablece el poder de staking. Los tokens GLV y GM se pueden vender en cualquier momento. En las raras ocasiones en que posiciones abiertas utilicen su liquidez, podrá retirarla en cuanto se cierren esas posiciones."
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -6998,6 +7003,10 @@ msgstr "Seleccionar mercado"
 msgid "Referral code creation failed"
 msgstr "Error al crear el código de referido"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "Resultado neto"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7599,6 +7608,10 @@ msgstr "Graduados"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Establezca el precio de stop por debajo del precio de referencia"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "Total recibido"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
@@ -8277,6 +8290,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> a </1>{toTokenIcon}"
 msgid "Pool max long amount"
 msgstr "Cantidad máxima en largo del pool"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "Recibido antes del cierre"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Requiere una gestión más activa que GLV"
@@ -8408,10 +8425,6 @@ msgstr "Primero convierte USDC a USDG en su monedero y luego confirma la compra.
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "Ninguna oportunidad coincide con sus tenencias"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Sí, puede retirar GMX del staking y vender tokens GLV/GM en cualquier momento; el protocolo nunca bloquea sus tokens. Sin embargo, si su saldo de GMX en staking cae por debajo del 80 % de su importe máximo histórico en staking, todo el poder de staking acumulado se restablece a cero y usted pierde su parte de la distribución de la Tesorería cuando GMX alcance los 90 $. En el caso de GLV/GM, en las raras ocasiones en que su liquidez se utilice para operaciones activas, podrá retirarla en cuanto se cierren esas posiciones."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -9099,6 +9112,10 @@ msgstr "Ocultar activos de poco valor"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (oferta)"
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} no está aprobado para las comisiones. Esta orden paga su comisión de red en {toSymbol}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -12667,6 +12684,11 @@ msgstr "Impacto actual: {0}. Utilice -0.30% o más para una mejor ejecución de 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Este mercado está deshabilitado. Póngase en contacto con el servicio de asistencia para reclamar las comisiones de financiación restantes."
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "Recibido al cierre"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

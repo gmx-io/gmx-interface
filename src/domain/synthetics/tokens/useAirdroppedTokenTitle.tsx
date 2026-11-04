@@ -1,12 +1,12 @@
 import { Trans } from "@lingui/macro";
 import find from "lodash/find";
-import { Address, isAddressEqual } from "viem";
 
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useLiquidityProvidersIncentives, useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { getTokens } from "sdk/configs/tokens";
+import { isSameAddress } from "sdk/utils/address";
 
 import { getMarketIndexName, getMarketPoolName } from "../markets";
 
@@ -19,11 +19,9 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
     return "";
   }
 
-  const airDropTokenAddress = incentivesData.token as Address;
+  const airDropTokenAddress = incentivesData.token;
 
-  const market = find(marketsInfoData, (market) =>
-    isAddressEqual(market.marketTokenAddress as Address, airDropTokenAddress)
-  );
+  const market = find(marketsInfoData, (market) => isSameAddress(market.marketTokenAddress, airDropTokenAddress));
 
   if (market) {
     const indexName = getMarketIndexName(market);
@@ -41,7 +39,7 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
   }
 
   const tokens = getTokens(chainId);
-  const tokenInfo = tokens.find((token) => isAddressEqual(token.address as Address, airDropTokenAddress));
+  const tokenInfo = tokens.find((token) => isSameAddress(token.address, airDropTokenAddress));
 
   if (tokenInfo) {
     return tokenInfo.symbol;
