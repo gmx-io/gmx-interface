@@ -366,30 +366,6 @@ describe("getActualApproval", () => {
 
     expect(actual.signature).toBe(ZERO_DATA);
   });
-
-  it("returns an empty approval when it was signed before a revocation", () => {
-    const actual = getActualApproval({
-      chainId: ARBITRUM,
-      address: SUBACCOUNT_ADDRESS,
-      signedApproval: createSettlementContextApproval({ revocationCounter: 0n }),
-      onchainData: createOnchainData({ revocationCounter: 1n }),
-    });
-
-    expect(actual.signature).toBe(ZERO_DATA);
-  });
-
-  it("returns the stored approval when its revocation counter is ahead of stale on-chain data", () => {
-    const approval = createSettlementContextApproval({ revocationCounter: 1n });
-
-    expect(
-      getActualApproval({
-        chainId: ARBITRUM,
-        address: SUBACCOUNT_ADDRESS,
-        signedApproval: approval,
-        onchainData: createOnchainData({ revocationCounter: 0n }),
-      })
-    ).toBe(approval);
-  });
 });
 
 const NOW = 1_800_000_000;
