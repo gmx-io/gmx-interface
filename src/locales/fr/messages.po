@@ -1503,10 +1503,6 @@ msgstr "Transaction :"
 msgid "No markets matched"
 msgstr "Aucun marché correspondant"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "Unstaker {tokenSymbol}"
-
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
 msgstr "Les récompenses de staking sont en pause. À la place, 27 % des frais du protocole s'accumulent dans la Trésorerie et seront distribués lorsque GMX atteindra 90 $, sous réserve de la gouvernance de la DAO. Votre part dépend de la puissance de staking (durée × montant staké)."
@@ -3250,6 +3246,10 @@ msgstr "Déboguer les points de terminaison RPC ({0})"
 msgid "Driven by our community"
 msgstr "Propulsé par notre communauté"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "Unstaker GMX et esGMX"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Le déplacement de liquidité n'est disponible que sur {chainNames}. Changez de réseau pour continuer."
@@ -4079,6 +4079,10 @@ msgstr "TYPE DE DONNÉES"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "L'impact sur le prix de l'échange est élevé"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "L’unstaking de GMX ou d’esGMX prend 180 jours. Vous demandez l’unstaking, puis, une fois l’attente terminée, vous retirez le montant en GMX ou en esGMX. Vous pouvez annuler une demande à tout moment. Si une demande fait passer votre solde staké sous 80 % de votre montant maximal staké, toute la puissance de staking accumulée est remise à zéro et vous perdez votre part de la distribution de la Trésorerie lorsque GMX atteint 90 $. Annuler la demande ne rétablit pas la puissance de staking. Les tokens GLV et GM peuvent être vendus à tout moment. Dans les rares cas où des positions ouvertes utilisent votre liquidité, vous pouvez la retirer dès la clôture de ces positions."
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -8421,10 +8425,6 @@ msgstr "D'abord, vous convertissez des USDC en USDG dans votre portefeuille, pui
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "Aucune opportunité ne correspond à vos avoirs"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Oui, les GMX peuvent être retirés du staking et les tokens GLV/GM peuvent être vendus à tout moment — le protocole ne verrouille jamais vos tokens. Toutefois, si votre solde de GMX stakés passe sous 80 % de votre montant maximal staké, toute la puissance de staking accumulée est remise à zéro et vous perdez votre part de la distribution de la Trésorerie lorsque GMX atteint 90 $. Pour GLV/GM, dans les rares cas où votre liquidité est utilisée pour des transactions actives, vous pouvez la retirer dès la clôture de ces positions."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
