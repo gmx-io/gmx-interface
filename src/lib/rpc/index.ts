@@ -3,7 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import { AnyChainId, AVALANCHE_FUJI } from "config/chains";
 import { getFallbackRpcUrl, getWsRpcProviders } from "config/rpc";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
+import { assertEvmRpcActive } from "lib/rpc/fetchRpc";
 import { getCurrentExpressRpcUrl, getCurrentRpcUrls, useCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
 export function getProvider(signer: undefined, chainId: number): ethers.JsonRpcProvider;
@@ -15,6 +17,8 @@ export function getProvider(signer: Signer | undefined, chainId: number): ethers
   if (signer) {
     return signer;
   }
+
+  assertEvmRpcActive();
 
   url = getCurrentRpcUrls(chainId).primary;
 
@@ -40,6 +44,10 @@ export function getWsUrl(chainId: AnyChainId): string | undefined {
 }
 
 export function getFallbackProvider(chainId: number) {
+  if (getIsSolanaNetworkSelected()) {
+    return;
+  }
+
   const providerUrl = getFallbackRpcUrl(chainId, getIsLargeAccountChain(chainId));
 
   if (!providerUrl) {
@@ -59,25 +67,31 @@ export function useJsonRpcProvider(chainId: number | undefined, { isExpress = fa
     () => (isExpress && chainId ? getCurrentExpressRpcUrl(chainId) : primary),
     [chainId, isExpress, primary]
   );
+  const solanaSelected = getIsSolanaNetworkSelected();
 
   useEffect(() => {
-    if (!chainId) {
+    if (!chainId || !rpcUrl || solanaSelected) {
+      setProvider(undefined);
       return;
     }
 
-    async function initializeProvider() {
-      if (!rpcUrl) return;
+    let cancelled = false;
+    const nextProvider = new ethers.JsonRpcProvider(rpcUrl, chainId);
+    nextProvider._start();
+    nextProvider._waitUntilReady().then(() => {
+      if (cancelled) {
+        nextProvider.destroy();
+        return;
+      }
+      setProvider(nextProvider);
+    });
 
-      const provider = new ethers.JsonRpcProvider(rpcUrl, chainId);
-
-      provider._start();
-      await provider._waitUntilReady();
-
-      setProvider(provider);
-    }
-
-    initializeProvider();
-  }, [chainId, rpcUrl]);
+    // A provider that became active is not destroyed here: destroy() cancels in-flight requests, and a submit
+    // can outlive its modal or an rpcUrl switch while it still holds this provider.
+    return () => {
+      cancelled = true;
+    };
+  }, [chainId, rpcUrl, solanaSelected]);
 
   return { provider };
 }
