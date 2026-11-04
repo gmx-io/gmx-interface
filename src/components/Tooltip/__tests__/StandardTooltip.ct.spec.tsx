@@ -64,7 +64,7 @@ async function startTabbingFromTop(page: Page) {
 }
 
 test.describe("StandardTooltip", () => {
-  test("opens about 200 ms after the cursor reaches the trigger", async ({ mount, page }) => {
+  test("opens about 150 ms after the cursor reaches the trigger", async ({ mount, page }) => {
     await mount(<PlainStory />);
     await page.evaluate(trackOpenDelays);
 
@@ -72,15 +72,15 @@ test.describe("StandardTooltip", () => {
     await expect(page.locator(OPEN_PANEL)).toHaveText("Tooltip text");
 
     const delays = await page.evaluate(() => (window as unknown as { openDelays: number[] }).openDelays);
-    expect(delays[0]).toBeGreaterThanOrEqual(190);
+    expect(delays[0]).toBeGreaterThanOrEqual(140);
     expect(delays[0]).toBeLessThan(500);
   });
 
-  test("does not open when the cursor leaves within 200 ms", async ({ mount, page }) => {
+  test("does not open when the cursor leaves within 150 ms", async ({ mount, page }) => {
     await mount(<PlainStory />);
 
     await page.getByText("Trigger").hover();
-    await page.waitForTimeout(80);
+    await page.waitForTimeout(30);
     await page.mouse.move(0, 0);
     await page.waitForTimeout(400);
     await expect(page.locator(PANEL)).toHaveCount(0);
@@ -96,7 +96,7 @@ test.describe("StandardTooltip", () => {
     await expect(page.locator(OPEN_PANEL)).toHaveText("Second tooltip");
 
     const delays = await page.evaluate(() => (window as unknown as { openDelays: number[] }).openDelays);
-    expect(delays[0]).toBeGreaterThanOrEqual(190);
+    expect(delays[0]).toBeGreaterThanOrEqual(140);
     expect(delays[1]).toBeLessThan(60);
   });
 

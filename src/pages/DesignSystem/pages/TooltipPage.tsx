@@ -348,8 +348,8 @@ const CONTENT_RULES: DocsRule[] = [
 ];
 
 const BEHAVIOR_RULES: DocsRule[] = [
-  ["Delay", "The first tooltip waits 200 ms, so passing over a trigger doesn't open it."],
-  ["Enter", "Fades in, grows from 94% out of the pointer and moves 4px away from the trigger, in 200 ms."],
+  ["Delay", "The first tooltip waits 150 ms, so passing over a trigger doesn't open it."],
+  ["Enter", "Fades in, grows from 96% out of the pointer and moves 4px away from the trigger, in 150 ms."],
   ["Next tooltips", "While one is open, the next ones open instantly, with no animation."],
   ["Exit", "The same way back, in 120 ms."],
   [
@@ -509,7 +509,7 @@ const STANDARD_TOOLTIP_PROPS: DocsProp[] = [
   {
     name: "openDelay",
     type: "number",
-    defaultValue: "200",
+    defaultValue: "150",
     description: "Hover delay in ms. Inside a TooltipGroup only the first tooltip waits.",
   },
   {
@@ -617,7 +617,7 @@ const CHANGELOG: DocsChangelogEntry[] = [
       "One see-through, blurred panel for every tooltip, light or dark with the app theme, with a 1px border and 8px corners.",
       "Two sizes: Default up to 350px; Wide up to 480px, for tables only.",
       "Five content blocks (title, text, rows, table, link or footnote) replace hand-built layouts.",
-      "Opens after 200 ms, grows out of the pointer and leaves quickly; neighbouring tooltips open instantly.",
+      "Opens after 150 ms, grows out of the pointer and leaves quickly; neighbouring tooltips open instantly.",
       "Works with the keyboard, screen readers and phones, and stays open so text can be copied.",
     ],
   },
