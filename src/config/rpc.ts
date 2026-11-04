@@ -21,8 +21,6 @@ import {
 
 import { isDevelopment } from "./env";
 
-const ALCHEMY_FALLBACK_KEY = "REMOVED_LEAKED_KEY";
-
 export type { RpcConfig } from "lib/rpc/types";
 export * from "sdk/configs/chains";
 export { getChainName } from "sdk/configs/chains";
