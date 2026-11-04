@@ -77,6 +77,8 @@ describe("getIsPermitSignatureErrorOnSimulation", () => {
 
     expect(getIsPermitSignatureErrorOnSimulation(error)).toBe(false);
     expect(getIsPermitSignatureErrorOnSimulation(error, { isAnyContext: true })).toBe(true);
-    expect(getIsPermitSignatureErrorOnSimulation(Object.assign(error, { errorContext: "simulation" }))).toBe(true);
+    expect(getIsPermitSignatureErrorOnSimulation(Object.assign(error, { errorContext: "simulation" as const }))).toBe(
+      true
+    );
   });
 });
