@@ -6712,6 +6712,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr ""
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr ""
 
@@ -11737,6 +11738,10 @@ msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Up to 25% of GMX trading fees, paid directly to you"
+msgstr ""
+
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
 msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx

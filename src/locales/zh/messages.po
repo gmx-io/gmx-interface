@@ -6712,6 +6712,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "忽略 UI 标志启用代币 Permit"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "您的钱包中没有资产"
 
@@ -11738,6 +11739,10 @@ msgstr "池余额"
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "最高可获得 GMX 交易费用的 25%，直接支付给您"
+
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
