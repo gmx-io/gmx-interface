@@ -420,6 +420,16 @@ describe("adaptive EIP-7702 signing", () => {
       didSwitchChain: false,
       accountTypeOnSigningChain: "postEip7702Eoa",
       accountTypeOnVerificationChain: "postEip7702Eoa",
+      signerSource: "wallet",
     });
+  });
+
+  it("reports a signature by a key other than the connected wallet as local, since no wallet prompt was shown", async () => {
+    getAccountMock.mockReturnValue({ address: "0x0000000000000000000000000000000000000002" });
+
+    await signOrderVerifiedOnArbitrum(walletOnArbitrum);
+
+    await vi.waitFor(() => expect(metricsPushEventMock).toHaveBeenCalledTimes(1));
+    expect(metricsPushEventMock.mock.calls[0][0].data.signerSource).toBe("local");
   });
 });

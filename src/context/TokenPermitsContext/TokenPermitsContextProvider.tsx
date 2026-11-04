@@ -47,7 +47,7 @@ export type AddTokenPermitFn = (
   spenderAddress: string,
   value: bigint,
   options?: { deadline?: bigint }
-) => Promise<void>;
+) => Promise<SignedTokenPermit>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
 
@@ -225,6 +225,8 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
       latestStoredTokenPermits.current = { ...latestStoredTokenPermits.current, permits: nextPermits };
       latestStoredTokenPermits.current.setTokenPermits(nextPermits);
+
+      return permit;
     },
     [chainId, signer]
   );
