@@ -2662,6 +2662,10 @@ msgstr "GMX에서."
 msgid "Chart positions"
 msgstr "차트 포지션"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Bridge {collateralSymbol}"
+msgstr "{collateralSymbol} 브릿지"
+
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
 msgstr "Uniswap V2 방식 벤치마크 대비 예상 연간 수익률입니다."
@@ -9007,10 +9011,6 @@ msgstr "소요 기간"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr "TWAP 주문 사용"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {collateralSymbol} or <0>bridge {collateralSymbol}</0>."
-msgstr "{collateralSymbol} 스왑 또는 <0>{collateralSymbol} 브릿지</0>."
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals V1 WETH"

@@ -2662,6 +2662,10 @@ msgstr "在 GMX。"
 msgid "Chart positions"
 msgstr "圖表倉位"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Bridge {collateralSymbol}"
+msgstr "透過跨鏈橋轉入 {collateralSymbol}"
+
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
 msgstr "相較於 Uniswap V2 類型基準的預估年化報酬。"
@@ -9007,10 +9011,6 @@ msgstr "時間表"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr "使用 TWAP 訂單"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {collateralSymbol} or <0>bridge {collateralSymbol}</0>."
-msgstr "兌換 {collateralSymbol}或<0>透過跨鏈橋轉入 {collateralSymbol}</0>。"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals V1 WETH"

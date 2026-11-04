@@ -2662,6 +2662,10 @@ msgstr "на GMX."
 msgid "Chart positions"
 msgstr "Позиции на графике"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Bridge {collateralSymbol}"
+msgstr "Перевести {collateralSymbol} через мост"
+
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
 msgstr "Прогнозируемая годовая доходность в сравнении с эталонным показателем в стиле Uniswap V2."
@@ -9007,10 +9011,6 @@ msgstr "Сроки"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr "Использовать TWAP-ордер"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {collateralSymbol} or <0>bridge {collateralSymbol}</0>."
-msgstr "Обменять на {collateralSymbol} или <0>перевести {collateralSymbol} через мост</0>."
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals V1 WETH"

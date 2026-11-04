@@ -2662,6 +2662,10 @@ msgstr ""
 msgid "Chart positions"
 msgstr ""
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Bridge {collateralSymbol}"
+msgstr ""
+
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark."
 msgstr ""
@@ -9006,10 +9010,6 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
-msgstr ""
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Swap {collateralSymbol} or <0>bridge {collateralSymbol}</0>."
 msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx

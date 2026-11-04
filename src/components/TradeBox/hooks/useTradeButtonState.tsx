@@ -1178,14 +1178,12 @@ function NoSwapPathTooltipContent({
           No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
         </Trans>
       </TooltipText>
-      <TooltipText>
-        <Trans>
-          Swap {collateralSymbol} or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
-        </Trans>
-      </TooltipText>
       <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
         <Trans>Swap {collateralSymbol}</Trans>
       </TooltipAction>
+      <TooltipLink href={JUMPER_BRIDGE_URL}>
+        <Trans>Bridge {collateralSymbol}</Trans>
+      </TooltipLink>
     </TooltipContent>
   );
 }
