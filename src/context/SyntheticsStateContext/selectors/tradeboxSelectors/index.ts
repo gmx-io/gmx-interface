@@ -301,10 +301,18 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
   const savedGasPaymentToken = q(selectSettlementChainGasPaymentToken);
   if (!savedGasPaymentToken) return undefined;
 
+  const chainId = q(selectChainId);
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
+  // the external swap desirability depends on this selector, so the token that would make a gas conflict
+  // (selectIsExternalSwapDisabledByExpressSchema) is never offered as the approved alternative
+  const conflictTokenAddress = isSwap
+    ? q(selectTradeboxSelectSwapToToken)?.address
+    : isIncrease
+      ? q(selectTradeboxCollateralToken)?.address
+      : undefined;
 
   return resolveGasPaymentTokenAddress({
-    chainId: q(selectChainId),
+    chainId,
     fallback: "skipApproval",
     gasPaymentToken: savedGasPaymentToken,
     payTokenAddress: isSwap || isIncrease ? q(selectTradeboxFromTokenAddress) : undefined,
@@ -315,6 +323,10 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
     tokensAllowanceData: q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
     tokenPermits: q(selectTokenPermits),
     unavailableTokenAddresses: q(selectUnavailableGasPaymentTokenAddresses),
+    excludeTokenAddresses:
+      conflictTokenAddress !== undefined && conflictTokenAddress !== getWrappedToken(chainId).address
+        ? [conflictTokenAddress]
+        : undefined,
   });
 });
 
