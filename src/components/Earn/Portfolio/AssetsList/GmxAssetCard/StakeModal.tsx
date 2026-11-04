@@ -156,7 +156,7 @@ export function StakeModal(props: {
   const unstakeMethodName = METHOD_NAME_MAP[tokenSymbol].unstake;
 
   const stakeTitle = t`Stake ${tokenSymbol}`;
-  const unstakeTitle = t`Unstake ${tokenSymbol}`;
+  const unstakeTitle = t`Unstake GMX and esGMX`;
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakeFarmAddress,

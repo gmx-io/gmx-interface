@@ -37,6 +37,7 @@ export function MarginDestinationDialog({
   }
 
   function handleNo() {
+    settings.setReceiveToGmxAccount(!chosenReceiveToGmxAccount);
     if (dontAskAgain) {
       setDialogHidden(true);
     }

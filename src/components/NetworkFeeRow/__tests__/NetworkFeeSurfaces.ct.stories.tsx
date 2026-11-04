@@ -5,6 +5,7 @@ import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import {
   getCollateralCloseDestinationKey,
   getExpressOrdersEnabledKey,
+  getSyntheticsTradeOptionsKey,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
@@ -22,6 +23,7 @@ import { Mode, Operation, type GmPaySource } from "domain/synthetics/markets/typ
 import type { OrderInfo, OrdersInfoData } from "domain/synthetics/orders";
 import type { PositionInfo, PositionsInfoData } from "domain/synthetics/positions";
 import type { TokenData, TokensData } from "domain/synthetics/tokens";
+import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE } from "domain/testUtils/mockChainData";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
@@ -35,7 +37,9 @@ import { getGasPaymentTokens } from "sdk/configs/express";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { DecreasePositionSwapType, OrderType, type Order } from "sdk/utils/orders/types";
 import { getOrderInfo } from "sdk/utils/orders/utils";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import { ClaimablePositionPriceImpactRebateModal } from "components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal";
 import { ClaimModal } from "components/ClaimModal/ClaimModal";
 import { GmSwapBoxDepositWithdrawal } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox";
@@ -50,9 +54,11 @@ import { TradeBox } from "components/TradeBox/TradeBox";
 const EXPRESS_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
 const SURFACES_WITHOUT_APPROVE_STEP: NetworkFeeSurface[] = ["addTpsl", "orderEditor"];
 
-function getGasPaymentTokenAllowance(amount: bigint) {
+function getGasPaymentTokenAllowance(getAmount: (address: string) => bigint) {
   return {
-    tokensAllowanceData: Object.fromEntries(getGasPaymentTokens(ARBITRUM).map((address) => [address, amount])),
+    tokensAllowanceData: Object.fromEntries(
+      getGasPaymentTokens(ARBITRUM).map((address) => [address, getAmount(address)])
+    ),
     isLoaded: true,
     isLoading: false,
   };
@@ -95,6 +101,10 @@ export type NetworkFeeSurfaceStoryProps = {
   isGasPaymentTokenApproved?: boolean;
   /** GM buy: which balance funds the deposit (`settlementChain` = wallet, `gmxAccount` = GMX Account) */
   gmPaySource?: GmPaySource;
+  /** Approve only these gas payment tokens (addresses), on every surface; the spec mirrors them on the mock chain */
+  approvedGasPaymentTokens?: string[];
+  /** Trade box: wrap native ETH into WETH (Swap) or pay with WETH (Long) */
+  tradeBoxPay?: "wrap" | "weth";
 };
 
 type Fixtures = {
@@ -441,6 +451,7 @@ function SurfaceState({
   multichain,
   gmPaySource,
   isGasPaymentTokenApproved,
+  approvedGasPaymentTokens,
   fixtures,
   children,
 }: {
@@ -449,18 +460,21 @@ function SurfaceState({
   multichain: boolean;
   gmPaySource: GmPaySource;
   isGasPaymentTokenApproved: boolean;
+  approvedGasPaymentTokens: string[] | undefined;
   fixtures: Fixtures;
   children: ReactNode;
 }) {
   const { srcChainId } = useChainId();
   const isExpressAvailable = express || multichain;
-  const gasPaymentTokenAllowance = useMemo(
-    () =>
-      SURFACES_WITHOUT_APPROVE_STEP.includes(surface)
-        ? getGasPaymentTokenAllowance(isGasPaymentTokenApproved ? HUGE_BALANCE : 0n)
-        : undefined,
-    [isGasPaymentTokenApproved, surface]
-  );
+  const gasPaymentTokenAllowance = useMemo(() => {
+    if (approvedGasPaymentTokens) {
+      return getGasPaymentTokenAllowance((address) => (approvedGasPaymentTokens.includes(address) ? HUGE_BALANCE : 0n));
+    }
+
+    return SURFACES_WITHOUT_APPROVE_STEP.includes(surface)
+      ? getGasPaymentTokenAllowance(() => (isGasPaymentTokenApproved ? HUGE_BALANCE : 0n))
+      : undefined;
+  }, [approvedGasPaymentTokens, isGasPaymentTokenApproved, surface]);
   const poolsDetails = useMockPoolsDetailsState({
     glvOrMarketAddress: MOCK_MARKET_ADDRESS,
     paySource: gmPaySource,
@@ -500,7 +514,9 @@ function Surface({
     case "tradeBox":
       return (
         <div className="text-body-medium flex flex-col rounded-8">
-          <TradeBox isMobile={false} activeFormId="tradebox" />
+          <ActiveFormScope formId="tradebox">
+            <TradeBox isMobile={false} activeFormId="tradebox" />
+          </ActiveFormScope>
         </div>
       );
     case "close":
@@ -541,6 +557,8 @@ export function NetworkFeeSurfaceStory({
   balances: balancesProp,
   gmPaySource = "settlementChain",
   isGasPaymentTokenApproved = true,
+  approvedGasPaymentTokens,
+  tradeBoxPay,
 }: NetworkFeeSurfaceStoryProps) {
   // eslint-disable-next-line react/hook-use-state
   useState(() => {
@@ -551,6 +569,22 @@ export function NetworkFeeSurfaceStory({
 
     if (receiveToGmxAccount) {
       localStorage.setItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, MOCK_ACCOUNT)), "true");
+    }
+
+    if (tradeBoxPay) {
+      const storedOptions: StoredTradeOptions = {
+        tradeType: tradeBoxPay === "wrap" ? TradeType.Swap : TradeType.Long,
+        tradeMode: TradeMode.Market,
+        tokens: {
+          fromTokenAddress: tradeBoxPay === "wrap" ? NATIVE_ETH_ADDRESS : ETH_ADDRESS,
+          swapToTokenAddress: tradeBoxPay === "wrap" ? ETH_ADDRESS : undefined,
+          indexTokenAddress: ETH_ADDRESS,
+        },
+        markets: { [ETH_ADDRESS]: { long: MOCK_MARKET_ADDRESS, short: MOCK_MARKET_ADDRESS } },
+        collaterals: {},
+        isFromTokenGmxAccount: false,
+      };
+      localStorage.setItem(JSON.stringify(getSyntheticsTradeOptionsKey(ARBITRUM)), JSON.stringify(storedOptions));
     }
 
     if (multichain) {
@@ -578,6 +612,7 @@ export function NetworkFeeSurfaceStory({
         multichain={multichain}
         gmPaySource={gmPaySource}
         isGasPaymentTokenApproved={isGasPaymentTokenApproved}
+        approvedGasPaymentTokens={approvedGasPaymentTokens}
         fixtures={fixtures}
       >
         <Surface surface={surface} fixtures={fixtures} collateralFromGmxAccount={collateralFromGmxAccount} />

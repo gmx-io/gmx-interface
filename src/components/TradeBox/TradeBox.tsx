@@ -26,8 +26,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -165,6 +163,7 @@ import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
 import { useOrderAutoSubmitAfterConversion } from "./hooks/useOrderAutoSubmitAfterConversion";
+import { useRefillMaxOnFeeTokenChange } from "./hooks/useRefillMaxOnFeeTokenChange";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
 import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
@@ -317,8 +316,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
   const settlementChainGasPaymentTokenData = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentTokenData = useSelector(selectGmxAccountGasPaymentToken);
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const { subaccount } = useSelector(selectSubaccountState);
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
@@ -332,9 +329,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const gasPaymentTokenData = isFromTokenGmxAccount
     ? gmxAccountGasPaymentTokenData
     : settlementChainGasPaymentTokenData;
-  const gasPaymentTokenAddress = isFromTokenGmxAccount
-    ? gmxAccountGasPaymentTokenAddress
-    : settlementChainGasPaymentTokenAddress;
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
@@ -460,6 +454,11 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       return {
         ...gmxSubmitButtonState,
         ...usdgConversion.buttonState,
+        // the order step still follows the conversion, so keep the curtain open for it
+        onSubmit: async () => {
+          await usdgConversion.buttonState?.onSubmit();
+          return false;
+        },
         ...orderStepGasError,
         expressParams: usdgConversion.expressParams,
         isExpressLoading: usdgConversion.isExpressLoading,
@@ -485,15 +484,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const wrappedOnSubmit = useCallback(async () => {
     try {
-      await submitButtonState.onSubmit();
-      // the order step still follows the conversion, so keep the curtain open for it
-      if (isMobile && !isConvertStepShown) {
+      const isTradeSent = await submitButtonState.onSubmit();
+      if (isMobile && isTradeSent) {
         setExternalIsCurtainOpen(false);
       }
     } catch (error) {
       reportHandledRejection("tradebox.submit")(error);
     }
-  }, [submitButtonState, isMobile, isConvertStepShown, setExternalIsCurtainOpen]);
+  }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
   const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
     isArmed: usdgConversion.isOrderAutoSubmitArmed,
@@ -511,22 +509,26 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
+  const feeGasPaymentTokenData = submitButtonState.expressGasPaymentToken ?? gasPaymentTokenData;
   const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
   // a convert-first order pays the conversion's fee and then its own, so Max keeps both; until the convert step is
   // shown only the order's estimate exists, and it stands in for the conversion's too
   const orderStepGasPaymentTokenAmount = isConvertStepShown
-    ? orderStepGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+    ? orderStepGasPaymentParams !== undefined &&
+      orderStepGasPaymentParams.gasPaymentTokenAddress === feeGasPaymentTokenData?.address
       ? orderStepGasPaymentParams.gasPaymentTokenAmount
       : 0n
     : isUsdgConvertFirstSetup
       ? expressGasPaymentParams?.gasPaymentTokenAmount ?? 0n
       : 0n;
   const expressGasPaymentTokenAmount =
-    expressOrdersEnabledForMax && expressGasPaymentParams?.gasPaymentTokenAddress === gasPaymentTokenAddress
+    expressOrdersEnabledForMax &&
+    expressGasPaymentParams !== undefined &&
+    expressGasPaymentParams.gasPaymentTokenAddress === feeGasPaymentTokenData?.address
       ? expressGasPaymentParams.gasPaymentTokenAmount + orderStepGasPaymentTokenAmount
       : undefined;
 
-  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
+  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? feeGasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
     : submitButtonState.totalExecutionFee?.feeTokenAmount;
@@ -547,10 +549,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     }
 
     const gasPaymentTokenAmount =
-      executionFee && gasPaymentTokenData && relayerFeeToken
+      executionFee && feeGasPaymentTokenData && relayerFeeToken
         ? estimateBatchMinGasPaymentTokenAmount({
             chainId,
-            gasPaymentToken: gasPaymentTokenData,
+            gasPaymentToken: feeGasPaymentTokenData,
             relayFeeToken: relayerFeeToken,
             isGmxAccount: isFromTokenGmxAccount,
             gasPrice: getExpressGasPrice(chainId, gasPrice),
@@ -576,7 +578,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     tokensData,
     chainId,
     expressOrdersEnabledForMax,
-    gasPaymentTokenData,
+    feeGasPaymentTokenData,
     relayerFeeToken,
     isFromTokenGmxAccount,
     isUsdgConvertFirstSetup,
@@ -626,6 +628,16 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       setFromTokenInputValue(formattedKeepGasAmount, true);
     }
   }, [formattedKeepGasAmount, setFocusedInput, setFromTokenInputValue]);
+
+  useRefillMaxOnFeeTokenChange({
+    feeTokenAddress: gasPaymentTokenForMax?.address,
+    payTokenAddress: fromTokenAddress,
+    inputValue: fromTokenInputValue,
+    selected: maxActions.selected,
+    isReady: !maxActions.isLoading && (!expressOrdersEnabledForMax || expressGasPaymentTokenAmount !== undefined),
+    maxAvailableAmount,
+    onMaxClick,
+  });
 
   const payMaxActionsProps =
     fromTokenBalance !== undefined && fromTokenBalance > 0n
@@ -1644,6 +1656,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             gasPaymentParams={getNetworkFeeGasPaymentParams({
               expressParams: submitButtonState.expressParams,
               tokensData,
+              canFallBackToClassic: !submitButtonState.isFeeInPayToken,
             })}
             totalExecutionFee={submitButtonState.totalExecutionFee}
             feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}

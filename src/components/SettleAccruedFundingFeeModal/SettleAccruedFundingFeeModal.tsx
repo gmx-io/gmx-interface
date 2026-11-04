@@ -212,6 +212,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     label: "Settle Funding Fee",
     isGmxAccount: isGmxAccountFeeSource,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const isSwitchPending = useMemo(

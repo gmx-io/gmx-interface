@@ -39,10 +39,12 @@ export function getNetworkFeeGasPaymentParams({
   expressParams,
   tokensData,
   canApproveGasPaymentToken = true,
+  canFallBackToClassic,
 }: {
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
   canApproveGasPaymentToken?: boolean;
+  canFallBackToClassic?: boolean;
 }): GasPaymentParams | undefined {
   const isWalletClassicFallback =
     expressParams !== undefined &&
@@ -50,7 +52,7 @@ export function getNetworkFeeGasPaymentParams({
     (canApproveGasPaymentToken
       ? getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)
       : !getIsValidExpressParams(expressParams)) &&
-    getExpressError({ expressParams, tokensData }).buttonErrorMessage === undefined;
+    getExpressError({ expressParams, tokensData, canFallBackToClassic }).buttonErrorMessage === undefined;
 
   return isWalletClassicFallback ? undefined : expressParams?.gasPaymentParams;
 }

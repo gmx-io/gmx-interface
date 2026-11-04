@@ -1273,10 +1273,6 @@ msgstr "您邀请的交易者产生的交易量"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "我可以随时解除质押或提取吗？"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "您已激活推荐码 {userReferralCodeString}。您的优惠费率将自动适用于您开立或关闭的每个仓位，无需执行其他操作。"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1481,6 +1477,10 @@ msgstr "执行费用低于当前网络成本"
 msgid "Tiers"
 msgstr "等级"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "您已激活推荐码 {activatedReferralCodeLabel}。您的优惠费率将自动适用于您开立或关闭的每个仓位，无需执行其他操作。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "兑换手续费因子（负 PI）"
@@ -1530,10 +1530,6 @@ msgstr "交易："
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "没有匹配的市场"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "解除质押 {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -3298,6 +3294,10 @@ msgstr "由我们的社区驱动"
 msgid "Choose:"
 msgstr "请选择："
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "解除质押 GMX 和 esGMX"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "转换仅在 {chainNames} 上可用。请切换网络以继续。"
@@ -4139,6 +4139,10 @@ msgstr "数据类型"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "兑换价格影响过高"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "解除质押 GMX 或 esGMX 需要 180 天。您需要先申请解除质押，等待期结束后，您可以以 GMX 或 esGMX 提取该数量。您可以随时取消请求。如果某个请求使您的质押余额降至历史最高质押量的 80% 以下，所有累积的质押权重都将重置为零，您也将失去 GMX 达到 90 美元时国库分配中的份额。取消该请求不会恢复质押权重。GLV 和 GM 代币可随时出售。在少数情况下，如果未平仓位正在使用您的流动性，则可在这些仓位平仓后立即提取。"
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -8484,10 +8488,6 @@ msgstr "您先在钱包中将 USDC 转换为 USDG，然后确认买入。若买�
 msgid "No opportunities match your holdings"
 msgstr "没有与您持仓匹配的机会"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "是的，GMX 可随时解除质押，GLV/GM 代币也可随时出售——协议绝不会锁定您的代币。但是，如果您的 GMX 质押余额降至历史最高质押量的 80% 以下，所有累积的质押权重都将重置为零，您也将失去 GMX 达到 90 美元时国库分配中的份额。对于 GLV/GM，在少数情况下，如果您的流动性正用于进行中的交易，则可在这些仓位平仓后立即提取。"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend your tokens or borrow against them"
@@ -9198,6 +9198,10 @@ msgstr "隐藏价值较低的资产"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL（供应量）"
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} 未获批准用于支付费用。此订单将以 {toSymbol} 支付网络费用。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"

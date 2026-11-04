@@ -17,7 +17,7 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { validateReferralCodeExists } from "domain/referrals/hooks";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
+import { isProtocolReferralCode } from "domain/referrals/utils/referralCode";
 import { signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useChainId } from "lib/chains";
@@ -28,7 +28,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
@@ -88,6 +88,11 @@ export function ReferralCodeFormMultichain({
         quoteResult.data === undefined
       ) {
         throw new Error("Missing required parameters");
+      }
+
+      // the debounced existence check can lag behind a quick submit
+      if (isProtocolReferralCode(referralCode)) {
+        throw new Error("Referral code does not exist");
       }
 
       const relayParamsPayload = createRelayEmptyParamsPayload(chainId as SettlementChainId, globalExpressParams);

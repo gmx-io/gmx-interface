@@ -170,7 +170,9 @@ export function PositionSeller() {
   const settings = useSettings();
   const { shouldDisableValidationForTesting, expressOrdersEnabled } = settings;
   useInitCollateralCloseDestination();
-  const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount ?? false);
+  const defaultReceiveToGmxAccount = settings.receiveToGmxAccount ?? false;
+  const [chosenReceiveToGmxAccount, setChosenReceiveToGmxAccount] = useState<boolean>();
+  const isReceiveToGmxAccount = chosenReceiveToGmxAccount ?? defaultReceiveToGmxAccount;
   const effectiveIsReceiveToGmxAccount = isReceiveToGmxAccount && expressOrdersEnabled;
   const [isDestinationDialogVisible, setIsDestinationDialogVisible] = useState(false);
   const [dialogHidden, setDialogHidden] = useLocalStorageSerializeKey(
@@ -180,12 +182,12 @@ export function PositionSeller() {
 
   const handleSetIsReceiveToGmxAccount = useCallback(
     (value: boolean) => {
-      setIsReceiveToGmxAccount(value);
-      if (value !== (settings.receiveToGmxAccount ?? false) && !dialogHidden) {
+      setChosenReceiveToGmxAccount(value);
+      if (value !== defaultReceiveToGmxAccount && !dialogHidden) {
         setIsDestinationDialogVisible(true);
       }
     },
-    [settings.receiveToGmxAccount, dialogHidden]
+    [defaultReceiveToGmxAccount, dialogHidden]
   );
 
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
@@ -262,12 +264,6 @@ export function PositionSeller() {
 
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
-  useEffect(() => {
-    if (isVisible) {
-      setIsReceiveToGmxAccount(settings.receiveToGmxAccount ?? false);
-    }
-  }, [isVisible, settings.receiveToGmxAccount]);
-
   const closeSizeReset = closeSize.reset;
 
   useEffect(() => {
@@ -278,6 +274,7 @@ export function PositionSeller() {
         resetPositionSeller();
         closeSizeReset();
         setIsUsdgChosenInsteadOfUsdc(false);
+        setChosenReceiveToGmxAccount(undefined);
       }, 200);
     }
   }, [isVisible, resetPositionSeller, closeSizeReset]);
@@ -504,6 +501,7 @@ export function PositionSeller() {
     orderParams: batchParams,
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const approvalTokens = useMemo(() => {
