@@ -17,10 +17,10 @@ export default function PageTitle({ title, subtitle, className, isTop = false, a
   return (
     <div className={classNames} data-qa={qa}>
       <div className="Page-title-group">
-        <h2 className="Page-title__text text-h1">{title}</h2>
+        <h2 className="Page-title__text text-h2">{title}</h2>
         {afterTitle}
       </div>
-      <div className="text-body-medium font-medium text-typography-secondary">{subtitle}</div>
+      <div className="text-body-medium font-medium text-textIcon-secondary">{subtitle}</div>
     </div>
   );
 }

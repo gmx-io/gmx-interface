@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({
   );
 
   return (
-    <div className="rounded-b-8 bg-slate-900">
+    <div className="rounded-b-8 bg-fill-surfaceBase">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1024px] table-fixed">
           <thead>
@@ -317,9 +317,9 @@ const TableRow = memo(
     const renderPositionTooltip = useCallback(() => {
       return (
         <>
-          <div className="mr-5 inline-flex items-start leading-1">
+          <div className="mr-4 inline-flex items-start leading-1">
             <span>{indexName}</span>
-            <span className="subtext">[{poolName}]</span>
+            <span className="subtext !leading-1">[{poolName}]</span>
           </div>
           <span className={cx(position.isLong ? "positive" : "negative")}>{position.isLong ? t`Long` : t`Short`}</span>
         </>
@@ -400,7 +400,9 @@ const TableRow = memo(
           </span>
         </TableTd>
         <TableTd>
-          <AddressView size={20} address={position.account} breakpoint="XL" />
+          <div className="[&_.AddressView]:flex">
+            <AddressView size={20} address={position.account} breakpoint="XL" />
+          </div>
         </TableTd>
         <TableTd>
           <TooltipWithPortal
@@ -503,14 +505,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return (
       <TooltipWithPortal
-        handleClassName="text-typography-secondary"
+        handleClassName="text-textIcon-secondary"
         handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
     );
 
-  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
+  return <span className="font-medium text-textIcon-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ position }: { position: LeaderboardPosition }) => {

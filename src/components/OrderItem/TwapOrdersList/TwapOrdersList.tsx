@@ -84,8 +84,8 @@ function TwapOrderItem({
     const toTokenIcon = <TokenIcon symbol={order.targetCollateralToken.symbol} displaySize={18} />;
 
     return (
-      <tr key={order.key} className="gap-x-8 border-b-1/2 border-slate-600 last:border-b-0">
-        <td className="py-8 pr-8 text-typography-secondary">{formatDateTime(Number(order.validFromTime))}</td>
+      <tr key={order.key} className="gap-x-8 border-b-1/2 border-stroke-primary last:border-b-0">
+        <td className="py-8 pr-8 text-textIcon-secondary">{formatDateTime(Number(order.validFromTime))}</td>
         <td className="py-8 pr-8">
           <div className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap")}>
             <Trans>
@@ -105,8 +105,8 @@ function TwapOrderItem({
   }
 
   return (
-    <tr key={order.key} className="gap-x-8 border-b-1/2 border-slate-600 last:border-b-0">
-      <td className="py-8 pr-8 text-typography-secondary">{formatDateTime(Number(order.validFromTime))}</td>
+    <tr key={order.key} className="gap-x-8 border-b-1/2 border-stroke-primary last:border-b-0">
+      <td className="py-8 pr-8 text-textIcon-secondary">{formatDateTime(Number(order.validFromTime))}</td>
       <td className="py-8 pr-8">{sizeText}</td>
       <td className="py-8 text-right">
         <TwapOrderPartStatusLabel status={status} />
@@ -122,7 +122,7 @@ function TwapOrderPartStatusLabel({ status }: { status: TwapOrderPartStatus }) {
 
   if (status === "frozen") {
     return (
-      <span className="text-yellow-300">
+      <span className="text-yellow-strong">
         <Trans context="TWAP part status">Frozen</Trans>
       </span>
     );

@@ -205,10 +205,10 @@ test("8.06 8.10 live position: Close opens the position seller, receive-token se
     .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
     .locator("div.cursor-pointer");
   await expect(toggle).not.toHaveClass(/pointer-events-none/);
-  const checked = (await toggle.getAttribute("class"))!.includes("bg-blue-400");
+  const checked = (await toggle.getAttribute("class"))!.includes("bg-button-primary");
   await toggle.click();
-  if (checked) await expect(toggle).not.toHaveClass(/bg-blue-400/);
-  else await expect(toggle).toHaveClass(/bg-blue-400/);
+  if (checked) await expect(toggle).not.toHaveClass(/bg-button-primary/);
+  else await expect(toggle).toHaveClass(/bg-button-primary/);
   await expect.poll(() => inputNumber(input)).toBe(Number(half));
   await modal.getByRole("button", { name: /^Max:/ }).click();
   await expect(toggle).toHaveClass(/pointer-events-none/);

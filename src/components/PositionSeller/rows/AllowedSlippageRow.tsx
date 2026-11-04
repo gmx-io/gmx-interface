@@ -26,7 +26,7 @@ export function AllowedSlippageRow({
           variant="iconStroke"
           renderContent={() => {
             return (
-              <div className="text-typography-primary">
+              <div className="text-textIcon-primary">
                 <Trans>
                   The difference between expected and actual execution price due to volatility. Orders won't execute if
                   slippage exceeds your maximum. Adjust the default in settings.
@@ -44,7 +44,7 @@ export function AllowedSlippageRow({
           }}
         />
       }
-      valueClassName="-my-5"
+      valueClassName="-my-4"
     >
       <PercentageInput
         onChange={setAllowedSlippage}

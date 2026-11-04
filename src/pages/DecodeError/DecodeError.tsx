@@ -134,23 +134,23 @@ export function DecodeError() {
             value={hexInput}
             onChange={(e) => setHexInput(e.target.value)}
             placeholder={t`0x...`}
-            className="min-h-96 w-full resize-y appearance-none border-none p-15 text-typography-primary text-input-bg focus:outline-none focus:ring-0"
+            className="min-h-96 w-full resize-y appearance-none border-none p-12 text-textIcon-primary text-input-bg focus:outline-none focus:ring-0"
           />
         </div>
 
         {decodedError && (
-          <div className="mb-20 rounded-8 border border-slate-800 bg-slate-900 p-20">
+          <div className="mb-20 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceBase p-20">
             <div className="text-body-medium mb-12">
               <span className="font-medium">
                 <Trans>Error name:</Trans>
               </span>{" "}
-              <span className="text-blue-400">{decodedError.errorName}</span>
+              <span className="text-blue-strong">{decodedError.errorName}</span>
             </div>
             <div className="text-body-medium mb-12">
               <span className="font-medium">
                 <Trans>Source:</Trans>
               </span>{" "}
-              <span className={decodedError.source === "CustomErrors" ? "text-green-400" : "text-purple-400"}>
+              <span className={decodedError.source === "CustomErrors" ? "text-green-secondary" : "text-purple-400"}>
                 {decodedError.source}
               </span>
             </div>
@@ -161,9 +161,9 @@ export function DecodeError() {
                 </div>
                 <div className="space-y-8">
                   {formattedArgs.map(({ key, value }) => (
-                    <div key={key} className="rounded-4 bg-slate-800 p-12">
-                      <div className="mb-4 text-12 font-medium text-typography-secondary">{key}:</div>
-                      <div className="break-all font-mono text-12 text-typography-primary">{value}</div>
+                    <div key={key} className="rounded-4 bg-fill-surfaceElevated p-12">
+                      <div className="text-body-small mb-4 font-medium text-textIcon-secondary">{key}:</div>
+                      <div className="text-body-small break-all font-mono text-textIcon-primary">{value}</div>
                     </div>
                   ))}
                 </div>
@@ -173,16 +173,16 @@ export function DecodeError() {
         )}
 
         {hexInput.trim() && !decodedError && (
-          <div className="mb-20 rounded-8 border border-red-500/50 bg-red-500/10 p-20">
-            <div className="text-body-medium text-red-400">
+          <div className="mb-20 rounded-8 border border-red-strong/50 bg-red-strong/10 p-20">
+            <div className="text-body-medium text-red-strong">
               <Trans>Failed to decode error. Make sure the hex data is valid and starts with "0x".</Trans>
             </div>
           </div>
         )}
 
         {!hexInput.trim() && (
-          <div className="mb-20 rounded-8 border border-slate-800 bg-slate-900 p-20">
-            <div className="text-body-medium text-typography-secondary">
+          <div className="mb-20 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceBase p-20">
+            <div className="text-body-medium text-textIcon-secondary">
               <Trans>Enter hex error data above to decode it</Trans>
             </div>
           </div>

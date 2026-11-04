@@ -1096,7 +1096,7 @@ export function OrderEditor(p: Props) {
           )}
         </div>
 
-        <div className="flex flex-col gap-14 px-20 pb-16">
+        <div className="flex flex-col gap-12 px-20 pb-16">
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -1183,7 +1183,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
+                        label={<div className="text-textIcon-primary">{t`Network fee`}:</div>}
                         value={
                           <NetworkFeeValue
                             amount={networkFee.feeTokenAmount}
@@ -1199,7 +1199,7 @@ export function OrderEditor(p: Props) {
                       {additionalExecutionFee && (
                         <>
                           <br />
-                          <div className="text-typography-primary">
+                          <div className="text-textIcon-primary">
                             <Trans>Network fees increased. Additional fee required.</Trans>
                           </div>
                         </>
@@ -1220,7 +1220,7 @@ export function OrderEditor(p: Props) {
                 recommendedAllowedSwapSlippageBps={defaultAllowedSwapSlippageBps}
                 setAllowedSwapSlippageBps={setSelectedAllowedSwapSlippageBps}
               />
-              <div className="h-1 bg-slate-600" />
+              <div className="h-1 bg-stroke-primary" />
               <SyntheticsInfoRow
                 label={t`Min receive`}
                 value={formatBalanceAmount(

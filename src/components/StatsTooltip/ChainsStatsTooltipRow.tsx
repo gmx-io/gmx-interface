@@ -42,7 +42,7 @@ export default function ChainsStatsTooltipRow({
           />
         </p>
       ))}
-      <div className="my-5 h-1 bg-gray-800" />
+      <div className="my-4 h-1 bg-stroke-primary" />
       <p className="Tooltip-row">
         <span className="label">
           <Trans>Total</Trans>:{" "}
@@ -58,7 +58,7 @@ export default function ChainsStatsTooltipRow({
       <ChainsStatsNotices
         missingTitles={missingTitles}
         staleEntries={staleEntries}
-        className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300"
+        className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-strong"
       />
     </>
   );

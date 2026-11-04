@@ -90,7 +90,7 @@ function TransitConversionProgressContent({ progress }: { progress: TransitRoute
           text={getSwapConversionText({ order, isPaxosTransitOrderStatusUnknown, tokenOut })}
         />
         {isTakingLong && (
-          <div className="text-body-small text-typography-secondary">
+          <div className="text-body-small text-textIcon-secondary">
             <Trans>
               Taking longer than usual. Standard-fee conversions can take up to an hour and arrive in parts.
             </Trans>
@@ -349,7 +349,7 @@ function TransitRouteProgressContent({
 }
 
 function StepLabel({ children }: { children: React.ReactNode }) {
-  return <div className="text-body-small text-typography-secondary">{children}</div>;
+  return <div className="text-body-small text-textIcon-secondary">{children}</div>;
 }
 
 function getConversionStatus(order: TransitOrder | undefined): TransactionStatusType {
@@ -368,7 +368,7 @@ function getConversionText(p: {
   if (order?.status === "PROCESSED") return t`${tokenOutSymbol} received`;
   if (order?.status === "REMOVED") return t`Conversion cancelled`;
   if (isPaxosTransitOrderStatusUnknown) {
-    return <span className="text-yellow-300">{t`Conversion status unavailable`}</span>;
+    return <span className="text-yellow-strong">{t`Conversion status unavailable`}</span>;
   }
 
   return t`Converting with Paxos, usually 2–10 min...`;

@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 
 import Button from "components/Button/Button";
@@ -38,7 +39,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         variant="secondary"
         key={pageNumber}
         className={cx("flex h-32 w-32 items-center justify-center rounded-8 p-8 font-medium", {
-          "!bg-blue-400 !text-white": pageNumber === page,
+          "!bg-button-primary !text-textIcon-onButton": pageNumber === page,
         })}
         onClick={() => onPageChange(pageNumber)}
       >
@@ -50,11 +51,17 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
   return (
     <div
       className={cx("pagination", {
-        "mt-25": topMargin,
+        "mt-24": topMargin,
       })}
     >
-      <div className="text-body-medium flex gap-8 max-md:text-[13px]">
-        <Button variant="secondary" onClick={() => onPageChange(1)} className="h-32 w-32 !p-0" disabled={page <= 1}>
+      <div className="text-body-medium flex gap-8 max-md:text-body-small">
+        <Button
+          variant="secondary"
+          onClick={() => onPageChange(1)}
+          aria-label={t`First page`}
+          className="h-32 w-32 !p-0"
+          disabled={page <= 1}
+        >
           <div className="size-14">
             <ChevronEdgeLeft />
           </div>
@@ -62,6 +69,7 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         <Button
           variant="secondary"
           onClick={() => onPageChange(page - 1)}
+          aria-label={t`Previous page`}
           className="h-32 w-32 !p-0"
           disabled={page <= 1}
         >
@@ -71,14 +79,16 @@ export default function Pagination({ page, pageCount, topMargin = true, onPageCh
         <Button
           variant="secondary"
           onClick={() => onPageChange(page + 1)}
+          aria-label={t`Next page`}
           className="h-32 w-32 !p-0"
           disabled={page >= pageCount}
         >
-          <ChevronRightIcon className="ml-2 size-14 shrink-0" />
+          <ChevronRightIcon className="ml-4 size-14 shrink-0" />
         </Button>
         <Button
           variant="secondary"
           onClick={() => onPageChange(pageCount)}
+          aria-label={t`Last page`}
           className="h-32 w-32 !p-0"
           disabled={page >= pageCount}
         >

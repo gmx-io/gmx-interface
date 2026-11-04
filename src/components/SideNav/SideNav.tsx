@@ -54,7 +54,7 @@ function SideNav({ className }: { className?: string }) {
   return (
     <>
       <nav
-        className={cx("flex h-full shrink-0 flex-col bg-slate-950", className, {
+        className={cx("flex h-full shrink-0 flex-col bg-fill-background", className, {
           "w-[172px] max-xl:w-[144px]": !isCollapsed,
         })}
       >
@@ -94,7 +94,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
   return (
     <Link
       to="/"
-      className={cx("flex cursor-pointer items-center justify-center gap-5 pb-16 pt-10 text-typography-primary", {
+      className={cx("flex cursor-pointer items-center justify-center gap-4 pb-16 pt-8 text-textIcon-primary", {
         "pl-12 pr-20": !isCollapsed,
       })}
     >
@@ -128,33 +128,33 @@ export function NavItem({
   const button = (
     <button
       aria-label={ariaLabel}
-      className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
+      className={cx("group cursor-pointer select-none text-left", { "w-full": !isCollapsed })}
       onClick={onClick}
     >
       <div
         className={cx(
           `relative flex cursor-pointer items-center gap-8
-          rounded-8 px-12 py-10 text-typography-secondary group-hover:bg-blue-400/20 group-hover:text-blue-400
-          dark:group-hover:bg-slate-700 dark:group-hover:text-typography-primary`,
+          rounded-8 px-12 py-8 text-textIcon-secondary group-hover:bg-button-primary/20 group-hover:text-blue-strong
+          dark:group-hover:bg-button-background dark:group-hover:text-textIcon-primary`,
           {
-            "bg-blue-400/20 !text-blue-400 dark:bg-slate-700 dark:!text-typography-primary": isActive,
+            "bg-button-primary/20 !text-blue-strong dark:bg-button-background dark:!text-textIcon-primary": isActive,
             "w-full": !isCollapsed,
           }
         )}
       >
         <div className="flex size-20 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
-        <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
+        <span className={cx("text-body-medium font-medium", { hidden: isCollapsed })}>{label}</span>
 
         <div
           className={cx(
             `absolute left-0 top-0 z-30 hidden items-center gap-8 rounded-8
-            bg-slate-800 text-blue-400 dark:text-typography-primary`,
+            bg-fill-surfaceElevated text-blue-strong dark:text-textIcon-primary`,
             { "group-hover:flex": isCollapsed }
           )}
         >
-          <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-12 py-10 dark:bg-slate-700">
+          <div className="flex items-center gap-8 rounded-8 bg-button-primary/20 px-12 py-8 dark:bg-button-background">
             <div className="flex size-20 shrink-0 items-center justify-center">{icon}</div>
-            <span className={cx("text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]")}>{label}</span>
+            <span className={cx("text-body-medium whitespace-nowrap font-medium")}>{label}</span>
           </div>
         </div>
       </div>

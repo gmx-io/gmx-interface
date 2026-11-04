@@ -80,7 +80,7 @@ export function BuyGmxModal({
           <Trans>Buy GMX on GMX swap</Trans>
         </BuyGmxModalButton>
         <div className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Buy on other platforms</Trans>
           </span>
           <div className="grid grid-cols-2 gap-12">
@@ -122,10 +122,9 @@ function BuyGmxModalButton({
   return (
     <Button
       variant={variant}
-      className="w-full !justify-between !py-10 px-16 text-14 normal-nums"
+      className="w-full !justify-between !py-8 px-16"
       to={to}
       newTab={newTab}
-      showExternalLinkArrow={false}
       onClick={onClick}
       disabled={disabled}
     >

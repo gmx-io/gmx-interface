@@ -114,7 +114,7 @@ export function PositionList(p: Props) {
         <TableScrollFadeContainer
           disableScrollFade={positions.length === 0}
           hideControls
-          className="flex grow flex-col bg-slate-900"
+          className="flex grow flex-col bg-fill-surfaceBase"
         >
           <Table className="!w-[max(100%,1180px)] table-fixed">
             <thead className="text-body-medium">

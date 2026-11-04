@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import React, { useCallback, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
@@ -184,7 +184,7 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex flex-wrap items-center gap-x-6">
+              <div className="text-body-medium flex flex-wrap items-center gap-x-4">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)
@@ -198,7 +198,7 @@ export function GmListItem({
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
                 </div>
               </div>
-              <div className="text-12 tracking-normal text-typography-secondary">
+              <div className="text-body-small tracking-normal text-textIcon-secondary">
                 [{getMarketPoolName({ longToken, shortToken })}]
               </div>
             </div>
@@ -211,7 +211,13 @@ export function GmListItem({
 
             {onFavoriteClick ? (
               <div>
-                <Button variant="secondary" className="shrink-0" onClick={handleFavoriteClick}>
+                <Button
+                  variant="secondary"
+                  size="controlled"
+                  className="size-32 shrink-0 !p-0"
+                  onClick={handleFavoriteClick}
+                  aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+                >
                   <FavoriteStar isFavorite={isFavorite} />
                 </Button>
               </div>
@@ -219,7 +225,7 @@ export function GmListItem({
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
+        <div className="flex flex-col gap-8 border-t border-stroke-primary pt-8">
           <SyntheticsInfoRow
             label={<Trans>TVL (supply)</Trans>}
             value={
@@ -307,7 +313,13 @@ export function GmListItem({
       <TableTdActionable className="w-[220px] pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (
-            <Button variant="ghost" className="!h-32 !min-h-32 !w-40 !p-0" onClick={handleFavoriteClick}>
+            <Button
+              variant="ghost"
+              size="controlled"
+              className="size-32 !p-0"
+              onClick={handleFavoriteClick}
+              aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+            >
               <RecentlyListedFavoriteSlot isRecentlyListed={showRecentlyListedBadge} isFavorite={isFavorite} />
             </Button>
           )}
@@ -329,16 +341,16 @@ export function GmListItem({
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
 
-              {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
+              {isUsdgGlv && <LaunchBoostBadge className="ml-4" />}
               {isWhitelistOnly && (
-                <WhitelistOnlyBadge className="ml-6" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
+                <WhitelistOnlyBadge className="ml-4" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
               )}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
               </div>
             </div>
-            <div className="text-12 tracking-normal text-typography-secondary">
+            <div className="text-body-small tracking-normal text-textIcon-secondary">
               [{getMarketPoolName({ longToken, shortToken })}]
             </div>
           </div>
@@ -356,7 +368,12 @@ export function GmListItem({
             usdOnTop
           />
         ) : (
-          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
         )}
       </TableTdActionable>
       <TableTdActionable className="w-[11%]">
@@ -378,14 +395,28 @@ export function GmListItem({
       </TableTdActionable>
 
       <TableTdActionable className="w-[11%]">
-        {!apyLoading ? apyValue : <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />}
+        {!apyLoading ? (
+          apyValue
+        ) : (
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
+        )}
       </TableTdActionable>
 
       <TableTdActionable className="w-[18%]">
         {!performanceLoading ? (
           <div className="numbers">{performanceValue}</div>
         ) : (
-          <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+          <Skeleton
+            width={60}
+            count={1}
+            baseColor="var(--color-fill-skeleton)"
+            highlightColor="var(--color-fill-skeleton)"
+          />
         )}
       </TableTdActionable>
 
@@ -446,17 +477,17 @@ const SnapshotGraph = ({
       <AreaChart width={size.width} height={size.height} data={chartData}>
         <defs>
           <linearGradient id={`snapshot-graph-gradient-green`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-green-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-green-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="var(--color-green-strong)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-green-strong)" stopOpacity={0}></stop>
           </linearGradient>
           <linearGradient id={`snapshot-graph-gradient-red`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="-45%" stopColor="var(--color-red-500)" stopOpacity={0.5}></stop>
-            <stop offset="100%" stopColor="var(--color-red-500)" stopOpacity={0}></stop>
+            <stop offset="-45%" stopColor="var(--color-red-strong)" stopOpacity={0.5}></stop>
+            <stop offset="100%" stopColor="var(--color-red-strong)" stopOpacity={0}></stop>
           </linearGradient>
         </defs>
         <Area
           dataKey="performance"
-          stroke={isNegative ? "var(--color-red-500)" : "var(--color-green-500)"}
+          stroke={isNegative ? "var(--color-red-strong)" : "var(--color-green-strong)"}
           dot={false}
           fill={isNegative ? "url(#snapshot-graph-gradient-red)" : "url(#snapshot-graph-gradient-green)"}
           baseValue="dataMin"

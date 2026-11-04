@@ -27,7 +27,7 @@ import { getNativeToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
-import Button from "components/Button/Button";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -363,9 +363,12 @@ export function getTxnErrorToast(
             <br />
             <br />
             Enable{" "}
-            <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
+            <EmbeddedActionButton
+              className="!text-textIcon-primary !decoration-textIcon-primary"
+              onClick={() => setIsSettingsVisible?.(true)}
+            >
               Express Trading
-            </Button>{" "}
+            </EmbeddedActionButton>{" "}
             in settings for better reliability
           </Trans>
           <br />

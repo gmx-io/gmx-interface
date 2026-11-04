@@ -131,13 +131,13 @@ export default function SuggestionInput({
       <div
         className={cx("Suggestion-input flex items-baseline", className, {
           "input-error": isError,
-          "pr-6": !suffix,
+          "pr-4": !suffix,
           "cursor-default opacity-50": disabled,
         })}
         ref={refs.setReference}
         {...getReferenceProps({ onPointerDown: handleReferencePointerDown })}
       >
-        {label ? <span className="pl-7 pr-7 text-typography-secondary">{label}</span> : null}
+        {label ? <span className="px-4 text-textIcon-secondary">{label}</span> : null}
         <NumberInput
           inputId={inputId}
           inputRef={inputRef}
@@ -152,7 +152,7 @@ export default function SuggestionInput({
           stripLeadingZeros={stripLeadingZeros}
         />
         {suffix && (
-          <div className="pr-7 text-typography-secondary">
+          <div className="pr-4 text-textIcon-secondary">
             <span>{suffix}</span>
           </div>
         )}

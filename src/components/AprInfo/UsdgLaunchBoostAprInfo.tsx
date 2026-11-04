@@ -101,7 +101,7 @@ function UsdgLaunchBoostTooltipContent({
   const tokenSymbol = launchBoost.isGlv ? "GLV" : "GM";
 
   return (
-    <div className="flex flex-col gap-y-14">
+    <div className="flex flex-col gap-y-12">
       <div>
         <StatsTooltipRow
           showDollar={false}
@@ -151,7 +151,7 @@ export function UsdgLaunchBoostAprInfo({
     <div className="inline-flex flex-nowrap">
       <span className={cx("numbers", className)}>{value}</span>
       <img
-        className={cx("relative -top-3 h-10", { "opacity-50 grayscale": !isBoostIncluded })}
+        className={cx("relative -top-4 h-10", { "opacity-50 grayscale": !isBoostIncluded })}
         src={sparkleIcon}
         alt={t`Sparkle`}
       />

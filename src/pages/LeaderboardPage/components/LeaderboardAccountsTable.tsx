@@ -185,7 +185,7 @@ export function LeaderboardAccountsTable({
   );
 
   return (
-    <div className="rounded-b-8 bg-slate-900">
+    <div className="rounded-b-8 bg-fill-surfaceBase">
       <TableScrollFadeContainer>
         <table className="w-full min-w-[1000px]">
           <thead>
@@ -361,7 +361,9 @@ const TableRow = memo(
         </TableTd>
 
         <TableTd>
-          <AddressView size={20} address={account.account} breakpoint="XL" />
+          <div className="[&_.AddressView]:flex">
+            <AddressView size={20} address={account.account} breakpoint="XL" />
+          </div>
         </TableTd>
         <TableTd>
           <TooltipWithPortal
@@ -394,32 +396,32 @@ const TableRow = memo(
         </TableTd>
         <TableTd
           className={cx("numbers", {
-            "text-typography-secondary": account.averageSize === 0n,
+            "text-textIcon-secondary": account.averageSize === 0n,
           })}
         >
           <UsdValue usd={account.averageSize} />
         </TableTd>
         <TableTd
           className={cx("numbers", {
-            "text-typography-secondary": account.averageLeverage === 0n,
+            "text-textIcon-secondary": account.averageLeverage === 0n,
           })}
         >
           <LeverageValue leverage={account.averageLeverage ?? 0n} />
         </TableTd>
-        <TableTd className="text-right text-typography-secondary numbers">
+        <TableTd className="text-right text-textIcon-secondary numbers">
           <TooltipWithPortal
             handle={
               <span
-                className={cx("text-typography-primary numbers", {
-                  "text-typography-secondary": account.wins === 0 && account.losses === 0,
+                className={cx("text-textIcon-primary numbers", {
+                  "text-textIcon-secondary": account.wins === 0 && account.losses === 0,
                 })}
               >
-                {account.wins} <span className="text-typography-secondary">{t`/`}</span> {account.losses}
+                {account.wins} <span className="text-textIcon-secondary">{t`/`}</span> {account.losses}
               </span>
             }
             renderContent={renderWinsLossesTooltipContent}
-            handleClassName={cx("text-typography-primary numbers", {
-              "text-typography-secondary": account.wins === 0 && account.losses === 0,
+            handleClassName={cx("text-textIcon-primary numbers", {
+              "text-textIcon-secondary": account.wins === 0 && account.losses === 0,
             })}
             variant="underline"
           />
@@ -448,14 +450,14 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   if (rank === null)
     return (
       <TooltipWithPortal
-        handleClassName="text-typography-secondary"
+        handleClassName="text-textIcon-secondary"
         handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
     );
 
-  return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
+  return <span className="font-medium text-textIcon-secondary numbers">{rank}</span>;
 });
 
 const LeaderboardPnlTooltipContent = memo(({ account }: { account: LeaderboardAccount }) => {

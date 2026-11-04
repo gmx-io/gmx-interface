@@ -65,12 +65,12 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
       </SettingsSection>
       <SettingsSection className="mt-16 gap-16">
-        <div className="text-14 font-medium text-typography-primary">
+        <div className="text-body-medium font-medium text-textIcon-primary">
           <Trans>Links</Trans>
         </div>
         <Link
           to="/monitor"
-          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          className="link-underline text-body-small text-textIcon-secondary hover:text-blue-strong"
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -79,7 +79,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </Link>
         <Link
           to="/rpc-debug"
-          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          className="link-underline text-body-small text-textIcon-secondary hover:text-blue-strong"
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -88,7 +88,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </Link>
         <Link
           to="/oracle-keeper-debug"
-          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          className="link-underline text-body-small text-textIcon-secondary hover:text-blue-strong"
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -97,7 +97,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         </Link>
         <Link
           to="/permits"
-          className="link-underline text-12 text-typography-secondary hover:text-blue-300"
+          className="link-underline text-body-small text-textIcon-secondary hover:text-blue-strong"
           onClick={(e) => {
             e.stopPropagation();
           }}

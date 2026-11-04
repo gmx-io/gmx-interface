@@ -315,7 +315,7 @@ function SizeWithIcon({
           {isTwapOrder(order) ? null : <span>{toTokenText} </span>}
           {toTokenIcon}
           {isTwapOrder(order) ? (
-            <TwapOrderProgress order={order} className="font-normal text-typography-secondary" />
+            <TwapOrderProgress order={order} className="font-normal text-textIcon-secondary" />
           ) : null}
         </Trans>
       </span>
@@ -364,7 +364,7 @@ function SizeWithIcon({
 
   return (
     <span className={className}>
-      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-typography-secondary" />}
+      {sizeText} {isTwapOrder(order) && <TwapOrderProgress order={order} className="text-textIcon-secondary" />}
     </span>
   );
 }
@@ -689,8 +689,10 @@ function OrderItemLarge({
   const cancelButton = (
     <Button
       variant="ghost"
-      className="max-2xl:px-4"
+      size="controlled"
+      className="size-32 !p-0"
       disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      aria-label={t`Cancel order`}
       onClick={onCancelOrder}
     >
       <CloseIcon className="size-14" />
@@ -708,7 +710,7 @@ function OrderItemLarge({
     >
       {!hideActions && onToggleOrder && (
         <TableTd className="cursor-pointer" onClick={onToggleOrder}>
-          <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} />
+          <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} aria-label={t`Select order`} />
         </TableTd>
       )}
       <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
@@ -727,7 +729,7 @@ function OrderItemLarge({
                   <span key={market.indexName}>
                     {index > 0 && " → "}
                     <span>{market.indexName}</span>
-                    <span className="subtext leading-1">[{market.poolName}]</span>
+                    <span className="subtext !leading-1">[{market.poolName}]</span>
                   </span>
                 ))}
               </>
@@ -750,7 +752,7 @@ function OrderItemLarge({
                 value={
                   <div className="flex items-center">
                     <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    <span className="subtext !leading-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
                 showDollar={false}
@@ -786,7 +788,7 @@ function OrderItemLarge({
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
             {setEditingOrderKey && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
+              <Button variant="ghost" size="controlled" onClick={setEditingOrderKey} className="size-32 !p-0">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}
@@ -881,7 +883,7 @@ function OrderItemSmall({
     <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
-          "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+          "after:absolute after:left-8 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
             isCurrentMarket,
         })}
       >
@@ -890,7 +892,7 @@ function OrderItemSmall({
             title
           ) : (
             <>
-              <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
+              <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder} aria-label={t`Select order`} />
               {title}
             </>
           )}
@@ -899,14 +901,14 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Key</Trans>
             </div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}
         <div className="App-card-row">
-          <div className="font-medium text-typography-secondary">
+          <div className="font-medium text-textIcon-secondary">
             <Trans>Order type</Trans>
           </div>
           <div>
@@ -914,13 +916,13 @@ function OrderItemSmall({
           </div>
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-typography-secondary">
+          <div className="font-medium text-textIcon-secondary">
             <Trans>Size</Trans>
           </div>
           <OrderSize order={order} showDebugValues={showDebugValues} />
         </div>
         <div className="App-card-row">
-          <div className="font-medium text-typography-secondary">
+          <div className="font-medium text-textIcon-secondary">
             <Trans>Trigger price</Trans>
           </div>
           <div>
@@ -933,7 +935,7 @@ function OrderItemSmall({
         </div>
 
         <div className="App-card-row">
-          <div className="font-medium text-typography-secondary">
+          <div className="font-medium text-textIcon-secondary">
             <Trans>Mark price</Trans>
           </div>
           <div>
@@ -1020,8 +1022,8 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
       handle={
         <span
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-red-500 decoration-red-500/50": level === "error",
-            "text-yellow-300 decoration-yellow-300/50": level === "warning",
+            "text-red-strong decoration-red-strong/50": level === "error",
+            "text-yellow-strong decoration-yellow-strong/50": level === "warning",
           })}
         >
           {handle}
@@ -1034,8 +1036,8 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
               <div key={error.key}>
                 <span
                   className={cx({
-                    "text-red-500": error!.level === "error",
-                    "text-yellow-300": error!.level === "warning",
+                    "text-red-strong": error!.level === "error",
+                    "text-yellow-strong": error!.level === "warning",
                   })}
                 >
                   {error.msg}
@@ -1055,14 +1057,14 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-4">
       {typeLabelWithErrors}
       <TooltipWithPortal
         as="span"
         variant="none"
-        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        className="text-body-small min-w-0 cursor-help truncate rounded-4 bg-yellow-backgroundOpacity px-4 py-4 font-medium text-yellow-strong"
         handle={<Trans>Frozen</Trans>}
-        content={<span className={cx({ "text-red-500": frozenError.level === "error" })}>{frozenError.msg}</span>}
+        content={<span className={cx({ "text-red-strong": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />
     </div>
   );

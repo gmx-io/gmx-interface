@@ -65,13 +65,13 @@ const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
 
 const LIVE_DASH_ARRAY = "4 4";
 
-const LONG_COLOR = "var(--color-green-500)";
-const SHORT_COLOR = "var(--color-red-500)";
+const LONG_COLOR = "var(--color-green-strong)";
+const SHORT_COLOR = "var(--color-red-strong)";
 
-const AXIS_TICK_PROPS = { fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 };
+const AXIS_TICK_PROPS = { fill: "var(--color-textIcon-secondary)", fontSize: 12, fontWeight: 500 };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "var(--color-slate-500)",
+  stroke: "var(--color-textIcon-disabled)",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
@@ -80,8 +80,8 @@ const CHART_MARGIN = { top: 5, right: 16, bottom: 0, left: 0 };
 
 const X_AXIS_DOMAIN: ["dataMin", "dataMax"] = ["dataMin", "dataMax"];
 
-const LONG_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: LONG_COLOR, fill: "var(--color-slate-900)" };
-const SHORT_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: SHORT_COLOR, fill: "var(--color-slate-900)" };
+const LONG_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: LONG_COLOR, fill: "var(--color-fill-surfaceBase)" };
+const SHORT_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: SHORT_COLOR, fill: "var(--color-fill-surfaceBase)" };
 
 function getRateFields(rateType: RateType): { longKey: keyof RatesSnapshot; shortKey: keyof RatesSnapshot } {
   switch (rateType) {
@@ -357,17 +357,15 @@ export function NetRateChart() {
       </div>
 
       <div className="flex items-center gap-16 px-4 pb-8">
-        <span className="text-body-small flex items-center gap-6 text-typography-secondary">
-          <span className="inline-block size-8 rounded-full bg-green-500" />
+        <span className="text-body-small flex items-center gap-4 text-textIcon-secondary">
+          <span className="inline-block size-8 rounded-full bg-green-strong" />
           <Trans>Long positions</Trans>
-          {legendRates && <span className="text-typography-primary">{formatRate(legendRates.longRate, decimals)}</span>}
+          {legendRates && <span className="text-textIcon-primary">{formatRate(legendRates.longRate, decimals)}</span>}
         </span>
-        <span className="text-body-small flex items-center gap-6 text-typography-secondary">
-          <span className="inline-block size-8 rounded-full bg-red-500" />
+        <span className="text-body-small flex items-center gap-4 text-textIcon-secondary">
+          <span className="inline-block size-8 rounded-full bg-red-strong" />
           <Trans>Short positions</Trans>
-          {legendRates && (
-            <span className="text-typography-primary">{formatRate(legendRates.shortRate, decimals)}</span>
-          )}
+          {legendRates && <span className="text-textIcon-primary">{formatRate(legendRates.shortRate, decimals)}</span>}
         </span>
       </div>
 
@@ -378,21 +376,21 @@ export function NetRateChart() {
           </div>
         ) : error && chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
-            <MinusCircleIcon className="size-24 text-typography-secondary" />
-            <p className="text-body-medium font-bold text-typography-primary">
+            <MinusCircleIcon className="size-24 text-textIcon-secondary" />
+            <p className="text-body-medium font-medium text-textIcon-primary">
               <Trans>Unable to load rate history</Trans>
             </p>
-            <p className="text-body-small text-typography-secondary">
+            <p className="text-body-small text-textIcon-secondary">
               <Trans>Refer to Net rate / 1h above the chart</Trans>
             </p>
           </div>
         ) : chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
-            <MinusCircleIcon className="size-24 text-typography-secondary" />
-            <p className="text-body-medium font-bold text-typography-primary">
+            <MinusCircleIcon className="size-24 text-textIcon-secondary" />
+            <p className="text-body-medium font-medium text-textIcon-primary">
               <Trans>No net rate history for this market</Trans>
             </p>
-            <p className="text-body-small text-typography-secondary">
+            <p className="text-body-small text-textIcon-secondary">
               <Trans>
                 For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart.
               </Trans>
@@ -401,7 +399,12 @@ export function NetRateChart() {
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={CHART_MARGIN}>
-              <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+              <CartesianGrid
+                vertical={false}
+                strokeDasharray="5 3"
+                strokeWidth={0.5}
+                stroke="var(--color-stroke-primary)"
+              />
               <XAxis
                 dataKey="timestampMs"
                 type="number"
@@ -483,15 +486,15 @@ function ProjectionDropdown({ value, onChange }: { value: RateProjection; onChan
     <Popover className="relative">
       <Popover.Button
         ref={refs.setReference}
-        className="text-body-small flex items-center gap-4 rounded-4 px-8 py-4 text-typography-secondary hover:text-typography-primary"
+        className="text-body-small flex items-center gap-4 rounded-4 px-8 py-4 text-textIcon-secondary hover:text-textIcon-primary"
       >
-        <Trans>Net rate projection:</Trans> <span className="text-typography-primary">{projectionLabels[value]}</span>
+        <Trans>Net rate projection:</Trans> <span className="text-textIcon-primary">{projectionLabels[value]}</span>
         <ChevronDownIcon className="size-16" />
       </Popover.Button>
       <Popover.Panel
         ref={refs.setFloating}
         style={floatingStyles}
-        className="z-50 rounded-4 border border-slate-600 bg-slate-800 py-4 shadow-lg"
+        className="z-50 rounded-4 border border-stroke-primary bg-fill-surfaceElevated py-4 shadow-lg"
       >
         {({ close }) => (
           <>
@@ -500,8 +503,8 @@ function ProjectionDropdown({ value, onChange }: { value: RateProjection; onChan
                 key={p}
                 type="button"
                 className={cx(
-                  "text-body-small flex w-full px-12 py-6 text-left hover:bg-slate-700",
-                  p === value ? "text-typography-primary" : "text-typography-secondary"
+                  "text-body-small flex w-full px-12 py-4 text-left hover:bg-button-background",
+                  p === value ? "text-textIcon-primary" : "text-textIcon-secondary"
                 )}
                 onClick={() => {
                   onChange(p);
@@ -534,8 +537,8 @@ function NetRateTooltip({
   const { raw } = point;
 
   return (
-    <div className="text-body-small flex min-w-[240px] flex-col gap-8 rounded-4 bg-slate-800 px-12 py-8 shadow-lg">
-      <span className="text-typography-secondary">{format(point.timestamp, "MMM dd, HH:mm")}</span>
+    <div className="text-body-small flex min-w-[240px] flex-col gap-8 rounded-4 bg-fill-surfaceElevated px-12 py-8 shadow-lg">
+      <span className="text-textIcon-secondary">{format(point.timestamp, "MMM dd, HH:mm")}</span>
 
       {rateType === "netRate" ? (
         <NetRateBreakdownTooltip
@@ -578,8 +581,8 @@ function NetRateLiveTooltip({
   const suffix = `/${projectionLabels[projection]}`;
 
   return (
-    <div className="text-body-small flex min-w-[240px] flex-col gap-8 rounded-4 bg-slate-800 px-12 py-8 shadow-lg">
-      <span className="text-typography-secondary">
+    <div className="text-body-small flex min-w-[240px] flex-col gap-8 rounded-4 bg-fill-surfaceElevated px-12 py-8 shadow-lg">
+      <span className="text-textIcon-secondary">
         <Trans>Live</Trans> · {format(point.timestamp, "HH:mm")}
       </span>
 
@@ -627,41 +630,41 @@ function NetRateBreakdownTooltip({
   decimals: number;
 }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
-          <span className="inline-block size-6 rounded-full bg-green-500" />
+        <span className="flex items-center gap-4 font-medium">
+          <span className="inline-block size-6 rounded-full bg-green-strong" />
           <Trans>Long net rate</Trans>
         </span>
-        <span className={cx("font-bold numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
+        <span className={cx("font-medium numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
           {formatRate(longNet, decimals)}
           {suffix}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-typography-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Funding</Trans>
         <span className="numbers">{formatRate(longFunding, decimals)}</span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-typography-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Borrowing</Trans>
         <span className="numbers">{formatRate(longBorrowing, decimals)}</span>
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
-          <span className="inline-block size-6 rounded-full bg-red-500" />
+        <span className="flex items-center gap-4 font-medium">
+          <span className="inline-block size-6 rounded-full bg-red-strong" />
           <Trans>Short net rate</Trans>
         </span>
-        <span className={cx("font-bold numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
+        <span className={cx("font-medium numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
           {formatRate(shortNet, decimals)}
           {suffix}
         </span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-typography-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Funding</Trans>
         <span className="numbers">{formatRate(shortFunding, decimals)}</span>
       </div>
-      <div className="flex items-center justify-between gap-16 pl-10 text-typography-secondary">
+      <div className="flex items-center justify-between gap-16 pl-8 text-textIcon-secondary">
         <Trans>Borrowing</Trans>
         <span className="numbers">{formatRate(shortBorrowing, decimals)}</span>
       </div>
@@ -683,10 +686,10 @@ function SimpleRateTooltip({
   decimals: number;
 }) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
-          <span className="inline-block size-6 rounded-full bg-green-500" />
+        <span className="flex items-center gap-4 font-medium">
+          <span className="inline-block size-6 rounded-full bg-green-strong" />
           {getRateDirectionLabel(rateType, "long")}
         </span>
         <span className={cx("numbers", { positive: longRate >= 0, negative: longRate < 0 })}>
@@ -695,8 +698,8 @@ function SimpleRateTooltip({
         </span>
       </div>
       <div className="flex items-center justify-between gap-16">
-        <span className="flex items-center gap-4 font-bold">
-          <span className="inline-block size-6 rounded-full bg-red-500" />
+        <span className="flex items-center gap-4 font-medium">
+          <span className="inline-block size-6 rounded-full bg-red-strong" />
           {getRateDirectionLabel(rateType, "short")}
         </span>
         <span className={cx("numbers", { positive: shortRate >= 0, negative: shortRate < 0 })}>

@@ -244,21 +244,16 @@ function Slide({ shift, children }: { shift: number; children: ReactNode }) {
 
 function CardContent({ event, variant }: { event: EventData; variant: NonNullable<EventData["variant"]> }) {
   const titleColor = {
-    info: "text-blue-300",
-    warning: "text-yellow-300",
-    error: "text-red-100",
-    success: "text-green-300",
+    info: "text-blue-strong",
+    warning: "text-yellow-strong",
+    error: "text-red-secondary",
+    success: "text-green-strong",
   }[variant];
 
   return (
     <div>
-      <p className={cx("text-body-medium mb-4 font-medium leading-[1.3]", titleColor)}>{event.title}</p>
-      <div
-        className={cx(
-          "text-body-medium leading-[1.3] text-typography-primary",
-          event.summary === undefined && "line-clamp-3"
-        )}
-      >
+      <p className={cx("text-body-medium mb-4 font-medium", titleColor)}>{event.title}</p>
+      <div className={cx("text-body-medium text-textIcon-primary", event.summary === undefined && "line-clamp-3")}>
         {event.summary ?? event.description}
       </div>
     </div>

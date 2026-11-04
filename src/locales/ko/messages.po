@@ -433,6 +433,10 @@ msgstr "거래량"
 msgid "Telegram bot"
 msgstr "Telegram 봇"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Next page"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr "Limit Swap 취소됨"
@@ -1053,6 +1057,7 @@ msgstr "알 수 없는 오류"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr "상세 보기"
@@ -2228,6 +2233,10 @@ msgstr "청구 내역"
 msgid "No SL orders"
 msgstr "SL 주문 없음"
 
+#: src/components/Button/ButtonLink.tsx
+msgid "(opens in a new tab)"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr "수동 레버리지"
@@ -2743,6 +2752,10 @@ msgstr "기본 허용 슬리피지"
 msgid "Max network fee buffer"
 msgstr "최대 네트워크 수수료 버퍼"
 
+#: src/components/Footer/Footer.tsx
+msgid "{0} (opens in a new tab)"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr "시프트 주문이 취소되었습니다"
@@ -3231,6 +3244,7 @@ msgid "Max:"
 msgstr "최대:"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "Show details"
 msgstr "세부 사항 표시"
 
@@ -3937,6 +3951,11 @@ msgstr "평균 포지션 규모"
 msgid "Theme"
 msgstr "테마"
 
+#: src/components/OrderList/OrderList.tsx
+#: src/components/OrderList/OrderList.tsx
+msgid "Select all orders"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -4143,6 +4162,11 @@ msgstr "스테이킹 업그레이드 전까지 언스테이킹이 일시 중지�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express를 사용하려면 GMX Account에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 입금하십시오."
+
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrderItem/OrderItem.tsx
+msgid "Select order"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4878,6 +4902,12 @@ msgstr "보상 수령"
 msgid "Multicall idle"
 msgstr "Multicall 유휴"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+#: src/components/PositionDropdown/PositionDropdown.tsx
+msgid "More actions"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX"
 msgstr "GMX에서 거래할 때마다<1/><0>최대 {traderDiscountPercentageLabel} 절약</0>"
@@ -5463,6 +5493,15 @@ msgstr "스왑 제출 완료"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "변동성으로 인한 예상 체결가와 실제 체결가의 차이입니다. 슬리피지가 최대치를 초과하면 주문이 체결되지 않습니다. 설정에서 기본값을 조정하십시오.<0/><1/>낮은 값(예: -{0} 미만)은 변동성이 큰 시기에 주문 실패를 초래할 수 있습니다.<2/><3/>슬리피지는 미결제약정 불균형에 기반한 가격 영향과 다릅니다. <4>자세히 보기</4>."
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Remove from favourites"
+msgstr ""
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -7070,6 +7109,7 @@ msgid "Failed Stop Market"
 msgstr "스탑 마켓 실패"
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsButton/SettingsButton.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
@@ -7350,6 +7390,10 @@ msgstr "더 보기"
 msgid "Price impact rebates from closing are claimable in the Claims tab. <0>Read more</0>."
 msgstr "포지션 종료 시 발생한 가격 영향 리베이트는 청구 탭에서 수령할 수 있습니다. <0>자세히 보기</0>."
 
+#: src/components/SearchInput/SearchInput.tsx
+msgid "Clear search"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "거래 시 할인이 아닌 {currentTierRebate}% 리베이트를 받습니다"
@@ -7416,6 +7460,10 @@ msgstr "{0, plural, other {보유하신 {markets} 풀의 거래가 USDG 풀로 �
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "리베이트는 등급에 따라 달라지며, <0>여기</0>에서 등급을 확인할 수 있습니다. 등급이 높아지면 더 많은 보상을 받고 트레이더에게 더 큰 할인이 적용됩니다."
+
+#: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
+msgid "Hide details"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
@@ -8084,6 +8132,7 @@ msgstr "ParaSwap"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8358,6 +8407,10 @@ msgstr "전통 금융"
 msgid "Gas"
 msgstr "Gas"
 
+#: src/components/Pagination/Pagination.tsx
+msgid "Previous page"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "메인 계정으로 {balanceFormatted}을(를) 출금하는 중…"
@@ -8518,6 +8571,10 @@ msgstr "제휴 대시보드"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: {remainingCollateralUsdText}, required: {minCollateralUsdForLeverageText}"
 msgstr "남은 포지션이 최대 허용 레버리지를 초과하게 됩니다. 더 많은 부분을 종료하거나, 인출 금액을 줄이거나, 먼저 증거금을 추가하세요. 잔여 증거금: {remainingCollateralUsdText}, 필요: {minCollateralUsdForLeverageText}"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "First page"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -9112,6 +9169,10 @@ msgstr "가치가 낮은 자산 숨기기"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
+
+#: src/components/Referrals/shared/modals/ClaimRewardRow.tsx
+msgid "Select {indexName} [{poolName}]"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
@@ -10184,6 +10245,10 @@ msgstr "알림"
 msgid "Trading mode"
 msgstr "거래 모드"
 
+#: src/components/Modal/Modal.tsx
+msgid "Back"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>교차 증거금</0><1>교차 담보</1>"
@@ -10969,6 +11034,15 @@ msgstr "Saulius GMX analytics"
 msgid "Add RPC"
 msgstr "RPC 추가"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/GmList/GmListItem.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolListItem.tsx
+msgid "Add to favourites"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Turn off \"Keep leverage\", close the full position, change the trigger price, or add margin."
 msgstr "\"레버리지 유지\"를 끄거나, 포지션을 전량 종료하거나, 트리거 가격을 변경하거나, 증거금을 추가하세요."
@@ -11119,6 +11193,8 @@ msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1
 msgstr "<0>추천 프로그램 문서</0>를 확인하시거나 <1>GMX Telegram</1>에서 문의하십시오"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Edit order"
 msgstr "주문 수정"
@@ -12321,6 +12397,7 @@ msgid "The export could not be completed. No file was downloaded."
 msgstr "내보내기를 완료할 수 없습니다. 다운로드된 파일이 없습니다."
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
+#: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade in a new tab"
 msgstr "새 탭에서 GMTrade 열기"
 
@@ -12452,6 +12529,10 @@ msgstr "이 프로그램이 적합합니까?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "획득"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Select all markets"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -12669,6 +12750,9 @@ msgstr "유동성은 {chainNames} 또는 {lastChainName}에서만 이용 가능�
 msgid "Transfer history"
 msgstr "전송 내역"
 
+#: src/components/OrderItem/OrderItem.tsx
+#: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "주문 취소"
@@ -13049,6 +13133,10 @@ msgstr "지수"
 #: src/components/DownloadAsCsv/DownloadAsCsv.tsx
 msgid "Download as CSV"
 msgstr "CSV로 다운로드"
+
+#: src/components/Pagination/Pagination.tsx
+msgid "Last page"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Fee discounts up to 25%"
@@ -13966,6 +14054,10 @@ msgstr "기본 제공되는 추천 수익"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "규모 확대 (Stop Market)"
+
+#: src/components/SideNav/MobileSideNav.tsx
+msgid "Menu"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction to avoid oversized wallet confirmations."

@@ -59,17 +59,17 @@ export function ModeTabs({ mode, setMode }: Props) {
   );
 
   const itemClass =
-    "text-body-small relative z-10 flex h-full items-center justify-center rounded-6 px-10 py-4 font-medium transition-colors max-md:w-[50%] max-md:px-0";
+    "text-body-small relative z-10 flex h-full items-center justify-center rounded-6 px-8 py-4 font-medium transition-colors max-md:w-[50%] max-md:px-0";
 
   return (
     <div
       ref={containerRef}
-      className="relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-slate-800 p-2 max-md:w-full"
+      className="relative flex h-32 shrink-0 items-center gap-4 rounded-8 bg-fill-surfaceElevated p-4 max-md:w-full"
     >
       {thumbStyle && (
         <div
           aria-hidden
-          className="absolute bottom-2 top-2 rounded-6 bg-slate-600 transition-all duration-200 ease-out"
+          className="absolute bottom-4 top-4 rounded-6 bg-fill-accent transition-all duration-200 ease-out"
           style={thumbStyle}
         />
       )}
@@ -77,8 +77,8 @@ export function ModeTabs({ mode, setMode }: Props) {
         ref={perpRef}
         type="button"
         className={cx(itemClass, {
-          "text-typography-primary": mode === "perp",
-          "text-typography-secondary hover:text-typography-primary": mode !== "perp",
+          "text-textIcon-primary": mode === "perp",
+          "text-textIcon-secondary hover:text-textIcon-primary": mode !== "perp",
         })}
         onClick={() => setMode("perp")}
         data-selected={mode === "perp"}
@@ -89,8 +89,8 @@ export function ModeTabs({ mode, setMode }: Props) {
         ref={swapRef}
         type="button"
         className={cx(itemClass, {
-          "text-typography-primary": mode === "swap",
-          "text-typography-secondary hover:text-typography-primary": mode !== "swap",
+          "text-textIcon-primary": mode === "swap",
+          "text-textIcon-secondary hover:text-textIcon-primary": mode !== "swap",
         })}
         onClick={() => setMode("swap")}
         data-selected={mode === "swap"}

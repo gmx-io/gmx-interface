@@ -20,6 +20,6 @@
 }
 
 .token-icon-with-badge-small {
-  // 2px border, 2px x and y offset
-  @include circle-badge-crop-out(14px, 4px, 4px);
+  // 2px border, 4px x and y offset
+  @include circle-badge-crop-out(14px, 6px, 6px);
 }

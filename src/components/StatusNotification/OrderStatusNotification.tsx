@@ -437,7 +437,7 @@ function OrderStatusNotification({
       <div className="relative z-[1]">
         <div className={cx("StatusNotification-title")}>{title}</div>
 
-        <div className="mt-10">
+        <div className="mt-8">
           {externalSwapStatus}
           {sendingStatus}
           {executionStatus}
@@ -675,7 +675,7 @@ export function OrdersStatusNotificiation({
               {createdTxnHashList?.map((txnHash) => (
                 <ExternalLink
                   key={txnHash}
-                  className="ml-10 !text-typography-primary"
+                  className="ml-8 !text-textIcon-primary"
                   href={`${getExplorerUrl(chainId)}tx/${txnHash}`}
                 >
                   {t`View`}

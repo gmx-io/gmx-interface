@@ -34,14 +34,19 @@ function Card({
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
         <Tooltip
-          handle={<div className={cx("card-header pr-4", slimHeader ? "px-20 py-8" : "p-20")}>{title}</div>}
+          handle={<div className={cx("card-header pr-4 font-medium", slimHeader ? "px-20 py-8" : "p-20")}>{title}</div>}
           position="bottom-start"
           content={tooltipText}
           variant="icon"
-          iconClassName="text-typography-secondary"
+          iconClassName="text-textIcon-secondary"
         />
       ) : (
-        <div className={cx("card-header border-b-1/2 border-slate-600", slimHeader ? "px-20 py-8" : "p-20")}>
+        <div
+          className={cx(
+            "card-header border-b-1/2 border-stroke-primary font-medium",
+            slimHeader ? "px-20 py-8" : "p-20"
+          )}
+        >
           {title}
         </div>
       )}

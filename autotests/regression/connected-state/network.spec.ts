@@ -71,10 +71,10 @@ test.describe("wallet on the other settlement chain", () => {
     await badge.click();
     await expect(
       page.getByTestId(`networks-dropdown-${walletChain}`).locator(".network-dropdown-item-label")
-    ).toHaveClass(/text-typography-primary/);
+    ).toHaveClass(/text-textIcon-primary/);
     await expect(
       page.getByTestId(`networks-dropdown-${chainName(chainId)}`).locator(".network-dropdown-item-label")
-    ).toHaveClass(/text-typography-secondary/);
+    ).toHaveClass(/text-textIcon-secondary/);
   });
 });
 

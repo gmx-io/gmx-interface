@@ -33,7 +33,7 @@ function BackButton({ onClick }: { onClick: () => void }) {
 
   return (
     <ArrowLeftIcon
-      className="size-20 text-slate-100 outline-none"
+      className="size-20 text-textIcon-secondary outline-none"
       tabIndex={0}
       role="button"
       onClick={onClick}
@@ -66,7 +66,7 @@ function WalletOnlyInfo({ chainName }: { chainName: string }) {
           <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
         </div>
       </div>
-      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
+      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-strong">
         <Trans>Read more</Trans>
       </ExternalLink>
     </div>
@@ -127,7 +127,7 @@ function WalletAndGmxAccountInfo() {
           </Trans>
         </div>
       </div>
-      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
+      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-strong">
         <Trans>Read more</Trans>
       </ExternalLink>
     </div>
@@ -163,11 +163,11 @@ export function MainViewTitle() {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-4">
       {title}
       {info && (
         <TooltipWithPortal
-          content={<div className="text-typography-secondary">{info}</div>}
+          content={<div className="text-textIcon-secondary">{info}</div>}
           variant="none"
           position="bottom"
           className="flex items-center"
@@ -175,7 +175,7 @@ export function MainViewTitle() {
           disabled={!isMainViewActive}
           openDelay={300}
         >
-          <InfoIconStroke className="size-16 text-typography-secondary" />
+          <InfoIconStroke className="size-16 text-textIcon-secondary" />
         </TooltipWithPortal>
       )}
     </div>
@@ -230,7 +230,7 @@ export function TransferHistoryScreen({ showDetails }: { showDetails: boolean })
         <TransferHistoryView />
       </div>
       {showDetails && (
-        <div className="absolute inset-0 flex flex-col bg-slate-900">
+        <div className="absolute inset-0 flex flex-col bg-fill-surfaceBase">
           <TransferDetailsView />
         </div>
       )}

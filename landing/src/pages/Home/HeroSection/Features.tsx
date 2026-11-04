@@ -22,10 +22,10 @@ type Props = {
 
 export function Features({ goToTradeArbitrum }: Props) {
   return (
-    <div className="relative flex flex-col gap-24 py-80 lg:grid lg:grid-cols-3 lg:grid-rows-3 lg:py-[120px]">
+    <div className="relative flex flex-col gap-24 py-80 lg:grid lg:grid-cols-3 lg:grid-rows-3 lg:py-120">
       <div className="flex flex-col gap-24 lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-4">
-        <div className="flex-grow-0 rounded-20 bg-slate-800 p-20">
-          <div className="mb-18 flex flex-row items-center gap-20 border-b border-slate-600 pb-20">
+        <div className="bg-slate-800 flex-grow-0 rounded-20 p-20">
+          <div className="border-slate-600 mb-16 flex flex-row items-center gap-20 border-b pb-20">
             <IconBox iconComponent={IcGears} />
             <div className="flex flex-col gap-4">
               <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
@@ -43,7 +43,7 @@ export function Features({ goToTradeArbitrum }: Props) {
             </Trans>
           </p>
         </div>
-        <div className="relative h-[220px] grow overflow-hidden rounded-20 bg-blue-400 p-20 lg:h-full">
+        <div className="bg-blue-400 relative h-[220px] grow overflow-hidden rounded-20 p-20 lg:h-full">
           <ProtectionBackground />
           <img src={bgProtection} alt="Protection" className="absolute bottom-1/2 left-1/2 w-[60%] object-cover" />
           <div className="relative flex h-full w-full flex-col justify-end">
@@ -60,26 +60,26 @@ export function Features({ goToTradeArbitrum }: Props) {
       </div>
       <div
         style={assetsBgStyle}
-        className="h-[220px] overflow-hidden rounded-20 bg-slate-800 lg:col-start-2  lg:col-end-3 lg:row-start-1 lg:row-end-3 lg:h-full lg:min-h-[180px]"
+        className="bg-slate-800 h-[220px] overflow-hidden rounded-20 lg:col-start-2  lg:col-end-3 lg:row-start-1 lg:row-end-3 lg:h-full lg:min-h-[180px]"
       >
         <div className="h-full w-full overflow-hidden">
-          <div className="relative flex flex-col p-20 pb-0 lg:p-28">
-            <p className="text-heading-4 md:text-heading-3 mb-11">
+          <div className="relative flex flex-col p-20 pb-0 lg:p-24">
+            <p className="text-heading-4 md:text-heading-3 mb-8">
               <Trans>Support for</Trans> <br className="hidden lg:block" /> <Trans>numerous assets</Trans>
             </p>
             <p className="text-description">
               <Trans>Use your preferred token to pay and collateralize positions</Trans>
             </p>
           </div>
-          <div className="relative mt-20 w-full grow lg:mt-36">
+          <div className="relative mt-20 w-full grow lg:mt-32">
             <div className="absolute left-1/2 -translate-x-1/2 lg:top-0">
               <ChainIcons />
             </div>
           </div>
         </div>
       </div>
-      <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-2 lg:min-h-[180px]">
-        <div className="mb-18 flex flex-row items-center gap-20 border-b border-slate-600 pb-20">
+      <div className="bg-slate-800 h-full rounded-20 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-1 lg:row-end-2 lg:min-h-[180px]">
+        <div className="border-slate-600 mb-16 flex flex-row items-center gap-20 border-b pb-20">
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
             <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
@@ -94,26 +94,26 @@ export function Features({ goToTradeArbitrum }: Props) {
           <Trans>Trade at scale without worrying about thin order books or slippage</Trans>
         </p>
       </div>
-      <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
+      <div className="bg-slate-800 h-full rounded-20 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
         <div className="flex h-full w-full flex-col justify-between">
           <p className="text-heading-4 mb-20 lg:mb-0">
             <Trans>Secure & permissionless</Trans>
           </p>
           <div className="flex flex-row flex-wrap gap-12 text-[13px]">
             <div className="flex flex-1 flex-col items-stretch gap-8 lg:flex-row lg:flex-wrap lg:items-start">
-              <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
+              <div className="bg-slate-600/50 flex flex-row items-center justify-center gap-4 rounded-8 py-4 pl-4 pr-8 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>No deposits required</Trans>
                 </p>
               </div>
-              <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
+              <div className="bg-slate-600/50 flex flex-row items-center justify-center gap-4 rounded-8 py-4 pl-4 pr-8 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>Trade from your wallet</Trans>
                 </p>
               </div>
-              <div className="flex flex-row items-center justify-center gap-2 rounded-8 bg-slate-600/50 py-6 pl-3 pr-10 text-slate-400">
+              <div className="bg-slate-600/50 flex flex-row items-center justify-center gap-4 rounded-8 py-4 pl-4 pr-8 text-slate-400">
                 <IcChecked className="text-blue-400" />
                 <p className="tracking-normal">
                   <Trans>No loss of fund ownership</Trans>
@@ -124,7 +124,7 @@ export function Features({ goToTradeArbitrum }: Props) {
         </div>
       </div>
 
-      <div className="relative h-full overflow-hidden rounded-20 bg-slate-800 p-20 lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4 lg:min-h-[180px] lg:p-28">
+      <div className="bg-slate-800 relative h-full overflow-hidden rounded-20 p-20 lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4 lg:min-h-[180px] lg:p-24">
         <SeamlessBackground />
         <div className="relative flex h-full flex-col items-stretch justify-between gap-20 lg:flex-row lg:items-end">
           <div className="w-full lg:w-[360px]">
@@ -138,7 +138,7 @@ export function Features({ goToTradeArbitrum }: Props) {
               </Trans>
             </p>
           </div>
-          <button className="btn-landing rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
+          <button className="btn-landing rounded-6 px-16 py-8 text-16 font-medium" onClick={goToTradeArbitrum}>
             <Trans>Trade now</Trans>
           </button>
         </div>

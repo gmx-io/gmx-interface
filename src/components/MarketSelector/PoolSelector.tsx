@@ -57,11 +57,11 @@ function PoolLabel({
   if (marketsOptions?.length > 1) {
     return (
       <div
-        className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-300")}
+        className={cx("group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong")}
         onClick={onClick}
       >
         {name ? name : "..."}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-blue-strong" />
       </div>
     );
   }
@@ -243,7 +243,7 @@ export function PoolSelector({
             );
           })}
           {filteredOptions.length === 0 && (
-            <div className="text-body-medium p-adaptive text-typography-secondary">
+            <div className="text-body-medium p-adaptive text-textIcon-secondary">
               <Trans>No pools found</Trans>
             </div>
           )}
@@ -253,7 +253,7 @@ export function PoolSelector({
       <div className="inline-flex items-center">
         {showIndexIcon && marketInfo && (
           <TokenIcon
-            className="mr-5"
+            className="mr-4"
             symbol={
               marketInfo.isSpotOnly
                 ? getNormalizedTokenSymbol(marketInfo.longToken.symbol) +

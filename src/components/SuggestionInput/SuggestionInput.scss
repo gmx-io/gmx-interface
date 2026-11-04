@@ -2,12 +2,12 @@
   position: relative;
 
   .Suggestion-input {
-    border: 1px solid var(--color-slate-800);
+    border: 1px solid var(--color-fill-surfaceElevated);
     border-radius: var(--border-radius-sm);
-    line-height: 1.3;
-    color: var(--color-gray-400);
-    background: var(--color-slate-800);
-    font-size: 13px;
+    line-height: var(--line-height-body-small);
+    color: var(--color-textIcon-secondary);
+    background: var(--color-fill-surfaceElevated);
+    font-size: var(--font-size-body-small);
 
     label {
       cursor: pointer;
@@ -15,27 +15,27 @@
     }
 
     &:hover {
-      background: var(--color-fill-surfaceElevatedHover);
+      background: var(--color-fill-surfaceHover);
     }
     &:focus {
-      border-color: var(--color-blue-300);
+      border-color: var(--color-blue-strong);
     }
     &:focus-within {
-      border-color: var(--color-blue-300);
+      border-color: var(--color-blue-strong);
     }
 
     &.input-error {
-      border-color: var(--color-red-500);
+      border-color: var(--color-red-strong);
     }
 
     input {
       padding: 1.5px 2px 1.5px 4px;
-      font-size: 13px;
-      line-height: 1.3;
+      font-size: var(--font-size-body-small);
+      line-height: var(--line-height-body-small);
       border-radius: 0;
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
       &::placeholder {
-        color: var(--color-slate-100);
+        color: var(--color-textIcon-secondary);
       }
     }
   }
@@ -46,18 +46,19 @@
   list-style: none;
   border-radius: var(--border-radius-sm);
   padding: 0;
-  background-color: var(--color-slate-900);
+  background-color: var(--color-fill-surfaceBase);
   overflow: hidden;
-  font-size: 13px;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
   font-weight: 500;
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid var(--color-stroke-primary);
 
   li {
     padding: 0.5rem 0.75rem;
     cursor: pointer;
     text-align: center;
     &:hover {
-      background: var(--color-slate-800);
+      background: var(--color-fill-surfaceElevated);
     }
   }
 }

@@ -1,10 +1,12 @@
 .TradeHistoryRow-time {
-  font-size: 1.25rem;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
 }
 
 .TradeHistoryRow-account {
   display: block;
-  font-size: 1.25rem;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
   margin-top: 0.25rem;
 
   min-width: 0;

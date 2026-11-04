@@ -127,7 +127,7 @@ export function HighPriceImpactOrFeesWarningCard({
           ) : (
             <div key={warning.id} className="flex justify-between gap-4">
               <div>{warning.key}</div>
-              <div className="font-medium text-yellow-300">{warning.value}</div>
+              <div className="font-medium text-yellow-strong">{warning.value}</div>
             </div>
           );
 

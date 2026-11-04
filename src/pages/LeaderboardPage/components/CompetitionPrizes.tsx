@@ -144,7 +144,7 @@ export function CompetitionPrizes({
   }, [accounts, competitionType, hasEnded, leaderboardPageKey]);
 
   return (
-    <BodyScrollFadeContainer className="flex border-b-1/2 border-slate-600">
+    <BodyScrollFadeContainer className="flex border-b-1/2 border-stroke-primary">
       {prizes.map((prize) => (
         <CompetitionPrize prize={prize} key={prize.key} />
       ))}
@@ -154,13 +154,13 @@ export function CompetitionPrizes({
 
 function CompetitionPrize({ prize }: { prize: Prize }) {
   return (
-    <div className="flex grow items-center justify-between gap-8 border-r-1/2 border-slate-600 bg-slate-900 p-20 last:border-r-0">
+    <div className="flex grow items-center justify-between gap-8 border-r-1/2 border-stroke-primary bg-fill-surfaceBase p-20 last:border-r-0">
       <div className="flex items-center gap-12">
         <img className="size-52" src={iconByType[prize.imgType]} />
 
         <div>
-          <div className="text-body-medium font-medium text-typography-secondary">{prize.title}</div>
-          <div className="text-20 font-medium">{prize.description}</div>
+          <div className="text-body-medium font-medium text-textIcon-secondary">{prize.title}</div>
+          <div className="text-h4">{prize.description}</div>
         </div>
       </div>
       <CompetitionPrizeWinners winners={prize.winners} />
@@ -177,9 +177,9 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
     <Link
       target="_blank"
       to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-      className="flex items-center gap-6 rounded-full bg-slate-700 px-12 py-8 hover:bg-slate-600"
+      className="flex items-center gap-4 rounded-full bg-button-background px-12 py-8 hover:bg-fill-accent"
     >
-      <div className="text-13 font-medium">{shortenAddress(winner.account, 8)}</div>
+      <div className="text-body-small font-medium">{shortenAddress(winner.account, 8)}</div>
       <Jazzicon diameter={16} seed={jsNumberForAddress(winner.account)} />
     </Link>
   ) : null;
@@ -189,8 +189,8 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className={`flex items-center gap-6 rounded-full bg-slate-600 p-10 text-typography-secondary
-        hover:bg-slate-500 hover:text-typography-primary active:bg-slate-500 active:text-typography-primary`}
+        className={`flex items-center gap-4 rounded-full bg-fill-accent p-8 text-textIcon-secondary
+        hover:bg-textIcon-disabled hover:text-textIcon-primary active:bg-textIcon-disabled active:text-textIcon-primary`}
       >
         <ChevronRightIcon className="size-12" />
       </Link>
@@ -202,7 +202,7 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
       <Link
         target="_blank"
         to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-typography-primary !no-underline hover:bg-fill-surfaceHover"
+        className="flex items-center gap-4 px-12 py-8 !text-textIcon-primary !no-underline hover:bg-fill-surfaceHover"
         key={winner.account}
       >
         <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />

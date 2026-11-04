@@ -88,7 +88,7 @@ export function Claims({
 
       <div className="flex grow flex-col">
         {account && isLoading && (
-          <div className="Claims-loading bg-slate-900">
+          <div className="Claims-loading bg-fill-surfaceBase">
             <Trans>Loading...</Trans>
           </div>
         )}

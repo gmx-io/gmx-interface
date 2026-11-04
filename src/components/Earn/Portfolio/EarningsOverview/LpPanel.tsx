@@ -19,7 +19,7 @@ import { EarningsStat, UsdStatValue, UsdText } from "./EarningsStat";
 
 function LpRowLabel({ to, children }: { to: string; children: ReactNode }) {
   return (
-    <Link to={to} className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary">
+    <Link to={to} className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary">
       {children}
       <ArrowRightIcon className="size-14" />
     </Link>
@@ -37,7 +37,7 @@ function LpRowValue({
 }) {
   return (
     <EarningValue value={usd} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={60}>
-      {(value) => <UsdText usd={value} className={cx("numbers", { "text-slate-500": value === 0n })} />}
+      {(value) => <UsdText usd={value} className={cx("numbers", { "text-textIcon-disabled": value === 0n })} />}
     </EarningValue>
   );
 }
@@ -72,13 +72,13 @@ export function LpPanel({
   const isLpAttributable = attributionScope === undefined;
 
   return (
-    <div className="flex h-full flex-col rounded-8 bg-slate-900">
+    <div className="flex h-full flex-col rounded-8 bg-fill-surfaceBase">
       <div className="flex flex-col gap-12 p-20">
-        <h3 className="text-body-large font-medium text-typography-primary">
+        <h3 className="text-body-large font-medium text-textIcon-primary">
           <Trans>LP</Trans>
         </h3>
 
-        <div className="flex gap-28">
+        <div className="flex gap-24">
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
             <UsdStatValue
               usd={lifetimeUsd}
@@ -97,7 +97,7 @@ export function LpPanel({
         </div>
       </div>
 
-      <div className="border-t-1/2 border-slate-600" />
+      <div className="border-t-1/2 border-stroke-primary" />
 
       <div className="flex flex-col gap-8 p-20">
         <SyntheticsInfoRow
@@ -133,7 +133,7 @@ export function LpPanel({
       </div>
 
       <div className="mt-auto">
-        <div className="border-t-1/2 border-slate-600" />
+        <div className="border-t-1/2 border-stroke-primary" />
         <div className="flex flex-col gap-8 p-20">
           <SyntheticsInfoRow
             label={
@@ -156,7 +156,7 @@ export function LpPanel({
                 skeletonWidth={60}
               >
                 {(value) => (
-                  <span className="text-blue-100 numbers">
+                  <span className="text-blue-secondary numbers">
                     ~<UsdValue usd={value} />
                   </span>
                 )}

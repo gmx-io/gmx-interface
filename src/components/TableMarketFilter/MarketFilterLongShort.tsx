@@ -240,16 +240,16 @@ export function MarketFilterLongShort({
             <div className="inline-flex items-center">
               <span className="subtext">[{poolName}]</span>
             </div>
-            {collateralSymbol && <span className="text-typography-secondary"> ({collateralSymbol})</span>}
+            {collateralSymbol && <span className="text-textIcon-secondary"> ({collateralSymbol})</span>}
           </>
         );
       }
 
       return (
         <>
-          <TokenIcon symbol={iconName} displaySize={16} className="mr-5" />
+          <TokenIcon symbol={iconName} displaySize={16} className="mr-4" />
           <div className="inline-flex items-center">
-            {longOrShortText && <span className="mr-3">{longOrShortText}</span>}
+            {longOrShortText && <span className="mr-4">{longOrShortText}</span>}
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

@@ -129,7 +129,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleShareOnX}
             size="medium"
-            className="grow !text-14"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             {isUploading ? <Trans>Uploading...</Trans> : <Trans>Share on</Trans>}
@@ -139,7 +139,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyImage}
             size="medium"
-            className="grow !text-14"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             {isCapturing ? (
@@ -160,7 +160,7 @@ export function ShareReferralCardModal({
             variant="secondary"
             onClick={handleCopyLink}
             size="medium"
-            className="grow !text-14"
+            className="grow"
             disabled={isUploading || isCapturing}
           >
             <Trans>Copy link</Trans>
@@ -217,29 +217,29 @@ function ScaledReferralCard({
     <div ref={containerRef} className="overflow-hidden rounded-8" style={styles.containerStyle}>
       <div ref={cardRef} className="relative overflow-hidden" style={styles.cardStyle}>
         <img src={shareReferralCodeBg} className="absolute inset-0 size-full object-cover" aria-hidden />
-        <div className="absolute right-16 top-16 rounded-4 bg-white p-4">
+        <div className="absolute right-16 top-16 rounded-4 bg-textIcon-onButton p-4">
           <QRCodeSVG value={referralLink} size={44} level="M" bgColor="white" fgColor="black" />
         </div>
         <div className="relative z-10 flex h-full flex-col justify-between p-20">
           <div className="flex items-start justify-between">
-            <div className="flex items-center text-white">
+            <div className="flex items-center text-textIcon-onButton">
               <img src={logoIcon} alt="GMX Logo" className="w-22" />
               <LogoText className="h-14" />
             </div>
           </div>
 
           <div>
-            <div className="mb-8 inline-block rounded-full bg-blue-300/20 px-6 py-2 text-16 font-medium leading-[20px] text-blue-300">
+            <div className="mb-8 inline-block rounded-full bg-blue-backgroundOpacity px-4 py-4 text-16 font-medium leading-[20px] text-blue-strong">
               <AnimatedGradientText className="block">{referralCode}</AnimatedGradientText>
             </div>
-            <h3 className="text-32 font-medium leading-1 text-white">
+            <h3 className="text-h2 text-textIcon-onButton">
               <Trans>
                 <AnimatedGradientText>Save up to {traderDiscountPercentageLabel}</AnimatedGradientText> on every
                 <br /> trade on GMX
               </Trans>
             </h3>
             {showDiscountsLine && (
-              <p className="text-body-medium mt-12 font-medium text-typography-secondary">
+              <p className="text-body-medium mt-12 font-medium text-textIcon-secondary">
                 <Trans>
                   So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code:{" "}
                   {referralCode}

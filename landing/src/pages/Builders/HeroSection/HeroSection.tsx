@@ -10,7 +10,7 @@ import { CodeSnippet } from "./CodeSnippet";
 
 export const HeroSection = forwardRef<HTMLDivElement>(function HeroSection(_, buttonsRef) {
   return (
-    <section className="relative w-full overflow-hidden bg-slate-900 px-16 pb-60 pt-80 text-white sm:px-40 sm:pb-80 sm:pt-[304px]">
+    <section className="bg-slate-900 text-white relative w-full overflow-hidden px-16 pb-56 pt-80 sm:px-40 sm:pb-80 sm:pt-[304px]">
       <img
         src={heroGlow}
         alt=""
@@ -28,10 +28,10 @@ export const HeroSection = forwardRef<HTMLDivElement>(function HeroSection(_, bu
               Get paid on every trade.
             </Trans>
           </h1>
-          <p className="mt-8 max-w-[340px] text-14 -tracking-[0.448px] text-slate-400">
+          <p className="text-14 mt-8 max-w-[340px] -tracking-[0.448px] text-slate-400">
             <Trans>Real onchain revenue, paid in stablecoins, every time someone trades through you</Trans>
           </p>
-          <div ref={buttonsRef} className="mt-[34px] flex w-full flex-col gap-12 sm:flex-row sm:gap-20">
+          <div ref={buttonsRef} className="mt-32 flex w-full flex-col gap-12 sm:flex-row sm:gap-20">
             <ArrowButton href={SDK_QUICKSTART_URL} variant="primary" className="sm:w-[200px]">
               <Trans>Start building</Trans>
             </ArrowButton>
@@ -40,7 +40,7 @@ export const HeroSection = forwardRef<HTMLDivElement>(function HeroSection(_, bu
             </ArrowButton>
           </div>
         </div>
-        <CodeSnippet className="relative lg:w-[500px] lg:flex-shrink-0 2xl:-mr-[99px]" />
+        <CodeSnippet className="relative lg:w-[500px] lg:flex-shrink-0 2xl:-mr-96" />
       </div>
     </section>
   );

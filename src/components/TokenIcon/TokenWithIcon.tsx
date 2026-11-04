@@ -16,7 +16,7 @@ export default function TokenWithIcon({ symbol, className, displaySize, chainIdB
 
   return (
     <span className={classNames}>
-      <TokenIcon className="mr-5" symbol={symbol} displaySize={displaySize} chainIdBadge={chainIdBadge} />
+      <TokenIcon className="mr-4" symbol={symbol} displaySize={displaySize} chainIdBadge={chainIdBadge} />
       {symbol}
     </span>
   );

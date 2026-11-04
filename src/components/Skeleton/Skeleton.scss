@@ -1,5 +1,5 @@
 .react-loading-skeleton::after {
-  background: linear-gradient(to right, transparent, #b4bbff1a, transparent);
+  background: linear-gradient(to right, transparent, var(--color-fill-skeleton), transparent);
   animation-duration: 2s;
 }
 

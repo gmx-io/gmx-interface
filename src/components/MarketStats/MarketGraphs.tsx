@@ -167,7 +167,7 @@ export function MarketGraphs({
   );
 
   return (
-    <div className="flex flex-col rounded-8 bg-slate-900">
+    <div className="flex flex-col rounded-8 bg-fill-surfaceBase">
       <Tabs<MarketGraphType>
         type="block"
         options={marketGraphsTabs}
@@ -187,8 +187,8 @@ export function MarketGraphs({
                 marketTokensData,
               })}
               label={graphTitleLabelMap[marketGraphType]}
-              valueClassName={cx("normal-nums", {
-                "text-green-300": marketGraphType === "performance" && performance[address] > 0n,
+              valueClassName={cx({
+                "text-green-strong": marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
@@ -202,7 +202,7 @@ export function MarketGraphs({
         </div>
       </div>
       {isMobile ? (
-        <div className="flex justify-center border-t-1/2 border-t-slate-600 px-16 py-12">{poolsTabs}</div>
+        <div className="flex justify-center border-t-1/2 border-t-stroke-primary px-16 py-12">{poolsTabs}</div>
       ) : null}
     </div>
   );
@@ -211,8 +211,8 @@ export function MarketGraphs({
 const ACTIVE_DOT_PROPS = {
   r: 4,
   strokeWidth: 2,
-  stroke: "var(--color-blue-300)",
-  fill: "var(--color-slate-900)",
+  stroke: "var(--color-blue-strong)",
+  fill: "var(--color-fill-surfaceBase)",
 };
 
 const DOT_PROPS = {
@@ -264,12 +264,12 @@ const axisValueFormatter =
   };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "var(--color-slate-500)",
+  stroke: "var(--color-textIcon-disabled)",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
 
-const AXIS_TICK_PROPS = { fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 };
+const AXIS_TICK_PROPS = { fill: "var(--color-textIcon-secondary)", fontSize: 12, fontWeight: 500 };
 const Y_AXIS_WIDTH = 56;
 
 const GraphChart = ({
@@ -353,7 +353,7 @@ const GraphChart = ({
   if (data.length === 0) {
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
-        <p className="text-body-medium text-typography-secondary">
+        <p className="text-body-medium text-textIcon-secondary">
           <Trans>Not enough data yet</Trans>
         </p>
       </div>
@@ -367,18 +367,23 @@ const GraphChart = ({
         <AreaChart data={data} margin={GRAPH_MARGIN} key={marketGraphType} overflow="visible">
           <defs>
             <linearGradient id="market-graph-gradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+              <stop offset="-45%" stopColor="var(--color-blue-strong)" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="var(--color-blue-strong)" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+          <CartesianGrid
+            vertical={false}
+            strokeDasharray="5 3"
+            strokeWidth={0.5}
+            stroke="var(--color-stroke-primary)"
+          />
 
           <Tooltip cursor={CHART_CURSOR_PROPS} content={<GraphTooltip formatValue={formatValue} />} />
           <Area
             key={marketGraphType}
             type="linear"
             dataKey="value"
-            stroke="var(--color-blue-300)"
+            stroke="var(--color-blue-strong)"
             fill="url(#market-graph-gradient)"
             strokeWidth={2}
             dot={DOT_PROPS}
@@ -419,10 +424,10 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
 
     return (
       <div
-        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)] bg-slate-800
+        className={`backdrop-blur-100 text-body-small flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)] bg-fill-surfaceElevated
       px-12 py-8 mix-blend-overlay shadow-lg`}
       >
-        <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
+        <span className=" text-textIcon-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
         <NumericText text={formatValue(item.value)} className="numbers" />
       </div>
     );
@@ -442,8 +447,8 @@ const GraphValue = ({
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <NumericText text={value ?? "N/A"} className={cx("text-h2", valueClassName)} />
-      <span className="text-body-small text-typography-secondary">{label}</span>
+      <NumericText text={value ?? "N/A"} className={cx("text-h3", valueClassName)} />
+      <span className="text-body-small text-textIcon-secondary">{label}</span>
     </div>
   );
 };

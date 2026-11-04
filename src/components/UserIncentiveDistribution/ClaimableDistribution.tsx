@@ -38,10 +38,15 @@ export function ClaimableDistribution({
 
   return (
     <div className="rounded-8 bg-fill-surfaceElevated50 lg:pl-12">
-      <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-slate-600 p-12 lg:pl-0">
+      <div className="flex items-center justify-between rounded-t-8 border-b-1/2 border-stroke-primary p-12 lg:pl-0">
         <div className="flex items-center justify-between gap-4">
-          <Checkbox isChecked={selected} setIsChecked={() => onToggle(distributionId)} className="mr-2" />
-          <span className="text-body-medium font-medium text-typography-primary">
+          <Checkbox
+            isChecked={selected}
+            setIsChecked={() => onToggle(distributionId)}
+            className="mr-4"
+            aria-label={getDistributionTitle(distributionId)}
+          />
+          <span className="text-body-medium font-medium text-textIcon-primary">
             {getDistributionTitle(distributionId)}
           </span>
         </div>
@@ -49,13 +54,13 @@ export function ClaimableDistribution({
       <div className="flex flex-col gap-8 rounded-b-8 p-12 lg:pl-0">
         <div className="flex items-center justify-between">
           <div className="flex cursor-pointer items-center gap-4" onClick={onViewBreakdown}>
-            <span className="text-body-small cursor-pointer select-none font-medium text-typography-secondary">
+            <span className="text-body-small cursor-pointer select-none font-medium text-textIcon-secondary">
               {isExpanded ? <Trans>Hide breakdown</Trans> : <Trans>View breakdown</Trans>}
             </span>
-            <ChevronDownIcon className={cx("size-14 text-typography-secondary", { "rotate-180": isExpanded })} />
+            <ChevronDownIcon className={cx("size-14 text-textIcon-secondary", { "rotate-180": isExpanded })} />
           </div>
 
-          <UsdValue usd={claimableAmountsData.totalUsd} className="text-body-small text-typography-secondary" />
+          <UsdValue usd={claimableAmountsData.totalUsd} className="text-body-small text-textIcon-secondary" />
         </div>
 
         {isExpanded
@@ -64,10 +69,10 @@ export function ClaimableDistribution({
               .map(([token, data]) => (
                 <div key={token}>
                   <div className="flex justify-between">
-                    <div className="text-body-small font-medium text-typography-secondary">{data.title}</div>
-                    <div className="flex gap-2 text-12">
+                    <div className="text-body-small font-medium text-textIcon-secondary">{data.title}</div>
+                    <div className="text-body-small flex gap-4">
                       <span>{formatBalanceAmount(data.amount, data.token.decimals)}</span>
-                      <span className="text-body-small whitespace-nowrap text-typography-secondary">
+                      <span className="text-body-small whitespace-nowrap text-textIcon-secondary">
                         (<UsdValue usd={data?.usd ?? 0n} />)
                       </span>
                     </div>

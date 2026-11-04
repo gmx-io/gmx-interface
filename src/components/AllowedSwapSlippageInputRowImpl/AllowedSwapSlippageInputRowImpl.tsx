@@ -92,7 +92,7 @@ function AllowedSwapSlippageInputRowImpl({
   );
 
   return (
-    <SyntheticsInfoRow label={t`Allowed slippage`} valueClassName="-my-5">
+    <SyntheticsInfoRow label={t`Allowed slippage`} valueClassName="-my-4">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

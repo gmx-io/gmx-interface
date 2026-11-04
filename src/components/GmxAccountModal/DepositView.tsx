@@ -123,8 +123,8 @@ import { wrapChainAction } from "./wrapChainAction";
 
 const valueSkeleton = (
   <Skeleton
-    baseColor="#B4BBFF1A"
-    highlightColor="#B4BBFF1A"
+    baseColor="var(--color-fill-skeleton)"
+    highlightColor="var(--color-fill-skeleton)"
     width={96}
     height={14}
     borderRadius={4}
@@ -1314,8 +1314,8 @@ export const DepositView = () => {
     <form className="flex grow flex-col overflow-y-auto px-adaptive pb-adaptive pt-adaptive" onSubmit={handleSubmit}>
       <div className="flex flex-col gap-[--padding-adaptive]">
         {!showEmptyState && (
-          <div className="flex flex-col gap-6">
-            <div className="text-body-medium text-typography-secondary">
+          <div className="flex flex-col gap-4">
+            <div className="text-body-medium text-textIcon-secondary">
               <Trans>Asset</Trans>
             </div>
             <div
@@ -1324,7 +1324,7 @@ export const DepositView = () => {
               onClick={() => {
                 setIsVisibleOrView("selectAssetToDeposit");
               }}
-              className="flex items-center justify-between rounded-8 border border-slate-800 bg-slate-800 px-14 py-13 gmx-hover:bg-fill-surfaceElevatedHover"
+              className="flex items-center justify-between rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-12 py-12 gmx-hover:bg-fill-surfaceHover"
             >
               <div className="flex items-center gap-8">
                 {selectedToken ? (
@@ -1335,26 +1335,31 @@ export const DepositView = () => {
                 ) : depositViewChain !== undefined ? (
                   <>
                     <Skeleton
-                      baseColor="#B4BBFF1A"
-                      highlightColor="#B4BBFF1A"
+                      baseColor="var(--color-fill-skeleton)"
+                      highlightColor="var(--color-fill-skeleton)"
                       width={20}
                       height={20}
                       borderRadius={10}
                     />
-                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                    <Skeleton
+                      baseColor="var(--color-fill-skeleton)"
+                      highlightColor="var(--color-fill-skeleton)"
+                      width={40}
+                      height={16}
+                    />
                   </>
                 ) : (
-                  <span className="text-typography-secondary">
+                  <span className="text-textIcon-secondary">
                     <Trans>Select an asset to deposit</Trans>
                   </span>
                 )}
               </div>
-              <ChevronRightIcon className="size-14 text-typography-secondary" />
+              <ChevronRightIcon className="size-14 text-textIcon-secondary" />
             </div>
           </div>
         )}
-        <div className="flex flex-col gap-6">
-          <div className="text-body-medium text-typography-secondary">
+        <div className="flex flex-col gap-4">
+          <div className="text-body-medium text-textIcon-secondary">
             <Trans>From network</Trans>
           </div>
           <DropdownSelector
@@ -1377,8 +1382,8 @@ export const DepositView = () => {
         </div>
 
         {!showEmptyState && (
-          <div className={cx("flex flex-col gap-6", { invisible: depositViewTokenAddress === undefined })}>
-            <div className="text-body-medium flex items-center justify-between gap-6 text-typography-secondary">
+          <div className={cx("flex flex-col gap-4", { invisible: depositViewTokenAddress === undefined })}>
+            <div className="text-body-medium flex items-center justify-between gap-4 text-textIcon-secondary">
               <Trans>Deposit</Trans>
               {selectedToken !== undefined && (
                 <div className="flex items-center gap-8">
@@ -1392,7 +1397,7 @@ export const DepositView = () => {
                   )}
                   <button type="button" onClick={handleMaxButtonClick}>
                     <Trans>Available</Trans>{" "}
-                    <span className="text-typography-primary">
+                    <span className="text-textIcon-primary">
                       <span className="numbers">{depositMaxDetails.formattedBalance}</span> {selectedToken?.symbol}
                     </span>
                   </button>
@@ -1403,17 +1408,17 @@ export const DepositView = () => {
               <NumberInput
                 value={inputValue}
                 onValueChange={(e) => setInputValue(e.target.value)}
-                className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
-                         focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+                className="w-full rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-12 pl-12 pr-96 text-16 leading-base
+                         focus-within:border-blue-strong hover:bg-fill-surfaceHover"
                 placeholder="0.00"
                 maxDecimals={selectedTokenSourceChainDecimals}
               />
-              <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
-                <span className="text-typography-secondary">{selectedToken?.symbol}</span>
+              <div className="pointer-events-none absolute right-12 top-1/2 flex -translate-y-1/2 items-center gap-8">
+                <span className="text-textIcon-secondary">{selectedToken?.symbol}</span>
               </div>
             </div>
             {!selectedToken?.isStable && (
-              <div className="text-body-medium text-typography-secondary numbers">
+              <div className="text-body-medium text-textIcon-secondary numbers">
                 <UsdValue usd={inputAmountUsd ?? 0n} />
               </div>
             )}
@@ -1450,7 +1455,7 @@ export const DepositView = () => {
               <Trans>No funds available to deposit from {networkName}</Trans>
             )}
           </div>
-          <div className="text-body-medium text-typography-secondary">
+          <div className="text-body-medium text-textIcon-secondary">
             {isGlobalEmpty ? (
               <Trans>
                 Receive supported assets into your wallet on {networksList}, then deposit them to GMX Account
@@ -1469,7 +1474,7 @@ export const DepositView = () => {
       )}
 
       {!showEmptyState && depositViewTokenAddress && (
-        <div className="mb-16 flex flex-col gap-10">
+        <div className="mb-16 flex flex-col gap-8">
           <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
             label={<Trans>Network fee</Trans>}
@@ -1493,7 +1498,7 @@ export const DepositView = () => {
         </div>
       )}
 
-      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-10 bg-slate-900 pt-8">
+      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-8 bg-fill-surfaceBase pt-8">
         {showEmptyState ? (
           <>
             <Button variant="primary-action" className="w-full shrink-0" type="button" onClick={handleReceiveToWallet}>

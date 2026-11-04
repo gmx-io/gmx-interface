@@ -57,9 +57,9 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
   );
 
   return (
-    <div className="my-15 rounded-4 bg-slate-900 text-left">
+    <div className="my-12 rounded-4 bg-fill-surfaceBase text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
-        <span className="text-h2">
+        <span className="text-h3">
           <Trans>GM pools</Trans>
         </span>
 
@@ -114,8 +114,8 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
             {indexTokensStats.length > 0 && !currentData.length && (
-              <TableTr className="h-[64.5px]">
-                <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
+              <TableTr className="h-72">
+                <TableTd colSpan={6} className="text-body-medium align-top text-textIcon-secondary">
                   <Trans>No markets found</Trans>
                 </TableTd>
               </TableTr>
@@ -243,7 +243,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext !leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={
@@ -273,7 +273,7 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext !leading-1">[{getMarketPoolName(marketInfo)}]</span>:
                     </div>
                   }
                   value={

@@ -32,7 +32,7 @@ export function MetricsDebugSettings() {
 
   return (
     <ExpandableRow title={<Trans>Metrics debug</Trans>} open={open} onToggle={setOpen}>
-      <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
+      <div className="flex flex-col gap-16 rounded-8 bg-fill-surfaceElevated p-12 pr-16">
         {Object.values(MetricsDebugFlags).map((flag) => (
           <ToggleSwitch
             key={flag}

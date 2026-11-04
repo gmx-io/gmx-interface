@@ -149,7 +149,7 @@ export function TradingSettings({
       {features.express && (
         <>
           <SettingsSection>
-            <div className="text-14 font-medium text-typography-primary">
+            <div className="text-body-medium font-medium text-textIcon-primary">
               <Trans>Trading mode</Trans>
             </div>
             {!srcChainId && (
@@ -231,10 +231,10 @@ export function TradingSettings({
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">
-                <div className="text-14 font-medium text-typography-secondary">
+                <div className="text-body-medium font-medium text-textIcon-secondary">
                   <Trans>Gas payment token</Trans>
                 </div>
-                <div className="text-12 text-typography-secondary">
+                <div className="text-body-small text-textIcon-secondary">
                   {srcChainId === undefined ? (
                     <Trans>
                       Used for Express and One-Click fees only, paid from the balance the action uses. Classic
@@ -271,7 +271,7 @@ export function TradingSettings({
       )}
 
       {srcChainId && !isAvalancheEmpty && isConnected && (
-        <SettingsSection className="mt-2">
+        <SettingsSection className="mt-4">
           <div className="flex items-center justify-between">
             <LabelWithTooltip
               className="font-medium"
@@ -289,13 +289,13 @@ export function TradingSettings({
               onChange={setSettlementChainId}
               options={MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING[srcChainId]}
               item={({ option }) => (
-                <div className="flex items-center gap-8 text-typography-primary">
+                <div className="flex items-center gap-8 text-textIcon-primary">
                   <img src={CHAIN_ID_TO_NETWORK_ICON[option]} alt={getChainName(option)} className="size-20" />
                   <span>{getChainName(option)}</span>
                 </div>
               )}
               button={
-                <div className="flex items-center gap-4 text-typography-primary">
+                <div className="flex items-center gap-4 text-textIcon-primary">
                   <img
                     src={CHAIN_ID_TO_NETWORK_ICON[settlementChainId]}
                     alt={getChainName(settlementChainId)}
@@ -310,7 +310,7 @@ export function TradingSettings({
         </SettingsSection>
       )}
 
-      <SettingsSection className="mt-2">
+      <SettingsSection className="mt-4">
         <InputSetting
           title={t`Default allowed slippage`}
           description={
@@ -383,10 +383,10 @@ export function TradingSettings({
                     <br />
                     <br />
                     Choose:
-                    <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
+                    <br />• <span className="font-medium">Wallet</span> if you mostly trade from your personal wallet on
                     Arbitrum
-                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX
+                    <br />• <span className="font-medium">GMX Account</span> if you plan to keep trading or reusing
+                    margin on GMX
                     <br />
                     <br />
                     You can change this preference anytime in settings or when closing a position.
@@ -397,7 +397,7 @@ export function TradingSettings({
             <MarginDestinationSelector
               isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
               onChangeDestination={settings.setReceiveToGmxAccount}
-              desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"
+              desktopPanelClassName="!z-[10000] w-[200px] !top-8"
             />
           </div>
         )}

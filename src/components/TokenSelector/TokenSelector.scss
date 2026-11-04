@@ -77,9 +77,8 @@
 }
 .text-accent {
   color: var(--dark-blue-accent);
-  font-size: 1.2rem;
-  line-height: 1.5;
-  letter-spacing: 0;
+  font-size: var(--font-size-body-small);
+  line-height: var(--line-height-body-small);
 }
 
 .TokenSelector.right .Modal-content {

@@ -84,9 +84,9 @@ export function PositionItemOrdersLarge({
             <Trans>Orders ({ordersWithErrors.length})</Trans>
             {ordersWarningsList.length > 0 || ordersErrorList.length > 0 ? (
               <div
-                className={cx("relative top-3 size-6 rounded-full", {
-                  "bg-yellow-300": ordersWarningsList.length > 0 && !ordersErrorList.length,
-                  "bg-red-500": ordersErrorList.length > 0,
+                className={cx("relative top-4 size-6 rounded-full", {
+                  "bg-yellow-strong": ordersWarningsList.length > 0 && !ordersErrorList.length,
+                  "bg-red-strong": ordersErrorList.length > 0,
                 })}
               />
             ) : null}
@@ -97,7 +97,7 @@ export function PositionItemOrdersLarge({
           "Exchange-list-info-label",
           "Exchange-position-list-orders",
           "clickable",
-          "text-typography-secondary",
+          "text-textIcon-secondary",
         ])}
         maxAllowedWidth={370}
         tooltipClassName="!z-10 w-[370px]"
@@ -151,14 +151,14 @@ function PositionItemOrder({
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
   const cancelButton = (
-    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8">
+    <Button variant="secondary" disabled={isDisabled} onClick={cancel} className="px-8" aria-label={t`Cancel order`}>
       <CloseIcon className="size-16" />
     </Button>
   );
 
   return (
     <div key={order.key}>
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex items-start justify-between gap-4">
         <Button variant="secondary" className="w-full !justify-start !pl-12" onClick={handleOrdersClick}>
           <div className="flex items-center justify-between">
             <PositionItemOrderText order={order} />
@@ -166,7 +166,7 @@ function PositionItemOrder({
           </div>
         </Button>
         {!hideActions && !isSizeOrderInClosedPool && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-          <Button variant="secondary" onClick={handleEditClick} className="px-8">
+          <Button variant="secondary" onClick={handleEditClick} className="px-8" aria-label={t`Edit order`}>
             <EditIcon className="size-16" />
           </Button>
         )}
@@ -184,8 +184,8 @@ function PositionItemOrder({
             <div
               key={err.key}
               className={cx("hyphens-auto [overflow-wrap:anywhere]", {
-                "text-red-500": err.level === "error",
-                "text-yellow-300": err.level === "warning",
+                "text-red-strong": err.level === "error",
+                "text-yellow-strong": err.level === "warning",
               })}
             >
               {err.msg}

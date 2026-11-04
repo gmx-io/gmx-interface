@@ -25,7 +25,7 @@ $app-card-padding: 1.5rem;
   padding-left: 3.2rem;
   padding-right: 3.2rem;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid var(--color-slate-700);
+  border-bottom: 1px solid var(--color-button-background);
   z-index: 1;
 }
 
@@ -74,18 +74,6 @@ $app-card-padding: 1.5rem;
   /* z-index: 2; */
 }
 
-.App-header-menu-icon {
-  color: var(--color-typography-primary);
-  font-size: 2rem;
-  cursor: pointer;
-  opacity: 0.7;
-  margin: 0.9rem 1rem;
-}
-
-.App-header-menu-icon:hover {
-  opacity: 0.9;
-}
-
 .App-highlight-box {
   background: linear-gradient(
     45deg,
@@ -105,7 +93,7 @@ $app-card-padding: 1.5rem;
 .App-box-solid {
   position: relative;
   border-radius: 8px;
-  background: var(--color-slate-900);
+  background: var(--color-fill-surfaceBase);
   font-size: var(--font-size-body-medium);
 }
 
@@ -136,7 +124,7 @@ $app-card-padding: 1.5rem;
 .App-card-divider-vertical {
   width: 0.5px;
   height: 8.8rem;
-  background: var(--color-slate-600);
+  background: var(--color-stroke-primary);
 }
 
 .App-card-title-block {
@@ -153,18 +141,6 @@ $app-card-padding: 1.5rem;
 
 .App-card-title-info {
   display: flex;
-}
-
-.App-card-info-title {
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-typography-primary);
-}
-
-.App-card-info-subtitle {
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-gray-400);
 }
 
 .App-card-title-iconlist {
@@ -188,12 +164,12 @@ $app-card-padding: 1.5rem;
 
 .mobile-menu-divider {
   height: 1px;
-  background: var(--color-slate-100);
+  background: var(--color-textIcon-secondary);
 }
 
 .App-card-divider {
   height: 0.5px;
-  background: var(--color-slate-600);
+  background: var(--color-stroke-primary);
   margin: 1.05rem -1.5rem;
 
   &:last-child {
@@ -207,7 +183,7 @@ $app-card-padding: 1.5rem;
 
 .line-divider {
   height: 1px;
-  background: var(--color-slate-700);
+  background: var(--color-button-background);
   margin: 1.5rem 0;
 }
 
@@ -254,27 +230,6 @@ $app-card-padding: 1.5rem;
   justify-content: flex-end;
 }
 
-.section-title-content .section-title-content__title {
-  font-size: var(--font-size-body-large);
-  line-height: 3.1rem;
-  color: var(--color-typography-primary);
-  letter-spacing: 0px;
-}
-
-.section-title-content .section-title-content__description {
-  font-size: 1.8rem;
-  line-height: 2.3rem;
-  letter-spacing: 0px;
-  color: var(--color-slate-100);
-  margin-top: 0.4rem;
-  max-width: 62rem;
-}
-
-.section-title-content .section-title-content__description span {
-  cursor: pointer;
-  color: var(--color-typography-primary);
-}
-
 .Page-title-section {
   padding-left: 4.65rem;
   padding-right: 1.5rem;
@@ -287,11 +242,11 @@ $app-card-padding: 1.5rem;
 }
 
 .Page-title {
-  font-size: var(--font-size-h1);
-  line-height: var(--line-height-h1);
+  font-size: var(--font-size-h2);
+  line-height: var(--line-height-h2);
 
   margin-bottom: 0.8rem;
-  font-weight: bold;
+  font-weight: 500;
   display: inline-block;
   .Page-title-icon {
     width: 24px;
@@ -300,7 +255,7 @@ $app-card-padding: 1.5rem;
 }
 
 .Page-description {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   font-size: var(--font-size-body-medium);
   line-height: var(--line-height-body-medium);
 }
@@ -314,7 +269,7 @@ $app-card-padding: 1.5rem;
 }
 
 .Page-description span:hover {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   opacity: 0.9;
 }
 
@@ -330,19 +285,6 @@ $app-card-padding: 1.5rem;
   margin-bottom: 3.1rem;
 }
 
-.App-hero-primary {
-  font-size: 4.65rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.App-note {
-  text-align: center;
-  font-weight: bold;
-  font-size: var(--font-size-body-small);
-  padding: 0 3.1rem;
-}
-
 .App-card {
   padding: $app-card-padding;
   border-radius: 0.4rem;
@@ -351,9 +293,9 @@ $app-card-padding: 1.5rem;
 
 .App-card-title {
   font-size: var(--font-size-body-large);
+  line-height: var(--line-height-body-large);
   font-weight: 500;
-  letter-spacing: -0.012em;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   margin-bottom: $app-card-padding;
   display: flex;
   align-items: center;
@@ -409,15 +351,6 @@ $app-card-padding: 1.5rem;
   margin: 0.62rem;
 }
 
-.App-header a.App-header-link-main,
-.App-header .App-header-link-main {
-  font-size: 1.7rem;
-  padding: 1.5rem;
-  margin-left: -1.5rem;
-  display: flex;
-  margin-right: 1.2rem;
-}
-
 .App-header-link-main img {
   display: inline-block;
   height: 2.15rem;
@@ -436,32 +369,9 @@ $app-card-padding: 1.5rem;
   cursor: pointer;
 }
 
-.App-header .a.active,
-.App-header a.active {
-  pointer-events: none;
-  opacity: 1;
-  color: var(--color-gray-50);
-}
-
-.App-header .a:hover,
-.App-header a:hover {
-  opacity: 1;
-  color: var(--color-gray-50);
-}
-
-.App-header-container-left .a,
-.App-header-container-left a {
-  padding: 1.8rem 1.7rem;
-  display: block;
-  color: var(--color-slate-100);
-  font-size: var(--font-size-body-medium);
-  line-height: 1.8rem;
-  font-weight: normal;
-}
-
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .App-icon {
@@ -534,22 +444,6 @@ $app-card-padding: 1.5rem;
   pointer-events: none;
 }
 
-.App-title {
-  text-align: center;
-  font-size: 4.65rem;
-  margin-top: 17vh;
-  margin-bottom: 1.5rem;
-  font-weight: bold;
-}
-
-.App-subtitle {
-  text-align: center;
-  font-size: 1.7rem;
-  margin-bottom: 7.75rem;
-  opacity: 0.9;
-  padding: 0 1.5rem;
-}
-
 .App-info-row {
   display: grid;
   grid-template-columns: auto auto;
@@ -573,7 +467,7 @@ $app-card-padding: 1.5rem;
 
 a.App-cta,
 button.App-cta {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, var(--color-blue-700) 100%);
 }
@@ -586,13 +480,13 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: var(--color-gray-400);
+  color: var(--color-textIcon-secondary);
   opacity: 1;
 }
 
 a.App-cta.transparent:hover,
 button.App-cta.transparent:hover:enabled {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   box-shadow: none;
   background: none;
 }
@@ -608,10 +502,7 @@ button.App-button-option {
   cursor: pointer;
   border-radius: 4px;
   font-size: var(--font-size-body-small);
-  line-height: 2rem;
-  font-weight: normal;
-  letter-spacing: 0px;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   padding-left: 16px;
   padding-right: 16px;
   text-decoration: none;
@@ -662,18 +553,6 @@ button.App-button-option:disabled {
   text-align: center;
 }
 
-a.App-social-link {
-  margin-left: 1.1rem;
-  margin-right: 1.1rem;
-  font-size: 2.635rem;
-  color: var(--color-typography-primary);
-  opacity: 0.8;
-}
-
-a.App-social-link:hover {
-  opacity: 0.9;
-}
-
 .App-input {
   text-align: center;
   display: inline-block;
@@ -713,20 +592,6 @@ a.App-social-link:hover {
   background: rgba(0, 0, 0, 0.1);
   display: grid;
   grid-template-columns: 1fr auto;
-}
-
-.App-input-unit {
-  text-align: right;
-  padding: 1.25rem;
-  font-size: 2rem;
-}
-
-button.App-button {
-  text-align: center;
-  display: inline-block;
-  font-size: 1.7rem;
-  width: 90%;
-  max-width: 46.5rem;
 }
 
 .dropdown-backdrop {
@@ -778,7 +643,7 @@ button.App-button {
 }
 
 .positive {
-  color: var(--color-green-500);
+  color: var(--color-green-strong);
   --affix-color: currentColor;
 }
 
@@ -796,12 +661,12 @@ button.App-button {
 }
 
 .warning {
-  color: var(--color-yellow-300);
+  color: var(--color-yellow-strong);
   --affix-color: currentColor;
 }
 
 .warning-decoration {
-  text-decoration-color: var(--color-yellow-300);
+  text-decoration-color: var(--color-yellow-strong);
 }
 
 .App-warning,
@@ -818,7 +683,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, #2e3dcd, var(--color-blue-600));
+  background: linear-gradient(90deg, #2e3dcd, var(--color-button-primary));
 }
 
 .App-slider .rc-slider-dot {
@@ -830,12 +695,12 @@ button.App-button {
 }
 
 .App-slider .rc-slider-dot-active {
-  background: var(--color-blue-500);
+  background: var(--color-button-primary);
 }
 
 .App-slider .rc-slider-handle {
-  background: var(--color-slate-600);
-  border: 2px solid var(--color-blue-600);
+  background: var(--color-fill-accent);
+  border: 2px solid var(--color-button-primary);
 }
 
 .App-slider .rc-slider-handle:active {
@@ -844,7 +709,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   opacity: 0.5;
 }
 
@@ -870,7 +735,7 @@ button.App-button {
 }
 
 .header-connect-btn {
-  background: var(--color-blue-600);
+  background: var(--color-button-primary);
 }
 
 .header-connect-btn:hover {
@@ -879,7 +744,7 @@ button.App-button {
 
 .header-connect-btn:focus {
   background: #7a7fec;
-  border: 1px solid var(--color-blue-600);
+  border: 1px solid var(--color-button-primary);
   box-sizing: border-box;
   padding-left: 1.5rem;
   padding-right: 1.5rem;
@@ -942,9 +807,6 @@ button.App-button {
   .App-cta.small {
     padding: 0.9rem 0.8rem;
   }
-  .App-subtitle {
-    margin-bottom: 4.65rem;
-  }
 
   .App-header-user {
     padding-bottom: 0;
@@ -975,7 +837,7 @@ button.App-button {
     padding-left: 1.6rem;
     padding-right: 1.6rem;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid var(--color-slate-700);
+    border-bottom: 1px solid var(--color-button-background);
   }
 
   .App-header.small::after {
@@ -1033,10 +895,6 @@ button.App-button {
   }
   .App-header-trade-link a {
     padding: 0 0.8rem;
-  }
-
-  .App-header-menu-icon {
-    margin: 0.4rem 0.5rem;
   }
 
   .App-header.small {

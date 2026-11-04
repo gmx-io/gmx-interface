@@ -179,7 +179,7 @@ export default function TokenSelector(props: Props) {
     <div className={cx("TokenSelector", props.className)} onClick={(event) => event.stopPropagation()}>
       <SlideModal
         qa={qa + "-modal"}
-        className="TokenSelector-modal text-typography-primary"
+        className="TokenSelector-modal text-textIcon-primary"
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
@@ -227,7 +227,7 @@ export default function TokenSelector(props: Props) {
                 key={token.address}
                 data-qa={`${qa}-token-${token.symbol}`}
                 className={cx(
-                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-adaptive py-8 hover:bg-slate-800",
+                  "text-body-medium flex w-full cursor-pointer items-center justify-between px-adaptive py-8 hover:bg-fill-surfaceElevated",
                   { disabled: tokenState.disabled }
                 )}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
@@ -252,7 +252,7 @@ export default function TokenSelector(props: Props) {
                     {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
-                <div className="text-body-large flex flex-col items-end gap-2">
+                <div className="text-body-large flex flex-col items-end gap-4">
                   {(showBalances && balance !== undefined && (
                     <div>
                       {balance > 0 &&
@@ -261,7 +261,7 @@ export default function TokenSelector(props: Props) {
                     </div>
                   )) ||
                     null}
-                  <span className="text-body-small text-typography-secondary">
+                  <span className="text-body-small text-textIcon-secondary">
                     {showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
                       <NumericValue parts={formatBigUsdParts(balanceUsd, { displayDecimals: 2 })} />
                     )}
@@ -271,7 +271,7 @@ export default function TokenSelector(props: Props) {
             );
           })}
           {sortedFilteredTokens.length === 0 && (
-            <div className="p-adaptive text-16 text-typography-secondary">
+            <div className="p-adaptive text-16 text-textIcon-secondary">
               <Trans>No tokens matched</Trans>
             </div>
           )}
@@ -279,7 +279,7 @@ export default function TokenSelector(props: Props) {
       </SlideModal>
       <div
         data-qa={qa}
-        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {selectedTokenLabel || (
@@ -290,7 +290,7 @@ export default function TokenSelector(props: Props) {
             {showTokenName ? tokenInfo.name : tokenInfo.symbol}
           </span>
         )}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-blue-strong" />
       </div>
     </div>
   );

@@ -24,11 +24,11 @@ export function AbFlagSettings() {
       scrollIntoViewOnMobile
     >
       {AB_FLAG_NAMES.length === 0 ? (
-        <div className="py-8 text-typography-secondary">
+        <div className="py-8 text-textIcon-secondary">
           <Trans>No AB flags</Trans>
         </div>
       ) : (
-        <div className="max-h-300 flex flex-col gap-8 overflow-auto rounded-8 bg-slate-800 p-12 pr-16">
+        <div className="max-h-300 flex flex-col gap-8 overflow-auto rounded-8 bg-fill-surfaceElevated p-12 pr-16">
           {AB_FLAG_NAMES.map((flag) => (
             <ToggleSwitch
               key={flag}

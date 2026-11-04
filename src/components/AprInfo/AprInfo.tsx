@@ -67,7 +67,7 @@ function DefaultAprInfo({
 
   const renderTooltipContent = useCallback(() => {
     return (
-      <div className="flex flex-col gap-y-14">
+      <div className="flex flex-col gap-y-12">
         <div>
           <StatsTooltipRow
             showDollar={false}
@@ -119,7 +119,7 @@ function DefaultAprInfo({
       return (
         <div className="inline-flex flex-nowrap">
           {node}
-          <img className="relative -top-3 h-10" src={sparkleIcon} alt={t`Sparkle`} />
+          <img className="relative -top-4 h-10" src={sparkleIcon} alt={t`Sparkle`} />
         </div>
       );
     } else {

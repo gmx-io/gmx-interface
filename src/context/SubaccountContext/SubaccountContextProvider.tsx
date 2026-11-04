@@ -890,7 +890,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
         break;
     }
 
-    return <div className="text-body-small mt-4 text-typography-secondary">{text}</div>;
+    return <div className="text-body-small mt-4 text-textIcon-secondary">{text}</div>;
   }, [chainId, hasError, subaccountDeactivationFailureReason, subaccountDeactivationFailureTokenSymbol]);
 
   useEffect(() => {

@@ -234,9 +234,9 @@ export default function DebugOracleKeeper() {
             <div className="flex gap-8" style={GRID_STYLE}>
               <div className="flex min-w-0 flex-[2] flex-col">
                 <OracleEndpointsTable allEndpointStats={allEndpointStats} />
-                <div className="mt-16 h-1 bg-slate-800"></div>
+                <div className="mt-16 h-1 bg-fill-surfaceElevated"></div>
                 <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
-                <div className="mt-16 h-1 bg-slate-800"></div>
+                <div className="mt-16 h-1 bg-fill-surfaceElevated"></div>
                 <NetworkStatusSection networkObserverState={networkObserverState} />
               </div>
               <EventsPanel events={events} onClearEvents={() => setEvents([])} />
@@ -280,10 +280,10 @@ function DataFreshnessSection({
   };
 
   const getFreshnessColor = (ms: number | undefined) => {
-    if (ms === undefined) return "text-gray-500";
-    if (ms < 5000) return "text-green-400";
+    if (ms === undefined) return "text-textIcon-disabled";
+    if (ms < 5000) return "text-green-secondary";
     if (ms < 30000) return "text-yellow-400";
-    return "text-red-400";
+    return "text-red-strong";
   };
 
   const renderFreshnessRow = (label: string, current: number | undefined, history: number[]) => {
@@ -295,16 +295,16 @@ function DataFreshnessSection({
     return (
       <TableTr>
         <TableTd padding="compact">
-          <div className="text-sm font-semibold text-white">{label}</div>
+          <div className="text-sm font-medium text-textIcon-onButton">{label}</div>
         </TableTd>
         <TableTd padding="compact">
-          <span className={`text-xs font-semibold ${getFreshnessColor(current)}`}>{formatFreshness(current)}</span>
+          <span className={`text-xs font-medium ${getFreshnessColor(current)}`}>{formatFreshness(current)}</span>
         </TableTd>
         <TableTd padding="compact">
           <div className="flex items-center justify-end gap-16">
             {previousValues.map((value, index) =>
               value !== undefined ? (
-                <span key={index} className={`text-xs font-semibold ${getFreshnessColor(value)}`}>
+                <span key={index} className={`text-xs font-medium ${getFreshnessColor(value)}`}>
                   {formatFreshness(value)}
                 </span>
               ) : null
@@ -317,15 +317,15 @@ function DataFreshnessSection({
 
   return (
     <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Data freshness</Trans>
         </h3>
       </div>
       <div className="flex-shrink-0">
         <div className="overflow-x-auto">
           <Table>
-            <thead className="sticky top-0 z-10 bg-slate-900">
+            <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
               <TableTheadTr>
                 <TableTh padding="compact">
                   <Trans>DATA TYPE</Trans>

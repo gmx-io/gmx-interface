@@ -44,21 +44,21 @@ export function OpportunityAssets({
       handle={
         <div className="flex items-center justify-end">
           {visibleAssets.map((token) => (
-            <span key={getOpportunityAssetKey(token)} className="relative -mr-6 size-24">
+            <span key={getOpportunityAssetKey(token)} className="relative -mr-4 size-24">
               <OpportunityTokenIcon
                 asset={token}
                 chainId={chainId}
                 marketsInfoData={marketsInfoData}
-                className="absolute left-0 border-2 border-slate-700 "
+                className="absolute left-0 border-2 border-button-background "
               />
             </span>
           ))}
           {remainingCount > 0 ? (
-            <div className="relative -mr-6 size-24">
+            <div className="relative -mr-4 size-24">
               <span
                 className={cx(
-                  "flex size-24 items-center justify-center rounded-full border-2 border-slate-700",
-                  "bg-slate-700 text-[11px] font-medium normal-nums text-typography-secondary"
+                  "flex size-24 items-center justify-center rounded-full border-2 border-button-background",
+                  "text-body-small bg-button-background font-medium text-textIcon-secondary"
                 )}
               >
                 +{remainingCount}
@@ -68,9 +68,9 @@ export function OpportunityAssets({
         </div>
       }
       content={
-        <div className="text-body-small flex flex-col gap-6">
+        <div className="text-body-small flex flex-col gap-4">
           {resolvedAssets.map((token) => (
-            <span key={getOpportunityAssetKey(token)} className="flex items-center gap-6">
+            <span key={getOpportunityAssetKey(token)} className="flex items-center gap-4">
               <OpportunityTokenIcon asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
 
               <OpportunityTokenLabel asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
@@ -154,10 +154,10 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(glvInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium text-textIcon-primary">
               <Trans>GLV</Trans>{" "}
             </span>
-            <span className="text-typography-secondary">[{poolName}]</span>
+            <span className="text-textIcon-secondary">[{poolName}]</span>
           </span>
         );
       }
@@ -170,10 +170,10 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(marketInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium text-textIcon-primary">
               <Trans>GM: {indexName}</Trans>{" "}
             </span>
-            <span className="text-typography-secondary">[{poolName}]</span>
+            <span className="text-textIcon-secondary">[{poolName}]</span>
           </span>
         );
       }

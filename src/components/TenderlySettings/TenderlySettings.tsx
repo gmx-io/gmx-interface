@@ -57,7 +57,7 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
       <ToggleSwitch isChecked={Boolean(tenderlySimulationEnabled)} setIsChecked={setTenderlySimulationEnabled}>
         <Trans>Simulate transactions</Trans>
       </ToggleSwitch>
-      <div className="text-typography-secondary">
+      <div className="text-textIcon-secondary">
         <Trans>
           See{" "}
           <ExternalLink href="https://docs.tenderly.co/tenderly-sdk/intro-to-tenderly-sdk#how-to-get-the-account-name-project-slug-and-secret-key">
@@ -88,13 +88,13 @@ function TenderlyInput({
   );
 
   return (
-    <p className="mb-12 flex items-center justify-between gap-6">
+    <p className="mb-12 flex items-center justify-between gap-4">
       <span>{name}</span>
       <input
         value={value}
         onChange={handleChange}
         placeholder={placeholder}
-        className="border-1 w-[280px] border border-slate-600 px-5 py-4 text-12"
+        className="border-1 text-body-small w-[280px] border border-stroke-primary px-4 py-4"
       />
     </p>
   );

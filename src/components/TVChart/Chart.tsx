@@ -98,7 +98,7 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
 
   return (
     <div className="ExchangeChart tv Synthetics-chart flex flex-col">
-      <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900">
+      <div className="flex grow flex-col overflow-hidden rounded-8 bg-fill-surfaceBase">
         {isSwap ? (
           activeTab === "MARKET_GRAPH" ? (
             marketGraphTabContent

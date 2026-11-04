@@ -49,7 +49,7 @@ function ContactRow({
   href?: string;
 }) {
   const buttonClassName = cx(
-    "duration-180 flex h-44 w-full flex-shrink-0 items-center justify-center rounded-8 text-16 font-medium -tracking-[0.512px] text-white transition-colors sm:w-[140px]",
+    "duration-180 text-white flex h-44 w-full flex-shrink-0 items-center justify-center rounded-8 text-16 font-medium -tracking-[0.512px] transition-colors sm:w-[140px]",
     primary ? "btn-landing" : "bg-slate-600/50 hover:bg-slate-600/70"
   );
 
@@ -58,7 +58,7 @@ function ContactRow({
       <div className="flex items-center gap-20">
         <img src={icon} alt="" className="size-60 flex-shrink-0" />
         <div className="flex flex-col gap-4">
-          <div className="text-18 font-medium -tracking-[0.576px] text-white">{title}</div>
+          <div className="text-18 text-white font-medium -tracking-[0.576px]">{title}</div>
           <div className="text-14 -tracking-[0.448px] text-slate-400">{description}</div>
         </div>
       </div>
@@ -79,7 +79,7 @@ export function ContactSection() {
   const openLiveChat = useOpenLiveChat();
 
   return (
-    <section className="relative flex w-full flex-col items-center overflow-hidden border-t-1/2 border-slate-600 bg-slate-900 px-16 pt-80 text-white sm:px-40 sm:pt-[120px]">
+    <section className="border-slate-600 bg-slate-900 text-white relative flex w-full flex-col items-center overflow-hidden border-t-1/2 px-16 pt-80 sm:px-40 sm:pt-120">
       <img
         src={contactBg}
         alt=""
@@ -87,19 +87,19 @@ export function ContactSection() {
         className="pointer-events-none absolute bottom-0 left-1/2 h-[1514px] w-full min-w-[1728px] max-w-none -translate-x-1/2 select-none"
       />
       <div id="contact" className="relative flex w-full flex-col items-center text-center">
-        <span className="inline-flex h-24 w-fit items-center rounded-full bg-blue-300/20 px-6">
+        <span className="bg-blue-300/20 inline-flex h-24 w-fit items-center rounded-full px-4">
           <span className={cx("text-16 -tracking-[0.512px]", GRADIENT_TEXT_CLASS)}>
             <Trans>Talk to the desk</Trans>
           </span>
         </span>
-        <h2 className="text-50 leading-heading-lg lg:text-100 mt-28 font-medium -tracking-[2.6px] lg:-tracking-[5.2px]">
+        <h2 className="text-50 leading-heading-lg lg:text-100 mt-24 font-medium -tracking-[2.6px] lg:-tracking-[5.2px]">
           <Trans>
             Lock in
             <br />
             <span className={GRADIENT_TEXT_CLASS}>a better rate</span>
           </Trans>
         </h2>
-        <p className="mt-14 max-w-[350px] text-16 leading-[20px] -tracking-[0.512px] text-slate-400">
+        <p className="mt-12 max-w-[350px] text-16 leading-[20px] -tracking-[0.512px] text-slate-400">
           <Trans>
             Reach out however suits you and we'll come back with your exact tier — usually within a couple of hours. No
             obligation.
@@ -107,7 +107,7 @@ export function ContactSection() {
         </p>
       </div>
 
-      <div className="relative mt-[57px] w-full max-w-[600px] rounded-20 border-1/2 border-slate-600 bg-slate-900 p-20 sm:p-28">
+      <div className="border-slate-600 bg-slate-900 relative mt-56 w-full max-w-[600px] rounded-20 border-1/2 p-20 sm:p-24">
         <div className="flex flex-col gap-20">
           <ContactRow
             icon={icContactChat}
@@ -133,21 +133,21 @@ export function ContactSection() {
           />
         </div>
 
-        <div className="mb-20 mt-20 flex items-center gap-20 text-14 -tracking-[0.448px] text-slate-500">
-          <div className="flex-1 border-t-1/2 border-slate-600/50" />
+        <div className="text-14 text-slate-500 mb-20 mt-20 flex items-center gap-20 -tracking-[0.448px]">
+          <div className="border-slate-600/50 flex-1 border-t-1/2" />
           <Trans>OR</Trans>
-          <div className="flex-1 border-t-1/2 border-slate-600/50" />
+          <div className="border-slate-600/50 flex-1 border-t-1/2" />
         </div>
 
         <a
           href={VIP_CONTACT_FORM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="duration-180 flex h-44 w-full items-center justify-center rounded-8 bg-slate-600/50 text-16 font-medium -tracking-[0.512px] text-white transition-colors hover:bg-slate-600/70"
+          className="duration-180 bg-slate-600/50 text-white hover:bg-slate-600/70 flex h-44 w-full items-center justify-center rounded-8 text-16 font-medium -tracking-[0.512px] transition-colors"
         >
           <Trans>Request to be contacted</Trans>
         </a>
-        <p className="mt-20 text-center text-[13px] leading-[16px] tracking-[0.026px] text-slate-500">
+        <p className="text-slate-500 mt-20 text-center text-[13px] leading-[16px] tracking-[0.026px]">
           <Trans>
             Anonymous by default — connect with just your wallet.
             <br className="hidden sm:block" />
@@ -156,7 +156,7 @@ export function ContactSection() {
         </p>
       </div>
 
-      <div className="relative mt-76 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 text-12 tracking-[0.024px] text-white sm:flex-row sm:justify-between">
+      <div className="text-12 text-white relative mt-64 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 tracking-[0.024px] sm:flex-row sm:justify-between">
         <a href="/" aria-label="GMX">
           <img src={footerLogo} alt="GMX" className="h-16 w-[70px]" />
         </a>
@@ -168,7 +168,7 @@ export function ContactSection() {
             href="https://docs.gmx.io/"
             target="_blank"
             rel="noopener noreferrer"
-            className="duration-180 transition-colors hover:text-white/80"
+            className="duration-180 hover:text-white/80 transition-colors"
           >
             <Trans>Docs</Trans>
           </a>
@@ -176,7 +176,7 @@ export function ContactSection() {
             href={`${import.meta.env.VITE_APP_BASE_URL}/stats`}
             target="_blank"
             rel="noopener noreferrer"
-            className="duration-180 transition-colors hover:text-white/80"
+            className="duration-180 hover:text-white/80 transition-colors"
           >
             <Trans>Stats</Trans>
           </a>
@@ -184,7 +184,7 @@ export function ContactSection() {
             href="/terms-and-conditions"
             target="_blank"
             rel="noopener noreferrer"
-            className="duration-180 transition-colors hover:text-white/80"
+            className="duration-180 hover:text-white/80 transition-colors"
           >
             <Trans>Terms</Trans>
           </a>

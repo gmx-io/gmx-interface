@@ -114,7 +114,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <SyntheticsInfoRow className={className} label={t`Acceptable price impact`} valueClassName="-my-5">
+    <SyntheticsInfoRow className={className} label={t`Acceptable price impact`} valueClassName="-my-4">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

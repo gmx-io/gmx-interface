@@ -52,7 +52,7 @@ export function TradersVolumeChartContainer({
 
   if (isLoading) {
     return (
-      <div className="text-body-small flex h-[256px] w-full grow items-center justify-center text-typography-secondary">
+      <div className="text-body-small flex h-[256px] w-full grow items-center justify-center text-textIcon-secondary">
         <Trans>Loading...</Trans>
       </div>
     );

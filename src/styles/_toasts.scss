@@ -49,51 +49,51 @@
 }
 
 .Toastify__toast-theme--light {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .Toastify__toast-theme--dark {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .Toastify__toast-theme--colored {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .Toastify__toast--error {
-  color: var(--color-red-100);
-  background: var(--color-red-900) !important;
-  border-bottom: 2px solid var(--color-red-500);
+  color: var(--color-red-secondary);
+  background: var(--color-red-background) !important;
+  border-bottom: 2px solid var(--color-red-strong);
 
   .close-toast-button > svg {
-    color: var(--color-red-500) !important;
+    color: var(--color-red-strong) !important;
   }
 }
 
 .Toastify__toast {
   .link-underline {
-    color: var(--color-typography-primary) !important;
+    color: var(--color-textIcon-primary) !important;
   }
 }
 
 .Toastify__toast--success {
-  color: var(--color-green-100);
-  background: var(--color-green-900);
-  border-bottom: 2px solid var(--color-green-500);
+  color: var(--color-green-secondary);
+  background: var(--color-green-background);
+  border-bottom: 2px solid var(--color-green-strong);
 
   .close-toast-button > svg {
-    color: var(--color-green-500) !important;
+    color: var(--color-green-strong) !important;
   }
 }
 
 .Toastify__toast--default {
-  background: var(--color-cold-blue-900);
+  background: var(--color-blue-background);
 }
 
 .Toastify__toast-body {
   padding: 12px 40px 12px 12px;
-  font: normal normal normal 1.4rem/1.6rem "TTHoves";
-  line-height: 2rem;
+  font: normal normal normal var(--font-size-body-medium) / var(--line-height-body-medium) "TTHoves";
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
 .Toastify__toast-body:has(.StatusNotification) {

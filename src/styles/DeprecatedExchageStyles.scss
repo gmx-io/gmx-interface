@@ -8,8 +8,8 @@
 }
 
 .Exchange-trigger-order-info {
-  color: var(--color-gray-300);
-  border: 1px solid var(--color-slate-700);
+  color: var(--color-textIcon-secondary);
+  border: 1px solid var(--color-button-background);
 }
 
 .Exchange-list-tab-container {
@@ -30,7 +30,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.5rem;
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
 }
 
 .Exchange-empty-positions-list-note.small {
@@ -41,7 +41,7 @@
   display: inline-block;
   font-size: 1.25rem;
   margin-left: 0.8rem;
-  color: var(--color-blue-600);
+  color: var(--color-button-primary);
   vertical-align: middle;
   margin-top: -0.31rem;
 }
@@ -153,7 +153,7 @@
   padding: 0 0.8rem;
   border-radius: 3px;
   background: #5b2ab0;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   opacity: 0.7;
   cursor: pointer;
 }
@@ -166,12 +166,6 @@
 
 .Exchange-swap-leverage-option:hover {
   opacity: 1;
-}
-
-.Exchange-swap-leverage-unlock-icon {
-  font-size: 0.8rem;
-  vertical-align: middle;
-  margin-top: -0.31rem;
 }
 
 .Exchange-swap-placeholder {
@@ -259,10 +253,6 @@
   position: relative;
 }
 
-.ExchangeChart-main-price {
-  font-size: 1.7rem;
-}
-
 .ExchangeChart-top-inner {
   display: grid;
   grid-template-columns: auto auto auto auto auto;
@@ -272,7 +262,7 @@
 }
 
 .ExchangeChart-info-label {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
   white-space: nowrap;
@@ -322,19 +312,6 @@
   top: 0;
 }
 
-.Exchange-price-tooltip {
-  font-size: var(--font-size-body-medium);
-  background: linear-gradient(90deg, rgba(57, 28, 147, 0.9) 0%, rgba(66, 24, 140, 0.9) 100%);
-  padding: 0.9rem;
-  border: 1px solid rgba(30, 9, 94, 0.5);
-  line-height: 2rem;
-}
-
-.Exchange-price-time {
-  font-size: 1.25rem;
-  font-weight: normal;
-}
-
 .Error-modal .Modal-content {
   width: 31rem;
 }
@@ -357,11 +334,6 @@
 
 .PositionEditor .Tab {
   margin-bottom: 1.05rem;
-}
-
-.PositionEditor-token-symbol {
-  font-size: 2.1rem;
-  text-align: right;
 }
 
 .Order-editor-tokens .Order-editor-icon {
@@ -406,14 +378,14 @@
 }
 
 .active-order-tooltip {
-  background-color: color-mix(in srgb, var(--color-slate-100) 15%, transparent);
+  background-color: color-mix(in srgb, var(--color-textIcon-secondary) 15%, transparent);
   padding: 1rem;
   border-radius: var(--border-radius-sm);
   white-space: normal;
 }
 
 .active-order-tooltip:hover {
-  background-color: color-mix(in srgb, var(--color-slate-100) 25%, transparent);
+  background-color: color-mix(in srgb, var(--color-textIcon-secondary) 25%, transparent);
 }
 
 .active-order-tooltip > .active-order-error {
@@ -428,10 +400,6 @@
 
 .order-error .Tooltip-popup {
   white-space: pre-line;
-}
-
-.Order-list-item-text {
-  line-height: 1.4;
 }
 
 .Exchange-list .App-card {
@@ -467,23 +435,16 @@ button.Exchange-list-action {
   border-radius: 3px;
   background: none;
   border: none;
-  color: var(--color-gray-300);
+  color: var(--color-textIcon-secondary);
   margin: 0 0.3rem;
 }
 
 button.Exchange-list-action:hover {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 table.Exchange-list {
   border-collapse: collapse;
-}
-
-table.Exchange-list th,
-table.Exchange-list td {
-  font-weight: normal;
-  text-align: left;
-  padding: 1.05rem;
 }
 
 table.Exchange-list th:first-child,
@@ -498,7 +459,7 @@ table.Exchange-list.Orders td {
 }
 
 table.Exchange-list tr {
-  border-bottom: 1px solid var(--color-slate-700);
+  border-bottom: 1px solid var(--color-button-background);
 }
 
 table.Exchange-list tbody tr:last-child {
@@ -506,7 +467,7 @@ table.Exchange-list tbody tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: var(--color-cold-blue-900);
+  background: var(--color-blue-background);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
   cursor: pointer;
 }
@@ -572,39 +533,16 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-info-row.top-line {
-  border-top: 1px solid var(--color-slate-700);
+  border-top: 1px solid var(--color-button-background);
   margin-top: 1.5rem;
   padding-top: 1.5rem;
 }
 
 .Exchange-info-label {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   margin-right: 0.8rem;
 }
 .Exchange-info-value-warning {
-  color: var(--error-red);
-}
-
-.Confirmation-box-info,
-.Confirmation-box-info a,
-.Confirmation-box-warning,
-.Confirmation-box-warning a {
-  font-size: 1.3rem;
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.Confirmation-box-info,
-.Confirmation-box-info a {
-  opacity: 0.7;
-  color: var(--warning-yellow);
-}
-
-.Confirmation-box-warning,
-.Confirmation-box-warning a {
   color: var(--error-red);
 }
 
@@ -667,8 +605,8 @@ table.Position-list .Exchange-list-item-active {
   border-radius: 0.3rem;
   background: linear-gradient(
     90deg,
-    var(--color-cold-blue-900) 0%,
-    color-mix(in srgb, var(--color-slate-100) 40%, transparent) 100%
+    var(--color-blue-background) 0%,
+    color-mix(in srgb, var(--color-textIcon-secondary) 40%, transparent) 100%
   );
   outline: 0.05rem solid transparent;
   outline-offset: -0.1rem;
@@ -690,14 +628,6 @@ table.Position-list .Exchange-list-item-active {
   margin-top: 1.5rem;
 }
 
-.Exchange-swap-section-top {
-  display: grid;
-  grid-template-columns: auto auto;
-  font-size: var(--font-size-body-medium);
-  padding-bottom: 1.25rem;
-  line-height: 1;
-}
-
 .Exchange-swap-section-bottom {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -714,7 +644,7 @@ table.Position-list .Exchange-list-item-active {
   right: 1.25rem;
   top: 0;
   padding: 0.465rem 0.8rem;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
@@ -725,7 +655,7 @@ table.Position-list .Exchange-list-item-active {
 }
 
 .Exchange-swap-max:hover {
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   background: #484e92;
 }
 
@@ -736,7 +666,7 @@ table.Position-list .Exchange-list-item-active {
 input.Exchange-swap-input {
   padding: 0;
   max-width: 100%;
-  font-size: var(--font-size-h2);
+  font-size: var(--font-size-h3);
   width: 100%;
   padding-right: 2rem;
 }
@@ -758,13 +688,6 @@ input.Exchange-swap-input.small {
   z-index: 1;
 }
 
-.Exchange-swap-ball-icon {
-  text-align: center;
-  display: block;
-  transform: rotate(90deg);
-  font-size: 2rem;
-}
-
 .Exchange-swap-ball {
   position: absolute;
   width: 3.5rem;
@@ -780,7 +703,7 @@ input.Exchange-swap-input.small {
   justify-content: center;
   align-items: center;
   border: none;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .Exchange-swap-ball:hover {
@@ -792,20 +715,13 @@ input.Exchange-swap-input.small {
 }
 
 .Exchange-swap-ball[disabled] {
-  background-color: var(--color-slate-700);
+  background-color: var(--color-button-background);
   cursor: not-allowed;
 }
 
 table.Exchange-list-small {
   width: 100%;
   background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);
-}
-
-table.Exchange-list-small th,
-table.Exchange-list-small td {
-  font-weight: normal;
-  text-align: left;
-  padding: 1.05rem;
 }
 
 .Exchange-list-card-header {
@@ -889,7 +805,7 @@ table.Exchange-list-small td {
   margin-right: 1.5rem;
   background: none;
   border: none;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
   padding: 0;
 }
 .cancel-order-btn:hover {
@@ -932,11 +848,11 @@ table.Exchange-list-small td {
 }
 
 .Position-pnl.negative:hover {
-  color: var(--color-red-400);
+  color: var(--color-red-strong);
 }
 
 .Position-pnl.positive:hover {
-  color: var(--color-green-300);
+  color: var(--color-green-strong);
 }
 
 .VersionSwitch-wrapper {
@@ -1067,12 +983,6 @@ table.Exchange-list-small td {
 
   input.Exchange-swap-input {
     max-width: 15.5rem;
-  }
-
-  .ExchangeChart-bottom-controls .Tab .Tab-option {
-    width: 3.875rem;
-    padding: 0.465rem 0;
-    font-size: 1.25rem;
   }
 
   .Exchange-swap-info-group {

@@ -230,7 +230,7 @@ export function NetworkFeeRow({
                 ) : undefined
               }
               valueClassName="numbers"
-              textClassName="text-green-500"
+              textClassName="text-green-strong"
             />
             {sourceExplanation && (
               <>
@@ -238,7 +238,7 @@ export function NetworkFeeRow({
                 <p>{sourceExplanation}</p>
               </>
             )}
-            {warning && <p className="text-yellow-300">{warning}</p>}
+            {warning && <p className="text-yellow-strong">{warning}</p>}
             {additionalOrdersMsg && <p>{additionalOrdersMsg}</p>}
           </>
         }

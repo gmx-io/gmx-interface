@@ -24,27 +24,27 @@ const formatEventType = (type: string) => {
 };
 
 const getEventColor = (type: string) => {
-  if (type.includes("success")) return "text-green-500";
-  if (type.includes("failed")) return "text-red-500";
+  if (type.includes("success")) return "text-green-strong";
+  if (type.includes("failed")) return "text-red-strong";
   if (type.includes("partial")) return "text-orange-500";
-  if (type.includes("start")) return "text-blue-500";
+  if (type.includes("start")) return "text-button-primary";
   if (type.includes("banned")) return "text-purple-500";
   if (type.includes("updated") || type.includes("finished")) return "text-cyan-500";
-  return "text-gray-500";
+  return "text-textIcon-disabled";
 };
 
 export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: OracleEndpointStats[] }) {
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Oracle endpoints</Trans>
         </h3>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="overflow-x-auto">
           <Table>
-            <thead className="sticky top-0 z-10 bg-slate-900">
+            <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
               <TableTheadTr>
                 <TableTh padding="compact">
                   <Trans>ENDPOINT</Trans>
@@ -67,28 +67,28 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
               {allEndpointStats.map((endpoint) => (
                 <TableTr key={endpoint.endpoint}>
                   <TableTd padding="compact">
-                    <div className="text-sm font-semibold text-white">{endpoint.endpoint}</div>
+                    <div className="text-sm font-medium text-textIcon-onButton">{endpoint.endpoint}</div>
                   </TableTd>
                   <TableTd padding="compact">
-                    <div className="text-xs flex flex-wrap gap-1">
+                    <div className="text-xs flex flex-wrap">
                       {endpoint.isPrimary && (
-                        <span className="text-green-400">
+                        <span className="text-green-secondary">
                           <Trans>Primary</Trans>
                         </span>
                       )}
                       {endpoint.isSecondary && (
-                        <span className="text-yellow-300">
+                        <span className="text-yellow-strong">
                           <Trans>Secondary</Trans>
                         </span>
                       )}
                     </div>
                   </TableTd>
                   <TableTd padding="compact">
-                    <span className="text-orange-500 text-sm font-semibold">{endpoint.failureCount}</span>
+                    <span className="text-orange-500 text-sm font-medium">{endpoint.failureCount}</span>
                   </TableTd>
                   <TableTd padding="compact">
                     {endpoint.bannedTimestamp ? (
-                      <span className="text-xs font-semibold text-red-500">
+                      <span className="text-xs font-medium text-red-strong">
                         {new Date(endpoint.bannedTimestamp).toLocaleTimeString("en-US", {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -97,14 +97,14 @@ export function OracleEndpointsTable({ allEndpointStats }: { allEndpointStats: O
                         })}
                       </span>
                     ) : (
-                      <span className="text-xs text-gray-500">—</span>
+                      <span className="text-xs text-textIcon-disabled">—</span>
                     )}
                   </TableTd>
                   <TableTd padding="compact">
                     {endpoint.responseTime !== undefined ? (
-                      <span className="text-xs text-white">{t`${endpoint.responseTime}ms`}</span>
+                      <span className="text-xs text-textIcon-onButton">{t`${endpoint.responseTime}ms`}</span>
                     ) : (
-                      <span className="text-xs text-gray-500">—</span>
+                      <span className="text-xs text-textIcon-disabled">—</span>
                     )}
                   </TableTd>
                 </TableTr>
@@ -126,8 +126,8 @@ export function EventsPanel({
 }) {
   return (
     <div className="flex min-h-0 min-w-[320px] flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Oracle keeper events</Trans>
         </h3>
         <Button variant="secondary" onClick={onClearEvents}>
@@ -140,7 +140,7 @@ export function EventsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact">
-                  <div className="text-sm font-semibold">
+                  <div className="text-sm font-medium">
                     <Trans>No events</Trans>
                   </div>
                 </TableTd>
@@ -150,7 +150,7 @@ export function EventsPanel({
         ) : (
           <div className="overflow-x-auto">
             <Table>
-              <thead className="sticky top-0 z-10 bg-slate-900">
+              <thead className="sticky top-0 z-10 bg-fill-surfaceBase">
                 <TableTheadTr>
                   <TableTh padding="compact" className="text-left">
                     <Trans>EVENT</Trans>
@@ -162,14 +162,14 @@ export function EventsPanel({
                   return (
                     <TableTr key={index}>
                       <TableTd padding="compact">
-                        <div className="flex flex-col items-start gap-2">
-                          <div className={`text-xs font-semibold ${getEventColor(event.type)}`}>
+                        <div className="flex flex-col items-start gap-4">
+                          <div className={`text-xs font-medium ${getEventColor(event.type)}`}>
                             {formatEventType(event.type)}
                           </div>
-                          {event.endpoint && <div className="text-xs text-gray-500">{event.endpoint}</div>}
-                          {event.error && <div className="text-xs text-red-500">{event.error.message}</div>}
+                          {event.endpoint && <div className="text-xs text-textIcon-disabled">{event.endpoint}</div>}
+                          {event.error && <div className="text-xs text-red-strong">{event.error.message}</div>}
                           {event.data && (
-                            <div className="text-xs text-gray-400">{JSON.stringify(event.data, null, 2)}</div>
+                            <div className="text-xs text-textIcon-secondary">{JSON.stringify(event.data, null, 2)}</div>
                           )}
                         </div>
                       </TableTd>
@@ -202,8 +202,8 @@ export function DebugControlsPanel({
 
   return (
     <div className="flex min-h-0 flex-col overflow-hidden">
-      <div className="mb-6 flex h-8 flex-shrink-0 items-center px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">
+      <div className="mb-4 flex h-8 flex-shrink-0 items-center px-8 py-16">
+        <h3 className="text-xl muted font-medium uppercase">
           <Trans>Debug controls</Trans>
         </h3>
       </div>
@@ -213,8 +213,8 @@ export function DebugControlsPanel({
             <tbody>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
+                  <div className="py-4">
+                    <div className="text-base mb-4 font-medium text-textIcon-secondary">
                       <Trans>Force failures</Trans>
                     </div>
                     <div className="space-y-4">
@@ -240,17 +240,17 @@ export function DebugControlsPanel({
               </TableTr>
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
+                  <div className="py-4">
+                    <div className="text-base mb-4 font-medium text-textIcon-secondary">
                       <Trans>Tickers simulation</Trans>
                     </div>
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       <ToggleSwitch
                         isChecked={debugState.triggerTickersFailure ?? false}
                         setIsChecked={(checked) =>
                           onDebugFlagChange(OracleKeeperDebugFlags.TriggerTickersFailure, checked)
                         }
-                        textClassName="text-base text-white"
+                        textClassName="text-base text-textIcon-onButton"
                       >
                         <Trans>Trigger tickers failure</Trans>
                       </ToggleSwitch>
@@ -259,7 +259,7 @@ export function DebugControlsPanel({
                         setIsChecked={(checked) =>
                           onDebugFlagChange(OracleKeeperDebugFlags.TriggerPartialTickers, checked)
                         }
-                        textClassName="text-base text-white"
+                        textClassName="text-base text-textIcon-onButton"
                       >
                         <Trans>Trigger partial tickers</Trans>
                       </ToggleSwitch>

@@ -76,7 +76,7 @@ const TooltipContent = ({
 
   return (
     <div className="flex w-max items-center gap-4">
-      <div className="mr-2 h-8 w-8 shrink-0 grow rounded-full" style={dotStyle} />
+      <div className="mr-4 h-8 w-8 shrink-0 grow rounded-full" style={dotStyle} />
       <TokenIcon symbol={symbol} displaySize={16} />
       <p className="text-body-medium">{name}:</p>
       <p className="text-body-medium numbers">{getCompositionPercentage(value, sum)}%</p>
@@ -110,7 +110,7 @@ function CompositionChart({ items, label }: CompositionChartProps) {
 
   return (
     <div className="flex w-full flex-col gap-16">
-      <div className="flex w-full gap-2">
+      <div className="flex w-full gap-4">
         {itemsWithStyles.map((item) => (
           <div key={item.key} className="h-12 rounded-2" style={item.style}>
             <Tooltip

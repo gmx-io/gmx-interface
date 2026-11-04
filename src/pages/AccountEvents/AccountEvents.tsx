@@ -267,7 +267,7 @@ export function AccountEvents() {
       <AppPageLayout title="Account Events">
         <div className="default-container page-layout">
           <PageTitle title={t`Account events`} className="p-12" />
-          <div className="text-center text-red-500">
+          <div className="text-center text-red-strong">
             <Trans>Connect wallet or add an address to the URL</Trans>
           </div>
         </div>
@@ -289,7 +289,7 @@ export function AccountEvents() {
                 <AddressView noLink address={account} size={20} />
               </div>
               {fromBlock !== null && fromTimestamp !== null && (
-                <div className="text-12 text-typography-secondary">
+                <div className="text-body-small text-textIcon-secondary">
                   <Trans>
                     From: block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
                   </Trans>
@@ -301,7 +301,7 @@ export function AccountEvents() {
         />
 
         {error && (
-          <div className="mb-20 p-20 text-center text-red-500">
+          <div className="mb-20 p-20 text-center text-red-strong">
             <Trans>Error:</Trans> {error instanceof Error ? error.message : String(error)}
             <div className="mt-8">
               <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
@@ -363,21 +363,21 @@ export function AccountEvents() {
                   <TableTr
                     key={`${event.txHash}-${event.logIndex}`}
                     className={cx({
-                      "!bg-red-500/20": isCancelled,
-                      "!bg-blue-500/20": isCreated,
-                      "!bg-green-500/20": isExecuted,
+                      "!bg-red-strong/20": isCancelled,
+                      "!bg-button-primary/20": isCreated,
+                      "!bg-green-strong/20": isExecuted,
                     })}
                   >
                     <TableTd>
                       <div className="font-medium">{event.eventName}</div>
                     </TableTd>
                     <TableTd>
-                      <div className="text-12 text-typography-secondary">{event.eventType}</div>
+                      <div className="text-body-small text-textIcon-secondary">{event.eventType}</div>
                     </TableTd>
                     <TableTd>
                       <div>
                         {event.timestamp === 0 ? (
-                          <span className="text-typography-secondary">...</span>
+                          <span className="text-textIcon-secondary">...</span>
                         ) : (
                           format(event.timestamp * 1000, "dd MMM yyyy, HH:mm:ss")
                         )}
@@ -390,7 +390,7 @@ export function AccountEvents() {
                     </TableTd>
                     <TableTd>
                       <div
-                        className="max-w-400 overflow-hidden text-ellipsis text-12"
+                        className="max-w-400 text-body-small overflow-hidden text-ellipsis"
                         title={formatEventData(event.eventData)}
                       >
                         {formatEventData(event.eventData)}
@@ -404,7 +404,7 @@ export function AccountEvents() {
         )}
 
         {!isLoading && !error && events.length === 0 && (
-          <div className="p-40 text-center text-typography-secondary">
+          <div className="p-40 text-center text-textIcon-secondary">
             <Trans>No events in the past {DAYS_BACK} days</Trans>
           </div>
         )}

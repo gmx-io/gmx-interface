@@ -42,9 +42,9 @@ describe("NumericValue", () => {
   });
 
   it("applies a custom affix class", () => {
-    const { container } = render(<NumericValue parts={formatUsdParts(usd(1))} affixClassName="text-blue-300" />);
+    const { container } = render(<NumericValue parts={formatUsdParts(usd(1))} affixClassName="text-blue-strong" />);
 
-    expect(container.querySelector("span > span")!.className).toBe("text-blue-300");
+    expect(container.querySelector("span > span")!.className).toBe("text-blue-strong");
   });
 });
 

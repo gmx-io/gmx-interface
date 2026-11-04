@@ -114,9 +114,9 @@ function MaxActionPill({
         aria-describedby={tooltip !== undefined ? descriptionId : undefined}
         disabled={isDisabled}
         onClick={handleClick}
-        className={cx("whitespace-nowrap rounded-full px-8 py-2 text-12 font-medium transition-colors", {
-          "bg-button-secondary text-typography-primary": isSelected,
-          "bg-slate-600 text-typography-secondary hover:bg-slate-500 hover:text-typography-primary": !isSelected,
+        className={cx("text-body-small whitespace-nowrap rounded-full px-8 py-4 font-medium transition-colors", {
+          "bg-button-secondary text-textIcon-primary": isSelected,
+          "bg-fill-accent text-textIcon-secondary hover:bg-textIcon-disabled hover:text-textIcon-primary": !isSelected,
           "cursor-not-allowed opacity-50": isDisabled,
         })}
       >

@@ -183,7 +183,7 @@ export const GmTokensBalanceInfo = ({
         {hasEarnedFees && !shouldShowFeesUnattributed && (
           <>
             <br />
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>Fee values calculated when earned. Excludes incentives.</Trans>
             </div>
           </>
@@ -191,7 +191,7 @@ export const GmTokensBalanceInfo = ({
         {hasEstimated365dFees && (
           <>
             <br />
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>Projected from last {daysConsidered} days' APY</Trans>
             </div>
           </>
@@ -340,13 +340,13 @@ export const GmTokensTotalBalanceInfo = ({
                   areEstimated365dFeesAvailable && (
                     <>
                       <br />
-                      <div className="text-typography-primary">
+                      <div className="text-textIcon-primary">
                         <Trans>Projected from last {daysConsidered} days' APY</Trans>
                       </div>
                       {shouldShowIncentivesNote && (
                         <>
                           <br />
-                          <div className="text-typography-primary">
+                          <div className="text-textIcon-primary">
                             <Trans>Excludes incentives</Trans>
                           </div>
                         </>

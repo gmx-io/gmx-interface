@@ -36,7 +36,7 @@ export function SyntheticsInfoRow({
     <Component
       type={onClick ? "button" : undefined}
       className={cx(
-        "flex w-full justify-between gap-8 text-14",
+        "text-body-medium flex w-full justify-between gap-8",
         {
           "cursor-pointer": onClick,
         },
@@ -47,8 +47,8 @@ export function SyntheticsInfoRow({
       onKeyDown={handleKeyDown}
       data-qa={qa ? `info-row-${qa}` : undefined}
     >
-      <div className={cx("font-medium text-typography-secondary", labelClassName)}>{label}</div>
-      <div className={cx("text-right", { "text-red-500": isWarning }, valueClassName)}>{children || value}</div>
+      <div className={cx("font-medium text-textIcon-secondary", labelClassName)}>{label}</div>
+      <div className={cx("text-right", { "text-red-strong": isWarning }, valueClassName)}>{children || value}</div>
     </Component>
   );
 }

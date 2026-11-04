@@ -29,7 +29,7 @@ export function EcosystemSection() {
     "group flex min-h-[154px] flex-col justify-between rounded-20 border-1/2 border-slate-400/50 bg-white p-20 shadow-[0_6px_8px_-6px_#BEC0DA] transition-transform duration-180";
 
   return (
-    <section className="bg-light-150 w-full px-16 py-60 text-slate-900 sm:px-40 sm:py-[120px]">
+    <section className="bg-light-150 text-slate-900 w-full px-16 py-56 sm:px-40 sm:py-120">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow>
           <Trans>Ecosystem</Trans>
@@ -41,24 +41,24 @@ export function EcosystemSection() {
           {categories.map((category) => (
             <span
               key={category}
-              className="flex h-36 items-center rounded-full border-[1px] border-blue-400 px-16 text-16 -tracking-[0.512px] text-blue-400"
+              className="border-blue-400 text-blue-400 flex h-36 items-center rounded-full border-[1px] px-16 text-16 -tracking-[0.512px]"
             >
               {category}
             </span>
           ))}
         </div>
-        <h3 className="mt-44 text-[28px] font-medium -tracking-[0.896px] text-slate-900">
+        <h3 className="text-slate-900 mt-40 text-[28px] font-medium -tracking-[0.896px]">
           <Trans>Already live</Trans>
         </h3>
-        <div className="mt-22 grid grid-cols-2 gap-20 lg:grid-cols-4">
+        <div className="mt-20 grid grid-cols-2 gap-20 lg:grid-cols-4">
           {projects.map((project) => {
             const content = (
               <>
                 <img src={project.logo} alt={project.name} className="size-60 select-none" />
                 <div className="flex items-center justify-between">
                   <span className="text-24 font-medium -tracking-[0.768px]">{project.name}</span>
-                  <span className="flex size-16 items-center justify-center rounded-full bg-slate-900">
-                    <IcLinkArrow className="size-8 text-white" />
+                  <span className="bg-slate-900 flex size-16 items-center justify-center rounded-full">
+                    <IcLinkArrow className="text-white size-8" />
                   </span>
                 </div>
               </>

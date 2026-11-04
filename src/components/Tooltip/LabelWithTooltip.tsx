@@ -34,7 +34,7 @@ export function LabelWithTooltip({ label, tooltip, position, variant = "icon", c
           {head}
           <span className="whitespace-nowrap">
             {lastWord}
-            <Icon className="ml-2 inline-block size-16 align-middle" />
+            <Icon className="ml-4 inline-block size-16 align-middle" />
           </span>
         </span>
       }

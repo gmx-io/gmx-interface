@@ -45,7 +45,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
-        <div className="text-center text-20 font-medium">
+        <div className="text-h4 text-center">
           <Trans>
             Claim <UsdValue usd={state.totalClaimableFundingUsd} />
           </Trans>
@@ -60,6 +60,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                     isChecked={state.isAllChecked}
                     setIsChecked={state.handleToggleSelectAll}
                     isPartialChecked={state.selectedMarketAddressesSet.size > 0 && !state.isAllChecked}
+                    aria-label={t`Select all markets`}
                   />
                 )}
               </TableTh>
@@ -93,7 +94,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
         {state.hiddenMainRewards.length > 0 && (
           <Button
             variant="ghost"
-            className="w-full text-13 text-typography-secondary"
+            className="text-body-small w-full text-textIcon-secondary"
             onClick={() => state.setShowOtherMainRewards((v) => !v)}
           >
             {state.showOtherMainRewards ? (
@@ -119,7 +120,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
         {state.smallRewardsWithUsd.length > 0 && state.shouldShowSmallRewardsToggle && (
           <Button
             variant="ghost"
-            className="w-full text-13 text-typography-secondary"
+            className="text-body-small w-full text-textIcon-secondary"
             onClick={() => state.setShowSmallRewards((v) => !v)}
           >
             {state.showSmallRewards ? (
@@ -147,7 +148,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
             <ToggleSwitch
               isChecked={state.isSwapEnabled}
               setIsChecked={state.setIsSwapEnabled}
-              textClassName="text-body-medium font-medium text-typography-secondary"
+              textClassName="text-body-medium font-medium text-textIcon-secondary"
             >
               <Trans>Swap all rewards into one asset</Trans>
             </ToggleSwitch>
@@ -187,7 +188,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                         }
                       />
                     }
-                    valueClassName="-my-5"
+                    valueClassName="-my-4"
                   >
                     <PercentageInput
                       onChange={state.setAllowedSlippage}

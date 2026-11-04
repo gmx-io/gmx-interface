@@ -121,7 +121,7 @@ test("11.06 minimum receive equals the receive amount less each allowed slippage
   ] as const) {
     const preset = box.getByRole("button", { name: label, exact: true });
     await preset.click();
-    await expect(preset).toHaveClass(/bg-blue-500/);
+    await expect(preset).toHaveClass(/bg-button-primary/);
     await expectMinReceive(page, slippage);
   }
   await box.getByText("Custom", { exact: true }).click();
@@ -131,7 +131,7 @@ test("11.06 minimum receive equals the receive amount less each allowed slippage
     .getByRole("textbox");
   await custom.fill("2.5");
   await custom.press("Tab");
-  await expect(box.getByRole("button", { name: "0.3%", exact: true })).not.toHaveClass(/bg-blue-500/);
+  await expect(box.getByRole("button", { name: "0.3%", exact: true })).not.toHaveClass(/bg-button-primary/);
   await expectMinReceive(page, 2.5);
 });
 
@@ -148,7 +148,7 @@ test("11.08 19.03 swap slippage defaults to the Settings value, survives reload 
   await page.keyboard.press("Escape");
   await page.reload();
   const preset = box.getByRole("button", { name: "1.0%", exact: true });
-  await expect(preset).toHaveClass(/bg-blue-500/);
+  await expect(preset).toHaveClass(/bg-button-primary/);
   await page.getByTestId("pay-input").fill("1000");
   await expectMinReceive(page, 1);
   await openSettings(page);

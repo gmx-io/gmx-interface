@@ -47,12 +47,12 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
           positionStats={relatedMarketsPositionStats}
           onSelect={setUserSelectedMarketAddress}
           handleClassName={cx(
-            "inline-block overflow-hidden text-ellipsis whitespace-nowrap text-13",
-            isInteractive && "group-gmx-hover/selector-field:text-blue-300"
+            "text-body-small inline-block overflow-hidden text-ellipsis whitespace-nowrap",
+            isInteractive && "group-gmx-hover/selector-field:text-blue-strong"
           )}
           chevronClassName={cx(
-            "w-12 text-typography-secondary max-lg:ml-4",
-            isInteractive && "group-gmx-hover/selector-field:text-blue-300"
+            "w-12 text-textIcon-secondary max-lg:ml-4",
+            isInteractive && "group-gmx-hover/selector-field:text-blue-strong"
           )}
           wrapperClassName="overflow-hidden"
           popoverReferenceRef={popoverReferenceRef}

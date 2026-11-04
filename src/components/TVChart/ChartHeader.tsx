@@ -83,8 +83,8 @@ function ChartHeaderMobile() {
         <ChartHeaderMobileItem
           label={
             <Trans>
-              Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
-              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
+              Open interest (<span className="text-green-strong numbers">{longOIPercentage}</span>/
+              <span className="text-red-strong numbers">{shortOIPercentage}</span>)
             </Trans>
           }
           value={
@@ -96,7 +96,7 @@ function ChartHeaderMobile() {
               content={<OpenInterestTooltip />}
             >
               <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-typography-inactive">/</span>
+              <span className="text-textIcon-inactive">/</span>
               <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
             </TooltipWithPortal>
           }
@@ -107,7 +107,7 @@ function ChartHeaderMobile() {
           value={
             <div className="flex items-center gap-8">
               <span className="numbers">{liquidityLong}</span>
-              <span className="text-typography-inactive">/</span>
+              <span className="text-textIcon-inactive">/</span>
               <span className="numbers">{liquidityShort}</span>
             </div>
           }
@@ -128,7 +128,7 @@ function ChartHeaderMobile() {
               content={<NetRate1hTooltip />}
             >
               <div className="flex items-center gap-4 numbers">{netRateLong}</div>
-              <span className="text-typography-inactive">/</span>
+              <span className="text-textIcon-inactive">/</span>
               <div className="flex items-center gap-4 numbers">{netRateShort}</div>
             </TooltipWithPortal>
           }
@@ -163,17 +163,17 @@ function ChartHeaderMobile() {
           role="button"
           onClick={toggleDetailsVisible}
         >
-          <div className="flex flex-col items-end gap-2">
-            <div className="mr-4 text-14 leading-[1.25] numbers">{avgPrice}</div>
-            <div className="ExchangeChart-daily-change text-12 leading-[1.25] numbers">{dayPriceDelta}</div>
+          <div className="flex flex-col items-end gap-4">
+            <div className="text-body-medium mr-4 numbers">{avgPrice}</div>
+            <div className="ExchangeChart-daily-change text-body-small numbers">{dayPriceDelta}</div>
           </div>
-          <span className="shrink-0 cursor-pointer rounded-full border-1/2 border-slate-600 p-8 text-typography-secondary">
+          <span className="shrink-0 cursor-pointer rounded-full border-1/2 border-stroke-primary p-8 text-textIcon-secondary">
             <DocsIcon className="size-16" />
           </span>
         </div>
       </div>
 
-      {details ? <div className="border-t-1/2 border-t-slate-600 p-16">{details}</div> : null}
+      {details ? <div className="border-t-1/2 border-t-stroke-primary p-16">{details}</div> : null}
     </div>
   );
 }
@@ -274,15 +274,15 @@ function ChartHeaderDesktop() {
         <ChartHeaderItem
           label={
             <Trans>
-              Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
-              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
+              Open interest (<span className="text-green-strong numbers">{longOIPercentage}</span>/
+              <span className="text-red-strong numbers">{shortOIPercentage}</span>)
             </Trans>
           }
           value={
             <TooltipWithPortal variant="none" as="div" position="bottom-end" content={<OpenInterestTooltip />}>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-                <span className="text-typography-inactive">/</span>
+                <span className="text-textIcon-inactive">/</span>
                 <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
               </div>
             </TooltipWithPortal>
@@ -294,7 +294,7 @@ function ChartHeaderDesktop() {
           value={
             <div className="flex items-center gap-4">
               <span className="numbers">{liquidityLong}</span>
-              <span className="text-typography-inactive">/</span>
+              <span className="text-textIcon-inactive">/</span>
               <span className="numbers">{liquidityShort}</span>
             </div>
           }
@@ -316,7 +316,7 @@ function ChartHeaderDesktop() {
             >
               <div className="flex items-center gap-4">
                 <div className="numbers">{netRateLong}</div>
-                <span className="text-typography-inactive">/</span>
+                <span className="text-textIcon-inactive">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
             </TooltipWithPortal>
@@ -409,7 +409,7 @@ function ChartHeaderDesktop() {
             style={leftStyles}
             onClick={scrollToLeft}
           >
-            {scrollLeft > 0 && <ChevronLeftIcon className="size-16 text-typography-secondary" />}
+            {scrollLeft > 0 && <ChevronLeftIcon className="size-16 text-textIcon-secondary" />}
           </div>
           <div
             className={cx("Chart-top-scrollable-fade-right", {
@@ -419,11 +419,11 @@ function ChartHeaderDesktop() {
             style={rightStyles}
             onClick={scrollToRight}
           >
-            {scrollRight > 0 && <ChevronRightIcon className="size-16 text-typography-secondary" />}
+            {scrollRight > 0 && <ChevronRightIcon className="size-16 text-textIcon-secondary" />}
           </div>
         </div>
         <div className={cx("flex gap-20 overflow-x-auto scrollbar-hide")} ref={scrollableRef}>
-          <div className="flex flex-col justify-center gap-2">
+          <div className="flex flex-col justify-center gap-4">
             <div className="text-body-medium numbers">{avgPrice}</div>
             <div className="text-body-small numbers">{dayPriceDelta}</div>
           </div>
@@ -436,10 +436,8 @@ function ChartHeaderDesktop() {
 
 const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex flex-col justify-center gap-2">
-      <div className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.08em] text-typography-secondary">
-        {label}
-      </div>
+    <div className="flex flex-col justify-center gap-4">
+      <div className="text-caption whitespace-nowrap text-textIcon-secondary">{label}</div>
       <div className="text-body-medium numbers">{value}</div>
     </div>
   );
@@ -447,9 +445,9 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
 
 const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
   return (
-    <div className="flex flex-col gap-8 text-12 leading-[1.25]">
-      <div className="font-medium capitalize text-typography-secondary">{label}</div>
-      <div className="flex items-center text-typography-primary numbers">{value}</div>
+    <div className="text-body-small flex flex-col gap-8">
+      <div className="font-medium capitalize text-textIcon-secondary">{label}</div>
+      <div className="flex items-center text-textIcon-primary numbers">{value}</div>
     </div>
   );
 };

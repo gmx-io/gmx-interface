@@ -61,12 +61,12 @@ export default function RegularTab<V extends string | number>({
           data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
           disabled={isDisabled}
           className={cx(
-            "text-body-medium flex items-center justify-center gap-6 rounded-full border-1/2 px-12 py-6 font-medium transition-colors",
+            "text-body-medium flex items-center justify-center gap-4 rounded-full border-1/2 px-12 py-4 font-medium transition-colors",
             optionClassName,
             regularOptionClassname,
             {
-              "border-[transparent] bg-button-secondary text-typography-primary": isActive,
-              "border-slate-600 text-typography-secondary hover:border-slate-500 hover:text-typography-primary":
+              "border-[transparent] bg-button-secondary text-textIcon-primary": isActive,
+              "border-stroke-primary text-textIcon-secondary hover:border-textIcon-disabled hover:text-textIcon-primary":
                 !isActive,
               "cursor-not-allowed opacity-50": isDisabled,
             }
@@ -89,13 +89,13 @@ export default function RegularTab<V extends string | number>({
           data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
           disabled={isDisabled}
           className={cx(
-            `text-body-medium -mb-[0.5px] flex items-center justify-center gap-4 border-b-2 border-b-[transparent] px-6 py-10
-            font-medium hover:text-typography-primary`,
+            `text-body-medium flex items-center justify-center gap-4 border-b-2 border-b-[transparent] px-4 py-8
+            font-medium hover:text-textIcon-primary`,
             optionClassName,
             regularOptionClassname,
             {
-              "border-b-blue-300 text-typography-primary": isActive,
-              "text-typography-secondary": !isActive,
+              "border-b-blue-strong text-textIcon-primary": isActive,
+              "text-textIcon-secondary": !isActive,
               "cursor-not-allowed opacity-50": isDisabled,
             }
           )}
@@ -117,7 +117,7 @@ export default function RegularTab<V extends string | number>({
           key={option.value}
           data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
           className={cx(optionClassName, regularOptionClassname, {
-            "!text-typography-primary": isActive,
+            "!text-textIcon-primary": isActive,
             "cursor-not-allowed opacity-50": isDisabled,
           })}
           disabled={isDisabled}
@@ -134,13 +134,13 @@ export default function RegularTab<V extends string | number>({
       <button
         type="button"
         className={cx(
-          `-mb-[0.5px] flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11 font-medium
-        first:rounded-tl-8 last:rounded-tr-8 hover:text-typography-primary max-smallMobile:px-12`,
+          `flex items-baseline justify-center gap-8 border-b-[2.5px] border-b-[transparent] px-20 pb-8 pt-12 font-medium
+        first:rounded-tl-8 last:rounded-tr-8 hover:text-textIcon-primary max-smallMobile:px-12`,
           optionClassName,
           regularOptionClassname,
           {
-            "border-b-blue-300 !text-typography-primary": isActive,
-            "text-typography-secondary": !isActive,
+            "border-b-blue-strong !text-textIcon-primary": isActive,
+            "text-textIcon-secondary": !isActive,
             "cursor-not-allowed opacity-50": isDisabled,
           }
         )}

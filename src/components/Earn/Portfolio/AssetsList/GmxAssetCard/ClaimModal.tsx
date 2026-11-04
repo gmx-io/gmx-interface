@@ -454,30 +454,30 @@ function ClaimRewardOption({
   const isPrimaryDisabled = Boolean(secondaryChecked);
 
   return (
-    <div className="overflow-hidden rounded-8 bg-slate-800">
+    <div className="overflow-hidden rounded-8 bg-fill-surfaceElevated">
       <Checkbox
         isChecked={primaryChecked}
         setIsChecked={setPrimaryChecked}
         disabled={isPrimaryDisabled}
         className={cx(
-          "w-full justify-between px-16 py-14 text-left",
-          isPrimaryDisabled ? "text-typography-secondary" : "text-typography-primary"
+          "w-full justify-between px-16 py-12 text-left focus-visible:outline-offset-[-2px]",
+          isPrimaryDisabled ? "text-textIcon-secondary" : "text-textIcon-primary"
         )}
       >
         <div className="flex items-center gap-4">
           <TokenIcon symbol={tokenSymbol} displaySize={20} className="!rounded-0" />
-          <span className="text-body-medium font-medium text-typography-primary">
+          <span className="text-body-medium font-medium text-textIcon-primary">
             <Trans>Claim {tokenSymbol} rewards</Trans>
           </span>
         </div>
-        <span className={cx("text-body-medium ml-auto numbers", "text-typography-secondary")}>{amountText}</span>
+        <span className={cx("text-body-medium ml-auto numbers", "text-textIcon-secondary")}>{amountText}</span>
       </Checkbox>
 
-      <div className="border-t-1/2 border-slate-600" />
+      <div className="border-t-1/2 border-stroke-primary" />
       <Checkbox
         isChecked={Boolean(secondaryChecked)}
         setIsChecked={setSecondaryChecked}
-        className="w-full justify-start px-16 py-14 text-left"
+        className="w-full justify-start px-16 py-12 text-left focus-visible:outline-offset-[-2px]"
       >
         <span className="text-body-medium">
           {nativeTokenSymbol && isNativeTokenToClaim ? (

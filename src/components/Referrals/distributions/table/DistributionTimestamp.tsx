@@ -24,8 +24,8 @@ export function DistributionTimestamp({ timestamp }: { timestamp: number }) {
 
   return (
     <>
-      <span className="text-typography-primary">{dateTime}</span>{" "}
-      <span className="text-typography-secondary">({relativeTime})</span>
+      <span className="text-textIcon-primary">{dateTime}</span>{" "}
+      <span className="text-textIcon-secondary">({relativeTime})</span>
     </>
   );
 }

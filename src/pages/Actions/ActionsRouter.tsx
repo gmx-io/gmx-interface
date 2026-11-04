@@ -30,7 +30,7 @@ export function AccountsRouter() {
             title={t`Trader activity`}
             subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
           />
-          <div className="text-center text-yellow-300">
+          <div className="text-center text-yellow-strong">
             <Trans>V1 unsupported on {chainName}. Switch to Arbitrum to use V1.</Trans>
           </div>
         </div>

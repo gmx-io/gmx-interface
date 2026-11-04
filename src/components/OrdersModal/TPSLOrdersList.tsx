@@ -96,7 +96,7 @@ export function TPSLOrdersList({
   if (orders.length === 0 && pendingOrders.length === 0) {
     return (
       <div className="flex h-full grow flex-col items-center justify-center gap-8 py-32">
-        <span className="text-typography-secondary">{emptyMessage}</span>
+        <span className="text-textIcon-secondary">{emptyMessage}</span>
         {onAddTPSL && (
           <Button variant="primary" onClick={onAddTPSL} disabled={isCreationPending}>
             <Trans>Add TP/SL</Trans>
@@ -108,7 +108,7 @@ export function TPSLOrdersList({
 
   if (isMobile) {
     return (
-      <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-60 pt-8">
+      <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-56 pt-12">
         {pendingOrders.map((order) => (
           <PendingTPSLOrder
             key={order.id}
@@ -262,7 +262,7 @@ function useTPSLOrderViewModel({
         <span className="whitespace-nowrap">
           -<UsdValue usd={order.sizeDeltaUsd} />
         </span>
-        <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
+        <span className="ml-4 text-textIcon-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
   }, [
@@ -404,23 +404,23 @@ function TPSLOrderCard({
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
-    <div className="flex flex-col gap-10 border-b-1/2 border-slate-600 p-16 last:border-b-0">
+    <div className="flex flex-col gap-8 border-b-1/2 border-stroke-primary p-16 last:border-b-0">
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-typography-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Type</Trans>
         </span>
         <span className="text-body-medium">{orderType}</span>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-typography-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Size (% of position)</Trans>
         </span>
         <span className="text-body-medium numbers">{sizeDisplay}</span>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-typography-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Trigger price</Trans>
         </span>
         <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
@@ -428,7 +428,7 @@ function TPSLOrderCard({
 
       {estimatedPnl && (
         <div className="flex items-center justify-between">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Est. PnL</Trans>
           </span>
           <DeltaUsdValue
@@ -441,7 +441,7 @@ function TPSLOrderCard({
 
       {estimatedPnl && (
         <div className="flex items-center justify-between">
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Receive</Trans>
           </span>
           <span className="text-body-medium numbers">{receiveDisplay}</span>
@@ -456,7 +456,8 @@ function TPSLOrderCard({
         )}
         <Button
           variant="secondary"
-          className="hover:!text-red-300 flex-1 !bg-red-900 !text-red-400 hover:!bg-red-700/25"
+          tone="destructive"
+          className="flex-1"
           onClick={handleCancel}
           disabled={isCancelling}
         >
@@ -510,7 +511,7 @@ export function TPSLOrderRow({
             className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}
           />
         ) : (
-          <span className="text-typography-secondary">—</span>
+          <span className="text-textIcon-secondary">—</span>
         )}
       </TableTd>
       <TableTd>
@@ -519,11 +520,18 @@ export function TPSLOrderRow({
       <TableTd>
         <div className="flex items-center justify-end gap-4">
           {isEditable && (
-            <Button variant="ghost" className="!p-8" onClick={handleEdit}>
+            <Button variant="ghost" className="!p-8" onClick={handleEdit} aria-label={t`Edit order`}>
               <EditIcon className="size-16" />
             </Button>
           )}
-          <Button variant="ghost" className="!p-8" onClick={handleCancel} disabled={isCancelling}>
+          <Button
+            variant="ghost"
+            tone="destructive"
+            className="!p-8"
+            onClick={handleCancel}
+            disabled={isCancelling}
+            aria-label={t`Cancel order`}
+          >
             <CloseIcon className="size-16" />
           </Button>
         </div>

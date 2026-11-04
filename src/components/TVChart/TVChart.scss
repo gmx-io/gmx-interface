@@ -1,33 +1,3 @@
-.chart-token-selector {
-  padding-left: 0.4rem;
-  margin-right: 0.5rem;
-
-  .Dropdown-current {
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: var(--color-typography-primary);
-  }
-
-  .Dropdown-current-arrow {
-    font-size: var(--font-size-body-small);
-    color: var(--color-slate-100);
-    margin-left: 1rem;
-    margin-top: -2px;
-  }
-
-  .Dropdown-options {
-    width: 15.8rem;
-    top: 4.6rem;
-    left: -0.6rem;
-  }
-
-  .Dropdown-option {
-    font-size: var(--font-size-body-small);
-    height: 3.4rem;
-    font-weight: 700;
-  }
-}
-
 .TVChart-top-card {
   height: 58px;
   display: flex;
@@ -37,7 +7,7 @@
 .Chart-header {
   display: grid;
   grid-template-columns: minmax(auto, max-content) auto;
-  background-color: var(--color-slate-900);
+  background-color: var(--color-fill-surfaceBase);
 }
 
 .Chart-top-scrollable {
@@ -72,12 +42,12 @@
 
 .Chart-top-scrollable-fade-left {
   justify-content: flex-start;
-  background: linear-gradient(to left, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
+  background: linear-gradient(to left, transparent, var(--color-fill-background) 50%, var(--color-fill-background));
 }
 
 .Chart-top-scrollable-fade-right {
   justify-content: flex-end;
-  background: linear-gradient(to right, transparent, var(--color-slate-950) 50%, var(--color-slate-950));
+  background: linear-gradient(to right, transparent, var(--color-fill-background) 50%, var(--color-fill-background));
 }
 
 .Chart-header-value {

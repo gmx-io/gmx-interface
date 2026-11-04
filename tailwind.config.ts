@@ -33,16 +33,16 @@ function textColorNames(tree: object, prefix = ""): string[] {
   });
 }
 
-const PRIMARY_TEXT_COLOR_NAMES = ["white", "black", "typography-primary"];
+const PRIMARY_TEXT_COLOR_NAMES = ["textIcon-onButton", "black", "textIcon-primary"];
 
 function affixColor(textColorName: string) {
-  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-typography-secondary)" : "currentColor";
+  return PRIMARY_TEXT_COLOR_NAMES.includes(textColorName) ? "var(--color-textIcon-secondary)" : "currentColor";
 }
 
 function injectAffixColorsPlugin({ addUtilities }: PluginAPI) {
   addUtilities({
     ".numeric-affix": {
-      color: "var(--affix-color, var(--color-typography-secondary))",
+      color: "var(--affix-color, var(--color-textIcon-secondary))",
     },
     ...fromPairs(textColorNames(colors).map((name) => [`.text-${name}`, { "--affix-color": affixColor(name) }])),
   });
@@ -82,10 +82,10 @@ function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
   addUtilities({
     ".text-input-bg": {
       borderRadius: "8px",
-      background: "var(--color-slate-800)",
+      background: "var(--color-fill-surfaceElevated)",
     },
     ".text-input-bg::placeholder": {
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
     },
   });
 
@@ -120,67 +120,80 @@ function customUtilsPlugin({ addUtilities, addVariant, addComponents }: any) {
 function fontComponentsPlugin({ addComponents, addBase }: any) {
   addBase({
     ":root": {
-      "--font-size-h1": "3.2rem",
-      "--font-size-h2": "2.4rem",
+      "--font-size-h1": "4rem",
+      "--font-size-h2": "3.2rem",
+      "--font-size-h3": "2.4rem",
+      "--font-size-h4": "2rem",
       "--font-size-body-large": "1.6rem",
       "--font-size-body-medium": "1.4rem",
       "--font-size-body-small": "1.2rem",
-      "--font-size-caption": "1rem",
+      "--font-size-caption": "1.2rem",
 
-      "--line-height-h1": "34px",
-      "--line-height-h2": "24px",
-      "--line-height-h3": "20px",
-      "--line-height-body-large": "2.1rem",
-      "--line-height-body-medium": "1.8rem",
+      "--line-height-h1": "48px",
+      "--line-height-h2": "40px",
+      "--line-height-h3": "32px",
+      "--line-height-h4": "28px",
+      "--line-height-body-large": "2.4rem",
+      "--line-height-body-medium": "2rem",
       "--line-height-body-small": "1.6rem",
-      "--line-height-caption": "1.4rem",
+      "--line-height-caption": "1.6rem",
     },
   });
 
   addComponents({
     ".text-h1": {
-      fontSize: "3.2rem",
-      lineHeight: "110%",
+      fontSize: "4rem",
+      lineHeight: "4.8rem",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },
     ".text-h2": {
-      fontSize: "2.4rem",
-      lineHeight: "110%",
+      fontSize: "3.2rem",
+      lineHeight: "4rem",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },
     ".text-h3": {
-      fontSize: "2rem",
-      lineHeight: "110%",
+      fontSize: "2.4rem",
+      lineHeight: "3.2rem",
       fontWeight: 500,
       letterSpacing: "-0.016em",
     },
+    ".text-h4": {
+      fontSize: "2rem",
+      lineHeight: "2.8rem",
+      fontWeight: 500,
+      letterSpacing: "-0.016em",
+    },
+    ".text-body-xlarge": {
+      fontSize: "2rem",
+      lineHeight: "2.8rem",
+    },
     ".text-body-large": {
       fontSize: "1.6rem",
-      lineHeight: "2.1rem",
+      lineHeight: "2.4rem",
     },
     ".text-body-medium": {
       fontSize: "1.4rem",
-      lineHeight: "1.75rem",
+      lineHeight: "2rem",
     },
     ".text-body-small": {
       fontSize: "1.2rem",
       lineHeight: "1.6rem",
     },
     ".text-caption": {
-      fontSize: "1.1rem",
-      lineHeight: "1.4rem",
+      fontSize: "1.2rem",
+      lineHeight: "1.6rem",
       fontWeight: 500,
       letterSpacing: "0.08em",
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
       textTransform: "uppercase",
     },
     ".label": {
       fontWeight: 500,
-      color: "var(--color-slate-100)",
+      color: "var(--color-textIcon-secondary)",
       "& a": {
-        color: "var(--color-slate-100)",
+        color: "var(--color-textIcon-secondary)",
       },
     },
   });
@@ -190,20 +203,13 @@ const config: Config = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   darkMode: "class",
   theme: {
-    spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),
+    spacing: merge(fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])), { 120: "120px" }),
     borderRadius: merge(fromPairs(range(0, 96 + 1).map((borderRadius) => [borderRadius, `${borderRadius}px`])), {
       full: "9999px",
     }),
     fontSize: {
-      11: "1.1rem",
-      12: "1.2rem",
-      13: "1.3rem",
-      14: "1.4rem",
-      15: "1.5rem",
       16: "1.6rem",
       20: "2rem",
-      24: "2.4rem",
-      32: "3.2rem",
     },
     lineHeight: {
       1: "1",

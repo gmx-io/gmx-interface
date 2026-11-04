@@ -284,9 +284,9 @@ export function GmList({
                   selectedValue={subCategoryTab}
                   onChange={setSubCategoryTab}
                   type="block"
-                  className="bg-slate-800/50 px-20"
+                  className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
-                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+                  regularOptionClassname="!px-0 !pb-8 !pt-12 text-body-small"
                 />
               </ButtonRowScrollFadeContainer>
             </div>
@@ -299,9 +299,9 @@ export function GmList({
                   selectedValue={subCategoryTab}
                   onChange={setSubCategoryTab}
                   type="block"
-                  className="bg-slate-800/50 px-20"
+                  className="bg-fill-surfaceElevated/50 px-20"
                   tabsWrapperClassName="gap-16"
-                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+                  regularOptionClassname="!px-0 !pb-8 !pt-12 text-body-small"
                 />
               </ButtonRowScrollFadeContainer>
             </div>
@@ -358,7 +358,7 @@ export function GmList({
                         <FeeApyLabel upperCase variant="iconStroke" />
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="whitespace-nowrap">
                       <Sorter {...getSorterProps("performance")}>
                         <PerformanceLabel upperCase variant="iconStroke" />
                       </Sorter>

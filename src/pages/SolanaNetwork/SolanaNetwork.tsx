@@ -8,8 +8,8 @@ function SolanaNetworkMessage({ title, children }: { title: string; children: Re
   return (
     <AppPageLayout title={title}>
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-12 px-16 text-center">
-        <h2 className="text-h2 text-typography-primary">{title}</h2>
-        <div className="text-14 text-typography-secondary">{children}</div>
+        <h2 className="text-h3 text-textIcon-primary">{title}</h2>
+        <div className="text-body-medium text-textIcon-secondary">{children}</div>
       </div>
     </AppPageLayout>
   );
@@ -28,7 +28,7 @@ export function EvmNetworksOnlyNotice() {
     <SolanaNetworkMessage title={t`EVM networks only`}>
       <Trans>
         This page is available on EVM networks only. Switch the network in the header, or go to{" "}
-        <Link to="/trade" className="text-typography-primary underline">
+        <Link to="/trade" className="text-textIcon-primary underline">
           Trade
         </Link>
         .

@@ -36,7 +36,7 @@ export default function Tabs<V extends string | number>({
       className={cx(
         "flex items-center justify-between",
         {
-          "rounded-t-8 border-b-1/2 border-b-slate-600": type === "block",
+          "rounded-t-8 border-b-1/2 border-b-stroke-primary": type === "block",
         },
         className
       )}
@@ -46,7 +46,7 @@ export default function Tabs<V extends string | number>({
           "flex w-full",
           {
             "gap-8": type === "inline" || type === "inline-primary" || type === "pill",
-            "-mx-6": type === "underline",
+            "-mx-4": type === "underline",
           },
           tabsWrapperClassName
         )}

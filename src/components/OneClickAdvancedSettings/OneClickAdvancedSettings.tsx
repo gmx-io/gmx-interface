@@ -101,7 +101,7 @@ export function OneClickAdvancedSettings() {
         title={<Trans>One-Click settings</Trans>}
         className="mb-4"
       >
-        <div className="mt-12 flex flex-col gap-14">
+        <div className="mt-12 flex flex-col gap-12">
           <SyntheticsInfoRow
             label={
               <TooltipWithPortal
@@ -147,7 +147,7 @@ export function OneClickAdvancedSettings() {
           <Button
             onClick={handleSave}
             variant="primary-action"
-            className="mt-6 h-36 w-full bg-blue-600 py-3 text-typography-primary"
+            className="mt-4 h-36 w-full bg-button-primary py-4 text-textIcon-primary"
             disabled={disabled}
           >
             <Trans>Save settings</Trans>

@@ -10,16 +10,16 @@ export function LiqiuditySection() {
   const totalLiquidity = poolsData?.totalLiquidity ? cleanFormatUsd(poolsData.totalLiquidity) : "-";
   const onClickEarn = useGoToPools("GLV");
   return (
-    <section className="bg-light-150 flex w-full px-16 py-80 text-slate-900 sm:px-40 sm:py-[120px]">
+    <section className="bg-light-150 text-slate-900 flex w-full px-16 py-80 sm:px-40 sm:py-120">
       <div className="mx-auto flex w-[1200px] flex-col items-stretch justify-center overflow-hidden sm:items-start">
-        <h2 className="text-heading-2 mb-20 sm:mb-28">
+        <h2 className="text-heading-2 mb-20 sm:mb-24">
           {totalLiquidity} <Trans>in liquidity</Trans>
         </h2>
-        <div className="mb-44 flex w-full flex-col items-stretch justify-between gap-24 lg:flex-row lg:items-center">
+        <div className="mb-40 flex w-full flex-col items-stretch justify-between gap-24 lg:flex-row lg:items-center">
           <h3 className="leading-heading-md text-18 font-medium -tracking-[0.896px] sm:text-[28px]">
             <Trans>Join {poolsData.totalDepositedUsers ?? "-"} users earning real yield</Trans>
           </h3>
-          <button onClick={onClickEarn} className="btn-landing rounded-8 px-16 py-12 text-16 text-white">
+          <button onClick={onClickEarn} className="btn-landing text-white rounded-8 px-16 py-12 text-16">
             <Trans>Start earning</Trans>
           </button>
         </div>

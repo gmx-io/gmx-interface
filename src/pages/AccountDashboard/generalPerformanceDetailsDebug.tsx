@@ -66,7 +66,7 @@ export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummary
         value={formatUsd(row.realizedSwapImpactUsd)}
       />
       <br />
-      <div className="text-body-small text-typography-secondary">
+      <div className="text-body-small text-textIcon-secondary">
         <Trans>Outstanding claimable amounts are not included</Trans>
       </div>
     </>

@@ -47,9 +47,14 @@ export function InputSetting({
   type?: "percentage" | "number";
 }) {
   const titleWithDescription = description ? (
-    <LabelWithTooltip label={title} tooltip={description} position="bottom" labelClassName="text-14 font-medium" />
+    <LabelWithTooltip
+      label={title}
+      tooltip={description}
+      position="bottom"
+      labelClassName="text-body-medium font-medium"
+    />
   ) : (
-    <span className="text-14 font-medium">{title}</span>
+    <span className="text-body-medium font-medium">{title}</span>
   );
 
   const Input =
@@ -110,29 +115,29 @@ export function SettingButton({
     <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
       <div
         className={cx(
-          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
-          active ? "border-slate-100 text-typography-primary" : "border-slate-600",
+          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-textIcon-secondary`,
+          active ? "border-textIcon-secondary text-textIcon-primary" : "border-stroke-primary",
           disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}
         onClick={disabled ? undefined : onClick}
       >
         <div
           className={cx(
-            "flex items-center justify-center text-typography-secondary",
+            "flex items-center justify-center text-textIcon-secondary",
             disabled && "opacity-50",
-            active && "text-typography-primary"
+            active && "text-textIcon-primary"
           )}
         >
           {icon}
         </div>
-        <div className="flex gap-4 py-6">
-          <div className="flex flex-col border-l border-solid border-slate-600 pl-12">
+        <div className="flex gap-4 py-4">
+          <div className="flex flex-col border-l border-solid border-stroke-primary pl-12">
             <div className="flex items-center gap-4">
               <div>{title}</div>
               {info && (
                 <TooltipWithPortal
                   content={info}
-                  handleClassName="-mb-6"
+                  handleClassName="-mb-4"
                   handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
                   variant="none"
                 />
@@ -140,7 +145,7 @@ export function SettingButton({
             </div>
             <div>{description}</div>
           </div>
-          {chip ? <div className="mr-6 mt-4">{chip}</div> : null}
+          {chip ? <div className="mr-4 mt-4">{chip}</div> : null}
         </div>
       </div>
     </Wrapper>
@@ -149,12 +154,12 @@ export function SettingButton({
 
 export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
   const variantClass = {
-    blue: "bg-blue-600 text-white",
-    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+    blue: "bg-button-primary text-textIcon-onButton",
+    outline: "text-textIcon-primary ring-1 ring-inset ring-stroke-accent",
   }[variant];
 
   return (
-    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
+    <div className={cx(`text-body-small whitespace-nowrap rounded-full px-8 py-4 font-medium`, variantClass)}>
       {children}
     </div>
   );

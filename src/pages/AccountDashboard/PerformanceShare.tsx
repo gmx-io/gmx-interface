@@ -120,7 +120,7 @@ export function PerformanceShare({
       contentPadding={false}
       withMobileBottomPosition
     >
-      <div className="flex flex-col gap-20 border-b-1/2 border-slate-600 p-20">
+      <div className="flex flex-col gap-20 border-b-1/2 border-stroke-primary p-20">
         <div className="flex justify-center">
           {hasData ? (
             <PerformanceShareCard
@@ -141,12 +141,12 @@ export function PerformanceShare({
             <ShareCardFrame
               bgImgUrl={null}
               loading={false}
-              cardClassName="flex items-center justify-center bg-slate-800 text-typography-secondary"
+              cardClassName="flex items-center justify-center bg-fill-surfaceElevated text-textIcon-secondary"
             >
               {isDataLoading ? (
                 <Loader />
               ) : error ? (
-                <div className="max-h-full overflow-auto whitespace-pre-wrap font-mono text-12 text-red-500">
+                <div className="text-body-small max-h-full overflow-auto whitespace-pre-wrap font-mono text-red-strong">
                   {JSON.stringify(error, null, 2)}
                 </div>
               ) : (
@@ -170,7 +170,7 @@ export function PerformanceShare({
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
-          <span className="text-14 font-medium text-typography-secondary">
+          <span className="text-body-medium font-medium text-textIcon-secondary">
             <Trans>Show PnL amounts</Trans>
           </span>
         </ToggleSwitch>

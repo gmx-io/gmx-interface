@@ -221,7 +221,7 @@ test.describe("frozen order", () => {
     await expect(row).toContainText(/2,000\.00/);
     await expect(row.getByText("Frozen", { exact: true })).toBeVisible();
     const { calls } = await inspectRejectedOrder(
-      row.getByRole("button", { name: "", exact: true }).last(),
+      row.getByRole("button", { name: "Cancel order", exact: true }),
       walletReviews
     );
     const mutations = calls.filter((call) => call.functionName !== "sendWnt");

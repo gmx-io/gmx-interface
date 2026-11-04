@@ -158,9 +158,9 @@ function DebugMarketGraph() {
       </div>
       <div>{allRouteTypes?.length} route types</div>
       <div>
-        Click on <span className="rounded-4 bg-slate-600 px-4 py-2">market label</span> to toggle its filtering. To use
-        this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don't
-        forget to clear it when done.
+        Click on <span className="rounded-4 bg-fill-accent px-4 py-4">market label</span> to toggle its filtering. To
+        use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage;
+        don't forget to clear it when done.
       </div>
 
       {!allRouteTypes?.length && <div>No routes</div>}
@@ -235,25 +235,25 @@ function DebugMarketGraph() {
             <div className="flex grow items-center gap-8">
               {swapPath.swapSteps.map((step, index) => (
                 <Fragment key={`${step.marketAddress}-${index}`}>
-                  {index > 0 && <div className="text-typography-secondary">→</div>}
+                  {index > 0 && <div className="text-textIcon-secondary">→</div>}
                   <div>
                     <div className="flex items-center gap-4">
-                      <div className="text-body-small text-typography-secondary">
+                      <div className="text-body-small text-textIcon-secondary">
                         {tokens[step.tokenInAddress].symbol}
                       </div>
                       <button
                         className={cx(
-                          "flex cursor-pointer gap-4 rounded-4 px-4 py-2",
+                          "flex cursor-pointer gap-4 rounded-4 px-4 py-4",
                           debugSwapMarketsConfig?.disabledSwapMarkets?.includes(step.marketAddress)
-                            ? "bg-red-700"
-                            : "bg-slate-600"
+                            ? "bg-red-strong"
+                            : "bg-fill-accent"
                         )}
                         title="Click to toggle market"
                         onClick={() => handleToggleMarket(step.marketAddress)}
                       >
                         {marketsInfoData ? getMarketFullName(marketsInfoData[step.marketAddress]) : step.marketAddress}
                       </button>
-                      <div className="text-body-small text-typography-secondary">
+                      <div className="text-body-small text-textIcon-secondary">
                         {tokens[step.tokenOutAddress].symbol}
                       </div>
                     </div>
@@ -274,9 +274,9 @@ function DebugMarketGraph() {
             <div className="flex grow flex-wrap items-center gap-8">
               {debugSwapMarketsConfig?.manualPath?.map((marketAddress, index, arr) => (
                 <Fragment key={`${marketAddress}-${index}`}>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-4">
                     <div
-                      className="flex cursor-pointer items-center gap-4 rounded-4 bg-slate-600 px-4 py-2"
+                      className="flex cursor-pointer items-center gap-4 rounded-4 bg-fill-accent px-4 py-4"
                       onClick={() =>
                         setDebugSwapMarketsConfig({
                           ...debugSwapMarketsConfig,
@@ -288,7 +288,7 @@ function DebugMarketGraph() {
                     </div>
                     <StepStatus step={swapPath?.swapSteps[index]} />
                   </div>
-                  {index < arr.length - 1 && <div className="text-typography-secondary">→</div>}
+                  {index < arr.length - 1 && <div className="text-textIcon-secondary">→</div>}
                 </Fragment>
               ))}
             </div>
@@ -297,17 +297,17 @@ function DebugMarketGraph() {
         </div>
       )}
 
-      <div className="flex items-start justify-between gap-8 rounded-4 border border-red-700/50 p-8">
+      <div className="flex items-start justify-between gap-8 rounded-4 border border-red-strong/50 p-8">
         <div className="flex grow flex-col gap-8">
           <div>Disabled markets</div>
           <div className="flex flex-wrap gap-8">
             {!debugSwapMarketsConfig?.disabledSwapMarkets?.length ? (
-              <span className="py-2 text-typography-secondary">No disabled markets</span>
+              <span className="py-4 text-textIcon-secondary">No disabled markets</span>
             ) : (
               debugSwapMarketsConfig?.disabledSwapMarkets?.map((m) => (
                 <button
                   key={m}
-                  className="flex cursor-pointer gap-4 rounded-4 bg-slate-600 px-4 py-2"
+                  className="flex cursor-pointer gap-4 rounded-4 bg-fill-accent px-4 py-4"
                   onClick={() => handleToggleMarket(m)}
                 >
                   {marketsInfoData ? getMarketFullName(marketsInfoData[m]) : m}
@@ -316,7 +316,7 @@ function DebugMarketGraph() {
             )}
           </div>
         </div>
-        <button className="rounded-4 bg-slate-600 px-8 py-6" onClick={() => setDebugSwapMarketsConfig({})}>
+        <button className="rounded-4 bg-fill-accent px-8 py-4" onClick={() => setDebugSwapMarketsConfig({})}>
           Clear debug overrides
         </button>
       </div>
@@ -328,7 +328,7 @@ function DebugMarketGraph() {
             .sort((a, b) => a[0].localeCompare(b[0]))
             .map(([letter, markets]) => (
               <div key={letter} className="flex flex-col gap-8">
-                <div className="text-typography-secondary">{letter}</div>
+                <div className="text-textIcon-secondary">{letter}</div>
                 {markets
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((m) => (
@@ -336,13 +336,13 @@ function DebugMarketGraph() {
                       <div
                         title="Click to toggle market"
                         onClick={() => handleToggleMarket(m.market)}
-                        className="min-w-[220px] rounded-4 bg-slate-600 px-4 py-2"
+                        className="min-w-[220px] rounded-4 bg-fill-accent px-4 py-4"
                       >
                         {m.name}
                       </div>
                       {isUsingManualPath && (
                         <button
-                          className="rounded-4 bg-slate-600 px-4 py-2"
+                          className="rounded-4 bg-fill-accent px-4 py-4"
                           onClick={() =>
                             setDebugSwapMarketsConfig({
                               ...debugSwapMarketsConfig,

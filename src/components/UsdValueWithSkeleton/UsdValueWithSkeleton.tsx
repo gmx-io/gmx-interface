@@ -10,7 +10,13 @@ export function UsdValueWithSkeleton({ usd }: Props) {
   if (usd === undefined) {
     return (
       <span className="numbers">
-        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={54} className="leading-base" inline={true} />
+        <Skeleton
+          baseColor="var(--color-fill-skeleton)"
+          highlightColor="var(--color-fill-skeleton)"
+          width={54}
+          className="leading-base"
+          inline={true}
+        />
       </span>
     );
   }

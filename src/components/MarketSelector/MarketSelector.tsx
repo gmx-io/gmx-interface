@@ -208,20 +208,20 @@ export function MarketSelector({
           ))}
         </div>
         {filteredOptions.length === 0 && (
-          <div className="px-20 text-14 text-typography-secondary">
+          <div className="text-body-medium px-20 text-textIcon-secondary">
             <Trans>No markets found</Trans>
           </div>
         )}
       </SlideModal>
       <div
         className={cx(
-          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap tracking-wide hover:text-blue-300"
+          "group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         )}
         onClick={handleClick}
         data-qa="market-selector"
       >
         {selectedMarketLabel ? selectedMarketLabel : marketInfo ? getMarketIndexName(marketInfo) : "..."}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-blue-300" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-blue-strong" />
       </div>
     </div>
   );
@@ -324,7 +324,13 @@ function MarketListItem(props: {
             null}
         </span>
       </div>
-      <Button variant="ghost" onClick={handleFavoriteClick}>
+      <Button
+        variant="ghost"
+        size="controlled"
+        className="size-32 !p-0"
+        onClick={handleFavoriteClick}
+        aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+      >
         <FavoriteStar isFavorite={isFavorite} />
       </Button>
     </div>

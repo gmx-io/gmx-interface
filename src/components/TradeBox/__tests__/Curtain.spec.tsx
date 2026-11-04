@@ -89,7 +89,7 @@ describe("Curtain", () => {
     const curtain = container.querySelector('[data-qa="curtain"]');
 
     expect(curtain?.className).toContain("after:h-[var(--safe-area-inset-bottom)]");
-    expect(curtain?.className).toContain("after:bg-slate-900");
+    expect(curtain?.className).toContain("after:bg-fill-surfaceBase");
   });
 
   it("finishes its animation after the curtain is hidden", () => {

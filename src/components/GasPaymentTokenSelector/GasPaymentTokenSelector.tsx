@@ -43,13 +43,13 @@ export function GasPaymentTokenSelector({ balanceType, currentTokenAddress, labe
       desktopPanelClassName="!z-[10000] w-[360px]"
       label={
         <div className="flex w-full justify-between">
-          <div className="font-medium text-typography-primary group-hover:text-blue-300">{label}</div>
+          <div className="font-medium text-textIcon-primary group-hover:text-blue-strong">{label}</div>
           {currentToken && (
             <div
               className={cx(
                 "flex items-center",
                 currentBalance !== undefined && currentBalance > 0n
-                  ? "text-typography-primary group-hover:text-blue-300"
+                  ? "text-textIcon-primary group-hover:text-blue-strong"
                   : null
               )}
             >
@@ -99,7 +99,7 @@ function GasTokenOption({
 
   return (
     <div
-      className="flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-slate-600"
+      className="flex cursor-pointer items-center justify-between px-12 py-8 hover:bg-fill-accent"
       onClick={() => {
         onClick();
         close();

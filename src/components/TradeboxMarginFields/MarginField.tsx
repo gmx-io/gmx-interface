@@ -109,7 +109,7 @@ export function MarginField({
             qa={qa ? qa + "-input" : undefined}
           />
           {showUsd && (
-            <span className="shrink-0 text-12 text-typography-secondary numbers">
+            <span className="text-body-small shrink-0 text-textIcon-secondary numbers">
               ≈<UsdValue usd={fromUsd} />
             </span>
           )}
@@ -117,14 +117,14 @@ export function MarginField({
       }
       rightHeadline={
         formattedBalance !== undefined ? (
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             {fromToken !== undefined && fromToken.balance !== undefined && fromToken.balance > 0n && (
               <MaxActions qa={qa} state={maxActions} onMax={handleMaxClick} onKeepGas={onKeepGasClick} />
             )}
             <button
               type="button"
               onClick={handleBalanceClick}
-              className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+              className="text-body-small flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
               data-qa={qa ? qa + "-balance" : undefined}
             >
               <WalletIcon className="size-14" />

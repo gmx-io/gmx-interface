@@ -26,7 +26,7 @@ for (const type of [3, 8, 5, 6]) {
         .getByRole("button", { name: /^Orders/ })
         .click();
       const row = page.getByTestId(`order-${order.key}`);
-      let button = row.getByRole("button", { name: "", exact: true }).last();
+      let button = row.getByRole("button", { name: "Cancel order", exact: true });
       if (operation === "edit") {
         await row.getByRole("button", { name: "Edit order", exact: true }).click();
         const price = page.getByTestId("trigger-price-input-input");

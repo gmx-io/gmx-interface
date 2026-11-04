@@ -74,8 +74,8 @@ export function UnstakeRequests({ processedData }: { processedData: StakingProce
   const esGmxInStakedGmx = processedData?.esGmxInStakedGmx ?? 0n;
 
   return (
-    <section className="flex flex-col rounded-8 bg-slate-900">
-      <h2 className="text-body-large p-20 pb-2 font-medium text-typography-primary">
+    <section className="flex flex-col rounded-8 bg-fill-surfaceBase">
+      <h2 className="text-body-large p-20 pb-4 font-medium text-textIcon-primary">
         <Trans>Unstake requests</Trans>
       </h2>
 
@@ -110,7 +110,7 @@ export function UnstakeRequests({ processedData }: { processedData: StakingProce
                   <TableTd>{formatDateTime(status.availableAt)}</TableTd>
                   <TableTd>
                     {status.type === "ready" ? (
-                      <span className="text-green-500">
+                      <span className="text-green-strong">
                         <Trans>Ready to withdraw</Trans>
                       </span>
                     ) : (

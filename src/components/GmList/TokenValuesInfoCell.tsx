@@ -22,12 +22,12 @@ export function TokenValuesInfoCell({
   const content = (
     <>
       {usd && (
-        <div className={cx("whitespace-nowrap text-typography-primary numbers", className)}>
+        <div className={cx("whitespace-nowrap text-textIcon-primary numbers", className)}>
           {isLoading ? <ShimmerText>{usd}</ShimmerText> : usd}
         </div>
       )}
       {value && (
-        <div className="whitespace-nowrap text-12 text-typography-secondary numbers">
+        <div className="text-body-small whitespace-nowrap text-textIcon-secondary numbers">
           ({symbol && isNumber ? `${value} ${symbol}` : value})
         </div>
       )}

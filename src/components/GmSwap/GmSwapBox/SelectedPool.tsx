@@ -19,9 +19,9 @@ export function SelectedPool({
 }) {
   const glvOrMarketInfo = getByKey(glvAndMarketsInfoData, selectedGlvOrMarketAddress);
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-4">
       {glvOrMarketInfo ? (
-        <TokenIcon className="mr-5" symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)} displaySize={20} />
+        <TokenIcon className="mr-4" symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)} displaySize={20} />
       ) : null}
       <SelectedPoolLabel glvOrMarketInfo={glvOrMarketInfo} />
     </div>

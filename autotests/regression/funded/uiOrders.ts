@@ -289,7 +289,7 @@ export async function cancelUiOrders(
             .filter({ has: page.getByRole("cell", { name: "TWAP", exact: true }) })
         : page.getByTestId(`order-${keys[0]}`);
       await expect(row).toBeVisible();
-      return row.getByRole("button", { name: "", exact: true }).last();
+      return row.getByRole("button", { name: "Cancel order", exact: true }).last();
     },
     (state) => assertUiInventory(session, state, keys, beforeSize),
     { cleanup: true }

@@ -1,11 +1,11 @@
 .App-header-network {
   position: relative;
-  border: 0.5px solid var(--color-slate-600);
+  border: 0.5px solid var(--color-stroke-primary);
   border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: var(--color-typography-primary);
+  color: var(--color-textIcon-primary);
 }
 
 .App-header-language {
@@ -23,12 +23,6 @@
 .App-header-network:hover {
   background: var(--dark-blue-hover);
   cursor: pointer;
-}
-.App-header-network:active {
-  background: var(--dark-blue-active);
-}
-.network-dropdown:active {
-  background: var(--dark-blue-active);
 }
 
 .network-dropdown-icon {
@@ -59,7 +53,7 @@
 }
 
 .dropdown-label {
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   font-size: var(--font-size-body-small);
   line-height: var(--line-height-body-small);
 }
@@ -77,10 +71,6 @@
   width: 20px;
 }
 
-.network-dropdown-item-label {
-  font-weight: 500;
-}
-
 .network-dropdown-list {
   display: grid;
   grid-template-columns: 1fr;
@@ -89,12 +79,8 @@
 }
 
 .network-dropdown-divider {
-  border-top: 0.5px solid var(--color-slate-600);
+  border-top: 0.5px solid var(--color-stroke-primary);
   margin: 0 -4px;
-}
-
-.menu-item:not(.disabled):hover .menu-item-label {
-  color: var(--color-gray-50);
 }
 
 @media (max-width: 1033px) {
@@ -127,22 +113,23 @@
   outline: none;
   z-index: 1000;
   border-radius: 8px;
-  border: 0.5px solid var(--color-slate-600);
-  background: color-mix(in srgb, var(--color-slate-900) 90%, transparent);
-  box-shadow: 0px 12px 40px -4px var(--color-slate-950);
+  border: 0.5px solid var(--color-stroke-primary);
+  background: color-mix(in srgb, var(--color-fill-surfaceBase) 90%, transparent);
+  box-shadow: 0px 12px 40px -4px var(--color-fill-background);
   backdrop-filter: blur(50px);
 
   .menu-item {
     display: flex !important;
     align-items: center;
-    color: var(--color-slate-100);
-    font-size: 13px;
+    color: var(--color-textIcon-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     cursor: pointer;
 
     &:not(.disabled):hover {
       background: var(--color-fill-surfaceHover) !important;
       opacity: 1;
-      color: var(--color-typography-secondary);
+      color: var(--color-textIcon-secondary);
     }
 
     > p {

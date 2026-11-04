@@ -3,8 +3,8 @@ import { FaqItem } from "landing/pages/Home/FaqSection/FaqItem";
 
 export function FaqSection() {
   return (
-    <section className="flex w-full bg-slate-900 px-16 py-80 text-white sm:px-40 sm:py-[120px]">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col justify-between gap-36 overflow-hidden sm:flex-row">
+    <section className="bg-slate-900 text-white flex w-full px-16 py-80 sm:px-40 sm:py-120">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col justify-between gap-32 overflow-hidden sm:flex-row">
         <h2 className="text-heading-2">
           <Trans>FAQ</Trans>
         </h2>

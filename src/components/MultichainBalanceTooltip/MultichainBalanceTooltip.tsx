@@ -55,8 +55,8 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
               label={label}
               value={
                 <span>
-                  <UsdValue usd={tokenBalancesData.balanceUsd} className="text-typography-primary numbers" />{" "}
-                  <span className="text-typography-secondary numbers">({formattedToken})</span>
+                  <UsdValue usd={tokenBalancesData.balanceUsd} className="text-textIcon-primary numbers" />{" "}
+                  <span className="text-textIcon-secondary numbers">({formattedToken})</span>
                 </span>
               }
               showDollar={false}

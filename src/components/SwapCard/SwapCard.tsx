@@ -44,12 +44,12 @@ export function SwapCard(p: Props) {
   }, [fromToken, toToken]);
 
   return (
-    <div className="text-body-medium relative rounded-4 bg-slate-900 p-15 max-[1024px]:mt-0">
-      <div className="text-body-medium mb-14 font-medium">
+    <div className="text-body-medium relative rounded-4 bg-fill-surfaceBase p-12 max-[1024px]:mt-0">
+      <div className="text-body-medium mb-12 font-medium">
         <Trans>Swap</Trans>
       </div>
 
-      <div className="flex flex-col gap-14">
+      <div className="flex flex-col gap-12">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} price`}
           value={<UsdPriceValue price={fromToken?.prices?.minPrice} fallback="..." />}

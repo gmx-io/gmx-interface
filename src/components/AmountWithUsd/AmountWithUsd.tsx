@@ -46,8 +46,8 @@ export function AmountWithUsdHuman({
       <span className={cx("numbers", className)}>{topValue} </span>
       {multiline && <br />}
       <span
-        className={cx("text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]", {
-          "ml-2": multiline,
+        className={cx("text-body-small text-textIcon-secondary numbers group-hover/hoverable:text-[inherit]", {
+          "ml-4": multiline,
         })}
       >
         ({bottomValue})
@@ -87,7 +87,7 @@ export function AmountWithUsdBalance({
 }) {
   if (amount === undefined || usd === undefined) {
     return suffix ? (
-      <span className="inline-flex items-center gap-6">
+      <span className="inline-flex items-center gap-4">
         ...
         {suffix}
       </span>
@@ -107,10 +107,10 @@ export function AmountWithUsdBalance({
   const secondaryPart = (
     <span
       className={cx(
-        "text-12 text-typography-secondary numbers group-hover/hoverable:text-[inherit]",
+        "text-body-small text-textIcon-secondary numbers group-hover/hoverable:text-[inherit]",
         secondaryValueClassName,
         {
-          "ml-2": multiline,
+          "ml-4": multiline,
           "pl-4": allowWrap,
           relative: underline,
         }
@@ -127,7 +127,7 @@ export function AmountWithUsdBalance({
       </span>
       {multiline && <br />}
       {suffix ? (
-        <span className="inline-flex items-center gap-6">
+        <span className="inline-flex items-center gap-4">
           {secondaryPart}
           {suffix}
         </span>

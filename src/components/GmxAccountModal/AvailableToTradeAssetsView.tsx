@@ -120,7 +120,7 @@ const AssetsList = ({
               <TokenIcon symbol={displayToken.symbol} displaySize={40} chainIdBadge={displayToken.chainId} />
               <div>
                 <div>{displayToken.symbol}</div>
-                <div className="text-body-small text-typography-secondary">{displayToken.name}</div>
+                <div className="text-body-small text-textIcon-secondary">{displayToken.name}</div>
               </div>
             </div>
             <div className="text-right">
@@ -130,7 +130,7 @@ const AssetsList = ({
                 decimals={displayToken.decimals}
                 isStable={displayToken.isStable}
               />
-              <div className="text-body-small text-typography-secondary numbers">
+              <div className="text-body-small text-textIcon-secondary numbers">
                 <UsdValue usd={displayToken.balanceUsd} />
               </div>
             </div>
@@ -138,12 +138,12 @@ const AssetsList = ({
         ))}
         {sortedFilteredTokens.length === 0 &&
           (searchQuery !== "" ? (
-            <div className="flex h-full flex-col items-center justify-center p-adaptive text-typography-secondary">
+            <div className="flex h-full flex-col items-center justify-center p-adaptive text-textIcon-secondary">
               <Trans>No assets found</Trans>
             </div>
           ) : !noChainFilter && activeFilter === "wallet" ? (
             <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
-              <span className="text-typography-secondary">
+              <span className="text-textIcon-secondary">
                 <Trans>No assets in your wallet</Trans>
               </span>
               <Button variant="secondary" size="medium" onClick={handleOpenWalletReceive}>
@@ -152,7 +152,7 @@ const AssetsList = ({
             </div>
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-12 p-adaptive">
-              <span className="text-typography-secondary">
+              <span className="text-textIcon-secondary">
                 <Trans>No assets in your GMX Account</Trans>
               </span>
               <Button variant="secondary" size="medium" onClick={() => setIsVisibleOrView("deposit")}>

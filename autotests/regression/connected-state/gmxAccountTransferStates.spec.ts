@@ -104,7 +104,7 @@ test("26.02 26.06 partial: pending, compose-failed and failed GMX Account transf
     ["-30.00", "Withdrawal failed"],
   ]) {
     const status = rows.filter({ hasText: amount }).getByText(label, { exact: true });
-    await expect(status).toHaveClass(/text-red-500/);
+    await expect(status).toHaveClass(/text-red-strong/);
     await expect(rows.filter({ hasText: amount }).locator("svg.animate-spin")).toHaveCount(0);
   }
 

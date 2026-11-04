@@ -451,7 +451,7 @@ export function BridgeOutModal({
         >
           <span className="inline-flex items-center">
             <TokenIcon
-              className="mr-5"
+              className="mr-4"
               symbol={isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken.symbol : glvOrMarketInfo.indexToken.symbol}
               displaySize={20}
               chainIdBadge={0}
@@ -467,21 +467,32 @@ export function BridgeOutModal({
           }}
           placeholder={t`Select network`}
           button={
-            <div className="flex items-center gap-8 text-14">
+            <div className="text-body-medium flex items-center gap-8">
               {bridgeOutChain !== undefined ? (
                 <>
                   <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />
                   <div>
                     <Trans comment="to network">
-                      <span className="text-typography-secondary">To </span>
+                      <span className="text-textIcon-secondary">To </span>
                       <span>{getChainName(bridgeOutChain)}</span>
                     </Trans>
                   </div>
                 </>
               ) : (
                 <>
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={20} height={20} borderRadius={10} />
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={40} height={16} />
+                  <Skeleton
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
+                    width={20}
+                    height={20}
+                    borderRadius={10}
+                  />
+                  <Skeleton
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
+                    width={40}
+                    height={16}
+                  />
                 </>
               )}
             </div>

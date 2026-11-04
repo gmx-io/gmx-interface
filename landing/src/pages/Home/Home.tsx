@@ -34,7 +34,7 @@ export default function Home() {
       <LaunchSection />
       <LiqiuditySection />
       <SponsorsSection />
-      <section className="w-full overflow-hidden bg-slate-900 pt-60 text-white sm:pt-[120px]">
+      <section className="bg-slate-900 text-white w-full overflow-hidden pt-56 sm:pt-120">
         <ProgramCards />
       </section>
       <FaqSection />

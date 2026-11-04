@@ -36,7 +36,7 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
     <div className="info">
       <TooltipWithPortal
         position="right"
-        handle={<AlertIcon className="size-16 text-yellow-300" />}
+        handle={<AlertIcon className="size-16 text-yellow-strong" />}
         variant="none"
         className="flex"
         content={

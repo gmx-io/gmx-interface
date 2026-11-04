@@ -30,7 +30,7 @@ function TableListSkeleton({ count = 10, Structure, invisible = false, ...restPr
   }
 
   return (
-    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+    <SkeletonTheme baseColor="var(--color-fill-skeleton)" highlightColor="var(--color-fill-skeleton)">
       {Array.from({ length: count }).map((_, index) => (
         <Structure {...restProps} key={index} />
       ))}

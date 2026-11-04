@@ -17,10 +17,6 @@ $tabs-threshold: 990px;
 .Leaderboard-Title h1 {
   margin: 0 0 1rem;
   display: flex;
-
-  @media screen and (max-width: $tabs-threshold) {
-    font-size: 2rem;
-  }
 }
 
 .Leaderboard-Title img {
@@ -134,7 +130,7 @@ $tabs-threshold: 990px;
   position: absolute;
   left: 0;
   top: 0;
-  background-color: var(--color-blue-300);
+  background-color: var(--color-blue-strong);
 }
 
 .LeaderboardRank-1::after,
@@ -142,16 +138,16 @@ $tabs-threshold: 990px;
 .LeaderboardRank-3::after,
 .LeaderboardRank-4::after {
   content: "";
-  width: 2.5rem;
+  width: 2.4rem;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   margin-left: 0.5rem;
   position: absolute;
   left: 31px;
-  top: 10px;
+  top: calc(50% - 1.2rem);
   z-index: 111;
-  height: 2.5rem;
+  height: 2.4rem;
 }
 
 .NoLiqPriceTooltip {
@@ -187,7 +183,7 @@ $tabs-threshold: 990px;
     &-container {
       flex: 1 1;
       margin-right: 1.8rem;
-      background-color: var(--color-slate-800);
+      background-color: var(--color-fill-surfaceElevated);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -223,41 +219,6 @@ $tabs-threshold: 990px;
       position: relative;
       top: 0.1rem;
       width: 100%;
-    }
-
-    &-title {
-      color: var(--color-gray-300);
-      margin-bottom: 0.5rem;
-      font-size: 1.5rem;
-
-      @media screen and (max-width: 1024px) {
-        font-size: 1.2rem;
-      }
-    }
-
-    &-description {
-      color: var(--color-typography-primary);
-      margin-bottom: 1rem;
-      white-space: nowrap;
-      font-size: 2rem;
-
-      @media screen and (max-width: 1024px) {
-        font-size: 1.5rem;
-      }
-    }
-  }
-
-  &__prize-winners-container {
-    display: flex;
-    align-items: center;
-    font-size: 1.4rem;
-    user-select: none;
-    margin-top: 1rem;
-    justify-content: space-between;
-    width: 100%;
-
-    @media screen and (max-width: 1180px) {
-      justify-content: center;
     }
   }
 
@@ -328,16 +289,7 @@ $tabs-threshold: 990px;
 
 .CompetitionCountdown {
   &__time {
-    color: var(--color-typography-primary);
-  }
-  &_desktop &__time {
-    white-space: nowrap;
-    font-size: 3rem;
-    margin-left: 0.5rem;
-
-    @media screen and (max-width: $tabs-threshold) {
-      font-size: 2rem;
-    }
+    color: var(--color-textIcon-primary);
   }
 
   &__end {
@@ -356,7 +308,7 @@ $tabs-threshold: 990px;
     right: 0;
     top: 0;
 
-    color: var(--color-gray-300);
+    color: var(--color-textIcon-secondary);
     white-space: nowrap;
 
     @media screen and (max-width: $tabs-threshold) {
@@ -398,7 +350,7 @@ $tabs-threshold: 990px;
   white-space: nowrap;
 
   &_selected {
-    background: var(--color-slate-600) !important;
+    background: var(--color-fill-accent) !important;
   }
 }
 
@@ -406,43 +358,10 @@ $tabs-threshold: 990px;
   margin-top: 0.1rem;
 }
 
-.LeaderboardNavigation__chip {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 999rem;
-  font-size: 1.1rem;
-  padding: 0.3rem 0.6rem;
-  margin-right: 0.8rem;
-  height: 2.2rem;
-
-  &_soon {
-    background-color: var(--color-blue-600);
-  }
-
-  &_over {
-    background-color: rgb(180 187 255 / 10%);
-  }
-
-  &_live {
-    background-color: #b42941;
-    color: var(--color-typography-primary);
-  }
-
-  &-circle {
-    background-color: var(--color-typography-primary);
-    border-radius: 9999rem;
-    width: 1.1rem;
-    height: 1.1rem;
-    display: inline-block;
-    margin-right: 0.3rem;
-  }
-}
-
 .TableBox {
   width: 100%;
   overflow: visible;
-  background-color: var(--color-slate-800);
+  background-color: var(--color-fill-surfaceElevated);
   padding-bottom: 10px;
 
   .text-right {

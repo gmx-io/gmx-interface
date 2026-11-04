@@ -37,7 +37,7 @@ export default function PoolsTimeRangeFilter({
       tabs={tabs}
       selected={timeRange}
       setSelected={setTimeRange}
-      itemClassName="bg-slate-700 text-typography-secondary"
+      itemClassName="bg-button-background text-textIcon-secondary"
     />
   );
 }

@@ -8,17 +8,12 @@
   text-decoration-style: solid;
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
-  text-decoration-color: var(--color-gray-300);
+  text-decoration-color: var(--color-textIcon-secondary);
   user-select: none;
-  color: var(--color-gray-300);
+  color: var(--color-textIcon-secondary);
 
   &:hover {
-    text-decoration-color: var(--color-typography-primary);
-    color: var(--color-typography-primary);
+    text-decoration-color: var(--color-textIcon-primary);
+    color: var(--color-textIcon-primary);
   }
-}
-
-// @TODO check na
-.AcceptablePriceImpactInputRow-na .AllowedSwapSlippageInputRow-na {
-  line-height: 2.3rem;
 }

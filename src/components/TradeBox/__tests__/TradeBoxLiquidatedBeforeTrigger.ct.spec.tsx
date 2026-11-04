@@ -13,7 +13,7 @@ type PageLike = {
 };
 
 function infoRowLabel(page: PageLike, label: RegExp) {
-  return page.locator(".font-medium.text-typography-secondary", { hasText: label });
+  return page.locator(".font-medium.text-textIcon-secondary", { hasText: label });
 }
 
 function infoRow(page: PageLike, label: RegExp) {

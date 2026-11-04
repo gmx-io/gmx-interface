@@ -131,15 +131,17 @@ export function ExpandableRow({
   const value = withToggleSwitch ? (
     <ToggleSwitch isChecked={open} setIsChecked={onToggle} disabled={disabled} />
   ) : open ? (
-    <ChevronUpIcon className={cx("w-16 text-typography-secondary group-gmx-hover:text-blue-300", chevronClassName)} />
+    <ChevronUpIcon className={cx("w-16 text-textIcon-secondary group-gmx-hover:text-blue-strong", chevronClassName)} />
   ) : (
-    <ChevronDownIcon className={cx("w-16 text-typography-secondary group-gmx-hover:text-blue-300", chevronClassName)} />
+    <ChevronDownIcon
+      className={cx("w-16 text-textIcon-secondary group-gmx-hover:text-blue-strong", chevronClassName)}
+    />
   );
 
   return (
     <div
       className={cx("min-h-16", className, {
-        "rounded-8 border-1/2 border-slate-600 bg-slate-950/50": wrapped,
+        "rounded-8 border-1/2 border-stroke-primary bg-fill-background/50": wrapped,
       })}
     >
       <AnimatePresence initial={false}>
@@ -147,17 +149,17 @@ export function ExpandableRow({
           key="handle"
           className={cx("transition-[margin] duration-200", {
             "mb-4": open && wrapped,
-            "mb-14": open && !wrapped,
+            "mb-12": open && !wrapped,
           })}
         >
           <SyntheticsInfoRow
-            className={cx("group relative !items-center gmx-hover:text-blue-300", {
+            className={cx("group relative !items-center gmx-hover:text-blue-strong", {
               "cursor-not-allowed": disabled,
-              "px-12 py-10": wrapped,
+              "px-12 py-8": wrapped,
             })}
             onClick={disabled ? undefined : handleOnClick}
             label={
-              <span className="flex flex-row justify-between align-middle group-hover:!text-blue-300">{label}</span>
+              <span className="flex flex-row justify-between align-middle group-hover:!text-blue-strong">{label}</span>
             }
             value={value}
           />
@@ -171,7 +173,7 @@ export function ExpandableRow({
             exit="exit"
             onAnimationComplete={handleAnimationComplete}
           >
-            <div className={cx(contentClassName, { "px-12 pb-10": wrapped })}>{children}</div>
+            <div className={cx(contentClassName, { "px-12 pb-8": wrapped })}>{children}</div>
           </motion.div>
         )}
       </AnimatePresence>

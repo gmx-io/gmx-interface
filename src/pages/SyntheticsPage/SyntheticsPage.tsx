@@ -453,7 +453,7 @@ export function SyntheticsPage(p: Props) {
     <div className="flex shrink-0 items-center gap-16 px-12">
       {listSection === ListSection.Orders && selectedOrderKeys.length > 0 && (
         <button
-          className="text-[13px] font-medium text-typography-secondary hover:text-slate-400"
+          className="text-body-small font-medium text-textIcon-secondary hover:text-slate-400"
           disabled={isCancelOrdersProcessing}
           type="button"
           onClick={onCancelSelectedOrders}
@@ -465,7 +465,7 @@ export function SyntheticsPage(p: Props) {
         <Checkbox
           isChecked={shouldShowPositionLines}
           setIsChecked={setShouldShowPositionLines}
-          className={cx("muted chart-positions text-[13px]", { active: shouldShowPositionLines })}
+          className={cx("muted chart-positions text-body-small", { active: shouldShowPositionLines })}
         >
           <span className="font-medium">
             <Trans>Chart positions</Trans>
@@ -482,7 +482,7 @@ export function SyntheticsPage(p: Props) {
         <AppHeader
           leftContent={
             isTablet ? (
-              <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
+              <Link to="/" className="flex items-center gap-4 p-8 max-md:p-4">
                 <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
@@ -507,7 +507,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className="bg-slate-900"
+                className="bg-fill-surfaceBase"
                 qa="exchange-list-tabs"
                 rightContent={actions}
               />
@@ -596,7 +596,7 @@ export function SyntheticsPage(p: Props) {
                 selectedValue={listSection}
                 onChange={handleTabChange}
                 type="block"
-                className={cx("w-[max(100%,420px)] rounded-t-8 bg-slate-900", {
+                className={cx("w-[max(100%,420px)] rounded-t-8 bg-fill-surfaceBase", {
                   "mb-8 rounded-b-8": [ListSection.Positions, ListSection.Orders].includes(listSection as ListSection),
                 })}
                 regularOptionClassname={cx({

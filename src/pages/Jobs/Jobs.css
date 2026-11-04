@@ -3,11 +3,11 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 2rem;
-  color: var(--color-gray-300);
+  color: var(--color-textIcon-secondary);
 }
 
 .jobs-page-body a {
-  color: var(--color-gray-300);
+  color: var(--color-textIcon-secondary);
 }
 
 .body-para .subheading {
@@ -16,10 +16,6 @@
 
 .mt-lg {
   margin-top: 2rem;
-}
-
-.jobs-contact {
-  line-height: 1.5;
 }
 
 @media (max-width: 1000px) {

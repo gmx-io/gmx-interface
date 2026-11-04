@@ -12,7 +12,7 @@ export type BreadcrumbsProps = {
 };
 
 export function Breadcrumbs({ children, className }: BreadcrumbsProps) {
-  return <nav className={cx("flex items-center gap-21", className)}>{children}</nav>;
+  return <nav className={cx("flex items-center gap-20", className)}>{children}</nav>;
 }
 
 export type BreadcrumbItemProps = {
@@ -34,18 +34,18 @@ export function BreadcrumbItem({ to: href, children, back, active, onClick, clas
   const content = (
     <div
       className={cx(
-        `text-slate-300 relative inline-flex items-center gap-6 rounded-full border-1/2 border-slate-600
-        px-12 py-8 text-13 font-medium leading-[1.15] transition-colors after:absolute after:-left-13 after:top-[50%]
-        after:translate-y-[-50%] after:text-11 after:text-slate-600 after:content-['/']
+        `text-slate-300 text-body-small relative inline-flex items-center gap-4 rounded-full border-1/2
+        border-stroke-primary px-12 py-8 font-medium transition-colors after:text-body-small after:absolute after:-left-12
+        after:top-[50%] after:translate-y-[-50%] after:text-textIcon-inactive after:content-['/']
         first:after:content-none max-md:px-8`,
         {
-          "cursor-pointer text-typography-secondary hover:bg-slate-800 hover:text-typography-primary": !active,
-          "cursor-default text-typography-primary": active,
+          "cursor-pointer text-textIcon-secondary hover:bg-fill-surfaceElevated hover:text-textIcon-primary": !active,
+          "cursor-default text-textIcon-primary": active,
         },
         className
       )}
     >
-      {back && <ChevronLeftIcon className="-ml-1 size-16" />}
+      {back && <ChevronLeftIcon className="size-16" />}
       {!isMobile ? children : null}
     </div>
   );

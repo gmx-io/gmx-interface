@@ -44,7 +44,7 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
             position="left-start"
             variant="iconStroke"
             content={
-              <div className="text-typography-primary">
+              <div className="text-textIcon-primary">
                 <Trans>
                   This pool holds USDG, so USDC is converted to USDG when you buy and back to USDC when you sell.
                   <br />
@@ -76,11 +76,11 @@ export function ConversionRouteSelector({ transitState }: { transitState: PaxosT
           <SelectorBase
             modalLabel={t`Conversion`}
             desktopPanelClassName="w-[300px]"
-            wrapperClassName="text-typography-primary"
+            wrapperClassName="text-textIcon-primary"
             label={preference === "auto" ? t`Auto · ${routeLabel}` : routeLabel}
             qa="conversion-route"
           >
-            <div className="flex flex-col py-6">
+            <div className="flex flex-col py-4">
               {ROUTE_PREFERENCES.map((option) => (
                 <RoutePreferenceOption
                   key={option}
@@ -128,8 +128,8 @@ function RoutePreferenceOption({
 
   return (
     <div
-      className={cx("flex flex-col px-12 py-6", {
-        "bg-slate-700": isSelected,
+      className={cx("flex flex-col px-12 py-4", {
+        "bg-button-background": isSelected,
         "cursor-pointer hover:bg-fill-surfaceHover": !isDisabled,
         "cursor-not-allowed opacity-50": isDisabled,
       })}
@@ -139,8 +139,8 @@ function RoutePreferenceOption({
         close();
       }}
     >
-      <span className="text-14">{getRoutePreferenceLabel(option)}</span>
-      <span className="text-body-small text-typography-secondary">
+      <span className="text-body-medium">{getRoutePreferenceLabel(option)}</span>
+      <span className="text-body-small text-textIcon-secondary">
         {getRoutePreferenceDescription(option, isZeroFee)}
       </span>
     </div>

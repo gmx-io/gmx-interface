@@ -434,7 +434,7 @@ export function TPSLInputRow({
 
   const estimatedPnlRow = (
     <div className="text-body-small flex min-w-0 justify-end">
-      <span className="shrink-0 text-typography-secondary">
+      <span className="shrink-0 text-textIcon-secondary">
         <Trans>Est. PnL</Trans>
       </span>
       <DeltaUsdValue
@@ -442,8 +442,8 @@ export function TPSLInputRow({
         percentage={estimatedPnl?.pnlPercentage}
         fallback="-"
         className={cx("ml-4 min-w-0 truncate numbers", {
-          "text-green-500": estimatedPnl && estimatedPnl.pnlUsd > 0n,
-          "text-red-500": estimatedPnl && estimatedPnl.pnlUsd < 0n,
+          "text-green-strong": estimatedPnl && estimatedPnl.pnlUsd > 0n,
+          "text-red-strong": estimatedPnl && estimatedPnl.pnlUsd < 0n,
         })}
       />
     </div>
@@ -462,13 +462,13 @@ export function TPSLInputRow({
           >
             <div
               className={cx(
-                "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
+                "text-body-small flex flex-1 cursor-text flex-col justify-between gap-4 rounded-4 border bg-fill-surfaceElevated px-8 py-4",
                 priceError
-                  ? "border-red-500"
+                  ? "border-red-strong"
                   : priceWarning
-                    ? "border-yellow-300"
-                    : "border-slate-800 focus-within:border-blue-300 active:border-blue-300",
-                "hover:bg-fill-surfaceElevatedHover"
+                    ? "border-yellow-strong"
+                    : "border-fill-surfaceElevated focus-within:border-blue-strong active:border-blue-strong",
+                "hover:bg-fill-surfaceHover"
               )}
               onClick={handleBoxClick(priceInputRef)}
             >
@@ -476,24 +476,24 @@ export function TPSLInputRow({
                 <div className="relative grow">
                   <NumberInput
                     value={priceValue}
-                    className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", {
-                      "text-red-500": priceError,
+                    className={cx("text-body-small h-18 w-full min-w-0 p-0 outline-none", {
+                      "text-red-strong": priceError,
                     })}
                     inputRef={priceInputRef}
                     onValueChange={handlePriceChange}
                     placeholder={priceLabel}
                   />
                 </div>
-                <span className="text-13 text-typography-secondary">USD</span>
+                <span className="text-body-small text-textIcon-secondary">USD</span>
               </div>
             </div>
           </TooltipWithPortal>
 
           <div
             className={cx(
-              "text-body-small relative flex grow cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
-              "border-slate-800",
-              "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
+              "text-body-small relative flex grow cursor-text flex-col justify-between gap-4 rounded-4 border bg-fill-surfaceElevated px-8 py-4",
+              "border-fill-surfaceElevated",
+              "focus-within:border-blue-strong hover:bg-fill-surfaceHover active:border-blue-strong"
             )}
             ref={displayModePopoverReferenceRef}
             onClick={handleBoxClick(secondInputRef)}
@@ -502,7 +502,7 @@ export function TPSLInputRow({
               <div className="relative grow">
                 <NumberInput
                   value={secondFieldValue}
-                  className="h-18 w-full min-w-0 p-0 text-13 outline-none"
+                  className="text-body-small h-18 w-full min-w-0 p-0 outline-none"
                   inputRef={secondInputRef}
                   onValueChange={handleGainLossChange}
                   placeholder={secondLabel}
@@ -534,28 +534,28 @@ export function TPSLInputRow({
         >
           <div
             className={cx(
-              "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
+              "flex flex-1 cursor-text flex-col gap-4 rounded-8 border bg-fill-surfaceElevated px-8 py-4",
               priceError
-                ? "border-red-500"
+                ? "border-red-strong"
                 : priceWarning
-                  ? "border-yellow-300"
-                  : "border-slate-800 focus-within:border-blue-300",
-              "hover:bg-fill-surfaceElevatedHover"
+                  ? "border-yellow-strong"
+                  : "border-fill-surfaceElevated focus-within:border-blue-strong",
+              "hover:bg-fill-surfaceHover"
             )}
             onClick={handleBoxClick(priceInputRef)}
           >
             <div className="flex items-center justify-between">
-              <div className="text-body-small text-typography-secondary">{priceLabel}</div>
+              <div className="text-body-small text-textIcon-secondary">{priceLabel}</div>
               {referencePrice !== undefined && (
                 <div
-                  className="cursor-pointer text-12 text-typography-secondary numbers"
+                  className="text-body-small cursor-pointer text-textIcon-secondary numbers"
                   onClick={handleMarkPriceClick}
                 >
                   <Trans>Mark:</Trans>{" "}
                   <UsdPriceValue
                     price={referencePrice}
                     visualMultiplier={visualMultiplier}
-                    className="text-typography-primary"
+                    className="text-textIcon-primary"
                   />
                 </div>
               )}
@@ -564,25 +564,25 @@ export function TPSLInputRow({
               <NumberInput
                 value={priceValue}
                 className={cx("bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none", {
-                  "text-red-500": priceError,
+                  "text-red-strong": priceError,
                 })}
                 inputRef={priceInputRef}
                 onValueChange={handlePriceChange}
                 placeholder="0.00"
               />
-              <span className="text-14 text-typography-secondary">USD</span>
+              <span className="text-body-medium text-textIcon-secondary">USD</span>
             </div>
           </div>
         </TooltipWithPortal>
         <div
           className={cx(
-            "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",
-            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+            "flex flex-1 cursor-text flex-col gap-4 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-8 py-4",
+            "focus-within:border-blue-strong hover:bg-fill-surfaceHover"
           )}
           ref={displayModePopoverReferenceRef}
           onClick={handleBoxClick(secondInputRef)}
         >
-          <div className="text-body-small text-typography-secondary">
+          <div className="text-body-small text-textIcon-secondary">
             <Trans>{secondLabel}</Trans>
           </div>
           <div className="flex items-center justify-between">
@@ -661,8 +661,8 @@ function DisplayModeSelector({
         <>
           <Popover.Button
             className={cx(
-              "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none p-1 text-typography-secondary outline-none hover:text-typography-primary",
-              size === "small" ? "text-13" : "text-14"
+              "flex shrink-0 cursor-pointer items-center gap-4 rounded-4 border-none text-textIcon-secondary outline-none hover:text-textIcon-primary",
+              size === "small" ? "text-body-small" : "text-body-medium"
             )}
             ref={setPopoverButtonRef}
           >
@@ -673,7 +673,7 @@ function DisplayModeSelector({
             <FloatingPortal>
               <Popover.Panel
                 static
-                className="z-10 overflow-hidden rounded-8 border border-slate-600 bg-slate-800 shadow-lg"
+                className="z-10 overflow-hidden rounded-8 border border-stroke-primary bg-fill-surfaceElevated shadow-lg"
                 ref={refs.setFloating}
                 style={popoverPanelStyle}
               >
@@ -682,8 +682,8 @@ function DisplayModeSelector({
                     <button
                       type="button"
                       className={cx(
-                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                        mode === "percentage" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
+                        "text-body-small flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 hover:bg-button-background",
+                        mode === "percentage" ? "bg-button-background text-textIcon-primary" : "text-textIcon-secondary"
                       )}
                       onClick={() => {
                         setMode("percentage");
@@ -695,8 +695,8 @@ function DisplayModeSelector({
                     <button
                       type="button"
                       className={cx(
-                        "flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 text-13 hover:bg-slate-700",
-                        mode === "usd" ? "bg-slate-700 text-typography-primary" : "text-typography-secondary"
+                        "text-body-small flex w-full cursor-pointer items-center justify-center border-none px-16 py-8 hover:bg-button-background",
+                        mode === "usd" ? "bg-button-background text-textIcon-primary" : "text-textIcon-secondary"
                       )}
                       onClick={() => {
                         setMode("usd");

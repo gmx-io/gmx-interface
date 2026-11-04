@@ -40,7 +40,7 @@ function StatValue({
   return (
     <TooltipWithPortal
       variant="none"
-      tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
+      tooltipClassName="!text-14 !text-white !rounded-16 !p-20 !font-medium !leading-[1.36] ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
       handle={
         <div className={cx(className, "underline decoration-dotted decoration-[4%] underline-offset-8")}>{text}</div>
       }
@@ -64,12 +64,12 @@ export function HeroSection() {
   };
 
   return (
-    <section className="overflow-hidden bg-slate-900 px-16 sm:px-40">
+    <section className="bg-slate-900 overflow-hidden px-16 sm:px-40">
       <div className="mx-auto sm:max-w-[1200px]">
-        <div className="relative h-[640px] py-60 sm:h-[860px] sm:py-80 ">
+        <div className="relative h-[640px] py-56 sm:h-[860px] sm:py-80 ">
           <HeroBackground />
           <div className="relative flex h-full w-full flex-col justify-end">
-            <div className="text-heading-1 mb-28 w-full border-b-0 border-b-slate-600 pb-28 sm:border-b-1/2 sm:pb-36">
+            <div className="text-heading-1 border-b-slate-600 mb-24 w-full border-b-0 pb-24 sm:border-b-1/2 sm:pb-32">
               <div className="float-left">
                 <Trans>Trade</Trans>
               </div>{" "}
@@ -78,13 +78,13 @@ export function HeroSection() {
             </div>
             {/* Stats and description */}
             <div className="flex flex-wrap items-end justify-between gap-0 sm:gap-56">
-              <div className="flex flex-1 flex-col-reverse items-stretch sm:flex-row sm:gap-36">
+              <div className="flex flex-1 flex-col-reverse items-stretch sm:flex-row sm:gap-32">
                 <button
-                  className="btn-landing my-28 flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:m-0 sm:w-[200px]"
+                  className="btn-landing my-24 flex w-full flex-col items-start gap-4 rounded-12 pb-12 pl-12 pr-8 pt-8 text-16 font-medium sm:m-0 sm:w-[200px]"
                   onClick={goToTradeArbitrum}
                 >
-                  <div className="self-end rounded-full bg-white p-4">
-                    <IcLinkArrow className="size-8 text-blue-400" />
+                  <div className="bg-white self-end rounded-full p-4">
+                    <IcLinkArrow className="text-blue-400 size-8" />
                   </div>
                   <Trans>Trade now</Trans>
                 </button>
@@ -94,9 +94,9 @@ export function HeroSection() {
                   </Trans>
                 </div>
               </div>
-              <div className="flex w-full flex-row flex-wrap gap-36 border-t-slate-600 pt-28 sm:w-auto sm:gap-60 sm:border-t-0 sm:pt-0">
+              <div className="border-t-slate-600 flex w-full flex-row flex-wrap gap-32 pt-24 sm:w-auto sm:gap-56 sm:border-t-0 sm:pt-0">
                 <div className="flex flex-col gap-4">
-                  <span className="text-nowrap text-12 text-slate-400 sm:text-14">
+                  <span className="text-12 sm:text-14 text-nowrap text-slate-400">
                     <Trans>Traders</Trans>
                   </span>
                   <StatValue
@@ -106,7 +106,7 @@ export function HeroSection() {
                   />
                 </div>
                 <div className="flex flex-col gap-4">
-                  <span className="text-nowrap text-12 text-slate-400 sm:text-14">
+                  <span className="text-12 sm:text-14 text-nowrap text-slate-400">
                     <Trans>Open interest</Trans>
                   </span>
                   <StatValue
@@ -116,14 +116,14 @@ export function HeroSection() {
                   />
                 </div>
                 <div className="group flex cursor-pointer flex-col gap-4" onClick={onTotalVolumeClick}>
-                  <span className="duration-180 inline-flex items-center text-nowrap text-12 text-slate-400 transition-colors group-hover:text-blue-300 sm:text-14">
+                  <span className="duration-180 text-12 group-hover:text-blue-300 sm:text-14 inline-flex items-center text-nowrap text-slate-400 transition-colors">
                     <Trans>Total volume</Trans>{" "}
                     <IcMidChevron className="duration-180 size-16 transition-transform group-hover:translate-x-4" />
                   </span>
                   <StatValue
                     stat={totalVolume}
                     format={shortFormatUsd}
-                    className="duration-180 text-[30px] font-medium tracking-tight transition-colors group-active:text-white/80 sm:text-[40px]"
+                    className="duration-180 group-active:text-white/80 text-[30px] font-medium tracking-tight transition-colors sm:text-[40px]"
                   />
                 </div>
               </div>

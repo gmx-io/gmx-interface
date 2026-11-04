@@ -124,7 +124,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         isVisible={isOpen}
         setIsVisible={setModalState}
         desktopContentClassName={isMainViewContent ? "!w-[420px]" : "!h-[640px] !w-[420px]"}
-        desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
+        desktopClassName="!items-start !justify-end !pt-56 !pr-8"
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}

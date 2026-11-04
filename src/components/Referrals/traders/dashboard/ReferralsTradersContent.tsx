@@ -79,9 +79,9 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
   return (
     <>
       <div className="flex grow flex-col gap-8">
-        <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
+        <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceBase p-adaptive">
           <div className="flex items-center justify-between">
-            <div className="text-body-large font-medium text-typography-primary">
+            <div className="text-body-large font-medium text-textIcon-primary">
               <Trans>Overview</Trans>
             </div>
             <TimeRangeFilter
@@ -136,8 +136,8 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
         </div>
       </div>
       <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
-        <div className="rounded-8 bg-slate-900 p-adaptive">
-          <div className="text-body-medium mb-8 font-medium text-typography-secondary">
+        <div className="rounded-8 bg-fill-surfaceBase p-adaptive">
+          <div className="text-body-medium mb-8 font-medium text-textIcon-secondary">
             {isBalancerProgramCode ? (
               <Tooltip variant="iconStroke" position="right" content={<BalancerProgramTooltipContent />}>
                 <Trans>Active Balancer Program code</Trans>
@@ -148,7 +148,7 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
           </div>
           {!userReferralCodeString ? (
             <Card>
-              <div className="text-body-small text-typography-secondary">
+              <div className="text-body-small text-textIcon-secondary">
                 <Trans>This account has no active referral code</Trans>
               </div>
             </Card>
@@ -156,14 +156,14 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
             <>
               <div className="mb-12 flex items-center justify-between gap-8">
                 <div
-                  className="flex min-w-0 cursor-pointer items-center gap-4 text-typography-primary"
+                  className="flex min-w-0 cursor-pointer items-center gap-4 text-textIcon-primary"
                   onClick={() => {
                     copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
                     helperToast.success(t`Referral link copied to clipboard`);
                   }}
                 >
-                  <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
-                  <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
+                  <ScaledText className="text-h3">{userReferralCodeString}</ScaledText>
+                  <CopyStrokeIcon className="size-20 shrink-0 text-textIcon-secondary" />
                 </div>
                 {isAccountOwner && (
                   <Button
@@ -177,7 +177,11 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
               </div>
               <Card>
                 {currentTierDiscount === undefined ? (
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" count={3} />
+                  <Skeleton
+                    baseColor="var(--color-fill-skeleton)"
+                    highlightColor="var(--color-fill-skeleton)"
+                    count={3}
+                  />
                 ) : isBalancerProgramCode ? (
                   <BalancerProgramExplanation
                     currentTierRebate={currentTierRebate}
@@ -222,7 +226,9 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
 
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
+    <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-fill-background/50 p-12", className)}>
+      {children}
+    </div>
   );
 }
 
@@ -258,11 +264,11 @@ function ActiveCodeExplanation({
 
   if (protocolCodeType === "organic") {
     return (
-      <div className="text-body-small text-typography-primary">
+      <div className="text-body-small text-textIcon-primary">
         <Trans>
           You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a{" "}
           {currentTierDiscount}% discount on opening and closing fees.{" "}
-          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-strong">
             Read more
           </ExternalLink>
           .
@@ -273,11 +279,11 @@ function ActiveCodeExplanation({
 
   if (protocolCodeType === "graduated") {
     return (
-      <div className="text-body-small text-typography-primary">
+      <div className="text-body-small text-textIcon-primary">
         <Trans>
           Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral
           program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees.{" "}
-          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-strong">
             Read more
           </ExternalLink>
           .
@@ -288,10 +294,10 @@ function ActiveCodeExplanation({
 
   return (
     <Trans>
-      <div className="text-body-medium mb-2 font-medium text-typography-primary">
+      <div className="text-body-medium mb-4 font-medium text-textIcon-primary">
         You're now receiving a {currentTierDiscount}% discount on your trades!
       </div>
-      <div className="text-body-small text-typography-secondary">
+      <div className="text-body-small text-textIcon-secondary">
         The reduced rate applies to every open and close fee.
       </div>
     </Trans>
@@ -304,7 +310,7 @@ function BalancerProgramTooltipContent() {
       The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes
       replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and can
       be claimed anytime.{" "}
-      <ExternalLink href={BALANCER_PROGRAM_URL} className="text-blue-300">
+      <ExternalLink href={BALANCER_PROGRAM_URL} className="text-blue-strong">
         Read more
       </ExternalLink>
       .
@@ -325,14 +331,14 @@ function BalancerProgramExplanation({
 }) {
   return (
     <>
-      <div className="text-body-medium mb-2 font-medium text-typography-primary">
+      <div className="text-body-medium mb-4 font-medium text-textIcon-primary">
         <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>
       </div>
-      <div className="text-body-small text-typography-secondary">
+      <div className="text-body-small text-textIcon-secondary">
         {isCodeOwnedByAccount ? (
           <Trans>
             Claim it anytime in the{" "}
-            <Link to={affiliatesTabUrl} className="text-blue-300">
+            <Link to={affiliatesTabUrl} className="text-blue-strong">
               Affiliates tab
             </Link>
             .

@@ -73,13 +73,13 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
             as="div"
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-10 rounded-8 border-1/2 border-slate-600 bg-slate-900 outline-none"
+            className="z-10 rounded-8 border-1/2 border-stroke-primary bg-fill-surfaceBase outline-none"
           >
             <Menu.Item as="div">
               {isGmx && (
                 <div onClick={() => setIsBuyGmxModalVisible(true)} className="asset-item">
                   <img className="asset-item-icon" width={16} height={16} src={token.imageUrl} alt={token.symbol} />
-                  <p>
+                  <p className="font-medium">
                     <Trans>Buy GMX</Trans>
                   </p>
                 </div>
@@ -95,7 +95,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
                     src={nansenPortfolioIcon}
                     alt={t`Proof of reserves`}
                   />
-                  <p>
+                  <p className="font-medium">
                     <Trans>Proof of reserves</Trans>
                   </p>
                 </ExternalLink>
@@ -131,7 +131,7 @@ const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketSt
         <TokenIcon symbol={tokenIconName} badge={tokenIconBadge} displaySize={32} />
       </div>
 
-      <p>
+      <p className="font-medium">
         <Trans>Buy GM: {marketStat.marketInfo.name}</Trans>
       </p>
     </Link>

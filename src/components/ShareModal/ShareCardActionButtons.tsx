@@ -34,7 +34,7 @@ export function ShareCardActionButtons({
         disabled={disabled || isUploading}
         onClick={interceptOnClick ?? onCopyLink}
         size="medium"
-        className="grow !text-14"
+        className="grow"
       >
         <Trans>Copy link</Trans>
         <CopyStrokeIcon className="size-16" />
@@ -44,7 +44,7 @@ export function ShareCardActionButtons({
         disabled={disabled || isUploading}
         onClick={interceptOnClick ?? onCopyImage}
         size="medium"
-        className="grow !text-14"
+        className="grow"
       >
         {isMobile ? (
           <>
@@ -63,7 +63,7 @@ export function ShareCardActionButtons({
         disabled={disabled || isUploading}
         onClick={interceptOnClick ?? onShareTwitter}
         size="medium"
-        className="grow !text-14"
+        className="grow"
       >
         <Trans>Share on</Trans>
         <TwitterIcon className="size-16" />

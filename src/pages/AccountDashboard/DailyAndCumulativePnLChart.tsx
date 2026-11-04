@@ -52,23 +52,23 @@ import type { AccountPnlHistoryPoint } from "./usePnlHistoricalData";
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
-  fill: "var(--color-slate-100)",
-  fontSize: 11,
+  fill: "var(--color-textIcon-secondary)",
+  fontSize: 12,
   fontWeight: 500,
 };
 
 const CUMULATIVE_CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   ...CHART_TICK_PROPS,
-  fill: "var(--color-blue-300)",
+  fill: "var(--color-blue-strong)",
 };
 
 const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
-  stroke: "var(--color-slate-600)",
+  stroke: "var(--color-stroke-primary)",
   strokeWidth: 0.5,
 };
 
 const CHART_CURSOR_PROPS = {
-  stroke: "var(--color-slate-500)",
+  stroke: "var(--color-textIcon-disabled)",
   strokeWidth: 1,
   strokeDasharray: "2 2",
 };
@@ -76,8 +76,8 @@ const CHART_CURSOR_PROPS = {
 const ACTIVE_DOT_PROPS = {
   r: 4,
   strokeWidth: 2,
-  stroke: "var(--color-blue-300)",
-  fill: "var(--color-slate-900)",
+  stroke: "var(--color-blue-strong)",
+  fill: "var(--color-fill-surfaceBase)",
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
@@ -632,7 +632,12 @@ export function DailyAndCumulativePnLChart({
               content={(props) => <ChartTooltip {...props} grouping={grouping} />}
               wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
             />
-            <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray="5 3"
+              strokeWidth={0.5}
+              stroke="var(--color-stroke-primary)"
+            />
             <Bar
               dataKey="pnlFloat"
               yAxisId="periodPnl"
@@ -646,8 +651,8 @@ export function DailyAndCumulativePnLChart({
 
             <defs>
               <linearGradient id="cumulative-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
-                <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+                <stop offset="-45%" stopColor="var(--color-blue-strong)" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="var(--color-blue-strong)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <Area
@@ -655,7 +660,7 @@ export function DailyAndCumulativePnLChart({
               type="monotone"
               dataKey="cumulativePnlFloat"
               yAxisId="cumulativePnl"
-              stroke="var(--color-blue-300)"
+              stroke="var(--color-blue-strong)"
               fill="url(#cumulative-pnl-gradient)"
               strokeWidth={2}
               dot={false}
@@ -724,7 +729,7 @@ export function DailyAndCumulativePnLChart({
       </div>
       {error && (
         <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
-          <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
+          <div className="whitespace-pre-wrap font-mono text-red-strong">{JSON.stringify(error, null, 2)}</div>
         </div>
       )}
       {loading && (
@@ -733,7 +738,7 @@ export function DailyAndCumulativePnLChart({
         </div>
       )}
       {!loading && !error && visibleChartPnlData.length === 0 && (
-        <div className="absolute grid size-full place-items-center text-typography-secondary">
+        <div className="absolute grid size-full place-items-center text-textIcon-secondary">
           <Trans>No data available</Trans>
         </div>
       )}
@@ -742,15 +747,15 @@ export function DailyAndCumulativePnLChart({
 
   return (
     <>
-      <div className="flex flex-wrap gap-24 px-16 pb-8 pt-16 text-typography-secondary">
-        <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Period profit</Trans>
+      <div className="flex flex-wrap gap-24 px-16 pb-8 pt-16 text-textIcon-secondary">
+        <div className="text-body-small flex items-center gap-8 font-medium">
+          <div className="inline-block size-4 rounded-full bg-green-strong" /> <Trans>Period profit</Trans>
         </div>
-        <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Period loss</Trans>
+        <div className="text-body-small flex items-center gap-8 font-medium">
+          <div className="inline-block size-4 rounded-full bg-red-strong" /> <Trans>Period loss</Trans>
         </div>
-        <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-blue-300" /> <Trans>Cumulative PnL</Trans>{" "}
+        <div className="text-body-small flex items-center gap-8 font-medium">
+          <div className="inline-block size-4 rounded-full bg-blue-strong" /> <Trans>Cumulative PnL</Trans>{" "}
           <UsdValue
             usd={groupedPnlData.at(-1)?.cumulativePnl}
             className={getPositiveOrNegativeClass(groupedPnlData.at(-1)?.cumulativePnl)}
@@ -776,11 +781,11 @@ export function DailyAndCumulativePnLChart({
 function renderPnlBar(entry: AccountPnlHistoryPoint) {
   let fill: string;
   if (entry.pnl !== undefined && entry.pnl > 0n) {
-    fill = "var(--color-green-500)";
+    fill = "var(--color-green-strong)";
   } else if (entry.pnl !== undefined && entry.pnl < 0n) {
-    fill = "var(--color-red-500)";
+    fill = "var(--color-red-strong)";
   } else {
-    fill = "var(--color-gray-900)";
+    fill = "var(--color-fill-accent)";
   }
   return <Cell key={entry.date} fill={fill} />;
 }
@@ -795,7 +800,7 @@ function ChartTooltip({ active, payload, grouping }: TooltipProps<any, any> & { 
   return (
     <div
       className={`backdrop-blur-100 text-body-small z-50 flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
-      bg-slate-800 px-12 pt-8 bg-blend-overlay mix-blend-overlay shadow-lg`}
+      bg-fill-surfaceElevated px-12 pt-8 bg-blend-overlay mix-blend-overlay shadow-lg`}
     >
       <StatsTooltipRow label={grouping === "daily" ? t`Date` : t`Period`} value={stats.date} showDollar={false} />
       <StatsTooltipRow

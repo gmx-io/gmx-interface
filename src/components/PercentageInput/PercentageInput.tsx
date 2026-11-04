@@ -143,7 +143,7 @@ export default function PercentageInput({
       position={tooltipPosition}
     >
       <SuggestionInput
-        className={cx("w-80", { "!border-yellow-500": !!error })}
+        className={cx("w-80", { "!border-yellow-strong": !!error })}
         label={negativeSign ? "-" : undefined}
         value={inputValue}
         setValue={handleChange}

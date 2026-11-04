@@ -45,23 +45,23 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           className={({ open }) =>
             cx(
               "flex w-full items-center justify-between rounded-8",
-              slim ? "text-body-medium p-4" : "px-14 py-13 text-16 leading-base",
+              slim ? "text-body-medium p-4" : "px-12 py-12 text-16 leading-base",
               variant === "ghost"
                 ? "border"
-                : "border bg-slate-800 hover:bg-fill-surfaceElevatedHover active:bg-fill-surfaceElevated50",
-              variant !== "ghost" && (open ? "group border-blue-300" : "border-slate-800"),
-              variant === "ghost" && (open ? "group border-blue-300" : "border-[transparent]")
+                : "border bg-fill-surfaceElevated hover:bg-fill-surfaceHover active:bg-fill-surfaceElevated50",
+              variant !== "ghost" && (open ? "group border-blue-strong" : "border-fill-surfaceElevated"),
+              variant === "ghost" && (open ? "group border-blue-strong" : "border-[transparent]")
             )
           }
         >
-          {value === undefined ? <div className="text-typography-primary">{placeholder}</div> : button}
-          <ChevronDownIcon className="size-20 group-aria-expanded:text-blue-300" />
+          {value === undefined ? <div className="text-textIcon-primary">{placeholder}</div> : button}
+          <ChevronDownIcon className="size-20 group-aria-expanded:text-blue-strong" />
         </Listbox.Button>
         <Listbox.Options
           className={cx(
             "absolute left-0 right-0 top-full z-10 mt-4 overflow-auto rounded-8 px-0",
             slim ? "" : "py-8",
-            "border-1/2 border-slate-600 bg-slate-800"
+            "border-1/2 border-stroke-primary bg-fill-surfaceElevated"
           )}
         >
           {options.map((option) => {
@@ -81,7 +81,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
                     <div
                       className={cx(
                         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
-                        slim ? "text-body-medium p-4" : "text-body-large px-14 py-8",
+                        slim ? "text-body-medium p-4" : "text-body-large px-12 py-8",
                         (active || selected) && "bg-fill-surfaceHover"
                       )}
                     >

@@ -340,7 +340,7 @@ export function StakeModal(props: {
   const showResetToast = useCallback(() => {
     helperToast.info(
       <div>
-        <span className="font-bold" style={RESET_TOAST_HEADER_STYLE}>
+        <span className="font-medium" style={RESET_TOAST_HEADER_STYLE}>
           <Trans>Rewards reset</Trans>
         </span>
         <br />
@@ -584,21 +584,25 @@ export function StakeModal(props: {
           )}
 
           {showSafeUnstakeBar && (
-            <div className="flex flex-col gap-6">
-              <div className="h-4 w-full rounded-full bg-slate-700">
+            <div className="flex flex-col gap-4">
+              <div className="h-4 w-full rounded-full bg-button-background">
                 <div
                   className={cx(
                     "h-full rounded-full transition-all",
-                    exceedsLimit ? "bg-red-500" : isApproachingLimit ? "bg-yellow-300" : "bg-blue-300"
+                    exceedsLimit ? "bg-red-strong" : isApproachingLimit ? "bg-yellow-strong" : "bg-blue-strong"
                   )}
                   style={unstakeBarStyle}
                 />
               </div>
-              <div className="flex justify-between text-12">
+              <div className="text-body-small flex justify-between">
                 <TooltipWithPortal
                   handleClassName={cx(
                     "font-medium",
-                    exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
+                    exceedsLimit
+                      ? "text-red-strong"
+                      : isApproachingLimit
+                        ? "text-yellow-strong"
+                        : "text-textIcon-secondary"
                   )}
                   handle={
                     <Trans>
@@ -616,7 +620,7 @@ export function StakeModal(props: {
                       <div>
                         <Trans>
                           Current safe limit:{" "}
-                          <span className="text-typography-primary numbers">
+                          <span className="text-textIcon-primary numbers">
                             {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))}
                           </span>{" "}
                           combined.
@@ -628,7 +632,11 @@ export function StakeModal(props: {
                 <span
                   className={cx(
                     "font-medium",
-                    exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
+                    exceedsLimit
+                      ? "text-red-strong"
+                      : isApproachingLimit
+                        ? "text-yellow-strong"
+                        : "text-textIcon-secondary"
                   )}
                 >
                   {formatUnstakeLimitPercentLabel(unstakeLimitPercent)}%
@@ -710,17 +718,17 @@ export function StakeModal(props: {
                     </Trans>
                   )}
                   {rewardsLossUsd !== null && (
-                    <div className="mt-4 font-medium text-red-500">
+                    <div className="mt-4 font-medium text-red-strong">
                       <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards</Trans>
                     </div>
                   )}
                 </div>
               </ColorfulBanner>
               <Checkbox isChecked={isResetAcknowledged} setIsChecked={setIsResetAcknowledged} className="!items-start">
-                <span className="text-body-small text-typography-secondary">
+                <span className="text-body-small text-textIcon-secondary">
                   <Trans>
                     I acknowledge that I will lose{" "}
-                    <span className="font-bold text-typography-primary">
+                    <span className="font-medium text-textIcon-primary">
                       {rewardsLossUsd !== null ? formatUsd(rewardsLossUsd) : "all accrued"} in rewards
                     </span>{" "}
                     if I proceed

@@ -31,9 +31,9 @@ export function RebatesDistributionTable({
   toggleSelectedRebateId,
 }: RebatesDistributionTableProps) {
   return (
-    <div className="flex w-full grow flex-col justify-between gap-8 rounded-8 bg-slate-900 px-8 pb-8">
+    <div className="flex w-full grow flex-col justify-between gap-8 rounded-8 bg-fill-surfaceBase px-8 pb-8">
       <TableScrollFadeContainer>
-        <div role="table" className="grid min-w-max grid-cols-[1fr_1fr_1fr_1fr_auto] gap-y-4">
+        <div role="table" className="grid min-w-max grid-cols-[1fr_1fr_1fr_1fr_auto]">
           <GridRow>
             <GridHeaderCell>
               <Trans>DATE</Trans>

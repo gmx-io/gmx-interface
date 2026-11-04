@@ -8,7 +8,7 @@ export function ProtectionBackground() {
   return (
     <div
       style={styleFirstImage}
-      className="pointer-events-none absolute -left-[403px] -top-[100px] h-[472px] w-[931px] -scale-y-100 opacity-60 blur-[46px]"
+      className="pointer-events-none absolute -left-[403px] -top-96 h-[472px] w-[931px] -scale-y-100 opacity-60 blur-[46px]"
     />
   );
 }

@@ -101,7 +101,7 @@ export function useChartHeaderFormattedValues() {
     if (info?.longOpenInterestPercentage !== undefined && info.openInterestLong !== undefined) {
       return [
         <>
-          <LongIcon width={12} className="relative top-1 opacity-70" />
+          <LongIcon width={12} className="relative opacity-70" />
           <AmountHumanValue
             key="long-oi-value"
             amount={info?.openInterestLong}
@@ -146,7 +146,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <span className="flex items-center justify-center gap-4 numbers">
-        <LongIcon width={12} className="relative top-1 opacity-70" />
+        <LongIcon width={12} className="relative opacity-70" />
         <AmountHumanValue amount={liquidity} decimals={USD_DECIMALS} showDollar />
       </span>
     );
@@ -176,7 +176,7 @@ export function useChartHeaderFormattedValues() {
 
     return (
       <span className={cx("flex flex-row items-center gap-4 numbers")}>
-        <LongIcon width={12} className="relative top-1" />
+        <LongIcon width={12} className="relative" />
         {formatRatePercentage(netRate)}
       </span>
     );

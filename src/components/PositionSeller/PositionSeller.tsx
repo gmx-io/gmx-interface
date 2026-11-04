@@ -829,14 +829,14 @@ export function PositionSeller() {
           <DecreaseReceiveOutputDisplay
             outputs={receiveOutputs}
             className="max-w-full"
-            secondaryValueClassName="!text-14"
+            secondaryValueClassName="!text-body-medium"
           />
         ) : (
           receiveToken && (
             <TokenSelector
               label={t`Receive`}
               className={cx({
-                "*:!text-yellow-300 hover:!text-yellow-300":
+                "*:!text-yellow-strong hover:!text-yellow-strong":
                   isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
               })}
               chainId={chainId}
@@ -858,7 +858,7 @@ export function PositionSeller() {
                   )}
                   <AmountWithUsdBalance
                     className={cx({
-                      "*:!text-yellow-300 hover:!text-yellow-300":
+                      "*:!text-yellow-strong hover:!text-yellow-strong":
                         isNotEnoughReceiveTokenLiquidity || isUsdcReceiveUnfillable,
                     })}
                     amount={isUsdcReceiveUnfillable ? decreaseAmounts?.receiveTokenAmount : receiveTokenAmount}
@@ -866,7 +866,7 @@ export function PositionSeller() {
                     symbol={receiveToken.symbol}
                     usd={receiveUsd}
                     isStable={receiveToken.isStable}
-                    secondaryValueClassName="!text-14"
+                    secondaryValueClassName="!text-body-medium"
                   />
                 </span>
               }
@@ -875,7 +875,7 @@ export function PositionSeller() {
                 chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
                   <div className="mb-16">
                     <div className="flex items-center justify-between gap-8">
-                      <span className="text-14 text-typography-secondary">
+                      <span className="text-body-medium text-textIcon-secondary">
                         <Trans>Send remaining margin to</Trans>
                       </span>
                       <MarginDestinationSelector
@@ -900,7 +900,7 @@ export function PositionSeller() {
         <DecreaseReceiveOutputDisplay
           outputs={receiveOutputs}
           className="max-w-full"
-          secondaryValueClassName="!text-14"
+          secondaryValueClassName="!text-body-medium"
           layout="stacked"
         />
       }
@@ -951,7 +951,7 @@ export function PositionSeller() {
               <TooltipWithPortal
                 handle={<DeltaUsdValue deltaUsd={position.pnl} percentage={position.pnlPercentage} hidePercentage />}
                 content={
-                  <span className={position.pnl > 0n ? "text-green-500" : "text-red-500"}>
+                  <span className={position.pnl > 0n ? "text-green-strong" : "text-red-strong"}>
                     {formatPercentage(position.pnlPercentage, { signed: true })}
                   </span>
                 }
@@ -970,8 +970,8 @@ export function PositionSeller() {
                   <span
                     className={
                       nextPositionValues?.nextPnl !== undefined && nextPositionValues.nextPnl > 0n
-                        ? "text-green-500"
-                        : "text-red-500"
+                        ? "text-green-strong"
+                        : "text-red-strong"
                     }
                   >
                     {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })}
@@ -1137,7 +1137,7 @@ export function PositionSeller() {
                     rightHeadline={
                       <button
                         type="button"
-                        className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                        className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
                         onClick={(e) => {
                           e.stopPropagation();
                           closeSize.setMaxCloseSize();
@@ -1154,7 +1154,7 @@ export function PositionSeller() {
               </div>
 
               {isTwap && (
-                <div className="px-20 py-14">
+                <div className="px-20 py-12">
                   <TwapRows
                     duration={duration}
                     numberOfParts={numberOfParts}
@@ -1168,10 +1168,10 @@ export function PositionSeller() {
                 </div>
               )}
 
-              <div className="flex w-full flex-col gap-14 px-20 pb-14">
+              <div className="flex w-full flex-col gap-12 px-20 pb-12">
                 {!isTwap && (
                   <ToggleSwitch
-                    textClassName="text-typography-secondary"
+                    textClassName="text-textIcon-secondary"
                     isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
                     setIsChecked={setKeepLeverage}
                     disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
@@ -1182,7 +1182,7 @@ export function PositionSeller() {
 
                 {isSplitReceiveAvailable && (
                   <ToggleSwitch
-                    textClassName="text-typography-secondary"
+                    textClassName="text-textIcon-secondary"
                     isChecked={isReceiveSeparated}
                     setIsChecked={setIsReceiveSeparated}
                   >
@@ -1255,7 +1255,7 @@ export function PositionSeller() {
                     <div className="flex flex-col gap-8">
                       <span>
                         <span
-                          className="cursor-pointer font-medium text-blue-300"
+                          className="cursor-pointer font-medium text-blue-strong"
                           onClick={() => {
                             handleSetOrderOption(OrderOption.Twap);
                           }}

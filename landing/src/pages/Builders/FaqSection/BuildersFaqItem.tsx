@@ -13,15 +13,15 @@ export function BuildersFaqItem({ title, defaultOpen, children }: Props) {
   const [isOpen, setIsOpen] = useState(Boolean(defaultOpen));
 
   return (
-    <div className="flex flex-col border-b-1/2 border-slate-600 py-32">
+    <div className="border-slate-600 flex flex-col border-b-1/2 py-32">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="duration-180 flex cursor-pointer items-center justify-between gap-44 transition-colors hover:text-blue-400"
+        className="duration-180 hover:text-blue-400 flex cursor-pointer items-center justify-between gap-40 transition-colors"
       >
         <h3 className="text-24 font-medium -tracking-[0.768px]">{title}</h3>
         <div className="flex size-24 flex-shrink-0 items-center justify-center">
           <IcCross
-            className={cx("duration-180 size-16 origin-center text-slate-500 transition-transform", {
+            className={cx("duration-180 text-slate-500 size-16 origin-center transition-transform", {
               "rotate-45": !isOpen,
             })}
           />

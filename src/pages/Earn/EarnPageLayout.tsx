@@ -63,7 +63,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
       <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">
-        <div className="overflow-x-auto scrollbar-hide">
+        <div className="-my-4 overflow-x-auto py-4 scrollbar-hide">
           <div className="flex gap-8">
             {tabOptions.map((tab) => (
               <Button

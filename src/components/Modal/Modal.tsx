@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { AnimatePresence, Variants, motion } from "framer-motion";
 import React, { PropsWithChildren, ReactNode, useCallback, useEffect, useMemo, useRef } from "react";
@@ -135,7 +136,7 @@ export default function Modal({
           </div>
         </div>
       )}
-      {footerContent && <div className="border-t-1/2 border-slate-600 px-adaptive py-16">{footerContent}</div>}
+      {footerContent && <div className="border-t-1/2 border-stroke-primary px-adaptive py-16">{footerContent}</div>}
     </ErrorBoundary>
   );
 
@@ -174,17 +175,17 @@ export default function Modal({
               <div
                 className={cx(
                   "Modal-header-wrapper flex flex-col gap-8 px-adaptive pb-12 pt-adaptive",
-                  hideHeaderBorder ? "" : "border-b-1/2 border-slate-600"
+                  hideHeaderBorder ? "" : "border-b-1/2 border-stroke-primary"
                 )}
               >
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (
-                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label="Back">
+                      <Button variant="ghost" size="small" className="px-8" onClick={onBack} aria-label={t`Back`}>
                         <ChevronLeftIcon className="size-16" />
                       </Button>
                     )}
-                    <div className="Modal-title font-medium text-typography-primary">{label}</div>
+                    <div className="Modal-title font-medium text-textIcon-primary">{label}</div>
                   </div>
                   <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
                     <CloseIcon className="Modal-close-icon size-20" />

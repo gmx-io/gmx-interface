@@ -35,6 +35,7 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";
@@ -77,8 +78,8 @@ function LineSpan({ span }: { span: TooltipString }) {
     <NumericText
       text={span.text}
       className={cx({
-        "text-red-500": span.state === "error",
-        "text-green-500": span.state === "success",
+        "text-red-strong": span.state === "error",
+        "text-green-strong": span.state === "success",
         muted: span.state === "muted",
       })}
     />
@@ -250,7 +251,7 @@ export function TradeHistoryRow({
           value={
             <div className="flex items-center">
               <span>{msg.indexName!}</span>
-              <span className="subtext leading-1">[{msg.poolName!}]</span>
+              <span className="subtext !leading-1">[{msg.poolName!}]</span>
             </div>
           }
           showDollar={false}
@@ -264,7 +265,7 @@ export function TradeHistoryRow({
           <span key={market.indexName}>
             {index > 0 && " → "}
             <span>{market.indexName}</span>
-            <span className="subtext leading-1">[{market.poolName}]</span>
+            <span className="subtext !leading-1">[{market.poolName}]</span>
           </span>
         ))}
       </>
@@ -376,7 +377,7 @@ export function TradeHistoryRow({
                 <TooltipWithPortal
                   className={cx("TradeHistoryRow-action-handle")}
                   handleClassName={cx("TradeHistoryRow-action-handle", {
-                    "text-red-500 !decoration-red-500/50": msg.isActionError,
+                    "text-red-strong !decoration-red-strong/50": msg.isActionError,
                   })}
                   handle={<span className="font-medium">{msg.action}</span>}
                   renderContent={renderActionTooltipContent}
@@ -384,7 +385,7 @@ export function TradeHistoryRow({
               ) : (
                 <span
                   className={cx("TradeHistoryRow-action-handle font-medium", {
-                    "text-red-500": msg.isActionError,
+                    "text-red-strong": msg.isActionError,
                   })}
                 >
                   {msg.action}
@@ -401,7 +402,7 @@ export function TradeHistoryRow({
               {showDebugValues && (
                 <Link
                   to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transactionHash}`}
-                  className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
+                  className="text-body-small ml-4 text-textIcon-secondary hover:text-textIcon-primary"
                 >
                   <Trans>Events</Trans>
                 </Link>
@@ -466,15 +467,15 @@ export function TradeHistoryRow({
         </TableTd>
         <TableTd>
           {!msg.pnl ? (
-            <span className="text-typography-secondary">-</span>
+            <span className="text-textIcon-secondary">-</span>
           ) : msg.pnlTooltip ? (
             <TooltipWithPortal
               handle={
                 <NumericText
                   text={msg.pnl}
                   className={cx("numbers", {
-                    "text-red-500": msg.pnlState === "error",
-                    "text-green-500": msg.pnlState === "success",
+                    "text-red-strong": msg.pnlState === "error",
+                    "text-green-strong": msg.pnlState === "success",
                   })}
                 />
               }
@@ -484,8 +485,8 @@ export function TradeHistoryRow({
             <NumericText
               text={msg.pnl}
               className={cx("numbers", {
-                "text-red-500": msg.pnlState === "error",
-                "text-green-500": msg.pnlState === "success",
+                "text-red-strong": msg.pnlState === "error",
+                "text-green-strong": msg.pnlState === "success",
               })}
             />
           )}
@@ -497,14 +498,14 @@ export function TradeHistoryRow({
                 msg.fees ? (
                   <NumericText text={msg.fees} className="numbers" />
                 ) : (
-                  <span className="text-typography-secondary">-</span>
+                  <span className="text-textIcon-secondary">-</span>
                 )
               }
               maxAllowedWidth={FEES_TOOLTIP_WIDTH}
               renderContent={renderFeesTooltipContent}
             />
           ) : !msg.fees ? (
-            <span className="text-typography-secondary">-</span>
+            <span className="text-textIcon-secondary">-</span>
           ) : (
             <NumericText text={msg.fees} className="numbers" />
           )}
@@ -518,25 +519,26 @@ export function TradeHistoryRow({
               </Button>
             ) : null}
             {shouldDisplayPositionLifecycleButton ? (
-              <TooltipWithPortal
+              <StandardTooltip
                 variant="none"
+                type="label"
                 position="bottom-end"
                 shouldPreventDefault={false}
-                handle={
-                  <Button
-                    variant="ghost"
-                    onClick={handleSelectPositionLifecycleClick}
-                    className="!min-h-28 !px-8 !py-6"
-                    aria-label={t`View position history`}
-                  >
-                    <FilterHistoryIcon className="size-14" />
-                  </Button>
-                }
                 content={<Trans>View position history</Trans>}
-              />
+              >
+                <Button
+                  variant="ghost"
+                  onClick={handleSelectPositionLifecycleClick}
+                  size="controlled"
+                  className="size-32 !p-0"
+                  aria-label={t`View position history`}
+                >
+                  <FilterHistoryIcon className="size-14" />
+                </Button>
+              </StandardTooltip>
             ) : (
               // Reserve the button's space so the Share button and layout don't shift between rows/states.
-              <Button variant="ghost" className="invisible !min-h-28 !px-8 !py-6">
+              <Button variant="ghost" size="controlled" className="invisible size-32 !p-0">
                 <FilterHistoryIcon className="size-14" />
               </Button>
             )}

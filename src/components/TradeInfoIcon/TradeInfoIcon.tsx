@@ -31,7 +31,7 @@ interface Props {
   tradePlace: TradePlace;
 }
 
-const UL_CLASS_NAME = "text-body-medium flex list-disc flex-col gap-2";
+const UL_CLASS_NAME = "text-body-medium flex list-disc flex-col gap-4";
 const LI_CLASS_NAME = "p-0";
 
 export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMobile }: Props) {
@@ -145,11 +145,11 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
     <Tooltip
       position={isMobile ? "bottom-end" : "top-end"}
       content={contentByTradeType[tradeType]}
-      tooltipClassName="p-10"
+      tooltipClassName="p-8"
       className="flex"
       variant="none"
     >
-      <InfoCircleIcon className="box-content h-16 w-16 cursor-pointer p-8 text-typography-secondary gmx-hover:text-typography-primary" />
+      <InfoCircleIcon className="box-content h-16 w-16 cursor-pointer p-8 text-textIcon-secondary gmx-hover:text-textIcon-primary" />
     </Tooltip>
   );
 }

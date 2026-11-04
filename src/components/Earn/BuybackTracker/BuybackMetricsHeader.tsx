@@ -24,7 +24,7 @@ export function BuybackMetricsHeader({
   const isUnavailable = !isLoading && (!!error || metrics === undefined);
 
   return (
-    <div className="flex gap-28 max-md:flex-col max-md:gap-12">
+    <div className="flex gap-24 max-md:flex-col max-md:gap-12">
       <MetricItem
         label={<Trans>Total bought GMX</Trans>}
         tooltip={
@@ -79,17 +79,17 @@ function MetricItem({
       <TooltipWithPortal
         variant="none"
         handle={
-          <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
+          <span className="text-body-small inline-flex items-center gap-4 font-medium text-textIcon-secondary">
             {label}
-            <InfoIcon className="size-16 text-typography-secondary" />
+            <InfoIcon className="size-16 text-textIcon-secondary" />
           </span>
         }
         content={tooltip}
       />
       <div className="flex flex-wrap items-baseline gap-x-8">
-        <span className="text-h2 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
+        <span className="text-h3 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
         {subtitle && !isLoading && !isUnavailable && (
-          <span className="text-14 font-medium text-typography-secondary numbers">{subtitle}</span>
+          <span className="text-body-medium font-medium text-textIcon-secondary numbers">{subtitle}</span>
         )}
       </div>
     </div>

@@ -21,17 +21,17 @@ export function MarginDestinationSelector({
     <SelectorBase
       modalLabel="Send remaining margin to"
       desktopPanelClassName={desktopPanelClassName}
-      wrapperClassName="text-typography-primary"
+      wrapperClassName="text-textIcon-primary"
       label={
         <div className="flex items-center gap-4">
           {isReceiveToGmxAccount ? <GmxRoundedIcon className="size-20" /> : <ArbitrumIcon className="size-20" />}
-          <span className="text-13 font-medium">
+          <span className="text-body-small font-medium">
             {isReceiveToGmxAccount ? <Trans>GMX Account</Trans> : <Trans>Arbitrum wallet</Trans>}
           </span>
         </div>
       }
     >
-      <div className="flex flex-col py-6">
+      <div className="flex flex-col py-4">
         <MarginDestinationOption
           isGmxBalance={false}
           isSelected={!isReceiveToGmxAccount}
@@ -60,8 +60,8 @@ function MarginDestinationOption({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center gap-6 px-12 py-6 text-14 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
+      className={cx("text-body-medium flex cursor-pointer items-center gap-4 px-12 py-4 hover:bg-fill-surfaceHover", {
+        "bg-button-background": isSelected,
       })}
       onClick={() => {
         onClick();

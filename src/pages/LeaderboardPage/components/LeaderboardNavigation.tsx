@@ -139,17 +139,17 @@ function NavigationItem({ item }: { item: LeaderboardNavigationItem }) {
     <Link
       to={item.href}
       className={cx(
-        "text-h1 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-typography-secondary hover:text-typography-primary",
+        "text-h2 inline-flex items-center gap-8 whitespace-nowrap leading-1 text-textIcon-secondary hover:text-textIcon-primary",
         {
-          "!text-typography-primary": item.isSelected,
-          "border-l-1/2 border-l-slate-600 pl-18": item.key === "concluded",
+          "!text-textIcon-primary": item.isSelected,
+          "border-l-1/2 border-l-stroke-primary pl-16": item.key === "concluded",
         }
       )}
     >
       {item.label}
 
       {timeframeLabel && (
-        <div className="text-body-small inline-flex h-fit whitespace-nowrap rounded-full bg-slate-700 px-8 py-6 text-typography-secondary">
+        <div className="text-body-small inline-flex h-fit whitespace-nowrap rounded-full bg-button-background px-8 py-4 text-textIcon-secondary">
           {timeframeLabel}
         </div>
       )}

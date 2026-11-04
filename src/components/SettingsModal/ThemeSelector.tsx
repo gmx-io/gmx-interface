@@ -23,8 +23,8 @@ function ThemeOption({
 
   return (
     <div
-      className={cx("flex cursor-pointer items-center justify-between px-14 py-8 hover:bg-fill-surfaceHover", {
-        "bg-slate-700": isSelected,
+      className={cx("flex cursor-pointer items-center justify-between px-12 py-8 hover:bg-fill-surfaceHover", {
+        "bg-button-background": isSelected,
       })}
       onClick={() => {
         onClick();
@@ -62,15 +62,15 @@ export function ThemeSelector() {
   return (
     <SelectorBase
       modalLabel={t`Theme`}
-      desktopPanelClassName="!z-[10000] w-[140px] !top-[10px]"
+      desktopPanelClassName="!z-[10000] w-[140px] !top-8"
       chevronClassName="hidden"
       handleClassName="max-md:[&>span]:grow"
       label={
         <div className="flex w-full items-center justify-between">
-          <div className="text-typography-secondary">
+          <div className="text-textIcon-secondary">
             <Trans>Theme</Trans>
           </div>
-          <Button variant="secondary">
+          <Button variant="secondary" className="focus-visible:outline-offset-[-2px]">
             {currentTheme?.label}
             <ChevronDownIcon className="inline-block size-14" />
           </Button>

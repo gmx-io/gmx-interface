@@ -9,7 +9,7 @@ export function LeaderboardTopAccountsStructure() {
         <Skeleton width={40} inline />
       </TableTd>
       <TableTd>
-        <div className="flex items-center gap-6 py-[1.5px]">
+        <div className="flex items-center gap-4">
           <Skeleton circle width={20} height={20} inline className="!block" />
           <Skeleton width={120} inline className="!block" />
         </div>

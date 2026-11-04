@@ -787,7 +787,11 @@ export default function TVChartContainer({
 
         const neutralColor = getChartThemeOverrides(theme)[PRICE_LINE_COLOR_KEY] as string;
         const priceLineColor =
-          direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+          direction === "up"
+            ? colors.green.strong[theme]
+            : direction === "down"
+              ? colors.red.strong[theme]
+              : neutralColor;
 
         widget.applyOverrides({
           [PRICE_LINE_COLOR_KEY]: priceLineColor,

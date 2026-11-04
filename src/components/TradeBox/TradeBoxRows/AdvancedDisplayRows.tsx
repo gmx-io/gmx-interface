@@ -215,7 +215,7 @@ export function TradeBoxAdvancedGroups({
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
-      contentClassName="flex flex-col gap-14"
+      contentClassName="flex flex-col gap-12"
       scrollIntoViewOnMobile
       wrapped
     >

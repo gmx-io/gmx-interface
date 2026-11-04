@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useEffect, useState } from "react";
 
@@ -33,7 +34,13 @@ export function SettingsButton({ openSettings }: { openSettings: () => void }) {
 
   return (
     <div className={cx("relative", { "z-[1003]": isElevated })}>
-      <Button variant="secondary" size="controlled" onClick={handleToggleSettings} className="size-32 !p-0 md:size-40">
+      <Button
+        variant="secondary"
+        size="controlled"
+        onClick={handleToggleSettings}
+        className="size-32 !p-0 md:size-40"
+        aria-label={t`Settings`}
+      >
         <SettingsIcon className="size-20 p-0" />
       </Button>
     </div>

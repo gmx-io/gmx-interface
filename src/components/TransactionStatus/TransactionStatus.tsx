@@ -24,11 +24,11 @@ export function TransactionStatus({ status, text, txnHash }: Props) {
   const txnLink = txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined;
 
   return (
-    <div className="text-body-small flex w-full items-center justify-between gap-8 py-2 text-14">
-      <div className="flex items-center gap-6">
-        {status === "loading" && <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />}
-        {status === "success" && <CheckCircleIcon className="size-15 shrink-0 text-green-500" />}
-        {status === "error" && <CloseCircleIcon className="size-15 shrink-0 text-red-500" />}
+    <div className="text-body-medium flex w-full items-center justify-between gap-8 py-4">
+      <div className="flex items-center gap-4">
+        {status === "loading" && <SpinnerIcon className="spin size-15 shrink-0 text-textIcon-primary" />}
+        {status === "success" && <CheckCircleIcon className="size-15 shrink-0 text-green-strong" />}
+        {status === "error" && <CloseCircleIcon className="size-15 shrink-0 text-red-strong" />}
         {status === "muted" && <div className="size-15 shrink-0" aria-hidden />}
         <div>{text}</div>
       </div>

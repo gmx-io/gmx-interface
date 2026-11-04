@@ -81,7 +81,7 @@ export function RebateDistributionRow({
   const explorerURL = getExplorerUrl(chainId);
 
   return (
-    <GridRow className="text-typography-primary" onClick={() => onClick(rebate.id)}>
+    <GridRow className="text-textIcon-primary" onClick={() => onClick(rebate.id)}>
       <GridCell>{formattedDate}</GridCell>
       <GridCell>{rebateType}</GridCell>
       <GridCell>
@@ -93,7 +93,7 @@ export function RebateDistributionRow({
             <div className="flex items-center numbers">
               {tokensWithoutPrices.length > 0 && (
                 <>
-                  <WarnIcon className="-my-5 size-20 text-yellow-300" />
+                  <WarnIcon className="-my-4 size-20 text-yellow-strong" />
                   &nbsp;
                 </>
               )}
@@ -137,7 +137,7 @@ export function RebateDistributionRow({
       </GridCell>
       <GridCell className="text-right">
         <ExternalLink
-          className="text-typography-secondary hover:text-typography-primary"
+          className="text-textIcon-secondary hover:text-textIcon-primary"
           variant="icon"
           href={explorerURL + `tx/${rebate.transactionHash}`}
         >
@@ -145,7 +145,7 @@ export function RebateDistributionRow({
         </ExternalLink>
       </GridCell>
       <GridCell className="flex items-center justify-end">
-        <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isSelected })} />
+        <ChevronDownIcon className={cx("size-16 text-textIcon-secondary", { "rotate-180": isSelected })} />
       </GridCell>
     </GridRow>
   );

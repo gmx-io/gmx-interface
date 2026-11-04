@@ -130,7 +130,7 @@ export function PositionItem(p: Props) {
     return (
       <StatsTooltipRow
         label={label}
-        labelClassName="text-balance text-typography-secondary"
+        labelClassName="text-balance text-textIcon-secondary"
         value={
           <>
             <DeltaUsdValue deltaUsd={priceImpactUsd} fallback="..." />
@@ -178,7 +178,7 @@ export function PositionItem(p: Props) {
               valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
-                "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                "text-red-strong": p.position.pendingBorrowingFeesUsd !== 0n,
               })}
             />
             <StatsTooltipRow
@@ -187,7 +187,7 @@ export function PositionItem(p: Props) {
               valueClassName="numbers"
               showDollar={false}
               textClassName={cx({
-                "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                "text-red-strong": p.position.pendingFundingFeesUsd !== 0n,
               })}
             />
             {savedShowPnlAfterFees && (
@@ -205,7 +205,7 @@ export function PositionItem(p: Props) {
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={cx({
-                    "text-red-500": p.position.closingFeeUsd !== 0n,
+                    "text-red-strong": p.position.closingFeeUsd !== 0n,
                   })}
                 />
               </>
@@ -247,7 +247,7 @@ export function PositionItem(p: Props) {
 
     return (
       <>
-        <div className="mb-4 text-typography-primary">
+        <div className="mb-4 text-textIcon-primary">
           <Trans>Since position opened</Trans>
         </div>
         <StatsTooltipRow
@@ -256,7 +256,7 @@ export function PositionItem(p: Props) {
           value={<UsdValue usd={totals && -totals.borrowingFeeUsd} fallback={fallback} />}
           valueClassName="numbers"
           textClassName={cx({
-            "text-red-500": totals !== undefined && totals.borrowingFeeUsd !== 0n,
+            "text-red-strong": totals !== undefined && totals.borrowingFeeUsd !== 0n,
           })}
         />
         <StatsTooltipRow
@@ -265,7 +265,7 @@ export function PositionItem(p: Props) {
           value={<DeltaUsdValue deltaUsd={totals && -totals.fundingFeePaidUsd} fallback={fallback} />}
           valueClassName="numbers"
           textClassName={cx({
-            "text-red-500": totals !== undefined && totals.fundingFeePaidUsd !== 0n,
+            "text-red-strong": totals !== undefined && totals.fundingFeePaidUsd !== 0n,
           })}
         />
         <StatsTooltipRow
@@ -274,11 +274,11 @@ export function PositionItem(p: Props) {
           value={<DeltaUsdValue deltaUsd={totals?.fundingFeeReceivedUsd} fallback={fallback} />}
           valueClassName="numbers"
           textClassName={cx({
-            "text-green-500": totals !== undefined && totals.fundingFeeReceivedUsd > 0,
+            "text-green-strong": totals !== undefined && totals.fundingFeeReceivedUsd > 0,
           })}
         />
         {lifetimeFees.status === "unavailable" && (
-          <div className="text-typography-secondary">
+          <div className="text-textIcon-secondary">
             <Trans>Full history unavailable for this position</Trans>
           </div>
         )}
@@ -338,7 +338,7 @@ export function PositionItem(p: Props) {
                   value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
-                    "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                    "text-red-strong": p.position.pendingBorrowingFeesUsd !== 0n,
                   })}
                 />
                 <StatsTooltipRow
@@ -347,11 +347,11 @@ export function PositionItem(p: Props) {
                   value={<DeltaUsdValue deltaUsd={-p.position.pendingFundingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
-                    "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                    "text-red-strong": p.position.pendingFundingFeesUsd !== 0n,
                   })}
                 />
                 <br />
-                <div className="mb-4 text-typography-primary">
+                <div className="mb-4 text-textIcon-primary">
                   <Trans>Claimable</Trans>
                 </div>
                 <StatsTooltipRow
@@ -360,13 +360,13 @@ export function PositionItem(p: Props) {
                   value={<DeltaUsdValue deltaUsd={p.position.pendingClaimableFundingFeesUsd} fallback="..." />}
                   valueClassName="numbers"
                   textClassName={cx({
-                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
+                    "text-green-strong": p.position.pendingClaimableFundingFeesUsd > 0,
                   })}
                 />
                 <br />
                 {renderLifetimeFees()}
                 <br />
-                <div className="mb-4 text-typography-primary">
+                <div className="mb-4 text-textIcon-primary">
                   <Trans>Estimated daily fees</Trans>
                 </div>
                 <StatsTooltipRow
@@ -375,7 +375,7 @@ export function PositionItem(p: Props) {
                   value={borrowingFeeRateUsd !== undefined ? <UsdValue usd={-borrowingFeeRateUsd} /> : "..."}
                   valueClassName="numbers"
                   textClassName={cx({
-                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
+                    "text-red-strong": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
                   })}
                 />
                 <StatsTooltipRow
@@ -395,7 +395,7 @@ export function PositionItem(p: Props) {
 
           {!p.position.isOpening && !p.hideActions && canEditMargin && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
-              <EditIcon className="text-typography-secondary" width={16} height={16} />
+              <EditIcon className="text-textIcon-secondary" width={16} height={16} />
             </span>
           )}
         </div>
@@ -416,7 +416,14 @@ export function PositionItem(p: Props) {
 
   function renderLiquidationPrice() {
     if (!p.position.marketInfo) {
-      return <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />;
+      return (
+        <Skeleton
+          width={60}
+          count={1}
+          baseColor="var(--color-fill-skeleton)"
+          highlightColor="var(--color-fill-skeleton)"
+        />
+      );
     }
 
     let liqPriceWarning: string | undefined;
@@ -581,7 +588,7 @@ export function PositionItem(p: Props) {
                         value={
                           <div className="flex items-center">
                             <span>{indexName && indexName}</span>
-                            <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                            <span className="subtext !leading-1">{poolName && `[${poolName}]`}</span>
                           </div>
                         }
                         showDollar={false}
@@ -620,7 +627,7 @@ export function PositionItem(p: Props) {
             <div className="Exchange-list-info-label">
               <LeverageValue
                 leverage={p.position.leverage}
-                className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}
+                className={cx("muted mr-4 rounded-2 px-4 numbers")}
                 fallback="..."
               />
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
@@ -630,7 +637,7 @@ export function PositionItem(p: Props) {
           </div>
         </TableTd>
         <TableTd>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
               {showSizeInTokens ? (
                 formatBalanceAmount(
@@ -658,7 +665,7 @@ export function PositionItem(p: Props) {
               {renderNetValue()}
               {displayedPnl !== undefined && (
                 <div
-                  className={cx("text-body-small flex items-center gap-2 numbers", {
+                  className={cx("text-body-small flex items-center gap-4 numbers", {
                     positive: displayedPnl > 0,
                     negative: displayedPnl < 0,
                     muted: displayedPnl == 0n,
@@ -667,7 +674,7 @@ export function PositionItem(p: Props) {
                   onClick={p.onShareClick}
                 >
                   <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
-                  {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
+                  {p.onShareClick && <NewLinkThinIcon className="size-14 shrink-0" />}
                 </div>
               )}
             </div>
@@ -758,7 +765,7 @@ export function PositionItem(p: Props) {
           <div className="text-body-medium flex items-center gap-8">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
-                "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+                "after:absolute after:-left-8 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-strong":
                   isCurrentMarket,
               })}
             >
@@ -783,14 +790,14 @@ export function PositionItem(p: Props) {
         <AppCardSection>
           {showDebugValues && (
             <div className="App-card-row">
-              <div className="font-medium text-typography-secondary">
+              <div className="font-medium text-textIcon-secondary">
                 <Trans>Key</Trans>
               </div>
               <div className="debug-key muted">{p.position.contractKey}</div>
             </div>
           )}
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Pool</Trans>
             </div>
             <div>
@@ -801,7 +808,7 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="cursor-pointer select-none font-medium text-typography-secondary" onClick={handleSizeClick}>
+            <div className="cursor-pointer select-none font-medium text-textIcon-secondary" onClick={handleSizeClick}>
               <Trans>Size</Trans>
             </div>
             <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
@@ -817,18 +824,18 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Net value</Trans>
             </div>
             <div>{renderNetValue()}</div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               {savedShowPnlAfterFees ? t`PnL after all fees` : t`PnL`}
             </div>
             <div>
               <span
-                className={cx("flex items-center gap-2 numbers", {
+                className={cx("flex items-center gap-4 numbers", {
                   positive: displayedPnl > 0,
                   negative: displayedPnl < 0,
                   muted: displayedPnl == 0n,
@@ -837,12 +844,12 @@ export function PositionItem(p: Props) {
                 onClick={p.onShareClick}
               >
                 <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
-                {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
+                {p.onShareClick && <NewLinkThinIcon className="mt-4 size-16 shrink-0" />}
               </span>
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Margin</Trans>
             </div>
             <div>{renderCollateral()}</div>
@@ -850,7 +857,7 @@ export function PositionItem(p: Props) {
         </AppCardSection>
         <AppCardSection>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Entry price</Trans>
             </div>
             <div className="numbers">
@@ -862,7 +869,7 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Mark price</Trans>
             </div>
             <div className="numbers">
@@ -874,14 +881,14 @@ export function PositionItem(p: Props) {
             </div>
           </div>
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">
+            <div className="font-medium text-textIcon-secondary">
               <Trans>Liquidation price</Trans>
             </div>
             <div>{renderLiquidationPrice()}</div>
           </div>
           {!p.hideActions && (
             <div className="App-card-row">
-              <div className="font-medium text-typography-secondary">
+              <div className="font-medium text-textIcon-secondary">
                 <Trans>TP/SL</Trans>
               </div>
               <div>
@@ -899,7 +906,7 @@ export function PositionItem(p: Props) {
           )}
         </AppCardSection>
         <AppCardSection className="!border-b-0">
-          <div className="font-medium text-typography-secondary">
+          <div className="font-medium text-textIcon-secondary">
             <Trans>Orders</Trans>
           </div>
 
@@ -912,11 +919,11 @@ export function PositionItem(p: Props) {
 
         <div ref={closeSentinelRef} />
         {!p.hideActions && (
-          <div className={cx("z-10", isCardTopVisible && "sticky bottom-14 bg-slate-950")}>
+          <div className={cx("z-10", isCardTopVisible && "sticky bottom-12 bg-fill-background")}>
             <AppCardSection
               className={cx(
-                "rounded-b-8 border-t-1/2 border-slate-600 bg-slate-900",
-                isCardTopVisible && "after:absolute after:inset-x-0 after:top-full after:h-8 after:bg-slate-950",
+                "rounded-b-8 border-t-1/2 border-stroke-primary bg-fill-surfaceBase",
+                isCardTopVisible && "after:absolute after:inset-x-0 after:top-full after:h-8 after:bg-fill-background",
                 isCloseStuck && isCardTopVisible && "shadow-[0_-6px_24px_rgba(0,0,0,0.4)]"
               )}
             >

@@ -50,7 +50,7 @@ export function OutOfTokenErrorAlert({
           />
           .{" "}
           <span
-            className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+            className="text-body-small cursor-pointer font-medium text-textIcon-secondary underline underline-offset-2"
             onClick={() => {
               onClose();
               history.push(`/trade/swap?to=${token.symbol}`);
@@ -60,7 +60,7 @@ export function OutOfTokenErrorAlert({
           </span>{" "}
           or{" "}
           <span
-            className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
+            className="text-body-small cursor-pointer font-medium text-textIcon-secondary underline underline-offset-2"
             onClick={() => {
               onClose();
               setDepositViewTokenAddress(convertTokenAddress(chainId, token.address, "native"));

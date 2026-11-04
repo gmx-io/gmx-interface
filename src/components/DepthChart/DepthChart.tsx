@@ -50,7 +50,7 @@ const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
   position: "top",
   offset: 0,
-  fill: "var(--color-typography-primary)",
+  fill: "var(--color-textIcon-primary)",
   opacity: 0.7,
   dx: -3,
   fontSize: 12,
@@ -64,9 +64,9 @@ const getOraclePriceLabel = (): ImplicitLabelType => ({
   position: "bottom",
   offset: 28,
   value: t`Oracle price`,
-  fill: "var(--color-typography-primary)",
+  fill: "var(--color-textIcon-primary)",
   opacity: 0.7,
-  fontSize: 10,
+  fontSize: 12,
 });
 
 const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
@@ -74,7 +74,7 @@ const DOLLAR: bigint = expandDecimals(1n, USD_DECIMALS);
 const CHART_MARGIN: Margin = { bottom: 10, top: 20, right: 0 };
 const TOOLTIP_WRAPPER_POSITION = { x: 0, y: 0 };
 const Y_AXIS_TICK = {
-  fill: "var(--color-typography-primary)",
+  fill: "var(--color-textIcon-primary)",
   opacity: 0.7,
   fontSize: 12,
 } satisfies SVGProps<SVGTextElement>;
@@ -118,8 +118,8 @@ export const DepthChart = memo(
 
     const theme = useTheme();
 
-    const redColor = colors.red[500][theme.theme];
-    const greenColor = colors.green[500][theme.theme];
+    const redColor = colors.red.strong[theme.theme];
+    const greenColor = colors.green.strong[theme.theme];
 
     const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
       leftExecutionPrice: leftMaxExecutionPrice,
@@ -342,7 +342,7 @@ export const DepthChart = memo(
             </linearGradient>
           </defs>
 
-          <CartesianGrid strokeDasharray="2 2" stroke="var(--color-typography-primary)" opacity={0.07} />
+          <CartesianGrid strokeDasharray="2 2" stroke="var(--color-textIcon-primary)" opacity={0.07} />
 
           {drawLeftTransparent && (
             <>
@@ -485,7 +485,7 @@ export const DepthChart = memo(
           <ReferenceLine
             x={oraclePrice}
             label={oraclePriceLabel}
-            stroke="var(--color-typography-primary)"
+            stroke="var(--color-textIcon-primary)"
             opacity={0.6}
             strokeDasharray="2 2"
           />
@@ -676,9 +676,9 @@ function Tick(
       y={y}
       height={height}
       textAnchor={textAnchor}
-      fill="var(--color-typography-primary)"
+      fill="var(--color-textIcon-primary)"
       opacity={index === marketPriceIndex ? 1 : 0.7}
-      fontWeight={index === marketPriceIndex ? "bold" : "normal"}
+      fontWeight={index === marketPriceIndex ? 500 : "normal"}
       verticalAnchor={verticalAnchor}
       fontSize={12}
     >

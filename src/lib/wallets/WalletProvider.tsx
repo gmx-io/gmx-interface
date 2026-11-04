@@ -44,7 +44,7 @@ export default function WalletProvider({
     () => ({
       appearance: {
         theme,
-        accentColor: colors.blue[600][theme] as `#${string}`,
+        accentColor: colors.button.primary[theme] as `#${string}`,
         logo: gmxLogoElement,
         walletChainType: "ethereum-only" as const,
         walletList: [...PRIVY_WALLET_LIST],

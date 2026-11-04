@@ -25,7 +25,7 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
             position="left-start"
             variant="iconStroke"
             content={
-              <div className="text-typography-primary">
+              <div className="text-textIcon-primary">
                 {isDeposit ? (
                   <Trans>
                     First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG

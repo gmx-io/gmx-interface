@@ -66,7 +66,7 @@ export async function changeUiStake(session: FundedSession, wallet: UiWallet, pa
     const button = modal.locator("button.primary-action");
     if (withdraw) {
       assert.equal(inventory.stakePowerBaseline, "0");
-      const acknowledgment = modal.getByRole("button", { name: /^I acknowledge that I will lose/ });
+      const acknowledgment = modal.getByRole("checkbox", { name: /^I acknowledge that I will lose/ });
       await expect
         .poll(
           async () => {
@@ -142,10 +142,10 @@ export async function claimUiRewards(session: FundedSession, wallet: UiWallet, p
       "Claim GMX rewards",
       "Claim esGMX rewards",
     ]) {
-      const toggle = modal.getByRole("button").filter({ has: page.getByText(label, { exact: true }) });
+      const toggle = modal.getByRole("checkbox").filter({ has: page.getByText(label, { exact: true }) });
       if ((await toggle.getAttribute("class"))?.split(/\s+/).includes("selected")) await toggle.click();
     }
-    const weth = modal.getByRole("button", { name: /Claim WETH rewards/ });
+    const weth = modal.getByRole("checkbox", { name: /Claim WETH rewards/ });
     if (!(await weth.getAttribute("class"))?.split(/\s+/).includes("selected")) await weth.click();
     await expect(weth).toHaveClass(/selected/);
     await wallet.submit(

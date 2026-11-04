@@ -11,8 +11,8 @@
   transform-origin: top right;
   border-radius: 8px;
   overflow: hidden;
-  background: var(--color-slate-900);
-  border: 0.5px solid var(--color-slate-600);
+  background: var(--color-fill-surfaceBase);
+  border: 0.5px solid var(--color-stroke-primary);
   list-style: none;
   outline: none;
   z-index: 1000;
@@ -21,14 +21,15 @@
   .menu-item {
     display: flex !important;
     align-items: center;
-    color: var(--color-slate-100);
-    font-size: 13px;
+    color: var(--color-textIcon-secondary);
+    font-size: var(--font-size-body-small);
+    line-height: var(--line-height-body-small);
     padding: 8px 12px;
     font-weight: 500;
 
     &:hover {
       background: var(--color-fill-surfaceHover);
-      color: var(--color-typography-primary);
+      color: var(--color-textIcon-primary);
     }
 
     > p {

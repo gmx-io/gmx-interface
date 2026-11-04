@@ -109,7 +109,7 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
   }
 
   if (!lastPoint) {
-    return <div className="flex items-center gap-8 text-13 font-medium">{t`Debug values unavailable`}</div>;
+    return <div className="text-body-small flex items-center gap-8 font-medium">{t`Debug values unavailable`}</div>;
   }
 
   return [
@@ -154,7 +154,7 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
       value: -lastPoint!.startUnrealizedFees,
     },
   ].map(({ className, text, value }) => (
-    <div key={text} className="flex items-center gap-8 text-13 font-medium">
+    <div key={text} className="text-body-small flex items-center gap-8 font-medium">
       <div className={`inline-block size-4 shrink-0 rounded-full ${className}`} />
       <span>
         {text} <span className={getPositiveOrNegativeClass(value)}>{formatUsd(value)}</span>

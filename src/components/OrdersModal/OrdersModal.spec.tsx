@@ -180,7 +180,7 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect((view.getByRole("button", { name: "Cancel all" }) as HTMLButtonElement).disabled).toBe(false);
     const [editButton, cancelButton] = isMobile
       ? [view.getByRole("button", { name: "Edit" }), view.getByRole("button", { name: "Cancel", exact: true })]
-      : view.getAllByRole("button", { name: "" });
+      : [view.getByRole("button", { name: "Edit order" }), view.getByRole("button", { name: "Cancel order" })];
     fireEvent.click(editButton);
     expect(state.editingOrder).toHaveBeenCalledWith({ orderKey: "existing", source: "OrdersModal" });
     fireEvent.click(cancelButton);

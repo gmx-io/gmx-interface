@@ -60,7 +60,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
         <thead>
           <TableTheadTr>
             {columns.map((column) => (
-              <TableTh key={column} className="sticky -top-1 bg-slate-900 first:!pl-20 last:!pr-20">
+              <TableTh key={column} className="sticky top-0 bg-fill-surfaceBase first:!pl-20 last:!pr-20">
                 <Trans>{column}</Trans>
               </TableTh>
             ))}
@@ -78,11 +78,11 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
       </table>
       {isMobile && composition.length > CLOSED_COUNT ? (
         <div
-          className="flex flex-row items-center justify-center gap-6 px-16 py-10 text-typography-secondary"
+          className="flex flex-row items-center justify-center gap-4 px-16 py-8 text-textIcon-secondary"
           onClick={toggleOpen}
         >
           <span>{isOpen ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}</span>
-          {isOpen ? <ChevronUpIcon className="mt-2 size-12" /> : <ChevronDownIcon className="mt-2 size-12" />}
+          {isOpen ? <ChevronUpIcon className="mt-4 size-12" /> : <ChevronDownIcon className="mt-4 size-12" />}
         </div>
       ) : null}
     </div>
@@ -109,7 +109,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
             symbol={item.type === "market" ? getGlvOrMarketIconSymbol(item.market) : item.token.symbol}
             displaySize={24}
           />
-          {item.type === "backing" ? <span className="capitalize text-typography-secondary">{item.side}:</span> : null}
+          {item.type === "backing" ? <span className="capitalize text-textIcon-secondary">{item.side}:</span> : null}
           <span className="overflow-hidden text-ellipsis whitespace-nowrap">
             {item.type === "market" ? <>{getMarketIndexName(item.market)}</> : item.token.symbol}
           </span>

@@ -102,43 +102,43 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Network fees:</span> every fee row shows the token you
-          pay with and which balance pays it
+          <span className="font-medium text-textIcon-primary">Network fees:</span> every fee row shows the token you pay
+          with and which balance pays it
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Low balance:</span> fee messages now name the missing
+          <span className="font-medium text-textIcon-primary">Low balance:</span> fee messages now name the missing
           token and how to top it up
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Max button:</span> it now shows how much it keeps back
-          for the network fee
+          <span className="font-medium text-textIcon-primary">Max button:</span> it now shows how much it keeps back for
+          the network fee
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Tradebox:</span> a position increase that would fail is
+          <span className="font-medium text-textIcon-primary">Tradebox:</span> a position increase that would fail is
           now blocked before you sign
         </span>
         <span>
-          <span className="font-medium text-typography-primary">One-Click Trading:</span> an outdated approval no longer
+          <span className="font-medium text-textIcon-primary">One-Click Trading:</span> an outdated approval no longer
           blocks your orders
         </span>
         <span>
-          <span className="font-medium text-typography-primary">TP/SL:</span> your orders show in the Orders tab the
+          <span className="font-medium text-textIcon-primary">TP/SL:</span> your orders show in the Orders tab the
           moment you submit them
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Startup:</span> an app update no longer leaves you on a
+          <span className="font-medium text-textIcon-primary">Startup:</span> an app update no longer leaves you on a
           blank screen
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Chart:</span> colors you set in Chart settings now stay
+          <span className="font-medium text-textIcon-primary">Chart:</span> colors you set in Chart settings now stay
           after a reload or a theme switch
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Homepage:</span> picking a network now opens the app on
+          <span className="font-medium text-textIcon-primary">Homepage:</span> picking a network now opens the app on
           that network
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Earn:</span> fees earned on GM no longer show N/A with a
+          <span className="font-medium text-textIcon-primary">Earn:</span> fees earned on GM no longer show N/A with a
           tiny GM balance
         </span>
       </span>
@@ -161,19 +161,19 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Earn:</span> the Portfolio overview figures are
-          corrected and now sit in a single band with Staking and LP aligned, Expected 365d fees is back, and GM earned
-          fees read N/A instead of $0.00 for balances held outside your wallet. LP earnings load in a fraction of the
-          time. The undelegated DAO voting power notice no longer blocks the Stake and Claim buttons.
+          <span className="font-medium text-textIcon-primary">Earn:</span> the Portfolio overview figures are corrected
+          and now sit in a single band with Staking and LP aligned, Expected 365d fees is back, and GM earned fees read
+          N/A instead of $0.00 for balances held outside your wallet. LP earnings load in a fraction of the time. The
+          undelegated DAO voting power notice no longer blocks the Stake and Claim buttons.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Referrals:</span> your codes now sit above the overview,
+          <span className="font-medium text-textIcon-primary">Referrals:</span> your codes now sit above the overview,
           so you see them without scrolling. The tabs are Trader Benefits and Affiliate Dashboard, the page advertises
           up to 25% commission, and the Rebates chart no longer rounds sub-cent amounts away.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Positions and orders:</span> closing 100% of a position
-          at market now cancels that position's pending margin deposits in the same transaction and refunds the reserved
+          <span className="font-medium text-textIcon-primary">Positions and orders:</span> closing 100% of a position at
+          market now cancels that position's pending margin deposits in the same transaction and refunds the reserved
           collateral and execution fee, and a deposit orphaned by a liquidation gets its own message on the Orders tab
           telling you to cancel and reclaim. Settling funding fees on a position below its minimum collateral is blocked
           with a reason instead of failing silently, and editing margin no longer switches your Express gas payment
@@ -182,12 +182,12 @@ export const appEventsData: EventData[] = [
           TP/SL prices instead of showing a misleading number.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#", so links
+          <span className="font-medium text-textIcon-primary">Links:</span> app URLs no longer contain "#", so links
           preview properly and can be shared anywhere, and your old links still work. A link like /trade?to=BTC now
           arrives with the market and pool already selected, without overriding the direction you were on.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Installed app and mobile:</span> the install dialog now
+          <span className="font-medium text-textIcon-primary">Installed app and mobile:</span> the install dialog now
           describes the app and adds Trade, Pools and Earn shortcuts, the installed app loads network-first so a new
           release is picked up instead of the cached one, and an Update available banner offers a reload instead of
           switching versions mid-session. Modals, toasts and the trade curtain respect the notch and home indicator.
@@ -196,19 +196,18 @@ export const appEventsData: EventData[] = [
           dropdown opens GMTrade instead of leaving the dropdown open.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Market and token search:</span> searching inside the
+          <span className="font-medium text-textIcon-primary">Market and token search:</span> searching inside the
           Crypto, TradFi or Recently Listed filters now finds markets outside the active filter and offers to widen the
           search, and empty states name what you searched for and point at the tab that has results. The Swap receive
           list is sorted by liquidity, so the order is stable and the deepest options come first.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Stats:</span> the buyback chart plots monthly bars
-          across the full history, with total bought GMX valued at today's price, and the stats page draws each headline
-          figure and its per-chain breakdown from one source, naming a chain with missing data instead of blanking the
-          totals.
+          <span className="font-medium text-textIcon-primary">Stats:</span> the buyback chart plots monthly bars across
+          the full history, with total bought GMX valued at today's price, and the stats page draws each headline figure
+          and its per-chain breakdown from one source, naming a chain with missing data instead of blanking the totals.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Fixes:</span> the Trade History margin delta is correct
+          <span className="font-medium text-textIcon-primary">Fixes:</span> the Trade History margin delta is correct
           when your pay token is not the position collateral, and returning users see a loading state instead of a
           Connect wallet flash while the session restores.
         </span>
@@ -225,8 +224,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via
-        GLV <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market
-        dropdown.
+        GLV <span className="text-textIcon-secondary">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the
+        market dropdown.
       </>
     ),
   },
@@ -247,43 +246,43 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Earn Portfolio:</span> the Portfolio tab now shows what
+          <span className="font-medium text-textIcon-primary">Earn Portfolio:</span> the Portfolio tab now shows what
           you have earned without hovering. Lifetime and last-7-day totals sit above your assets, split into Staking and
           LP, and GLV vault earnings appear for the first time. Every GM pool and GLV card carries its own 7d, expected
           365d and lifetime line.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Margin deposits:</span> Edit margin now takes a trigger
+          <span className="font-medium text-textIcon-primary">Margin deposits:</span> Edit margin now takes a trigger
           price, so you can queue extra margin that only lands if the market reaches it. It shows as a Deposit margin
           order you can edit or replace from the Orders tab.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">History exports:</span> the CSV button on Trade History
+          <span className="font-medium text-textIcon-primary">History exports:</span> the CSV button on Trade History
           and Claims History now opens an export picker, with a detailed GMX format plus Koinly, CoinTracker and
           CoinLedger. Exports cover your full filtered history, not just the rows on screen.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Trade History:</span> the settlement tooltip on a closed
+          <span className="font-medium text-textIcon-primary">Trade History:</span> the settlement tooltip on a closed
           position now reconciles the whole lifecycle, from the margin you put in through every increase, withdrawal and
           partial close to the final payout. Executed swaps show their swap fee and price impact alongside.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Order warnings:</span> the copy for an order that cannot
+          <span className="font-medium text-textIcon-primary">Order warnings:</span> the copy for an order that cannot
           execute is now the same across the Orders tab, the tradebox and position editing, and each one tells you what
           to do about it. A limit increase with a trigger beyond your liquidation price is now previewed as a fresh
           position and warns you.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Wallet funding:</span> Buy with card and Transfer from
+          <span className="font-medium text-textIcon-primary">Wallet funding:</span> Buy with card and Transfer from
           another chain are available from Receive for every wallet, not just email and social logins. On desktop,
           Receive to Wallet has a proper Back button.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#". Your old
+          <span className="font-medium text-textIcon-primary">Links:</span> app URLs no longer contain "#". Your old
           links and bookmarks still work and are rewritten in place, keeping your referral code, network and page.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Fixes:</span> position PnL matches what the contract
+          <span className="font-medium text-textIcon-primary">Fixes:</span> position PnL matches what the contract
           settles when the pool PnL cap applies, Staking Power Share shows three decimals on the GMX card so you can see
           small changes in your share, swap slippage no longer accepts values above 99%, and the TP/SL edit icon on the
           chart is visible again in light mode.
@@ -308,34 +307,34 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Builders:</span>{" "}
+          <span className="font-medium text-textIcon-primary">Builders:</span>{" "}
           <ExternalLink href="https://gmx.io/builders">gmx.io/builders</ExternalLink> is a new home for teams building
           on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
           direct contact route.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
+          <span className="font-medium text-textIcon-primary">Trader &amp; Affiliate Program:</span>{" "}
           <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume traders
           and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and marketing
           support. Apply from the page, or reach the team on Telegram or a call.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address
-          pages now live at /traders, and the address page is called Trader Profile. GMX Account keeps its own meaning,
-          your trading balance. Your existing links still work.
+          <span className="font-medium text-textIcon-primary">Trader profiles:</span> trader activity and address pages
+          now live at /traders, and the address page is called Trader Profile. GMX Account keeps its own meaning, your
+          trading balance. Your existing links still work.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Referrals:</span> the share card now prints a code you
+          <span className="font-medium text-textIcon-primary">Referrals:</span> the share card now prints a code you
           actually own. A code you transferred away no longer appears on the card, in the QR, or in the copied link, so
           your shares credit you. The two network warnings on your code are now a single icon.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">GMX Account:</span> you can deposit any asset you hold
-          on Arbitrum, not just ETH, USDC and USDT.
+          <span className="font-medium text-textIcon-primary">GMX Account:</span> you can deposit any asset you hold on
+          Arbitrum, not just ETH, USDC and USDT.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Fixes:</span> your selected pool stays put after you
-          close a position, and the Daily and cumulative PnL chart shows its first and last dates.
+          <span className="font-medium text-textIcon-primary">Fixes:</span> your selected pool stays put after you close
+          a position, and the Daily and cumulative PnL chart shows its first and last dates.
         </span>
       </span>
     ),
@@ -354,27 +353,27 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
+          <span className="font-medium text-textIcon-primary">Smart wallets:</span> Safe, Coinbase Smart Wallet, and
           other contract accounts can now use Express and One-Click Trading. If your wallet can't sign or is on the
           wrong network, the app tells you exactly what to fix.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Swaps:</span> the trade box now shows whether your swap
+          <span className="font-medium text-textIcon-primary">Swaps:</span> the trade box now shows whether your swap
           routes through GMX pools or an external aggregator, and tells you which one is short on liquidity instead of a
           generic insufficient-liquidity message.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">One-Click Trading:</span> turning One-Click on and off
-          is reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
+          <span className="font-medium text-textIcon-primary">One-Click Trading:</span> turning One-Click on and off is
+          reliable again. Declining a signature no longer leaves it half-enabled, switching back to Express works
           without clearing your cache, and changing GMX Account networks no longer asks you to re-sign.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Orders and positions:</span> market orders that expire
+          <span className="font-medium text-textIcon-primary">Orders and positions:</span> market orders that expire
           before they can be executed are now labeled as expired in Trade History rather than looking like failures, and
           liquidation time estimates line up with when liquidations actually trigger.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Install as an app:</span> add GMX to your home screen or
+          <span className="font-medium text-textIcon-primary">Install as an app:</span> add GMX to your home screen or
           desktop and launch straight into the app. A more refined experience and further functionality, such as push
           notifications, are still to come.
         </span>
@@ -398,26 +397,26 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Wallet:</span> create a wallet with just a passkey. Face
+          <span className="font-medium text-textIcon-primary">Wallet:</span> create a wallet with just a passkey. Face
           ID, Touch ID, Windows Hello, or Android biometrics get you trading, with no email or seed phrase required.
           Funding is built into the Receive flow: buy crypto with a card, Apple Pay, or Google Pay, or transfer from
           another wallet, exchange, or chain.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Account Dashboard:</span> share your results with a
+          <span className="font-medium text-textIcon-primary">Account Dashboard:</span> share your results with a
           performance card showing your PnL, win rate, and cumulative PnL curve, carrying your referral code.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Orders:</span> TP/SL and TWAP close orders can now
-          return profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a
-          resting increase order would be liquidatable at its trigger price.
+          <span className="font-medium text-textIcon-primary">Orders:</span> TP/SL and TWAP close orders can now return
+          profit and collateral separately, skipping the internal swap and its fee. The app also warns you if a resting
+          increase order would be liquidatable at its trigger price.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Chart:</span> your TradingView drawings and tool
-          settings now survive refreshes.
+          <span className="font-medium text-textIcon-primary">Chart:</span> your TradingView drawings and tool settings
+          now survive refreshes.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Support:</span> the menu now shows how many replies came
+          <span className="font-medium text-textIcon-primary">Support:</span> the menu now shows how many replies came
           in while you were away.
         </span>
       </span>
@@ -439,13 +438,13 @@ export const appEventsData: EventData[] = [
     description: (
       <span className="flex flex-col gap-12">
         <span>
-          <span className="font-medium text-typography-primary">Account Dashboard:</span> the PnL chart now supports
+          <span className="font-medium text-textIcon-primary">Account Dashboard:</span> the PnL chart now supports
           daily, weekly, and monthly views, zoom and pan (pinch on mobile), and shares its date range with Trade
           History. Performance details now show your trader rank and a full breakdown of realized and unrealized PnL and
           fees.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Trade History:</span> filter by position to follow every
+          <span className="font-medium text-textIcon-primary">Trade History:</span> filter by position to follow every
           action in a position's lifecycle, from open to full close.
         </span>
         <video
@@ -464,20 +463,20 @@ export const appEventsData: EventData[] = [
           <source src={release117PositionFilterDemo} type="video/mp4" />
         </video>
         <span>
-          <span className="font-medium text-typography-primary">Wallet:</span> new Send and Receive buttons for your
+          <span className="font-medium text-textIcon-primary">Wallet:</span> new Send and Receive buttons for your
           connected wallet. Receive shows your address as a QR code to copy or scan, and Send transfers tokens to any
           address, with the network fee shown before you confirm.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">GMX Account:</span> deposits now start by picking the
+          <span className="font-medium text-textIcon-primary">GMX Account:</span> deposits now start by picking the
           asset you want to move, and each deposit's progress is tracked in Transfer history.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">TP/SL orders:</span> the app now warns when a TP or SL
+          <span className="font-medium text-textIcon-primary">TP/SL orders:</span> the app now warns when a TP or SL
           trigger price is beyond your liquidation price.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Additional bug fixes:</span> market orders no longer get
+          <span className="font-medium text-textIcon-primary">Additional bug fixes:</span> market orders no longer get
           stuck as pending after executing, and GM pool fee data loads reliably again in Pools and Earn.
         </span>
       </span>
@@ -509,8 +508,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
-        <span className="text-slate-100">[USDM-USDM]</span> on MegaETH.
+        <span className="text-textIcon-secondary">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
+        <span className="text-textIcon-secondary">[USDM-USDM]</span> on MegaETH.
       </>
     ),
   },
@@ -525,32 +524,38 @@ export const appEventsData: EventData[] = [
     summary: (
       <>
         Earn points each epoch across four activities: trading, referral volume, trader PnL, and GLV{" "}
-        <span className="text-slate-100">[USDM-USDM]</span> liquidity.
+        <span className="text-textIcon-secondary">[USDM-USDM]</span> liquidity.
       </>
     ),
     description: (
       <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trading activity</span>
-          <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+          <span className="text-body-small block text-textIcon-secondary">Based on cumulative trading volume</span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Referral volume</span>
-          <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+          <span className="text-body-small block text-textIcon-secondary">
+            Trading volume from wallets using your referral code
+          </span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">Trader PnL</span>
-          <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+          <span className="text-body-small block text-textIcon-secondary">
+            Net positive realized PnL only, to reward skill
+          </span>
         </span>
-        <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+        <img className="mt-4 h-12" src={sparkleIcon} alt="" />
         <span>
           <span className="block font-medium">
-            GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
+            GLV <span className="text-textIcon-secondary">[USDM-USDM]</span> liquidity
           </span>
-          <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
+          <span className="text-body-small block text-textIcon-secondary">
+            Time-weighted share of the vault over the epoch
+          </span>
         </span>
       </span>
     ),
@@ -579,8 +584,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
-        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
-        them under the TradFi category in the market dropdown.
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-textIcon-secondary">[WETH-USDC]</span>.
+        Find them under the TradFi category in the market dropdown.
       </>
     ),
   },
@@ -595,7 +600,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
-        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-textIcon-secondary">[WETH-USDC]</span>.
       </>
     ),
     link: {
@@ -630,7 +635,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>.
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>.
       </>
     ),
   },
@@ -645,7 +650,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>, or GLV{" "}
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>
       </>
     ),
   },
@@ -660,7 +666,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>, or GLV{" "}
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>
       </>
     ),
   },
@@ -675,7 +682,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>, or GLV{" "}
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>
       </>
     ),
   },
@@ -705,7 +713,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM{" "}
-        <span className="text-slate-100">[XAUt0-XAUt0]</span> or GM <span className="text-slate-100">[XAUt0-USDT]</span>
+        <span className="text-textIcon-secondary">[XAUt0-XAUt0]</span> or GM{" "}
+        <span className="text-textIcon-secondary">[XAUt0-USDT]</span>
       </>
     ),
   },
@@ -720,9 +729,10 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         Lending and borrowing are now available for GLV assets:{" "}
-        <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
-        and <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
-        <span className="text-slate-100">[ETH-USDC]</span> on{" "}
+        <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
+        <span className="text-textIcon-secondary">[BTC-USDC]</span> and{" "}
+        <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
+        <span className="text-textIcon-secondary">[ETH-USDC]</span> on{" "}
         <ExternalLink href="https://app.morpho.org/arbitrum/borrow?search=GLV">Morpho</ExternalLink>
       </>
     ),
@@ -738,7 +748,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>, or GLV{" "}
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>
       </>
     ),
   },
@@ -753,7 +764,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>
+        <span className="text-textIcon-secondary">[WBTC-USDC]</span>
       </>
     ),
   },
@@ -768,7 +779,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>
       </>
     ),
   },
@@ -798,7 +809,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>
+        <span className="text-textIcon-secondary">[WETH-USDC]</span>
       </>
     ),
   },
@@ -813,8 +824,8 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> this market, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum
+        <span className="text-textIcon-secondary">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
+        <span className="text-textIcon-secondary">[WETH-USDC]</span> on Arbitrum
       </>
     ),
   },
@@ -829,7 +840,7 @@ export const appEventsData: EventData[] = [
     description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT
+        <span className="text-textIcon-secondary">[WETH-USDC]</span> for AERO and BRETT
       </>
     ),
   },

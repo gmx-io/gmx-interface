@@ -444,7 +444,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const renderTooltipContent = useCallback(
     () => (
-      <span className="text-typography-primary">
+      <span className="text-textIcon-primary">
         <Trans>Accrued funding fees available for settlement</Trans>
       </span>
     ),
@@ -466,7 +466,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           </Trans>
         </div>
       </div>
-      <div className="mb-20 mt-15 h-1 bg-slate-700" />
+      <div className="mb-20 mt-12 h-1 bg-button-background" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
           <div className="ClaimSettleModal-header">
@@ -494,7 +494,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           ))}
         </div>
       </div>
-      <div className="mb-15">
+      <div className="mb-12">
         <NetworkFeeRow
           executionFee={isExpressLoading || isSwitchPending ? undefined : totalExecutionFee}
           gasPaymentParams={

@@ -61,7 +61,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-typography-primary">{t`Swap price impact`}:</div>
+              <div className="text-textIcon-primary">{t`Swap price impact`}:</div>
               <div>
                 <Trans>
                   (
@@ -75,7 +75,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: <DeltaUsdValue deltaUsd={p.swapPriceImpact!.deltaUsd} />,
-          className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-500"),
+          className: getPositiveOrNegativeClass(p.swapPriceImpact!.deltaUsd, "text-green-strong"),
         }
       : undefined;
 
@@ -85,7 +85,7 @@ export function TradeFeesRow(p: Props) {
             id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
             label: (
               <>
-                <div className="text-typography-primary">
+                <div className="text-textIcon-primary">
                   {t`External swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
@@ -104,7 +104,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.externalSwapFee.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.externalSwapFee.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.externalSwapFee.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -113,12 +113,12 @@ export function TradeFeesRow(p: Props) {
         id: `swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
         label: (
           <>
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>
                 Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
               </Trans>
               {showDebugValues && (
-                <span className="text-typography-secondary">
+                <span className="text-textIcon-secondary">
                   <Trans>in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}</Trans>
                 </span>
               )}
@@ -137,7 +137,7 @@ export function TradeFeesRow(p: Props) {
           </>
         ),
         value: <DeltaUsdValue deltaUsd={swap.deltaUsd} />,
-        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-500"),
+        className: getPositiveOrNegativeClass(swap.deltaUsd, "text-green-strong"),
       })) || [];
 
     const swapProfitFeeRow =
@@ -146,7 +146,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-typography-primary">{t`Swap profit fee`}:</div>
+                <div className="text-textIcon-primary">{t`Swap profit fee`}:</div>
                 <div>
                   <Trans>
                     (
@@ -165,7 +165,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.swapProfitFee?.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.swapProfitFee?.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -175,7 +175,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div className="text-typography-primary">{feesTypeName}:</div>
+              <div className="text-textIcon-primary">{feesTypeName}:</div>
               <div>
                 <Trans>
                   (
@@ -189,7 +189,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: <DeltaUsdValue deltaUsd={p.positionFee?.deltaUsd} />,
-          className: getPositiveOrNegativeClass(p.positionFee?.deltaUsd, "text-green-500"),
+          className: getPositiveOrNegativeClass(p.positionFee?.deltaUsd, "text-green-strong"),
         }
       : undefined;
 
@@ -198,7 +198,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-typography-primary">{t`UI fee`}:</div>
+              <div className="text-textIcon-primary">{t`UI fee`}:</div>
               <div>
                 <Trans>
                   (
@@ -212,7 +212,7 @@ export function TradeFeesRow(p: Props) {
             </>
           ),
           value: <DeltaUsdValue deltaUsd={p.uiFee?.deltaUsd} />,
-          className: "text-red-500",
+          className: "text-red-strong",
         }
       : undefined;
 
@@ -222,7 +222,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}:</div>
+                <div className="text-textIcon-primary">{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}:</div>
                 <div>
                   <Trans>
                     (
@@ -236,7 +236,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.uiSwapFee.deltaUsd} />,
-            className: "text-red-500",
+            className: "text-red-strong",
           }
         : undefined;
 
@@ -244,12 +244,12 @@ export function TradeFeesRow(p: Props) {
       ? {
           id: "feeDiscount",
           label: (
-            <div className="text-typography-primary">
+            <div className="text-textIcon-primary">
               <Trans>Referral discount</Trans>:
             </div>
           ),
           value: <DeltaUsdValue deltaUsd={p.feeDiscountUsd} />,
-          className: "text-green-500",
+          className: "text-green-strong",
         }
       : undefined;
 
@@ -257,9 +257,9 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-typography-primary">{t`Borrow fee`}:</div>,
+            label: <div className="text-textIcon-primary">{t`Borrow fee`}:</div>,
             value: <DeltaUsdValue deltaUsd={p.borrowFee.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -267,9 +267,9 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-typography-primary">{t`Funding fee`}:</div>,
+            label: <div className="text-textIcon-primary">{t`Funding fee`}:</div>,
             value: <DeltaUsdValue deltaUsd={p.fundingFee.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -280,7 +280,7 @@ export function TradeFeesRow(p: Props) {
             id: "proportionalPendingImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">
+                <div className="text-textIcon-primary">
                   <Trans>Proportional stored impact</Trans>:
                 </div>
                 <div>
@@ -296,7 +296,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.proportionalPendingImpact.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.proportionalPendingImpact.deltaUsd, "text-green-strong"),
           }
         : undefined);
 
@@ -307,7 +307,7 @@ export function TradeFeesRow(p: Props) {
             id: "closePriceImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Close price impact`}:</div>
+                <div className="text-textIcon-primary">{t`Close price impact`}:</div>
                 <div>
                   <Trans>
                     (
@@ -321,7 +321,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.decreasePositionPriceImpact.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.decreasePositionPriceImpact.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.decreasePositionPriceImpact.deltaUsd, "text-green-strong"),
           }
         : undefined);
 
@@ -331,7 +331,7 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div className="text-typography-primary">{t`Net price impact`}:</div>
+                <div className="text-textIcon-primary">{t`Net price impact`}:</div>
                 <div>
                   <Trans>
                     (
@@ -345,7 +345,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.totalPendingImpact.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.totalPendingImpact.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.totalPendingImpact.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -355,7 +355,7 @@ export function TradeFeesRow(p: Props) {
             id: "priceImpactDiff",
             label: (
               <>
-                <div className="text-typography-primary">{t`Price impact rebates`}:</div>
+                <div className="text-textIcon-primary">{t`Price impact rebates`}:</div>
                 <div>
                   <Trans>
                     (
@@ -369,7 +369,7 @@ export function TradeFeesRow(p: Props) {
               </>
             ),
             value: <DeltaUsdValue deltaUsd={p.priceImpactDiff.deltaUsd} />,
-            className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green-500"),
+            className: getPositiveOrNegativeClass(p.priceImpactDiff.deltaUsd, "text-green-strong"),
           }
         : undefined;
 
@@ -378,10 +378,10 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-typography-primary">
+                <div className="text-textIcon-primary">
                   <span className="relative">
                     <Trans>Bonus rebate</Trans>
-                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
+                    <img className="absolute -right-8 top-0 h-7" src={sparkleIcon} alt={t`Sparkle`} />
                   </span>
                   :
                 </div>
@@ -399,7 +399,7 @@ export function TradeFeesRow(p: Props) {
                 }
               />
             ),
-            className: "text-green-500",
+            className: "text-green-strong",
             id: "rebate",
           }
         : undefined;
@@ -482,7 +482,7 @@ export function TradeFeesRow(p: Props) {
       const rebatedTextWithSparkle = (
         <span className="relative">
           <Trans>(rebated)</Trans>
-          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
+          <img className="absolute -right-4 top-0 h-7" src={sparkleIcon} alt={t`Sparkle`} />
         </span>
       );
 
@@ -547,8 +547,8 @@ export function TradeFeesRow(p: Props) {
         <DeltaUsdValue
           deltaUsd={totalFeeUsd}
           className={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-300": shouldShowWarning,
+            "text-green-strong": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-yellow-strong": shouldShowWarning,
           })}
         />
       );
@@ -557,8 +557,8 @@ export function TradeFeesRow(p: Props) {
         <TooltipWithPortal
           tooltipClassName="TradeFeesRow-tooltip"
           handleClassName={cx({
-            "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
+            "text-green-strong": totalFeeUsd > 0 && !shouldShowWarning,
+            "text-yellow-strong !decoration-yellow-strong/50": shouldShowWarning,
           })}
           handle={<DeltaUsdValue deltaUsd={totalFeeUsd} />}
           position="left-start"

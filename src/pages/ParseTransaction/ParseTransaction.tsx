@@ -215,7 +215,7 @@ export function ParseTransactionPage() {
 
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
-      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+      <div className="text-body-large m-auto pt-24 text-center text-red-strong xl:px-[10%]">
         <Trans>Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia</Trans>
       </div>
     );
@@ -223,7 +223,7 @@ export function ParseTransactionPage() {
 
   if (!txHash) {
     return (
-      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+      <div className="text-body-large m-auto pt-24 text-center text-red-strong xl:px-[10%]">
         <Trans>Invalid transaction</Trans>
       </div>
     );
@@ -231,7 +231,7 @@ export function ParseTransactionPage() {
 
   if (error) {
     return (
-      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+      <div className="text-body-large m-auto pt-24 text-center text-red-strong xl:px-[10%]">
         <Trans>Error:</Trans> {error.message}
       </div>
     );
@@ -272,7 +272,7 @@ export function ParseTransactionPage() {
             {isOrderTransactionsLoading ? (
               <Loader />
             ) : orderTransactionsError ? (
-              <div className="text-body-medium text-red-400">
+              <div className="text-body-medium text-red-strong">
                 <Trans>Failed to load order data:</Trans> {orderTransactionsError.message}
               </div>
             ) : (
@@ -286,14 +286,14 @@ export function ParseTransactionPage() {
                       <Trans>Order key:</Trans> {entry.orderKey}
                     </div>
                     {!entry.transactions ? (
-                      <div className="text-body-medium text-typography-secondary">
+                      <div className="text-body-medium text-textIcon-secondary">
                         <Trans>Order data unavailable yet</Trans>
                       </div>
                     ) : lifecycleTarget ? (
                       isOrderLifecycleEventsLoading ? (
                         <Loader />
                       ) : orderLifecycleEventsError ? (
-                        <div className="text-body-medium text-red-400">
+                        <div className="text-body-medium text-red-strong">
                           <Trans>Failed to parse related transaction:</Trans> {orderLifecycleEventsError.message}
                         </div>
                       ) : (
@@ -318,7 +318,7 @@ export function ParseTransactionPage() {
                         </>
                       )
                     ) : (
-                      <div className="text-body-medium text-typography-secondary">
+                      <div className="text-body-medium text-textIcon-secondary">
                         <Trans>No executed or cancelled transaction yet</Trans>
                       </div>
                     )}
@@ -515,7 +515,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
           <span className="flex flex-row items-center gap-8">
             <TokenSymbolWithIcon symbol={token.symbol} /> ({props.value})
             <ExternalLink
-              className="text-typography-secondary underline"
+              className="text-textIcon-secondary underline"
               href={`${explorerUrl}address/${props.value.toString()}`}
             >
               <img src={explorerIconSrc} className="h-18 w-18" />
@@ -527,7 +527,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
           <span className="flex flex-row items-center gap-8">
             {isGlvInfo(marketOrGlv) ? getGlvDisplayName(marketOrGlv) : getMarketFullName(marketOrGlv)} ({props.value})
             <ExternalLink
-              className="text-typography-secondary underline"
+              className="text-textIcon-secondary underline"
               href={`${explorerUrl}address/${props.value.toString()}`}
             >
               <img src={explorerIconSrc} className="h-18 w-18" />
@@ -547,13 +547,13 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     value = (
       <span className="flex flex-row items-center gap-8">
         <Link
-          className="text-typography-secondary underline"
+          className="text-textIcon-secondary underline"
           to={`/traders/${props.value.toString()}?network=${network}&v=2`}
         >
           {props.value.toString()}
         </Link>
         <ExternalLink
-          className="text-typography-secondary underline"
+          className="text-textIcon-secondary underline"
           href={`${explorerUrl}address/${props.value.toString()}`}
         >
           <img src={explorerIconSrc} className="h-18 w-18" />
@@ -614,7 +614,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     return (
       <TableTr>
         <TableTd className="font-medium">{props.item}</TableTd>
-        <TableTd className="text-red-400">{props.error ?? props.value.toString()}</TableTd>
+        <TableTd className="text-red-strong">{props.error ?? props.value.toString()}</TableTd>
         <TableTd>{props.type}</TableTd>
       </TableTr>
     );
@@ -625,7 +625,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
       <TableTd className="font-medium">{props.item}</TableTd>
       <TableTd
         className={cx("!text-left", {
-          "text-red-400": withError,
+          "text-red-strong": withError,
         })}
       >
         <div className="flex flex-row items-center gap-8">
@@ -652,9 +652,9 @@ function CopyButton({ value }: { value: string }) {
   return (
     <CopyIcon
       className={cx(
-        "invisible size-16 cursor-pointer text-typography-secondary transition-transform hover:text-typography-primary group-hover:visible",
+        "invisible size-16 cursor-pointer text-textIcon-secondary transition-transform hover:text-textIcon-primary group-hover:visible",
         {
-          "scale-110 text-typography-primary": isCopied,
+          "scale-110 text-textIcon-primary": isCopied,
         }
       )}
       onClick={onClick}
@@ -694,7 +694,7 @@ const ParseTransactionEvents = ({
   }
 
   return events.map((event) => (
-    <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
+    <Table key={`${keyPrefix}-${event.key}`} className="mt-24 overflow-hidden !rounded-8 first:mt-0">
       <tbody>
         <TableTr>
           <TableTd className="w-[25rem] font-medium">
@@ -743,10 +743,12 @@ const ParseTransactionEvents = ({
             allEvents={events}
           />
         ))}
-        <TableTr>
-          <TableTd padding="compact" className="bg-slate-900" colSpan={3}></TableTd>
-        </TableTr>
       </tbody>
+      <tfoot>
+        <TableTr>
+          <TableTd padding="compact" className="bg-fill-surfaceBase" colSpan={3}></TableTd>
+        </TableTr>
+      </tfoot>
     </Table>
   ));
 };

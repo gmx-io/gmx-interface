@@ -45,8 +45,8 @@ const CONTEXTS: Context[] = [
   },
   {
     id: "positive",
-    title: "Positive (green-500)",
-    className: "text-green-500",
+    title: "Positive (green-strong)",
+    className: "text-green-strong",
     rows: [
       { label: "Refund", value: <NumericValue parts={FEE_REFUND_PARTS} /> },
       { label: "PnL", value: <DeltaUsdValue deltaUsd={usd(123_456)} percentage={PNL_PERCENTAGE} /> },
@@ -54,8 +54,8 @@ const CONTEXTS: Context[] = [
   },
   {
     id: "negative",
-    title: "Negative (red-500)",
-    className: "text-red-500",
+    title: "Negative (red-strong)",
+    className: "text-red-strong",
     rows: [
       { label: "PnL", value: <DeltaUsdValue deltaUsd={-usd(123_456)} percentage={-PNL_PERCENTAGE} /> },
       { label: "Fees", value: <UsdValue usd={-usd(49)} /> },
@@ -63,8 +63,8 @@ const CONTEXTS: Context[] = [
   },
   {
     id: "warning",
-    title: "Incomplete (yellow-300)",
-    className: "text-yellow-300",
+    title: "Incomplete (yellow-strong)",
+    className: "text-yellow-strong",
     rows: [
       {
         label: "Open interest",
@@ -74,14 +74,14 @@ const CONTEXTS: Context[] = [
   },
   {
     id: "accent",
-    title: "Hover / active (blue-300)",
-    className: "text-blue-300",
+    title: "Hover / active (blue-strong)",
+    className: "text-blue-strong",
     rows: [{ label: "Leverage", value: <LeverageValue leverage={LEVERAGE} /> }],
   },
   {
     id: "muted",
-    title: "Muted (typography-secondary)",
-    className: "text-typography-secondary",
+    title: "Muted (textIcon-secondary)",
+    className: "text-textIcon-secondary",
     rows: [
       { label: "Rewards", value: <UsdValue usd={0n} /> },
       {
@@ -98,8 +98,8 @@ const CONTEXTS: Context[] = [
 
 const SURFACES: { id: Surface; title: string; className: string }[] = [
   { id: "tooltip", title: "Tooltip", className: "Tooltip-popup" },
-  { id: "card", title: "Card", className: "rounded-8 bg-slate-900 p-10 text-body-medium" },
-  { id: "page", title: "Page", className: "p-10 text-body-medium" },
+  { id: "card", title: "Card", className: "rounded-8 bg-fill-surfaceBase p-8 text-body-medium" },
+  { id: "page", title: "Page", className: "p-8 text-body-medium" },
 ];
 
 export function NumericAffixes() {
@@ -109,7 +109,7 @@ export function NumericAffixes() {
 
   return (
     <div className="px-20">
-      <h2 className="mb-16 mt-24 text-24 font-medium">Numeric affixes</h2>
+      <h2 className="text-h3 mb-16 mt-24">Numeric affixes</h2>
       <p className="max-w-prose">
         The $ prefix and the leverage x are separated from the number by a hair space. Inside primary text they are
         drawn in the secondary colour; inside a coloured value they keep the colour of the number. The k / m / b
@@ -120,7 +120,7 @@ export function NumericAffixes() {
         {SURFACES.map((item) => (
           <button
             key={item.id}
-            className={cx("rounded-4 px-8 py-4", item.id === surface ? "bg-slate-600" : "bg-slate-800")}
+            className={cx("rounded-4 px-8 py-4", item.id === surface ? "bg-fill-accent" : "bg-fill-surfaceElevated")}
             onClick={() => setSurface(item.id)}
           >
             {item.title}
@@ -131,10 +131,10 @@ export function NumericAffixes() {
       <div className="flex flex-wrap gap-8">
         {CONTEXTS.map((context) => (
           <div key={context.id} className={cx("!w-[260px] shrink-0", surfaceClassName)}>
-            <div className="mb-4 text-12 text-typography-secondary">{context.title}</div>
+            <div className="text-body-small mb-4 text-textIcon-secondary">{context.title}</div>
             {context.rows.map((row) => (
               <div key={row.label} className="flex justify-between gap-12">
-                <span className="whitespace-nowrap text-typography-secondary">{row.label}</span>
+                <span className="whitespace-nowrap text-textIcon-secondary">{row.label}</span>
                 <span className={cx("numbers", context.className)}>{row.value}</span>
               </div>
             ))}

@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 
 import { userAnalytics } from "lib/userAnalytics";
@@ -54,7 +55,14 @@ export default function Footer({ isMobileSideNav }: Props) {
                 );
               }}
             >
-              <Button variant="ghost" to={platform.link} newTab aria-label={platform.name}>
+              <Button
+                variant="ghost"
+                size="controlled"
+                className="size-32 !p-0"
+                to={platform.link}
+                newTab
+                aria-label={t`${platform.name} (opens in a new tab)`}
+              >
                 <div className="size-16">{platform.icon}</div>
               </Button>
             </TrackingLink>

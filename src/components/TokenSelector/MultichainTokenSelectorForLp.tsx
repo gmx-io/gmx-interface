@@ -114,7 +114,7 @@ export function MultichainTokenSelectorForLp({
         />
       </SlideModal>
       <div
-        className="group/hoverable group flex cursor-pointer items-center gap-5 whitespace-nowrap hover:text-blue-300"
+        className="group/hoverable group flex cursor-pointer items-center gap-4 whitespace-nowrap hover:text-blue-strong"
         onClick={() => setIsModalVisible(true)}
       >
         {!token.isPlatformToken || token.isPlatformTradingToken ? (
@@ -137,7 +137,7 @@ export function MultichainTokenSelectorForLp({
             })}
           </span>
         )}
-        <ChevronDownIcon className="w-16 text-typography-secondary group-hover:text-[inherit]" />
+        <ChevronDownIcon className="w-16 text-textIcon-secondary group-hover:text-[inherit]" />
       </div>
     </div>
   );

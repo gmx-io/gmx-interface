@@ -131,7 +131,7 @@ describe("TPSLInputRow with a blocking price direction error", () => {
       priceError: testCase.priceError,
     });
 
-    expect(priceInput.className).toContain("text-red-500");
+    expect(priceInput.className).toContain("text-red-strong");
     expect(gainLossInput.value).toBe("");
     expect(gainLossInput.placeholder).toBe("-");
     expect(estimatedPnlText).toBe("-");

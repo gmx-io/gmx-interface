@@ -246,7 +246,11 @@ export default function ClaimableAmounts() {
   if (isLoading) {
     return (
       <div className="flex flex-col gap-16">
-        <Skeleton className="h-64 w-full" baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
+        <Skeleton
+          className="h-64 w-full"
+          baseColor="var(--color-fill-skeleton)"
+          highlightColor="var(--color-fill-skeleton)"
+        />
       </div>
     );
   }
@@ -254,7 +258,7 @@ export default function ClaimableAmounts() {
   if (claimableEntries.length === 0) {
     return (
       <div className="flex flex-col gap-16">
-        <span className="text-body-medium font-medium text-typography-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>No distributions to claim</Trans>
         </span>
       </div>
@@ -276,7 +280,7 @@ export default function ClaimableAmounts() {
         ))}
 
       <div className="flex items-center justify-between">
-        <span className="text-body-medium font-medium text-typography-secondary">
+        <span className="text-body-medium font-medium text-textIcon-secondary">
           <Trans>Total to claim</Trans>
         </span>
         <Tooltip
@@ -296,10 +300,14 @@ export default function ClaimableAmounts() {
       {buttonElement}
 
       {hasGlpReimbursementSelected && (
-        <div className="text-center font-medium text-typography-secondary">
+        <div className="text-center font-medium text-textIcon-secondary">
           <Trans>
             By claiming, you agree to the{" "}
-            <ExternalLink href={GLP_REIMBURSEMENT_TERMS_URL} variant="underline" className="font-medium text-blue-300">
+            <ExternalLink
+              href={GLP_REIMBURSEMENT_TERMS_URL}
+              variant="underline"
+              className="font-medium text-blue-strong"
+            >
               GLP Reimbursement
             </ExternalLink>{" "}
             terms

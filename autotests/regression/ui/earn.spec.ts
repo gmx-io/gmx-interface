@@ -28,7 +28,7 @@ test("13.01 13.13 Discover cards open the GMX buy modal with this chain's GMX ve
     ["Bybit", "https://www.bybit.com/en-US/trade/spot/GMX/USDT"],
     ["Banxa", `https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=${network}`],
   ]) {
-    const link = page.getByRole("link", { name: venue, exact: true });
+    const link = page.getByRole("link", { name: `${venue} (opens in a new tab)`, exact: true });
     await expect(link).toHaveAttribute("href", href);
     await expect(link).toHaveAttribute("target", "_blank");
   }

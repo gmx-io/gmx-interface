@@ -79,7 +79,7 @@ export default function NetworkDropdown({
               <Button
                 variant="secondary"
                 size="controlled"
-                className="flex h-40 items-center gap-8 px-15 pr-12 max-md:h-32 max-md:p-6"
+                className="flex h-40 items-center gap-8 px-12 max-md:h-32 max-md:px-8 max-md:py-4"
               >
                 <NavIcons chainId={chainId} open={open} />
               </Button>
@@ -166,11 +166,11 @@ function NetworkMenuItems({
       {walletAndGmxAccountNetworks.length > 0 && (
         <>
           <div className="flex items-center gap-4 px-12 pb-4 pt-8">
-            <span className="text-13 font-medium text-typography-secondary">
+            <span className="text-body-small font-medium text-textIcon-secondary">
               <Trans>Wallet & GMX Account</Trans>
             </span>
             <TooltipWithPortal
-              handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
+              handle={<InfoIconStroke className="size-15 text-textIcon-secondary" />}
               position="top"
               variant="none"
               className="flex"
@@ -190,11 +190,11 @@ function NetworkMenuItems({
         <>
           {walletAndGmxAccountNetworks.length > 0 && <div className="network-dropdown-divider" />}
           <div className="flex items-center gap-4 px-12 pb-4 pt-8">
-            <span className="text-13 font-medium text-typography-secondary">
+            <span className="text-body-small font-medium text-textIcon-secondary">
               <Trans>Wallet-only</Trans>
             </span>
             <TooltipWithPortal
-              handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
+              handle={<InfoIconStroke className="size-15 text-textIcon-secondary" />}
               position="top"
               variant="none"
               className="flex"
@@ -249,15 +249,15 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               </div>
               <span
                 className={cx(
-                  "network-dropdown-item-label",
-                  isSelected ? "text-typography-primary" : "text-typography-secondary"
+                  "network-dropdown-item-label font-medium",
+                  isSelected ? "text-textIcon-primary" : "text-textIcon-secondary"
                 )}
               >
                 {network.label}
               </span>
               {isValidVisualSettlementChain(network.value) && isSelected && (
                 <TooltipWithPortal
-                  handle={<WalletIcon className="size-16 text-typography-secondary" />}
+                  handle={<WalletIcon className="size-16 text-textIcon-secondary" />}
                   position="top"
                   variant="none"
                   className="flex"
@@ -266,7 +266,7 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               )}
             </div>
             {isSelected && (
-              <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
+              <div className="mr-4 size-[5px] rounded-full bg-green-strong shadow-[0_0_0_2.5px_rgb(var(--color-green-strong-raw)/0.2)]" />
             )}
           </div>
         </Wrapper>

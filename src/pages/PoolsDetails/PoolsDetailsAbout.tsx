@@ -54,7 +54,7 @@ export function PoolsDetailsAbout({
 
   return (
     <div className="flex flex-col gap-16">
-      <div className="text-body-medium text-typography-secondary">
+      <div className="text-body-medium text-textIcon-secondary">
         {isGlv ? (
           <Trans>
             Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by{" "}
@@ -90,8 +90,8 @@ export function PoolsDetailsAbout({
               "..."
             )
           }
-          valueClassName="text-13"
-          secondaryValueClassName="text-12"
+          valueClassName="text-body-small"
+          secondaryValueClassName="text-body-small"
           secondaryValue={
             mintable ? (
               <AmountHumanValue amount={mintable.mintableUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
@@ -114,8 +114,8 @@ export function PoolsDetailsAbout({
               "..."
             )
           }
-          valueClassName="text-13"
-          secondaryValueClassName="text-12"
+          valueClassName="text-body-small"
+          secondaryValueClassName="text-body-small"
           secondaryValue={
             sellable ? (
               <AmountHumanValue amount={sellable.totalUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
@@ -136,8 +136,8 @@ export function PoolsDetailsAbout({
                   : formatDateTime(bigintToNumber(glvOrMarketInfo.shiftLastExecutedAt, 0))
                 : "..."
             }
-            valueClassName="text-13"
-            secondaryValueClassName="text-12"
+            valueClassName="text-body-small"
+            secondaryValueClassName="text-body-small"
           />
         )}
       </div>
@@ -327,7 +327,7 @@ const BuyableTooltipContent = ({
 
   return (
     <>
-      <p className="text-typography-primary">
+      <p className="text-textIcon-primary">
         {marketInfo?.isSameCollaterals ? (
           <Trans>Buy GM with {marketInfo?.longToken?.symbol} up to the caps below</Trans>
         ) : (

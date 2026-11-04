@@ -14,7 +14,7 @@ function SwapButton({ chainId, children }: { chainId: ContractsChainId; children
 
   return (
     <span
-      className="text-body-small cursor-pointer text-13 font-medium underline underline-offset-2"
+      className="text-body-small cursor-pointer font-medium underline underline-offset-2"
       onClick={() => {
         setGmxAccountModalOpen(false);
         history.push(`/trade/swap?to=${wrappedTokenSymbol}`);
@@ -37,7 +37,7 @@ function DepositButton({
 
   return (
     <span
-      className="text-body-small cursor-pointer text-13 font-medium underline underline-offset-2"
+      className="text-body-small cursor-pointer font-medium underline underline-offset-2"
       onClick={() => {
         onBeforeNavigation?.();
         setGmxAccountModalOpen("deposit");

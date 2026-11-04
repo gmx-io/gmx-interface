@@ -35,7 +35,7 @@ test("10.01 10.02 10.03 10.05 populated trade history shows type, direction, siz
   await expect(second.locator(".TradeHistoryRow-action-handle")).toHaveText("Market Decrease");
   await expect(first.getByRole("cell").nth(4)).toHaveText("-");
   await expect(second.getByRole("cell").nth(4)).toHaveText(/^\+?\$\s*10\.00$/);
-  await expect(second.getByRole("cell").nth(4).locator(".text-green-500")).toBeVisible();
+  await expect(second.getByRole("cell").nth(4).locator(".text-green-strong")).toBeVisible();
   // 0.6 USDC position fee at $1 collateral price.
   for (const row of [first, second]) await expect(row.getByRole("cell").nth(5)).toHaveText(/^-\$\s*0\.60$/);
   await expect(table).not.toContainText(/NaN|Infinity|undefined/);
@@ -99,8 +99,8 @@ test("9.03 26.07 trade history labels created, executed, cancelled and failed or
       .locator(".TradeHistoryRow-action-handle")
       .last();
     await expect(action).toHaveText(label);
-    if (failed) await expect(action).toHaveClass(/text-red-500/);
-    else await expect(action).not.toHaveClass(/text-red-500/);
+    if (failed) await expect(action).toHaveClass(/text-red-strong/);
+    else await expect(action).not.toHaveClass(/text-red-strong/);
     if (!reasonBytes) continue;
     await action.hover();
     const tooltip = page.locator(".Tooltip-popup").filter({ hasText: "Execution price didn't meet acceptable price" });

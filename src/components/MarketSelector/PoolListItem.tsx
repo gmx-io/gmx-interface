@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 
@@ -131,12 +132,12 @@ export function PoolListItem(props: {
               {isGlvInfo(glvOrMarketInfo) ? (
                 <div className="flex items-center leading-1">
                   <span>{getGlvDisplayName(glvOrMarketInfo)}</span>
-                  <span className="subtext">[{poolName}]</span>
+                  <span className="subtext !leading-1">[{poolName}]</span>
                 </div>
               ) : showAllPools ? (
                 <div className="flex items-center leading-1">
                   <span>{indexName && indexName}</span>
-                  <span className="subtext">[{getMarketPoolName(glvOrMarketInfo, "-")}]</span>
+                  <span className="subtext !leading-1">[{getMarketPoolName(glvOrMarketInfo, "-")}]</span>
                 </div>
               ) : (
                 <div className="Token-text">{poolName}</div>
@@ -165,13 +166,19 @@ export function PoolListItem(props: {
                 null}
             </span>
           </div>
-          <Button variant="ghost" onClick={handleFavoriteClick}>
+          <Button
+            variant="ghost"
+            size="controlled"
+            className="size-32 !p-0"
+            onClick={handleFavoriteClick}
+            aria-label={isFavorite ? t`Remove from favourites` : t`Add to favourites`}
+          >
             <FavoriteStar isFavorite={isFavorite} />
           </Button>
         </div>
       </div>
       {state.warning && (
-        <p className="mb-8 px-adaptive py-8 text-14 text-typography-secondary last:mb-0">{state.warning}</p>
+        <p className="text-body-medium mb-8 px-adaptive py-8 text-textIcon-secondary last:mb-0">{state.warning}</p>
       )}
     </>
   );

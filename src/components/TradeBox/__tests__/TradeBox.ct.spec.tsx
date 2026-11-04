@@ -772,7 +772,7 @@ test.describe("TradeBox", () => {
 
       // above EXCESSIVE_SLIPPAGE_AMOUNT: yellow border (the error text lives in a hover tooltip)
       await expect(
-        page.locator('[class*="border-yellow-500"]:right-of(:text("Allowed slippage"))').first()
+        page.locator('[class*="border-yellow-strong"]:right-of(:text("Allowed slippage"))').first()
       ).toBeVisible();
     });
 
@@ -791,7 +791,7 @@ test.describe("TradeBox", () => {
 
       // high value: yellow border (the warning text lives in a hover tooltip)
       await expect(
-        page.locator('[class*="border-yellow-500"]:right-of(:text("Acceptable price impact"))').first()
+        page.locator('[class*="border-yellow-strong"]:right-of(:text("Acceptable price impact"))').first()
       ).toBeVisible();
     });
   });

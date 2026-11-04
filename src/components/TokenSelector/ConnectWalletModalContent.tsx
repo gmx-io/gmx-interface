@@ -13,12 +13,12 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
   return (
     <div className="flex grow flex-col items-center justify-center gap-20 p-adaptive">
       {walletIconUrls && walletIconUrls.length > 0 && (
-        <div className="flex rounded-full bg-slate-800 p-2">
+        <div className="flex rounded-full bg-fill-surfaceElevated p-4">
           {walletIconUrls.map((url, index) => (
             <img
               src={url}
               alt={t`Wallet icon`}
-              className="relative -ml-8 size-24 rounded-full border-2 border-slate-800 first-of-type:ml-0"
+              className="relative -ml-8 size-24 rounded-full border-2 border-fill-surfaceElevated first-of-type:ml-0"
               // Safety: walletIconUrls is not changing, memo prevents parent caused re-renders
               // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
               style={{
@@ -29,7 +29,7 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
           ))}
         </div>
       )}
-      <div className="text-body-medium text-center text-typography-secondary">
+      <div className="text-body-medium text-center text-textIcon-secondary">
         <Trans>
           Connect wallet to view
           <br />

@@ -42,7 +42,7 @@ export function PriceField({
         <UsdPriceValue
           price={markPrice}
           visualMultiplier={indexToken?.visualMultiplier}
-          className="text-typography-primary"
+          className="text-textIcon-primary"
         />
       </span>
     );

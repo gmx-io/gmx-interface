@@ -79,7 +79,7 @@ function NumberInput({
       type="text"
       inputMode="decimal"
       placeholder={placeholder}
-      className={cx(className, "text-typography-primary placeholder:text-typography-secondary")}
+      className={cx(className, "text-textIcon-primary placeholder:text-textIcon-secondary")}
       value={value}
       ref={inputRef}
       onChange={onChange}

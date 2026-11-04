@@ -24,10 +24,10 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
 
   return (
     <div
-      className="flex w-full flex-col justify-between gap-12 border-b-1/2 border-slate-600 bg-slate-900 px-20 py-12 last:border-r-0 lg:border-r-1/2"
+      className="flex w-full flex-col justify-between gap-12 border-b-1/2 border-stroke-primary bg-fill-surfaceBase px-20 py-12 last:border-r-0 lg:border-r-1/2"
       style={style}
     >
-      <div className="text-[11px] font-medium uppercase text-typography-secondary">{title}</div>
+      <div className="text-caption text-textIcon-secondary">{title}</div>
       <div className={cx("grid grid-cols-2")}>
         <Section title={t`Positive funding fees`} {...section1} />
         <Section title={t`Price impact rebates`} {...section2} />
@@ -41,7 +41,7 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
 
   return (
     <div
-      className={`flex grow items-end justify-between gap-8 border-r-1/2 border-r-slate-600 px-20
+      className={`flex grow items-end justify-between gap-8 border-r-1/2 border-r-stroke-primary px-20
         first:pl-0 last:border-r-0 last:pr-0 max-xl:flex-col max-xl:items-start`}
     >
       <div className="flex flex-col gap-4">
@@ -57,7 +57,7 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
             <DeltaUsdValue deltaUsd={usd} className="numbers" />
           )}
         </span>
-        <span className="text-body-small text-typography-secondary">{title}</span>
+        <span className="text-body-small text-textIcon-secondary">{title}</span>
       </div>
       <div className="max-xl:w-full">
         <Button variant="secondary" disabled={usd <= 0} onClick={onButtonClick} className="max-xl:w-full">

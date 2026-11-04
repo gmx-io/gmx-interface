@@ -7,7 +7,7 @@ import LogoText from "img/logo-text.svg?react";
 
 export function AppHeaderLogo() {
   return (
-    <ButtonLink to="/" className="flex items-center gap-8 px-6 py-4 text-typography-primary lg:hidden">
+    <ButtonLink to="/" className="flex items-center gap-8 px-4 py-4 text-textIcon-primary lg:hidden">
       <img src={logoIcon} alt={t`GMX logo`} className="block" />
       <LogoText className="hidden md:block" />
     </ButtonLink>

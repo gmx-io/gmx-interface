@@ -148,7 +148,7 @@ export function ClaimsHistory() {
   );
 
   return (
-    <div className="flex grow flex-col bg-slate-900">
+    <div className="flex grow flex-col bg-fill-surfaceBase">
       <HistoryExportModal
         isVisible={historyExport.isModalVisible}
         setIsVisible={historyExport.setIsModalVisible}

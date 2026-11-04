@@ -42,25 +42,27 @@ export function TradeInputBox({
       <div
         ref={containerRef}
         className={cx(
-          "flex cursor-text flex-col gap-2 overflow-hidden rounded-8 border border-slate-800 bg-slate-800 pb-8 pt-10",
+          "flex cursor-text flex-col gap-4 overflow-hidden rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated py-8",
           {
-            "bg-slate-900": isDisabled,
-            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
+            "bg-fill-surfaceBase": isDisabled,
+            "focus-within:border-blue-strong hover:bg-fill-surfaceHover active:border-blue-strong": !isDisabled,
           },
           className
         )}
         onClick={handleBoxClick}
       >
         {(leftHeadline || rightHeadline) && (
-          <div className="text-body-small flex items-center justify-between gap-8 px-12 text-typography-secondary">
+          <div className="text-body-small flex items-center justify-between gap-8 px-12 text-textIcon-secondary">
             <div className="min-w-0 truncate">{leftHeadline}</div>
             {rightHeadline && <div className="flex shrink-0 items-center">{rightHeadline}</div>}
           </div>
         )}
 
         <div className="flex">
-          <div className="flex min-w-0 grow flex-col gap-2 pl-12">
-            <div className={cx("flex items-center gap-4 pr-12", { "border-r-1/2 border-r-slate-600": !hideDivider })}>
+          <div className="flex min-w-0 grow flex-col gap-4 pl-12">
+            <div
+              className={cx("flex items-center gap-4 pr-12", { "border-r-1/2 border-r-stroke-primary": !hideDivider })}
+            >
               {leftContent}
             </div>
             {bottomContent}

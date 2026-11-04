@@ -37,7 +37,7 @@ export const AccruedPositionPriceImpactRebateModal = memo(
             </Trans>
           </div>
         </div>
-        <div className="mb-20 mt-15 h-1 bg-slate-700" />
+        <div className="mb-20 mt-12 h-1 bg-button-background" />
         <div>
           <div className="App-card-content">
             <div className="ClaimSettleModal-header">
@@ -67,7 +67,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const poolName = getMarketPoolName(market);
     return (
       <div className="flex items-center">
-        <span className="text-typography-primary">{indexName}</span>
+        <span className="text-textIcon-primary">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
     );

@@ -10,10 +10,10 @@ export function EmbeddedActionButton({
     <button
       type="button"
       className={cx(
-        "bg-transparent relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left text-13 underline decoration-1 underline-offset-2 focus-visible:rounded-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-300",
+        "bg-transparent text-body-small relative z-[1] inline-flex cursor-pointer touch-manipulation select-none border-0 p-0 text-left underline decoration-1 underline-offset-2 focus-visible:rounded-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-strong",
         tone === "link"
-          ? "text-blue-300 decoration-blue-300 hover:text-blue-100 hover:decoration-blue-100"
-          : "text-gray-400 decoration-gray-400 hover:text-typography-primary hover:decoration-typography-primary focus-visible:text-typography-primary focus-visible:decoration-typography-primary",
+          ? "text-blue-strong decoration-blue-strong hover:text-blue-secondary hover:decoration-blue-secondary"
+          : "text-textIcon-secondary decoration-textIcon-secondary hover:text-textIcon-primary hover:decoration-textIcon-primary focus-visible:text-textIcon-primary focus-visible:decoration-textIcon-primary",
         className
       )}
       {...props}

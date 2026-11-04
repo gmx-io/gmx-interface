@@ -676,7 +676,7 @@ export function PositionEditor() {
                 rightHeadline={
                   <button
                     type="button"
-                    className="whitespace-nowrap text-typography-secondary hover:text-typography-primary"
+                    className="whitespace-nowrap text-textIcon-secondary hover:text-textIcon-primary"
                     onClick={() =>
                       setTriggerPriceInputValue(
                         formatMarginDepositPriceInput(markPrice, position.indexToken?.visualMultiplier)
@@ -710,7 +710,7 @@ export function PositionEditor() {
                     maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
                   />
                   {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
-                    <span className="shrink-0 text-12 text-typography-secondary numbers">
+                    <span className="text-body-small shrink-0 text-textIcon-secondary numbers">
                       ≈<UsdValue usd={collateralDeltaUsd} />
                     </span>
                   )}
@@ -718,7 +718,7 @@ export function PositionEditor() {
               }
               rightHeadline={
                 isDeposit ? (
-                  <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4">
                     {collateralTokenBalance !== undefined && collateralTokenBalance > 0n && (
                       <MaxActions
                         qa="amount-input"
@@ -729,7 +729,7 @@ export function PositionEditor() {
                     )}
                     <button
                       type="button"
-                      className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                      className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleCollateralPercentageChange(100);
@@ -744,7 +744,7 @@ export function PositionEditor() {
                     </button>
                   </div>
                 ) : (
-                  <span className="flex items-center gap-6 text-typography-secondary">
+                  <span className="flex items-center gap-4 text-textIcon-secondary">
                     {maxWithdrawAmount > 0n && (
                       <MaxActions
                         qa="amount-input"
@@ -778,7 +778,7 @@ export function PositionEditor() {
                       variant={isDeposit ? "balance" : "destination"}
                     />
                   ) : (
-                    <span className="text-14">{collateralToken?.symbol}</span>
+                    <span className="text-body-medium">{collateralToken?.symbol}</span>
                   )}
                 </div>
               }
@@ -786,7 +786,7 @@ export function PositionEditor() {
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}
-            <div className="flex flex-col gap-14">
+            <div className="flex flex-col gap-12">
               <HighPriceImpactOrFeesWarningCard
                 priceImpactWarningState={priceImpactWarningState}
                 swapPriceImpact={fees?.swapPriceImpact}
@@ -818,7 +818,7 @@ export function PositionEditor() {
                     {conditionalDepositWarning}
                   </AlertInfoCard>
                 ) : (
-                  <p className="text-12 text-typography-secondary">
+                  <p className="text-body-small text-textIcon-secondary">
                     <Trans>Adds margin without increasing your position size when the trigger price is reached.</Trans>
                   </p>
                 ))}
@@ -868,7 +868,7 @@ export function PositionEditor() {
                       qa="deposit-max-instant"
                     >
                       <Trans>Deposit {maxInstantAmountText} now</Trans>
-                      <span className="text-13 font-normal opacity-80">
+                      <span className="text-body-small font-normal opacity-80">
                         <Trans>Instant</Trans>
                       </span>
                     </Button>
@@ -877,22 +877,21 @@ export function PositionEditor() {
                     <Button
                       className="w-full flex-col !items-start"
                       variant="secondary"
-                      showExternalLinkArrow={false}
                       onClick={handleConvertRestWithPaxos}
                       qa="convert-rest-with-paxos"
                     >
                       <Trans>Convert the rest with Paxos</Trans>
-                      <span className="text-12 font-normal text-typography-secondary">
+                      <span className="text-body-small font-normal text-textIcon-secondary">
                         <Trans>In the Swap tab · arrives separately</Trans>
                       </span>
                     </Button>
                   ) : isPaxosWalletOnly ? (
-                    <div className="text-12 text-typography-secondary">
+                    <div className="text-body-small text-textIcon-secondary">
                       <Trans>Paxos converts USDC from your wallet on {settlementChainName}.</Trans>
                     </div>
                   ) : (
                     paxosMinimumText && (
-                      <div className="text-12 text-typography-secondary">
+                      <div className="text-body-small text-textIcon-secondary">
                         <Trans>Paxos converts amounts from {paxosMinimumText}.</Trans>
                       </div>
                     )

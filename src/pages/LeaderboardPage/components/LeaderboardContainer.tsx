@@ -158,10 +158,6 @@ export function LeaderboardContainer() {
     return leaderboardDataTypeTabs.map((value) => ({
       value,
       label: leaderboardDataTypeLabels[value],
-      className: {
-        active: "!text-white !bg-blue-400",
-        regular: "hover:!text-typography-primary !bg-button-secondary",
-      },
     }));
   }, [leaderboardDataTypeLabels]);
 
@@ -176,10 +172,6 @@ export function LeaderboardContainer() {
     return competitionsTabs.map((value) => ({
       value,
       label: competitionLabels[value],
-      className: {
-        active: "!text-white !bg-blue-400",
-        regular: "hover:!text-typography-primary !bg-button-secondary",
-      },
     }));
   }, [competitionLabels]);
 
@@ -193,14 +185,14 @@ export function LeaderboardContainer() {
             <LeaderboardNavigation />
           </div>
         </BodyScrollFadeContainer>
-        <div className="text-body-medium font-medium text-typography-secondary">{description}</div>
+        <div className="text-body-medium font-medium text-textIcon-secondary">{description}</div>
       </div>
 
       <div>
-        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-slate-600 bg-slate-900 p-20 max-md:flex-col">
+        <div className="flex items-center justify-between gap-16 rounded-t-8 border-b-1/2 border-stroke-primary bg-fill-surfaceBase p-20 max-md:flex-col">
           {!isCompetition ? (
             <Tabs
-              type="inline"
+              type="inline-primary"
               selectedValue={activeLeaderboardDataTypeIndex}
               onChange={handleLeaderboardDataTypeTabChange}
               options={leaderboardDataTypeTabsOptions}
@@ -209,7 +201,7 @@ export function LeaderboardContainer() {
             />
           ) : (
             <Tabs
-              type="inline"
+              type="inline-primary"
               selectedValue={activeCompetitionIndex}
               onChange={handleCompetitionTabChange}
               options={competitionsTabsOptions}

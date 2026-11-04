@@ -672,7 +672,7 @@ export function GmSwapBoxDepositWithdrawal() {
   return (
     <>
       <form ref={formRef} className="flex flex-col gap-8" onSubmit={handleSubmit}>
-        <div className="flex flex-col rounded-b-8 bg-slate-900">
+        <div className="flex flex-col rounded-b-8 bg-fill-surfaceBase">
           <div className="flex flex-col gap-12 p-12">
             <div className={cx("flex gap-4", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
               <div>
@@ -749,7 +749,7 @@ export function GmSwapBoxDepositWithdrawal() {
                 </BuyInputSection>
 
                 {isPair && secondTokenAddress && (
-                  <div className="border-t-1/2 border-slate-600">
+                  <div className="border-t-1/2 border-stroke-primary">
                     <BuyInputSection
                       topLeftLabel={isDeposit ? t`Pay` : t`Receive`}
                       bottomLeftValue={<UsdValue usd={secondTokenUsd ?? 0n} />}
@@ -868,7 +868,7 @@ export function GmSwapBoxDepositWithdrawal() {
                     glvOrMarketInfo && (
                       <span className="inline-flex items-center">
                         <TokenIcon
-                          className="mr-5"
+                          className="mr-4"
                           symbol={getGlvOrMarketIconSymbol(glvOrMarketInfo)}
                           displaySize={20}
                           chainIdBadge={
@@ -887,7 +887,7 @@ export function GmSwapBoxDepositWithdrawal() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-14">
+            <div className="flex flex-col gap-12">
               <GmSwapBoxPoolRow
                 indexName={indexName}
                 marketAddress={selectedGlvOrMarketAddress}
@@ -917,7 +917,7 @@ export function GmSwapBoxDepositWithdrawal() {
               />
             </div>
           </div>
-          <div className="border-t border-slate-600 p-12">
+          <div className="border-t border-stroke-primary p-12">
             {srcChainId === undefined || isMarketTransferrableToSourceChain ? (
               submitButton
             ) : (

@@ -16,13 +16,13 @@ const DOCS_ITEMS = [
 
 export function ReferralsDocsCard() {
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-adaptive">
+    <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceBase p-adaptive">
       {DOCS_ITEMS.map((item) => (
         <ExternalLink
           key={item.link}
           href={item.link}
           variant="icon"
-          className="justify-between text-typography-secondary"
+          className="justify-between text-textIcon-secondary"
         >
           {item.title}
         </ExternalLink>

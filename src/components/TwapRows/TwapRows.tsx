@@ -82,7 +82,7 @@ const TwapRows = ({
   }, [tradeboxChanges.direction, tradeboxChanges.toTokenAddress, savedTwapNumberOfParts, setNumberOfParts]);
 
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-12">
       <SyntheticsInfoRow label={t`Duration`} className="!items-center">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
@@ -128,7 +128,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">Every</span> {hours} hours
+        <span className="text-textIcon-secondary">Every</span> {hours} hours
         {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
@@ -138,7 +138,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">Every</span> {minutes} minutes
+        <span className="text-textIcon-secondary">Every</span> {minutes} minutes
         {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
@@ -146,7 +146,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
 
   return (
     <Trans>
-      <span className="text-typography-secondary">Every</span> {seconds} seconds
+      <span className="text-textIcon-secondary">Every</span> {seconds} seconds
     </Trans>
   );
 };

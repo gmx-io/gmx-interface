@@ -25,7 +25,14 @@ export function EarningValue<T>({
   children,
 }: EarningValueProps<T>) {
   if (isLoading) {
-    return <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={skeletonWidth} className="leading-base" />;
+    return (
+      <Skeleton
+        baseColor="var(--color-fill-skeleton)"
+        highlightColor="var(--color-fill-skeleton)"
+        width={skeletonWidth}
+        className="leading-base"
+      />
+    );
   }
 
   if (!isAvailable) {
@@ -41,7 +48,7 @@ export function EarningValue<T>({
 
 export function EarningNotAvailable({ tooltip }: { tooltip?: ReactNode }) {
   const label = (
-    <span className="text-typography-secondary">
+    <span className="text-textIcon-secondary">
       <Trans>N/A</Trans>
     </span>
   );
@@ -55,7 +62,7 @@ export function EarningNotAvailable({ tooltip }: { tooltip?: ReactNode }) {
 
 export function EarningUnavailableNote() {
   return (
-    <div className="text-typography-primary">
+    <div className="text-textIcon-primary">
       <Trans>Fee data is temporarily unavailable</Trans>
     </div>
   );
@@ -90,7 +97,7 @@ export function EarningAttributionNote({ scope }: { scope: EarningAttributionSco
   const chainName = getChainName(chainId);
 
   return (
-    <div className="text-typography-primary">
+    <div className="text-textIcon-primary">
       {scope === "gm" && (
         <Trans>
           Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another

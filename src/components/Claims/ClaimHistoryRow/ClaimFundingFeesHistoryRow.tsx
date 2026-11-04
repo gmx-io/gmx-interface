@@ -76,10 +76,10 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-textIcon-primary"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext !leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -109,10 +109,10 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
               const isLong = claimAction.isLongOrders[index];
               return (
                 <div
-                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-typography-primary"
+                  className="ClaimHistoryRow-tooltip-row inline-flex items-start text-textIcon-primary"
                   key={`${market.name}/${isLong}`}
                 >
-                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                  {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext !leading-1">[{poolName}]</span>
                 </div>
               );
             });
@@ -155,7 +155,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
 
             return (
               <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-                <div className="flex items-baseline text-typography-primary">
+                <div className="flex items-baseline text-textIcon-primary">
                   <span>{indexName}</span>
                   <span className="subtext">[{poolName}]</span>
                 </div>
@@ -208,7 +208,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
         <div className="flex">
           <div className="ClaimHistoryRow-action-handle font-medium">{_(eventTitleDescriptor)}</div>
           <ExternalLink
-            className="ClaimHistoryRow-external-link ml-5"
+            className="ClaimHistoryRow-external-link ml-4"
             href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />

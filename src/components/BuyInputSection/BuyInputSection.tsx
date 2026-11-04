@@ -170,18 +170,18 @@ export default function BuyInputSection(props: Props) {
     <div data-qa={qa}>
       <div
         className={cx(
-          `text-body-small flex cursor-text flex-col justify-between gap-2 rounded-8
-          border border-slate-800 bg-slate-800 px-12 py-8`,
+          `text-body-small flex cursor-text flex-col justify-between gap-4 rounded-8
+          border border-fill-surfaceElevated bg-fill-surfaceElevated px-12 py-8`,
           {
-            "bg-slate-900": isDisabled,
-            "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
+            "bg-fill-surfaceBase": isDisabled,
+            "focus-within:border-blue-strong hover:bg-fill-surfaceHover active:border-blue-strong": !isDisabled,
           },
           className
         )}
         onClick={handleBoxClick}
       >
         <div className="flex justify-between">
-          <div data-label="left" className="text-typography-secondary">
+          <div data-label="left" className="text-textIcon-secondary">
             {topLeftLabel}
           </div>
           {(topRightLabel || topRightValue || (hasMaxActions && maxButtonPosition === "top-right")) && (
@@ -196,7 +196,7 @@ export default function BuyInputSection(props: Props) {
               {maxActionsProps && maxButtonPosition === "top-right" && (
                 <MaxActions className="-my-4" {...maxActionsProps} />
               )}
-              {topRightLabel && <span className="text-typography-secondary">{topRightLabel}:</span>}
+              {topRightLabel && <span className="text-textIcon-secondary">{topRightLabel}:</span>}
               {topRightValue && <span className="numbers">{topRightValue}</span>}
             </div>
           )}
@@ -236,15 +236,15 @@ export default function BuyInputSection(props: Props) {
             )}
           </div>
 
-          <div className="shrink-0 text-20 leading-1 tracking-wide">{children}</div>
+          <div className="text-body-xlarge shrink-0 leading-1">{children}</div>
         </div>
 
         {(bottomLeftValue || bottomRightValue || (hasMaxActions && maxButtonPosition === "bottom-right")) && (
           <div className="flex justify-between">
             <div
               className={cx("numbers", {
-                "text-typography-secondary": isBottomLeftValueMuted,
-                "text-typography-primary": !isBottomLeftValueMuted,
+                "text-textIcon-secondary": isBottomLeftValueMuted,
+                "text-textIcon-primary": !isBottomLeftValueMuted,
               })}
             >
               {bottomLeftValue || ""}
@@ -259,7 +259,7 @@ export default function BuyInputSection(props: Props) {
               {maxActionsProps && maxButtonPosition === "bottom-right" && (
                 <MaxActions className="-my-4" tooltipPosition="bottom-end" {...maxActionsProps} />
               )}
-              {bottomRightLabel && <span className="text-typography-secondary">{bottomRightLabel}:</span>}
+              {bottomRightLabel && <span className="text-textIcon-secondary">{bottomRightLabel}:</span>}
               {bottomRightValue && <span className="numbers">{bottomRightValue}</span>}
             </div>
           </div>

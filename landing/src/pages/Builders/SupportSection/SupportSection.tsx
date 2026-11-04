@@ -61,7 +61,7 @@ export function SupportSection() {
   ];
 
   return (
-    <section className="w-full border-b-1/2 border-slate-600 bg-slate-900 px-16 py-60 text-white sm:px-40 sm:py-[120px]">
+    <section className="border-slate-600 bg-slate-900 text-white w-full border-b-1/2 px-16 py-56 sm:px-40 sm:py-120">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow gradient>
           <Trans>The program</Trans>
@@ -75,35 +75,35 @@ export function SupportSection() {
           </Trans>
         </h2>
 
-        <div className="mt-[34px] grid grid-cols-1 gap-20 md:grid-cols-3">
+        <div className="mt-32 grid grid-cols-1 gap-20 md:grid-cols-3">
           {steps.map((step) => (
             <div
               key={step.number}
-              className="flex min-h-[192px] flex-col justify-between rounded-20 border-1/2 border-slate-600/50 bg-slate-800 p-20"
+              className="border-slate-600/50 bg-slate-800 flex min-h-[192px] flex-col justify-between rounded-20 border-1/2 p-20"
             >
-              <div className="flex items-center gap-8 text-16 -tracking-[0.512px] text-blue-300">
-                <span className="flex size-24 items-center justify-center rounded-full bg-blue-300 text-16 text-slate-900">
+              <div className="text-blue-300 flex items-center gap-8 text-16 -tracking-[0.512px]">
+                <span className="bg-blue-300 text-slate-900 flex size-24 items-center justify-center rounded-full text-16">
                   {step.number}
                 </span>
                 {step.label}
               </div>
               <div className="flex flex-col">
                 <h3 className="text-24 font-medium -tracking-[0.768px]">{step.title}</h3>
-                <p className="mt-4 text-14 -tracking-[0.448px] text-slate-400">{step.description}</p>
+                <p className="text-14 mt-4 -tracking-[0.448px] text-slate-400">{step.description}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-20 flex flex-col gap-28 rounded-20 border-1/2 border-slate-600/50 bg-[#171827]/30 p-20 shadow-[0_6px_8px_-6px_#000] lg:flex-row lg:gap-0">
+        <div className="border-slate-600/50 mt-20 flex flex-col gap-24 rounded-20 border-1/2 bg-[#171827]/30 p-20 shadow-[0_6px_8px_-6px_#000] lg:flex-row lg:gap-0">
           <h3 className="text-[28px] font-medium -tracking-[0.896px] lg:w-[387px] lg:flex-shrink-0">
             <Trans>Is this the right fit?</Trans>
           </h3>
           <div className="grid w-full grid-cols-1 gap-20 pt-8 sm:grid-cols-2">
             <div className="flex flex-col">
-              <div className="text-18 flex items-center gap-12 -tracking-[0.576px] text-white">
-                <span className="flex size-24 items-center justify-center rounded-full bg-blue-300/20">
-                  <IcCheck className="size-24 text-blue-300" />
+              <div className="text-18 text-white flex items-center gap-12 -tracking-[0.576px]">
+                <span className="bg-blue-300/20 flex size-24 items-center justify-center rounded-full">
+                  <IcCheck className="text-blue-300 size-24" />
                 </span>
                 <Trans>Good fit</Trans>
               </div>
@@ -112,20 +112,20 @@ export function SupportSection() {
                   <div
                     key={item}
                     className={cx(
-                      "text-light-150 flex h-44 items-center gap-16 pl-16 pr-12 text-14 -tracking-[0.224px]",
+                      "text-light-150 text-14 flex h-44 items-center gap-16 pl-16 pr-12 -tracking-[0.224px]",
                       i % 2 === 0 && "rounded-12 bg-[#1E223C]"
                     )}
                   >
-                    <IcCheck className="size-24 flex-shrink-0 text-blue-300" />
+                    <IcCheck className="text-blue-300 size-24 flex-shrink-0" />
                     {item}
                   </div>
                 ))}
               </div>
             </div>
             <div className="flex flex-col">
-              <div className="text-18 flex items-center gap-12 -tracking-[0.576px] text-slate-500">
-                <span className="flex size-24 items-center justify-center rounded-full bg-slate-600/20">
-                  <IcX className="size-24 text-slate-500" />
+              <div className="text-18 text-slate-500 flex items-center gap-12 -tracking-[0.576px]">
+                <span className="bg-slate-600/20 flex size-24 items-center justify-center rounded-full">
+                  <IcX className="text-slate-500 size-24" />
                 </span>
                 <Trans>Not yet</Trans>
               </div>
@@ -134,11 +134,11 @@ export function SupportSection() {
                   <div
                     key={item}
                     className={cx(
-                      "flex h-44 items-center gap-16 pl-16 pr-12 text-14 -tracking-[0.224px] text-slate-500",
-                      i % 2 === 0 && "rounded-12 bg-slate-800"
+                      "text-14 text-slate-500 flex h-44 items-center gap-16 pl-16 pr-12 -tracking-[0.224px]",
+                      i % 2 === 0 && "bg-slate-800 rounded-12"
                     )}
                   >
-                    <IcX className="size-24 flex-shrink-0 text-slate-500" />
+                    <IcX className="text-slate-500 size-24 flex-shrink-0" />
                     {item}
                   </div>
                 ))}

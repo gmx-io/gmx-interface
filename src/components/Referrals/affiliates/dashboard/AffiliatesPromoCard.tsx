@@ -26,7 +26,7 @@ export function AffiliatesPromoCard({ account }: { account: string | undefined }
         <Trans>
           Activate someone's referral code to receive a permanent discount on all opening and closing <br /> fees. Your
           savings apply automatically on every trade.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon-arrow" className="text-blue-300">
+          <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon-arrow" className="text-blue-strong">
             <Trans>Read more</Trans>
           </ExternalLink>
           .
@@ -34,7 +34,7 @@ export function AffiliatesPromoCard({ account }: { account: string | undefined }
       }
       onClose={close}
       imgSrc={referralCodePromoFg}
-      imgClassName="-bottom-22 right-28 max-[1257px]:hidden"
+      imgClassName="-bottom-20 right-24 max-[1257px]:hidden"
     />
   );
 }

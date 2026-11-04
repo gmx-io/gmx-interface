@@ -4,8 +4,8 @@ import { BuildersFaqItem } from "./BuildersFaqItem";
 
 export function BuildersFaqSection() {
   return (
-    <section className="flex w-full border-b-1/2 border-slate-600 bg-slate-900 px-16 py-60 text-white sm:px-40 sm:py-[120px]">
-      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-36 lg:flex-row lg:gap-0">
+    <section className="border-slate-600 bg-slate-900 text-white flex w-full border-b-1/2 px-16 py-56 sm:px-40 sm:py-120">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-32 lg:flex-row lg:gap-0">
         <div className="flex flex-col lg:w-[404px] lg:flex-shrink-0">
           <h2 className="text-heading-2">
             <Trans>FAQ</Trans>
@@ -50,23 +50,23 @@ export function BuildersFaqSection() {
             </BuildersFaqItem>
           </div>
 
-          <div className="mt-14 flex flex-col rounded-20 border-1/2 border-slate-600/50 bg-[#171827]/30 px-25 py-24">
-            <span className="text-12 font-medium uppercase tracking-[0.864px] text-blue-300">
+          <div className="border-slate-600/50 mt-12 flex flex-col rounded-20 border-1/2 bg-[#171827]/30 px-24 py-24">
+            <span className="text-12 text-blue-300 font-medium uppercase tracking-[0.864px]">
               <Trans>Quick hits</Trans>
             </span>
-            <h4 className="text-18 mt-20 -tracking-[0.576px] text-white">
+            <h4 className="text-18 text-white mt-20 -tracking-[0.576px]">
               <Trans>Chains</Trans>
             </h4>
-            <p className="mt-8 text-14 -tracking-[0.448px] text-slate-400">
+            <p className="text-14 mt-8 -tracking-[0.448px] text-slate-400">
               <Trans>
                 Arbitrum, Avalanche, MegaETH. (GMX Account also accepts entry from Ethereum, Base, and BNB.)
               </Trans>
             </p>
-            <div className="mt-16 border-t-1/2 border-slate-600/50" />
-            <h4 className="text-18 mt-20 -tracking-[0.576px] text-white">
+            <div className="border-slate-600/50 mt-16 border-t-1/2" />
+            <h4 className="text-18 text-white mt-20 -tracking-[0.576px]">
               <Trans>Timeline</Trans>
             </h4>
-            <p className="mt-8 text-14 -tracking-[0.448px] text-slate-400">
+            <p className="text-14 mt-8 -tracking-[0.448px] text-slate-400">
               <Trans>A day for a lightweight integration, 1 to 3 weeks for something deeper</Trans>
             </p>
           </div>

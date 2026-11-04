@@ -45,7 +45,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 
 function V1Icon() {
   return (
-    <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-medium text-white dark:text-black">
+    <div className="rounded-2 bg-textIcon-secondary px-4 py-4 text-[8px] font-medium leading-1 text-textIcon-onButton dark:text-black">
       {t`V1`}
     </div>
   );

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -71,14 +71,14 @@ function EarningsStripCell({
 }) {
   return (
     <div
-      className={cx("flex min-w-0 flex-col gap-2 px-8 first:pl-0 last:pr-0", {
+      className={cx("flex min-w-0 flex-col gap-4 px-8 first:pl-0 last:pr-0", {
         "items-start": align === "left",
         "items-center": align === "center",
         "items-end": align === "right",
       })}
     >
-      <span className="text-body-small whitespace-nowrap font-medium text-typography-secondary">{label}</span>
-      <span className="text-body-small whitespace-nowrap font-medium text-typography-primary numbers">{children}</span>
+      <span className="text-body-small whitespace-nowrap font-medium text-textIcon-secondary">{label}</span>
+      <span className="text-body-small whitespace-nowrap font-medium text-textIcon-primary numbers">{children}</span>
     </div>
   );
 }
@@ -98,7 +98,7 @@ function EarningsStrip({
   const attributionNote = attributionScope ? <EarningAttributionNote scope={attributionScope} /> : undefined;
 
   return (
-    <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-slate-600 rounded-8 border-1/2 border-dashed border-slate-600 bg-slate-900/[0.88] px-12 py-6">
+    <div className="grid grid-cols-3 divide-x-1/2 divide-dashed divide-stroke-primary rounded-8 border-1/2 border-dashed border-stroke-primary bg-fill-surfaceBase/[0.88] px-12 py-4">
       <EarningsStripCell label={<Trans>7d earnings</Trans>}>
         <EarningValue
           value={earnings?.recent}
@@ -109,7 +109,7 @@ function EarningsStrip({
         >
           {(value) =>
             value > 0n ? (
-              <DeltaUsdValue deltaUsd={value} hidePercentage className="text-green-500" />
+              <DeltaUsdValue deltaUsd={value} hidePercentage className="text-green-strong" />
             ) : (
               <UsdValue usd={value} />
             )
@@ -119,7 +119,7 @@ function EarningsStrip({
       <EarningsStripCell label={<Trans>Expected 365d</Trans>} align="center">
         <EarningValue value={earnings?.expected365d} isLoading={isLoading} isAvailable={isAvailable} skeletonWidth={40}>
           {(value) => (
-            <span className="whitespace-nowrap text-blue-100">
+            <span className="whitespace-nowrap text-blue-secondary">
               ~<UsdValue usd={value} />
             </span>
           )}
@@ -207,13 +207,19 @@ export function GmGlvAssetCard({
           symbol={iconTokenSymbol}
           displaySize={40}
           badge={getMarketBadge(chainId, marketInfo)}
-          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-1" : undefined}
+          badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] -bottom-0" : undefined}
         />
       }
       title={title}
       subtitle={subtitle}
       headerButton={
-        <Button variant="secondary" className="w-32 !p-0" to={detailsPath} onClick={makeHandleClick("details")}>
+        <Button
+          variant="secondary"
+          className="w-32 !p-0"
+          to={detailsPath}
+          onClick={makeHandleClick("details")}
+          aria-label={t`View details`}
+        >
           <NewLinkIcon className="size-16" />
         </Button>
       }
@@ -242,7 +248,7 @@ export function GmGlvAssetCard({
             variant="none"
             maxAllowedWidth={350}
             handle={
-              <span className="inline-flex w-fit items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
+              <span className="text-body-small inline-flex w-fit items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
                 <img className="h-10" src={sparkleIcon} alt="" />
                 <Trans>Earns MegaETH points</Trans>
               </span>
@@ -292,7 +298,12 @@ export function GmGlvAssetCard({
             totalPerformanceApy !== undefined ? (
               formatPercentage(totalPerformanceApy, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+              <Skeleton
+                baseColor="var(--color-fill-skeleton)"
+                highlightColor="var(--color-fill-skeleton)"
+                width={50}
+                className="leading-base"
+              />
             ) : (
               "N/A"
             )
@@ -304,7 +315,12 @@ export function GmGlvAssetCard({
             performanceApy30d !== undefined ? (
               formatPercentage(performanceApy30d, { bps: false, signed: true, showPlus: false })
             ) : isPerformanceLoading ? (
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+              <Skeleton
+                baseColor="var(--color-fill-skeleton)"
+                highlightColor="var(--color-fill-skeleton)"
+                width={50}
+                className="leading-base"
+              />
             ) : (
               "N/A"
             )

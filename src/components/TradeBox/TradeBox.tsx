@@ -986,7 +986,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   isStable: fromToken.isStable,
                   showZero: payPendingAmount !== undefined,
                 })}{" "}
-                <span className="text-typography-secondary">{fromToken.symbol}</span>
+                <span className="text-textIcon-secondary">{fromToken.symbol}</span>
                 {payPendingAmount !== undefined && <PaxosPendingLabel amount={payPendingAmount} token={fromToken} />}
               </>
             ) : undefined
@@ -1042,10 +1042,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                   type="button"
                   disabled={!isSwitchTokensAllowed}
                   className={cx(
-                    `absolute -top-19 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
-                    items-center justify-center rounded-full bg-slate-600 text-typography-secondary`,
+                    `absolute -top-20 left-1/2 flex size-36 -translate-x-1/2 cursor-pointer
+                    items-center justify-center rounded-full bg-fill-accent text-textIcon-secondary`,
                     {
-                      "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-slate-600),var(--color-slate-600))] hover:bg-blend-overlay":
+                      "hover:bg-[var(--color-fill-surfaceHover)] hover:bg-[linear-gradient(0deg,var(--color-fill-accent),var(--color-fill-accent))] hover:bg-blend-overlay":
                         isSwitchTokensAllowed,
                     }
                   )}
@@ -1197,7 +1197,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             selectedPosition?.sizeInUsd ? (
               <button
                 type="button"
-                className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                className="flex items-center gap-4 text-textIcon-secondary hover:text-textIcon-primary"
                 onClick={(e) => {
                   e.stopPropagation();
                   closeSizeHook.setMaxCloseSize();
@@ -1353,7 +1353,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef} {...orderAutoSubmitHandlers}>
-      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-fill-surfaceBase pb-16">
         <div className="flex items-center justify-between">
           <Tabs
             options={tabsOptions}
@@ -1368,7 +1368,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
         <div className="flex flex-col gap-12 px-12">
           <UsdgAddMarginReturnBanner isSwap={isSwap} />
-          <div className="text-body-medium flex grow flex-col gap-14">
+          <div className="text-body-medium flex grow flex-col gap-12">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
               {isIncrease && (
@@ -1436,14 +1436,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-14 px-12 pt-12">
+        <div className="flex flex-col gap-12 px-12 pt-12">
           {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
             <ToggleSwitch
               isChecked={keepLeverageChecked}
               setIsChecked={setKeepLeverage}
               disabled={decreaseAmounts?.isFullClose}
             >
-              <span className="text-14 text-typography-secondary">
+              <span className="text-body-medium text-textIcon-secondary">
                 <Trans>Keep leverage at {formatLeverage(selectedPosition.leverage)}</Trans>
               </span>
             </ToggleSwitch>
@@ -1488,7 +1488,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
                 <span
-                  className="cursor-pointer font-medium text-blue-300"
+                  className="cursor-pointer font-medium text-blue-strong"
                   onClick={() => onSelectTradeMode(TradeMode.Twap)}
                 >
                   <Trans>Use a TWAP order</Trans>
@@ -1558,7 +1558,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         </div>
       </div>
 
-      <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
+      <div className={cx("flex flex-col gap-12 rounded-8 bg-fill-surfaceBase", isTwap ? "p-4" : "p-12 pb-16")}>
         {isPaxosRouteActive && fromToken && toToken && (
           <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
         )}

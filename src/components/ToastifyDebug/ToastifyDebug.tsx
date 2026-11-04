@@ -20,14 +20,14 @@ export function ToastifyDebug(props: { error: string }) {
   }, [props.error]);
 
   return (
-    <div className="text-12 opacity-70">
-      <div className="flex gap-10">
+    <div className="text-body-small opacity-70">
+      <div className="flex gap-8">
         <span className="inline-block cursor-pointer border-b border-dashed" onClick={() => setOpen((old) => !old)}>
           {open ? <Trans>Hide error</Trans> : <Trans>Show error</Trans>}
         </span>
         <span
           className={cx("inline-block cursor-pointer border-b border-dashed", {
-            "text-green-500": hasCopied,
+            "text-green-strong": hasCopied,
           })}
           onClick={handleCopy}
         >

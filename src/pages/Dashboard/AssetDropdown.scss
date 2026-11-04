@@ -11,7 +11,7 @@
 .dropdown-arrow {
   margin-left: 0.8rem;
   cursor: pointer;
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   opacity: 0.8;
 
   &:hover {
@@ -23,21 +23,20 @@
   display: flex;
   align-items: center;
   cursor: pointer;
-  color: var(--color-slate-100);
+  color: var(--color-textIcon-secondary);
   text-decoration: none;
   padding: 8px 12px;
   font-size: var(--font-size-body-medium);
   text-align: left;
 
   &:hover {
-    background: var(--color-slate-800);
-    color: var(--color-typography-primary);
+    background: var(--color-fill-surfaceElevated);
+    color: var(--color-textIcon-primary);
   }
 
   p {
     margin: 0;
     margin-left: 8px;
-    font-weight: 500;
   }
 
   .asset-item-icon {

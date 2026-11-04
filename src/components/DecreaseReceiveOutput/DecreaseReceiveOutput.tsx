@@ -62,15 +62,15 @@ export function DecreaseReceiveOutputDisplay({
     <span
       className={cx(
         isStacked
-          ? "inline-flex flex-col items-end gap-2"
-          : "inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-2",
+          ? "inline-flex flex-col items-end gap-4"
+          : "inline-flex flex-wrap items-center justify-end gap-x-4 gap-y-4",
         className
       )}
     >
       {outputs.map((output, index) => {
         const content = (
           <>
-            {index > 0 && <span className="text-typography-secondary">+</span>}
+            {index > 0 && <span className="text-textIcon-secondary">+</span>}
             <AmountWithUsdBalance
               amount={output.amount}
               decimals={output.token.decimals}

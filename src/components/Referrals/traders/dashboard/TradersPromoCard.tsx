@@ -25,7 +25,7 @@ export function TradersPromoCard({ account }: { account: string | undefined }) {
         <Trans>
           Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <br /> with your
           tier and the activity of your referred traders.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon-arrow" className="text-blue-300">
+          <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon-arrow" className="text-blue-strong">
             <Trans>Read more</Trans>
           </ExternalLink>
           .
@@ -33,7 +33,7 @@ export function TradersPromoCard({ account }: { account: string | undefined }) {
       }
       onClose={close}
       imgSrc={affiliateCodePromoFg}
-      imgClassName="-bottom-34 right-28 max-[1266px]:hidden"
+      imgClassName="-bottom-32 right-24 max-[1266px]:hidden"
     />
   );
 }

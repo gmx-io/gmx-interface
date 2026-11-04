@@ -55,7 +55,7 @@ export default function DashboardV2() {
             <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
             <StatsCard />
           </div>
-          <h2 className="text-h2 px-12 font-medium">{t`Tokens`}</h2>
+          <h2 className="text-h3 px-12 font-medium">{t`Tokens`}</h2>
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
               <GmxCard

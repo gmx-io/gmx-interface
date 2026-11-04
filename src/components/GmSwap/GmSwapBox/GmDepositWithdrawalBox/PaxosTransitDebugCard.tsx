@@ -100,7 +100,7 @@ export function PaxosTransitDebugCard({
   };
 
   return (
-    <div className="flex w-full flex-col gap-14 rounded-8 bg-slate-900 p-12">
+    <div className="flex w-full flex-col gap-12 rounded-8 bg-fill-surfaceBase p-12">
       <ToggleSwitch isChecked={isMocked} setIsChecked={setIsMocked}>
         Mock Transit gateway, no real conversion
       </ToggleSwitch>
@@ -128,7 +128,7 @@ export function PaxosTransitDebugCard({
         label="Transit size threshold, $"
         value={
           <NumberInput
-            className="w-120 rounded-4 border border-gray-700 px-8 py-4 text-right numbers"
+            className="w-120 rounded-4 border border-stroke-primary px-8 py-4 text-right numbers"
             value={thresholdUsdInput}
             onValueChange={(e) => setThresholdUsdInput(e.target.value)}
             placeholder={

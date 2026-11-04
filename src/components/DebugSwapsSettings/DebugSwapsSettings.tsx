@@ -63,9 +63,9 @@ export function DebugSwapsSettings() {
             <Trans>Swap price impact for external swap threshold</Trans>
           </div>
           <div className="relative">
-            <div className="absolute left-11 top-1/2 -translate-y-1/2 text-typography-secondary">-</div>
+            <div className="absolute left-8 top-1/2 -translate-y-1/2 text-textIcon-secondary">-</div>
             <NumberInput
-              className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
+              className="mb-8 mt-8 w-full rounded-4 border border-stroke-primary pl-24"
               value={(-debugSettings.swapPriceImpactForExternalSwapThresholdBps).toString()}
               onValueChange={(e) => {
                 const value = -BigInt(e.target.value);
@@ -76,9 +76,7 @@ export function DebugSwapsSettings() {
               maxDecimals={0}
               stripLeadingZeros
             />
-            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-typography-secondary">
-              {t`bps`}
-            </div>
+            <div className="absolute right-8 top-1/2 -translate-y-1/2 text-right text-textIcon-secondary">{t`bps`}</div>
           </div>
         </div>
         <div>
@@ -86,9 +84,9 @@ export function DebugSwapsSettings() {
             <Trans>USDC-USDG instant conversion limit</Trans>
           </div>
           <div className="relative">
-            <div className="absolute left-11 top-1/2 -translate-y-1/2 text-typography-secondary">$</div>
+            <div className="absolute left-8 top-1/2 -translate-y-1/2 text-textIcon-secondary">$</div>
             <NumberInput
-              className="mb-8 mt-8 w-full rounded-4 border border-gray-700 pl-25"
+              className="mb-8 mt-8 w-full rounded-4 border border-stroke-primary pl-24"
               value={debugSwapMarketsConfig?.usdcUsdgInstantLimitUsd ?? ""}
               onValueChange={(e) =>
                 setDebugSwapMarketsConfig({
@@ -100,7 +98,7 @@ export function DebugSwapsSettings() {
               maxDecimals={2}
             />
           </div>
-          <div className="text-12 text-typography-secondary">
+          <div className="text-body-small text-textIcon-secondary">
             <Trans>
               Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin.
             </Trans>

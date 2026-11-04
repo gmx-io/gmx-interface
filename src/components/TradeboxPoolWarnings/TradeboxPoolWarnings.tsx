@@ -461,7 +461,7 @@ const useTradeboxPoolWarnings = () => {
     warning.push(
       <AlertInfoCard key="showHasBetterOpenFeesWarning">
         <Trans>
-          <span className="cursor-pointer font-medium text-blue-300 underline" onClick={onSwitchPoolClick}>
+          <span className="cursor-pointer font-medium text-blue-strong underline" onClick={onSwitchPoolClick}>
             Switch to {getMarketPoolName(minOpenFeesMarket)} pool
           </span>{" "}
           for potentially lower price impact

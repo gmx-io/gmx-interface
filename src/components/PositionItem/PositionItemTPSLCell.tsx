@@ -48,7 +48,7 @@ export function PositionItemTPSLCell({
     return (
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
-          <span className={cx("numbers", "text-green-500")}>
+          <span className={cx("numbers", "text-green-strong")}>
             {closestTp ? (
               <>
                 <UsdValue
@@ -62,8 +62,8 @@ export function PositionItemTPSLCell({
               "—"
             )}
           </span>
-          <span className="text-typography-inactive">•</span>
-          <span className={cx("numbers", "text-red-500")}>
+          <span className="text-textIcon-inactive">•</span>
+          <span className={cx("numbers", "text-red-strong")}>
             {closestSl ? (
               <>
                 <UsdValue
@@ -85,8 +85,8 @@ export function PositionItemTPSLCell({
             "flex items-center justify-center rounded-4",
             isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             hasTpOrSl
-              ? "size-20 text-typography-secondary hover:text-typography-primary"
-              : "ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
+              ? "size-20 text-textIcon-secondary hover:text-textIcon-primary"
+              : "text-body-small ml-8 gap-4 rounded-full border border-textIcon-disabled px-8 py-4 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
           )}
         >
           {hasTpOrSl ? (
@@ -103,8 +103,8 @@ export function PositionItemTPSLCell({
 
   return (
     <div className="flex items-center gap-4">
-      <div className="flex flex-col gap-2">
-        <span className={cx("numbers", "text-green-500")}>
+      <div className="flex flex-col gap-4">
+        <span className={cx("numbers", "text-green-strong")}>
           {closestTp ? (
             <>
               <UsdValue
@@ -112,13 +112,13 @@ export function PositionItemTPSLCell({
                 displayDecimals={marketDecimals}
                 visualMultiplier={visualMultiplier}
               />
-              {tpCount > 1 && <span className="ml-2">({tpCount})</span>}
+              {tpCount > 1 && <span className="ml-4">({tpCount})</span>}
             </>
           ) : (
             "—"
           )}
         </span>
-        <span className={cx("numbers", "text-red-500")}>
+        <span className={cx("numbers", "text-red-strong")}>
           {closestSl ? (
             <>
               <UsdValue
@@ -126,7 +126,7 @@ export function PositionItemTPSLCell({
                 displayDecimals={marketDecimals}
                 visualMultiplier={visualMultiplier}
               />
-              {slCount > 1 && <span className="ml-2">({slCount})</span>}
+              {slCount > 1 && <span className="ml-4">({slCount})</span>}
             </>
           ) : (
             "—"
@@ -140,8 +140,8 @@ export function PositionItemTPSLCell({
           "flex items-center justify-center rounded-4",
           isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
           hasTpOrSl
-            ? "size-20 text-typography-secondary hover:text-typography-primary"
-            : "ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
+            ? "size-20 text-textIcon-secondary hover:text-textIcon-primary"
+            : "text-body-small ml-8 gap-4 rounded-full border border-textIcon-disabled px-8 py-4 font-medium text-textIcon-secondary hover:border-stroke-accent hover:text-textIcon-primary"
         )}
       >
         {hasTpOrSl ? (

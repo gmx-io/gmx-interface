@@ -200,7 +200,7 @@ export default function EarnAdditionalOpportunitiesPage() {
             ))}
           </div>
         ) : (
-          <div className="text-body-medium rounded-12 bg-slate-900 p-20 text-typography-secondary">
+          <div className="text-body-medium rounded-12 bg-fill-surfaceBase p-20 text-textIcon-secondary">
             {emptyStateMessage}
           </div>
         )}

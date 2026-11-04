@@ -215,8 +215,8 @@ export function EarningsBand({
   chainName: string;
 }) {
   return (
-    <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
-      <h3 className="text-body-large font-medium text-typography-primary">
+    <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceBase p-20">
+      <h3 className="text-body-large font-medium text-textIcon-primary">
         <Trans>Summary</Trans>
       </h3>
 

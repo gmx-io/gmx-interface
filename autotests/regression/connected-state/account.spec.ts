@@ -65,7 +65,7 @@ test("4.10 19.01 settings open from the account panel, the top-bar gear and the 
   await expect(modal).toBeVisible();
   await expect(modal.getByRole("button", { name: "Trading settings", exact: true })).toBeVisible();
   await close();
-  await page.getByRole("banner").getByRole("button", { name: "", exact: true }).click();
+  await page.getByRole("banner").getByRole("button", { name: "Settings", exact: true }).click();
   await expect(modal.getByRole("button", { name: "Trading settings", exact: true })).toBeVisible();
   await close();
   await page.locator("nav, aside").getByRole("button", { name: "Settings", exact: true }).click();

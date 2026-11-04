@@ -104,9 +104,9 @@ export function DailyAndCumulativePnL({
   );
 
   return (
-    <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
-      <div className="flex items-center justify-between px-20 py-15">
-        <div className="text-20 font-medium">
+    <div className="flex flex-col rounded-8 bg-fill-surfaceBase" ref={cardRef}>
+      <div className="flex items-center justify-between px-20 py-12">
+        <div className="text-h4">
           <Trans>Daily and cumulative PnL</Trans>
         </div>
         {isMobile ? null : (
@@ -126,7 +126,10 @@ export function DailyAndCumulativePnL({
       />
 
       {isMobile && (
-        <div data-exclude className="flex flex-wrap justify-between gap-8 border-t-1/2 border-slate-600 px-16 py-12">
+        <div
+          data-exclude
+          className="flex flex-wrap justify-between gap-8 border-t-1/2 border-stroke-primary px-16 py-12"
+        >
           {controls}
         </div>
       )}

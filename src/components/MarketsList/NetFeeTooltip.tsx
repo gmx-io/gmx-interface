@@ -16,31 +16,31 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           const { marketInfo: market, netFeeLong, netFeeShort } = stat;
           return (
             <div key={market.marketTokenAddress} className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-start text-typography-primary">
+              <div className="flex flex-wrap items-start text-textIcon-primary">
                 <span>{getMarketIndexName(market)}</span>
-                <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+                <span className="subtext !leading-1">[{getMarketPoolName(market)}]</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-typography-secondary">
+                <span className="text-textIcon-secondary">
                   <Trans>Longs net rate / 1h</Trans>
                 </span>
                 <span
                   className={cx("numbers", {
-                    "text-green-500": netFeeLong > 0,
-                    "text-red-500": netFeeLong < 0,
+                    "text-green-strong": netFeeLong > 0,
+                    "text-red-strong": netFeeLong < 0,
                   })}
                 >
                   {formatRatePercentage(netFeeLong)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-typography-secondary">
+                <span className="text-textIcon-secondary">
                   <Trans>Shorts net rate / 1h</Trans>
                 </span>
                 <span
                   className={cx("numbers", {
-                    "text-green-500": netFeeShort > 0,
-                    "text-red-500": netFeeShort < 0,
+                    "text-green-strong": netFeeShort > 0,
+                    "text-red-strong": netFeeShort < 0,
                   })}
                 >
                   {formatRatePercentage(netFeeShort)}
@@ -57,13 +57,13 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
     <table className="w-full">
       <thead>
         <tr>
-          <th className="pb-10 font-normal uppercase text-typography-secondary">
+          <th className="pb-8 font-normal uppercase text-textIcon-secondary">
             <Trans>POOL</Trans>
           </th>
-          <th className="pb-10 pr-10 text-right font-normal uppercase text-typography-secondary">
+          <th className="pb-8 pr-8 text-right font-normal uppercase text-textIcon-secondary">
             <Trans>LONGS NET RATE / 1H</Trans>
           </th>
-          <th className="pb-10  text-right font-normal uppercase text-typography-secondary">
+          <th className="pb-8  text-right font-normal uppercase text-textIcon-secondary">
             <Trans>SHORTS NET RATE / 1H</Trans>
           </th>
         </tr>
@@ -75,23 +75,23 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
           return (
             <tr key={market.marketTokenAddress}>
               <td>
-                <div className="inline-flex flex-wrap items-start text-typography-primary">
+                <div className="inline-flex flex-wrap items-start text-textIcon-primary">
                   <span>{getMarketIndexName(market)}</span>
-                  <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+                  <span className="subtext !leading-1">[{getMarketPoolName(market)}]</span>
                 </div>
               </td>
               <td
-                className={cx("pr-10 text-right numbers", {
-                  "text-green-500": netFeeLong > 0,
-                  "text-red-500": netFeeLong < 0,
+                className={cx("pr-8 text-right numbers", {
+                  "text-green-strong": netFeeLong > 0,
+                  "text-red-strong": netFeeLong < 0,
                 })}
               >
                 {formatRatePercentage(netFeeLong)}
               </td>
               <td
                 className={cx("text-right numbers", {
-                  "text-green-500": netFeeShort > 0,
-                  "text-red-500": netFeeShort < 0,
+                  "text-green-strong": netFeeShort > 0,
+                  "text-red-strong": netFeeShort < 0,
                 })}
               >
                 {formatRatePercentage(netFeeShort)}

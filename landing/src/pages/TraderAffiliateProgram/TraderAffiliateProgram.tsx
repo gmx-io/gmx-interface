@@ -17,7 +17,7 @@ export default function TraderAffiliateProgram() {
       <HomePageContextProvider>
         <HeaderMenu />
         <HeroSection />
-        <section className="bg-light-150 flex w-full justify-center px-16 py-80 sm:px-40 sm:pb-[114px] sm:pt-[120px]">
+        <section className="bg-light-150 flex w-full justify-center px-16 py-80 sm:px-40 sm:pb-96 sm:pt-120">
           <div id="program" className="w-full">
             <TraderAffiliateWidget />
           </div>
