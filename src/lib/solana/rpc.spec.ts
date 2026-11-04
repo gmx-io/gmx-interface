@@ -1,6 +1,9 @@
 import { address } from "@solana/kit";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
+import { setAbFlagEnabled } from "config/ab";
+import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
+import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getSolanaRpcUrl } from "config/rpc";
 import { metrics } from "lib/metrics";
 import { registerRpcTracker } from "lib/rpc/registry";
@@ -36,6 +39,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
   vi.useRealTimers();
   localStorage.clear();
+  setAbFlagEnabled("solanaNetwork", false);
 });
 
 it.each([
@@ -130,6 +134,8 @@ it.each([true, false])(
   "reports probe failure and recovery once from initial health %s FESOL-89",
   async (initiallyHealthy) => {
     vi.useFakeTimers();
+    setAbFlagEnabled("solanaNetwork", true);
+    localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
     const tracker = createTracker();
     const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
     if (!initiallyHealthy) probe.mockRejectedValue(new Error("RPC unavailable"));
@@ -169,3 +175,60 @@ it.each([true, false])(
     }
   }
 );
+
+it("stops Solana probes on EVM and resumes only while Solana is enabled and selected FESOL-89", async () => {
+  vi.useFakeTimers();
+  const tracker = createTracker();
+  const requests: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url, init) => {
+      const { id, method } = JSON.parse(init.body);
+      requests.push(method);
+      return Response.json({
+        jsonrpc: "2.0",
+        id,
+        result: method === "getGenesisHash" ? "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d" : 123,
+      });
+    })
+  );
+  const selectSolana = (selected: boolean) => {
+    if (selected) localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
+    else localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
+    document.dispatchEvent(
+      new CustomEvent("networkChange", { detail: { chainId: selected ? SOLANA_NETWORK_ID : ARBITRUM } })
+    );
+  };
+  const unregister = registerRpcTracker(tracker);
+  try {
+    selectSolana(true);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(requests).toEqual([]);
+    setAbFlagEnabled("solanaNetwork", true);
+    selectSolana(true);
+    selectSolana(false);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(requests).toEqual([]);
+    selectSolana(true);
+    selectSolana(true);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(requests.sort()).toEqual(["getGenesisHash", "getSlot"]);
+    expect(tracker.getRpc()).toBe(tracker.rpc);
+    selectSolana(false);
+    const stoppedAt = requests.length;
+    document.dispatchEvent(new CustomEvent("visibilitychange", { detail: undefined }));
+    await vi.advanceTimersByTimeAsync(40_000);
+    expect(requests).toHaveLength(stoppedAt);
+    expect(tracker.fallbackTracker.state.trackerTimeoutId).toBeUndefined();
+    selectSolana(true);
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(requests).toHaveLength(stoppedAt + 2);
+    unregister();
+    selectSolana(false);
+    selectSolana(true);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(requests).toHaveLength(stoppedAt + 2);
+  } finally {
+    unregister();
+  }
+});

@@ -1,7 +1,7 @@
 import { afterEach, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
-import { RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS } from "config/rpc";
+import { getProviderNameFromUrl, RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS } from "config/rpc";
 import { emitEndpointBanned, emitEndpointsUpdated, emitTrackingFinished } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { metrics } from "lib/metrics";
@@ -74,9 +74,11 @@ it.each([ARBITRUM, SOLANA_NETWORK_ID])(
     });
     if (networkId === SOLANA_NETWORK_ID) expect(update?.payload.customFields?.progressUnit).toBe("slot");
     else expect(update?.payload.customFields).not.toHaveProperty("progressUnit");
-    expect(
-      metrics.queue.some((item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned")
-    ).toBe(true);
+    const ban = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+    expect(ban?.payload.customFields?.endpoint).toBe(getProviderNameFromUrl(endpoints[0]));
+    expect(JSON.stringify(ban)).not.toContain(endpoints[0]);
     const gaps = metrics.queue.filter(
       (item) => item.type === "timing" && item.payload.event === "rpcTracker.endpoint.blockGap"
     );

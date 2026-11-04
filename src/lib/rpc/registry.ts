@@ -1,3 +1,6 @@
+import { getIsSolanaNetworkEnabled } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
+import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
 
 import { _debugRpcTracker } from "./_debug";
@@ -12,9 +15,22 @@ export function registerRpcTracker(tracker: RpcTrackerObserver) {
   trackers.set(tracker.params.chainId, tracker);
   const cleanupMetrics = subscribeForRpcTrackerMetrics(tracker);
   const cleanupDebug = _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
-  tracker.fallbackTracker.startTracking();
+  const isSolana = isSolanaNetwork(tracker.params.chainId);
+  let isTracking = false;
+  const syncTracking = () => {
+    const shouldTrack =
+      !isSolana ||
+      (getIsSolanaNetworkEnabled() && localStorage.getItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY) === "true");
+    if (isTracking === shouldTrack) return;
+    isTracking = shouldTrack;
+    if (shouldTrack) tracker.fallbackTracker.startTracking();
+    else tracker.fallbackTracker.stopTracking();
+  };
+  if (isSolana) document.addEventListener("networkChange", syncTracking);
+  syncTracking();
 
   return () => {
+    if (isSolana) document.removeEventListener("networkChange", syncTracking);
     tracker.fallbackTracker.stopTracking();
     cleanupMetrics();
     cleanupDebug?.();
