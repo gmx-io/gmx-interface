@@ -21,8 +21,7 @@ const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
 const GM_TOKEN = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
 
-const renderText = (content: ReactNode) =>
-  render(createElement(I18nProvider, { i18n }, content)).container.textContent;
+const renderText = (content: ReactNode) => render(createElement(I18nProvider, { i18n }, content)).container.textContent;
 
 beforeAll(() => {
   i18n.load("en", {});
@@ -344,10 +343,12 @@ describe("getTxnErrorToast wallet errors", () => {
 describe("getTxnErrorToast relay failures", () => {
   it.each([
     {
-      name: "relay down, order paid from the wallet",
+      name: "relay down, order update paid from the wallet",
       error: new GmxRelayError("GMX Relay /v1/relay/submit failed: Internal Server Error", 503),
       isGmxAccount: false,
-      shows: "Express relayer is temporarily unavailable.Try again shortly or switch to Classic Trading in settings",
+      defaultMessage: "Order update failed",
+      shows:
+        "Order update failedExpress relayer is temporarily unavailable.Try again shortly or switch to Classic Trading in settings",
     },
     {
       name: "relay unreachable, order paid from GMX Account",
@@ -363,8 +364,9 @@ describe("getTxnErrorToast relay failures", () => {
       shows: "Transaction failed",
       hides: "relayer",
     },
-  ])("names a relayer outage instead of a generic failure: $name PRO-4548", ({ error, isGmxAccount, shows, hides }) => {
+  ])("names a relayer outage: $name PRO-4548", ({ error, isGmxAccount, defaultMessage, shows, hides }) => {
     const { errorContent } = getTxnErrorToast(ARBITRUM, parseError(error), {
+      defaultMessage,
       isRelayUnavailable: getIsRelayUnavailableError(error),
       setIsSettingsVisible: vi.fn(),
       expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount },

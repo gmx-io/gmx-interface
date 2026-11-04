@@ -263,6 +263,7 @@ export function getTxnErrorToast(
 
   if (isRelayUnavailable) {
     toastParams.errorContent = getRelayUnavailableToastContent({
+      defaultMessage,
       debugErrorMessage,
       setIsSettingsVisible: expressTxn && !expressTxn.isGmxAccount ? setIsSettingsVisible : undefined,
     });
@@ -485,14 +486,19 @@ export function getErrorMessage(
 }
 
 function getRelayUnavailableToastContent({
+  defaultMessage,
   debugErrorMessage,
   setIsSettingsVisible,
 }: {
+  defaultMessage: ReactNode;
   debugErrorMessage: string | undefined;
   setIsSettingsVisible: ((isVisible: boolean) => void) | undefined;
 }) {
   return (
     <div>
+      {defaultMessage}
+      <br />
+      <br />
       {setIsSettingsVisible ? (
         <Trans>
           Express relayer is temporarily unavailable.
