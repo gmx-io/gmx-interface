@@ -92,11 +92,6 @@ export function uiEarnRehearsal(state: AccountState, weth: string) {
         stake = call.args[0];
         state.balances.set(gmx, state.balances.get(gmx)! - stake);
         state.balances.set(feeTracker, stake);
-      } else if (call.functionName === "unstakeGmx") {
-        expect(call.args[0]).toBe(stake);
-        state.balances.set(gmx, state.balances.get(gmx)! + stake);
-        stake = 0n;
-        state.balances.set(feeTracker, 0n);
       } else throw new Error("Unsupported simulated earn operation");
     },
   };

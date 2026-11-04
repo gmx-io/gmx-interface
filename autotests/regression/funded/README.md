@@ -8,7 +8,7 @@ This opt-in harness has **17 Playwright scenarios across all funded groups**, se
 - **Relay (Express and 1CT actions, the Base bridge return):** the harness holds the app's `/v1/relay/submit` request until its guards pass and the action is journaled, then sends the app's request to gmx-api unchanged and returns the relay's real response. The app polls the relay status itself. The step continues only after the harness has also confirmed execution and the transaction receipt from Node. A completed step is not sent again on replay; the app receives its recorded task ID.
 - **Cleanup:** SDK cleanup runs after every scenario and as pre-run recovery, not only after failures. On passing GM, GLV and claims runs it sends a WETH unwrap transaction, and it rebalances ETH/USDC with an SDK swap when the ratio drifts by more than 5% and $2.
 
-No scenario tests a wallet extension. `funded-ui-rehearsal` runs all 17 UI journeys with simulated transactions, balances and receipts. It creates a disposable in-memory signer for testing signature validation; it never loads `.env.test.local`, uses the funded wallet, broadcasts transactions or contacts a relay for submission. Relay submissions get a simulated task ID, and the app's status polling gets a simulated `executed` status. It does not prove mainnet keeper, relay or bridge execution.
+No scenario tests a wallet extension. `funded-ui-rehearsal` runs the 15 unblocked UI journeys with simulated transactions, balances and receipts. It creates a disposable in-memory signer for testing signature validation; it never loads `.env.test.local`, uses the funded wallet, broadcasts transactions or contacts a relay for submission. Relay submissions get a simulated task ID, and the app's status polling gets a simulated `executed` status. It does not prove mainnet keeper, relay or bridge execution.
 
 Checkpoints include their UI assertions. A resumed step verifies the submitted action before continuing, and completed steps are not replayed. The rehearsal exercises an interrupted checkpoint after every action and resumes the entire completed journey without additional actions. Paid 1CT retries preserve the same limited session in a `0600` file under the wallet's state directory, outside reports; cleanup revokes it and deletes the file. A lost relay submission response blocks resubmission until its outcome is reconciled.
 
@@ -28,14 +28,14 @@ yarn test:regression --project=funded-ui-rehearsal --workers=1 --retries=0
 | `account`   |     1 | $1 USDC same-chain GMX Account deposit/withdrawal; account balance in UI                                                          |
 | `bridge`    |     1 | 3 USDC Base → GMX Account; 2 USDC returned to Base; ~$0.50 ETH bridge-gas deposit and withdrawal of remaining USDC/WETH           |
 | `liquidity` |     2 | $1 USDC into GM and GLV; LP mint, portfolio/refresh, withdrawal outputs and empty pending requests                                |
-| `earn`      |     2 | Claim existing WETH staking rewards; stake/unstake up to $1 of existing GMX (blocked on RewardRouterV3)                           |
+| `earn`      |     2 | Claim existing WETH staking rewards; stake up to $1 of existing GMX (blocked on RewardRouterV3)                                   |
 | `one-click` |     1 | One-day / two-action UI authorization; limit creation/cancellation; on-chain activation and revocation                            |
 
 Trading uses ETH/USD [WETH-USDC] on Arbitrum. Liquidity uses that GM market and a compatible ETH/USDC GLV, selected through the pool UI. Trigger orders are placed far from the current price; this verifies creation/edit/cancellation, not natural trigger execution. The guard accepts the application's price sentinels for pending orders, while enforcing the intended trigger, size, collateral, receiver and fees. TWAP creates two parts through the form, verifies the first execution, cancels the remaining part scheduled ten minutes later, and closes the position. GM/GLV forms use 1% slippage; their guard also reserves 0.5% for fees and impact.
 
 Bridge remains excluded from the default sequential batch. It additionally requires 3 USDC and gas on Base. The UI bridge-out pays its network fee from GMX Account USDC and its bridge fee from GMX Account WETH; the journey deposits about $0.50 ETH for that purpose and returns unused WETH/USDC to Arbitrum. Existing account WETH is rejected instead of consumed. A bridge requiring more gas stops at the unchanged spending limits.
 
-Staking requires zero initial GMX/esGMX stake, staking power and projected rewards. The UI acknowledges reset only for power accrued by the test itself. The rehearsal updates both the staked and FeeGmxTracker balances so vesting availability is consistent.
+Staking requires zero initial GMX/esGMX stake, staking power and projected rewards. The rehearsal updates both the staked and FeeGmxTracker balances so vesting availability is consistent.
 
 All groups are represented, but Avalanche/other source-chain matrices, synthetic markets, alternative collateral, GM shifts, limit swaps, real TP/SL triggers, GMX Account trading, 1CT top-up, vesting, affiliate/funding/distribution claims and extension/mobile wallet flows are **not covered by these 17 cases**. Controlled fork/mocked suites are appropriate for triggers and entitlement/cooldown variants; they must not be reported as mainnet settlement coverage.
 
@@ -99,7 +99,7 @@ For a wallet without existing rewards, explicitly select the other 13 scenarios:
 REGRESSION_BASE_URL=https://YOUR-UPDATED-PREVIEW.gmx-interface.pages.dev REGRESSION_MAX_GAS_GWEI=0.03 yarn test:regression:funded:all --group smoke,trading,orders,swap,account,liquidity --execute --budget-usd 20
 ```
 
-This uses the same preview URL and gas environment variables. To include all 17 again, use `--group all` and set `REGRESSION_BASE_MAX_GAS_GWEI` as well as the bridge prerequisites below.
+This uses the same preview URL and gas environment variables. To run all 15 unblocked scenarios again, use `--group all` and set `REGRESSION_BASE_MAX_GAS_GWEI` as well as the bridge prerequisites below.
 
 `--budget-usd` caps **combined fee reservations across all cases**, including retries, cleanup and additional fees reserved during startup recovery. Historical reservations from the previous run are reported separately and are not charged to the new batch again. The previous run's entire remaining allowance must fit this cap before automatic recovery is attempted. The default is $5; the example explicitly permits $20 for the sequence. Before starting each case, the entire $5 allowance (or $8 for GLV) must fit the remaining total budget. This can stop the sequence before the cap is fully used. The cap is not an estimate of actual spending or a guarantee against market losses. A new invocation starts a new batch budget.
 
@@ -120,7 +120,7 @@ Use the gitignored `.env.test.local`. The preferred key name is `REGRESSION_PRIV
 The RPC can be set with `REGRESSION_RPC_URL` (or `REGRESSION_ARBITRUM_RPC_URL` / existing `GMX_TEST_RPC_URL`). Without an override it uses the public Arbitrum RPC. **Set an explicit positive `REGRESSION_MAX_GAS_GWEI` or `REGRESSION_ARBITRUM_MAX_GAS_GWEI` before execution. There is no default ceiling.** Gas checks run before every paid action, including cleanup; retries never bypass the gate.
 
 ```sh
-# List all 17 scenario IDs without loading the wallet env file.
+# List the 15 unblocked scenario IDs without loading the wallet env file.
 yarn test:regression:funded:list
 
 # Read-only balances, market minima, quote and selected cases.
@@ -152,7 +152,7 @@ yarn test:regression:funded:cleanup --execute
 
 Replace example hosts such as `YOUR-UPDATED-PREVIEW` with the real deployment address before execution. The runner rejects these placeholders before opening a funded run. The browser also reports unsuccessful deployment responses and Cloudflare's unavailable-page message directly, before attempting wallet connection.
 
-Use the PR's **updated immutable Cloudflare preview URL**: the new cases need the order/account/portfolio selectors in this change. The public test URL or an older preview may not contain them. CI validates funded types, offline policies and discovery of all 17 Playwright cases. It does not receive the wallet key or run funded transactions; the existing manual PR-label/dispatch workflow still runs the free UI/mock suites against the PR deployment preview.
+Use the PR's **updated immutable Cloudflare preview URL**: the new cases need the order/account/portfolio selectors in this change. The public test URL or an older preview may not contain them. CI validates funded types, offline policies and discovery of the 15 unblocked Playwright cases. It does not receive the wallet key or run funded transactions; the existing manual PR-label/dispatch workflow still runs the free UI/mock suites against the PR deployment preview.
 
 The bridge case also requires at least **3 USDC plus native ETH on Base**, with $1 of Base ETH retained as a reserve, and an explicit `REGRESSION_BASE_MAX_GAS_GWEI`. Set `REGRESSION_BASE_RPC_URL` if needed (`GMX_TEST_SOURCE_RPC_URL` is also accepted). Arbitrum and Base each have a gas gate; Base fee reservations also include the L1 data-fee upper bound. Bridge return waits up to ten minutes per destination leg. Small residual account USDC is withdrawn on Arbitrum to avoid paying for another bridge.
 

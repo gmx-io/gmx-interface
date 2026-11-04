@@ -15,7 +15,7 @@ export const fundedCases = [
   { id: "bridge", group: "bridge", title: "Base to GMX Account and back: destination settlement" },
   { id: "gm", group: "liquidity", title: "GM: USDC deposit and withdrawal" },
   { id: "glv", group: "liquidity", title: "GLV: USDC deposit and withdrawal" },
-  { id: "staking", group: "earn", title: "GMX: stake and unstake a bounded existing balance" },
+  { id: "staking", group: "earn", title: "GMX: stake a bounded existing balance" },
   { id: "claims", group: "earn", title: "claim existing staking rewards and verify receipt and balance" },
   { id: "one-click", group: "one-click", title: "1CT: bounded activation, order, cancellation and revocation" },
 ] as const;
