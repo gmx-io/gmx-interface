@@ -1,15 +1,28 @@
-import { describe, expect, it } from "vitest";
+import { createPublicClient, custom, encodeFunctionResult, multicall3Abi } from "viem";
+import { arbitrum } from "viem/chains";
+import { describe, expect, it, vi } from "vitest";
 
-import type { TokenData, TokensData } from "domain/tokens";
+import { convertToTokenAmount, type TokenData, type TokensData } from "domain/tokens";
+import { abis } from "sdk/abis";
 import { ARBITRUM } from "sdk/configs/chainIds";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import type { SwapPathStats, SwapStats } from "sdk/utils/trade/types";
 
 import {
+  fetchGasPaymentTokensOnchainState,
   getAvailableGasPaymentTokenAddress,
   getGasPaymentTokenUnavailableReason,
   type GasPaymentTokensOnchainState,
 } from "../gasPaymentTokenAvailability";
+
+const rpc = vi.hoisted(() => ({ request: vi.fn() }));
+
+vi.mock("lib/wallets/walletConfig", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getPublicClientWithRpc: () =>
+    createPublicClient({ chain: arbitrum, transport: custom({ request: rpc.request }, { retryCount: 0 }) }),
+}));
 
 const USDC = getTokenBySymbol(ARBITRUM, "USDC").address;
 const USDT = getTokenBySymbol(ARBITRUM, "USDT").address;
@@ -119,6 +132,7 @@ describe("getAvailableGasPaymentTokenAddress", () => {
   }
 
   const usdgUnavailable = { [USDG]: "price" as const };
+  const minFeeAmount = (token: TokenData) => convertToTokenAmount(ONE_USD, token.decimals, token.prices.minPrice);
   const allApproved = { [USDC]: MAX_ALLOWANCE, [WETH]: MAX_ALLOWANCE, [USDT]: MAX_ALLOWANCE, [USDG]: MAX_ALLOWANCE };
 
   it.each([
@@ -135,6 +149,20 @@ describe("getAvailableGasPaymentTokenAddress", () => {
       unavailable: usdgUnavailable,
       balances: { [USDC]: usd(5n), [USDT]: usd(50n) },
       allowances: { [USDC]: MAX_ALLOWANCE },
+      expected: USDC,
+    },
+    {
+      name: "picks a larger unapproved balance over an approved one too small for the fee",
+      unavailable: usdgUnavailable,
+      balances: { [USDC]: usd(1n) / 2n, [USDT]: usd(50n) },
+      allowances: { [USDC]: MAX_ALLOWANCE },
+      expected: USDT,
+    },
+    {
+      name: "counts an allowance that covers the fee as approved",
+      unavailable: usdgUnavailable,
+      balances: { [USDC]: usd(100n), [USDT]: usd(500n) },
+      allowances: { [USDC]: usd(5n) },
       expected: USDC,
     },
     {
@@ -159,8 +187,45 @@ describe("getAvailableGasPaymentTokenAddress", () => {
         unavailableTokens: unavailable,
         tokensData: tokensData(balances),
         tokensAllowanceData: allowances,
+        tokenPermits: [],
         isGmxAccount: false,
+        getMinFeeAmount: minFeeAmount,
       })
     ).toBe(expected);
+  });
+});
+
+describe("fetchGasPaymentTokensOnchainState", () => {
+  type HexData = `0x${string}`;
+
+  const priceResult = (token: string) =>
+    encodeFunctionResult({
+      abi: abis.ChainlinkPriceFeedProvider,
+      functionName: "getOraclePrice",
+      result: { token: token as HexData, min: 1n, max: 1n, timestamp: 1n, provider: token as HexData },
+    }) as HexData;
+  const notPaused = encodeFunctionResult({ abi: abis.Pausable, functionName: "paused", result: false }) as HexData;
+
+  it("marks a token unpriced only when its price read reverts", async () => {
+    const aggregate3Result = encodeFunctionResult({
+      abi: multicall3Abi,
+      functionName: "aggregate3",
+      result: getGasPaymentTokens(ARBITRUM).flatMap((token): { success: boolean; returnData: HexData }[] => [
+        token === USDG ? { success: false, returnData: "0x" } : { success: true, returnData: priceResult(token) },
+        { success: true, returnData: notPaused },
+      ]),
+    });
+    rpc.request.mockResolvedValue(aggregate3Result);
+
+    await expect(fetchGasPaymentTokensOnchainState(ARBITRUM)).resolves.toEqual({
+      unpricedTokenAddresses: [USDG],
+      pausedTokenAddresses: [],
+    });
+  });
+
+  it("throws on a failed request instead of marking every token unpriced", async () => {
+    rpc.request.mockRejectedValue(new Error("network error"));
+
+    await expect(fetchGasPaymentTokensOnchainState(ARBITRUM)).rejects.toThrow();
   });
 });

@@ -12,6 +12,7 @@ import {
 import { getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
+import { estimateBatchMinGasPaymentTokenAmount } from "sdk/utils/fees/executionFee";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 import type { FindSwapPath } from "sdk/utils/trade/types";
@@ -102,16 +103,41 @@ function createSelectExpressFeeTokenAddress(
   selectSavedGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector,
   isGmxAccount: boolean
 ) {
-  return createSelector((q) =>
-    getAvailableGasPaymentTokenAddress({
-      chainId: q(selectChainId),
+  return createSelector(function selectExpressFeeTokenAddress(q) {
+    const chainId = q(selectChainId);
+    const tokensData = q(selectTokensData);
+    const gasLimits = q(selectGasLimits);
+    const gasPrice = q(selectGasPrice);
+    const l1Reference = q(selectL1ExpressOrderGasReference);
+    const relayFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
+
+    return getAvailableGasPaymentTokenAddress({
+      chainId,
       savedTokenAddress: q(selectSavedGasPaymentTokenAddressSelector),
       unavailableTokens: q(selectUnavailableGasPaymentTokens),
-      tokensData: q(selectTokensData),
+      tokensData,
       tokensAllowanceData: isGmxAccount ? undefined : q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
+      tokenPermits: isGmxAccount ? EMPTY_ARRAY : q(selectTokenPermits),
       isGmxAccount,
-    })
-  );
+      getMinFeeAmount: (gasPaymentToken) =>
+        tokensData && relayFeeToken && gasLimits && gasPrice !== undefined
+          ? estimateBatchMinGasPaymentTokenAmount({
+              chainId,
+              gasPaymentToken,
+              isGmxAccount,
+              relayFeeToken,
+              gasPrice: getExpressGasPrice(chainId, gasPrice),
+              gasLimits,
+              l1Reference,
+              tokensData,
+              createOrdersCount: 1,
+              updateOrdersCount: 0,
+              cancelOrdersCount: 0,
+              executionFeeAmount: undefined,
+            })
+          : undefined,
+    });
+  });
 }
 
 export const selectSettlementChainExpressFeeTokenAddress = createSelectExpressFeeTokenAddress(
