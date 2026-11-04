@@ -1,23 +1,28 @@
 // Rows have no stripes: a hairline between them, drawn as a background so rows keep their height. At the table
 // edges the line stops at the cell padding: 20px, 12px in compact cells, 8px in single-column cells.
+// The header row gets the same line under it, between the titles and the first row.
 .TableTr:not(:last-child) > td,
-.TableTr:not(:last-child) > [role="cell"] {
+.TableTr:not(:last-child) > [role="cell"],
+.TableTh {
   --table-line-inset: 20px;
   background-image: linear-gradient(var(--color-button-background), var(--color-button-background));
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: 100% 1px;
 
-  &.TableTd_compact {
+  &.TableTd_compact,
+  &.TableTh_compact {
     --table-line-inset: 12px;
   }
 
-  &.TableTd_compactOneColumn {
+  &.TableTd_compactOneColumn,
+  &.TableTh_compactOneColumn {
     --table-line-inset: 8px;
   }
 
   // Div grid cells (GridCell, Referrals tables) are padded with the adaptive padding: 16px, 20px from 768px
-  &[role="cell"] {
+  &[role="cell"],
+  &[role="columnheader"] {
     --table-line-inset: var(--padding-adaptive);
   }
 
@@ -40,11 +45,33 @@
 // One device pixel on high-density screens: the lower half of the 1px tile. Chrome doesn't draw a 0.5px tile.
 @media (min-resolution: 2dppx) {
   .TableTr:not(:last-child) > td,
-  .TableTr:not(:last-child) > [role="cell"] {
+  .TableTr:not(:last-child) > [role="cell"],
+  .TableTh {
     background-image: linear-gradient(to top, var(--color-button-background) 50%, transparent 50%);
   }
 }
 
 .TableTr_hoverable:hover {
   background: var(--color-fill-surfaceHover);
+}
+
+// A hovered row shows no lines next to it: neither its own line below nor the line above it (the header line
+// for the first row)
+.TableTr_hoverable:hover,
+.TableTr_actionable:hover {
+  > td,
+  > [role="cell"] {
+    background-image: none;
+  }
+}
+
+.TableTr:has(+ .TableTr_hoverable:hover, + .TableTr_actionable:hover) {
+  > td,
+  > [role="cell"] {
+    background-image: none;
+  }
+}
+
+table:has(tbody > .TableTr_hoverable:first-child:hover, tbody > .TableTr_actionable:first-child:hover) .TableTh {
+  background-image: none;
 }

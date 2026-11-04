@@ -18,7 +18,9 @@ export function TableTh(props: TableTdThProps) {
   return (
     <th
       {...rest}
-      className={cx("text-caption text-left last-of-type:text-right", props.className, {
+      className={cx("TableTh text-caption text-left last-of-type:text-right", props.className, {
+        TableTh_compact: padding === "compact",
+        TableTh_compactOneColumn: padding === "compact-one-column",
         "px-4 py-12 pb-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",
@@ -51,7 +53,7 @@ export const TableTrActionable = forwardRef<
   HTMLTableRowElement,
   PropsWithChildren<{ onClick: (event: React.MouseEvent) => void }> & React.HTMLProps<HTMLTableRowElement>
 >(function TableTrInternal({ className, ...props }, ref) {
-  return <tr {...props} ref={ref} className={cx("TableTr group/tr", className)} />;
+  return <tr {...props} ref={ref} className={cx("TableTr TableTr_actionable group/tr", className)} />;
 });
 
 export const TableTdActionable = forwardRef<

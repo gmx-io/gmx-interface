@@ -2,7 +2,7 @@ import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatLeverage } from "domain/synthetics/positions";
+import { formatLeverage, formatLeverageParts } from "domain/synthetics/positions";
 import { expandDecimals, formatAmountHuman, formatDeltaUsd, formatUsd, formatUsdParts, numberParts } from "lib/numbers";
 
 import { AmountHumanValue } from "./AmountHumanValue";
@@ -22,14 +22,14 @@ function affixes(root: Element) {
 }
 
 describe("NumericValue", () => {
-  it("renders parts in one non-wrapping span with affixes in secondary spans", () => {
+  it("renders parts in one non-wrapping span; the $ is plain text in the color of its number", () => {
     const { container } = render(<NumericValue parts={formatUsdParts(usd(52))} className="numbers" />);
 
     const root = container.firstElementChild!;
     expect(root.tagName).toBe("SPAN");
     expect(root.className).toBe("whitespace-nowrap numbers");
     expect(root.textContent).toBe(`$${HAIR_SPACE}52.00`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(root)).toEqual([]);
     expect(root.childNodes).toHaveLength(2);
   });
 
@@ -42,20 +42,22 @@ describe("NumericValue", () => {
   });
 
   it("applies a custom affix class", () => {
-    const { container } = render(<NumericValue parts={formatUsdParts(usd(1))} affixClassName="text-blue-strong" />);
+    const { container } = render(
+      <NumericValue parts={formatLeverageParts(expandDecimals(207, 2))} affixClassName="text-blue-strong" />
+    );
 
     expect(container.querySelector("span > span")!.className).toBe("text-blue-strong");
   });
 });
 
 describe("typed values", () => {
-  it("UsdValue renders formatUsd with the same text and a secondary $", () => {
+  it("UsdValue renders formatUsd with the same text and a plain $", () => {
     const { container } = render(<UsdValue usd={-usd(1234)} displayDecimals={0} />);
 
     const root = container.firstElementChild!;
     expect(root.textContent).toBe(formatUsd(-usd(1234), { displayDecimals: 0 }));
     expect(root.textContent).toBe(`-$${HAIR_SPACE}1,234`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(root)).toEqual([]);
   });
 
   it("UsdValue keeps threshold markers as regular text", () => {
@@ -63,7 +65,7 @@ describe("typed values", () => {
 
     const root = container.firstElementChild!;
     expect(root.textContent).toBe(`>\u00a0$${HAIR_SPACE}1,000,000,000.00`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(root)).toEqual([]);
   });
 
   it("DeltaUsdValue keeps the sign and the percentage outside the affix", () => {
@@ -73,7 +75,7 @@ describe("typed values", () => {
     const root = container.firstElementChild!;
     expect(root.textContent).toBe(formatDeltaUsd(usd(1), percentage));
     expect(root.textContent).toBe(`+$${HAIR_SPACE}1.00 (+2.00%)`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(root)).toEqual([]);
   });
 
   it("LeverageValue adds exactly one hair space before a secondary x", () => {
@@ -92,7 +94,7 @@ describe("typed values", () => {
     const root = container.firstElementChild!;
     expect(root.textContent).toBe(formatAmountHuman(usd(1_150_000_000), USD_DECIMALS, true));
     expect(root.textContent).toBe(`$${HAIR_SPACE}1.1b`);
-    expect(affixes(root)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(root)).toEqual([]);
 
     const plain = render(<AmountHumanValue amount={expandDecimals(12_500, 18)} decimals={18} />).container
       .firstElementChild!;
@@ -115,7 +117,7 @@ describe("typed values", () => {
     const { container } = render(<NumericText text={parts} className="numbers" />);
 
     expect(container.firstElementChild!.textContent).toBe(`> $${HAIR_SPACE}1.00`);
-    expect(affixes(container.firstElementChild!)).toEqual([`$${HAIR_SPACE}`]);
+    expect(affixes(container.firstElementChild!)).toEqual([]);
 
     const text = render(<NumericText text="1.0000 ETH" className="numbers" />).container.firstElementChild!;
     expect(text.innerHTML).toBe("1.0000 ETH");
