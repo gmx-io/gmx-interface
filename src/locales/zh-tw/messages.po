@@ -12910,6 +12910,10 @@ msgstr "正在存入至 GMX Account..."
 msgid "Address copied"
 msgstr "地址已複製"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "需要重新簽署"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr "解除質押此數量後，您將接近 20% 的重設門檻"

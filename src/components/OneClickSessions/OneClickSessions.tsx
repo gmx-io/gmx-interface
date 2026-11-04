@@ -24,6 +24,10 @@ const NO_EXPIRY_TIMESTAMP = 4102444800n;
 const UNLIMITED_ACTIONS = 1_000_000n;
 
 function getSessionStatusText(session: SubaccountSession): string {
+  if (session.isResignNeeded) {
+    return t`Re-sign needed`;
+  }
+
   if (getIsSubaccountSessionUsable(session)) {
     const remainingActions = getSubaccountSessionRemainingActions(session);
     const actionsText =

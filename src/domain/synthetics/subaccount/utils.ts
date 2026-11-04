@@ -380,10 +380,11 @@ function getIsSubaccountApprovalSynced(params: {
   const { signedApproval, onchainData } = params;
 
   /**
-   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser
+   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser.
+   * An address the contract has never seen keeps its approval, so the UI can ask to re-sign it
    */
   if (getIsSubaccountNonceExpired(params)) {
-    return true;
+    return onchainData.expiresAt > 0n;
   }
 
   return (

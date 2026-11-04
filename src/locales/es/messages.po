@@ -12910,6 +12910,10 @@ msgstr "Depositando en GMX Account..."
 msgid "Address copied"
 msgstr "Dirección copiada"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "Hay que volver a firmar"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr "Retirar esta cantidad del staking le acercará al umbral de reinicio del 20 %"

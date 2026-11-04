@@ -12910,6 +12910,10 @@ msgstr "GMX Account에 입금 중..."
 msgid "Address copied"
 msgstr "주소가 복사되었습니다"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "재서명 필요"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
 msgstr "이 수량의 스테이킹을 해제하면 20% 초기화 기준치에 근접합니다"

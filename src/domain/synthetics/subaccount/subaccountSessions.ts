@@ -15,7 +15,12 @@ import {
 import type { Subaccount } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
-import { getIsSubaccountExpired, getMaxSubaccountActions, getSubaccountExpiresAt } from "./utils";
+import {
+  getIsSubaccountExpired,
+  getIsSubaccountNonceExpired,
+  getMaxSubaccountActions,
+  getSubaccountExpiresAt,
+} from "./utils";
 
 export type SubaccountSession = {
   address: string;
@@ -23,6 +28,7 @@ export type SubaccountSession = {
   maxAllowedCount: bigint;
   actionsCount: bigint;
   isPending?: boolean;
+  isResignNeeded?: boolean;
 };
 
 export async function fetchSubaccountSessions(
@@ -102,6 +108,7 @@ export function getCurrentSubaccountSession(subaccount: Subaccount | undefined):
     maxAllowedCount: isPending ? getMaxSubaccountActions(subaccount) : onchainData.maxAllowedCount,
     actionsCount: onchainData.currentActionsCount,
     isPending,
+    isResignNeeded: isPending && getIsSubaccountNonceExpired(subaccount),
   };
 }
 
