@@ -48,7 +48,6 @@ import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import { TooltipGroupContext } from "./TooltipGroup";
 import { TooltipMotion, type TooltipMotionProps } from "./TooltipMotion";
 import { getPointerGapX, TooltipPointer } from "./TooltipPointer";
-import { withStandardDefaults } from "./tooltipStandard";
 
 import "./Tooltip.scss";
 
@@ -151,17 +150,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
 export type TooltipProps<T extends ElementType | undefined> = InnerTooltipProps<T> &
   (T extends undefined ? {} : Omit<ComponentPropsWithoutRef<Exclude<T, undefined>>, keyof InnerTooltipProps<T>>);
 
-/**
- * The app's tooltip. It uses the tooltip standard (see tooltipStandard.tsx); props the caller sets still win.
- */
-export default function Tooltip<T extends ElementType>(props: TooltipProps<T>) {
-  return <TooltipBase {...withStandardDefaults(props)} />;
-}
-
-/**
- * The tooltip without the standard defaults, for StandardTooltip and the design system's before/after previews.
- */
-export function TooltipBase<T extends ElementType>({
+export default function Tooltip<T extends ElementType>({
   handle,
   children,
   renderContent,

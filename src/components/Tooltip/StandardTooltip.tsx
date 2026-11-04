@@ -1,19 +1,27 @@
 import cx from "classnames";
-import { ElementType } from "react";
+import { ElementType, useLayoutEffect, useRef, useState } from "react";
 
 import { TOOLTIP_STANDARD_OPEN_DELAY } from "config/ui";
 
-import { TooltipBase, type TooltipProps } from "./Tooltip";
-import {
-  STANDARD_TOOLTIP_LOOK,
-  STANDARD_TOOLTIP_MAX_WIDTH,
-  type StandardTooltipSize,
-  TooltipPlainText,
-} from "./tooltipStandard";
+import type { TooltipProps } from "./Tooltip";
+import TooltipWithPortal from "./TooltipWithPortal";
 
-import "./Tooltip.scss";
+export type StandardTooltipSize = "default" | "wide";
 
-export { STANDARD_TOOLTIP_LOOK, STANDARD_TOOLTIP_MAX_WIDTH, type StandardTooltipSize };
+export const STANDARD_TOOLTIP_MAX_WIDTH: Record<StandardTooltipSize, number> = {
+  default: 350,
+  wide: 480,
+};
+
+/**
+ * The standard panel and pointer, and how close it may come to the screen edges.
+ * The design system site draws open previews with the same look.
+ */
+export const STANDARD_TOOLTIP_LOOK = {
+  popupClassName: "Tooltip-popup--standard",
+  seamlessPointer: true,
+  viewportPadding: 8,
+};
 
 type Props<T extends ElementType | undefined> = Omit<
   TooltipProps<T>,
@@ -41,10 +49,9 @@ type Props<T extends ElementType | undefined> = Omit<
 
 /**
  * Tooltip standard: one see-through, blurred panel that follows the app theme, two sizes, placement above or below the trigger,
- * 150 ms open delay, an origin-aware enter animation and a normal cursor over the trigger.
+ * 200 ms open delay, an origin-aware enter animation and a normal cursor over the trigger.
  * It stays open while the cursor moves into it, so links work and text can be copied.
  * Pass `interactive={false}` to let the cursor pass through.
- * Tooltip and TooltipWithPortal use the same standard; StandardTooltip adds the two sizes and the `type` prop.
  */
 export default function StandardTooltip<T extends ElementType | undefined>({
   size = "default",
@@ -57,10 +64,9 @@ export default function StandardTooltip<T extends ElementType | undefined>({
   ...props
 }: Props<T>) {
   return (
-    <TooltipBase
-      {...(props as TooltipProps<T>)}
-      withPortal
-      content={typeof content === "string" ? <TooltipPlainText text={content} /> : content}
+    <TooltipWithPortal
+      {...(props as Omit<TooltipProps<T>, "withPortal">)}
+      content={typeof content === "string" ? <PlainText text={content} /> : content}
       animated
       interactive={interactive}
       openDelay={openDelay}
@@ -77,5 +83,33 @@ export default function StandardTooltip<T extends ElementType | undefined>({
       // A turned-off tooltip has nothing to show, so it adds no Tab stop.
       handleTabIndex={props.disabled || (props.children && !props.isHandlerDisabled) ? undefined : 0}
     />
+  );
+}
+
+/**
+ * Plain text is centered while it fits in one or two lines; longer text aligns left.
+ */
+function PlainText({ text }: { text: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [isShort, setIsShort] = useState(true);
+
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element?.parentElement) {
+      return;
+    }
+
+    // An inline element has one rect per line. The popup width settles after it opens, so measure again on resize.
+    const measure = () => setIsShort(element.getClientRects().length <= 2);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element.parentElement);
+    return () => observer.disconnect();
+  }, [text]);
+
+  return (
+    <div className={cx({ "text-center": isShort })}>
+      <span ref={ref}>{text}</span>
+    </div>
   );
 }

@@ -350,8 +350,8 @@ const CONTENT_RULES: DocsRule[] = [
 ];
 
 const BEHAVIOR_RULES: DocsRule[] = [
-  ["Delay", "The first tooltip waits 150 ms, so passing over a trigger doesn't open it."],
-  ["Enter", "Fades in, grows from 96% out of the pointer and moves 4px away from the trigger, in 150 ms."],
+  ["Delay", "The first tooltip waits 200 ms, so passing over a trigger doesn't open it."],
+  ["Enter", "Fades in, grows from 94% out of the pointer and moves 4px away from the trigger, in 200 ms."],
   ["Next tooltips", "While one is open, the next ones open instantly, with no animation."],
   ["Exit", "The same way back, in 120 ms."],
   [
@@ -512,7 +512,7 @@ const STANDARD_TOOLTIP_PROPS: DocsProp[] = [
   {
     name: "openDelay",
     type: "number",
-    defaultValue: "150",
+    defaultValue: "200",
     description: "Hover delay in ms. Inside a TooltipGroup only the first tooltip waits.",
   },
   {
@@ -603,17 +603,6 @@ export function TooltipGuidelines() {
 }
 
 const CHANGELOG: DocsChangelogEntry[] = [
-  {
-    id: "tooltip-v1-1",
-    title: "v1.1 · Applied in the app",
-    icon: CalendarIcon,
-    date: "Nov 4, 2026",
-    changes: [
-      "Every Tooltip and TooltipWithPortal uses the standard: the see-through, blurred panel, the enter animation and keyboard support.",
-      "Opens faster: waits 150 ms instead of 200 ms, then fades in over 150 ms instead of 200 ms, growing from 96% instead of 94%.",
-      "Text inside the tooltips stays as it was; the content blocks come later.",
-    ],
-  },
   {
     id: "tooltip-v1-0",
     title: "v1.0 · Proposal",

@@ -19,10 +19,10 @@ import {
   DEFAULT_TOOLTIP_ARROW_CLASSNAME,
   DEFAULT_TOOLTIP_MAX_WIDTH,
   TOOLTIP_OFFSET,
-  TooltipBase,
   type TooltipPosition,
 } from "components/Tooltip/Tooltip";
 import { getPointerGapX, TooltipPointer } from "components/Tooltip/TooltipPointer";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 // Tooltips drawn open on the page, for the docs: the real trigger, panel, pointer and content, no hover needed.
 
@@ -191,7 +191,7 @@ export function StandardTooltipPreview({
 }
 
 /**
- * A tooltip as the app draws it before the standard (TooltipBase, without the standard defaults), open.
+ * A tooltip as the app draws it before the standard (TooltipWithPortal with its defaults), open.
  */
 export function LegacyTooltipPreview({
   handle,
@@ -202,7 +202,7 @@ export function LegacyTooltipPreview({
 }: PreviewProps & { maxWidth?: number }) {
   return (
     <TooltipPreview
-      trigger={<TooltipBase withPortal handle={handle} variant={variant} disabled />}
+      trigger={<TooltipWithPortal handle={handle} variant={variant} disabled />}
       content={content}
       look={LEGACY_LOOK}
       maxWidth={maxWidth}
