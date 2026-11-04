@@ -118,7 +118,7 @@ import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/S
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
@@ -1380,10 +1380,9 @@ export function AddTPSLModal({
           />
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={<Trans>Margin ({collateralToken.symbol})</Trans>}
-                content={<Trans>Margin before pending borrow and funding fees</Trans>}
-                variant="icon"
+                content={t`Margin before pending borrow and funding fees`}
               />
             }
             value={

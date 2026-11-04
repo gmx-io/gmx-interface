@@ -22,6 +22,14 @@ const colors = {
     500: "#A0A3C4",
     400: "#BEC0DA",
   },
+  textIcon: {
+    primary: "#FFFFFF",
+    secondary: "#A0A3C4",
+  },
+  fill: {
+    surfaceElevated: "#1E2033",
+    accent: "#363A59",
+  },
   light: {
     150: "#F4F5F9",
   },
@@ -29,6 +37,7 @@ const colors = {
     100: "#A4C3F9",
     300: "#7885ff",
     400: "#2D42FC",
+    strong: "#7885FF",
   },
   white: "#ffffff",
   black: "#000000",
@@ -147,7 +156,11 @@ function fontComponentsPlugin({ addComponents }) {
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [resolve(__dirname, "./index.html"), resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}")],
+  content: [
+    resolve(__dirname, "./index.html"),
+    resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}"),
+    resolve(__dirname, "../src/components/Tooltip/**/*.{ts,tsx}"),
+  ],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: merge(fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])), { 120: "120px" }),

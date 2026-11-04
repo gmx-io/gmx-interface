@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
 import {
@@ -12,7 +12,7 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
 import { ExpandableRow } from "components/ExpandableRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { SideOrderEntry } from "../components/SideOrderEntry";
 
@@ -83,17 +83,12 @@ export function TPSLGroup() {
     <ExpandableRow
       open={isTpSlVisible}
       title={
-        <TooltipWithPortal
+        <StandardTooltip
           handle={<Trans>Take-Profit / Stop-Loss</Trans>}
           variant="iconStroke"
-          position="top"
+          position="bottom"
           disableClickToggle
-          content={
-            <Trans>
-              Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list
-              after opening a position.
-            </Trans>
-          }
+          content={t`Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position.`}
         />
       }
       hasError={hasError}

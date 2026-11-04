@@ -58,7 +58,8 @@ import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculate
 import Modal from "components/Modal/Modal";
 import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipText } from "components/Tooltip/TooltipBlocks";
 
 type ClaimNetworkFee = {
   details: NetworkFeeDetails | undefined;
@@ -559,18 +560,21 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
   }, [rebateItems, tokensData]);
 
   const renderContent = useCallback(
-    () =>
-      reducedByTokenItems.map((rebateItem) => {
-        const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
-        if (!tokenData) return null;
-        return (
-          <div key={rebateItem.id}>
-            {formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol, {
-              isStable: tokenData.isStable,
-            })}
-          </div>
-        );
-      }),
+    () => (
+      <TooltipText>
+        {reducedByTokenItems.map((rebateItem) => {
+          const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+          if (!tokenData) return null;
+          return (
+            <div key={rebateItem.id}>
+              {formatTokenAmount(rebateItem.valueByFactor, tokenData?.decimals, tokenData?.symbol, {
+                isStable: tokenData.isStable,
+              })}
+            </div>
+          );
+        })}
+      </TooltipText>
+    ),
     [reducedByTokenItems, tokensData]
   );
 
@@ -578,9 +582,8 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     <div className="ClaimSettleModal-info-row">
       <div className="Exchange-info-label">{label}</div>
       <div className="ClaimSettleModal-info-label-usd">
-        <TooltipWithPortal
-          position="top-end"
-          tooltipClassName="ClaimModal-row-tooltip"
+        <StandardTooltip
+          position="bottom-end"
           handle={<DeltaUsdValue deltaUsd={usd} />}
           renderContent={renderContent}
         />

@@ -21,10 +21,9 @@ import { SlideModal } from "components/Modal/SlideModal";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
 
@@ -194,14 +193,13 @@ export function MarketSelector({
         }
       >
         <div className="flex flex-col">
-          {filteredOptions.map((option, marketIndex) => (
+          {filteredOptions.map((option) => (
             <MarketListItem
               key={option.marketInfo.marketTokenAddress}
               {...option}
               showBalances={showBalances}
               marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
               isFavorite={favoriteTokens?.includes(option.marketInfo.indexToken.address)}
-              isInFirstHalf={marketIndex < filteredOptions.length / 2}
               onSelectOption={onSelectOption}
               onFavoriteClick={toggleFavoriteToken}
             />
@@ -235,7 +233,6 @@ function MarketListItem(props: {
   indexName: string;
   state?: MarketState;
   isFavorite: boolean;
-  isInFirstHalf: boolean;
   showBalances?: boolean;
   onFavoriteClick: (address: string) => void;
   onSelectOption: (option: MarketOption) => void;
@@ -248,7 +245,6 @@ function MarketListItem(props: {
     state = {},
     marketToken,
     isFavorite,
-    isInFirstHalf,
     showBalances,
     onFavoriteClick,
     onSelectOption,
@@ -289,13 +285,12 @@ function MarketListItem(props: {
       data-qa={`market-selector-${indexName}`}
     >
       {state.disabled && state.message && (
-        <TooltipWithPortal
+        <StandardTooltip
           className="TokenSelector-tooltip"
           handle={<div className="TokenSelector-tooltip-backing" />}
-          position={isInFirstHalf ? "bottom" : "top"}
+          position="bottom"
           variant="none"
           closeOnDoubleClick
-          fitHandleWidth
           renderContent={() => state.message}
         />
       )}

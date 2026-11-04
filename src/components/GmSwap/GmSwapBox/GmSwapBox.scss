@@ -25,19 +25,6 @@
   margin-bottom: 1.05rem !important;
 }
 
-.warning-tooltip {
-  direction: ltr;
-
-  .Tooltip-handle {
-    color: var(--color-yellow-strong);
-    text-decoration-color: var(--color-yellow-strong);
-  }
-
-  .Tooltip-popup {
-    color: var(--color-textIcon-primary);
-  }
-}
-
 .gm-toast {
   line-height: var(--line-height-body-small);
 }

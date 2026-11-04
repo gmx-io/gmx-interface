@@ -13,7 +13,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import NumberInput from "components/NumberInput/NumberInput";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -453,7 +453,7 @@ export function TPSLInputRow({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
-          <TooltipWithPortal
+          <StandardTooltip
             className="flex grow"
             handleClassName="grow"
             variant="none"
@@ -487,7 +487,7 @@ export function TPSLInputRow({
                 <span className="text-body-small text-textIcon-secondary">USD</span>
               </div>
             </div>
-          </TooltipWithPortal>
+          </StandardTooltip>
 
           <div
             className={cx(
@@ -525,7 +525,7 @@ export function TPSLInputRow({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-8 max-smallMobile:flex-col">
-        <TooltipWithPortal
+        <StandardTooltip
           className="flex-1"
           handleClassName="w-full"
           variant="none"
@@ -573,7 +573,7 @@ export function TPSLInputRow({
               <span className="text-body-medium text-textIcon-secondary">USD</span>
             </div>
           </div>
-        </TooltipWithPortal>
+        </StandardTooltip>
         <div
           className={cx(
             "flex flex-1 cursor-text flex-col gap-4 rounded-8 border border-fill-surfaceElevated bg-fill-surfaceElevated px-8 py-4",

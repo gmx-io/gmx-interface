@@ -1,20 +1,42 @@
-import { FloatingDelayGroup } from "@floating-ui/react";
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useMemo } from "react";
 
-import { TOOLTIP_CLOSE_DELAY, TOOLTIP_GROUP_TIMEOUT, TOOLTIP_STANDARD_OPEN_DELAY } from "config/ui";
+import { TOOLTIP_GROUP_TIMEOUT } from "config/ui";
 
-export const TooltipGroupContext = createContext(false);
+type OpenTooltip = { id: string; close: () => void };
 
-const GROUP_DELAY = { open: TOOLTIP_STANDARD_OPEN_DELAY, close: TOOLTIP_CLOSE_DELAY };
+export type TooltipGroupStore = {
+  isActive: () => boolean;
+  open: (id: string, close: () => void) => void;
+  close: (id: string) => void;
+};
 
-/**
- * Tooltips inside a group share one hover delay: only the first tooltip waits,
- * the next ones open instantly and without animation while the group is active.
- */
+export const TooltipGroupContext = createContext<TooltipGroupStore | null>(null);
+
 export function TooltipGroup({ children }: { children: ReactNode }) {
-  return (
-    <FloatingDelayGroup delay={GROUP_DELAY} timeoutMs={TOOLTIP_GROUP_TIMEOUT}>
-      <TooltipGroupContext.Provider value={true}>{children}</TooltipGroupContext.Provider>
-    </FloatingDelayGroup>
-  );
+  const store = useMemo(createTooltipGroupStore, []);
+
+  return <TooltipGroupContext.Provider value={store}>{children}</TooltipGroupContext.Provider>;
+}
+
+function createTooltipGroupStore(): TooltipGroupStore {
+  let openTooltip: OpenTooltip | null = null;
+  let lastCloseTime = -Infinity;
+
+  return {
+    isActive: () => openTooltip !== null || performance.now() - lastCloseTime < TOOLTIP_GROUP_TIMEOUT,
+    open(id, close) {
+      const previous = openTooltip;
+      openTooltip = { id, close };
+
+      if (previous && previous.id !== id) {
+        previous.close();
+      }
+    },
+    close(id) {
+      if (openTooltip?.id === id) {
+        openTooltip = null;
+        lastCloseTime = performance.now();
+      }
+    },
+  };
 }

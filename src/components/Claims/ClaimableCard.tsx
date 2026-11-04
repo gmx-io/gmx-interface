@@ -9,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { ClaimableCardUI } from "./ClaimableCardUI";
 
@@ -33,12 +33,14 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
         {
           buttonText: _(buttonText),
           tooltipText: (
-            <Trans>
-              Positive funding fees ready to claim.
-              <br />
-              <br />
-              Available after changing position size, adjusting collateral, or clicking "Settle".
-            </Trans>
+            <TooltipText>
+              <Trans>
+                Positive funding fees ready to claim.
+                <br />
+                <br />
+                Available after changing position size, adjusting collateral, or clicking "Settle".
+              </Trans>
+            </TooltipText>
           ),
           onButtonClick: onClaimClick,
           usd: totalClaimableFundingUsd,
@@ -46,13 +48,14 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
         {
           buttonText: _(buttonText),
           tooltipText: (
-            <Trans>
-              Price impact rebates ready to claim.{" "}
-              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>Price impact rebates ready to claim.</Trans>
+              </TooltipText>
+              <TooltipLink href={DOCS_LINKS.priceImpact}>
+                <Trans>Read more</Trans>
+              </TooltipLink>
+            </TooltipContent>
           ),
           onButtonClick: onClaimablePositionPriceImpactFeesClick,
           usd: priceImpactRebateUsd,

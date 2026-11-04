@@ -7,7 +7,7 @@ import { formatUsdParts, getLimitedDisplay, NumberPart } from "lib/numbers";
 import { EarningValue } from "components/EarningValue/EarningValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 const FULL_PRECISION_DISPLAY_DECIMALS = 8;
 
@@ -48,7 +48,7 @@ export function UsdText({ usd, className }: { usd: bigint; className?: string })
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={handle}
       content={<NumericValue parts={formatFullPrecisionUsdParts(usd)} className="numbers" />}
     />

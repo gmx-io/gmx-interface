@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -12,41 +12,30 @@ import Badge from "components/Badge/Badge";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { EarningsStat, formatFullPrecisionUsdParts, isAbbreviatedUsd, UsdStatValue } from "./EarningsStat";
 
 function RewardsPausedBadge() {
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       variant="none"
       handle={
         <Badge className="!bg-transparent border-1/2 border-dashed border-stroke-primary">
           <Trans>Rewards paused</Trans>
         </Badge>
       }
-      content={
-        <Trans>
-          Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed
-          when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount
-          staked).
-        </Trans>
-      }
+      content={t`Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked).`}
     />
   );
 }
 
-function TreasuryProjectionLabel() {
+function TreasuryProjectionLabel({ variant }: { variant?: "iconStroke" }) {
   return (
-    <TooltipWithPortal
-      variant="iconStroke"
+    <StandardTooltip
+      variant={variant}
       handle={<Trans>Accumulated rewards</Trans>}
-      content={
-        <Trans>
-          Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual
-          distribution is subject to DAO governance.
-        </Trans>
-      }
+      content={t`Your projected share of the Treasury at today's staking power. A best-effort estimate only; actual distribution is subject to DAO governance.`}
     />
   );
 }
@@ -81,7 +70,7 @@ function TreasuryProjectionValue({ skeletonWidth = 65 }: { skeletonWidth?: numbe
   const isAbbreviated = isAbbreviatedUsd(projectedRewardUsd);
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={
         <span className="text-blue-secondary numbers">
           {isAbbreviated ? "" : "~"}
@@ -130,7 +119,7 @@ function StakingRewardRow({
         ) : isZero ? (
           <UsdValue usd={0n} className="text-textIcon-disabled numbers" />
         ) : (
-          <TooltipWithPortal
+          <StandardTooltip
             handle={<UsdValue usd={usd} className="numbers" />}
             content={<TokenAmountWithUsd amount={amount ?? 0n} usd={usd ?? 0n} symbol={symbol} />}
           />
@@ -169,7 +158,7 @@ export function StakingPanel({
             <UsdStatValue usd={lifetimeUsd} isLoading={isLoading} />
           </EarningsStat>
           {isPaused ? (
-            <EarningsStat label={<TreasuryProjectionLabel />}>
+            <EarningsStat label={<TreasuryProjectionLabel variant="iconStroke" />}>
               <TreasuryProjectionValue />
             </EarningsStat>
           ) : (
@@ -185,16 +174,9 @@ export function StakingPanel({
       <div className="flex flex-col gap-8 p-20">
         <StakingRewardRow
           label={
-            <TooltipWithPortal
-              variant="iconStroke"
+            <StandardTooltip
               handle={<Trans>GMX rewards</Trans>}
-              content={
-                <Trans>
-                  GMX paid out to your stake by protocol buybacks. Vested esGMX is not counted here: vesting converts
-                  esGMX that is already counted in the esGMX rewards row, so counting it again would double count the
-                  same reward.
-                </Trans>
-              }
+              content={t`GMX paid out to your stake by protocol buybacks. Vested esGMX is not counted here: vesting converts esGMX that is already counted in the esGMX rewards row, so counting it again would double count the same reward.`}
             />
           }
           usd={processedData?.cumulativeGmxRewardsUsd}

@@ -6,9 +6,9 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { TradeFees } from "sdk/utils/trade/types";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
@@ -36,17 +36,17 @@ export function ExitPriceRow({
   return (
     <SyntheticsInfoRow
       label={
-        <TooltipWithPortal
-          variant="iconStroke"
+        <StandardTooltip
           handle={t`Exit price`}
           content={
-            <Trans>
-              Price you'll receive when closing, adjusted for capped price impact.{" "}
-              <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>Price you'll receive when closing, adjusted for capped price impact.</Trans>
+              </TooltipText>
+              <TooltipLink href={DOCS_LINKS.priceImpact}>
+                <Trans>Read more</Trans>
+              </TooltipLink>
+            </TooltipContent>
           }
         />
       }

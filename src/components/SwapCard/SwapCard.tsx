@@ -8,8 +8,8 @@ import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
@@ -65,26 +65,26 @@ export function SwapCard(p: Props) {
         <SyntheticsInfoRow
           label={t`Available liquidity`}
           value={
-            <Tooltip
+            <StandardTooltip
               handle={<UsdValue usd={maxLiquidityUsd} fallback="..." />}
               handleClassName="numbers"
-              position="left-start"
+              position="bottom-end"
               content={
-                <StatsTooltipRow
-                  textClassName="al-swap"
-                  label={t`Max ${toToken?.symbol} out`}
-                  value={
-                    <AmountWithUsdBalance
-                      multiline
-                      amount={maxLiquidityAmount}
-                      decimals={toToken?.decimals ?? 0}
-                      symbol={toToken?.symbol}
-                      usd={maxLiquidityUsd}
-                      isStable={toToken?.isStable}
-                    />
-                  }
-                  showDollar={false}
-                />
+                <TooltipRows>
+                  <TooltipRow
+                    label={t`Max ${toToken?.symbol} out`}
+                    value={
+                      <AmountWithUsdBalance
+                        multiline
+                        amount={maxLiquidityAmount}
+                        decimals={toToken?.decimals ?? 0}
+                        symbol={toToken?.symbol}
+                        usd={maxLiquidityUsd}
+                        isStable={toToken?.isStable}
+                      />
+                    }
+                  />
+                </TooltipRows>
               }
             />
           }

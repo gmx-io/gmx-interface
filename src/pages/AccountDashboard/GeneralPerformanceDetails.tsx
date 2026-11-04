@@ -13,10 +13,18 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+  TooltipTitle,
+} from "components/Tooltip/TooltipBlocks";
 
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
@@ -59,9 +67,9 @@ export function GeneralPerformanceDetails({
     <div className="overflow-hidden rounded-8 bg-fill-surfaceBase">
       <div className="text-h4 flex items-center gap-8 border-b-1/2 border-stroke-primary p-20">
         <Trans>General performance details</Trans>
-        <TooltipWithPortal content={t`Performance and chart data are based on UTC times`} variant="none">
-          <InfoIconStroke className="h-16 w-16 cursor-help text-textIcon-secondary" />
-        </TooltipWithPortal>
+        <StandardTooltip content={t`Performance and chart data are based on UTC times`} variant="none">
+          <InfoIconStroke className="h-16 w-16 text-textIcon-secondary" />
+        </StandardTooltip>
       </div>
 
       <TableScrollFadeContainer>
@@ -75,22 +83,20 @@ export function GeneralPerformanceDetails({
                 <Trans>VOLUME</Trans>
               </TableTh>
               <TableTh>
-                <TooltipWithPortal
-                  tooltipClassName="cursor-help *:cursor-auto"
+                <StandardTooltip
                   content={t`Total PnL after fees and price impact. Hover the value to see the breakdown.`}
                   variant="iconStroke"
                 >
                   <Trans>PNL ($)</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh>
-                <TooltipWithPortal
-                  tooltipClassName="cursor-help *:cursor-auto"
+                <StandardTooltip
                   variant="iconStroke"
                   content={t`Total PnL percentage after fees and price impact. Hover the value to see the breakdown.`}
                 >
                   <Trans>PNL (%)</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh className="w-0 whitespace-nowrap py-12 pl-4 pr-16 !text-right">
                 <Trans>WIN/LOSS</Trans>
@@ -143,16 +149,10 @@ function GeneralPerformanceDetailsRow({
       </TableTd>
       <TableTd>
         <MetricWithRank rank={row.pnlUsdRank}>
-          <TooltipWithPortal
-            variant="none"
-            tooltipClassName={cx("cursor-help *:cursor-auto", {
-              "!p-0": !showDebugValues,
-            })}
-            maxAllowedWidth={showDebugValues ? 350 : 420}
-            className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-              "text-green-strong decoration-green-strong/50": row.pnlUsd > 0n,
-              "text-red-strong decoration-red-strong/50": row.pnlUsd < 0n,
-              "decoration-textIcon-secondary": row.pnlUsd === 0n,
+          <StandardTooltip
+            className={cx({
+              "text-green-strong": row.pnlUsd > 0n,
+              "text-red-strong": row.pnlUsd < 0n,
             })}
             content={
               showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
@@ -163,14 +163,10 @@ function GeneralPerformanceDetailsRow({
       </TableTd>
       <TableTd>
         <MetricWithRank rank={row.pnlBpsRank}>
-          <TooltipWithPortal
-            variant="none"
-            tooltipClassName="cursor-help !p-0 *:cursor-auto"
-            maxAllowedWidth={420}
-            className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-              "text-green-strong decoration-green-strong/50": row.pnlBps > 0n,
-              "text-red-strong decoration-red-strong/50": row.pnlBps < 0n,
-              "decoration-textIcon-secondary": row.pnlBps === 0n,
+          <StandardTooltip
+            className={cx({
+              "text-green-strong": row.pnlBps > 0n,
+              "text-red-strong": row.pnlBps < 0n,
             })}
             content={<PnlPercentageTooltip row={row} />}
             handle={<span className="numbers">{formatPercentage(row.pnlBps, { signed: true, useCommas: true })}</span>}
@@ -178,26 +174,16 @@ function GeneralPerformanceDetailsRow({
         </MetricWithRank>
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
+        <StandardTooltip
           handle={`${row.wins} / ${row.losses}`}
           handleClassName="numbers"
           content={
-            <>
-              <StatsTooltipRow
-                label={t`Total trades`}
-                showDollar={false}
-                value={String(row.wins + row.losses)}
-                valueClassName="numbers"
-              />
+            <TooltipRows>
+              <TooltipRow label={t`Total trades`} value={String(row.wins + row.losses)} />
               {row.winsLossesRatioBps !== undefined && (
-                <StatsTooltipRow
-                  label={t`Win rate`}
-                  showDollar={false}
-                  value={formatPercentage(row.winsLossesRatioBps)}
-                  valueClassName="numbers"
-                />
+                <TooltipRow label={t`Win rate`} value={formatPercentage(row.winsLossesRatioBps)} />
               )}
-            </>
+            </TooltipRows>
           }
         />
       </TableTd>
@@ -210,12 +196,12 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
     <span className="flex items-center gap-8">
       {children}
       {rank !== undefined && (
-        <TooltipWithPortal
+        <StandardTooltip
           variant="none"
           shouldStopPropagation
           content={t`Rank among accounts for this metric and period`}
           handle={
-            <span className="text-body-small cursor-help rounded-full border-1/2 border-stroke-primary px-4 font-medium text-textIcon-secondary numbers">
+            <span className="text-body-small rounded-full border-1/2 border-stroke-primary px-4 font-medium text-textIcon-secondary numbers">
               #{rank}
             </span>
           }
@@ -227,9 +213,9 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
 
 function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:w-[calc(100vw-24px)] max-md:max-w-[calc(100vw-24px)] max-md:p-12">
+    <TooltipContent className="max-h-[min(70dvh,560px,calc(var(--tooltip-available-height,70dvh)-28px))] overflow-y-auto">
       <PnlBreakdownTooltipContent row={row} />
-    </div>
+    </TooltipContent>
   );
 }
 
@@ -238,57 +224,43 @@ function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
   const feeRows = getPnlBreakdownFeeAndImpactRows(row);
 
   return (
-    <div className="text-body-medium">
-      <BreakdownTooltipTotalRow value={row.pnlUsd} />
-
-      <div className="mt-8 flex flex-col gap-8">
+    <>
+      <TooltipRows>
+        <TooltipTitle value={<UsdValue usd={row.pnlUsd} />} valueClassName={getPositiveOrNegativeClass(row.pnlUsd)}>
+          {t`PnL`}
+        </TooltipTitle>
         {pnlRows.map((breakdownRow) => (
           <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
-      </div>
-
-      <div className="my-12 h-[0.5px] bg-stroke-primary" />
-
-      <div className="mb-8 font-medium text-textIcon-primary">
-        <Trans>Fees and impacts</Trans>
-      </div>
-      <div className="flex flex-col gap-8">
+      </TooltipRows>
+      <TooltipDivider />
+      <TooltipRows>
+        <TooltipTitle>
+          <Trans>Fees and impacts</Trans>
+        </TooltipTitle>
         {feeRows.map((breakdownRow) => (
           <BreakdownTooltipRow key={breakdownRow.key} row={breakdownRow} />
         ))}
-      </div>
-      <div className="text-body-small mt-8 text-textIcon-secondary">
+      </TooltipRows>
+      <TooltipFootnote>
         <Trans>Outstanding claimable amounts are not included</Trans>.
-      </div>
-    </div>
+      </TooltipFootnote>
+    </>
   );
 }
 
 function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:max-w-[calc(100vw-24px)] max-md:p-12">
-      <StatsTooltipRow
-        label={t`Capital used`}
-        showDollar={false}
-        value={<UsdValue usd={row.usedCapitalUsd} />}
-        valueClassName="numbers"
-        labelClassName="text-textIcon-primary font-medium"
-      />
-      <div className="text-body-small text-textIcon-secondary">
-        <Trans>Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL).</Trans>
-      </div>
-      <div className="my-12 h-[0.5px] bg-stroke-primary" />
+    <TooltipContent className="max-h-[min(70dvh,560px,calc(var(--tooltip-available-height,70dvh)-28px))] overflow-y-auto">
+      <TooltipRows>
+        <TooltipTitle value={<UsdValue usd={row.usedCapitalUsd} />}>{t`Capital used`}</TooltipTitle>
+        <TooltipText>
+          <Trans>Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL).</Trans>
+        </TooltipText>
+      </TooltipRows>
+      <TooltipDivider />
       <PnlBreakdownTooltipContent row={row} />
-    </div>
-  );
-}
-
-function BreakdownTooltipTotalRow({ value }: { value: bigint }) {
-  return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
-      <span className="min-w-0 break-words font-medium text-textIcon-primary">{t`PnL`}</span>
-      <UsdValue usd={value} className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))} />
-    </div>
+    </TooltipContent>
   );
 }
 
@@ -325,16 +297,12 @@ function getPnlBreakdownFieldLabel(key: PnlBreakdownFieldKey) {
   }
 }
 
-function BreakdownTooltipRow({ row, labelClassName }: { row: PnlBreakdownRow; labelClassName?: string }) {
+function BreakdownTooltipRow({ row }: { row: PnlBreakdownRow }) {
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
-      <span className={cx("min-w-0 break-words font-medium text-textIcon-secondary", labelClassName)}>
-        {getPnlBreakdownFieldLabel(row.key)}
-      </span>
-      <UsdValue
-        usd={row.value}
-        className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(row.value))}
-      />
-    </div>
+    <TooltipRow
+      label={getPnlBreakdownFieldLabel(row.key)}
+      value={<UsdValue usd={row.value} />}
+      valueClassName={getPositiveOrNegativeClass(row.value)}
+    />
   );
 }

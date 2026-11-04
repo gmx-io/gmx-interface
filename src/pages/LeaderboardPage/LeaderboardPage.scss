@@ -79,16 +79,6 @@ $tabs-threshold: 990px;
   width: 30rem;
 }
 
-.TopPositionsPositionCell .Tooltip {
-  display: inline-block;
-  width: 100%;
-}
-
-.TopPositionsPositionCell .Tooltip-handle {
-  display: inline-block;
-  width: 100%;
-}
-
 .TopPositionsPositionView {
   display: inline-flex;
   align-items: center;
@@ -148,11 +138,6 @@ $tabs-threshold: 990px;
   top: calc(50% - 1.2rem);
   z-index: 111;
   height: 2.4rem;
-}
-
-.NoLiqPriceTooltip {
-  min-width: 28rem;
-  white-space: normal;
 }
 
 .LeaderboardRank-1::after {
@@ -255,31 +240,6 @@ $tabs-threshold: 990px;
     text-decoration: none;
     display: flex;
     align-items: center;
-  }
-
-  &__tooltip-winner &__prize-rest {
-    margin-left: 1rem;
-  }
-
-  &__tooltip-winner {
-    display: flex;
-    text-decoration: none !important;
-    margin-bottom: 1rem;
-    color: white !important;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-
-  &__prize-winner-tooltip .Tooltip-popup {
-    min-width: 0 !important;
-  }
-
-  .Tooltip-handle {
-    text-decoration: none;
-    align-items: center;
-    top: 0.2rem;
   }
 
   a {
@@ -417,9 +377,4 @@ table.Table.Exchange-list th {
 .Table_tr td {
   z-index: 1;
   position: relative;
-}
-
-.Table-SizeTooltip .Tooltip-popup {
-  min-width: 38rem !important;
-  max-width: 38rem !important;
 }

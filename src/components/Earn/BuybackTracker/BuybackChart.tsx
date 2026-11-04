@@ -18,9 +18,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 
 import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import InfoIcon from "img/ic_info_circle_stroke.svg?react";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-textIcon-secondary)",
@@ -124,21 +122,12 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
         <div className="text-body-small flex items-center gap-8 font-medium">
           <div className="inline-block size-6 rounded-full bg-textIcon-secondary" /> <Trans>Cumulative</Trans>
         </div>
-        <TooltipWithPortal
-          variant="none"
+        <StandardTooltip
+          variant="iconStroke"
           className="ml-auto"
-          handle={
-            <span className="text-body-small inline-flex items-center gap-4 font-medium text-textIcon-secondary">
-              <Trans>USD estimate</Trans>
-              <InfoIcon className="size-16 text-textIcon-secondary" />
-            </span>
-          }
-          content={
-            <Trans>
-              USD values are estimated using the average GMX price for each displayed month. Actual buyback execution
-              amounts may differ due to execution timing, conversions, and price movements.
-            </Trans>
-          }
+          handleClassName="text-body-small font-medium text-textIcon-secondary"
+          handle={<Trans>USD estimate</Trans>}
+          content={t`USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements.`}
         />
       </div>
 

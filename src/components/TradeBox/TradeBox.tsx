@@ -144,8 +144,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
@@ -1287,7 +1286,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     </Button>
   );
   const button = submitButtonState.tooltipContent ? (
-    <Tooltip
+    <StandardTooltip
       className="w-full"
       content={submitButtonState.tooltipContent}
       handle={buttonContent}
@@ -1361,7 +1360,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             onChange={onSelectTradeMode}
             qa="trade-mode"
             className="w-full px-12"
-            rightContent={<TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />}
+            rightContent={<TradeInfoIcon tradeType={tradeType} tradePlace="tradebox" />}
             regularOptionClassname="!px-0"
             tabsWrapperClassName="gap-12"
           />
@@ -1566,10 +1565,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         {usdgConversion.isConvertFirst && (
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={t`Steps`}
-                position="left-start"
-                variant="iconStroke"
                 content={
                   <Trans>
                     Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or

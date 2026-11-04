@@ -2,7 +2,7 @@ import cx from "classnames";
 
 import Button from "components/Button/Button";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { RegularOption } from "./types";
 
@@ -26,13 +26,13 @@ export default function RegularTab<V extends string | number>({
   const isActive = option.value === selectedValue;
   const isDisabled = option.disabled;
   const label = option.label || option.value;
-  const Wrap = isDisabled && option.disabledMessage ? TooltipWithPortal : NoopWrapper;
+  const Wrap = isDisabled && option.disabledMessage ? StandardTooltip : NoopWrapper;
 
   const optionClassName = isActive ? option.className?.active : option.className?.regular;
 
   if (type === "inline-primary") {
     return (
-      <Wrap content={option.disabledMessage} variant="none">
+      <Wrap content={option.disabledMessage} variant="none" isHandlerDisabled>
         <Button
           type="button"
           variant={isActive ? "primary" : "secondary"}
@@ -53,7 +53,7 @@ export default function RegularTab<V extends string | number>({
 
   if (type === "pill") {
     return (
-      <Wrap content={option.disabledMessage} variant="none">
+      <Wrap content={option.disabledMessage} variant="none" isHandlerDisabled>
         <button
           type="button"
           onClick={() => !isDisabled && onOptionClick?.(option.value)}
@@ -81,7 +81,7 @@ export default function RegularTab<V extends string | number>({
 
   if (type === "underline") {
     return (
-      <Wrap content={option.disabledMessage} variant="none">
+      <Wrap content={option.disabledMessage} variant="none" isHandlerDisabled>
         <button
           type="button"
           onClick={() => !isDisabled && onOptionClick?.(option.value)}
@@ -109,7 +109,7 @@ export default function RegularTab<V extends string | number>({
 
   if (type === "inline") {
     return (
-      <Wrap content={option.disabledMessage} variant="none">
+      <Wrap content={option.disabledMessage} variant="none" isHandlerDisabled>
         <Button
           type="button"
           variant={isActive ? "secondary" : "ghost"}
@@ -130,7 +130,7 @@ export default function RegularTab<V extends string | number>({
   }
 
   return (
-    <Wrap content={option.disabledMessage} variant="none">
+    <Wrap content={option.disabledMessage} variant="none" isHandlerDisabled>
       <button
         type="button"
         className={cx(

@@ -44,7 +44,7 @@ import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import ReferralsIcon from "img/ic_referrals.svg?react";
 
@@ -634,9 +634,11 @@ function CreateReferralCodeLayout({
             />
           </AlertInfoCard>
         )}
-        <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
-          {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-        </Button>
+        <ButtonTooltipWrapper content={error} isHandlerDisabled={buttonState.disabled}>
+          <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
       </form>
     </div>
   );

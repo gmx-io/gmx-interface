@@ -6,6 +6,9 @@
   :root {
     @apply text-[10px];
     -webkit-font-smoothing: antialiased;
+    --font-size-body-medium: 1.4rem;
+    --line-height-body-medium: 2rem;
+    --color-textIcon-primary-raw: 255 255 255;
   }
   html {
     /* Restore native webkit behavior */

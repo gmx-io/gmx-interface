@@ -18,10 +18,10 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { WithMissedCoinsSearch } from "../WithMissedCoinsSearch/WithMissedCoinsSearch";
 
 import "./TokenSelector.scss";
@@ -206,7 +206,7 @@ export default function TokenSelector(props: Props) {
           />
         )}
         <VerticalScrollFadeContainer className="flex grow flex-col gap-8 overflow-y-auto">
-          {sortedFilteredTokens.map((token, tokenIndex) => {
+          {sortedFilteredTokens.map((token) => {
             let info = infoTokens?.[token.address] || ({} as TokenInfo);
 
             let balance = info.balance;
@@ -233,13 +233,12 @@ export default function TokenSelector(props: Props) {
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && (
-                  <TooltipWithPortal
+                  <StandardTooltip
                     className="TokenSelector-tooltip"
                     handle={<div className="TokenSelector-tooltip-backing" />}
-                    position={tokenIndex < filteredTokens.length / 2 ? "bottom" : "top"}
+                    position="bottom"
                     variant="none"
                     closeOnDoubleClick
-                    fitHandleWidth
                     renderContent={() => tokenState.message}
                   />
                 )}

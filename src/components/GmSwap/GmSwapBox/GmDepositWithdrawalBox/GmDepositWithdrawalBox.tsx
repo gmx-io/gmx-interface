@@ -109,7 +109,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { MultichainTokenSelectorForLp } from "components/TokenSelector/MultichainTokenSelectorForLp";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
@@ -651,16 +651,18 @@ export function GmSwapBoxDepositWithdrawal() {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal
+        <StandardTooltip
           content={submitState.errorDescription}
           variant="none"
           position="bottom"
           className="w-full"
           handleClassName="w-full"
           contentClassName="w-full justify-center"
+          isHandlerDisabled={submitState.disabled}
+          shouldPreventDefault={false}
         >
           {btn}
-        </TooltipWithPortal>
+        </StandardTooltip>
       );
     }
 

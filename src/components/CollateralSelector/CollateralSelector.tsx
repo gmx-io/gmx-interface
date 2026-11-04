@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import noop from "lodash/noop";
 import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -23,7 +24,7 @@ import {
   SelectorBaseMobileList,
   useSelectorClose,
 } from "../SelectorBase/SelectorBase";
-import { getCollateralInHintText } from "../TradeBox/hooks/useCollateralInTooltipContent";
+import { getCollateralInHint } from "../TradeBox/hooks/useCollateralInTooltipContent";
 
 import "./CollateralSelector.scss";
 
@@ -107,7 +108,7 @@ function CollateralListItemDesktop({
     return (
       <SelectorBaseDesktopRow
         disabled
-        disabledMessage={<Trans>Select a pool that supports {tokenData.symbol} as collateral</Trans>}
+        disabledMessage={t`Select a pool that supports ${tokenData.symbol} as collateral`}
       >
         <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           {tokenData.symbol}
@@ -129,11 +130,12 @@ function CollateralSelectorMobile(props: Props) {
   const close = useSelectorClose();
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const tradeType = useSelector(selectTradeboxTradeType);
+  const { _ } = useLingui();
 
   return (
     <SelectorBaseMobileList>
       {props.options?.map((option) => {
-        const description = marketInfo ? getCollateralInHintText(tradeType, option, marketInfo) : "";
+        const description = marketInfo ? _(getCollateralInHint(tradeType, option, marketInfo)) : "";
 
         return (
           <>

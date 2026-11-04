@@ -32,7 +32,7 @@ import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import MinusCircleIcon from "img/ic_minus_circle.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
@@ -244,21 +244,15 @@ export function GmGlvAssetCard({
           attributionScope={attributionScope}
         />
         {showMegaethPointsBadge && (
-          <TooltipWithPortal
+          <StandardTooltip
             variant="none"
-            maxAllowedWidth={350}
             handle={
               <span className="text-body-small inline-flex w-fit items-center gap-4 rounded-4 bg-blue-backgroundOpacity px-4 py-4 font-medium text-blue-strong">
                 <img className="h-10" src={sparkleIcon} alt="" />
                 <Trans>Earns MegaETH points</Trans>
               </span>
             }
-            content={
-              <Trans>
-                Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the
-                epoch
-              </Trans>
-            }
+            content={t`Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch`}
           />
         )}
         <SyntheticsInfoRow
@@ -267,7 +261,7 @@ export function GmGlvAssetCard({
           value={
             balance !== 0n ? (
               tooltipContent ? (
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={
                     <AmountWithUsdBalance
                       amount={balance}

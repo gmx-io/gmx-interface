@@ -3,8 +3,7 @@ import { Fragment, ReactNode } from "react";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import StandardTooltip from "components/Tooltip/StandardTooltip";
-import type { TooltipPosition } from "components/Tooltip/Tooltip";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
   TooltipDivider,
@@ -208,7 +207,7 @@ const FOOTNOTE_EXAMPLE = (
 
 const MOTION_ROW = ["Open fee", "Close fee", "Borrow fee"];
 
-const PLACEMENTS: [string, TooltipPosition][] = [
+const PLACEMENTS: [string, StandardTooltipPosition][] = [
   ["Below · start", "bottom-start"],
   ["Below · center", "bottom"],
   ["Below · end", "bottom-end"],
@@ -340,12 +339,18 @@ const PLACEMENT_RULES: DocsRule[] = [
 ];
 
 const CONTENT_RULES: DocsRule[] = [
-  ["Block order", "Title → Text → Rows → Table → Link or footnote."],
+  [
+    "Block order",
+    "Title → Text → Rows → Table → Link or footnote. With two topics that have their own links, each link goes under its own paragraph.",
+  ],
   ["Short text", "Plain text that fits in one or two lines is centered. Longer text and blocks align left."],
   ["Rows", "No colons. Muted label on the left, value on the right with tabular numbers. A divider above the total."],
   ["$ and units", "Always the same color as their number: main text, green, red or yellow."],
   ["Colors", "Green and red only for values, yellow only for warnings."],
-  ["Links", 'One style: underlined, blue on hover. "Read more" goes last, on its own line.'],
+  [
+    "Links",
+    'One style: underlined, blue on hover. "Read more" goes on its own line, right under the text it explains: last when there is one link, under each paragraph when two topics have their own links.',
+  ],
   ["Not a tooltip", "Menus and buttons go in dropdowns. No bullets: use Title + Text pairs."],
 ];
 
@@ -560,8 +565,16 @@ const BLOCK_PROPS: DocsProp[] = [
     type: "columns, rows",
     description: 'A multi-column table with headers. Use with size="wide".',
   },
-  { name: "TooltipLink", type: "href, children", description: "A link on its own line, always last." },
-  { name: "TooltipFootnote", type: "children", description: "A small note, always last." },
+  {
+    name: "TooltipLink",
+    type: "href, children",
+    description: "A link on its own line, right under the text it explains. Last when the tooltip has one link.",
+  },
+  {
+    name: "TooltipFootnote",
+    type: "children",
+    description: "A small note at the end of the tooltip. Its own link, if any, goes right under it.",
+  },
 ];
 
 export function TooltipPropsReference() {
