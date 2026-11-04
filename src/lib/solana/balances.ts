@@ -10,7 +10,7 @@ import {
 } from "@solana/kit";
 
 import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
-import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
+import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS, type GmsolTokenConfig } from "config/gmsol/tokens";
 
 import { fetchSolanaAccounts } from "./rpc";
 
@@ -39,7 +39,7 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
   const ownerAddress = address(owner);
   const encoder = getAddressEncoder();
   const tokenAccounts = await Promise.all(
-    GMSOL_TOKENS.map(async (token) => {
+    GMSOL_TOKENS.filter((token) => !token.isSynthetic).map(async (token) => {
       const [ata] = await getProgramDerivedAddress({
         programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
         seeds: [
@@ -66,33 +66,47 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
       balances[token.address] = 0n;
       return;
     }
-    if (account.owner !== token.tokenProgram || account.executable) {
-      throw new Error(`Invalid Solana token program for account: ${ata}`);
-    }
-    const data = Uint8Array.from(atob(account.data[0]), (char) => char.charCodeAt(0));
-    if (
-      data.length < TOKEN_ACCOUNT_SIZE ||
-      (token.tokenProgram === SOLANA_TOKEN_PROGRAM_ID && data.length !== TOKEN_ACCOUNT_SIZE)
-    ) {
-      throw new Error(`Invalid Solana token account size: ${ata}`);
-    }
-    if (data.length > TOKEN_ACCOUNT_SIZE) {
-      validateTokenExtensions(data);
-    }
-    const decoded = tokenAccountDecoder.decode(data);
-    if (
-      decoded.mint !== token.address ||
-      decoded.owner !== ownerAddress ||
-      (decoded.state !== 1 && decoded.state !== 2) ||
-      decoded.delegateOption > 1 ||
-      decoded.nativeOption > 1 ||
-      decoded.closeAuthorityOption > 1
-    ) {
-      throw new Error(`Invalid Solana token account data: ${ata}`);
-    }
-    balances[token.address] = decoded.amount;
+    balances[token.address] = decodeSolanaTokenBalance({ account, token, owner: ownerAddress, ata });
   });
   return balances;
+}
+
+export function decodeSolanaTokenBalance({
+  account,
+  token,
+  owner,
+  ata,
+}: {
+  account: { owner: string; executable: boolean; data: readonly [string, "base64"] };
+  token: GmsolTokenConfig;
+  owner: string;
+  ata: string;
+}) {
+  if (account.owner !== token.tokenProgram || account.executable) {
+    throw new Error(`Invalid Solana token program for account: ${ata}`);
+  }
+  const data = Uint8Array.from(atob(account.data[0]), (char) => char.charCodeAt(0));
+  if (
+    data.length < TOKEN_ACCOUNT_SIZE ||
+    (token.tokenProgram === SOLANA_TOKEN_PROGRAM_ID && data.length !== TOKEN_ACCOUNT_SIZE)
+  ) {
+    throw new Error(`Invalid Solana token account size: ${ata}`);
+  }
+  if (data.length > TOKEN_ACCOUNT_SIZE) {
+    validateTokenExtensions(data);
+  }
+  const decoded = tokenAccountDecoder.decode(data);
+  if (
+    decoded.mint !== token.address ||
+    decoded.owner !== owner ||
+    (decoded.state !== 1 && decoded.state !== 2) ||
+    decoded.delegateOption > 1 ||
+    decoded.nativeOption > 1 ||
+    decoded.closeAuthorityOption > 1
+  ) {
+    throw new Error(`Invalid Solana token account data: ${ata}`);
+  }
+  return decoded.amount;
 }
 
 // Token-2022 shares the base layout, followed by an account type and TLV extensions.
