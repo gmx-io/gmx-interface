@@ -2,7 +2,6 @@ import { plural, t, Trans } from "@lingui/macro";
 import { useCallback, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import { getIsPasskeySubaccountConfig } from "domain/synthetics/subaccount/passkey";
 import {
   getIsSubaccountSessionUsable,
   getSubaccountSessionRemainingActions,
@@ -54,7 +53,6 @@ export function OneClickSessions() {
 
   const currentAddress = subaccountConfig?.address;
   const legacyAddress = legacySubaccountConfig?.address;
-  const isPasskeySession = getIsPasskeySubaccountConfig(subaccountConfig);
 
   const sortedSessions = useMemo(() => {
     if (!sessions) {
@@ -129,11 +127,6 @@ export function OneClickSessions() {
                   {isCurrent && (
                     <Chip variant="outline">
                       <Trans>This browser</Trans>
-                    </Chip>
-                  )}
-                  {isCurrent && isPasskeySession && (
-                    <Chip variant="outline">
-                      <Trans>Passkey</Trans>
                     </Chip>
                   )}
                   {isLegacy && (

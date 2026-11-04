@@ -715,10 +715,6 @@ msgstr "Saldo GM insuficiente"
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr "Las comisiones Express se pagan con el token de pago de Gas de su Monedero. Cámbielo en Configuración."
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Saved a One-Click session to a passkey on another device? Restore it here."
-msgstr "¿Guardó una sesión de One-Click en una llave de acceso en otro dispositivo? Restáurela aquí."
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Rendimiento anual proyectado solo a partir de comisiones de operaciones.<0/><1/>Incluye: comisiones de operaciones, comisiones de préstamo, liquidaciones, intercambios.<2/>Excluye: cambios de precio de tokens de respaldo, PnL, comisiones de financiación.<3/><4/><5>Ver estadísticas detalladas en Dune</5>."
@@ -1249,10 +1245,6 @@ msgstr "GMX en Solana"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volumen negociado por los operadores que ha referido"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Passkey confirmed"
-msgstr "Llave de acceso confirmada"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
@@ -2826,11 +2818,6 @@ msgstr "El importe está por debajo del límite de transferencia. Pruebe con un 
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "Las posiciones {longOrShort} no pagan comisión de financiación y pagan una comisión de préstamo del {borrowRate} por hora"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkeys are not available in this browser"
-msgstr "Las llaves de acceso no están disponibles en este navegador"
-
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr "Buscar pools"
@@ -3148,10 +3135,6 @@ msgstr "Factor de reserva de interés abierto para largos"
 msgid "Layer 2"
 msgstr "Capa 2"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "This passkey belongs to another account"
-msgstr "Esta llave de acceso pertenece a otra cuenta"
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr "Los pools de GMX no pueden cubrir este tamaño de intercambio. Se necesita una ruta externa, que no está disponible con One-Click Trading. Desactive One-Click Trading para continuar."
@@ -3302,10 +3285,6 @@ msgstr "GM:"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "One-Click sessions ({0})"
 msgstr "Sesiones de One-Click ({0})"
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Restore from passkey"
-msgstr "Restaurar desde la llave de acceso"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -3722,10 +3701,6 @@ msgstr "Tamaño de reducción no válido"
 msgid "Subscribe"
 msgstr "Suscribirse"
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Passkey failed"
-msgstr "Error de la llave de acceso"
-
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr "Se pueden convertir hasta {maxInstantAmountText} ahora."
@@ -3882,10 +3857,6 @@ msgstr "El token GMX sirve como token de gobernanza del protocolo GMX. El 27 % d
 msgid "Max lendable impact USD"
 msgstr "Impacto máximo prestable en USD"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Passkey (experimental)"
-msgstr "Llave de acceso (experimental)"
-
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr "<0>Comprando {0}{1}<1>{poolName}</1></0> <2>con {offerAmount}</2>"
@@ -3985,10 +3956,6 @@ msgstr "Tema"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Apalancamiento máximo superado"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Passkey"
-msgstr "Llave de acceso"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -5912,10 +5879,6 @@ msgstr "Unstakear"
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr "Número máximo de acciones alcanzado. <0>Haga clic aquí</0> para actualizar"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
-msgstr "Esta sesión está guardada en su llave de acceso. Use Restaurar desde la llave de acceso en sus otros dispositivos. Al desactivar One-Click, la sesión se elimina en todos los dispositivos."
-
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
 msgstr "Firma:"
@@ -6140,10 +6103,6 @@ msgstr "Retirar del staking más del 20% de su máximo histórico de GMX o esGMX
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Sin impacto en el precio. Precio de ejecución único para<0/>aumentar posiciones cortas o reducir posiciones largas a<1/>este tamaño."
-
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "This passkey can't create a session key: its provider doesn't support PRF"
-msgstr "Esta llave de acceso no puede crear una clave de sesión: su proveedor no admite PRF"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
@@ -7283,7 +7242,6 @@ msgid "Enter a code"
 msgstr "Introduzca un código"
 
 #: src/components/GmList/GmListItem.tsx
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr "Detalles"
 
@@ -7490,10 +7448,6 @@ msgstr "Mostrar iconos de compra/venta en el gráfico"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
 msgstr "Este intercambio requiere enrutamiento externo. Pague el gas en {0} para habilitarlo."
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
-msgstr "Guarde esta sesión en una llave de acceso para usarla en sus otros dispositivos y después de borrar los datos del sitio. ¿Ya la guardó en otro dispositivo? Restáurela en su lugar."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
@@ -11189,10 +11143,6 @@ msgstr "Visite la <0>documentación sobre referidos</0> o pregunte en el <1>Tele
 msgid "Edit order"
 msgstr "Editar orden"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkey created. Press Restore from passkey to finish"
-msgstr "Llave de acceso creada. Pulse Restaurar desde la llave de acceso para terminar"
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11553,10 +11503,6 @@ msgstr "Exposición a los tokens de respaldo"
 msgid "Search type"
 msgstr "Buscar tipo"
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Save to passkey"
-msgstr "Guardar en la llave de acceso"
-
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Converted to {marginTokenSymbol} in the same order"
@@ -11875,10 +11821,6 @@ msgstr "Vaults basados en opciones"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "Límite de tiempo"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Confirm with your passkey..."
-msgstr "Confirme con su llave de acceso..."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Live unrealized PnL before fees"
@@ -12422,10 +12364,6 @@ msgstr "Swap Limit: intercambiar tokens cuando se alcance el precio de activaci�
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Reciba alertas y anuncios de GMX para estar al día de sus operaciones, riesgo de liquidación y más"
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "The passkey request was cancelled or timed out"
-msgstr "La solicitud de la llave de acceso se canceló o caducó"
-
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr "Usar el importe de Pagar"
@@ -12493,10 +12431,6 @@ msgstr "Vault de afiliado"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Vender GM por {0} hasta los límites indicados a continuación. Los tokens restantes están reservados para posiciones abiertas."
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session is already active, no approval needed"
-msgstr "La sesión ya está activa, no se necesita aprobación"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"

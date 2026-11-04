@@ -715,10 +715,6 @@ msgstr ""
 msgid "Express fees are paid in your Wallet gas payment token. Change it in Settings."
 msgstr ""
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Saved a One-Click session to a passkey on another device? Restore it here."
-msgstr ""
-
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr ""
@@ -1248,10 +1244,6 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Passkey confirmed"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
@@ -2826,11 +2818,6 @@ msgstr ""
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr ""
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkeys are not available in this browser"
-msgstr ""
-
 #: src/components/GmList/GmList.tsx
 msgid "Search pools"
 msgstr ""
@@ -3148,10 +3135,6 @@ msgstr ""
 msgid "Layer 2"
 msgstr ""
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "This passkey belongs to another account"
-msgstr ""
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
 msgstr ""
@@ -3301,10 +3284,6 @@ msgstr ""
 
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "One-Click sessions ({0})"
-msgstr ""
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Restore from passkey"
 msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -3722,10 +3701,6 @@ msgstr ""
 msgid "Subscribe"
 msgstr ""
 
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Passkey failed"
-msgstr ""
-
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Up to {maxInstantAmountText} can be converted now."
 msgstr ""
@@ -3882,10 +3857,6 @@ msgstr ""
 msgid "Max lendable impact USD"
 msgstr ""
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Passkey (experimental)"
-msgstr ""
-
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
 msgstr ""
@@ -3984,10 +3955,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
-msgstr ""
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Passkey"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5912,10 +5879,6 @@ msgstr ""
 msgid "Max action count reached. <0>Click here</0> to update"
 msgstr ""
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "This session is saved to your passkey. Use Restore from passkey on your other devices. Turning One-Click off removes the session on all devices."
-msgstr ""
-
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signature:"
 msgstr ""
@@ -6139,10 +6102,6 @@ msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
-msgstr ""
-
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "This passkey can't create a session key: its provider doesn't support PRF"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -7283,7 +7242,6 @@ msgid "Enter a code"
 msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
 msgid "Details"
 msgstr ""
 
@@ -7489,10 +7447,6 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
-msgstr ""
-
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Save this session to a passkey to use it on your other devices and after site data is cleared. Saved it on another device already? Restore it instead."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -11189,10 +11143,6 @@ msgstr ""
 msgid "Edit order"
 msgstr ""
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "Passkey created. Press Restore from passkey to finish"
-msgstr ""
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/getGmSwapSimulationError.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11553,10 +11503,6 @@ msgstr ""
 msgid "Search type"
 msgstr ""
 
-#: src/components/OneClickPasskey/OneClickPasskey.tsx
-msgid "Save to passkey"
-msgstr ""
-
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 msgid "Converted to {marginTokenSymbol} in the same order"
@@ -11874,10 +11820,6 @@ msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Confirm with your passkey..."
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -12422,10 +12364,6 @@ msgstr ""
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr ""
 
-#: src/domain/synthetics/subaccount/passkey.ts
-msgid "The passkey request was cancelled or timed out"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Use the Pay amount"
 msgstr ""
@@ -12492,10 +12430,6 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
-msgstr ""
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session is already active, no approval needed"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx

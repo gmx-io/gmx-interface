@@ -44,14 +44,6 @@ import {
   SubaccountRemovalResultUnknownError,
 } from "domain/synthetics/subaccount/errors";
 import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
-import {
-  generatePasskeySubaccount,
-  getIsPasskeySubaccountConfig,
-  getPasskeyErrorText,
-  PasskeyError,
-  PasskeyErrorReason,
-  type PasskeyMode,
-} from "domain/synthetics/subaccount/passkey";
 import type { SubaccountRemovalTarget } from "domain/synthetics/subaccount/removeSubaccount";
 import {
   findFallbackSubaccountApproval,
@@ -110,12 +102,7 @@ enum SubaccountActivationState {
   ApprovalSigning = 1,
   ApprovalSigningError = 2,
   Success = 3,
-  GeneratingError = 4,
 }
-
-type SubaccountKeySource = "random" | "passkey";
-
-type SubaccountActivationError = { message?: string; walletName?: string; passkeyReason?: PasskeyErrorReason };
 
 export enum SubaccountLegacyRemovalState {
   Removing = "removing",
@@ -129,7 +116,6 @@ export type SubaccountActivationParams = {
   isGmxAccount?: boolean;
   // false for flows that don't trade from the wallet, like GMX Account deposits
   withTokenPermits?: boolean;
-  passkeyMode?: PasskeyMode;
 };
 
 function composeSubaccount({
@@ -299,11 +285,8 @@ export type SubaccountState = {
   subaccountConfig: SubaccountSerializedConfig | undefined;
   legacySubaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
-  isSubaccountReady: boolean;
   subaccountActivationState: SubaccountActivationState | undefined;
-  subaccountActivationError: SubaccountActivationError | undefined;
-  subaccountActivationKeySource: SubaccountKeySource | undefined;
-  isSubaccountApprovalSkipped: boolean;
+  subaccountActivationError: { message?: string; walletName?: string } | undefined;
   subaccountDeactivationState: SubaccountDeactivationState | undefined;
   subaccountDeactivationFailureReason: SubaccountDeactivationFailureReason | undefined;
   subaccountDeactivationFailureTokenSymbol: string | undefined;
@@ -360,13 +343,9 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     undefined
   );
 
-  const [subaccountActivationError, setSubaccountActivationError] = useState<SubaccountActivationError | undefined>(
-    undefined
-  );
-  const [subaccountActivationKeySource, setSubaccountActivationKeySource] = useState<SubaccountKeySource | undefined>(
-    undefined
-  );
-  const [isSubaccountApprovalSkipped, setIsSubaccountApprovalSkipped] = useState(false);
+  const [subaccountActivationError, setSubaccountActivationError] = useState<
+    { message?: string; walletName?: string } | undefined
+  >(undefined);
 
   const [subaccountDeactivationState, setSubaccountDeactivationState] = useState<
     SubaccountDeactivationState | undefined
@@ -577,32 +556,19 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       remainingSeconds,
       isGmxAccount: isGmxAccountParam,
       withTokenPermits = true,
-      passkeyMode,
     }: SubaccountActivationParams = {}) => {
-      if (!provider || !signer || !account) {
-        return false;
-      }
-
-      const passkeyConfigRequest = passkeyMode
-        ? generatePasskeySubaccount({ account, chainId, mode: passkeyMode })
-        : undefined;
-
-      passkeyConfigRequest?.catch(() => undefined);
-
-      if (await getIsContractAccount(signer.address, chainId)) {
+      if (!provider || !signer || !account || (await getIsContractAccount(signer.address, chainId))) {
         return false;
       }
 
       const currentSubaccount = await getCurrentSubaccount();
 
-      if (!passkeyMode && currentSubaccount && getIsSubaccountUsable(currentSubaccount)) {
+      if (currentSubaccount && getIsSubaccountUsable(currentSubaccount)) {
         return true;
       }
 
       setSubaccountActivationError(undefined);
       setSubaccountLegacyRemovalState(undefined);
-      setSubaccountActivationKeySource(passkeyMode ? "passkey" : "random");
-      setIsSubaccountApprovalSkipped(false);
 
       const toastId = Date.now();
 
@@ -616,8 +582,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       const isGmxAccount = isGmxAccountParam ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
       const addressBeforeLock = subaccountConfig?.address;
       let isCreatedInThisTab = false;
-      let isApprovalSkipped = false;
-      let isGenerationFailed = false;
 
       try {
         await withSubaccountTabLock(chainId, account, async () => {
@@ -632,54 +596,19 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             return;
           }
 
-          let config: SubaccountSerializedConfig;
+          const config = generateSubaccount(account);
 
-          if (passkeyConfigRequest) {
-            try {
-              config = await passkeyConfigRequest;
-            } catch (error) {
-              isGenerationFailed = true;
-              throw error;
-            }
+          setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
 
-            const onchainData = await getSubaccountOnchainData({
-              chainId,
-              signer,
-              provider,
-              subaccountAddress: config.address,
-            });
-
-            const listedSubaccount = composeSubaccount({
-              chainId,
-              srcChainId,
-              account,
-              config,
-              provider: signer.provider ?? undefined,
-              onchainData,
-              signedApproval: undefined,
-              fallbackSignedApproval: undefined,
-            });
-
-            isApprovalSkipped = Boolean(listedSubaccount && getIsSubaccountUsable(listedSubaccount));
-          } else {
-            config = getIsPasskeySubaccountConfig(storedConfig) ? storedConfig : generateSubaccount(account);
-          }
-
-          let approval: SignedSubaccountApproval | undefined;
-
-          if (!isApprovalSkipped) {
-            setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
-
-            approval = await getInitialSubaccountApproval({
-              chainId,
-              signer,
-              provider,
-              subaccountAddress: config.address,
-              isGmxAccount,
-              remainingSeconds,
-              remainingActions,
-            });
-          }
+          const approval = await getInitialSubaccountApproval({
+            chainId,
+            signer,
+            provider,
+            subaccountAddress: config.address,
+            isGmxAccount,
+            remainingSeconds,
+            remainingActions,
+          });
 
           if (storedConfig && getIsLegacySubaccountConfig(storedConfig)) {
             keepLegacySubaccountConfig(chainId, account, storedConfig);
@@ -687,30 +616,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
           writeStoredSubaccountConfig(chainId, account, config);
           removeAllStoredSubaccountApprovals(chainId, account);
-
-          if (approval) {
-            writeStoredSubaccountApproval(chainId, account, approval);
-          }
-
+          writeStoredSubaccountApproval(chainId, account, approval);
           isCreatedInThisTab = true;
         });
       } catch (error) {
-        setSubaccountActivationState(
-          isGenerationFailed
-            ? SubaccountActivationState.GeneratingError
-            : SubaccountActivationState.ApprovalSigningError
-        );
-        setSubaccountActivationError({
-          message: error?.message,
-          walletName: error?.data?.walletName,
-          passkeyReason: error instanceof PasskeyError ? error.reason : undefined,
-        });
+        setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
+        setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
         // eslint-disable-next-line no-console
         console.error(error);
-        metrics.pushError(
-          error,
-          isGenerationFailed ? "subaccount.generatePasskeySubaccount" : "subaccount.signDefaultApproval"
-        );
+        metrics.pushError(error, "subaccount.signDefaultApproval");
         return false;
       } finally {
         commitStorageChange();
@@ -720,7 +634,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       walletTxnRemovalKeyRef.current = undefined;
       unknownResultRemovalKeyRef.current = undefined;
 
-      setIsSubaccountApprovalSkipped(isApprovalSkipped);
       setSubaccountActivationState(SubaccountActivationState.Success);
       refreshSubaccountData();
 
@@ -1079,18 +992,13 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     [subaccount, refreshSubaccountData]
   );
 
-  const isSubaccountReady = Boolean(signer?.address) && (!subaccountConfig || Boolean(subaccountData));
-
   const state: SubaccountState = useMemo(() => {
     return {
       subaccountConfig,
       legacySubaccountConfig,
       subaccount,
-      isSubaccountReady,
       subaccountActivationState,
       subaccountActivationError,
-      subaccountActivationKeySource,
-      isSubaccountApprovalSkipped,
       subaccountDeactivationState,
       subaccountDeactivationFailureReason,
       subaccountDeactivationFailureTokenSymbol,
@@ -1107,11 +1015,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountConfig,
     legacySubaccountConfig,
     subaccount,
-    isSubaccountReady,
     subaccountActivationState,
     subaccountActivationError,
-    subaccountActivationKeySource,
-    isSubaccountApprovalSkipped,
     subaccountDeactivationState,
     subaccountDeactivationFailureReason,
     subaccountDeactivationFailureTokenSymbol,
@@ -1146,14 +1051,7 @@ function SubaccountLegacyRemovalStatus({ state }: { state: SubaccountLegacyRemov
 
 function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   const { chainId } = useChainId();
-  const {
-    subaccountActivationState,
-    subaccountActivationError,
-    subaccountActivationKeySource,
-    isSubaccountApprovalSkipped,
-    subaccountLegacyRemovalState,
-  } = useSubaccountContext();
-  const isPasskey = subaccountActivationKeySource === "passkey";
+  const { subaccountActivationState, subaccountActivationError, subaccountLegacyRemovalState } = useSubaccountContext();
 
   const errorContent = useMemo(
     () =>
@@ -1169,8 +1067,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
 
   const dismissTimerId = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  const isGeneratingError = subaccountActivationState === SubaccountActivationState.GeneratingError;
-  const hasError = subaccountActivationState === SubaccountActivationState.ApprovalSigningError || isGeneratingError;
+  const hasError = subaccountActivationState === SubaccountActivationState.ApprovalSigningError;
 
   const isCompleted =
     (subaccountActivationState === SubaccountActivationState.Success &&
@@ -1178,19 +1075,16 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
     hasError;
 
   const generatingStatus = useMemo(() => {
-    let text = isPasskey ? t`Confirm with your passkey...` : t`Generating session...`;
+    let text = t`Generating session...`;
     let status: TransactionStatusType = "loading";
 
-    if (isGeneratingError) {
-      status = "error";
-      text = t`Passkey failed`;
-    } else if (subaccountActivationState && subaccountActivationState >= SubaccountActivationState.ApprovalSigning) {
+    if (subaccountActivationState && subaccountActivationState >= SubaccountActivationState.ApprovalSigning) {
       status = "success";
-      text = isPasskey ? t`Passkey confirmed` : t`Session generated`;
+      text = t`Session generated`;
     }
 
     return <TransactionStatus status={status} text={text} />;
-  }, [isGeneratingError, isPasskey, subaccountActivationState]);
+  }, [subaccountActivationState]);
 
   const approvalSigningStatus = useMemo(() => {
     let status: TransactionStatusType = "muted";
@@ -1203,15 +1097,11 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       text = t`Approval signing failed`;
     } else if (subaccountActivationState === SubaccountActivationState.Success) {
       status = "success";
-      text = isSubaccountApprovalSkipped ? t`Session is already active, no approval needed` : t`Approval signed`;
+      text = t`Approval signed`;
     }
 
     return <TransactionStatus status={status} text={text} />;
-  }, [isSubaccountApprovalSkipped, subaccountActivationState]);
-
-  const passkeyErrorText = isGeneratingError
-    ? getPasskeyErrorText(subaccountActivationError?.passkeyReason) ?? subaccountActivationError?.message
-    : undefined;
+  }, [subaccountActivationState]);
 
   useEffect(
     function cleanup() {
@@ -1244,7 +1134,6 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       {approvalSigningStatus}
       <SubaccountLegacyRemovalStatus state={subaccountLegacyRemovalState} />
       {hasError && errorContent && <div className="mt-8">{errorContent}</div>}
-      {passkeyErrorText && <div className="mt-8">{passkeyErrorText}</div>}
     </StatusNotification>
   );
 }
