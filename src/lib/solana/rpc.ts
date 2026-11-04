@@ -8,6 +8,7 @@ import { EndpointStats, FallbackTracker } from "lib/FallbackTracker/FallbackTrac
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { getAvgResponseTime, scoreBySpeedAndConsistency, scoreNotBanned } from "lib/FallbackTracker/utils";
 import { withFallback } from "lib/FallbackTracker/withFallback";
+import { registerRpcTracker } from "lib/rpc/registry";
 
 const MAX_ACCOUNTS_PER_REQUEST = 100;
 const RPC_TIMEOUT = 15_000;
@@ -19,6 +20,7 @@ type SolanaRpcCheckResult = { responseTime: number; slot: bigint };
 type SolanaRpcStats = EndpointStats<SolanaRpcCheckResult>;
 
 export class SolanaRpcTracker {
+  readonly params = { chainId: SOLANA_NETWORK_ID };
   readonly fallbackTracker: FallbackTracker<SolanaRpcCheckResult>;
   readonly clients = new Map<string, ReturnType<typeof createSolanaRpc>>();
 
@@ -64,7 +66,15 @@ export class SolanaRpcTracker {
   }
 
   getPurpose(endpoint: string) {
-    return this.providers.find((provider) => provider.url === endpoint)?.purpose;
+    return this.getRpcConfig(endpoint)?.purpose;
+  }
+
+  get trackerKey() {
+    return this.fallbackTracker.trackerKey;
+  }
+
+  getRpcConfig(endpoint: string) {
+    return this.providers.find((provider) => provider.url === endpoint);
   }
 
   async checkEndpoint(endpoint: string, signal: AbortSignal): Promise<SolanaRpcCheckResult> {
@@ -84,7 +94,9 @@ export class SolanaRpcTracker {
   }
 
   rank(stats: SolanaRpcStats[]) {
-    const successful = stats.filter((item) => item.checkResults[0]?.success);
+    const successful = stats.filter(
+      (item) => this.getPurpose(item.endpoint) === "default" && item.checkResults[0]?.success
+    );
     const slots = successful
       .map((item) => item.checkResults[0].stats!.slot)
       .sort((a, b) => (a > b ? -1 : a < b ? 1 : 0));
@@ -93,8 +105,10 @@ export class SolanaRpcTracker {
     const eligible = stats.filter((item) => {
       const latest = item.checkResults[0];
       if (!latest) return true;
+      if (!latest.success) return false;
+      // Like EVM, retain the configured fallback outside public-node height ranking.
+      if (this.getPurpose(item.endpoint) === "fallback") return true;
       return (
-        latest.success &&
         latest.stats &&
         bestSlot !== undefined &&
         latest.stats.slot >= bestSlot - MAX_SLOT_LAG &&
@@ -111,9 +125,8 @@ export class SolanaRpcTracker {
 
   async fetchAccounts(addresses: readonly Address[]) {
     if (!addresses.length) return [];
-    const { primary, fallbacks } = this.fallbackTracker.getCurrentEndpoints();
     return withFallback({
-      endpoints: [primary, ...fallbacks],
+      endpoints: this.getRequestEndpoints(),
       fn: async (endpoint) => {
         try {
           const rpc = this.getClient(endpoint);
@@ -142,6 +155,18 @@ export class SolanaRpcTracker {
       },
     });
   }
+
+  getRequestEndpoints() {
+    const { primary, fallbacks, endpointsStats } = this.fallbackTracker.getCurrentEndpoints();
+    const selected = new Set([primary, ...fallbacks]);
+    const endpoints = this.rank(endpointsStats)
+      .map((stats) => stats.endpoint)
+      .filter((endpoint) => selected.has(endpoint));
+    if (!endpoints.length) {
+      throw new Error("No healthy Solana RPC endpoints available");
+    }
+    return endpoints;
+  }
 }
 
 let tracker: SolanaRpcTracker | undefined;
@@ -149,14 +174,14 @@ let tracker: SolanaRpcTracker | undefined;
 export function getSolanaRpcTracker() {
   if (!tracker) {
     tracker = new SolanaRpcTracker();
-    tracker.fallbackTracker.startTracking();
+    registerRpcTracker(tracker);
   }
   return tracker;
 }
 
 export function getSolanaRpc() {
   const tracker = getSolanaRpcTracker();
-  return tracker.getClient(tracker.fallbackTracker.getCurrentEndpoints().primary);
+  return tracker.getClient(tracker.getRequestEndpoints()[0]);
 }
 
 export function fetchSolanaAccounts(addresses: readonly Address[]) {

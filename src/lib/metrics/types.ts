@@ -297,6 +297,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
+    progressUnit?: "slot";
   } & Partial<EndpointsPairRepeats>;
 };
 
@@ -313,6 +314,7 @@ export type RpcTrackerEndpointBlockGapTiming = {
   data: {
     endpoint: string;
     chainId: number;
+    progressUnit?: "slot";
   };
 };
 
