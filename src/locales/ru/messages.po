@@ -1634,7 +1634,6 @@ msgstr "ДАТА"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3300,6 +3299,10 @@ msgstr "РАНГ"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} ордер {0} для"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -7301,7 +7304,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "Изменить Limit Increase: {suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Нет открытых ордеров"
 
@@ -8082,6 +8084,7 @@ msgstr "Цена TP"
 msgid "ParaSwap"
 msgstr "ParaSwap"
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -9513,6 +9516,10 @@ msgstr "Squid GraphQL"
 msgid "Express transaction data is still loading. Retry in a few seconds"
 msgstr "Данные Express-транзакции ещё загружаются. Повторите попытку через несколько секунд"
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Solana market data is unavailable right now. Prices and positions will appear once it is back."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -9647,10 +9654,6 @@ msgstr "Низкая маржа после вычета комиссий. Вне
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Получать {profitTokenSymbol} и {collateralTokenSymbol} отдельно"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Торговля на Solana скоро станет доступна."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11889,6 +11892,10 @@ msgstr "Отправитель вывел все токены из хранил�
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
