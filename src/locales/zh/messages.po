@@ -2788,6 +2788,10 @@ msgstr "缺少参数。请刷新页面后重试"
 msgid "Instant via {instantLabel}"
 msgstr "通过 {instantLabel} 即时"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "活动至 {expiryDate}，{actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "现有仓位位于 WETH-USDC 池中，但该池的流动性不足以执行此订单"
@@ -4335,6 +4339,10 @@ msgstr "支持哪些网络？"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "深色主题"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "每个浏览器都有自己的会话。其他浏览器的会话在首笔交易后显示在这里。代您交易的机器人和应用也会列出。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -6051,6 +6059,10 @@ msgstr "提取"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | 加密货币、金属、股票与能源永续合约 DEX"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "已取消移除"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "更新止价市价单"
@@ -6879,10 +6891,6 @@ msgstr "已收到 {receivedText}"
 msgid "Transferring a referral code"
 msgstr "转让推荐码"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-msgstr "每个开启 One-Click Trading 的浏览器都有自己的会话。代您交易的机器人和应用也会显示在这里。"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10 分钟"
@@ -7507,6 +7515,10 @@ msgstr "使用“平仓”按钮，通过市价单或 TWAP 订单减少您的仓
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "全部移除"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -9098,6 +9110,7 @@ msgstr "留住更多交易收益"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9870,6 +9883,10 @@ msgstr "隐藏其他资产"
 msgid "Swap or bridge {tokenSymbol}."
 msgstr "请兑换或通过跨链桥转入 {tokenSymbol}。"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "等待首笔交易，{actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -10097,6 +10114,10 @@ msgstr "由于您的钱包中没有足够的 {walletGasTokenSymbol} 支付费用
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "复制"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "这也会移除代您交易的机器人和应用的会话。在您再次批准之前，它们将停止工作。"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -12301,10 +12322,6 @@ msgstr "Nonce："
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText}保证金存入：{amountText} 至 {indexTokenText} {longShortText}"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {0}, {actionsText}"
-msgstr "活动至 {0}，{actionsText}"
-
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "平仓时您将获得的价格，已根据设有上限的价格影响进行调整。<0>了解更多</0>。"
@@ -12517,6 +12534,10 @@ msgstr "是否合适？"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "新增"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "已于 {expiryDate} 过期"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."

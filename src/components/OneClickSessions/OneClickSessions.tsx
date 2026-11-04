@@ -1,8 +1,9 @@
 import { plural, t, Trans } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
+  getCurrentSubaccountSession,
   getIsSubaccountSessionUsable,
   getSubaccountSessionRemainingActions,
   type SubaccountSession,
@@ -14,6 +15,7 @@ import { shortenAddress } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ExpandableRow } from "components/ExpandableRow";
 import { Chip } from "components/SettingsModal/shared";
@@ -29,15 +31,27 @@ function getSessionStatusText(session: SubaccountSession): string {
         ? t`unlimited actions`
         : plural(Number(remainingActions), { one: "# action left", other: "# actions left" });
 
+    if (session.isPending) {
+      return t`Pending first trade, ${actionsText}`;
+    }
+
     if (session.expiresAt >= NO_EXPIRY_TIMESTAMP) {
       return t`Active, no expiry, ${actionsText}`;
     }
 
-    return t`Active until ${formatDate(Number(session.expiresAt))}, ${actionsText}`;
+    const expiryDate = formatDate(Number(session.expiresAt));
+
+    return t`Active until ${expiryDate}, ${actionsText}`;
+  }
+
+  if (session.expiresAt === 0n) {
+    return t`Expired`;
   }
 
   if (session.expiresAt <= BigInt(nowInSeconds())) {
-    return t`Expired`;
+    const expiryDate = formatDate(Number(session.expiresAt));
+
+    return t`Expired on ${expiryDate}`;
   }
 
   return t`No actions left`;
@@ -46,18 +60,31 @@ function getSessionStatusText(session: SubaccountSession): string {
 export function OneClickSessions() {
   const { chainId } = useChainId();
   const { account } = useWallet();
-  const { subaccountConfig, legacySubaccountConfig, removeSubaccountSessions } = useSubaccountContext();
+  const { subaccount, subaccountConfig, legacySubaccountConfig, removeSubaccountSessions } = useSubaccountContext();
   const { sessions, refreshSessions } = useSubaccountSessions(chainId, account);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [removeAllConfirmKey, setRemoveAllConfirmKey] = useState<string | undefined>(undefined);
   const [removingAddresses, setRemovingAddresses] = useState<string[]>([]);
 
-  const currentAddress = subaccountConfig?.address;
+  const currentAddress = subaccountConfig?.isNew ? subaccountConfig.address : undefined;
   const legacyAddress = legacySubaccountConfig?.address;
+
+  useEffect(
+    function refreshSessionsOnCurrentSessionChange() {
+      refreshSessions();
+    },
+    [currentAddress, refreshSessions]
+  );
 
   const sortedSessions = useMemo(() => {
     if (!sessions) {
       return [];
     }
+
+    const currentSession = getCurrentSubaccountSession(subaccount);
+    const allSessions = currentSession
+      ? [currentSession, ...sessions.filter((session) => session.address !== currentSession.address)]
+      : sessions;
 
     const getRank = (session: SubaccountSession) => {
       if (session.address === currentAddress) {
@@ -67,16 +94,20 @@ export function OneClickSessions() {
       return getIsSubaccountSessionUsable(session) ? 1 : 2;
     };
 
-    return [...sessions].sort((a, b) => getRank(a) - getRank(b));
-  }, [currentAddress, sessions]);
+    return [...allSessions].sort((a, b) => getRank(a) - getRank(b));
+  }, [currentAddress, sessions, subaccount]);
 
   const otherSessionAddresses = useMemo(
     () => sortedSessions.filter((session) => session.address !== currentAddress).map((session) => session.address),
     [currentAddress, sortedSessions]
   );
 
+  const otherSessionsKey = [chainId, account, ...otherSessionAddresses].join();
+  const isRemoveAllConfirmVisible = removeAllConfirmKey === otherSessionsKey;
+
   const handleRemove = useCallback(
     async (subaccountAddresses: string[]) => {
+      setRemoveAllConfirmKey(undefined);
       setRemovingAddresses(subaccountAddresses);
 
       try {
@@ -105,8 +136,8 @@ export function OneClickSessions() {
       <div className="flex flex-col gap-12" data-qa="one-click-sessions">
         <div className="text-12 text-typography-secondary">
           <Trans>
-            Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also
-            appear here.
+            Each browser has its own session. A session from another browser appears here after its first trade. Bots
+            and apps that trade for you are listed too.
           </Trans>
         </div>
 
@@ -142,6 +173,7 @@ export function OneClickSessions() {
                 <Button
                   variant="ghost"
                   size="small"
+                  className="-mr-8 shrink-0 !px-8"
                   disabled={isRemoving}
                   onClick={() => handleRemove([session.address])}
                 >
@@ -152,18 +184,41 @@ export function OneClickSessions() {
           );
         })}
 
-        {otherSessionAddresses.length > 1 && (
-          <Button
-            variant="secondary"
-            size="small"
-            textAlign="center"
-            showExternalLinkArrow={false}
-            disabled={isRemoving}
-            onClick={() => handleRemove(otherSessionAddresses)}
-          >
-            <Trans>Remove all other sessions</Trans>
-          </Button>
-        )}
+        {otherSessionAddresses.length > 1 &&
+          (isRemoveAllConfirmVisible ? (
+            <div className="flex flex-col gap-8" data-qa="one-click-sessions-remove-all-confirm">
+              <AlertInfoCard type="warning" hideClose>
+                <Trans>
+                  This also removes sessions of bots and apps that trade for you. They stop working until you approve
+                  them again.
+                </Trans>
+              </AlertInfoCard>
+              <div className="grid grid-cols-2 gap-8">
+                <Button
+                  variant="secondary"
+                  size="small"
+                  showExternalLinkArrow={false}
+                  onClick={() => setRemoveAllConfirmKey(undefined)}
+                >
+                  <Trans>Cancel</Trans>
+                </Button>
+                <Button variant="primary" size="small" onClick={() => handleRemove(otherSessionAddresses)}>
+                  <Trans>Remove all</Trans>
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Button
+              variant="secondary"
+              size="small"
+              textAlign="center"
+              showExternalLinkArrow={false}
+              disabled={isRemoving}
+              onClick={() => setRemoveAllConfirmKey(otherSessionsKey)}
+            >
+              <Trans>Remove all other sessions</Trans>
+            </Button>
+          ))}
       </div>
     </ExpandableRow>
   );

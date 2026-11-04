@@ -12,13 +12,17 @@ import {
   subaccountExpiresAtKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
+import type { Subaccount } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
+
+import { getIsSubaccountExpired, getMaxSubaccountActions, getSubaccountExpiresAt } from "./utils";
 
 export type SubaccountSession = {
   address: string;
   expiresAt: bigint;
   maxAllowedCount: bigint;
   actionsCount: bigint;
+  isPending?: boolean;
 };
 
 export async function fetchSubaccountSessions(
@@ -80,11 +84,35 @@ export function getIsSubaccountSessionUsable(session: SubaccountSession): boolea
   return session.expiresAt > BigInt(nowInSeconds()) && getSubaccountSessionRemainingActions(session) > 0n;
 }
 
+export function getCurrentSubaccountSession(subaccount: Subaccount | undefined): SubaccountSession | undefined {
+  if (!subaccount) {
+    return undefined;
+  }
+
+  const { address, onchainData } = subaccount;
+  const isPending = !onchainData.active;
+
+  if (isPending && getIsSubaccountExpired(subaccount)) {
+    return undefined;
+  }
+
+  return {
+    address,
+    expiresAt: isPending ? getSubaccountExpiresAt(subaccount) : onchainData.expiresAt,
+    maxAllowedCount: isPending ? getMaxSubaccountActions(subaccount) : onchainData.maxAllowedCount,
+    actionsCount: onchainData.currentActionsCount,
+    isPending,
+  };
+}
+
 export function useSubaccountSessions(chainId: ContractsChainId, account: string | undefined) {
-  const { data, mutate, error } = useSWR(account ? ["subaccountSessions", chainId, account] : null, {
-    fetcher: () => fetchSubaccountSessions(chainId, account!),
-    refreshInterval: 60_000,
-  });
+  const { data, mutate, error } = useSWR<SubaccountSession[]>(
+    account ? ["subaccountSessions", chainId, account] : null,
+    {
+      fetcher: () => fetchSubaccountSessions(chainId, account!),
+      refreshInterval: 60_000,
+    }
+  );
 
   const refreshSessions = useCallback(() => {
     mutate();

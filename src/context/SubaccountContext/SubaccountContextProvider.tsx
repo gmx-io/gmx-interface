@@ -972,9 +972,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         console.error(error);
         metrics.pushError(error, "subaccount.removeSubaccountSessions");
         toast.dismiss();
+
+        const isRejected = parseError(error as ErrorLike)?.isUserRejectedError;
+
         helperToast.error(
           <StatusNotification key="removeSubaccountSessionsError" title={t`Remove 1CT sessions`}>
-            <TransactionStatus status="error" text={t`Removal failed`} />
+            <TransactionStatus status="error" text={isRejected ? t`Removal cancelled` : t`Removal failed`} />
           </StatusNotification>
         );
         return false;

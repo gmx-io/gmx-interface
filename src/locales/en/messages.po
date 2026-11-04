@@ -2788,6 +2788,10 @@ msgstr "Missing parameters. Refresh and retry"
 msgid "Instant via {instantLabel}"
 msgstr "Instant via {instantLabel}"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "Active until {expiryDate}, {actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
@@ -4335,6 +4339,10 @@ msgstr "What networks are supported?"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "Dark theme"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -6051,6 +6059,10 @@ msgstr "Withdraw"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "Removal cancelled"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Update Stop Market"
@@ -6879,10 +6891,6 @@ msgstr "Received {receivedText}"
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-msgstr "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10 min"
@@ -7507,6 +7515,10 @@ msgstr "Use the \"Close\" button to reduce your position via market or TWAP orde
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "Remove all"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -9098,6 +9110,7 @@ msgstr "Keep more of every trade"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9870,6 +9883,10 @@ msgstr "Hide other assets"
 msgid "Swap or bridge {tokenSymbol}."
 msgstr "Swap or bridge {tokenSymbol}."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "Pending first trade, {actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -10097,6 +10114,10 @@ msgstr "Paid from your GMX Account because your Wallet does not have enough {wal
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "Copy"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -12301,10 +12322,6 @@ msgstr "Nonce:"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {0}, {actionsText}"
-msgstr "Active until {0}, {actionsText}"
-
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
@@ -12517,6 +12534,10 @@ msgstr "Is this the right fit?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "Gained"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "Expired on {expiryDate}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."

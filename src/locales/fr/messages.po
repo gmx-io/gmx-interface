@@ -2788,6 +2788,10 @@ msgstr "Paramètres manquants. Actualisez et réessayez"
 msgid "Instant via {instantLabel}"
 msgstr "Instantané via {instantLabel}"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "Active jusqu'au {expiryDate}, {actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "La position existante se trouve dans le pool WETH-USDC, mais la liquidité de ce pool est insuffisante pour cet ordre"
@@ -4335,6 +4339,10 @@ msgstr "Quels réseaux sont pris en charge ?"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "Thème sombre"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "Chaque navigateur a sa propre session. Une session d'un autre navigateur apparaît ici après son premier trade. Les bots et les applications qui tradent pour vous sont également listés."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -6051,6 +6059,10 @@ msgstr "Retirer"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | DEX de perpétuels pour crypto, métaux, actions et énergie"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "Suppression annulée"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Actualiser Stop Market"
@@ -6879,10 +6891,6 @@ msgstr "Reçu : {receivedText}"
 msgid "Transferring a referral code"
 msgstr "Transfert d’un code de parrainage"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-msgstr "Chaque navigateur dans lequel vous activez One-Click Trading a sa propre session. Les bots et les applications qui tradent pour vous apparaissent aussi ici."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10 min"
@@ -7507,6 +7515,10 @@ msgstr "Utilisez le bouton « Fermer » pour réduire votre position via des ord
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "Tout supprimer"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -9098,6 +9110,7 @@ msgstr "Gardez plus à chaque trade"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9870,6 +9883,10 @@ msgstr "Masquer les autres actifs"
 msgid "Swap or bridge {tokenSymbol}."
 msgstr "Échangez ou bridgez {tokenSymbol}."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "En attente du premier trade, {actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -10097,6 +10114,10 @@ msgstr "Payé depuis votre GMX Account, car votre Portefeuille n'a pas assez de 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "Copier"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "Cela supprime aussi les sessions des bots et des applications qui tradent pour vous. Ils cessent de fonctionner jusqu'à ce que vous les approuviez à nouveau."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -12301,10 +12322,6 @@ msgstr "Nonce :"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} dépôt de marge : {amountText} vers {indexTokenText} {longShortText}"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {0}, {actionsText}"
-msgstr "Active jusqu'au {0}, {actionsText}"
-
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "Prix que vous recevrez à la clôture, ajusté en fonction de l’impact sur le prix plafonné. <0>En savoir plus</0>."
@@ -12517,6 +12534,10 @@ msgstr "Ce programme vous correspond-il ?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "Gagnés"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "Expirée le {expiryDate}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."

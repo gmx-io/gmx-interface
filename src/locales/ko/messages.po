@@ -2788,6 +2788,10 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Instant via {instantLabel}"
 msgstr "{instantLabel} 경유 즉시"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "{expiryDate}까지 활성, {actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "기존 포지션은 WETH-USDC 풀에 있지만 해당 풀에는 이 주문에 필요한 유동성이 부족합니다"
@@ -4335,6 +4339,10 @@ msgstr "지원되는 네트워크는 무엇인가요?"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "다크 테마"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "브라우저마다 별도의 세션이 있습니다. 다른 브라우저의 세션은 첫 거래 후 여기에 표시됩니다. 대신 거래하는 봇과 앱도 표시됩니다."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -6051,6 +6059,10 @@ msgstr "출금"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | 암호화폐, 금속, 주식, 에너지 무기한 DEX"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "제거 취소됨"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "스탑 마켓 업데이트"
@@ -6879,10 +6891,6 @@ msgstr "{receivedText} 수령"
 msgid "Transferring a referral code"
 msgstr "추천 코드 이전"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-msgstr "One-Click Trading을 켠 브라우저마다 별도의 세션이 있습니다. 대신 거래하는 봇과 앱도 여기에 표시됩니다."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10분"
@@ -7507,6 +7515,10 @@ msgstr "\"Close\" 버튼을 사용하여 시장가 또는 TWAP 주문으로 포�
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "모두 제거"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -9098,6 +9110,7 @@ msgstr "모든 거래에서 더 많이 가져가십시오"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9870,6 +9883,10 @@ msgstr "기타 자산 숨기기"
 msgid "Swap or bridge {tokenSymbol}."
 msgstr "{tokenSymbol}을(를) 스왑하거나 브릿지하십시오."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "첫 거래 대기 중, {actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -10097,6 +10114,10 @@ msgstr "지갑에 수수료에 필요한 {walletGasTokenSymbol}이(가) 부족�
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "복사"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "대신 거래하는 봇과 앱의 세션도 제거됩니다. 다시 승인할 때까지 작동하지 않습니다."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -12301,10 +12322,6 @@ msgstr "Nonce:"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} 증거금 입금: {indexTokenText} {longShortText}에 {amountText}"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {0}, {actionsText}"
-msgstr "{0}까지 활성, {actionsText}"
-
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "상한이 적용된 가격 영향을 반영하여 조정된, 청산 시 받게 되는 가격입니다. <0>자세히 알아보기</0>."
@@ -12517,6 +12534,10 @@ msgstr "이 프로그램이 적합합니까?"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "획득"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "{expiryDate}에 만료됨"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."

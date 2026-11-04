@@ -2788,6 +2788,10 @@ msgstr "パラメータが不足しています。ページを更新して再試
 msgid "Instant via {instantLabel}"
 msgstr "{instantLabel}経由で即時"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "{expiryDate}まで有効、{actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "既存のポジションはWETH-USDCプールにありますが、この注文に必要な流動性が不足しています"
@@ -4335,6 +4339,10 @@ msgstr "どのネットワークに対応していますか？"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "ダークテーマ"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "ブラウザごとに個別のセッションがあります。別のブラウザのセッションは、最初の取引の後にここに表示されます。あなたの代わりに取引するボットやアプリも表示されます。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -6051,6 +6059,10 @@ msgstr "出金"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | 暗号資産・貴金属・株式・エネルギーのパーペチュアルDEX"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "削除をキャンセルしました"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "ストップマーケットを更新"
@@ -6879,10 +6891,6 @@ msgstr "{receivedText}を受け取りました"
 msgid "Transferring a referral code"
 msgstr "紹介コードの移管"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Each browser where you turn on One-Click Trading has its own session. Bots and apps that trade for you also appear here."
-msgstr "One-Click Tradingを有効にしたブラウザごとに個別のセッションがあります。あなたの代わりに取引するボットやアプリもここに表示されます。"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "2–10 min"
 msgstr "2–10分"
@@ -7507,6 +7515,10 @@ msgstr "「Close」ボタンを使用して、成行注文またはTWAP注文で
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Substack"
 msgstr "GMX Substack"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "すべて削除"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
@@ -9098,6 +9110,7 @@ msgstr "すべての取引で、より多くを手元に残す"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9870,6 +9883,10 @@ msgstr "その他の資産を非表示にする"
 msgid "Swap or bridge {tokenSymbol}."
 msgstr "{tokenSymbol}をスワップまたはブリッジしてください。"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "最初の取引待ち、{actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
@@ -10097,6 +10114,10 @@ msgstr "ウォレットに手数料分の{walletGasTokenSymbol}が不足して�
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "コピー"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "あなたの代わりに取引するボットやアプリのセッションも削除されます。再度承認するまで動作しなくなります。"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -12301,10 +12322,6 @@ msgstr "Nonce:"
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} 証拠金入金: {amountText}（{indexTokenText} {longShortText}）"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {0}, {actionsText}"
-msgstr "{0}まで有効、{actionsText}"
-
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "決済時に受け取る価格です。上限が適用された価格への影響を反映しています。<0>詳細を見る</0>。"
@@ -12517,6 +12534,10 @@ msgstr "このプログラムはあなたに合っていますか？"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "獲得"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "{expiryDate}に期限切れ"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
