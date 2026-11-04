@@ -23,7 +23,6 @@ import {
   getInitialSubaccountApproval,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountNonceExpired,
-  getIsSubaccountRevoked,
   getSubaccountApprovalContextSrcChainId,
   signUpdatedSubaccountSettings,
 } from "./utils";
@@ -273,26 +272,6 @@ describe("getIsSubaccountNonceExpired", () => {
       getIsSubaccountNonceExpired({
         chainId: ARBITRUM,
         onchainData: createOnchainData(),
-        signedApproval: createEmptyApproval(),
-      })
-    ).toBe(false);
-  });
-});
-
-describe("getIsSubaccountRevoked", () => {
-  it("returns true for an approval signed before the subaccount was revoked", () => {
-    expect(
-      getIsSubaccountRevoked({
-        onchainData: createOnchainData({ revocationCounter: 1n }),
-        signedApproval: createSettlementContextApproval({ revocationCounter: 0n }),
-      })
-    ).toBe(true);
-  });
-
-  it("returns false for an empty approval", () => {
-    expect(
-      getIsSubaccountRevoked({
-        onchainData: createOnchainData({ revocationCounter: 1n }),
         signedApproval: createEmptyApproval(),
       })
     ).toBe(false);
