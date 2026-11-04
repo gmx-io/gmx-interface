@@ -98,7 +98,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -522,9 +522,7 @@ export function usePositionEditorButtonState(
           <TooltipAction onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
           </TooltipAction>
-          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
         </TooltipContent>
       );
     }

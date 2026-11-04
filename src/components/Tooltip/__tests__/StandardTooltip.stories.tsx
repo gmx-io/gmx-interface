@@ -3,7 +3,7 @@ import { useState } from "react";
 import Modal from "components/Modal/Modal";
 
 import StandardTooltip from "../StandardTooltip";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "../TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "../TooltipBlocks";
 import { TooltipGroup } from "../TooltipGroup";
 
 const LONG_TEXT =
@@ -40,7 +40,7 @@ export function LinkActionStory() {
           <TooltipContent>
             <TooltipText>Selectable tooltip text</TooltipText>
             <TooltipAction onClick={() => setClicks((c) => c + 1)}>Set max leverage</TooltipAction>
-            <TooltipLink href="https://docs.gmx.io/">Read more</TooltipLink>
+            <TooltipReadMore href="https://docs.gmx.io/" />
           </TooltipContent>
         }
       />
@@ -222,7 +222,7 @@ export function TriggerInsideButtonStory() {
           content={
             <TooltipContent>
               <TooltipText>Size of the position</TooltipText>
-              <TooltipLink href="https://docs.gmx.io/">Read more</TooltipLink>
+              <TooltipReadMore href="https://docs.gmx.io/" />
             </TooltipContent>
           }
         />

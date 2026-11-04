@@ -10,7 +10,7 @@ import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
@@ -61,9 +61,7 @@ export function PositionSellerPriceImpactFeesRow() {
                 <TooltipText>
                   <Trans>Price impact from closing. Positive values benefit you.</Trans>
                 </TooltipText>
-                <TooltipLink href={DOCS_LINKS.priceImpact}>
-                  <Trans>Read more</Trans>
-                </TooltipLink>
+                <TooltipReadMore href={DOCS_LINKS.priceImpact} />
               </TooltipContent>
             }
           />{" "}

@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import type { ReactNode } from "react";
 
@@ -116,9 +117,27 @@ export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[];
 export function TooltipAction({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   return (
     <div>
-      <button type="button" className="link-underline text-left hover:text-blue-strong" onClick={onClick}>
+      <button
+        type="button"
+        className="link-underline text-left text-textIcon-secondary hover:text-textIcon-primary"
+        onClick={onClick}
+      >
         {children}
       </button>
+    </div>
+  );
+}
+
+/**
+ * "Read more" right under the text it explains: no underline and an arrow that never wraps onto a line alone.
+ */
+export function TooltipReadMore({ href }: { href: string }) {
+  return (
+    <div>
+      <ExternalLink href={href} className="whitespace-nowrap !no-underline">
+        <Trans>Read more</Trans>
+        {"\u00a0\u2197"}
+      </ExternalLink>
     </div>
   );
 }

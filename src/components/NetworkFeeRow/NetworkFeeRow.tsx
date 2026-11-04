@@ -25,8 +25,9 @@ import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
+  TooltipDivider,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
 } from "components/Tooltip/TooltipBlocks";
@@ -227,11 +228,10 @@ export function NetworkFeeRow({
             <TooltipFootnote>
               <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.</Trans>
             </TooltipFootnote>
+            <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/#network-fee" />
+            {(sourceExplanation || additionalOrdersMsg) && <TooltipDivider />}
             {sourceExplanation && <TooltipFootnote>{sourceExplanation}</TooltipFootnote>}
             {additionalOrdersMsg && <TooltipFootnote>{additionalOrdersMsg}</TooltipFootnote>}
-            <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
-              <Trans>Read more</Trans>
-            </TooltipLink>
           </TooltipContent>
         }
       />

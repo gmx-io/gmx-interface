@@ -113,7 +113,7 @@ import { mustNeverExist } from "sdk/utils/types";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -430,9 +430,7 @@ export function useTradeboxButtonState({
                 )}
               </TooltipText>
               {setMaxLeverageAction}
-              <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-                <Trans>Read more</Trans>
-              </TooltipLink>
+              <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
             </TooltipContent>
           );
 

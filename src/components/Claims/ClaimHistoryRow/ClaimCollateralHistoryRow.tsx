@@ -1,6 +1,7 @@
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import cx from "classnames";
 import React, { useCallback, useMemo } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -102,11 +103,14 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
   return (
     <TooltipContent>
       {claimAction.claimItems.map(
-        ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
+        ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }, index) => {
           const indexName = getMarketIndexName(market);
           const poolName = getMarketPoolName(market);
           return (
-            <div key={market.indexTokenAddress} className="flex flex-col gap-4">
+            <div
+              key={market.indexTokenAddress}
+              className={cx("flex flex-col gap-4", index > 0 && "border-t border-fill-accent pt-8")}
+            >
               <TooltipTitle>
                 {indexName}
                 <span className="subtext">[{poolName}]</span>

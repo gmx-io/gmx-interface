@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipTitledText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipTitledText } from "components/Tooltip/TooltipBlocks";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 
@@ -61,9 +61,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType }: Pro
             time.
           </Trans>
         </TooltipTitledText>
-        <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/">
-          <Trans>Read more</Trans>
-        </TooltipLink>
+        <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/" />
       </TooltipContent>
     ),
     [TradeType.Short]: (
@@ -93,9 +91,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType }: Pro
             specified time.
           </Trans>
         </TooltipTitledText>
-        <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/">
-          <Trans>Read more</Trans>
-        </TooltipLink>
+        <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/" />
       </TooltipContent>
     ),
     [TradeType.Swap]: (

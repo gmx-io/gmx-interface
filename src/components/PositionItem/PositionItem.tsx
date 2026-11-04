@@ -47,7 +47,7 @@ import {
   TooltipContent,
   TooltipDivider,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipText,
@@ -485,9 +485,7 @@ export function PositionItem(p: Props) {
                 />
               }
             />
-            <TooltipLink href={OFF_HOURS_DOCS_URL}>
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href={OFF_HOURS_DOCS_URL} />
           </>
         )}
       </TooltipContent>

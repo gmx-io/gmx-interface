@@ -35,7 +35,7 @@ import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubac
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
@@ -320,9 +320,7 @@ export function TradingSettings({
                   Slippage differs from price impact, which is based on open interest imbalances.
                 </Trans>
               </TooltipText>
-              <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
-                <Trans>Read more</Trans>
-              </TooltipLink>
+              <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/#slippage" />
             </TooltipContent>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
@@ -351,9 +349,7 @@ export function TradingSettings({
                 <TooltipText>
                   <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>
                 </TooltipText>
-                <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
-                  <Trans>Read more</Trans>
-                </TooltipLink>
+                <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/#network-fee" />
               </TooltipContent>
             }
             defaultValue={30}
@@ -388,9 +384,7 @@ export function TradingSettings({
                     TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
                   </Trans>
                 </TooltipText>
-                <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
-                  <Trans>Read more</Trans>
-                </TooltipLink>
+                <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl" />
               </TooltipContent>
             }
             label={t`Auto-cancel TP/SL`}

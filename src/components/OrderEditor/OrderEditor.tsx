@@ -143,7 +143,13 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipRow, TooltipText } from "components/Tooltip/TooltipBlocks";
+import {
+  TooltipAction,
+  TooltipContent,
+  TooltipReadMore,
+  TooltipRow,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -752,9 +758,7 @@ export function OrderEditor(p: Props) {
               )}
             </TooltipText>
             {setMaxLeverageAction}
-            <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
           </TooltipContent>
         ),
         disabled: true,

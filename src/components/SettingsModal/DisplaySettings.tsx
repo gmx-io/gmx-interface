@@ -8,7 +8,7 @@ import Button from "components/Button/Button";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CheckIcon from "img/ic_checked.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -133,9 +133,7 @@ export function DisplaySettings() {
                       orders) in execution details.
                     </Trans>
                   </TooltipText>
-                  <TooltipLink href={DOCS_LINKS.priceImpact}>
-                    <Trans>Read more</Trans>
-                  </TooltipLink>
+                  <TooltipReadMore href={DOCS_LINKS.priceImpact} />
                 </TooltipContent>
               }
             />

@@ -9,7 +9,7 @@ import { formatPercentage } from "lib/numbers";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export type Props = {
   priceImpactWarningState: WarningState;
@@ -54,9 +54,7 @@ export function HighPriceImpactOrFeesWarningCard({
                 collateral. Consider reducing leverage.
               </Trans>
             </TooltipText>
-            <TooltipLink href={DOCS_LINKS.priceImpact}>
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href={DOCS_LINKS.priceImpact} />
           </TooltipContent>
         ) : undefined,
       });

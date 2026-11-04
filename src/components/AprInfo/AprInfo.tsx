@@ -15,7 +15,7 @@ import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
 } from "components/Tooltip/TooltipBlocks";
@@ -83,9 +83,7 @@ function DefaultAprInfo({
             <TooltipFootnote>
               <Trans>Bonus APR paid as {airdropTokenTitle} airdrops.</Trans>
             </TooltipFootnote>
-            <TooltipLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)} />
           </>
         )}
       </TooltipContent>

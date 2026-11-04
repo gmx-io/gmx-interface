@@ -6,7 +6,7 @@ import { formatPercentage } from "lib/numbers";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function AllowedSlippageRow({
   allowedSlippage,
@@ -38,9 +38,7 @@ export function AllowedSlippageRow({
                     Slippage differs from price impact, which is based on open interest imbalances.
                   </Trans>
                 </TooltipText>
-                <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
-                  <Trans>Read more</Trans>
-                </TooltipLink>
+                <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/#slippage" />
               </TooltipContent>
             );
           }}

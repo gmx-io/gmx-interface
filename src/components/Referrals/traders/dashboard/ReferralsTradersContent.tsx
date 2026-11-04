@@ -38,7 +38,7 @@ import { REFERRALS_TIME_RANGE_INFOS, TimeRangeFilter } from "components/Referral
 import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
@@ -315,9 +315,7 @@ function BalancerProgramTooltipContent() {
           can be claimed anytime.
         </Trans>
       </TooltipText>
-      <TooltipLink href={BALANCER_PROGRAM_URL}>
-        <Trans>Read more</Trans>
-      </TooltipLink>
+      <TooltipReadMore href={BALANCER_PROGRAM_URL} />
     </TooltipContent>
   );
 }
