@@ -1251,10 +1251,6 @@ msgstr "귀하가 추천한 트레이더의 거래량"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "언제든지 언스테이킹하거나 출금할 수 있습니까?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "추천인 코드 {userReferralCodeString}이(가) 활성화되었습니다. 개설하거나 종료하는 모든 포지션에 할인된 수수료율이 자동으로 적용되므로 추가 단계가 필요하지 않습니다."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1449,6 +1445,10 @@ msgstr "실행 수수료가 현재 네트워크 비용에 비해 너무 낮습�
 msgid "Tiers"
 msgstr "등급"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "추천인 코드 {activatedReferralCodeLabel}이(가) 활성화되었습니다. 개설하거나 종료하는 모든 포지션에 할인된 수수료율이 자동으로 적용되므로 추가 단계가 필요하지 않습니다."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "스왑 수수료 계수 (음의 PI)"
@@ -1502,10 +1502,6 @@ msgstr "트랜잭션:"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "일치하는 시장이 없습니다"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "{tokenSymbol} 언스테이킹"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -3250,6 +3246,10 @@ msgstr "RPC 엔드포인트 디버그 ({0})"
 msgid "Driven by our community"
 msgstr "커뮤니티가 이끌어 갑니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "GMX 및 esGMX 언스테이킹"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "시프팅은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -4079,6 +4079,10 @@ msgstr "데이터 유형"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "스왑 가격 영향이 높습니다"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "GMX 또는 esGMX 언스테이킹에는 180일이 걸립니다. 언스테이킹을 요청하고 대기 기간이 끝나면 해당 수량을 GMX 또는 esGMX로 출금할 수 있습니다. 요청은 언제든지 취소할 수 있습니다. 요청으로 스테이킹 잔액이 과거 최대 스테이킹 수량의 80% 미만이 되면 누적된 모든 스테이킹 파워가 0으로 초기화되며, GMX가 $90에 도달할 때 트레저리에서 분배받을 지분을 잃게 됩니다. 요청을 취소해도 스테이킹 파워는 복구되지 않습니다. GLV 및 GM 토큰은 언제든지 매도할 수 있습니다. 드물게 오픈 포지션이 유동성을 사용하고 있으면 해당 포지션이 종료되는 즉시 출금할 수 있습니다."
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -8422,10 +8426,6 @@ msgstr "먼저 지갑에서 USDC를 USDG로 변환한 다음 구매를 확인합
 msgid "No opportunities match your holdings"
 msgstr "보유 자산과 일치하는 기회가 없습니다"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "예. GMX는 언제든지 스테이킹을 해제할 수 있고 GLV/GM 토큰은 언제든지 매도할 수 있습니다. 프로토콜은 토큰을 잠그지 않습니다. 단, 스테이킹된 GMX 잔액이 과거 최대 스테이킹 수량의 80% 미만으로 감소하면 누적된 모든 스테이킹 파워가 0으로 초기화되며, GMX가 $90에 도달할 때 트레저리에서 분배받을 지분을 잃게 됩니다. GLV/GM의 경우 드물게 유동성이 진행 중인 거래에 사용되고 있으면 해당 포지션이 종료되는 즉시 출금할 수 있습니다."
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend your tokens or borrow against them"
@@ -9112,6 +9112,10 @@ msgstr "가치가 낮은 자산 숨기기"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (공급량)"
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol}이(가) 수수료용으로 승인되지 않았습니다. 이 주문의 네트워크 수수료는 {toSymbol}(으)로 지불됩니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"

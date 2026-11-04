@@ -60,7 +60,6 @@ test("5.35 close destination selector switches the margin destination without ch
   test.skip(chainId !== 42161, "The GMX Account destination selector exists only on Arbitrum");
   accountState.positions = [accountState.data.position(true)];
   await accountState.connect(page);
-  // A choice made before the default destination is stored gets reset when it is stored.
   const destinationKey = JSON.stringify([chainId, accountState.address, "collateral-close-destination"]);
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), destinationKey)).toBe("false");
   for (const keepDefault of [true, false]) {

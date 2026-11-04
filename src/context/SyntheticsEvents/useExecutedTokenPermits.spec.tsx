@@ -16,7 +16,10 @@ const mocks = vi.hoisted(() => ({
 vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
   useTokenPermitsContext: () => ({ removeTokenPermits: mocks.removeTokenPermits, accountType: mocks.accountType }),
 }));
-vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
+vi.mock("lib/metrics/tokenPermitMetrics", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  sendTokenPermitMetric: mocks.sendTokenPermitMetric,
+}));
 
 const ARBITRUM = 42161;
 const AVALANCHE = 43114;
@@ -75,6 +78,7 @@ describe("useExecutedTokenPermits", () => {
     });
 
     expect(mocks.removeTokenPermits.mock.calls).toEqual([[[usdcPermit, wethPermit], ARBITRUM]]);
+    expect(mocks.sendTokenPermitMetric.mock.calls.map(([params]) => params.permitId)).toEqual(["1", "3"]);
   });
 
   it("forgets the permits of tasks that succeed together in one removal", () => {

@@ -1251,10 +1251,6 @@ msgstr "Handelsvolumen Ihrer geworbenen Trader"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Kann ich jederzeit entstaken oder abheben?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Sie haben den Empfehlungscode {userReferralCodeString} aktiviert. Ihr ermäßigter Gebührensatz gilt automatisch für jede Position, die Sie öffnen oder schließen — es sind keine weiteren Schritte erforderlich."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1449,6 +1445,10 @@ msgstr "Die Ausführungsgebühr ist für die aktuellen Netzwerkkosten zu niedrig
 msgid "Tiers"
 msgstr "Stufen"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Sie haben den Empfehlungscode {activatedReferralCodeLabel} aktiviert. Ihr ermäßigter Gebührensatz gilt automatisch für jede Position, die Sie öffnen oder schließen — es sind keine weiteren Schritte erforderlich."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Tauschgebührfaktor (negativer PI)"
@@ -1502,10 +1502,6 @@ msgstr "Transaktion:"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "Keine passenden Märkte"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "{tokenSymbol} entstaken"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -3250,6 +3246,10 @@ msgstr "Debug-RPC-Endpunkte ({0})"
 msgid "Driven by our community"
 msgstr "Angetrieben durch unsere Community"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "GMX und esGMX entstaken"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting ist nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
@@ -4079,6 +4079,10 @@ msgstr "DATENTYP"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap price impact is high"
 msgstr "Preiseinfluss beim Tauschen ist hoch"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "Das Entstaken von GMX oder esGMX dauert 180 Tage. Sie beantragen das Entstaken und heben den Betrag nach Ablauf der Wartezeit als GMX oder esGMX ab. Sie können eine Anfrage jederzeit abbrechen. Wenn eine Anfrage Ihr gestaktes Guthaben unter 80 % Ihres bisher höchsten gestakten Betrags senkt, wird die gesamte angesammelte Staking Power auf null zurückgesetzt und Sie verlieren Ihren Anteil an der Ausschüttung aus der Treasury bei einem GMX Kurs von 90 $. Ein Abbruch der Anfrage stellt die Staking Power nicht wieder her. GLV und GM Token können jederzeit verkauft werden. In seltenen Fällen, in denen offene Positionen Ihre Liquidität nutzen, können Sie sie abheben, sobald diese Positionen geschlossen sind."
 
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
@@ -8422,10 +8426,6 @@ msgstr "Zuerst wandeln Sie USDC in Ihrem Wallet in USDG um, dann bestätigen Sie
 msgid "No opportunities match your holdings"
 msgstr "Keine Möglichkeiten entsprechen Ihren Beständen"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Ja, das Staking von GMX kann jederzeit beendet werden und GLV/GM Token können jederzeit verkauft werden — das Protokoll sperrt Ihre Token nie. Wenn Ihr gestaktes GMX Guthaben jedoch unter 80 % Ihres bisher höchsten gestakten Betrags fällt, wird die gesamte angesammelte Staking Power auf null zurückgesetzt und Sie verlieren Ihren Anteil an der Ausschüttung aus der Treasury bei einem GMX Kurs von 90 $. Bei GLV/GM kann Ihre Liquidität in seltenen Fällen für aktive Trades verwendet werden. Sie können sie abheben, sobald diese Positionen geschlossen sind."
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend your tokens or borrow against them"
@@ -9112,6 +9112,10 @@ msgstr "Vermögenswerte mit geringem Wert ausblenden"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
 msgstr "TVL (Umlaufmenge)"
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} ist nicht für Gebühren freigegeben. Diese Order zahlt ihre Netzwerkgebühr in {toSymbol}."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"

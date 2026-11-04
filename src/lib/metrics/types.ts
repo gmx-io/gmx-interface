@@ -599,6 +599,8 @@ export type TokenPermitEvent = {
     accountType: string | undefined;
     reason?: string;
     flow?: TokenPermitFlow;
+    /** Links the signed, failedCheck and executed events of one permit */
+    permitId?: string;
   };
 };
 
@@ -733,6 +735,8 @@ export type SignatureProducedEvent = {
   data: {
     /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
     signaturePurpose: string;
+    /** `local` is the One-Click session key or a fee-simulation key: no wallet prompt */
+    signerSource: "wallet" | "local";
     signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
     signatureBytes: number | undefined;
     ecdsaV: number | undefined;
@@ -797,6 +801,42 @@ export type StakingActionEvent = {
     action: "stake" | "unstake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
     tokenSymbol: string | undefined;
     outcome: "sent" | "rejected" | "failed";
+    chainId: number;
+  };
+};
+
+export type SubaccountActivationEvent = {
+  event: "subaccount.activation";
+  isError: false;
+  data: {
+    outcome: "activated" | "rejected" | "failed";
+    failedStep: "keyGeneration" | "approval" | undefined;
+    isNewKey: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountSettingsUpdateEvent = {
+  event: "subaccount.settingsUpdate";
+  isError: false;
+  data: {
+    outcome: "updated" | "rejected" | "failed";
+    wasExpired: boolean;
+    wasActionsExceeded: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountRemovalEvent = {
+  event: "subaccount.removal";
+  isError: false;
+  data: {
+    /** `none` when nothing was left to remove on chain; unset when it failed before a method was chosen */
+    method: "none" | "signature" | "walletTxn" | undefined;
+    /** `unknown`: the relay didn't confirm, the next attempt finds out on chain */
+    outcome: "removed" | "rejected" | "failed" | "unknown";
     chainId: number;
   };
 };
