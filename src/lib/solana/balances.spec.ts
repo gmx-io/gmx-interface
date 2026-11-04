@@ -6,7 +6,7 @@ import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import { getRpcProviders } from "config/rpc";
 
-import { fetchSolanaBalances } from "./balances";
+import { decodeSolanaTokenBalance, fetchSolanaBalances } from "./balances";
 import { fetchSolanaAccounts, getSolanaRpcTracker } from "./rpc";
 
 const nativeAbort = vi.hoisted(() => {
@@ -21,7 +21,8 @@ const nativeAbort = vi.hoisted(() => {
 
 const owner = SOLANA_SYSTEM_PROGRAM_ID;
 const amount = 9007199254740993n;
-const token = GMSOL_TOKENS.find((token) => token.tokenProgram === SOLANA_TOKEN_PROGRAM_ID)!;
+const walletTokens = GMSOL_TOKENS.filter((token) => !token.isSynthetic);
+const token = walletTokens[0];
 const token2022 = GMSOL_TOKENS.find((token) => token.tokenProgram !== SOLANA_TOKEN_PROGRAM_ID)!;
 
 function tokenAccount(mint = token.address, program: string = token.tokenProgram, size = 165) {
@@ -40,7 +41,7 @@ function tokenAccount(mint = token.address, program: string = token.tokenProgram
 
 function mockRpc(account = tokenAccount(), mode?: string) {
   const calls: string[][] = [];
-  const tokenIndex = account.program === token.tokenProgram ? 1 : GMSOL_TOKENS.indexOf(token2022) + 1;
+  const tokenIndex = 1;
   const native = {
     owner: mode === "nativeOwner" ? token.tokenProgram : owner,
     executable: false,
@@ -86,44 +87,61 @@ afterEach(() => {
 describe("configured Solana balances", () => {
   it.each([
     tokenAccount(),
-    tokenAccount(token2022.address, token2022.tokenProgram, 170),
     { ...tokenAccount(), bytes: tokenAccount().bytes.map((byte, i) => (i >= 64 && i < 72 ? 0 : byte)) },
-  ])("keeps raw precision, native SOL and missing ATAs with both token programs", async (account) => {
+  ])("keeps raw precision, native SOL and non-synthetic configured ATAs", async (account) => {
     const calls = mockRpc(account);
     const balances = await fetchSolanaBalances(owner);
     expect(balances[GMSOL_NATIVE_TOKEN.address]).toBe(1234n);
-    expect(balances[account.program === token.tokenProgram ? token.address : token2022.address]).toBe(
-      new DataView(account.bytes.buffer).getBigUint64(64, true)
-    );
+    expect(balances[token.address]).toBe(new DataView(account.bytes.buffer).getBigUint64(64, true));
     expect(Object.values(balances).filter((balance) => balance === 0n)).toHaveLength(
-      GMSOL_TOKENS.length - (account.bytes[64] ? 1 : 0)
+      walletTokens.length - (account.bytes[64] ? 1 : 0)
     );
     expect(calls.flat()[0]).toBe(owner);
-    expect(calls.flat()[1]).toBe("HsaAttyEh3fnaPoVnuogmmoAys5gsTEnHvASxeFKhXBa");
-    expect(calls.flat()[GMSOL_TOKENS.indexOf(token2022) + 1]).toBe("A3k6WpTFtWMtFfiNGbAKi3Y3WEELwqMXK6bMLaUaH4j5");
-    expect(new Set(calls.flat()).size).toBe(GMSOL_TOKENS.length + 1);
+    expect(calls.flat()[1]).toBe("aqxoAhCwpy3oB1BpNw9hL1HdLYLgPpbPjzxDrrQj3Fs");
+    expect(new Set(calls.flat()).size).toBe(walletTokens.length + 1);
+    expect(calls.map((batch) => batch.length)).toEqual([walletTokens.length + 1]);
+    expect(Object.keys(balances)).toEqual([GMSOL_NATIVE_TOKEN.address, ...walletTokens.map((token) => token.address)]);
+    expect(GMSOL_TOKENS.filter((token) => token.isSynthetic).every((token) => !(token.address in balances))).toBe(true);
   });
 
-  it.each(["mint", "owner", "program", "state", "size", "extension", "rpc", "nativeOwner"])(
+  it.each(["mint", "owner", "program", "state", "size", "rpc", "nativeOwner"])(
     "rejects invalid %s instead of reporting a partial snapshot",
     async (failure) => {
-      const account =
-        failure === "extension" ? tokenAccount(token2022.address, token2022.tokenProgram, 166) : tokenAccount();
+      const account = tokenAccount();
       if (failure === "mint") account.bytes.fill(0, 0, 32);
       if (failure === "owner") account.bytes.fill(1, 32, 64);
       if (failure === "program") account.program = SOLANA_SYSTEM_PROGRAM_ID;
       if (failure === "state") account.bytes[108] = 0;
       if (failure === "size") account.bytes = account.bytes.slice(0, 164);
-      if (failure === "extension") account.bytes[165] = 1;
       mockRpc(account, failure);
       await expect(fetchSolanaBalances(owner)).rejects.toThrow();
     }
   );
 
+  it.each(["valid", "account-type", "header", "length"])("validates Token-2022 extensions: %s", (mode) => {
+    const fixture = tokenAccount(token2022.address, token2022.tokenProgram, mode === "header" ? 168 : 170);
+    if (mode === "account-type") fixture.bytes[165] = 1;
+    if (mode === "header" || mode === "length") fixture.bytes[166] = 1;
+    if (mode === "length") fixture.bytes[168] = 1;
+    const decode = () =>
+      decodeSolanaTokenBalance({
+        account: {
+          owner: address(fixture.program),
+          executable: false,
+          data: [getBase64Decoder().decode(fixture.bytes), "base64"],
+        },
+        token: token2022,
+        owner,
+        ata: "A3k6WpTFtWMtFfiNGbAKi3Y3WEELwqMXK6bMLaUaH4j5",
+      });
+    if (mode === "valid") expect(decode()).toBe(amount);
+    else expect(decode).toThrow();
+  });
+
   it("reports zero for an unfunded owner and absent ATAs", async () => {
     mockRpc(tokenAccount(), "missing");
     const balances = await fetchSolanaBalances(owner);
-    expect(Object.keys(balances)).toHaveLength(GMSOL_TOKENS.length + 1);
+    expect(Object.keys(balances)).toHaveLength(walletTokens.length + 1);
     expect(Object.values(balances).every((balance) => balance === 0n)).toBe(true);
   });
 

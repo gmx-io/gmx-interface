@@ -13643,6 +13643,10 @@ msgstr "TIMEKEY"
 msgid "Min position size"
 msgstr "Min position size"
 
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr "SLOT"
+
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"
 msgstr "GMX detailed CSV"
