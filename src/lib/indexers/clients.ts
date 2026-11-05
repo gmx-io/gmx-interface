@@ -1,5 +1,6 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 
 import { createClient } from "./utils";
 
@@ -45,6 +46,11 @@ export function getSyntheticsGraphClient(chainId: number) {
 }
 
 export function getSubsquidGraphClient(chainId: number) {
+  // The client was built with the real URL. chainId stays Arbitrum on Solana, so refuse it here.
+  if (getIsSolanaNetworkSelected()) {
+    return null;
+  }
+
   if (chainId === ARBITRUM) {
     return arbitrumSubsquidClient;
   }

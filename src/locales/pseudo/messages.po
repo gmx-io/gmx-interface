@@ -865,6 +865,10 @@ msgstr ""
 msgid "Order execution price"
 msgstr ""
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
+msgstr ""
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr ""
@@ -1626,7 +1630,6 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr ""
 
@@ -3297,6 +3300,10 @@ msgstr ""
 msgid "{txnTypeText} {0} order for"
 msgstr ""
 
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -4726,6 +4733,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Solana service disruption"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -7297,7 +7308,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr ""
 
@@ -8078,6 +8088,7 @@ msgstr ""
 msgid "ParaSwap"
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -9509,6 +9520,10 @@ msgstr ""
 msgid "Express transaction data is still loading. Retry in a few seconds"
 msgstr ""
 
+#: src/pages/SolanaNetwork/SolanaNetwork.tsx
+msgid "Solana market data is unavailable right now. Prices and positions will appear once it is back."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr ""
@@ -9642,10 +9657,6 @@ msgstr ""
 
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
-msgstr ""
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -11884,6 +11895,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
 msgstr ""
 
 #: src/components/PositionSeller/MarginDestinationDialog.tsx

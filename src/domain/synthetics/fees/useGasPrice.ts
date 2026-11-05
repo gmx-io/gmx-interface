@@ -1,6 +1,7 @@
 import useSWR from "swr";
 
 import { ContractsChainId, getExecutionFeeConfig } from "config/chains";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
 import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
@@ -15,7 +16,7 @@ import {
 export function useGasPrice(chainId: number | undefined) {
   const settings = useSettings();
 
-  const queryCondition = chainId !== undefined;
+  const queryCondition = chainId !== undefined && !getIsSolanaNetworkSelected();
   const { data: gasPrice } = useSWR<bigint | undefined>(
     queryCondition ? ["gasPrice", chainId, settings.executionFeeBufferBps] : null,
     {

@@ -22,6 +22,7 @@ import { RpcPurpose } from "config/rpc";
 import { SECONDS_IN_DAY } from "lib/dates";
 import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
 import { getWsUrl } from "lib/rpc";
+import { fetchEvmRpc } from "lib/rpc/fetchRpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
@@ -112,8 +113,9 @@ function readPersistedWagmiState(): State | undefined {
 const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
-const HTTP_TRANSPORT_OPTIONS =
-  import.meta.env.MODE === "test"
+const HTTP_TRANSPORT_OPTIONS = {
+  fetchFn: fetchEvmRpc,
+  ...(import.meta.env.MODE === "test"
     ? {
         fetchOptions: {
           headers: {
@@ -121,7 +123,8 @@ const HTTP_TRANSPORT_OPTIONS =
           },
         },
       }
-    : undefined;
+    : {}),
+};
 
 export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Transport {
   const key = `chainId:${chainId}:purpose:${purpose}`;
