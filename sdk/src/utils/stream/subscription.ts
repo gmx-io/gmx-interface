@@ -19,7 +19,6 @@ export function createChannelSubscription<T>(
       meta = {
         serverTs: frame.serverTs,
         receivedAt: frame.receivedAt,
-        byteLength: frame.byteLength,
         originTs: frame.originTs,
       };
       for (const listener of listeners) {

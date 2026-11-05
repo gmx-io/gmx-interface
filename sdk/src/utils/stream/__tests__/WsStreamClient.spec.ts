@@ -145,7 +145,6 @@ describe("WsStreamClient messages", () => {
         data: { p: 1 },
         serverTs: 1000,
         originTs: 900,
-        byteLength: expect.any(Number),
         receivedAt: expect.any(Number),
       })
     );

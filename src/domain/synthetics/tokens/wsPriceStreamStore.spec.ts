@@ -103,7 +103,7 @@ describe("getWsPriceStore", () => {
     const onChange = vi.fn();
     store.subscribe(onChange);
     const prices = { "0xabc": { minPrice: 1n, maxPrice: 2n } };
-    const meta = { serverTs: 2, originTs: 1, receivedAt: 3, byteLength: 4 };
+    const meta = { serverTs: 2, originTs: 1, receivedAt: 3 };
 
     subscriptions[0].pushFrame(prices, meta);
     expect(onChange).toHaveBeenCalledTimes(1);

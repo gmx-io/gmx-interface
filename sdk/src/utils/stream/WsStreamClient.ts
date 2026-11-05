@@ -222,7 +222,6 @@ export class WsStreamClient {
       serverTs: frame.serverTs,
       originTs: frame.originTs,
       receivedAt: Date.now(),
-      byteLength: text.length,
     };
     this.lastFrameByChannel.set(frame.ch, payload);
     this.refusalByChannel.delete(frame.ch);

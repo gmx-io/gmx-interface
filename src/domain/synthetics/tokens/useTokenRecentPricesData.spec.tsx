@@ -59,7 +59,7 @@ function createFakeStore() {
     push(prices: typeof snapshot) {
       const now = Date.now();
       snapshot = prices;
-      meta = { serverTs: now, originTs: now, receivedAt: now, byteLength: 0 };
+      meta = { serverTs: now, originTs: now, receivedAt: now };
       notify();
     },
     disconnect() {
@@ -110,7 +110,7 @@ describe("getWsFrameExpiresAt", () => {
     { name: "a frame whose origin is ahead of the server clock", serverTs: 1_000, originTs: 2_000, expiresAt: 15_000 },
     { name: "a frame without an origin", serverTs: 1_000, originTs: undefined, expiresAt: 0 },
   ])("$name expires at $expiresAt", ({ serverTs, originTs, expiresAt }) => {
-    expect(getWsFrameExpiresAt({ serverTs, originTs, receivedAt: 5_000, byteLength: 0 })).toBe(expiresAt);
+    expect(getWsFrameExpiresAt({ serverTs, originTs, receivedAt: 5_000 })).toBe(expiresAt);
   });
 });
 
