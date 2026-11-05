@@ -92,11 +92,11 @@ function EvmAnnouncementToasts({
     })),
     ...(closingPoolsLp.notice
       ? [
-          {
-            key: "closing-pools-lp",
-            node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
-          },
-        ]
+        {
+          key: "closing-pools-lp",
+          node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
+        },
+      ]
       : []),
   ];
 
@@ -135,9 +135,9 @@ export function WhatsNewToastContainer() {
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
   const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
     ? {
-        key: "app-update",
-        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
-      }
+      key: "app-update",
+      node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
+    }
     : undefined;
   const uiFlagEvents = useUiFlagEvents();
   const solanaMessages: TopRightMessage[] = [
