@@ -46,6 +46,8 @@ export async function callContract(
     bestNonce?: number;
     setPendingTxns?: SetPendingTransactions;
     pendingTransactionData?: PendingTransactionData;
+    /** Runs once the transaction is mined successfully; needs `setPendingTxns` */
+    onPendingTxnSuccess?: () => void;
     metricId?: OrderMetricId;
   }
 ) {
@@ -181,6 +183,7 @@ export async function callContract(
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
         data: opts.pendingTransactionData,
+        onSuccess: opts.onPendingTxnSuccess,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

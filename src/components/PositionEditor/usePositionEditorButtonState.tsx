@@ -37,6 +37,7 @@ import {
   selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -144,6 +145,7 @@ export function usePositionEditorButtonState(
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { isClassicEnabled: isClassicTokenPermitsEnabled, classicTokenPermits } = useTokenPermitsContext();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const depositMode = useSelector(selectPositionEditorDepositMode);
   const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
@@ -359,7 +361,7 @@ export function usePositionEditorButtonState(
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams) || isClassicTokenPermitsEnabled,
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -646,6 +648,7 @@ export function usePositionEditorButtonState(
       provider,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      tokenPermits: classicTokenPermits,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined

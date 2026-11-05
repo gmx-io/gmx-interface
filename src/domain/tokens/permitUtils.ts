@@ -114,7 +114,7 @@ export function getPermitsExpiryTimeoutMs(permits: SignedTokenPermit[], now: num
 }
 
 /**
- * Each permit costs relay gas and only Router permits are accepted, so a relay call carries just
+ * Each permit costs gas and only Router permits are accepted, so a relay call or wallet transaction carries just
  * the permits for tokens it spends. GMX Account routers reject permits entirely.
  */
 export function getRelayTokenPermits({

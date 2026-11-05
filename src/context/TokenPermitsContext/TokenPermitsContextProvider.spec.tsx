@@ -3,7 +3,11 @@ import { SWRConfig } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
-import { IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, type UiFlags } from "domain/synthetics/uiFlags/uiFlags";
+import {
+  IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
+  type UiFlags,
+} from "domain/synthetics/uiFlags/uiFlags";
 import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
@@ -127,6 +131,30 @@ describe("TokenPermitsContextProvider", () => {
     expect(state.tokenPermits.map((p) => p.token)).toEqual([USDC]);
     expect(state.getIsPermitAvailable(USDC)).toBe(true);
     expect(state.getIsPermitAvailable(LINK)).toBe(false);
+  });
+
+  it.each([
+    { name: "only the account type's flag is on", classicFlag: false, isClassicEnabled: false },
+    { name: "the Classic flag is on too", classicFlag: true, isClassicEnabled: true },
+  ])("offers permits in wallet transactions when $name", async ({ classicFlag, isClassicEnabled }) => {
+    mocks.uiFlags = {
+      ...flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true),
+      ...flag(IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG, classicFlag),
+    };
+    storePermits([permit(USDC)]);
+
+    await setup();
+
+    expect(state.isClassicEnabled).toBe(isClassicEnabled);
+    expect(state.classicTokenPermits.map((p) => p.token)).toEqual(isClassicEnabled ? [USDC] : []);
+  });
+
+  it("keeps permits out of wallet transactions while the account type's flag is off, whatever the Classic flag", async () => {
+    mocks.uiFlags = flag(IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG, true);
+
+    await setup();
+
+    expect(state.isClassicEnabled).toBe(false);
   });
 
   it("sends a token whose permit failed back to approvals without touching other tokens", async () => {

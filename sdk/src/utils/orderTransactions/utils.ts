@@ -19,7 +19,7 @@ import { getByKey } from "utils/objects";
 import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { convertToContractPrice, convertToUsd } from "utils/tokens";
-import { ContractPrice, ERC20Address, TokensData } from "utils/tokens/types";
+import { ContractPrice, ERC20Address, SignedTokenPermit, TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { ExternalSwapQuote } from "utils/trade/types";
 import { getTwapValidFromTime } from "utils/twap";
@@ -892,11 +892,51 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
-export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
+/**
+ * Sets the Router allowance inside the same wallet transaction. ExchangeRouter and GlvRouter share this call, and it
+ * has to come before the first sendTokens, which spends the allowance.
+ */
+export function buildTokenPermitsCall(tokenPermits: SignedTokenPermit[]): ExchangeRouterCall {
+  return {
+    method: "makeExternalCalls",
+    params: [
+      tokenPermits.map((permit) => permit.token),
+      tokenPermits.map((permit) =>
+        encodeFunctionData({
+          abi: abis.ERC20PermitInterface,
+          functionName: "permit",
+          args: [
+            permit.owner as Hex,
+            permit.spender as Hex,
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r as Hex,
+            permit.s as Hex,
+          ],
+        })
+      ),
+      [],
+      [],
+    ],
+  };
+}
+
+export function getBatchOrderMulticallPayload({
+  params,
+  tokenPermits = [],
+}: {
+  params: BatchOrderTxnParams;
+  tokenPermits?: SignedTokenPermit[];
+}) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
   let value = 0n;
+
+  if (tokenPermits.length > 0) {
+    multicall.push(buildTokenPermitsCall(tokenPermits));
+  }
 
   for (const params of createOrderParams) {
     const { multicall: createMulticall, value: createValue } = buildCreateOrderMulticall(params);

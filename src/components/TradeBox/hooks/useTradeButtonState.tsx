@@ -61,6 +61,7 @@ import {
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
@@ -150,6 +151,7 @@ export function useTradeboxButtonState({
   canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
+  const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
 
@@ -233,7 +235,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams) || isClassicTokenPermitsEnabled,
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
