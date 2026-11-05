@@ -166,6 +166,14 @@ describe("getAvailableGasPaymentTokenAddress", () => {
       expected: USDC,
     },
     {
+      name: "keeps the replacement picked for a short fee token",
+      unavailable: usdgUnavailable,
+      balances: { [USDC]: usd(5n), [USDT]: usd(50n) },
+      allowances: allApproved,
+      replacement: USDC,
+      expected: USDC,
+    },
+    {
       name: "skips listed tokens that can't pay either",
       unavailable: { ...usdgUnavailable, [USDT]: "price" as const },
       balances: { [USDC]: usd(5n), [USDT]: usd(50n) },
@@ -179,11 +187,12 @@ describe("getAvailableGasPaymentTokenAddress", () => {
       allowances: allApproved,
       expected: USDG,
     },
-  ])("$name", ({ unavailable, balances, allowances, expected }) => {
+  ])("$name", ({ unavailable, balances, allowances, expected, ...row }) => {
     expect(
       getAvailableGasPaymentTokenAddress({
         chainId: ARBITRUM,
         savedTokenAddress: USDG,
+        replacementTokenAddress: "replacement" in row ? row.replacement : undefined,
         unavailableTokens: unavailable,
         tokensData: tokensData(balances),
         tokensAllowanceData: allowances,

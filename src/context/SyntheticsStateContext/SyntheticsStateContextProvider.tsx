@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
@@ -17,7 +17,10 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
-import type { GasPaymentTokensOnchainState } from "domain/synthetics/express/gasPaymentTokenAvailability";
+import type {
+  GasPaymentTokenReplacements,
+  GasPaymentTokensOnchainState,
+} from "domain/synthetics/express/gasPaymentTokenAvailability";
 import { useGasPaymentTokensOnchainState } from "domain/synthetics/express/useGasPaymentTokensOnchainState";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
@@ -171,6 +174,8 @@ export type SyntheticsState = {
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   gasPaymentTokensOnchainState: GasPaymentTokensOnchainState | undefined;
+  gasPaymentTokenReplacements: GasPaymentTokenReplacements;
+  setGasPaymentTokenReplacement: (isGmxAccount: boolean, tokenAddress: string | undefined) => void;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -390,6 +395,11 @@ export function SyntheticsStateContextProvider({
   });
 
   const gasPaymentTokensOnchainState = useGasPaymentTokensOnchainState(chainId);
+  const [gasPaymentTokenReplacements, setGasPaymentTokenReplacements] = useState<GasPaymentTokenReplacements>({});
+  const setGasPaymentTokenReplacement = useCallback((isGmxAccount: boolean, tokenAddress: string | undefined) => {
+    const key = isGmxAccount ? "gmxAccount" : "wallet";
+    setGasPaymentTokenReplacements((prev) => (prev[key] === tokenAddress ? prev : { ...prev, [key]: tokenAddress }));
+  }, []);
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -461,6 +471,8 @@ export function SyntheticsStateContextProvider({
       uiFlags,
       gasPaymentTokenAllowance,
       gasPaymentTokensOnchainState,
+      gasPaymentTokenReplacements,
+      setGasPaymentTokenReplacement,
       l1ExpressOrderGasReference,
     };
 
@@ -478,6 +490,8 @@ export function SyntheticsStateContextProvider({
     gasLimits,
     gasPaymentTokenAllowance,
     gasPaymentTokensOnchainState,
+    gasPaymentTokenReplacements,
+    setGasPaymentTokenReplacement,
     gasPrice,
     glvInfo,
     isCandlesLoaded,

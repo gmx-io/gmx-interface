@@ -11,10 +11,6 @@ import {
   selectGasPaymentTokenAllowance,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
-} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, type TokenData } from "domain/tokens";
@@ -65,17 +61,12 @@ export function useGasPaymentTokenFallback({
 }): {
   globalExpressParams: GlobalExpressParams | undefined;
   recordExpressParams: (expressParams: ExpressTxnParams | undefined) => void;
-  // only while the saved token can't pay
-  replaceShortFeeToken: ((gasPaymentTokenAddress: string) => void) | undefined;
 } {
   const chainId = useSelector(selectChainId);
   const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
   const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
-  const savedGasPaymentTokenAddress = useSelector(
-    isGmxAccount ? selectGmxAccountGasPaymentTokenAddress : selectGasPaymentTokenAddress
-  );
   const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
   const isPayTokenFallback = fallback === "skipApproval" && payTokenFeeToken !== undefined;
   const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
@@ -98,40 +89,10 @@ export function useGasPaymentTokenFallback({
           unavailableTokenAddresses,
         });
 
-  const isSavedTokenUnavailable = unavailableTokenAddresses.includes(savedGasPaymentTokenAddress);
-  // picked for this form when the token paying for an unavailable saved one is short; it's never saved,
-  // so the saved token pays again once it can
-  const [shortFeeTokenReplacement, setShortFeeTokenReplacement] = useState<{
-    address: string;
-    isGmxAccount: boolean;
-  }>();
-
-  useEffect(() => {
-    if (!isSavedTokenUnavailable) {
-      setShortFeeTokenReplacement(undefined);
-    }
-  }, [isSavedTokenUnavailable]);
-
-  const replacementTokenAddress =
-    isSavedTokenUnavailable &&
-    shortFeeTokenReplacement?.isGmxAccount === isGmxAccount &&
-    !unavailableTokenAddresses.includes(shortFeeTokenReplacement.address)
-      ? shortFeeTokenReplacement.address
-      : undefined;
-
-  const replaceShortFeeToken = useCallback(
-    (address: string) =>
-      setShortFeeTokenReplacement((prev) =>
-        prev?.address === address && prev.isGmxAccount === isGmxAccount ? prev : { address, isGmxAccount }
-      ),
-    [isGmxAccount]
-  );
-
   const gasPaymentTokenAddress =
-    replacementTokenAddress ??
-    (fallback && !isGmxAccount && baseGasPaymentToken
+    fallback && !isGmxAccount && baseGasPaymentToken
       ? resolveFallbackTokenAddress(baseGasPaymentToken)
-      : baseGasPaymentToken?.address);
+      : baseGasPaymentToken?.address;
 
   const isFallbackActive =
     gasPaymentTokenAddress !== undefined && gasPaymentTokenAddress !== baseGasPaymentToken?.address;
@@ -161,19 +122,12 @@ export function useGasPaymentTokenFallback({
 
   useGasPaymentTokenNotApprovedToast({
     fromToken: baseGasPaymentToken,
-    toToken:
-      isFallbackActive && replacementTokenAddress === undefined
-        ? getByKey(tokensData, gasPaymentTokenAddress)
-        : undefined,
+    toToken: isFallbackActive ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
     // the copy is about an order, so only the trade box shows it
     enabled: isPayTokenFallback && canNotify,
   });
 
-  return {
-    globalExpressParams,
-    recordExpressParams,
-    replaceShortFeeToken: isSavedTokenUnavailable ? replaceShortFeeToken : undefined,
-  };
+  return { globalExpressParams, recordExpressParams };
 }
 
 function useGasPaymentTokenNotApprovedToast({

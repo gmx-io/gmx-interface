@@ -159,13 +159,15 @@ export const useDepositTransactions = ({
   const gasPaymentTokenAddress =
     paySource === "gmxAccount" ? gmxAccountGasPaymentTokenAddress : settlementChainGasPaymentTokenAddress;
   const gasPaymentTokenAsCollateralAmount = useMemo((): bigint | undefined => {
-    if (longTokenAddress === gasPaymentTokenAddress) {
-      return longTokenAmount;
+    if (longTokenAddress !== gasPaymentTokenAddress && shortTokenAddress !== gasPaymentTokenAddress) {
+      return undefined;
     }
-    if (shortTokenAddress === gasPaymentTokenAddress) {
-      return shortTokenAmount;
-    }
-    return undefined;
+
+    // same-collateral markets split the deposit between the long and the short token
+    return (
+      (longTokenAddress === gasPaymentTokenAddress ? longTokenAmount : 0n) +
+      (shortTokenAddress === gasPaymentTokenAddress ? shortTokenAmount : 0n)
+    );
   }, [longTokenAddress, shortTokenAddress, longTokenAmount, shortTokenAmount, gasPaymentTokenAddress]);
 
   const multichainDepositExpressTxnParams = useMultichainDepositExpressTxnParams({
