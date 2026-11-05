@@ -11233,6 +11233,10 @@ msgstr "주문 수정"
 msgid "Error simulating withdrawal"
 msgstr "출금 시뮬레이션 오류"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
+msgstr "GT는 GMX 생태계 내의 토큰입니다. GT 바이백 기능은 향후 제공될 예정입니다."
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -12164,7 +12168,6 @@ msgstr "수령할 배분을 하나 이상 선택하십시오"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
 
@@ -13141,10 +13144,6 @@ msgstr "언어"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}초"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
-msgstr "GT는 GM Trade 프로젝트의 네이티브 토큰입니다. 현재는 사용처가 없으며, 추가 기능은 토큰 생성 이벤트(TGE) 이후 제공될 예정입니다."
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -13508,7 +13507,6 @@ msgid "How and when do I get paid or credited?"
 msgstr "언제, 어떻게 지급받거나 적립받습니까?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Sell"
 msgstr "판매"
 
@@ -14003,6 +14001,10 @@ msgstr "조건가를 기준가보다 높게 설정하십시오"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Open buyback"
+msgstr "바이백 열기"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."

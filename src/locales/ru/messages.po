@@ -11233,6 +11233,10 @@ msgstr "Редактировать ордер"
 msgid "Error simulating withdrawal"
 msgstr "Ошибка симуляции вывода"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
+msgstr "GT — токен экосистемы GMX. Функция обратного выкупа GT станет доступна в будущем."
+
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -12164,7 +12168,6 @@ msgstr "Выберите хотя бы одно распределение дл�
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Buy"
 msgstr "Купить"
 
@@ -13141,10 +13144,6 @@ msgstr "Язык"
 msgid "{idleSeconds}s"
 msgstr "{idleSeconds}с"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is the native token of the GM Trade project. It currently has no utility; additional functionality will become available after the token generation event (TGE)."
-msgstr "GT — нативный токен проекта GM Trade. Сейчас он не имеет применения; дополнительная функциональность станет доступна после события генерации токенов (TGE)."
-
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -13508,7 +13507,6 @@ msgid "How and when do I get paid or credited?"
 msgstr "Как и когда я получу выплату или начисление?"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 msgid "Sell"
 msgstr "Продать"
 
@@ -14003,6 +14001,10 @@ msgstr "Установите цену активации выше расчётн
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "В этой сети пока нет возможностей"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Open buyback"
+msgstr "Открыть обратный выкуп"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
