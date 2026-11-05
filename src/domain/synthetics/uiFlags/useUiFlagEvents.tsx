@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX } from "config/localStorage";
 import {
   UiFlagEventData,
@@ -7,6 +8,7 @@ import {
   getUiFlagEventDismissCooldown,
   uiFlagEventsData,
 } from "config/uiFlagEvents";
+import { useSolanaUiFlagsRequest } from "domain/synthetics/uiFlags/useSolanaUiFlagsRequest";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
 
@@ -34,8 +36,10 @@ function persistDismissal(eventId: string) {
 }
 
 export function useUiFlagEvents(): ActiveUiFlagEvent[] {
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags: evmUiFlags } = useUiFlagsRequest();
   const { networkId } = useChainId();
+  const { uiFlags: solanaUiFlags } = useSolanaUiFlagsRequest({ enabled: isSolanaNetwork(networkId) });
+  const uiFlags = isSolanaNetwork(networkId) ? solanaUiFlags : evmUiFlags;
   const [dismissalVersion, setDismissalVersion] = useState(0);
 
   const bumpVersion = useCallback(() => setDismissalVersion((v) => v + 1), []);

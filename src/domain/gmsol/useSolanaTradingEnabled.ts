@@ -1,21 +1,12 @@
-import useSWR from "swr";
-
 import { getIsSolanaNetworkEnabled } from "config/ab";
-import { ARBITRUM } from "config/chains";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-
-import { fetchSolanaTradingEnabled } from "./fetchSolanaTradingEnabled";
+import { useSolanaUiFlagsRequest } from "domain/synthetics/uiFlags/useSolanaUiFlagsRequest";
 
 export function useSolanaTradingEnabled({ enabled }: { enabled: boolean }) {
   const shouldFetch = enabled && getIsSolanaNetworkEnabled();
-  const { data, error, isLoading } = useSWR<boolean, Error>(
-    shouldFetch ? ["solanaTrading", ARBITRUM] : null,
-    fetchSolanaTradingEnabled,
-    { refreshInterval: CONFIG_UPDATE_INTERVAL }
-  );
+  const { uiFlags, error, isLoading } = useSolanaUiFlagsRequest({ enabled: shouldFetch });
 
   return {
-    isSolanaTradingEnabled: shouldFetch && !isLoading && !error && data === true,
+    isSolanaTradingEnabled: shouldFetch && !isLoading && !error && uiFlags?.solanaTrading?.enabled === true,
     isLoading: shouldFetch && isLoading,
     error: shouldFetch ? error : undefined,
   };
