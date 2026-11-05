@@ -1,5 +1,4 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
-import isEqual from "lodash/isEqual";
 import { encodeFunctionData, isHex, size } from "viem";
 
 import { getContract } from "config/contracts";
@@ -11,7 +10,9 @@ import {
   ExpressTransactionBuilder,
   ExpressTransactionEstimatorParams,
   ExpressTxnParams,
+  getGelatoRelayRouterDomain,
   GlobalExpressParams,
+  hashRelayParams,
   RawRelayParamsPayload,
   RelayParamsPayload,
 } from "domain/synthetics/express";
@@ -20,7 +21,6 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
 import { getRelayTokenPermits } from "domain/tokens/permitUtils";
 import { extendError } from "lib/errors";
-import { EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
@@ -29,18 +29,12 @@ import { WalletSigner } from "lib/wallets";
 import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
 import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { getAbi } from "sdk/abis/getAbi";
+import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { type ExpressTxnData, estimateExpressParams as sdkEstimateExpressParams } from "sdk/utils/express";
-import {
-  getBatchTypedData,
-  buildBatchOrderCalldata,
-  getBridgeOutTypedData,
-  getReferralCodeTypedData,
-} from "sdk/utils/express";
-import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
+import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
   getBatchExternalCalls,
@@ -272,10 +266,6 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
-  if (!isEqual(relayParamsPayload.externalCalls, getBatchExternalCalls(batchParams))) {
-    throw new Error(EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR);
-  }
-
   const messageSigner = subaccount ? subaccount!.signer : signer;
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
   const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
@@ -299,7 +289,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       relayParams: relayPayload,
       account: signer.address,
       subaccountApprovalHash: subaccount?.signedApproval
-        ? hashSubaccountApproval(chainId, subaccount.signedApproval)
+        ? hashSubaccountApproval(subaccount.signedApproval)
         : undefined,
       relayRouterAddress,
     });
@@ -311,7 +301,6 @@ export async function buildAndSignExpressBatchOrderTxn({
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
       verificationChainId: chainId,
-      relayParams: relayPayload,
     };
 
     signature = await signTypedData(signatureParams);
@@ -398,7 +387,6 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature = false,
   relayerFeeTokenAddress,
   relayerFeeAmount,
-  validateBeforeSign,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
@@ -409,7 +397,6 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
-  validateBeforeSign?: () => void;
 }): Promise<ExpressTxnData> {
   let signature: string;
 
@@ -431,12 +418,11 @@ export async function buildAndSignBridgeOutTxn({
       signer,
       chainId,
       srcChainId,
-      validateBeforeSign,
     });
   }
 
   const bridgeOutCallData = encodeFunctionData({
-    abi: getAbi(chainId, "MultichainTransferRouter"),
+    abi: abis.MultichainTransferRouter,
     functionName: "bridgeOut",
     args: [
       {
@@ -445,7 +431,7 @@ export async function buildAndSignBridgeOutTxn({
       },
       account,
       BigInt(srcChainId),
-      { ...params, bridgeFee: params.bridgeFee ?? getEmptyBridgeFeeParams() },
+      params,
     ],
   });
 
@@ -463,32 +449,36 @@ async function signBridgeOutPayload({
   params,
   chainId,
   srcChainId,
-  validateBeforeSign,
 }: {
   signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
-  validateBeforeSign?: () => void;
 }): Promise<string> {
-  const { domain, types, message } = getBridgeOutTypedData({
-    chainId,
-    srcChainId,
-    params,
-    relayParams,
-    account: signer.address,
-  });
+  const types = {
+    BridgeOut: [
+      { name: "token", type: "address" },
+      { name: "amount", type: "uint256" },
+      { name: "minAmountOut", type: "uint256" },
+      { name: "provider", type: "address" },
+      { name: "data", type: "bytes" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
 
-  return signTypedData({
-    signer,
-    domain,
-    types,
-    typedData: message,
-    verificationChainId: chainId,
-    relayParams,
-    validateBeforeSign,
-  });
+  const typedData = {
+    token: params.token,
+    amount: params.amount,
+    minAmountOut: params.minAmountOut,
+    provider: params.provider,
+    data: params.data,
+    relayParams: hashRelayParams(relayParams),
+  };
+
+  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainTransferRouter"));
+
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
 }
 
 export async function signSetTraderReferralCode({
@@ -506,25 +496,20 @@ export async function signSetTraderReferralCode({
   srcChainId: SourceChainId;
   shouldUseSignerMethod?: boolean;
 }) {
-  const account = await signer.getAddress();
-  const { domain, types, message } = getReferralCodeTypedData({
-    primaryType: "SetTraderReferralCode",
-    chainId,
-    srcChainId,
-    relayParams,
-    referralCode,
-    account,
-  });
+  const types = {
+    SetTraderReferralCode: [
+      { name: "referralCode", type: "bytes32" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
 
-  return signTypedData({
-    signer,
-    domain,
-    types,
-    typedData: message,
-    shouldUseSignerMethod,
-    verificationChainId: chainId,
-    relayParams,
-  });
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
+  const typedData = {
+    referralCode: referralCode,
+    relayParams: hashRelayParams(relayParams),
+  };
+
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 export async function signRegisterCode({
@@ -542,25 +527,20 @@ export async function signRegisterCode({
   srcChainId: SourceChainId;
   shouldUseSignerMethod?: boolean;
 }) {
-  const account = await signer.getAddress();
-  const { domain, types, message } = getReferralCodeTypedData({
-    primaryType: "RegisterCode",
-    chainId,
-    srcChainId,
-    relayParams,
-    referralCode,
-    account,
-  });
+  const types = {
+    RegisterCode: [
+      { name: "referralCode", type: "bytes32" },
+      { name: "relayParams", type: "bytes32" },
+    ],
+  };
 
-  return signTypedData({
-    signer,
-    domain,
-    types,
-    typedData: message,
-    shouldUseSignerMethod,
-    verificationChainId: chainId,
-    relayParams,
-  });
+  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
+  const typedData = {
+    referralCode: referralCode,
+    relayParams: hashRelayParams(relayParams),
+  };
+
+  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
 }
 
 export const SIGNATURE_VALIDATION_FAILED_ERROR = "Signature validation failed";
