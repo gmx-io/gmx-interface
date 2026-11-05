@@ -15,8 +15,8 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay, getProtocolReferralCodeType } from "domain/referrals/utils/referralCode";
 import {
-  getProtocolReferralCodeType,
   getReferralCodeTradeUrl,
   getSharePercentage,
   isBalancerProgramTier,
@@ -162,7 +162,9 @@ export function ReferralsTradersContent({ account, hasAddressInUrl = false }: Re
                     helperToast.success(t`Referral link copied to clipboard`);
                   }}
                 >
-                  <ScaledText className="text-24 font-medium">{userReferralCodeString}</ScaledText>
+                  <ScaledText className="text-24 font-medium">
+                    {formatReferralCodeForDisplay(userReferralCodeString)}
+                  </ScaledText>
                   <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
                 </div>
                 {isAccountOwner && (
