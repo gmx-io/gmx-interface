@@ -63,6 +63,7 @@ export function toastCustomOrStargateError(
         {
           errorMessage: prettyErrorMessage,
           txErrorType: errorData?.isUserRejectedError ? TxErrorType.UserDenied : undefined,
+          data: errorData?.data,
         },
         {
           defaultMessage:
