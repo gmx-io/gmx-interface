@@ -127,7 +127,7 @@ describe("DataFeed candle stream and poll", () => {
         return () => undefined;
       },
       subscribeConnectionStatus: () => () => undefined,
-      subscribeError: () => () => undefined,
+      subscribeRefusal: () => () => undefined,
       connectionStatus: "live",
       close: () => undefined,
     };
@@ -212,7 +212,7 @@ describe("DataFeed candle stream lifecycle", () => {
         getMeta: () => undefined,
         subscribe: () => () => undefined,
         subscribeConnectionStatus: () => () => undefined,
-        subscribeError: () => () => undefined,
+        subscribeRefusal: () => () => undefined,
         connectionStatus: "live",
         close: () => {
           opened.closed = true;

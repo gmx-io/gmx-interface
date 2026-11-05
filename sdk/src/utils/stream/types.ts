@@ -18,7 +18,7 @@ export interface Subscription<T> {
   getMeta(): FrameMeta | undefined;
   subscribe(listener: (value: T) => void): Unsubscribe;
   subscribeConnectionStatus(listener: (status: StreamConnectionStatus) => void): Unsubscribe;
-  subscribeError(listener: (error: { message: string }) => void): Unsubscribe;
+  subscribeRefusal(listener: (error: { message: string }) => void): Unsubscribe;
   readonly connectionStatus: StreamConnectionStatus;
   close(): void;
 }
