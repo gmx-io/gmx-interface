@@ -2597,10 +2597,6 @@ msgstr "选择时间"
 msgid "GMX balance"
 msgstr "GMX 余额"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Avalanche 上的价格"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "链下签署交易。优质 RPC 确保在网络拥堵时的可靠性。<0/><1/>费用将从该操作所使用的余额中以您的 Gas 支付代币支付。"
@@ -7601,10 +7597,6 @@ msgstr "积分根据您在 GMX MegaETH 上的累计交易量分配"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "结算 {0, plural, one {# 个仓位} other {# 个仓位}} 的请求已发送"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Arbitrum 上的价格"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
