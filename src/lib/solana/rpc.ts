@@ -6,6 +6,7 @@ import { DEFAULT_FALLBACK_TRACKER_CONFIG } from "lib/FallbackTracker/const";
 import { FallbackTracker } from "lib/FallbackTracker/FallbackTracker";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { registerRpcTracker } from "lib/rpc/registry";
+import { getIsSolanaRpcTrackingEnabled } from "lib/rpc/useSolanaRpcTracking";
 
 const MAX_ACCOUNTS_PER_REQUEST = 100;
 const RPC_TIMEOUT = 15_000;
@@ -96,6 +97,10 @@ export function getSolanaRpcTracker() {
   if (!tracker) {
     tracker = new SolanaRpcTracker();
     registerRpcTracker(tracker);
+    // A delayed balance read can initialize this singleton after Solana was deselected.
+    if (!getIsSolanaRpcTrackingEnabled()) {
+      tracker.fallbackTracker.stopTracking();
+    }
   }
   return tracker;
 }
