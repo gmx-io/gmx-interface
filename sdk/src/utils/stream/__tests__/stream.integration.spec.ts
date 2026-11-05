@@ -52,6 +52,7 @@ function startServer() {
       return received.filter((m) => m.op === "subscribe").length;
     },
     async close() {
+      connections.forEach((socket) => socket.terminate());
       await new Promise<void>((resolve) => wss.close(() => resolve()));
     },
   };
@@ -120,20 +121,20 @@ describe("stream integration (real client <-> real ws server)", () => {
     await vi.waitFor(() => expect(sub.get()).toEqual({ "0xabc": { minPrice: 200n, maxPrice: 201n } }));
   });
 
-  it("closes the socket on close() and does not reconnect", async () => {
+  it("unsubscribes on close() and stops delivering", async () => {
     const sub = sdk.watchTokenPrices();
     open.push(sub);
-    sub.subscribe(vi.fn());
-
-    await vi.waitFor(() => expect(server.connections.length).toBe(1));
-    const socket = server.connections[0];
+    const listener = vi.fn();
+    sub.subscribe(listener);
+    await vi.waitFor(() => expect(sub.connectionStatus).toBe("live"));
 
     sub.close();
-
-    await vi.waitFor(() => expect(socket.readyState).toBe(WebSocket.CLOSED));
+    await vi.waitFor(() => expect(server.received).toContainEqual({ op: "unsubscribe", channels: ["prices"] }));
+    server.broadcast(snapshot("300", "301"));
     await new Promise((resolve) => setTimeout(resolve, 60));
+
+    expect(listener).not.toHaveBeenCalled();
     expect(server.connections.length).toBe(1);
-    expect(sub.connectionStatus).toBe("closed");
   });
 
   it("subscribes to a per-token candle channel and delivers the forming bar", async () => {

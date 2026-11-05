@@ -14,6 +14,7 @@ const DEFAULT_RECONNECT_MAX_MS = 10_000;
 const DEFAULT_PROBE_INTERVAL_MS = 15_000;
 const DEFAULT_PROBE_TIMEOUT_MS = 10_000;
 const CONNECT_TIMEOUT_MS = 10_000;
+const IDLE_CLOSE_MS = 10_000;
 // a socket that stayed up this long proves the path works; one dropped sooner keeps backing off
 const STABLE_CONNECTION_MS = 30_000;
 const REFUSED_MESSAGE = "subscription refused";
@@ -60,6 +61,7 @@ export class WsStreamClient {
   private probeTimer?: ReturnType<typeof setTimeout>;
   private probeTimeoutTimer?: ReturnType<typeof setTimeout>;
   private connectTimeoutTimer?: ReturnType<typeof setTimeout>;
+  private idleCloseTimer?: ReturnType<typeof setTimeout>;
   private messageCount = 0;
   private openedAt?: number;
   private closedByUser = false;
@@ -84,6 +86,7 @@ export class WsStreamClient {
 
   subscribe(channel: string, listener: ChannelListener, onError?: ErrorListener): Unsubscribe {
     const subscriber: ChannelSubscriber = { onFrame: listener, onError };
+    clearTimeout(this.idleCloseTimer);
     const existing = this.listeners.get(channel);
     if (existing) {
       existing.add(subscriber);
@@ -114,7 +117,7 @@ export class WsStreamClient {
         }
       }
       if (this.listeners.size === 0) {
-        this.close();
+        this.idleCloseTimer = setTimeout(() => this.close(), IDLE_CLOSE_MS);
       }
     };
   }
@@ -402,6 +405,7 @@ export class WsStreamClient {
 
   close() {
     this.closedByUser = true;
+    clearTimeout(this.idleCloseTimer);
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = undefined;

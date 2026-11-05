@@ -355,7 +355,7 @@ describe("WsStreamClient reconnect / backoff", () => {
 });
 
 describe("WsStreamClient unsubscribe / lifecycle", () => {
-  it("sends unsubscribe and closes when the last channel is dropped", () => {
+  it("sends unsubscribe and closes 10 s after the last channel is dropped", () => {
     const { client, sockets } = makeClient();
     const unsub = client.subscribe("prices", vi.fn());
     sockets[0].open();
@@ -363,8 +363,26 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
 
     unsub();
     expect(parseSends(sockets[0])).toContainEqual({ op: "unsubscribe", channels: ["prices"] });
+    vi.advanceTimersByTime(9_999);
+    expect(sockets[0].close).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(1);
     expect(sockets[0].close).toHaveBeenCalled();
     expect(client.connectionStatus).toBe("closed");
+  });
+
+  it("keeps the socket for a channel subscribed within 10 s of the last one dropped", () => {
+    const { client, sockets } = makeClient();
+    const unsub = client.subscribe("prices", vi.fn());
+    sockets[0].open();
+
+    unsub();
+    vi.advanceTimersByTime(9_999);
+    client.subscribe("candles:ETH:1m", vi.fn());
+    vi.advanceTimersByTime(10_000);
+
+    expect(sockets.length).toBe(1);
+    expect(sockets[0].close).not.toHaveBeenCalled();
+    expect(parseSends(sockets[0])).toContainEqual({ op: "subscribe", channels: ["candles:ETH:1m"] });
   });
 
   it("keeps the channel while another listener remains", () => {
@@ -383,6 +401,7 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     const { client, sockets } = makeClient();
     const unsub = client.subscribe("prices", vi.fn()); // connecting (not open)
     unsub();
+    vi.advanceTimersByTime(10_000);
     expect(sockets[0].send).not.toHaveBeenCalled();
     expect(sockets[0].close).toHaveBeenCalled();
     expect(client.connectionStatus).toBe("closed");
