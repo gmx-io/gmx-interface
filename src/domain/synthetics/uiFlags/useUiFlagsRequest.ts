@@ -13,13 +13,12 @@ export * from "./uiFlags";
 export function useUiFlagsRequest(overrideChainId?: ContractsChainId) {
   const { chainId: selectedChainId, networkId } = useChainId();
   const chainId = overrideChainId ?? selectedChainId;
-  const isEvmChainRequested = overrideChainId !== undefined || !isSolanaNetwork(networkId);
 
   const fallbackData = useMemo(() => readPersistedUiFlags(chainId), [chainId]);
 
   // These are the EVM flags, Solana reads its own. The fetcher is created lazily, as creating it starts endpoint probes
   const { data: uiFlags } = useSWR<UiFlags>(
-    isEvmChainRequested ? ["uiFlags", chainId] : null,
+    isSolanaNetwork(networkId) ? null : ["uiFlags", chainId],
     async () => {
       const result = await confirmRelayControlFlags(chainId, await getOracleKeeperFetcher(chainId).fetchUiFlags());
       persistApiFlags(chainId, result);
