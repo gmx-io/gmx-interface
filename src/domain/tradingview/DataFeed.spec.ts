@@ -192,7 +192,12 @@ describe("DataFeed candle stream lifecycle", () => {
     { name: "closes the stream when the flag turns off", steps: ["disable"], periods: ["1m"], open: 0 },
     { name: "closes the stream on unsubscribeBars", steps: ["unsubscribe"], periods: ["1m"], open: 0 },
     { name: "closes the stream on destroy", steps: ["destroy"], periods: ["1m"], open: 0 },
-    { name: "opens nothing when subscribed after destroy", steps: ["destroy", "subscribe"], periods: ["1m"], open: 0 },
+    {
+      name: "ignores a subscription that arrives after destroy",
+      steps: ["destroy", "subscribe", "unsubscribe"],
+      periods: ["1m"],
+      open: 0,
+    },
     { name: "keeps the stream through a short hide", steps: ["hide", 9_999, "show"], periods: ["1m"], open: 1 },
     {
       name: "closes after 10 s hidden and reopens when shown",
@@ -203,6 +208,7 @@ describe("DataFeed candle stream lifecycle", () => {
   ])("$name", ({ symbol = "BTC", resolution = "1", enabled = true, steps = [], periods, open }) => {
     const subscriptions: { symbol: string; period: string; closed: boolean }[] = [];
     const oracleFetcher = { fetchOracleCandles: async () => [] } as unknown as OracleFetcher;
+    let guid = "guid";
     const dataFeed = new DataFeed(ARBITRUM, oracleFetcher);
     dataFeed.setCandleStreamFactory((streamSymbol, period) => {
       const opened = { symbol: streamSymbol, period, closed: false };
@@ -229,9 +235,10 @@ describe("DataFeed candle stream lifecycle", () => {
       } else if (step === "enable" || step === "disable") {
         dataFeed.setCandleStreamEnabled(step === "enable");
       } else if (step === "subscribe") {
-        dataFeed.subscribeBars(symbolInfo, resolution as ResolutionString, () => undefined, "guid2");
+        guid = "guid2";
+        dataFeed.subscribeBars(symbolInfo, resolution as ResolutionString, () => undefined, guid);
       } else if (step === "unsubscribe") {
-        dataFeed.unsubscribeBars("guid");
+        dataFeed.unsubscribeBars(guid);
       } else if (step === "destroy") {
         dataFeed.destroy();
       } else {

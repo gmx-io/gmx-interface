@@ -400,7 +400,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   unsubscribeBars(listenerGuid: string): void {
-    this.subscriptions[listenerGuid].destroy();
+    this.subscriptions[listenerGuid]?.destroy();
     delete this.subscriptions[listenerGuid];
     this.candleStreams[listenerGuid]?.close();
     delete this.candleStreams[listenerGuid];
