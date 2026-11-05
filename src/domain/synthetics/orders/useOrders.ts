@@ -58,45 +58,6 @@ export function useOrders(
     marketsInfoData?: MarketsInfoData;
   }
 ): OrdersResult {
-  const {
-    nonSwapRelevantDefinedFiltersLowercased,
-    hasNonSwapRelevantDefinedMarkets,
-    pureDirectionFilters,
-    hasPureDirectionFilters,
-    swapRelevantDefinedMarketsLowercased,
-    hasSwapRelevantDefinedMarkets,
-  } = useMemo(() => {
-    const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
-      .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
-      .map((filter) => ({
-        marketAddress: getAddressKey(filter.marketAddress) as Address,
-        direction: filter.direction,
-        collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
-      }));
-
-    const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
-
-    const pureDirectionFilters = marketsDirectionsFilter
-      .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
-      .map((filter) => filter.direction);
-    const hasPureDirectionFilters = pureDirectionFilters.length > 0;
-
-    const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
-      .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-      .map((filter) => getAddressKey(filter.marketAddress) as Address);
-
-    const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
-
-    return {
-      nonSwapRelevantDefinedFiltersLowercased,
-      hasNonSwapRelevantDefinedMarkets,
-      pureDirectionFilters,
-      hasPureDirectionFilters,
-      swapRelevantDefinedMarketsLowercased,
-      hasSwapRelevantDefinedMarkets,
-    };
-  }, [marketsDirectionsFilter]);
-
   const key = useMemo(() => (!account ? null : ([account] as const)), [account]);
 
   // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
@@ -160,41 +121,19 @@ export function useOrders(
       return undefined;
     }
 
-    const isOrderMatchingTypeFilters = getIsOrderMatchingTypeFilters(orderTypesFilter);
-
-    const filteredOrders = orders.filter((order) => {
-      if (isMarketOrderType(order.orderType)) {
-        const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
-        if (!is15SecondsPassedSinceOrderCreation) {
-          return false;
+    const filteredOrders = filterOrdersByUiFilters(
+      orders.filter((order) => {
+        if (isMarketOrderType(order.orderType)) {
+          const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
+          if (!is15SecondsPassedSinceOrderCreation) {
+            return false;
+          }
         }
-      }
 
-      if (!isVisibleOrder(order.orderType)) {
-        return false;
-      }
-
-      const matchByMarketResult = matchByMarket({
-        order,
-        nonSwapRelevantDefinedFiltersLowercased,
-        hasNonSwapRelevantDefinedMarkets,
-        pureDirectionFilters,
-        hasPureDirectionFilters,
-        swapRelevantDefinedMarketsLowercased,
-        hasSwapRelevantDefinedMarkets,
-        chainId,
-        marketsInfoData,
-      });
-
-      let matchByOrderType = true;
-
-      if (orderTypesFilter.length > 0) {
-        const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
-        matchByOrderType = isOrderMatchingTypeFilters(order.orderType, twapParams ? "twap" : "none");
-      }
-
-      return matchByMarketResult && matchByOrderType;
-    });
+        return isVisibleOrder(order.orderType);
+      }),
+      { chainId, marketsDirectionsFilter, orderTypesFilter, marketsInfoData }
+    );
 
     return filteredOrders.reduce((acc, order) => {
       acc[order.key] = order;
@@ -205,14 +144,9 @@ export function useOrders(
     shouldUseApiOrdersData,
     rpcData?.orders,
     chainId,
-    hasNonSwapRelevantDefinedMarkets,
-    hasPureDirectionFilters,
-    hasSwapRelevantDefinedMarkets,
+    marketsDirectionsFilter,
     marketsInfoData,
-    nonSwapRelevantDefinedFiltersLowercased,
     orderTypesFilter,
-    pureDirectionFilters,
-    swapRelevantDefinedMarketsLowercased,
   ]);
 
   const count = shouldUseApiOrdersData && apiOrdersData ? Object.keys(apiOrdersData).length : rpcData?.count;
@@ -324,6 +258,81 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         data: orderData._dataList as string[],
       } satisfies Order;
     }),
+  };
+}
+
+// Market and order-type filters for the orders list. Runs on the orders already in state, so Solana
+// and EVM lists share one source with the tab count.
+export function filterOrdersByUiFilters<T extends Order>(
+  orders: T[],
+  {
+    chainId,
+    marketsDirectionsFilter,
+    orderTypesFilter,
+    marketsInfoData,
+  }: {
+    chainId: number;
+    marketsDirectionsFilter: MarketFilterLongShortItemData[];
+    orderTypesFilter: OrderTypeFilterValue[];
+    marketsInfoData?: MarketsInfoData;
+  }
+): T[] {
+  const {
+    nonSwapRelevantDefinedFiltersLowercased,
+    hasNonSwapRelevantDefinedMarkets,
+    pureDirectionFilters,
+    hasPureDirectionFilters,
+    swapRelevantDefinedMarketsLowercased,
+    hasSwapRelevantDefinedMarkets,
+  } = prepareMarketDirectionFilters(marketsDirectionsFilter);
+  const isOrderMatchingTypeFilters = getIsOrderMatchingTypeFilters(orderTypesFilter);
+
+  return orders.filter((order) => {
+    const matchesMarket = matchByMarket({
+      order,
+      nonSwapRelevantDefinedFiltersLowercased,
+      hasNonSwapRelevantDefinedMarkets,
+      pureDirectionFilters,
+      hasPureDirectionFilters,
+      swapRelevantDefinedMarketsLowercased,
+      hasSwapRelevantDefinedMarkets,
+      chainId,
+      marketsInfoData,
+    });
+
+    if (!matchesMarket || orderTypesFilter.length === 0) {
+      return matchesMarket;
+    }
+
+    const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
+    return isOrderMatchingTypeFilters(order.orderType, twapParams ? "twap" : "none");
+  });
+}
+
+function prepareMarketDirectionFilters(marketsDirectionsFilter: MarketFilterLongShortItemData[]) {
+  const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
+    .map((filter) => ({
+      marketAddress: getAddressKey(filter.marketAddress) as Address,
+      direction: filter.direction,
+      collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
+    }));
+
+  const pureDirectionFilters = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
+    .map((filter) => filter.direction);
+
+  const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
+    .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
+    .map((filter) => getAddressKey(filter.marketAddress) as Address);
+
+  return {
+    nonSwapRelevantDefinedFiltersLowercased,
+    hasNonSwapRelevantDefinedMarkets: nonSwapRelevantDefinedFiltersLowercased.length > 0,
+    pureDirectionFilters,
+    hasPureDirectionFilters: pureDirectionFilters.length > 0,
+    swapRelevantDefinedMarketsLowercased,
+    hasSwapRelevantDefinedMarkets: swapRelevantDefinedMarketsLowercased.length > 0,
   };
 }
 

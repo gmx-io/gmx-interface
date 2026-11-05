@@ -15,6 +15,7 @@ import {
   RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS,
   RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
 } from "config/rpc";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
@@ -29,6 +30,7 @@ class RpcTrackersRegistry {
   trackersByKey: Record<string, RpcTracker> = {};
   trackerKeysByChainId: Record<number, string> = {};
   isInitialized = false;
+  private trackingEnabled = false;
 
   static getInstance(): RpcTrackersRegistry {
     if (!RpcTrackersRegistry.instance) {
@@ -64,11 +66,30 @@ class RpcTrackersRegistry {
 
       subscribeForRpcTrackerMetrics(tracker);
       _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
-
-      tracker.fallbackTracker.startTracking();
     }
 
     this.isInitialized = true;
+    this.syncTracking();
+  }
+
+  // Health checks hit every EVM RPC, including Arbitrum and Ethereum public nodes.
+  // Solana keeps chainId on Arbitrum, so the selection has to stop them explicitly.
+  syncTracking() {
+    const enabled = !getIsSolanaNetworkSelected();
+
+    if (this.trackingEnabled === enabled) {
+      return;
+    }
+
+    this.trackingEnabled = enabled;
+
+    for (const tracker of Object.values(this.trackersByKey)) {
+      if (enabled) {
+        tracker.fallbackTracker.startTracking();
+      } else {
+        tracker.fallbackTracker.stopTracking();
+      }
+    }
   }
 
   getRpcTracker(trackerKey: string): RpcTracker | undefined {
@@ -111,12 +132,18 @@ class RpcTrackersRegistry {
   }
 }
 
+export function syncEvmRpcTracking() {
+  RpcTrackersRegistry.getInstance().syncTracking();
+}
+
 export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
   return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
 }
 
 export function getCurrentRpcUrls(chainId: number) {
-  return RpcTrackersRegistry.getInstance().getCurrentRpcUrls(chainId);
+  const registry = RpcTrackersRegistry.getInstance();
+  registry.syncTracking();
+  return registry.getCurrentRpcUrls(chainId);
 }
 
 export function getCurrentExpressRpcUrl(chainId: number) {

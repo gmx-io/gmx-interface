@@ -1,8 +1,14 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX } from "config/localStorage";
-import { UiFlagEventData, getUiFlagEventDismissCooldown, uiFlagEventsData } from "config/uiFlagEvents";
+import {
+  UiFlagEventData,
+  getIsUiFlagEventOnNetwork,
+  getUiFlagEventDismissCooldown,
+  uiFlagEventsData,
+} from "config/uiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { useChainId } from "lib/chains";
 
 export type ActiveUiFlagEvent = {
   data: UiFlagEventData;
@@ -29,6 +35,7 @@ function persistDismissal(eventId: string) {
 
 export function useUiFlagEvents(): ActiveUiFlagEvent[] {
   const { uiFlags } = useUiFlagsRequest();
+  const { networkId } = useChainId();
   const [dismissalVersion, setDismissalVersion] = useState(0);
 
   const bumpVersion = useCallback(() => setDismissalVersion((v) => v + 1), []);
@@ -37,6 +44,7 @@ export function useUiFlagEvents(): ActiveUiFlagEvent[] {
     if (!uiFlags) return [];
 
     return uiFlagEventsData
+      .filter((event) => getIsUiFlagEventOnNetwork(event, networkId))
       .filter((event) => uiFlags[event.flagName]?.enabled === true)
       .filter((event) => !isDismissedByCooldown(event.id, getUiFlagEventDismissCooldown(event)))
       .map((event) => ({
@@ -47,5 +55,5 @@ export function useUiFlagEvents(): ActiveUiFlagEvent[] {
         },
       }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [uiFlags, dismissalVersion, bumpVersion]);
+  }, [uiFlags, networkId, dismissalVersion, bumpVersion]);
 }
