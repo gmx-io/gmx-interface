@@ -45,6 +45,7 @@ import { TokensData, useTokensAllowanceData } from "../tokens";
 import {
   buildResetTradeOptions,
   INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+  normalizeTradeOptions,
   readStoredTradeOptions,
   resolveStoredTradeOptionsSync,
   type StoredTradeOptions,
@@ -143,7 +144,7 @@ export function useTradeboxState(
   const setStoredOptionsOnChain = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
-        const newState = typeof args === "function" ? args(oldState) : args;
+        const newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args);
 
         if (isEqual(oldState, newState)) {
           return oldState;
@@ -211,7 +212,7 @@ export function useTradeboxState(
   const setStoredOptions = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsOnChain((oldState) => {
-        let newState = typeof args === "function" ? args(oldState) : args;
+        let newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args);
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
           newState = fallbackPositionTokens({
