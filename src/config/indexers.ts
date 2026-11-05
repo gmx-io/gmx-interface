@@ -2,7 +2,7 @@ import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type Co
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
-type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid";
+type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "gtAirdrop";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
@@ -14,6 +14,8 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
     subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+    // test squid until the GT airdrop allocations (gmx-squid#226) reach the prod one
+    gtAirdrop: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@gtdrop/api/graphql",
   },
 
   [AVALANCHE]: {
