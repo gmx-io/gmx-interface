@@ -212,10 +212,10 @@ describe("WsStreamClient messages", () => {
       refusals: ["subscription refused"],
     },
     {
-      name: "a probe ack after the channel's ack",
+      name: "the ack of a probe sent before the channel's subscribe",
       probe: true,
       frames: [
-        { op: "ack", channels: ["prices", CANDLES] },
+        { op: "ack", channels: ["prices"] },
         { op: "ack", channels: ["prices", CANDLES] },
       ],
       refusals: [],
@@ -231,11 +231,11 @@ describe("WsStreamClient messages", () => {
     client.subscribe("prices", vi.fn());
     sockets[0].open();
     sockets[0].emit({ op: "ack", channels: ["prices"] });
-    const onError = vi.fn();
-    client.subscribe(CANDLES, vi.fn(), onError);
     if (probe) {
       vi.advanceTimersByTime(15_000);
     }
+    const onError = vi.fn();
+    client.subscribe(CANDLES, vi.fn(), onError);
 
     frames.forEach((frame) => sockets[0].emit(frame));
 
