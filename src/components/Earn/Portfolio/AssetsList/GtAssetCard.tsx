@@ -9,9 +9,7 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
-import MinusCircleIcon from "img/ic_minus_circle.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
-import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import gtIcon from "img/tokens/ic_gt.svg";
 
 import { BaseAssetCard } from "./BaseAssetCard";
@@ -34,16 +32,9 @@ export function GtAssetCard({ gtAmount, gtAmountUsd }: { gtAmount: bigint; gtAmo
         </Button>
       }
       footer={
-        <div className="grid w-full grid-cols-2 gap-8">
-          <Button variant="secondary" disabled>
-            <PlusCircleIcon className="size-16" />
-            <Trans>Buy</Trans>
-          </Button>
-          <Button variant="secondary" disabled>
-            <MinusCircleIcon className="size-16" />
-            <Trans>Sell</Trans>
-          </Button>
-        </div>
+        <Button variant="secondary" className="w-full" disabled>
+          <Trans>Open buyback</Trans>
+        </Button>
       }
     >
       <div className="flex flex-col gap-12">
@@ -59,8 +50,7 @@ export function GtAssetCard({ gtAmount, gtAmountUsd }: { gtAmount: bigint; gtAmo
         />
         <p className="text-body-small text-typography-secondary">
           <Trans>
-            GT is the native token of the GM Trade project. It currently has no utility; additional functionality will
-            become available after the token generation event (TGE).
+            GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future.
           </Trans>
         </p>
       </div>
