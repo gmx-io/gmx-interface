@@ -1,3 +1,4 @@
+import { getSolanaResponseHandler, SolanaReadOptions } from "utils/http/solana";
 import { IHttp } from "utils/http/types";
 import { assertApiFields, assertApiRecords } from "utils/http/validation";
 import { deserializeBigIntsInObject } from "utils/numbers";
@@ -6,13 +7,15 @@ import { ApiPositionInfo } from "./types";
 
 export async function fetchApiPositionsInfo(
   ctx: { api: IHttp },
-  params: { address: string; includeRelatedOrders?: boolean }
+  params: { address: string; includeRelatedOrders?: boolean } & SolanaReadOptions
 ): Promise<ApiPositionInfo[]> {
   const positions: unknown = await ctx.api.fetchJson("/v1/positions", {
     query: {
       address: params.address,
       includeRelatedOrders: params.includeRelatedOrders || undefined,
+      minContextSlot: params.minContextSlot,
     },
+    onResponse: getSolanaResponseHandler(params.onResponse),
   });
   assertApiRecords(positions, "/v1/positions");
 
