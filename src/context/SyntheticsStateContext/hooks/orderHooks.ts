@@ -1,7 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -16,7 +16,7 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { OrderInfo } from "sdk/utils/orders/types";
 
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
-import { selectExpressGlobalParams } from "../selectors/expressSelectors";
+import { selectExpressGlobalParams, selectUnavailableExpressFeeToken } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
@@ -45,6 +45,8 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -70,7 +72,7 @@ export function useCancelOrder(order: OrderInfo) {
 
       try {
         const expressParams = globalExpressParams
-          ? await estimateBatchExpressParams({
+          ? await estimateExpressParams({
               signer,
               chainId,
               batchParams,
@@ -88,6 +90,7 @@ export function useCancelOrder(order: OrderInfo) {
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
+            unavailableGasPaymentToken,
             actionName: "Cancel Order",
             collateral: order.initialCollateralToken.symbol,
           })
@@ -114,7 +117,9 @@ export function useCancelOrder(order: OrderInfo) {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       order,

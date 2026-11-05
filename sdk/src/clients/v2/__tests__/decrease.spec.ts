@@ -277,7 +277,6 @@ describe("decrease orders", () => {
           requestId: prepared.requestId,
           signature: sig,
           from: account,
-          idempotencyKey: prepared.idempotencyKey,
           eip712Data: {
             batchParams: prepared.payload.batchParams,
             relayParams: prepared.payload.relayParams,
@@ -381,7 +380,6 @@ describe("decrease orders", () => {
           requestId: prepared.requestId,
           signature: sig,
           from: account,
-          idempotencyKey: prepared.idempotencyKey,
           eip712Data: {
             batchParams: prepared.payload.batchParams,
             relayParams: prepared.payload.relayParams,

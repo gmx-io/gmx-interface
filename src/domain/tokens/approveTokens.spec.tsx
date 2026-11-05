@@ -8,10 +8,12 @@ import { createClient, custom } from "viem";
 import { arbitrum } from "viem/chains";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
+import type { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
+import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { approveTokens } from "./approveTokens";
 
@@ -21,7 +23,10 @@ vi.mock("lib/rpc", () => ({ getProvider: vi.fn() }));
 vi.mock("lib/helperToast", () => ({ helperToast: { success: vi.fn(), error: vi.fn(), info: vi.fn() } }));
 vi.mock("lib/gas/estimateGasLimit", () => ({ estimateGasLimit: async () => 100000n }));
 vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn(), pushEvent: mocks.pushEvent } }));
-vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: mocks.sendTokenPermitMetric }));
+vi.mock("lib/metrics/tokenPermitMetrics", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  sendTokenPermitMetric: mocks.sendTokenPermitMetric,
+}));
 
 const ARBITRUM = 42161;
 const ACCOUNT = "0x0000000000000000000000000000000000000001";
@@ -139,7 +144,7 @@ describe("approveTokens metric", () => {
 
 describe("approveTokens permit metric", () => {
   function approveWithPermit(
-    addTokenPermit: () => Promise<void>,
+    addTokenPermit: AddTokenPermitFn,
     disableTokenPermits = vi.fn(),
     sendTransaction = async () => HASH
   ) {
@@ -160,12 +165,16 @@ describe("approveTokens permit metric", () => {
   }
 
   it("reports a signed permit without a transaction", async () => {
-    const addTokenPermit = vi.fn(async () => undefined);
+    const permit = { token: USDC, r: `0x${"11".repeat(32)}` } as SignedTokenPermit;
+    const addTokenPermit = vi.fn(async () => permit);
 
     await approveWithPermit(addTokenPermit);
 
     expect(addTokenPermit).toHaveBeenCalledWith(USDC, SPENDER, 100n);
     expect(getOutcomes()).toEqual(["permit:accepted"]);
+    expect(mocks.sendTokenPermitMetric).toHaveBeenCalledWith(
+      expect.objectContaining({ outcome: "signed", permitId: "111111111111" })
+    );
   });
 
   it.each([
@@ -226,9 +235,7 @@ describe("approveTokens rejection toast", () => {
       approveAmount: undefined,
       permitParams: isPermit
         ? {
-            addTokenPermit: async () => {
-              await signer.provider.send("eth_signTypedData_v4", [ACCOUNT, "{}"]);
-            },
+            addTokenPermit: () => signer.provider.send("eth_signTypedData_v4", [ACCOUNT, "{}"]),
             disableTokenPermits: mocks.disableTokenPermits,
             accountType: "eoa",
           }
