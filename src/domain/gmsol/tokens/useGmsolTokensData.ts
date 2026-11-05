@@ -1,17 +1,19 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useMemo, useRef } from "react";
+import useSWR from "swr";
 
-import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
-import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
-import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
+import type { TokenPricesData } from "sdk/utils/tokens/types";
 
+import { buildGmsolTokensData } from "./buildGmsolTokensData";
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
-import type { GmsolTokenPricesData } from "../gmsolOracleUtils";
-import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
+import { getGmsolApiCacheKey } from "../api/gmsolApiSdk";
+
+type PricesResponse = { pricesData: TokenPricesData | undefined; receivedAt: number };
 
 export function useGmsolTokensData({
   enabled,
@@ -21,54 +23,39 @@ export function useGmsolTokensData({
   rawMarketsInfoData: RawMarketsInfoData | undefined;
 }): TokensDataResult & { isUnavailable: boolean } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
-  const key = enabled
-    ? ["gmsolPrices", SOLANA_NETWORK_ID, getUiApiCacheKey(SOLANA_NETWORK_ID), oracleFetcher.url]
-    : null;
-  const {
-    data: pricesData,
-    error,
-    freshness,
-  } = useSWRWithFreshness<GmsolTokenPricesData | undefined>(key, () => fetchGmsolPrices(oracleFetcher), {
-    refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS,
-  });
+  const { data, error } = useSWR<PricesResponse, Error>(
+    enabled ? ["gmsolPrices", SOLANA_NETWORK_ID, getGmsolApiCacheKey(), oracleFetcher.url] : null,
+    async () => ({ pricesData: await fetchGmsolPrices(oracleFetcher), receivedAt: Date.now() }),
+    { refreshInterval: FREQUENT_UPDATE_INTERVAL }
+  );
 
-  const receivedAt = freshness.asOf;
-  const snapshotRef = useRef<GmsolTokensSnapshot>();
-  const snapshot = key
-    ? resolveGmsolTokensData({
-        previous: snapshotRef.current,
-        scope: key.join(" "),
-        response: pricesData,
-        now: Date.now(),
-      })
-    : undefined;
-  snapshotRef.current = snapshot;
+  const pricesData = data?.pricesData;
+  const receivedAt = data?.receivedAt;
+  const lastCompleteRef = useRef<GmsolTokensSnapshot>();
+  const resolved = useMemo(() => {
+    if (!pricesData || receivedAt === undefined) {
+      return undefined;
+    }
 
-  const pricesUpdatedAt = snapshot?.pricesUpdatedAt;
-  const [pricesExpiryCheck, checkPricesExpiry] = useReducer((tick: number) => tick + 1, 0);
+    return resolveGmsolTokensData({
+      tokensData: buildGmsolTokensData(pricesData),
+      receivedAt,
+      rawMarketsInfoData,
+      lastComplete: lastCompleteRef.current,
+    });
+  }, [pricesData, receivedAt, rawMarketsInfoData]);
+  lastCompleteRef.current = resolved?.lastComplete ?? lastCompleteRef.current;
 
-  useEffect(() => {
-    if (pricesUpdatedAt === undefined) return;
-
-    const timeout = setTimeout(checkPricesExpiry, Math.max(0, pricesUpdatedAt + PRICES_CACHE_TTL - Date.now()));
-    return () => clearTimeout(timeout);
-  }, [pricesUpdatedAt, pricesExpiryCheck]);
-
-  const isExpired = isSnapshotPastGrace(receivedAt, FREQUENT_UPDATE_INTERVAL);
-  const tokensData = isExpired ? undefined : snapshot?.tokensData;
-  const isIncomplete =
-    rawMarketsInfoData !== undefined &&
-    tokensData !== undefined &&
-    !hasGmsolListedMarketPrices(rawMarketsInfoData, tokensData);
+  const tokensData = resolved?.tokensData;
+  const isPriceCoverageIncomplete = Boolean(pricesData && rawMarketsInfoData && !tokensData);
 
   return {
     tokensData,
-    pricesUpdatedAt: isExpired ? undefined : pricesUpdatedAt,
+    pricesUpdatedAt: resolved?.pricesUpdatedAt,
     isGmxAccountBalancesLoaded: false,
     isWalletBalancesLoaded: false,
     isBalancesLoaded: false,
     error,
-    isUnavailable: Boolean(error) || isExpired || isIncomplete || (receivedAt !== undefined && !tokensData),
+    isUnavailable: Boolean(error) || (data !== undefined && !pricesData) || isPriceCoverageIncomplete,
   };
 }

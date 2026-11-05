@@ -16,7 +16,7 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { OrderInfo } from "sdk/utils/orders/types";
 
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
-import { selectExpressGlobalParams, selectUnavailableExpressFeeToken } from "../selectors/expressSelectors";
+import { selectExpressGlobalParams } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
@@ -45,7 +45,6 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
   const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -90,7 +89,6 @@ export function useCancelOrder(order: OrderInfo) {
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
-            unavailableGasPaymentToken,
             actionName: "Cancel Order",
             collateral: order.initialCollateralToken.symbol,
           })
@@ -119,7 +117,6 @@ export function useCancelOrder(order: OrderInfo) {
       chainId,
       estimateExpressParams,
       globalExpressParams,
-      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       order,
