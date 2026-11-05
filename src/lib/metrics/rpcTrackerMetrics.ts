@@ -38,7 +38,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
         data: {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
-          endpoint: endpoint,
+          endpoint: new URL(endpoint).hostname,
           reason: reason,
         },
       });

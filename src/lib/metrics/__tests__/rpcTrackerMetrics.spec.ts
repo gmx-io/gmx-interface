@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { emitEndpointsUpdated } from "lib/FallbackTracker/events";
+import { emitEndpointBanned, emitEndpointsUpdated } from "lib/FallbackTracker/events";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
 import { metrics } from "..";
@@ -42,6 +42,29 @@ describe("subscribeForRpcTrackerMetrics", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+  });
+
+  it.each([
+    ["https://solana-mainnet.g.alchemy.com/v2/test-secret-key", "solana-mainnet.g.alchemy.com"],
+    ["https://arb-mainnet.g.alchemy.com/v2/test-secret-key?api_key=query-secret", "arb-mainnet.g.alchemy.com"],
+    ["https://user:password@rpc.example.com/private/test-secret-key?token=query-secret#fragment", "rpc.example.com"],
+  ])("reports only the hostname when banning %s", (endpoint, hostname) => {
+    const reason = "Banned by failures threshold";
+    emitEndpointBanned({ trackerKey: TRACKER_KEY, endpoint, reason });
+
+    const report = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+
+    expect(report).toBeDefined();
+    expect(report?.payload.customFields).toMatchObject({
+      chainId: mockTracker.params.chainId,
+      endpoint: hostname,
+      reason,
+    });
+    expect(JSON.stringify(report)).not.toContain("test-secret-key");
+    expect(JSON.stringify(report)).not.toContain("query-secret");
+    expect(JSON.stringify(report)).not.toContain("password");
   });
 
   it("reports new pairs at once and folds flapping between reported pairs into one summary per interval", () => {
