@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { isSolanaNetwork } from "config/chains";
+import { useChainId } from "lib/chains";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { ContractsChainId } from "sdk/configs/chains";
 
@@ -10,10 +12,12 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
   listingDateByIndexToken: MarketsListingDates;
   isLoading: boolean;
 } {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data, isLoading } = useSWR(
-    ["markets-listing-dates", chainId],
+    isSolana ? null : ["markets-listing-dates", chainId],
     async () => {
       const markets = await oracleKeeperFetcher.fetchMarkets();
       const map: MarketsListingDates = {};
@@ -31,5 +35,9 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
     }
   );
 
-  return useMemo(() => ({ listingDateByIndexToken: data ?? {}, isLoading }), [data, isLoading]);
+  // Solana has no confirmed listing dates yet; never reuse the EVM cache or migration date.
+  return useMemo(
+    () => ({ listingDateByIndexToken: isSolana ? {} : data ?? {}, isLoading: !isSolana && isLoading }),
+    [data, isLoading, isSolana]
+  );
 }
