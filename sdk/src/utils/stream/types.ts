@@ -7,8 +7,6 @@ export type Unsubscribe = () => void;
 export type FrameMeta = {
   serverTs: number;
   receivedAt: number;
-  // Origin (oracle/keeper) timestamp of the payload, when the producer forwards it.
-  // Lets the consumer measure true end-to-end freshness against the same reference REST uses.
   originTs?: number;
 };
 
