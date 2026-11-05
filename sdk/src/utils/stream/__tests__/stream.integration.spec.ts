@@ -75,8 +75,6 @@ describe("stream integration (real client <-> real ws server)", () => {
     sdk = new GmxApiSdk({
       chainId: ARBITRUM,
       apiUrl: `http://localhost:${port}`,
-      reconnectBaseMs: 20,
-      reconnectMaxMs: 40,
     });
   });
 

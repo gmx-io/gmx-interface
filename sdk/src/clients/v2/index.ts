@@ -323,8 +323,6 @@ export class GmxApiSdk {
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
   private readonly streamUrlOverride?: string;
   private readonly webSocketImpl?: WebSocketCtor;
-  private readonly reconnectBaseMs?: number;
-  private readonly reconnectMaxMs?: number;
   private _streamClient?: WsStreamClient;
 
   constructor({
@@ -333,21 +331,15 @@ export class GmxApiSdk {
     api,
     streamUrl,
     webSocketImpl,
-    reconnectBaseMs,
-    reconnectMaxMs,
   }: {
     chainId: ContractsChainId;
     apiUrl?: string;
     api?: IHttp;
     streamUrl?: string;
     webSocketImpl?: WebSocketCtor;
-    reconnectBaseMs?: number;
-    reconnectMaxMs?: number;
   }) {
     this.streamUrlOverride = streamUrl;
     this.webSocketImpl = webSocketImpl;
-    this.reconnectBaseMs = reconnectBaseMs;
-    this.reconnectMaxMs = reconnectMaxMs;
 
     if (api) {
       this.ctx = { chainId, api };
@@ -432,12 +424,7 @@ export class GmxApiSdk {
   private getStreamClient(): WsStreamClient {
     if (!this._streamClient) {
       const url = this.streamUrlOverride ?? toStreamUrl(this.ctx.api.url);
-      this._streamClient = new WsStreamClient({
-        url,
-        webSocketImpl: this.webSocketImpl,
-        reconnectBaseMs: this.reconnectBaseMs,
-        reconnectMaxMs: this.reconnectMaxMs,
-      });
+      this._streamClient = new WsStreamClient({ url, webSocketImpl: this.webSocketImpl });
     }
     return this._streamClient;
   }
