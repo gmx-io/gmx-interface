@@ -675,10 +675,6 @@ msgstr "Financement"
 msgid "Deposit margin"
 msgstr "Dépôt de marge"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "Retrait du staking..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Réseau source"
@@ -2171,10 +2167,6 @@ msgstr "Sélectionner un pool"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Ce marché a été désactivé. Contactez l’assistance pour récupérer vos frais de financement restants."
-
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "Le staking a été transféré vers un nouveau contrat. Vérifiez et réessayez."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -4135,10 +4127,6 @@ msgstr "Dune Analytics pour GMX"
 msgid "External routes are only used for Market Swaps"
 msgstr "Les routes externes ne sont utilisées que pour les Market Swaps"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "Le retrait du staking est en pause jusqu'à la mise à niveau du staking"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express nécessite {gasPaymentTokensText} dans votre GMX Account. Déposez l'un d'eux."
@@ -5130,10 +5118,6 @@ msgstr "Marge totale apportée (solde GMX)"
 msgid "POOL VALUE"
 msgstr "VALEUR DU POOL"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "Unstake terminé"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
 msgstr "Exporter le portefeuille"
@@ -5852,8 +5836,6 @@ msgstr "Application désactivée, en attente de la mise à niveau de {0}"
 msgid "v:"
 msgstr "v :"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7307,10 +7289,6 @@ msgstr "Historique complet indisponible pour cette position"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Liquidité insuffisante. Disponible : {availableLiquidityText}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "Unstaking soumis"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
@@ -10558,10 +10536,6 @@ msgstr "Actifs disponibles"
 msgid "Conversion cancelled"
 msgstr "Conversion annulée"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "Échec de l'unstaking"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
 msgstr "[{0}]"
@@ -12926,10 +12900,6 @@ msgstr "FACTEUR"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "Paramètres de récupération indisponibles. Réessayez dans quelques secondes"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "Le retrait de plus de 20 % de votre montant maximal historique de GMX stakés réinitialisera vos récompenses accumulées"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
