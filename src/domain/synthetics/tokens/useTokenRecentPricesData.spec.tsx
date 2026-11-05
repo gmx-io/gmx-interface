@@ -6,6 +6,7 @@ import { ARBITRUM } from "config/chains";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import type { FrameMeta } from "sdk/clients/v2";
 import { getTokenBySymbol, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { parseContractPrice } from "sdk/utils/tokens";
 
 import { getPriceTokenConfig, getWsFrameExpiresAt, useTokenRecentPricesRequest } from "./useTokenRecentPricesData";
 import type { WsPriceStore } from "./wsPriceStreamStore";
@@ -31,6 +32,10 @@ vi.mock("./wsPriceStreamStore", () => ({ getWsPriceStore: () => fakeStore }));
 const WETH = getTokenBySymbol(ARBITRUM, "WETH");
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
 const WS_PRICE = { minPrice: 1n, maxPrice: 2n };
+const REST_PRICE = {
+  minPrice: parseContractPrice(1000n, WETH.decimals),
+  maxPrice: parseContractPrice(1000n, WETH.decimals),
+};
 const SWR_CONFIG = { provider: () => new Map(), dedupingInterval: 0 };
 
 function createFakeStore() {
@@ -137,7 +142,7 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
     expect(wethPrice()).toEqual(WS_PRICE);
 
     await advance(10_000);
-    expect(wethPrice()).not.toEqual(WS_PRICE);
+    expect(wethPrice()).toEqual(REST_PRICE);
   });
 
   it("keeps the last frame after the socket drops until a newer REST response arrives", async () => {
@@ -149,7 +154,7 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
     expect(wethPrice()).toEqual(WS_PRICE);
 
     await advance(250);
-    expect(wethPrice()).not.toEqual(WS_PRICE);
+    expect(wethPrice()).toEqual(REST_PRICE);
   });
 
   it.each([
