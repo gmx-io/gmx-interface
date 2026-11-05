@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
+import { isQaMockOn } from "config/qaMocks";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -47,7 +48,81 @@ export type EventData = {
   requiresOpenPosition?: string;
 };
 
+const QA_QQQ_SPY_EVENT: EventData = {
+  id: "qa-qqq-spy-arbitrum-listing",
+  type: "listing",
+  isActive: true,
+  startDate: "3 Nov 2026, 0:00",
+  endDate: "15 Dec 2026, 0:00",
+  title: "QQQ and SPY markets added on Arbitrum",
+  description: (
+    <>
+      <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via GLV{" "}
+      <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market dropdown.
+    </>
+  ),
+};
+
+const QA_EVENTS: EventData[] = [
+  {
+    id: "qa-1-long-title",
+    type: "update",
+    isActive: true,
+    startDate: "1 Nov 2026, 5:00",
+    endDate: "15 Dec 2026, 0:00",
+    title:
+      "Test 1 · App Update: Clearer Network Fees, Fewer Failed Orders, Instant TP/SL, a Max Button That Keeps Gas Back and Chart Colors That Stay",
+    description:
+      "Test 1 has no summary, so the card shows its full text. Every fee row shows the token you pay with and which balance pays it. A position increase that would fail is now blocked before you sign. TP/SL orders show in the Orders tab the moment you submit them. The Max button keeps back the network fee. Chart colors stay after a reload.",
+    link: { text: "Read the announcement", href: "https://x.com/GMX_IO", newTab: true },
+  },
+  {
+    id: "qa-2-own-app-link",
+    type: "listing",
+    isActive: true,
+    startDate: "1 Nov 2026, 4:00",
+    endDate: "15 Dec 2026, 0:00",
+    title: "Test 2 · New: GLV [USDG-USDG] is live with an 8%+ launch boost",
+    summary: "Deposit dollars, earn dollars, with no crypto price exposure on your deposit.",
+    description: "Test 2 full text on the Announcements page.",
+    link: { text: "Open pools", href: "/pools" },
+  },
+  {
+    id: "qa-3-no-own-link",
+    type: "update",
+    isActive: true,
+    startDate: "1 Nov 2026, 3:00",
+    endDate: "15 Dec 2026, 0:00",
+    title: "Test 3 · Announcement without its own link",
+    summary:
+      "The footer shows only See more, in gray. The card keeps the height of the tallest announcement in the carousel.",
+    description: "Test 3 full text on the Announcements page.",
+  },
+  {
+    id: "qa-4-fourth",
+    type: "update",
+    isActive: true,
+    startDate: "1 Nov 2026, 2:00",
+    endDate: "15 Dec 2026, 0:00",
+    title: "Test 4 · Fourth announcement",
+    summary: "The last of the four announcements that fit in the carousel.",
+    description: "Test 4 full text on the Announcements page.",
+  },
+  {
+    id: "qa-5-fifth",
+    type: "update",
+    isActive: true,
+    startDate: "1 Nov 2026, 1:00",
+    endDate: "15 Dec 2026, 0:00",
+    title: "Test 5 · Fifth announcement, outside the first four",
+    summary: "Joins the carousel after one of the first four is closed or opened with See more.",
+    description: "Test 5 full text on the Announcements page.",
+  },
+];
+
 export const appEventsData: EventData[] = [
+  ...(isQaMockOn("qqqSpy") ? [QA_QQQ_SPY_EVENT] : []),
+  ...(isQaMockOn("whatsNew") ? QA_EVENTS : []),
   {
     id: "gmlabs-003-staking-changes",
     type: "update",
