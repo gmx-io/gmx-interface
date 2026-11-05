@@ -5,7 +5,8 @@ import { isAddress } from "viem";
 import { swrCache, SWRConfigProp } from "App/swrConfig";
 import { type AnyChainId } from "config/chains";
 import { executeMulticall } from "lib/multicall";
-import { abis, AbiId } from "sdk/abis";
+import type { AbiId } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 
 import { getFallbackProvider, getProvider } from "../rpc";
 
@@ -165,7 +166,7 @@ async function fetchContractData({
 }): Promise<any | undefined> {
   if (isAddress(arg0, { strict: false })) {
     const address = arg0;
-    const contract = new ethers.Contract(address, abis[abiId], provider);
+    const contract = new ethers.Contract(address, getAbi(chainId, abiId), provider);
 
     const result = await executeMulticall(
       chainId as AnyChainId,

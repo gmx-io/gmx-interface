@@ -9206,6 +9206,10 @@ msgstr "Reclamar reembolsos"
 msgid "View transaction"
 msgstr "Ver transacción"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Su {walletName} aún no está desplegado en {0}</0><1/><2>Realice cualquier transacción desde él en {1} e inténtelo de nuevo</2>"
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
@@ -10306,10 +10310,6 @@ msgstr "Abre GMTrade en una nueva pestaña"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "Principales direcciones"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "El nonce de aprobación de One-Click Trading ha expirado. Vuelva a firmar para seguir usando One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12787,7 +12787,6 @@ msgstr "Ejecutar depósito de margen"
 msgid "Estimate your savings"
 msgstr "Calcule su ahorro"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
