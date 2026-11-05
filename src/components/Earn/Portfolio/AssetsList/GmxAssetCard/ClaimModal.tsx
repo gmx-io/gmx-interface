@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ARBITRUM, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getIsRewardRouterChanged, getRewardRouterContract, RewardRouter } from "domain/stake/rewardRouter";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { getIsRewardRouterClaimNeeded, getVesterClaimedAmount, getVesterClaims } from "domain/stake/rewardsClaim";
 import { getRewardsClaimAction, sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
@@ -25,7 +25,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
@@ -37,8 +37,6 @@ import { GMX_DAO_LINKS } from "./constants";
 export function ClaimModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
-  rewardRouter: RewardRouter | undefined;
-  mutateRewardRouter: () => void;
   signer: UncheckedJsonRpcSigner | undefined;
   chainId: ContractsChainId;
   setPendingTxns: SetPendingTransactions;
@@ -57,8 +55,6 @@ export function ClaimModal(props: {
   const {
     isVisible,
     setIsVisible,
-    rewardRouter,
-    mutateRewardRouter,
     signer,
     chainId,
     setPendingTxns,
@@ -143,12 +139,7 @@ export function ClaimModal(props: {
     (totalNativeTokenRewards !== undefined && totalNativeTokenRewards > 0n);
 
   const isPrimaryEnabled =
-    !isClaiming &&
-    !isApproving &&
-    rewardRouter !== undefined &&
-    hasAnyPendingRewards &&
-    isAnySelectedToClaim &&
-    !hasOutdatedUi;
+    !isClaiming && !isApproving && hasAnyPendingRewards && isAnySelectedToClaim && !hasOutdatedUi;
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
@@ -191,10 +182,6 @@ export function ClaimModal(props: {
       return;
     }
 
-    if (!rewardRouter) {
-      return;
-    }
-
     setIsClaiming(true);
 
     const stakingAction = getRewardsClaimAction({
@@ -209,22 +196,14 @@ export function ClaimModal(props: {
     let failMsg = t`Claim failed`;
 
     try {
-      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
-        mutateRewardRouter();
-        showRewardRouterChangedToast();
-        return;
-      }
-
-      const rewardRouterContract = getRewardRouterContract(rewardRouter, signer);
-      const vesterClaims =
-        rewardRouter.version === "v3" && shouldClaimGmxRewards
-          ? getVesterClaims([
-              { vesterAddress: gmxVesterAddress, claimableAmount: gmxVesterRewards ?? 0n },
-              { vesterAddress: glpVesterAddress, claimableAmount: glpVesterRewards ?? 0n },
-            ])
-          : [];
+      const rewardRouterContract = getRewardRouterContract(chainId, signer);
+      const vesterClaims = shouldClaimGmxRewards
+        ? getVesterClaims([
+            { vesterAddress: gmxVesterAddress, claimableAmount: gmxVesterRewards ?? 0n },
+            { vesterAddress: glpVesterAddress, claimableAmount: glpVesterRewards ?? 0n },
+          ])
+        : [];
       const isRewardRouterClaimNeeded =
-        rewardRouter.version === "v2" ||
         vesterClaims.length === 0 ||
         getIsRewardRouterClaimNeeded({
           shouldClaimGmx: shouldClaimGmxRewards,
@@ -310,8 +289,6 @@ export function ClaimModal(props: {
     gmxVesterAddress,
     glpVesterAddress,
     chainId,
-    rewardRouter,
-    mutateRewardRouter,
     shouldClaimGmx,
     shouldStakeGmx,
     shouldClaimEsGmx,
