@@ -133,16 +133,20 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
     vi.useRealTimers();
   });
 
-  it("serves stream prices and falls back to REST once frames stop for 10 s", async () => {
+  it("serves stream prices, then REST at its normal cadence once frames stop for 10 s", async () => {
     const { wethPrice } = renderPrices();
     await advance(0);
 
-    fakeStore.push({ [WETH.address]: WS_PRICE });
-    await advance(250);
+    fakeStore.push({ [WETH.address]: WS_PRICE, [NATIVE_TOKEN_ADDRESS]: WS_PRICE });
+    await advance(9_999);
     expect(wethPrice()).toEqual(WS_PRICE);
 
-    await advance(10_000);
+    await advance(1);
     expect(wethPrice()).toEqual(REST_PRICE);
+
+    fetchTickers.mockClear();
+    await advance(2_000);
+    expect(fetchTickers).toHaveBeenCalledTimes(2);
   });
 
   it("keeps the last frame after the socket drops until a newer REST response arrives", async () => {
