@@ -42,6 +42,7 @@ import {
   TooltipRow,
   TooltipRows,
   TooltipText,
+  TooltipTitle,
 } from "components/Tooltip/TooltipBlocks";
 
 import FilterHistoryIcon from "img/ic_filter_history.svg?react";
@@ -57,7 +58,7 @@ import {
   getUsdgPartialClosePayoutLines,
 } from "./utils/lifecycleSettlement";
 import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
-import { Line, TooltipString } from "./utils/shared";
+import { Line, TooltipString, TooltipValue } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 import "./TradeHistoryRow.scss";
@@ -102,10 +103,19 @@ function LineSpans({ spans }: { spans: TooltipString[] }) {
   );
 }
 
+function LineValue({ value }: { value: TooltipValue }) {
+  return Array.isArray(value) ? <LineSpans spans={value} /> : <LineSpan span={value} />;
+}
+
 type RowLine = Extract<Line, { key: string }>;
+type TitleLine = Extract<Line, { title: string }>;
 
 function isRowLine(line: Line): line is RowLine {
   return typeof line === "object" && !Array.isArray(line) && "key" in line;
+}
+
+function isTitleLine(line: Line): line is TitleLine {
+  return typeof line === "object" && !Array.isArray(line) && "title" in line;
 }
 
 function isFootnoteLine(line: Line) {
@@ -114,7 +124,7 @@ function isFootnoteLine(line: Line) {
 
 function getTooltipBlocks(content: Line[]): ReactNode[] {
   const blocks: ReactNode[] = [];
-  let rows: RowLine[] = [];
+  let rows: (RowLine | TitleLine)[] = [];
   let lastBlock: "text" | "rows" | undefined;
   let hasGap = false;
 
@@ -125,14 +135,20 @@ function getTooltipBlocks(content: Line[]): ReactNode[] {
 
     blocks.push(
       <TooltipRows key={blocks.length}>
-        {rows.map((row, i) => (
-          <TooltipRow
-            key={i}
-            label={row.key}
-            value={Array.isArray(row.value) ? <LineSpans spans={row.value} /> : <LineSpan span={row.value} />}
-            valueClassName={Array.isArray(row.value) ? "min-w-0 !shrink !whitespace-normal" : undefined}
-          />
-        ))}
+        {rows.map((row, i) =>
+          isTitleLine(row) ? (
+            <TooltipTitle key={i} value={<LineValue value={row.value} />}>
+              {row.title}
+            </TooltipTitle>
+          ) : (
+            <TooltipRow
+              key={i}
+              label={row.key}
+              value={<LineValue value={row.value} />}
+              valueClassName={Array.isArray(row.value) ? "min-w-0 !shrink !whitespace-normal" : undefined}
+            />
+          )
+        )}
       </TooltipRows>
     );
     rows = [];
@@ -160,7 +176,7 @@ function getTooltipBlocks(content: Line[]): ReactNode[] {
 
     hasGap = false;
 
-    if (isRowLine(line)) {
+    if (isRowLine(line) || isTitleLine(line)) {
       rows.push(line);
       return;
     }
