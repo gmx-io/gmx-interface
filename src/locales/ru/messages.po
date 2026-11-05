@@ -4519,6 +4519,10 @@ msgstr "Только через кошелёк"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Котировка Paxos изменилась. Проверьте новую сумму и комиссию, затем подтвердите снова."
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому транзакции отправляются без Express, пока это не станет возможным."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "Листинг"
@@ -7428,6 +7432,10 @@ msgstr "Ваши средства в безопасности в контрак�
 msgid "Perpetuals"
 msgstr "Бессрочные контракты"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии. Вместо этого они оплачиваются в {toSymbol}."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Экспонента влияния (отрицательная)"
@@ -8346,6 +8354,10 @@ msgstr "По этой цене срабатывания оставшаяся п�
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "Обновлено: {orderText}"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому действия GMX Account нельзя отправить, пока это не станет возможным."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts

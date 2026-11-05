@@ -4519,6 +4519,10 @@ msgstr "Nur Wallet"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Das Paxos-Angebot hat sich geändert. Prüfen Sie den neuen Betrag und die Gebühr und bestätigen Sie erneut."
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen, daher werden Transaktionen ohne Express gesendet, bis dies wieder möglich ist."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "Listing"
@@ -7428,6 +7432,10 @@ msgstr "Ihre Mittel sind sicher in GMX-Verträgen auf der Zielchain. Versuchen S
 msgid "Perpetuals"
 msgstr "Perpetuals"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen. Sie werden stattdessen in {toSymbol} bezahlt."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Einflussexponent (negativ)"
@@ -8346,6 +8354,10 @@ msgstr "Bei diesem Auslösepreis würde die verbleibende Position den maximalen 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} aktualisiert"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen, daher können Aktionen im GMX Account erst wieder gesendet werden, wenn dies möglich ist."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
