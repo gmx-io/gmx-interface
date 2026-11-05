@@ -1324,7 +1324,6 @@ msgid "Claimed funding fees"
 msgstr "Получены комиссии за финансирование"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Что нового"
 

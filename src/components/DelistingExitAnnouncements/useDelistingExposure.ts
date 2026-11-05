@@ -19,6 +19,7 @@ const EMPTY_EXPOSURE: DelistingExposure = {
 
 export function useDelistingExposure(): DelistingExposure & {
   account: string | undefined;
+  isLoading: boolean;
 } {
   const { account } = useWallet();
   const { chainId, srcChainId } = useChainId();
@@ -54,5 +55,7 @@ export function useDelistingExposure(): DelistingExposure & {
     [chainId, enabled, marketTokensData, marketsInfoData, positions.positionsData]
   );
 
-  return { account, ...exposure };
+  const isLoading = enabled && (positions.positionsData === undefined || marketTokensData === undefined);
+
+  return { account, isLoading, ...exposure };
 }

@@ -17,7 +17,8 @@ const MAX_TOAST_CARDS = 4;
 
 type UseWhatsNewAnnouncementsResult = {
   cards: EventData[];
-  dismiss: () => void;
+  isLoading: boolean;
+  dismiss: (id: string) => void;
 };
 
 export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
@@ -27,7 +28,7 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { account } = useWallet();
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags, isLoading: isUiFlagsLoading } = useUiFlagsRequest();
 
   const hasLivePositionGatedEvent = useMemo(() => {
     if (isHome) return false;
@@ -82,12 +83,17 @@ export function useWhatsNewAnnouncements(): UseWhatsNewAnnouncementsResult {
 
   const cards = useMemo(() => eligible.slice(0, MAX_TOAST_CARDS), [eligible]);
 
-  const dismiss = useCallback(() => {
-    if (eligible.length === 0) return;
-    const prev = Array.isArray(visited) ? visited : [];
-    const next = Array.from(new Set([...prev, ...eligible.map((event) => event.id)]));
-    setVisited(next);
-  }, [eligible, setVisited, visited]);
+  const isLoading =
+    isUiFlagsLoading || (hasLivePositionGatedEvent && Boolean(account) && positions.positionsData === undefined);
 
-  return { cards, dismiss };
+  const dismiss = useCallback(
+    (id: string) => {
+      const prev = Array.isArray(visited) ? visited : [];
+      if (prev.includes(id)) return;
+      setVisited([...prev, id]);
+    },
+    [setVisited, visited]
+  );
+
+  return { cards, isLoading, dismiss };
 }
