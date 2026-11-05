@@ -96,14 +96,14 @@ describe("WsStreamClient connection", () => {
   it("connects on first subscribe and transitions connecting -> live", () => {
     const { client, sockets, getAttempts } = makeClient();
     const statuses: StreamConnectionStatus[] = [];
-    client.addStatusListener((s) => statuses.push(s));
+    client.subscribeConnectionStatus((s) => statuses.push(s));
 
     client.subscribe("prices", vi.fn());
     expect(getAttempts()).toBe(1);
-    expect(client.status).toBe("connecting");
+    expect(client.connectionStatus).toBe("connecting");
 
     sockets[0].open();
-    expect(client.status).toBe("live");
+    expect(client.connectionStatus).toBe("live");
     expect(statuses).toEqual(["connecting", "live"]);
   });
 
@@ -264,7 +264,7 @@ describe("WsStreamClient reconnect / backoff", () => {
       vi.advanceTimersByTime(1);
       expect(getAttempts()).toBe(index + 2);
     });
-    expect(client.status).toBe("reconnecting");
+    expect(client.connectionStatus).toBe("reconnecting");
   });
 
   it("keeps backing off while sockets drop soon after opening, and resets after one stayed up 30 s", () => {
@@ -310,7 +310,7 @@ describe("WsStreamClient reconnect / backoff", () => {
 
     vi.advanceTimersByTime(15_000);
     expect(sockets[0].close).toHaveBeenCalled();
-    expect(client.status).toBe("reconnecting");
+    expect(client.connectionStatus).toBe("reconnecting");
     vi.advanceTimersByTime(499);
     expect(getAttempts()).toBe(1);
     vi.advanceTimersByTime(1);
@@ -350,7 +350,7 @@ describe("WsStreamClient reconnect / backoff", () => {
     sockets[1].emit({ ch: "prices", type: "snapshot", serverTs: 1, data: 1 });
 
     expect(getAttempts()).toBe(2);
-    expect(client.status).toBe("live");
+    expect(client.connectionStatus).toBe("live");
     expect(listener).toHaveBeenCalledTimes(1);
   });
 });
@@ -365,7 +365,7 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     unsub();
     expect(parseSends(sockets[0])).toContainEqual({ op: "unsubscribe", channels: ["prices"] });
     expect(sockets[0].close).toHaveBeenCalled();
-    expect(client.status).toBe("closed");
+    expect(client.connectionStatus).toBe("closed");
   });
 
   it("keeps the channel while another listener remains", () => {
@@ -386,7 +386,7 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     unsub();
     expect(sockets[0].send).not.toHaveBeenCalled();
     expect(sockets[0].close).toHaveBeenCalled();
-    expect(client.status).toBe("closed");
+    expect(client.connectionStatus).toBe("closed");
   });
 
   it("close() stops a pending reconnect", () => {
@@ -395,7 +395,7 @@ describe("WsStreamClient unsubscribe / lifecycle", () => {
     client.close();
     vi.advanceTimersByTime(5000);
     expect(getAttempts()).toBe(1);
-    expect(client.status).toBe("closed");
+    expect(client.connectionStatus).toBe("closed");
   });
 
   it("drops late frames after close", () => {
@@ -414,7 +414,7 @@ describe("WsStreamClient status listeners", () => {
   it("notifies on transitions and stops after removal", () => {
     const { client, sockets } = makeClient();
     const cb = vi.fn();
-    const remove = client.addStatusListener(cb);
+    const remove = client.subscribeConnectionStatus(cb);
 
     client.subscribe("prices", vi.fn());
     sockets[0].open();

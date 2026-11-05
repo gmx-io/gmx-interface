@@ -37,7 +37,7 @@ export function createChannelSubscription<T>(
     get: () => value,
     getMeta: () => meta,
     get connectionStatus() {
-      return client.status;
+      return client.connectionStatus;
     },
     subscribe(listener: (value: T) => void): Unsubscribe {
       listeners.add(listener);
@@ -46,7 +46,7 @@ export function createChannelSubscription<T>(
       };
     },
     subscribeConnectionStatus(listener: (status: StreamConnectionStatus) => void): Unsubscribe {
-      const remove = client.addStatusListener(listener);
+      const remove = client.subscribeConnectionStatus(listener);
       connectionStatusUnsubscribers.add(remove);
       return () => {
         connectionStatusUnsubscribers.delete(remove);

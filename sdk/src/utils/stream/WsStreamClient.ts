@@ -38,7 +38,7 @@ export function callListener<T>(listener: (value: T) => void, value: T) {
 }
 
 export class WsStreamClient {
-  status: StreamConnectionStatus = "closed";
+  connectionStatus: StreamConnectionStatus = "closed";
 
   private ws?: WebSocketLike;
   private readonly url: string;
@@ -49,7 +49,7 @@ export class WsStreamClient {
   private readonly probeTimeoutMs: number;
   private readonly random: () => number;
   private readonly listeners = new Map<string, Set<ChannelSubscriber>>();
-  private readonly statusListeners = new Set<(status: StreamConnectionStatus) => void>();
+  private readonly connectionStatusListeners = new Set<(status: StreamConnectionStatus) => void>();
   private readonly lastFrameByChannel = new Map<string, ChannelFrame>();
   private readonly originTsByChannel = new Map<string, number>();
   private readonly refusalByChannel = new Map<string, { message: string }>();
@@ -93,7 +93,7 @@ export class WsStreamClient {
     }
 
     this.ensureConnected();
-    if (!existing && this.status === "live") {
+    if (!existing && this.connectionStatus === "live") {
       this.sendOp("subscribe", [channel]);
     }
 
@@ -107,7 +107,7 @@ export class WsStreamClient {
         this.lastFrameByChannel.delete(channel);
         this.originTsByChannel.delete(channel);
         this.refusalByChannel.delete(channel);
-        if (this.status === "live") {
+        if (this.connectionStatus === "live") {
           this.sendOp("unsubscribe", [channel]);
         }
       }
@@ -117,10 +117,10 @@ export class WsStreamClient {
     };
   }
 
-  addStatusListener(listener: (status: StreamConnectionStatus) => void): Unsubscribe {
-    this.statusListeners.add(listener);
+  subscribeConnectionStatus(listener: (status: StreamConnectionStatus) => void): Unsubscribe {
+    this.connectionStatusListeners.add(listener);
     return () => {
-      this.statusListeners.delete(listener);
+      this.connectionStatusListeners.delete(listener);
     };
   }
 
@@ -140,7 +140,7 @@ export class WsStreamClient {
     if (!this.canConnect()) {
       return;
     }
-    this.setStatus(this.status === "closed" ? "connecting" : "reconnecting");
+    this.setConnectionStatus(this.connectionStatus === "closed" ? "connecting" : "reconnecting");
     if (!this.canConnect()) {
       return;
     }
@@ -166,7 +166,7 @@ export class WsStreamClient {
       if (channels.length) {
         this.sendOp("subscribe", channels);
       }
-      this.setStatus("live");
+      this.setConnectionStatus("live");
     };
     ws.onmessage = (ev: { data: unknown }) => {
       if (this.ws === ws) {
@@ -295,7 +295,7 @@ export class WsStreamClient {
     this.ws = undefined;
     this.noteSocketEnded();
     if (this.closedByUser || this.listeners.size === 0) {
-      this.setStatus("closed");
+      this.setConnectionStatus("closed");
       return;
     }
     this.scheduleReconnect();
@@ -318,7 +318,7 @@ export class WsStreamClient {
       },
       ceiling / 2 + (this.random() * ceiling) / 2
     );
-    this.setStatus("reconnecting");
+    this.setConnectionStatus("reconnecting");
   }
 
   private startProbe() {
@@ -355,18 +355,18 @@ export class WsStreamClient {
     }
   }
 
-  private setStatus(status: StreamConnectionStatus) {
-    if (this.status === status) {
+  private setConnectionStatus(status: StreamConnectionStatus) {
+    if (this.connectionStatus === status) {
       return;
     }
-    this.status = status;
+    this.connectionStatus = status;
     if (status === "live") {
       this.startProbe();
     } else {
       this.stopProbe();
     }
-    for (const listener of this.statusListeners) {
-      if (this.status !== status) {
+    for (const listener of this.connectionStatusListeners) {
+      if (this.connectionStatus !== status) {
         return;
       }
       callListener(listener, status);
@@ -402,6 +402,6 @@ export class WsStreamClient {
     this.refusalByChannel.clear();
     this.reconnectAttempt = 0;
     this.dropSocket();
-    this.setStatus("closed");
+    this.setConnectionStatus("closed");
   }
 }
