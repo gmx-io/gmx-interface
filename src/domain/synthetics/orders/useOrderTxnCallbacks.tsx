@@ -45,7 +45,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
@@ -132,6 +132,7 @@ export function useOrderTxnCallbacks() {
             tokenAddress: permit.token,
             accountType: tokenPermitAccountType,
             reason,
+            permitId: getTokenPermitId(permit),
           });
         });
       };
@@ -499,6 +500,7 @@ export function useOrderTxnCallbacks() {
                 tokenAddress: permit.token,
                 accountType: tokenPermitAccountType,
                 reason: "simulation",
+                permitId: getTokenPermitId(permit),
               });
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(

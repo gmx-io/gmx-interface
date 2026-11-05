@@ -33,7 +33,6 @@ async function cancelAllOrders() {
       requestId: prepared.requestId,
       signature: sig,
       from: account,
-      idempotencyKey: prepared.idempotencyKey,
       eip712Data: {
         batchParams: prepared.payload.batchParams,
         relayParams: prepared.payload.relayParams,
@@ -813,7 +812,6 @@ describe("increase orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
