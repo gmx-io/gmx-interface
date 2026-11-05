@@ -8,9 +8,8 @@ import {
   useProtocolStatsSummary,
 } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
-import { useTotalVolume, useV1FeesInfo } from "domain/stats";
+import { V1_TOTAL_FEES_USD, V1_UNIQUE_USERS, useTotalVolume } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
-import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
@@ -52,18 +51,12 @@ export function StatsCard() {
   // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
   const gmtradeUsers = gmtradeStats?.users.all ?? undefined;
 
-  const uniqueUsers = useUniqueUsers();
   const totalVolumeStaleEntries = getStaleEntries(
     [v1TotalVolume.freshness, "Arbitrum", "Avalanche"],
     [gmtradeFreshness, SOLANA_ENTRY]
   );
-  const uniqueUsersStaleEntries = getStaleEntries(
-    [uniqueUsers.freshness, "Arbitrum", "Avalanche"],
-    [gmtradeFreshness, SOLANA_ENTRY]
-  );
-
-  const v1ArbitrumTotalFees = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheTotalFees = useV1FeesInfo(AVALANCHE);
+  // v1 users and fees are frozen constants (domain/stats/v1Totals), so only Solana can be stale here
+  const uniqueUsersStaleEntries = gmtradeStaleEntries;
 
   // #endregion Fees
 
@@ -86,19 +79,12 @@ export function StatsCard() {
 
   const totalFeesEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalFees, v1ArbitrumTotalFees?.totalFees),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalFees, v1AvalancheTotalFees?.totalFees),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalFees, V1_TOTAL_FEES_USD[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalFees, V1_TOTAL_FEES_USD[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalFees,
       [SOLANA_ENTRY]: gmtradeTotalFees,
     }),
-    [
-      v1AvalancheTotalFees?.totalFees,
-      v1ArbitrumTotalFees?.totalFees,
-      v2ArbitrumOverview?.totalFees,
-      v2AvalancheOverview?.totalFees,
-      v2MegaethOverview?.totalFees,
-      gmtradeTotalFees,
-    ]
+    [v2ArbitrumOverview?.totalFees, v2AvalancheOverview?.totalFees, v2MegaethOverview?.totalFees, gmtradeTotalFees]
   );
 
   const totalVolumeEntries = useMemo(
@@ -119,18 +105,12 @@ export function StatsCard() {
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, uniqueUsers.data?.[ARBITRUM]),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, uniqueUsers.data?.[AVALANCHE]),
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, V1_UNIQUE_USERS[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, V1_UNIQUE_USERS[AVALANCHE]),
       MegaETH: v2MegaethOverview?.totalUsers,
       [SOLANA_ENTRY]: gmtradeUsers,
     }),
-    [
-      gmtradeUsers,
-      uniqueUsers.data,
-      v2ArbitrumOverview?.totalUsers,
-      v2AvalancheOverview?.totalUsers,
-      v2MegaethOverview?.totalUsers,
-    ]
+    [gmtradeUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
   );
 
   return (

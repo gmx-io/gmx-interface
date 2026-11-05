@@ -11,7 +11,6 @@ import {
   useProtocolStatsSummary,
 } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
-import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
@@ -63,9 +62,6 @@ export function OverviewCard({
     [positionStats.freshness, "Arbitrum", "Avalanche"],
     [gmtradeFreshness, SOLANA_ENTRY]
   );
-
-  const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
@@ -132,10 +128,7 @@ export function OverviewCard({
   // #endregion TVL and GLP Pool
 
   // #region Daily Volume
-  const v1DailyVolumeInfo = useVolumeInfo();
-  const v1ArbitrumDailyVolume = v1DailyVolumeInfo?.[ARBITRUM];
-  const v1AvalancheDailyVolume = v1DailyVolumeInfo?.[AVALANCHE];
-
+  // v1 is left out: its daily volume is a few dollars of GLP redemptions (see domain/stats/v1Totals)
   const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
   // #endregion Daily Volume
@@ -173,9 +166,7 @@ export function OverviewCard({
   // #endregion Short Position Sizes
 
   // #region Fees
-  const v1ArbitrumEpochFees = v1ArbitrumFees?.epochFees;
-  const v1AvalancheEpochFees = v1AvalancheFees?.epochFees;
-
+  // v1 earns no fees any more, so its epoch fees are 0 (see domain/stats/v1Totals)
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
@@ -185,15 +176,13 @@ export function OverviewCard({
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.dailyVolume, v1ArbitrumDailyVolume),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.dailyVolume, v1AvalancheDailyVolume),
+      Arbitrum: v2ArbitrumOverview?.dailyVolume,
+      Avalanche: v2AvalancheOverview?.dailyVolume,
       MegaETH: v2MegaethOverview?.dailyVolume,
       [SOLANA_ENTRY]: gmtradeDailyVolume,
     }),
     [
       gmtradeDailyVolume,
-      v1ArbitrumDailyVolume,
-      v1AvalancheDailyVolume,
       v2ArbitrumOverview?.dailyVolume,
       v2AvalancheOverview?.dailyVolume,
       v2MegaethOverview?.dailyVolume,
@@ -253,19 +242,12 @@ export function OverviewCard({
 
   const epochFeesEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumEpochFees, v1ArbitrumEpochFees),
-      Avalanche: sumKnownBigInts(v2AvalancheEpochFees, v1AvalancheEpochFees),
+      Arbitrum: v2ArbitrumEpochFees,
+      Avalanche: v2AvalancheEpochFees,
       MegaETH: v2MegaethEpochFees,
       [SOLANA_ENTRY]: gmtradeEpochFees,
     }),
-    [
-      v1ArbitrumEpochFees,
-      v1AvalancheEpochFees,
-      v2ArbitrumEpochFees,
-      v2AvalancheEpochFees,
-      v2MegaethEpochFees,
-      gmtradeEpochFees,
-    ]
+    [v2ArbitrumEpochFees, v2AvalancheEpochFees, v2MegaethEpochFees, gmtradeEpochFees]
   );
 
   const tvlEntries = useMemo(
