@@ -8,7 +8,10 @@ import {
   useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -101,6 +104,7 @@ export function OrderList({
 
   const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
   const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
@@ -197,6 +201,7 @@ export function OrderList({
           isGmxAccount: srcChainId !== undefined,
           expressParams,
           tokensData: undefined,
+          unavailableGasPaymentToken,
           actionName: "Cancel Order",
           collateral: order.initialCollateralToken.symbol,
         })

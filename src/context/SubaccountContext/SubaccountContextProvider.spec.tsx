@@ -29,14 +29,11 @@ const { mocks, ACCOUNT, CHAIN_ID, SUBACCOUNT_ADDRESS, OLD_SUBACCOUNT_ADDRESS, WE
 vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: () => undefined,
   selectGmxAccountGasPaymentToken: () => undefined,
+  selectSettlementChainExpressFeeTokenAddress: () => WETH,
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxIsFromTokenGmxAccount: () => mocks.isGmxAccount,
-}));
-
-vi.mock("context/SyntheticsStateContext/selectors/settingsSelectors", () => ({
-  selectGasPaymentTokenAddress: () => WETH,
 }));
 
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({

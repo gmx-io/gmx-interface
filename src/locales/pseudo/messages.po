@@ -4519,6 +4519,10 @@ msgstr ""
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr ""
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr ""
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr ""
@@ -7428,6 +7432,10 @@ msgstr ""
 msgid "Perpetuals"
 msgstr "[!! Perpetuals !!]"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr ""
@@ -8345,6 +8353,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr ""
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts

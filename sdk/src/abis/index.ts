@@ -3,6 +3,7 @@ import { erc20Abi } from "viem";
 import AbstractSubaccountApprovalNonceable from "./AbstractSubaccountApprovalNonceable";
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
 import ArbSys from "./ArbSys";
+import ChainlinkPriceFeedProvider from "./ChainlinkPriceFeedProvider";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
 import DataStore from "./DataStore";
@@ -27,6 +28,7 @@ import MultichainOrderRouter from "./MultichainOrderRouter";
 import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
 import MultichainVault from "./MultichainVault";
+import Pausable from "./Pausable";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
 import ReferralStorage from "./ReferralStorage";
@@ -62,6 +64,7 @@ export const abis = {
   AbstractSubaccountApprovalNonceable,
   ArbitrumNodeInterface,
   ArbSys,
+  ChainlinkPriceFeedProvider,
   ClaimHandler,
   CustomErrors,
   DataStore,
@@ -86,6 +89,7 @@ export const abis = {
   MultichainSubaccountRouter,
   MultichainTransferRouter,
   MultichainVault,
+  Pausable,
   ReferralStorage,
   RelayParams,
   RewardReader,
