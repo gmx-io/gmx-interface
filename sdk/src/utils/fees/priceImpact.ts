@@ -1,15 +1,6 @@
 import { zeroHash } from "viem";
 
 import { bigMath } from "utils/bigmath";
-import { getGmsolMidPrice, getGmsolUsdAmount } from "utils/gmsol";
-import {
-  GMSOL_MAX_IMPACT_EXPONENT,
-  GMSOL_MAX_SIGNED,
-  GMSOL_MAX_UNSIGNED,
-  GMSOL_PRECISION,
-  GMSOL_PRECISION_SCALE,
-} from "utils/gmsol/constants";
-import { getGmsolFractionalPower } from "utils/gmsol/numbers";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import {
@@ -18,17 +9,12 @@ import {
   BASIS_POINTS_DECIMALS,
   expandDecimals,
   getBasisPoints,
-  PRECISION,
   PRECISION_DECIMALS,
   roundUpMagnitudeDivision,
 } from "utils/numbers";
 import { TokenData } from "utils/tokens/types";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd, getMidPrice } from "utils/tokens/utils";
 import { TradeFees } from "utils/trade/types";
-
-export class GmsolPriceImpactError extends Error {
-  override name = "GmsolPriceImpactError";
-}
 
 export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: bigint;
@@ -96,9 +82,6 @@ export function getCappedPositionImpactUsd(
   isIncrease: boolean,
   opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
-  if (marketInfo.tradeMath === "gmsol") {
-    sizeDeltaUsd = getGmsolUsdAmount(sizeDeltaUsd);
-  }
   sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
 
   const { priceImpactDeltaUsd, balanceWasImproved } = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
@@ -107,10 +90,7 @@ export function getCappedPositionImpactUsd(
     return { priceImpactDeltaUsd, balanceWasImproved };
   }
 
-  let cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsd);
-  if (marketInfo.tradeMath === "gmsol") {
-    cappedImpactUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, cappedImpactUsd);
-  }
+  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsd);
 
   return {
     priceImpactDeltaUsd: cappedImpactUsd,
@@ -147,9 +127,7 @@ export function capPositionImpactUsdByMaxPriceImpactFactor(
 
   const maxPriceImapctFactor = positionImpactDeltaUsd > 0 ? maxPositiveImpactFactor : maxNegativeImpactFactor;
 
-  const maxImpactUsd = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImapctFactor);
-  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor =
-    marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(maxImpactUsd) : maxImpactUsd;
+  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImapctFactor);
 
   if (bigMath.abs(positionImpactDeltaUsd) > maxPriceImpactUsdBasedOnMaxPriceImpactFactor) {
     positionImpactDeltaUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor * (positionImpactDeltaUsd > 0 ? 1n : -1n);
@@ -162,7 +140,7 @@ export function getMaxPositionImpactFactors(marketInfo: MarketInfo) {
   let maxPositiveImpactFactor = marketInfo.maxPositionImpactFactorPositive;
   const maxNegativeImpactFactor = marketInfo.maxPositionImpactFactorNegative;
 
-  if (marketInfo.tradeMath !== "gmsol" && maxPositiveImpactFactor > maxNegativeImpactFactor) {
+  if (maxPositiveImpactFactor > maxNegativeImpactFactor) {
     maxPositiveImpactFactor = maxNegativeImpactFactor;
   }
 
@@ -175,15 +153,12 @@ export function getPriceImpactForPosition(
   isLong: boolean,
   opts: { fallbackToZero?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
-  if (marketInfo.tradeMath === "gmsol") {
-    sizeDeltaUsd = getGmsolUsdAmount(sizeDeltaUsd);
-  }
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
   let effectiveUsdDelta = sizeDeltaUsd;
 
-  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.useOpenInterestInTokensForBalance) {
     if (sizeDeltaUsd < 0n && opts.sizeDeltaInTokens === undefined) {
       throw new Error(`Missing sizeDeltaInTokens for token-OI decrease market ${marketInfo.marketTokenAddress}`);
     }
@@ -226,7 +201,6 @@ export function getPriceImpactForPosition(
     exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
     exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
     fallbackToZero: opts.fallbackToZero,
-    tradeMath: marketInfo.tradeMath,
   });
 
   if (priceImpactDeltaUsd >= 0n) {
@@ -262,7 +236,6 @@ export function getPriceImpactForPosition(
       exponentFactorPositive: marketInfo.positionImpactExponentFactorPositive,
       exponentFactorNegative: marketInfo.positionImpactExponentFactorNegative,
       fallbackToZero: opts.fallbackToZero,
-      tradeMath: marketInfo.tradeMath,
     });
 
   if (priceImpactUsdForVirtualInventory < priceImpactDeltaUsd) {
@@ -288,7 +261,7 @@ function getVirtualInventoryForPositionImpact(marketInfo: MarketInfo) {
 
   let virtualInventory = marketInfo.virtualInventoryForPositions;
 
-  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.useOpenInterestInTokensForBalance) {
     if (typeof marketInfo.virtualInventoryForPositionsInTokens !== "bigint") {
       throw new Error(
         `Missing virtualInventoryForPositionsInTokens for token-OI market ${marketInfo.marketTokenAddress}`
@@ -363,7 +336,6 @@ export function getPriceImpactForSwap(
     shortPoolAmount: marketInfo.shortPoolAmount,
     longDeltaUsd,
     shortDeltaUsd,
-    tradeMath: marketInfo.tradeMath,
   });
 
   const { priceImpactDeltaUsd, balanceWasImproved } = getPriceImpactUsd({
@@ -376,7 +348,6 @@ export function getPriceImpactForSwap(
     exponentFactorPositive: marketInfo.swapImpactExponentFactor,
     exponentFactorNegative: marketInfo.swapImpactExponentFactor,
     fallbackToZero: opts.fallbackToZero,
-    tradeMath: marketInfo.tradeMath,
   });
 
   if (priceImpactDeltaUsd > 0) {
@@ -403,7 +374,6 @@ export function getPriceImpactForSwap(
     shortPoolAmount: virtualInventoryShort,
     longDeltaUsd,
     shortDeltaUsd,
-    tradeMath: marketInfo.tradeMath,
   });
 
   const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory } = getPriceImpactUsd({
@@ -416,7 +386,6 @@ export function getPriceImpactForSwap(
     exponentFactorPositive: marketInfo.swapImpactExponentFactor,
     exponentFactorNegative: marketInfo.swapImpactExponentFactor,
     fallbackToZero: opts.fallbackToZero,
-    tradeMath: marketInfo.tradeMath,
   });
 
   return {
@@ -486,12 +455,11 @@ export function getNextPoolAmountsParams(p: {
   shortPoolAmount: bigint;
   longDeltaUsd: bigint;
   shortDeltaUsd: bigint;
-  tradeMath?: MarketInfo["tradeMath"];
 }) {
   const { longToken, shortToken, longPoolAmount, shortPoolAmount, longDeltaUsd, shortDeltaUsd } = p;
 
-  const longPrice = p.tradeMath === "gmsol" ? getGmsolMidPrice(longToken) : getMidPrice(longToken.prices);
-  const shortPrice = p.tradeMath === "gmsol" ? getGmsolMidPrice(shortToken) : getMidPrice(shortToken.prices);
+  const longPrice = getMidPrice(longToken.prices);
+  const shortPrice = getMidPrice(shortToken.prices);
 
   const longPoolUsd = convertToUsd(longPoolAmount, longToken.decimals, longPrice)!;
   const shortPoolUsd = convertToUsd(shortPoolAmount, shortToken.decimals, shortPrice)!;
@@ -519,7 +487,6 @@ export function getPriceImpactUsd(p: {
   factorNegative: bigint;
   exponentFactorPositive: bigint;
   exponentFactorNegative: bigint;
-  tradeMath?: MarketInfo["tradeMath"];
   fallbackToZero?: boolean;
 }) {
   const { nextLongUsd, nextShortUsd } = p;
@@ -553,7 +520,6 @@ export function getPriceImpactUsd(p: {
       hasPositiveImpact,
       factor,
       exponentFactor,
-      tradeMath: p.tradeMath,
     });
   } else {
     priceImpactDeltaUsd = calculateImpactForCrossoverRebalance({
@@ -563,7 +529,6 @@ export function getPriceImpactUsd(p: {
       factorNegative: p.factorNegative,
       exponentFactorPositive: p.exponentFactorPositive,
       exponentFactorNegative: p.exponentFactorNegative,
-      tradeMath: p.tradeMath,
     });
   }
 
@@ -582,28 +547,13 @@ export function calculateImpactForSameSideRebalance(p: {
   hasPositiveImpact: boolean;
   factor: bigint;
   exponentFactor: bigint;
-  tradeMath?: MarketInfo["tradeMath"];
 }) {
   const { currentDiff, nextDiff, hasPositiveImpact, factor, exponentFactor } = p;
 
-  const currentImpact = applyMarketImpactFactor({
-    diff: currentDiff,
-    factor,
-    exponent: exponentFactor,
-    tradeMath: p.tradeMath,
-  });
-  const nextImpact = applyMarketImpactFactor({
-    diff: nextDiff,
-    factor,
-    exponent: exponentFactor,
-    tradeMath: p.tradeMath,
-  });
+  const currentImpact = applyImpactFactor(currentDiff, factor, exponentFactor);
+  const nextImpact = applyImpactFactor(nextDiff, factor, exponentFactor);
 
   const deltaDiff = bigMath.abs(currentImpact - nextImpact);
-
-  if (p.tradeMath === "gmsol" && deltaDiff > GMSOL_MAX_SIGNED * GMSOL_PRECISION_SCALE) {
-    throw new GmsolPriceImpactError("Solana price impact exceeds native signed range");
-  }
 
   return hasPositiveImpact ? deltaDiff : -deltaDiff;
 }
@@ -618,87 +568,15 @@ export function calculateImpactForCrossoverRebalance(p: {
   factorNegative: bigint;
   exponentFactorPositive: bigint;
   exponentFactorNegative: bigint;
-  tradeMath?: MarketInfo["tradeMath"];
 }) {
   const { currentDiff, nextDiff, factorNegative, factorPositive, exponentFactorPositive, exponentFactorNegative } = p;
 
-  const positiveImpact = applyMarketImpactFactor({
-    diff: currentDiff,
-    factor: factorPositive,
-    exponent: exponentFactorPositive,
-    tradeMath: p.tradeMath,
-  });
-  const negativeImpactUsd = applyMarketImpactFactor({
-    diff: nextDiff,
-    factor: factorNegative,
-    exponent: exponentFactorNegative,
-    tradeMath: p.tradeMath,
-  });
+  const positiveImpact = applyImpactFactor(currentDiff, factorPositive, exponentFactorPositive);
+  const negativeImpactUsd = applyImpactFactor(nextDiff, factorNegative, exponentFactorNegative);
 
   const deltaDiffUsd = bigMath.abs(positiveImpact - negativeImpactUsd);
 
-  if (p.tradeMath === "gmsol" && deltaDiffUsd > GMSOL_MAX_SIGNED * GMSOL_PRECISION_SCALE) {
-    throw new GmsolPriceImpactError("Solana price impact exceeds native signed range");
-  }
-
   return positiveImpact > negativeImpactUsd ? deltaDiffUsd : -deltaDiffUsd;
-}
-
-function applyMarketImpactFactor(p: {
-  diff: bigint;
-  factor: bigint;
-  exponent: bigint;
-  tradeMath?: MarketInfo["tradeMath"];
-}) {
-  if (p.tradeMath !== "gmsol") {
-    return applyImpactFactor(p.diff, p.factor, p.exponent);
-  }
-
-  for (const value of [p.diff, p.factor, p.exponent]) {
-    if (value < 0n || value % GMSOL_PRECISION_SCALE !== 0n || value > GMSOL_MAX_UNSIGNED * GMSOL_PRECISION_SCALE) {
-      throw new GmsolPriceImpactError("Solana impact input is outside native precision or range");
-    }
-  }
-  const base = bigMath.mulDiv(p.diff, 1n, GMSOL_PRECISION_SCALE);
-  const factor = bigMath.mulDiv(p.factor, 1n, GMSOL_PRECISION_SCALE);
-  const power = getGmsolImpactPower(base, p.exponent);
-  const impact = bigMath.mulDiv(power, factor, GMSOL_PRECISION);
-  if (impact > GMSOL_MAX_UNSIGNED) {
-    throw new GmsolPriceImpactError("Solana impact factor exceeds native range");
-  }
-  return impact * GMSOL_PRECISION_SCALE;
-}
-
-function getGmsolImpactPower(base: bigint, exponent: bigint) {
-  if (base < GMSOL_PRECISION) {
-    return 0n;
-  }
-
-  if (base === GMSOL_PRECISION || exponent === 0n) {
-    return GMSOL_PRECISION;
-  }
-
-  const hasFractionalExponent = exponent % PRECISION !== 0n;
-  if (hasFractionalExponent) {
-    try {
-      return getGmsolFractionalPower(base, exponent / GMSOL_PRECISION_SCALE);
-    } catch (error) {
-      throw new GmsolPriceImpactError(error instanceof Error ? error.message : "Solana fractional power failed");
-    }
-  }
-
-  if (exponent > GMSOL_MAX_IMPACT_EXPONENT) {
-    throw new GmsolPriceImpactError("Solana impact exponent is unsupported for exact calculation");
-  }
-
-  let power = GMSOL_PRECISION;
-  for (let remaining = exponent; remaining > 0n; remaining -= PRECISION) {
-    power = bigMath.mulDiv(power, base, GMSOL_PRECISION);
-    if (power > GMSOL_MAX_UNSIGNED) {
-      throw new GmsolPriceImpactError("Solana impact power exceeds native range");
-    }
-  }
-  return power;
 }
 
 export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint) {

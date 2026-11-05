@@ -1,8 +1,7 @@
 import { useMemo, useRef } from "react";
+import useSWR from "swr";
 
-import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
-import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import {
   getIsValuesSnapshotFrozen,
   hasIncompleteMarketValues,
@@ -11,9 +10,10 @@ import {
   type MarketValuesSnapshot,
 } from "domain/synthetics/markets/useMarketsInfoRequest/useApiMarketsInfoRequest";
 import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import { mergeMarketsConfigValues } from "sdk/utils/markets";
 import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
+
+import { getGmsolApiCacheKey, getGmsolApiSdk } from "./api/gmsolApiSdk";
 
 export type GmsolRawMarketsInfoResult = {
   rawMarketsInfoData: RawMarketsInfoData | undefined;
@@ -31,27 +31,24 @@ export function getGmsolMarketsValuesKey(apiCacheKey: string) {
   return ["gmsolMarketsValues", SOLANA_NETWORK_ID, apiCacheKey] as const;
 }
 
+type ValuesResponse = { values: RawMarketValues[]; receivedAt: number };
+
 export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): GmsolRawMarketsInfoResult {
-  const sdk = useGmxSdk(SOLANA_NETWORK_ID);
-  const apiCacheKey = getUiApiCacheKey(SOLANA_NETWORK_ID);
+  const apiCacheKey = getGmsolApiCacheKey();
 
-  const config = useSWRWithFreshness<RawMarketConfig[]>(
-    enabled && sdk ? getGmsolMarketsConfigKey(apiCacheKey) : null,
-    () => sdk!.fetchMarketsConfig(),
-    { refreshInterval: CONFIG_UPDATE_INTERVAL, maxAgeMs: CONFIG_UPDATE_INTERVAL + API_STALE_MS }
+  const { data: configData, error: configError } = useSWR<RawMarketConfig[], Error>(
+    enabled ? getGmsolMarketsConfigKey(apiCacheKey) : null,
+    () => getGmsolApiSdk().fetchMarketsConfig(),
+    { refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
-  const values = useSWRWithFreshness<RawMarketValues[]>(
-    enabled && sdk ? getGmsolMarketsValuesKey(apiCacheKey) : null,
-    () => sdk!.fetchMarketsValues(),
-    { refreshInterval: FREQUENT_UPDATE_INTERVAL, maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS }
+  const { data: valuesResponse, error: valuesError } = useSWR<ValuesResponse, Error>(
+    enabled ? getGmsolMarketsValuesKey(apiCacheKey) : null,
+    async () => ({ values: await getGmsolApiSdk().fetchMarketsValues(), receivedAt: Date.now() }),
+    { refreshInterval: FREQUENT_UPDATE_INTERVAL }
   );
 
-  const configData = config.data;
-  const valuesData = values.data;
-  const configError = config.error;
-  const valuesError = values.error;
-  const error = valuesError ?? configError;
+  const valuesData = valuesResponse?.values;
 
   const rawMarketsInfoData = useMemo(() => {
     if (!configData || !valuesData) {
@@ -62,7 +59,7 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
   }, [configData, valuesData]);
 
   const disabledMarketAddresses = useMemo(
-    () => new Set((configData ?? []).filter((market) => market.isDisabled).map((market) => market.marketTokenAddress)),
+    () => new Set((configData ?? []).filter((config) => config.isDisabled).map((config) => config.marketTokenAddress)),
     [configData]
   );
 
@@ -72,27 +69,23 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     valuesSnapshotRef.current,
     ARBITRUM,
     valuesData,
-    values.freshness.asOf
+    valuesResponse?.receivedAt
   );
 
   const isStale =
     hasStaleMarketValues(configData, valuesData, disabledMarketAddresses) ||
-    getIsValuesSnapshotFrozen(valuesSnapshotRef.current, values.freshness.asOf);
+    getIsValuesSnapshotFrozen(valuesSnapshotRef.current, valuesResponse?.receivedAt);
   const isIncomplete = hasIncompleteMarketValues(configData, valuesData, disabledMarketAddresses);
-  const isExpired =
-    isSnapshotPastGrace(config.freshness.asOf, CONFIG_UPDATE_INTERVAL) ||
-    isSnapshotPastGrace(values.freshness.asOf, FREQUENT_UPDATE_INTERVAL);
+  const error = valuesError ?? configError;
 
   if (!enabled) {
     return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined };
   }
 
-  const isUnavailable = !sdk || Boolean(error) || isStale || isIncomplete || isExpired;
-  // A failed read keeps the last good snapshot until the same grace window EVM uses, then drops it.
-  const keepSnapshot = Boolean(rawMarketsInfoData) && !isStale && !isIncomplete && !isExpired;
+  const isUnavailable = Boolean(error) || isStale || isIncomplete;
 
   return {
-    rawMarketsInfoData: keepSnapshot ? rawMarketsInfoData : undefined,
+    rawMarketsInfoData: isUnavailable ? undefined : rawMarketsInfoData,
     isLoading: !error && !rawMarketsInfoData,
     isUnavailable,
     error,

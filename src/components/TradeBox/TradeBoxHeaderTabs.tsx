@@ -1,5 +1,4 @@
-import { msg } from "@lingui/macro";
-import { useLingui } from "@lingui/react";
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
@@ -50,13 +49,12 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const leverageTooltipEnabled = useSelector(selectTradeboxLeverageTooltipEnabled);
   const resultingPositionLeverage = useSelector(selectTradeboxResultingPositionLeverage);
 
-  const { _ } = useLingui();
   const leverageTooltipContent = useMemo(() => {
     if (!leverageTooltipEnabled) return undefined;
 
     const formattedLeverage = formatLeverage(resultingPositionLeverage) ?? "-";
-    return _(msg`Leverage for the current order. Resulting position leverage: ${formattedLeverage}.`);
-  }, [_, leverageTooltipEnabled, resultingPositionLeverage]);
+    return <Trans>Leverage for the current order. Resulting position leverage: {formattedLeverage}.</Trans>;
+  }, [leverageTooltipEnabled, resultingPositionLeverage]);
 
   const onTradeTypeChange = useCallback(
     (type: TradeType) => {

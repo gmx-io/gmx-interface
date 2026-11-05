@@ -1,10 +1,10 @@
 import { t } from "@lingui/macro";
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 import {
-  makeSelectExpressGlobalParamsForGasPaymentToken,
+  makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken,
   selectSettlementChainExpressGlobalParams,
-  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
@@ -25,14 +25,17 @@ import {
   resolveGasPaymentTokenAddress,
 } from "./gasPaymentTokenFallback";
 import type { ExpressTxnParams, GlobalExpressParams } from "./types";
-import { notifyGasPaymentTokenUnavailable } from "./useGasPaymentTokenUnavailableToast";
 
 const GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID = "gas-payment-token-not-approved";
 
 const notifyGasPaymentTokenNotApproved = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
   const content = t`${fromSymbol} is not approved for fees. This order pays its network fee in ${toSymbol}.`;
 
-  helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID);
+  if (toast.isActive(GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID)) {
+    toast.update(GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID, { render: content });
+  } else {
+    helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_NOT_APPROVED_TOAST_ID });
+  }
 };
 
 /**
@@ -45,14 +48,14 @@ export type PayTokenFeeToken = {
 };
 
 export function useGasPaymentTokenFallback({
-  baseGlobalExpressParams,
+  savedGlobalExpressParams,
   fallback,
   isGmxAccount,
   payTokenFeeToken,
   payAmounts,
   canNotify,
 }: {
-  baseGlobalExpressParams: GlobalExpressParams | undefined;
+  savedGlobalExpressParams: GlobalExpressParams | undefined;
   fallback: GasPaymentTokenFallback | undefined;
   isGmxAccount: boolean;
   payTokenFeeToken: PayTokenFeeToken | undefined;
@@ -66,12 +69,11 @@ export function useGasPaymentTokenFallback({
   const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
-  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
   const [localFeeUsdByToken, setLocalFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
   const isPayTokenFallback = fallback === "skipApproval" && payTokenFeeToken !== undefined;
   const setFeeUsdByToken = isPayTokenFallback ? payTokenFeeToken.setFeeUsdByToken : setLocalFeeUsdByToken;
 
-  const baseGasPaymentToken = baseGlobalExpressParams?.gasPaymentToken;
+  const savedGasPaymentToken = savedGlobalExpressParams?.gasPaymentToken;
 
   const resolveFallbackTokenAddress = (gasPaymentToken: TokenData) =>
     isPayTokenFallback
@@ -86,24 +88,23 @@ export function useGasPaymentTokenFallback({
           tokensData,
           tokensAllowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
           tokenPermits,
-          unavailableTokenAddresses,
         });
 
   const gasPaymentTokenAddress =
-    fallback && !isGmxAccount && baseGasPaymentToken
-      ? resolveFallbackTokenAddress(baseGasPaymentToken)
-      : baseGasPaymentToken?.address;
+    fallback && !isGmxAccount && savedGasPaymentToken
+      ? resolveFallbackTokenAddress(savedGasPaymentToken)
+      : savedGasPaymentToken?.address;
 
   const isFallbackActive =
-    gasPaymentTokenAddress !== undefined && gasPaymentTokenAddress !== baseGasPaymentToken?.address;
+    gasPaymentTokenAddress !== undefined && gasPaymentTokenAddress !== savedGasPaymentToken?.address;
 
   const fallbackGlobalExpressParams = useSelector(
     isFallbackActive
-      ? makeSelectExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)
+      ? makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)
       : selectSettlementChainExpressGlobalParams
   );
 
-  const globalExpressParams = isFallbackActive ? fallbackGlobalExpressParams : baseGlobalExpressParams;
+  const globalExpressParams = isFallbackActive ? fallbackGlobalExpressParams : savedGlobalExpressParams;
 
   const recordExpressParams = useCallback(
     (expressParams: ExpressTxnParams | undefined) => {
@@ -121,7 +122,7 @@ export function useGasPaymentTokenFallback({
   );
 
   useGasPaymentTokenNotApprovedToast({
-    fromToken: baseGasPaymentToken,
+    fromToken: savedGasPaymentToken,
     toToken: isFallbackActive ? getByKey(tokensData, gasPaymentTokenAddress) : undefined,
     // the copy is about an order, so only the trade box shows it
     enabled: isPayTokenFallback && canNotify,
@@ -168,30 +169,16 @@ export function useEstimateBatchExpressParamsWithApprovedGasToken() {
   const calcSelector = useCalcSelector();
 
   return useCallback(
-    (params: Parameters<typeof estimateBatchExpressParams>[0]) => {
-      const unavailableTokenAddresses = calcSelector(selectUnavailableGasPaymentTokenAddresses);
-      const gasPaymentToken = params.globalExpressParams?.gasPaymentToken;
-
-      // a GMX Account action is blocked instead, and its error names the token
-      if (!params.isGmxAccount && gasPaymentToken && unavailableTokenAddresses.includes(gasPaymentToken.address)) {
-        notifyGasPaymentTokenUnavailable({
-          fromSymbol: gasPaymentToken.symbol,
-          toSymbol: undefined,
-          isGmxAccount: false,
-        });
-      }
-
-      return estimateWithApprovedGasPaymentToken({
+    (params: Parameters<typeof estimateBatchExpressParams>[0]) =>
+      estimateWithApprovedGasPaymentToken({
         chainId: params.chainId,
         isGmxAccount: params.isGmxAccount,
         globalExpressParams: params.globalExpressParams,
         payAmounts: getBatchTotalPayCollateralAmount(params.batchParams),
         estimate: (globalExpressParams) => estimateBatchExpressParams({ ...params, globalExpressParams }),
         getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress) =>
-          calcSelector(makeSelectExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)),
-        unavailableTokenAddresses,
-      });
-    },
+          calcSelector(makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)),
+      }),
     [calcSelector]
   );
 }

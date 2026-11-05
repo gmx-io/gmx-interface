@@ -78,7 +78,6 @@ export function useSidecarOrderPayloads() {
         acceptablePrice: amounts.acceptablePrice ?? 0n,
         minOutputAmount: 0n,
         validFromTime: 0n,
-        decreasePositionSwapType: order.decreasePositionSwapType,
         autoCancel: order.autoCancel,
         executionFeeTopUp: getExecutionFeeAmountForEntry(entry) ?? 0n,
         executionGasLimit: getOrderExecutionFee(0, entry.decreaseAmounts?.decreaseSwapType)?.gasLimit,
