@@ -1,5 +1,11 @@
 import type { SourceChainId } from "configs/chains";
 import { postJsonPinned, postJsonPinning } from "utils/http/chainPins";
+import {
+  getSignedSubmit,
+  SIGNED_CROSS_CHAIN_WITHDRAW_SUBMIT,
+  submitSigned,
+  type SignedSubmit,
+} from "utils/http/signedSubmit";
 import { IHttp } from "utils/http/types";
 import type { BridgeOutParams } from "utils/multichain/api";
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/signer";
@@ -74,6 +80,11 @@ export type CrossChainWithdrawSubmitRequest = {
   relayerFeeAmount: bigint;
   requestId?: string;
 };
+
+export type SignedCrossChainWithdrawSubmit = SignedSubmit<
+  CrossChainWithdrawPrepareResponse,
+  CrossChainWithdrawSubmitRequest
+>;
 
 export type CrossChainWithdrawSubmitResponse = {
   requestId: string;
@@ -201,6 +212,10 @@ export async function signCrossChainWithdrawPrepared(
   );
 }
 
+export function getSignedCrossChainWithdrawSubmit(error: unknown): SignedCrossChainWithdrawSubmit | undefined {
+  return getSignedSubmit(error, SIGNED_CROSS_CHAIN_WITHDRAW_SUBMIT);
+}
+
 export async function executeCrossChainWithdraw(
   ctx: { api: IHttp },
   signer: IAbstractSigner,
@@ -208,7 +223,7 @@ export async function executeCrossChainWithdraw(
 ): Promise<CrossChainWithdrawSubmitResponse> {
   const prepared = await prepareCrossChainWithdraw(ctx, request);
   const signature = await signCrossChainWithdrawPrepared(prepared, signer);
-  return submitCrossChainWithdraw(ctx, {
+  const submitRequest: CrossChainWithdrawSubmitRequest = {
     srcChainId: request.srcChainId,
     account: request.account,
     signature,
@@ -217,7 +232,13 @@ export async function executeCrossChainWithdraw(
     relayerFeeTokenAddress: prepared.payload.gasPaymentParams.relayerFeeTokenAddress,
     relayerFeeAmount: prepared.payload.gasPaymentParams.relayerFeeAmount,
     requestId: prepared.requestId,
-  });
+  };
+
+  return submitSigned(
+    SIGNED_CROSS_CHAIN_WITHDRAW_SUBMIT,
+    { requestId: prepared.requestId, prepared, signature, submitRequest },
+    (body) => submitCrossChainWithdraw(ctx, body)
+  );
 }
 
 export async function getCrossChainWithdrawStatus(
