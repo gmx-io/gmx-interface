@@ -622,7 +622,6 @@ export function PositionSeller() {
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
-      swapPath: params?.orderPayload.addresses.swapPath,
       executionFee,
       orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
@@ -647,6 +646,7 @@ export function PositionSeller() {
       expressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: srcChainId !== undefined,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
