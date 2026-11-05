@@ -16,6 +16,7 @@ vi.mock("cross-fetch", async (importOriginal) => ({
 }));
 
 const address = "So11111111111111111111111111111111111111112";
+const referrer = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const amount = "1234567890123456789012345678901";
 const fee = (overrides: Record<string, unknown> = {}) => ({
   userReferralCode: "RefErRaL",
@@ -29,6 +30,11 @@ const fee = (overrides: Record<string, unknown> = {}) => ({
   discountShare: amount,
   discountFactor: amount,
   orderFeeDiscountFactor: amount,
+  gtRank: 3,
+  rankDiscountFactor: amount,
+  referrer,
+  referredUserDiscountFactor: amount,
+  hasUserAccount: true,
   updatedAt: 123,
   ...overrides,
 });
@@ -66,7 +72,15 @@ describe("Solana API reads", () => {
 
   it("preserves referral case and fee precision, rejecting malformed required fields", async () => {
     const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
-    const fields = ["totalRebate", "totalRebateFactor", "discountShare", "discountFactor", "orderFeeDiscountFactor"];
+    const fields = [
+      "totalRebate",
+      "totalRebateFactor",
+      "discountShare",
+      "discountFactor",
+      "orderFeeDiscountFactor",
+      "rankDiscountFactor",
+      "referredUserDiscountFactor",
+    ];
     for (const value of [amount, 0]) {
       vi.mocked(fetch).mockResolvedValueOnce(response(fee(Object.fromEntries(fields.map((key) => [key, value])))));
       expect(await sdk.fetchFeeDiscount({ address })).toEqual({
@@ -83,17 +97,25 @@ describe("Solana API reads", () => {
           discountFactor: BigInt(value),
         },
         orderFeeDiscountFactor: BigInt(value),
+        gtRank: 3,
+        rankDiscountFactor: BigInt(value),
+        referrer,
+        referredUserDiscountFactor: BigInt(value),
+        hasUserAccount: true,
         updatedAt: 123,
       });
       expect(new URL(String(vi.mocked(fetch).mock.lastCall![0])).searchParams.get("address")).toBe(address);
     }
+    expect(parseFeeDiscount(fee({ referrer: null })).referrer).toBeUndefined();
     for (const raw of [
       null,
       [],
       {},
       fee({ attachedOnChain: "true" }),
+      fee({ hasUserAccount: "true" }),
       fee({ tierId: 1.5 }),
-      ...["userReferralCode", "userReferralCodeString", "referralCodeForTxn", "affiliate"].map((key) =>
+      fee({ gtRank: -1 }),
+      ...["userReferralCode", "userReferralCodeString", "referralCodeForTxn", "affiliate", "referrer"].map((key) =>
         fee({ [key]: undefined })
       ),
       ...fields.flatMap((key) =>

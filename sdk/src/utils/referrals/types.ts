@@ -15,6 +15,12 @@ export type UserReferralInfo = {
 export type FeeDiscount = {
   userReferralInfo: UserReferralInfo;
   orderFeeDiscountFactor: bigint;
+  gtRank: number;
+  rankDiscountFactor: bigint;
+  referrer: string | undefined;
+  // the Store's factor for any referred user: it applies only when referrer is set, and orderFeeDiscountFactor already includes it
+  referredUserDiscountFactor: bigint;
+  hasUserAccount: boolean;
   updatedAt: number | undefined;
 };
 
