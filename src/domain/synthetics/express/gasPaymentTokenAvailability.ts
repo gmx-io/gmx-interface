@@ -22,6 +22,12 @@ export type GasPaymentTokensOnchainState = {
   pausedTokenAddresses: string[];
 };
 
+// tokens that pay for now when the token covering an unavailable saved one is short; never saved
+export type GasPaymentTokenReplacements = {
+  wallet?: string;
+  gmxAccount?: string;
+};
+
 // well above any relay fee, so a route that can't swap it can't swap the real fee either
 const FEE_SWAP_CHECK_USD = expandDecimals(10, USD_DECIMALS);
 
@@ -117,13 +123,14 @@ function isBetterFallbackCandidate(candidate: FallbackCandidate, best: FallbackC
 }
 
 /**
- * The saved token, or when it can't pay right now, the listed token most likely to cover the fee: one whose balance
- * covers a minimal fee first, then an approved one, then the largest balance. The saved token isn't changed here,
- * so it pays again once it can.
+ * The saved token, or when it can't pay right now, the replacement picked for a short fee token, else the listed token
+ * most likely to cover the fee: one whose balance covers a minimal fee first, then an approved one, then the largest
+ * balance. The saved token isn't changed here, so it pays again once it can.
  */
 export function getAvailableGasPaymentTokenAddress({
   chainId,
   savedTokenAddress,
+  replacementTokenAddress,
   unavailableTokens,
   tokensData,
   tokensAllowanceData,
@@ -133,6 +140,7 @@ export function getAvailableGasPaymentTokenAddress({
 }: {
   chainId: number;
   savedTokenAddress: string;
+  replacementTokenAddress: string | undefined;
   unavailableTokens: Record<string, GasPaymentTokenUnavailableReason>;
   tokensData: TokensData | undefined;
   tokensAllowanceData: TokensAllowanceData | undefined;
@@ -153,6 +161,10 @@ export function getAvailableGasPaymentTokenAddress({
 
     if (unavailableTokens[tokenAddress] !== undefined || !token || balance === undefined || balance === 0n) {
       continue;
+    }
+
+    if (tokenAddress === replacementTokenAddress) {
+      return tokenAddress;
     }
 
     const minFeeAmount = getMinFeeAmount(token);

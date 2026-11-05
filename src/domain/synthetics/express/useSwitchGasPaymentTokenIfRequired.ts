@@ -4,10 +4,12 @@ import { useEffect } from "react";
 import { selectUnavailableGasPaymentTokenAddresses } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectGasPaymentTokenAllowance,
+  selectSetGasPaymentTokenReplacement,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -138,13 +140,11 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   payAmounts,
   isGmxAccount,
   canSwitchGasPaymentToken,
-  replaceShortFeeToken,
 }: {
   expressParams: Pick<ExpressTxnParams, "gasPaymentValidations" | "gasPaymentParams"> | undefined;
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
   canSwitchGasPaymentToken: boolean;
-  replaceShortFeeToken: ((gasPaymentTokenAddress: string) => void) | undefined;
 }) {
   useSwitchGasPaymentTokenIfRequired({
     gasPaymentValidations: expressParams?.gasPaymentValidations,
@@ -153,18 +153,16 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     payAmounts,
     isGmxAccount,
     canSwitchGasPaymentToken,
-    replaceShortFeeToken,
   });
 }
 
-function useSwitchGasPaymentTokenIfRequired({
+export function useSwitchGasPaymentTokenIfRequired({
   gasPaymentValidations,
   gasPaymentToken,
   gasPaymentTokenAmount,
   payAmounts,
   isGmxAccount,
   canSwitchGasPaymentToken,
-  replaceShortFeeToken,
 }: {
   gasPaymentValidations: GasPaymentValidations | undefined;
   gasPaymentToken: TokenData | undefined;
@@ -172,16 +170,29 @@ function useSwitchGasPaymentTokenIfRequired({
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
   canSwitchGasPaymentToken: boolean;
-  replaceShortFeeToken: ((gasPaymentTokenAddress: string) => void) | undefined;
 }) {
   const { chainId } = useChainId();
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
   const savedGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const savedGmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const setGasPaymentTokenReplacement = useSelector(selectSetGasPaymentTokenReplacement);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokensAllowanceData = gasPaymentTokenAllowance?.tokensAllowanceData;
   const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
+  const isSavedTokenUnavailable = unavailableTokenAddresses.includes(
+    isGmxAccount ? savedGmxAccountGasPaymentTokenAddress : savedGasPaymentTokenAddress
+  );
+
+  useEffect(
+    function clearGasPaymentTokenReplacement() {
+      if (!isSavedTokenUnavailable) {
+        setGasPaymentTokenReplacement(isGmxAccount, undefined);
+      }
+    },
+    [isGmxAccount, isSavedTokenUnavailable, setGasPaymentTokenReplacement]
+  );
 
   useEffect(
     function switchGasPaymentToken() {
@@ -208,8 +219,8 @@ function useSwitchGasPaymentTokenIfRequired({
       if (!anotherGasToken || anotherGasToken === gasPaymentToken.address) return;
 
       // saving it would replace a saved token that can't pay only for now
-      if (replaceShortFeeToken) {
-        replaceShortFeeToken(anotherGasToken);
+      if (isSavedTokenUnavailable) {
+        setGasPaymentTokenReplacement(isGmxAccount, anotherGasToken);
         return;
       }
 
@@ -241,7 +252,8 @@ function useSwitchGasPaymentTokenIfRequired({
       savedGasPaymentTokenAddress,
       tokensAllowanceData,
       unavailableTokenAddresses,
-      replaceShortFeeToken,
+      isSavedTokenUnavailable,
+      setGasPaymentTokenReplacement,
     ]
   );
 }

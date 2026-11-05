@@ -23,6 +23,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPaymentTokenAllowance,
+  selectGasPaymentTokenReplacements,
   selectGasPaymentTokensOnchainState,
   selectGasPrice,
   selectIsExpressAvailableFlag,
@@ -114,6 +115,7 @@ function createSelectExpressFeeTokenAddress(
     return getAvailableGasPaymentTokenAddress({
       chainId,
       savedTokenAddress: q(selectSavedGasPaymentTokenAddressSelector),
+      replacementTokenAddress: q(selectGasPaymentTokenReplacements)?.[isGmxAccount ? "gmxAccount" : "wallet"],
       unavailableTokens: q(selectUnavailableGasPaymentTokens),
       tokensData,
       tokensAllowanceData: isGmxAccount ? undefined : q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,

@@ -187,6 +187,8 @@ export function MockSyntheticsStateProvider({
       uiFlags: undefined,
       gasPaymentTokenAllowance,
       gasPaymentTokensOnchainState: undefined,
+      gasPaymentTokenReplacements: {},
+      setGasPaymentTokenReplacement: () => undefined,
       l1ExpressOrderGasReference,
     };
 
