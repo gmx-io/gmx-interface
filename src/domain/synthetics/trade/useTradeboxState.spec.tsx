@@ -2,11 +2,11 @@ import { act, cleanup, render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getLeverageKey } from "config/localStorage";
+import { getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { createMockMarketInfo, createMockMarketsData, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { BTC_ADDRESS, BTC_TOKEN, ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { ARBITRUM, type NetworkId, SOLANA_NETWORK_ID } from "sdk/configs/chains";
-import { TradeType } from "sdk/utils/trade/types";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
   INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
@@ -84,6 +84,34 @@ describe("useTradeboxState network isolation", () => {
     cleanup();
     localStorage.clear();
   });
+
+  it.each([ARBITRUM, SOLANA_NETWORK_ID] as const)(
+    "restores and accepts Swap only on supported networks FESOL-15 (%s)",
+    (networkId) => {
+      seedNetwork(networkId, {
+        tradeType: TradeType.Swap,
+        indexTokenAddress: ETH_ADDRESS,
+        market: MOCK_MARKET_ADDRESS,
+      });
+      const key = JSON.stringify(getSyntheticsTradeOptionsKey(networkId));
+      const saved = JSON.parse(localStorage.getItem(key)!);
+      saved.tokens.swapToTokenAddress = BTC_ADDRESS;
+      saved.tradeMode = TradeMode.Twap;
+      localStorage.setItem(key, JSON.stringify(saved));
+
+      const expectedType = networkId === SOLANA_NETWORK_ID ? TradeType.Long : TradeType.Swap;
+      renderTradebox(networkId);
+      expect(tradebox.tradeType).toBe(expectedType);
+      expect(tradebox.toTokenAddress).toBe(networkId === SOLANA_NETWORK_ID ? ETH_ADDRESS : BTC_ADDRESS);
+      expect(tradebox.tradeMode).toBe(networkId === SOLANA_NETWORK_ID ? TradeMode.Market : TradeMode.Twap);
+      expect(JSON.parse(localStorage.getItem(key)!).tradeType).toBe(expectedType);
+
+      act(() => tradebox.setTradeConfig({ tradeType: TradeType.Swap, toTokenAddress: BTC_ADDRESS }));
+      expect(tradebox.tradeType).toBe(expectedType);
+      expect(tradebox.availableTradeModes.length).toBeGreaterThan(0);
+      expect(JSON.parse(localStorage.getItem(key)!).tradeType).toBe(expectedType);
+    }
+  );
 
   // The app remounts the tree on a network switch (SWRConfig key), a rerender covers the in-place sync effect
   it.each(["remount", "rerender"] as const)(

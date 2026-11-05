@@ -6,6 +6,7 @@ import type { Address } from "viem";
 
 import { isSolanaNetwork, type NetworkId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { PROMOTED_TOKENS_ORDER } from "config/promotedTokens";
 import type { SortDirection } from "context/SorterContext/types";
 import {
@@ -202,6 +203,7 @@ type SortField =
 function MarketsList() {
   const { networkId } = useChainId();
   const isSolana = isSolanaNetwork(networkId);
+  const swapEnabled = getNetworkFeatures(networkId).swap;
   const chainId = useSelector(selectChainId);
   const perpTokens = useSelector(selectAvailablePerpChartTokens);
   const swapTokens = useSelector(selectAvailableSwapChartTokens);
@@ -212,13 +214,14 @@ function MarketsList() {
   const {
     topLevelTab: storedTopLevelTab,
     subCategoryTab: storedSubCategoryTab,
-    mode,
+    mode: storedMode,
     setMode,
     setModeAndResetFilters,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
   } = useTokensFavorites("chart-token-selector");
+  const mode = swapEnabled ? storedMode : "perp";
 
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
@@ -235,13 +238,13 @@ function MarketsList() {
   useEffect(() => {
     if (initialModeSyncRef.current) return;
     initialModeSyncRef.current = true;
-    setMode(tradeFlags.isSwap ? "swap" : "perp");
+    setMode(swapEnabled && tradeFlags.isSwap ? "swap" : "perp");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isSwap = mode === "swap";
   const availableTokens = isSwap ? swapTokens : perpTokens;
-  const otherModeAvailableTokens = isSwap ? perpTokens : swapTokens;
+  const otherModeAvailableTokens = swapEnabled ? (isSwap ? perpTokens : swapTokens) : undefined;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) =>
@@ -462,7 +465,7 @@ function MarketsList() {
       <div className="flex flex-col">
         <ArbitrumRecommendation />
         <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
-          <ModeTabs mode={mode} setMode={setMode} />
+          {swapEnabled && <ModeTabs mode={mode} setMode={setMode} />}
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
