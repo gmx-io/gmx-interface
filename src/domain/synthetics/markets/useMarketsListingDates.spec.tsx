@@ -1,12 +1,16 @@
-import { cleanup, render, waitFor } from "@testing-library/react";
+import { act, cleanup, render, waitFor } from "@testing-library/react";
+import type { PropsWithChildren } from "react";
 import { SWRConfig } from "swr";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 
 import { isMarketRecentlyListed } from "components/ChartTokenSelector/marketFilters";
 
 import { useMarketsListingDates } from "./useMarketsListingDates";
+
+const state = vi.hoisted(() => ({ networkId: 42161 }));
+vi.mock("lib/chains", () => ({ useChainId: () => ({ networkId: state.networkId }) }));
 
 const mocks = vi.hoisted(() => ({ fetchMarkets: vi.fn() }));
 
@@ -56,4 +60,35 @@ describe("useMarketsListingDates", () => {
       expect(isMarketRecentlyListed(result.listingDateByIndexToken[newIndexToken], now)).toBe(true);
     }
   );
+});
+
+describe("market listing dates by network", () => {
+  it("keeps EVM dates out of Solana on selection changes and never requests guessed Solana dates", async () => {
+    const date = "2026-11-01T00:00:00Z";
+    mocks.fetchMarkets.mockResolvedValue([{ indexToken: "evm-index", listingDate: date }]);
+    const cache = new Map();
+    const config = { provider: () => cache, dedupingInterval: 0 };
+    const wrapper = ({ children }: PropsWithChildren) => <SWRConfig value={config}>{children}</SWRConfig>;
+    let result!: ReturnType<typeof useMarketsListingDates>;
+    function Harness() {
+      result = useMarketsListingDates(ARBITRUM);
+      return null;
+    }
+    const { rerender } = render(<Harness />, { wrapper });
+    await waitFor(() => expect(result.listingDateByIndexToken).toEqual({ "evm-index": Date.parse(date) }));
+    const requests = mocks.fetchMarkets.mock.calls.length;
+
+    act(() => {
+      state.networkId = SOLANA_NETWORK_ID;
+      rerender(<Harness />);
+    });
+    expect(result).toEqual({ listingDateByIndexToken: {}, isLoading: false });
+    expect(mocks.fetchMarkets).toHaveBeenCalledTimes(requests);
+
+    act(() => {
+      state.networkId = ARBITRUM;
+      rerender(<Harness />);
+    });
+    await waitFor(() => expect(result.listingDateByIndexToken).toEqual({ "evm-index": Date.parse(date) }));
+  });
 });

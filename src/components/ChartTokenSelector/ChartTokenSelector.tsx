@@ -4,6 +4,7 @@ import partition from "lodash/partition";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
+import { isSolanaNetwork, type NetworkId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { PROMOTED_TOKENS_ORDER } from "config/promotedTokens";
 import type { SortDirection } from "context/SorterContext/types";
@@ -41,6 +42,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -198,6 +200,8 @@ type SortField =
   | "unspecified";
 
 function MarketsList() {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const chainId = useSelector(selectChainId);
   const perpTokens = useSelector(selectAvailablePerpChartTokens);
   const swapTokens = useSelector(selectAvailableSwapChartTokens);
@@ -240,18 +244,23 @@ function MarketsList() {
   const otherModeAvailableTokens = isSwap ? perpTokens : swapTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
-    const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
+    const availableChartTokens = availableTokens?.filter((token) =>
+      isSolana ? !token.isChartDisabled : isChartAvailableForToken(chainId, token.symbol)
+    );
     const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address as Address);
 
     return {
       availableChartTokens,
       availableChartTokenAddresses,
     };
-  }, [availableTokens, chainId]);
+  }, [availableTokens, chainId, isSolana]);
 
   const otherModeOptions = useMemo(
-    () => otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
-    [chainId, otherModeAvailableTokens]
+    () =>
+      otherModeAvailableTokens?.filter((token) =>
+        isSolana ? !token.isChartDisabled : isChartAvailableForToken(chainId, token.symbol)
+      ),
+    [chainId, isSolana, otherModeAvailableTokens]
   );
 
   const recentlyListedCount = useMemo(() => {
@@ -358,7 +367,13 @@ function MarketsList() {
     }
 
     return sortedTokens.map((token) => {
-      const wrappedAddress = convertTokenAddress(chainId, token.address, "wrapped") as Address;
+      const wrappedAddress = (
+        isSolana
+          ? token.isNative
+            ? token.wrappedAddress ?? token.address
+            : token.address
+          : convertTokenAddress(chainId, token.address, "wrapped")
+      ) as Address;
       return {
         token,
         tokenData: tokensData?.[wrappedAddress],
@@ -369,7 +384,7 @@ function MarketsList() {
         maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
       };
     });
-  }, [sortedTokens, chainId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
+  }, [sortedTokens, chainId, isSolana, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -677,12 +692,14 @@ function useFilterSortTokens({
   }, [textMatchedTokens, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
+  const { networkId } = useChainId();
 
   const sortedTokens = useMemo(() => {
     const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
 
     const sorter = tokenSortingComparatorBuilder({
       chainId,
+      networkId,
       orderBy,
       direction,
       tokensData,
@@ -700,6 +717,7 @@ function useFilterSortTokens({
   }, [
     filteredTokens,
     chainId,
+    networkId,
     orderBy,
     direction,
     tokensData,
@@ -922,6 +940,7 @@ function MarketListItem({
 
 function tokenSortingComparatorBuilder({
   chainId,
+  networkId,
   orderBy,
   direction,
   tokensData,
@@ -931,6 +950,7 @@ function tokenSortingComparatorBuilder({
   getMaxLongShortLiquidityPool,
 }: {
   chainId: number;
+  networkId: NetworkId;
   orderBy: SortField;
   direction: SortDirection;
   tokensData: TokensData | undefined;
@@ -944,9 +964,16 @@ function tokenSortingComparatorBuilder({
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
+  const wrappedAddress = (token: Token) =>
+    isSolanaNetwork(networkId)
+      ? token.isNative
+        ? token.wrappedAddress ?? token.address
+        : token.address
+      : convertTokenAddress(chainId, token.address, "wrapped");
+
   return (a: Token, b: Token) => {
-    const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
-    const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
+    const aAddress = wrappedAddress(a);
+    const bAddress = wrappedAddress(b);
 
     if (orderBy === "unspecified" || direction === "unspecified") {
       const promoted = PROMOTED_TOKENS_ORDER[chainId];

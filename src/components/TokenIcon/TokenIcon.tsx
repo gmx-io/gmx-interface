@@ -9,7 +9,8 @@ import "./TokenIcon.scss";
 function getIconUrl(symbol: string) {
   if (!symbol) return;
 
-  return findImage(`ic_${symbol.toLowerCase()}.svg`);
+  const underlyingSymbol = symbol === "WSOL" ? "SOL" : symbol === "WGMX" ? "GMX" : symbol;
+  return findImage(`ic_${underlyingSymbol.toLowerCase()}.svg`);
 }
 
 type Props = {
