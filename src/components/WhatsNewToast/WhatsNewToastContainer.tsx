@@ -55,13 +55,14 @@ type TopRightMessage = {
 function EvmAnnouncementToasts({
   isAnnouncementsPage,
   appUpdate,
+  uiFlagEvents,
 }: {
   isAnnouncementsPage: boolean;
   appUpdate: TopRightMessage | undefined;
+  uiFlagEvents: ActiveUiFlagEvent[];
 }) {
   const isWalletInitializing = useIsWalletInitializing();
   const { isLoading: isUiFlagsLoading } = useUiFlagsRequest();
-  const uiFlagEvents = useUiFlagEvents();
   const delisting = useDelistingExitAnnouncements();
   const closingPools = useClosingPoolsNotices();
   const closingPoolsLp = useClosingPoolsLpNotice();
@@ -91,11 +92,11 @@ function EvmAnnouncementToasts({
     })),
     ...(closingPoolsLp.notice
       ? [
-          {
-            key: "closing-pools-lp",
-            node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
-          },
-        ]
+        {
+          key: "closing-pools-lp",
+          node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
+        },
+      ]
       : []),
   ];
 
@@ -134,10 +135,16 @@ export function WhatsNewToastContainer() {
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
   const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
     ? {
-        key: "app-update",
-        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
-      }
+      key: "app-update",
+      node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
+    }
     : undefined;
+  const uiFlagEvents = useUiFlagEvents();
+  const solanaMessages: TopRightMessage[] = [
+    ...uiFlagEvents.filter(isOutageWarning).map(toUiFlagEventMessage),
+    ...(appUpdate ? [appUpdate] : []),
+    ...uiFlagEvents.filter((event) => !isOutageWarning(event)).map(toUiFlagEventMessage),
+  ];
 
   useEffect(() => {
     setIsScrolled(false);
@@ -169,9 +176,13 @@ export function WhatsNewToastContainer() {
     >
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
         {isSolanaNetwork(networkId) ? (
-          <TopRightMessageSlot message={appUpdate} />
+          <TopRightMessageSlot message={solanaMessages[0]} />
         ) : (
-          <EvmAnnouncementToasts isAnnouncementsPage={isAnnouncementsPage} appUpdate={appUpdate} />
+          <EvmAnnouncementToasts
+            isAnnouncementsPage={isAnnouncementsPage}
+            appUpdate={appUpdate}
+            uiFlagEvents={uiFlagEvents}
+          />
         )}
       </div>
     </div>
