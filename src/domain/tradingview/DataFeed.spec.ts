@@ -181,22 +181,24 @@ describe("DataFeed candle stream lifecycle", () => {
     steps?: LifecycleStep[];
     periods: string[];
     open: number;
+    polling?: boolean;
   }>([
     { name: "opens a 1m stream for a 1-minute chart", periods: ["1m"], open: 1 },
     { name: "opens a 1d stream for a daily chart", resolution: "1D", periods: ["1d"], open: 1 },
     { name: "opens no stream for a weekly chart", resolution: "1W", periods: [], open: 0 },
     { name: "opens no stream for a monthly chart", resolution: "1M", periods: [], open: 0 },
-    { name: "opens no stream for a stablecoin", symbol: "USDC", periods: [], open: 0 },
+    { name: "opens no stream for a stablecoin", symbol: "USDC", periods: [], open: 0, polling: false },
     { name: "opens no stream while the flag is off", enabled: false, periods: [], open: 0 },
     { name: "opens the stream once the flag turns on", enabled: false, steps: ["enable"], periods: ["1m"], open: 1 },
     { name: "closes the stream when the flag turns off", steps: ["disable"], periods: ["1m"], open: 0 },
-    { name: "closes the stream on unsubscribeBars", steps: ["unsubscribe"], periods: ["1m"], open: 0 },
-    { name: "closes the stream on destroy", steps: ["destroy"], periods: ["1m"], open: 0 },
+    { name: "closes the stream on unsubscribeBars", steps: ["unsubscribe"], periods: ["1m"], open: 0, polling: false },
+    { name: "closes the stream on destroy", steps: ["destroy"], periods: ["1m"], open: 0, polling: false },
     {
       name: "ignores a subscription that arrives after destroy",
       steps: ["destroy", "subscribe", "unsubscribe"],
       periods: ["1m"],
       open: 0,
+      polling: false,
     },
     { name: "keeps the stream through a short hide", steps: ["hide", 9_999, "show"], periods: ["1m"], open: 1 },
     {
@@ -205,9 +207,10 @@ describe("DataFeed candle stream lifecycle", () => {
       periods: ["1m", "1m"],
       open: 1,
     },
-  ])("$name", ({ symbol = "BTC", resolution = "1", enabled = true, steps = [], periods, open }) => {
+  ])("$name", ({ symbol = "BTC", resolution = "1", enabled = true, steps = [], periods, open, polling = true }) => {
     const subscriptions: { symbol: string; period: string; closed: boolean }[] = [];
-    const oracleFetcher = { fetchOracleCandles: async () => [] } as unknown as OracleFetcher;
+    const fetchOracleCandles = vi.fn(async () => []);
+    const oracleFetcher = { fetchOracleCandles } as unknown as OracleFetcher;
     let guid = "guid";
     const dataFeed = new DataFeed(ARBITRUM, oracleFetcher);
     dataFeed.setCandleStreamFactory((streamSymbol, period) => {
@@ -250,6 +253,9 @@ describe("DataFeed candle stream lifecycle", () => {
     expect(subscriptions.map(({ period }) => period)).toEqual(periods);
     expect(subscriptions.every((subscription) => subscription.symbol === symbol)).toBe(true);
     expect(subscriptions.filter((subscription) => !subscription.closed).length).toBe(open);
+    fetchOracleCandles.mockClear();
+    vi.advanceTimersByTime(2_000);
+    expect(fetchOracleCandles.mock.calls.length > 0).toBe(polling);
     dataFeed.destroy();
   });
 });
