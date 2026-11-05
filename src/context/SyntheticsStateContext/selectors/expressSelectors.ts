@@ -161,6 +161,14 @@ export const selectGasPaymentToken = createSelector((q) => {
   return q(srcChainId !== undefined ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken);
 });
 
+export const selectUnavailableExpressFeeToken = createSelector((q) => {
+  const gasPaymentToken = q(selectGasPaymentToken);
+
+  return gasPaymentToken !== undefined && q(selectUnavailableGasPaymentTokens)[gasPaymentToken.address] !== undefined
+    ? gasPaymentToken
+    : undefined;
+});
+
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
   const chainId = q(selectChainId);
   const isExpressOrdersEnabledSetting = q(selectExpressOrdersEnabled);
@@ -273,7 +281,7 @@ export const selectGmxAccountExpressGlobalParams = createSelectExpressGlobalPara
   selectGmxAccountExpressFindSwapPath
 );
 
-export const makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
+export const makeSelectExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
   (gasPaymentTokenAddress: string) => {
     const selectGasPaymentTokenAddressOverride = () => gasPaymentTokenAddress;
 

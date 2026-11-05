@@ -40,6 +40,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
+import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/useGasPaymentTokenUnavailableToast";
 import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
@@ -209,9 +210,16 @@ export const useGmSwapSubmitState = ({
     directDepositAccess,
   });
 
-  const collateralSwapError = useMemo((): ValidationResult | undefined => {
-    const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
+  const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
 
+  // the relay params' own notice waits for fees that can't be estimated while the token can't pay
+  useGasPaymentTokenUnavailableToast({
+    isGmxAccount: true,
+    feeTokenAddress: gmxAccountGasPaymentTokenAddress,
+    enabled: paySource === "gmxAccount" && hasInput,
+  });
+
+  const collateralSwapError = useMemo((): ValidationResult | undefined => {
     if (!collateralSwapTokens || isTransitRoute || !hasInput || isDirectDepositBlocked) {
       return undefined;
     }
@@ -226,15 +234,7 @@ export const useGmSwapSubmitState = ({
     }
 
     return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
-  }, [
-    amounts,
-    collateralSwapTokens,
-    firstTokenAmount,
-    isDeposit,
-    isDirectDepositBlocked,
-    isTransitRoute,
-    marketOrGlvTokenAmount,
-  ]);
+  }, [amounts, collateralSwapTokens, hasInput, isDeposit, isDirectDepositBlocked, isTransitRoute]);
 
   const expressError = useExpressError({
     paySource,

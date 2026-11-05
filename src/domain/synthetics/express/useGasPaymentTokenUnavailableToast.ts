@@ -13,7 +13,7 @@ import { getByKey } from "lib/objects";
 
 const GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID = "gas-payment-token-unavailable";
 
-function getContent({
+export function getGasPaymentTokenUnavailableMessage({
   fromSymbol,
   toSymbol,
   isGmxAccount,
@@ -29,6 +29,10 @@ function getContent({
   return isGmxAccount
     ? t`${fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can.`
     : t`${fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can.`;
+}
+
+export function notifyGasPaymentTokenUnavailable(params: Parameters<typeof getGasPaymentTokenUnavailableMessage>[0]) {
+  helperToast.infoOrUpdate(getGasPaymentTokenUnavailableMessage(params), GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID);
 }
 
 export function useGasPaymentTokenUnavailableToast({
@@ -77,9 +81,7 @@ export function useGasPaymentTokenUnavailableToast({
       }
 
       notifiedKeyRef.current = notifiedKey;
-      const content = getContent({ fromSymbol, toSymbol, isGmxAccount });
-
-      helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_UNAVAILABLE_TOAST_ID);
+      notifyGasPaymentTokenUnavailable({ fromSymbol, toSymbol, isGmxAccount });
     },
     [enabled, fromSymbol, isFeeTokenAvailable, isGmxAccount, isLoaded, isSavedTokenUnavailable, toSymbol]
   );
