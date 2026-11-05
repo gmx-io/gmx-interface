@@ -53,7 +53,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
     lastFrameAt = now;
     frameCount += 1;
 
-    if (document.hidden || !snapshot || !meta) {
+    if (!snapshot || !meta) {
       return;
     }
 
@@ -65,7 +65,7 @@ export function getWsPriceStore(sdk: GmxApiSdk): WsPriceStore {
       });
     }
 
-    if (frameCount % METRIC_SAMPLE_EVERY !== 0) {
+    if (document.hidden || frameCount % METRIC_SAMPLE_EVERY !== 0) {
       return;
     }
 
