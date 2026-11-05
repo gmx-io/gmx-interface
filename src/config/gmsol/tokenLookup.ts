@@ -1,10 +1,12 @@
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { ARBITRUM } from "sdk/configs/chains";
+import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { Token, TokenAddressTypesMap } from "sdk/utils/tokens/types";
 
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS, type GmsolTokenConfig } from "./tokens";
 
 function toToken({ tokenProgram: _tokenProgram, ...token }: GmsolTokenConfig): Token {
-  return token;
+  const underlying = getToken(ARBITRUM, token.arbitrumTokenAddress);
+  return { ...token, categories: underlying.categories, searchAliases: underlying.searchAliases };
 }
 
 const gmsolNativeToken: Token = { ...GMSOL_NATIVE_TOKEN };

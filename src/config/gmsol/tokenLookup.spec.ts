@@ -18,6 +18,25 @@ const WBTC_MINT = "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh";
 const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 
 describe("gmsol token lookup", () => {
+  it("exposes GMX categories and scaled names without changing Solana mint decimals", () => {
+    for (const [symbol, category] of [
+      ["SOL", "layer1"],
+      ["LINK", "defi"],
+      ["BONK", "meme"],
+      ["SHIB", "meme"],
+      ["PEPE", "meme"],
+    ]) {
+      expect(getGmsolTokenBySymbol(symbol)?.categories).toContain(category);
+    }
+    for (const symbol of ["BONK", "SHIB", "PEPE"]) {
+      const token = getGmsolTokenBySymbol(symbol)!;
+      expect(token).toMatchObject({ visualMultiplier: 1000, visualPrefix: "k" });
+      expect(getGmsolToken(token.address)).toBe(token);
+      expect(token.address).not.toMatch(/^0x/);
+    }
+    expect(getGmsolTokenBySymbol("BONK")?.decimals).toBe(5);
+  });
+
   it("keeps base58 case, native SOL and collateral twins", () => {
     expect(getGmsolToken(USDC_MINT)?.symbol).toBe("USDC");
     expect(getGmsolToken(USDC_MINT.replace(/^E/, "e"))).toBeUndefined();
