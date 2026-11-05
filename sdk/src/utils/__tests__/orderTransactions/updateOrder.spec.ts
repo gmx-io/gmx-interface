@@ -4,7 +4,7 @@ import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken } from "configs/tokens";
 import { MOCK_GAS_PRICE } from "test/mock";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
-import { OrderType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { buildUpdateOrderPayload, UpdateOrderParams } from "utils/orderTransactions";
 
 beforeAll(() => {
@@ -34,6 +34,7 @@ describe("Update Order Payloads", () => {
         executionFeeTopUp: 0n,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
       };
 
       const result = buildUpdateOrderPayload(params);
@@ -48,6 +49,7 @@ describe("Update Order Payloads", () => {
           minOutputAmount: parseValue("0.8", USDC.decimals)!,
           autoCancel: false,
           validFromTime: 0n,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           executionFeeTopUp: 0n,
         },
       });
@@ -66,6 +68,7 @@ describe("Update Order Payloads", () => {
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
       };
 
       const result = buildUpdateOrderPayload(params);
@@ -80,6 +83,7 @@ describe("Update Order Payloads", () => {
           minOutputAmount: 0n,
           autoCancel: false,
           validFromTime: 0n,
+          decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         },
       });
