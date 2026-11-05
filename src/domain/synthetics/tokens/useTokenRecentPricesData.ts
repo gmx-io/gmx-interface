@@ -125,7 +125,7 @@ export function useTokenRecentPricesRequest(
   const key = pricesEnabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
 
   const { data, error, isLoading } = useSequentialTimedSWR(key, {
-    refreshInterval: refreshPricesInterval,
+    baseInterval: refreshPricesInterval,
     pollInterval: isRestCoveredByStream ? WS_FRESH_PRICES_UPDATE_INTERVAL : refreshPricesInterval,
     refreshWhenHidden: true,
 

@@ -5,12 +5,12 @@ import { BareFetcher, SWRConfiguration } from "swr/_internal";
 export function useSequentialTimedSWR<Data = any, Error = any>(
   key: any[] | null | undefined | false,
   config: Omit<SWRConfiguration<Data, Error, BareFetcher<Data>>, "refreshInterval"> & {
-    refreshInterval: number;
+    baseInterval: number;
     // only the wait between polls: keying it would serve the other key's older cache on every switch
     pollInterval?: number;
   }
 ) {
-  const { refreshInterval, pollInterval = refreshInterval, ...swrConfig } = config;
+  const { baseInterval, pollInterval = baseInterval, ...swrConfig } = config;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const wrappedFetcher = async (...args: any[]) => {
@@ -22,7 +22,7 @@ export function useSequentialTimedSWR<Data = any, Error = any>(
     return { result, start };
   };
 
-  const getRefreshInterval = useCallback(
+  const getPollWait = useCallback(
     (latestData: { result: Data; start: number }) => {
       if (!latestData) {
         return pollInterval;
@@ -35,11 +35,11 @@ export function useSequentialTimedSWR<Data = any, Error = any>(
     [pollInterval]
   );
 
-  const query = useSWR(key && [...key, refreshInterval], {
+  const query = useSWR(key && [...key, baseInterval], {
     ...swrConfig,
     fetcher: wrappedFetcher,
-    dedupingInterval: refreshInterval / 2,
-    refreshInterval: getRefreshInterval,
+    dedupingInterval: baseInterval / 2,
+    refreshInterval: getPollWait,
   });
 
   return {
