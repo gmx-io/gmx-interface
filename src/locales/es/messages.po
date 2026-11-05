@@ -675,10 +675,6 @@ msgstr "Financiación"
 msgid "Deposit margin"
 msgstr "Depósito de margen"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "Retirando del staking..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Red de origen"
@@ -1327,7 +1323,6 @@ msgstr "Alto impacto en el precio del intercambio"
 msgid "Claimed funding fees"
 msgstr "Comisiones de financiación reclamadas"
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Novedades"
@@ -2175,10 +2170,6 @@ msgstr "Seleccionar pool"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Este mercado se ha deshabilitado. Póngase en contacto con el equipo de soporte para reclamar las comisiones de financiación restantes."
-
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "El staking se ha trasladado a un nuevo contrato. Revise los datos e inténtelo de nuevo."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
@@ -4143,10 +4134,6 @@ msgstr "Dune Analytics para GMX"
 msgid "External routes are only used for Market Swaps"
 msgstr "Las rutas externas solo se usan para Market Swaps"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "El retiro del staking está pausado hasta la actualización del staking"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express necesita {gasPaymentTokensText} en su GMX Account. Deposite uno de ellos."
@@ -5142,10 +5129,6 @@ msgstr "Margen total aportado (saldo GMX)"
 msgid "POOL VALUE"
 msgstr "VALOR DEL POOL"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "Operación de unstakear completada"
-
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
 msgstr "Exportar monedero"
@@ -5864,8 +5847,6 @@ msgstr "App deshabilitada, pendiente de la actualización de {0}"
 msgid "v:"
 msgstr "v:"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7318,10 +7299,6 @@ msgstr "Historial completo no disponible para esta posición"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Liquidez insuficiente. Disponible: {availableLiquidityText}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "Solicitud para unstakear enviada"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
@@ -10570,10 +10547,6 @@ msgstr "Activos disponibles"
 msgid "Conversion cancelled"
 msgstr "Conversión cancelada"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "Error al unstakear"
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
 msgstr "[{0}]"
@@ -12942,10 +12915,6 @@ msgstr "FACTOR"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "Parámetros de reclamación no disponibles. Reintente en unos segundos"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "Retirar del staking más del 20 % de su máximo histórico de GMX en staking pondrá a cero sus recompensas acumuladas"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."
