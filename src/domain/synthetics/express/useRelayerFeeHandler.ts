@@ -94,7 +94,7 @@ export function useExpressOrdersParams({
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
   const isExpressWanted = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
   const canNotify = canSwitchGasPaymentToken && Boolean(isExpressWanted) && !getIsEmptyBatch(orderParams);
-  const { globalExpressParams, recordExpressParams } = useGasPaymentTokenFallback({
+  const { globalExpressParams, recordExpressParams, replaceShortFeeToken } = useGasPaymentTokenFallback({
     baseGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
     fallback: gasPaymentTokenFallback,
     isGmxAccount,
@@ -280,10 +280,15 @@ export function useExpressOrdersParams({
   useEffect(() => recordExpressParams(result.expressParams), [recordExpressParams, result.expressParams]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
-    expressParams: result.expressParams,
+    // an estimate left from the previous fee token would switch away from the current one
+    expressParams:
+      result.expressParams?.gasPaymentParams.gasPaymentTokenAddress === feeTokenAddress
+        ? result.expressParams
+        : undefined,
     payAmounts,
     isGmxAccount,
     canSwitchGasPaymentToken,
+    replaceShortFeeToken,
   });
 
   if (showDebugValues && label && result.expressParams) {
