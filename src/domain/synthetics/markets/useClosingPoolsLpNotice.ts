@@ -17,6 +17,7 @@ import { useMarketTokensDataRequest } from "./useMarketTokensData";
 
 export function useClosingPoolsLpNotice(): {
   notice: ClosingPoolsLpNotice | undefined;
+  isLoading: boolean;
   dismiss: () => void;
 } {
   const { account } = useWallet();
@@ -52,5 +53,9 @@ export function useClosingPoolsLpNotice(): {
     forceRerender();
   }, [account, chainId]);
 
-  return { notice: getClosingPoolsLpNotice(holdings, undismissedMarkets), dismiss };
+  return {
+    notice: getClosingPoolsLpNotice(holdings, undismissedMarkets),
+    isLoading: enabled && marketTokensData === undefined,
+    dismiss,
+  };
 }

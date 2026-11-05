@@ -3,8 +3,9 @@ import cx from "classnames";
 import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
+import { useSettled } from "lib/useSettled";
+
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
-import { useSettled } from "components/StatsTooltip/useSettled";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
