@@ -14,7 +14,13 @@ export type UserReferralInfo = {
 
 export type FeeDiscount = {
   userReferralInfo: UserReferralInfo;
+  // 1 - (1 - rankDiscountFactor)(1 - referredUserDiscountFactor) when referrer is set, else rankDiscountFactor
   orderFeeDiscountFactor: bigint;
+  gtRank: number;
+  rankDiscountFactor: bigint;
+  // the referrer's wallet, not its gmsol User account
+  referrer: string | undefined;
+  referredUserDiscountFactor: bigint;
   updatedAt: number | undefined;
 };
 

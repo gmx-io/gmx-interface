@@ -23,6 +23,14 @@ function readBigInt(raw: Record<string, unknown>, name: string): bigint {
   return BigInt(value as string | number);
 }
 
+function readUint(raw: Record<string, unknown>, name: string): number {
+  const value = raw[name];
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected number field "${name}"`);
+  }
+  return value;
+}
+
 export function parseFeeDiscount(raw: unknown): FeeDiscount {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected an object`);
@@ -34,10 +42,6 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
     throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected boolean field "attachedOnChain"`);
   }
 
-  if (typeof record.tierId !== "number" || !Number.isSafeInteger(record.tierId) || record.tierId < 0) {
-    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected number field "tierId"`);
-  }
-
   return {
     userReferralInfo: {
       userReferralCode: readString(record, "userReferralCode"),
@@ -45,13 +49,17 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
       referralCodeForTxn: readString(record, "referralCodeForTxn"),
       attachedOnChain: record.attachedOnChain,
       affiliate: readString(record, "affiliate"),
-      tierId: record.tierId,
+      tierId: readUint(record, "tierId"),
       totalRebate: readBigInt(record, "totalRebate"),
       totalRebateFactor: readBigInt(record, "totalRebateFactor"),
       discountShare: readBigInt(record, "discountShare"),
       discountFactor: readBigInt(record, "discountFactor"),
     },
     orderFeeDiscountFactor: readBigInt(record, "orderFeeDiscountFactor"),
+    gtRank: readUint(record, "gtRank"),
+    rankDiscountFactor: readBigInt(record, "rankDiscountFactor"),
+    referrer: record.referrer === null ? undefined : readString(record, "referrer"),
+    referredUserDiscountFactor: readBigInt(record, "referredUserDiscountFactor"),
     updatedAt: typeof record.updatedAt === "number" ? record.updatedAt : undefined,
   };
 }
