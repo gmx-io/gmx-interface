@@ -107,6 +107,8 @@ export type ProtocolStatsTimeseriesMetric =
   | "fees.total"
   | "revenue.protocol"
   | "revenue.lp"
+  | "revenue.buyback"
+  | "revenue.treasury"
   | "trades.perps"
   | "trades.swaps"
   | "users.active";
