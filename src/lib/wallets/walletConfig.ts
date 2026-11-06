@@ -158,7 +158,8 @@ export function getPublicClientWithRpc(
       console.warn(`No WebSocket URL found for chain id: ${chainId}. Using HTTP instead.`);
       transport = getRpcTransport(chainId as AnyChainId, "default");
     } else {
-      transport = webSocket(wsUrl);
+      // watchContractEventWithReconnect owns reconnects
+      transport = webSocket(wsUrl, { reconnect: false });
 
       isWsTransport = true;
     }

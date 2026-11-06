@@ -82,6 +82,23 @@ describe("applyOptimisticUpdates", () => {
     expect(positions[positionKey]?.pendingUpdate).toBeUndefined();
   });
 
+  it.each([
+    ["no events were received", []],
+    ["only the increase event was received", [makeIncreaseEvent()]],
+  ])("does not bring back a closed position when %s", (_, positionIncreaseEvents) => {
+    const pendingUpdate = makePendingUpdate({ updatedAt: Date.now() - 61_000 });
+    const positions = applyOptimisticUpdates({
+      positionsData: {},
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents,
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]).toBeUndefined();
+  });
+
   it("keeps the pending state when block coverage is unknown", () => {
     const pendingUpdate = makePendingUpdate({ updatedAtBlock: 0n });
     const positions = applyOptimisticUpdates({
