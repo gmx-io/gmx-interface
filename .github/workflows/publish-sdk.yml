@@ -33,6 +33,9 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           scope: "@gmx-io"
 
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@11.21.2
+
       - name: Install dependencies
         working-directory: ./sdk
         run: yarn install --immutable
@@ -68,9 +71,6 @@ jobs:
           fi
 
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Update npm for trusted publishing
-        run: npm install -g npm@11
 
       - name: Publish package
         run: npm publish --provenance --access public --tag "${{ inputs.npm_tag }}"

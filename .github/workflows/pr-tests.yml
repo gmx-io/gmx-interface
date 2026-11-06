@@ -82,6 +82,9 @@ jobs:
           cache: "yarn"
           cache-dependency-path: sdk/yarn.lock
 
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@11.21.2
+
       - name: Install dependencies
         working-directory: ./sdk
         run: yarn install --immutable
