@@ -685,10 +685,6 @@ msgstr ""
 msgid "Deposit margin"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr ""
@@ -869,6 +865,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -1346,7 +1346,6 @@ msgstr ""
 msgid "Claimed funding fees"
 msgstr ""
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr ""
@@ -2205,10 +2204,6 @@ msgstr ""
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr ""
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr ""
@@ -2636,10 +2631,6 @@ msgstr ""
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
-msgstr ""
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4196,10 +4187,6 @@ msgstr ""
 msgid "External routes are only used for Market Swaps"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr ""
@@ -4608,6 +4595,10 @@ msgstr ""
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr ""
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr ""
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr ""
@@ -4786,6 +4777,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Solana service disruption"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -5191,10 +5186,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -5906,8 +5897,6 @@ msgstr ""
 msgid "v:"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7362,10 +7351,6 @@ msgstr ""
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr ""
@@ -7508,6 +7493,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "[!! Perpetuals !!]"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -7672,10 +7661,6 @@ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
-msgstr ""
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -8438,6 +8423,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr ""
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
@@ -9305,6 +9294,10 @@ msgstr ""
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "View transaction"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
 msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10422,10 +10415,6 @@ msgstr ""
 msgid "Top addresses"
 msgstr ""
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr ""
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10649,10 +10638,6 @@ msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion cancelled"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -12912,7 +12897,6 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr ""
 
@@ -13026,10 +13010,6 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx

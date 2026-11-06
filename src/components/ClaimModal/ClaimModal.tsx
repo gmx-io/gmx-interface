@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGmxAccountExpressFeeTokenAddress,
+  selectGmxAccountGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ArbitraryExpressError,
@@ -284,7 +286,7 @@ function ClaimModalMultichain(p: Props) {
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
 
   const networkFee = useMemo((): ClaimNetworkFee => {
     const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;

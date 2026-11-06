@@ -15,16 +15,18 @@ export const fundedCases = [
   { id: "bridge", group: "bridge", title: "Base to GMX Account and back: destination settlement" },
   { id: "gm", group: "liquidity", title: "GM: USDC deposit and withdrawal" },
   { id: "glv", group: "liquidity", title: "GLV: USDC deposit and withdrawal" },
-  { id: "staking", group: "earn", title: "GMX: stake and unstake a bounded existing balance" },
+  { id: "staking", group: "earn", title: "GMX: stake a bounded existing balance" },
   { id: "claims", group: "earn", title: "claim existing staking rewards and verify receipt and balance" },
   { id: "one-click", group: "one-click", title: "1CT: bounded activation, order, cancellation and revocation" },
 ] as const;
 
 export type FundedCase = (typeof fundedCases)[number];
 
-// A case that waits on an app change is skipped by groups and refused by name until that change lands.
+// A case that cannot run now is skipped by groups and refused by name with its reason.
 export const blockedFundedCases: Partial<Record<FundedCase["id"], string>> = {
   "one-click": "bounded activation needs One-Click limits set before activation (PRO-4504, #3121)",
+  staking:
+    "RewardRouterV3 unstakes only through a 180-day request, so the stake cannot be returned in the run (PRO-4528)",
 };
 
 export function selectFundedCases(args: string[]) {

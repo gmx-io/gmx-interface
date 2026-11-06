@@ -1,10 +1,11 @@
+import { zeroAddress } from "viem";
+
 import { getContract } from "config/contracts";
 import { executeMulticall, useMulticall } from "lib/multicall";
 import type { ContractCallConfig, MulticallRequestConfig, MulticallResult } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { signalUnstakeFeatureDisabledKey } from "sdk/configs/dataStore";
 
-import type { RewardRouter } from "./rewardRouter";
 import type { UnstakeRequest } from "./unstakeRequests";
 
 export type UnstakeRequestsData = {
@@ -18,23 +19,20 @@ export type UnstakeRequestsData = {
 
 const REQUEST_CALL_PREFIX = "request:";
 
-export function useUnstakeRequests(
-  chainId: ContractsChainId,
-  { rewardRouter, account }: { rewardRouter: RewardRouter | undefined; account: string | undefined }
-) {
-  const routerAddress = rewardRouter?.version === "v3" ? rewardRouter.address : undefined;
+export function useUnstakeRequests(chainId: ContractsChainId, account: string | undefined) {
+  const routerAddress = getContract(chainId, "RewardRouterV3");
 
   const { data, mutate } = useMulticall<MulticallRequestConfig<any>, UnstakeRequestsData>(
     chainId,
     "useUnstakeRequests",
     {
-      key: routerAddress && account ? [routerAddress, account] : null,
+      key: routerAddress !== zeroAddress && account ? [routerAddress, account] : null,
       request: async (requestChainId) => {
         const keysResult = await executeMulticall(
           requestChainId,
           {
             rewardRouter: {
-              contractAddress: routerAddress!,
+              contractAddress: routerAddress,
               abiId: "RewardRouterV3",
               calls: {
                 requestKeys: { methodName: "unstakeRequestKeys", params: [account] },
@@ -62,7 +60,7 @@ export function useUnstakeRequests(
 
         return {
           rewardRouter: {
-            contractAddress: routerAddress!,
+            contractAddress: routerAddress,
             abiId: "RewardRouterV3",
             calls: {
               unstakeDelay: { methodName: "unstakeDelay", params: [] },
@@ -76,7 +74,7 @@ export function useUnstakeRequests(
             contractAddress: getContract(requestChainId, "DataStore"),
             abiId: "DataStore",
             calls: {
-              isSignalPaused: { methodName: "getBool", params: [signalUnstakeFeatureDisabledKey(routerAddress!)] },
+              isSignalPaused: { methodName: "getBool", params: [signalUnstakeFeatureDisabledKey(routerAddress)] },
             },
           },
         } satisfies MulticallRequestConfig<any>;

@@ -1,18 +1,25 @@
-import { Abi, Address, encodeFunctionData } from "viem";
+import { Abi, Address } from "viem";
 
 import { abis } from "abis";
 import type { GmxSdk } from "clients/v1";
 import { getContract } from "configs/contracts";
-import { convertToContractPrice } from "utils/tokens";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
+import {
+  buildUpdateOrderMulticall,
+  buildUpdateOrderPayload,
+  encodeExchangeRouterMulticall,
+} from "utils/orderTransactions/utils";
 import { Token } from "utils/tokens/types";
 
 export type UpdateOrderParams = {
   orderKey: string;
-  indexToken?: Token;
+  orderType: OrderType;
+  indexToken: Token;
   sizeDeltaUsd: bigint;
   triggerPrice: bigint;
   acceptablePrice: bigint;
   minOutputAmount: bigint;
+  decreasePositionSwapType: DecreasePositionSwapType;
   // used to top-up execution fee for frozen orders
   executionFee?: bigint;
   autoCancel: boolean;
@@ -21,6 +28,7 @@ export type UpdateOrderParams = {
 export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Address> {
   const {
     orderKey,
+    orderType,
     sizeDeltaUsd,
     triggerPrice,
     acceptablePrice,
@@ -28,6 +36,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
     executionFee,
     indexToken,
     autoCancel,
+    decreasePositionSwapType,
   } = p;
 
   const router = getContract(sdk.chainId, "ExchangeRouter");
@@ -35,6 +44,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
   const encodedPayload = createUpdateEncodedPayload({
     sdk,
     orderKey,
+    orderType,
     sizeDeltaUsd,
     executionFee,
     indexToken,
@@ -42,6 +52,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
     triggerPrice,
     minOutputAmount,
     autoCancel,
+    decreasePositionSwapType,
   });
 
   return sdk.callContract(router, abis.ExchangeRouter as Abi, "multicall", [encodedPayload], {
@@ -52,6 +63,7 @@ export function updateOrderTxn(sdk: GmxSdk, p: UpdateOrderParams): Promise<Addre
 export function createUpdateEncodedPayload({
   sdk,
   orderKey,
+  orderType,
   sizeDeltaUsd,
   executionFee,
   indexToken,
@@ -59,42 +71,36 @@ export function createUpdateEncodedPayload({
   triggerPrice,
   autoCancel,
   minOutputAmount,
+  decreasePositionSwapType,
 }: {
   sdk: GmxSdk;
   orderKey: string;
+  orderType: OrderType;
   sizeDeltaUsd: bigint;
   executionFee?: bigint;
-  indexToken?: Token;
+  indexToken: Token;
   acceptablePrice: bigint;
   triggerPrice: bigint;
   minOutputAmount: bigint;
   autoCancel: boolean;
+  decreasePositionSwapType: DecreasePositionSwapType;
 }) {
-  const orderVaultAddress = getContract(sdk.chainId, "OrderVault");
-
-  const multicall: { method: string; params: any[] }[] = [];
-  if (executionFee != undefined && executionFee > 0) {
-    multicall.push({ method: "sendWnt", params: [orderVaultAddress, executionFee] });
-  }
-
-  multicall.push({
-    method: "updateOrder",
-    params: [
-      orderKey,
-      sizeDeltaUsd,
-      acceptablePrice !== undefined ? convertToContractPrice(acceptablePrice, indexToken?.decimals || 0) : 0n,
-      triggerPrice !== undefined ? convertToContractPrice(triggerPrice, indexToken?.decimals || 0) : 0n,
-      minOutputAmount,
-      0n,
-      autoCancel,
-    ],
+  const updateTxn = buildUpdateOrderPayload({
+    chainId: sdk.chainId,
+    indexTokenAddress: indexToken.address,
+    orderKey,
+    orderType,
+    sizeDeltaUsd,
+    triggerPrice,
+    acceptablePrice,
+    minOutputAmount,
+    autoCancel,
+    validFromTime: 0n,
+    decreasePositionSwapType,
+    executionFeeTopUp: executionFee ?? 0n,
   });
+  const { multicall } = buildUpdateOrderMulticall(updateTxn);
+  const { encodedMulticall } = encodeExchangeRouterMulticall(sdk.chainId, multicall);
 
-  return multicall.filter(Boolean).map((call) =>
-    encodeFunctionData({
-      abi: abis.ExchangeRouter as Abi,
-      functionName: call!.method,
-      args: call!.params,
-    })
-  );
+  return encodedMulticall;
 }

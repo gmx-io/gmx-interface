@@ -2,8 +2,9 @@ import { Trans } from "@lingui/macro";
 import { useHeroStats, type HeroStat } from "landing/pages/Home/hooks/useHeroStats";
 import { shortFormat, shortFormatUsd } from "landing/pages/Home/utils/formatters";
 
+import { useSettled } from "lib/useSettled";
+
 import { ChainsStatsNotices } from "components/StatsTooltip/ChainsStatsNotices";
-import { useSettled } from "components/StatsTooltip/useSettled";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TooltipContent } from "components/Tooltip/TooltipBlocks";
 

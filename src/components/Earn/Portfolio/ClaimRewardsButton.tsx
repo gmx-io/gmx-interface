@@ -8,7 +8,6 @@ import { getChainName, getChainNativeTokenSymbol, getChainWrappedTokenSymbol } f
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useRewardRouter } from "domain/stake/useRewardRouter";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
@@ -34,7 +33,6 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
 
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
 
-  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
   const readerAddress = getContract(chainId, "Reader");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
@@ -97,8 +95,6 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
       <ClaimModal
         isVisible={isClaimModalVisible}
         setIsVisible={setIsClaimModalVisible}
-        rewardRouter={rewardRouter}
-        mutateRewardRouter={mutateRewardRouter}
         signer={signer}
         chainId={chainId}
         setPendingTxns={setPendingTxns}

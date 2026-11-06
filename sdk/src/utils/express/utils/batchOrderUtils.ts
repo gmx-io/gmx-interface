@@ -1,7 +1,8 @@
 import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 
-import { abis } from "abis";
+import { getAbi } from "abis/getAbi";
 import type { ContractsChainId, SourceChainId } from "configs/chains";
+import { isContractsV2_2_1 } from "configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "configs/express";
 import type { IMetrics } from "utils/metrics";
 import { noopMetrics } from "utils/metrics";
@@ -37,6 +38,7 @@ export function getBatchTypedData({
   subaccountApprovalHash?: string;
   relayRouterAddress: string;
 }): BatchTypedData {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     Batch: [
       { name: "account", type: "address" },
@@ -83,16 +85,17 @@ export function getBatchTypedData({
       { name: "triggerPrice", type: "uint256" },
       { name: "minOutputAmount", type: "uint256" },
       { name: "validFromTime", type: "uint256" },
+      ...(isV2_2_1 ? [{ name: "decreasePositionSwapType", type: "uint256" }] : []),
       { name: "autoCancel", type: "bool" },
       { name: "executionFeeIncrease", type: "uint256" },
     ],
   };
 
   const domain = getGelatoRelayRouterDomain(signingChainId ?? chainId, relayRouterAddress);
-  const paramsLists = getBatchParamsLists(batchParams);
+  const paramsLists = getBatchParamsLists(chainId, batchParams);
 
   const message = {
-    account: subaccountApprovalHash ? account : zeroAddress,
+    account: subaccountApprovalHash || isV2_2_1 ? account : zeroAddress,
     createOrderParamsList: paramsLists.createOrderParamsList,
     updateOrderParamsList: paramsLists.updateOrderParamsList,
     cancelOrderKeys: paramsLists.cancelOrderKeys,
@@ -134,7 +137,7 @@ export function buildBatchOrderCalldata({
     signature,
   };
 
-  const paramsLists = getBatchParamsLists(batchParams);
+  const paramsLists = getBatchParamsLists(chainId, batchParams);
   const isSubaccount = subaccountApproval !== undefined;
   const isMultichain = isGmxAccount && srcChainId !== undefined;
 
@@ -149,7 +152,7 @@ export function buildBatchOrderCalldata({
   if (isMultichain) {
     if (isSubaccount) {
       callData = encodeFunctionData({
-        abi: abis.MultichainSubaccountRouter,
+        abi: getAbi(chainId, "MultichainSubaccountRouter"),
         functionName: "batch",
         args: [
           relayParamsWithSignature,
@@ -162,7 +165,7 @@ export function buildBatchOrderCalldata({
       });
     } else {
       callData = encodeFunctionData({
-        abi: abis.MultichainOrderRouter,
+        abi: getAbi(chainId, "MultichainOrderRouter"),
         functionName: "batch",
         args: [relayParamsWithSignature, account, BigInt(srcChainId), paramsLists],
       });
@@ -170,7 +173,7 @@ export function buildBatchOrderCalldata({
   } else {
     if (isSubaccount) {
       callData = encodeFunctionData({
-        abi: abis.SubaccountGelatoRelayRouter,
+        abi: getAbi(chainId, "SubaccountGelatoRelayRouter"),
         functionName: "batch",
         args: [
           relayParamsWithSignature,
@@ -182,7 +185,7 @@ export function buildBatchOrderCalldata({
       });
     } else {
       callData = encodeFunctionData({
-        abi: abis.GelatoRelayRouter,
+        abi: getAbi(chainId, "GelatoRelayRouter"),
         functionName: "batch",
         args: [relayParamsWithSignature, account, paramsLists],
       });
@@ -198,7 +201,9 @@ export function buildBatchOrderCalldata({
   };
 }
 
-export function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
+export function getBatchParamsLists(chainId: ContractsChainId, batchParams: BatchOrderTxnParams) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
+
   return {
     createOrderParamsList: batchParams.createOrderParams.map((p) => ({
       addresses: updateExpressOrdersAddresses(p.orderPayload.addresses),
@@ -218,6 +223,7 @@ export function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
       triggerPrice: p.updatePayload.triggerPrice,
       minOutputAmount: p.updatePayload.minOutputAmount,
       validFromTime: p.updatePayload.validFromTime,
+      ...(isV2_2_1 ? { decreasePositionSwapType: p.updatePayload.decreasePositionSwapType } : {}),
       autoCancel: p.updatePayload.autoCancel,
       executionFeeIncrease: p.updatePayload.executionFeeTopUp,
     })),

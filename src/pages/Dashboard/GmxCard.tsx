@@ -24,16 +24,12 @@ import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/Toolti
 export function GmxCard({
   chainId,
   gmxPrice,
-  gmxPriceFromArbitrum,
-  gmxPriceFromAvalanche,
   totalGmxSupply,
   gmxMarketCap,
   totalGmxInLiquidity,
 }: {
   chainId: number;
   gmxPrice: bigint | undefined;
-  gmxPriceFromArbitrum: bigint | undefined;
-  gmxPriceFromAvalanche: bigint | undefined;
   totalGmxSupply: bigint | undefined;
   gmxMarketCap: bigint | undefined;
   totalGmxInLiquidity: bigint;
@@ -44,12 +40,12 @@ export function GmxCard({
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 
   const stakedGmxArbitrumUsd =
-    gmxPriceFromArbitrum !== undefined && stakedGmxArbitrum !== undefined
-      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPriceFromArbitrum, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxArbitrum !== undefined
+      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const stakedGmxAvalancheUsd =
-    gmxPriceFromAvalanche !== undefined && stakedGmxAvalanche !== undefined
-      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPriceFromAvalanche, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxAvalanche !== undefined
+      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const totalStakedGmxUsd = sumBigInts(stakedGmxArbitrumUsd, stakedGmxAvalancheUsd);
 
@@ -133,35 +129,7 @@ export function GmxCard({
                   {gmxPrice === undefined || gmxPrice === 0n ? (
                     "..."
                   ) : (
-                    <StandardTooltip
-                      position="bottom-end"
-                      handle={<UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} />}
-                      handleClassName="numbers"
-                      content={
-                        <TooltipRows>
-                          <TooltipRow
-                            label={t`Price on Arbitrum`}
-                            value={
-                              <UsdValue
-                                usd={gmxPriceFromArbitrum}
-                                displayDecimals={GMX_PRICE_DECIMALS}
-                                fallback="..."
-                              />
-                            }
-                          />
-                          <TooltipRow
-                            label={t`Price on Avalanche`}
-                            value={
-                              <UsdValue
-                                usd={gmxPriceFromAvalanche}
-                                displayDecimals={GMX_PRICE_DECIMALS}
-                                fallback="..."
-                              />
-                            }
-                          />
-                        </TooltipRows>
-                      }
-                    />
+                    <UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} className="numbers" />
                   )}
                 </div>
               </div>

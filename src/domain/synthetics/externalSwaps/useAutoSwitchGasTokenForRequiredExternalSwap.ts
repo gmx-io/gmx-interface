@@ -1,13 +1,19 @@
 import { t } from "@lingui/macro";
 import { useEffect, useRef } from "react";
-import { toast } from "react-toastify";
 
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
+  selectChainId,
+  selectSetGasPaymentTokenReplacement,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -38,11 +44,7 @@ const EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID = "external-swap-gas-token-switc
 const notifyExternalSwapGasTokenSwitched = (toSymbol: string) => {
   const content = t`Gas token switched to ${toSymbol} to enable external swap routing`;
 
-  if (toast.isActive(EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID)) {
-    toast.update(EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID, { render: content });
-  } else {
-    helperToast.info(content, { toastId: EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID });
-  }
+  helperToast.infoOrUpdate(content, EXTERNAL_SWAP_GAS_TOKEN_SWITCHED_TOAST_ID);
 };
 
 export function getExternalSwapGasTokenToSwitchTo({
@@ -54,6 +56,7 @@ export function getExternalSwapGasTokenToSwitchTo({
   conflictTokenAddress,
   currentGasTokenAddress,
   isGmxAccount,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -63,6 +66,7 @@ export function getExternalSwapGasTokenToSwitchTo({
   conflictTokenAddress: string | undefined;
   currentGasTokenAddress: string | undefined;
   isGmxAccount: boolean;
+  unavailableTokenAddresses: string[];
 }): string | undefined {
   if (desirability !== "required" || isOneClickActiveByUser || !isBlockedByGasConflict) return undefined;
   if (!conflictTokenAddress) return undefined;
@@ -72,8 +76,8 @@ export function getExternalSwapGasTokenToSwitchTo({
     tokensData,
     isGmxAccount,
     excludeTokenAddresses: currentGasTokenAddress
-      ? [conflictTokenAddress, currentGasTokenAddress]
-      : [conflictTokenAddress],
+      ? [...unavailableTokenAddresses, conflictTokenAddress, currentGasTokenAddress]
+      : [...unavailableTokenAddresses, conflictTokenAddress],
   });
 }
 
@@ -87,6 +91,7 @@ export function getExternalSwapGasTokenCandidate({
   gasPaymentParams,
   payAmounts,
   isGmxAccount,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
@@ -97,9 +102,11 @@ export function getExternalSwapGasTokenCandidate({
   gasPaymentParams: Pick<GasPaymentParams, "gasPaymentToken" | "gasPaymentTokenAmount"> | undefined;
   payAmounts: Record<string, bigint>;
   isGmxAccount: boolean;
+  unavailableTokenAddresses: string[];
 }): string | undefined {
   const wrappedTokenAddress = getWrappedToken(chainId).address;
   const excludeTokenAddresses = [
+    ...unavailableTokenAddresses,
     conflictTokenAddress,
     savedGasTokenAddress,
     gasPaymentParams?.gasPaymentToken.address,
@@ -155,6 +162,11 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
+  const setGasPaymentTokenReplacement = useSelector(selectSetGasPaymentTokenReplacement);
+  const savedGasTokenAddress = useSelector(
+    isFromTokenGmxAccount ? selectGmxAccountGasPaymentTokenAddress : selectGasPaymentTokenAddress
+  );
 
   const attemptedKeysRef = useRef(new Set<string>());
 
@@ -176,6 +188,7 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
         conflictTokenAddress,
         currentGasTokenAddress,
         isGmxAccount: isFromTokenGmxAccount,
+        unavailableTokenAddresses,
       });
 
       if (!targetAddress) return;
@@ -185,7 +198,10 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
       attemptedKeysRef.current.add(attemptKey);
 
       // No "gasPaymentTokenChanged" dispatch — its listener clears the pay input the auto-switch is meant to unblock.
-      if (isFromTokenGmxAccount) {
+      // Like useSwitchGasPaymentTokenIfRequired, a saved token that can't pay only for now is replaced, not saved over.
+      if (unavailableTokenAddresses.includes(savedGasTokenAddress)) {
+        setGasPaymentTokenReplacement(isFromTokenGmxAccount, targetAddress);
+      } else if (isFromTokenGmxAccount) {
         setGmxAccountGasPaymentTokenAddress(targetAddress);
       } else {
         setGasPaymentTokenAddress(targetAddress);
@@ -208,6 +224,9 @@ export function useAutoSwitchGasTokenForRequiredExternalSwap() {
       fromTokenAddress,
       setGasPaymentTokenAddress,
       setGmxAccountGasPaymentTokenAddress,
+      unavailableTokenAddresses,
+      savedGasTokenAddress,
+      setGasPaymentTokenReplacement,
     ]
   );
 }

@@ -14,8 +14,9 @@ import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import SubaccountRouterAbi from "sdk/abis/SubaccountRouter";
-import { getContract } from "sdk/configs/contracts";
+import { getContract, isContractsV2_2_1 } from "sdk/configs/contracts";
 import { subaccountListKey } from "sdk/configs/dataStore";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import {
@@ -192,13 +193,13 @@ async function buildAndSignRemoveSubaccountTxn({
   let removeSubaccountCallData: string;
   if (isMultichain) {
     removeSubaccountCallData = encodeFunctionData({
-      abi: abis.MultichainSubaccountRouter,
+      abi: getAbi(chainId, "MultichainSubaccountRouter"),
       functionName: "removeSubaccount",
       args: [{ ...relayParamsPayload, signature }, signer.address, BigInt(srcChainId ?? chainId), subaccount.address],
     });
   } else {
     removeSubaccountCallData = encodeFunctionData({
-      abi: abis.SubaccountGelatoRelayRouter,
+      abi: getAbi(chainId, "SubaccountGelatoRelayRouter"),
       functionName: "removeSubaccount",
       args: [{ ...relayParamsPayload, signature }, signer.address, subaccount.address],
     });
@@ -223,12 +224,14 @@ async function signRemoveSubaccountPayload({
   subaccountAddress: string;
   chainId: ContractsChainId;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
 
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, true, srcChainId !== undefined);
 
   const types = {
     RemoveSubaccount: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "subaccount", type: "address" },
       { name: "relayParams", type: "bytes32" },
     ],
@@ -237,6 +240,7 @@ async function signRemoveSubaccountPayload({
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
 
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     subaccount: subaccountAddress,
     relayParams: hashRelayParams(relayParams),
   };
