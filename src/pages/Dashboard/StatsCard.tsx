@@ -25,7 +25,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
-const gmGmxTokenAddresses = chains.map((chain) =>
+const gmGmxTokenAddresses = chains.flatMap((chain) =>
   Object.keys(MARKETS[chain]).filter((address) => {
     return (
       gmxTokenAddresses.includes(MARKETS[chain][address].longTokenAddress) &&
