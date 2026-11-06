@@ -17,13 +17,7 @@ export type GmsolOrderFields = {
   rentReceiver: string | undefined;
 };
 
-type GmsolApiOrder = ApiOrderInfo & {
-  actionState?: string;
-  orderAccount?: string;
-  positionAccount?: string;
-  rentReceiver?: string;
-  uiFeeFactor?: bigint;
-};
+type GmsolApiOrder = ApiOrderInfo & { uiFeeFactor?: bigint };
 
 function parseActionState(value: string | undefined): GmsolOrderActionState {
   return value === "completed" || value === "cancelled" ? value : "pending";

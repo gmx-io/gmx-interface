@@ -164,4 +164,31 @@ export type ApiOrderInfo = {
   isFrozen: boolean;
   autoCancel: boolean;
   dataList: string[];
+} & Partial<SolanaApiOrderFields>;
+
+export type SolanaOrderActionState = "pending" | "completed" | "cancelled";
+
+export type SolanaOrderCallback = {
+  version: number;
+  program: string;
+  sharedData: string;
+  partitionedData: string;
+};
+
+export type SolanaOrderEscrowTokens = {
+  initialCollateralToken: string | undefined;
+  finalOutputToken: string | undefined;
+  longToken: string | undefined;
+  shortToken: string | undefined;
+};
+
+export type SolanaApiOrderFields = {
+  orderAccount: string;
+  actionState: SolanaOrderActionState;
+  positionAccount: string | undefined;
+  rentReceiver: string;
+  // sent only while one of the wallet's orders holds a GT reward, the one case close_order_v2 needs it
+  referrer: string | undefined;
+  callback: SolanaOrderCallback | undefined;
+  escrowTokens: SolanaOrderEscrowTokens;
 };
