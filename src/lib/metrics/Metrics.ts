@@ -422,6 +422,12 @@ class Metrics {
     return event as CachedMetricData & TData;
   };
 
+  getCachedMetricIds = (): string[] => {
+    const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
+
+    return cachedMetricsData ? Object.keys(this.deserializeCachedMetricsData(cachedMetricsData)) : [];
+  };
+
   getIsGlobalPropsInited = () => {
     return this.globalMetricData.isInited && this.wallets;
   };
