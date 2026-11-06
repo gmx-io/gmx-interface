@@ -311,7 +311,7 @@ export async function activateTestSubaccount(
   signer: IAbstractSigner,
   account: string
 ): Promise<void> {
-  const subAddr = await sdkSub.generateSubaccount(signer);
+  const subAddr = sdkSub.generateSubaccount();
   const status = await sdkSub.fetchSubaccountStatus({ account, subaccountAddress: subAddr });
   const maxAllowedCount = Number(status.currentActionsCount) + 50;
 

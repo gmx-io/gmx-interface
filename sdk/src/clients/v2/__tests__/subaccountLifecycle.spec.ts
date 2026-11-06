@@ -63,7 +63,7 @@ describe("GmxApiSdk — subaccount (1CT) live flow", () => {
     const cleanupSdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api: recordingApi });
 
     try {
-      const subaccountAddress = await sdkSub.generateSubaccount(signer);
+      const subaccountAddress = sdkSub.generateSubaccount();
       const statusBefore = await sdkSub.refreshSubaccountState(account);
 
       await sdkSub.activateSubaccount(signer, {
