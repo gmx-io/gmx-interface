@@ -9,6 +9,7 @@ import { isDevelopment } from "config/env";
 import { isIOS } from "lib/headlessUiIsMobile";
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { assertEvmRpcActive } from "lib/rpc/fetchRpc";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { AbiId } from "sdk/abis";
 
@@ -191,6 +192,8 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
   name?: string,
   disableBatching?: boolean
 ): Promise<MulticallResult<TConfig>> {
+  assertEvmRpcActive();
+
   if (disableBatching) {
     const callsCount = Object.keys(request).reduce(
       (sum, contractAbiKey) => sum + Object.keys(request[contractAbiKey].calls).length,

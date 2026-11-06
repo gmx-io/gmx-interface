@@ -10,7 +10,7 @@ export type Freshness = {
 export type SWRWithFreshnessResult<Data> = {
   data: Data | undefined;
   isLoading: boolean;
-  error: unknown;
+  error: Error | undefined;
   freshness: Freshness;
 };
 
@@ -20,6 +20,23 @@ type Fetched<Data> = {
 };
 
 const UNKNOWN: Freshness = { isStale: false, asOf: undefined };
+
+function asError(error: unknown): Error | undefined {
+  if (!error) return undefined;
+  return error instanceof Error ? error : new Error(String(error));
+}
+
+// Same window as useApiDataRequest: refresh interval plus 10s. A failed read keeps its last value until then.
+const API_STALE_MS = 10_000;
+
+export function isSnapshotPastGrace(
+  asOf: number | undefined,
+  hasError: boolean,
+  refreshInterval: number,
+  now = Date.now()
+) {
+  return hasError && (asOf === undefined || now - asOf > refreshInterval + API_STALE_MS);
+}
 
 // swr backs off exponentially after repeated failures, which would hold a recovered source back for minutes
 export const retryAtRefreshCadence: NonNullable<SWRConfiguration["onErrorRetry"]> = (
@@ -43,11 +60,12 @@ export function useSWRWithFreshness<Data, Arg = any>(
   fetcher: (arg: Arg) => Promise<Data>,
   config?: SWRConfiguration<Fetched<Data>>
 ): SWRWithFreshnessResult<Data> {
-  const { data, error, isLoading } = useSWR<Fetched<Data>>(
+  const { data, error: swrError, isLoading } = useSWR<Fetched<Data>>(
     key,
     async (arg: Arg) => ({ value: await fetcher(arg), fetchedAt: Date.now() }),
     { onErrorRetry: retryAtRefreshCadence, ...config }
   );
+  const error = asError(swrError);
 
   return {
     data: data?.value,

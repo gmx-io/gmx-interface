@@ -2,7 +2,6 @@ import { GetAccountReturnType, watchAccount } from "@wagmi/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useAccount } from "wagmi";
 
-import { getIsSolanaNetworkEnabled } from "config/ab";
 import {
   type ContractsChainId,
   type SettlementChainId,
@@ -14,9 +13,9 @@ import { isDevelopment } from "config/env";
 import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
-  SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { useLatestValueRef } from "lib/useLatestValueRef";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
@@ -216,8 +215,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     [settlementChainIdRef]
   );
 
-  const isSolanaNetworkSelected =
-    getIsSolanaNetworkEnabled() && localStorage.getItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY) === "true";
+  const isSolanaNetworkSelected = getIsSolanaNetworkSelected();
 
   if (isSolanaNetworkSelected) {
     return { chainId: INITIAL_CHAIN_ID, isSolanaNetworkSelected };
