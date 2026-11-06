@@ -10,7 +10,7 @@ import Button from "components/Button/Button";
 import { ExpandableRow } from "components/ExpandableRow";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 export function OneClickAdvancedSettings() {
   const { subaccount, updateSubaccountSettings } = useSubaccountContext();
@@ -104,13 +104,9 @@ export function OneClickAdvancedSettings() {
         <div className="mt-12 flex flex-col gap-14">
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
-                position="left-start"
-                variant="icon"
-                content={<Trans>Maximum actions before reauthorization required</Trans>}
-              >
+              <StandardTooltip variant="iconStroke" content={t`Maximum actions before reauthorization required`}>
                 <Trans>Allowed actions</Trans>
-              </TooltipWithPortal>
+              </StandardTooltip>
             }
           >
             <SuggestionInput
@@ -125,13 +121,9 @@ export function OneClickAdvancedSettings() {
 
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
-                position="left-start"
-                variant="icon"
-                content={<Trans>Maximum days before reauthorization required</Trans>}
-              >
+              <StandardTooltip variant="iconStroke" content={t`Maximum days before reauthorization required`}>
                 <Trans>Time limit</Trans>
-              </TooltipWithPortal>
+              </StandardTooltip>
             }
           >
             <SuggestionInput

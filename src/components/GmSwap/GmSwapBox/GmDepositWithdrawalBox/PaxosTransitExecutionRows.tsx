@@ -6,7 +6,7 @@ import { formatBalanceAmount } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import type { PaxosTransitState } from "./usePaxosTransitState";
 
@@ -20,24 +20,12 @@ export function PaxosTransitExecutionRows({ transitState }: { transitState: Paxo
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal
+          <StandardTooltip
             handle={t`Steps`}
-            position="left-start"
-            variant="iconStroke"
             content={
-              <div className="text-typography-primary">
-                {isDeposit ? (
-                  <Trans>
-                    First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG
-                    stays in your wallet.
-                  </Trans>
-                ) : (
-                  <Trans>
-                    First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If the
-                    conversion fails, the USDG stays in your wallet.
-                  </Trans>
-                )}
-              </div>
+              isDeposit
+                ? t`First you convert USDC to USDG in your wallet, then you confirm the buy. If the buy fails, the USDG stays in your wallet.`
+                : t`First the pool pays out USDG to your wallet, then you confirm the conversion to USDC. If the conversion fails, the USDG stays in your wallet.`
             }
           />
         }

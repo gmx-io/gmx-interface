@@ -140,9 +140,9 @@ export function MarketGraphs({
   );
 
   const graphTitleLabelMap = {
-    performance: <PerformanceLabel short={false} variant="none" />,
+    performance: <PerformanceLabel short={false} variant="iconStroke" />,
     price: t`Current price`,
-    feeApr: <FeeApyLabel variant="none" />,
+    feeApr: <FeeApyLabel variant="iconStroke" />,
   };
 
   const poolsTabs = (
