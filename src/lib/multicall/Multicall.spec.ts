@@ -104,6 +104,22 @@ describe("multicall result isolation", () => {
     expect(result.data.balance.amount.returnValues).toEqual([50_000_000n]);
     expect(call).toHaveBeenCalledTimes(2);
   });
+
+  it("logs an error only when the last RPC fails PRO-4571", async () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const failed = [failure(new Error("RPC failure")), failure(new Error("RPC failure"))];
+    const call = vi.fn().mockResolvedValueOnce(failed).mockResolvedValueOnce([success, success]);
+    vi.spyOn(Multicall, "getViemClient").mockReturnValue({ multicall: call } as unknown as ReturnType<
+      typeof Multicall.getViemClient
+    >);
+
+    await new Multicall(42161, {}).call(endpoints, request, false);
+    expect(consoleError).not.toHaveBeenCalled();
+
+    call.mockResolvedValue(failed);
+    await expect(new Multicall(42161, {}).call(endpoints, request, false)).rejects.toThrow("Multicall failed");
+    expect(consoleError).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("Sepolia position multicalls", () => {

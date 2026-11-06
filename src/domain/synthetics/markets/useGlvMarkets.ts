@@ -121,6 +121,7 @@ export function useGlvMarketsInfo(
     "useGlvMarketsInfos",
     {
       key: shouldRequest ? ["glvMarketsInfos", chainId, glvs, account] : shouldRequest,
+      disableBatching: true,
       request: () => {
         if (!shouldRequest) {
           throw new Error("Not all required data is loaded");
@@ -161,21 +162,6 @@ export function useGlvMarketsInfo(
               glvTokenPriceMax: {
                 methodName: "getGlvTokenPrice",
                 params: [...glvPricesQuery, true],
-              },
-            },
-          } satisfies ContractCallsConfig<any>;
-
-          acc[glv.glvToken + "-glvValue"] = {
-            contractAddress: glvReaderAddress,
-            abiId: "GlvReader",
-            calls: {
-              glvValueMax: {
-                methodName: "getGlvValue",
-                params: [...glvPricesQuery, true],
-              },
-              glvValueMin: {
-                methodName: "getGlvValue",
-                params: [...glvPricesQuery, false],
               },
             },
           } satisfies ContractCallsConfig<any>;
@@ -291,10 +277,8 @@ export function useGlvMarketsInfo(
 
       const pricesMax = glvPrices.glvTokenPriceMax.returnValues as [bigint, bigint, bigint];
       const pricesMin = glvPrices.glvTokenPriceMin.returnValues as [bigint, bigint, bigint];
-      const [valueMax] = glvRawData[glv.glvToken + "-glvValue"].glvValueMax.returnValues as [bigint, bigint, bigint];
-      const [valueMin] = glvRawData[glv.glvToken + "-glvValue"].glvValueMin.returnValues as [bigint, bigint, bigint];
-      const [priceMin, , totalSupply] = pricesMin;
-      const [priceMax] = pricesMax;
+      const [priceMin, valueMin, totalSupply] = pricesMin;
+      const [priceMax, valueMax] = pricesMax;
       const glvTokenPrices = pricesData?.[glv.glvToken] ?? {
         minPrice: priceMin,
         maxPrice: priceMax,
