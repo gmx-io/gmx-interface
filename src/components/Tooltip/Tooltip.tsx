@@ -187,6 +187,7 @@ export default function Tooltip<T extends ElementType>({
 
       const isKeyboardFocusWithin =
         hasVisibleFocusWithin(referenceRef.current) ||
+        hasVisibleFocusWithin(parentControlRef.current) ||
         (keyboardEngagedRef.current && containsFocus(floatingRef.current));
 
       if (!open && (reason === "hover" || reason === "safe-polygon" || reason === undefined) && isKeyboardFocusWithin) {
