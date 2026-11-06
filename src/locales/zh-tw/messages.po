@@ -4998,10 +4998,6 @@ msgstr "分享 GMX 意見回饋"
 msgid "Withdraw failed"
 msgstr "提取失敗"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade."
-msgstr "質押升級期間，帳戶轉移已暫停。"
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr "只有 GMX 向此池提供流動性。如需提供 USDG 流動性，請使用 GLV [USDG]。"
@@ -7045,6 +7041,10 @@ msgstr "文件"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
 msgstr "請求已送出，但無法確認其結果。它可能已經完成 — 請重試以檢查並完成停用"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused. Try again later."
+msgstr "帳戶轉帳已暫停。請稍後再試。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
