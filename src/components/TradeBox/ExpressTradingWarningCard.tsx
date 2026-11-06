@@ -12,6 +12,7 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTokensData,
@@ -28,16 +29,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import {
-  findGasPaymentTokenWithPositiveBalance,
-  findNextGasPaymentToken,
-} from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import { getExternalSwapGasTokenCandidate } from "domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -175,90 +172,44 @@ export function ExpressTradingWarningCard({
   });
 
   const conflictToken = tradeFlags?.isSwap ? swapToToken : collateralToken;
-  const currentGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
+  const selectedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
 
   const payAmounts = useMemo(
     () => (payTokenAddress && fromTokenAmount > 0n ? { [payTokenAddress]: fromTokenAmount } : {}),
     [payTokenAddress, fromTokenAmount]
   );
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const gasTokenCandidate = useMemo(() => {
-    const excludeTokenAddresses = conflictToken ? [conflictToken.address] : [];
-
-    if (shouldShowExternalSwapGasConflictRequiredWarning) {
-      const candidateAddress =
-        currentGasPaymentToken && expressParams
-          ? findNextGasPaymentToken({
-              chainId,
-              tokensData,
-              gasPaymentToken: currentGasPaymentToken,
-              gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-              payAmounts,
-              isGmxAccount,
-              excludeTokenAddresses,
-            })
-          : findGasPaymentTokenWithPositiveBalance({
-              chainId,
-              tokensData,
-              isGmxAccount,
-              excludeTokenAddresses: currentGasPaymentToken
-                ? [...excludeTokenAddresses, currentGasPaymentToken.address]
-                : excludeTokenAddresses,
-            });
-
-      return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
+    if (!shouldShowExternalSwapGasConflictRequiredWarning && !shouldShowExternalSwapGasConflictOptionalWarning) {
+      return undefined;
     }
 
-    if (shouldShowExternalSwapGasConflictOptionalWarning) {
-      const wrappedTokenAddress = getWrappedToken(chainId).address;
-      const wrappedToken = getByKey(tokensData, wrappedTokenAddress);
+    const candidateAddress = getExternalSwapGasTokenCandidate({
+      chainId,
+      tokensData,
+      desirability: shouldShowExternalSwapGasConflictRequiredWarning ? "required" : "optional",
+      conflictTokenAddress: conflictToken?.address,
+      savedGasTokenAddress: selectedGasPaymentToken?.address,
+      gasPaymentParams: expressParams?.gasPaymentParams,
+      payAmounts,
+      isGmxAccount,
+      unavailableTokenAddresses,
+    });
 
-      if (currentGasPaymentToken && expressParams) {
-        const findSufficientGasToken = (excluded: string[]) =>
-          findNextGasPaymentToken({
-            chainId,
-            tokensData,
-            gasPaymentToken: currentGasPaymentToken,
-            gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            payAmounts,
-            isGmxAccount,
-            excludeTokenAddresses: excluded,
-          });
-
-        const candidateAddress =
-          findSufficientGasToken(getGasPaymentTokens(chainId).filter((address) => address !== wrappedTokenAddress)) ??
-          findSufficientGasToken(excludeTokenAddresses);
-
-        return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
-      }
-
-      const wrappedTokenBalance = isGmxAccount ? wrappedToken?.gmxAccountBalance : wrappedToken?.walletBalance;
-      if ((wrappedTokenBalance ?? 0n) > 0n) return wrappedToken;
-
-      const candidateAddress = findGasPaymentTokenWithPositiveBalance({
-        chainId,
-        tokensData,
-        isGmxAccount,
-        excludeTokenAddresses: currentGasPaymentToken
-          ? [...excludeTokenAddresses, currentGasPaymentToken.address]
-          : excludeTokenAddresses,
-      });
-
-      return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
-    }
-
-    return undefined;
+    return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
   }, [
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
     conflictToken,
-    currentGasPaymentToken,
+    selectedGasPaymentToken,
     expressParams,
     payAmounts,
     chainId,
     tokensData,
     isGmxAccount,
+    unavailableTokenAddresses,
   ]);
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);

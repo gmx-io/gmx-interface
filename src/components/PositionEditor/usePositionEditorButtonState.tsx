@@ -330,6 +330,7 @@ export function usePositionEditorButtonState(
     orderParams: batchParams,
     isGmxAccount: isCollateralTokenFromGmxAccount,
     canSwitchGasPaymentToken,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const approvalTokens = useMemo(() => {

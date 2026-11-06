@@ -13,7 +13,10 @@ import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hoo
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectOrdersInfoData,
@@ -30,7 +33,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -706,6 +709,8 @@ function useOrdersControl() {
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const selectedOrderKeys = useMemo(
@@ -731,7 +736,7 @@ function useOrdersControl() {
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -748,6 +753,7 @@ function useOrdersControl() {
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
+            unavailableGasPaymentToken,
             actionName: "Cancel Order",
           })
         ) {
@@ -774,7 +780,9 @@ function useOrdersControl() {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
@@ -808,7 +816,7 @@ function useOrdersControl() {
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -825,6 +833,7 @@ function useOrdersControl() {
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
+            unavailableGasPaymentToken,
             actionName: "Cancel Order",
             collateral: order.initialCollateralToken.symbol,
           })
@@ -852,7 +861,9 @@ function useOrdersControl() {
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,

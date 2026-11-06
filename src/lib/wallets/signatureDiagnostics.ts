@@ -1,9 +1,10 @@
-import { isHex, size } from "viem";
+import { getAccount } from "@wagmi/core";
+import { isAddressEqual, isHex, size, type Address } from "viem";
 
 import { metrics, type SignatureProducedEvent } from "lib/metrics";
 
 import { ACCOUNT_TYPE_LABELS, getAccountType } from "./useAccountType";
-import { getPublicClientWithRpc } from "./walletConfig";
+import { getPublicClientWithRpc, getWagmiConfig } from "./walletConfig";
 
 export const ERC6492_MAGIC_SUFFIX = "6492649264926492649264926492649264926492649264926492649264926492";
 
@@ -82,6 +83,8 @@ export function reportSignatureProduced({
   verificationChainId: number;
   isRetryAfterInvalidSignature?: boolean;
 }) {
+  const connectedAddress = getAccount(getWagmiConfig()).address;
+
   Promise.all([
     resolveAccountTypeLabel(address, signingChainId),
     signingChainId === verificationChainId
@@ -89,12 +92,17 @@ export function reportSignatureProduced({
       : resolveAccountTypeLabel(address, verificationChainId),
   ])
     .then(([accountTypeOnSigningChain, accountTypeOnVerificationChain]) => {
+      // compared in here, so a malformed address can't throw into the signing flow
+      const signerSource =
+        connectedAddress !== undefined && isAddressEqual(address as Address, connectedAddress) ? "wallet" : "local";
+
       metrics.pushEvent<SignatureProducedEvent>({
         event: "signature.produced",
         isError: false,
         data: {
           ...analyzeSignatureShape(signature),
           signaturePurpose,
+          signerSource,
           signingChainId,
           verificationChainId,
           didSwitchChain: signingChainId !== startingChainId,

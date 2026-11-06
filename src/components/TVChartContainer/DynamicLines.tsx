@@ -7,7 +7,10 @@ import {
   useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -20,7 +23,7 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
@@ -66,6 +69,8 @@ export function DynamicLines({
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -92,7 +97,7 @@ export function DynamicLines({
       };
 
       try {
-        const expressParams = await estimateBatchExpressParams({
+        const expressParams = await estimateExpressParams({
           signer,
           chainId,
           batchParams,
@@ -109,6 +114,7 @@ export function DynamicLines({
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
+            unavailableGasPaymentToken,
             actionName: "Cancel Order",
             collateral: order.initialCollateralToken.symbol,
           })
@@ -135,7 +141,9 @@ export function DynamicLines({
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,

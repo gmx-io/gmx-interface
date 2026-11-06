@@ -6,7 +6,10 @@ import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { getActivationPermitTokenAddresses, signActivationTokenPermits } from "./activationTokenPermits";
 
-vi.mock("lib/metrics/tokenPermitMetrics", () => ({ sendTokenPermitMetric: vi.fn() }));
+vi.mock("lib/metrics/tokenPermitMetrics", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  sendTokenPermitMetric: vi.fn(),
+}));
 vi.mock("lib/metrics", () => ({ metrics: { pushError: vi.fn() } }));
 
 const ARBITRUM = 42161;
@@ -116,7 +119,7 @@ describe("signActivationTokenPermits", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    addTokenPermit.mockResolvedValue(undefined);
+    addTokenPermit.mockImplementation(async (token: string) => permit(token));
   });
 
   function sign(tokenAddresses: string[]) {
@@ -170,7 +173,7 @@ describe("signActivationTokenPermits", () => {
   ])("keeps only invalid signatures on approvals when $name", async ({ errors, tokens, asked, disabled }) => {
     errors.forEach((error) =>
       error === undefined
-        ? addTokenPermit.mockResolvedValueOnce(undefined)
+        ? addTokenPermit.mockImplementationOnce(async (token: string) => permit(token))
         : addTokenPermit.mockRejectedValueOnce(error)
     );
 
