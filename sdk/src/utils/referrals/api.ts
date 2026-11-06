@@ -23,14 +23,6 @@ function readBigInt(raw: Record<string, unknown>, name: string): bigint {
   return BigInt(value as string | number);
 }
 
-function readBoolean(raw: Record<string, unknown>, name: string): boolean {
-  const value = raw[name];
-  if (typeof value !== "boolean") {
-    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected boolean field "${name}"`);
-  }
-  return value;
-}
-
 function readUint(raw: Record<string, unknown>, name: string): number {
   const value = raw[name];
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
@@ -46,12 +38,16 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
 
   const record = raw as Record<string, unknown>;
 
+  if (typeof record.attachedOnChain !== "boolean") {
+    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected boolean field "attachedOnChain"`);
+  }
+
   return {
     userReferralInfo: {
       userReferralCode: readString(record, "userReferralCode"),
       userReferralCodeString: readString(record, "userReferralCodeString"),
       referralCodeForTxn: readString(record, "referralCodeForTxn"),
-      attachedOnChain: readBoolean(record, "attachedOnChain"),
+      attachedOnChain: record.attachedOnChain,
       affiliate: readString(record, "affiliate"),
       tierId: readUint(record, "tierId"),
       totalRebate: readBigInt(record, "totalRebate"),
@@ -64,7 +60,6 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
     rankDiscountFactor: readBigInt(record, "rankDiscountFactor"),
     referrer: record.referrer === null ? undefined : readString(record, "referrer"),
     referredUserDiscountFactor: readBigInt(record, "referredUserDiscountFactor"),
-    hasUserAccount: readBoolean(record, "hasUserAccount"),
     updatedAt: typeof record.updatedAt === "number" ? record.updatedAt : undefined,
   };
 }

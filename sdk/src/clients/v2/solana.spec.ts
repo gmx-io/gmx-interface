@@ -34,7 +34,6 @@ const fee = (overrides: Record<string, unknown> = {}) => ({
   rankDiscountFactor: amount,
   referrer,
   referredUserDiscountFactor: amount,
-  hasUserAccount: true,
   updatedAt: 123,
   ...overrides,
 });
@@ -101,7 +100,6 @@ describe("Solana API reads", () => {
         rankDiscountFactor: BigInt(value),
         referrer,
         referredUserDiscountFactor: BigInt(value),
-        hasUserAccount: true,
         updatedAt: 123,
       });
       expect(new URL(String(vi.mocked(fetch).mock.lastCall![0])).searchParams.get("address")).toBe(address);
@@ -112,7 +110,6 @@ describe("Solana API reads", () => {
       [],
       {},
       fee({ attachedOnChain: "true" }),
-      fee({ hasUserAccount: "true" }),
       fee({ tierId: 1.5 }),
       fee({ gtRank: -1 }),
       ...["userReferralCode", "userReferralCodeString", "referralCodeForTxn", "affiliate", "referrer"].map((key) =>
