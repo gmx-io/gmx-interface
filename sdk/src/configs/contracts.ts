@@ -43,35 +43,35 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
     EventEmitter: "0xC8ee91A54287DB53897056e12D9819156D3822Fb",
-    SubaccountRouter: "0x9c05880A2AaD7530c69e18e342eDC9E06cc757db",
-    ExchangeRouter: "0x7dE39FF2e232A2203196788d37e234cF8F1b83f1",
+    SubaccountRouter: "0x63e3fFcF0bBc43F2ed253134EBA534E31A268509",
+    ExchangeRouter: "0x6776c2b52179BC737193DE3bc75262681006AA27",
     DepositVault: "0xF89e77e8Dc11691C9e8757e84aaFbCD8A67d7A55",
     WithdrawalVault: "0x0628D46b5D145f183AdB6Ef1f2c97eD1C4701C55",
     OrderVault: "0x31eF83a530Fde1B38EE9A18093A333D8Bbbc40D5",
     ShiftVault: "0xfe99609C4AA83ff6816b64563Bdffd7fa68753Ab",
-    SyntheticsReader: "0xfA26cBb46e2614609406de08CA1Dc7f70a684184",
+    SyntheticsReader: "0xAda708aFf0f1D784D28cd8Ff4d6D977fF9599e5D",
     SyntheticsRouter: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
 
-    SimulationRouter: "0xaD3051cB1aE3a86b335f12A9a41BD4d995a137ea",
+    SimulationRouter: "0x3C81eBE9892431B5c9B8Eff7904c2a09397014D1",
 
-    GlvReader: "0x85fcBD684D08053f1efAB302dCb04F22E20E65B1",
-    GlvRouter: "0x167540D2DFF14120365CfDDF2F86e3045D4fa712",
+    GlvReader: "0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6",
+    GlvRouter: "0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9",
     GlvVault: "0x393053B58f9678C9c28c2cE941fF6cac49C3F8f9",
 
-    GelatoRelayRouter: "0x5503b99308dB6923758F9A22d118207D633c4e87",
-    SubaccountGelatoRelayRouter: "0xfD0596f708d9D950E0eF7b5d191e5F8e55b8a67f",
+    GelatoRelayRouter: "0xE6c871230F758F03b39D4Fb5ea3fc7B49E9dAc64",
+    SubaccountGelatoRelayRouter: "0xC3969579D6ec54879F078c36F6B364cDbd1B557B",
 
-    MultichainClaimsRouter: "0x946CC490DFedd6016645F5ce555E0036D116f50e",
-    MultichainGlvRouter: "0xA0Ef0Ace6E437458BB4b5F72A7c7bB43a1CdDa8d",
-    MultichainGmRouter: "0xFd26a7E3c4A9b75Bd0dce495290Fa33af2bb4b00",
-    MultichainOrderRouter: "0xABFC734f7CFc9352AED7a97b1F6a236eae831e8A",
-    MultichainSubaccountRouter: "0xAb3EDf0f3eed6804BAe1bD9bF90109ccadFD262e",
-    MultichainTransferRouter: "0x3f6772B95423fC03264adf90Efb8A9922B6C8c6e",
+    MultichainClaimsRouter: "0x7b2b62a4604417d0340Ed3A837BA66ad3a5eeAd7",
+    MultichainGlvRouter: "0xf9B01d45B2c5022429c3f745e5A2E700B02cEBeb",
+    MultichainGmRouter: "0xa334b4e3f92a91e927f061494A95d84B7F0D134d",
+    MultichainOrderRouter: "0x5cFdc00811d0697D18b080f4E4fEB092a3b18671",
+    MultichainSubaccountRouter: "0xa2d9D6B0904929A1CD43c3762931Eb19ca1b4215",
+    MultichainTransferRouter: "0xC993eF170859DAE0241a3c12B8186e456Fa1c1B0",
     MultichainVault: "0xCeaadFAf6A8C489B250e407987877c5fDfcDBE6E",
-    LayerZeroProvider: "0x0B33EBA531e5a5A331a3Ff9F418B8205F01C2869",
+    LayerZeroProvider: "0xCb60d0A8372Cb8f8a074d304F88bA851FC5E8e29",
 
     ChainlinkPriceFeedProvider: "0x90218fbb064b1475E4382b041Cc7ccF08AF718B0",
-    ClaimHandler: "0xc31E7aC86Cc20FF8D7f4642b5Ed67a43B2AC8426",
+    ClaimHandler: "0xc581aF9d20b1d95e456e4Bb9E3039aa0d48F9891",
 
     // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
@@ -122,35 +122,35 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6",
     EventEmitter: "0xDb17B211c34240B014ab6d61d4A31FA0C0e20c26",
-    SubaccountRouter: "0xAda708aFf0f1D784D28cd8Ff4d6D977fF9599e5D",
-    ExchangeRouter: "0xc002Db96E682FFF6675966F959677285a0C45Efa",
+    SubaccountRouter: "0x2A929c97Ec71ced74675C2b5175Afa8927A28404",
+    ExchangeRouter: "0x5b7693839ef8d767168891797B9d2f319e351672",
     DepositVault: "0x90c670825d0C62ede1c5ee9571d6d9a17A722DFF",
     WithdrawalVault: "0xf5F30B10141E1F63FC11eD772931A8294a591996",
     OrderVault: "0xD3D60D22d415aD43b7e64b510D86A30f19B1B12C",
     ShiftVault: "0x7fC46CCb386e9bbBFB49A2639002734C3Ec52b39",
-    SyntheticsReader: "0xa34320a507493C71Fe35E982e496F7C5d1a7fa02",
+    SyntheticsReader: "0x9390285097B4a1997B91F61AF756DCD2509FcD0F",
     SyntheticsRouter: "0x820F5FfC5b525cD4d88Cd91aCf2c28F16530Cc68",
 
-    SimulationRouter: "0xaB409fCaCc14Dd4234f6f86a2547f04ACC90a55e",
+    SimulationRouter: "0x25B13cEE3D0d3bB318C64d121b7c9983D0EBD795",
 
-    GlvReader: "0x321EB66dD95ad33715ee615AAb8dAC6394E7b3F9",
-    GlvRouter: "0x603B3D3aB077CA433b888c05fa59c777d5b6dCAD",
+    GlvReader: "0x79B6Bf52D49d215724951c5a9A541f8A2Ee165Bc",
+    GlvRouter: "0x5B8c1B498CCDDCAad36B5C81e48D773Ad338145D",
     GlvVault: "0x527FB0bCfF63C47761039bB386cFE181A92a4701",
 
-    GelatoRelayRouter: "0x51fe0b7919e1208a717E9B16a097C1C3D70eFbf6",
-    SubaccountGelatoRelayRouter: "0xa62BD1cFE2066c5bF4180b4125BBb5116eEA26c9",
+    GelatoRelayRouter: "0xE9f7E49F7304D36Aae146B5Af7cE6f9421Dac2CF",
+    SubaccountGelatoRelayRouter: "0x4fe335118106542DeD0748Eebbf276dD92F386e3",
 
-    MultichainClaimsRouter: "0xa664B7E894ad5777f3419C2883911Af3692a4569",
-    MultichainGlvRouter: "0x206B582F309724dAd259058Bc3289Ca3519F34B1",
-    MultichainGmRouter: "0x00205f26BCc52537D12fA9b0eFA5Fcc58F03ab76",
-    MultichainOrderRouter: "0x204CC947Fddd11c90e302db2A5ac3865021D1618",
-    MultichainSubaccountRouter: "0x4A2826cAee8FF70d9392B171eaF398E0a2B55047",
-    MultichainTransferRouter: "0xd4F6C2332b36D1Ccb22C7ac479b270fa0cA26a41",
+    MultichainClaimsRouter: "0xd9e34687F82602780a277F891f9a33B9A1F9291e",
+    MultichainGlvRouter: "0x13BF6A53C2aBc86b080d3E6f500d7c209F73dc82",
+    MultichainGmRouter: "0xC7fC0698774b4C704aCD5521368dA5BeB397289E",
+    MultichainOrderRouter: "0x1c9d9BF1286Ea617a4eFbCf4f0B2b4A160269229",
+    MultichainSubaccountRouter: "0x96bE3cbFfbCeb1020ddfE5689807b8C20c3659C0",
+    MultichainTransferRouter: "0xcD11f8277Faca1c906cB13e2447cDC9fed1d3B39",
     MultichainVault: "0x6D5F3c723002847B009D07Fe8e17d6958F153E4e",
-    LayerZeroProvider: "0x74eECe8cC29b3d549db97F566a4445F48ed62a0d",
+    LayerZeroProvider: "0x1eEd675410879BDd9BF7f595d944F1b732019470",
 
     ChainlinkPriceFeedProvider: "0x86E284921273E1442f32ebd1b567Ce988Cf50dfE",
-    ClaimHandler: "0x07d8115676362Cf0d6672Dd71B23A43DB1e69C06",
+    ClaimHandler: "0xE08885EA7860f19e5fb2AECbA892e8A6BA505C86",
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
@@ -395,7 +395,7 @@ type ExtractContractNames<T extends object> = {
 export type ContractName = ExtractContractNames<typeof CONTRACTS>;
 
 export function isContractsV2_2_1(chainId: number): boolean {
-  return chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH;
+  return chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH || chainId === ARBITRUM || chainId === AVALANCHE;
 }
 
 export function getContract(chainId: ContractsChainId, name: ContractName): Address {

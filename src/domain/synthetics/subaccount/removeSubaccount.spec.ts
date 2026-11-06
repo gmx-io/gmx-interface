@@ -1,4 +1,4 @@
-import { decodeFunctionData, type Hex } from "viem";
+import { decodeFunctionData, type Hex, zeroHash } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
@@ -6,7 +6,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import type { ExpressTxnParams, GlobalExpressParams } from "domain/synthetics/express";
 import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE } from "domain/testUtils/mockChainData";
 import { ETH_ADDRESS, ETH_TOKEN } from "domain/testUtils/mockTokens";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { getContract } from "sdk/configs/contracts";
 import {
   buildGlobalExpressParams,
@@ -95,6 +95,7 @@ const RELAY_PARAMS_PAYLOAD = {
   userNonce: 0n,
   deadline: 0n,
   desChainId: BigInt(CHAIN_ID),
+  eip6492SignatureWrapperHash: zeroHash,
 };
 
 const ENCODED_TRUE = `0x${"1".padStart(64, "0")}`;
@@ -456,7 +457,7 @@ describe("estimateSettlementChainRemoveSubaccountExpressParams", () => {
     expect(account).toBe(GMX_SIMULATION_ORIGIN);
     expect(to).toBe(RELAY_ROUTER_ADDRESS);
 
-    const { functionName, args } = decodeFunctionData({ abi: abis.SubaccountGelatoRelayRouter, data });
+    const { functionName, args } = decodeFunctionData({ abi: getAbi(CHAIN_ID, "SubaccountGelatoRelayRouter"), data });
     expect(functionName).toBe("removeSubaccount");
     expect(args).toEqual([expect.objectContaining({ signature: "0x" }), ACCOUNT, SUBACCOUNT_ADDRESS]);
 
@@ -536,11 +537,12 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
       expect.objectContaining({
         types: {
           RemoveSubaccount: [
+            { name: "account", type: "address" },
             { name: "subaccount", type: "address" },
             { name: "relayParams", type: "bytes32" },
           ],
         },
-        typedData: { subaccount: SUBACCOUNT_ADDRESS, relayParams: "0xhash" },
+        typedData: { account: ACCOUNT, subaccount: SUBACCOUNT_ADDRESS, relayParams: "0xhash" },
         domain: {
           name: "GmxBaseGelatoRelayRouter",
           version: "1",
@@ -556,7 +558,7 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
     expect(txnData.to).toBe(RELAY_ROUTER_ADDRESS);
 
     const { functionName, args } = decodeFunctionData({
-      abi: abis.SubaccountGelatoRelayRouter,
+      abi: getAbi(CHAIN_ID, "SubaccountGelatoRelayRouter"),
       data: txnData.callData as Hex,
     });
     expect(functionName).toBe("removeSubaccount");
