@@ -62,7 +62,8 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
 
   tokenAccounts.forEach(({ token, ata }, index) => {
     const account = accounts[index];
-    if (!account) {
+    // An ATA can be prefunded with SOL before the token account is initialized.
+    if (!account || (account.owner === SOLANA_SYSTEM_PROGRAM_ID && !account.executable && account.data[0] === "")) {
       balances[token.address] = 0n;
       return;
     }
