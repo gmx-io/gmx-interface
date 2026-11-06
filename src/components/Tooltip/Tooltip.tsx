@@ -161,6 +161,7 @@ export default function Tooltip<T extends ElementType>({
 }: TooltipProps<T>) {
   const keyboardAccessible = keyboardAccessibleProp || Boolean(isHandlerDisabled);
   const [visible, setVisible] = useState(false);
+  const visibleRef = useLatestValueRef(visible);
   const arrowRef = useRef<SVGSVGElement>(null);
   const referenceRef = useRef<Element | null>(null);
   const floatingRef = useRef<HTMLElement | null>(null);
@@ -475,7 +476,8 @@ export default function Tooltip<T extends ElementType>({
       };
 
       const handleControlKeyDown = (event: globalThis.KeyboardEvent) => {
-        const firstFocusable = event.key === "Tab" && !event.shiftKey ? getFocusableChild(floatingRef.current) : null;
+        const firstFocusable =
+          event.key === "Tab" && !event.shiftKey && visibleRef.current ? getFocusableChild(floatingRef.current) : null;
 
         if (firstFocusable instanceof HTMLElement) {
           event.preventDefault();
@@ -492,7 +494,7 @@ export default function Tooltip<T extends ElementType>({
         parentControl.removeEventListener("keydown", handleControlKeyDown);
       };
     },
-    [parentControl, disabled]
+    [parentControl, disabled, visibleRef]
   );
 
   const handleBlur = useCallback(
