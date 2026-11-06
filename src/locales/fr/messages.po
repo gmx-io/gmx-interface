@@ -3682,6 +3682,10 @@ msgstr "Récompenses LP cumulées"
 msgid "Invalid decrease size"
 msgstr "Taille de réduction invalide"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
+msgstr "Le relais Express est temporairement indisponible.<0/><1/>Réessayez dans quelques instants ou passez à Classic Trading dans les <2>paramètres</2>"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "S'abonner"
@@ -10238,6 +10242,10 @@ msgstr "pour {comment}"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "Capital utilisé = max(somme des garanties des positions ouvertes - PnL réalisé + PnL en attente initial)."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable. Try again shortly"
+msgstr "Le relais Express est temporairement indisponible. Réessayez dans quelques instants"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"
