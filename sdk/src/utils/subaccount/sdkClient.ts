@@ -19,7 +19,7 @@ import type { IAbstractSigner } from "utils/signer";
 import { nowInSeconds } from "utils/time";
 
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "./api";
-import { generateSubaccount } from "./generateSubaccount";
+import { generateSubaccount, getSubaccountFromPrivateKey, type GeneratedSubaccount } from "./generateSubaccount";
 import { getEmptySubaccountApproval } from "./getEmptySubaccountApproval";
 import {
   isEmptySubaccountApproval,
@@ -54,7 +54,9 @@ export type PrepareWithContext<TRequest extends SubaccountPrepareRequest> = (
   request: TRequest
 ) => Promise<PrepareOrderResponse>;
 
-const sdkSubaccountSigners = new WeakMap<object, Awaited<ReturnType<typeof generateSubaccount>>["signer"]>();
+export type ExportedSubaccount = Pick<GeneratedSubaccount, "address" | "privateKey">;
+
+const sdkSubaccountKeys = new WeakMap<object, GeneratedSubaccount>();
 const MAX_PREPARED_SUBACCOUNT_APPROVALS = 100;
 const SUBACCOUNT_STATUS_CACHE_TTL_MS = 15000;
 const LOW_SUBACCOUNT_ACTIONS_REFRESH_THRESHOLD = 1n;
@@ -68,11 +70,11 @@ const SUBMITTED_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>([
 const FINAL_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>(["created", "executed"]);
 
 function hasSdkSubaccountSigner(owner: object): boolean {
-  return sdkSubaccountSigners.has(owner);
+  return sdkSubaccountKeys.has(owner);
 }
 
 function getSdkSubaccountSigner(owner: object) {
-  return sdkSubaccountSigners.get(owner);
+  return sdkSubaccountKeys.get(owner)?.signer;
 }
 
 function isSameAddress(a: string | undefined, b: string | undefined): boolean {
@@ -94,7 +96,7 @@ function throwSubaccountAddressMismatch(source: string, provided: string, expect
 }
 
 function resetSdkSubaccount(client: SdkSubaccountClientContext): void {
-  sdkSubaccountSigners.delete(client.owner);
+  sdkSubaccountKeys.delete(client.owner);
   client.preparedSubaccountApprovals.clear();
   client.setSubaccount(undefined);
 }
@@ -222,20 +224,34 @@ export function getSdkSubaccountApprovalMessage(client: SdkSubaccountClientConte
   return getUsableSubaccountApproval(client);
 }
 
-export async function generateSdkSubaccount(
+function setSdkSubaccount(
   client: SdkSubaccountClientContext,
-  mainSigner: IAbstractSigner
-): Promise<string> {
+  subaccount: GeneratedSubaccount,
+  account: string | undefined
+): string {
   client.preparedSubaccountApprovals.clear();
-  const result = await generateSubaccount(mainSigner);
+  sdkSubaccountKeys.set(client.owner, subaccount);
+  client.setSubaccount({ account, address: subaccount.address });
 
-  sdkSubaccountSigners.set(client.owner, result.signer);
-  client.setSubaccount({
-    account: mainSigner.address,
-    address: result.address,
-  });
+  return subaccount.address;
+}
 
-  return result.address;
+export function generateSdkSubaccount(client: SdkSubaccountClientContext, account?: string): string {
+  return setSdkSubaccount(client, generateSubaccount(), account);
+}
+
+export function importSdkSubaccount(
+  client: SdkSubaccountClientContext,
+  privateKey: `0x${string}`,
+  account: string
+): string {
+  return setSdkSubaccount(client, getSubaccountFromPrivateKey(privateKey), account);
+}
+
+export function exportSdkSubaccount(client: SdkSubaccountClientContext): ExportedSubaccount | undefined {
+  const subaccount = sdkSubaccountKeys.get(client.owner);
+
+  return subaccount && { address: subaccount.address, privateKey: subaccount.privateKey };
 }
 
 export function reconcileSdkSubaccountApproval(subaccount: SubaccountState | undefined): void {
@@ -317,11 +333,11 @@ export async function activateSdkSubaccount(
   const existingSubaccount = client.getSubaccount();
 
   if (existingSubaccount && hasDifferentSubaccountAccount(existingSubaccount, mainSigner.address)) {
-    resetSdkSubaccount(client);
+    throwSubaccountAccountMismatch(existingSubaccount, mainSigner.address);
   }
 
   if (!client.getSubaccount()) {
-    await generateSdkSubaccount(client, mainSigner);
+    generateSdkSubaccount(client, mainSigner.address);
   }
 
   const status = knownStatus ?? (await getSdkSubaccountStatus(client, mainSigner.address, { force: true }));
@@ -378,11 +394,6 @@ export async function getSdkSubaccountApprovalForOrder(
   }
 
   if (hasDifferentSubaccountAccount(subaccount, account)) {
-    if (mainSigner && isSameAddress(mainSigner.address, account)) {
-      await activateSdkSubaccount(client, mainSigner);
-      return client.getSubaccount()?.approval?.message ?? getUsableSubaccountApproval(client);
-    }
-
     throwSubaccountAccountMismatch(subaccount, account);
   }
 

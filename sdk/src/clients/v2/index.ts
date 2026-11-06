@@ -137,13 +137,16 @@ import {
   activateSdkSubaccount,
   clearSdkSubaccount,
   executeExpressOrderWithSubaccount,
+  exportSdkSubaccount,
   generateSdkSubaccount,
   getSdkSubaccountApprovalMessage,
   hasActiveSdkSubaccount,
+  importSdkSubaccount,
   prepareWithSubaccount,
   refreshSdkSubaccountState,
   signOrderWithSubaccount,
   submitOrderWithSubaccount,
+  type ExportedSubaccount,
   type SdkSubaccountClientContext,
 } from "utils/subaccount/sdkClient";
 import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
@@ -312,6 +315,7 @@ export type {
   SubaccountApprovalPrepareResponse,
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
+export type { ExportedSubaccount } from "utils/subaccount/sdkClient";
 
 export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
@@ -635,15 +639,32 @@ export class GmxApiSdk {
   }
 
   /**
-   * Generate a subaccount deterministically from the main signer's signature.
-   * The main signer signs a predefined message, and the subaccount private key
-   * is derived via keccak256(signature).
+   * Generate a random subaccount key. Nothing is signed.
+   *
+   * The key lives only in this instance. Store the `exportSubaccount` result and pass it to
+   * `importSubaccount` on the next start, otherwise every start needs a new approval.
    *
    * Returns the subaccount address. Use `activateSubaccount` to sign the
    * approval and start using it for orders.
    */
-  async generateSubaccount(mainSigner: IAbstractSigner): Promise<string> {
-    return generateSdkSubaccount(this.subaccountClient, mainSigner);
+  generateSubaccount(): string {
+    return generateSdkSubaccount(this.subaccountClient);
+  }
+
+  /**
+   * Returns the current subaccount key to store. Treat `privateKey` as a secret.
+   */
+  exportSubaccount(): ExportedSubaccount | undefined {
+    return exportSdkSubaccount(this.subaccountClient);
+  }
+
+  /**
+   * Resume a subaccount from a stored key. `account` is the main account it trades for.
+   *
+   * Returns the subaccount address.
+   */
+  importSubaccount(privateKey: `0x${string}`, account: string): string {
+    return importSdkSubaccount(this.subaccountClient, privateKey, account);
   }
 
   /**
