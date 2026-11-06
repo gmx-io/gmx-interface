@@ -352,9 +352,16 @@ describe("getActualApproval", () => {
       signedApproval,
       onchainData: createOnchainData({ currentActionsCount: 1n }),
     });
+    const revokedOnV2_2_1 = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ maxAllowedCount: 0n, expiresAt: 0n, revocationCounter: 1n }),
+    });
 
     expect(neverOnchain).toBe(signedApproval);
     expect(removedInAnotherBrowser.signature).toBe(ZERO_DATA);
+    expect(revokedOnV2_2_1.signature).toBe(ZERO_DATA);
   });
 
   it("returns an empty approval when the settlement-context approval nonce is consumed", () => {

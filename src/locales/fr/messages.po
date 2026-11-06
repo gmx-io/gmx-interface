@@ -10397,6 +10397,10 @@ msgstr "Ouvre GMTrade dans un nouvel onglet"
 msgid "Top addresses"
 msgstr "Meilleures adresses"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+msgstr "Le nonce d'approbation One-Click Trading a expiré. Signez à nouveau pour continuer à utiliser One-Click Trading."
+
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -12889,6 +12893,7 @@ msgstr "Exécuter le dépôt de marge"
 msgid "Estimate your savings"
 msgstr "Estimez vos économies"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
