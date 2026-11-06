@@ -252,7 +252,6 @@ export function getLiquidationPrice(p: {
 
   const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
-  const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
 
   const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
     marketInfo,
@@ -271,25 +270,30 @@ export function getLiquidationPrice(p: {
   let liquidationPrice: bigint;
 
   if (getIsEquivalentTokens(collateralToken, indexToken)) {
+    // pending funding is owed in collateral tokens, so the liquidation check values it at the liquidation price
+    const pendingFundingFeeAmount =
+      convertToTokenAmount(pendingFundingFeesUsd, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n;
+    const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
+
     if (isLong) {
-      const denominator = sizeInTokens + collateralAmount;
+      const denominator = sizeInTokens + collateralAmount - pendingFundingFeeAmount;
 
       if (denominator == 0n) {
         return undefined;
       }
 
       liquidationPrice =
-        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + totalFeesUsd) / denominator) *
+        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd) / denominator) *
         expandDecimals(1, indexToken.decimals);
     } else {
-      const denominator = sizeInTokens - collateralAmount;
+      const denominator = sizeInTokens + pendingFundingFeeAmount - collateralAmount;
 
       if (denominator == 0n) {
         return undefined;
       }
 
       liquidationPrice =
-        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - totalFeesUsd) / denominator) *
+        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd) / denominator) *
         expandDecimals(1, indexToken.decimals);
     }
   } else {
