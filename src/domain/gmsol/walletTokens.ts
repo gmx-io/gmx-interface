@@ -14,7 +14,7 @@ export type SolanaWalletToken = {
   isStable: boolean | undefined;
 };
 
-// Synthetic mints are never collateral and never in a wallet, so a wallet holds native SOL and the collateral mints
+// Query every configured mint regardless of its market collateral role, plus native SOL.
 export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
   {
     address: GMSOL_NATIVE_TOKEN.address,
@@ -24,7 +24,7 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
     decimals: GMSOL_NATIVE_TOKEN.decimals,
     isStable: undefined,
   },
-  ...GMSOL_TOKENS.filter((token) => !token.isSynthetic).map((token) => ({
+  ...GMSOL_TOKENS.map((token) => ({
     address: token.address,
     symbol: token.symbol,
     iconSymbol: token.baseSymbol ?? (token.symbol === "WGMX" ? "GMX" : token.symbol),

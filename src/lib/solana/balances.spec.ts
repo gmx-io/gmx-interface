@@ -21,8 +21,8 @@ const nativeAbort = vi.hoisted(() => {
 
 const owner = SOLANA_SYSTEM_PROGRAM_ID;
 const amount = 9007199254740993n;
-const walletTokens = GMSOL_TOKENS.filter((token) => !token.isSynthetic);
-const token = walletTokens[0];
+const walletTokens = GMSOL_TOKENS;
+const token = walletTokens.find((token) => token.symbol === "WSOL")!;
 const token2022 = GMSOL_TOKENS.find((token) => token.tokenProgram !== SOLANA_TOKEN_PROGRAM_ID)!;
 
 function tokenAccount(mint = token.address, program: string = token.tokenProgram, size = 165) {
@@ -39,9 +39,8 @@ function tokenAccount(mint = token.address, program: string = token.tokenProgram
   return { bytes, program };
 }
 
-function mockRpc(account = tokenAccount(), mode?: string) {
+function mockRpc(account = tokenAccount(), mode?: string, tokenIndex = walletTokens.indexOf(token) + 1) {
   const calls: string[][] = [];
-  const tokenIndex = 1;
   const native = {
     owner: mode === "nativeOwner" ? token.tokenProgram : owner,
     executable: false,
@@ -85,10 +84,33 @@ afterEach(() => {
 });
 
 describe("configured Solana balances", () => {
+  it.each(["PUMP", "WLFI"])("reads and displays a held %s mint even though it is not collateral", async (symbol) => {
+    const heldToken = walletTokens.find((token) => token.symbol === symbol)!;
+    expect(heldToken.isSynthetic).toBe(true);
+    const account = tokenAccount(heldToken.address, heldToken.tokenProgram);
+    mockRpc(account, undefined, walletTokens.indexOf(heldToken) + 1);
+    const balances = await fetchSolanaBalances(owner);
+    expect(balances[heldToken.address]).toBe(amount);
+
+    const { SOLANA_WALLET_TOKENS } = await import("domain/gmsol/walletTokens");
+    const { getSolanaWalletAssets } = await import("domain/solana/solanaWalletAssets");
+    const result = getSolanaWalletAssets(SOLANA_WALLET_TOKENS, balances, undefined);
+    expect(result?.assets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          address: heldToken.address,
+          symbol,
+          balance: amount,
+          balanceUsd: undefined,
+        }),
+      ])
+    );
+  });
+
   it.each([
     tokenAccount(),
     { ...tokenAccount(), bytes: tokenAccount().bytes.map((byte, i) => (i >= 64 && i < 72 ? 0 : byte)) },
-  ])("keeps raw precision, native SOL and non-synthetic configured ATAs", async (account) => {
+  ])("keeps raw precision, native SOL and supported wallet ATAs", async (account) => {
     const calls = mockRpc(account);
     const balances = await fetchSolanaBalances(owner);
     expect(balances[GMSOL_NATIVE_TOKEN.address]).toBe(1234n);
@@ -97,11 +119,15 @@ describe("configured Solana balances", () => {
       walletTokens.length - (account.bytes[64] ? 1 : 0)
     );
     expect(calls.flat()[0]).toBe(owner);
-    expect(calls.flat()[1]).toBe("aqxoAhCwpy3oB1BpNw9hL1HdLYLgPpbPjzxDrrQj3Fs");
+    expect(calls.flat()[walletTokens.indexOf(token) + 1]).toBe("aqxoAhCwpy3oB1BpNw9hL1HdLYLgPpbPjzxDrrQj3Fs");
     expect(new Set(calls.flat()).size).toBe(walletTokens.length + 1);
     expect(calls.map((batch) => batch.length)).toEqual([walletTokens.length + 1]);
     expect(Object.keys(balances)).toEqual([GMSOL_NATIVE_TOKEN.address, ...walletTokens.map((token) => token.address)]);
-    expect(GMSOL_TOKENS.filter((token) => token.isSynthetic).every((token) => !(token.address in balances))).toBe(true);
+    expect(
+      walletTokens
+        .filter((configured) => configured.address !== token.address)
+        .every((configured) => balances[configured.address] === 0n)
+    ).toBe(true);
   });
 
   it.each(["mint", "owner", "program", "state", "size", "rpc", "nativeOwner"])(

@@ -34,12 +34,12 @@ const tokenAccountDecoder = getStructDecoder([
 
 export type SolanaBalances = Record<string, bigint>;
 
-/** Reads configured ATAs only. Raw amounts do not guarantee that funds are spendable. */
+/** Reads every configured mint's ATA and native SOL. Raw amounts do not guarantee that funds are spendable. */
 export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances> {
   const ownerAddress = address(owner);
   const encoder = getAddressEncoder();
   const tokenAccounts = await Promise.all(
-    GMSOL_TOKENS.filter((token) => !token.isSynthetic).map(async (token) => {
+    GMSOL_TOKENS.map(async (token) => {
       const [ata] = await getProgramDerivedAddress({
         programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
         seeds: [
