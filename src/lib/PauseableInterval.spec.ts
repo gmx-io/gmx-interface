@@ -235,6 +235,26 @@ describe("PauseableInterval", () => {
     expect(mockCallback).toHaveBeenCalledTimes(1);
   });
 
+  it("should keep one loop when paused and resumed during async callback execution", async () => {
+    const mockCallback = vi.fn().mockImplementation(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+    const interval = 1000;
+
+    const pauseableInterval = new PauseableInterval(mockCallback, interval);
+
+    await vi.advanceTimersByTimeAsync(0);
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+
+    pauseableInterval.pause();
+    pauseableInterval.resume();
+    await vi.advanceTimersByTimeAsync(0);
+    expect(mockCallback).toHaveBeenCalledTimes(2);
+
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(mockCallback).toHaveBeenCalledTimes(5);
+  });
+
   it("should handle pause called during async callback execution", async () => {
     let callbackStarted = false;
     const mockCallback = vi.fn().mockImplementation(async ({ lastReturnedValue }) => {
