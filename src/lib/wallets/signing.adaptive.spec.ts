@@ -86,7 +86,7 @@ vi.mock("./walletConfig", () => ({
 import { DAY_MS } from "lib/dates";
 import { SMART_WALLET_NOT_DEPLOYED_ERROR } from "lib/errors/customErrors";
 import { sleep } from "lib/sleep";
-import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
 
 import { signMessage, signTypedData } from "./signing";
 import { AccountType } from "./useAccountType";
@@ -236,10 +236,10 @@ describe("adaptive EIP-7702 signing", () => {
       signTypedData({ signer: wallet, domain, types, typedData: { value: 1n }, verificationChainId: ARBITRUM_SEPOLIA })
     ).rejects.toThrow(SMART_WALLET_NOT_DEPLOYED_ERROR);
 
-    chainState.chainId = ARBITRUM;
+    chainState.chainId = AVALANCHE_FUJI;
 
     await expect(
-      signTypedData({ signer: wallet, domain, types, typedData: { value: 1n }, verificationChainId: ARBITRUM })
+      signTypedData({ signer: wallet, domain, types, typedData: { value: 1n }, verificationChainId: AVALANCHE_FUJI })
     ).resolves.toBe(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
   });
 
