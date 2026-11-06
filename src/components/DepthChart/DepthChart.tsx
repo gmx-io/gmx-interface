@@ -24,6 +24,7 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
+import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
@@ -32,6 +33,7 @@ import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -45,6 +47,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
+import { getDepthChartPreviewMarket } from "./previewMarket";
 
 const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
@@ -95,7 +98,14 @@ const MIN_FACTOR_THRESHOLD_BIGINT = 2000000000000000n;
 
 export const DepthChart = memo(
   ({ marketInfo, jitLiquidityInfo }: { marketInfo: MarketInfo; jitLiquidityInfo?: JitLiquidityInfo }) => {
+    const { chainId, networkId } = useChainId();
+    const isImpactPreview = import.meta.env.DEV && isSolanaNetwork(networkId);
+    const chartMarketInfo = useMemo(
+      () => getDepthChartPreviewMarket(marketInfo, isImpactPreview),
+      [marketInfo, isImpactPreview]
+    );
     const containerRef = useRef<HTMLDivElement>(null);
+    const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const isZeroPriceImpact =
       marketInfo.positionImpactFactorPositive <= MIN_FACTOR_THRESHOLD_BIGINT &&
       marketInfo.positionImpactFactorNegative <= MIN_FACTOR_THRESHOLD_BIGINT;
@@ -114,7 +124,7 @@ export const DepthChart = memo(
       realRightMax,
       isLeftEmpty,
       isRightEmpty,
-    } = useEdgePoints(marketInfo, zoom, jitLiquidityInfo);
+    } = useEdgePoints(chartMarketInfo, zoom, jitLiquidityInfo);
 
     const theme = useTheme();
 
@@ -127,7 +137,7 @@ export const DepthChart = memo(
       isZeroPriceImpact,
     });
 
-    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
+    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(chartMarketInfo, {
       leftMax,
       rightMax,
       leftMin,
@@ -146,8 +156,67 @@ export const DepthChart = memo(
     const drawLeftOpaqueEllipsis = leftMax < leftMin;
     const drawRightOpaqueEllipsis = rightMax < rightMin;
 
+    // Capture values together and stringify BigInts so "Copy object" produces reusable JSON.
+    // A serialized dependency avoids logging again on unrelated renders or mouse movement.
+    const debugSnapshotJson = JSON.stringify(
+      {
+        networkId,
+        chainId,
+        network: isSolanaNetwork(networkId) ? "Solana" : "EVM",
+        marketTokenAddress: marketInfo.marketTokenAddress,
+        marketName: marketInfo.name,
+        indexTokenAddress: marketInfo.indexTokenAddress,
+        indexTokenSymbol: marketInfo.indexToken.symbol,
+        units: { usdAndPricesDecimals: USD_DECIMALS, bigInts: "decimal strings" },
+        marketInfo,
+        isImpactPreview,
+        chartImpactParameters: {
+          positionImpactFactorPositive: chartMarketInfo.positionImpactFactorPositive,
+          positionImpactFactorNegative: chartMarketInfo.positionImpactFactorNegative,
+          positionImpactExponentFactorPositive: chartMarketInfo.positionImpactExponentFactorPositive,
+          positionImpactExponentFactorNegative: chartMarketInfo.positionImpactExponentFactorNegative,
+        },
+        jitLiquidityInfo,
+        zoom,
+        containerSize,
+        xAxisDomain,
+        yAxisDomain: isZeroPriceImpact
+          ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT
+          : isLeftEmpty && isRightEmpty
+            ? Y_AXIS_DOMAIN_EMPTY
+            : Y_AXIS_DOMAIN,
+        ticks,
+        marketPriceIndex,
+        isZeroPriceImpact,
+        sidePointsCount: SIDE_POINTS_COUNT,
+        bounds: {
+          leftMaxExecutionPrice,
+          rightMaxExecutionPrice,
+          leftMax,
+          rightMax,
+          leftMin,
+          rightMin,
+          realLeftMax,
+          realRightMax,
+          isLeftEmpty,
+          isRightEmpty,
+        },
+        data,
+      },
+      (_key, value) => (typeof value === "bigint" ? value.toString() : value)
+    );
+
+    useEffect(() => {
+      const snapshot = { capturedAt: new Date().toISOString(), ...JSON.parse(debugSnapshotJson) };
+      // eslint-disable-next-line no-console
+      console.log("[DepthChart snapshot]", snapshot);
+    }, [debugSnapshotJson]);
+
     const handleResize = useCallback(
-      (width: number) => {
+      (width: number, height: number) => {
+        setContainerSize((previous) =>
+          previous.width === width && previous.height === height ? previous : { width, height }
+        );
         setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
       },
       [setTickCount]
