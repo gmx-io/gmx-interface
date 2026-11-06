@@ -5,6 +5,7 @@ import {
   selectGmxAccountExpressGlobalParams,
   selectIsExpressTransactionAvailable,
   selectSettlementChainExpressGlobalParams,
+  selectUnavailableGasPaymentTokens,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectRawSubaccountForMultichainAction,
@@ -36,6 +37,7 @@ import { ExpressTxnParams } from ".";
 import { estimateBatchExpressParams } from "./expressOrderUtils";
 import type { GasPaymentTokenFallback } from "./gasPaymentTokenFallback";
 import { type PayTokenFeeToken, useGasPaymentTokenFallback } from "./useGasPaymentTokenFallback";
+import { useGasPaymentTokenUnavailableToast } from "./useGasPaymentTokenUnavailableToast";
 import { useSwitchGasPaymentTokenIfRequiredFromExpressParams } from "./useSwitchGasPaymentTokenIfRequired";
 
 export type ExpressOrdersParamsResult = {
@@ -90,15 +92,22 @@ export function useExpressOrdersParams({
   const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const payAmounts = useMemo(() => (orderParams ? getBatchTotalPayCollateralAmount(orderParams) : {}), [orderParams]);
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
-  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
+  const isExpressWanted = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
+  const canNotify = canSwitchGasPaymentToken && Boolean(isExpressWanted) && !getIsEmptyBatch(orderParams);
   const { globalExpressParams, recordExpressParams } = useGasPaymentTokenFallback({
-    savedGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
+    baseGlobalExpressParams: isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams,
     fallback: gasPaymentTokenFallback,
     isGmxAccount,
     payTokenFeeToken,
     payAmounts,
-    canNotify: canSwitchGasPaymentToken && Boolean(isAvailable) && !getIsEmptyBatch(orderParams),
+    canNotify,
   });
+  const unavailableGasPaymentTokens = useSelector(selectUnavailableGasPaymentTokens);
+  const feeTokenAddress = globalExpressParams?.gasPaymentTokenAddress;
+  // no listed token can pay: wallet orders go out as Classic, GMX Account orders are blocked on submit
+  const isAvailable =
+    isExpressWanted && (feeTokenAddress === undefined || unavailableGasPaymentTokens[feeTokenAddress] === undefined);
+  useGasPaymentTokenUnavailableToast({ isGmxAccount, feeTokenAddress, enabled: canNotify });
   const subaccount = useSelector(
     isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
@@ -271,7 +280,11 @@ export function useExpressOrdersParams({
   useEffect(() => recordExpressParams(result.expressParams), [recordExpressParams, result.expressParams]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
-    expressParams: result.expressParams,
+    // an estimate left from the previous fee token would switch away from the current one
+    expressParams:
+      result.expressParams?.gasPaymentParams.gasPaymentTokenAddress === feeTokenAddress
+        ? result.expressParams
+        : undefined,
     payAmounts,
     isGmxAccount,
     canSwitchGasPaymentToken,

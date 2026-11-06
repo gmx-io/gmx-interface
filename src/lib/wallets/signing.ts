@@ -8,15 +8,17 @@ import { extendError, parseError, type ErrorLike } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
-import { analyzeSignatureShape, reportSignatureProduced } from "./signatureDiagnostics";
+import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -332,6 +334,11 @@ export async function signTypedData({
       return { signature, signingChainId };
     }
   );
+
+  // 2.2.1 contracts accept an EIP-6492 signature only with its wrapper hash in the signed data, which we do not send yet
+  if (isContractsV2_2_1(verificationChainId) && getSignatureKind(firstResult.signature) === "erc6492") {
+    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { address: from, verificationChainId } });
+  }
 
   if (firstResult.signingChainId === verificationChainId) {
     return firstResult.signature;

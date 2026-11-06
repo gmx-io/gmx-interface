@@ -7,10 +7,10 @@ import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
   selectExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
+  selectSettlementChainExpressFeeTokenAddress,
   selectSettlementChainExpressGlobalParams,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { selectIsSubaccountRelayRouterEnabled } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -660,7 +660,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
               client: getPublicClientWithRpc(chainId),
               account: signer.address,
               spender,
-              gasPaymentTokenAddress: calcSelector(selectGasPaymentTokenAddress),
+              gasPaymentTokenAddress: calcSelector(selectSettlementChainExpressFeeTokenAddress),
               tokenPermits,
               getIsPermitAvailable,
             });

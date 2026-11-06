@@ -42,14 +42,11 @@ vi.mock("context/SyntheticsStateContext/selectors/expressSelectors", () => ({
   selectExpressGlobalParams: () => undefined,
   selectSettlementChainExpressGlobalParams: () => undefined,
   selectGmxAccountGasPaymentToken: () => undefined,
+  selectSettlementChainExpressFeeTokenAddress: () => WETH,
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxIsFromTokenGmxAccount: () => mocks.isGmxAccount,
-}));
-
-vi.mock("context/SyntheticsStateContext/selectors/settingsSelectors", () => ({
-  selectGasPaymentTokenAddress: () => WETH,
 }));
 
 vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
@@ -163,6 +160,8 @@ function approvalFor(subaccount: string) {
     signature: `0xsigned-for-${subaccount}`,
     signedAt: 1700000000000,
     integrationId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
     subaccountRouterAddress: "0x0000000000000000000000000000000000000001",
     signatureChainId: 42161,
   };

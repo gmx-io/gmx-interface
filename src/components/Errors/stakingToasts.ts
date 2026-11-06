@@ -1,5 +1,3 @@
-import { t } from "@lingui/macro";
-
 import type { ErrorLike } from "lib/errors";
 import { decodeInnermostCustomErrorFromError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -57,8 +55,4 @@ export function showStakingErrorToast({
 
   const { failMsg: errorContent, autoCloseToast } = getErrorMessage(chainId, error, failMsg);
   helperToast.error(errorContent, { autoClose: autoCloseToast });
-}
-
-export function showRewardRouterChangedToast() {
-  helperToast.info(t`Staking moved to a new contract. Review and try again.`);
 }

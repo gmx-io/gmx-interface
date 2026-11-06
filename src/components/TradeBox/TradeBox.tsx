@@ -595,7 +595,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const reserveTokenForMax = isFromTokenGmxAccount
     ? gmxAccountGasPaymentTokenData
     : expressOrdersEnabled
-      ? gasPaymentTokenData
+      ? feeGasPaymentTokenData
       : undefined;
 
   const {

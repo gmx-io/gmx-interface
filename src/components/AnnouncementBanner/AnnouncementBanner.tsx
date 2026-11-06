@@ -10,18 +10,21 @@ import CheckCircleIcon from "img/ic_check_circle.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import MessageIcon from "img/ic_message.svg?react";
 
+export type AnnouncementFooterLinkData = {
+  text: ReactNode;
+  to?: string;
+  href?: string;
+  onClick?: () => void;
+};
+
 type AnnouncementBannerProps = {
   variant?: AnnouncementVariant;
   headerLabel: ReactNode;
   headerIcon?: "info" | "alert" | "success" | ReactNode;
   onClose?: () => void;
   children: ReactNode;
-  footerLink?: {
-    text: ReactNode;
-    to?: string;
-    href?: string;
-    onClick?: () => void;
-  };
+  footerLink?: AnnouncementFooterLinkData;
+  footerContent?: ReactNode;
   dots?: {
     count: number;
     activeIndex: number;
@@ -89,6 +92,7 @@ export function AnnouncementBanner({
   onClose,
   children,
   footerLink,
+  footerContent,
   dots,
   onPointerEnter,
   onPointerLeave,
@@ -112,14 +116,14 @@ export function AnnouncementBanner({
       <div className={cx("flex items-center justify-between gap-8 p-12", variantDividerClass[variant])}>
         <div className="flex min-w-0 items-center gap-8">
           {headerIcon !== undefined && <HeaderIcon kind={headerIcon} className={cx("size-20 shrink-0", accentText)} />}
-          <p
+          <div
             className={cx(
               "text-body-medium font-medium text-typography-primary",
               truncateHeader ? "truncate" : "break-words"
             )}
           >
             {headerLabel}
-          </p>
+          </div>
         </div>
         {onClose && (
           <button
@@ -139,9 +143,9 @@ export function AnnouncementBanner({
           {children}
         </div>
 
-        {(footerLink || dots) && (
+        {(footerLink || footerContent || dots) && (
           <div className="flex items-center justify-between gap-12 pr-4">
-            {footerLink ? <FooterLink variant={variant} link={footerLink} /> : <span />}
+            {footerContent ?? (footerLink ? <AnnouncementFooterLink variant={variant} link={footerLink} /> : <span />)}
             {dots && dots.count > 1 && (
               <Dots
                 count={dots.count}
@@ -158,16 +162,18 @@ export function AnnouncementBanner({
   );
 }
 
-function FooterLink({
+export function AnnouncementFooterLink({
   variant,
   link,
+  isSecondary = false,
 }: {
   variant: AnnouncementVariant;
-  link: NonNullable<AnnouncementBannerProps["footerLink"]>;
+  link: AnnouncementFooterLinkData;
+  isSecondary?: boolean;
 }) {
   const className = cx(
     "group text-body-medium -my-4 inline-flex items-center gap-4 py-4 font-medium",
-    variantAccentTextClass[variant]
+    isSecondary ? "text-typography-secondary hover:text-typography-primary" : variantAccentTextClass[variant]
   );
   const content = (
     <>

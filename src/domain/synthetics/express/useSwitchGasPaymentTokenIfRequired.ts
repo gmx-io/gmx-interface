@@ -1,13 +1,15 @@
 import { t } from "@lingui/macro";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
 
+import { selectUnavailableGasPaymentTokenAddresses } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectGasPaymentTokenAllowance,
+  selectSetGasPaymentTokenReplacement,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectGasPaymentTokenAddress,
+  selectGmxAccountGasPaymentTokenAddress,
   selectSetGasPaymentTokenAddress,
   selectSetGmxAccountGasPaymentTokenAddress,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -38,11 +40,7 @@ const notifyGasPaymentTokenSwitched = ({
     ? t`Not enough ${fromSymbol} in your GMX Account for fees. Gas payment token switched to ${toSymbol}`
     : t`Not enough ${fromSymbol} in your wallet for fees. Gas payment token switched to ${toSymbol}`;
 
-  if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
-    toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });
-  } else {
-    helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID });
-  }
+  helperToast.infoOrUpdate(content, GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID);
 };
 
 export function findNextGasPaymentToken({
@@ -158,7 +156,7 @@ export function useSwitchGasPaymentTokenIfRequiredFromExpressParams({
   });
 }
 
-function useSwitchGasPaymentTokenIfRequired({
+export function useSwitchGasPaymentTokenIfRequired({
   gasPaymentValidations,
   gasPaymentToken,
   gasPaymentTokenAmount,
@@ -178,8 +176,23 @@ function useSwitchGasPaymentTokenIfRequired({
   const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
   const savedGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const savedGmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const setGasPaymentTokenReplacement = useSelector(selectSetGasPaymentTokenReplacement);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokensAllowanceData = gasPaymentTokenAllowance?.tokensAllowanceData;
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
+  const isSavedTokenUnavailable = unavailableTokenAddresses.includes(
+    isGmxAccount ? savedGmxAccountGasPaymentTokenAddress : savedGasPaymentTokenAddress
+  );
+
+  useEffect(
+    function clearGasPaymentTokenReplacement() {
+      if (!isSavedTokenUnavailable) {
+        setGasPaymentTokenReplacement(isGmxAccount, undefined);
+      }
+    },
+    [isGmxAccount, isSavedTokenUnavailable, setGasPaymentTokenReplacement]
+  );
 
   useEffect(
     function switchGasPaymentToken() {
@@ -200,22 +213,29 @@ function useSwitchGasPaymentTokenIfRequired({
         isGmxAccount,
         savedGasPaymentTokenAddress,
         tokensAllowanceData,
+        excludeTokenAddresses: unavailableTokenAddresses,
       });
 
-      if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
-        const newTokenData = getByKey(tokensData, anotherGasToken);
-        if (isGmxAccount) {
-          setGmxAccountGasPaymentTokenAddress(anotherGasToken);
-        } else {
-          setGasPaymentTokenAddress(anotherGasToken);
-        }
-        if (newTokenData) {
-          notifyGasPaymentTokenSwitched({
-            fromSymbol: gasPaymentToken.symbol,
-            toSymbol: newTokenData.symbol,
-            isGmxAccount,
-          });
-        }
+      if (!anotherGasToken || anotherGasToken === gasPaymentToken.address) return;
+
+      // saving it would replace a saved token that can't pay only for now
+      if (isSavedTokenUnavailable) {
+        setGasPaymentTokenReplacement(isGmxAccount, anotherGasToken);
+        return;
+      }
+
+      const newTokenData = getByKey(tokensData, anotherGasToken);
+      if (isGmxAccount) {
+        setGmxAccountGasPaymentTokenAddress(anotherGasToken);
+      } else {
+        setGasPaymentTokenAddress(anotherGasToken);
+      }
+      if (newTokenData) {
+        notifyGasPaymentTokenSwitched({
+          fromSymbol: gasPaymentToken.symbol,
+          toSymbol: newTokenData.symbol,
+          isGmxAccount,
+        });
       }
     },
     [
@@ -231,6 +251,9 @@ function useSwitchGasPaymentTokenIfRequired({
       tokensData,
       savedGasPaymentTokenAddress,
       tokensAllowanceData,
+      unavailableTokenAddresses,
+      isSavedTokenUnavailable,
+      setGasPaymentTokenReplacement,
     ]
   );
 }

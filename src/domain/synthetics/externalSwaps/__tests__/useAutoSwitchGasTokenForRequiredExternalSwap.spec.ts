@@ -38,6 +38,7 @@ const baseParams = {
   conflictTokenAddress: usdc.address,
   currentGasTokenAddress: usdc.address,
   isGmxAccount: false,
+  unavailableTokenAddresses: [],
 };
 
 describe("getExternalSwapGasTokenToSwitchTo", () => {
@@ -126,6 +127,7 @@ describe("getExternalSwapGasTokenCandidate", () => {
     savedGasTokenAddress: usdc.address,
     payAmounts: { [weth.address]: expandDecimals(1, 18) },
     isGmxAccount: false,
+    unavailableTokenAddresses: [],
   };
 
   // $1 fee
