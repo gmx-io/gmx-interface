@@ -675,10 +675,6 @@ msgstr "Финансирование"
 msgid "Deposit margin"
 msgstr "Внесение маржи"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "Снятие со стейкинга..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Сеть отправления"
@@ -1255,10 +1251,6 @@ msgstr "Объём торгов привлечённых вами трейдер
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Можно ли в любое время вывести GMX из стейкинга или вывести ликвидность?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Вы активировали реферальный код {userReferralCodeString}. Сниженная ставка применяется автоматически к каждой позиции, которую вы открываете или закрываете, — дополнительных действий не требуется."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1331,7 +1323,6 @@ msgstr "Высокое влияние обмена на цену"
 msgid "Claimed funding fees"
 msgstr "Получены комиссии за финансирование"
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Что нового"
@@ -1453,6 +1444,10 @@ msgstr "Комиссия за исполнение слишком низкая �
 msgid "Tiers"
 msgstr "Уровни"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Вы активировали реферальный код {activatedReferralCodeLabel}. Сниженная ставка применяется автоматически к каждой позиции, которую вы открываете или закрываете, — дополнительных действий не требуется."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Фактор комиссии за обмен (отрицательный PI)"
@@ -1506,10 +1501,6 @@ msgstr "Транзакция:"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "Подходящие рынки не найдены"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "Вывести из стейкинга {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -2181,10 +2172,6 @@ msgstr "Выбрать пул"
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Этот рынок отключён. Обратитесь в службу поддержки, чтобы получить оставшиеся комиссии за финансирование."
 
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "Стейкинг перешёл на новый контракт. Проверьте данные и повторите попытку."
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr "Индекс лога:"
@@ -2613,10 +2600,6 @@ msgstr "Выбрать время"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
 msgstr "Баланс GMX"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Цена на Avalanche"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
@@ -3253,6 +3236,10 @@ msgstr "Отладочные RPC-эндпоинты ({0})"
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "Развивается благодаря нашему сообществу"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "Вывести из стейкинга GMX и esGMX"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
@@ -4084,6 +4071,10 @@ msgstr "ТИП ДАННЫХ"
 msgid "Swap price impact is high"
 msgstr "Высокое влияние на цену при обмене"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "Вывод GMX или esGMX из стейкинга занимает 180 дней. Вы подаёте заявку на вывод, а после окончания ожидания выводите сумму в GMX или esGMX. Заявку можно отменить в любой момент. Если из-за заявки баланс в стейкинге станет меньше 80% от максимальной суммы, которую вы когда-либо размещали в стейкинге, вся накопленная сила стейкинга обнулится, а вы потеряете свою долю в распределении средств казначейства при цене GMX $90. Отмена заявки не вернёт силу стейкинга. Токены GLV и GM можно продать в любое время. В редких случаях, когда вашу ликвидность используют открытые позиции, вы сможете вывести средства сразу после закрытия этих позиций."
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Отмена доступна через {minutesText}{seconds}с"
@@ -4135,10 +4126,6 @@ msgstr "Dune Analytics для GMX"
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for Market Swaps"
 msgstr "Внешние маршруты используются только для Market Swaps"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "Вывод из стейкинга приостановлен до обновления стейкинга"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
@@ -4535,6 +4522,10 @@ msgstr "Только через кошелёк"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Котировка Paxos изменилась. Проверьте новую сумму и комиссию, затем подтвердите снова."
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому транзакции отправляются без Express, пока это не станет возможным."
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -5134,10 +5125,6 @@ msgstr "Всего внесено маржи (баланс GMX)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr "СТОИМОСТЬ ПУЛА"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "Вывод из стейкинга завершён"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
@@ -5857,8 +5844,6 @@ msgstr "Приложение отключено, ожидается обновл
 msgid "v:"
 msgstr "v:"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7314,10 +7299,6 @@ msgstr "Полная история этой позиции недоступна
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Недостаточная ликвидность. Доступно: {availableLiquidityText}"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "Вывод из стейкинга отправлен"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr "Изменить стоп-лосс: {suffix}"
@@ -7459,6 +7440,10 @@ msgstr "Ваши средства в безопасности в контрак�
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "Бессрочные контракты"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии. Вместо этого они оплачиваются в {toSymbol}."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -7629,10 +7614,6 @@ msgstr "Баллы начисляются с учётом вашего сово�
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Запрос на расчёт {0, plural, one {# позиции} other {# позиций}} отправлен"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Цена на Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8383,6 +8364,10 @@ msgstr "По этой цене срабатывания оставшаяся п�
 msgid "{orderText} updated"
 msgstr "Обновлено: {orderText}"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому действия GMX Account нельзя отправить, пока это не станет возможным."
+
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8430,10 +8415,6 @@ msgstr "Сначала вы конвертируете USDC в USDG в свое�
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "Нет возможностей, соответствующих вашим активам"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Да, GMX можно вывести из стейкинга, а токены GLV/GM можно продать в любое время — протокол никогда не блокирует ваши токены. Однако если баланс GMX в стейкинге станет меньше 80% от максимальной суммы GMX, которую вы когда-либо размещали в стейкинге, вся накопленная сила стейкинга обнулится, а вы потеряете свою долю в распределении средств казначейства при цене GMX $90. В редких случаях, когда ликвидность GLV/GM используется для активных сделок, вы сможете вывести средства сразу после закрытия соответствующих позиций."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -9122,6 +9103,10 @@ msgstr "Скрыть активы с низкой стоимостью"
 msgid "TVL (supply)"
 msgstr "TVL (предложение)"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} не одобрен для оплаты комиссий. Комиссия сети за этот ордер оплачивается в {toSymbol}."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
@@ -9229,6 +9214,10 @@ msgstr "Получить реферальные вознаграждения"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "Просмотреть транзакцию"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Ваш {walletName} ещё не развёрнут в сети {0}</0><1/><2>Сделайте любую транзакцию с него в сети {1} и попробуйте снова</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10331,10 +10320,6 @@ msgstr "Открывает GMTrade в новой вкладке"
 msgid "Top addresses"
 msgstr "Лучшие адреса"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "Срок действия nonce подтверждения One-Click Trading истёк. Подпишите повторно, чтобы продолжить использовать One-Click Trading."
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10563,10 +10548,6 @@ msgstr "Доступные активы"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion cancelled"
 msgstr "Конвертация отменена"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "Не удалось вывести из стейкинга"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
@@ -12821,7 +12802,6 @@ msgstr "Оценить свою экономию"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Переподписать"
 
@@ -12936,10 +12916,6 @@ msgstr "КОЭФФИЦИЕНТ"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "Параметры получения недоступны. Повторите через несколько секунд"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "Вывод из стейкинга более 20% от максимального количества GMX, которое вы когда-либо размещали в стейкинге, приведёт к сбросу накопленных вознаграждений"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."

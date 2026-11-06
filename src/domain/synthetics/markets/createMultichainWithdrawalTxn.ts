@@ -4,7 +4,7 @@ import { getContract } from "config/contracts";
 import { TransferRequests } from "domain/multichain/types";
 import { ExpressTxnData, ExpressTxnResult, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
@@ -64,7 +64,7 @@ export async function buildAndSignMultichainWithdrawalTxn({
   }
 
   const withdrawalData = encodeFunctionData({
-    abi: abis.MultichainGmRouter,
+    abi: getAbi(chainId, "MultichainGmRouter"),
     functionName: "createWithdrawal",
     args: [
       {

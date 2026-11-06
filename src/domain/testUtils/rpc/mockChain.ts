@@ -21,6 +21,7 @@ const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_A
 const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
+const SUBACCOUNT_REVOCATION_COUNTER = hashString("SUBACCOUNT_REVOCATION_COUNTER");
 export const SUBACCOUNT_ORDER_ACTION_HASH = hashString("SUBACCOUNT_ORDER_ACTION");
 
 export function subaccountListKey(account: string): string {
@@ -50,6 +51,10 @@ export function subaccountExpiresAtKey(account: string, subaccount: string): str
 
 export function subaccountIntegrationIdKey(account: string, subaccount: string): string {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
+}
+
+export function subaccountRevocationCounterKey(account: string, subaccount: string): string {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_REVOCATION_COUNTER, account, subaccount]);
 }
 
 export const ARBITRUM_CONTRACTS = {
@@ -126,6 +131,7 @@ export type SubaccountOnchainState = {
   approvalNonce: bigint;
   multichainApprovalNonce: bigint;
   integrationId: string;
+  revocationCounter: bigint;
 };
 
 export type SentTransaction = {
@@ -167,6 +173,7 @@ export class MockChain implements RpcResponder {
     approvalNonce: 0n,
     multichainApprovalNonce: 0n,
     integrationId: ZERO_HASH,
+    revocationCounter: 0n,
   };
 
   balances: Record<string, bigint> = {};
@@ -186,6 +193,8 @@ export class MockChain implements RpcResponder {
   estimateGasError: string | undefined = undefined;
   sendTransactionError: string | undefined = undefined;
   allowance: bigint = ethers.MaxUint256;
+  /** ERC20 allowances by token address; unset tokens read `allowance`. */
+  tokenAllowances: Record<string, bigint> = {};
 
   sentTransactions: SentTransaction[] = [];
   signedTypedData: SignedTypedDataRecord[] = [];
@@ -216,6 +225,10 @@ export class MockChain implements RpcResponder {
 
   setTokenTotalSupply({ token, value }: { token: string; value: bigint }) {
     this.tokenTotalSupplies[ethers.getAddress(token)] = value;
+  }
+
+  setTokenAllowance({ token, value }: { token: string; value: bigint }) {
+    this.tokenAllowances[ethers.getAddress(token)] = value;
   }
 
   setDataStoreUint(key: string, value: bigint) {
@@ -515,7 +528,10 @@ export class MockChain implements RpcResponder {
         return IFACE.encodeFunctionResult("getEthBalance", [balance]);
       }
       case SELECTORS.allowance: {
-        return IFACE.encodeFunctionResult("allowance", [this.allowance]);
+        const token = to === undefined ? undefined : normalizeAddress(to);
+        const allowance =
+          token !== undefined && token in this.tokenAllowances ? this.tokenAllowances[token] : this.allowance;
+        return IFACE.encodeFunctionResult("allowance", [allowance]);
       }
       case SELECTORS.getBytes32: {
         const [key] = IFACE.decodeFunctionData("getBytes32", data) as unknown as [string];
@@ -563,6 +579,9 @@ export class MockChain implements RpcResponder {
     }
     if (key === subaccountExpiresAtKey(this.account, this.subaccountAddress)) {
       return this.onchain.expiresAt;
+    }
+    if (key === subaccountRevocationCounterKey(this.account, this.subaccountAddress)) {
+      return this.onchain.revocationCounter;
     }
 
     return 0n;

@@ -675,10 +675,6 @@ msgstr "资金费"
 msgid "Deposit margin"
 msgstr "存入保证金"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "取消质押中..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "来源网络"
@@ -1255,10 +1251,6 @@ msgstr "您邀请的交易者产生的交易量"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "我可以随时解除质押或提取吗？"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "您已激活推荐码 {userReferralCodeString}。您的优惠费率将自动适用于您开立或关闭的每个仓位，无需执行其他操作。"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1331,7 +1323,6 @@ msgstr "兑换价格影响过高"
 msgid "Claimed funding fees"
 msgstr "已领取资金费用"
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "最新动态"
@@ -1453,6 +1444,10 @@ msgstr "执行费用低于当前网络成本"
 msgid "Tiers"
 msgstr "等级"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "您已激活推荐码 {activatedReferralCodeLabel}。您的优惠费率将自动适用于您开立或关闭的每个仓位，无需执行其他操作。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "兑换手续费因子（负 PI）"
@@ -1506,10 +1501,6 @@ msgstr "交易："
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "没有匹配的市场"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "解除质押 {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -2181,10 +2172,6 @@ msgstr "选择池"
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "该市场已停用。请联系支持团队领取剩余的资金费。"
 
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "质押已迁移至新合约。请检查后重试。"
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr "日志索引："
@@ -2613,10 +2600,6 @@ msgstr "选择时间"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
 msgstr "GMX 余额"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Avalanche 上的价格"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
@@ -3253,6 +3236,10 @@ msgstr "调试 RPC 端点 ({0})"
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "由我们的社区驱动"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "解除质押 GMX 和 esGMX"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
@@ -4084,6 +4071,10 @@ msgstr "数据类型"
 msgid "Swap price impact is high"
 msgstr "兑换价格影响过高"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "解除质押 GMX 或 esGMX 需要 180 天。您需要先申请解除质押，等待期结束后，您可以以 GMX 或 esGMX 提取该数量。您可以随时取消请求。如果某个请求使您的质押余额降至历史最高质押量的 80% 以下，所有累积的质押权重都将重置为零，您也将失去 GMX 达到 90 美元时国库分配中的份额。取消该请求不会恢复质押权重。GLV 和 GM 代币可随时出售。在少数情况下，如果未平仓位正在使用您的流动性，则可在这些仓位平仓后立即提取。"
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "可在 {minutesText}{seconds}s 后取消"
@@ -4135,10 +4126,6 @@ msgstr "GMX 的 Dune Analytics"
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for Market Swaps"
 msgstr "外部路由仅用于 Market Swap"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "解除质押已暂停，直至质押升级完成"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
@@ -4535,6 +4522,10 @@ msgstr "仅钱包"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxos 报价已变更。请查看新的金额和费用，然后再次确认。"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} 当前无法支付网络费用，因此在恢复之前交易将不通过 Express 发送。"
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -5134,10 +5125,6 @@ msgstr "累计投入保证金（GMX 余额）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr "池价值"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "解除质押完成"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
@@ -5857,8 +5844,6 @@ msgstr "应用已禁用，等待 {0} 升级"
 msgid "v:"
 msgstr "v:"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7314,10 +7299,6 @@ msgstr "此仓位的完整历史不可用"
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "流动性不足。可用：{availableLiquidityText}"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "解除质押已提交"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr "编辑止损单：{suffix}"
@@ -7459,6 +7440,10 @@ msgstr "您的资金安全存放在目标链上的 GMX 合约中。请在 LayerZ
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "永续合约"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} 当前无法支付网络费用，将改用 {toSymbol} 支付。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -7629,10 +7614,6 @@ msgstr "积分根据您在 GMX MegaETH 上的累计交易量分配"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "结算 {0, plural, one {# 个仓位} other {# 个仓位}} 的请求已发送"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Arbitrum 上的价格"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8383,6 +8364,10 @@ msgstr "在此触发价格下，剩余仓位将超过最大杠杆，订单可能
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} 当前无法支付网络费用，因此在恢复之前无法发送 GMX Account 操作。"
+
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8430,10 +8415,6 @@ msgstr "您先在钱包中将 USDC 转换为 USDG，然后确认买入。若买�
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "没有与您持仓匹配的机会"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "是的，GMX 可随时解除质押，GLV/GM 代币也可随时出售——协议绝不会锁定您的代币。但是，如果您的 GMX 质押余额降至历史最高质押量的 80% 以下，所有累积的质押权重都将重置为零，您也将失去 GMX 达到 90 美元时国库分配中的份额。对于 GLV/GM，在少数情况下，如果您的流动性正用于进行中的交易，则可在这些仓位平仓后立即提取。"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -9122,6 +9103,10 @@ msgstr "隐藏价值较低的资产"
 msgid "TVL (supply)"
 msgstr "TVL（供应量）"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} 未获批准用于支付费用。此订单将以 {toSymbol} 支付网络费用。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
@@ -9229,6 +9214,10 @@ msgstr "领取返佣"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "查看交易"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>您的 {walletName} 尚未在 {0} 上部署</0><1/><2>请先用它在 {1} 上发起任意一笔交易，然后重试</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10331,10 +10320,6 @@ msgstr "将在新标签页中打开 GMTrade"
 msgid "Top addresses"
 msgstr "排名地址"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading 授权 nonce 已过期。请重新签名以继续使用 One-Click Trading。"
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10563,10 +10548,6 @@ msgstr "可用资产"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion cancelled"
 msgstr "转换已取消"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "解除质押失败"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
@@ -12821,7 +12802,6 @@ msgstr "预估节省金额"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "重新签名"
 
@@ -12936,10 +12916,6 @@ msgstr "系数"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "领取参数不可用。请在几秒后重试"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "解除质押数量超过您历史最高 GMX 质押量的 20% 将重置您已累计的奖励"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."

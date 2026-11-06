@@ -27,7 +27,9 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import {
+  selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountGasPaymentToken,
+  selectSettlementChainExpressFeeTokenAddress,
   selectSettlementChainGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -35,13 +37,12 @@ import {
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
-} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "domain/synthetics/express/expressOrderUtils";
+import type { GasPaymentValidations } from "domain/synthetics/express/types";
+import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/useGasPaymentTokenUnavailableToast";
+import { useSwitchGasPaymentTokenIfRequired } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
@@ -134,8 +135,8 @@ export const useGmSwapSubmitState = ({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tokensData = useSelector(selectTokensData);
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectSettlementChainExpressFeeTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const gasPaymentTokenAddress =
@@ -211,9 +212,16 @@ export const useGmSwapSubmitState = ({
     directDepositAccess,
   });
 
-  const collateralSwapError = useMemo((): ValidationResult | undefined => {
-    const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
+  const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
 
+  // the relay params' own notice waits for fees that can't be estimated while the token can't pay
+  useGasPaymentTokenUnavailableToast({
+    isGmxAccount: true,
+    feeTokenAddress: gmxAccountGasPaymentTokenAddress,
+    enabled: paySource === "gmxAccount" && hasInput,
+  });
+
+  const collateralSwapError = useMemo((): ValidationResult | undefined => {
     if (!collateralSwapTokens || isTransitRoute || !hasInput || isDirectDepositBlocked) {
       return undefined;
     }
@@ -228,26 +236,18 @@ export const useGmSwapSubmitState = ({
     }
 
     return { buttonErrorMessage: t`Insufficient GMX pool liquidity` };
-  }, [
-    amounts,
-    collateralSwapTokens,
-    firstTokenAmount,
-    isDeposit,
-    isDirectDepositBlocked,
-    isTransitRoute,
-    marketOrGlvTokenAmount,
-  ]);
+  }, [amounts, collateralSwapTokens, hasInput, isDeposit, isDirectDepositBlocked, isTransitRoute]);
 
-  const expressError = useExpressError({
+  const expressError = useGmxAccountGasPayment({
     paySource,
     technicalFees,
     gasPaymentToken,
-    gasPaymentTokenAddress,
     longTokenAddress,
     shortTokenAddress,
     longTokenAmount,
     shortTokenAmount,
     isDeposit,
+    canSwitchGasPaymentToken: hasInput,
   });
 
   const nativeGasError = getGmNativeGasError({
@@ -525,83 +525,97 @@ export const useGmSwapSubmitState = ({
   ]);
 };
 
-function useExpressError({
+function useGmxAccountGasPayment({
   paySource,
   technicalFees,
   gasPaymentToken,
-  gasPaymentTokenAddress,
   longTokenAddress,
   shortTokenAddress,
   longTokenAmount,
   shortTokenAmount,
   isDeposit,
+  canSwitchGasPaymentToken,
 }: {
   paySource: GmPaySource | undefined;
   technicalFees: TechnicalGmFees | undefined;
   gasPaymentToken: TokenData | undefined;
-  gasPaymentTokenAddress: string | undefined;
   longTokenAddress: string | undefined;
   shortTokenAddress: string | undefined;
   longTokenAmount: bigint | undefined;
   shortTokenAmount: bigint | undefined;
   isDeposit: boolean;
+  canSwitchGasPaymentToken: boolean;
 }): ValidationResult | undefined {
-  return useMemo(() => {
-    if (paySource !== "gmxAccount" || !technicalFees || !gasPaymentToken || !gasPaymentTokenAddress) {
+  const isGmxAccount = paySource === "gmxAccount";
+
+  // same-collateral markets split the deposit between the long and the short token
+  const payAmounts = useMemo((): Record<string, bigint> => {
+    const amounts: Record<string, bigint> = {};
+    if (!isGmxAccount || !isDeposit) return amounts;
+
+    for (const [tokenAddress, amount] of [
+      [longTokenAddress, longTokenAmount],
+      [shortTokenAddress, shortTokenAmount],
+    ] as const) {
+      if (tokenAddress !== undefined && amount !== undefined) {
+        amounts[tokenAddress] = (amounts[tokenAddress] ?? 0n) + amount;
+      }
+    }
+
+    return amounts;
+  }, [isDeposit, isGmxAccount, longTokenAddress, longTokenAmount, shortTokenAddress, shortTokenAmount]);
+
+  const gasPaymentTokenAmount = useMemo((): bigint | undefined => {
+    const fees = isGmxAccount && technicalFees?.kind === "gmxAccount" ? technicalFees.fees : undefined;
+    if (!fees || !gasPaymentToken || gasPaymentToken.prices.minPrice === undefined) {
       return undefined;
     }
 
-    const fees = technicalFees.kind === "gmxAccount" ? technicalFees.fees : undefined;
-    if (!fees) {
-      return undefined;
-    }
-
-    if (gasPaymentToken.prices.minPrice === undefined) {
-      return undefined;
-    }
-
-    const gasPaymentTokenAmount = convertToTokenAmount(
+    const amount = convertToTokenAmount(
       fees.executionFee.feeUsd + fees.relayFeeUsd,
       gasPaymentToken.decimals,
       gasPaymentToken.prices.minPrice
     );
 
-    if (gasPaymentTokenAmount === undefined || gasPaymentTokenAmount === 0n) {
+    return amount === 0n ? undefined : amount;
+  }, [gasPaymentToken, isGmxAccount, technicalFees]);
+
+  const gasPaymentValidations = useMemo((): GasPaymentValidations | undefined => {
+    if (!gasPaymentToken || gasPaymentTokenAmount === undefined) {
       return undefined;
     }
 
-    let collateralAmount = 0n;
-    if (isDeposit) {
-      if (longTokenAddress === gasPaymentTokenAddress) {
-        collateralAmount = longTokenAmount ?? 0n;
-      } else if (shortTokenAddress === gasPaymentTokenAddress) {
-        collateralAmount = shortTokenAmount ?? 0n;
-      }
-    }
+    const isOutGasTokenBalance =
+      (payAmounts[gasPaymentToken.address] ?? 0n) + gasPaymentTokenAmount > (gasPaymentToken.gmxAccountBalance ?? 0n);
 
-    const gmxAccountBalance = gasPaymentToken.gmxAccountBalance ?? 0n;
-    const totalRequired = collateralAmount + gasPaymentTokenAmount;
+    return {
+      isGasPaymentTokenBalanceLoaded: gasPaymentToken.gmxAccountBalance !== undefined,
+      isOutGasTokenBalance,
+      needGasPaymentTokenApproval: false,
+      isValid: !isOutGasTokenBalance,
+    };
+  }, [gasPaymentToken, gasPaymentTokenAmount, payAmounts]);
 
-    if (totalRequired > gmxAccountBalance) {
-      return {
-        buttonErrorMessage: getInsufficientFeeButtonMessage({
-          tokenSymbol: gasPaymentToken.symbol,
-          feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
-        }),
-        bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
-      };
-    }
-
-    return undefined;
-  }, [
-    paySource,
-    technicalFees,
+  useSwitchGasPaymentTokenIfRequired({
+    gasPaymentValidations,
     gasPaymentToken,
-    gasPaymentTokenAddress,
-    longTokenAddress,
-    shortTokenAddress,
-    isDeposit,
-    longTokenAmount,
-    shortTokenAmount,
-  ]);
+    gasPaymentTokenAmount,
+    payAmounts,
+    isGmxAccount: true,
+    canSwitchGasPaymentToken: isGmxAccount && canSwitchGasPaymentToken,
+  });
+
+  return useMemo((): ValidationResult | undefined => {
+    if (!gasPaymentToken || !gasPaymentValidations?.isOutGasTokenBalance) {
+      return undefined;
+    }
+
+    return {
+      buttonErrorMessage: getInsufficientFeeButtonMessage({
+        tokenSymbol: gasPaymentToken.symbol,
+        feeSource: GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+      }),
+      bannerErrorName: ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance,
+    };
+  }, [gasPaymentToken, gasPaymentValidations]);
 }

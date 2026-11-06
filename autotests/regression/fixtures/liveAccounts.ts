@@ -128,7 +128,7 @@ export type LiveAccount = Candidate & {
   referralCodeCount?: number;
   transfers?: { deposit: FundingTransfer; withdrawal: FundingTransfer };
   trades?: { open: string; close: string };
-  vesting?: { vested: bigint; maxVestable: bigint; walletEsGmx: bigint; unstakeEsGmxMax: bigint };
+  vesting?: { vested: bigint; maxVestable: bigint; walletEsGmx: bigint };
   staking?: { gmx: bigint; esGmx: bigint; unstakeMax: bigint; power: StakingPowerResponse };
   distributions?: Distribution[];
 };
@@ -430,13 +430,15 @@ export class LiveAccounts {
         args: [row.account, getAddress(getContract(this.chainId, "ES_GMX"))],
       });
       const power = await fetchApiStakingPower(this, { address: row.account });
-      const available = await this.rpc.readContract({
-        address: getAddress(getContract(this.chainId, "FeeGmxTracker")),
-        abi: erc20Abi,
-        functionName: "balanceOf",
+      const pending = await this.rpc.readContract({
+        address: getAddress(getContract(this.chainId, "RewardRouterV3")),
+        abi: parseAbi(["function pendingUnstakeAmount(address) view returns(uint256)"]),
+        functionName: "pendingUnstakeAmount",
         args: [row.account],
       });
-      const unstakeMax = gmx < available ? gmx : available;
+      // RewardRouterV3.signalUnstake accepts staked GMX and esGMX together, less the amount already requested
+      const stakedTotal: bigint = gmx + esGmx;
+      const unstakeMax = stakedTotal > pending ? stakedTotal - pending : 0n;
       if (power.currentStaked <= 0n || unstakeMax <= 0n) return;
       const staking = { gmx, esGmx, unstakeMax, power };
       if (profile === "staking") return { staking };
@@ -454,10 +456,9 @@ export class LiveAccounts {
         functionName: "balanceOf",
         args: [row.account],
       });
-      const unstakeEsGmxMax = esGmx < available ? esGmx : available;
       return {
         staking,
-        vesting: { vested: vestingInfo[1], maxVestable: vestingInfo[5], walletEsGmx, unstakeEsGmxMax },
+        vesting: { vested: vestingInfo[1], maxVestable: vestingInfo[5], walletEsGmx },
       };
     }
     if (profile === "referral") {

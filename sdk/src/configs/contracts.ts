@@ -318,36 +318,36 @@ export const CONTRACTS = {
     // Synthetics
     DataStore: "0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201",
     EventEmitter: "0xa973c2692C1556E1a3d478e745e9a75624AEDc73",
-    ExchangeRouter: "0x6B489dD5bB1AAE8df246359d59aA7316760a75d2",
-    SubaccountRouter: "0xAFdD3e0B6c162974594AcA157eA642B8847CC5b1",
+    ExchangeRouter: "0x3Fb6d5429612588510341eA60AacC282dB264295",
+    SubaccountRouter: "0xb72922b646d617515ED68A30a63Fe88B51277858",
     DepositVault: "0x809Ea82C394beB993c2b6B0d73b8FD07ab92DE5A",
     WithdrawalVault: "0x7601c9dBbDCf1f5ED1E7Adba4EFd9f2cADa037A5",
     OrderVault: "0x1b8AC606de71686fd2a1AEDEcb6E0EFba28909a2",
     ShiftVault: "0x6b6F9B7B9a6b69942DAE74FB95E694ec277117af",
-    SyntheticsReader: "0x92659fEf40582ceCC3CBa4D096d28291C238D358",
+    SyntheticsReader: "0x1543f5e73b9d329d7DE25ADC98120F13D29bC53b",
     SyntheticsRouter: "0x72F13a44C8ba16a678CAD549F17bc9e06d2B8bD2",
 
-    SimulationRouter: "0x82f1bb43b7E93dE4c38EC3198ed13e33D0904555",
+    SimulationRouter: "0x94dF25454a27237b51b72E91A41076a40b4bF3dE",
 
-    GlvReader: "0x45356cEE7f8668b7030577c13b4638802D3397Df",
-    GlvRouter: "0x792D48B94F430965FE85645cF72527b3343d4BdD",
+    GlvReader: "0xdC1d1039Dc78B82Ef5e3F6F7461a30b21082FD93",
+    GlvRouter: "0x15bCdc0F55083D359dDACe542F807Ba93ba4661B",
     GlvVault: "0x40bD50de0977c68ecB958ED4A065E14E1091ce64",
 
-    GelatoRelayRouter: "0x7FB9d059d2F2323115285dAc25a3C66A67AeFAA7",
-    SubaccountGelatoRelayRouter: "0xaa174e2fbE98C1EE42009B81ec8b8D9C0Ed075cf",
+    GelatoRelayRouter: "0x0384909F08B93EB7B8Bf7c1a0b0B1c2F50233aea",
+    SubaccountGelatoRelayRouter: "0x842826C68d52Cd54b2C2Dee539C84d5249e02CA0",
 
-    MultichainClaimsRouter: "0x2265c65b65ad8336C6Eb41dA1f2BeB5fF7a1CA3F",
-    MultichainGlvRouter: "0x666E55DABCDdd29C273B5C03886BcbFBd4FF654e",
-    MultichainGmRouter: "0x3224967e564f2e5E2551F0B87Cb759230E3C6908",
-    MultichainOrderRouter: "0xb813bf9a4968eb524C07aAf7Dd8c678840854f6C",
-    MultichainSubaccountRouter: "0x01ecA08518c90acf2779F5509de74B1C2c590b58",
-    MultichainTransferRouter: "0x26493a63B9e4Fd6E94bE8D3d9CfB5bAA90714697",
+    MultichainClaimsRouter: "0xc79199213ca050ad02B07394eD2aE95257C1FF31",
+    MultichainGlvRouter: "0xb86aC18dEB4C16364820C5D7BEf76496B391bfc5",
+    MultichainGmRouter: "0x29155BFBFDe3f3a191ae6999C83cF96c7d3DD0F4",
+    MultichainOrderRouter: "0xf41C2ad38b78Ab4661093947F58179CAaCf84FB5",
+    MultichainSubaccountRouter: "0x43998d11d3C2703022d213A0888320C477d09C0d",
+    MultichainTransferRouter: "0xA51c25bE642429e6B6316075a22f11DA6a2e57E8",
     MultichainVault: "0xCd46EF5ed7d08B345c47b5a193A719861Aa2CD91",
-    LayerZeroProvider: "0x1Bc31F4e57d3A0694049ac6fa829a1B33111e28A",
+    LayerZeroProvider: "0x3b67943bFB5aEdF411f509924EF9D2225332A62A",
 
-    ChainlinkPriceFeedProvider: "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d",
+    ChainlinkPriceFeedProvider: "0x7780E11552D5d070f971C5683466F9eB110afF32",
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
-    ClaimHandler: "0x90B3B7a28574e8E623Fdce11D93D85Dffe12398D",
+    ClaimHandler: "0x511512C6dbD5fFC0c4f1A14E5f4De66D2BAF2d3E",
 
     // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",
@@ -393,6 +393,10 @@ type ExtractContractNames<T extends object> = {
 }[keyof T];
 
 export type ContractName = ExtractContractNames<typeof CONTRACTS>;
+
+export function isContractsV2_2_1(chainId: number): boolean {
+  return chainId === ARBITRUM_SEPOLIA;
+}
 
 export function getContract(chainId: ContractsChainId, name: ContractName): Address {
   if (!CONTRACTS[chainId]) {
