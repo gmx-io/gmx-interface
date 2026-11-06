@@ -301,23 +301,6 @@ describe("tradeboxSelectors", () => {
         expect(selectIsOneClickActiveByUser(createState(baseSubaccount, SOURCE_BASE_MAINNET))).toBe(true);
         expect(selectIsOneClickActiveByUser(createState(bscSubaccount, SOURCE_BSC_MAINNET))).toBe(true);
       });
-
-      it("an approval with a consumed shared nonce is not a valid One-Click path even in its own context", () => {
-        const subaccount = createSubaccount({
-          signerChainId: SOURCE_BASE_MAINNET,
-          onchainData: {
-            active: true,
-            multichainApprovalNonce: PENDING_MULTICHAIN_NONCE + 1n,
-          },
-          signedApproval: {
-            signatureChainId: SOURCE_BASE_MAINNET,
-            subaccountRouterAddress: multichainSubaccountRouterAddress,
-            nonce: PENDING_MULTICHAIN_NONCE,
-          },
-        });
-
-        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(false);
-      });
     });
   });
 });

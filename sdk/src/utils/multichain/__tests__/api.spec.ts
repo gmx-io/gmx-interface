@@ -150,12 +150,24 @@ describe("multichain api: buildCrossChainWithdrawBridgeOutParams", () => {
     expect(decodedDstEid).toBe(CHAIN_ID_TO_ENDPOINT_ID[SOURCE_BASE_MAINNET]);
   });
 
-  it("defaults minAmountOut to amount when slippage is unspecified", () => {
+  it("leaves 50 bps for the bridge fee when slippage is unspecified", () => {
     const params = buildCrossChainWithdrawBridgeOutParams({
       tokenAddress: USDC_ARBITRUM,
       amount: 1_000_000n,
       dstChainId: SOURCE_BASE_MAINNET,
       stargateAddress: STARGATE_USDC_ARBITRUM,
+    });
+
+    expect(params.minAmountOut).toBe(995_000n);
+  });
+
+  it("keeps minAmountOut equal to amount with zero slippage", () => {
+    const params = buildCrossChainWithdrawBridgeOutParams({
+      tokenAddress: USDC_ARBITRUM,
+      amount: 1_000_000n,
+      dstChainId: SOURCE_BASE_MAINNET,
+      stargateAddress: STARGATE_USDC_ARBITRUM,
+      slippageBps: 0,
     });
 
     expect(params.minAmountOut).toBe(1_000_000n);

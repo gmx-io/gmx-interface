@@ -1,12 +1,4 @@
-import {
-  BaseError,
-  CallExecutionError,
-  Chain,
-  ContractFunctionRevertedError,
-  ContractFunctionZeroDataError,
-  createPublicClient,
-  http,
-} from "viem";
+import { Chain, createPublicClient, http } from "viem";
 
 import { type AnyChainId, getViemChain, type ContractsChainId } from "config/chains";
 import { isWebWorker } from "config/env";
@@ -28,22 +20,9 @@ import { getAbi } from "sdk/abis/getAbi";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
+import { isContractRevert } from "./utils";
 
 export const MAX_PRIMARY_TIMEOUT = 20_000;
-
-// viem labels a whole failed chunk as reverted when the RPC answers -32603 or code 3, so a read only counts
-// as reverted when its error came from decoding aggregate3 results, not from the RPC call itself.
-function isContractRevert(error: unknown) {
-  return (
-    error instanceof BaseError &&
-    !error.walk((cause) => cause instanceof CallExecutionError) &&
-    Boolean(
-      error.walk(
-        (cause) => cause instanceof ContractFunctionRevertedError || cause instanceof ContractFunctionZeroDataError
-      )
-    )
-  );
-}
 
 export class Multicall {
   static instances: {

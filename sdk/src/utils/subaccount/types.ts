@@ -72,8 +72,6 @@ export type Subaccount = {
 export type SubaccountValidations = {
   isExpired: boolean;
   isActionsExceeded: boolean;
-  isNonceExpired: boolean;
-  isRevoked: boolean;
   isApprovalInvalid: boolean;
   isValid: boolean;
 };

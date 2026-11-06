@@ -675,10 +675,6 @@ msgstr "Financement"
 msgid "Deposit margin"
 msgstr "Dépôt de marge"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr "Retrait du staking..."
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Réseau source"
@@ -864,6 +860,10 @@ msgstr "Continuer pour ajouter de la marge"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "Prix d'exécution de l'ordre"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
+msgstr "Le trading sur Solana peut être temporairement indisponible. Notre équipe travaille à résoudre le problème."
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
@@ -1251,10 +1251,6 @@ msgstr "Volume négocié par les traders que vous avez parrainés"
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Puis-je unstaker ou retirer à tout moment ?"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr "Vous avez activé le code de parrainage {userReferralCodeString}. Votre taux réduit s’applique automatiquement à chaque position que vous ouvrez ou fermez — aucune étape supplémentaire n’est nécessaire."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
@@ -1327,7 +1323,6 @@ msgstr "Impact élevé sur le prix de l'échange"
 msgid "Claimed funding fees"
 msgstr "Frais de financement réclamés"
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Nouveautés"
@@ -1449,6 +1444,10 @@ msgstr "Les frais d'exécution sont trop faibles pour les coûts réseau actuels
 msgid "Tiers"
 msgstr "Niveaux"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr "Vous avez activé le code de parrainage {activatedReferralCodeLabel}. Votre taux réduit s’applique automatiquement à chaque position que vous ouvrez ou fermez — aucune étape supplémentaire n’est nécessaire."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Facteur de frais d'échange (PI négatif)"
@@ -1502,10 +1501,6 @@ msgstr "Transaction :"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
 msgstr "Aucun marché correspondant"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
-msgstr "Unstaker {tokenSymbol}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Staking rewards are paused. 27% of protocol fees are accumulating in the Treasury instead, to be distributed when GMX reaches $90, subject to DAO governance. Your share is based on staking power (duration × amount staked)."
@@ -1685,6 +1680,7 @@ msgstr "Résultat net du portefeuille"
 msgid "Use {0} for gas"
 msgstr "Utiliser {0} pour le Gas"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr "Marge totale apportée"
@@ -2176,10 +2172,6 @@ msgstr "Sélectionner un pool"
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr "Ce marché a été désactivé. Contactez l’assistance pour récupérer vos frais de financement restants."
 
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr "Le staking a été transféré vers un nouveau contrat. Vérifiez et réessayez."
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr "Index du log :"
@@ -2609,10 +2601,6 @@ msgstr "Choisir un horaire"
 msgid "GMX balance"
 msgstr "Solde GMX"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Prix sur Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Signez les transactions hors chaîne. Les RPC premium garantissent la fiabilité en cas de congestion du réseau.<0/><1/>Les frais sont payés avec votre jeton de paiement du Gas depuis le solde utilisé par l'action."
@@ -2798,10 +2786,6 @@ msgstr "Market Decrease échoué"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DefiLlama"
 msgstr "DefiLlama"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
-msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
@@ -3252,6 +3236,10 @@ msgstr "Déboguer les points de terminaison RPC ({0})"
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "Propulsé par notre communauté"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
+msgstr "Unstaker GMX et esGMX"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
@@ -4083,6 +4071,10 @@ msgstr "TYPE DE DONNÉES"
 msgid "Swap price impact is high"
 msgstr "L'impact sur le prix de l'échange est élevé"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr "L’unstaking de GMX ou d’esGMX prend 180 jours. Vous demandez l’unstaking, puis, une fois l’attente terminée, vous retirez le montant en GMX ou en esGMX. Vous pouvez annuler une demande à tout moment. Si une demande fait passer votre solde staké sous 80 % de votre montant maximal staké, toute la puissance de staking accumulée est remise à zéro et vous perdez votre part de la distribution de la Trésorerie lorsque GMX atteint 90 $. Annuler la demande ne rétablit pas la puissance de staking. Les tokens GLV et GM peuvent être vendus à tout moment. Dans les rares cas où des positions ouvertes utilisent votre liquidité, vous pouvez la retirer dès la clôture de ces positions."
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr "Annulable dans {minutesText}{seconds}s"
@@ -4134,10 +4126,6 @@ msgstr "Dune Analytics pour GMX"
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for Market Swaps"
 msgstr "Les routes externes ne sont utilisées que pour les Market Swaps"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
-msgstr "Le retrait du staking est en pause jusqu'à la mise à niveau du staking"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
@@ -4535,6 +4523,10 @@ msgstr "Portefeuille uniquement"
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "La cotation Paxos a changé. Vérifiez le nouveau montant et les frais, puis confirmez à nouveau."
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} ne peut pas payer les frais de réseau pour le moment, les transactions sont donc envoyées sans Express jusqu'à ce que ce soit possible."
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr "Listing"
@@ -4726,6 +4718,10 @@ msgstr "Frontends"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
 msgstr "Récupération réussie"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Solana service disruption"
+msgstr "Perturbation du service sur Solana"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Points are based on the total notional trading volume on GMX MegaETH generated by wallets using your onchain referral code"
@@ -5129,10 +5125,6 @@ msgstr "Marge totale apportée (solde GMX)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr "VALEUR DU POOL"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
-msgstr "Unstake terminé"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Export wallet"
@@ -5852,8 +5844,6 @@ msgstr "Application désactivée, en attente de la mise à niveau de {0}"
 msgid "v:"
 msgstr "v :"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7002,6 +6992,10 @@ msgstr "Sélectionner le marché"
 msgid "Referral code creation failed"
 msgstr "Échec de la création du code de parrainage"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr "Résultat net"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7304,10 +7298,6 @@ msgstr "Historique complet indisponible pour cette position"
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Liquidité insuffisante. Disponible : {availableLiquidityText}"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr "Unstaking soumis"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr "Modifier le Stop-Loss : {suffix}"
@@ -7449,6 +7439,10 @@ msgstr "Vos fonds sont en sécurité dans les contrats GMX sur la chaîne de des
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "Perpétuels"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} ne peut pas payer les frais de réseau pour le moment. Ils sont payés en {toSymbol} à la place."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -7604,6 +7598,10 @@ msgstr "Gradués"
 msgid "Set stop price below mark price"
 msgstr "Définissez le prix stop en dessous du prix de référence"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr "Total reçu"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
 msgstr "<0>L'approbation One-Click Trading était obsolète et a été actualisée. Veuillez réessayer</0>"
@@ -7615,10 +7613,6 @@ msgstr "Les points sont attribués en fonction de votre volume de négociation c
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Demande de règlement pour {0, plural, one {# position} other {# positions}} envoyée"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Prix sur Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8281,6 +8275,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> vers </1>{toTokenIcon}"
 msgid "Pool max long amount"
 msgstr "Montant long maximum du pool"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr "Reçu avant la clôture"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Nécessite une gestion plus active que GLV"
@@ -8365,6 +8363,10 @@ msgstr "À ce prix de déclenchement, la position restante dépasserait l'effet 
 msgid "{orderText} updated"
 msgstr "{orderText} mis à jour"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} ne peut pas payer les frais de réseau pour le moment, les actions GMX Account ne peuvent donc pas être envoyées tant que ce n'est pas possible."
+
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8412,10 +8414,6 @@ msgstr "D'abord, vous convertissez des USDC en USDG dans votre portefeuille, pui
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
 msgstr "Aucune opportunité ne correspond à vos avoirs"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
-msgstr "Oui, les GMX peuvent être retirés du staking et les tokens GLV/GM peuvent être vendus à tout moment — le protocole ne verrouille jamais vos tokens. Toutefois, si votre solde de GMX stakés passe sous 80 % de votre montant maximal staké, toute la puissance de staking accumulée est remise à zéro et vous perdez votre part de la distribution de la Trésorerie lorsque GMX atteint 90 $. Pour GLV/GM, dans les rares cas où votre liquidité est utilisée pour des transactions actives, vous pouvez la retirer dès la clôture de ces positions."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -9104,6 +9102,10 @@ msgstr "Masquer les actifs de faible valeur"
 msgid "TVL (supply)"
 msgstr "TVL (offre)"
 
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
+msgstr "{fromSymbol} n'est pas approuvé pour les frais. Cet ordre paie ses frais de réseau en {toSymbol}."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
@@ -9214,7 +9216,7 @@ msgstr "Voir la transaction"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
-msgstr ""
+msgstr "<0>Votre {walletName} n'est pas encore déployé sur {0}</0><1/><2>Effectuez une transaction depuis ce portefeuille sur {1}, puis réessayez</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10317,10 +10319,6 @@ msgstr "Ouvre GMTrade dans un nouvel onglet"
 msgid "Top addresses"
 msgstr "Meilleures adresses"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "Le nonce d'approbation One-Click Trading a expiré. Signez à nouveau pour continuer à utiliser One-Click Trading."
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10549,10 +10547,6 @@ msgstr "Actifs disponibles"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion cancelled"
 msgstr "Conversion annulée"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
-msgstr "Échec de l'unstaking"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "[{0}]"
@@ -12676,6 +12670,11 @@ msgstr "Impact actuel : {0}. Utilisez -0,30 % ou plus pour une meilleure exécut
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Ce marché est désactivé. Contactez l’assistance pour récupérer vos frais de financement restants."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr "Reçu à la clôture"
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "Test des permits de jetons"
@@ -12798,8 +12797,6 @@ msgstr "Estimez vos économies"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Re-signer"
 
@@ -12914,10 +12911,6 @@ msgstr "FACTEUR"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "Paramètres de récupération indisponibles. Réessayez dans quelques secondes"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
-msgstr "Le retrait de plus de 20 % de votre montant maximal historique de GMX stakés réinitialisera vos récompenses accumulées"
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Nothing can be converted instantly right now. <0>Convert with Paxos first</0> in the Swap tab: a one-time conversion, 2 to 10 min or longer. Trades paid in USDG need no conversion."

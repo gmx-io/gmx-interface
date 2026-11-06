@@ -675,10 +675,6 @@ msgstr ""
 msgid "Deposit margin"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking..."
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr ""
@@ -863,6 +859,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -1251,10 +1251,6 @@ msgstr ""
 msgid "Can I unstake or withdraw anytime?"
 msgstr ""
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "You have activated the referral code {userReferralCodeString}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr ""
@@ -1327,7 +1323,6 @@ msgstr ""
 msgid "Claimed funding fees"
 msgstr ""
 
-#: src/components/WhatsNewToast/WhatsNewToast.tsx
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr ""
@@ -1449,6 +1444,10 @@ msgstr ""
 msgid "Tiers"
 msgstr ""
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr ""
@@ -1501,10 +1500,6 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake {tokenSymbol}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -1685,6 +1680,7 @@ msgstr ""
 msgid "Use {0} for gas"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total margin funded"
 msgstr ""
@@ -2176,10 +2172,6 @@ msgstr ""
 msgid "This market has been disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
-#: src/components/Errors/stakingToasts.ts
-msgid "Staking moved to a new contract. Review and try again."
-msgstr ""
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr ""
@@ -2609,10 +2601,6 @@ msgstr ""
 msgid "GMX balance"
 msgstr ""
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr ""
@@ -2797,10 +2785,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DefiLlama"
-msgstr ""
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading was turned off elsewhere. Re-sign to continue using One-Click Trading."
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
@@ -3251,6 +3235,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstake GMX and esGMX"
 msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
@@ -4083,6 +4071,10 @@ msgstr ""
 msgid "Swap price impact is high"
 msgstr ""
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close."
+msgstr ""
+
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in {minutesText}{seconds}s"
 msgstr ""
@@ -4133,10 +4125,6 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "External routes are only used for Market Swaps"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking is paused until the staking upgrade"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4535,6 +4523,10 @@ msgstr ""
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr ""
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr ""
+
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
 msgstr ""
@@ -4725,6 +4717,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
+msgstr ""
+
+#: src/config/uiFlagEvents.tsx
+msgid "Solana service disruption"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -5128,10 +5124,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake completed"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -5852,8 +5844,6 @@ msgstr ""
 msgid "v:"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake"
@@ -7002,6 +6992,10 @@ msgstr ""
 msgid "Referral code creation failed"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net result"
+msgstr ""
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "The bridge fee is paid in {bridgeFeeTokenSymbol} from your GMX Account"
@@ -7304,10 +7298,6 @@ msgstr ""
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake submitted"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr ""
@@ -7449,6 +7439,10 @@ msgstr ""
 #: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "[!! Perpetuals !!]"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -7604,6 +7598,10 @@ msgstr ""
 msgid "Set stop price below mark price"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Total received"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>One-Click Trading approval was outdated and has been refreshed. Try again</0>"
 msgstr ""
@@ -7614,10 +7612,6 @@ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
-msgstr ""
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -8281,6 +8275,10 @@ msgstr ""
 msgid "Pool max long amount"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Received before close"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr ""
@@ -8365,6 +8363,10 @@ msgstr ""
 msgid "{orderText} updated"
 msgstr ""
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr ""
+
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8411,10 +8413,6 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities match your holdings"
-msgstr ""
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "Yes, GMX can be unstaked and GLV/GM tokens can be sold at any time — the protocol never locks your tokens. However, if your staked GMX balance drops below 80% of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the GMX-at-$90 Treasury distribution. For GLV/GM, in rare cases where your liquidity is being used for active trades, you can withdraw as soon as those positions close."
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -9102,6 +9100,10 @@ msgstr ""
 #: src/components/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (supply)"
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenFallback.ts
+msgid "{fromSymbol} is not approved for fees. This order pays its network fee in {toSymbol}."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10317,10 +10319,6 @@ msgstr ""
 msgid "Top addresses"
 msgstr ""
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr ""
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10548,10 +10546,6 @@ msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion cancelled"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstake failed"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -12676,6 +12670,11 @@ msgstr ""
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Received at close"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr ""
@@ -12798,8 +12797,6 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr ""
 
@@ -12913,10 +12910,6 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim parameters unavailable. Retry in a few seconds"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx

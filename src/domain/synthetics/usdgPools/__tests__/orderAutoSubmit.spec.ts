@@ -6,8 +6,20 @@ import type { GasPaymentParams } from "domain/synthetics/express/types";
 import type { TokenData, TokensData } from "domain/tokens";
 import { expandDecimals } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
+import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
+import { OrderType } from "sdk/utils/orders/types";
+import type { PositionInfo } from "sdk/utils/positions/types";
+import { convertToUsd } from "sdk/utils/tokens";
+import { getIncreasePositionAmounts } from "sdk/utils/trade/increase";
 
-import { getIsOrderStepGasCovered, getOrderAutoSubmitStep } from "../orderAutoSubmit";
+import {
+  type ConfirmedUsdgOrder,
+  getConvertedOrderStatus,
+  getConvertedSizeFit,
+  getConvertFirstPayAmount,
+  getIsOrderStepGasCovered,
+  getOrderAutoSubmitStep,
+} from "../orderAutoSubmit";
 
 const ready = {
   isSubmitting: false,
@@ -135,5 +147,86 @@ describe("getIsOrderStepGasCovered", () => {
         isGmxAccount: false,
       })
     ).toBe(true);
+  });
+});
+
+describe("getConvertedOrderStatus", () => {
+  const typedSize: ConfirmedUsdgOrder = { setupKey: "setup", sizeDeltaUsd: usd(11_000), sizeInputValue: "4.88888888" };
+  const typedPay: ConfirmedUsdgOrder = { ...typedSize, sizeInputValue: undefined };
+  const confirmed = {
+    setupKey: "setup",
+    sizeDeltaUsd: usd(11_000),
+    sizeInputValue: "4.88888888",
+    payAmount: usdc(1_137.3),
+    convertedAmount: usdc(1_137.3),
+  };
+
+  it.each([
+    ["sends the typed size the converted USDG pays for", typedSize, {}, "confirmed"],
+    ["fits a typed size that needs more USDG than converted", typedSize, { payAmount: usdc(1_137.31) }, "marginShort"],
+    ["holds a changed size input", typedSize, { sizeInputValue: "4.8853" }, "changed"],
+    ["sends a size from the pay amount when it isn't larger", typedPay, { sizeDeltaUsd: usd(10_999) }, "confirmed"],
+    ["sends a size from the pay amount a better fill moved up", typedPay, { sizeDeltaUsd: usd(11_010) }, "confirmed"],
+    ["holds a size more than 0.1% above the confirmed one", typedPay, { sizeDeltaUsd: usd(11_012) }, "changed"],
+    ["holds a size grown by the position's pending fees", typedPay, { sizeDeltaUsd: usd(11_327) }, "changed"],
+    ["holds a changed price, impact, leverage or TP/SL", typedSize, { setupKey: "changed" }, "changed"],
+  ] as const)("%s PRO-4531", (_, confirmedOrder, overrides, expected) => {
+    expect(getConvertedOrderStatus({ ...confirmed, ...overrides, confirmedOrder })).toBe(expected);
+  });
+});
+
+describe("getConvertFirstPayAmount", () => {
+  it.each([
+    ["converts 0.1% more than a typed size needs", usdc(2_000), usdc(1_001)],
+    ["keeps the extra within the available amount", usdc(1_000.4), usdc(1_000.4)],
+    ["leaves an amount over the available one as it is", usdc(900), usdc(1_000)],
+  ] as const)("%s PRO-4531", (_, maxAvailableAmount, expected) => {
+    expect(getConvertFirstPayAmount({ payAmount: usdc(1_000), maxAvailableAmount })).toBe(expected);
+  });
+});
+
+describe("getConvertedSizeFit", () => {
+  it("fits a typed size to the converted USDG PRO-4531", () => {
+    const tokensData = mockTokensData();
+    const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-USDC-USDC"]);
+    const marketInfo = marketsInfoData["ETH-USDC-USDC"];
+    const collateral = tokensData.USDC;
+    const position = { pendingBorrowingFeesUsd: usd(30), fundingFeeAmount: 0n } as unknown as PositionInfo;
+    const amountsFor = (indexTokenAmount: bigint) =>
+      getIncreasePositionAmounts({
+        marketInfo,
+        indexToken: marketInfo.indexToken,
+        initialCollateralToken: collateral,
+        collateralToken: collateral,
+        isLong: true,
+        initialCollateralAmount: 0n,
+        position,
+        externalSwapQuote: undefined,
+        indexTokenAmount,
+        leverage: 100_000n,
+        triggerPrice: usd(1100),
+        limitOrderType: OrderType.LimitIncrease,
+        userReferralInfo: undefined,
+        strategy: "leverageBySize",
+        findSwapPath: () => undefined,
+        uiFeeFactor: 0n,
+        marketsInfoData,
+        chainId: ARBITRUM,
+        externalSwapQuoteParams: undefined,
+        isSetAcceptablePriceImpactEnabled: false,
+      });
+
+    const typed = amountsFor(expandDecimals(10, 18));
+    const converted = typed.initialCollateralAmount - usdc(0.5);
+    const fitted = amountsFor(
+      getConvertedSizeFit({
+        increaseAmounts: typed,
+        convertedUsd: convertToUsd(converted, collateral.decimals, typed.initialCollateralPrice)!,
+      })!
+    );
+
+    // 0.5 USDC short plus the 0.1% margin, at 10x
+    expect(fitted.initialCollateralAmount).toBeLessThanOrEqual(converted - converted / 1000n);
+    expect(typed.sizeDeltaUsd - fitted.sizeDeltaUsd).toBeLessThan(usd(17));
   });
 });

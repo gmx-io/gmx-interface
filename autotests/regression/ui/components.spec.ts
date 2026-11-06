@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-import { datedChainAnnouncements } from "../fixtures/announcements";
+import { datedChainAnnouncements, dismissOutageWarning, showWhatsNewSlide } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 import { openTooltip } from "../fixtures/marketData";
 
@@ -122,7 +122,11 @@ test("2.22 a long modal dims the page, scrolls inside and closes by Escape, over
   await expect(page.getByTestId("pay-input")).toBeVisible();
 });
 
-test("2.24 the What's new banner shows the current announcement and stays dismissed after reload", async ({
+function visitedAnnouncements(page: Page) {
+  return page.evaluate(() => JSON.parse(localStorage.getItem("visited-announcements") ?? "[]"));
+}
+
+test("2.24 the What's new card shows the announcement title, and closing it marks only that announcement as seen", async ({
   page,
   chainId,
 }) => {
@@ -130,40 +134,42 @@ test("2.24 the What's new banner shows the current announcement and stays dismis
   const latest = events.filter((event) => event.title).sort((a, b) => b.start - a.start)[0];
   expect(latest, "a titled, always-on announcement in src/config/events.tsx").toBeDefined();
   const now = latest.start + 60 * 60 * 1000;
-  const shown = events.filter((event) => event.start <= now && now < event.end);
+  const others = events.filter(
+    (event) => event.id !== latest.id && event.title && event.start <= now && now < event.end
+  );
+  await dismissOutageWarning(page);
   await page.clock.install({ time: now });
 
   await page.goto("/pools");
-  const banner = page.getByTestId("announcement-banner").filter({ hasText: "What's new" });
-  await expect(banner).toBeVisible();
-  await expect(banner.getByText(latest.title!, { exact: true }).last()).toBeVisible();
-  await expect(banner.getByRole("link", { name: "See more" })).toHaveAttribute(
+  const whatsNew = page.getByRole("region", { name: "What's new" });
+  await expect(whatsNew).toBeVisible();
+  await showWhatsNewSlide(whatsNew, latest.title!);
+  await expect(whatsNew.getByRole("link", { name: "See more" })).toHaveAttribute(
     "href",
     new RegExp(`/announcements\\?id=${latest.id}`)
   );
-  await banner.getByTestId("announcement-banner-close").click();
-  await expect(banner).toBeHidden();
-  await expect
-    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("visited-announcements") ?? "[]")))
-    .toEqual(expect.arrayContaining(shown.map((event) => event.id)));
+  await whatsNew.getByTestId("announcement-banner-close").click();
+  await expect.poll(() => visitedAnnouncements(page)).toEqual([latest.id]);
   await page.reload();
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
   await expect(page.getByTestId("whats-new-toast-container")).toBeAttached();
-  await expect(banner).toHaveCount(0);
+  if (others.length > 0) await expect(whatsNew).toBeVisible();
+  await expect(page.getByTestId("announcement-banner").getByText(latest.title!, { exact: true })).toHaveCount(0);
 });
 
-test("2.24 opening Announcements marks the What's new banner as read", async ({ page, chainId }) => {
+test("2.24 opening Announcements hides What's new there and marks nothing as seen", async ({ page, chainId }) => {
   const latest = toastEvents(chainId)
     .filter((event) => event.title)
     .sort((a, b) => b.start - a.start)[0];
+  await dismissOutageWarning(page);
   await page.clock.install({ time: latest.start + 60 * 60 * 1000 });
   await page.goto("/announcements");
   await expect(page.locator(`[data-announcement-id="${latest.id}"]`)).toBeVisible();
-  await expect(page.getByTestId("announcement-banner").filter({ hasText: "What's new" })).toHaveCount(0);
-  await expect
-    .poll(() => page.evaluate(() => JSON.parse(localStorage.getItem("visited-announcements") ?? "[]")))
-    .toContain(latest.id);
+  await expect(page.getByRole("region", { name: "What's new" })).toHaveCount(0);
   await page.getByRole("link", { name: "Pools", exact: true }).first().click();
   await expect(page.getByText("TVL in vaults and pools", { exact: true })).toBeVisible();
-  await expect(page.getByTestId("announcement-banner").filter({ hasText: "What's new" })).toHaveCount(0);
+  const whatsNew = page.getByRole("region", { name: "What's new" });
+  await expect(whatsNew).toBeVisible();
+  await expect(whatsNew.getByText(latest.title!, { exact: true }).first()).toBeAttached();
+  expect(await visitedAnnouncements(page)).toEqual([]);
 });

@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import { useSettled } from "lib/useSettled";
 
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import TooltipComponent from "components/Tooltip/Tooltip";
 
 import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
 import { summarizeChainsStats, type ChainsStatsEntries, type ChainsStatsStaleEntry } from "./summarizeChainsStats";
-import { useSettled } from "./useSettled";
 
 type Props = {
   entries: ChainsStatsEntries;

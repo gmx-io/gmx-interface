@@ -3,6 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { getNetworkFeatures } from "config/features";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
@@ -15,6 +16,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { TradeType } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 
 import { LeverageField } from "components/LeverageField/LeverageField";
@@ -29,6 +31,8 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import { tradeTypeClassNames, tradeTypeLabels } from "./tradeboxConstants";
 
 export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
+  const { networkId } = useChainId();
+  const showSwap = getNetworkFeatures(networkId).swap;
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const history = useHistory();
   const {
@@ -150,14 +154,16 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
               }
             )}
           />
-          <Tabs
-            options={swapTabOptions}
-            selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
-            onChange={onTradeTypeChange}
-            qa="trade-direction-swap"
-            className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
-            regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
-          />
+          {showSwap && (
+            <Tabs
+              options={swapTabOptions}
+              selectedValue={tradeType === TradeType.Swap ? TradeType.Swap : undefined}
+              onChange={onTradeTypeChange}
+              qa="trade-direction-swap"
+              className="flex-none overflow-hidden rounded-8 !border-0 bg-slate-800 p-0"
+              regularOptionClassname={cx("mb-0", { "!py-6 text-13": isInCurtain && !isCurtainOpen })}
+            />
+          )}
         </div>
         {isInCurtain && (
           <button onClick={handleToggleCurtain} className="group shrink-0 px-10">

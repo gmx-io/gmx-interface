@@ -6,8 +6,7 @@ import { getAddress, isAddress, zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getIsRewardRouterChanged, getRewardRouterContract } from "domain/stake/rewardRouter";
-import { useRewardRouter } from "domain/stake/useRewardRouter";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -19,7 +18,7 @@ import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { getAccountTransfersPausedMessage } from "components/Errors/getContractErrorMessage";
-import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -56,9 +55,7 @@ export default function BeginAccountTransfer() {
   const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
   const affiliateVesterAddress = getContract(chainId, "AffiliateVester");
-
-  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
-  const rewardRouterAbiId = rewardRouter?.version === "v3" ? "RewardRouterV3" : "RewardRouter";
+  const rewardRouterAddress = getContract(chainId, "RewardRouterV3");
 
   const { data: gmxVesterBalance } = useSWR(active && [active, chainId, gmxVesterAddress, "balanceOf", account], {
     fetcher: contractFetcher(signer, "Token"),
@@ -160,19 +157,19 @@ export default function BeginAccountTransfer() {
   });
 
   const { data: pendingReceiver } = useSWR(
-    active && rewardRouter && [active, chainId, rewardRouter.address, "pendingReceivers", account],
+    active && [active, chainId, rewardRouterAddress, "pendingReceivers", account],
     {
-      fetcher: contractFetcher(signer, rewardRouterAbiId),
+      fetcher: contractFetcher(signer, "RewardRouterV3"),
     }
   );
 
   const { data: designatedVestersLength } = useSWR<bigint>(
-    rewardRouter?.version === "v3" && [active, chainId, rewardRouter.address, "designatedVestersLength"],
+    [active, chainId, rewardRouterAddress, "designatedVestersLength"],
     {
       fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
     }
   );
-  const isTransferPaused = rewardRouter?.version === "v3" && designatedVestersLength === 0n;
+  const isTransferPaused = designatedVestersLength === 0n;
 
   const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
@@ -277,9 +274,8 @@ export default function BeginAccountTransfer() {
     claimableGmxRewards,
     gmxAllowance,
     pendingReceiver,
-    rewardRouter,
   ].some((value) => value === undefined);
-  const isTransferPauseLoading = rewardRouter?.version === "v3" && designatedVestersLength === undefined;
+  const isTransferPauseLoading = designatedVestersLength === undefined;
   const isReceiverCheckLoading =
     hasValidReceiver &&
     (!feeGmxAllowanceData ||
@@ -415,20 +411,10 @@ export default function BeginAccountTransfer() {
   };
 
   const signalTransfer = async () => {
-    if (!rewardRouter) {
-      return;
-    }
-
     setIsTransferring(true);
 
     try {
-      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
-        mutateRewardRouter();
-        showRewardRouterChangedToast();
-        return;
-      }
-
-      await callContract(chainId, getRewardRouterContract(rewardRouter, signer), "signalTransfer", [parsedReceiver], {
+      await callContract(chainId, getRewardRouterContract(chainId, signer), "signalTransfer", [parsedReceiver], {
         sentMsg: t`Transfer submitted`,
         failMsg: t`Transfer failed`,
         setPendingTxns,

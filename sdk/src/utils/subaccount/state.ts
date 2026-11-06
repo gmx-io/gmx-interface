@@ -71,7 +71,7 @@ export function isSubaccountApprovalNonceExpired(
 }
 
 export function isSubaccountApprovalRevoked(approval: SubaccountApproval, revocationCounter: bigint): boolean {
-  return (toBigInt(approval.revocationCounter) ?? 0n) !== revocationCounter;
+  return (toBigInt(approval.revocationCounter) ?? 0n) < revocationCounter;
 }
 
 export function isSubaccountApprovalSynced(approval: SdkSubaccountApproval, status: SdkSubaccountStatus): boolean {

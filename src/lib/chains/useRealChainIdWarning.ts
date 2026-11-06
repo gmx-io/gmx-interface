@@ -14,6 +14,8 @@ import {
 } from "components/Errors/errorToasts";
 import { needSwitchToSettlementChain } from "components/SwitchToSettlementChain/utils";
 
+const EMPTY_CHAIN_IDS: number[] = [];
+
 const toastSubscribe = (onStoreChange: () => void): (() => void) => {
   const cleanup = toast.onChange(({ id }) => {
     if (id === INVALID_NETWORK_TOAST_ID) {
@@ -34,7 +36,9 @@ export function useRealChainIdWarning() {
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
-  const { unavailableChains, isLoading: isLoadingAvailability } = useWalletUnavailableChains([settlementChainId]);
+  const { unavailableChains, isLoading: isLoadingAvailability } = useWalletUnavailableChains(
+    isSolanaNetworkSelected ? EMPTY_CHAIN_IDS : [settlementChainId]
+  );
 
   const isOnSourceChain = needSwitchToSettlementChain(walletChainId);
   const isSettlementChainUnreachable = isOnSourceChain && Boolean(unavailableChains?.includes(settlementChainId));

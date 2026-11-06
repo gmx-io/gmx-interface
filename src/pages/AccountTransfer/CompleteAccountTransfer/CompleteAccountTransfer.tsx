@@ -5,9 +5,9 @@ import { useCopyToClipboard } from "react-use";
 import useSWR from "swr";
 import { isAddress } from "viem";
 
+import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getIsRewardRouterChanged, getRewardRouterContract } from "domain/stake/rewardRouter";
-import { useRewardRouter } from "domain/stake/useRewardRouter";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -17,7 +17,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { getAccountTransfersPausedMessage } from "components/Errors/getContractErrorMessage";
-import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -35,17 +35,14 @@ export default function CompleteAccountTransfer() {
   const [isConfirming, setIsConfirming] = useState(false);
   const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
 
-  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
-
   const { data: designatedVestersLength } = useSWR<bigint>(
-    rewardRouter?.version === "v3" && [active, chainId, rewardRouter.address, "designatedVestersLength"],
+    [active, chainId, getContract(chainId, "RewardRouterV3"), "designatedVestersLength"],
     {
       fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
     }
   );
-  const isTransferPaused = rewardRouter?.version === "v3" && designatedVestersLength === 0n;
-  const isRewardRouterLoading =
-    rewardRouter === undefined || (rewardRouter.version === "v3" && designatedVestersLength === undefined);
+  const isTransferPaused = designatedVestersLength === 0n;
+  const isTransferPauseLoading = designatedVestersLength === undefined;
 
   const getError = () => {
     if (!account) {
@@ -61,7 +58,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return false;
     }
-    if (isConfirming || isRewardRouterLoading || isTransferPaused) {
+    if (isConfirming || isTransferPauseLoading || isTransferPaused) {
       return false;
     }
     return true;
@@ -76,20 +73,10 @@ export default function CompleteAccountTransfer() {
   };
 
   const onClickPrimary = async () => {
-    if (!rewardRouter) {
-      return;
-    }
-
     setIsConfirming(true);
 
     try {
-      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
-        mutateRewardRouter();
-        showRewardRouterChangedToast();
-        return;
-      }
-
-      await callContract(chainId, getRewardRouterContract(rewardRouter, signer), "acceptTransfer", [sender], {
+      await callContract(chainId, getRewardRouterContract(chainId, signer), "acceptTransfer", [sender], {
         sentMsg: t`Transfer submitted`,
         failMsg: t`Transfer failed`,
         setPendingTxns,
