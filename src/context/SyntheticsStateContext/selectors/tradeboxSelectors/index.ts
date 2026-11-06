@@ -82,6 +82,7 @@ import {
   selectGmxAccountGasPaymentToken,
   selectIsExpressTransactionAvailable,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "../expressSelectors";
 import {
   selectAccount,
@@ -297,8 +298,8 @@ export const selectIsOneClickActiveByUser = createSelector((q) => {
 
 // Token that pays a wallet-funded Express fee: the pay token when the saved gas payment token needs an approval
 export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
-  const savedGasPaymentToken = q(selectSettlementChainGasPaymentToken);
-  if (!savedGasPaymentToken) return undefined;
+  const gasPaymentToken = q(selectSettlementChainGasPaymentToken);
+  if (!gasPaymentToken) return undefined;
 
   const chainId = q(selectChainId);
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
@@ -313,7 +314,7 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
   return resolveGasPaymentTokenAddress({
     chainId,
     fallback: "skipApproval",
-    gasPaymentToken: savedGasPaymentToken,
+    gasPaymentToken,
     payTokenAddress: isSwap || isIncrease ? q(selectTradeboxFromTokenAddress) : undefined,
     // the pay token decision doesn't depend on the order amount
     payAmounts: EMPTY_OBJECT,
@@ -321,6 +322,7 @@ export const selectTradeboxExpressFeeTokenAddress = createSelector((q) => {
     tokensData: q(selectTokensData),
     tokensAllowanceData: q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
     tokenPermits: q(selectTokenPermits),
+    unavailableTokenAddresses: q(selectUnavailableGasPaymentTokenAddresses),
     excludeTokenAddresses:
       conflictTokenAddress !== undefined && conflictTokenAddress !== getWrappedToken(chainId).address
         ? [conflictTokenAddress]

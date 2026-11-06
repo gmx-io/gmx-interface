@@ -53,6 +53,7 @@ function resolve(overrides: Partial<Parameters<typeof resolveGasPaymentTokenAddr
     gasPaymentToken: tokensData[USDC.address],
     payTokenAddress: WETH.address,
     payAmounts: {},
+    unavailableTokenAddresses: [],
     feeUsdByToken: {},
     tokensData,
     tokensAllowanceData: { [USDC.address]: 0n, [USDT.address]: 0n, [WETH.address]: 0n },
@@ -260,6 +261,7 @@ describe("estimateWithApprovedGasPaymentToken", () => {
 
     const result = await estimateWithApprovedGasPaymentToken({
       chainId: ARBITRUM,
+      unavailableTokenAddresses: [],
       isGmxAccount: false,
       globalExpressParams: savedGlobalExpressParams,
       payAmounts: {},
@@ -271,6 +273,24 @@ describe("estimateWithApprovedGasPaymentToken", () => {
     expect(result?.gasPaymentParams.gasPaymentTokenAddress).toBe(USDC.address);
   });
 
+  it("returns no params while the fee token can't pay, so cancels and edits aren't relayed PRO-4529", async () => {
+    const estimate = vi.fn(async (p: GlobalExpressParams | undefined) => makeExpressParams(p, true));
+
+    for (const isGmxAccount of [false, true]) {
+      const result = await estimateWithApprovedGasPaymentToken({
+        chainId: ARBITRUM,
+        unavailableTokenAddresses: [USDC.address],
+        isGmxAccount,
+        globalExpressParams: savedGlobalExpressParams,
+        payAmounts: {},
+        estimate,
+        getGlobalExpressParamsForGasPaymentToken: () => usdtGlobalExpressParams,
+      });
+
+      expect(result).toBeUndefined();
+    }
+  });
+
   it("estimates with an approved token when the saved token is not approved", async () => {
     const estimate = vi.fn(async (p: GlobalExpressParams | undefined) =>
       makeExpressParams(p, p?.gasPaymentTokenAddress === USDT.address)
@@ -279,6 +299,7 @@ describe("estimateWithApprovedGasPaymentToken", () => {
 
     const result = await estimateWithApprovedGasPaymentToken({
       chainId: ARBITRUM,
+      unavailableTokenAddresses: [],
       isGmxAccount: false,
       globalExpressParams: savedGlobalExpressParams,
       payAmounts: {},
@@ -296,6 +317,7 @@ describe("estimateWithApprovedGasPaymentToken", () => {
 
     const result = await estimateWithApprovedGasPaymentToken({
       chainId: ARBITRUM,
+      unavailableTokenAddresses: [],
       isGmxAccount: false,
       globalExpressParams: makeGlobalExpressParams(tokensData[USDC.address], { ...allowances, [USDT.address]: 0n }),
       payAmounts: {},
@@ -313,6 +335,7 @@ describe("estimateWithApprovedGasPaymentToken", () => {
 
     await estimateWithApprovedGasPaymentToken({
       chainId: ARBITRUM,
+      unavailableTokenAddresses: [],
       isGmxAccount: true,
       globalExpressParams: savedGlobalExpressParams,
       payAmounts: {},
