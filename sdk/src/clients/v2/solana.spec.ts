@@ -6,6 +6,7 @@ import ERC20ABI from "abis/Token";
 import { ARBITRUM, AVALANCHE, SOLANA_NETWORK_ID } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
+import { parseApiOrder } from "utils/orders/api";
 import { parseFeeDiscount } from "utils/referrals/api";
 
 import { GmxApiSdk } from "./index";
@@ -36,6 +37,25 @@ const fee = (overrides: Record<string, unknown> = {}) => ({
   referredUserDiscountFactor: amount,
   hasUserAccount: true,
   updatedAt: 123,
+  ...overrides,
+});
+const callback = {
+  version: 1,
+  program: referrer,
+  sharedData: "11111111111111111111111111111111",
+  partitionedData: address,
+};
+const escrowTokens = { initialCollateralToken: null, finalOutputToken: address, longToken: referrer, shortToken: null };
+const order = (overrides: Record<string, unknown> = {}) => ({
+  key: address,
+  sizeDeltaUsd: amount,
+  orderAccount: address,
+  actionState: "completed",
+  positionAccount: null,
+  rentReceiver: address,
+  referrer: null,
+  callback,
+  escrowTokens,
   ...overrides,
 });
 const response = (body: unknown, slot?: string) =>
@@ -125,6 +145,43 @@ describe("Solana API reads", () => {
       ),
     ])
       expect(() => parseFeeDiscount(raw)).toThrow("/v1/fee-discount");
+  });
+
+  it("reads Solana-only order fields strictly and leaves EVM orders as they were", async () => {
+    const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
+    const evm = { key: address, sizeDeltaUsd: amount };
+    vi.mocked(fetch).mockResolvedValueOnce(
+      response([order(), order({ positionAccount: referrer, referrer, callback: null }), evm])
+    );
+    const solana = {
+      key: address,
+      sizeDeltaUsd: BigInt(amount),
+      orderAccount: address,
+      actionState: "completed",
+      positionAccount: undefined,
+      rentReceiver: address,
+      referrer: undefined,
+      callback,
+      escrowTokens: { ...escrowTokens, initialCollateralToken: undefined, shortToken: undefined },
+    };
+    expect(await sdk.fetchOrders({ address })).toStrictEqual([
+      solana,
+      { ...solana, positionAccount: referrer, referrer, callback: undefined },
+      { key: address, sizeDeltaUsd: BigInt(amount) },
+    ]);
+    for (const raw of [
+      order({ orderAccount: null }),
+      order({ actionState: "frozen" }),
+      order({ positionAccount: 1 }),
+      order({ rentReceiver: null }),
+      order({ referrer: 1 }),
+      order({ callback: [] }),
+      order({ callback: { ...callback, version: -1 } }),
+      order({ callback: { ...callback, program: undefined } }),
+      order({ escrowTokens: null }),
+      order({ escrowTokens: { ...escrowTokens, longToken: 1 } }),
+    ])
+      expect(() => parseApiOrder(raw)).toThrow("/v1/orders");
   });
 
   it("passes slot floors and returns each response slot without changing account data", async () => {
