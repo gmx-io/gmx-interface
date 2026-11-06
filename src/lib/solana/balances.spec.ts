@@ -48,7 +48,12 @@ function mockRpc(account = tokenAccount(), mode?: string, tokenIndex = walletTok
     data: ["", "base64"],
     space: 0,
   };
-  const encoded = { ...native, owner: account.program, data: [getBase64Decoder().decode(account.bytes), "base64"] };
+  const encoded = {
+    ...native,
+    owner: account.program,
+    executable: mode === "executable",
+    data: [getBase64Decoder().decode(account.bytes), "base64"],
+  };
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url, init) => {
@@ -130,13 +135,27 @@ describe("configured Solana balances", () => {
     ).toBe(true);
   });
 
-  it.each(["mint", "owner", "program", "state", "size", "rpc", "nativeOwner"])(
+  it.each([token, token2022])("reports zero for a prefunded, empty System-owned ATA: $symbol", async (heldToken) => {
+    mockRpc(
+      { bytes: new Uint8Array(0), program: SOLANA_SYSTEM_PROGRAM_ID },
+      undefined,
+      walletTokens.indexOf(heldToken) + 1
+    );
+    const balances = await fetchSolanaBalances(owner);
+    expect(balances[heldToken.address]).toBe(0n);
+    expect(balances[GMSOL_NATIVE_TOKEN.address]).toBe(1234n);
+    expect(Object.keys(balances)).toHaveLength(walletTokens.length + 1);
+  });
+
+  it.each(["mint", "owner", "program", "systemData", "executable", "state", "size", "rpc", "nativeOwner"])(
     "rejects invalid %s instead of reporting a partial snapshot",
     async (failure) => {
       const account = tokenAccount();
       if (failure === "mint") account.bytes.fill(0, 0, 32);
       if (failure === "owner") account.bytes.fill(1, 32, 64);
-      if (failure === "program") account.program = SOLANA_SYSTEM_PROGRAM_ID;
+      if (failure === "program") account.program = token2022.tokenProgram;
+      if (failure === "systemData" || failure === "executable") account.program = SOLANA_SYSTEM_PROGRAM_ID;
+      if (failure === "executable") account.bytes = new Uint8Array(0);
       if (failure === "state") account.bytes[108] = 0;
       if (failure === "size") account.bytes = account.bytes.slice(0, 164);
       mockRpc(account, failure);
