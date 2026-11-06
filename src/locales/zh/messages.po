@@ -1243,6 +1243,10 @@ msgstr "金库和池中的 TVL"
 msgid "GMX on Solana"
 msgstr "Solana 上的 GMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "您邀请的交易者产生的交易量"
@@ -1360,6 +1364,10 @@ msgstr "存入已完成"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "编辑止盈：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "当前影响：{0}。建议添加 0.30% 缓冲，以获得更好的订�
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "输入推荐码以获得交易手续费折扣。<0/>根据推荐等级，所有<1/>开仓和平仓手续费最高可节省 10%。"
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"

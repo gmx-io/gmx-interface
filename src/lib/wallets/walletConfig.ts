@@ -126,8 +126,12 @@ const HTTP_TRANSPORT_OPTIONS = {
     : {}),
 };
 
-export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Transport {
-  const key = `chainId:${chainId}:purpose:${purpose}`;
+export function getRpcTransport(
+  chainId: AnyChainId,
+  purpose: RpcPurpose,
+  options?: { skipSolanaGate?: boolean }
+): Transport {
+  const key = `chainId:${chainId}:purpose:${purpose}:gate:${options?.skipSolanaGate ? 0 : 1}`;
   if (TRANSPORTS_CACHE.has(key)) {
     return TRANSPORTS_CACHE.get(key)!;
   }
@@ -137,17 +141,27 @@ export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Trans
       ? [...getRpcProviders(chainId, "express"), ...getRpcProviders(chainId, "default")]
       : getRpcProviders(chainId, purpose);
 
-  const transport = fallback(providers.map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS)));
+  const transport = fallback(
+    providers.map((provider: RpcConfig) =>
+      http(
+        provider.url,
+        options?.skipSolanaGate ? { ...HTTP_TRANSPORT_OPTIONS, fetchFn: fetch } : HTTP_TRANSPORT_OPTIONS
+      )
+    )
+  );
   TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }
 
 export function getPublicClientWithRpc(
   chainId: number,
-  options: { withWs?: boolean; withExpress?: boolean } = { withWs: false, withExpress: false }
+  options: { withWs?: boolean; withExpress?: boolean; skipSolanaGate?: boolean } = {
+    withWs: false,
+    withExpress: false,
+  }
 ): PublicClient {
   const normalizedOptions = options.withWs ? { withWs: true, withExpress: false } : options;
-  const key = `chainId:${chainId}:ws:${normalizedOptions.withWs ? 1 : 0}:express:${normalizedOptions.withExpress ? 1 : 0}`;
+  const key = `chainId:${chainId}:ws:${normalizedOptions.withWs ? 1 : 0}:express:${normalizedOptions.withExpress ? 1 : 0}:gate:${options.skipSolanaGate ? 0 : 1}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
@@ -159,16 +173,16 @@ export function getPublicClientWithRpc(
     if (!wsUrl) {
       // eslint-disable-next-line no-console
       console.warn(`No WebSocket URL found for chain id: ${chainId}. Using HTTP instead.`);
-      transport = getRpcTransport(chainId as AnyChainId, "default");
+      transport = getRpcTransport(chainId as AnyChainId, "default", { skipSolanaGate: options.skipSolanaGate });
     } else {
       transport = webSocket(wsUrl);
 
       isWsTransport = true;
     }
   } else if (normalizedOptions.withExpress) {
-    transport = getRpcTransport(chainId as AnyChainId, "express");
+    transport = getRpcTransport(chainId as AnyChainId, "express", { skipSolanaGate: options.skipSolanaGate });
   } else {
-    transport = getRpcTransport(chainId as AnyChainId, "default");
+    transport = getRpcTransport(chainId as AnyChainId, "default", { skipSolanaGate: options.skipSolanaGate });
   }
 
   const publicClient = createPublicClient({

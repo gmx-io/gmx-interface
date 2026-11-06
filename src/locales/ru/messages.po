@@ -1243,6 +1243,10 @@ msgstr "TVL в хранилищах и пулах"
 msgid "GMX on Solana"
 msgstr "GMX в сети Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Объём торгов привлечённых вами трейдеров"
@@ -1360,6 +1364,10 @@ msgstr "Депозит завершён"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Изменить тейк-профит: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "Текущее влияние: {0}. Добавьте буфер 0.30% д
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Введите реферальный код, чтобы получить скидку на торговую комиссию.<0/> В зависимости от уровня реферальной программы вы можете экономить до 10% на всех комиссиях<1/> за открытие и закрытие позиций."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"

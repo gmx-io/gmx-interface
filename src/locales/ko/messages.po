@@ -1243,6 +1243,10 @@ msgstr "볼트 및 풀의 TVL"
 msgid "GMX on Solana"
 msgstr "Solana의 GMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "귀하가 추천한 트레이더의 거래량"
@@ -1360,6 +1364,10 @@ msgstr "입금 완료"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "익절매 수정: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 0.30% 버퍼를 �
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "추천 코드를 입력하여 거래 수수료 할인을 받으십시오.<0/> 추천 등급에 따라 모든<1/> 포지션 개설 및 종료 수수료를 최대 10%까지 절감할 수 있습니다."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"

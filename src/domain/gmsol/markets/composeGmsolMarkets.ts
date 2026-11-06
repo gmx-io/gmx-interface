@@ -11,31 +11,42 @@ export type GmsolMarkets = {
   marketsInfoData: MarketsInfoData;
 };
 
-// Only markets in the static list are offered; the host also serves delisted ones.
+// Markets in the static list that this host response returned, disabled ones included.
+// A disabled market stays so its positions and orders can still be composed. EVM does the same.
 export function getGmsolListedMarketAddresses(rawMarketsInfoData: RawMarketsInfoData): string[] {
   return GMSOL_MARKETS.map((market) => market.marketTokenAddress).filter((address) => rawMarketsInfoData[address]);
 }
 
-// Hydration drops a listed market whose index or collateral token has no price, and that market's
-// positions with it. Callers treat a false result as incomplete data, not as a shorter market list.
+function getGmsolEnabledMarketAddresses(rawMarketsInfoData: RawMarketsInfoData): string[] {
+  return getGmsolListedMarketAddresses(rawMarketsInfoData).filter(
+    (address) => !rawMarketsInfoData[address].isDisabled
+  );
+}
+
+function hasMarketTokenPrices(rawMarketsInfoData: RawMarketsInfoData, address: string, tokensData: TokensData) {
+  const market = rawMarketsInfoData[address];
+
+  return (
+    market !== undefined &&
+    Boolean(
+      tokensData[market.indexTokenAddress] &&
+        tokensData[market.longTokenAddress] &&
+        tokensData[market.shortTokenAddress]
+    )
+  );
+}
+
+// Disabled markets are not part of this check. A missing price on an enabled market is one market, not the page.
 export function hasGmsolListedMarketPrices(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData): boolean {
-  for (const address of getGmsolListedMarketAddresses(rawMarketsInfoData)) {
-    const market = rawMarketsInfoData[address];
-
-    if (
-      !tokensData[market.indexTokenAddress] ||
-      !tokensData[market.longTokenAddress] ||
-      !tokensData[market.shortTokenAddress]
-    ) {
-      return false;
-    }
-  }
-
-  return true;
+  return getGmsolEnabledMarketAddresses(rawMarketsInfoData).every((address) =>
+    hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
+  );
 }
 
 export function composeGmsolMarkets(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData): GmsolMarkets {
-  const marketsAddresses = getGmsolListedMarketAddresses(rawMarketsInfoData);
+  const marketsAddresses = getGmsolListedMarketAddresses(rawMarketsInfoData).filter((address) =>
+    hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
+  );
   const marketsData: MarketsData = {};
 
   for (const address of marketsAddresses) {
@@ -74,7 +85,7 @@ export function getGmsolPositionsConstants(rawMarketsInfoData: RawMarketsInfoDat
   let minCollateralUsd: bigint | undefined;
   let minPositionSizeUsd: bigint | undefined;
 
-  for (const address of getGmsolListedMarketAddresses(rawMarketsInfoData)) {
+  for (const address of getGmsolEnabledMarketAddresses(rawMarketsInfoData)) {
     const raw = rawMarketsInfoData[address] as unknown as GmsolMarketMinimums;
 
     if (typeof raw.minCollateralUsd !== "bigint" || typeof raw.minPositionSizeUsd !== "bigint") {

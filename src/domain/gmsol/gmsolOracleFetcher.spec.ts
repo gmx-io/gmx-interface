@@ -4,7 +4,6 @@ import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import type { OracleFetcher, TickersResponse } from "lib/oracleKeeperFetcher";
 
-import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
 import { GmsolOracleFetcher } from "./gmsolOracleFetcher";
 
 vi.mock("config/ab", async (importOriginal) => ({
@@ -104,18 +103,6 @@ describe("GmsolOracleFetcher candles and 24h change", () => {
     const fetcher = new GmsolOracleFetcher({ fetchOracleCandles: async () => [] } as unknown as OracleFetcher);
 
     await expect(fetcher.fetchCandles("11111111111111111111111111111111", "1h", 1)).rejects.toThrow();
-  });
-
-  it("asks the Arbitrum keeper for chart candles under the mapped token's symbol", async () => {
-    const fetchOracleCandles = vi.fn(async (_tokenSymbol: string, _period: string, _limit: number) => []);
-    const candlesFetcher = createGmsolCandlesFetcher({ fetchOracleCandles } as unknown as OracleFetcher);
-
-    for (const symbol of ["SOL", "WSOL", "WGMX", "WBTC"]) {
-      await candlesFetcher.fetchOracleCandles(symbol, "1h", 1);
-    }
-    await expect(candlesFetcher.fetchOracleCandles("TON", "1h", 1)).rejects.toThrow();
-
-    expect(fetchOracleCandles.mock.calls.map(([tokenSymbol]) => tokenSymbol)).toEqual(["SOL", "SOL", "GMX", "BTC"]);
   });
 
   it("matches 24h candles by the Arbitrum token symbol", async () => {

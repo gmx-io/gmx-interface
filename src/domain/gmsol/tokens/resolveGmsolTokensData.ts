@@ -12,8 +12,8 @@ type ResolvedGmsolTokensData = {
   lastComplete: GmsolTokensSnapshot | undefined;
 };
 
-// A keeper poll that misses one ticker would drop a listed market and its positions. Within PRICES_CACHE_TTL of
-// the last complete poll the missing tokens keep their last price; past it the data is incomplete (undefined).
+// Within PRICES_CACHE_TTL a missing ticker keeps its last price. Past that the partial map is returned and
+// compose drops only the markets that still lack a price.
 export function resolveGmsolTokensData({
   tokensData,
   receivedAt,
@@ -42,5 +42,5 @@ export function resolveGmsolTokensData({
     }
   }
 
-  return { tokensData: undefined, pricesUpdatedAt: undefined, lastComplete };
+  return { tokensData, pricesUpdatedAt: receivedAt, lastComplete };
 }

@@ -157,7 +157,7 @@ export function useOrders(
   };
 }
 
-function convertApiOrderToOrder({
+export function convertApiOrderToOrder({
   triggerPrice,
   acceptablePrice,
   cancellationReceiver: _cancellationReceiver,

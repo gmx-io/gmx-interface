@@ -1243,6 +1243,10 @@ msgstr "TVL in vaults and pools"
 msgid "GMX on Solana"
 msgstr "GMX on Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr "Could not refresh open positions. This list may be out of date."
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volume traded by your referred traders"
@@ -1360,6 +1364,10 @@ msgstr "Deposit completed"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Edit Take-Profit: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr "Could not load open positions"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "Current impact: {0}. Add a 0.30% buffer for better order execution."
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"

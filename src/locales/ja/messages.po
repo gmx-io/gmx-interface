@@ -1243,6 +1243,10 @@ msgstr "ボールトおよびプール内のTVL"
 msgid "GMX on Solana"
 msgstr "Solana上のGMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "紹介したトレーダーによる取引高"
@@ -1360,6 +1364,10 @@ msgstr "入金完了"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "テイクプロフィットを編集：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "現在の影響: {0}。注文の約定精度を高めるために0.30%�
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "紹介コードを入力すると、取引手数料の割引を受けられます。<0/> 紹介ティアに応じて、すべての<1/>新規建ておよび決済手数料を最大10%節約できます。"
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"

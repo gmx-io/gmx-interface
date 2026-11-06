@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useMemo, useRef, useState } from "react";
 
 import { getKeepLeverageKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -12,6 +12,7 @@ import type { MarketsInfoResult, MarketsResult } from "domain/synthetics/markets
 import { useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import type { AggregatedOrdersDataResult } from "domain/synthetics/orders/useOrdersInfo";
 import type { PositionsInfoResult } from "domain/synthetics/positions";
+import { composeApiPositionInfo } from "domain/synthetics/positions/usePositionsInfo";
 import { useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import { OrderOption, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
@@ -21,10 +22,10 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
+import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/types";
 
 import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
-import { composeGmsolOrdersInfo, getGmsolActiveOrdersInfo } from "./orders/composeGmsolOrdersInfo";
-import { composeGmsolPositionsInfo } from "./positions/composeGmsolPositionsInfo";
+import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
@@ -41,6 +42,28 @@ export class GmsolMarketsUnavailableError extends Error {
 }
 
 const EMPTY_MARKETS: MarketsResult = {};
+const noopSetGasPaymentTokenReplacement = () => undefined;
+
+function composePositions(
+  positions: ApiPositionInfo[],
+  marketsInfoData: NonNullable<MarketsInfoResult["marketsInfoData"]>,
+  showPnlInLeverage: boolean
+): PositionsInfoData {
+  const positionsInfoData: PositionsInfoData = {};
+
+  for (const position of positions) {
+    const positionInfo = composeApiPositionInfo(position, marketsInfoData);
+
+    if (!positionInfo) {
+      continue;
+    }
+
+    positionInfo.leverage = showPnlInLeverage ? positionInfo.leverageWithPnl : positionInfo.leverageWithoutPnl;
+    positionsInfoData[positionInfo.key] = positionInfo;
+  }
+
+  return positionsInfoData;
+}
 
 // The trade state while Solana is selected. It fills the same SyntheticsState the shared trade page reads,
 // from gmx-api's Solana host and the static Solana lists. globals.chainId stays Arbitrum, an EVM id, so
@@ -79,11 +102,18 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const marketsUnavailableError = rawMarkets.error ?? tokensDataResult.error;
 
   const marketsInfo = useMemo((): MarketsInfoResult => {
-    if (isMarketsUnavailable) {
-      return { isLoading: false, error: new GmsolMarketsUnavailableError(marketsUnavailableError) };
+    const error = isMarketsUnavailable ? new GmsolMarketsUnavailableError(marketsUnavailableError) : undefined;
+
+    // Keep the last good markets under the warning until the grace window drops them.
+    if (composedMarkets) {
+      return { marketsInfoData: composedMarkets.marketsInfoData, isLoading: false, dataSource: "api", error };
     }
 
-    return { marketsInfoData: composedMarkets?.marketsInfoData, isLoading: !composedMarkets, dataSource: "api" };
+    if (error) {
+      return { isLoading: false, error };
+    }
+
+    return { isLoading: true };
   }, [composedMarkets, isMarketsUnavailable, marketsUnavailableError]);
 
   const markets = useMemo(
@@ -100,19 +130,52 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
   const marketsInfoData = marketsInfo.marketsInfoData;
 
+  const composedPositions = useMemo(() => {
+    if (!positionsRequest.data || !marketsInfoData) {
+      return undefined;
+    }
+
+    return composePositions(positionsRequest.data, marketsInfoData, settings.isPnlInLeverage);
+  }, [positionsRequest.data, marketsInfoData, settings.isPnlInLeverage]);
+  const lastPositionsRef = useRef<{ owner: string; data: PositionsInfoData }>();
+  if (owner && composedPositions) {
+    lastPositionsRef.current = { owner, data: composedPositions };
+  }
+
+  const composedOrders = useMemo(() => {
+    if (!ordersRequest.data || !marketsInfoData || !tokensData) {
+      return undefined;
+    }
+
+    return composeGmsolOrdersInfo(ordersRequest.data, { marketsInfoData, tokensData });
+  }, [ordersRequest.data, marketsInfoData, tokensData]);
+  const lastOrdersRef = useRef<{ owner: string; data: NonNullable<AggregatedOrdersDataResult["ordersInfoData"]> }>();
+  if (owner && composedOrders) {
+    lastOrdersRef.current = { owner, data: composedOrders };
+  }
+
   const positionsInfo = useMemo((): PositionsInfoResult => {
     if (!owner) {
       return { isLoading: false };
     }
 
-    // A failed poll keeps the previous list. Dropping it makes the table say there are no positions.
-    if (positionsRequest.data && marketsInfoData) {
+    if (composedPositions) {
       return {
-        positionsInfoData: composeGmsolPositionsInfo(positionsRequest.data, marketsInfoData, {
-          showPnlInLeverage: settings.isPnlInLeverage,
-        }),
+        positionsInfoData: composedPositions,
         isLoading: false,
         dataSource: "api",
+        error: positionsRequest.error,
+      };
+    }
+
+    // Host down drops markets, so this wallet's last list stays with the error instead of "No open positions".
+    const cachedPositions = lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined;
+    if (isMarketsUnavailable && cachedPositions) {
+      return {
+        positionsInfoData: cachedPositions,
+        isLoading: false,
+        dataSource: "api",
+        error: marketsUnavailableError ?? positionsRequest.error,
       };
     }
 
@@ -121,34 +184,31 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, positionsRequest.data, positionsRequest.error, marketsInfoData, settings.isPnlInLeverage]);
+  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
       return { isLoading: false };
     }
 
-    // A failed first read is not an empty book. A failed refresh keeps the last list and stays an error,
-    // so the page does not present that cache as a confirmed fresh result.
-    if (ordersRequest.error && !ordersRequest.data) {
+    const cachedOrders = lastOrdersRef.current?.owner === owner ? lastOrdersRef.current.data : undefined;
+    const ordersInfoData = composedOrders ?? (isMarketsUnavailable ? cachedOrders : undefined);
+
+    if (ordersInfoData) {
+      return {
+        ordersInfoData,
+        count: Object.keys(ordersInfoData).length,
+        isLoading: false,
+        error: ordersRequest.error ?? (composedOrders ? undefined : marketsUnavailableError),
+      };
+    }
+
+    if (ordersRequest.error) {
       return { isLoading: false, error: ordersRequest.error };
     }
 
-    if (!ordersRequest.data || !marketsInfoData || !tokensData) {
-      return { isLoading: true };
-    }
-
-    const ordersInfoData = getGmsolActiveOrdersInfo(
-      composeGmsolOrdersInfo(ordersRequest.data, { marketsInfoData, tokensData })
-    );
-
-    return {
-      ordersInfoData,
-      count: Object.keys(ordersInfoData).length,
-      isLoading: false,
-      error: ordersRequest.error,
-    };
-  }, [owner, ordersRequest.data, ordersRequest.error, marketsInfoData, tokensData]);
+    return { isLoading: true };
+  }, [owner, composedOrders, ordersRequest.error, isMarketsUnavailable, marketsUnavailableError]);
 
   const positionsInfoData = positionsInfo.positionsInfoData;
 
@@ -258,6 +318,9 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       features: undefined,
       uiFlags: undefined,
       gasPaymentTokenAllowance: undefined,
+      gasPaymentTokensOnchainState: undefined,
+      gasPaymentTokenReplacements: EMPTY_OBJECT,
+      setGasPaymentTokenReplacement: noopSetGasPaymentTokenReplacement,
       l1ExpressOrderGasReference: undefined,
     };
   }, [

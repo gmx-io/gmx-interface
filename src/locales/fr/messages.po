@@ -1243,6 +1243,10 @@ msgstr "TVL dans les vaults et les pools"
 msgid "GMX on Solana"
 msgstr "GMX sur Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volume négocié par les traders que vous avez parrainés"
@@ -1360,6 +1364,10 @@ msgstr "Dépôt terminé"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Modifier le Take-Profit : {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -8717,7 +8725,6 @@ msgstr "Impact actuel : {0}. Ajoutez un tampon de 0.30% pour une meilleure exéc
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Saisissez un code de parrainage pour bénéficier d’une réduction sur les frais de négociation.<0/> Selon le niveau de parrainage, vous pouvez économiser jusqu’à 10 % sur tous les frais<1/> d’ouverture et de clôture."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
