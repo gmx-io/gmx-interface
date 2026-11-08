@@ -6,7 +6,7 @@ import ERC20ABI from "abis/Token";
 import { ARBITRUM, AVALANCHE, SOLANA_NETWORK_ID } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
-import { parseApiOrder } from "utils/orders/api";
+import { parseApiOrders } from "utils/orders/api";
 import { parseFeeDiscount } from "utils/referrals/api";
 
 import { GmxApiSdk } from "./index";
@@ -35,7 +35,6 @@ const fee = (overrides: Record<string, unknown> = {}) => ({
   rankDiscountFactor: amount,
   referrer,
   referredUserDiscountFactor: amount,
-  hasUserAccount: true,
   updatedAt: 123,
   ...overrides,
 });
@@ -121,7 +120,6 @@ describe("Solana API reads", () => {
         rankDiscountFactor: BigInt(value),
         referrer,
         referredUserDiscountFactor: BigInt(value),
-        hasUserAccount: true,
         updatedAt: 123,
       });
       expect(new URL(String(vi.mocked(fetch).mock.lastCall![0])).searchParams.get("address")).toBe(address);
@@ -132,7 +130,6 @@ describe("Solana API reads", () => {
       [],
       {},
       fee({ attachedOnChain: "true" }),
-      fee({ hasUserAccount: "true" }),
       fee({ tierId: 1.5 }),
       fee({ gtRank: -1 }),
       ...["userReferralCode", "userReferralCodeString", "referralCodeForTxn", "affiliate", "referrer"].map((key) =>
@@ -169,11 +166,17 @@ describe("Solana API reads", () => {
       { ...solana, positionAccount: referrer, referrer, callback: undefined },
       { key: address, sizeDeltaUsd: BigInt(amount) },
     ]);
+    vi.mocked(fetch).mockResolvedValueOnce(
+      response([{ key: address, positionValueInUsd: amount, relatedOrders: [order()] }])
+    );
+    const [position] = await sdk.fetchPositionsInfo({ address, includeRelatedOrders: true });
+    expect(position.relatedOrders).toStrictEqual([solana]);
     for (const raw of [
       order({ orderAccount: null }),
       order({ actionState: "frozen" }),
       order({ positionAccount: 1 }),
       order({ rentReceiver: null }),
+      order({ rentReceiver: undefined }),
       order({ referrer: 1 }),
       order({ callback: [] }),
       order({ callback: { ...callback, version: -1 } }),
@@ -181,7 +184,7 @@ describe("Solana API reads", () => {
       order({ escrowTokens: null }),
       order({ escrowTokens: { ...escrowTokens, longToken: 1 } }),
     ])
-      expect(() => parseApiOrder(raw)).toThrow("/v1/orders");
+      expect(() => parseApiOrders([raw], "/v1/orders")).toThrow("/v1/orders");
   });
 
   it("passes slot floors and returns each response slot without changing account data", async () => {

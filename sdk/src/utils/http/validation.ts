@@ -1,3 +1,5 @@
+import { getRecord, getString } from "utils/objects";
+
 export type ApiFieldType = "bigint" | "boolean" | "number" | "numberOrNull" | "string";
 
 export type ApiFieldSpec = {
@@ -45,4 +47,28 @@ export function assertApiFields(
       throw new Error(`Invalid ${endpoint} response${identifier}: ${field.name} must be ${field.type}`);
     }
   }
+}
+
+export function getApiFieldReaders(endpoint: string) {
+  const fail = (name: string, expected: string): never => {
+    throw new Error(`${endpoint}: expected ${expected} field "${name}"`);
+  };
+  const readString = (value: unknown, name: string): string => getString(value) ?? fail(name, "string");
+
+  return {
+    fail,
+    readString,
+    readNullableString: (value: unknown, name: string): string | undefined =>
+      value === null ? undefined : readString(value, name),
+    readBoolean: (value: unknown, name: string): boolean =>
+      typeof value === "boolean" ? value : fail(name, "boolean"),
+    readUint: (value: unknown, name: string): number =>
+      typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : fail(name, "number"),
+    readBigInt: (value: unknown, name: string): bigint =>
+      (typeof value === "string" && /^\d+$/.test(value)) ||
+      (typeof value === "number" && Number.isSafeInteger(value) && value >= 0)
+        ? BigInt(value)
+        : fail(name, "bigint"),
+    readRecord: (value: unknown, name: string): Record<string, unknown> => getRecord(value) ?? fail(name, "object"),
+  };
 }
