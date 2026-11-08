@@ -732,6 +732,8 @@ export default function Tooltip<T extends ElementType>({
         {...containerProps}
         className={cx("Tooltip", className, handleClassName)}
         ref={setReference}
+        // Lets a table row keep its hover while the cursor is inside this row's open tooltip
+        data-tooltip-open={visible ? "" : undefined}
         {...referenceProps}
       >
         {handle ?? children}
@@ -747,6 +749,7 @@ export default function Tooltip<T extends ElementType>({
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
         tabIndex={tabIndex}
+        data-tooltip-open={visible ? "" : undefined}
         {...disabledHandleProps}
         {...referenceProps}
       >
