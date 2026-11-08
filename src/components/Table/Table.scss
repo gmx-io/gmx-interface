@@ -51,27 +51,23 @@
   }
 }
 
-.TableTr_hoverable:hover {
+// A row is highlighted while it's hovered and while one of its tooltips is open, so moving the cursor down into the
+// tooltip keeps the row highlighted
+.TableTr_hoverable:is(:hover, :has([data-tooltip-open])) {
   background: var(--color-fill-surfaceHover);
 }
 
-// A hovered row shows no lines next to it: neither its own line below nor the line above it (the header line
-// for the first row)
-.TableTr_hoverable:hover,
-.TableTr_actionable:hover {
+.TableTr_actionable:has([data-tooltip-open]) > td::before {
+  background-color: var(--color-fill-surfaceHover);
+}
+
+// A highlighted row shows no lines next to it: its own line below is hidden, and the line above it (the header line
+// for the first row) is covered by a 1px edge in the highlight color
+.TableTr_hoverable:is(:hover, :has([data-tooltip-open])),
+.TableTr_actionable:is(:hover, :has([data-tooltip-open])) {
   > td,
   > [role="cell"] {
     background-image: none;
+    box-shadow: 0 -1px 0 var(--color-fill-surfaceHover);
   }
-}
-
-.TableTr:has(+ .TableTr_hoverable:hover, + .TableTr_actionable:hover) {
-  > td,
-  > [role="cell"] {
-    background-image: none;
-  }
-}
-
-table:has(tbody > .TableTr_hoverable:first-child:hover, tbody > .TableTr_actionable:first-child:hover) .TableTh {
-  background-image: none;
 }
