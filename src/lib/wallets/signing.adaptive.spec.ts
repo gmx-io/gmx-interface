@@ -1,3 +1,4 @@
+import { serializeErc6492Signature, zeroAddress, zeroHash } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
@@ -87,6 +88,7 @@ import { DAY_MS } from "lib/dates";
 import { SMART_WALLET_NOT_DEPLOYED_ERROR } from "lib/errors/customErrors";
 import { sleep } from "lib/sleep";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE_FUJI, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
+import { getEip6492SignatureWrapperHash, hashRelayParams, type RelayParamsPayload } from "sdk/utils/express";
 
 import { signMessage, signTypedData } from "./signing";
 import { AccountType } from "./useAccountType";
@@ -95,7 +97,31 @@ import { getChainBindingState } from "./verificationChainSigning";
 const ACCOUNT = "0xF5B94d808d97AEB44dE46d8997Fdc6D215fC6d60";
 const SIGNATURE_FROM_BASE = `0x${"11".repeat(200)}`;
 const SIGNATURE_FROM_ARBITRUM = `0x${"22".repeat(200)}`;
-const SIGNATURE_OF_NOT_DEPLOYED_WALLET = `0x${"33".repeat(200)}${"6492".repeat(16)}`;
+const SIGNATURE_OF_NOT_DEPLOYED_WALLET = serializeErc6492Signature({
+  address: "0xba5ed110efdba3d005bfc882d75358acbbb85842",
+  data: `0x3ffba36f${"00".repeat(32)}`,
+  signature: `0x${"33".repeat(65)}`,
+});
+
+function makeRelayParams(chainId: number): RelayParamsPayload {
+  return {
+    oracleParams: { tokens: [], providers: [], data: [] },
+    tokenPermits: [],
+    externalCalls: {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    },
+    fee: { feeToken: zeroAddress, feeAmount: 0n, feeSwapPath: [] },
+    deadline: 0n,
+    desChainId: BigInt(chainId),
+    userNonce: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
+  };
+}
 
 const domain = {
   name: "GmxBaseGelatoRelayRouter",
@@ -228,7 +254,32 @@ describe("adaptive EIP-7702 signing", () => {
     expect(helperToastInfoMock).not.toHaveBeenCalled();
   });
 
-  it("rejects a signature of a not deployed smart wallet on 2.2.1 contracts, because they do not accept it yet", async () => {
+  it("asks a not deployed smart wallet to sign again with its deployment in the relay params on 2.2.1 contracts", async () => {
+    const wallet = makeWallet(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
+    const relayParams = makeRelayParams(ARBITRUM_SEPOLIA);
+    const typedData = { relayParams: hashRelayParams(relayParams) };
+    chainState.chainId = ARBITRUM_SEPOLIA;
+
+    await expect(
+      signTypedData({
+        signer: wallet,
+        domain,
+        types: { Test: [{ name: "relayParams", type: "bytes32" }] },
+        typedData,
+        verificationChainId: ARBITRUM_SEPOLIA,
+        relayParams,
+      })
+    ).resolves.toBe(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
+
+    expect(typedDataRequestCount(wallet)).toBe(2);
+    expect(helperToastInfoMock).toHaveBeenCalledTimes(1);
+    expect(relayParams.eip6492SignatureWrapperHash).toBe(
+      getEip6492SignatureWrapperHash(SIGNATURE_OF_NOT_DEPLOYED_WALLET)
+    );
+    expect(typedData.relayParams).toBe(hashRelayParams(relayParams));
+  });
+
+  it("rejects a signature of a not deployed smart wallet on 2.2.1 contracts when there are no relay params", async () => {
     const wallet = makeWallet(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
     chainState.chainId = ARBITRUM_SEPOLIA;
 
