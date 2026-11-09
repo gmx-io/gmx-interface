@@ -10,7 +10,7 @@ import {
 } from "@solana/kit";
 
 import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
-import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS, type GmsolTokenConfig } from "config/gmsol/tokens";
+import { GMSOL_BALANCE_TOKENS, GMSOL_NATIVE_TOKEN, type GmsolTokenConfig } from "config/gmsol/tokens";
 
 import { fetchSolanaAccounts } from "./rpc";
 
@@ -34,12 +34,12 @@ const tokenAccountDecoder = getStructDecoder([
 
 export type SolanaBalances = Record<string, bigint>;
 
-/** Reads every configured mint's ATA and native SOL. Raw amounts do not guarantee that funds are spendable. */
+/** Reads native SOL and the ATA of every non-synthetic mint. Raw amounts do not guarantee that funds are spendable. */
 export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances> {
   const ownerAddress = address(owner);
   const encoder = getAddressEncoder();
   const tokenAccounts = await Promise.all(
-    GMSOL_TOKENS.map(async (token) => {
+    GMSOL_BALANCE_TOKENS.map(async (token) => {
       const [ata] = await getProgramDerivedAddress({
         programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
         seeds: [

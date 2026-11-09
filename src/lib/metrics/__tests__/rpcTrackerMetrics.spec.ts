@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SOLANA_NETWORK_ID } from "config/chains";
 import { emitEndpointBanned, emitEndpointsUpdated } from "lib/FallbackTracker/events";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
@@ -44,11 +45,8 @@ describe("subscribeForRpcTrackerMetrics", () => {
     vi.useRealTimers();
   });
 
-  it.each([
-    ["https://solana-mainnet.g.alchemy.com/v2/test-secret-key", "solana-mainnet.g.alchemy.com"],
-    ["https://arb-mainnet.g.alchemy.com/v2/test-secret-key?api_key=query-secret", "arb-mainnet.g.alchemy.com"],
-    ["https://user:password@rpc.example.com/private/test-secret-key?token=query-secret#fragment", "rpc.example.com"],
-  ])("reports only the hostname when banning %s", (endpoint, hostname) => {
+  it("reports the full endpoint when banning on an EVM chain", () => {
+    const endpoint = "https://arb-mainnet.g.alchemy.com/v2/test-key";
     const reason = "Banned by failures threshold";
     emitEndpointBanned({ trackerKey: TRACKER_KEY, endpoint, reason });
 
@@ -56,9 +54,28 @@ describe("subscribeForRpcTrackerMetrics", () => {
       (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
     );
 
-    expect(report).toBeDefined();
+    expect(report?.payload.customFields).toMatchObject({ chainId: mockTracker.params.chainId, endpoint, reason });
+  });
+
+  it.each([
+    ["https://solana-mainnet.g.alchemy.com/v2/test-secret-key", "solana-mainnet.g.alchemy.com"],
+    ["https://user:password@rpc.example.com/private/test-secret-key?token=query-secret#fragment", "rpc.example.com"],
+  ])("reports only the hostname when banning %s on Solana", (endpoint, hostname) => {
+    const solanaTracker = {
+      trackerKey: "RpcTracker.Solana.test",
+      params: { chainId: SOLANA_NETWORK_ID },
+    } as unknown as RpcTracker;
+    const solanaCleanup = subscribeForRpcTrackerMetrics(solanaTracker);
+    const reason = "Banned by failures threshold";
+    emitEndpointBanned({ trackerKey: solanaTracker.trackerKey, endpoint, reason });
+    solanaCleanup();
+
+    const report = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+
     expect(report?.payload.customFields).toMatchObject({
-      chainId: mockTracker.params.chainId,
+      chainId: SOLANA_NETWORK_ID,
       endpoint: hostname,
       reason,
     });

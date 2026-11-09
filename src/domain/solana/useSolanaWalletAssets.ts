@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import useSWRImmutable from "swr/immutable";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
 import { ARBITRUM, isSolanaNetwork, SOLANA_NETWORK_ID } from "config/chains";
 import type { SolanaWalletToken } from "domain/gmsol/walletTokens";
 import { useChainId } from "lib/chains";
@@ -22,7 +23,7 @@ export function getSolanaWalletPricesKey(url: string) {
  */
 export function useSolanaWalletAssets(owner: string | undefined) {
   const { networkId } = useChainId();
-  const enabled = isSolanaNetwork(networkId) && Boolean(owner);
+  const enabled = getIsSolanaNetworkEnabled() && isSolanaNetwork(networkId) && Boolean(owner);
   const arbitrumFetcher = useOracleKeeperFetcher(ARBITRUM);
 
   const balances = useSolanaBalances(owner);

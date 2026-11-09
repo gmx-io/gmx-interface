@@ -1,4 +1,4 @@
-import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
+import { GMSOL_BALANCE_TOKENS, GMSOL_NATIVE_TOKEN } from "config/gmsol/tokens";
 import type { OracleFetcher } from "lib/oracleKeeperFetcher";
 import type { TokenPricesData } from "sdk/utils/tokens/types";
 
@@ -14,7 +14,7 @@ export type SolanaWalletToken = {
   isStable: boolean | undefined;
 };
 
-// Query every configured mint regardless of its market collateral role, plus native SOL.
+// Native SOL plus the non-synthetic mints; synthetic ones are never held as collateral.
 export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
   {
     address: GMSOL_NATIVE_TOKEN.address,
@@ -24,7 +24,7 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
     decimals: GMSOL_NATIVE_TOKEN.decimals,
     isStable: undefined,
   },
-  ...GMSOL_TOKENS.map((token) => ({
+  ...GMSOL_BALANCE_TOKENS.map((token) => ({
     address: token.address,
     symbol: token.symbol,
     iconSymbol: token.baseSymbol ?? (token.symbol === "WGMX" ? "GMX" : token.symbol),

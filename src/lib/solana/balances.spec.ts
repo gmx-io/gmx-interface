@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
-import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
+import { GMSOL_BALANCE_TOKENS, GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import { getRpcProviders } from "config/rpc";
 
 import { decodeSolanaTokenBalance, fetchSolanaBalances } from "./balances";
@@ -21,7 +21,7 @@ const nativeAbort = vi.hoisted(() => {
 
 const owner = SOLANA_SYSTEM_PROGRAM_ID;
 const amount = 9007199254740993n;
-const walletTokens = GMSOL_TOKENS;
+const walletTokens = GMSOL_BALANCE_TOKENS;
 const token = walletTokens.find((token) => token.symbol === "WSOL")!;
 const token2022 = GMSOL_TOKENS.find((token) => token.tokenProgram !== SOLANA_TOKEN_PROGRAM_ID)!;
 
@@ -89,27 +89,15 @@ afterEach(() => {
 });
 
 describe("configured Solana balances", () => {
-  it.each(["PUMP", "WLFI"])("reads and displays a held %s mint even though it is not collateral", async (symbol) => {
-    const heldToken = walletTokens.find((token) => token.symbol === symbol)!;
-    expect(heldToken.isSynthetic).toBe(true);
-    const account = tokenAccount(heldToken.address, heldToken.tokenProgram);
-    mockRpc(account, undefined, walletTokens.indexOf(heldToken) + 1);
+  it.each(["PUMP", "WLFI"])("leaves the synthetic %s mint out of the balances", async (symbol) => {
+    const syntheticToken = GMSOL_TOKENS.find((token) => token.symbol === symbol)!;
+    expect(syntheticToken.isSynthetic).toBe(true);
+    const calls = mockRpc();
     const balances = await fetchSolanaBalances(owner);
-    expect(balances[heldToken.address]).toBe(amount);
 
-    const { SOLANA_WALLET_TOKENS } = await import("domain/gmsol/walletTokens");
-    const { getSolanaWalletAssets } = await import("domain/solana/solanaWalletAssets");
-    const result = getSolanaWalletAssets(SOLANA_WALLET_TOKENS, balances, undefined);
-    expect(result?.assets).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          address: heldToken.address,
-          symbol,
-          balance: amount,
-          balanceUsd: undefined,
-        }),
-      ])
-    );
+    expect(balances[syntheticToken.address]).toBeUndefined();
+    expect(calls.flat()).toHaveLength(walletTokens.length + 1);
+    expect(walletTokens.some((configured) => configured.isSynthetic)).toBe(false);
   });
 
   it.each([
@@ -135,7 +123,8 @@ describe("configured Solana balances", () => {
     ).toBe(true);
   });
 
-  it.each([token, token2022])("reports zero for a prefunded, empty System-owned ATA: $symbol", async (heldToken) => {
+  it("reports zero for a prefunded, empty System-owned ATA", async () => {
+    const heldToken = token;
     mockRpc(
       { bytes: new Uint8Array(0), program: SOLANA_SYSTEM_PROGRAM_ID },
       undefined,

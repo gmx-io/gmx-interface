@@ -38,7 +38,8 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
         data: {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
-          endpoint: new URL(endpoint).hostname,
+          // The Solana RPC URL carries the Alchemy key in its path, so only the host is reported.
+          endpoint: isSolana ? new URL(endpoint).hostname : endpoint,
           reason: reason,
         },
       });
