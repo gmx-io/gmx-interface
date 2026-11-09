@@ -410,7 +410,6 @@ function ReferralCodesMobileTable({
         <GridHeaderCell className="col-span-2 text-right">
           <Trans>TOTAL VOLUME</Trans>
         </GridHeaderCell>
-        <GridHeaderCell />
       </GridRow>
 
       {data.map((stat) => (
