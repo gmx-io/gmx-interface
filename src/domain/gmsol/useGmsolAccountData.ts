@@ -38,6 +38,7 @@ export type GmsolAccountDataResult<T> = {
   data: T | undefined;
   isLoading: boolean;
   error: Error | undefined;
+  refetch: () => Promise<T | undefined>;
 };
 
 function useGmsolAccountRequest<T>(
@@ -48,13 +49,14 @@ function useGmsolAccountRequest<T>(
 ): GmsolAccountDataResult<T> {
   const key = owner ? getGmsolAccountDataKey(request, getGmsolApiCacheKey(), owner) : null;
 
-  const { data, error, isLoading } = useSWR<T, Error>(
-    key,
-    ([, , , keyOwner]: NonNullable<typeof key>) => fetcher(keyOwner),
-    { refreshInterval }
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate: refetch,
+  } = useSWR<T, Error>(key, ([, , , keyOwner]: NonNullable<typeof key>) => fetcher(keyOwner), { refreshInterval });
 
-  return { data: key ? data : undefined, isLoading: key ? isLoading : false, error: key ? error : undefined };
+  return { data: key ? data : undefined, isLoading: key ? isLoading : false, error: key ? error : undefined, refetch };
 }
 
 function pendingSlotKey(request: GmsolSlotRequest, owner: string) {

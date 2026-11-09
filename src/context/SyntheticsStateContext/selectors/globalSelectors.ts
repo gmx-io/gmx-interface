@@ -14,6 +14,8 @@ export const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInf
 export const selectOrdersInfoError = (s: SyntheticsState) => s.globals.ordersInfo.error;
 export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
+export const selectPositionsInfoError = (s: SyntheticsState) => s.globals.positionsInfo.error;
+export const selectRefetchPositions = (s: SyntheticsState) => s.globals.positionsInfo.refetch;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 export const selectMarketsInfoError = (s: SyntheticsState) => s.globals.marketsInfo.error;
 export const selectTokensData = (s: SyntheticsState) => s.globals.tokensDataResult.tokensData;

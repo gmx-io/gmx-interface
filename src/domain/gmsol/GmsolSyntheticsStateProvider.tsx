@@ -114,15 +114,24 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         }),
         isLoading: false,
         dataSource: "api",
+        error: positionsRequest.error,
+        refetch: positionsRequest.refetch,
       };
     }
 
     if (positionsRequest.error) {
-      return { isLoading: false, error: positionsRequest.error };
+      return { isLoading: false, error: positionsRequest.error, refetch: positionsRequest.refetch };
     }
 
     return { isLoading: true };
-  }, [owner, positionsRequest.data, positionsRequest.error, marketsInfoData, settings.isPnlInLeverage]);
+  }, [
+    owner,
+    positionsRequest.data,
+    positionsRequest.error,
+    positionsRequest.refetch,
+    marketsInfoData,
+    settings.isPnlInLeverage,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
