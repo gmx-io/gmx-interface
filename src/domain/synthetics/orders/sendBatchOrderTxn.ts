@@ -189,6 +189,7 @@ export async function sendBatchOrderTxn({
     }
 
     const { callData, value } = getBatchOrderMulticallPayload({
+      chainId,
       params: encodedBatchParams,
       tokenPermits: walletTokenPermits,
     });
@@ -290,7 +291,6 @@ const makeBatchOrderSimulation = async ({
         data: {
           isExpired: expressParams.subaccountValidations.isExpired,
           isActionsExceeded: expressParams.subaccountValidations.isActionsExceeded,
-          isNonceExceeded: expressParams.subaccountValidations.isNonceExpired,
           onchainData: {
             maxAllowedCount: onchainData.maxAllowedCount,
             currentCount: onchainData.currentActionsCount,
@@ -299,6 +299,7 @@ const makeBatchOrderSimulation = async ({
             nonce: onchainData.approvalNonce,
             multichainNonce: onchainData.multichainApprovalNonce,
             integrationId: onchainData.integrationId,
+            revocationCounter: onchainData.revocationCounter,
           },
           signedData: {
             maxAllowedCount: signedApproval.maxAllowedCount,
@@ -306,6 +307,7 @@ const makeBatchOrderSimulation = async ({
             shouldAdd: signedApproval.shouldAdd,
             nonce: signedApproval.nonce,
             integrationId: signedApproval.integrationId,
+            revocationCounter: signedApproval.revocationCounter,
           },
         },
       });
@@ -365,6 +367,7 @@ const makeBatchOrderSimulation = async ({
       });
     } else {
       const { encodedMulticall, value } = getBatchOrderMulticallPayload({
+        chainId,
         params: {
           ...batchParams,
           createOrderParams: [batchParams.createOrderParams[0]],

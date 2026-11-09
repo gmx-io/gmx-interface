@@ -21,6 +21,7 @@ import {
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
@@ -319,6 +320,7 @@ export function useTradeboxButtonState({
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const alternativeGasToken = useMemo((): TokenData | undefined => {
     if (
@@ -334,8 +336,8 @@ export function useTradeboxButtonState({
       externalSwapDesirability === "required" &&
       externalSwapConflictToken &&
       externalSwapConflictToken.address !== getWrappedToken(chainId).address
-        ? [externalSwapConflictToken.address]
-        : undefined;
+        ? [...unavailableTokenAddresses, externalSwapConflictToken.address]
+        : unavailableTokenAddresses;
 
     const address = findNextGasPaymentToken({
       chainId,
@@ -362,6 +364,7 @@ export function useTradeboxButtonState({
     fromToken,
     payAmount,
     gasPaymentTokenAllowance?.tokensAllowanceData,
+    unavailableTokenAddresses,
   ]);
 
   const handleSwitchGasToken = useCallback(() => {

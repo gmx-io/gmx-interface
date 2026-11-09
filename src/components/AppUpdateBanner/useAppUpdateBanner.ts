@@ -62,6 +62,7 @@ export function useAppUpdateBanner() {
   const [updateBuildId, setUpdateBuildId] = useState<string>();
   const [snoozedUntil, setSnoozedUntil] = useState<number>();
   const [isOffered, setIsOffered] = useState(false);
+  const reportedOfferBuildIdRef = useRef<string>();
 
   const hiddenSince = useRef(document.visibilityState === "hidden" ? Date.now() : undefined);
   const hasInteracted = useRef(false);
@@ -211,18 +212,25 @@ export function useAppUpdateBanner() {
   );
 
   useEffect(
-    function reportOffer() {
-      if (!isOffered || !updateBuildId) {
-        return;
+    function resetReportedOffer() {
+      if (!isOffered) {
+        reportedOfferBuildIdRef.current = undefined;
       }
-
-      metrics.pushCounter<AppUpdateCounter>("pwa.update.offered", {
-        fromBuildId: currentBuildId ?? UNKNOWN_BUILD_ID,
-        toBuildId: updateBuildId,
-      });
     },
-    [isOffered, updateBuildId, currentBuildId]
+    [isOffered]
   );
+
+  const reportShown = useCallback(() => {
+    if (!updateBuildId || reportedOfferBuildIdRef.current === updateBuildId) {
+      return;
+    }
+
+    reportedOfferBuildIdRef.current = updateBuildId;
+    metrics.pushCounter<AppUpdateCounter>("pwa.update.offered", {
+      fromBuildId: currentBuildId ?? UNKNOWN_BUILD_ID,
+      toBuildId: updateBuildId,
+    });
+  }, [currentBuildId, updateBuildId]);
 
   const dismiss = useCallback(() => {
     setSnoozedUntil(Date.now() + (isDebug ? APP_UPDATE_DEBUG.snoozeMs : SNOOZE_MS));
@@ -242,5 +250,5 @@ export function useAppUpdateBanner() {
     }
   }, [reload, updateBuildId]);
 
-  return { isVisible: isOffered, dismiss, applyUpdate };
+  return { isVisible: isOffered, dismiss, applyUpdate, reportShown };
 }

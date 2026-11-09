@@ -8,9 +8,10 @@ import type { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { ContractsChainId } from "sdk/configs/chains";
 import type { SourceChainId } from "sdk/configs/chains";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { type RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
@@ -27,7 +28,11 @@ export async function createClaimCollateralTxn(
   signer: Signer,
   { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
 ) {
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const exchangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    getAbi(chainId, "ExchangeRouter"),
+    signer
+  );
 
   const args: [markets: string[], tokens: string[], timeKeys: number[], account: string] = [[], [], [], account];
 
@@ -53,7 +58,7 @@ export async function estimateClaimCollateralGas(
   const client = getPublicClientWithRpc(chainId);
 
   const callData = encodeFunctionData({
-    abi: abis.ExchangeRouter,
+    abi: getAbi(chainId, "ExchangeRouter"),
     functionName: "claimCollateral",
     args: [
       claimablePositionPriceImpactFees.map((p) => p.marketAddress),
@@ -125,7 +130,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   }
 
   const claimCollateralCallData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouter,
+    abi: getAbi(chainId, "MultichainClaimsRouter"),
     functionName: "claimCollateral",
     args: [{ ...relayParams, signature }, account, BigInt(srcChainId), markets, tokens, timeKeys, receiver],
   });
@@ -157,8 +162,10 @@ async function signClaimCollateralPayload({
   chainId: ContractsChainId;
   srcChainId: number;
 }): Promise<string> {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     ClaimCollateral: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "markets", type: "address[]" },
       { name: "tokens", type: "address[]" },
       { name: "timeKeys", type: "uint256[]" },
@@ -172,6 +179,7 @@ async function signClaimCollateralPayload({
     getContract(chainId, "MultichainClaimsRouter")
   );
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     markets,
     tokens,
     timeKeys,

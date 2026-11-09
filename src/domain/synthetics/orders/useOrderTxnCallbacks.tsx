@@ -26,7 +26,7 @@ import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
-  getIsInvalidSubaccountApprovalNonceError,
+  getIsOutdatedSubaccountApprovalError,
   getIsPossibleExternalSwapError,
   getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
@@ -386,7 +386,7 @@ export function useOrderTxnCallbacks() {
 
           const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
           const isOutdatedSubaccountApproval =
-            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+            sentSubaccountApproval !== undefined && getIsOutdatedSubaccountApprovalError(error);
 
           const permitIssueType = getTokenPermitIssueType(error, sentTokenPermits);
 

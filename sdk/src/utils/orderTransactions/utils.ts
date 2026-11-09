@@ -1,8 +1,7 @@
 import uniq from "lodash/uniq";
 import { encodeFunctionData, type Hex, zeroAddress, zeroHash } from "viem";
 
-import ExchangeRouterAbi from "abis/ExchangeRouter";
-import { abis } from "abis/index";
+import { getAbi } from "abis/getAbi";
 import ERC20ABI from "abis/Token";
 import {
   ContractsChainId,
@@ -10,7 +9,7 @@ import {
   getExecutionFeePriorityFeeAllowance,
   getHighExecutionFee,
 } from "configs/chains";
-import { getContract } from "configs/contracts";
+import { getContract, isContractsV2_2_1 } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { bigMath } from "utils/bigmath";
 import { ExecutionFee } from "utils/fees/types";
@@ -100,6 +99,7 @@ export type UpdateOrderParams = {
   minOutputAmount: bigint;
   autoCancel: boolean;
   validFromTime: bigint;
+  decreasePositionSwapType: DecreasePositionSwapType;
   // used to top-up execution fee for frozen orders
   executionFeeTopUp: bigint;
   // lets express take the priority fee allowance out of the top-up
@@ -116,6 +116,7 @@ export type UpdateOrderPayload = {
   minOutputAmount: bigint;
   autoCancel: boolean;
   validFromTime: bigint;
+  decreasePositionSwapType: DecreasePositionSwapType;
   // used to top-up execution fee for frozen orders
   executionFeeTopUp: bigint;
 };
@@ -517,6 +518,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
       minOutputAmount: p.minOutputAmount,
       autoCancel: p.autoCancel,
       validFromTime: 0n,
+      decreasePositionSwapType: p.decreasePositionSwapType,
       executionFeeTopUp: p.executionFeeTopUp,
     },
   };
@@ -923,9 +925,11 @@ export function buildTokenPermitsCall(tokenPermits: SignedTokenPermit[]): Exchan
 }
 
 export function getBatchOrderMulticallPayload({
+  chainId,
   params,
   tokenPermits = [],
 }: {
+  chainId: ContractsChainId;
   params: BatchOrderTxnParams;
   tokenPermits?: SignedTokenPermit[];
 }) {
@@ -956,7 +960,7 @@ export function getBatchOrderMulticallPayload({
     value += cancelValue;
   }
 
-  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(multicall);
+  const { encodedMulticall, callData } = encodeExchangeRouterMulticall(chainId, multicall);
 
   return { multicall, value, encodedMulticall, callData };
 }
@@ -1018,6 +1022,7 @@ export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
       updatePayload.triggerPrice,
       updatePayload.minOutputAmount,
       0n,
+      ...(isContractsV2_2_1(chainId) ? [updatePayload.decreasePositionSwapType] : []),
       updatePayload.autoCancel,
     ],
   });
@@ -1044,20 +1049,23 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
   };
 }
 
-export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]): {
+export function encodeExchangeRouterMulticall(
+  chainId: ContractsChainId,
+  multicall: ExchangeRouterCall[]
+): {
   encodedMulticall: Hex[];
   callData: Hex;
 } {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
-      abi: abis.ExchangeRouter,
+      abi: getAbi(chainId, "ExchangeRouter"),
       functionName: call.method as any,
       args: call.params as any,
     })
   );
 
   const callData = encodeFunctionData({
-    abi: ExchangeRouterAbi,
+    abi: getAbi(chainId, "ExchangeRouter"),
     functionName: "multicall",
     args: [encodedMulticall],
   });

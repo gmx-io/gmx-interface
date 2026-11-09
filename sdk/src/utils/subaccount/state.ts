@@ -1,3 +1,5 @@
+import { zeroHash } from "viem";
+
 import type { AnyChainId } from "configs/chains";
 import { toBigInt } from "utils/numbers";
 import { nowInSeconds } from "utils/time";
@@ -8,6 +10,7 @@ import type {
   SdkSubaccountStatus,
   SignedSubaccountApproval,
   StoredSubaccountApproval,
+  SubaccountApproval,
 } from "./types";
 
 export function parseSubaccountStatus(status: SubaccountStatusResponse): SdkSubaccountStatus {
@@ -20,6 +23,7 @@ export function parseSubaccountStatus(status: SubaccountStatusResponse): SdkSuba
     approvalNonce: toBigInt(status.approvalNonce) ?? 0n,
     multichainApprovalNonce: toBigInt(status.multichainApprovalNonce) ?? 0n,
     integrationId: status.integrationId ?? undefined,
+    revocationCounter: toBigInt(status.revocationCounter) ?? 0n,
   };
 }
 
@@ -54,6 +58,7 @@ export function shouldRefreshExplicitSubaccountApproval(
     status !== undefined &&
     (isSubaccountApprovalSynced(approval, status) ||
       isSubaccountApprovalNonceExpired(approval, status) ||
+      isSubaccountApprovalRevoked(approval, status.revocationCounter) ||
       isSubaccountApprovalExpired(approval))
   );
 }
@@ -63,6 +68,10 @@ export function isSubaccountApprovalNonceExpired(
   status: SdkSubaccountStatus
 ): boolean {
   return toBigInt(approval.nonce) !== status.approvalNonce;
+}
+
+export function isSubaccountApprovalRevoked(approval: SubaccountApproval, revocationCounter: bigint): boolean {
+  return (toBigInt(approval.revocationCounter) ?? 0n) < revocationCounter;
 }
 
 export function isSubaccountApprovalSynced(approval: SdkSubaccountApproval, status: SdkSubaccountStatus): boolean {
@@ -92,6 +101,8 @@ export function toSignedSubaccountApproval(
     desChainId: toBigInt(prepared.message.desChainId) ?? 0n,
     deadline: toBigInt(prepared.message.deadline) ?? 0n,
     integrationId: prepared.message.integrationId,
+    revocationCounter: toBigInt(prepared.message.revocationCounter) ?? 0n,
+    eip6492SignatureWrapperHash: prepared.message.eip6492SignatureWrapperHash ?? zeroHash,
     signature,
     signedAt: Date.now(),
     signatureChainId: prepared.domain.chainId as AnyChainId,

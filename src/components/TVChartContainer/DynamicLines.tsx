@@ -7,7 +7,10 @@ import {
   useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -66,6 +69,7 @@ export function DynamicLines({
   const { marketsData } = useMarkets(chainId);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
   const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -110,6 +114,7 @@ export function DynamicLines({
             isGmxAccount: srcChainId !== undefined,
             expressParams,
             tokensData: undefined,
+            unavailableGasPaymentToken,
             actionName: "Cancel Order",
             collateral: order.initialCollateralToken.symbol,
           })
@@ -138,6 +143,7 @@ export function DynamicLines({
       chainId,
       estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,

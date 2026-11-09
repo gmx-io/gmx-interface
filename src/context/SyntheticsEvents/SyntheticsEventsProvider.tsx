@@ -48,7 +48,7 @@ import { ErrorLike, parseError } from "lib/errors";
 import {
   getIsInsufficientExecutionFeeError,
   getIsInvalidSignatureError,
-  getIsInvalidSubaccountApprovalNonceError,
+  getIsOutdatedSubaccountApprovalError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
@@ -1200,7 +1200,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               );
 
               if (
-                getIsInvalidSubaccountApprovalNonceError(relayError) &&
+                getIsOutdatedSubaccountApprovalError(relayError) &&
                 invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
               ) {
                 // Wait to ensure there is no race condition with the pending order toast
