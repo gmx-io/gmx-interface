@@ -12,6 +12,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import { SolanaReferralsAffiliatesTab } from "components/Referrals/Solana/SolanaReferralsAffiliatesTab";
 import { SolanaReferralsTradersTab } from "components/Referrals/Solana/SolanaReferralsTradersTab";
 import { SolanaReferralsTab, SOLANA_REFERRALS_TABS } from "components/Referrals/Solana/solanaReferralsTypes";
+import { SolanaReferralsTesterPanel } from "components/Referrals/Solana/tester/SolanaReferralsTesterPanel"; // rewards-tester
 import { useSolanaReferralsData } from "components/Referrals/Solana/useSolanaReferralsData";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
@@ -132,6 +133,7 @@ export default function SolanaReferrals({ activeTab }: { activeTab: SolanaReferr
           </div>
         </div>
       </SEO>
+      <SolanaReferralsTesterPanel /* rewards-tester */ />
     </AppPageLayout>
   );
 }
