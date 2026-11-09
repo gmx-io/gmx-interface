@@ -292,7 +292,19 @@ export default function RpcDebug() {
     };
   }, [chainId]);
 
-  if (trackerError) throw trackerError;
+  if (trackerError) {
+    return (
+      <AppPageLayout title="RPC Debug">
+        <div className="default-container">
+          <Card title={t`RPC debug`}>
+            <div className="App-card-content text-typography-secondary">
+              <Trans>Unable to load the Solana RPC tracker</Trans>
+            </div>
+          </Card>
+        </div>
+      </AppPageLayout>
+    );
+  }
 
   return (
     <AppPageLayout title="RPC Debug">
