@@ -2111,6 +2111,7 @@ msgstr "Рынки"
 msgid "Whitelist only"
 msgstr "Только для белого списка"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Повторить"
@@ -2770,6 +2771,10 @@ msgstr "Существующая позиция находится в пуле W
 msgid "Failed withdraw"
 msgstr "Вывод не выполнен"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr "Значок предупреждения"
@@ -3269,6 +3274,10 @@ msgstr "{0, plural, one {Отменить ордер} other {Отменить о
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"

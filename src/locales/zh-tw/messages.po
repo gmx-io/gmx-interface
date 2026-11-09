@@ -2111,6 +2111,7 @@ msgstr "市場"
 msgid "Whitelist only"
 msgstr "僅限白名單"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"
@@ -2770,6 +2771,10 @@ msgstr "現有倉位位於 WETH-USDC 池中，但該池缺乏此訂單所需的�
 msgid "Failed withdraw"
 msgstr "提取失敗"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr "無法重新整理倉位，顯示的資料可能已過期。"
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr "警告圖示"
@@ -3269,6 +3274,10 @@ msgstr "{0, plural, one {取消訂單} other {取消 # 筆訂單}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
+msgstr "無法載入倉位，請重試。"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"

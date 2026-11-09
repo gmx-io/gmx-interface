@@ -2111,6 +2111,7 @@ msgstr ""
 msgid "Whitelist only"
 msgstr ""
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr ""
@@ -2770,6 +2771,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr ""
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr ""
@@ -3268,6 +3273,10 @@ msgstr ""
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
+msgstr ""
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
 msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx

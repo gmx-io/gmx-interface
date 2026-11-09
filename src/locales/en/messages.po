@@ -2111,6 +2111,7 @@ msgstr "Markets"
 msgid "Whitelist only"
 msgstr "Whitelist only"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Retry"
@@ -2770,6 +2771,10 @@ msgstr "Existing position is in WETH-USDC pool, but that pool lacks liquidity fo
 msgid "Failed withdraw"
 msgstr "Failed withdraw"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr "Unable to refresh positions. Displayed data may be outdated."
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr "Warning icon"
@@ -3269,6 +3274,10 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
+msgstr "Unable to load positions. Please try again."
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
