@@ -5,6 +5,7 @@ import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
   getSyntheticsCollateralEditAddressMapKey,
   getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey,
+  getUsdgAddMarginReturnPositionKey,
 } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useIsGmxAccount } from "domain/multichain/useIsGmxAccount";
@@ -38,9 +39,30 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
   const [replacingOrderKey, setReplacingOrderKey] = useState<string>();
   const [atPriceOpenRequest, setAtPriceOpenRequest] = useState<PositionEditorAtPriceOpenRequest>();
+  // not persisted with the collateral choice: Withdraw reads that one and must keep paying out the collateral
+  const [depositPayTokenAddress, setDepositPayTokenAddress] = useState<Address>();
   const [selectedCollateralAddressMap, setSelectedCollateralAddressMap] = useLocalStorageSerializeKey<
     Partial<Record<Address, Address>>
   >(getSyntheticsCollateralEditAddressMapKey(chainId), {});
+  // survives the trip to the Swap page so the trader can come back to the position after converting with Paxos
+  const [addMarginReturnPositionKey, setStoredAddMarginReturnPositionKey, removeAddMarginReturnPositionKey] =
+    useLocalStorageSerializeKey<string | undefined>(getUsdgAddMarginReturnPositionKey(chainId), undefined);
+  // the storage setter ignores undefined, so clearing goes through remove
+  const setAddMarginReturnPositionKey = useCallback(
+    (positionKey: string | undefined) =>
+      positionKey === undefined ? removeAddMarginReturnPositionKey() : setStoredAddMarginReturnPositionKey(positionKey),
+    [removeAddMarginReturnPositionKey, setStoredAddMarginReturnPositionKey]
+  );
+
+  useEffect(
+    // every page mounts its own state, so landing anywhere but the trade page ends the trip to the Swap tab
+    function clearAddMarginReturnOutsideTrade() {
+      if (!/^\/trade(\/|$)/.test(window.location.pathname)) {
+        removeAddMarginReturnPositionKey();
+      }
+    },
+    [removeAddMarginReturnPositionKey]
+  );
   const [storedIsCollateralTokenFromGmxAccount, setStoredIsCollateralTokenFromGmxAccount] =
     useLocalStorageSerializeKey<boolean>(getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId), false);
 
@@ -61,6 +83,7 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
   const updateEditingPositionKey = useCallback(
     (positionKey: SetStateAction<string | undefined>) => {
       resetAtPriceState();
+      setDepositPayTokenAddress(undefined);
       setEditingPositionKey(positionKey);
     },
     [resetAtPriceState]
@@ -72,6 +95,7 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
     setTriggerPriceInputValue(request.triggerPriceInputValue ?? "");
     setReplacingOrderKey(request.replacingOrderKey);
     setAtPriceOpenRequest(request);
+    setDepositPayTokenAddress(undefined);
     setEditingPositionKey(request.positionKey);
   }, []);
 
@@ -141,6 +165,10 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       clearAtPriceOpenRequest,
       openAtPrice,
       openDepositNow,
+      depositPayTokenAddress,
+      setDepositPayTokenAddress,
+      addMarginReturnPositionKey,
+      setAddMarginReturnPositionKey,
     }),
     [
       collateralInputValue,
@@ -158,6 +186,9 @@ export function usePositionEditorState(chainId: ContractsChainId, srcChainId: So
       clearAtPriceOpenRequest,
       openAtPrice,
       openDepositNow,
+      depositPayTokenAddress,
+      addMarginReturnPositionKey,
+      setAddMarginReturnPositionKey,
     ]
   );
 }

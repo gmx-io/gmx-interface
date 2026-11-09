@@ -5,24 +5,23 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
-import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useGmxPrice } from "domain/legacy";
+import { getRequestableUnstakeAmount, getReservedForVestingAmount } from "domain/stake/unstakeRequests";
+import { useSbfGmxBalance } from "domain/stake/useSbfGmxBalance";
 import { getUserEstimatedApr, isLoyaltyTrackingActive } from "domain/stake/useStakingPowerData";
 import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
+import { useUnstakeRequests } from "domain/stake/useUnstakeRequests";
 import { useChainId } from "lib/chains";
-import { contractFetcher } from "lib/contracts";
-import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
+import { StakingProcessedData } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
-import { bigMath } from "sdk/utils/bigmath";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -47,9 +46,9 @@ import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 
 export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
   const { chainId } = useChainId();
-  const { active, signer, account } = useWallet();
+  const { signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
   const {
     stakingPowerData,
     projectedRewardGmx: displayProjectedRewardGmx,
@@ -69,46 +68,36 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const [isVestModalVisible, setIsVestModalVisible] = useState(false);
   const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+  const { unstakeRequestsData } = useUnstakeRequests(chainId, account);
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
 
-  const shouldFetchSbfGmx = chainId !== undefined && feeGmxTrackerAddress !== zeroAddress;
-  const { data: sbfGmxBalance } = useSWR<bigint>(
-    shouldFetchSbfGmx
-      ? [
-          `EarnPortfolio:sbfGmxBalance:${account ?? PLACEHOLDER_ACCOUNT}`,
-          chainId,
-          feeGmxTrackerAddress,
-          "balanceOf",
-          account ?? PLACEHOLDER_ACCOUNT,
-        ]
-      : null,
-    { fetcher: contractFetcher(undefined, "Token") as any }
+  const sbfGmxBalance = useSbfGmxBalance(chainId, account);
+
+  const reservedAmount = useMemo(
+    () =>
+      getReservedForVestingAmount({
+        stakedAmount: (processedData?.gmxInStakedGmx ?? 0n) + (processedData?.esGmxInStakedGmx ?? 0n),
+        sbfGmxBalance,
+      }),
+    [processedData?.esGmxInStakedGmx, processedData?.gmxInStakedGmx, sbfGmxBalance]
   );
 
-  const reservedAmount = useMemo(() => {
-    if (sbfGmxBalance === undefined) return 0n;
-    const stakedTotal = (processedData?.gmxInStakedGmx ?? 0n) + (processedData?.esGmxInStakedGmx ?? 0n);
-    const reserved = stakedTotal - sbfGmxBalance;
-    return reserved > 0n ? reserved : 0n;
-  }, [processedData?.esGmxInStakedGmx, processedData?.gmxInStakedGmx, sbfGmxBalance]);
+  const requestableUnstakeAmount = useMemo(() => {
+    if (
+      unstakeRequestsData === undefined ||
+      processedData?.gmxInStakedGmx === undefined ||
+      processedData?.esGmxInStakedGmx === undefined
+    ) {
+      return undefined;
+    }
 
-  const gmxMaxUnstakeAmount = useMemo(() => {
-    const stakedAmount = processedData?.gmxInStakedGmx;
-    if (stakedAmount === undefined) return undefined;
-    if (sbfGmxBalance === undefined) return stakedAmount;
-    return bigMath.min(stakedAmount, sbfGmxBalance);
-  }, [sbfGmxBalance, processedData?.gmxInStakedGmx]);
-
-  const esGmxMaxUnstakeAmount = useMemo(() => {
-    const stakedAmount = processedData?.esGmxInStakedGmx;
-    if (stakedAmount === undefined) return undefined;
-    if (sbfGmxBalance === undefined) return stakedAmount;
-    return bigMath.min(stakedAmount, sbfGmxBalance);
-  }, [sbfGmxBalance, processedData?.esGmxInStakedGmx]);
+    return getRequestableUnstakeAmount({
+      stakedAmount: processedData.gmxInStakedGmx + processedData.esGmxInStakedGmx,
+      pendingAmount: unstakeRequestsData.pendingAmount,
+    });
+  }, [processedData?.esGmxInStakedGmx, processedData?.gmxInStakedGmx, unstakeRequestsData]);
 
   const priceRowValue = gmxPrice === undefined ? "..." : <UsdValue usd={gmxPrice} />;
 
@@ -163,8 +152,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   );
 
   const gmxUnstakeConfig: StakeModalTabConfig = useMemo(
-    () => ({ maxAmount: gmxMaxUnstakeAmount, value: gmxUnstakeValue, setValue: setGmxUnstakeValue }),
-    [gmxMaxUnstakeAmount, gmxUnstakeValue]
+    () => ({ maxAmount: requestableUnstakeAmount, value: gmxUnstakeValue, setValue: setGmxUnstakeValue }),
+    [requestableUnstakeAmount, gmxUnstakeValue]
   );
 
   const esGmxStakeConfig: StakeModalTabConfig = useMemo(
@@ -173,8 +162,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   );
 
   const esGmxUnstakeConfig: StakeModalTabConfig = useMemo(
-    () => ({ maxAmount: esGmxMaxUnstakeAmount, value: esGmxUnstakeValue, setValue: setEsGmxUnstakeValue }),
-    [esGmxMaxUnstakeAmount, esGmxUnstakeValue]
+    () => ({ maxAmount: requestableUnstakeAmount, value: esGmxUnstakeValue, setValue: setEsGmxUnstakeValue }),
+    [requestableUnstakeAmount, esGmxUnstakeValue]
   );
 
   return (
@@ -307,7 +296,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             }
           />
           <div className="grow" />
-          {stakingPowerData && stakingPowerData.powerResetCount > 0 && (
+          {stakingPowerData && stakingPowerData.powerResetCount > 0 && (requestableUnstakeAmount ?? 0n) > 0n && (
             <AlertInfoCard type="info">
               <Trans>
                 Your staking power was reset{" "}
@@ -375,7 +364,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         chainId={chainId}
         signer={signer}
         tokenSymbol="GMX"
-        rewardRouterAddress={rewardRouterAddress}
+        unstakeRequestsData={unstakeRequestsData}
         stakeTokenAddress={gmxAddress}
         stakeFarmAddress={stakedGmxTrackerAddress}
         reservedAmount={reservedAmount}
@@ -395,7 +384,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             chainId={chainId}
             signer={signer}
             tokenSymbol="esGMX"
-            rewardRouterAddress={rewardRouterAddress}
+            unstakeRequestsData={unstakeRequestsData}
             stakeTokenAddress={esGmxAddress}
             stakeFarmAddress={zeroAddress}
             reservedAmount={reservedAmount}

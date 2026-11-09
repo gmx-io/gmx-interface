@@ -13,13 +13,11 @@ import {
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { sumKnownBigInts } from "lib/sumBigInts";
 import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
-import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
@@ -40,9 +38,6 @@ export function OverviewCard({
   statsArbitrum?: ChainStats;
   statsAvalanche?: ChainStats;
 }) {
-  const { active, signer } = useWallet();
-  const { chainId } = useChainId();
-
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
@@ -63,7 +58,7 @@ export function OverviewCard({
     [gmtradeFreshness, SOLANA_ENTRY]
   );
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 

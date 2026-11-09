@@ -33,6 +33,7 @@ const { mocks, chainState, ACCOUNT, CHAIN_ID, SRC_CHAIN_ID, SUBACCOUNT_ADDRESS, 
     selectGmxAccountGasPaymentToken: vi.fn(),
     refreshSubaccountData: vi.fn(),
     pushError: vi.fn(),
+    pushEvent: vi.fn(),
   },
   chainState: { chainId: 42161, srcChainId: undefined as number | undefined },
   ACCOUNT: "0x1234567890123456789012345678901234567890",
@@ -86,6 +87,7 @@ vi.mock("domain/synthetics/subaccount/useSubaccountOnchainData", () => ({
       approvalNonce: 0n,
       multichainApprovalNonce: 0n,
       integrationId: "0x0",
+      revocationCounter: 0n,
     },
     refreshSubaccountData: mocks.refreshSubaccountData,
   }),
@@ -115,6 +117,7 @@ vi.mock("lib/helperToast", () => ({
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: mocks.pushError,
+    pushEvent: mocks.pushEvent,
   },
 }));
 
@@ -191,6 +194,13 @@ function setup() {
   );
 
   return captured;
+}
+
+function getRemovalEvents() {
+  return mocks.pushEvent.mock.calls
+    .map(([event]) => event)
+    .filter(({ event }) => event === "subaccount.removal")
+    .map(({ data }) => data);
 }
 
 describe("SubaccountContextProvider.tryDisableSubaccount", () => {
@@ -349,6 +359,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(context.current.subaccountDeactivationFailureReason).toBe(SubaccountDeactivationFailureReason.ResultUnknown);
     expect(mocks.refreshSubaccountData).toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(true);
+    expect(getRemovalEvents()).toEqual([{ method: "signature", outcome: "unknown", chainId: CHAIN_ID }]);
   });
 
   it("classifies an insufficient gas payment token balance failure of the express removal (multichain)", async () => {
@@ -436,6 +447,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(mocks.removeSubaccountWalletTxn).not.toHaveBeenCalled();
     expect(getIsSubaccountStoredLocally()).toBe(false);
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
+    expect(getRemovalEvents()).toEqual([{ method: "signature", outcome: "removed", chainId: CHAIN_ID }]);
   });
 
   it("sends the transaction directly, without a signature first, when the wallet gas payment token can't pay the relay fee", async () => {
@@ -453,6 +465,7 @@ describe("SubaccountContextProvider.tryDisableSubaccount", () => {
     expect(mocks.removeSubaccountSettlementChainExpressTxn).not.toHaveBeenCalled();
     expect(mocks.removeSubaccountWalletTxn).toHaveBeenCalledWith(CHAIN_ID, expect.anything(), SUBACCOUNT_ADDRESS);
     expect(context.current.subaccountDeactivationState).toBe(SubaccountDeactivationState.Success);
+    expect(getRemovalEvents()).toEqual([{ method: "walletTxn", outcome: "removed", chainId: CHAIN_ID }]);
   });
 
   it.each([

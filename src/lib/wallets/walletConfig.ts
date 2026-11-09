@@ -1,3 +1,4 @@
+import type { WalletListEntry } from "@privy-io/react-auth";
 import { createConfig } from "@privy-io/wagmi";
 import { deserialize } from "@wagmi/core";
 import once from "lodash/once";
@@ -39,6 +40,9 @@ export const PRIVY_WALLET_LIST = [
   "phantom",
   "wallet_connect",
 ] as const;
+
+// Privy 3.35.0 shows TokenPocket for Solana but leaves it out of its WalletListEntry type.
+export const PRIVY_SOLANA_WALLET_LIST = ["phantom", "solflare", "okx_wallet", "tokenpocket"] as WalletListEntry[];
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;
 

@@ -21,6 +21,7 @@ const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
     getTokenBySymbol(ARBITRUM, "USDC").address,
     getTokenBySymbol(ARBITRUM, "WETH").address,
     getTokenBySymbol(ARBITRUM, "USDT").address,
+    getTokenBySymbol(ARBITRUM, "USDG").address,
   ],
   [AVALANCHE]: [
     getTokenBySymbol(AVALANCHE, "USDC").address,

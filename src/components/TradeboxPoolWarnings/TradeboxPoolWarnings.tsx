@@ -19,11 +19,20 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import {
+  selectTradeboxClosingPool,
+  selectTradeboxIsClosedToNewPendingOrders,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
 import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
+import { getMarketClosingState } from "domain/synthetics/markets/closingMarkets";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
+import {
+  getAvailableUsdLiquidityForPosition,
+  getMarketBaseName,
+  getMarketPoolName,
+} from "domain/synthetics/markets/utils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
@@ -35,6 +44,7 @@ import {
   TradeBoxWarningShownEvent,
   TradeBoxWarningSwitchPoolClickEvent,
 } from "lib/userAnalytics/types";
+import { TradeMode } from "sdk/utils/trade";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
@@ -55,6 +65,8 @@ const useTradeboxPoolWarnings = () => {
   const hasExistingOrder = useSelector(selectTradeboxHasExistingLimitOrder);
   const isExpressEnabled = useSelector(selectExpressOrdersEnabled);
   const { subaccount } = useSelector(selectSubaccountState);
+  const closingPool = useSelector(selectTradeboxClosingPool);
+  const isClosedToNewPendingOrders = useSelector(selectTradeboxIsClosedToNewPendingOrders);
 
   const jitLiquidityMap = useSelector(selectJitLiquidityMap);
 
@@ -93,6 +105,16 @@ const useTradeboxPoolWarnings = () => {
 
   const isOutPositionLiquidity = marketInfo !== undefined && !hasEnoughLiquidity(marketInfo);
   const marketWithOrder = marketsOptions?.marketWithOrder;
+
+  const now = Date.now();
+  const marketWithPositionClosingState =
+    marketWithPosition && getMarketClosingState(chainId, marketWithPosition.marketTokenAddress, now);
+  const isMarketWithOrderClosing =
+    marketWithOrder !== undefined &&
+    getMarketClosingState(chainId, marketWithOrder.marketTokenAddress, now) !== undefined;
+  const isMinOpenFeesMarketClosing =
+    minOpenFeesMarket !== undefined &&
+    getMarketClosingState(chainId, minOpenFeesMarket.marketTokenAddress, now) !== undefined;
 
   const positionFeeBeforeDiscountBps =
     increaseAmounts &&
@@ -143,7 +165,7 @@ const useTradeboxPoolWarnings = () => {
       ? improvedOpenFeesDeltaBps >= SHOW_HAS_BETTER_FEES_WARNING_THRESHOLD_BPS
       : undefined);
 
-  const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning;
+  const showHasBetterOpenFeesWarning = canShowHasBetterExecutionFeesWarning && !isMinOpenFeesMarketClosing;
 
   const isFirstOrder = !accountStats || accountStats.closedCount === 0;
   const marketName = marketInfo ? marketInfo.name : "";
@@ -235,7 +257,10 @@ const useTradeboxPoolWarnings = () => {
   const showHasExistingOrderButNoLiquidityWarning =
     !hasExistingOrder && marketWithOrder && !hasEnoughLiquidity(marketWithOrder);
 
+  const showClosingPoolWarning = closingPool !== undefined && isClosedToNewPendingOrders;
+
   if (
+    !showClosingPoolWarning &&
     !showHasExistingPositionWarning &&
     !showHasNoSufficientLiquidityInAnyMarketWarning &&
     !showHasInsufficientLiquidityAndPositionWarning &&
@@ -250,7 +275,63 @@ const useTradeboxPoolWarnings = () => {
 
   const warning: ReactNode[] = [];
 
-  if (showHasExistingPositionWarning) {
+  if (showClosingPoolWarning) {
+    const { poolName, targetMarket } = closingPool;
+    const targetPoolName = targetMarket ? getMarketPoolName(targetMarket) : undefined;
+
+    warning.push(
+      <AlertInfoCard key="closingPoolPendingOrders" type="error" hideClose>
+        {tradeMode === TradeMode.StopMarket ? (
+          <Trans>{poolName} pool is closing and isn't taking new stop market orders.</Trans>
+        ) : tradeMode === TradeMode.Twap ? (
+          <Trans>{poolName} pool is closing and isn't taking new TWAP orders.</Trans>
+        ) : (
+          <Trans>{poolName} pool is closing and isn't taking new limit orders.</Trans>
+        )}
+        {targetMarket && (
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => setUserSelectedMarketAddress(targetMarket.marketTokenAddress)}
+          >
+            <Trans>Move order to {targetPoolName} pool</Trans>
+          </ColorfulButtonLink>
+        )}
+      </AlertInfoCard>
+    );
+  }
+
+  if (
+    marketWithPositionClosingState?.isClosed &&
+    (showHasExistingPositionWarning || showHasExistingPositionButNotEnoughLiquidityWarning)
+  ) {
+    const token = getMarketBaseName(marketWithPosition);
+    const poolName = getMarketPoolName(marketWithPosition);
+
+    warning.push(
+      <AlertInfoCard key="showHasExistingPositionInClosedPoolWarning" type="warning" hideClose>
+        {isLong ? (
+          <Trans>
+            Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate
+            position.
+          </Trans>
+        ) : (
+          <Trans>
+            Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate
+            position.
+          </Trans>
+        )}
+      </AlertInfoCard>
+    );
+  } else if (showHasExistingPositionWarning && marketWithPositionClosingState) {
+    warning.push(
+      <AlertInfoCard key="showHasExistingPositionWarning" type="warning" hideClose>
+        <Trans>
+          Existing position is in {getMarketPoolName(marketWithPosition)} pool. Using the selected pool will create a
+          separate position.
+        </Trans>
+      </AlertInfoCard>
+    );
+  } else if (showHasExistingPositionWarning) {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionWarning" type="warning" hideClose>
         <Trans>
@@ -268,9 +349,7 @@ const useTradeboxPoolWarnings = () => {
         </Trans>
       </AlertInfoCard>
     );
-  }
-
-  if (showHasExistingPositionButNotEnoughLiquidityWarning) {
+  } else if (showHasExistingPositionButNotEnoughLiquidityWarning) {
     warning.push(
       <AlertInfoCard key="showHasExistingPositionButNotEnoughLiquidityWarning" type="warning" hideClose>
         <Trans>
@@ -295,7 +374,7 @@ const useTradeboxPoolWarnings = () => {
         <Trans>
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
-        {hasEnoughLiquidity(minOpenFeesMarket) && (
+        {hasEnoughLiquidity(minOpenFeesMarket) && !isMinOpenFeesMarketClosing && (
           <ColorfulButtonLink
             color="blue"
             onClick={() => setUserSelectedMarketAddress(minOpenFeesMarket!.marketTokenAddress)}
@@ -314,17 +393,25 @@ const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Choosing a different pool
           creates a new position.
         </Trans>
-        <ColorfulButtonLink
-          color="blue"
-          onClick={() => setUserSelectedMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
-        >
-          <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
-        </ColorfulButtonLink>
+        {!isMinOpenFeesMarketClosing && (
+          <ColorfulButtonLink
+            color="blue"
+            onClick={() => setUserSelectedMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
+          >
+            <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
+          </ColorfulButtonLink>
+        )}
       </AlertInfoCard>
     );
   }
 
-  if (showHasExistingOrderWarning) {
+  if (showHasExistingOrderWarning && isMarketWithOrderClosing) {
+    warning.push(
+      <AlertInfoCard key="showHasExistingOrderWarning" type="warning" hideClose>
+        <Trans>Existing limit order in {getMarketPoolName(marketWithOrder)} pool</Trans>
+      </AlertInfoCard>
+    );
+  } else if (showHasExistingOrderWarning) {
     const address = marketsOptions.collateralWithOrder!.address;
 
     warning.push(

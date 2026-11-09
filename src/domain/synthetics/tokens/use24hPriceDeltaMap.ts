@@ -6,18 +6,11 @@ import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { ContractsChainId } from "sdk/configs/chains";
-import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import { getToken } from "sdk/configs/tokens";
 
-export type PriceDelta = {
-  close: number;
-  deltaPercentage: number;
-  deltaPercentageStr: string;
-  deltaPrice: number;
-  high: number;
-  low: number;
-  open: number;
-  tokenSymbol: string;
-};
+import { type PriceDelta, getPriceDelta } from "./priceDelta";
+
+export type { PriceDelta } from "./priceDelta";
 
 export type PriceDeltaMap = Partial<Record<Address, PriceDelta>>;
 
@@ -48,25 +41,7 @@ export function use24hPriceDeltaMap(
     return Object.fromEntries(
       tokenAddresses
         .filter((tokenAddress): tokenAddress is Address => Boolean(tokenAddress))
-        .map((tokenAddress) => {
-          const token = getToken(chainId, tokenAddress);
-
-          const tokenDelta = data?.find(
-            (candle) =>
-              candle.tokenSymbol === token.symbol || candle.tokenSymbol === getNormalizedTokenSymbol(token.symbol)
-          );
-
-          if (!tokenDelta) {
-            return [tokenAddress, undefined];
-          }
-
-          const deltaPrice = tokenDelta.close - tokenDelta.open;
-          const deltaPercentage = (deltaPrice * 100) / tokenDelta.open;
-          const deltaPercentageStr =
-            deltaPercentage > 0 ? `+${deltaPercentage.toFixed(2)}%` : `${deltaPercentage.toFixed(2)}%`;
-
-          return [tokenAddress, { ...tokenDelta, deltaPrice, deltaPercentage, deltaPercentageStr }];
-        })
+        .map((tokenAddress) => [tokenAddress, getPriceDelta(data, getToken(chainId, tokenAddress).symbol)])
     );
   }, [chainId, data, tokenAddresses]);
 

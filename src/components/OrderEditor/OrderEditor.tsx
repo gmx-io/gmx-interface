@@ -463,6 +463,7 @@ export function OrderEditor(p: Props) {
             minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
             autoCancel: p.order.autoCancel,
             validFromTime: 0n,
+            decreasePositionSwapType: p.order.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
           }),
@@ -498,6 +499,7 @@ export function OrderEditor(p: Props) {
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
             autoCancel: positionOrder.autoCancel,
             validFromTime: 0n,
+            decreasePositionSwapType: positionOrder.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
           }),
@@ -530,6 +532,7 @@ export function OrderEditor(p: Props) {
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "approvedToken",
   });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);

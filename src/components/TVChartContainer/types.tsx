@@ -44,4 +44,5 @@ export type DynamicChartLine = {
   indexTokenVisualMultiplier: number;
   isPartial: boolean;
   isMarginDeposit: boolean;
+  isEditable: boolean;
 };

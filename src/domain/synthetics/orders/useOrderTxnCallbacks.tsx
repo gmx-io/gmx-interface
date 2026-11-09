@@ -30,7 +30,7 @@ import { parseError } from "lib/errors";
 import {
   getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
-  getIsInvalidSubaccountApprovalNonceError,
+  getIsOutdatedSubaccountApprovalError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
@@ -45,7 +45,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
 import { getByKey } from "lib/objects";
 import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
@@ -86,6 +86,7 @@ export type CallbackUiCtx = {
   onExternalSwapFallback?: () => void;
   actionName?: TradingActionName;
   collateralSymbol?: string;
+  requestedReceiveTokenAddress?: string;
 };
 
 export function useOrderTxnCallbacks() {
@@ -131,6 +132,7 @@ export function useOrderTxnCallbacks() {
             tokenAddress: permit.token,
             accountType: tokenPermitAccountType,
             reason,
+            permitId: getTokenPermitId(permit),
           });
         });
       };
@@ -153,7 +155,11 @@ export function useOrderTxnCallbacks() {
       const handleTxnSubmitted = async () => {
         const createdAt = Date.now();
 
-        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData, createdAt);
+        const pendingOrders = getBatchPendingOrders(e.data.batchParams, ordersInfoData, createdAt).map((order) =>
+          ctx.requestedReceiveTokenAddress !== undefined && order.txnType === "create"
+            ? { ...order, requestedReceiveTokenAddress: ctx.requestedReceiveTokenAddress }
+            : order
+        );
 
         const optimisticBatchPayAmounts = getOptimisticBatchPayAmounts(e.data);
 
@@ -398,7 +404,7 @@ export function useOrderTxnCallbacks() {
 
           const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
           const isOutdatedSubaccountApproval =
-            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+            sentSubaccountApproval !== undefined && getIsOutdatedSubaccountApprovalError(error);
 
           const fallbackToInternalSwap =
             !isOutdatedSubaccountApproval &&
@@ -494,6 +500,7 @@ export function useOrderTxnCallbacks() {
                 tokenAddress: permit.token,
                 accountType: tokenPermitAccountType,
                 reason: "simulation",
+                permitId: getTokenPermitId(permit),
               });
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(

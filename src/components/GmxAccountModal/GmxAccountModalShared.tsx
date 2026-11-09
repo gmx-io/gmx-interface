@@ -1,8 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { type KeyboardEvent, type ReactNode } from "react";
 
-import { getChainName } from "config/chains";
-import { getAccountModalMode } from "config/multichain";
+import { getChainName, isSolanaNetwork } from "config/chains";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -15,6 +14,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
+import { useAccountModalMode } from "./hooks";
 import { TransferHistoryView } from "./MainView";
 import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawalView } from "./WithdrawalView";
@@ -135,9 +135,10 @@ function WalletAndGmxAccountInfo() {
 }
 
 export function MainViewTitle() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
   const [modalState] = useGmxAccountModalOpen();
-  const mode = getAccountModalMode(chainId, srcChainId);
+  const isSolanaSelected = isSolanaNetwork(networkId);
+  const mode = useAccountModalMode();
 
   const isMainViewActive = modalState === true || modalState === "main";
 
@@ -145,11 +146,14 @@ export function MainViewTitle() {
   const sourceChainName = srcChainId !== undefined ? getChainName(srcChainId) : settlementChainName;
 
   let title: ReactNode;
-  let info: ReactNode;
+  let info: ReactNode = undefined;
 
   if (mode === "walletOnly") {
     title = <Trans>Wallet</Trans>;
-    info = <WalletOnlyInfo chainName={settlementChainName} />;
+    // Solana has no GMX Account copy yet. The settlement-chain text names Arbitrum.
+    if (!isSolanaSelected) {
+      info = <WalletOnlyInfo chainName={settlementChainName} />;
+    }
   } else if (mode === "gmxAccount") {
     title = <Trans>GMX Account</Trans>;
     info = <GmxAccountInfo sourceChainName={sourceChainName} settlementChainName={settlementChainName} />;
@@ -161,17 +165,19 @@ export function MainViewTitle() {
   return (
     <div className="flex items-center gap-2">
       {title}
-      <TooltipWithPortal
-        content={<div className="text-typography-secondary">{info}</div>}
-        variant="none"
-        position="bottom"
-        className="flex items-center"
-        tooltipClassName="!max-w-[320px]"
-        disabled={!isMainViewActive}
-        openDelay={300}
-      >
-        <InfoIconStroke className="size-16 text-typography-secondary" />
-      </TooltipWithPortal>
+      {info && (
+        <TooltipWithPortal
+          content={<div className="text-typography-secondary">{info}</div>}
+          variant="none"
+          position="bottom"
+          className="flex items-center"
+          tooltipClassName="!max-w-[320px]"
+          disabled={!isMainViewActive}
+          openDelay={300}
+        >
+          <InfoIconStroke className="size-16 text-typography-secondary" />
+        </TooltipWithPortal>
+      )}
     </div>
   );
 }

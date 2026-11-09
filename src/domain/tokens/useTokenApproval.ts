@@ -13,6 +13,7 @@ import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import type { AnyChainId } from "sdk/configs/chains";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
@@ -88,7 +89,7 @@ export function useTokenApproval({
 
   const tokenAddresses = useMemo(() => mergedTokens.map((t) => t.tokenAddress), [mergedTokens]);
 
-  const nothingToCheck = skip || tokenAddresses.length === 0;
+  const nothingToCheck = skip || tokenAddresses.every((address) => address === NATIVE_TOKEN_ADDRESS);
 
   const {
     tokensAllowanceData,

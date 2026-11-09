@@ -95,6 +95,7 @@ export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBAC
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
 export const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
+export const SUBACCOUNT_REVOCATION_COUNTER = hashString("SUBACCOUNT_REVOCATION_COUNTER");
 export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_USD = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_USD");
 export const MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY = hashString("MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION");
@@ -113,6 +114,7 @@ export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
+export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
@@ -431,6 +433,10 @@ export function subaccountIntegrationIdKey(account: string, subaccount: string) 
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
 }
 
+export function subaccountRevocationCounterKey(account: string, subaccount: string) {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_REVOCATION_COUNTER, account, subaccount]);
+}
+
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
 }
@@ -445,6 +451,10 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function signalUnstakeFeatureDisabledKey(rewardRouter: string) {
+  return hashData(["bytes32", "address"], [SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY, rewardRouter]);
 }
 
 export function claimTermsKey(distributionId: bigint) {

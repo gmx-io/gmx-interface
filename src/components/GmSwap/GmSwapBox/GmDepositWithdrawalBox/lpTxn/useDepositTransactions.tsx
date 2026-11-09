@@ -26,15 +26,15 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
+  selectGmxAccountExpressFeeTokenAddress,
+  selectSettlementChainExpressFeeTokenAddress,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
   selectBlockTimestampData,
   selectChainId,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import {
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
-} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   TokensBalancesUpdates,
@@ -154,18 +154,20 @@ export const useDepositTransactions = ({
     };
   }, [rawParams, technicalFees, isDeposit]);
 
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const settlementChainGasPaymentTokenAddress = useSelector(selectSettlementChainExpressFeeTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
   const gasPaymentTokenAddress =
     paySource === "gmxAccount" ? gmxAccountGasPaymentTokenAddress : settlementChainGasPaymentTokenAddress;
   const gasPaymentTokenAsCollateralAmount = useMemo((): bigint | undefined => {
-    if (longTokenAddress === gasPaymentTokenAddress) {
-      return longTokenAmount;
+    if (longTokenAddress !== gasPaymentTokenAddress && shortTokenAddress !== gasPaymentTokenAddress) {
+      return undefined;
     }
-    if (shortTokenAddress === gasPaymentTokenAddress) {
-      return shortTokenAmount;
-    }
-    return undefined;
+
+    // same-collateral markets split the deposit between the long and the short token
+    return (
+      (longTokenAddress === gasPaymentTokenAddress ? longTokenAmount : 0n) +
+      (shortTokenAddress === gasPaymentTokenAddress ? shortTokenAmount : 0n)
+    );
   }, [longTokenAddress, shortTokenAddress, longTokenAmount, shortTokenAmount, gasPaymentTokenAddress]);
 
   const multichainDepositExpressTxnParams = useMultichainDepositExpressTxnParams({
@@ -203,6 +205,10 @@ export const useDepositTransactions = ({
     if (isGlv) {
       return initGLVSwapMetricData({
         chainId,
+        srcChainId,
+        isExpress: paySource === "gmxAccount",
+        isExpress1CT: false,
+        isCollateralFromMultichain: paySource === "gmxAccount",
         longTokenAddress,
         shortTokenAddress,
         selectedMarketForGlv,
@@ -223,6 +229,10 @@ export const useDepositTransactions = ({
 
     return initGMSwapMetricData({
       chainId,
+      srcChainId,
+      isExpress: paySource === "gmxAccount",
+      isExpress1CT: false,
+      isCollateralFromMultichain: paySource === "gmxAccount",
       longTokenAddress,
       shortTokenAddress,
       marketToken,
@@ -237,6 +247,8 @@ export const useDepositTransactions = ({
       isFirstBuy,
     });
   }, [
+    srcChainId,
+    paySource,
     chainId,
     glvInfo,
     params?.executionFee,

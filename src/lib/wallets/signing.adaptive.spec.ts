@@ -84,8 +84,9 @@ vi.mock("./walletConfig", () => ({
 }));
 
 import { DAY_MS } from "lib/dates";
+import { SMART_WALLET_NOT_DEPLOYED_ERROR } from "lib/errors/customErrors";
 import { sleep } from "lib/sleep";
-import { ARBITRUM, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
+import { ARBITRUM, ARBITRUM_SEPOLIA, SOURCE_BASE_MAINNET as BASE } from "sdk/configs/chainIds";
 
 import { signMessage, signTypedData } from "./signing";
 import { AccountType } from "./useAccountType";
@@ -94,6 +95,7 @@ import { getChainBindingState } from "./verificationChainSigning";
 const ACCOUNT = "0xF5B94d808d97AEB44dE46d8997Fdc6D215fC6d60";
 const SIGNATURE_FROM_BASE = `0x${"11".repeat(200)}`;
 const SIGNATURE_FROM_ARBITRUM = `0x${"22".repeat(200)}`;
+const SIGNATURE_OF_NOT_DEPLOYED_WALLET = `0x${"33".repeat(200)}${"6492".repeat(16)}`;
 
 const domain = {
   name: "GmxBaseGelatoRelayRouter",
@@ -224,6 +226,21 @@ describe("adaptive EIP-7702 signing", () => {
     expect(verificationClient.verifyHash).not.toHaveBeenCalled();
     expect(switchNetworkMock).not.toHaveBeenCalled();
     expect(helperToastInfoMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a signature of a not deployed smart wallet on 2.2.1 contracts, because they do not accept it yet", async () => {
+    const wallet = makeWallet(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
+    chainState.chainId = ARBITRUM_SEPOLIA;
+
+    await expect(
+      signTypedData({ signer: wallet, domain, types, typedData: { value: 1n }, verificationChainId: ARBITRUM_SEPOLIA })
+    ).rejects.toThrow(SMART_WALLET_NOT_DEPLOYED_ERROR);
+
+    chainState.chainId = ARBITRUM;
+
+    await expect(
+      signTypedData({ signer: wallet, domain, types, typedData: { value: 1n }, verificationChainId: ARBITRUM })
+    ).resolves.toBe(SIGNATURE_OF_NOT_DEPLOYED_WALLET);
   });
 
   it("keeps the first signature when it is valid on the verification chain", async () => {
@@ -420,6 +437,16 @@ describe("adaptive EIP-7702 signing", () => {
       didSwitchChain: false,
       accountTypeOnSigningChain: "postEip7702Eoa",
       accountTypeOnVerificationChain: "postEip7702Eoa",
+      signerSource: "wallet",
     });
+  });
+
+  it("reports a signature by a key other than the connected wallet as local, since no wallet prompt was shown", async () => {
+    getAccountMock.mockReturnValue({ address: "0x0000000000000000000000000000000000000002" });
+
+    await signOrderVerifiedOnArbitrum(walletOnArbitrum);
+
+    await vi.waitFor(() => expect(metricsPushEventMock).toHaveBeenCalledTimes(1));
+    expect(metricsPushEventMock.mock.calls[0][0].data.signerSource).toBe("local");
   });
 });

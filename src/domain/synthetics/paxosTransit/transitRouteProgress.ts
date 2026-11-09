@@ -29,11 +29,19 @@ export type TransitRouteProgress = {
   depositTxnHash: string | undefined;
   isContinueRequested: boolean;
   isDismissed: boolean;
+  // set when the conversion tops up margin of a USDG position that was too large to convert instantly
+  addMarginPositionKey?: string;
 };
 
 export type NewTransitRouteProgress = Pick<
   TransitRouteProgress,
-  "chainId" | "account" | "direction" | "glvOrMarketAddress" | "withdrawalTxnHash" | "conversion"
+  | "chainId"
+  | "account"
+  | "direction"
+  | "glvOrMarketAddress"
+  | "withdrawalTxnHash"
+  | "conversion"
+  | "addMarginPositionKey"
 >;
 
 export function getTransitRouteProgressForMarket(
@@ -73,6 +81,9 @@ export function getShouldStoreTransitRouteProgress(p: {
     progress.withdrawalTxnHash === undefined || progress.withdrawalExecutedTxnHash !== undefined;
 
   if (isOrderLookupExpired) return false;
+
+  // the continue step comes after the conversion, so it has to survive a reload
+  if (progress.addMarginPositionKey !== undefined) return !progress.isDismissed && !isConversionRemoved;
 
   if (progress.glvOrMarketAddress === undefined) return !isConverted && !isConversionRemoved;
 

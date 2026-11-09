@@ -33,7 +33,6 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
 
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const readerAddress = getContract(chainId, "Reader");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
@@ -98,11 +97,13 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
       <ClaimModal
         isVisible={isClaimModalVisible}
         setIsVisible={setIsClaimModalVisible}
-        rewardRouterAddress={rewardRouterAddress}
         signer={signer}
         chainId={chainId}
         setPendingTxns={setPendingTxns}
         totalGmxRewards={processedData?.totalGmxRewards}
+        stakingGmxRewards={processedData?.extendedGmxTrackerRewards}
+        gmxVesterRewards={processedData?.gmxVesterRewards}
+        glpVesterRewards={processedData?.glpVesterRewards}
         totalEsGmxRewards={processedData?.totalEsGmxRewards}
         totalNativeTokenRewards={processedData?.totalNativeTokenRewards}
         nativeTokenSymbol={nativeTokenSymbol}

@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
@@ -17,6 +17,11 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
+import type {
+  GasPaymentTokenReplacements,
+  GasPaymentTokensOnchainState,
+} from "domain/synthetics/express/gasPaymentTokenAvailability";
+import { useGasPaymentTokensOnchainState } from "domain/synthetics/express/useGasPaymentTokensOnchainState";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
@@ -62,6 +67,7 @@ import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTrad
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
+import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import {
   AccountWhitelistsResult,
@@ -167,6 +173,9 @@ export type SyntheticsState = {
   features: FeaturesSettings | undefined;
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
+  gasPaymentTokensOnchainState: GasPaymentTokensOnchainState | undefined;
+  gasPaymentTokenReplacements: GasPaymentTokenReplacements;
+  setGasPaymentTokenReplacement: (isGmxAccount: boolean, tokenAddress: string | undefined) => void;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -204,7 +213,8 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
-  const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfoRequest = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfo = useMarketsInfoWithDebugInstantLimit(chainId, marketsInfoRequest);
 
   const { isFirstOrder = true } = useIsFirstOrder(chainId, { account });
 
@@ -384,6 +394,13 @@ export function SyntheticsStateContextProvider({
     tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
 
+  const gasPaymentTokensOnchainState = useGasPaymentTokensOnchainState(chainId);
+  const [gasPaymentTokenReplacements, setGasPaymentTokenReplacements] = useState<GasPaymentTokenReplacements>({});
+  const setGasPaymentTokenReplacement = useCallback((isGmxAccount: boolean, tokenAddress: string | undefined) => {
+    const key = isGmxAccount ? "gmxAccount" : "wallet";
+    setGasPaymentTokenReplacements((prev) => (prev[key] === tokenAddress ? prev : { ...prev, [key]: tokenAddress }));
+  }, []);
+
   const state = useMemo(() => {
     const s: SyntheticsState = {
       pageType,
@@ -453,6 +470,9 @@ export function SyntheticsStateContextProvider({
       features,
       uiFlags,
       gasPaymentTokenAllowance,
+      gasPaymentTokensOnchainState,
+      gasPaymentTokenReplacements,
+      setGasPaymentTokenReplacement,
       l1ExpressOrderGasReference,
     };
 
@@ -469,6 +489,9 @@ export function SyntheticsStateContextProvider({
     features,
     gasLimits,
     gasPaymentTokenAllowance,
+    gasPaymentTokensOnchainState,
+    gasPaymentTokenReplacements,
+    setGasPaymentTokenReplacement,
     gasPrice,
     glvInfo,
     isCandlesLoaded,

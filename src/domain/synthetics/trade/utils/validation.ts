@@ -35,6 +35,7 @@ import type { GmPaySource } from "domain/synthetics/markets/types";
 import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domain/synthetics/tokens";
+import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
 import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { TokenBalanceType } from "domain/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
@@ -137,8 +138,10 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
 export function getExpressError(p: {
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
+  // when false, a short wallet gas token is an error instead of a quiet Classic transaction paid in the native token
+  canFallBackToClassic?: boolean;
 }): ValidationResult {
-  const { expressParams, tokensData } = p;
+  const { expressParams, tokensData, canFallBackToClassic = true } = p;
 
   if (!expressParams) {
     return {};
@@ -163,7 +166,8 @@ export function getExpressError(p: {
     nativeToken.walletBalance < expressParams.gasPaymentParams.totalRelayerFeeTokenAmount;
 
   const isNativeExpressError =
-    expressParams.gasPaymentValidations.isOutGasTokenBalance && isInsufficientNativeTokenBalance;
+    expressParams.gasPaymentValidations.isOutGasTokenBalance &&
+    (isInsufficientNativeTokenBalance || !canFallBackToClassic);
 
   if (isNativeExpressError) {
     return {
@@ -336,6 +340,8 @@ export function getIncreaseError(p: {
   chainId: number;
   resultingPositionMarginState: PositionMarginState | undefined;
   isResultingPositionCheckBlocking: boolean;
+  /** set when a USDC margin on a USDG pool is too large to convert instantly */
+  instantConversionLimit?: bigint;
 }): ValidationResult {
   const {
     marketInfo,
@@ -400,6 +406,15 @@ export function getIncreaseError(p: {
   const noExternalSwap = !externalSwapQuote;
 
   if (isNeedSwap) {
+    if (p.instantConversionLimit !== undefined) {
+      const maxInstantText = formatMaxInstantAmount(initialCollateralToken, p.instantConversionLimit);
+
+      return {
+        buttonErrorMessage:
+          p.instantConversionLimit > 0n ? t`Max instant margin: ${maxInstantText}` : t`Too large to convert instantly`,
+      };
+    }
+
     if (noInternalSwap && noExternalSwap && !isExternalSwapLoading) {
       return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
     }
@@ -788,6 +803,8 @@ export function getEditCollateralError(p: {
   minDepositUsd: bigint | undefined;
   marketInfo: MarketInfo | undefined;
   maxWithdrawAmount: bigint | undefined;
+  isDepositSwapUnfillable?: boolean;
+  isDepositSwapPathMissing?: boolean;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -801,6 +818,8 @@ export function getEditCollateralError(p: {
     minDepositUsd,
     marketInfo,
     maxWithdrawAmount,
+    isDepositSwapUnfillable,
+    isDepositSwapPathMissing,
   } = p;
 
   const minCollateralFactor = marketInfo?.minCollateralFactor;
@@ -820,6 +839,14 @@ export function getEditCollateralError(p: {
 
   if (collateralDeltaAmount === undefined || collateralDeltaUsd === undefined || amountError.buttonErrorMessage) {
     return amountError;
+  }
+
+  if (isDeposit && isDepositSwapUnfillable) {
+    return { buttonErrorMessage: t`Too large to convert instantly` };
+  }
+
+  if (isDeposit && isDepositSwapPathMissing) {
+    return { buttonErrorMessage: t`No swap path found` };
   }
 
   if (!isDeposit && maxWithdrawAmount !== undefined && collateralDeltaAmount > maxWithdrawAmount) {
