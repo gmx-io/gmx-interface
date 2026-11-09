@@ -2600,10 +2600,6 @@ msgstr ""
 msgid "GMX balance"
 msgstr ""
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr ""
@@ -4528,6 +4524,10 @@ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
 msgstr ""
 
 #: src/pages/Announcements/AnnouncementCard.tsx
@@ -7442,6 +7442,10 @@ msgstr ""
 msgid "Perpetuals"
 msgstr "[!! Perpetuals !!]"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr ""
@@ -7610,10 +7614,6 @@ msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
-msgstr ""
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -8364,6 +8364,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
+msgstr ""
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr ""
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
@@ -9211,6 +9215,10 @@ msgstr ""
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "View transaction"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
 msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10312,10 +10320,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
-msgstr ""
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
 msgstr ""
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
@@ -12798,7 +12802,6 @@ msgstr ""
 msgid "Estimate your savings"
 msgstr ""
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

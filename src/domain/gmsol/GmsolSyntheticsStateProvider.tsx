@@ -1,3 +1,4 @@
+import noop from "lodash/noop";
 import { ReactNode, useMemo, useState } from "react";
 
 import { getKeepLeverageKey } from "config/localStorage";
@@ -258,6 +259,9 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       features: undefined,
       uiFlags: undefined,
       gasPaymentTokenAllowance: undefined,
+      gasPaymentTokensOnchainState: undefined,
+      gasPaymentTokenReplacements: EMPTY_OBJECT,
+      setGasPaymentTokenReplacement: noop,
       l1ExpressOrderGasReference: undefined,
     };
   }, [

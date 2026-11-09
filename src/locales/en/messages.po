@@ -2600,10 +2600,6 @@ msgstr "Pick a time"
 msgid "GMX balance"
 msgstr "GMX balance"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Price on Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
@@ -4529,6 +4525,10 @@ msgstr "Wallet-only"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "The Paxos quote changed. Review the new amount and fee, then confirm again."
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "Your funds are safe in GMX contracts on the destination chain. Retry the
 msgid "Perpetuals"
 msgstr "Perpetuals"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Impact exponent (negative)"
@@ -7611,10 +7615,6 @@ msgstr "Points are allocated based on your cumulative trading volume on GMX Mega
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Settle request for {0, plural, one {# position} other {# positions}} sent"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Price on Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "At this trigger price, the remaining position would exceed max leverage 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} updated"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "Claim rebates"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "View transaction"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "Opens GMTrade in a new tab"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "Top addresses"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "Execute margin deposit"
 msgid "Estimate your savings"
 msgstr "Estimate your savings"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

@@ -1,12 +1,12 @@
 import { beforeAll, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM } from "configs/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { MARKETS } from "configs/markets";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { MOCK_GAS_PRICE, mockExternalSwap } from "test/mock";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
-import { OrderType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import {
   buildIncreaseOrderPayload,
   buildUpdateOrderPayload,
@@ -73,7 +73,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: CHAIN_ID, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -113,7 +113,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: CHAIN_ID, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -143,6 +143,44 @@ describe("Exchange Router Multicall", () => {
       );
     });
 
+    it("Update order passes the order swap type on Arbitrum Sepolia", () => {
+      const updateOrderPayload = buildUpdateOrderPayload({
+        chainId: ARBITRUM_SEPOLIA,
+        orderKey: "0x1234567890123456789012345678901234567890123456789012345678901234",
+        orderType: OrderType.LimitDecrease,
+        sizeDeltaUsd: parseValue("1000", USD_DECIMALS)!,
+        triggerPrice: parseValue("1200", USD_DECIMALS)!,
+        acceptablePrice: parseValue("1194", USD_DECIMALS)!,
+        minOutputAmount: 0n,
+        autoCancel: false,
+        executionFeeTopUp: 0n,
+        indexTokenAddress: getWrappedToken(ARBITRUM_SEPOLIA).address,
+        validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
+      });
+
+      const result = getBatchOrderMulticallPayload({
+        chainId: ARBITRUM_SEPOLIA,
+        params: { createOrderParams: [], updateOrderParams: [updateOrderPayload], cancelOrderParams: [] },
+      });
+
+      expect(result.multicall).toEqual([
+        {
+          method: "updateOrder",
+          params: [
+            updateOrderPayload.updatePayload.orderKey,
+            updateOrderPayload.updatePayload.sizeDeltaUsd,
+            updateOrderPayload.updatePayload.acceptablePrice,
+            updateOrderPayload.updatePayload.triggerPrice,
+            updateOrderPayload.updatePayload.minOutputAmount,
+            0n,
+            DecreasePositionSwapType.SwapPnlTokenToCollateralToken,
+            updateOrderPayload.updatePayload.autoCancel,
+          ],
+        },
+      ]);
+    });
+
     it("Token transfers with update order top up", () => {
       const ORDER_KEY = "0x1234567890123456789012345678901234567890123456789012345678901234";
 
@@ -158,6 +196,7 @@ describe("Exchange Router Multicall", () => {
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
       } satisfies Partial<UpdateOrderParams>;
 
       const updateOrderPayload = buildUpdateOrderPayload(updateParams);
@@ -167,7 +206,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: CHAIN_ID, params: batchParams });
 
       expect(result.multicall).toEqual([
         {
@@ -246,6 +285,7 @@ describe("Exchange Router Multicall", () => {
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
         validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
       } satisfies Partial<UpdateOrderParams>;
 
       const updateOrderPayload = buildUpdateOrderPayload(updateParams);
@@ -258,7 +298,7 @@ describe("Exchange Router Multicall", () => {
         cancelOrderParams: [{ orderKey: CANCEL_ORDER_KEY }],
       };
 
-      const result = getBatchOrderMulticallPayload({ params: batchParams });
+      const result = getBatchOrderMulticallPayload({ chainId: CHAIN_ID, params: batchParams });
 
       expect(result.multicall).toEqual([
         {

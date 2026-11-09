@@ -12,6 +12,7 @@ import { useSubaccountContext } from "context/SubaccountContext/SubaccountContex
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTokensData,
@@ -150,7 +151,6 @@ export function ExpressTradingWarningCard({
     shouldShowNativeTokenWarning,
     shouldShowWrapOrUnwrapWarning,
     shouldShowExpiredSubaccountWarning,
-    shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
     shouldShowSubaccountApprovalInvalidWarning,
     shouldShowSubaccountApprovalForAnotherNetworkWarning,
@@ -171,13 +171,14 @@ export function ExpressTradingWarningCard({
   });
 
   const conflictToken = tradeFlags?.isSwap ? swapToToken : collateralToken;
-  const savedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
+  const selectedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
 
   const payAmounts = useMemo(
     () => (payTokenAddress && fromTokenAmount > 0n ? { [payTokenAddress]: fromTokenAmount } : {}),
     [payTokenAddress, fromTokenAmount]
   );
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const gasTokenCandidate = useMemo(() => {
     if (!shouldShowExternalSwapGasConflictRequiredWarning && !shouldShowExternalSwapGasConflictOptionalWarning) {
@@ -189,10 +190,11 @@ export function ExpressTradingWarningCard({
       tokensData,
       desirability: shouldShowExternalSwapGasConflictRequiredWarning ? "required" : "optional",
       conflictTokenAddress: conflictToken?.address,
-      savedGasTokenAddress: savedGasPaymentToken?.address,
+      savedGasTokenAddress: selectedGasPaymentToken?.address,
       gasPaymentParams: expressParams?.gasPaymentParams,
       payAmounts,
       isGmxAccount,
+      unavailableTokenAddresses,
     });
 
     return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
@@ -200,12 +202,13 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
     conflictToken,
-    savedGasPaymentToken,
+    selectedGasPaymentToken,
     expressParams,
     payAmounts,
     chainId,
     tokensData,
     isGmxAccount,
+    unavailableTokenAddresses,
   ]);
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
@@ -294,12 +297,6 @@ export function ExpressTradingWarningCard({
     color = "blue";
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-  } else if (shouldShowNonceExpiredWarning) {
-    onClick = handleUpdateSubaccountSettings;
-    icon = OneClickIcon;
-    color = "blue";
-    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
-    buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissExpiredSubaccountWarning;

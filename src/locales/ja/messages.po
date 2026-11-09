@@ -2600,10 +2600,6 @@ msgstr "日時を選択"
 msgid "GMX balance"
 msgstr "GMX 残高"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Avalanche上の価格"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "オフチェーンでトランザクションに署名します。プレミアムRPCがネットワーク混雑時の信頼性を確保します。<0/><1/>手数料は、アクションが使用する残高からGas支払いトークンで支払われます。"
@@ -4529,6 +4525,10 @@ msgstr "ウォレットのみ"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxosの見積もりが変わりました。新しい金額と手数料を確認し、もう一度承認してください。"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができないため、支払えるようになるまでトランザクションはExpressなしで送信されます。"
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "お客様の資金は送信先チェーンのGMXコントラクトに安
 msgid "Perpetuals"
 msgstr "パーペチュアル"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができません。代わりに{toSymbol}で支払われます。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "インパクト指数（マイナス）"
@@ -7611,10 +7615,6 @@ msgstr "ポイントは、GMX MegaETHでの累計取引高に基づいて付与�
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "{0, plural, one {# ポジション} other {# ポジション}} の決済リクエストを送信しました"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Arbitrum上の価格"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "このトリガー価格では残りのポジションが最大レバレ
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}が更新されました"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "現在{fromSymbol}でネットワーク手数料を支払うことができないため、支払えるようになるまでGMX Accountの操作は送信できません。"
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "リベートを受け取る"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "トランザクションを表示"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>{walletName}はまだ{0}にデプロイされていません</0><1/><2>{1}でこのウォレットから任意のトランザクションを送信してから、もう一度お試しください</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "GMTradeを新しいタブで開きます"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "トップアドレス"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading の承認 nonce が期限切れです。One-Click Trading を続行するには再署名してください。"
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "証拠金入金を執行"
 msgid "Estimate your savings"
 msgstr "節約額シミュレーション"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

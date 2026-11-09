@@ -2600,10 +2600,6 @@ msgstr "選擇時間"
 msgid "GMX balance"
 msgstr "GMX 餘額"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Avalanche 上的價格"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>費用以您的 Gas 支付代幣從操作所使用的餘額中支付。"
@@ -4529,6 +4525,10 @@ msgstr "僅限錢包"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Paxos 報價已變更。請查看新的金額和費用，然後再次確認。"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前交易將不透過 Express 送出。"
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "您的資金安全存放在目標鏈上的 GMX 合約中。請在 LayerZ
 msgid "Perpetuals"
 msgstr "永續合約"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} 目前無法支付網路費用，將改用 {toSymbol} 支付。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "影響指數（負向）"
@@ -7611,10 +7615,6 @@ msgstr "點數會依據您在 GMX MegaETH 的累計交易量分配"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "已發送 {0, plural, one {# 個倉位} other {# 個倉位}} 的結算請求"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Arbitrum 上的價格"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "在此觸發價格下，剩餘倉位將超過最大槓桿，訂單可能
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前無法送出 GMX Account 操作。"
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "領取回饋金"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "查看交易"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>您的 {walletName} 尚未在 {0} 上部署</0><1/><2>請先用它在 {1} 上發起任意一筆交易，然後重試</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "在新分頁中開啟 GMTrade"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "頂尖地址"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading 授權 nonce 已過期。請重新簽署以繼續使用 One-Click Trading。"
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "執行保證金存入"
 msgid "Estimate your savings"
 msgstr "試算您的節省金額"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"

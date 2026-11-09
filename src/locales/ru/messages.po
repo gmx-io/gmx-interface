@@ -2600,10 +2600,6 @@ msgstr "Выбрать время"
 msgid "GMX balance"
 msgstr "Баланс GMX"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Цена на Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Подписывайте транзакции вне сети. Премиальные RPC обеспечивают надёжность при перегрузке сети.<0/><1/>Комиссии оплачиваются вашим токеном оплаты Gas из баланса, который использует действие."
@@ -4529,6 +4525,10 @@ msgstr "Только через кошелёк"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Котировка Paxos изменилась. Проверьте новую сумму и комиссию, затем подтвердите снова."
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому транзакции отправляются без Express, пока это не станет возможным."
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "Ваши средства в безопасности в контрак�
 msgid "Perpetuals"
 msgstr "Бессрочные контракты"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии. Вместо этого они оплачиваются в {toSymbol}."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Экспонента влияния (отрицательная)"
@@ -7611,10 +7615,6 @@ msgstr "Баллы начисляются с учётом вашего сово�
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Запрос на расчёт {0, plural, one {# позиции} other {# позиций}} отправлен"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Цена на Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "По этой цене срабатывания оставшаяся п�
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "Обновлено: {orderText}"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому действия GMX Account нельзя отправить, пока это не станет возможным."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "Получить реферальные вознаграждения"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "Просмотреть транзакцию"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Ваш {walletName} ещё не развёрнут в сети {0}</0><1/><2>Сделайте любую транзакцию с него в сети {1} и попробуйте снова</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "Открывает GMTrade в новой вкладке"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "Лучшие адреса"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "Срок действия nonce подтверждения One-Click Trading истёк. Подпишите повторно, чтобы продолжить использовать One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "Исполнить депозит маржи"
 msgid "Estimate your savings"
 msgstr "Оценить свою экономию"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
