@@ -276,8 +276,14 @@ function MarketsList() {
     return options.some((t) => favoriteTokens.includes(t.address));
   }, [options, favoriteTokens]);
 
+  const hasTradfiMarkets = options?.some((token) => token.categories?.includes("tradfi")) ?? false;
+  const excludedTabs = useMemo<TopLevelTab[]>(
+    () => (isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : hasTradfiMarkets ? [] : ["tradfi"]),
+    [isSwap, hasTradfiMarkets]
+  );
+
   const shouldFallbackToAll =
-    (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
+    excludedTabs.includes(storedTopLevelTab) ||
     (storedTopLevelTab === "favorites" && !hasAvailableFavorites) ||
     (storedTopLevelTab === "recently-listed" && recentlyListedCount === 0);
   const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
@@ -482,7 +488,7 @@ function MarketsList() {
             recentlyListedCount={recentlyListedCount}
             hasAvailableFavorites={hasAvailableFavorites}
             className="px-16"
-            excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
+            excludedTabs={excludedTabs}
             selectedValue={topLevelTab}
           />
         </ButtonRowScrollFadeContainer>

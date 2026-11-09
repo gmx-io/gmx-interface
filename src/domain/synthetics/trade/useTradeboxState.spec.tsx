@@ -3,9 +3,11 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import type { OrderInfo } from "domain/synthetics/orders";
 import { createMockMarketInfo, createMockMarketsData, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { BTC_ADDRESS, BTC_TOKEN, ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { ARBITRUM, type NetworkId, SOLANA_NETWORK_ID } from "sdk/configs/chains";
+import { OrderType } from "sdk/utils/orders/types";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
@@ -110,6 +112,51 @@ describe("useTradeboxState network isolation", () => {
       expect(tradebox.tradeType).toBe(expectedType);
       expect(tradebox.availableTradeModes.length).toBeGreaterThan(0);
       expect(JSON.parse(localStorage.getItem(key)!).tradeType).toBe(expectedType);
+    }
+  );
+
+  it.each(["trade type", "trade config", "swap order"] as const)(
+    "preserves the Solana Short Limit form when an unsupported Swap is requested via %s",
+    (entry) => {
+      seedNetwork(SOLANA_NETWORK_ID, {
+        tradeType: TradeType.Short,
+        indexTokenAddress: ETH_ADDRESS,
+        market: MOCK_MARKET_ADDRESS,
+      });
+      renderTradebox(SOLANA_NETWORK_ID);
+      act(() => {
+        tradebox.setTradeMode(TradeMode.Limit);
+        tradebox.setFromTokenInputValue("123");
+      });
+      const previous = readStoredTradeOptions(SOLANA_NETWORK_ID);
+      expect(tradebox.tradeType).toBe(TradeType.Short);
+      expect(tradebox.tradeMode).toBe(TradeMode.Limit);
+
+      act(() => {
+        if (entry === "trade type") {
+          tradebox.setTradeType(TradeType.Swap);
+        } else if (entry === "trade config") {
+          tradebox.setTradeConfig({ tradeType: TradeType.Swap, toTokenAddress: BTC_ADDRESS });
+        } else {
+          tradebox.setActiveOrder({
+            orderType: OrderType.LimitSwap,
+            isTwap: false,
+            isSwap: true,
+            isLong: true,
+            marketAddress: MOCK_MARKET_ADDRESS,
+            swapPath: [MOCK_MARKET_ADDRESS],
+            initialCollateralTokenAddress: USDC_ADDRESS,
+            initialCollateralToken: USDC_TOKEN,
+            targetCollateralToken: BTC_TOKEN,
+          } as OrderInfo);
+        }
+      });
+
+      expect(tradebox.tradeType).toBe(TradeType.Short);
+      expect(tradebox.tradeMode).toBe(TradeMode.Limit);
+      expect(tradebox.fromTokenInputValue).toBe("123");
+      expect(tradebox.toTokenAddress).toBe(ETH_ADDRESS);
+      expect(readStoredTradeOptions(SOLANA_NETWORK_ID)).toEqual(previous);
     }
   );
 
