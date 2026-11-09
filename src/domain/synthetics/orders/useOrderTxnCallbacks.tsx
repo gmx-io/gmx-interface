@@ -30,7 +30,7 @@ import { parseError } from "lib/errors";
 import {
   getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
-  getIsInvalidSubaccountApprovalNonceError,
+  getIsOutdatedSubaccountApprovalError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
@@ -404,7 +404,7 @@ export function useOrderTxnCallbacks() {
 
           const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
           const isOutdatedSubaccountApproval =
-            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+            sentSubaccountApproval !== undefined && getIsOutdatedSubaccountApprovalError(error);
 
           const fallbackToInternalSwap =
             !isOutdatedSubaccountApproval &&

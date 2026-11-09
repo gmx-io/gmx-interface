@@ -82,6 +82,8 @@ export function OneClickNetworkSwitchStory({
       signature: "0x01",
       signedAt: 1000,
       integrationId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      revocationCounter: 0n,
+      eip6492SignatureWrapperHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
       subaccountRouterAddress: getContract(ARBITRUM, "SubaccountGelatoRelayRouter"),
       signatureChainId: ARBITRUM,
     };

@@ -2,13 +2,11 @@ import useSWR from "swr";
 import { expect, it, vi } from "vitest";
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
-import { SOLANA_NETWORK_ID } from "config/chains";
 
 import { useSolanaTradingEnabled } from "./useSolanaTradingEnabled";
 
 vi.mock("swr", () => ({ default: vi.fn() }));
 vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: vi.fn() }));
-vi.mock("lib/chains", () => ({ useChainId: () => ({ networkId: SOLANA_NETWORK_ID }) }));
 
 it.each`
   scenario                   | enabled  | networkEnabled | data         | error                       | isLoading | active   | allowed
@@ -21,9 +19,7 @@ it.each`
   ${"explicit permission"}   | ${true}  | ${true}        | ${true}      | ${undefined}                | ${false}  | ${true}  | ${true}
 `("keeps trading fail-closed: $scenario", ({ enabled, networkEnabled, data, error, isLoading, active, allowed }) => {
   vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(networkEnabled);
-  vi.mocked(useSWR).mockReturnValue({
-    data: data === undefined ? undefined : { solanaTrading: { enabled: data } },
-    error, isLoading, isValidating: false, mutate: vi.fn() });
+  vi.mocked(useSWR).mockReturnValue({ data, error, isLoading, isValidating: false, mutate: vi.fn() });
   const result = useSolanaTradingEnabled({ enabled });
   expect(result.isSolanaTradingEnabled).toBe(allowed);
   expect(result.isLoading).toBe(active && isLoading);

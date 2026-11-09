@@ -34,6 +34,7 @@ import {
   getGasPaymentValidations,
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
+import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/useGasPaymentTokenUnavailableToast";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { convertToTokenAmount } from "domain/tokens";
@@ -395,6 +396,12 @@ export function useArbitraryRelayParamsAndPayload({
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
+
+  useGasPaymentTokenUnavailableToast({
+    isGmxAccount,
+    feeTokenAddress: globalExpressParams?.gasPaymentTokenAddress,
+    enabled: isGmxAccount && enabled && expressTransactionBuilder !== undefined,
+  });
 
   const estimationKey = `${globalExpressParams?.gasPaymentTokenAddress}`;
   const prevEstimationKey = usePrevious(estimationKey);

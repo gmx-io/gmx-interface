@@ -145,6 +145,9 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://coin-images.coingecko.com/coins/images/51281/small/GDN_USDG_Token_200x200.png?1730484111",
       explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      isPermitSupported: true,
+      // the contract has no version() to read it from
+      contractVersion: "1",
     },
     {
       name: "Tether",

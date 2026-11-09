@@ -81,6 +81,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
             acceptablePrice: order.acceptablePrice,
             minOutputAmount: order.minOutputAmount,
             orderType: order.orderType,
+            decreasePositionSwapType: order.decreasePositionSwapType,
             executionFee: order.executionFee,
             setPendingTxns,
           })),

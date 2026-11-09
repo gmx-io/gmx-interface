@@ -52,6 +52,7 @@ function createOnchainData(overrides: Partial<SubaccountOnchainData> = {}): Suba
     approvalNonce: APPROVAL_NONCE,
     multichainApprovalNonce: MULTICHAIN_APPROVAL_NONCE,
     integrationId: zeroHash,
+    revocationCounter: 0n,
     ...overrides,
   };
 }
@@ -69,6 +70,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: gelatoRouterAddress,
     signatureChainId: ARBITRUM,
     ...overrides,

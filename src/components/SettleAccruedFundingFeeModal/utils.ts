@@ -72,11 +72,13 @@ export function getCanPayNetworkFeeFromBalance({
   tokensData,
   gasPaymentParams,
   isGmxAccount,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
   gasPaymentParams: GasPaymentParams;
   isGmxAccount: boolean;
+  unavailableTokenAddresses: string[];
 }): boolean {
   const { gasPaymentToken, gasPaymentTokenAmount } = gasPaymentParams;
   const feeUsd = convertToUsd(gasPaymentTokenAmount, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
@@ -84,7 +86,7 @@ export function getCanPayNetworkFeeFromBalance({
 
   return getGasPaymentTokens(chainId).some((tokenAddress) => {
     const token = getByKey(tokensData, tokenAddress);
-    if (!token) return false;
+    if (!token || unavailableTokenAddresses.includes(tokenAddress)) return false;
 
     const balance = isGmxAccount ? token.gmxAccountBalance : token.walletBalance;
     const required = convertToTokenAmount(feeUsd, token.decimals, token.prices.minPrice);
@@ -98,16 +100,24 @@ export function getShouldSwitchNetworkFeeSource({
   chainId,
   tokensData,
   expressParams,
+  unavailableTokenAddresses,
 }: {
   chainId: number;
   tokensData: TokensData | undefined;
   expressParams: ExpressTxnParams;
+  unavailableTokenAddresses: string[];
 }): boolean {
   if (!getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)) return false;
 
   const { isGmxAccount, gasPaymentParams } = expressParams;
   const canPay = (fromGmxAccount: boolean) =>
-    getCanPayNetworkFeeFromBalance({ chainId, tokensData, gasPaymentParams, isGmxAccount: fromGmxAccount });
+    getCanPayNetworkFeeFromBalance({
+      chainId,
+      tokensData,
+      gasPaymentParams,
+      isGmxAccount: fromGmxAccount,
+      unavailableTokenAddresses,
+    });
 
   if (canPay(isGmxAccount)) return false;
   if (canPay(!isGmxAccount)) return true;

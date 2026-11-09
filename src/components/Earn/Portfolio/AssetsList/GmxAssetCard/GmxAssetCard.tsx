@@ -7,7 +7,6 @@ import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRecentAvgWeeklyBuybackGmx } from "domain/buyback/useBuybackChartData";
@@ -47,9 +46,9 @@ import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 
 export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
   const { chainId } = useChainId();
-  const { active, signer, account } = useWallet();
+  const { signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
   const {
     stakingPowerData,
     projectedRewardGmx: displayProjectedRewardGmx,

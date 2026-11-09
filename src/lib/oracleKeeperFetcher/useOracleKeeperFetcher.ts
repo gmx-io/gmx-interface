@@ -17,9 +17,8 @@ function getOrCreateOracleKeeperFetcher(chainId: ContractsChainId, track: boolea
   return fetcher;
 }
 
-// track: false skips the endpoint probes for a fetcher created while Solana is selected; it still falls back between hosts
-export function getOracleKeeperFetcher(chainId: ContractsChainId, { track = true }: { track?: boolean } = {}): OracleFetcher {
-  return getOrCreateOracleKeeperFetcher(chainId, track);
+export function getOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {
+  return getOrCreateOracleKeeperFetcher(chainId, true);
 }
 
 export function useOracleKeeperFetcher(chainId: ContractsChainId): OracleFetcher {

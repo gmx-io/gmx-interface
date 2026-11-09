@@ -7,7 +7,7 @@ import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
 import { useTotalGmxStaked } from "domain/legacy";
 import { GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -24,16 +24,12 @@ import TooltipComponent from "components/Tooltip/Tooltip";
 export function GmxCard({
   chainId,
   gmxPrice,
-  gmxPriceFromArbitrum,
-  gmxPriceFromAvalanche,
   totalGmxSupply,
   gmxMarketCap,
   totalGmxInLiquidity,
 }: {
   chainId: number;
   gmxPrice: bigint | undefined;
-  gmxPriceFromArbitrum: bigint | undefined;
-  gmxPriceFromAvalanche: bigint | undefined;
   totalGmxSupply: bigint | undefined;
   gmxMarketCap: bigint | undefined;
   totalGmxInLiquidity: bigint;
@@ -44,12 +40,12 @@ export function GmxCard({
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 
   const stakedGmxArbitrumUsd =
-    gmxPriceFromArbitrum !== undefined && stakedGmxArbitrum !== undefined
-      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPriceFromArbitrum, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxArbitrum !== undefined
+      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const stakedGmxAvalancheUsd =
-    gmxPriceFromAvalanche !== undefined && stakedGmxAvalanche !== undefined
-      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPriceFromAvalanche, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxAvalanche !== undefined
+      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const totalStakedGmxUsd = sumBigInts(stakedGmxArbitrumUsd, stakedGmxAvalancheUsd);
 
@@ -133,26 +129,7 @@ export function GmxCard({
                   {gmxPrice === undefined || gmxPrice === 0n ? (
                     "..."
                   ) : (
-                    <TooltipComponent
-                      position="bottom-end"
-                      className="whitespace-nowrap"
-                      handle={<UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} />}
-                      handleClassName="numbers"
-                      content={
-                        <>
-                          <StatsTooltipRow
-                            label={t`Price on Arbitrum`}
-                            value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                            showDollar={true}
-                          />
-                          <StatsTooltipRow
-                            label={t`Price on Avalanche`}
-                            value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                            showDollar={true}
-                          />
-                        </>
-                      }
-                    />
+                    <UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} className="numbers" />
                   )}
                 </div>
               </div>

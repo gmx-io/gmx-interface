@@ -6,7 +6,6 @@ import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/l
 import { useChainId } from "lib/chains";
 import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
-import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -25,7 +24,6 @@ import "./DashboardV2.css";
 export const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 export default function DashboardV2() {
-  const { active, signer } = useWallet();
   const { chainId } = useChainId();
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
@@ -33,11 +31,7 @@ export default function DashboardV2() {
   const statsArbitrum = useDashboardChainStatsMulticall(ARBITRUM);
   const statsAvalanche = useDashboardChainStatsMulticall(AVALANCHE);
 
-  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? signer : undefined },
-    active
-  );
+  const { gmxPrice } = useGmxPrice();
 
   let gmxMarketCap =
     gmxPrice !== undefined && totalGmxSupply !== undefined
@@ -61,8 +55,6 @@ export default function DashboardV2() {
               <GmxCard
                 chainId={chainId}
                 gmxPrice={gmxPrice}
-                gmxPriceFromArbitrum={gmxPriceFromArbitrum}
-                gmxPriceFromAvalanche={gmxPriceFromAvalanche}
                 totalGmxSupply={totalGmxSupply}
                 gmxMarketCap={gmxMarketCap}
                 totalGmxInLiquidity={totalGmxInLiquidity}

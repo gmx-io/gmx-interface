@@ -17,6 +17,7 @@ import {
   getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -524,6 +525,18 @@ export function getSmartWalletErrorToastContent(
         <div>
           Switch your {walletName} to {getChainName(chainId)}, then try again
         </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_NOT_DEPLOYED_ERROR) {
+    return (
+      <Trans>
+        <div>
+          Your {walletName} is not deployed on {getChainName(chainId)} yet
+        </div>
+        <br />
+        <div>Make any transaction from it on {getChainName(chainId)}, then try again</div>
       </Trans>
     );
   }

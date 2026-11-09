@@ -260,11 +260,17 @@ function canPay(tokensData: TokensData, isGmxAccount: boolean) {
     tokensData,
     gasPaymentParams: GAS_PAYMENT_PARAMS,
     isGmxAccount,
+    unavailableTokenAddresses: [],
   });
 }
 
 function shouldSwitch(tokensData: TokensData, expressParams: ExpressTxnParams) {
-  return getShouldSwitchNetworkFeeSource({ chainId: ARBITRUM, tokensData, expressParams });
+  return getShouldSwitchNetworkFeeSource({
+    chainId: ARBITRUM,
+    tokensData,
+    expressParams,
+    unavailableTokenAddresses: [],
+  });
 }
 
 describe("getCanPayNetworkFeeFromBalance", () => {

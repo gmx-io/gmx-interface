@@ -39,12 +39,12 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import {
+  selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectExpressOrdersEnabled,
-  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -105,6 +105,7 @@ import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { CustomErrorName } from "sdk/utils/errors";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
@@ -551,7 +552,7 @@ export const WithdrawalView = () => {
   const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
   const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
-  const gasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
@@ -724,6 +725,7 @@ export const WithdrawalView = () => {
         minAmountOut: fakeAmount,
         data: "0x",
         provider: zeroAddress,
+        bridgeFee: getEmptyBridgeFeeParams(),
       };
     }
 
@@ -748,6 +750,7 @@ export const WithdrawalView = () => {
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [
     withdrawalViewChain,
@@ -777,6 +780,7 @@ export const WithdrawalView = () => {
         minAmountOut: inputAmount, // Ignored by the same-chain transferOut path
         data: "0x",
         provider: zeroAddress,
+        bridgeFee: getEmptyBridgeFeeParams(),
       };
     }
 
@@ -801,6 +805,7 @@ export const WithdrawalView = () => {
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [
     withdrawalViewChain,

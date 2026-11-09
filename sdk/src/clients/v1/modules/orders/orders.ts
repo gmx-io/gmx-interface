@@ -288,6 +288,7 @@ export class Orders extends Module {
         txnType: entry.txnType!,
         initialCollateralDeltaAmount: entry.order?.initialCollateralDeltaAmount ?? 0n,
         autoCancel: entry.order!.autoCancel,
+        decreasePositionSwapType: entry.order!.decreasePositionSwapType,
       })),
     });
   }

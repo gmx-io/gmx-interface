@@ -8,6 +8,7 @@ import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
 import type { CreateWithdrawalParams } from ".";
+import { getTransferRequestsTypedDataParts } from "./getTransferRequestsTypedDataParts";
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import type { RelayParamsPayload } from "../express/types";
 
@@ -28,11 +29,11 @@ export async function signCreateWithdrawal({
   srcChainId: SourceChainId | undefined;
   shouldUseSignerMethod?: boolean;
 }) {
+  const account = await signer.getAddress();
+  const transferRequestsTypedDataParts = getTransferRequestsTypedDataParts({ chainId, account, transferRequests });
   const types = {
     CreateWithdrawal: [
-      { name: "transferTokens", type: "address[]" },
-      { name: "transferReceivers", type: "address[]" },
-      { name: "transferAmounts", type: "uint256[]" },
+      ...transferRequestsTypedDataParts.fields,
       { name: "addresses", type: "CreateWithdrawalAddresses" },
       { name: "minLongTokenAmount", type: "uint256" },
       { name: "minShortTokenAmount", type: "uint256" },
@@ -50,13 +51,12 @@ export async function signCreateWithdrawal({
       { name: "longTokenSwapPath", type: "address[]" },
       { name: "shortTokenSwapPath", type: "address[]" },
     ],
+    ...transferRequestsTypedDataParts.types,
   };
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainGmRouter"));
   const typedData = {
-    transferTokens: transferRequests.tokens,
-    transferReceivers: transferRequests.receivers,
-    transferAmounts: transferRequests.amounts,
+    ...transferRequestsTypedDataParts.message,
     addresses: params.addresses,
     minLongTokenAmount: params.minLongTokenAmount,
     minShortTokenAmount: params.minShortTokenAmount,
