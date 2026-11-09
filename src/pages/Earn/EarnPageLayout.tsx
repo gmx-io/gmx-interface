@@ -2,6 +2,8 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useEffect, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
+import { isSolanaNetwork } from "config/chains";
+import { useChainId } from "lib/chains";
 import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/earnEvents";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -29,15 +31,23 @@ type EarnPageLayoutProps = {
 
 export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   const { pathname } = useLocation();
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
 
   const tabOptions = useMemo(
-    () => [
-      { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
-      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
-      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional opportunities</Trans> },
-      { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
-    ],
-    []
+    () =>
+      isSolana
+        ? [
+            { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
+            { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
+          ]
+        : [
+            { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
+            { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
+            { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional opportunities</Trans> },
+            { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
+          ],
+    [isSolana]
   );
 
   const activeTabValue = useMemo(() => {
@@ -60,7 +70,11 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   return (
     <AppPageLayout title={t`Earn`}>
-      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
+      <PageTitle
+        title={t`Earn`}
+        subtitle={isSolana ? t`Earn rewards with GLV/GM and GT` : t`Stake GMX and buy GLV or GM to earn rewards`}
+        isTop
+      />
 
       <div className="mt-12 flex grow flex-col gap-8">
         <div className="overflow-x-auto scrollbar-hide">
