@@ -599,10 +599,6 @@ msgstr "Двойная экспозиция {indexSymbol} от позиции и
 msgid "GMX Account balance"
 msgstr "Баланс GMX Account"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "No GT holders to show yet"
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "Адрес скопирован!"
@@ -802,6 +798,7 @@ msgstr "Значение:"
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "Проекты, разработанные сообществом GMX. <0/>Проявляйте осторожность при использовании любого приложения, так как все приложения полностью поддерживаются разработчиками сообщества."
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -2634,10 +2631,6 @@ msgstr "Проскальзывание должно быть менее 5%"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "Виртуальный запас отслеживает дисбаланс токенов между сходными рынками, например ETH/USDC и ETH/USDT."
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "HOLDER"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "Прибыль"
@@ -3818,6 +3811,10 @@ msgstr "Тейк-профит / стоп-лосс"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
 msgstr "Каждые 4 часа начисляется в цену {tokenSymbol}. Получать ничего не нужно."
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT HOLDINGS"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
@@ -13270,7 +13267,7 @@ msgid "Where can I read more?"
 msgstr "Где можно узнать больше?"
 
 #: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "GT"
+msgid "Top holders are not available yet"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

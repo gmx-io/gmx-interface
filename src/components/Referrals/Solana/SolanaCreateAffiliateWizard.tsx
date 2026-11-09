@@ -1,9 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { REFERRALS_DOCS_URL } from "config/links";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
+import { helperToast } from "lib/helperToast";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -58,7 +59,6 @@ export function SolanaCreateAffiliateWizard({
   const [referralCode, setReferralCode] = useState("");
   const [createdCode, setCreatedCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string>();
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   useEffect(
@@ -72,6 +72,11 @@ export function SolanaCreateAffiliateWizard({
     [isConnected, step]
   );
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (step === CreateStep.CreateReferralCode) inputRef.current?.focus();
+  }, [step]);
+
   const trimmedCode = referralCode.trim();
   const codeError = trimmedCode ? getSolanaCodeError(trimmedCode) : "";
 
@@ -80,20 +85,19 @@ export function SolanaCreateAffiliateWizard({
     if (!trimmedCode || codeError || isSubmitting) return;
 
     setIsSubmitting(true);
-    setError(undefined);
     try {
       await createCode(trimmedCode);
       setCreatedCode(trimmedCode);
       onCreated(trimmedCode);
       setStep(CreateStep.Success);
     } catch (e) {
-      setError(e instanceof Error ? e.message : t`Something went wrong`);
+      helperToast.error(e instanceof Error ? e.message : t`Something went wrong`);
     } finally {
       setIsSubmitting(false);
     }
   }
 
-  const buttonText = isSubmitting ? t`Creating...` : error ? error : trimmedCode === "" ? t`Enter a code` : t`Create`;
+  const buttonText = isSubmitting ? t`Creating...` : trimmedCode === "" ? t`Enter a code` : t`Create`;
   // Named like the EVM wizard's placeholder, so the existing translations of this message apply
   const createdReferralCode = createdCode;
 
@@ -134,6 +138,7 @@ export function SolanaCreateAffiliateWizard({
               <div className="flex flex-col gap-12">
                 <form onSubmit={handleSubmit}>
                   <input
+                    ref={inputRef}
                     type="text"
                     value={referralCode}
                     disabled={isSubmitting}
@@ -141,7 +146,6 @@ export function SolanaCreateAffiliateWizard({
                     placeholder={t`Enter a code`}
                     onChange={({ target }) => {
                       setReferralCode(target.value);
-                      setError(undefined);
                     }}
                   />
                   {codeError && <p className="text-body-small m-0 pb-24 pt-8 text-red-500">{codeError}</p>}
@@ -149,7 +153,7 @@ export function SolanaCreateAffiliateWizard({
                     variant="primary-action"
                     className="w-full"
                     type="submit"
-                    disabled={isSubmitting || Boolean(error) || Boolean(codeError) || trimmedCode === ""}
+                    disabled={isSubmitting || Boolean(codeError) || trimmedCode === ""}
                   >
                     {buttonText}
                   </Button>

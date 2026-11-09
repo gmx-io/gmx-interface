@@ -16,3 +16,13 @@ export function formatGt(amount: bigint, { signed = false }: { signed?: boolean 
 export function shortenSolanaAddress(address: string) {
   return address.length > 14 ? `${address.slice(0, 6)}…${address.slice(-6)}` : address;
 }
+
+// Dates in the app language, like the EVM referral tables (e.g. "Nov 9, 2026" or "9 nov 2026").
+export function formatReferralDate(seconds: number, locale: string, { withTime = false }: { withTime?: boolean } = {}) {
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    ...(withTime ? { hour: "numeric", minute: "2-digit" } : {}),
+  }).format(new Date(seconds * 1000));
+}

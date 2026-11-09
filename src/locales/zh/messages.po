@@ -599,10 +599,6 @@ msgstr "仓位和抵押品带来双重 {indexSymbol} 敞口。清算价格高于
 msgid "GMX Account balance"
 msgstr "GMX Account 余额"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "No GT holders to show yet"
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "地址已复制！"
@@ -802,6 +798,7 @@ msgstr "值："
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "由 GMX 社区开发的项目。<0/>与任何应用交互时请保持谨慎，所有应用均由社区开发者独立维护。"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -2634,10 +2631,6 @@ msgstr "滑点不得超过 5%"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "虚拟库存用于跟踪相似市场之间的代币不平衡情况，例如 ETH/USDC、ETH/USDT。"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "HOLDER"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "盈利"
@@ -3818,6 +3811,10 @@ msgstr "止盈 / 止损"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
 msgstr "每 4 小时计入 {tokenSymbol} 价格。无需领取。"
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT HOLDINGS"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
@@ -13270,7 +13267,7 @@ msgid "Where can I read more?"
 msgstr "在哪里可以了解更多信息？"
 
 #: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "GT"
+msgid "Top holders are not available yet"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

@@ -599,10 +599,6 @@ msgstr "Doble exposición a {indexSymbol} por posición y garantía. Precio de l
 msgid "GMX Account balance"
 msgstr "Saldo de GMX Account"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "No GT holders to show yet"
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "¡Dirección copiada!"
@@ -802,6 +798,7 @@ msgstr "Valor:"
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "Proyectos desarrollados por la comunidad de GMX. <0/>Tenga precaución al interactuar con cualquier aplicación, ya que las aplicaciones son mantenidas íntegramente por desarrolladores de la comunidad."
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -2634,10 +2631,6 @@ msgstr "El deslizamiento debe ser inferior al 5%"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "El inventario virtual registra el desequilibrio de tokens entre mercados similares, p. ej., ETH/USDC, ETH/USDT."
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "HOLDER"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "Ganancia"
@@ -3818,6 +3811,10 @@ msgstr "Take-Profit / Stop-Loss"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
 msgstr "Se abona en el precio de {tokenSymbol} cada 4 horas. No hay nada que reclamar."
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT HOLDINGS"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
@@ -13270,7 +13267,7 @@ msgid "Where can I read more?"
 msgstr "¿Dónde puedo obtener más información?"
 
 #: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "GT"
+msgid "Top holders are not available yet"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

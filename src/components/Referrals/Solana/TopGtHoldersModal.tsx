@@ -29,7 +29,7 @@ export function TopGtHoldersModal({
         </p>
         {holders.length === 0 ? (
           <div className="text-body-medium px-20 py-40 text-center text-typography-secondary">
-            <Trans>No GT holders to show yet</Trans>
+            <Trans>Top holders are not available yet</Trans>
           </div>
         ) : (
           <div className="max-h-[420px] overflow-y-auto">
@@ -40,10 +40,10 @@ export function TopGtHoldersModal({
                     #
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>HOLDER</Trans>
+                    <Trans>ADDRESS</Trans>
                   </TableTh>
                   <TableTh padding="compact" className="max-md:hidden">
-                    <Trans>GT</Trans>
+                    <Trans>GT HOLDINGS</Trans>
                   </TableTh>
                   <TableTh padding="compact">
                     <Trans>REFERRAL CODE</Trans>
@@ -57,7 +57,9 @@ export function TopGtHoldersModal({
                       {holder.rank}
                     </TableTd>
                     <TableTd padding="compact">
-                      <div className="font-mono text-typography-primary">{shortenSolanaAddress(holder.address)}</div>
+                      <div className="font-mono text-typography-primary">
+                        {holder.name ?? shortenSolanaAddress(holder.address)}
+                      </div>
                       <div className="text-body-small text-typography-secondary numbers md:hidden">
                         {formatGt(holder.gtBalance)}
                       </div>

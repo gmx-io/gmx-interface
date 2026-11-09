@@ -83,6 +83,8 @@ export type SolanaReferee = {
 export type SolanaGtHolder = {
   rank: number;
   address: string;
+  /** Known accounts, e.g. the GT vault */
+  name?: string;
   /** GT with SOLANA_GT_DECIMALS */
   gtBalance: bigint;
   referralCode: string | undefined;
