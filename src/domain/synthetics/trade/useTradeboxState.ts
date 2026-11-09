@@ -144,7 +144,7 @@ export function useTradeboxState(
   const setStoredOptionsOnChain = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
-        const newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args);
+        const newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args, oldState);
 
         if (isEqual(oldState, newState)) {
           return oldState;
@@ -212,7 +212,11 @@ export function useTradeboxState(
   const setStoredOptions = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsOnChain((oldState) => {
-        let newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args);
+        let newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args, oldState);
+
+        if (newState === oldState) {
+          return oldState;
+        }
 
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
           newState = fallbackPositionTokens({
