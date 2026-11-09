@@ -1,6 +1,7 @@
 import uniq from "lodash/uniq";
 import { encodeFunctionData, type Hex, zeroAddress, zeroHash } from "viem";
 
+import ERC20PermitInterface from "abis/ERC20PermitInterface";
 import { getAbi } from "abis/getAbi";
 import ERC20ABI from "abis/Token";
 import {
@@ -905,7 +906,7 @@ export function buildTokenPermitsCall(tokenPermits: SignedTokenPermit[]): Exchan
       tokenPermits.map((permit) => permit.token),
       tokenPermits.map((permit) =>
         encodeFunctionData({
-          abi: abis.ERC20PermitInterface,
+          abi: ERC20PermitInterface,
           functionName: "permit",
           args: [
             permit.owner as Hex,
