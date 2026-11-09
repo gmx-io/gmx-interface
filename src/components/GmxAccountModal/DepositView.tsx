@@ -1548,7 +1548,7 @@ export const DepositView = () => {
   );
 };
 
-// The txn callback already shows the error toast, so a wallet reject is a plain cancel here.
+// A wallet reject (of the txn or of the network switch) is the user cancelling, so it is not an error here.
 // Other errors are rethrown so the global unhandled rejection handler still reports them.
 function throwUnlessUserRejected(error: unknown) {
   if (!parseError(error as ErrorLike)?.isUserRejectedError) {
