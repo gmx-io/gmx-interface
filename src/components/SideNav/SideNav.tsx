@@ -20,6 +20,7 @@ import DocsIcon from "img/docs.svg?react";
 import EcosystemIcon from "img/ecosystem.svg?react";
 import AnnouncementsIcon from "img/ic_announcement.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
+import GtPointsIcon from "img/ic_gt_points.svg?react";
 import ReferralsIcon from "img/ic_referrals.svg?react";
 import LeaderboardIcon from "img/leaderboard.svg?react";
 import logoIcon from "img/logo-icon.svg";
@@ -176,6 +177,11 @@ export function NavItem({
   return <li className="p-0 first:-mt-4">{content}</li>;
 }
 
+// Pages that also work on the Solana network
+const SOLANA_MENU_KEYS = ["trade", "gt-points"];
+// Pages that exist only on the Solana network
+const SOLANA_ONLY_MENU_KEYS = ["gt-points"];
+
 export function MenuSection({
   isCollapsed,
   onMenuItemClick,
@@ -206,6 +212,12 @@ export function MenuSection({
     },
     { icon: <EarnIcon className="size-20" />, label: t`Earn`, key: "earn", to: "/earn" },
     {
+      icon: <GtPointsIcon className="size-20" />,
+      label: t`GT Points`,
+      key: "gt-points",
+      to: "/gt-points",
+    },
+    {
       icon: <DatabaseIcon className="size-20" />,
       label: withMegaethSparkle(t`Pools`),
       key: "pools",
@@ -233,7 +245,9 @@ export function MenuSection({
   return (
     <ul className="flex list-none flex-col px-0">
       {mainNavItems
-        .filter((item) => showEvmPages || item.key === "trade")
+        .filter((item) =>
+          showEvmPages ? !SOLANA_ONLY_MENU_KEYS.includes(item.key) : SOLANA_MENU_KEYS.includes(item.key)
+        )
         .map((item) => (
           <NavItem
             key={item.key}
