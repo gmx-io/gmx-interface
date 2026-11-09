@@ -67,9 +67,13 @@ function getSerializedTradeOptionsKey(networkId: NetworkId) {
   return JSON.stringify(getSyntheticsTradeOptionsKey(networkId));
 }
 
-export function normalizeTradeOptions(networkId: NetworkId, options: StoredTradeOptions): StoredTradeOptions {
+export function normalizeTradeOptions(
+  networkId: NetworkId,
+  options: StoredTradeOptions,
+  previousOptions?: StoredTradeOptions
+): StoredTradeOptions {
   if (options.tradeType === TradeType.Swap && !getNetworkFeatures(networkId).swap) {
-    return { ...options, tradeType: TradeType.Long, tradeMode: TradeMode.Market };
+    return previousOptions ?? { ...options, tradeType: TradeType.Long, tradeMode: TradeMode.Market };
   }
 
   return options;
