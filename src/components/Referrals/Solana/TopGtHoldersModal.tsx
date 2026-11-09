@@ -37,7 +37,7 @@ export function TopGtHoldersModal({
               <thead className="sticky top-0 z-10 bg-slate-900">
                 <TableTheadTr>
                   <TableTh padding="compact" className="w-0">
-                    #
+                    <Trans>RANK</Trans>
                   </TableTh>
                   <TableTh padding="compact">
                     <Trans>ADDRESS</Trans>
@@ -71,7 +71,12 @@ export function TopGtHoldersModal({
                       {holder.referralCode ? (
                         <div className="flex items-center justify-end gap-8">
                           <span className="font-mono text-typography-primary">{holder.referralCode}</span>
-                          <Button variant="secondary" size="small" onClick={() => onUseCode(holder.referralCode!)}>
+                          <Button
+                            variant="secondary"
+                            size="small"
+                            aria-label={t`Use code ${holder.referralCode}`}
+                            onClick={() => onUseCode(holder.referralCode!)}
+                          >
                             <Trans>Use code</Trans>
                           </Button>
                         </div>

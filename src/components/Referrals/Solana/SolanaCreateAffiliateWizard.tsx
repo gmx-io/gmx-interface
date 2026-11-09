@@ -73,6 +73,13 @@ export function SolanaCreateAffiliateWizard({
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
   useEffect(() => {
     if (step === CreateStep.CreateReferralCode) inputRef.current?.focus();
   }, [step]);
@@ -87,6 +94,7 @@ export function SolanaCreateAffiliateWizard({
     setIsSubmitting(true);
     try {
       await createCode(trimmedCode);
+      if (!isMountedRef.current) return; // another wallet by now: its wizard is a new one
       setCreatedCode(trimmedCode);
       onCreated(trimmedCode);
       setStep(CreateStep.Success);
@@ -148,7 +156,11 @@ export function SolanaCreateAffiliateWizard({
                       setReferralCode(target.value);
                     }}
                   />
-                  {codeError && <p className="text-body-small m-0 pb-24 pt-8 text-red-500">{codeError}</p>}
+                  {codeError && (
+                    <p role="alert" className="text-body-small m-0 pb-24 pt-8 text-red-500">
+                      {codeError}
+                    </p>
+                  )}
                   <Button
                     variant="primary-action"
                     className="w-full"

@@ -3353,6 +3353,7 @@ msgstr "Confirmar compensación"
 msgid "Generating shareable image..."
 msgstr "Generando imagen para compartir..."
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "RANK"
@@ -3550,6 +3551,10 @@ msgstr "Instantáneo"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "Posiciones abiertas"
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "Use code {0}"
+msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Blockchain gas fee (not GMX-specific). Doesn't impact your margin."

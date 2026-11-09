@@ -34,12 +34,16 @@ export function SolanaReferralsAffiliatesTab({
     return <Loader />;
   }
 
-  const affiliate =
-    data.affiliate ?? (isDashboardForced && justCreatedCode ? getEmptyAffiliate(justCreatedCode) : undefined);
+  // A code created in this visit keeps its success screen (and share window) until the user moves on
+  const isOnSuccessScreen = Boolean(justCreatedCode) && !isDashboardForced;
+  const affiliate = isOnSuccessScreen
+    ? undefined
+    : data.affiliate ?? (isDashboardForced && justCreatedCode ? getEmptyAffiliate(justCreatedCode) : undefined);
 
   if (data.account && affiliate) {
     return (
       <SolanaAffiliateDashboard
+        key={data.account}
         account={data.account}
         affiliate={affiliate}
         hasAppliedTraderCode={hasAppliedTraderCode}
@@ -51,6 +55,7 @@ export function SolanaReferralsAffiliatesTab({
     <div className="flex gap-8 max-md:flex-col">
       <div className="flex grow flex-col gap-8">
         <SolanaCreateAffiliateWizard
+          key={data.account ?? "no-wallet"}
           account={data.account}
           createCode={data.createCode}
           onCreated={onCreated}

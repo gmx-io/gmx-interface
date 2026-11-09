@@ -30,7 +30,7 @@ export function getSolanaCodeError(value: string): string {
   return "";
 }
 
-// Placeholders until the GT Points page exists (separate design task).
+// GT Points pages (from the Solana GT Points PR)
 export const GT_POINTS_MY_PATH = "/gt-points/my";
 export const GT_POINTS_GLOBAL_PATH = "/gt-points/global";
 export const GT_POINTS_BUYBACK_PATH = "/gt-points/buyback";
@@ -96,23 +96,28 @@ export type SolanaAffiliateData = {
   rewardRatePercent: number | undefined;
   totalReferrals: number;
   activeReferrals: number;
-  /** Newest first, as shown */
+  /** Every reward of the last 90 days, newest first: the page filters 7d/30d/90d and pages in the browser */
   activity: SolanaReferralActivity[];
-  /** In the order shown */
+  /** Every referee, in the order shown (paged in the browser) */
   referees: SolanaReferee[];
 };
 
 export type SolanaReferralsData = {
   account: string | undefined;
   isWalletInitializing: boolean;
+  /** First load only. Keep the previous data while refetching, or the forms on the page start over.
+   * There is no error state yet: a failed load must not look like "no code" (add one when wiring). */
   isLoading: boolean;
   /** Referral code the trader applied; undefined = none */
   appliedCode: string | undefined;
-  /** Trader volume and discounts, one point per hour, in any order */
+  /** Trader volume and discounts, one point per hour, in any order. Send the whole history:
+   * Total shows all of it, and each range compares with the period before it. */
   traderPoints: SolanaTraderPoint[];
   /** The affiliate's own code and stats; undefined = no code yet */
   affiliate: SolanaAffiliateData | undefined;
   topHolders: SolanaGtHolder[];
+  /** Resolves once the code is applied; rejects with an Error whose message is shown in a toast (e.g. "Code not found") */
   applyCode: (code: string) => Promise<void>;
+  /** Resolves once the code exists; rejects with an Error whose message is shown in a toast (e.g. "Code already taken") */
   createCode: (code: string) => Promise<void>;
 };

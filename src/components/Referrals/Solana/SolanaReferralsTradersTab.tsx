@@ -30,7 +30,11 @@ export function SolanaReferralsTradersTab({
     return <Loader />;
   }
 
-  const appliedCode = data.appliedCode ?? (isDashboardForced ? justAppliedCode : undefined);
+  // A code applied in this visit keeps its success screen until the user moves on
+  const isOnSuccessScreen = Boolean(justAppliedCode) && !isDashboardForced;
+  const appliedCode = isOnSuccessScreen
+    ? undefined
+    : data.appliedCode ?? (isDashboardForced ? justAppliedCode : undefined);
   const isWizard = !data.account || !appliedCode;
 
   return (
@@ -39,6 +43,7 @@ export function SolanaReferralsTradersTab({
         <>
           <div className="flex grow flex-col gap-8">
             <SolanaJoinReferralWizard
+              key={data.account ?? "no-wallet"}
               account={data.account}
               ownCode={ownAffiliateCode}
               topHolders={data.topHolders}
@@ -53,7 +58,12 @@ export function SolanaReferralsTradersTab({
           </div>
         </>
       ) : (
-        <SolanaTradersDashboard data={data} appliedCode={appliedCode} hasOwnAffiliateCode={Boolean(ownAffiliateCode)} />
+        <SolanaTradersDashboard
+          key={data.account}
+          data={data}
+          appliedCode={appliedCode}
+          hasOwnAffiliateCode={Boolean(ownAffiliateCode)}
+        />
       )}
     </div>
   );
