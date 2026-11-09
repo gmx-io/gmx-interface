@@ -25,6 +25,7 @@ import {
   executeCrossChainDeposit,
   executeCrossChainWithdraw,
   getCrossChainWithdrawStatus,
+  getSignedCrossChainWithdrawSubmit,
   prepareCrossChainDeposit,
   prepareCrossChainWithdraw,
   signCrossChainWithdrawPrepared,
@@ -77,6 +78,7 @@ import {
   prepareCancelOrder,
   prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
+  getSignedOrderSubmit,
   isPrepareOrderError,
   parsePrepareOrderError,
 } from "utils/orderTransactions/api";
@@ -94,6 +96,7 @@ import type {
   PrepareCollateralRequest,
   OrderStatusRequest,
   OrderStatusResponse,
+  SignedOrderSubmit,
 } from "utils/orderTransactions/api";
 import { fetchApiPairs } from "utils/pairs/api";
 import {
@@ -274,8 +277,9 @@ export type {
   PrepareCollateralRequest,
   OrderStatusRequest,
   OrderStatusResponse,
+  SignedOrderSubmit,
 };
-export { isPrepareOrderError, parsePrepareOrderError };
+export { getSignedOrderSubmit, isPrepareOrderError, parsePrepareOrderError };
 export type {
   WalletBalance,
   TokenAllowance,
@@ -298,7 +302,9 @@ export type {
   CrossChainWithdrawSubmitRequest,
   CrossChainWithdrawSubmitResponse,
   ExecuteCrossChainDepositResult,
+  SignedCrossChainWithdrawSubmit,
 } from "utils/gmxAccountApi";
+export { getSignedCrossChainWithdrawSubmit };
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
