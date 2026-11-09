@@ -30,6 +30,7 @@ import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
 import MultichainVault from "./MultichainVault";
 import Pausable from "./Pausable";
+import RatioVesterReader from "./RatioVesterReader";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
 import ReferralStorage from "./ReferralStorage";
@@ -59,6 +60,7 @@ import VaultV2 from "./VaultV2";
 import VaultV2b from "./VaultV2b";
 import VenusVToken from "./VenusVToken";
 import Vester from "./Vester";
+import VesterCapZeroer from "./VesterCapZeroer";
 import WETH from "./WETH";
 
 export const abis = {
@@ -91,6 +93,7 @@ export const abis = {
   MultichainTransferRouter,
   MultichainVault,
   Pausable,
+  RatioVesterReader,
   ReferralStorage,
   RelayParams,
   RewardReader,
@@ -120,6 +123,7 @@ export const abis = {
   VaultV2b,
   VenusVToken,
   Vester,
+  VesterCapZeroer,
   WETH,
   IStargate,
 } satisfies Record<string, any>;
