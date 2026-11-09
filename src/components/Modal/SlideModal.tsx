@@ -213,12 +213,21 @@ function MobileSlideModal({
     [handleAnimate, setIsOpen]
   );
 
-  const handlePointerCancel = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    e.stopPropagation();
+  const handlePointerCancel = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.stopPropagation();
 
-    isPointerDownRef.current = false;
-    isDraggingRef.current = false;
-  }, []);
+      const wasDragging = isDraggingRef.current;
+      isPointerDownRef.current = false;
+      isDraggingRef.current = false;
+
+      if (wasDragging && curtainRef.current) {
+        curtainRef.current.style.willChange = "";
+        handleAnimate(isOpen);
+      }
+    },
+    [handleAnimate, isOpen]
+  );
 
   useEffect(() => {
     if (!isDraggingRef.current) {
@@ -295,6 +304,7 @@ function MobileSlideModal({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
           >
             <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
