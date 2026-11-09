@@ -29,6 +29,10 @@ type ShareReferralCardModalProps = {
   referralCode: string;
   traderDiscountPercentage?: string | number;
   totalDiscountsUsd?: bigint;
+  /** Overrides the EVM trade link, e.g. for Solana codes */
+  referralLink?: string;
+  /** Solana codes give a fixed discount on GMX Solana */
+  isSolana?: boolean;
 };
 
 export function ShareReferralCardModal({
@@ -37,13 +41,15 @@ export function ShareReferralCardModal({
   referralCode,
   traderDiscountPercentage,
   totalDiscountsUsd,
+  referralLink: referralLinkOverride,
+  isSolana = false,
 }: ShareReferralCardModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
   const referralCodeLinkParam = getReferralCodeLinkParam(referralCode);
-  const referralLink = `${homeURL}/trade/?ref=${referralCodeLinkParam}`;
+  const referralLink = referralLinkOverride ?? `${homeURL}/trade/?ref=${referralCodeLinkParam}`;
   const referralCodeLabel = formatReferralCodeForDisplay(referralCode);
   const totalDiscountsFormatted = useMemo(
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
@@ -60,8 +66,11 @@ export function ShareReferralCardModal({
     const discountsText = showDiscountsLine
       ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCodeLabel}`
       : "";
+    if (isSolana) {
+      return `Save ${traderDiscountPercentageLabel} on every trade on GMX Solana.${discountsText}`;
+    }
     return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
-  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel]);
+  }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel, isSolana]);
 
   const handleShareOnX = useCallback(async () => {
     const element = cardRef.current;
@@ -125,6 +134,7 @@ export function ShareReferralCardModal({
           traderDiscountPercentageLabel={traderDiscountPercentageLabel}
           totalDiscountsFormatted={totalDiscountsFormatted}
           showDiscountsLine={showDiscountsLine}
+          isSolana={isSolana}
         />
 
         <div className="flex gap-12 max-md:flex-wrap">
@@ -185,6 +195,7 @@ function ScaledReferralCard({
   traderDiscountPercentageLabel,
   totalDiscountsFormatted,
   showDiscountsLine,
+  isSolana,
 }: {
   cardRef: React.Ref<HTMLDivElement>;
   referralLink: string;
@@ -192,6 +203,7 @@ function ScaledReferralCard({
   traderDiscountPercentageLabel: string;
   totalDiscountsFormatted: string | undefined;
   showDiscountsLine: boolean;
+  isSolana: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -236,10 +248,17 @@ function ScaledReferralCard({
               <AnimatedGradientText className="block">{referralCode}</AnimatedGradientText>
             </div>
             <h3 className="text-32 font-medium leading-1 text-white">
-              <Trans>
-                <AnimatedGradientText>Save up to {traderDiscountPercentageLabel}</AnimatedGradientText> on every
-                <br /> trade on GMX
-              </Trans>
+              {isSolana ? (
+                <Trans>
+                  <AnimatedGradientText>Save {traderDiscountPercentageLabel}</AnimatedGradientText> on every
+                  <br /> trade on GMX Solana
+                </Trans>
+              ) : (
+                <Trans>
+                  <AnimatedGradientText>Save up to {traderDiscountPercentageLabel}</AnimatedGradientText> on every
+                  <br /> trade on GMX
+                </Trans>
+              )}
             </h3>
             {showDiscountsLine && (
               <p className="text-body-medium mt-12 font-medium text-typography-secondary">
