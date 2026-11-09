@@ -29,6 +29,9 @@ import TradeIcon from "img/trade.svg?react";
 
 import { BottomMenuSection } from "./BottomMenuSection";
 
+// Menu items that have a Solana version of their page.
+const SOLANA_NAV_KEYS = ["trade", "earn"];
+
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
@@ -233,7 +236,7 @@ export function MenuSection({
   return (
     <ul className="flex list-none flex-col px-0">
       {mainNavItems
-        .filter((item) => showEvmPages || item.key === "trade")
+        .filter((item) => showEvmPages || SOLANA_NAV_KEYS.includes(item.key))
         .map((item) => (
           <NavItem
             key={item.key}

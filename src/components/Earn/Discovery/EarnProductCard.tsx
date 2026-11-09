@@ -7,12 +7,14 @@ import { EarnRecommendationToken, sendEarnRecommendationClickedEvent } from "lib
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
+import { GT_DOCS_URL, GT_POINTS_MY_PATH } from "components/Earn/Solana/solanaEarnTypes";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import gtMarkIcon from "img/tokens/ic_gt_mark.svg";
 
-type EarnProductType = "gmx" | "glv" | "gm";
+type EarnProductType = "gmx" | "glv" | "gm" | "gt";
 
 type ProductCopy = {
   tokenSymbol: string;
@@ -79,6 +81,23 @@ const getCardContent = (type: EarnProductType) => {
         to: "/pools",
       },
     },
+    gt: {
+      tokenSymbol: "GT",
+      badge: t`Points`,
+      title: t`What is GT?`,
+      description: t`GT Points are the incentive points of GMX Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of GMX Solana's fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards.`,
+      readMoreUrl: GT_DOCS_URL,
+      bullets: [
+        t`Earn GT from trading, LP, and referrals`,
+        t`More GT, higher VIP tier and benefits`,
+        t`Mint earlier at a lower cost`,
+        t`Turn GT into USDC through buybacks`,
+      ],
+      cta: {
+        label: t`Manage GT`,
+        to: GT_POINTS_MY_PATH,
+      },
+    },
   };
   return cardContentByType[type];
 };
@@ -94,7 +113,7 @@ export default function EarnProductCard({
 }: {
   type: EarnProductType;
   className?: string;
-  openBuyGmxModal: () => void;
+  openBuyGmxModal?: () => void;
 }) {
   const content = getCardContent(type);
   const { isMobile } = useBreakpoints();
@@ -103,6 +122,10 @@ export default function EarnProductCard({
   const shouldCollapse = isMobile && !isExpanded;
 
   const handleRecommendationClick = () => {
+    if (type === "gt") {
+      return;
+    }
+
     sendEarnRecommendationClickedEvent({
       activeTab: "discover",
       context: "AboutTokens",
@@ -110,7 +133,7 @@ export default function EarnProductCard({
     });
 
     if (type === "gmx") {
-      openBuyGmxModal();
+      openBuyGmxModal?.();
     }
   };
 
@@ -123,7 +146,11 @@ export default function EarnProductCard({
     >
       <div className={cx("relative flex flex-col gap-16", { "max-h-[136px] overflow-hidden": shouldCollapse })}>
         <div className="flex items-start justify-between gap-12">
-          <TokenIcon symbol={content.tokenSymbol} displaySize={40} className="!rounded-0" />
+          {type === "gt" ? (
+            <img src={gtMarkIcon} alt="GT" className="size-40" />
+          ) : (
+            <TokenIcon symbol={content.tokenSymbol} displaySize={40} className="!rounded-0" />
+          )}
           <Badge className="!bg-fill-accent">{content.badge}</Badge>
         </div>
 

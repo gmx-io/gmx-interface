@@ -21,6 +21,8 @@ import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunit
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
 import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
+import SolanaEarnDiscoveryPage from "pages/Earn/SolanaEarnDiscoveryPage";
+import SolanaEarnPortfolioPage from "pages/Earn/SolanaEarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
@@ -36,6 +38,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
+import { SolanaEarnRedirect } from "components/Earn/Solana/SolanaEarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
@@ -132,6 +135,15 @@ function SolanaRoutes() {
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/earn">
+        <SolanaEarnRedirect />
+      </Route>
+      <Route exact path="/earn/portfolio">
+        <SolanaEarnPortfolioPage />
+      </Route>
+      <Route exact path="/earn/discover">
+        <SolanaEarnDiscoveryPage />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />

@@ -108,6 +108,10 @@ msgstr "锁定<0/><1>更优费率</1>"
 msgid "Paxos fee {fee} · ~2–10 min, can be longer"
 msgstr "Paxos 手续费 {fee} · 约 2–10 分钟，可能更久"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance:"
+msgstr ""
+
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "立即刷新"
@@ -414,6 +418,7 @@ msgid "One-Click Trading is unavailable for smart wallets"
 msgstr "One-Click Trading 不适用于智能合约钱包"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "发现"
 
@@ -452,6 +457,7 @@ msgstr "至"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -865,6 +871,10 @@ msgstr "订单成交价格"
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Solana 上的交易可能暂时不可用。我们的团队正在努力解决此问题。"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking:"
+msgstr ""
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "当前兑换价格影响：{0}。增加 1% 的缓冲，以改善成交效果。"
@@ -874,6 +884,7 @@ msgid "Switch to Classic Trading"
 msgstr "切换到 Classic Trading"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "GLV:"
 msgstr "GLV："
 
@@ -925,6 +936,10 @@ msgstr "零费用额度不足"
 msgid "..."
 msgstr "..."
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Lifetime GT rewards"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since position opened"
 msgstr "自开仓以来"
@@ -936,6 +951,10 @@ msgstr "在外部聚合器上兑换"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
 msgstr "经典"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Turn GT into USDC through buybacks"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1300,6 +1319,10 @@ msgstr "第1名"
 #: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
 msgid "Transaction blocked"
 msgstr "交易已阻止"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Buying GLV/GM tokens means providing liquidity to GMX markets and becoming a liquidity provider (LP). On Solana, 1% of fees generated from trading, liquidations, borrowing, and swaps goes to LPs. They can also stake GLV/GM to earn GT rewards, which can be converted into USDC through GT buybacks."
+msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in tokens"
@@ -2197,6 +2220,7 @@ msgid "Affiliate address:"
 msgstr "推广者地址："
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -2866,6 +2890,10 @@ msgstr "搜索"
 msgid "Fees for the past"
 msgstr "费用 · 过去"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "GT Points are the incentive points of GMX Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of GMX Solana's fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max open interest {directionLabel}"
 msgstr "最大未平仓量 {directionLabel}"
@@ -3265,6 +3293,7 @@ msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {取消订单} other {取消 # 个订单}}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3322,6 +3351,10 @@ msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系�
 msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Points"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you"
 msgstr "以稳定币支付的链上收入 — 你自己的构建者费用，<0/>加上 GMX 手续费分成，每当有人通过你<1/>交易即可获得"
@@ -3349,6 +3382,10 @@ msgstr "更改可能需要几分钟才能显示"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "不包含激励"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Current sellable GT"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -3675,12 +3712,17 @@ msgid "Paid in {nativeTokenSymbol} from your Wallet because your Wallet does not
 msgstr "由于您的钱包中没有足够的 {walletGasTokenSymbol} 用于 Express，因此以您钱包中的 {nativeTokenSymbol} 支付"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Lifetime LP rewards"
 msgstr "累计 LP 奖励"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "无效的减仓规模"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Potential GT value"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3978,6 +4020,7 @@ msgid "Up to 25% earnings"
 msgstr "最高 25% 收益"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "No assets yet"
 msgstr "暂无资产"
 
@@ -4012,6 +4055,7 @@ msgstr "平仓时钱包收到"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4130,6 +4174,10 @@ msgstr "外部路由仅用于 Market Swap"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存入其中一种。"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Mint earlier at a lower cost"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4298,6 +4346,7 @@ msgstr "网络状态"
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "价格影响过高。影响：{negativeImpactAmountText}，输入：{amountAfterFeesText}"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "支持哪些网络？"
@@ -4548,6 +4597,7 @@ msgstr "{first}、{second} 及另外 {restCount} 个"
 msgid "Signing approval..."
 msgstr "签署批准中..."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What's the difference between GLV and GM?"
 msgstr "GLV 和 GM 有什么区别？"
@@ -5028,6 +5078,10 @@ msgstr "第 2 步：接收"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "已授权数量低于所需数量。请重新授权或减少数量"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Total GT"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Close the full position, change the trigger price, or add margin."
@@ -5040,6 +5094,10 @@ msgstr "错误名称："
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "市场构成"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Manage GT"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5342,6 +5400,10 @@ msgstr "更多详情"
 msgid "Max profit limit reached"
 msgstr "已达到最大利润上限"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "The full GT Points system and features are currently available only on Solana. GLV vaults and GM tokens vary by chain. Visit the Pools page to see the liquidity options available on your connected network."
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Maximum collateral capacity reached"
 msgstr "已达到抵押品容量上限"
@@ -5572,6 +5634,7 @@ msgid "Price impact rebates accrued. Claimable after 5 days. <0>Read more</0>."
 msgstr "价格影响返利已累计。5 天后可领取。<0>了解更多</0>。"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr "投资组合"
 
@@ -5672,6 +5735,10 @@ msgstr "<0>买入</0> {wrappedNativeTokenSymbol}。"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr "Solana 上的 GMX（又称 GMTrade）由独立域名提供服务"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Can LPs unstake or sell GLV/GM anytime?"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5895,6 +5962,7 @@ msgstr "兑换利润费用较高"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6630,6 +6698,10 @@ msgstr "输入价格"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "正在更新…"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "More GT, higher VIP tier and benefits"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -7370,6 +7442,7 @@ msgstr "Solana 上的 GMX（GMTrade）由独立域名提供服务"
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -7637,6 +7710,10 @@ msgstr "返利"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "仅因费用（资金费用 + 借款费用）不断降低保证金，仓位仍可能随时间推移而被清算。"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual realizable value depends on future sellable quota and buyback prices."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
@@ -7914,6 +7991,7 @@ msgid "TVL/CAP"
 msgstr "TVL/上限"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "Connect wallet to see your assets"
 msgstr "连接钱包以查看您的资产"
 
@@ -8180,6 +8258,10 @@ msgstr "超出 {poolName} 池的剩余容量。请取消并在 {targetPoolName} 
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "正在更新 {updateOrdersCount} 个止盈/止损订单..."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "How do LPs earn rewards?"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
 msgstr "成交价格未达到可接受价格"
@@ -8238,6 +8320,10 @@ msgstr "wstETH APR"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 提款受 Stargate 跨链桥流动性限制。请尝试小于 <0>{upperLimitFormatted}</0> 的金额。"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Earn GT from trading, LP, and referrals"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "预计清算时间"
@@ -8290,6 +8376,10 @@ msgstr "治理提醒"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "{symbol} 余额较低。此金额仅为您的 GMX Account 留下少量资金用于支付后续手续费。"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Maximum value of your currently sellable GT based on the current minting price, the maximum possible buyback price. Actual buyback value may be lower."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8626,6 +8716,7 @@ msgid "Win rate"
 msgstr "胜率"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM 和 GLV 包含您已不再持有的市场"
 
@@ -9111,6 +9202,7 @@ msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Summary"
 msgstr "摘要"
@@ -9188,6 +9280,10 @@ msgstr "清算"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "添加 TP/SL"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Max sellable value"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "How would you like to add funds?"
@@ -9354,6 +9450,7 @@ msgid "Zero-fee conversion is paused until {reopenTime}."
 msgstr "零费用转换已暂停至 {reopenTime}。"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "My assets"
 msgstr "我的资产"
 
@@ -10061,6 +10158,10 @@ msgstr "现有仓位位于 {0} 池。使用所选池将创建单独的仓位。"
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "在止盈价格下，剩余仓位将超过最大杠杆，订单可能无法执行。"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Yes, GLV/GM can generally be unstaked and sold at any time. However, for markets with trading hours, selling is only available while the market is open. In rare cases where your liquidity is being used for active trades, you can sell once those positions are closed."
+msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -11223,6 +11324,10 @@ msgstr "钱包交易的 Gas 以您钱包中的 {nativeTokenSymbol} 支付"
 msgid "Position would be liquidatable at current prices"
 msgstr "按当前价格，仓位将可被清算"
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Earn rewards with GLV/GM and GT"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>GMX 以 75.5% 的多数票选择 LayerZero 作为其多链扩展的消息传递合作伙伴！此次集成为 GMX 带来：</0><1><2>扩展至 125+ 条链的能力</2><3>对所有合约及安全性的完全所有权</3><4>快速、零滑点的转账</4><5>久经考验的基础设施，已获数十亿美元资产和数百个应用的信赖... <6>查看更多</6></5></1>"
@@ -11868,6 +11973,7 @@ msgid "Sender has withdrawn all tokens from the GLP vesting vault"
 msgstr "发送方已从 GLP 归属期金库中提取所有代币"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 从单个市场赚取费用。GLV 持有多个 GM 代币，并在相关市场间自动再平衡。两者均自动复利回报。选择 GM 获得单一市场敞口，或选择 GLV 在多个池之间分散投资。"
 
@@ -11921,6 +12027,10 @@ msgstr "两种收入来源。"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "正在执行转移请求…"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "What is GT?"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
@@ -11994,6 +12104,10 @@ msgstr "更换网络"
 msgid "Requesting unstake..."
 msgstr "正在申请解除质押..."
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Last buyback"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM 是 GMX V2 市场的流动性提供者代币。它可累积 V2 市场所产生费用的 63%。"
@@ -12003,6 +12117,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "纯 {indexSymbol} 做多。敞口仅来自仓位。"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total portfolio value"
 msgstr "投资组合总价值"
 
@@ -12940,6 +13055,10 @@ msgstr "模拟交易"
 msgid "Where can I read more?"
 msgstr "在哪里可以了解更多信息？"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "GT"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "已设置较高的可接受价格影响。当前影响：{0}。"
@@ -13178,6 +13297,7 @@ msgstr "EIP-4844, 3 月 20-27 日"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#: src/components/Earn/Solana/GtPanel.tsx
 msgid "Lifetime rewards"
 msgstr "累计奖励"
 
@@ -13381,6 +13501,10 @@ msgstr "今年"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr "系统会先将 USDC 转换为 USDG，然后订单会请求第二次签名。如果您拒绝或离开，USDG 将保留在您的账户中。"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Sell GT in buyback"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
@@ -13827,6 +13951,7 @@ msgid "POOL CAP LONG"
 msgstr "做多池容量上限"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "累计总收益"
 

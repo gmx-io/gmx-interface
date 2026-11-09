@@ -108,6 +108,10 @@ msgstr "Зафиксируйте<0/><1>более выгодную ставку<
 msgid "Paxos fee {fee} · ~2–10 min, can be longer"
 msgstr "Комиссия Paxos {fee} · ~2–10 мин, может дольше"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance:"
+msgstr ""
+
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "Перезагрузить"
@@ -414,6 +418,7 @@ msgid "One-Click Trading is unavailable for smart wallets"
 msgstr "One-Click Trading недоступен для смарт-кошельков"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "Обзор"
 
@@ -452,6 +457,7 @@ msgstr "Куда"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -865,6 +871,10 @@ msgstr "Цена исполнения ордера"
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Торговля на Solana может быть временно недоступна. Наша команда работает над устранением проблемы."
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking:"
+msgstr ""
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "Текущее влияние свопа на цену: {0}. Добавьте буфер 1% для более эффективного исполнения."
@@ -874,6 +884,7 @@ msgid "Switch to Classic Trading"
 msgstr "Переключиться на Classic Trading"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "GLV:"
 msgstr "GLV:"
 
@@ -925,6 +936,10 @@ msgstr "Недостаточно лимита без комиссии"
 msgid "..."
 msgstr "..."
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Lifetime GT rewards"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since position opened"
 msgstr "С момента открытия позиции"
@@ -936,6 +951,10 @@ msgstr "Своп на внешнем агрегаторе"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
 msgstr "Классический"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Turn GT into USDC through buybacks"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1300,6 +1319,10 @@ msgstr "1-е место"
 #: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
 msgid "Transaction blocked"
 msgstr "Транзакция заблокирована"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Buying GLV/GM tokens means providing liquidity to GMX markets and becoming a liquidity provider (LP). On Solana, 1% of fees generated from trading, liquidations, borrowing, and swaps goes to LPs. They can also stake GLV/GM to earn GT rewards, which can be converted into USDC through GT buybacks."
+msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in tokens"
@@ -2197,6 +2220,7 @@ msgid "Affiliate address:"
 msgstr "Адрес аффилиата:"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -2866,6 +2890,10 @@ msgstr "Поиск"
 msgid "Fees for the past"
 msgstr "Комиссии за последние"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "GT Points are the incentive points of GMX Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of GMX Solana's fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max open interest {directionLabel}"
 msgstr "Макс. открытый интерес {directionLabel}"
@@ -3265,6 +3293,7 @@ msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Отменить ордер} other {Отменить ордера (#)}}"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3322,6 +3351,10 @@ msgstr "Помогите нам улучшить GMX. В целях безопа
 msgid "Cancel margin deposit"
 msgstr "Отмена депозита маржи"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Points"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you"
 msgstr "Ончейн-доход в стейблкоинах — ваша комиссия билдера<0/>плюс доля комиссий GMX каждый раз, когда кто-то<1/>торгует через вас"
@@ -3349,6 +3382,10 @@ msgstr "Изменения могут отобразиться через нес
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "Без учёта бонусов"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Current sellable GT"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -3675,12 +3712,17 @@ msgid "Paid in {nativeTokenSymbol} from your Wallet because your Wallet does not
 msgstr "Оплачивается в {nativeTokenSymbol} из вашего Кошелька, потому что в вашем Кошельке недостаточно {walletGasTokenSymbol} для Express"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Lifetime LP rewards"
 msgstr "Вознаграждения LP за всё время"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Недопустимый размер уменьшения"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Potential GT value"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -3978,6 +4020,7 @@ msgid "Up to 25% earnings"
 msgstr "Доход до 25%"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "No assets yet"
 msgstr "Пока нет активов"
 
@@ -4012,6 +4055,7 @@ msgstr "Получено на кошелёк при закрытии"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4130,6 +4174,10 @@ msgstr "Внешние маршруты используются только д
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Для Express нужны {gasPaymentTokensText} в вашем GMX Account. Внесите один из них."
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Mint earlier at a lower cost"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4298,6 +4346,7 @@ msgstr "Статус сети"
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "Слишком высокое влияние на цену. Влияние: {negativeImpactAmountText}, сумма: {amountAfterFeesText}"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "Какие сети поддерживаются?"
@@ -4548,6 +4597,7 @@ msgstr "{first}, {second} и ещё {restCount}"
 msgid "Signing approval..."
 msgstr "Подписание одобрения..."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What's the difference between GLV and GM?"
 msgstr "В чём разница между GLV и GM?"
@@ -5028,6 +5078,10 @@ msgstr "Шаг 2: Получение"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "Одобренная сумма меньше требуемой. Одобрите ещё раз или уменьшите сумму"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Total GT"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Close the full position, change the trigger price, or add margin."
@@ -5040,6 +5094,10 @@ msgstr "Имя ошибки:"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "Состав рынка"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Manage GT"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5342,6 +5400,10 @@ msgstr "Подробнее"
 msgid "Max profit limit reached"
 msgstr "Достигнут лимит максимальной прибыли"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "The full GT Points system and features are currently available only on Solana. GLV vaults and GM tokens vary by chain. Visit the Pools page to see the liquidity options available on your connected network."
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Maximum collateral capacity reached"
 msgstr "Достигнут максимальный лимит обеспечения"
@@ -5572,6 +5634,7 @@ msgid "Price impact rebates accrued. Claimable after 5 days. <0>Read more</0>."
 msgstr "Возвраты за влияние на цену начислены. Доступны для получения через 5 дней. <0>Подробнее</0>."
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr "Портфель"
 
@@ -5672,6 +5735,10 @@ msgstr "<0>Купить</0> {wrappedNativeTokenSymbol}."
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr "GMX на Solana (известный как GMTrade) доступен на отдельном домене"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Can LPs unstake or sell GLV/GM anytime?"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5895,6 +5962,7 @@ msgstr "Высокая комиссия с прибыли от свопа"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6630,6 +6698,10 @@ msgstr "Введите цену"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "Обновление…"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "More GT, higher VIP tier and benefits"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -7370,6 +7442,7 @@ msgstr "GMX на Solana (GMTrade) доступен на отдельном до�
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -7637,6 +7710,10 @@ msgstr "ВОЗВРАТ"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "Позиция всё ещё может быть ликвидирована только из-за комиссий за финансирование и заимствование, которые со временем уменьшают маржу."
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual realizable value depends on future sellable quota and buyback prices."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
@@ -7914,6 +7991,7 @@ msgid "TVL/CAP"
 msgstr "TVL/ЛИМИТ"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "Connect wallet to see your assets"
 msgstr "Подключите кошелёк, чтобы увидеть ваши активы"
 
@@ -8180,6 +8258,10 @@ msgstr "Слишком большой для оставшегося места �
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "Обновление {updateOrdersCount} TP/SL ордеров..."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "How do LPs earn rewards?"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
 msgstr "Цена исполнения не соответствовала допустимой цене"
@@ -8238,6 +8320,10 @@ msgstr "APR wstETH"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Вывод средств из GMX Account ограничен ликвидностью моста Stargate. Попробуйте сумму меньше <0>{upperLimitFormatted}</0>."
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Earn GT from trading, LP, and referrals"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "Расчётное время до ликвидации"
@@ -8290,6 +8376,10 @@ msgstr "Уведомления о governance"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "Низкий баланс {symbol}. При такой сумме на вашем GMX Account останется мало средств для оплаты будущих комиссий."
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Maximum value of your currently sellable GT based on the current minting price, the maximum possible buyback price. Actual buyback value may be lower."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8626,6 +8716,7 @@ msgid "Win rate"
 msgstr "Процент побед"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM и GLV включают рынки, которые вы больше не держите"
 
@@ -9111,6 +9202,7 @@ msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Summary"
 msgstr "Сводка"
@@ -9188,6 +9280,10 @@ msgstr "Ликвидация"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "Добавить TP/SL"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Max sellable value"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "How would you like to add funds?"
@@ -9354,6 +9450,7 @@ msgid "Zero-fee conversion is paused until {reopenTime}."
 msgstr "Конвертация без комиссии приостановлена до {reopenTime}."
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "My assets"
 msgstr "Мои активы"
 
@@ -10061,6 +10158,10 @@ msgstr "Существующая позиция находится в пуле {
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "По цене тейк-профита оставшаяся позиция превысит максимальное плечо, и ордер может не исполниться."
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Yes, GLV/GM can generally be unstaked and sold at any time. However, for markets with trading hours, selling is only available while the market is open. In rare cases where your liquidity is being used for active trades, you can sell once those positions are closed."
+msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
@@ -11223,6 +11324,10 @@ msgstr "Для транзакций из кошелька Gas оплачивае
 msgid "Position would be liquidatable at current prices"
 msgstr "Позиция подлежала бы ликвидации при текущих ценах"
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Earn rewards with GLV/GM and GT"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Большинством в 75.5% голосов GMX выбрал LayerZero в качестве партнера по обмену сообщениями для мультичейн-расширения! Интеграция дает GMX:</0><1><2>Возможность расширения на 125+ сетей</2><3>Полный контроль над всеми контрактами и безопасностью</3><4>Быстрые переводы без проскальзывания</4><5>Проверенную в деле инфраструктуру, которой уже доверяют активы на миллиарды долларов и сотни приложений... <6>ещё</6></5></1>"
@@ -11868,6 +11973,7 @@ msgid "Sender has withdrawn all tokens from the GLP vesting vault"
 msgstr "Отправитель вывел все токены из хранилища вестинга GLP"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
 
@@ -11921,6 +12027,10 @@ msgstr "Два источника дохода."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "Выполнение запроса на перемещение…"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "What is GT?"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
@@ -11994,6 +12104,10 @@ msgstr "Сменить сеть"
 msgid "Requesting unstake..."
 msgstr "Отправка заявки..."
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Last buyback"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM — это токен поставщика ликвидности для рынков GMX V2. Он накапливает 63% комиссий, генерируемых рынками V2."
@@ -12003,6 +12117,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "Чистый лонг {indexSymbol}. Экспозиция только от позиции."
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total portfolio value"
 msgstr "Общая стоимость портфеля"
 
@@ -12940,6 +13055,10 @@ msgstr "Симулировать транзакции"
 msgid "Where can I read more?"
 msgstr "Где можно узнать больше?"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "GT"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "Установлено высокое допустимое влияние на цену. Текущее влияние: {0}."
@@ -13178,6 +13297,7 @@ msgstr "EIP-4844, 20-27 марта"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#: src/components/Earn/Solana/GtPanel.tsx
 msgid "Lifetime rewards"
 msgstr "Вознаграждения за всё время"
 
@@ -13381,6 +13501,10 @@ msgstr "Этот год"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr "Сначала USDC конвертируются в USDG, затем ордер запросит вторую подпись. Если вы откажетесь или уйдёте, USDG останутся на вашем счёте."
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Sell GT in buyback"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"
@@ -13827,6 +13951,7 @@ msgid "POOL CAP LONG"
 msgstr "ЛИМИТ ПУЛА ЛОНГ"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "Всего заработано"
 

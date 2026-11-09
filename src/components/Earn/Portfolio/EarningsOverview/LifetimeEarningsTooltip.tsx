@@ -22,7 +22,7 @@ export type LifetimeEarningsBreakdown = {
   totalUsd: bigint | undefined;
 };
 
-function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) {
+export function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) {
   return (
     <StatsTooltipRow
       label={label}
@@ -38,7 +38,7 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
   );
 }
 
-function Group({ title, children }: { title: ReactNode; children: ReactNode }) {
+export function Group({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
     <div className="flex flex-col gap-8">
       <span className="text-body-medium font-medium text-typography-secondary">{title}</span>
