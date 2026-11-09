@@ -299,7 +299,7 @@ export async function signTypedData(params: SignTypedDataParams) {
   typedData.relayParams = hashRelayParams(relayParams);
 
   helperToast.info(
-    t`Your wallet is not activated on ${getChainName(verificationChainId)} yet. Sign once more to activate it`
+    t`This wallet is not deployed on ${getChainName(verificationChainId)} yet. Sign once more to deploy it with this action`
   );
 
   return signTypedDataOnce(params);
