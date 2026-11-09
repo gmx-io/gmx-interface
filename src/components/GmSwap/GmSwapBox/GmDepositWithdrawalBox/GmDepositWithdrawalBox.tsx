@@ -154,6 +154,12 @@ export function GmSwapBoxDepositWithdrawal() {
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = usePoolsDetailsMarketOrGlvTokenInputValue();
   const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
 
+  const resetInputs = useCallback(() => {
+    setFirstTokenInputValue("");
+    setSecondTokenInputValue("");
+    setMarketOrGlvTokenInputValue("");
+  }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
+
   const account = useSelector(selectAccount);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -289,6 +295,7 @@ export function GmSwapBoxDepositWithdrawal() {
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketsInfoData,
     glvAndMarketsInfoData,
+    onSent: resetInputs,
   });
 
   const submitState = transitState.submitState ?? gmSwapSubmitState;
@@ -447,12 +454,6 @@ export function GmSwapBoxDepositWithdrawal() {
     },
     [marketInfo, glvInfo, setFocusedInput]
   );
-
-  const resetInputs = useCallback(() => {
-    setFirstTokenInputValue("");
-    setSecondTokenInputValue("");
-    setMarketOrGlvTokenInputValue("");
-  }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
 
   const onGlvOrMarketChange = useCallback(
     (glvOrMarketAddress: string) => {
