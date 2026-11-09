@@ -15,6 +15,7 @@ import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
+import { getIsLowSupplyMarketToken } from "domain/synthetics/markets/utils";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -128,6 +129,8 @@ export function MarketGraphs({
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
+  const isLowSupply = getIsLowSupplyMarketToken(getByKey(marketTokensData, address));
+
   const isMobile = usePoolsIsMobilePage();
 
   const timeRangeTabs = useMemo(
@@ -198,6 +201,7 @@ export function MarketGraphs({
             priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
+            isLowSupply={isLowSupply}
           />
         </div>
       </div>
@@ -277,11 +281,13 @@ const GraphChart = ({
   priceSnapshots,
   marketGraphType,
   aprSnapshots,
+  isLowSupply,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
   aprSnapshots: AprSnapshot[];
+  isLowSupply: boolean;
 }) => {
   const performanceData = useMemo(
     () =>
@@ -350,7 +356,7 @@ const GraphChart = ({
     }
   }, [performanceData, priceData, priceSnapshots.length, apyData, marketGraphType, prevMarketGraphType]);
 
-  if (data.length === 0) {
+  if (isLowSupply || data.length === 0) {
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
         <p className="text-body-medium text-typography-secondary">
