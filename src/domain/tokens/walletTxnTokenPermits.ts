@@ -79,7 +79,8 @@ export async function sendWithWalletTxnTokenPermits<T>({
 
     return result;
   } catch (error) {
-    // the permit is the multicall's only external call, and its simulation and gas estimate rethrow without context
+    // only the permit's external call can fail with a permit reason, and the simulation and gas estimate rethrow
+    // without context
     walletTxnTokenPermits?.handleTokenPermitsError(error, tokenPermits, { isAnyContext: true });
     throw error;
   }
