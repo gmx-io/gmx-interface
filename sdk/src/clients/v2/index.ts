@@ -317,22 +317,35 @@ export type {
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
-type GmxApiSdkOptions<TNetworkId extends NetworkId> = (
-  | { chainId: TNetworkId & ContractsChainId; networkId?: never }
-  | { networkId: TNetworkId; chainId?: never }
+type GmxApiSdkOptions = (
+  | { networkId: NetworkId; chainId?: never }
+  | { chainId: ContractsChainId; networkId?: never }
 ) & { apiUrl?: string; api?: IHttp };
 
-type GmxApiContext<TNetworkId extends NetworkId> = {
-  chainId: TNetworkId extends ContractsChainId ? ContractsChainId : undefined;
-  api: IHttp;
-};
+class GmxApiContext {
+  constructor(
+    public networkId: NetworkId,
+    public api: IHttp
+  ) {}
 
-export class GmxApiSdk<out TNetworkId extends NetworkId = ContractsChainId> {
-  ctx: GmxApiContext<TNetworkId>;
+  get chainId(): ContractsChainId {
+    if (!isContractsChain(this.networkId, true)) {
+      throw new Error("EVM operations require an EVM chainId");
+    }
+    return this.networkId;
+  }
+
+  set chainId(chainId: ContractsChainId) {
+    this.networkId = chainId;
+  }
+}
+
+export class GmxApiSdk {
+  private _ctx: GmxApiContext;
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
 
-  constructor(options: GmxApiSdkOptions<TNetworkId>) {
+  constructor(options: GmxApiSdkOptions) {
     const { apiUrl, api } = options;
     const networkId = options.networkId ?? options.chainId;
     if (networkId === undefined) {
@@ -350,17 +363,23 @@ export class GmxApiSdk<out TNetworkId extends NetworkId = ContractsChainId> {
       resolvedApi = allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl);
     }
 
-    this.ctx = {
-      chainId: isContractsChain(networkId, true) ? networkId : undefined,
-      api: resolvedApi,
-    } as GmxApiContext<TNetworkId>;
+    this._ctx = new GmxApiContext(networkId, resolvedApi);
+  }
+
+  get ctx(): GmxApiContext {
+    return this._ctx;
+  }
+
+  set ctx(context: { networkId: NetworkId; api: IHttp } | { chainId: ContractsChainId; api: IHttp }) {
+    if ("chainId" in context && Object.prototype.hasOwnProperty.call(context, "chainId")) {
+      this._ctx = new GmxApiContext(context.chainId, context.api);
+      return;
+    }
+    this._ctx = new GmxApiContext("networkId" in context ? context.networkId : context.chainId, context.api);
   }
 
   requireEvmContext(): { chainId: ContractsChainId; api: IHttp } {
     const { chainId, api } = this.ctx;
-    if (chainId === undefined || !isContractsChain(chainId, true)) {
-      throw new Error("EVM operations require an EVM chainId");
-    }
     return { chainId, api };
   }
 

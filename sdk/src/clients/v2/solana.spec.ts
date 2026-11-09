@@ -43,23 +43,43 @@ afterEach(() => {
 });
 
 describe("Solana API reads", () => {
-  it("uses the current EVM context when encoding approvals", () => {
-    for (const options of [{ chainId: ARBITRUM }, { networkId: ARBITRUM }] as const) {
-      for (const replaceContext of [false, true]) {
+  it("uses the current network for approvals through both context interfaces", () => {
+    for (const options of [{ chainId: ARBITRUM }, { networkId: ARBITRUM }, { networkId: SOLANA_NETWORK_ID }] as const) {
+      for (const update of [
+        "chainId",
+        "networkId",
+        "legacyContext",
+        "networkContext",
+        "legacySpread",
+        "networkSpread",
+      ] as const) {
         const sdk = new GmxApiSdk(options);
-        if (replaceContext) {
+        if (update === "legacyContext") {
           sdk.ctx = { chainId: AVALANCHE, api: sdk.ctx.api };
+        } else if (update === "networkContext") {
+          sdk.ctx = { networkId: AVALANCHE, api: sdk.ctx.api };
+        } else if (update === "legacySpread") {
+          sdk.ctx = { ...sdk.ctx, chainId: AVALANCHE };
+        } else if (update === "networkSpread") {
+          sdk.ctx = { ...sdk.ctx, networkId: AVALANCHE };
         } else {
-          sdk.ctx.chainId = AVALANCHE;
+          sdk.ctx[update] = AVALANCHE;
         }
-        const transaction = sdk.buildApproveTransaction({
+        const params = {
           tokenAddress: "0x0000000000000000000000000000000000000001",
-          spender: "router",
+          spender: "router" as const,
           amount: 1n,
-        });
+        };
+        const transaction = sdk.buildApproveTransaction(params);
         const decoded = decodeFunctionData({ abi: ERC20ABI, data: transaction.data });
         expect(decoded.functionName).toBe("approve");
         expect(decoded.args).toEqual([getContract(AVALANCHE, "SyntheticsRouter"), 1n]);
+        expect(sdk.ctx.networkId).toBe(AVALANCHE);
+        expect(sdk.ctx.chainId).toBe(AVALANCHE);
+        sdk.ctx.networkId = SOLANA_NETWORK_ID;
+        const solanaContext = sdk.ctx;
+        sdk.ctx = solanaContext;
+        expect(() => sdk.buildApproveTransaction(params)).toThrow("EVM operations require an EVM chainId");
       }
     }
   });

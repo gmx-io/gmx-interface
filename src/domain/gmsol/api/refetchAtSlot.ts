@@ -1,4 +1,3 @@
-import type { SolanaNetworkId } from "config/chains";
 import type { GmxApiSdk } from "sdk/clients/v2";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { ApiPositionInfo } from "sdk/utils/positions/types";
@@ -44,7 +43,7 @@ async function readGmsolAccount<T>(
 }
 
 export function fetchGmsolPositions(
-  sdk: GmxApiSdk<SolanaNetworkId>,
+  sdk: GmxApiSdk,
   owner: string,
   minContextSlot?: number
 ): Promise<GmsolSlotted<ApiPositionInfo[]>> {
@@ -52,7 +51,7 @@ export function fetchGmsolPositions(
 }
 
 export function fetchGmsolOrders(
-  sdk: GmxApiSdk<SolanaNetworkId>,
+  sdk: GmxApiSdk,
   owner: string,
   minContextSlot?: number
 ): Promise<GmsolSlotted<ApiOrderInfo[]>> {
