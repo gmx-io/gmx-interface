@@ -129,7 +129,7 @@ export function MarketGraphs({
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
-  const marketToken = getByKey(marketTokensData, address);
+  const marketToken = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken : getByKey(marketTokensData, address);
   // wait for the supply too, otherwise a low-supply pool flashes its broken chart while loading
   const isChartHidden = marketToken === undefined || getIsLowSupplyMarketToken(marketToken);
 
