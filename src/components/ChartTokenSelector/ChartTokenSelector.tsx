@@ -985,7 +985,7 @@ function tokenSortingComparatorBuilder({
     const bAddress = wrappedAddress(b);
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      const promoted = PROMOTED_TOKENS_ORDER[chainId];
+      const promoted = PROMOTED_TOKENS_ORDER[networkId];
       if (promoted) {
         const aIdx = promoted.indexOf(a.address);
         const bIdx = promoted.indexOf(b.address);
