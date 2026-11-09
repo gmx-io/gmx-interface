@@ -2111,6 +2111,7 @@ msgstr "마켓"
 msgid "Whitelist only"
 msgstr "화이트리스트 전용"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "재시도"
@@ -2770,6 +2771,10 @@ msgstr "기존 포지션은 WETH-USDC 풀에 있지만 해당 풀에는 이 주�
 msgid "Failed withdraw"
 msgstr "출금 실패"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr "경고 아이콘"
@@ -3269,6 +3274,10 @@ msgstr "{0, plural, one {주문 취소} other {주문 #건 취소}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"

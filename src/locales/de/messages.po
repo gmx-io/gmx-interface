@@ -2111,6 +2111,7 @@ msgstr "Märkte"
 msgid "Whitelist only"
 msgstr "Nur Whitelist"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Erneut versuchen"
@@ -2770,6 +2771,10 @@ msgstr "Die bestehende Position befindet sich im WETH-USDC-Pool, aber dieser Poo
 msgid "Failed withdraw"
 msgstr "Fehlgeschlagene Abhebung"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to refresh positions. Displayed data may be outdated."
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "Warning icon"
 msgstr "Warnsymbol"
@@ -3269,6 +3274,10 @@ msgstr "{0, plural, one {Order abbrechen} other {# Orders abbrechen}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Unable to load positions. Please try again."
+msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
