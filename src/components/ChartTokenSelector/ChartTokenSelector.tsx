@@ -247,9 +247,9 @@ function MarketsList() {
   const otherModeAvailableTokens = swapEnabled ? (isSwap ? perpTokens : swapTokens) : undefined;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
-    const availableChartTokens = availableTokens?.filter((token) =>
-      isSolana ? !token.isChartDisabled : isChartAvailableForToken(chainId, token.symbol)
-    );
+    const availableChartTokens = isSolana
+      ? availableTokens
+      : availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
     const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address as Address);
 
     return {
@@ -260,9 +260,9 @@ function MarketsList() {
 
   const otherModeOptions = useMemo(
     () =>
-      otherModeAvailableTokens?.filter((token) =>
-        isSolana ? !token.isChartDisabled : isChartAvailableForToken(chainId, token.symbol)
-      ),
+      isSolana
+        ? otherModeAvailableTokens
+        : otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
     [chainId, isSolana, otherModeAvailableTokens]
   );
 
@@ -376,13 +376,7 @@ function MarketsList() {
     }
 
     return sortedTokens.map((token) => {
-      const wrappedAddress = (
-        isSolana
-          ? token.isNative
-            ? token.wrappedAddress ?? token.address
-            : token.address
-          : convertTokenAddress(chainId, token.address, "wrapped")
-      ) as Address;
+      const wrappedAddress = getWrappedTokenAddress(chainId, networkId, token.address);
       return {
         token,
         tokenData: tokensData?.[wrappedAddress],
@@ -393,7 +387,7 @@ function MarketsList() {
         maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
       };
     });
-  }, [sortedTokens, chainId, isSolana, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
+  }, [sortedTokens, chainId, networkId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -947,6 +941,11 @@ function MarketListItem({
   );
 }
 
+function getWrappedTokenAddress(chainId: number, networkId: NetworkId, address: string): Address {
+  // Solana perp options already use index mints; native SOL is not a market option.
+  return isSolanaNetwork(networkId) ? (address as Address) : convertTokenAddress(chainId, address, "wrapped");
+}
+
 function tokenSortingComparatorBuilder({
   chainId,
   networkId,
@@ -973,16 +972,9 @@ function tokenSortingComparatorBuilder({
 }) {
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
-  const wrappedAddress = (token: Token) =>
-    isSolanaNetwork(networkId)
-      ? token.isNative
-        ? token.wrappedAddress ?? token.address
-        : token.address
-      : convertTokenAddress(chainId, token.address, "wrapped");
-
   return (a: Token, b: Token) => {
-    const aAddress = wrappedAddress(a);
-    const bAddress = wrappedAddress(b);
+    const aAddress = getWrappedTokenAddress(chainId, networkId, a.address);
+    const bAddress = getWrappedTokenAddress(chainId, networkId, b.address);
 
     if (orderBy === "unspecified" || direction === "unspecified") {
       const promoted = PROMOTED_TOKENS_ORDER[networkId];
