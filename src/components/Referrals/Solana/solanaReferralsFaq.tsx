@@ -5,8 +5,7 @@ import type { FaqItem } from "components/Faq/Faq";
 
 import { GT_POINTS_MY_PATH } from "./solanaReferralsTypes";
 
-// The issue lists the questions only. The answers follow the issue and the Solana reference app and docs;
-// "Can I change my referral code?" still needs the PM to confirm that codes can't be changed or transferred.
+// The answers follow the Solana referral rules: a fixed 10% trader discount, GT and sellable quota for affiliates.
 
 const REFERRER_BENEFITS: FaqItem = {
   title: <Trans>What benefits does my referrer receive?</Trans>,

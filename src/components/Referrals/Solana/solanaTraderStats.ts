@@ -28,7 +28,8 @@ export function buildSolanaTraderStats({
 
   const isTotal = days === 0;
   const bucketSizeSeconds = getBucketSizeSeconds(days);
-  const from = isTotal ? points[0]?.timestamp ?? periodEnd : periodStart;
+  const firstTimestamp = points.reduce((min, point) => Math.min(min, point.timestamp), periodEnd);
+  const from = isTotal ? firstTimestamp : periodStart;
   const compareFrom = from - (periodEnd - from);
 
   const buckets = new Map<number, { volumeUsd: bigint; discountsUsd: bigint }>();

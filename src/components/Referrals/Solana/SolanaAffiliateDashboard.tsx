@@ -1,4 +1,4 @@
-import { msg, t, Trans } from "@lingui/macro";
+import { msg, Plural, t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
@@ -6,7 +6,6 @@ import { useCopyToClipboard } from "react-use";
 import type { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { formatDate, formatDateTime, formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
 import { helperToast } from "lib/helperToast";
-import { shortenAddress } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -27,11 +26,11 @@ import ShareIcon from "img/ic_share.svg?react";
 
 import { SolanaAffiliatesPromoCard } from "./SolanaPromoCards";
 import { SOLANA_AFFILIATE_POST_WIZARD_FAQS } from "./solanaReferralsFaq";
+import { formatGt, shortenSolanaAddress } from "./solanaReferralsFormat";
 import {
   getSolanaReferralLink,
   GT_POINTS_BUYBACK_PATH,
   GT_POINTS_MY_PATH,
-  SOLANA_GT_DECIMALS,
   SOLANA_TRADER_DISCOUNT_PERCENT,
   type SolanaAffiliateData,
   type SolanaReferee,
@@ -48,10 +47,6 @@ const ACTIVITY_TIME_RANGE_INFOS: TimeRangeInfo[] = [
   { slug: "30d", days: 30, title: msg`${30}d` },
   { slug: "90d", days: 90, title: msg`${90}d` },
 ];
-
-function formatGt(amount: bigint, sign = "") {
-  return `${sign}${formatAmount(amount, SOLANA_GT_DECIMALS, 4, true)} GT`;
-}
 
 export function SolanaAffiliateDashboard({
   account,
@@ -107,7 +102,7 @@ function InviteCard({ code, onShare }: { code: string; onShare: () => void }) {
             <Trans>Invite and earn rewards</Trans>
           </div>
           <div className="text-body-small text-typography-secondary">
-            <Trans>Earn GT rewards and increase sellable GT quota as your referrals trade.</Trans>
+            <Trans>Earn GT rewards and increase your GT sellable quota as your referrals trade.</Trans>
           </div>
         </div>
         <div className="flex min-w-0 shrink-0 flex-col items-end gap-2 max-md:items-start">
@@ -117,6 +112,7 @@ function InviteCard({ code, onShare }: { code: string; onShare: () => void }) {
           <button
             type="button"
             className="flex max-w-full items-center gap-4 text-typography-primary"
+            aria-label={t`Copy referral code ${code}`}
             onClick={() => {
               copyToClipboard(code);
               helperToast.success(t`Referral code copied to clipboard`);
@@ -161,17 +157,17 @@ function TotalReferralsCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
       </div>
       <div className="flex flex-wrap items-center gap-8">
         <span className="text-24 font-medium text-typography-primary numbers">
-          {affiliate.totalReferrals.toLocaleString()}
+          {formatAmount(BigInt(affiliate.totalReferrals), 0, 0, true)}
         </span>
         {affiliate.totalReferrals > 0 && (
           <>
             <span className="flex items-center gap-4 rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500">
               <span className="size-6 rounded-full bg-green-500" />
-              <Trans>{affiliate.activeReferrals.toLocaleString()} active</Trans>
+              <Plural value={affiliate.activeReferrals} one="# active" other="# active" />
             </span>
             <span className="flex items-center gap-4 rounded-full bg-slate-700 px-6 py-2 text-12 font-medium text-typography-secondary">
               <span className="size-6 rounded-full bg-slate-500" />
-              <Trans>{inactiveReferrals.toLocaleString()} inactive</Trans>
+              <Plural value={inactiveReferrals} one="# inactive" other="# inactive" />
             </span>
           </>
         )}
@@ -180,7 +176,7 @@ function TotalReferralsCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
   );
 }
 
-function RewardRateCard({ rewardRatePercent }: { rewardRatePercent: number }) {
+function RewardRateCard({ rewardRatePercent }: { rewardRatePercent: number | undefined }) {
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-adaptive">
       <div className="text-body-small font-medium text-typography-secondary">
@@ -199,7 +195,9 @@ function RewardRateCard({ rewardRatePercent }: { rewardRatePercent: number }) {
           }
         />
       </div>
-      <span className="text-24 font-medium text-typography-primary numbers">{rewardRatePercent}%</span>
+      <span className="text-24 font-medium text-typography-primary numbers">
+        {rewardRatePercent === undefined ? "—" : `${rewardRatePercent}%`}
+      </span>
     </div>
   );
 }
@@ -242,10 +240,17 @@ function ActivityCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
 
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
-      <div className="flex flex-wrap items-center justify-between gap-8 border-b-1/2 border-slate-600 pr-adaptive">
-        <Tabs type="block" options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} />
+      {/* One divider under the header; the time filter moves under the tabs, padded, when the card is narrow */}
+      <div className="flex flex-wrap items-end justify-between border-b-1/2 border-slate-600">
+        <Tabs
+          type="block"
+          className="!border-b-0"
+          options={tabOptions}
+          selectedValue={activeTab}
+          onChange={setActiveTab}
+        />
         {activeTab === ActivityTab.RecentActivity && (
-          <div className="max-md:px-adaptive max-md:pb-8">
+          <div className="px-adaptive py-6">
             <TimeRangeFilter
               timeRange={timeRange ?? "7d"}
               setTimeRange={setTimeRange}
@@ -255,7 +260,7 @@ function ActivityCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
         )}
       </div>
       {activeTab === ActivityTab.RecentActivity ? (
-        <RecentActivityTable activity={activity} />
+        <RecentActivityTable activity={activity} rangeDays={days} />
       ) : (
         <RefereesTable referees={affiliate.referees} />
       )}
@@ -271,9 +276,13 @@ function EmptyRow({ children }: { children: React.ReactNode }) {
   );
 }
 
-function RecentActivityTable({ activity }: { activity: SolanaReferralActivity[] }) {
+function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferralActivity[]; rangeDays: number }) {
   const { isMobile } = useBreakpoints();
-  const { currentPage, setCurrentPage, pageCount, currentData } = usePagination("SolanaReferralsActivity", activity);
+  // A new time range starts again on page 1
+  const { currentPage, setCurrentPage, pageCount, currentData } = usePagination(
+    `SolanaReferralsActivity-${rangeDays}`,
+    activity
+  );
 
   if (activity.length === 0) {
     return (
@@ -296,13 +305,13 @@ function RecentActivityTable({ activity }: { activity: SolanaReferralActivity[] 
               className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-adaptive py-10 last:border-b-0"
             >
               <div className="flex min-w-0 flex-col gap-2">
-                <span className="font-mono text-typography-primary">{shortenAddress(record.referee, 13)}</span>
+                <span className="font-mono text-typography-primary">{shortenSolanaAddress(record.referee)}</span>
                 <span className="text-body-small text-typography-secondary">{formatDateTime(record.timestamp)}</span>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2 numbers">
-                <span className="text-typography-primary">{formatGt(record.gtReward, "+")}</span>
+                <span className="text-typography-primary">{formatGt(record.gtReward, { signed: true })}</span>
                 <span className="text-body-small text-typography-secondary">
-                  <Trans>Quota {formatGt(record.sellableQuota, "+")}</Trans>
+                  <Trans>Quota {formatGt(record.sellableQuota, { signed: true })}</Trans>
                 </span>
               </div>
             </div>
@@ -331,9 +340,13 @@ function RecentActivityTable({ activity }: { activity: SolanaReferralActivity[] 
               {currentData.map((record) => (
                 <TableTr key={record.id}>
                   <TableTd className="whitespace-nowrap">{formatDateTime(record.timestamp)}</TableTd>
-                  <TableTd className="font-mono">{shortenAddress(record.referee, 13)}</TableTd>
-                  <TableTd className="whitespace-nowrap text-right numbers">{formatGt(record.gtReward, "+")}</TableTd>
-                  <TableTd className="whitespace-nowrap numbers">{formatGt(record.sellableQuota, "+")}</TableTd>
+                  <TableTd className="font-mono">{shortenSolanaAddress(record.referee)}</TableTd>
+                  <TableTd className="whitespace-nowrap text-right numbers">
+                    {formatGt(record.gtReward, { signed: true })}
+                  </TableTd>
+                  <TableTd className="whitespace-nowrap numbers">
+                    {formatGt(record.sellableQuota, { signed: true })}
+                  </TableTd>
                 </TableTr>
               ))}
             </tbody>
@@ -382,15 +395,22 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
               className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-adaptive py-10 last:border-b-0"
             >
               <div className="flex min-w-0 flex-col gap-2">
-                <span className="font-mono text-typography-primary">{shortenAddress(referee.address, 13)}</span>
+                <span className="font-mono text-typography-primary">{shortenSolanaAddress(referee.address)}</span>
                 <span className="text-body-small text-typography-secondary">
                   <Trans>Joined {formatDate(referee.joinedAt)}</Trans>
                 </span>
+                <span className="text-body-small text-typography-secondary">
+                  {referee.lastTradeAt === undefined ? (
+                    <Trans>No trades yet</Trans>
+                  ) : (
+                    <Trans>Last trade {formatTimeAgo(referee.lastTradeAt * 1000)}</Trans>
+                  )}
+                </span>
               </div>
-              <div className="flex shrink-0 flex-col items-end gap-2 numbers">
+              <div className="flex shrink-0 flex-col items-end gap-2 self-start numbers">
                 <span className="text-typography-primary">{formatGt(referee.gtEarned)}</span>
                 <span className="text-body-small text-typography-secondary">
-                  <LastTrade timestamp={referee.lastTradeAt} />
+                  <Trans>Quota {formatGt(referee.sellableQuotaEarned)}</Trans>
                 </span>
               </div>
             </div>
@@ -421,7 +441,7 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
             <tbody>
               {currentData.map((referee) => (
                 <TableTr key={referee.address}>
-                  <TableTd className="font-mono">{shortenAddress(referee.address, 13)}</TableTd>
+                  <TableTd className="font-mono">{shortenSolanaAddress(referee.address)}</TableTd>
                   <TableTd className="whitespace-nowrap">{formatDate(referee.joinedAt)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">{formatGt(referee.gtEarned)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">

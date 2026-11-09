@@ -120,6 +120,7 @@ export function SolanaTradersDashboard({
             <button
               type="button"
               className="flex min-w-0 items-center gap-4 text-left text-typography-primary"
+              aria-label={t`Copy referral link ${appliedCode}`}
               onClick={() => {
                 copyToClipboard(getSolanaReferralLink(appliedCode));
                 helperToast.success(t`Referral link copied to clipboard`);

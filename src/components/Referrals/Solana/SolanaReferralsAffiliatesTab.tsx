@@ -10,7 +10,7 @@ import { SOLANA_AFFILIATE_WIZARD_FAQS } from "./solanaReferralsFaq";
 import type { SolanaAffiliateData, SolanaReferralsData } from "./solanaReferralsTypes";
 
 function getEmptyAffiliate(code: string): SolanaAffiliateData {
-  return { code, rewardRatePercent: 0, totalReferrals: 0, activeReferrals: 0, activity: [], referees: [] };
+  return { code, rewardRatePercent: undefined, totalReferrals: 0, activeReferrals: 0, activity: [], referees: [] };
 }
 
 export function SolanaReferralsAffiliatesTab({

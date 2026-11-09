@@ -106,7 +106,6 @@ const EVM_ONLY_PAGE_PATHS = [
   "/pools",
   "/leaderboard",
   "/competitions",
-  "/referrals",
   "/traders",
   "/accounts",
   "/actions",

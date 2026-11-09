@@ -49,6 +49,7 @@ msgid "Monthly"
 msgstr ""
 
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "Quota {0}"
 msgstr ""
 
@@ -1481,6 +1482,7 @@ msgstr ""
 msgid "Tiers"
 msgstr ""
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
 msgstr ""
@@ -1872,10 +1874,6 @@ msgstr ""
 msgid "No pools found"
 msgstr ""
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "You have activated the referral code {appliedCode}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr ""
@@ -2089,6 +2087,7 @@ msgid "Deposit to GMX Account"
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
 msgstr ""
 
@@ -2273,10 +2272,6 @@ msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No SL orders"
-msgstr ""
-
-#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
-msgid "Your referral code {createdCode} is now active. Share it with friends or your community."
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -2652,6 +2647,10 @@ msgstr ""
 msgid "Swapped {0} for {1}"
 msgstr ""
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{0, plural, one {# active} other {# active}}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr ""
@@ -2989,6 +2988,10 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
+msgstr ""
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Last trade {0}"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
@@ -4693,10 +4696,6 @@ msgstr ""
 msgid "Margin is below the minimum required for the position size"
 msgstr ""
 
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "{0} inactive"
-msgstr ""
-
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr ""
@@ -5889,6 +5888,7 @@ msgid "Error sending permit for {0}: {1}"
 msgstr ""
 
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr ""
@@ -6058,6 +6058,10 @@ msgstr ""
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
 msgstr "[!! Favourites !!]"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{inactiveReferrals, plural, one {# inactive} other {# inactive}}"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
@@ -6669,6 +6673,7 @@ msgstr ""
 msgid "Set TP/SL"
 msgstr ""
 
+#: src/components/Referrals/Solana/solanaReferralsTypes.ts
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr ""
@@ -6708,10 +6713,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
-msgstr ""
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "{0} active"
 msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
@@ -7799,10 +7800,6 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "margin deposit"
-msgstr ""
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Earn GT rewards and increase sellable GT quota as your referrals trade."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -9747,6 +9744,10 @@ msgstr ""
 msgid "Express transaction data is still loading. Retry in a few seconds"
 msgstr ""
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr ""
@@ -10218,10 +10219,6 @@ msgstr ""
 msgid "Referred monthly volume"
 msgstr ""
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Your {SOLANA_TRADER_DISCOUNT_PERCENT}% discount is now active!"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr ""
@@ -10397,6 +10394,7 @@ msgstr ""
 msgid "{tokenInSymbol} conversion is unavailable"
 msgstr ""
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr ""
@@ -11643,10 +11641,6 @@ msgstr ""
 msgid "Sell {operationTokenSymbol}"
 msgstr ""
 
-#: src/components/Referrals/Solana/solanaReferralsTypes.ts
-msgid "Max {SOLANA_MAX_REFERRAL_CODE_LENGTH} characters"
-msgstr ""
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
@@ -12542,6 +12536,10 @@ msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
+msgstr ""
+
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
+msgid "Copy referral link {appliedCode}"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -14180,6 +14178,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
+msgstr ""
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Copy referral code {code}"
 msgstr ""
 
 #: src/domain/multichain/toastEnableExpress.tsx
