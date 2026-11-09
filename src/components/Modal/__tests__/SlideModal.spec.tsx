@@ -1,4 +1,4 @@
-import { act, cleanup, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("lib/useBreakpoints", () => ({ useBreakpoints: () => ({ isMobile: true }) }));
@@ -61,5 +61,44 @@ describe("slide modal animation lifecycle", () => {
     act(() => animations[0].dispatchEvent(new Event("finish")));
     const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
     expect(curtain.style.transform).toBe("translateY(0)");
+  });
+});
+
+describe("slide modal drag", () => {
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, "animate").mockImplementation(
+      () => Object.assign(new EventTarget(), { cancel: vi.fn() }) as unknown as Animation
+    );
+  });
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
+
+  it("drags the curtain only on a pull down from the top of a nested list PRO-4546", () => {
+    const cases = [
+      { listScrollTop: 300, pointerYs: [550], transform: "" },
+      { listScrollTop: 0, pointerYs: [250, 550], transform: "" },
+      { listScrollTop: 0, pointerYs: [550], transform: "translateY(-550px)" },
+    ];
+
+    for (const { listScrollTop, pointerYs, transform } of cases) {
+      const view = render(
+        <SlideModal qa="curtain" isVisible setIsVisible={() => undefined}>
+          <div data-testid="list">Row</div>
+        </SlideModal>
+      );
+      const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
+      Object.defineProperty(curtain, "clientHeight", { value: 700 });
+      vi.spyOn(curtain, "getBoundingClientRect").mockReturnValue({ top: window.innerHeight - 700 } as DOMRect);
+      const list = view.getByTestId("list");
+      list.scrollTop = listScrollTop;
+
+      fireEvent.pointerDown(list, { screenX: 0, screenY: 400 });
+      pointerYs.forEach((screenY) => fireEvent.pointerMove(list, { screenX: 0, screenY }));
+
+      expect(curtain.style.transform).toBe(transform);
+      cleanup();
+    }
   });
 });
