@@ -94,11 +94,14 @@ export function SolanaCreateAffiliateWizard({
   }
 
   const buttonText = isSubmitting ? t`Creating...` : error ? error : trimmedCode === "" ? t`Enter a code` : t`Create`;
+  // Named like the EVM wizard's placeholder, so the existing translations of this message apply
+  const createdReferralCode = createdCode;
 
   return (
     <div className="relative min-h-[570px] overflow-hidden rounded-8">
       <img
         src={referralWizardBg}
+        alt=""
         className="absolute -left-8 -top-8 min-h-[calc(100%+16px)] min-w-[calc(100%+16px)] select-none object-fill blur-[12px] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0"
       />
 
@@ -170,7 +173,7 @@ export function SolanaCreateAffiliateWizard({
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    Your referral code {createdCode} is now active. Share it with friends or your community.
+                    Your referral code {createdReferralCode} is now active. Share it with friends or your community.
                   </Trans>
                 </p>
               </div>

@@ -4,7 +4,7 @@ import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
 import { isSolanaNetwork } from "config/chains";
-import { REFERRAL_CODE_KEY } from "config/localStorage";
+import { REFERRAL_CODE_KEY, SOLANA_REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
@@ -13,6 +13,7 @@ import { useMultichainFundingToast } from "domain/multichain/useMultichainFundin
 import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
 import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
 import { useChainId } from "lib/chains";
+import { SOLANA_SEARCH_PARAM } from "lib/chains/chainIdSearchParam";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -76,7 +77,12 @@ export function AppRoutes() {
     if (isReferralCodeQueryParam(referralCode)) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
-        localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+        // A Solana referral link carries a Solana code: keep it out of the EVM code that EVM orders use
+        if (query.get("chainId") === SOLANA_SEARCH_PARAM) {
+          localStorage.setItem(SOLANA_REFERRAL_CODE_KEY, referralCode);
+        } else {
+          localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+        }
         const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
           queryParams.delete(REFERRAL_CODE_QUERY_PARAM);

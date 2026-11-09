@@ -1,16 +1,14 @@
 import { Trans, t } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
-import { shortenAddress } from "lib/legacy";
-import { formatAmount } from "lib/numbers";
-
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
-import { GT_POINTS_GLOBAL_PATH, SOLANA_GT_DECIMALS, type SolanaGtHolder } from "./solanaReferralsTypes";
+import { formatGt, shortenSolanaAddress } from "./solanaReferralsFormat";
+import { GT_POINTS_GLOBAL_PATH, type SolanaGtHolder } from "./solanaReferralsTypes";
 
 export function TopGtHoldersModal({
   isVisible,
@@ -26,7 +24,7 @@ export function TopGtHoldersModal({
   return (
     <ModalWithPortal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Top GT holders`} contentPadding={false}>
       <div className="flex w-[560px] max-w-full flex-col">
-        <p className="text-body-small px-20 pb-8 text-typography-secondary max-md:px-12">
+        <p className="text-body-small px-adaptive pb-8 pt-12 text-typography-secondary">
           <Trans>Use a code from a top GT holder. Every code gives you the same 10% discount.</Trans>
         </p>
         {holders.length === 0 ? (
@@ -59,13 +57,13 @@ export function TopGtHoldersModal({
                       {holder.rank}
                     </TableTd>
                     <TableTd padding="compact">
-                      <div className="font-mono text-typography-primary">{shortenAddress(holder.address, 13)}</div>
+                      <div className="font-mono text-typography-primary">{shortenSolanaAddress(holder.address)}</div>
                       <div className="text-body-small text-typography-secondary numbers md:hidden">
-                        {`${formatAmount(holder.gtBalance, SOLANA_GT_DECIMALS, 0, true)} GT`}
+                        {formatGt(holder.gtBalance)}
                       </div>
                     </TableTd>
                     <TableTd padding="compact" className="whitespace-nowrap numbers max-md:hidden">
-                      {`${formatAmount(holder.gtBalance, SOLANA_GT_DECIMALS, 0, true)} GT`}
+                      {formatGt(holder.gtBalance)}
                     </TableTd>
                     <TableTd padding="compact">
                       {holder.referralCode ? (

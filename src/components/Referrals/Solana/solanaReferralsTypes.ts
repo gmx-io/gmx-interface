@@ -18,8 +18,10 @@ export function getSolanaCodeError(value: string): string {
   if (!value) return "";
 
   const trimmedValue = value.trim();
-  if (trimmedValue.length > SOLANA_MAX_REFERRAL_CODE_LENGTH) {
-    return t`Max ${SOLANA_MAX_REFERRAL_CODE_LENGTH} characters`;
+  // Named like the EVM placeholder, so the existing translations of this message apply
+  const MAX_REFERRAL_CODE_LENGTH = SOLANA_MAX_REFERRAL_CODE_LENGTH;
+  if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
+    return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
 
   if (!SOLANA_REFERRAL_CODE_REGEX.test(trimmedValue)) {
@@ -49,7 +51,9 @@ export function getSolanaReferralLink(code: string) {
 export type SolanaTraderPoint = {
   /** Start of the bucket, in seconds */
   timestamp: number;
+  /** USD with USD_DECIMALS (30), like the EVM referral stats */
   volumeUsd: bigint;
+  /** USD with USD_DECIMALS (30) */
   discountsUsd: bigint;
 };
 
@@ -58,7 +62,9 @@ export type SolanaReferralActivity = {
   /** In seconds */
   timestamp: number;
   referee: string;
+  /** GT with SOLANA_GT_DECIMALS */
   gtReward: bigint;
+  /** GT with SOLANA_GT_DECIMALS */
   sellableQuota: bigint;
 };
 
@@ -66,9 +72,9 @@ export type SolanaReferee = {
   address: string;
   /** In seconds */
   joinedAt: number;
-  /** GT the affiliate earned from this referee */
+  /** GT the affiliate earned from this referee, with SOLANA_GT_DECIMALS */
   gtEarned: bigint;
-  /** Sellable quota the affiliate earned from this referee */
+  /** Sellable quota the affiliate earned from this referee, GT with SOLANA_GT_DECIMALS */
   sellableQuotaEarned: bigint;
   /** In seconds; undefined = no trades yet */
   lastTradeAt: number | undefined;
@@ -77,17 +83,20 @@ export type SolanaReferee = {
 export type SolanaGtHolder = {
   rank: number;
   address: string;
+  /** GT with SOLANA_GT_DECIMALS */
   gtBalance: bigint;
   referralCode: string | undefined;
 };
 
 export type SolanaAffiliateData = {
   code: string;
-  /** Share of the referral rewards the affiliate receives, set by their VIP tier */
-  rewardRatePercent: number;
+  /** Share of the referral rewards the affiliate receives (50-100%), set by their VIP tier; undefined = not known yet */
+  rewardRatePercent: number | undefined;
   totalReferrals: number;
   activeReferrals: number;
+  /** Newest first, as shown */
   activity: SolanaReferralActivity[];
+  /** In the order shown */
   referees: SolanaReferee[];
 };
 
@@ -97,7 +106,7 @@ export type SolanaReferralsData = {
   isLoading: boolean;
   /** Referral code the trader applied; undefined = none */
   appliedCode: string | undefined;
-  /** Trader volume and discounts, one point per hour */
+  /** Trader volume and discounts, one point per hour, in any order */
   traderPoints: SolanaTraderPoint[];
   /** The affiliate's own code and stats; undefined = no code yet */
   affiliate: SolanaAffiliateData | undefined;

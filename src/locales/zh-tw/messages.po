@@ -49,6 +49,7 @@ msgid "Monthly"
 msgstr "每月"
 
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "Quota {0}"
 msgstr ""
 
@@ -1481,6 +1482,7 @@ msgstr "執行費用低於目前網路成本"
 msgid "Tiers"
 msgstr "等級"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
 msgstr "您已啟用推薦代碼 {activatedReferralCodeLabel}。您的優惠費率會自動套用於您開啟或關閉的每個倉位，無需額外操作。"
@@ -1872,10 +1874,6 @@ msgstr "總交易次數"
 msgid "No pools found"
 msgstr "找不到池"
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "You have activated the referral code {appliedCode}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -2089,6 +2087,7 @@ msgid "Deposit to GMX Account"
 msgstr "存入至 GMX Account"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
 msgstr "您的推薦碼 {createdReferralCode} 現已啟用。請分享給朋友或您的社群。"
 
@@ -2274,10 +2273,6 @@ msgstr "領取歷史記錄"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No SL orders"
 msgstr "無 SL 訂單"
-
-#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
-msgid "Your referral code {createdCode} is now active. Share it with friends or your community."
-msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
@@ -2652,6 +2647,10 @@ msgstr "獲利"
 msgid "Swapped {0} for {1}"
 msgstr "已將 {0} 兌換為 {1}"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{0, plural, one {# active} other {# active}}"
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
 msgstr "選擇時間"
@@ -2990,6 +2989,10 @@ msgstr "市場"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "最大 {0}"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Last trade {0}"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paxos standard"
@@ -4693,10 +4696,6 @@ msgstr "為什麼 GMX 比其他永續合約平台更具成本效益？"
 msgid "Margin is below the minimum required for the position size"
 msgstr "保證金低於該倉位規模所需的最低要求"
 
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "{0} inactive"
-msgstr ""
-
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "成為聯盟夥伴可以賺取多少收益？"
@@ -5889,6 +5888,7 @@ msgid "Error sending permit for {0}: {1}"
 msgstr "傳送 {0} 授權時發生錯誤：{1}"
 
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "尚無交易記錄"
@@ -6058,6 +6058,10 @@ msgstr "PnL"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
 msgstr "收藏"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{inactiveReferrals, plural, one {# inactive} other {# inactive}}"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
@@ -6669,6 +6673,7 @@ msgstr "每當有人透過你交易，都能獲得以穩定幣支付的真實鏈
 msgid "Set TP/SL"
 msgstr "設定 TP/SL"
 
+#: src/components/Referrals/Solana/solanaReferralsTypes.ts
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "最多 {MAX_REFERRAL_CODE_LENGTH} 個字元"
@@ -6709,10 +6714,6 @@ msgstr "平倉"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "，直接從您的錢包進行"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "{0} active"
-msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
@@ -7800,10 +7801,6 @@ msgstr "授權簽署失敗"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "margin deposit"
 msgstr "保證金存入"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Earn GT rewards and increase sellable GT quota as your referrals trade."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -9747,6 +9744,10 @@ msgstr "Squid GraphQL"
 msgid "Express transaction data is still loading. Retry in a few seconds"
 msgstr "Express 交易資料仍在載入中。請於數秒後重試"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"
@@ -10218,10 +10219,6 @@ msgstr "已領取"
 msgid "Referred monthly volume"
 msgstr "被推薦者每月交易量"
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Your {SOLANA_TRADER_DISCOUNT_PERCENT}% discount is now active!"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr "存入金額"
@@ -10397,6 +10394,7 @@ msgstr "未找到公告"
 msgid "{tokenInSymbol} conversion is unavailable"
 msgstr "{tokenInSymbol} 轉換無法使用"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
 msgstr "您的 {currentTierDiscount}% 折扣現已生效！"
@@ -11643,10 +11641,6 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
 
-#: src/components/Referrals/Solana/solanaReferralsTypes.ts
-msgid "Max {SOLANA_MAX_REFERRAL_CODE_LENGTH} characters"
-msgstr ""
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr "開啟時，槓桿由您手動設定，並決定保證金和倉位規模。關閉時，保證金和規模可自由設定，槓桿則據此計算。"
@@ -12543,6 +12537,10 @@ msgstr "{txnTypeText}保證金存入：{amountText} 至 {indexTokenText} {longSh
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
 msgstr "您平倉時將獲得的價格，已根據設有上限的價格影響進行調整。<0>瞭解詳情</0>。"
+
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
+msgid "Copy referral link {appliedCode}"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -14181,6 +14179,10 @@ msgstr "做多池上限"
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "累計總收益"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Copy referral code {code}"
+msgstr ""
 
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"

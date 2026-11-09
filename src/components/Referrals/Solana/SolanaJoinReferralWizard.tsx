@@ -17,7 +17,7 @@ import ReferralsFilledIcon from "img/ic_referrals_filled.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import referralWizardBg from "img/referral_wizard_bg.png";
 
-import { SOLANA_TRADER_DISCOUNT_PERCENT, type SolanaGtHolder } from "./solanaReferralsTypes";
+import { getSolanaCodeError, SOLANA_TRADER_DISCOUNT_PERCENT, type SolanaGtHolder } from "./solanaReferralsTypes";
 import { TopGtHoldersModal } from "./TopGtHoldersModal";
 
 enum JoinStep {
@@ -77,11 +77,12 @@ export function SolanaJoinReferralWizard({
   );
 
   const trimmedCode = referralCode.trim();
+  const codeError = trimmedCode ? getSolanaCodeError(trimmedCode) : "";
   const isOwnCode = Boolean(ownCode) && trimmedCode === ownCode;
 
   async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    if (!trimmedCode || isOwnCode || isSubmitting) return;
+    if (!trimmedCode || codeError || isOwnCode || isSubmitting) return;
 
     setIsSubmitting(true);
     setError(undefined);
@@ -97,10 +98,16 @@ export function SolanaJoinReferralWizard({
     }
   }
 
+  // Named like the EVM wizard's placeholders, so the existing translations of these messages apply
+  const currentTierDiscount = SOLANA_TRADER_DISCOUNT_PERCENT;
+  const activatedReferralCodeLabel = appliedCode;
+
   const buttonText = isSubmitting ? (
     t`Adding...`
   ) : error ? (
     error
+  ) : codeError ? (
+    codeError
   ) : isOwnCode ? (
     t`Own referral code not allowed`
   ) : trimmedCode === "" ? (
@@ -113,6 +120,7 @@ export function SolanaJoinReferralWizard({
     <div className="relative min-h-[570px] overflow-hidden rounded-8">
       <img
         src={referralWizardBg}
+        alt=""
         className="absolute -left-8 -top-8 min-h-[calc(100%+16px)] min-w-[calc(100%+16px)] select-none object-fill blur-[12px] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0"
       />
 
@@ -155,7 +163,7 @@ export function SolanaJoinReferralWizard({
                   <Button
                     variant="primary-action"
                     type="submit"
-                    disabled={isSubmitting || Boolean(error) || isOwnCode || trimmedCode === ""}
+                    disabled={isSubmitting || Boolean(error) || Boolean(codeError) || isOwnCode || trimmedCode === ""}
                   >
                     {buttonText}
                   </Button>
@@ -181,12 +189,12 @@ export function SolanaJoinReferralWizard({
               <div className="flex flex-col items-center gap-12">
                 <LabelWithIcon icon={ReferralsFilledIcon} label={<Trans>Success</Trans>} />
                 <h2 className="text-[40px] font-medium">
-                  <Trans>Your {SOLANA_TRADER_DISCOUNT_PERCENT}% discount is now active!</Trans>
+                  <Trans>Your {currentTierDiscount}% discount is now active!</Trans>
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    You have activated the referral code {appliedCode}. Your reduced rate applies automatically to every
-                    position you open or close — no extra steps needed.
+                    You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies
+                    automatically to every position you open or close — no extra steps needed.
                   </Trans>
                 </p>
               </div>

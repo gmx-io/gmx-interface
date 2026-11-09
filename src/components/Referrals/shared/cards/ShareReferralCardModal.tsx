@@ -73,6 +73,12 @@ export function ShareReferralCardModal({
   }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel, isSolana]);
 
   const handleShareOnX = useCallback(async () => {
+    // The image-share link opens GMX on EVM, so a custom link (e.g. Solana) is shared as is, without the card image
+    if (referralLinkOverride) {
+      window.open(getTwitterIntentURL(getTweetText(), referralLinkOverride), "_blank", "noopener,noreferrer");
+      return;
+    }
+
     const element = cardRef.current;
     if (!element) return;
 
@@ -92,7 +98,7 @@ export function ShareReferralCardModal({
 
     const tweetLink = getTwitterIntentURL(getTweetText(), shareUrl);
     window.open(tweetLink, "_blank", "noopener,noreferrer");
-  }, [referralLink, referralCodeLinkParam, getTweetText]);
+  }, [referralLink, referralLinkOverride, referralCodeLinkParam, getTweetText]);
 
   const handleCopyLink = useCallback(() => {
     copyToClipboard(referralLink);

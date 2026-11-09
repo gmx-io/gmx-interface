@@ -27,11 +27,21 @@ export default function SolanaReferrals({ activeTab }: { activeTab: SolanaReferr
   const localizedTabOptionLabels = useLocalizedMap(TAB_OPTION_LABELS);
   const data = useSolanaReferralsData();
 
-  // Codes applied or created in this visit, before the data shows them.
+  // Codes applied or created in this visit, before the data shows them. They belong to the wallet that made them.
+  const [visitAccount, setVisitAccount] = useState(data.account);
   const [justAppliedCode, setJustAppliedCode] = useState<string>();
   const [isTraderDashboardForced, setIsTraderDashboardForced] = useState(false);
   const [justCreatedCode, setJustCreatedCode] = useState<string>();
   const [isAffiliateDashboardForced, setIsAffiliateDashboardForced] = useState(false);
+
+  if (visitAccount !== data.account) {
+    // Another wallet (or none): forget the codes of the previous one
+    setVisitAccount(data.account);
+    setJustAppliedCode(undefined);
+    setIsTraderDashboardForced(false);
+    setJustCreatedCode(undefined);
+    setIsAffiliateDashboardForced(false);
+  }
 
   const hasTraderCode = Boolean(data.appliedCode ?? justAppliedCode);
   const hasAffiliateCode = Boolean(data.affiliate?.code ?? justCreatedCode);
@@ -65,8 +75,13 @@ export default function SolanaReferrals({ activeTab }: { activeTab: SolanaReferr
   ]);
 
   const setActiveTab = useCallback(
-    (newTab: SolanaReferralsTab) => history.replace(`/referrals/${newTab}${history.location.search}`),
-    [history]
+    (newTab: SolanaReferralsTab) => {
+      // After a success screen, coming back to its tab shows the dashboard, not the form again
+      if (justAppliedCode) setIsTraderDashboardForced(true);
+      if (justCreatedCode) setIsAffiliateDashboardForced(true);
+      history.replace(`/referrals/${newTab}${history.location.search}`);
+    },
+    [history, justAppliedCode, justCreatedCode]
   );
 
   return (
