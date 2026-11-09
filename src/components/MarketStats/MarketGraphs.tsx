@@ -129,7 +129,9 @@ export function MarketGraphs({
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
-  const isLowSupply = getIsLowSupplyMarketToken(getByKey(marketTokensData, address));
+  const marketToken = getByKey(marketTokensData, address);
+  // wait for the supply too, otherwise a low-supply pool flashes its broken chart while loading
+  const isChartHidden = marketToken === undefined || getIsLowSupplyMarketToken(marketToken);
 
   const isMobile = usePoolsIsMobilePage();
 
@@ -201,7 +203,7 @@ export function MarketGraphs({
             priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
-            isLowSupply={isLowSupply}
+            isChartHidden={isChartHidden}
           />
         </div>
       </div>
@@ -281,13 +283,13 @@ const GraphChart = ({
   priceSnapshots,
   marketGraphType,
   aprSnapshots,
-  isLowSupply,
+  isChartHidden,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
   aprSnapshots: AprSnapshot[];
-  isLowSupply: boolean;
+  isChartHidden: boolean;
 }) => {
   const performanceData = useMemo(
     () =>
@@ -356,7 +358,7 @@ const GraphChart = ({
     }
   }, [performanceData, priceData, priceSnapshots.length, apyData, marketGraphType, prevMarketGraphType]);
 
-  if (isLowSupply || data.length === 0) {
+  if (isChartHidden || data.length === 0) {
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
         <p className="text-body-medium text-typography-secondary">

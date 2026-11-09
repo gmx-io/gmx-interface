@@ -437,8 +437,8 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
 }
 
 // GM/GLV price is pool value / supply, so below one token the price and everything derived from it blow up
-export function getIsLowSupplyMarketToken(marketToken: TokenData | undefined): boolean {
-  return marketToken?.totalSupply !== undefined && marketToken.totalSupply < expandDecimals(1, marketToken.decimals);
+export function getIsLowSupplyMarketToken(marketToken: TokenData): boolean {
+  return marketToken.totalSupply !== undefined && marketToken.totalSupply < expandDecimals(1, marketToken.decimals);
 }
 
 export function getTotalGmInfo({
