@@ -22,6 +22,10 @@ import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
 import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
+import GtPointsBuybackPage from "pages/GtPoints/GtPointsBuybackPage";
+import GtPointsGlobalPage from "pages/GtPoints/GtPointsGlobalPage";
+import GtPointsMyPage from "pages/GtPoints/GtPointsMyPage";
+import GtPointsStakePage from "pages/GtPoints/GtPointsStakePage";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
@@ -31,11 +35,18 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import { SolanaTradePlaceholder, EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
+import { SolanaTradePlaceholder, EvmNetworksOnlyNotice, SolanaOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
+import {
+  GT_POINTS_BUYBACK_PATH,
+  GT_POINTS_GLOBAL_PATH,
+  GT_POINTS_MY_PATH,
+  GT_POINTS_PATH,
+  GT_POINTS_STAKE_PATH,
+} from "components/GtPoints/gtPointsTypes";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
@@ -132,6 +143,19 @@ function SolanaRoutes() {
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
+      </Route>
+      <RedirectWithQuery exact from={GT_POINTS_PATH} to={GT_POINTS_MY_PATH} />
+      <Route exact path={GT_POINTS_MY_PATH}>
+        <GtPointsMyPage />
+      </Route>
+      <Route exact path={GT_POINTS_GLOBAL_PATH}>
+        <GtPointsGlobalPage />
+      </Route>
+      <Route exact path={GT_POINTS_BUYBACK_PATH}>
+        <GtPointsBuybackPage />
+      </Route>
+      <Route exact path={GT_POINTS_STAKE_PATH}>
+        <GtPointsStakePage />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
@@ -313,6 +337,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <DecodeErrorPage />
         </Route>,
       ]}
+      <Route path={GT_POINTS_PATH}>
+        <SolanaOnlyNotice />
+      </Route>
       <Route path="*">
         <PageNotFound />
       </Route>
