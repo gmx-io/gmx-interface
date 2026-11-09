@@ -49,6 +49,7 @@ const GM_MARKET_TOKEN_ADDRESSES = [
 ];
 const GM_TOKEN_TOTAL_SUPPLY = 2_600_000n * 10n ** 18n;
 const WETH_ADDRESS = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
+const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const NO_APPROVED_GAS_TOKENS: string[] = [];
 const ONLY_WETH_APPROVED = [WETH_ADDRESS];
 
@@ -578,6 +579,22 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await page.locator(getDataQALocator("gm-first-token-input")).fill("1000");
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+    });
+
+    test("Buy GM in Classic: picking a GMX Account token turns Express on and quotes the fee (PRO-4567)", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="gmBuy" classicWithRelay />);
+
+      await page.locator(getDataQALocator("gm-first-token")).getByText("USDC", { exact: true }).click();
+      await page.locator(getDataQALocator(`available-token-${USDC_ADDRESS}-0`)).click();
+      await expect(page.getByText(/Express Trading enabled/)).toBeVisible();
+
+      await page.locator(getDataQALocator("gm-first-token-input")).fill("1000");
+      await openExecutionDetails(page);
+      await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+      await expect(page.getByRole("button", { name: "Buy GM" })).toBeEnabled();
     });
   });
 
