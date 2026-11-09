@@ -374,7 +374,9 @@ export const useGmSwapSubmitState = ({
     formattedEstimationError
   );
 
-  const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving } = useTokensToApprove();
+  const { approve, isAllowanceLoaded, isAllowanceLoading, tokensToApproveSymbols, isApproving, approvalBatch } =
+    useTokensToApprove();
+  const submit = useCallback(() => onSubmit(approvalBatch), [approvalBatch, onSubmit]);
 
   const isAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
@@ -397,7 +399,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: t`Not supported`,
         disabled: true,
-        onSubmit,
+        onSubmit: submit,
       };
     }
 
@@ -405,7 +407,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: multipleWalletExtensionsChainError.buttonErrorMessage,
         disabled: true,
-        onSubmit,
+        onSubmit: submit,
         errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
       };
     }
@@ -426,7 +428,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: error.buttonErrorMessage,
         disabled: !shouldDisableValidation,
-        onSubmit: onSubmit,
+        onSubmit: submit,
         isAllowanceLoaded,
         isAllowanceLoading,
         errorDescription: error.buttonTooltipMessage,
@@ -452,7 +454,7 @@ export const useGmSwapSubmitState = ({
       };
     }
 
-    if (isAllowanceLoaded && tokensToApproveSymbols.length > 0) {
+    if (isAllowanceLoaded && tokensToApproveSymbols.length > 0 && approvalBatch === undefined) {
       const onApprove = approve;
 
       return {
@@ -494,7 +496,7 @@ export const useGmSwapSubmitState = ({
 
     return {
       text: isDeposit ? t`Buy ${operationTokenSymbol}` : t`Sell ${operationTokenSymbol}`,
-      onSubmit,
+      onSubmit: submit,
     };
   }, [
     account,
@@ -514,7 +516,8 @@ export const useGmSwapSubmitState = ({
     isSubmitting,
     isLoading,
     isDeposit,
-    onSubmit,
+    submit,
+    approvalBatch,
     onConnectAccount,
     shouldDisableValidation,
     chainId,

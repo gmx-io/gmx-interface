@@ -1,4 +1,4 @@
-import { isAddress, isHex } from "viem";
+import { isAddress, isHex, type Address, type Hex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
@@ -10,6 +10,7 @@ import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { ISigner, ISignerSendTransactionParams } from "./iSigner";
+import { sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -31,6 +32,7 @@ export async function sendWalletTransaction({
   nonce,
   msg,
   callback,
+  walletCallsBatch,
 }: {
   chainId: number;
   signer: WalletSigner | ISigner;
@@ -46,6 +48,8 @@ export async function sendWalletTransaction({
   msg?: string;
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;
+  /** Sent in the same wallet confirmation, before this call; `runSimulation` has to account for them */
+  walletCallsBatch?: WalletCallsBatch;
 }): Promise<WalletTxnResult> {
   const from = signer.address;
   const eventBuilder = new TxnEventBuilder<WalletTxnCtx>({});
@@ -74,6 +78,23 @@ export async function sendWalletTransaction({
           status: "success",
         }),
       };
+    }
+
+    if (walletCallsBatch) {
+      await runSimulation?.().then(() => callback?.(eventBuilder.Simulated()));
+
+      callback?.(eventBuilder.Sending());
+
+      const { transactionHash } = await sendWalletCalls({
+        chainId,
+        account: from,
+        calls: [...walletCallsBatch.calls, { to: to as Address, data: callData as Hex, value }],
+        batch: walletCallsBatch,
+      });
+
+      callback?.(eventBuilder.Sent({ type: "wallet", transactionHash }));
+
+      return { transactionHash, wait: makeWalletTxnResultWaiter(chainId, transactionHash as `0x${string}`) };
     }
 
     const gasLimitPromise = gasLimit

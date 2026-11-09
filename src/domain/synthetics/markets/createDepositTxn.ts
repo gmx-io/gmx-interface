@@ -8,6 +8,7 @@ import type { WalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandl
 import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "domain/tokens/walletTxnTokenPermits";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
@@ -37,6 +38,7 @@ export async function createDepositTxn({
   setPendingTxns,
   setPendingDeposit,
   walletTxnTokenPermits,
+  walletCallsBatch,
 }: {
   chainId: ContractsChainId;
   signer: Signer;
@@ -52,6 +54,7 @@ export async function createDepositTxn({
   setPendingDeposit?: SetPendingDeposit;
   params: CreateDepositParams;
   walletTxnTokenPermits?: WalletTxnTokenPermits;
+  walletCallsBatch?: WalletCallsBatch;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
@@ -128,6 +131,7 @@ export async function createDepositTxn({
         value: wntAmount,
         metricId,
         blockTimestampData,
+        preCalls: walletCallsBatch?.calls,
       })
     : undefined;
 
@@ -142,7 +146,9 @@ export async function createDepositTxn({
         [encodedPayload],
         wntAmount,
         simulationPromise,
-        metricId
+        metricId,
+        undefined,
+        walletCallsBatch !== undefined
       );
 
       return callContract(chainId, contract, "multicall", [encodedPayload], {
@@ -153,6 +159,7 @@ export async function createDepositTxn({
         gasLimit,
         gasPriceData,
         setPendingTxns,
+        walletCallsBatch: walletCallsBatch,
         pendingTransactionData: {
           estimatedExecutionFee: executionFee,
           estimatedExecutionGasLimit: executionGasLimit,

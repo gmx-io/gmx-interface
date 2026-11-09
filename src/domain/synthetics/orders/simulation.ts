@@ -8,7 +8,10 @@ import {
   BaseError as ViemBaseError,
   WebSocketRequestError,
   encodeFunctionData,
+  MethodNotFoundRpcError,
+  MethodNotSupportedRpcError,
   withRetry,
+  type Address,
   type Hex,
 } from "viem";
 
@@ -20,6 +23,7 @@ import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "d
 import { SignedTokenPermit } from "domain/tokens";
 import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import type { WalletCall } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
@@ -50,6 +54,8 @@ export type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   blockTimestampData: BlockTimestampData | undefined;
   jitShiftParamsList?: GlvShiftParam[];
+  /** Calls the same wallet batch sends first, e.g. the approvals the order needs */
+  preCalls?: WalletCall[];
 };
 
 export function isInsufficientFundsError(error: any): boolean {
@@ -290,7 +296,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -312,12 +318,13 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else if (simulationRouterAddress) {
     simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: exchangeRouterAddress,
@@ -339,13 +346,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else {
     simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -367,6 +375,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   }
 }
@@ -380,6 +389,7 @@ export async function simulateContractWithRetry({
   account,
   blockNumber,
   isExpress,
+  preCalls,
 }: {
   client: PublicClient;
   address: string;
@@ -389,10 +399,21 @@ export async function simulateContractWithRetry({
   account: string;
   blockNumber: bigint | undefined;
   isExpress: boolean;
+  preCalls?: WalletCall[];
 }) {
   try {
-    await withRetry(
-      () => {
+    const result = await withRetry(
+      (): Promise<unknown> => {
+        if (preCalls?.length) {
+          return simulateCallsAfterPreCalls({
+            client,
+            account,
+            blockNumber,
+            preCalls,
+            call: { to: address, data: encodeFunctionData({ abi, functionName: "multicall", args }), value },
+          });
+        }
+
         return client.simulateContract({
           address: address,
           abi: abi,
@@ -411,6 +432,10 @@ export async function simulateContractWithRetry({
         },
       }
     );
+
+    if (result === SIMULATION_SKIPPED) {
+      return;
+    }
   } catch (txnError) {
     const decodedError = decodeSimulationErrorFromViemError(txnError);
 
@@ -440,6 +465,79 @@ export async function simulateContractWithRetry({
   throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
     errorContext: "simulation",
   });
+}
+
+export const SIMULATION_SKIPPED = "skipped";
+
+/**
+ * A wallet batch runs the approvals and the action in one transaction, so the approvals aren't mined yet when the
+ * action is simulated. Throws the first failing call's error, as simulateContract would.
+ */
+export async function simulateCallsAfterPreCalls({
+  client,
+  account,
+  blockNumber,
+  preCalls,
+  call,
+}: {
+  client: PublicClient;
+  account: string;
+  blockNumber: bigint | undefined;
+  preCalls: WalletCall[];
+  call: { to: string; data: Hex; value: bigint };
+}): Promise<typeof SIMULATION_SKIPPED | undefined> {
+  let results: Awaited<ReturnType<PublicClient["simulateCalls"]>>["results"];
+
+  try {
+    ({ results } = await client.simulateCalls({
+      account: account as Address,
+      blockNumber,
+      calls: [...preCalls, { ...call, to: call.to as Address }],
+    }));
+  } catch (error) {
+    // an RPC without eth_simulateV1 can't check the batch; the wallet still simulates it before signing
+    if (getIsEthSimulateV1UnsupportedError(error)) {
+      return SIMULATION_SKIPPED;
+    }
+
+    throw error;
+  }
+
+  const failedCall = results.find((result) => result.status === "failure");
+
+  if (failedCall) {
+    throw failedCall.error ?? new Error("Batched call simulation failed");
+  }
+
+  return undefined;
+}
+
+const SIMULATE_V1_UNSUPPORTED_ERROR_CODES: number[] = [MethodNotFoundRpcError.code, MethodNotSupportedRpcError.code];
+
+function getIsEthSimulateV1UnsupportedError(error: any): boolean {
+  let current = error;
+
+  for (let depth = 0; depth < 10 && current && typeof current === "object"; depth++) {
+    if (SIMULATE_V1_UNSUPPORTED_ERROR_CODES.includes(current.code)) {
+      return true;
+    }
+
+    const text = [current.details, current.shortMessage, current.message]
+      .filter((value): value is string => typeof value === "string")
+      .join(" ")
+      .toLowerCase();
+
+    if (
+      text.includes("eth_simulatev1") &&
+      /not found|not supported|unsupported|does not exist|not available|not allowed/.test(text)
+    ) {
+      return true;
+    }
+
+    current = current.cause;
+  }
+
+  return false;
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {
