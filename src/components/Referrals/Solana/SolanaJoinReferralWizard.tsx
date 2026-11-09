@@ -77,6 +77,13 @@ export function SolanaJoinReferralWizard({
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const isMountedRef = useRef(true);
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
   useEffect(() => {
     if (step === JoinStep.EnterReferralCode) inputRef.current?.focus();
   }, [step]);
@@ -92,6 +99,7 @@ export function SolanaJoinReferralWizard({
     setIsSubmitting(true);
     try {
       await applyCode(trimmedCode);
+      if (!isMountedRef.current) return; // another wallet by now: its wizard is a new one
       setAppliedCode(trimmedCode);
       onApplied(trimmedCode);
       setStep(JoinStep.Success);
@@ -161,7 +169,11 @@ export function SolanaJoinReferralWizard({
                     }}
                   />
                   {/* Same place and style as the create form's code rules message */}
-                  {codeError && <p className="text-body-small -mt-4 text-red-500">{codeError}</p>}
+                  {codeError && (
+                    <p role="alert" className="text-body-small -mt-4 text-red-500">
+                      {codeError}
+                    </p>
+                  )}
                   <Button
                     variant="primary-action"
                     type="submit"
@@ -232,6 +244,8 @@ export function SolanaJoinReferralWizard({
         onUseCode={(code) => {
           setReferralCode(code);
           setIsHoldersModalVisible(false);
+          // Back to the code field, so keyboard users can apply it right away
+          requestAnimationFrame(() => inputRef.current?.focus());
         }}
       />
     </div>

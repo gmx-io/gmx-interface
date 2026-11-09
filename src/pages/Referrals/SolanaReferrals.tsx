@@ -76,12 +76,13 @@ export default function SolanaReferrals({ activeTab }: { activeTab: SolanaReferr
 
   const setActiveTab = useCallback(
     (newTab: SolanaReferralsTab) => {
+      if (newTab === activeTab) return;
       // After a success screen, coming back to its tab shows the dashboard, not the form again
       if (justAppliedCode) setIsTraderDashboardForced(true);
       if (justCreatedCode) setIsAffiliateDashboardForced(true);
       history.replace(`/referrals/${newTab}${history.location.search}`);
     },
-    [history, justAppliedCode, justCreatedCode]
+    [activeTab, history, justAppliedCode, justCreatedCode]
   );
 
   return (

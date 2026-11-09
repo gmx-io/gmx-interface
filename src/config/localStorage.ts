@@ -20,7 +20,8 @@ export const DISABLE_SHARE_MODAL_PNL_CHECK_KEY = "disable-share-modal-pnl-check"
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines-key";
 export const BUY_SELL_ICONS_MODE_KEY = "Exchange-swap-should-show-buy-sell-icons-key";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
-/** Code from a Solana referral link (chainId=solana), kept apart from the EVM code that EVM orders use */
+/** Code from a Solana referral link (chainId=solana), kept apart from the EVM code that EVM orders use.
+ * Not read yet: the Solana apply flow should use it once Solana referrals are wired. */
 export const SOLANA_REFERRAL_CODE_KEY = "GMX-solana-referralCode";
 export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";

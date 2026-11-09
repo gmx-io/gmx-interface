@@ -8,7 +8,6 @@ import type { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
@@ -144,6 +143,7 @@ function InviteCard({ code, onShare }: { code: string; onShare: () => void }) {
 }
 
 function TotalReferralsCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
+  const { i18n } = useLingui();
   const inactiveReferrals = Math.max(0, affiliate.totalReferrals - affiliate.activeReferrals);
 
   return (
@@ -158,7 +158,7 @@ function TotalReferralsCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
       </div>
       <div className="flex flex-wrap items-center gap-8">
         <span className="text-24 font-medium text-typography-primary numbers">
-          {formatAmount(BigInt(affiliate.totalReferrals), 0, 0, true)}
+          {i18n.number(affiliate.totalReferrals)}
         </span>
         {affiliate.totalReferrals > 0 && (
           <>

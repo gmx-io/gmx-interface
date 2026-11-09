@@ -3353,6 +3353,7 @@ msgstr ""
 msgid "Generating shareable image..."
 msgstr ""
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "RANK"
@@ -3549,6 +3550,10 @@ msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
+msgstr ""
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "Use code {0}"
 msgstr ""
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
