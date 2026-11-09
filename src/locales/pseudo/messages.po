@@ -599,10 +599,6 @@ msgstr ""
 msgid "GMX Account balance"
 msgstr ""
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "No GT holders to show yet"
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr ""
@@ -802,6 +798,7 @@ msgstr ""
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr ""
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -2634,10 +2631,6 @@ msgstr ""
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr ""
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "HOLDER"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr ""
@@ -3817,6 +3810,10 @@ msgstr ""
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
+msgstr ""
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT HOLDINGS"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -13270,7 +13267,7 @@ msgid "Where can I read more?"
 msgstr ""
 
 #: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "GT"
+msgid "Top holders are not available yet"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

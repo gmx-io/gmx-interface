@@ -599,10 +599,6 @@ msgstr "ポジションと担保による{indexSymbol}の二重エクスポー�
 msgid "GMX Account balance"
 msgstr "GMX Account残高"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "No GT holders to show yet"
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
 msgstr "アドレスがコピーされました！"
@@ -802,6 +798,7 @@ msgstr "値："
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "GMXコミュニティによって開発されたプロジェクトです。<0/>各アプリはコミュニティの開発者によって完全に管理されていますので、ご利用の際はご注意ください。"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -2634,10 +2631,6 @@ msgstr "スリッページは5%未満に設定してください"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "仮想インベントリは、類似市場間におけるトークンの不均衡を追跡します（例：ETH/USDC、ETH/USDT）。"
 
-#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "HOLDER"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "利益"
@@ -3818,6 +3811,10 @@ msgstr "テイクプロフィット / ストップロス"
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Paid into the {tokenSymbol} price every 4 hours. Nothing to claim."
 msgstr "4時間ごとに{tokenSymbol}の価格に反映されます。受け取る操作は不要です。"
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT HOLDINGS"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Yield trading"
@@ -13270,7 +13267,7 @@ msgid "Where can I read more?"
 msgstr "詳細はどこで確認できますか？"
 
 #: src/components/Referrals/Solana/TopGtHoldersModal.tsx
-msgid "GT"
+msgid "Top holders are not available yet"
 msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx

@@ -1,9 +1,10 @@
 import { Trans, t } from "@lingui/macro";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { REFERRALS_DOCS_URL } from "config/links";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
+import { helperToast } from "lib/helperToast";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -62,7 +63,6 @@ export function SolanaJoinReferralWizard({
   const [referralCode, setReferralCode] = useState("");
   const [appliedCode, setAppliedCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string>();
   const [isHoldersModalVisible, setIsHoldersModalVisible] = useState(false);
 
   useEffect(
@@ -76,6 +76,11 @@ export function SolanaJoinReferralWizard({
     [isConnected, step]
   );
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (step === JoinStep.EnterReferralCode) inputRef.current?.focus();
+  }, [step]);
+
   const trimmedCode = referralCode.trim();
   const codeError = trimmedCode ? getSolanaCodeError(trimmedCode) : "";
   const isOwnCode = Boolean(ownCode) && trimmedCode === ownCode;
@@ -85,14 +90,13 @@ export function SolanaJoinReferralWizard({
     if (!trimmedCode || codeError || isOwnCode || isSubmitting) return;
 
     setIsSubmitting(true);
-    setError(undefined);
     try {
       await applyCode(trimmedCode);
       setAppliedCode(trimmedCode);
       onApplied(trimmedCode);
       setStep(JoinStep.Success);
     } catch (e) {
-      setError(e instanceof Error ? e.message : t`Something went wrong`);
+      helperToast.error(e instanceof Error ? e.message : t`Something went wrong`);
     } finally {
       setIsSubmitting(false);
     }
@@ -104,10 +108,6 @@ export function SolanaJoinReferralWizard({
 
   const buttonText = isSubmitting ? (
     t`Adding...`
-  ) : error ? (
-    error
-  ) : codeError ? (
-    codeError
   ) : isOwnCode ? (
     t`Own referral code not allowed`
   ) : trimmedCode === "" ? (
@@ -153,17 +153,19 @@ export function SolanaJoinReferralWizard({
               <div className="flex flex-col gap-12">
                 <form onSubmit={handleSubmit} className="flex flex-col gap-12">
                   <ReferralCodeInput
+                    ref={inputRef}
                     disabled={isSubmitting}
                     value={referralCode}
                     onChange={(value) => {
                       setReferralCode(value);
-                      setError(undefined);
                     }}
                   />
+                  {/* Same place and style as the create form's code rules message */}
+                  {codeError && <p className="text-body-small -mt-4 text-red-500">{codeError}</p>}
                   <Button
                     variant="primary-action"
                     type="submit"
-                    disabled={isSubmitting || Boolean(error) || Boolean(codeError) || isOwnCode || trimmedCode === ""}
+                    disabled={isSubmitting || Boolean(codeError) || isOwnCode || trimmedCode === ""}
                   >
                     {buttonText}
                   </Button>
@@ -229,7 +231,6 @@ export function SolanaJoinReferralWizard({
         holders={topHolders}
         onUseCode={(code) => {
           setReferralCode(code);
-          setError(undefined);
           setIsHoldersModalVisible(false);
         }}
       />

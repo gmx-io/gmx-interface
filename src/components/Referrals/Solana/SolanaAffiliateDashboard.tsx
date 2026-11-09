@@ -1,10 +1,11 @@
 import { msg, Plural, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
 import type { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
-import { formatDate, formatDateTime, formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
+import { formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
@@ -26,7 +27,7 @@ import ShareIcon from "img/ic_share.svg?react";
 
 import { SolanaAffiliatesPromoCard } from "./SolanaPromoCards";
 import { SOLANA_AFFILIATE_POST_WIZARD_FAQS } from "./solanaReferralsFaq";
-import { formatGt, shortenSolanaAddress } from "./solanaReferralsFormat";
+import { formatGt, formatReferralDate, shortenSolanaAddress } from "./solanaReferralsFormat";
 import {
   getSolanaReferralLink,
   GT_POINTS_BUYBACK_PATH,
@@ -277,6 +278,7 @@ function EmptyRow({ children }: { children: React.ReactNode }) {
 }
 
 function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferralActivity[]; rangeDays: number }) {
+  const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
   // A new time range starts again on page 1
   const { currentPage, setCurrentPage, pageCount, currentData } = usePagination(
@@ -306,7 +308,9 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
             >
               <div className="flex min-w-0 flex-col gap-2">
                 <span className="font-mono text-typography-primary">{shortenSolanaAddress(record.referee)}</span>
-                <span className="text-body-small text-typography-secondary">{formatDateTime(record.timestamp)}</span>
+                <span className="text-body-small text-typography-secondary">
+                  {formatReferralDate(record.timestamp, i18n.locale, { withTime: true })}
+                </span>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2 numbers">
                 <span className="text-typography-primary">{formatGt(record.gtReward, { signed: true })}</span>
@@ -339,7 +343,9 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
             <tbody>
               {currentData.map((record) => (
                 <TableTr key={record.id}>
-                  <TableTd className="whitespace-nowrap">{formatDateTime(record.timestamp)}</TableTd>
+                  <TableTd className="whitespace-nowrap">
+                    {formatReferralDate(record.timestamp, i18n.locale, { withTime: true })}
+                  </TableTd>
                   <TableTd className="font-mono">{shortenSolanaAddress(record.referee)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
                     {formatGt(record.gtReward, { signed: true })}
@@ -359,6 +365,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
 }
 
 function LastTrade({ timestamp }: { timestamp: number | undefined }) {
+  const { i18n } = useLingui();
   if (timestamp === undefined) {
     return (
       <span className="text-typography-secondary">
@@ -367,10 +374,15 @@ function LastTrade({ timestamp }: { timestamp: number | undefined }) {
     );
   }
 
-  return <span title={formatDateTime(timestamp)}>{formatTimeAgo(timestamp * 1000)}</span>;
+  return (
+    <span title={formatReferralDate(timestamp, i18n.locale, { withTime: true })}>
+      {formatTimeAgo(timestamp * 1000)}
+    </span>
+  );
 }
 
 function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
+  const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
   const { currentPage, setCurrentPage, pageCount, currentData } = usePagination("SolanaReferralsReferees", referees);
 
@@ -397,7 +409,7 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
               <div className="flex min-w-0 flex-col gap-2">
                 <span className="font-mono text-typography-primary">{shortenSolanaAddress(referee.address)}</span>
                 <span className="text-body-small text-typography-secondary">
-                  <Trans>Joined {formatDate(referee.joinedAt)}</Trans>
+                  <Trans>Joined {formatReferralDate(referee.joinedAt, i18n.locale)}</Trans>
                 </span>
                 <span className="text-body-small text-typography-secondary">
                   {referee.lastTradeAt === undefined ? (
@@ -442,7 +454,7 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
               {currentData.map((referee) => (
                 <TableTr key={referee.address}>
                   <TableTd className="font-mono">{shortenSolanaAddress(referee.address)}</TableTd>
-                  <TableTd className="whitespace-nowrap">{formatDate(referee.joinedAt)}</TableTd>
+                  <TableTd className="whitespace-nowrap">{formatReferralDate(referee.joinedAt, i18n.locale)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">{formatGt(referee.gtEarned)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
                     {formatGt(referee.sellableQuotaEarned)}
