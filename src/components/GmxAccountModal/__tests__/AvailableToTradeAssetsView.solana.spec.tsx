@@ -49,7 +49,12 @@ const SOL_ASSET = {
 };
 
 function renderView(walletAssets: Partial<WalletAssets>) {
-  mocks.walletAssets = { isLoading: false, balancesError: undefined, pricesError: undefined, ...walletAssets } as WalletAssets;
+  mocks.walletAssets = {
+    isLoading: false,
+    balancesError: undefined,
+    pricesError: undefined,
+    ...walletAssets,
+  } as WalletAssets;
   return render(
     <I18nProvider i18n={i18n}>
       <AvailableToTradeAssetsView />

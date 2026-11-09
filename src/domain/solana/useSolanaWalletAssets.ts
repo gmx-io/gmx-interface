@@ -39,7 +39,9 @@ export function useSolanaWalletAssets(owner: string | undefined) {
 
   const walletAssets = useMemo(
     () =>
-      balancesError ? undefined : getSolanaWalletAssets(tokens.data, balances.data, prices.error ? undefined : prices.data),
+      balancesError
+        ? undefined
+        : getSolanaWalletAssets(tokens.data, balances.data, prices.error ? undefined : prices.data),
     [balancesError, tokens.data, balances.data, prices.data, prices.error]
   );
 

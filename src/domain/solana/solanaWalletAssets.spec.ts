@@ -23,7 +23,14 @@ const USDC: SolanaWalletToken = {
   decimals: 6,
   isStable: true,
 };
-const APE: SolanaWalletToken = { address: "ape", symbol: "APE", iconSymbol: "APE", name: "ApeCoin", decimals: 9, isStable: undefined };
+const APE: SolanaWalletToken = {
+  address: "ape",
+  symbol: "APE",
+  iconSymbol: "APE",
+  name: "ApeCoin",
+  decimals: 9,
+  isStable: undefined,
+};
 const TOKENS = [SOL, USDC, APE];
 
 const PRICES = {
