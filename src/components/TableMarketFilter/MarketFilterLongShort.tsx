@@ -8,6 +8,7 @@ import {
   selectChainId,
   selectOrdersInfoData,
   selectSrcChainId,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
@@ -18,7 +19,7 @@ import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "do
 import { isOrderForPosition } from "domain/synthetics/orders";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
-import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
@@ -71,6 +72,7 @@ export function MarketFilterLongShort({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
+  const tokensData = useSelector(selectTokensData);
   const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
@@ -224,9 +226,7 @@ export function MarketFilterLongShort({
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
-      const collateralToken = props.item.collateralAddress
-        ? getToken(chainId, props.item.collateralAddress)
-        : undefined;
+      const collateralToken = props.item.collateralAddress ? tokensData?.[props.item.collateralAddress] : undefined;
       const collateralSymbol = collateralToken?.symbol;
 
       if (props.item.direction === "long" || props.item.direction === "short") {
@@ -256,7 +256,7 @@ export function MarketFilterLongShort({
         </>
       );
     },
-    [chainId, marketsInfoData]
+    [marketsInfoData, tokensData]
   );
 
   return (
