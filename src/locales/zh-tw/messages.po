@@ -3631,10 +3631,6 @@ msgstr "地址"
 msgid "Update Take-Profit"
 msgstr "更新止盈"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
-msgstr "透過GMX<0/>推薦計畫獲得手續費折扣並賺取高達25%的佣金"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "從 {sourceChainName} 存入失敗"
@@ -12491,6 +12487,10 @@ msgstr "輸入觸發價格"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "總計統計"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX referral program"
+msgstr "透過GMX推薦計畫獲得手續費折扣並賺取高達25%的佣金"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"

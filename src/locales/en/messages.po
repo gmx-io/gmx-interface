@@ -3631,10 +3631,6 @@ msgstr "Address"
 msgid "Update Take-Profit"
 msgstr "Update Take-Profit"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
-msgstr "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "Deposit from {sourceChainName} failed"
@@ -12491,6 +12487,10 @@ msgstr "Enter a trigger price"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "Total stats"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX referral program"
+msgstr "Get fee discounts and earn up to 25% commission through the GMX referral program"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"

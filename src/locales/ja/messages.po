@@ -3631,10 +3631,6 @@ msgstr "アドレス"
 msgid "Update Take-Profit"
 msgstr "テイクプロフィットを更新"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn up to 25% commission through the GMX <0/> referral program"
-msgstr "GMXの<0/>リファラルプログラムで手数料割引を受け、最大25%のコミッションを獲得しましょう"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "{sourceChainName}からの入金に失敗しました"
@@ -12491,6 +12487,10 @@ msgstr "トリガー価格を入力"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "総合統計"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 25% commission through the GMX referral program"
+msgstr "GMXのリファラルプログラムで手数料割引を受け、最大25%のコミッションを獲得しましょう"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
