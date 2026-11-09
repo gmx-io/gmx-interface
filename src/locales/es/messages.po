@@ -2600,10 +2600,6 @@ msgstr "Elija un horario"
 msgid "GMX balance"
 msgstr "Saldo de GMX"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Precio en Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Firme transacciones fuera de la cadena. Los RPC premium garantizan fiabilidad durante la congestión de la red.<0/><1/>Las comisiones se pagan con su token de pago de Gas desde el saldo que utiliza la acción."
@@ -4529,6 +4525,10 @@ msgstr "Solo monedero"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "La cotización de Paxos cambió. Revisa el nuevo importe y la comisión, y confirma de nuevo."
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento, por lo que las transacciones se envían sin Express hasta que pueda hacerlo."
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "Sus fondos están seguros en los contratos de GMX en la cadena de destin
 msgid "Perpetuals"
 msgstr "Perpetuos"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento. Se pagan en {toSymbol} en su lugar."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Exponente de impacto (negativo)"
@@ -7611,10 +7615,6 @@ msgstr "Los puntos se asignan según su volumen de negociación acumulado en GMX
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Solicitud de liquidación de comisiones de {0, plural, one {# posición} other {# posiciones}} enviada"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Precio en Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "A este precio de activación, la posición restante excedería el apalan
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText}: actualización completada"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} no puede pagar las comisiones de red en este momento, por lo que las acciones de GMX Account no se pueden enviar hasta que pueda hacerlo."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "Reclamar reembolsos"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "Ver transacción"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Su {walletName} aún no está desplegado en {0}</0><1/><2>Realice cualquier transacción desde él en {1} e inténtelo de nuevo</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "Abre GMTrade en una nueva pestaña"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "Principales direcciones"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "El nonce de aprobación de One-Click Trading ha expirado. Vuelva a firmar para seguir usando One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "Ejecutar depósito de margen"
 msgid "Estimate your savings"
 msgstr "Calcule su ahorro"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
