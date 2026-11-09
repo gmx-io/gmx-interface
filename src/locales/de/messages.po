@@ -2600,10 +2600,6 @@ msgstr "Zeit auswählen"
 msgid "GMX balance"
 msgstr "GMX-Guthaben"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Avalanche"
-msgstr "Preis auf Avalanche"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Transaktionen off-chain signieren. Premium-RPCs gewährleisten Zuverlässigkeit bei Netzwerküberlastung.<0/><1/>Gebühren werden mit Ihrem Token für Gasgebühren aus dem Guthaben bezahlt, das die Aktion verwendet."
@@ -4529,6 +4525,10 @@ msgstr "Nur Wallet"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The Paxos quote changed. Review the new amount and fee, then confirm again."
 msgstr "Das Paxos-Angebot hat sich geändert. Prüfen Sie den neuen Betrag und die Gebühr und bestätigen Sie erneut."
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so transactions are sent without Express until it can."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen, daher werden Transaktionen ohne Express gesendet, bis dies wieder möglich ist."
 
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Listing"
@@ -7442,6 +7442,10 @@ msgstr "Ihre Mittel sind sicher in GMX-Verträgen auf der Zielchain. Versuchen S
 msgid "Perpetuals"
 msgstr "Perpetuals"
 
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now. They are paid in {toSymbol} instead."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen. Sie werden stattdessen in {toSymbol} bezahlt."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Einflussexponent (negativ)"
@@ -7611,10 +7615,6 @@ msgstr "Punkte werden anhand Ihres kumulierten Handelsvolumens auf GMX MegaETH v
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "Abwicklungsanfrage für {0, plural, one {# Position} other {# Positionen}} gesendet"
-
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "Price on Arbitrum"
-msgstr "Preis auf Arbitrum"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
@@ -8365,6 +8365,10 @@ msgstr "Bei diesem Auslösepreis würde die verbleibende Position den maximalen 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} aktualisiert"
+
+#: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
+msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
+msgstr "{fromSymbol} kann derzeit keine Netzwerkgebühren zahlen, daher können Aktionen im GMX Account erst wieder gesendet werden, wenn dies möglich ist."
 
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
@@ -9212,6 +9216,10 @@ msgstr "Rückvergütungen beanspruchen"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "Transaktion anzeigen"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
+msgstr "<0>Ihre {walletName} ist auf {0} noch nicht bereitgestellt</0><1/><2>Führen Sie damit auf {1} eine beliebige Transaktion aus und versuchen Sie es erneut</2>"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -10313,10 +10321,6 @@ msgstr "Öffnet GMTrade in einem neuen Tab"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "Top-Adressen"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "Die Nonce der Genehmigung für One-Click Trading ist abgelaufen. Signieren Sie erneut, um One-Click Trading weiter zu nutzen."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -12798,7 +12802,6 @@ msgstr "Margin-Einzahlung ausführen"
 msgid "Estimate your savings"
 msgstr "Ihre Ersparnis schätzen"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
