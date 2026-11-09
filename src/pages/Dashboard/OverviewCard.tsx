@@ -123,7 +123,8 @@ export function OverviewCard({
   // #endregion TVL and GLP Pool
 
   // #region Daily Volume
-  // v1 is left out: its daily volume is a few dollars of GLP redemptions (see domain/stats/v1Totals)
+  // v1 is left out: over the last 30 days its volume is GLP redemptions, $8.3k on Arbitrum and
+  // $51.3k on Avalanche, up to $37.1k in one day. That is still noise next to v2 (see domain/stats/v1Totals)
   const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
   // #endregion Daily Volume
