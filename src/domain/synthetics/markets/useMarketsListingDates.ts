@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import useSWR from "swr";
 
 import { isSolanaNetwork } from "config/chains";
@@ -16,6 +15,7 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
   const isSolana = isSolanaNetwork(networkId);
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
+  // Solana has no confirmed listing dates; disable the EVM request.
   const { data, isLoading } = useSWR(
     isSolana ? null : ["markets-listing-dates", chainId],
     async () => {
@@ -35,9 +35,5 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
     }
   );
 
-  // Solana has no confirmed listing dates yet; never reuse the EVM cache or migration date.
-  return useMemo(
-    () => ({ listingDateByIndexToken: isSolana ? {} : data ?? {}, isLoading: !isSolana && isLoading }),
-    [data, isLoading, isSolana]
-  );
+  return { listingDateByIndexToken: data ?? {}, isLoading: isLoading ?? false };
 }
