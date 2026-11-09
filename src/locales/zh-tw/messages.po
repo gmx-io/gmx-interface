@@ -48,7 +48,12 @@ msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
 msgid "Monthly"
 msgstr "每月"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Quota {0}"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
 msgid "REFERRAL CODE"
 msgstr "推薦代碼"
 
@@ -421,6 +426,10 @@ msgstr "探索"
 msgid "GM airdrop"
 msgstr "GM 空投"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "The share of the GT your referees earn from trading that you receive: 50% to 100%, set by your VIP tier. <0>View tiers in GT Points</0>."
+msgstr ""
+
 #: src/components/PositionEditor/types.ts
 msgid "At price"
 msgstr "指定價格"
@@ -455,6 +464,10 @@ msgstr "目標"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaReferralsAffiliatesTab.tsx
+#: src/components/Referrals/Solana/SolanaReferralsTradersTab.tsx
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/Referrals/traders/faq.tsx
 #: src/components/Referrals/traders/ReferralsTradersTab.tsx
@@ -564,6 +577,10 @@ msgstr "請<0>兌換</0>或透過<1>跨鏈橋</1>轉入 {gasPaymentTokenSymbol}�
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr "回饋金會以受您推薦者使用的抵押品代幣支付。例如，如果受您推薦者使用 USDC 作為抵押品進行交易，您的回饋金部分將以 USDC 支付。"
 
+#: src/components/Referrals/Solana/useSolanaReferralsData.ts
+msgid "Solana referrals are not connected yet"
+msgstr ""
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Idea stage, nothing shipped yet"
 msgstr "還在想法階段，尚未發布任何產品"
@@ -580,6 +597,10 @@ msgstr "倉位和抵押品帶來雙重 {indexSymbol} 曝險。清算價格高於
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
 msgid "GMX Account balance"
 msgstr "GMX Account 餘額"
+
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "No GT holders to show yet"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveView.tsx
 msgid "Address copied!"
@@ -806,6 +827,9 @@ msgstr "倉位"
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "{0}d"
 msgstr "{0}天"
 
@@ -1014,6 +1038,10 @@ msgstr "外部兌換影響過高"
 msgid "Keep more of what you earn"
 msgstr "保留更多收益"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Invite and earn rewards"
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
 msgstr "可結算的累計資金費率費用"
@@ -1118,6 +1146,10 @@ msgstr "STIP.b 追溯獎勵"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "流動性"
+
+#: src/pages/Referrals/SolanaReferrals.tsx
+msgid "Get fee discounts and earn GT rewards through the GMX Solana <0/> referral program"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
@@ -1242,6 +1274,10 @@ msgstr "金庫與池中的 TVL"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "Solana 上的 GMX"
+
+#: src/components/Referrals/Solana/SolanaPromoCards.tsx
+msgid "Activate someone's referral code to receive a permanent 10% discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1385,6 +1421,7 @@ msgstr "市場"
 msgid "Existing position uses {0} collateral. Using the selected collateral will create a separate position. <0>Switch to {1} collateral</0>"
 msgstr "現有倉位使用 {0} 作為抵押品。使用所選抵押品將建立另一個倉位。<0>切換為以 {1} 作為抵押品</0>"
 
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "使用中的推薦碼"
@@ -1622,6 +1659,7 @@ msgstr "正在建立推薦碼..."
 msgid "DATE"
 msgstr "日期"
 
+#: src/components/ChainDataImage.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -1717,6 +1755,7 @@ msgstr "正在賣出 {symbol}..."
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum.<0/><1/>Slippage differs from price impact, which is based on open interest imbalances."
 msgstr "因波動性導致的預期成交價格與實際成交價格之間的差異。若滑點超出您的最大設定值，訂單將不會執行。<0/><1/>滑點不同於價格影響，後者是基於未平倉量的不平衡。"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Adding..."
 msgstr "正在新增..."
@@ -1767,6 +1806,7 @@ msgid "Withdraw all tokens from the GMX and GLP vesting vaults before the transf
 msgstr "轉帳前請從 GMX 和 GLP 歸屬期金庫提取所有代幣"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr "前往聯盟夥伴儀表板"
 
@@ -1832,6 +1872,10 @@ msgstr "總交易次數"
 msgid "No pools found"
 msgstr "找不到池"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "You have activated the referral code {appliedCode}. Your reduced rate applies automatically to every position you open or close — no extra steps needed."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Beefy"
 msgstr "Beefy"
@@ -1886,6 +1930,7 @@ msgid "High network fees"
 msgstr "網路費用偏高"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
@@ -1943,6 +1988,7 @@ msgstr "基礎 APY"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 倉位每小時{fundingAction}資金費用 {fundingRate}，借貸費用每小時{borrowAction} {borrowRate}"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIME"
@@ -1985,6 +2031,7 @@ msgstr "發送許可"
 msgid "V1 interface"
 msgstr "V1 介面"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "How do I know if a code is good?"
 msgstr "如何判斷推薦碼是否合適？"
@@ -1998,6 +2045,7 @@ msgstr "您執行交易時，系統會自動套用折扣。開立交易前，您
 msgid "CSV"
 msgstr "CSV"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "我的手續費折扣如何套用？"
@@ -2184,6 +2232,10 @@ msgstr "將止盈價格設為高於限價"
 msgid "Pool max short amount"
 msgstr "池最大做空數量"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Share your referral link to start earning."
+msgstr ""
+
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Only whitelisted addresses can deposit into this vault"
 msgstr "僅白名單地址可存入此金庫"
@@ -2222,6 +2274,10 @@ msgstr "領取歷史記錄"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No SL orders"
 msgstr "無 SL 訂單"
+
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+msgid "Your referral code {createdCode} is now active. Share it with friends or your community."
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
@@ -2583,6 +2639,10 @@ msgstr "滑點必須小於 5%"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "虛擬庫存會追蹤相似市場間的代幣不平衡，例如 ETH/USDC、ETH/USDT。"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "HOLDER"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "獲利"
@@ -2822,6 +2882,10 @@ msgstr "領取 <0/>"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "可能需要幾分鐘才會顯示。請稍後再查看"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Traders who use your code get a permanent 10% discount on their opening and closing fees, regardless of your VIP tier."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Monthly volume"
 msgstr "每月交易量"
@@ -2847,6 +2911,10 @@ msgstr "已達到自動取消訂單上限"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "GMX 流動性的模擬訂單簿檢視。開倉以標記價格執行，零價格影響。淨價格影響僅在平倉時適用（有上限，通常為 0.5%）。<0>了解更多</0>。"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Every valid code gives you the same permanent 10% discount. The code only decides which affiliate earns GT and GT sellable quota from your trades."
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2893,14 +2961,20 @@ msgstr "年化率"
 msgid "No swap path found"
 msgstr "未找到兌換路徑"
 
+#: src/components/Referrals/Solana/SolanaPromoCards.tsx
+msgid "Enter a referral code and save 10% on fees"
+msgstr ""
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set long Stop Market @ {0}"
 msgstr "在 {0} 設定做多觸發市價單"
 
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
 msgstr "您的折扣"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code?"
 msgstr "我可以變更推薦代碼嗎？"
@@ -3107,6 +3181,10 @@ msgstr "正在載入網路費用..."
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
 msgstr "「依價格」存入保證金僅支援 {positionCollateralSymbol}。如需使用 USDC 支付，請<0>使用「立即」</0>。"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "SELLABLE QUOTA"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI SWAPS"
@@ -3571,6 +3649,7 @@ msgid "Long positions"
 msgstr "做多倉位"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr "分享你的推薦碼"
 
@@ -3606,6 +3685,10 @@ msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易�
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr "正在減少 {indexTokenText} 做空倉位：-{sizeDeltaUsdText}"
 
+#: src/components/Referrals/Solana/SolanaPromoCards.tsx
+msgid "Create your referral code and earn GT from your referrals"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "搜尋地址"
@@ -3616,6 +3699,7 @@ msgid "Data freshness"
 msgstr "資料新鮮度"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Done!"
 msgstr "完成！"
 
@@ -3657,7 +3741,9 @@ msgstr "{0} 池中已有一筆限價單"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
 msgid "Create referral code"
 msgstr "建立推薦碼"
 
@@ -3753,6 +3839,10 @@ msgstr "面向開發者和團隊"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "天"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "No referral rewards in this period"
+msgstr ""
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
@@ -3990,9 +4080,18 @@ msgstr "AB 旗標"
 msgid "Wallet & GMX Account"
 msgstr "錢包與 GMX Account"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "A referral code gives you a permanent 10% discount on opening and closing fees for every trade you make. It costs you nothing, and the savings add up quickly."
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Tenderly 設定"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "REFEREE"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap all rewards into one asset"
@@ -4135,6 +4234,10 @@ msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。請存�
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "Use code"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
 msgstr "做空淨費率 / 1小時"
@@ -4184,6 +4287,10 @@ msgstr "行銷工具包 + 聯合行銷"
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "您的 GMX Account 中 {wrappedNativeTokenSymbol} 不足以支付 Gas 費用。"
+
+#: src/components/Referrals/Solana/SolanaReferralsAffiliatesTab.tsx
+msgid "Share and earn GT"
+msgstr ""
 
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -4412,6 +4519,7 @@ msgstr "此觸發價格超過目前清算價格。在此 TP/SL 訂單執行之�
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating..."
 msgstr "建立中..."
@@ -4457,6 +4565,7 @@ msgstr "正在接收 {0}：{delivered} / {due}"
 msgid "Funds are now in your GMX Account"
 msgstr "資金已存入您的 GMX Account"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Why should I enter a referral code?"
 msgstr "為什麼要輸入推薦碼？"
@@ -4583,6 +4692,10 @@ msgstr "為什麼 GMX 比其他永續合約平台更具成本效益？"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Margin is below the minimum required for the position size"
 msgstr "保證金低於該倉位規模所需的最低要求"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{0} inactive"
+msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
@@ -4829,6 +4942,10 @@ msgstr "在過去 {DAYS_BACK} 天內找到 {0} 個事件"
 msgid "How you earn"
 msgstr "收益方式"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "The 10% discount applies to the opening and closing fees of your positions."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
 msgstr "{gmOrGlvLabel} 跨鏈至..."
@@ -4898,6 +5015,10 @@ msgstr "設定可接受的價格影響"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "此保證金存入對應的倉位已平倉，但該存入訂單仍有效。請取消該訂單以取回資金。"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -4920,6 +5041,10 @@ msgstr "正在提交訂單請求..."
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>賣出 {0}{1}<1>{poolName}</1></0>"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "GT REWARD"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -5275,6 +5400,8 @@ msgstr "當 Oracle 價格{0} {1} 時執行"
 msgid "Withdrawal from subaccount"
 msgstr "從子帳戶提取"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -5284,6 +5411,8 @@ msgid "Enter referral code"
 msgstr "輸入推薦碼"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr "推薦連結已複製到剪貼簿"
@@ -5377,6 +5506,10 @@ msgstr "PNL ($)"
 msgid "Borrowing exponent long"
 msgstr "做多借貸指數"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "View all on GT Points"
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
@@ -5455,6 +5588,10 @@ msgstr "兌換已提交"
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "預期成交價格與實際成交價格之間因波動性產生的差異。若滑點超過您設定的最大值，訂單將不會執行。可在設定中調整預設值。<0/><1/>過低的值（例如低於 -{0}）可能導致訂單在波動時失敗。<2/><3/>滑點不同於價格影響，後者基於未平倉量的不平衡。<4>閱讀更多</4>。"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Recent activity"
+msgstr ""
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
@@ -5476,6 +5613,10 @@ msgstr "提交新的授權"
 #: src/components/TradeHistory/keys.ts
 msgid "Update margin deposit"
 msgstr "更新保證金存入"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "What benefits does my referrer receive?"
+msgstr ""
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "What people are building."
@@ -5747,6 +5888,7 @@ msgstr "沒有符合的代幣"
 msgid "Error sending permit for {0}: {1}"
 msgstr "傳送 {0} 授權時發生錯誤：{1}"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades yet"
 msgstr "尚無交易記錄"
@@ -5979,6 +6121,11 @@ msgstr "在槓桿顯示中包含 PnL"
 msgid "No claims yet"
 msgstr "目前尚無領取記錄"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Can I change my referrer?"
+msgstr ""
+
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trading volume"
 msgstr "您的交易量"
@@ -6374,6 +6521,10 @@ msgstr "<0>不需要。GMX 是自託管且無許可的平台——您只需連�
 msgid "Transfer account"
 msgstr "轉移帳戶"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "JOINED"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "LONGS NET RATE / 1H"
 msgstr "做多淨費率 / 1 小時"
@@ -6440,6 +6591,9 @@ msgstr "<0>GMX 的交易是透過動態平衡的流動性池執行，不同於�
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -6555,6 +6709,10 @@ msgstr "平倉"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "，直接從您的錢包進行"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "{0} active"
+msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
@@ -6805,6 +6963,7 @@ msgstr "領取資金失敗"
 msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
 msgstr "所選期間的統計資料無法提供。改為顯示最接近的可用期間。"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr "哪些手續費可享折扣？"
@@ -7064,6 +7223,10 @@ msgstr "觸價市價單失敗"
 msgid "Settings"
 msgstr "設定"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "GT EARNED"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paxos zero-fee"
 msgstr "Paxos 零費用"
@@ -7129,6 +7292,10 @@ msgstr "從其他錢包、交易所或鏈存入"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Sending {0} to {1} is not supported"
 msgstr "不支援將 {0} 傳送至 {1}"
+
+#: src/components/Referrals/Solana/solanaReferralsTypes.ts
+msgid "Only letters and numbers, without 0, O, I and l"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -7202,6 +7369,8 @@ msgstr "兌換中有可用結果"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Enter a code"
@@ -7218,6 +7387,10 @@ msgstr "GLV 額外激勵"
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Add your own fee and keep 100% of it"
 msgstr "加入您自己的費用，並保留其 100%"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "You earn GT and GT sellable quota from every trade your referees make. GT counts toward your VIP tier, and sellable quota lets you sell GT in buybacks."
+msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 msgid "Lifetime staking rewards"
@@ -7375,6 +7548,10 @@ msgstr "Solana 上的 GMX（GMTrade）由獨立網域提供服務"
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -7529,6 +7706,7 @@ msgid "Decreased"
 msgstr "已減倉"
 
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
 msgid "Trader benefits"
 msgstr "交易者福利"
 
@@ -7536,6 +7714,7 @@ msgstr "交易者福利"
 msgid "Selling"
 msgstr "賣出中"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Start trading"
@@ -7622,6 +7801,10 @@ msgstr "授權簽署失敗"
 msgid "margin deposit"
 msgstr "保證金存入"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Earn GT rewards and increase sellable GT quota as your referrals trade."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -7638,9 +7821,17 @@ msgstr "回饋"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "僅因費用（資金費用與借款費用）隨時間降低保證金，倉位仍可能遭到清算。"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Joined {0}"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
 msgstr "從 GM 轉移至 GLV 類似於用 GM 代幣買入 GLV。選擇此選項會跳轉至「買入 GLV」分頁。"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Active referees traded in the last 7 days."
+msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
@@ -7669,6 +7860,10 @@ msgstr "{typeString} 做多 TWAP：{0}做多倉位，並在指定期間內以均
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim & swap"
 msgstr "領取並兌換"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "You can use a code from the top GT holders list on GT Points, or find one that community members share on social media."
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdraw all tokens from the esGMX vesting vault before the transfer"
@@ -7703,6 +7898,10 @@ msgstr "GMX 新版本已就緒。完成目前操作後重新載入即可切換�
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
 msgstr "暫時無法提取：賣出此數量將使做空交易者的 PnL 佔池比率升至 {pnlToPoolRatioText}，超過 {maxPnlRatioText} 的上限。請減少數量或稍後再試"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Your discount is applied automatically when you open or close a position. You'll see the referral discount in your fee tooltip before you confirm a trade."
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
@@ -7820,6 +8019,10 @@ msgstr "GMX 累計交易量"
 msgid "Liquidation fee"
 msgstr "清算費用"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Your referrer earns GT and GT sellable quota from your trades. This doesn't reduce your discount or add anything to your fees."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "兌換影響指數"
@@ -7909,6 +8112,10 @@ msgstr "分享您的推薦卡"
 msgid "<0>Wallet not connected to {0}</0><1/><2>Switch to {1}</2>"
 msgstr "<0>錢包未連接至 {0}</0><1/><2>切換至 {1}</2>"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "You can find a referral code from <0>top GT holders</0> or on other social media platforms"
+msgstr ""
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "TVL/CAP"
 msgstr "TVL/上限"
@@ -7969,6 +8176,9 @@ msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
 msgid "Referrals"
 msgstr "推薦計畫"
 
@@ -8105,6 +8315,10 @@ msgstr "載入中..."
 msgid "Trade now"
 msgstr "立即交易"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Rewards show here when your referees trade."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr "傳送方已從 GMX 歸屬期金庫提取所有代幣"
@@ -8113,6 +8327,7 @@ msgstr "傳送方已從 GMX 歸屬期金庫提取所有代幣"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Share"
@@ -8229,6 +8444,10 @@ msgstr "跨多個 GMX 市場提供流動性的收益優化金庫"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "轉換狀態無法使用"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Referral code copied to clipboard"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -8377,6 +8596,7 @@ msgid "What if I'm building a competing perp DEX?"
 msgstr "如果我正在打造與 GMX 競爭的永續合約 DEX 呢？"
 
 #: src/components/Referrals/affiliates/faq.tsx
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 msgid "How do I share my code?"
 msgstr "如何分享我的推薦碼？"
 
@@ -8501,6 +8721,7 @@ msgid "buy"
 msgstr "買入"
 
 #: src/pages/Referrals/Referrals.tsx
+#: src/pages/Referrals/SolanaReferrals.tsx
 msgid "Affiliate dashboard"
 msgstr "推廣夥伴儀表板"
 
@@ -8724,6 +8945,10 @@ msgstr "沒有未平倉倉位"
 msgid "See the perks"
 msgstr "查看專屬禮遇"
 
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+msgid "Earn GT and GT sellable quota as an affiliate"
+msgstr ""
+
 #: src/components/NetworkFeeRow/NetworkFeeValue.tsx
 msgid "Paid from"
 msgstr "支付來源"
@@ -8751,6 +8976,10 @@ msgstr "查看兌換中的結果"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "保證流動性"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "You start earning as soon as a referred trader makes their first trade with your code. GT rewards go straight to your GT balance, with nothing to claim, and show in Recent activity on the Affiliate dashboard."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -9130,6 +9359,10 @@ msgstr "將停止價格設為高於標記價格"
 msgid "<0>To </0><1>{0}</1>"
 msgstr "<0>至 </0><1>{0}</1>"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "No referees yet"
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "FX"
 msgstr "外匯"
@@ -9192,6 +9425,10 @@ msgstr "新增 TP/SL"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "How would you like to add funds?"
 msgstr "您想以哪種方式新增資金？"
+
+#: src/components/Referrals/Solana/SolanaPromoCards.tsx
+msgid "Generate your own referral code and earn GT and GT sellable quota whenever users trade with it. Rewards<0/> scale with your VIP tier and the activity of your referees. <1>Read more</1>."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -9345,6 +9582,10 @@ msgstr "簽章無效。<0/><1/>請嘗試其他錢包服務提供者，或前往 
 msgid "Edit"
 msgstr "編輯"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "How are my GT rewards and sellable quota calculated?"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total supply"
 msgstr "總供給量"
@@ -9486,6 +9727,10 @@ msgstr "將 SL 價格設為低於限價"
 msgid "({0} of {1})"
 msgstr "（{1}的 {0}）"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Your referral reward rate depends on your VIP tier. Hold more GT to reach a higher tier. See all tiers in <0>GT Points</0>."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Request unstake"
 msgstr "申請解除質押"
@@ -9564,12 +9809,17 @@ msgid "Proof of reserves"
 msgstr "儲備金證明"
 
 #: src/components/Referrals/affiliates/faq.tsx
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 msgid "When will I start earning?"
 msgstr "我何時會開始獲得回饋金？"
 
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
 msgid "Closed to new limit orders"
 msgstr "不再接受新的限價單"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "SELLABLE QUOTA EARNED"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -9968,6 +10218,10 @@ msgstr "已領取"
 msgid "Referred monthly volume"
 msgstr "被推薦者每月交易量"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Your {SOLANA_TRADER_DISCOUNT_PERCENT}% discount is now active!"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Deposit amount"
 msgstr "存入金額"
@@ -9998,6 +10252,7 @@ msgstr "更多資訊"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -10005,6 +10260,7 @@ msgid "Create"
 msgstr "建立"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
 msgid "Your code is ready. Share it!"
 msgstr "您的推薦碼已準備就緒。立即分享！"
 
@@ -10161,6 +10417,10 @@ msgstr "{0} 上無可存入的代幣"
 msgid "Total to claim"
 msgstr "可領取總額"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "What can I earn as an affiliate?"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Min receive"
 msgstr "最低可收取數量"
@@ -10311,6 +10571,10 @@ msgstr "{directionLabel} 最大預留量 + JIT"
 msgid "Close price impact"
 msgstr "平倉價格影響"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "Top GT holders"
+msgstr ""
+
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
@@ -10432,6 +10696,10 @@ msgstr "頂尖倉位"
 msgid "Send remaining margin to"
 msgstr "將剩餘保證金傳送至"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Sellable quota lets you sell GT in buybacks. Use it in <0>GT Points › Buyback</0>."
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 買入 GM，上限如下"
@@ -10439,6 +10707,10 @@ msgstr "使用 {0} 買入 GM，上限如下"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "協議分析"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "No. Each wallet can create one referral code, and it can't be changed later, so pick one you're happy to share."
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -10481,6 +10753,10 @@ msgstr "市場下架"
 msgid "GMX rewards"
 msgstr "GMX 獎勵"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Your referees earn GT from the order and borrowing fees they pay. You get a share of that GT based on your referral reward rate, and your sellable quota grows by the full amount."
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "已達池最大容量"
@@ -10513,6 +10789,7 @@ msgstr "執行停止市價單"
 msgid "Unavailable"
 msgstr "無法使用"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr "前往交易者儀表板"
@@ -10859,6 +11136,10 @@ msgstr "透過 Paxos 轉換 · 手續費 {fee}"
 msgid "Max reserved {directionLabel}"
 msgstr "最大保留 {directionLabel}"
 
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
+msgid "You're now receiving a permanent {SOLANA_TRADER_DISCOUNT_PERCENT}% discount on your trades!"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr "所有有效代碼皆提供至少 5% 的折扣。高級聯盟夥伴（第 2/3 級）提供 10% 的折扣。套用代碼後，您會看到確切的折扣百分比。"
@@ -11062,6 +11343,10 @@ msgstr "最終倉位將超過允許的最大槓桿。請增加保證金或減小
 msgid "No funds available for GMX Account deposit"
 msgstr "沒有可存入 GMX Account 的資金"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Referees"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} sold successfully, but the bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 賣出成功，但透過跨鏈橋轉移至 {0} 失敗。您的資金安全地保存在您的 GMX Account 中。請重試跨鏈橋轉移，或開啟 GMX Account 提取您的代幣。"
@@ -11159,6 +11444,10 @@ msgstr "每日分配率，USD"
 msgid "Caps the USDC-USDG pool in both directions. Amounts shown are slightly lower to keep a safety margin."
 msgstr "在兩個方向上限制 USDC-USDG 池。為保留安全餘量，顯示的金額會略低。"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "You'll get a referral link that opens GMX on Solana with your code. Share it on social media, in your content, or directly with friends."
+msgstr ""
+
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "這些網路僅支援錢包交易"
@@ -11182,6 +11471,10 @@ msgstr "選擇累計資金費用超過 {0} Gas 費用的倉位進行結算"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Continue to convert"
 msgstr "繼續轉換"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Referral reward rate"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -11350,6 +11643,10 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
 
+#: src/components/Referrals/Solana/solanaReferralsTypes.ts
+msgid "Max {SOLANA_MAX_REFERRAL_CODE_LENGTH} characters"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr "開啟時，槓桿由您手動設定，並決定保證金和倉位規模。關閉時，保證金和規模可自由設定，槓桿則據此計算。"
@@ -11401,6 +11698,8 @@ msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received fro
 msgstr "推薦碼已在以下網路被使用：{takenNetworkNamesJoined}。無法從這些網路獲得返傭。"
 
 #: src/components/Errors/ErrorBoundary.tsx
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 msgid "Something went wrong"
 msgstr "發生錯誤"
 
@@ -11672,6 +11971,10 @@ msgstr "什麼是 GMX？"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposit submitted"
 msgstr "存入已提交"
+
+#: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
+msgid "Share your referral code with friends or your community. Every trade made with your code earns you GT and GT sellable quota."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11978,6 +12281,10 @@ msgstr "開啟 GMTrade"
 msgid "Execute TWAP part"
 msgstr "執行 TWAP 分段"
 
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
+msgid "The reduced rate applies to every open and close fee."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "建立 Limit Swap"
@@ -11989,6 +12296,10 @@ msgstr "以您方便的方式聯繫我們，我們會回覆您的確切等級—
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
 msgstr "更換網路"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX Solana"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Requesting unstake..."
@@ -12257,6 +12568,10 @@ msgstr "正在載入網路費用…"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "All earnings auto-compound"
 msgstr "所有收益自動複利"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "No. Once you apply a referral code, it stays linked to your account, so make sure you pick the code you want to use."
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
@@ -12577,6 +12892,10 @@ msgstr "從槓桿交易、兌換和價差中賺取手續費"
 msgid "Time elapsed"
 msgstr "已經過時間"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "Use a code from a top GT holder. Every code gives you the same 10% discount."
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "No pending transfer from the sender to this account. The sender has to start the transfer again."
 msgstr "沒有從傳送方到此帳戶的待處理轉帳。傳送方需要重新發起轉帳。"
@@ -12658,6 +12977,10 @@ msgstr "流動性僅在 {chainNames} 或 {lastChainName} 上可用。請切換�
 msgid "Transfer history"
 msgstr "轉帳歷史記錄"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Your referral code"
+msgstr ""
+
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "取消訂單"
@@ -12674,6 +12997,10 @@ msgstr "此市場已停用。請聯絡支援團隊以領取剩餘的資金費用
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close"
 msgstr "平倉時收到"
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Own referral code not allowed"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
@@ -12849,6 +13176,10 @@ msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
 msgid "GLP to GM airdrop"
 msgstr "GLP 轉 GM 空投"
 
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Trade smarter with 10% trading fee savings"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -12940,6 +13271,10 @@ msgstr "模擬交易"
 msgid "Where can I read more?"
 msgstr "哪裡可以閱讀更多資訊？"
 
+#: src/components/Referrals/Solana/TopGtHoldersModal.tsx
+msgid "GT"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
@@ -12958,6 +13293,10 @@ msgstr "兌換"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 質押獎勵從何而來？"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "How can I increase my referral reward rate?"
+msgstr ""
 
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Reserves ~{holdback} {symbol} for this transaction's fee"
@@ -13201,6 +13540,10 @@ msgstr "橫幅、連結，以及專屬合作夥伴經理"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Step 1: Convert"
 msgstr "步驟 1：轉換"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Total referrals"
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Convert, then place order"
@@ -13470,6 +13813,10 @@ msgstr "資產總價值"
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>切換至 {0} 池</0>以獲得可能更低的價格影響"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "LAST TRADE"
+msgstr ""
+
 #: src/components/BuyGmxModal/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "在其他平台買入"
@@ -13497,6 +13844,7 @@ msgid "No distributions to claim"
 msgstr "無可領取的分配"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
 msgstr "複製連結"
@@ -13760,6 +14108,10 @@ msgstr "包含已審核項目"
 msgid "General performance details"
 msgstr "整體績效詳情"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "What benefits does my referee receive?"
+msgstr ""
+
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Est. next 7 days"
 msgstr "預計未來 7 天"
@@ -13870,6 +14222,7 @@ msgstr "推薦碼已在以下網路被使用：{takenNetworkNamesJoined}。無�
 msgid "Margin before borrow/funding"
 msgstr "扣除借貸/資金費用前的保證金"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
 msgstr "要在哪裡取得推薦碼？"
@@ -13968,6 +14321,7 @@ msgid "{orderText} update failed"
 msgstr "{orderText} 更新失敗"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"

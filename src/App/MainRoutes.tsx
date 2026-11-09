@@ -30,6 +30,7 @@ import Pools from "pages/Pools/Pools";
 import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
+import { SolanaReferralsRouter } from "pages/Referrals/SolanaReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SolanaTradePlaceholder, EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
@@ -132,6 +133,9 @@ function SolanaRoutes() {
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route path="/referrals">
+        <SolanaReferralsRouter />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
