@@ -1,7 +1,8 @@
 import { ARBITRUM } from "sdk/configs/chainIds";
+import { getAddressKey } from "sdk/utils/address";
 import type { MarketInfo } from "sdk/utils/markets/types";
 
-export const OFF_HOURS_DOCS_URL = "https://docs.gmx.io/docs/trading/overview/#off-hours-behavior";
+export const OFF_HOURS_DOCS_URL = "https://docs.gmx.io/docs/trading/tradfi-markets#off-hours-behavior";
 
 const GOLD = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
 const SILVER = "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc";
@@ -75,13 +76,13 @@ const OFF_HOURS_BORROWING_FACTOR_DENOMINATOR = 45n;
 
 export function isOffHoursMarket(chainId: number, marketTokenAddress: string | undefined): boolean {
   if (chainId !== ARBITRUM || !marketTokenAddress) return false;
-  return marketTokenAddress.toLowerCase() in OFF_HOURS_MARKET_OVERRIDES;
+  return getAddressKey(marketTokenAddress) in OFF_HOURS_MARKET_OVERRIDES;
 }
 
 export function getOffHoursMarketInfo(chainId: number, marketInfo: MarketInfo | undefined): MarketInfo | undefined {
   if (!marketInfo || !isOffHoursMarket(chainId, marketInfo.marketTokenAddress)) return undefined;
 
-  const override = OFF_HOURS_MARKET_OVERRIDES[marketInfo.marketTokenAddress.toLowerCase()];
+  const override = OFF_HOURS_MARKET_OVERRIDES[getAddressKey(marketInfo.marketTokenAddress)];
 
   if (marketInfo.minCollateralFactor >= override.minCollateralFactor) return undefined;
 

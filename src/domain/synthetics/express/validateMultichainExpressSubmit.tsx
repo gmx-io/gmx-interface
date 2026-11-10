@@ -3,7 +3,7 @@ import { t } from "@lingui/macro";
 import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams, GasPaymentParams } from "domain/synthetics/express";
 import { getExpressError } from "domain/synthetics/trade/utils/validation";
-import { TokensData } from "domain/tokens";
+import { TokenData, TokensData } from "domain/tokens";
 import { helperToast } from "lib/helperToast";
 import type { OrderMetricId } from "lib/metrics/types";
 import { sendTxnValidationErrorMetric } from "lib/metrics/utils";
@@ -12,11 +12,25 @@ import { getIsConfirmedOutOfGasPaymentTokenBalance, getIsValidExpressParams } fr
 
 import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
+import { getGasPaymentTokenUnavailableMessage } from "./useGasPaymentTokenUnavailableToast";
+
 export function isMultichainExpressSubmitBlocked(
   isGmxAccount: boolean,
   expressParams: ExpressTxnParams | undefined
 ): boolean {
   return isGmxAccount && (!expressParams || !getIsValidExpressParams(expressParams));
+}
+
+/**
+ * A permit travels inside the relay call, so it can stand in for an approval only when the order is
+ * going to be relayed. Missing gas token approval doesn't count against it: a permit can cover that too.
+ */
+export function getCanUseTokenPermits(expressParams: ExpressTxnParams | undefined): boolean {
+  return (
+    expressParams !== undefined &&
+    !expressParams.isGmxAccount &&
+    !expressParams.gasPaymentValidations.isOutGasTokenBalance
+  );
 }
 
 export function getExpressParamsForSubmit(expressParams: ExpressTxnParams | undefined): ExpressTxnParams | undefined {
@@ -27,10 +41,12 @@ export function getNetworkFeeGasPaymentParams({
   expressParams,
   tokensData,
   canApproveGasPaymentToken = true,
+  canFallBackToClassic,
 }: {
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
   canApproveGasPaymentToken?: boolean;
+  canFallBackToClassic?: boolean;
 }): GasPaymentParams | undefined {
   const isWalletClassicFallback =
     expressParams !== undefined &&
@@ -38,7 +54,7 @@ export function getNetworkFeeGasPaymentParams({
     (canApproveGasPaymentToken
       ? getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)
       : !getIsValidExpressParams(expressParams)) &&
-    getExpressError({ expressParams, tokensData }).buttonErrorMessage === undefined;
+    getExpressError({ expressParams, tokensData, canFallBackToClassic }).buttonErrorMessage === undefined;
 
   return isWalletClassicFallback ? undefined : expressParams?.gasPaymentParams;
 }
@@ -51,6 +67,7 @@ export function reportMultichainExpressSubmitError({
   collateral,
   requestId,
   metricId,
+  unavailableGasPaymentToken,
 }: {
   isGmxAccount: boolean;
   expressParams: ExpressTxnParams | undefined;
@@ -59,6 +76,8 @@ export function reportMultichainExpressSubmitError({
   collateral?: string;
   requestId?: string;
   metricId?: OrderMetricId;
+  // the fee token when no params were estimated because it can't pay right now
+  unavailableGasPaymentToken?: TokenData;
 }): boolean {
   if (!isMultichainExpressSubmitBlocked(isGmxAccount, expressParams)) {
     return false;
@@ -72,6 +91,12 @@ export function reportMultichainExpressSubmitError({
         chainId={expressParams.chainId as ContractsChainId}
         gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
       />
+    ) : unavailableGasPaymentToken ? (
+      getGasPaymentTokenUnavailableMessage({
+        fromSymbol: unavailableGasPaymentToken.symbol,
+        toSymbol: undefined,
+        isGmxAccount: true,
+      })
     ) : (
       t`Express is unavailable right now, so this GMX Account action can't be sent`
     );

@@ -16,9 +16,11 @@ import type { MulticallError, MulticallRequestConfig, MulticallResult } from "li
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { BATCH_CONFIGS } from "sdk/configs/batch";
 
 import { _debugMulticall, type MulticallDebugEventType, type MulticallDebugState } from "./_debug";
+import { isContractRevert } from "./utils";
 
 export const MAX_PRIMARY_TIMEOUT = 20_000;
 
@@ -98,7 +100,7 @@ export class Multicall {
         // Add Errors ABI to each contract ABI to correctly parse errors
         if (!abiWithErrorsMap[contractCallConfig.abiId]) {
           abiWithErrorsMap[contractCallConfig.abiId] = [
-            ...(allAbis[contractCallConfig.abiId] as any),
+            ...getAbi(this.chainId, contractCallConfig.abiId),
             ...(allAbis.CustomErrors as any),
           ];
         }
@@ -329,7 +331,11 @@ export class Multicall {
 
             const processed = processResponse(response);
 
-            if (processed.success) {
+            // A reverted read must not discard successful reads from unrelated batched requests,
+            // but a transport failure in any chunk still goes to the fallback RPC.
+            const onlyReverts = response.every((item) => item.status === "success" || isContractRevert(item.error));
+
+            if (processed.success || (onlyReverts && response.some((item) => item.status === "success"))) {
               return processed;
             } else {
               throw new Error("Multicall failed");

@@ -1,21 +1,23 @@
 import { t, Trans } from "@lingui/macro";
-import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
+import useSWR from "swr";
 import { isAddress } from "viem";
 
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { useChainId } from "lib/chains";
-import { callContract } from "lib/contracts";
+import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
-import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { getAccountTransfersPausedMessage } from "components/Errors/getContractErrorMessage";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import PageTitle from "components/PageTitle/PageTitle";
 
@@ -25,7 +27,7 @@ export default function CompleteAccountTransfer() {
   const isSenderAndReceiverValid =
     sender && receiver && isAddress(sender, { strict: false }) && isAddress(receiver, { strict: false });
   const { setPendingTxns } = usePendingTxns();
-  const { signer, account } = useWallet();
+  const { active, signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
   const { chainId } = useChainId();
@@ -33,7 +35,14 @@ export default function CompleteAccountTransfer() {
   const [isConfirming, setIsConfirming] = useState(false);
   const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+  const { data: designatedVestersLength } = useSWR<bigint>(
+    [active, chainId, getContract(chainId, "RewardRouterV3"), "designatedVestersLength"],
+    {
+      fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
+    }
+  );
+  const isTransferPaused = designatedVestersLength === 0n;
+  const isTransferPauseLoading = designatedVestersLength === undefined;
 
   const getError = () => {
     if (!account) {
@@ -49,7 +58,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return false;
     }
-    if (isConfirming) {
+    if (isConfirming || isTransferPauseLoading || isTransferPaused) {
       return false;
     }
     return true;
@@ -63,22 +72,22 @@ export default function CompleteAccountTransfer() {
     return t`Complete transfer`;
   };
 
-  const onClickPrimary = () => {
+  const onClickPrimary = async () => {
     setIsConfirming(true);
 
-    const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
-
-    callContract(chainId, contract, "acceptTransfer", [sender], {
-      sentMsg: t`Transfer submitted`,
-      failMsg: t`Transfer failed`,
-      setPendingTxns,
-    })
-      .then(() => {
-        setIsTransferSubmittedModalVisible(true);
-      })
-      .finally(() => {
-        setIsConfirming(false);
+    try {
+      await callContract(chainId, getRewardRouterContract(chainId, signer), "acceptTransfer", [sender], {
+        sentMsg: t`Transfer submitted`,
+        failMsg: t`Transfer failed`,
+        setPendingTxns,
+        hideErrorMsg: true,
       });
+      setIsTransferSubmittedModalVisible(true);
+    } catch (error) {
+      showStakingErrorToast({ chainId, error, failMsg: t`Transfer failed`, action: "transfer" });
+    } finally {
+      setIsConfirming(false);
+    }
   };
 
   if (!isSenderAndReceiverValid) {
@@ -138,6 +147,12 @@ export default function CompleteAccountTransfer() {
           )
         }
       />
+
+      {isTransferPaused && (
+        <ColorfulBanner color="yellow" className="mt-16">
+          {getAccountTransfersPausedMessage()}
+        </ColorfulBanner>
+      )}
 
       {isCorrectAccount && (
         <div className="mt-16">

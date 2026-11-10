@@ -17,6 +17,7 @@ import {
   getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -41,12 +42,13 @@ import {
 } from "./gasErrors";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
-export type PermitIssueType = "invalidSignature" | "expiredDeadline";
+export type PermitIssueType = "invalidSignature" | "expiredDeadline" | "failedCheck";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   isSizeIncrease?: boolean;
+  isDecrease?: boolean;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
   isExternalSwapFallback?: boolean;
@@ -201,6 +203,7 @@ export function getTxnErrorToast(
     additionalContent,
     slippageInputId,
     isSizeIncrease,
+    isDecrease,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
     isExternalSwapFallback,
@@ -294,7 +297,7 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (permitIssueType === "invalidSignature") {
+  if (permitIssueType === "invalidSignature" || permitIssueType === "failedCheck") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
     return toastParams;
   } else if (permitIssueType === "expiredDeadline") {
@@ -312,7 +315,13 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId, isSizeIncrease });
+  const contractErrorMessage = getContractErrorToastContent({
+    chainId,
+    errorData,
+    slippageInputId,
+    isSizeIncrease,
+    isDecrease,
+  });
   if (contractErrorMessage) {
     toastParams.errorContent = contractErrorMessage;
     return toastParams;
@@ -388,8 +397,14 @@ function getDefaultErrorMessage(errorData: ErrorData | undefined) {
 }
 
 export function getDebugErrorMessage(errorData: ErrorData | undefined) {
+  const contractErrorArgs = errorData?.contractErrorArgs;
+  const contractErrorArgValues =
+    contractErrorArgs && typeof contractErrorArgs === "object" && !Array.isArray(contractErrorArgs)
+      ? Object.values(contractErrorArgs)
+      : contractErrorArgs;
+
   const message = errorData?.contractError
-    ? `${errorData.contractError} [${errorData.contractErrorArgs}] ${errorData.errorMessage}`
+    ? `${errorData.contractError} [${contractErrorArgValues}] ${errorData.errorMessage}`
     : errorData?.errorMessage;
 
   const handles = [
@@ -510,6 +525,18 @@ export function getSmartWalletErrorToastContent(
         <div>
           Switch your {walletName} to {getChainName(chainId)}, then try again
         </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_NOT_DEPLOYED_ERROR) {
+    return (
+      <Trans>
+        <div>
+          Your {walletName} is not deployed on {getChainName(chainId)} yet
+        </div>
+        <br />
+        <div>Make any transaction from it on {getChainName(chainId)}, then try again</div>
       </Trans>
     );
   }

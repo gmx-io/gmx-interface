@@ -46,6 +46,8 @@ vi.mock("context/SyntheticsStateContext/utils", async (importOriginal) => ({
   useCalcSelector: () => () => false,
 }));
 
+vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({ useTokenPermitsContext: () => ({}) }));
+
 vi.mock("domain/synthetics/subaccount", () => ({
   removeSubaccountExpressTxn: vi.fn(),
   removeSubaccountWalletTxn: vi.fn(),
@@ -84,6 +86,7 @@ vi.mock("lib/helperToast", () => ({
 vi.mock("lib/metrics", () => ({
   metrics: {
     pushError: vi.fn(),
+    pushEvent: vi.fn(),
   },
 }));
 
@@ -134,6 +137,7 @@ function createOnchainData(overrides: Partial<SubaccountOnchainData> = {}): Suba
     approvalNonce: 5n,
     multichainApprovalNonce: MULTICHAIN_APPROVAL_NONCE,
     integrationId: zeroHash,
+    revocationCounter: 0n,
     ...overrides,
   };
 }
@@ -151,6 +155,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: multichainRouterAddress,
     signatureChainId: SOURCE_BASE_MAINNET,
     ...overrides,

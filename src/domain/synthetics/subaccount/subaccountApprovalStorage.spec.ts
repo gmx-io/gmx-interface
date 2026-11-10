@@ -54,6 +54,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: gelatoRouterAddress,
     signatureChainId: ARBITRUM,
     ...overrides,
@@ -106,11 +108,30 @@ describe("serializeSubaccountApproval / deserializeSubaccountApproval", () => {
       deadline: approval.deadline,
       nonce: approval.nonce,
       desChainId: approval.desChainId,
+      revocationCounter: approval.revocationCounter,
+      eip6492SignatureWrapperHash: approval.eip6492SignatureWrapperHash,
     });
 
-    for (const field of ["maxAllowedCount", "expiresAt", "deadline", "nonce", "desChainId"] as const) {
+    for (const field of [
+      "maxAllowedCount",
+      "expiresAt",
+      "deadline",
+      "nonce",
+      "desChainId",
+      "revocationCounter",
+    ] as const) {
       expect(typeof restored?.[field], field).toBe("bigint");
     }
+  });
+
+  it("restores an approval stored before the revocation counter existed", () => {
+    const stored = JSON.parse(serializeSubaccountApproval(createSourceContextApproval(SOURCE_BASE_MAINNET)));
+    delete stored.revocationCounter;
+    delete stored.eip6492SignatureWrapperHash;
+
+    const restored = deserializeSubaccountApproval(JSON.stringify(stored));
+
+    expect(restored).toMatchObject({ revocationCounter: 0n, eip6492SignatureWrapperHash: zeroHash });
   });
 
   it("deserializes an empty or broken value as undefined", () => {

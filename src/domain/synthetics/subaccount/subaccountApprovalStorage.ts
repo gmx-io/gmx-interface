@@ -1,3 +1,5 @@
+import { zeroHash } from "viem";
+
 import { SOURCE_CHAIN_IDS, type ContractsChainId, type SourceChainId } from "config/chains";
 import { getSubaccountApprovalKey } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
@@ -28,6 +30,8 @@ export function deserializeSubaccountApproval(stored: string): SignedSubaccountA
       deadline: BigInt(parsed.deadline),
       nonce: BigInt(parsed.nonce),
       desChainId: BigInt(parsed.desChainId),
+      revocationCounter: BigInt(parsed.revocationCounter ?? 0),
+      eip6492SignatureWrapperHash: parsed.eip6492SignatureWrapperHash ?? zeroHash,
     };
   } catch (e) {
     return undefined;

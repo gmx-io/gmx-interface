@@ -8,15 +8,17 @@ import { extendError, parseError, type ErrorLike } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
-import { analyzeSignatureShape, reportSignatureProduced } from "./signatureDiagnostics";
+import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -369,6 +371,11 @@ export async function signTypedData({
     }
   );
 
+  // 2.2.1 contracts accept an EIP-6492 signature only with its wrapper hash in the signed data, which we do not send yet
+  if (isContractsV2_2_1(verificationChainId) && getSignatureKind(firstResult.signature) === "erc6492") {
+    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { address: from, verificationChainId } });
+  }
+
   if (firstResult.signingChainId === verificationChainId) {
     return firstResult.signature;
   }
@@ -476,11 +483,23 @@ export async function signTypedData({
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {
+  if (!/^0x[0-9a-fA-F]{130}$/.test(signature)) {
+    throw new Error(`Expected a 65-byte signature, got ${(signature.length - 2) / 2} bytes`);
+  }
+
   const sig = signature.slice(2);
   const r = "0x" + sig.substring(0, 64);
   const s = "0x" + sig.substring(64, 128);
-  const v = parseInt(sig.substring(128, 130), 16);
+  let v = parseInt(sig.substring(128, 130), 16);
 
-  // ECDSA signature components
+  // some wallets return the bare recovery id
+  if (v === 0 || v === 1) {
+    v += 27;
+  }
+
+  if (v !== 27 && v !== 28) {
+    throw new Error(`Unexpected signature v: ${v}`);
+  }
+
   return { r, s, v };
 }

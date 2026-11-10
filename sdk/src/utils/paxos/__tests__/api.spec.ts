@@ -92,14 +92,37 @@ describe("paxos transit api", () => {
     expect(calls).toEqual([{ path: "/v1/paxos/transit/routes", query: { filter: undefined, feeTier: "zeroFee" } }]);
   });
 
-  it("parses fee tier capacity as bigint", async () => {
+  it("parses the fee tier with capacity as bigint and the reopen time in seconds", async () => {
     const calls: Call[] = [];
-    const api = createApi(calls, { feeTier: "zeroFee", zeroFeeCapacity: "250000000000" });
+    const api = createApi(calls, {
+      feeTier: "zeroFee",
+      zeroFeeCapacity: "250000000000",
+      isZeroFeeAvailable: false,
+      zeroFeeExpectedReopenAt: "2026-10-26T13:00:00Z",
+    });
 
     const result = await fetchApiTransitFeeTier({ api }, { userAddress: USER });
 
     expect(calls).toEqual([{ path: "/v1/paxos/transit/fee-tier", query: { userAddress: USER } }]);
-    expect(result).toEqual({ feeTier: "zeroFee", zeroFeeCapacity: 250_000_000_000n });
+    expect(result).toEqual({
+      feeTier: "zeroFee",
+      zeroFeeCapacity: 250_000_000_000n,
+      isZeroFeeAvailable: false,
+      zeroFeeExpectedReopenAt: Date.UTC(2026, 9, 26, 13) / 1000,
+    });
+  });
+
+  it.each([undefined, null, "soon"])("drops a reopen time of %s", async (zeroFeeExpectedReopenAt) => {
+    const api = createApi([], {
+      feeTier: "zeroFee",
+      zeroFeeCapacity: "0",
+      isZeroFeeAvailable: false,
+      zeroFeeExpectedReopenAt,
+    });
+
+    const result = await fetchApiTransitFeeTier({ api }, { userAddress: USER });
+
+    expect(result.zeroFeeExpectedReopenAt).toBeUndefined();
   });
 
   it("sends quote amounts as strings and parses fees", async () => {

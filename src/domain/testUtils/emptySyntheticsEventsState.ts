@@ -39,6 +39,7 @@ export const emptySyntheticsEventsState: SyntheticsEventsContextType = {
   attachTransitRouteConversion: noop,
   attachTransitRouteDeposit: noop,
   setTransitRouteContinueRequested: noop,
+  dismissTransitRouteProgress: noop,
 
   multichainSourceChainApprovalStatuses: {},
   setMultichainSourceChainApprovalsActiveListener: noop,

@@ -34,6 +34,7 @@ import {
   getGasPaymentValidations,
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
+import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/useGasPaymentTokenUnavailableToast";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { convertToTokenAmount } from "domain/tokens";
@@ -337,7 +338,7 @@ export function getArbitraryRelayParamsAndPayload({
     gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     gasPaymentTokenAsCollateralAmount: 0n,
     gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
-    tokenPermits: globalExpressParams.tokenPermits,
+    tokenPermits: EMPTY_ARRAY,
     isGmxAccount,
   });
 
@@ -395,6 +396,12 @@ export function useArbitraryRelayParamsAndPayload({
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
+
+  useGasPaymentTokenUnavailableToast({
+    isGmxAccount,
+    feeTokenAddress: globalExpressParams?.gasPaymentTokenAddress,
+    enabled: isGmxAccount && enabled && expressTransactionBuilder !== undefined,
+  });
 
   const estimationKey = `${globalExpressParams?.gasPaymentTokenAddress}`;
   const prevEstimationKey = usePrevious(estimationKey);
@@ -456,7 +463,8 @@ export function useArbitraryRelayParamsAndPayload({
         chainId,
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
-        globalExpressParams: p.globalExpressParams,
+        // permits are an order-flow feature: only order batches get the pre-send permit check and cleanup
+        globalExpressParams: { ...p.globalExpressParams, tokenPermits: EMPTY_ARRAY },
         rpc,
         stateOverride,
         requireValidations: p.requireValidations,

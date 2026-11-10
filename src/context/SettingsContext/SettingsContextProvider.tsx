@@ -1,10 +1,10 @@
 import noop from "lodash/noop";
 import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { ARBITRUM, getExecutionFeeConfig } from "config/chains";
+import { ARBITRUM, getExecutionFeeConfig, isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
+import { getNetworkFeatures } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   BUY_SELL_ICONS_MODE_KEY,
@@ -12,6 +12,7 @@ import {
   CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
+  DEBUG_TOKEN_PERMITS_ENABLED_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
@@ -52,6 +53,12 @@ function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined)
   return savedValue ?? DEFAULT_BUY_SELL_ICONS_MODE;
 }
 
+type DebugSwapMarketsConfig = {
+  disabledSwapMarkets?: string[];
+  manualPath?: string[];
+  usdcUsdgInstantLimitUsd?: string;
+};
+
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
@@ -72,6 +79,8 @@ export type SettingsContextType = {
   setShouldDisableValidationForTesting: (val: boolean) => void;
   shouldDisableShareModalPnlCheck: boolean;
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
+  isTokenPermitsQaOverrideEnabled: boolean;
+  setIsTokenPermitsQaOverrideEnabled: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
   buySellIconsMode: BuySellIconsMode;
@@ -110,13 +119,8 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  debugSwapMarketsConfig:
-    | {
-        disabledSwapMarkets?: string[];
-        manualPath?: string[];
-      }
-    | undefined;
-  setDebugSwapMarketsConfig: (val: { disabledSwapMarkets?: string[]; manualPath?: string[] }) => void;
+  debugSwapMarketsConfig: DebugSwapMarketsConfig | undefined;
+  setDebugSwapMarketsConfig: (val: DebugSwapMarketsConfig) => void;
 
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
@@ -141,7 +145,8 @@ export function useSettings() {
 }
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const expressSupported = getNetworkFeatures(networkId).express;
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -211,7 +216,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     true
   );
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
-    undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
+    undefined | DebugSwapMarketsConfig
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
   const { canSignTypedData } = useWalletCanSignTypedData();
@@ -267,6 +272,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   if (!isDevelopment()) {
     savedShouldDisableShareModalPnlCheck = false;
     setSavedShouldDisableShareModalPnlCheck = noop;
+  }
+
+  let [savedIsTokenPermitsQaOverrideEnabled, setSavedIsTokenPermitsQaOverrideEnabled] = useLocalStorageSerializeKey(
+    [chainId, DEBUG_TOKEN_PERMITS_ENABLED_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedIsTokenPermitsQaOverrideEnabled = false;
+    setSavedIsTokenPermitsQaOverrideEnabled = noop;
   }
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
@@ -328,7 +342,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       if (
         !account ||
         expressOrdersEnabled ||
-        !getIsExpressSupported(chainId) ||
+        !expressSupported ||
         hasStoredLocalStorageValue(expressOrdersEnabledKey)
       ) {
         return;
@@ -336,16 +350,16 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       setExpressOrdersEnabled(true);
     },
-    [account, chainId, expressOrdersEnabled, expressOrdersEnabledKey, setExpressOrdersEnabled]
+    [account, expressOrdersEnabled, expressOrdersEnabledKey, expressSupported, setExpressOrdersEnabled]
   );
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled) {
+      if (srcChainId && !expressOrdersEnabled && (!isSolanaNetwork(networkId) || expressSupported)) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+    [expressOrdersEnabled, expressSupported, networkId, setExpressOrdersEnabled, srcChainId]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -369,6 +383,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableValidationForTesting: setSavedShouldDisableValidationForTesting,
       shouldDisableShareModalPnlCheck: savedShouldDisableShareModalPnlCheck!,
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
+      isTokenPermitsQaOverrideEnabled: savedIsTokenPermitsQaOverrideEnabled!,
+      setIsTokenPermitsQaOverrideEnabled: setSavedIsTokenPermitsQaOverrideEnabled,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       buySellIconsMode: savedBuySellIconsMode!,
@@ -396,7 +412,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isSettingsVisible,
       setIsSettingsVisible,
 
-      expressOrdersEnabled: expressOrdersEnabled! && canSignTypedData,
+      expressOrdersEnabled:
+        expressOrdersEnabled! && canSignTypedData && (!isSolanaNetwork(networkId) || expressSupported),
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
@@ -444,6 +461,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableValidationForTesting,
     savedShouldDisableShareModalPnlCheck,
     setSavedShouldDisableShareModalPnlCheck,
+    savedIsTokenPermitsQaOverrideEnabled,
+    setSavedIsTokenPermitsQaOverrideEnabled,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     savedBuySellIconsMode,
@@ -465,6 +484,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    networkId,
+    expressSupported,
     expressOrdersEnabled,
     canSignTypedData,
     setExpressOrdersEnabled,

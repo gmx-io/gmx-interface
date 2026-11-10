@@ -1,11 +1,18 @@
 import { encodeAbiParameters, encodeFunctionData, type Hex, zeroAddress } from "viem";
 
-import { abis } from "abis";
+import { getAbi } from "abis/getAbi";
 import type { AnyChainId, SettlementChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { getLayerZeroEndpointId } from "configs/multichain";
 import { getToken } from "configs/tokens";
 import type { IAbstractSigner } from "utils/signer";
+
+export type BridgeFeeParams = {
+  feeToken: string;
+  feeAmount: bigint;
+  feeSwapPath: string[];
+  minOutputAmount: bigint;
+};
 
 export type BridgeOutParams = {
   token: string;
@@ -13,6 +20,7 @@ export type BridgeOutParams = {
   minAmountOut: bigint;
   provider: string;
   data: string;
+  bridgeFee?: BridgeFeeParams;
 };
 
 export type BuildTxnResult = {
@@ -51,26 +59,26 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
     }
     depositTokenAddress = wrappedAddress;
     sendCall = encodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(chainId, "MultichainTransferRouter"),
       functionName: "sendWnt",
       args: [multichainVault, amount],
     });
   } else {
     sendCall = encodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(chainId, "MultichainTransferRouter"),
       functionName: "sendTokens",
       args: [tokenAddress, multichainVault, amount],
     });
   }
 
   const bridgeInCall = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "bridgeIn",
     args: [account, depositTokenAddress],
   });
 
   const data = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "multicall",
     args: [[sendCall, bridgeInCall]],
   });
@@ -79,6 +87,15 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
     to: router,
     data,
     value: isNative ? amount : 0n,
+  };
+}
+
+export function getEmptyBridgeFeeParams(): BridgeFeeParams {
+  return {
+    feeToken: zeroAddress,
+    feeAmount: 0n,
+    feeSwapPath: [],
+    minOutputAmount: 0n,
   };
 }
 
@@ -108,13 +125,15 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
   const router = getContract(chainId, "MultichainTransferRouter");
 
   const data = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
+    abi: getAbi(chainId, "MultichainTransferRouter"),
     functionName: "transferOut",
-    args: [bridgeOutParams],
+    args: [{ ...bridgeOutParams, bridgeFee: bridgeOutParams.bridgeFee ?? getEmptyBridgeFeeParams() }],
   });
 
   return { to: router, data, value: 0n };
 }
+
+export const DEFAULT_CROSS_CHAIN_WITHDRAW_SLIPPAGE_BPS = 50;
 
 /**
  * `BridgeOutParams.data` for cross-chain delivery is a single `uint32 dstEid`
@@ -131,10 +150,16 @@ export function buildCrossChainWithdrawBridgeOutParams(params: {
   dstChainId: AnyChainId;
   /** Settlement-chain Stargate pool address handling this token. */
   stargateAddress: string;
-  /** Slippage tolerance in basis points for `minAmountOut`. Default 0 = no slippage allowed. */
+  /** Slippage tolerance in basis points for `minAmountOut`. Default 50; 0 = no slippage allowed. */
   slippageBps?: number;
 }): BridgeOutParams {
-  const { tokenAddress, amount, dstChainId, stargateAddress, slippageBps = 0 } = params;
+  const {
+    tokenAddress,
+    amount,
+    dstChainId,
+    stargateAddress,
+    slippageBps = DEFAULT_CROSS_CHAIN_WITHDRAW_SLIPPAGE_BPS,
+  } = params;
 
   if (!Number.isInteger(slippageBps) || slippageBps < 0 || slippageBps >= 10_000) {
     throw new Error(`slippageBps must be an integer in range [0, 10000), got ${slippageBps}`);

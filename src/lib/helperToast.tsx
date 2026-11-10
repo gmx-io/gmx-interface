@@ -41,4 +41,12 @@ export const helperToast = {
     toast.dismiss();
     toast(content, opts);
   },
+  // updates the toast in place while it's shown instead of dismissing and showing it again
+  infoOrUpdate: (content: ToastContent, toastId: string) => {
+    if (toast.isActive(toastId)) {
+      toast.update(toastId, { render: content });
+    } else {
+      helperToast.info(content, { toastId });
+    }
+  },
 };

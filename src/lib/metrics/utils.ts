@@ -405,6 +405,7 @@ export function initEditCollateralMetricData({
   marketInfo,
   collateralToken,
   collateralDeltaAmount,
+  swapPath,
   selectedCollateralAddress,
   isLong,
   isExpress,
@@ -420,6 +421,7 @@ export function initEditCollateralMetricData({
   executionFee: ExecutionFee | undefined;
   selectedCollateralAddress: string | undefined;
   collateralDeltaAmount: bigint | undefined;
+  swapPath: string[] | undefined;
   orderType: OrderType | undefined;
   marketInfo: MarketInfo | undefined;
   subaccount: Subaccount | undefined;
@@ -435,7 +437,7 @@ export function initEditCollateralMetricData({
     metricId: getPositionOrderMetricId({
       marketAddress: marketInfo?.marketTokenAddress,
       initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath: [],
+      swapPath,
       isLong,
       orderType,
       sizeDeltaUsd: 0n,
@@ -448,7 +450,7 @@ export function initEditCollateralMetricData({
     initialCollateralTokenAddress: selectedCollateralAddress,
     initialCollateralSymbol: collateralToken?.symbol,
     initialCollateralDeltaAmount: formatAmountForMetrics(collateralDeltaAmount, collateralToken?.decimals),
-    swapPath: [],
+    swapPath: swapPath ?? [],
     isLong,
     orderType,
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
@@ -475,6 +477,10 @@ export function initGMSwapMetricData({
   marketTokenUsd,
   isFirstBuy,
   chainId,
+  srcChainId,
+  isExpress,
+  isExpress1CT,
+  isCollateralFromMultichain,
 }: {
   longTokenAddress: string | undefined;
   shortTokenAddress: string | undefined;
@@ -489,6 +495,10 @@ export function initGMSwapMetricData({
   marketTokenUsd: bigint | undefined;
   isFirstBuy: boolean | undefined;
   chainId: number;
+  srcChainId: number | undefined;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
 }) {
   return metrics.setCachedMetricData<SwapGmMetricData>({
     metricId: getGMSwapMetricId({
@@ -497,6 +507,10 @@ export function initGMSwapMetricData({
     }),
     metricType: isDeposit ? "buyGM" : "sellGM",
     requestId: getRequestId(),
+    chainId: srcChainId ?? chainId,
+    isExpress,
+    isExpress1CT,
+    isCollateralFromMultichain,
     initialLongTokenAddress: longTokenAddress,
     initialShortTokenAddress: shortTokenAddress,
     marketAddress: marketInfo?.marketTokenAddress,
@@ -518,6 +532,10 @@ export function initGMSwapMetricData({
 
 export function initGLVSwapMetricData({
   chainId,
+  srcChainId,
+  isExpress,
+  isExpress1CT,
+  isCollateralFromMultichain,
   longTokenAddress,
   shortTokenAddress,
   isDeposit,
@@ -534,6 +552,10 @@ export function initGLVSwapMetricData({
   isFirstBuy,
 }: {
   chainId: number;
+  srcChainId: number | undefined;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   longTokenAddress: string | undefined;
   shortTokenAddress: string | undefined;
   selectedMarketForGlv: string | undefined;
@@ -557,6 +579,10 @@ export function initGLVSwapMetricData({
     }),
     metricType: isDeposit ? "buyGLV" : "sellGLV",
     requestId: getRequestId(),
+    chainId: srcChainId ?? chainId,
+    isExpress,
+    isExpress1CT,
+    isCollateralFromMultichain,
     initialLongTokenAddress: longTokenAddress,
     initialShortTokenAddress: shortTokenAddress,
     glvAddress,
@@ -598,7 +624,6 @@ function getExpressMetricData({
     isSubaccountValid: expressParams.subaccountValidations?.isValid,
     isSubbaccountExpired: expressParams.subaccountValidations?.isExpired,
     isSubaccountActionsExceeded: expressParams.subaccountValidations?.isActionsExceeded,
-    isSubaccountNonceExpired: expressParams.subaccountValidations?.isNonceExpired,
     approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
     approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,
     gasPrice: fastExpressParams ? Number(fastExpressParams.gasPrice) : 0,
@@ -611,11 +636,19 @@ function getExpressMetricData({
   return expressData;
 }
 export function initShiftGmMetricData({
+  chainId,
+  isExpress,
+  isExpress1CT,
+  isCollateralFromMultichain,
   executionFee,
   fromMarketToken,
   toMarketToken,
   minMarketTokenAmount,
 }: {
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   executionFee: ExecutionFee | undefined;
   fromMarketToken: TokenData | undefined;
   toMarketToken: TokenData | undefined;
@@ -629,6 +662,10 @@ export function initShiftGmMetricData({
     }),
     metricType: "shiftGM",
     requestId: getRequestId(),
+    chainId,
+    isExpress,
+    isExpress1CT,
+    isCollateralFromMultichain,
     fromMarketAddress: fromMarketToken?.address,
     toMarketAddress: toMarketToken?.address,
     minToMarketTokenAmount: formatAmountForMetrics(minMarketTokenAmount, toMarketToken?.decimals),

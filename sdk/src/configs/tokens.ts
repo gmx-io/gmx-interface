@@ -145,6 +145,9 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isStable: true,
       imageUrl: "https://coin-images.coingecko.com/coins/images/51281/small/GDN_USDG_Token_200x200.png?1730484111",
       explorerUrl: "https://arbiscan.io/token/0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      isPermitSupported: true,
+      // the contract has no version() to read it from
+      contractVersion: "1",
     },
     {
       name: "Tether",
@@ -1859,9 +1862,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
 };
 
-// Solana mints stay out of TOKENS: gmx-api checksums every TOKENS address as an EVM address at startup
-export const SOLANA_TOKENS: Token[] = [];
-
 export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, string>> = {
   ETH: "#6062a6",
   BTC: "#F7931A",
@@ -1954,7 +1954,7 @@ for (let j = 0; j < NETWORK_IDS.length; j++) {
     }
   }
 
-  if (!isSolanaNetwork(chainId) || tokens.length > 0) {
+  if (!isSolanaNetwork(chainId)) {
     NATIVE_TOKENS_MAP[chainId].wrappedAddress = wrappedTokenAddress;
   }
 }
@@ -1971,8 +1971,9 @@ export function getNativeToken(chainId: number) {
   return NATIVE_TOKENS_MAP[chainId];
 }
 
-export function getTokens(chainId: number) {
-  return isSolanaNetwork(chainId) ? SOLANA_TOKENS : TOKENS[chainId];
+export function getTokens(chainId: number): Token[] {
+  // Solana tokens stay in the app (src/config/gmsol): SDK configs ship in the EVM main bundle
+  return isSolanaNetwork(chainId) ? [] : TOKENS[chainId];
 }
 
 export function getV1Tokens(chainId: number) {
