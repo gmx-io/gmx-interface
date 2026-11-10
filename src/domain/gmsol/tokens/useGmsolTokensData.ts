@@ -12,6 +12,7 @@ import { buildGmsolTokensData } from "./buildGmsolTokensData";
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
 import { getGmsolApiCacheKey } from "../api/gmsolApiSdk";
+import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
 
 export function useGmsolTokensData({
   enabled,
@@ -47,9 +48,12 @@ export function useGmsolTokensData({
   }, [pricesData, receivedAt, rawMarketsInfoData]);
   lastCompleteRef.current = resolved?.lastComplete ?? lastCompleteRef.current;
 
-  const fetchError = error;
-  const isExpired = isSnapshotPastGrace(receivedAt, Boolean(fetchError), FREQUENT_UPDATE_INTERVAL);
+  const isExpired = isSnapshotPastGrace(receivedAt, FREQUENT_UPDATE_INTERVAL);
   const tokensData = isExpired ? undefined : resolved?.tokensData;
+  const isIncomplete =
+    rawMarketsInfoData !== undefined &&
+    tokensData !== undefined &&
+    !hasGmsolListedMarketPrices(rawMarketsInfoData, tokensData);
 
   return {
     tokensData,
@@ -57,7 +61,7 @@ export function useGmsolTokensData({
     isGmxAccountBalancesLoaded: false,
     isWalletBalancesLoaded: false,
     isBalancesLoaded: false,
-    error: fetchError,
-    isUnavailable: Boolean(fetchError) || (receivedAt !== undefined && !pricesData),
+    error,
+    isUnavailable: Boolean(error) || isExpired || isIncomplete || (receivedAt !== undefined && !pricesData),
   };
 }

@@ -7,6 +7,8 @@ import { getOrderInfo } from "sdk/utils/orders";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
+import { resolveGmsolAccountSnapshot } from "../resolveGmsolAccountSnapshot";
+
 type GmsolApiOrder = ApiOrderInfo & {
   actionState?: string;
   orderAccount?: string;
@@ -25,20 +27,25 @@ function toApiOrder(apiOrder: GmsolApiOrder): ApiOrderInfo {
 
 export function composeGmsolOrdersInfo(
   apiOrders: ApiOrderInfo[],
-  { marketsInfoData, tokensData }: { marketsInfoData: MarketsInfoData; tokensData: TokensData }
-): OrdersInfoData {
+  {
+    marketsInfoData,
+    tokensData,
+    previousData,
+  }: { marketsInfoData: MarketsInfoData; tokensData: TokensData; previousData: OrdersInfoData | undefined }
+) {
   const wrappedNativeToken = getGmsolWrappedToken();
   const ordersInfoData: OrdersInfoData = {};
+  const keys: string[] = [];
 
   for (const apiOrder of apiOrders as GmsolApiOrder[]) {
     if (apiOrder.actionState === "completed" || apiOrder.actionState === "cancelled") {
       continue;
     }
+    keys.push(apiOrder.key);
 
     const order = convertApiOrderToOrder(toApiOrder(apiOrder));
     const orderInfo = getOrderInfo({ marketsInfoData, tokensData, wrappedNativeToken, order });
 
-    // An order in a market the app does not list, or with an unknown token, stays out.
     if (!orderInfo) {
       continue;
     }
@@ -47,5 +54,5 @@ export function composeGmsolOrdersInfo(
     ordersInfoData[orderInfo.key] = orderInfo;
   }
 
-  return ordersInfoData;
+  return resolveGmsolAccountSnapshot({ keys, data: ordersInfoData, previousData });
 }

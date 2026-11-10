@@ -81,14 +81,14 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     getIsValuesSnapshotFrozen(valuesSnapshotRef.current, values.freshness.asOf);
   const isIncomplete = hasIncompleteMarketValues(configData, valuesData, disabledMarketAddresses);
   const isExpired =
-    isSnapshotPastGrace(config.freshness.asOf, Boolean(configError), CONFIG_UPDATE_INTERVAL) ||
-    isSnapshotPastGrace(values.freshness.asOf, Boolean(valuesError), FREQUENT_UPDATE_INTERVAL);
+    isSnapshotPastGrace(config.freshness.asOf, CONFIG_UPDATE_INTERVAL) ||
+    isSnapshotPastGrace(values.freshness.asOf, FREQUENT_UPDATE_INTERVAL);
 
   if (!enabled) {
     return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined };
   }
 
-  const isUnavailable = Boolean(error) || isStale || isIncomplete;
+  const isUnavailable = Boolean(error) || isStale || isIncomplete || isExpired;
   // A failed read keeps the last good snapshot until the same grace window EVM uses, then drops it.
   const keepSnapshot = Boolean(rawMarketsInfoData) && !isStale && !isIncomplete && !isExpired;
 

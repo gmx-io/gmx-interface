@@ -26,6 +26,7 @@ import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/typ
 
 import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
+import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
@@ -44,11 +45,17 @@ export class GmsolMarketsUnavailableError extends Error {
 const EMPTY_MARKETS: MarketsResult = {};
 const noopSetGasPaymentTokenReplacement = () => undefined;
 
-function composePositions(
-  positions: ApiPositionInfo[],
-  marketsInfoData: NonNullable<MarketsInfoResult["marketsInfoData"]>,
-  showPnlInLeverage: boolean
-): PositionsInfoData {
+function composePositions({
+  positions,
+  marketsInfoData,
+  showPnlInLeverage,
+  previousData,
+}: {
+  positions: ApiPositionInfo[];
+  marketsInfoData: NonNullable<MarketsInfoResult["marketsInfoData"]>;
+  showPnlInLeverage: boolean;
+  previousData: PositionsInfoData | undefined;
+}) {
   const positionsInfoData: PositionsInfoData = {};
 
   for (const position of positions) {
@@ -62,7 +69,11 @@ function composePositions(
     positionsInfoData[positionInfo.key] = positionInfo;
   }
 
-  return positionsInfoData;
+  return resolveGmsolAccountSnapshot({
+    keys: positions.map((position) => position.key),
+    data: positionsInfoData,
+    previousData,
+  });
 }
 
 // The trade state while Solana is selected. It fills the same SyntheticsState the shared trade page reads,
@@ -129,29 +140,38 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const feeDiscountRequest = useGmsolFeeDiscount(owner);
 
   const marketsInfoData = marketsInfo.marketsInfoData;
+  const lastPositionsRef = useRef<{ owner: string; data: PositionsInfoData }>();
 
   const composedPositions = useMemo(() => {
-    if (!positionsRequest.data || !marketsInfoData) {
+    if (!positionsRequest.data) {
       return undefined;
     }
 
-    return composePositions(positionsRequest.data, marketsInfoData, settings.isPnlInLeverage);
-  }, [positionsRequest.data, marketsInfoData, settings.isPnlInLeverage]);
-  const lastPositionsRef = useRef<{ owner: string; data: PositionsInfoData }>();
+    return composePositions({
+      positions: positionsRequest.data,
+      marketsInfoData: marketsInfoData ?? EMPTY_OBJECT,
+      showPnlInLeverage: settings.isPnlInLeverage,
+      previousData: owner && lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined,
+    });
+  }, [owner, positionsRequest.data, marketsInfoData, settings.isPnlInLeverage]);
   if (owner && composedPositions) {
-    lastPositionsRef.current = { owner, data: composedPositions };
+    lastPositionsRef.current = { owner, data: composedPositions.data };
   }
 
+  const lastOrdersRef = useRef<{ owner: string; data: NonNullable<AggregatedOrdersDataResult["ordersInfoData"]> }>();
   const composedOrders = useMemo(() => {
-    if (!ordersRequest.data || !marketsInfoData || !tokensData) {
+    if (!ordersRequest.data) {
       return undefined;
     }
 
-    return composeGmsolOrdersInfo(ordersRequest.data, { marketsInfoData, tokensData });
-  }, [ordersRequest.data, marketsInfoData, tokensData]);
-  const lastOrdersRef = useRef<{ owner: string; data: NonNullable<AggregatedOrdersDataResult["ordersInfoData"]> }>();
+    return composeGmsolOrdersInfo(ordersRequest.data, {
+      marketsInfoData: marketsInfoData ?? EMPTY_OBJECT,
+      tokensData: tokensData ?? EMPTY_OBJECT,
+      previousData: owner && lastOrdersRef.current?.owner === owner ? lastOrdersRef.current.data : undefined,
+    });
+  }, [owner, ordersRequest.data, marketsInfoData, tokensData]);
   if (owner && composedOrders) {
-    lastOrdersRef.current = { owner, data: composedOrders };
+    lastOrdersRef.current = { owner, data: composedOrders.data };
   }
 
   const positionsInfo = useMemo((): PositionsInfoResult => {
@@ -161,10 +181,12 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (composedPositions) {
       return {
-        positionsInfoData: composedPositions,
+        positionsInfoData: composedPositions.data,
         isLoading: false,
         dataSource: "api",
-        error: positionsRequest.error,
+        error:
+          positionsRequest.error ??
+          (composedPositions.isIncomplete ? new GmsolMarketsUnavailableError(marketsUnavailableError) : undefined),
       };
     }
 
@@ -175,12 +197,15 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         positionsInfoData: cachedPositions,
         isLoading: false,
         dataSource: "api",
-        error: marketsUnavailableError ?? positionsRequest.error,
+        error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
     }
 
-    if (positionsRequest.error) {
-      return { isLoading: false, error: positionsRequest.error };
+    if (positionsRequest.error || isMarketsUnavailable) {
+      return {
+        isLoading: false,
+        error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
+      };
     }
 
     return { isLoading: true };
@@ -192,19 +217,26 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     const cachedOrders = lastOrdersRef.current?.owner === owner ? lastOrdersRef.current.data : undefined;
-    const ordersInfoData = composedOrders ?? (isMarketsUnavailable ? cachedOrders : undefined);
+    const ordersInfoData = composedOrders?.data ?? (isMarketsUnavailable ? cachedOrders : undefined);
 
     if (ordersInfoData) {
       return {
         ordersInfoData,
         count: Object.keys(ordersInfoData).length,
         isLoading: false,
-        error: ordersRequest.error ?? (composedOrders ? undefined : marketsUnavailableError),
+        error:
+          ordersRequest.error ??
+          (!composedOrders || composedOrders.isIncomplete
+            ? new GmsolMarketsUnavailableError(marketsUnavailableError)
+            : undefined),
       };
     }
 
-    if (ordersRequest.error) {
-      return { isLoading: false, error: ordersRequest.error };
+    if (ordersRequest.error || isMarketsUnavailable) {
+      return {
+        isLoading: false,
+        error: ordersRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
+      };
     }
 
     return { isLoading: true };
