@@ -16,6 +16,7 @@ import {
   getReservedUsd,
   getTokenPoolType,
 } from "sdk/utils/markets";
+import { ProgressiveTokenData } from "sdk/utils/tokens/types";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 
 import { getCappedPositionImpactUsd } from "../fees";
@@ -436,9 +437,13 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
-// GM/GLV price is pool value / supply, so below one token the price and everything derived from it blow up
-export function getIsLowSupplyMarketToken(marketToken: TokenData): boolean {
-  return marketToken.totalSupply !== undefined && marketToken.totalSupply < expandDecimals(1, marketToken.decimals);
+// GM/GLV price is pool value / supply: under one token of supply it blows up, and a non-positive price
+// falls back to $1 in useMarketTokensData, so anything derived from the price is meaningless
+export function getIsPoolTokenPriceInvalid(glvOrMarketInfo: GlvOrMarketInfo, poolToken: ProgressiveTokenData): boolean {
+  return (
+    glvOrMarketInfo.poolValueMin <= 0n ||
+    (poolToken.totalSupply !== undefined && poolToken.totalSupply < expandDecimals(1, poolToken.decimals))
+  );
 }
 
 export function getTotalGmInfo({

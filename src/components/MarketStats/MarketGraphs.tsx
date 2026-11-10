@@ -15,7 +15,7 @@ import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
-import { getIsLowSupplyMarketToken } from "domain/synthetics/markets/utils";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -130,8 +130,8 @@ export function MarketGraphs({
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
   const marketToken = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken : getByKey(marketTokensData, address);
-  // wait for the supply too, otherwise a low-supply pool flashes its broken values while loading
-  const isGraphHidden = marketToken === undefined || getIsLowSupplyMarketToken(marketToken);
+  // wait for the token too, otherwise an invalid-price pool flashes its broken values while loading
+  const isGraphHidden = marketToken === undefined || getIsPoolTokenPriceInvalid(glvOrMarketInfo, marketToken);
 
   const isMobile = usePoolsIsMobilePage();
 

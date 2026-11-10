@@ -5,7 +5,7 @@ import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { expandDecimals } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { getAvailableUsdLiquidityForPosition, getIsLowSupplyMarketToken, getMaxReservedUsd } from "./utils";
+import { getAvailableUsdLiquidityForPosition, getIsPoolTokenPriceInvalid, getMaxReservedUsd } from "./utils";
 
 describe("getAvailableUsdLiquidityForPosition JIT handling", () => {
   const market = createMockMarketInfo();
@@ -40,11 +40,13 @@ describe("getAvailableUsdLiquidityForPosition JIT handling", () => {
   });
 });
 
-describe("getIsLowSupplyMarketToken", () => {
-  it("treats a pool with less than 1 GM in supply as low supply PRO-4569", () => {
-    const gmToken = getTokenBySymbol(ARBITRUM, "GM");
-    const prices = { minPrice: expandDecimals(1, 30), maxPrice: expandDecimals(1, 30) };
-    const oneGm = expandDecimals(1, gmToken.decimals);
+describe("getIsPoolTokenPriceInvalid", () => {
+  const gmToken = getTokenBySymbol(ARBITRUM, "GM");
+  const prices = { minPrice: expandDecimals(1, 30), maxPrice: expandDecimals(1, 30) };
+  const oneGm = expandDecimals(1, gmToken.decimals);
+
+  it("treats a pool with less than 1 GM in supply as invalid PRO-4569", () => {
+    const market = createMockMarketInfo();
 
     const cases: [totalSupply: bigint | undefined, expected: boolean][] = [
       [undefined, false],
@@ -55,7 +57,21 @@ describe("getIsLowSupplyMarketToken", () => {
     ];
 
     for (const [totalSupply, expected] of cases) {
-      expect(getIsLowSupplyMarketToken({ ...gmToken, prices, totalSupply })).toBe(expected);
+      expect(getIsPoolTokenPriceInvalid(market, { ...gmToken, prices, totalSupply })).toBe(expected);
+    }
+  });
+
+  it("treats a pool with a non-positive pool value as invalid whatever its supply PRO-4569", () => {
+    const token = { ...gmToken, prices, totalSupply: expandDecimals(218, gmToken.decimals) };
+
+    const cases: [poolValueMin: bigint, expected: boolean][] = [
+      [-expandDecimals(123, 30), true],
+      [0n, true],
+      [1n, false],
+    ];
+
+    for (const [poolValueMin, expected] of cases) {
+      expect(getIsPoolTokenPriceInvalid(createMockMarketInfo(undefined, { poolValueMin }), token)).toBe(expected);
     }
   });
 });
