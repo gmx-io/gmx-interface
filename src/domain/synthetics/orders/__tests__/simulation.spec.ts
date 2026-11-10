@@ -148,18 +148,13 @@ describe("simulation", () => {
       expect(parseError(error)).toEqual(expect.objectContaining({ errorContext: "simulation" }));
     });
 
-    it.each([
-      { name: "a method-not-found code", error: Object.assign(new Error("method not found"), { code: -32601 }) },
-      { name: "a method-not-supported code", error: Object.assign(new Error("not supported"), { code: -32004 }) },
-      { name: "a provider message", error: new Error("the method eth_simulateV1 does not exist/is not available") },
-    ])(
-      "skips the check on an RPC without eth_simulateV1 ($name), the wallet simulates the batch itself",
-      async ({ error }) => {
-        const simulateCalls = vi.fn().mockRejectedValue(error);
+    it("fails instead of sending the batch unchecked when the RPC can't run eth_simulateV1", async () => {
+      const simulateCalls = vi.fn().mockRejectedValue(Object.assign(new Error("method not found"), { code: -32601 }));
 
-        await expect(simulate(simulateCalls)).resolves.toBeUndefined();
-      }
-    );
+      const error = await simulate(simulateCalls).catch((e) => e);
+
+      expect(parseError(error)).toEqual(expect.objectContaining({ errorContext: "simulation" }));
+    });
   });
 
   describe("isTemporaryError", () => {

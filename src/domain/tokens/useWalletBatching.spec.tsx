@@ -31,11 +31,12 @@ vi.mock("lib/wallets/useWalletChainCapabilities", () => ({
 }));
 
 const ARBITRUM = 42161;
+const AVALANCHE = 43114;
 
 let result: ReturnType<typeof useWalletBatching>;
 
-function Harness({ enabled = true }: { enabled?: boolean }) {
-  result = useWalletBatching({ chainId: ARBITRUM, enabled });
+function Harness({ enabled = true, chainId = ARBITRUM }: { enabled?: boolean; chainId?: number }) {
+  result = useWalletBatching({ chainId, enabled });
   return null;
 }
 
@@ -77,6 +78,13 @@ describe("useWalletBatching", () => {
     view.rerender(<Harness />);
 
     expect(result.isAvailable).toBe(true);
+  });
+
+  it("stays off on a chain whose RPCs can't simulate the batch", () => {
+    render(<Harness chainId={AVALANCHE} />);
+
+    expect(result.isAvailable).toBe(false);
+    expect(mocks.useWalletChainCapabilities).toHaveBeenLastCalledWith({ chainId: AVALANCHE, enabled: false });
   });
 
   it("stays off for the rest of the session once the wallet turned a batch down", () => {

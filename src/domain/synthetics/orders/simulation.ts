@@ -8,8 +8,6 @@ import {
   BaseError as ViemBaseError,
   WebSocketRequestError,
   encodeFunctionData,
-  MethodNotFoundRpcError,
-  MethodNotSupportedRpcError,
   withRetry,
   type Address,
   type Hex,
@@ -402,7 +400,7 @@ export async function simulateContractWithRetry({
   preCalls?: WalletCall[];
 }) {
   try {
-    const result = await withRetry(
+    await withRetry(
       (): Promise<unknown> => {
         if (preCalls?.length) {
           return simulateCallsAfterPreCalls({
@@ -432,10 +430,6 @@ export async function simulateContractWithRetry({
         },
       }
     );
-
-    if (result === SIMULATION_SKIPPED) {
-      return;
-    }
   } catch (txnError) {
     const decodedError = decodeSimulationErrorFromViemError(txnError);
 
@@ -467,8 +461,6 @@ export async function simulateContractWithRetry({
   });
 }
 
-export const SIMULATION_SKIPPED = "skipped";
-
 /**
  * A wallet batch runs the approvals and the action in one transaction, so the approvals aren't mined yet when the
  * action is simulated. Throws the first failing call's error, as simulateContract would.
@@ -485,59 +477,18 @@ export async function simulateCallsAfterPreCalls({
   blockNumber: bigint | undefined;
   preCalls: WalletCall[];
   call: { to: string; data: Hex; value: bigint };
-}): Promise<typeof SIMULATION_SKIPPED | undefined> {
-  let results: Awaited<ReturnType<PublicClient["simulateCalls"]>>["results"];
-
-  try {
-    ({ results } = await client.simulateCalls({
-      account: account as Address,
-      blockNumber,
-      calls: [...preCalls, { ...call, to: call.to as Address }],
-    }));
-  } catch (error) {
-    // an RPC without eth_simulateV1 can't check the batch; the wallet still simulates it before signing
-    if (getIsEthSimulateV1UnsupportedError(error)) {
-      return SIMULATION_SKIPPED;
-    }
-
-    throw error;
-  }
+}) {
+  const { results } = await client.simulateCalls({
+    account: account as Address,
+    blockNumber,
+    calls: [...preCalls, { ...call, to: call.to as Address }],
+  });
 
   const failedCall = results.find((result) => result.status === "failure");
 
   if (failedCall) {
     throw failedCall.error ?? new Error("Batched call simulation failed");
   }
-
-  return undefined;
-}
-
-const SIMULATE_V1_UNSUPPORTED_ERROR_CODES: number[] = [MethodNotFoundRpcError.code, MethodNotSupportedRpcError.code];
-
-function getIsEthSimulateV1UnsupportedError(error: any): boolean {
-  let current = error;
-
-  for (let depth = 0; depth < 10 && current && typeof current === "object"; depth++) {
-    if (SIMULATE_V1_UNSUPPORTED_ERROR_CODES.includes(current.code)) {
-      return true;
-    }
-
-    const text = [current.details, current.shortMessage, current.message]
-      .filter((value): value is string => typeof value === "string")
-      .join(" ")
-      .toLowerCase();
-
-    if (
-      text.includes("eth_simulatev1") &&
-      /not found|not supported|unsupported|does not exist|not available|not allowed/.test(text)
-    ) {
-      return true;
-    }
-
-    current = current.cause;
-  }
-
-  return false;
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {

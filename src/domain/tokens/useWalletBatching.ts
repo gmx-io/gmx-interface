@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { useAccount } from "wagmi";
 
+import { getIsWalletBatchingSupported } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getIsWalletBatchingEnabled } from "domain/synthetics/uiFlags/uiFlags";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
@@ -16,9 +17,13 @@ export function useWalletBatching({ chainId, enabled }: { chainId: number | unde
   const { connector, address } = useAccount();
   const { uiFlags } = useUiFlagsRequest();
   const { isWalletBatchingQaOverrideEnabled } = useSettings();
-  const isFlagEnabled = isWalletBatchingQaOverrideEnabled || getIsWalletBatchingEnabled(uiFlags);
+  const isEnabled =
+    enabled &&
+    chainId !== undefined &&
+    getIsWalletBatchingSupported(chainId) &&
+    (isWalletBatchingQaOverrideEnabled || getIsWalletBatchingEnabled(uiFlags));
 
-  const atomicStatus = useWalletChainCapabilities({ chainId, enabled: enabled && isFlagEnabled })?.atomicStatus;
+  const atomicStatus = useWalletChainCapabilities({ chainId, enabled: isEnabled })?.atomicStatus;
 
   const sessionKey =
     connector && address && chainId !== undefined
@@ -29,8 +34,7 @@ export function useWalletBatching({ chainId, enabled }: { chainId: number | unde
   );
 
   // `ready`: the wallet offers a one-time smart account upgrade before the first batch
-  const isAvailable =
-    enabled && isFlagEnabled && !isSessionDisabled && (atomicStatus === "supported" || atomicStatus === "ready");
+  const isAvailable = isEnabled && !isSessionDisabled && (atomicStatus === "supported" || atomicStatus === "ready");
 
   return { isAvailable, atomicStatus };
 }

@@ -24,12 +24,7 @@ import { getErrorMessage } from "components/Errors/errorToasts";
 import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import {
-  getBlockTimestampAndNumber,
-  isTemporaryError,
-  simulateCallsAfterPreCalls,
-  SIMULATION_SKIPPED,
-} from "./simulation";
+import { getBlockTimestampAndNumber, isTemporaryError, simulateCallsAfterPreCalls } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 type PriceOverrides = {
@@ -210,9 +205,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      if ((await simulateMulticall(routerAddress, routerAbi)) === SIMULATION_SKIPPED) {
-        return;
-      }
+      await simulateMulticall(routerAddress, routerAbi);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
@@ -236,9 +229,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      if ((await simulateMulticall(exchangeRouterAddress, abis.ExchangeRouter)) === SIMULATION_SKIPPED) {
-        return;
-      }
+      await simulateMulticall(exchangeRouterAddress, abis.ExchangeRouter);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
@@ -263,9 +254,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      if ((await simulateMulticall(routerAddress, routerAbi)) === SIMULATION_SKIPPED) {
-        return;
-      }
+      await simulateMulticall(routerAddress, routerAbi);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
