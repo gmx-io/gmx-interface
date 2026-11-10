@@ -355,6 +355,7 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
     multichainMarketTokensBalancesResult,
+    expressOrdersEnabled: settings.expressOrdersEnabled,
   });
 
   const gasLimits = useGasLimits(chainId);

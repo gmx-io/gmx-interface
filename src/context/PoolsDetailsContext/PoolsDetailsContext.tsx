@@ -102,6 +102,7 @@ export function usePoolsDetailsState({
   glvData,
   withGlv,
   multichainMarketTokensBalancesResult,
+  expressOrdersEnabled,
 }: {
   enabled: boolean;
   marketsInfoData: MarketsInfoData | undefined;
@@ -109,6 +110,7 @@ export function usePoolsDetailsState({
   glvData: GlvInfoData | undefined;
   withGlv: boolean;
   multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
+  expressOrdersEnabled: boolean;
 }): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
@@ -142,7 +144,13 @@ export function usePoolsDetailsState({
     "settlementChain"
   );
 
-  const paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const savedPaySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  // Classic can't spend GMX Account funds. Not saved: Express reads off for a render after the account loads,
+  // and the choice should come back when Express is turned on
+  const paySource =
+    savedPaySource === "gmxAccount" && srcChainId === undefined && !expressOrdersEnabled
+      ? "settlementChain"
+      : savedPaySource;
 
   useEffect(
     function fallbackSourceChainPaySource() {
