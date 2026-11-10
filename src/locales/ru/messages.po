@@ -4281,6 +4281,7 @@ msgstr "Факторы комиссий"
 msgid "Funding factor"
 msgstr "Фактор финансирования"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -8367,6 +8368,7 @@ msgstr "Обновлено: {orderText}"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "Сейчас {fromSymbol} не может оплатить сетевые комиссии, поэтому действия GMX Account нельзя отправить, пока это не станет возможным."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
