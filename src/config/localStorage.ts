@@ -98,6 +98,7 @@ const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 // older builds set it on any permit error and never cleared it
 export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
 export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
+export const DEBUG_WALLET_BATCHING_ENABLED_KEY = "debug-wallet-batching-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 

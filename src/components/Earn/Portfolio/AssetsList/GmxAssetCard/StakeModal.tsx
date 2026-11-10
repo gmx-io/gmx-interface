@@ -21,8 +21,8 @@ import {
 import type { UnstakeRequestsData } from "domain/stake/useUnstakeRequests";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
 import { formatDateTime } from "lib/dates";
@@ -147,12 +147,6 @@ export function StakeModal(props: {
   const stakeTitle = t`Stake ${tokenSymbol}`;
   const unstakeTitle = t`Unstake GMX and esGMX`;
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: stakeFarmAddress,
-    tokenAddresses: [stakeTokenAddress].filter(Boolean),
-  });
-  const tokenAllowance = tokensAllowanceData?.[stakeTokenAddress];
-
   useEffect(() => {
     setStakeValue("");
     setUnstakeValue("");
@@ -163,11 +157,20 @@ export function StakeModal(props: {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
 
-  const needApproval =
-    stakeFarmAddress !== zeroAddress &&
-    tokenAllowance !== undefined &&
-    stakeAmount !== undefined &&
-    stakeAmount > tokenAllowance;
+  const stakeApprovalTokens = useMemo(
+    () => [{ tokenAddress: stakeTokenAddress, amount: stakeAmount }],
+    [stakeAmount, stakeTokenAddress]
+  );
+  const { needsApproval, isAllowanceLoaded, approvalBatch } = useTokenApproval({
+    chainId,
+    spenderAddress: stakeFarmAddress,
+    tokens: stakeApprovalTokens,
+    allowBatch: true,
+    skip: stakeFarmAddress === zeroAddress,
+    metric: { flow: "stake" },
+  });
+  // with a batch the approval goes in the stake's own confirmation, so there is no separate Approve step
+  const needApproval = isAllowanceLoaded && needsApproval && approvalBatch === undefined;
 
   const stakeBonusPercentage = useMemo(() => {
     return calculateStakeBonusPercentage({
@@ -279,6 +282,7 @@ export function StakeModal(props: {
         failMsg: t`Stake failed`,
         setPendingTxns,
         hideErrorMsg: true,
+        walletCallsBatch: approvalBatch,
       });
       sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
       setIsVisible(false);
@@ -290,6 +294,7 @@ export function StakeModal(props: {
     }
   }, [
     needApproval,
+    approvalBatch,
     signer,
     stakeTokenAddress,
     stakeFarmAddress,

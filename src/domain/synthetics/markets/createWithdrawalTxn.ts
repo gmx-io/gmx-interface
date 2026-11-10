@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import type { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
@@ -32,6 +33,7 @@ export async function createWithdrawalTxn({
   params,
   setPendingTxns,
   setPendingWithdrawal,
+  walletCallsBatch,
 }: {
   chainId: ContractsChainId;
   signer: Signer;
@@ -44,6 +46,7 @@ export async function createWithdrawalTxn({
   params: CreateWithdrawalParams;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal?: SetPendingWithdrawal;
+  walletCallsBatch?: WalletCallsBatch;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
@@ -96,6 +99,7 @@ export async function createWithdrawalTxn({
         swapPricingType: SwapPricingType.Swap,
         metricId: metricId,
         blockTimestampData: blockTimestampData,
+        preCalls: walletCallsBatch?.calls,
       })
     : undefined;
 
@@ -106,7 +110,9 @@ export async function createWithdrawalTxn({
     [encodedPayload],
     params.executionFee,
     simulationPromise,
-    metricId
+    metricId,
+    undefined,
+    walletCallsBatch !== undefined
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
@@ -117,6 +123,7 @@ export async function createWithdrawalTxn({
     gasLimit,
     gasPriceData,
     setPendingTxns: setPendingTxns,
+    walletCallsBatch: walletCallsBatch,
     pendingTransactionData: {
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,

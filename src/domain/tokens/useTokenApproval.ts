@@ -1,7 +1,7 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
-import { isAddressEqual, type Address } from "viem";
+import { isAddressEqual, maxUint256, type Address, type Hex } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -9,17 +9,21 @@ import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/t
 import { helperToast } from "lib/helperToast";
 import type { TokenApprovalMetricParams } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import type { AnyChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { buildErc20ApproveTxn } from "sdk/utils/balances/api";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
 import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
+import { sendTokenApprovalMetric } from "./tokenApprovalMetric";
+import { useWalletBatching } from "./useWalletBatching";
 
 interface TokenToApprove {
   tokenAddress: string;
@@ -33,6 +37,8 @@ interface UseTokenApprovalParams {
   skip?: boolean;
   approveAmount?: bigint;
   allowPermit?: boolean;
+  /** Only for actions the wallet sends itself: the approvals can then go in the same confirmation */
+  allowBatch?: boolean;
   metric: TokenApprovalMetricContext;
 }
 
@@ -59,6 +65,8 @@ interface UseTokenApprovalReturn {
   handleApprove: (options?: HandleApproveOptions) => void;
   /** Whether approving the token would sign a permit instead of sending a transaction */
   getIsPermitApproval: (tokenAddress: string) => boolean;
+  /** Set when the approvals should go in the same wallet confirmation as the action, instead of the Approve step */
+  approvalBatch: WalletCallsBatch | undefined;
 }
 
 export function useTokenApproval({
@@ -68,6 +76,7 @@ export function useTokenApproval({
   skip,
   approveAmount,
   allowPermit = false,
+  allowBatch = false,
   metric,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
@@ -125,6 +134,68 @@ export function useTokenApproval({
   );
 
   const needsApproval = tokensToApprove.length > 0;
+
+  const { isAvailable: isBatchAvailable, atomicStatus } = useWalletBatching({
+    chainId,
+    enabled: allowBatch && needsApproval,
+  });
+
+  const approvalBatch = useMemo((): WalletCallsBatch | undefined => {
+    if (!isBatchAvailable || !isAllowanceLoaded || !needsApproval || !spenderAddress || chainId === undefined) {
+      return undefined;
+    }
+
+    const amount = approveAmount ?? maxUint256;
+    const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
+
+    return {
+      calls: tokensToApprove.map((tokenAddress) => {
+        const call = buildErc20ApproveTxn({ tokenAddress, spender: spenderAddress, amount });
+        return { to: call.to as Address, data: call.data as Hex, value: call.value };
+      }),
+      flow: metricParams.flow,
+      atomicStatus,
+      onOutcome: (outcome, error) => {
+        if (outcome === "sent") {
+          return;
+        }
+
+        tokensToApprove.forEach((tokenAddress) =>
+          sendTokenApprovalMetric({
+            metric: {
+              ...metricParams,
+              isGasPaymentToken:
+                gasPaymentTokenAddress !== undefined
+                  ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
+                  : undefined,
+            },
+            method: "batch",
+            outcome:
+              outcome === "confirmed"
+                ? "accepted"
+                : outcome === "rejected" || outcome === "upgradeRejected"
+                  ? "rejected"
+                  : "failed",
+            chainId,
+            tokenAddress,
+            spender: spenderAddress,
+            isUnlimited: amount === maxUint256,
+            error,
+          })
+        );
+      },
+    };
+  }, [
+    approveAmount,
+    atomicStatus,
+    chainId,
+    isAllowanceLoaded,
+    isBatchAvailable,
+    latestMetric,
+    needsApproval,
+    spenderAddress,
+    tokensToApprove,
+  ]);
   const isApproving = approvingToken !== undefined && tokensToApprove[0] === approvingToken;
 
   useEffect(() => {
@@ -258,5 +329,6 @@ export function useTokenApproval({
     isApproving,
     handleApprove,
     getIsPermitApproval,
+    approvalBatch,
   };
 }
