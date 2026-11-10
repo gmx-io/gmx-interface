@@ -89,6 +89,7 @@ import { formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useAttentionHighlight } from "lib/useAttentionHighlight";
 import { switchNetwork } from "lib/wallets";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
@@ -606,17 +607,20 @@ export function GmSwapBoxDepositWithdrawal() {
     [setFirstTokenAddress, glvInfo, setSelectedMarketAddressForGlv]
   );
 
+  const { canSignTypedData } = useWalletCanSignTypedData();
+
   const handleSelectPaySource = useCallback(
     (newPaySource: GmPaySource) => {
-      // GMX Account balance can only be spent via Express, Classic would never get a network fee
-      if (newPaySource === "gmxAccount" && !expressOrdersEnabled) {
+      // GMX Account balance can only be spent via Express, Classic would never get a network fee.
+      // Express stays off for wallets that can't sign messages, so the toast would be wrong there
+      if (newPaySource === "gmxAccount" && !expressOrdersEnabled && canSignTypedData) {
         setExpressOrdersEnabled(true);
         toastEnableExpress(() => setIsSettingsVisible(true));
       }
 
       setPaySource(newPaySource);
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible, setPaySource]
+    [canSignTypedData, expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible, setPaySource]
   );
 
   const handleSubmit = useCallback(
