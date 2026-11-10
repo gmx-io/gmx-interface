@@ -164,7 +164,9 @@ export function usePaxosTransitState({
   const isNoUsdgReceived = receivedUsdg === 0n || withdrawalStatus?.cancelledTxnHash !== undefined;
   const withdrawalStatusWithUsdg = isNoUsdgReceived ? undefined : withdrawalStatus;
   const isWithdrawalSent = withdrawalTxnHash !== undefined && !isNoUsdgReceived;
-  const isWithdrawalUsdgPendingConversion = isWithdrawalSettled || withdrawalStatusWithUsdg !== undefined;
+  const withdrawalEstimatedUsdgAmount = isWithdrawalSent
+    ? transitRouteProgressForWithdrawal?.withdrawalEstimatedUsdgAmount
+    : undefined;
 
   let amountIn = 0n;
 
@@ -172,6 +174,8 @@ export function usePaxosTransitState({
     amountIn = receivedUsdg;
   } else if (withdrawalStatusWithUsdg?.data) {
     amountIn = withdrawalStatusWithUsdg.data.minLongTokenAmount + withdrawalStatusWithUsdg.data.minShortTokenAmount;
+  } else if (withdrawalEstimatedUsdgAmount !== undefined) {
+    amountIn = withdrawalEstimatedUsdgAmount;
   } else if (isConversionNeeded) {
     amountIn = isDeposit ? firstTokenAmount : withdrawalUsdgAmount;
   }
@@ -241,7 +245,7 @@ export function usePaxosTransitState({
   const isQuoteLoading = isQuoteNeeded && !quote && !quoteError;
   const isTransitLoading = isTransitAvailable && (isFeeTierLoading || isQuoteLoading);
 
-  const isTransitInProgress = step !== "idle" || isConverting || isWithdrawalUsdgPendingConversion;
+  const isTransitInProgress = step !== "idle" || isConverting || isWithdrawalSent;
   const hasAmountIn = amountIn > 0n;
   const canPoolFill = collateralSwapTotalFeesDeltaUsd !== undefined;
   const isRouteSelectable = isWhitelisted && !isTransitInProgress && hasAmountIn && quote !== undefined && canPoolFill;
@@ -458,8 +462,8 @@ export function usePaxosTransitState({
       isTransitLoading,
     });
 
-    if (isWithdrawal && !isWithdrawalUsdgPendingConversion) {
-      if (isWithdrawalSent || shouldDisableValidation) return undefined;
+    if (isWithdrawal && !isWithdrawalSent) {
+      if (shouldDisableValidation) return undefined;
       if (conversionError) return { text: conversionError, disabled: true };
       if (isTransitLoading) return { text: t`Loading...`, disabled: true };
       return undefined;
@@ -497,13 +501,13 @@ export function usePaxosTransitState({
     quote,
     quoteError,
     shouldDisableValidation,
-    isWithdrawalUsdgPendingConversion,
     step,
     tokenIn,
     tokenOut,
   ]);
 
   const usdgStepAmount = isDeposit ? quote?.amountOut : amountIn;
+  const sentSellAmountOut = isWithdrawalSent && hasAmountIn ? transitAmountOut : undefined;
   const hasUsdgCollateral =
     paxosTransitConfig !== undefined &&
     (longTokenAddress === paxosTransitConfig.usdgAddress || shortTokenAddress === paxosTransitConfig.usdgAddress);
@@ -521,6 +525,7 @@ export function usePaxosTransitState({
     tokenIn,
     usdgToken,
     usdgStepAmount,
+    sentSellAmountOut,
     transitFillCount,
     thresholdUsd,
     isWhitelisted,

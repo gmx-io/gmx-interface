@@ -110,10 +110,11 @@ export const useWithdrawalTransactions = ({
         direction: "usdgToUsdc",
         glvOrMarketAddress,
         withdrawalTxnHash: txnHash,
+        withdrawalEstimatedUsdgAmount: longTokenAmount + shortTokenAmount,
         conversion: undefined,
       });
     },
-    [account, chainId, glvOrMarketAddress, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketAddress, isTransitRoute, longTokenAmount, shortTokenAmount, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
