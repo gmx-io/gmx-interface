@@ -31,14 +31,6 @@ import { TwapDuration } from "sdk/utils/twap/types";
 
 import { metrics, SubmittedOrderEvent } from ".";
 import {
-  expectOrderCreations,
-  markOrderCreationsFailed,
-  markOrderCreationsSent,
-  pruneOrderTracking,
-  takeCreatedOrderMetricId,
-  trackCreatedOrder,
-} from "./orderCreationTracking";
-import {
   DecreaseOrderMetricData,
   EditCollateralMetricData,
   ExpressOrderMetricData,
@@ -61,6 +53,8 @@ import {
   SwapGmMetricData,
   SwapMetricData,
 } from "./types";
+
+const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = ["simulation", "gasLimit", "gasPrice", "minting"];
 
 export function initSwapMetricData({
   fromToken,
@@ -757,8 +751,8 @@ type LpCreationParams =
 function cacheOrderMetricData<TData extends OrderMetricData = never>(creationKeys: string[], metricData: TData) {
   const cached = metrics.setCachedMetricData<TData>(metricData);
 
-  pruneOrderTracking(new Set(metrics.getCachedMetricIds()));
-  expectOrderCreations(cached.metricId, creationKeys);
+  metrics.orderCreationTracker.prune(new Set(metrics.getCachedMetricIds()));
+  metrics.orderCreationTracker.expect(cached.metricId, creationKeys);
 
   return cached;
 }
@@ -798,7 +792,7 @@ export function getOrderCreationKey(
   ]);
 }
 
-function getOrderPayloadsCreationKeys(orderPayloads: CreateOrderPayload[] | undefined) {
+export function getOrderPayloadsCreationKeys(orderPayloads: CreateOrderPayload[] | undefined) {
   return (orderPayloads ?? []).map((payload) =>
     getOrderCreationKey({
       orderType: payload.orderType,
@@ -970,7 +964,7 @@ export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
     return;
   }
 
-  markOrderCreationsSent(metricId);
+  metrics.orderCreationTracker.markSent(metricId);
 
   const timings = getOrderStepTimings(metricId, OrderStage.TxnSubmitted);
 
@@ -996,7 +990,7 @@ export function sendTxnSentMetric(metricId: OrderMetricId) {
     return;
   }
 
-  markOrderCreationsSent(metricId);
+  metrics.orderCreationTracker.markSent(metricId);
 
   const timings = getOrderStepTimings(metricId, OrderStage.Sent);
 
@@ -1011,7 +1005,7 @@ export function sendTxnSentMetric(metricId: OrderMetricId) {
 }
 
 export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
-  markOrderCreationsFailed(metricId);
+  metrics.orderCreationTracker.drop(metricId);
 
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
@@ -1036,8 +1030,14 @@ export function sendTxnErrorMetric(
   error: ErrorLike | undefined,
   errorContext: OrderErrorContext
 ) {
+  const errorData = parseError(error);
+
   if (metricId) {
-    markOrderCreationsFailed(metricId);
+    if (errorData?.isUserRejectedError || NEVER_CREATED_ERROR_CONTEXTS.includes(errorContext)) {
+      metrics.orderCreationTracker.drop(metricId);
+    } else {
+      metrics.orderCreationTracker.markFailed(metricId);
+    }
   }
 
   const metricData = metricId ? metrics.getCachedMetricData<OrderMetricData>(metricId) : undefined;
@@ -1045,14 +1045,13 @@ export function sendTxnErrorMetric(
   if (!metricData) {
     const err = extendError(new Error("Order metric data not found"), {
       data: {
-        originalError: parseError(error),
+        originalError: errorData,
       },
     });
     metrics.pushError(err, "sendTxnErrorMetric");
     return;
   }
 
-  const errorData = parseError(error);
   const timings = metricId ? getOrderStepTimings(metricId, OrderStage.Failed) : undefined;
 
   const eventName =
@@ -1135,7 +1134,7 @@ export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: Eve
 }
 
 export function sendTrackedOrderCreatedMetric(creationKey: string, orderKey: string) {
-  const trackedOrder = trackCreatedOrder(creationKey, orderKey);
+  const trackedOrder = metrics.orderCreationTracker.trackCreated(creationKey, orderKey);
 
   if (trackedOrder) {
     sendOrderCreatedMetric(trackedOrder.metricId, trackedOrder.hasMoreCreations);
@@ -1145,7 +1144,7 @@ export function sendTrackedOrderCreatedMetric(creationKey: string, orderKey: str
 }
 
 export function sendTrackedOrderExecutedMetric(orderKey: string) {
-  const metricId = takeCreatedOrderMetricId(orderKey);
+  const metricId = metrics.orderCreationTracker.takeCreated(orderKey);
 
   if (metricId) {
     sendOrderExecutedMetric(metricId);
@@ -1155,7 +1154,7 @@ export function sendTrackedOrderExecutedMetric(orderKey: string) {
 }
 
 export function sendTrackedOrderCancelledMetric(orderKey: string, eventData: EventLogData) {
-  const metricId = takeCreatedOrderMetricId(orderKey);
+  const metricId = metrics.orderCreationTracker.takeCreated(orderKey);
 
   if (metricId) {
     sendOrderCancelledMetric(metricId, eventData);

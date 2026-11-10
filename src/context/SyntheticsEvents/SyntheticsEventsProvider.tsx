@@ -21,7 +21,6 @@ import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/market
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
-  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
@@ -90,11 +89,9 @@ import { OrdersStatusNotificiation } from "components/StatusNotification/OrderSt
 
 import {
   ApprovalStatuses,
-  DepositCreatedEventData,
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
@@ -109,16 +106,23 @@ import {
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   RelayTaskStatus,
-  ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
-  WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
 import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
 import { useTransitRouteEvents } from "./useTransitRouteEvents";
-import { extractRelayTaskError, getPendingOrderKey } from "./utils";
+import {
+  extractRelayTaskError,
+  getPendingOrderKey,
+  parseDepositCreatedEventData,
+  parseGlvDepositCreatedEventData,
+  parseGlvWithdrawalCreatedEventData,
+  parseOrderCreatedEventData,
+  parseShiftCreatedEventData,
+  parseWithdrawalCreatedEventData,
+} from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -225,36 +229,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver);
-
-      const data: OrderCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
-        swapPath: eventData.addressItems.arrayItems.swapPath,
-        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
-        initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
-        contractTriggerPrice: eventData.uintItems.items.triggerPrice,
-        contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        minOutputAmount: eventData.uintItems.items.minOutputAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        orderType: Number(eventData.uintItems.items.orderType),
-        decreasePositionSwapType: Number(
-          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
-        ) as DecreasePositionSwapType,
-        isLong: eventData.boolItems.items.isLong,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        isFrozen: eventData.boolItems.items.isFrozen,
-        uiFeeReceiver: uiFeeReceiver,
-        externalSwapQuote: undefined,
-        key: eventData.bytes32Items.items.key,
-        isTwap: twapParams !== undefined,
-      };
+      const data = parseOrderCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
@@ -263,6 +238,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const metricId = sendTrackedOrderCreatedMetric(getOrderCreationKey(data), data.key);
 
       if (metricId && !isMarketOrderType(data.orderType)) {
+        const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, data.uiFeeReceiver);
+
         sendUserAnalyticsOrderResultEvent(
           chainId,
           metricId,
@@ -423,27 +400,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: GLVDepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        glvAddress: eventData.addressItems.items.glv,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minGlvTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: true,
-      };
+      const depositData = parseGlvDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
@@ -464,25 +421,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: DepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: false,
-      };
+      const depositData = parseDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
@@ -563,20 +502,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
@@ -597,20 +523,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvWithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.glv,
-        marketTokenAmount: eventData.uintItems.items.glvTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseGlvWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
@@ -673,18 +586,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     },
 
     ShiftCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const data: ShiftCreatedEventData = {
-        key: eventData.bytes32Items.items.key,
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        fromMarket: eventData.addressItems.items.fromMarket,
-        toMarket: eventData.addressItems.items.toMarket,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtTime: eventData.uintItems.items.updatedAtTime,
-        executionFee: eventData.uintItems.items.executionFee,
-      };
+      const data = parseShiftCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;

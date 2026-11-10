@@ -1,76 +1,85 @@
 import type { OrderMetricId } from "./types";
 
-type SubmissionStatus = "waiting" | "sent" | "failed";
-
 type PendingCreations = {
   metricId: OrderMetricId;
   creationKeys: string[];
-  status: SubmissionStatus;
+  status: "waiting" | "sent";
+  failedAt?: number;
 };
 
-const MATCH_PRIORITY: SubmissionStatus[] = ["sent", "waiting", "failed"];
+const MAX_FAILED_SUBMISSION_MATCH_TIME = 1000 * 60;
 
-let pendingCreations: PendingCreations[] = [];
-const createdOrders = new Map<string, OrderMetricId>();
+export class OrderCreationTracker {
+  private pendingCreations: PendingCreations[] = [];
+  private createdOrders = new Map<string, OrderMetricId>();
 
-export function pruneOrderTracking(cachedMetricIds: Set<string>) {
-  pendingCreations = pendingCreations.filter((pending) => cachedMetricIds.has(pending.metricId));
+  prune(cachedMetricIds: Set<string>) {
+    this.pendingCreations = this.pendingCreations.filter((pending) => cachedMetricIds.has(pending.metricId));
 
-  createdOrders.forEach((metricId, orderKey) => {
-    if (!cachedMetricIds.has(metricId)) {
-      createdOrders.delete(orderKey);
+    this.createdOrders.forEach((metricId, orderKey) => {
+      if (!cachedMetricIds.has(metricId)) {
+        this.createdOrders.delete(orderKey);
+      }
+    });
+  }
+
+  expect(metricId: OrderMetricId, creationKeys: string[]) {
+    if (creationKeys.length > 0) {
+      this.pendingCreations.push({ metricId, creationKeys: [...creationKeys], status: "waiting" });
     }
-  });
-}
-
-export function expectOrderCreations(metricId: OrderMetricId, creationKeys: string[]) {
-  if (creationKeys.length > 0) {
-    pendingCreations.push({ metricId, creationKeys: [...creationKeys], status: "waiting" });
   }
-}
 
-function setSubmissionStatus(metricId: OrderMetricId, status: SubmissionStatus) {
-  pendingCreations.forEach((pending) => {
-    if (pending.metricId === metricId) {
-      pending.status = status;
+  markSent(metricId: OrderMetricId) {
+    this.pendingCreations.forEach((pending) => {
+      if (pending.metricId === metricId) {
+        pending.status = "sent";
+      }
+    });
+  }
+
+  markFailed(metricId: OrderMetricId) {
+    const failedAt = Date.now();
+
+    this.pendingCreations.forEach((pending) => {
+      if (pending.metricId === metricId) {
+        pending.failedAt = failedAt;
+      }
+    });
+  }
+
+  drop(metricId: OrderMetricId) {
+    this.pendingCreations = this.pendingCreations.filter((pending) => pending.metricId !== metricId);
+  }
+
+  trackCreated(creationKey: string, orderKey: string): { metricId: OrderMetricId; hasMoreCreations: boolean } | undefined {
+    const now = Date.now();
+
+    this.pendingCreations = this.pendingCreations.filter(
+      (pending) => pending.failedAt === undefined || now - pending.failedAt < MAX_FAILED_SUBMISSION_MATCH_TIME
+    );
+
+    const candidates = this.pendingCreations.filter((pending) => pending.creationKeys.includes(creationKey));
+    const pending =
+      candidates.find((candidate) => candidate.status === "sent" && candidate.failedAt === undefined) ?? candidates[0];
+
+    if (!pending) {
+      return undefined;
     }
-  });
-}
 
-export function markOrderCreationsSent(metricId: OrderMetricId) {
-  setSubmissionStatus(metricId, "sent");
-}
+    pending.creationKeys.splice(pending.creationKeys.indexOf(creationKey), 1);
+    this.createdOrders.set(orderKey, pending.metricId);
 
-export function markOrderCreationsFailed(metricId: OrderMetricId) {
-  setSubmissionStatus(metricId, "failed");
-}
+    if (pending.creationKeys.length === 0) {
+      this.pendingCreations = this.pendingCreations.filter((item) => item !== pending);
+    }
 
-export function trackCreatedOrder(
-  creationKey: string,
-  orderKey: string
-): { metricId: OrderMetricId; hasMoreCreations: boolean } | undefined {
-  const candidates = pendingCreations.filter((pending) => pending.creationKeys.includes(creationKey));
-  const pending = MATCH_PRIORITY.map((status) => candidates.find((candidate) => candidate.status === status)).find(
-    Boolean
-  );
-
-  if (!pending) {
-    return undefined;
+    return { metricId: pending.metricId, hasMoreCreations: pending.creationKeys.length > 0 };
   }
 
-  pending.creationKeys.splice(pending.creationKeys.indexOf(creationKey), 1);
-  createdOrders.set(orderKey, pending.metricId);
+  takeCreated(orderKey: string): OrderMetricId | undefined {
+    const metricId = this.createdOrders.get(orderKey);
+    this.createdOrders.delete(orderKey);
 
-  if (pending.creationKeys.length === 0) {
-    pendingCreations = pendingCreations.filter((item) => item !== pending);
+    return metricId;
   }
-
-  return { metricId: pending.metricId, hasMoreCreations: pending.creationKeys.length > 0 };
-}
-
-export function takeCreatedOrderMetricId(orderKey: string): OrderMetricId | undefined {
-  const metricId = createdOrders.get(orderKey);
-  createdOrders.delete(orderKey);
-
-  return metricId;
 }
