@@ -10,6 +10,7 @@ import {
   LinkActionStory,
   ModalStory,
   NestedStory,
+  NoRoomBelowStory,
   PlacementStory,
   PlainStory,
   ScrollStory,
@@ -78,11 +79,15 @@ test.describe("StandardTooltip", () => {
 
   test("does not open when the cursor leaves within 150 ms", async ({ mount, page }) => {
     await mount(<PlainStory />);
+    await page.evaluate(trackOpenDelays);
 
     await page.getByText("Trigger").hover();
     await page.waitForTimeout(30);
     await page.mouse.move(0, 0);
     await page.waitForTimeout(400);
+
+    const delays = await page.evaluate(() => (window as unknown as { openDelays: number[] }).openDelays);
+    expect(delays).toHaveLength(0);
     await expect(page.locator(PANEL)).toHaveCount(0);
   });
 
@@ -352,7 +357,10 @@ test.describe("StandardTooltip", () => {
 test.describe("StandardTooltip in a short window", () => {
   test.use({ viewport: { width: 800, height: 400 } });
 
-  test("a panel taller than the space left stays on screen and scrolls inside", async ({ mount, page }) => {
+  test("a panel taller than the space left stays on screen, scrolls inside and keeps its scroll when it repositions", async ({
+    mount,
+    page,
+  }) => {
     await mount(<TallStory />);
 
     await page.getByText("Tall trigger").hover();
@@ -366,9 +374,50 @@ test.describe("StandardTooltip in a short window", () => {
     const content = panel.locator(".Tooltip-content");
     const contentBox = (await content.boundingBox())!;
     await page.mouse.move(contentBox.x + contentBox.width / 2, contentBox.y + contentBox.height / 2, { steps: 4 });
-    await page.mouse.wheel(0, 200);
+    await page.mouse.wheel(0, 5000);
     await expect.poll(() => content.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
     await expect(panel).toBeVisible();
+
+    const scrollTop = await content.evaluate((element) => element.scrollTop);
+    await page.evaluate(
+      () =>
+        new Promise((resolve) => {
+          window.dispatchEvent(new Event("resize"));
+          requestAnimationFrame(() => requestAnimationFrame(resolve));
+        })
+    );
+    expect(await content.evaluate((element) => element.scrollTop)).toBe(scrollTop);
+  });
+
+  test("opens above in full when the panel does not fit below, also after its content grows", async ({
+    mount,
+    page,
+  }) => {
+    await mount(<NoRoomBelowStory />);
+
+    const placement = async (triggerText: string) => {
+      const trigger = (await page.getByText(triggerText).boundingBox())!;
+      const panel = page.locator(OPEN_PANEL);
+      const panelBox = (await panel.boundingBox())!;
+      const isClipped = await panel
+        .locator(".Tooltip-content")
+        .evaluate((element) => element.scrollHeight > element.clientHeight + 1);
+      return { isAbove: panelBox.y + panelBox.height <= trigger.y, isClipped };
+    };
+
+    await page.getByText("Long text trigger").hover();
+    await expect(page.locator(OPEN_PANEL)).toHaveCSS("opacity", "1");
+    expect(await placement("Long text trigger")).toEqual({ isAbove: true, isClipped: false });
+
+    await page.mouse.move(0, 0);
+    await expect(page.locator(PANEL)).toHaveCount(0);
+
+    await page.getByText("Growing trigger").hover();
+    await expect(page.locator(OPEN_PANEL)).toHaveCSS("opacity", "1");
+    expect(await placement("Growing trigger")).toEqual({ isAbove: false, isClipped: false });
+    await page.evaluate(() => window.dispatchEvent(new Event("grow-tooltip-content")));
+    await expect(page.locator(OPEN_PANEL)).toContainText("Row 7");
+    await expect.poll(() => placement("Growing trigger")).toEqual({ isAbove: true, isClipped: false });
   });
 });
 

@@ -2,6 +2,7 @@ import {
   FloatingArrow,
   FloatingFocusManager,
   FloatingPortal,
+  Middleware,
   OpenChangeReason,
   Placement,
   arrow,
@@ -59,6 +60,7 @@ export type TooltipPosition = Placement;
 export const DEFAULT_TOOLTIP_ARROW_CLASSNAME = "scale-3 fill-slate-700 dark:fill-[#2b2d41]";
 export const TOOLTIP_OFFSET = 10;
 export const DEFAULT_TOOLTIP_MAX_WIDTH = 350;
+const AVAILABLE_HEIGHT_PROPERTY = "--tooltip-available-height";
 
 type InnerTooltipProps<T extends ElementType | undefined> = {
   /**
@@ -249,6 +251,7 @@ export default function Tooltip<T extends ElementType>({
 
   const middleware = useMemo(
     () => [
+      resetSizeLimitsBeforeFlip(maxAllowedWidth, viewportPadding),
       offset(TOOLTIP_OFFSET),
       flip(
         flipOnlyToOppositeSide
@@ -269,17 +272,9 @@ export default function Tooltip<T extends ElementType>({
       }),
       size({
         padding: viewportPadding ?? 10,
-        apply: (state) => {
-          state.elements.floating.style.setProperty("--tooltip-available-height", `${state.availableHeight}px`);
-
-          const screenWidth = state.elements.floating.ownerDocument.documentElement.clientWidth;
-          const maxWidth =
-            viewportPadding === undefined
-              ? maxAllowedWidth
-              : Math.min(maxAllowedWidth, screenWidth - viewportPadding * 2);
-          Object.assign(state.elements.floating.style, {
-            maxWidth: `${maxWidth}px`,
-          });
+        apply: ({ elements, availableHeight, middlewareData }) => {
+          elements.floating.style.setProperty(AVAILABLE_HEIGHT_PROPERTY, `${availableHeight}px`);
+          restoreScrollPositions(middlewareData.resetSizeLimitsBeforeFlip?.scrollPositions);
         },
       }),
       arrow({ element: arrowRef, padding: 6 }),
@@ -782,6 +777,56 @@ export function TooltipUnderline() {
       <line stroke="currentColor" x1="0" y1="0" x2="100%" y2="0" strokeWidth="0.75" strokeDasharray="1.25,2.25" />
     </svg>
   );
+}
+
+function resetSizeLimitsBeforeFlip(maxAllowedWidth: number, viewportPadding: number | undefined): Middleware {
+  return {
+    name: "resetSizeLimitsBeforeFlip",
+    fn: ({ elements, middlewareData }) => {
+      if (middlewareData.resetSizeLimitsBeforeFlip) {
+        return {};
+      }
+
+      const floating = elements.floating;
+      const screenWidth = floating.ownerDocument.documentElement.clientWidth;
+      const maxWidth = `${
+        viewportPadding === undefined ? maxAllowedWidth : Math.min(maxAllowedWidth, screenWidth - viewportPadding * 2)
+      }px`;
+      const isWidthChanged = floating.style.maxWidth !== maxWidth;
+      floating.style.maxWidth = maxWidth;
+
+      const cappedScrollContainers =
+        floating.style.getPropertyValue(AVAILABLE_HEIGHT_PROPERTY) === ""
+          ? []
+          : getOverflowingScrollContainers(floating);
+      const scrollPositions: ScrollPosition[] = cappedScrollContainers.map((element) => ({
+        element,
+        scrollTop: element.scrollTop,
+      }));
+      const isHeightCapped = cappedScrollContainers.length > 0;
+
+      if (isHeightCapped) {
+        floating.style.removeProperty(AVAILABLE_HEIGHT_PROPERTY);
+      }
+
+      return { data: { scrollPositions }, reset: isWidthChanged || isHeightCapped ? { rects: true } : undefined };
+    },
+  };
+}
+
+type ScrollPosition = { element: HTMLElement; scrollTop: number };
+
+function getOverflowingScrollContainers(root: HTMLElement): HTMLElement[] {
+  return Array.from(root.querySelectorAll<HTMLElement>("*")).filter(
+    (element) =>
+      element.scrollHeight > element.clientHeight && ["auto", "scroll"].includes(getComputedStyle(element).overflowY)
+  );
+}
+
+function restoreScrollPositions(scrollPositions: ScrollPosition[] | undefined) {
+  scrollPositions?.forEach(({ element, scrollTop }) => {
+    element.scrollTop = scrollTop;
+  });
 }
 
 function containsFocus(element: Element | null): boolean {

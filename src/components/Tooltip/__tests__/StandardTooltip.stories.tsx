@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Modal from "components/Modal/Modal";
 
@@ -80,6 +80,31 @@ export function TallStory() {
           </TooltipContent>
         }
       />
+    </div>
+  );
+}
+
+function GrowingContent() {
+  const [rows, setRows] = useState(2);
+  useEffect(() => {
+    const grow = () => setRows(7);
+    window.addEventListener("grow-tooltip-content", grow);
+    return () => window.removeEventListener("grow-tooltip-content", grow);
+  }, []);
+  return (
+    <TooltipContent>
+      {Array.from({ length: rows }, (_, index) => (
+        <TooltipText key={index}>Row {index + 1}</TooltipText>
+      ))}
+    </TooltipContent>
+  );
+}
+
+export function NoRoomBelowStory() {
+  return (
+    <div className="fixed bottom-[130px] left-40 flex gap-[200px]">
+      <StandardTooltip handle="Long text trigger" content={LONG_TEXT} />
+      <StandardTooltip handle="Growing trigger" renderContent={() => <GrowingContent />} />
     </div>
   );
 }
