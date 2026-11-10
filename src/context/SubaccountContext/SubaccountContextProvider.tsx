@@ -208,7 +208,15 @@ async function getSettlementChainRemovalExpressParams({
   }
 }
 
+export type SubaccountActivationParams = {
+  remainingActions?: bigint;
+  remainingSeconds?: bigint;
+  // false for flows that don't trade from the wallet, like GMX Account deposits
+  withTokenPermits?: boolean;
+};
+
 export type SubaccountState = {
+  // limits saved in One-Click settings before activation, passed to tryEnableSubaccount by its callers
   initialSettings: SubaccountLimits | undefined;
   setInitialSettings: (settings: SubaccountLimits | undefined) => void;
   subaccountConfig: SubaccountSerializedConfig | undefined;
@@ -225,8 +233,7 @@ export type SubaccountState = {
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   invalidateSubaccountApproval: (approval: SignedSubaccountApproval) => boolean;
-  // withTokenPermits: false for flows that don't trade from the wallet, like GMX Account deposits
-  tryEnableSubaccount: (params?: { withTokenPermits?: boolean }) => Promise<boolean>;
+  tryEnableSubaccount: (params?: SubaccountActivationParams) => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
@@ -427,7 +434,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   );
 
   const tryEnableSubaccount = useCallback(
-    async ({ withTokenPermits = true }: { withTokenPermits?: boolean } = {}) => {
+    async ({ remainingActions, remainingSeconds, withTokenPermits = true }: SubaccountActivationParams = {}) => {
       if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
         return false;
       }
@@ -487,7 +494,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           provider,
           subaccountAddress: config!.address,
           isGmxAccount,
-          initialSettings,
+          remainingSeconds,
+          remainingActions,
         });
 
         setSignedApproval(defaultSubaccountApproval);
@@ -557,7 +565,6 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       return true;
     },
     [
-      initialSettings,
       provider,
       signer,
       subaccountConfig,

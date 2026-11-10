@@ -382,13 +382,7 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
   });
 
   test("limits saved before activation are signed into the first approval", async ({ mount, page }) => {
-    const generated = await deriveGeneratedSubaccount(MOCK_ACCOUNT_PRIVATE_KEY, SUBACCOUNT_MESSAGE);
-    const chain = new MockChain({
-      walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
-      subaccountAddress: generated.address,
-      onchain: { active: false },
-    });
-    chain.setBalance(generated.address, 2n * 10n ** 15n);
+    const chain = new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY, onchain: { active: false } });
     await installRpcResponder(page, chain);
     await mount(<OneClickTradingModeStory expressEnabled />);
 

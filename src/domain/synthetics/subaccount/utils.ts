@@ -327,46 +327,42 @@ function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApprov
 
 export type SubaccountLimits = { remainingActions: bigint; remainingSeconds: bigint };
 
-export function getInitialSubaccountLimits(onchainData: SubaccountOnchainData, initialSettings?: SubaccountLimits) {
-  if (initialSettings && (initialSettings.remainingActions <= 0n || initialSettings.remainingSeconds <= 0n)) {
-    throw new Error("One-Click limits must be positive");
-  }
-  const defaultExpiresAt =
-    BigInt(nowInSeconds()) + (initialSettings?.remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION));
-
-  let expiresAt = getSubaccountExpiresAt({
-    onchainData,
-    signedApproval: undefined,
-  });
-
-  if (initialSettings || expiresAt < defaultExpiresAt) {
-    expiresAt = defaultExpiresAt;
-  }
-
-  const defaultMaxAllowedCount = initialSettings?.remainingActions ?? BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
-  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
-
-  return { expiresAt, maxAllowedCount };
-}
-
 export async function getInitialSubaccountApproval({
   chainId,
   signer,
   provider,
   subaccountAddress,
   isGmxAccount,
-  initialSettings,
+  remainingSeconds,
+  remainingActions = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
-  initialSettings?: SubaccountLimits;
+  remainingSeconds?: bigint;
+  remainingActions?: bigint;
 }) {
+  if (remainingActions <= 0n || (remainingSeconds !== undefined && remainingSeconds <= 0n)) {
+    throw new Error("One-Click limits must be positive");
+  }
+
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const { expiresAt, maxAllowedCount } = getInitialSubaccountLimits(onchainData, initialSettings);
+  const defaultExpiresAt = BigInt(nowInSeconds()) + (remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION));
+
+  let expiresAt = getSubaccountExpiresAt({
+    onchainData,
+    signedApproval: undefined,
+  });
+
+  // a time limit the user set wins over a longer expiry left on chain by an earlier session of this address
+  if (remainingSeconds !== undefined || expiresAt < defaultExpiresAt) {
+    expiresAt = defaultExpiresAt;
+  }
+
+  const maxAllowedCount = onchainData.currentActionsCount + remainingActions;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
