@@ -28,8 +28,14 @@ export function ClosedVaultPanel({
 
   return (
     <div className="flex flex-col gap-20 px-20 pb-20" data-qa="vesting-closed-vault">
-      <AlertInfoCard type="info" hideClose>
-        <Trans>This vault no longer accepts deposits. Your vesting continues.</Trans>
+      <AlertInfoCard type="warning" hideClose>
+        <span className="font-medium">
+          <Trans>Deposits are closed.</Trans>
+        </span>{" "}
+        <Trans>
+          This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can
+          claim vested GMX at any time.
+        </Trans>
       </AlertInfoCard>
 
       <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
@@ -42,7 +48,7 @@ export function ClosedVaultPanel({
 
         <p className="text-body-small leading-[1.4] text-typography-secondary">
           <Trans>
-            Withdrawing claims{" "}
+            Stopping vesting claims{" "}
             <span className="font-medium text-typography-primary numbers">
               {formatVaultAmount(claimableAmount)} GMX
             </span>{" "}

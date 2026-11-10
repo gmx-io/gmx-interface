@@ -29,6 +29,7 @@ import { ProgressRow } from "components/ProgressRow/ProgressRow";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -254,6 +255,7 @@ export function OldVaultPanel({ vault, isClosed, processedData, reservedAmount, 
         setDepositValues((prev) => ({ ...prev, [vault]: "" }));
         onTxSent();
       })
+      .catch(() => undefined)
       .finally(() => {
         setIsDepositing(false);
       });
@@ -276,6 +278,7 @@ export function OldVaultPanel({ vault, isClosed, processedData, reservedAmount, 
       .then(() => {
         onTxSent();
       })
+      .catch(() => undefined)
       .finally(() => {
         setIsWithdrawing(false);
       });
@@ -298,6 +301,7 @@ export function OldVaultPanel({ vault, isClosed, processedData, reservedAmount, 
       .then(() => {
         onTxSent();
       })
+      .catch(() => undefined)
       .finally(() => {
         setIsClaiming(false);
       });
@@ -475,7 +479,7 @@ export function OldVaultPanel({ vault, isClosed, processedData, reservedAmount, 
                 ) : isWithdrawing ? (
                   <Trans>Confirming...</Trans>
                 ) : (
-                  getWithdrawText(vault)
+                  <Trans>Stop vesting & withdraw</Trans>
                 )}
               </Button>
             </div>
@@ -575,92 +579,95 @@ export function OldVaultPanel({ vault, isClosed, processedData, reservedAmount, 
         </>
       )}
 
-      <div className="mt-8 flex flex-col gap-12">
-        <ProgressRow
-          label={<Trans>Claimable</Trans>}
-          value={t`${formatGmxAmount(claimableAmount)} GMX`}
-          currentValue={claimableAmount}
-          totalValue={vestedAmount}
-        />
-        <ProgressRow
-          label={<Trans>Vesting status</Trans>}
-          value={
-            <TooltipWithPortal
-              handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
-              position="top-end"
-              handleClassName="whitespace-nowrap"
-              content={
-                <span>
-                  <Trans>
-                    {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)} esGMX
-                    deposited for vesting
-                  </Trans>
-                </span>
+      <div className="mt-12 flex flex-col gap-16">
+        {vault !== "glp" && (
+          <div className="flex flex-col gap-12">
+            {vault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
+              <>
+                <SyntheticsInfoRow
+                  label={<Trans>Staked tokens reserved for vesting</Trans>}
+                  value={
+                    <TooltipWithPortal
+                      handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
+                        gmxDepositConfig.maxReserveAmount
+                      )}`}
+                      position="top-end"
+                      handleClassName="whitespace-nowrap numbers"
+                      content={
+                        <div>
+                          <StatsTooltipRow
+                            label={<Trans>Current reserved:</Trans>}
+                            value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
+                            showDollar={false}
+                          />
+                          <StatsTooltipRow
+                            label={<Trans>Additional reserve required:</Trans>}
+                            value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
+                            showDollar={false}
+                          />
+                        </div>
+                      }
+                    />
+                  }
+                />
+                <div className="border-t-1/2 border-slate-600" />
+              </>
+            )}
+            <SyntheticsInfoRow
+              label={<Trans>Vault capacity</Trans>}
+              value={
+                <TooltipWithPortal
+                  handle={`${formatGmxAmount(
+                    vault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount
+                  )} / ${formatGmxAmount(depositConfig.maxVestableAmount)}`}
+                  position="top-end"
+                  handleClassName="whitespace-nowrap numbers"
+                  content={
+                    <div>
+                      <StatsTooltipRow
+                        label={<Trans>Deposited:</Trans>}
+                        value={formatGmxAmount(depositConfig.vestedAmount)}
+                        showDollar={false}
+                      />
+                      <StatsTooltipRow
+                        label={<Trans>Max capacity:</Trans>}
+                        value={formatGmxAmount(depositConfig.maxVestableAmount)}
+                        showDollar={false}
+                      />
+                    </div>
+                  }
+                />
               }
             />
-          }
-          currentValue={claimSum}
-          totalValue={vestedAmount}
-        />
-        {vault === "gmx" && gmxDepositConfig.reserveAmount !== undefined && (
+          </div>
+        )}
+
+        <div className="flex flex-col gap-16 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
           <ProgressRow
-            label={<Trans>Staked tokens reserved for vesting</Trans>}
+            label={<Trans>Vesting status</Trans>}
             value={
               <TooltipWithPortal
-                handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
-                  gmxDepositConfig.maxReserveAmount
-                )}`}
+                handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
                 position="top-end"
-                handleClassName="whitespace-nowrap"
+                handleClassName="whitespace-nowrap numbers"
                 content={
-                  <div>
-                    <StatsTooltipRow
-                      label={<Trans>Current reserved:</Trans>}
-                      value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
-                      showDollar={false}
-                    />
-                    <StatsTooltipRow
-                      label={<Trans>Additional reserve required:</Trans>}
-                      value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
-                      showDollar={false}
-                    />
-                  </div>
+                  <span>
+                    <Trans>
+                      {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)} esGMX
+                      deposited for vesting
+                    </Trans>
+                  </span>
                 }
               />
             }
-            currentValue={gmxReservePreview.nextReserveAmount}
-            totalValue={gmxDepositConfig.maxReserveAmount}
+            currentValue={claimSum}
+            totalValue={vestedAmount}
           />
-        )}
-        {vault !== "glp" && (
-          <ProgressRow
-            label={<Trans>Vault capacity</Trans>}
-            value={
-              <TooltipWithPortal
-                handle={`${formatGmxAmount(
-                  vault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount
-                )} / ${formatGmxAmount(depositConfig.maxVestableAmount)}`}
-                position="top-end"
-                content={
-                  <div>
-                    <StatsTooltipRow
-                      label={<Trans>Deposited:</Trans>}
-                      value={formatGmxAmount(depositConfig.vestedAmount)}
-                      showDollar={false}
-                    />
-                    <StatsTooltipRow
-                      label={<Trans>Max capacity:</Trans>}
-                      value={formatGmxAmount(depositConfig.maxVestableAmount)}
-                      showDollar={false}
-                    />
-                  </div>
-                }
-              />
-            }
-            currentValue={vault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount}
-            totalValue={depositConfig.maxVestableAmount}
+          <SyntheticsInfoRow
+            label={<Trans>Claimable</Trans>}
+            value={<span className="numbers">{t`${formatGmxAmount(claimableAmount)} GMX`}</span>}
           />
-        )}
+        </div>
       </div>
     </div>
   );

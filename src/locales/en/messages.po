@@ -1308,10 +1308,6 @@ msgstr "Show line values in tokens"
 msgid "Force primary failure"
 msgstr "Force primary failure"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "This vault no longer accepts deposits. Your vesting continues."
-msgstr "This vault no longer accepts deposits. Your vesting continues."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position fee factor (positive PI)"
 msgstr "Position fee factor (positive PI)"
@@ -2597,6 +2593,10 @@ msgstr "Gain"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "Swapped {0} for {1}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Deposits are closed."
+msgstr "Deposits are closed."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
@@ -4498,6 +4498,10 @@ msgstr "27% of protocol fees are accumulating in the Treasury and will be distri
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "Depositing {amountText} to {indexTokenText} Long..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Stop vesting & withdraw"
+msgstr "Stop vesting & withdraw"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "Position not found. It may have been closed."
@@ -6012,7 +6016,6 @@ msgstr "Fail external swaps"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10646,6 +10649,10 @@ msgstr "Deposit margin at price"
 msgid "FEES"
 msgstr "FEES"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting"
+msgstr "Stop vesting"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11554,6 +11561,10 @@ msgstr "Order key:"
 msgid "Show size in USD"
 msgstr "Show size in USD"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Stopping vesting claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
+msgstr "Stopping vesting claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
 msgstr "Positive funding fees are claimable in Claims."
@@ -11707,10 +11718,6 @@ msgstr "Open {marketName} in explorer"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "What is GMX?"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "Withdrawing claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
-msgstr "Withdrawing claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 msgid "Deposit submitted"
@@ -13445,6 +13452,10 @@ msgstr "Save tier"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"

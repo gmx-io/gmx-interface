@@ -1308,10 +1308,6 @@ msgstr "라인 값을 토큰으로 표시"
 msgid "Force primary failure"
 msgstr "기본 엔드포인트 장애 강제 발생"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "This vault no longer accepts deposits. Your vesting continues."
-msgstr "이 볼트는 더 이상 예치를 받지 않습니다. 베스팅은 계속 진행됩니다."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position fee factor (positive PI)"
 msgstr "포지션 수수료 계수 (양의 PI)"
@@ -2597,6 +2593,10 @@ msgstr "이익"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "{0}을(를) {1}(으)로 스왑했습니다"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Deposits are closed."
+msgstr "예치가 종료되었습니다."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
@@ -4498,6 +4498,10 @@ msgstr "프로토콜 수수료의 27%가 트레저리에 적립되고 있으며,
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "{indexTokenText} 롱에 {amountText} 예치 중..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Stop vesting & withdraw"
+msgstr "베스팅 중지 및 출금"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습니다."
@@ -6012,7 +6016,6 @@ msgstr "외부 스왑 실패 처리"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10646,6 +10649,10 @@ msgstr "지정가로 증거금 입금"
 msgid "FEES"
 msgstr "수수료"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting"
+msgstr "베스팅 중지"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11554,6 +11561,10 @@ msgstr "주문 키:"
 msgid "Show size in USD"
 msgstr "크기를 USD로 표시"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Stopping vesting claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
+msgstr "베스팅을 중지하면 <0>{0} GMX</0>를 수령하고 <1>{1} esGMX</1>가 지갑으로 반환됩니다."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
 msgstr "양(+)의 펀딩 수수료는 수령 메뉴에서 수령할 수 있습니다."
@@ -11707,10 +11718,6 @@ msgstr "{marketName}을(를) 탐색기에서 열기"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "GMX란 무엇입니까?"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "Withdrawing claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
-msgstr "출금하면 <0>{0} GMX</0>를 수령하고 <1>{1} esGMX</1>가 지갑으로 반환됩니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 msgid "Deposit submitted"
@@ -13445,6 +13452,10 @@ msgstr "등급 저장"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {주문} other {주문 #건}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "이 볼트는 운영이 종료될 예정이므로 더 이상 esGMX를 추가할 수 없습니다. 기존 베스팅은 계속 유지되며, 베스팅된 GMX는 언제든지 수령할 수 있습니다."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"

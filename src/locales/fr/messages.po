@@ -1308,10 +1308,6 @@ msgstr "Afficher les valeurs de ligne en tokens"
 msgid "Force primary failure"
 msgstr "Forcer une défaillance primaire"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "This vault no longer accepts deposits. Your vesting continues."
-msgstr "Ce vault n'accepte plus de dépôts. Votre acquisition progressive continue."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position fee factor (positive PI)"
 msgstr "Facteur de frais de position (PI positif)"
@@ -2597,6 +2593,10 @@ msgstr "Gain"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "{0} échangé contre {1}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Deposits are closed."
+msgstr "Les dépôts sont fermés."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
@@ -4498,6 +4498,10 @@ msgstr "27 % des frais du protocole s’accumulent dans la Trésorerie et seront
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "Dépôt de {amountText} sur le long {indexTokenText}..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Stop vesting & withdraw"
+msgstr "Arrêter l'acquisition progressive et retirer"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "Position introuvable. Elle a peut-être été clôturée."
@@ -6012,7 +6016,6 @@ msgstr "Forcer l'échec des swaps externes"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10646,6 +10649,10 @@ msgstr "Déposer de la marge au prix"
 msgid "FEES"
 msgstr "FRAIS"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting"
+msgstr "Arrêter l'acquisition progressive"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11554,6 +11561,10 @@ msgstr "Clé de l'ordre :"
 msgid "Show size in USD"
 msgstr "Afficher la taille en USD"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Stopping vesting claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
+msgstr "L'arrêt de l'acquisition progressive récupère <0>{0} GMX</0> et renvoie <1>{1} esGMX</1> vers votre portefeuille."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
 msgstr "Les frais de financement positifs peuvent être récupérés dans la section Réclamations."
@@ -11707,10 +11718,6 @@ msgstr "Ouvrir {marketName} dans l'explorateur"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "Qu’est-ce que GMX ?"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "Withdrawing claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
-msgstr "Le retrait récupère <0>{0} GMX</0> et renvoie <1>{1} esGMX</1> vers votre portefeuille."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 msgid "Deposit submitted"
@@ -13445,6 +13452,10 @@ msgstr "Enregistrer le palier"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Ordre} other {# Ordres}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "Ce vault est en cours de retrait, vous ne pouvez donc plus y ajouter d'esGMX. Les acquisitions progressives en cours restent actives et vous pouvez récupérer les GMX acquis à tout moment."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"

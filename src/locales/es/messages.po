@@ -1308,10 +1308,6 @@ msgstr "Mostrar valores de línea en tokens"
 msgid "Force primary failure"
 msgstr "Forzar fallo del primario"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "This vault no longer accepts deposits. Your vesting continues."
-msgstr "Este vault ya no acepta depósitos. Su periodo de consolidación continúa."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position fee factor (positive PI)"
 msgstr "Factor de comisión de posición (PI positivo)"
@@ -2597,6 +2593,10 @@ msgstr "Ganancia"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "Se intercambió {0} por {1}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Deposits are closed."
+msgstr "Los depósitos están cerrados."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Pick a time"
@@ -4498,6 +4498,10 @@ msgstr "El 27 % de las comisiones del protocolo se acumula en la Tesorería y se
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "Depositando {amountText} en la posición larga de {indexTokenText}..."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Stop vesting & withdraw"
+msgstr "Detener la consolidación y retirar"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "Posición no encontrada. Puede haberse cerrado."
@@ -6012,7 +6016,6 @@ msgstr "Forzar fallo de intercambios externos"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10646,6 +10649,10 @@ msgstr "Depositar margen a precio"
 msgid "FEES"
 msgstr "COMISIONES"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting"
+msgstr "Detener la consolidación"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -11554,6 +11561,10 @@ msgstr "Clave de orden:"
 msgid "Show size in USD"
 msgstr "Mostrar tamaño en USD"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "Stopping vesting claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
+msgstr "Al detener la consolidación, se reclaman <0>{0} GMX</0> y se devuelven <1>{1} esGMX</1> a su monedero."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimable in Claims."
 msgstr "Las comisiones de financiación positivas se pueden reclamar en Reclamaciones."
@@ -11707,10 +11718,6 @@ msgstr "Abrir {marketName} en el explorador"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "¿Qué es GMX?"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
-msgid "Withdrawing claims <0>{0} GMX</0> and returns <1>{1} esGMX</1> to your wallet."
-msgstr "Al retirar, se reclaman <0>{0} GMX</0> y se devuelven <1>{1} esGMX</1> a su billetera."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 msgid "Deposit submitted"
@@ -11952,7 +11959,7 @@ msgstr "Comprar USDG"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "esGMX in your wallet, staked and unclaimed at the snapshot. esGMX already in the GMX, GLP and Affiliate vaults doesn't count."
-msgstr "esGMX en su billetera, en staking y sin reclamar en el momento de la instantánea. Los esGMX que ya están en los vaults de GMX, GLP y de afiliado no cuentan."
+msgstr "esGMX en su monedero, en staking y sin reclamar en el momento de la instantánea. Los esGMX que ya están en los vaults de GMX, GLP y de afiliado no cuentan."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -13445,6 +13452,10 @@ msgstr "Guardar nivel"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Orden} other {# Órdenes}}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClosedVaultPanel.tsx
+msgid "This vault is being retired, so you can no longer add esGMX. Existing vests will remain active, and you can claim vested GMX at any time."
+msgstr "Este vault se está retirando, por lo que ya no puede añadir esGMX. Los periodos de consolidación existentes seguirán activos y podrá reclamar el GMX consolidado en cualquier momento."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"

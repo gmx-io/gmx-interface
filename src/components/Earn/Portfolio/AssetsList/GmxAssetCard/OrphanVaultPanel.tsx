@@ -74,17 +74,14 @@ export function OrphanVaultPanel({
           }
           value={<span className="numbers">{formatVaultAmount(data.eligibleAmount)} esGMX</span>}
         />
-        <ProgressRow
+        <SyntheticsInfoRow
           label={<Trans>Vault capacity</Trans>}
           value={<VaultAmountRatio current={data.usedAmount} total={data.eligibleAmount} />}
-          currentValue={data.usedAmount}
-          totalValue={data.eligibleAmount}
         />
-        <ProgressRow
+        <div className="border-t-1/2 border-slate-600" />
+        <SyntheticsInfoRow
           label={<Trans>Staked tokens reserved for vesting</Trans>}
           value={<VaultAmountRatio current={data.reservedAmount} total={stakedAmount} />}
-          currentValue={data.reservedAmount}
-          totalValue={stakedAmount}
         />
       </div>
 
@@ -108,7 +105,7 @@ export function OrphanVaultPanel({
             <Trans>Claim GMX</Trans>
           </Button>
           <Button variant="secondary" size="medium" className="w-full" disabled>
-            <Trans>Withdraw</Trans>
+            <Trans>Stop vesting</Trans>
           </Button>
         </div>
       </div>
