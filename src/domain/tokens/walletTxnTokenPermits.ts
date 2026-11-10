@@ -79,8 +79,6 @@ export async function sendWithWalletTxnTokenPermits<T>({
 
     return result;
   } catch (error) {
-    // only the permit's external call can fail with a permit reason, and the simulation and gas estimate rethrow
-    // without context
     walletTxnTokenPermits?.handleTokenPermitsError(error, tokenPermits, { isAnyContext: true });
     throw error;
   }

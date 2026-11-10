@@ -2,7 +2,7 @@ import type { PublicClient } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { getContract } from "config/contracts";
-import type { WalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
+import { getTokenPermitIssueType, type WalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
 import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "domain/tokens/walletTxnTokenPermits";
 import { TxnCallback, TxnEventBuilder, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
@@ -61,17 +61,12 @@ export async function sendSameChainDepositTxn({
       // transaction that would revert, so its token can go back to the Approve button
       if (tokenPermits.length > 0) {
         try {
-          gasLimit = await estimateSameChainDepositGas({
-            chainId,
-            client: getPublicClientWithRpc(chainId),
-            tokenAddress,
-            amount,
-            account,
-            tokenPermits,
-          });
+          gasLimit = await estimateDepositTxnGas(getPublicClientWithRpc(chainId), account, txn);
         } catch (error) {
-          callback?.(eventBuilder.Error(error));
-          throw error;
+          if (getTokenPermitIssueType(error, tokenPermits, { isAnyContext: true }) !== undefined) {
+            callback?.(eventBuilder.Error(error));
+            throw error;
+          }
         }
       }
 
@@ -116,14 +111,19 @@ export async function estimateSameChainDepositGas({
   account: string;
   tokenPermits?: SignedTokenPermit[];
 }): Promise<bigint> {
-  const txn = buildSameChainDepositTxn({ chainId, tokenAddress, amount, account, tokenPermits });
-
-  const gas = await client.estimateGas({
+  return estimateDepositTxnGas(
+    client,
     account,
-    to: txn.to,
-    data: txn.data,
-    value: txn.value,
-  });
+    buildSameChainDepositTxn({ chainId, tokenAddress, amount, account, tokenPermits })
+  );
+}
+
+async function estimateDepositTxnGas(
+  client: PublicClient,
+  account: string,
+  txn: ReturnType<typeof buildSameChainDepositTxn>
+): Promise<bigint> {
+  const gas = await client.estimateGas({ account, to: txn.to, data: txn.data, value: txn.value });
 
   return applyGasLimitBuffer(gas);
 }

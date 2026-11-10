@@ -26,6 +26,7 @@ import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { nowInSeconds } from "sdk/utils/time";
@@ -51,7 +52,11 @@ export type AddTokenPermitFn = (
   tokenAddress: string,
   spenderAddress: string,
   value: bigint,
-  options?: { deadline?: bigint }
+  options?: {
+    deadline?: bigint;
+    /** Defaults to the wallet's signer from the last render */
+    signer?: WalletSigner;
+  }
 ) => Promise<SignedTokenPermit>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
@@ -184,13 +189,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   }, [account, getIsPermitAvailable, isEnabled, storedTokenPermits]);
 
   const addTokenPermit = useCallback(
-    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: { deadline?: bigint }) => {
+    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: Parameters<AddTokenPermitFn>[3]) => {
+      const permitSigner = options?.signer ?? signer;
+
       // returning quietly would read as a signed permit to the caller while nothing was stored
-      if (!signer?.provider) {
+      if (!permitSigner?.provider) {
         throw new Error("Wallet is not ready to sign a permit");
       }
 
-      const signerWalletKey = `${chainId}:${signer.address}`;
+      const signerWalletKey = `${chainId}:${permitSigner.address}`;
       const assertWalletUnchanged = () => {
         if (latestStoredTokenPermits.current.walletKey !== signerWalletKey) {
           throw new Error(PERMIT_WALLET_CHANGED_ERROR);
@@ -201,7 +208,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
       const { permit } = await createAndSignTokenPermit(
         chainId,
-        signer,
+        permitSigner,
         tokenAddress,
         spenderAddress,
         value,

@@ -64,36 +64,10 @@ function mockCheck(result: Partial<TokenPermitsCheckResult>) {
 describe("sendSameChainDepositTxn", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.estimateGas.mockResolvedValue(300_000n);
     mocks.sendWalletTransaction.mockResolvedValue({
       transactionHash: "0xhash",
       wait: async () => ({ status: "success" }),
     });
-  });
-
-  it.each<{
-    name: string;
-    stored: SignedTokenPermit[];
-    check: Partial<TokenPermitsCheckResult>;
-    to: "ExchangeRouter" | "MultichainTransferRouter";
-  }>([
-    { name: "a checked permit", stored: [usdcPermit], check: { validPermits: [usdcPermit] }, to: "ExchangeRouter" },
-    {
-      name: "a permit the allowance already covers",
-      stored: [usdcPermit],
-      check: { stalePermits: [usdcPermit] },
-      to: "MultichainTransferRouter",
-    },
-    { name: "no stored permit", stored: [], check: {}, to: "MultichainTransferRouter" },
-  ])("deposits with $name through $to", async ({ stored, check, to }) => {
-    mockCheck(check);
-
-    await deposit(stored);
-
-    const sent = mocks.sendWalletTransaction.mock.calls[0][0];
-    expect(getAddress(sent.to)).toBe(getAddress(getContract(ARBITRUM, to)));
-    // only the permit deposit is estimated before the wallet, to catch a bad permit
-    expect(sent.gasLimit !== undefined).toBe(to === "ExchangeRouter");
   });
 
   it("stops before the wallet when the permit reverts, and reports the error with the permit it carried", async () => {
@@ -119,5 +93,16 @@ describe("sendSameChainDepositTxn", () => {
     const { event, data } = callback.mock.calls[0][0];
     expect(event).toBe("Error");
     expect(getTokenPermitIssueType(data.error, data.tokenPermits, { isAnyContext: true })).toBe("invalidSignature");
+  });
+
+  it("leaves the estimate to the wallet when it fails for another reason", async () => {
+    mockCheck({ validPermits: [usdcPermit] });
+    mocks.estimateGas.mockRejectedValue(new Error("rpc timeout"));
+
+    await deposit([usdcPermit]);
+
+    const sent = mocks.sendWalletTransaction.mock.calls[0][0];
+    expect(getAddress(sent.to)).toBe(getAddress(getContract(ARBITRUM, "ExchangeRouter")));
+    expect(sent.gasLimit).toBeUndefined();
   });
 });

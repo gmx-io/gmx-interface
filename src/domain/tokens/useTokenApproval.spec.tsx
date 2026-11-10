@@ -20,6 +20,8 @@ const mocks = vi.hoisted(() => ({
   toastContent: vi.fn(),
   tokenPermits: [] as { token: string; spender: string; value: bigint }[],
   isPermitAvailable: false,
+  addTokenPermit: vi.fn(),
+  SIGNER: { address: "0x0000000000000000000000000000000000000003" },
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -68,7 +70,7 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
     getIsPermitAvailable: () => mocks.isPermitAvailable,
-    addTokenPermit: vi.fn(),
+    addTokenPermit: mocks.addTokenPermit,
     disableTokenPermits: vi.fn(),
   }),
 }));
@@ -78,7 +80,8 @@ vi.mock("context/GmxAccountContext/hooks", () => ({
 }));
 
 vi.mock("components/GmxAccountModal/wrapChainAction", () => ({
-  wrapChainAction: (_chainId: number, _setChainId: unknown, action: (signer: unknown) => Promise<void>) => action({}),
+  wrapChainAction: (_chainId: number, _setChainId: unknown, action: (signer: unknown) => Promise<void>) =>
+    action(mocks.SIGNER),
 }));
 
 type HookResult = ReturnType<typeof useTokenApproval>;
@@ -282,6 +285,16 @@ describe("useTokenApproval", () => {
         metric: { flow: "trade", isExpress: true, isGasPaymentToken: true },
       })
     );
+  });
+
+  it("signs the permit with the signer from after the network switch", async () => {
+    mocks.isPermitAvailable = true;
+    const view = setup(1000n, true);
+    await approve(view);
+
+    await mocks.approveTokens.mock.calls[0][0].permitParams.addTokenPermit(mocks.TOKEN, mocks.SPENDER, 1000n);
+
+    expect(mocks.addTokenPermit).toHaveBeenCalledWith(mocks.TOKEN, mocks.SPENDER, 1000n, { signer: mocks.SIGNER });
   });
 
   it("releases the button when the mined allowance cannot be read", async () => {

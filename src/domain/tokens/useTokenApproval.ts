@@ -194,9 +194,7 @@ export function useTokenApproval({
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams = getIsPermitApproval(tokenAddress)
-        ? { addTokenPermit, disableTokenPermits, accountType }
-        : undefined;
+      const isPermit = getIsPermitApproval(tokenAddress);
       const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
 
       const doApprove = async (signerToUse: WalletSigner) => {
@@ -207,7 +205,16 @@ export function useTokenApproval({
           tokenAddress,
           spender: spenderAddress,
           chainId,
-          permitParams,
+          permitParams: isPermit
+            ? {
+                // wrapChainAction may have just switched the wallet to this chain, and the signer from the last render
+                // stays bound to the previous one
+                addTokenPermit: (token, spender, value, permitOptions) =>
+                  addTokenPermit(token, spender, value, { ...permitOptions, signer: signerToUse }),
+                disableTokenPermits,
+                accountType,
+              }
+            : undefined,
           approveAmount,
           metric: {
             ...metricParams,
