@@ -4020,7 +4020,6 @@ msgid "Up to 25% earnings"
 msgstr "최대 25% 수익"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "No assets yet"
 msgstr "아직 자산이 없습니다"
 
@@ -4032,6 +4031,10 @@ msgstr "AB 플래그"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "지갑 & GMX Account"
+
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
+msgid "No GM or GLV yet"
+msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
@@ -11594,6 +11597,10 @@ msgstr "시장가 주문"
 msgid "Buying"
 msgstr "매수"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"
 msgstr "언스테이킹 요청이 제출되었습니다"
@@ -12603,6 +12610,10 @@ msgstr "지갑"
 msgid "Enter a trigger price"
 msgstr "조건가 입력"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT buybacks"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "종합 통계"
@@ -13501,10 +13512,6 @@ msgstr "올해"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr "먼저 USDC가 USDG로 변환된 후 주문에서 두 번째 서명을 요청합니다. 거부하거나 나가면 USDG는 계정에 남습니다."
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Sell GT in buyback"
-msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

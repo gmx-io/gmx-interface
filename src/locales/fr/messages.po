@@ -4020,7 +4020,6 @@ msgid "Up to 25% earnings"
 msgstr "Jusqu'à 25 % de gains"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "No assets yet"
 msgstr "Aucun actif pour le moment"
 
@@ -4032,6 +4031,10 @@ msgstr "Indicateurs AB"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "Portefeuille & GMX Account"
+
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
+msgid "No GM or GLV yet"
+msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
@@ -11594,6 +11597,10 @@ msgstr "Ordres au marché"
 msgid "Buying"
 msgstr "Achat de"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"
 msgstr "Demande d’unstaking soumise"
@@ -12603,6 +12610,10 @@ msgstr "Portefeuille"
 msgid "Enter a trigger price"
 msgstr "Saisir un prix de déclenchement"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT buybacks"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "Statistiques totales"
@@ -13501,10 +13512,6 @@ msgstr "Cette année"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr "Votre USDC est d'abord converti en USDG, puis l'ordre demande une deuxième signature. Si vous la refusez ou partez, les USDG restent sur votre compte."
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Sell GT in buyback"
-msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

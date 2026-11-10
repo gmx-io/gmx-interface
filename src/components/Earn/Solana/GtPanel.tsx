@@ -37,7 +37,15 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
           <EarningsStat label={<Trans>Lifetime rewards</Trans>}>
             <UsdStatValue usd={gt?.lifetimeBuybackUsd} isLoading={isLoading} isAvailable={isLoading || isAvailable} />
           </EarningsStat>
-          <EarningsStat label={<Trans>Last buyback</Trans>}>
+          <EarningsStat
+            label={
+              <TooltipWithPortal
+                variant="iconStroke"
+                handle={<Trans>Last buyback</Trans>}
+                content={<Trans>USDC you received for your GT in the last buyback.</Trans>}
+              />
+            }
+          >
             <UsdStatValue
               usd={gt?.lastBuybackUsd}
               isLoading={isLoading}
