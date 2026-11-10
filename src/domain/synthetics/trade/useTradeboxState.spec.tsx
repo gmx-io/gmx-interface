@@ -87,6 +87,22 @@ describe("useTradeboxState network isolation", () => {
     localStorage.clear();
   });
 
+  it("initializes collateral for fresh and restored position forms FESOL-15", () => {
+    for (const tradeType of [undefined, TradeType.Long, TradeType.Short]) {
+      if (tradeType !== undefined) {
+        seedNetwork(ARBITRUM, { tradeType, indexTokenAddress: BTC_ADDRESS, market: BTC_MARKET_ADDRESS });
+      }
+
+      const view = renderTradebox(ARBITRUM);
+      const marketAddress = tradeType === undefined ? MOCK_MARKET_ADDRESS : BTC_MARKET_ADDRESS;
+      const side = tradeType === TradeType.Short ? "short" : "long";
+      expect(tradebox.collateralAddress).toBe(USDC_ADDRESS);
+      expect(readStoredTradeOptions(ARBITRUM)?.collaterals?.[marketAddress]?.[side]).toBe(USDC_ADDRESS);
+      view.unmount();
+      localStorage.clear();
+    }
+  });
+
   it.each([ARBITRUM, SOLANA_NETWORK_ID] as const)(
     "restores and accepts Swap only on supported networks FESOL-15 (%s)",
     (networkId) => {

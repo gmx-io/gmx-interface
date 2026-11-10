@@ -212,9 +212,10 @@ export function useTradeboxState(
   const setStoredOptions = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsOnChain((oldState) => {
-        let newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args, oldState);
+        let newState = typeof args === "function" ? args(oldState) : args;
 
-        if (newState === oldState) {
+        // Ignore unsupported Swap requests, but let identity updates initialize position tokens and collateral.
+        if (newState.tradeType === TradeType.Swap && !getNetworkFeatures(networkId).swap) {
           return oldState;
         }
 
