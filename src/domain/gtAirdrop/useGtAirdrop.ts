@@ -48,7 +48,7 @@ export function useGtAirdrop({
       // each chain allocates GT for the GMX staked on it, the airdrop is their sum
       const amounts = await Promise.all(
         GT_AIRDROP_CHAIN_IDS.map(async (airdropChainId) => {
-          const url = getIndexerUrl(airdropChainId, "gtAirdrop");
+          const url = getIndexerUrl(airdropChainId, "subsquid");
           if (!url) {
             return 0n;
           }
