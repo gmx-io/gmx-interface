@@ -1,9 +1,10 @@
 import { Plural, t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import type { SortDirection } from "context/SorterContext/types";
-import { formatDateTime } from "lib/dates";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -13,13 +14,14 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { Sorter } from "components/Sorter/Sorter";
+import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 
-import { formatGt } from "../gtPointsFormat";
+import { formatGt, formatTableDateTime } from "../gtPointsFormat";
 import type { GtPointsStakeData, GtStakePosition } from "../gtPointsTypes";
-import { formatLpAmount, formatUsdValue, StakeTokenLabel } from "./StakeTokenLabel";
+import { formatLpAmount, formatUsdValue, getStakeTokenName, StakeTokenLabel } from "./StakeTokenLabel";
 
 type Tab = "positions" | "history";
 type SortField = "value" | "duration";
@@ -42,6 +44,7 @@ type Props = {
 };
 
 export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: Props) {
+  const { isMobile } = useBreakpoints();
   const [tab, setTab] = useState<Tab>("positions");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [sort, setSort] = useState<{ field: SortField; direction: SortDirection } | undefined>(undefined);
@@ -64,6 +67,7 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
 
   const toggle = (id: string, isChecked: boolean) =>
     setSelectedIds((ids) => (isChecked ? [...ids, id] : ids.filter((value) => value !== id)));
+  const selectAll = (isChecked: boolean) => setSelectedIds(isChecked ? positions.map((p) => p.id) : []);
 
   const sorterProps = (field: SortField) => ({
     direction: sort?.field === field ? sort.direction : ("unspecified" as SortDirection),
@@ -118,10 +122,23 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
           options={tabOptions}
           selectedValue={tab}
           onChange={setTab}
-          rightContent={showBulk ? <div className="flex gap-8 pb-8 max-md:hidden">{bulkButtons}</div> : null}
+          rightContent={showBulk && !isMobile ? <div className="flex gap-8 pb-8">{bulkButtons}</div> : null}
         />
       </div>
-      {showBulk ? <div className="flex gap-8 px-20 pt-12 md:hidden">{bulkButtons}</div> : null}
+      {showBulk && isMobile ? (
+        <div className="flex flex-wrap items-center gap-8 px-16 pt-12">
+          <Checkbox
+            isChecked={allSelected}
+            isPartialChecked={selected.length > 0 && !allSelected}
+            setIsChecked={selectAll}
+          >
+            <span className="text-body-medium whitespace-nowrap">
+              <Trans>Select all</Trans>
+            </span>
+          </Checkbox>
+          <div className="ml-auto flex gap-8">{bulkButtons}</div>
+        </div>
+      ) : null}
 
       {!isConnected && isLoading ? (
         <EmptyTableContent isLoading isEmpty />
@@ -129,98 +146,121 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
         <ConnectState />
       ) : tab === "positions" ? (
         <>
-          <TableScrollFadeContainer>
-            <table className="w-full min-w-[780px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
-              <thead>
-                <TableTheadTr>
-                  <TableTh className="w-[44px]">
-                    <Checkbox
-                      isChecked={allSelected}
-                      isPartialChecked={selected.length > 0 && !allSelected}
-                      disabled={positions.length === 0}
-                      setIsChecked={(isChecked) => setSelectedIds(isChecked ? positions.map((p) => p.id) : [])}
-                    />
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Token</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...sorterProps("value")}>
-                      <Trans>Initial value</Trans>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...sorterProps("duration")}>
-                      <Trans>Duration</Trans>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Current APR</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Avg APR</Trans>
-                  </TableTh>
-                  <TableTh>
-                    <Trans>Unclaimed GT</Trans>
-                  </TableTh>
-                  <TableTh />
-                </TableTheadTr>
-              </thead>
-              {!isLoading && sorted.length > 0 ? (
-                <tbody>
-                  {sorted.map((position) => {
-                    const duration = formatStakeDuration(position.stakedAt, now);
-                    return (
-                      <TableTr key={position.id}>
-                        <TableTd>
-                          <Checkbox
-                            isChecked={selectedIds.includes(position.id)}
-                            setIsChecked={(isChecked) => toggle(position.id, isChecked)}
-                          />
-                        </TableTd>
-                        <TableTd>
-                          <StakeTokenLabel token={position.token} size={28} />
-                        </TableTd>
-                        <TableTd>
-                          <TwoLines
-                            top={formatUsdValue(position.initialValueUsd)}
-                            bottom={`(${formatLpAmount(position.amount, position.token)})`}
-                          />
-                        </TableTd>
-                        <TableTd className="text-body-medium numbers">
-                          {duration.days} <span className="text-typography-secondary">{duration.weeks}</span>
-                        </TableTd>
-                        <TableTd className="text-body-medium numbers">{formatApr(position.currentApr)}</TableTd>
-                        <TableTd className="text-body-medium numbers">{formatApr(position.avgApr)}</TableTd>
-                        <TableTd className="text-body-medium numbers">{formatGt(position.unclaimedGt)}</TableTd>
-                        <TableTd>
-                          <div className="flex justify-end gap-8">
-                            <Button
-                              variant="secondary"
-                              size="small"
-                              className="whitespace-nowrap !px-8"
-                              disabled={position.unclaimedGt === 0n}
-                              onClick={() => onAction({ kind: "claim", positions: [position] })}
+          {isMobile ? (
+            !isLoading && sorted.length > 0 ? (
+              <div className="flex flex-col gap-8 p-16">
+                {sorted.map((position) => (
+                  <PositionCard
+                    key={position.id}
+                    position={position}
+                    now={now}
+                    isSelected={selectedIds.includes(position.id)}
+                    onToggle={(isChecked) => toggle(position.id, isChecked)}
+                    onAction={onAction}
+                  />
+                ))}
+              </div>
+            ) : null
+          ) : (
+            <TableScrollFadeContainer>
+              <table className="w-full min-w-[780px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
+                <thead>
+                  <TableTheadTr>
+                    <TableTh className="w-[44px]">
+                      <Checkbox
+                        isChecked={allSelected}
+                        isPartialChecked={selected.length > 0 && !allSelected}
+                        disabled={positions.length === 0}
+                        setIsChecked={selectAll}
+                      >
+                        <span className="sr-only">
+                          <Trans>Select all positions</Trans>
+                        </span>
+                      </Checkbox>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Token</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...sorterProps("value")}>
+                        <Trans>Initial value</Trans>
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <Sorter {...sorterProps("duration")}>
+                        <Trans>Duration</Trans>
+                      </Sorter>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Current APR</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Avg APR</Trans>
+                    </TableTh>
+                    <TableTh>
+                      <Trans>Unclaimed GT</Trans>
+                    </TableTh>
+                    <TableTh />
+                  </TableTheadTr>
+                </thead>
+                {!isLoading && sorted.length > 0 ? (
+                  <tbody>
+                    {sorted.map((position) => {
+                      const duration = formatStakeDuration(position.stakedAt, now);
+                      return (
+                        <TableTr key={position.id}>
+                          <TableTd>
+                            <Checkbox
+                              isChecked={selectedIds.includes(position.id)}
+                              setIsChecked={(isChecked) => toggle(position.id, isChecked)}
                             >
-                              <Trans>Claim GT</Trans>
-                            </Button>
-                            <Button
-                              variant="secondary"
-                              size="small"
-                              className="whitespace-nowrap !px-8"
-                              onClick={() => onAction({ kind: "unstake", positions: [position] })}
-                            >
-                              <Trans>Unstake</Trans>
-                            </Button>
-                          </div>
-                        </TableTd>
-                      </TableTr>
-                    );
-                  })}
-                </tbody>
-              ) : null}
-            </table>
-          </TableScrollFadeContainer>
+                              <span className="sr-only">{t`Select ${getStakeTokenName(position.token)}`}</span>
+                            </Checkbox>
+                          </TableTd>
+                          <TableTd>
+                            <StakeTokenLabel token={position.token} size={28} />
+                          </TableTd>
+                          <TableTd>
+                            <TwoLines
+                              top={formatUsdValue(position.initialValueUsd)}
+                              bottom={`(${formatLpAmount(position.amount, position.token)})`}
+                            />
+                          </TableTd>
+                          <TableTd className="text-body-medium numbers">
+                            {duration.days} <span className="text-typography-secondary">{duration.weeks}</span>
+                          </TableTd>
+                          <TableTd className="text-body-medium numbers">{formatApr(position.currentApr)}</TableTd>
+                          <TableTd className="text-body-medium numbers">{formatApr(position.avgApr)}</TableTd>
+                          <TableTd className="text-body-medium numbers">{formatGt(position.unclaimedGt)}</TableTd>
+                          <TableTd>
+                            <div className="flex justify-end gap-8">
+                              <Button
+                                variant="secondary"
+                                size="small"
+                                className="whitespace-nowrap !px-8"
+                                disabled={position.unclaimedGt === 0n}
+                                onClick={() => onAction({ kind: "claim", positions: [position] })}
+                              >
+                                <Trans>Claim GT</Trans>
+                              </Button>
+                              <Button
+                                variant="secondary"
+                                size="small"
+                                className="whitespace-nowrap !px-8"
+                                onClick={() => onAction({ kind: "unstake", positions: [position] })}
+                              >
+                                <Trans>Unstake</Trans>
+                              </Button>
+                            </div>
+                          </TableTd>
+                        </TableTr>
+                      );
+                    })}
+                  </tbody>
+                ) : null}
+              </table>
+            </TableScrollFadeContainer>
+          )}
           <EmptyTableContent
             isLoading={isLoading}
             isEmpty={sorted.length === 0}
@@ -236,6 +276,81 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
       ) : (
         <StakeHistory stake={stake} isLoading={isLoading} />
       )}
+    </div>
+  );
+}
+
+// Phones: one card per position, laid out like the GM/GLV cards on the Pools page.
+function PositionCard({
+  position,
+  now,
+  isSelected,
+  onToggle,
+  onAction,
+}: {
+  position: GtStakePosition;
+  now: number;
+  isSelected: boolean;
+  onToggle: (isChecked: boolean) => void;
+  onAction: (action: StakeAction) => void;
+}) {
+  const duration = formatStakeDuration(position.stakedAt, now);
+
+  return (
+    <div
+      className={cx(
+        "flex flex-col gap-4 rounded-8 border-1/2 bg-fill-surfaceElevated50 p-12",
+        isSelected ? "border-blue-300" : "border-[transparent]"
+      )}
+    >
+      <div className="flex items-center pb-8">
+        <Checkbox className="text-left" isChecked={isSelected} setIsChecked={onToggle}>
+          <StakeTokenLabel token={position.token} size={32} />
+        </Checkbox>
+      </div>
+      <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
+        <SyntheticsInfoRow
+          label={<Trans>Initial value</Trans>}
+          value={
+            <span className="numbers">
+              {formatUsdValue(position.initialValueUsd)}{" "}
+              <span className="text-typography-secondary">({formatLpAmount(position.amount, position.token)})</span>
+            </span>
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Duration</Trans>}
+          value={
+            <span className="numbers">
+              {duration.days} <span className="text-typography-secondary">{duration.weeks}</span>
+            </span>
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Current APR</Trans>}
+          value={<span className="numbers">{formatApr(position.currentApr)}</span>}
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Avg APR</Trans>}
+          value={<span className="numbers">{formatApr(position.avgApr)}</span>}
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Unclaimed GT</Trans>}
+          value={<span className="numbers">{formatGt(position.unclaimedGt)}</span>}
+        />
+      </div>
+      <div className="mt-12 grid grid-cols-2 gap-8">
+        <Button
+          variant="secondary"
+          disabled={position.unclaimedGt === 0n}
+          onClick={() => onAction({ kind: "claim", positions: [position] })}
+        >
+          <Trans>Claim GT</Trans>
+        </Button>
+        <Button variant="secondary" onClick={() => onAction({ kind: "unstake", positions: [position] })}>
+          <Trans>Unstake</Trans>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -284,7 +399,7 @@ function StakeHistory({ stake, isLoading }: { stake: GtPointsStakeData | undefin
                 <Trans>Action</Trans>
               </TableTh>
               <TableTh>
-                <Trans>Asset</Trans>
+                <Trans>Token</Trans>
               </TableTh>
               <TableTh>
                 <Trans>Amount</Trans>
@@ -308,7 +423,7 @@ function StakeHistory({ stake, isLoading }: { stake: GtPointsStakeData | undefin
                     <TwoLines top={formatLpAmount(item.amount, item.token)} bottom={formatUsdValue(item.valueUsd)} />
                   </TableTd>
                   <TableTd className="text-body-medium text-typography-secondary numbers">
-                    {formatDateTime(item.timestamp)}
+                    {formatTableDateTime(item.timestamp)}
                   </TableTd>
                 </TableTr>
               ))}

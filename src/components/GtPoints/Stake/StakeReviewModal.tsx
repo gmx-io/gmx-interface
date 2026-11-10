@@ -44,7 +44,7 @@ export function StakeReviewModal({ action, onClose }: { action: StakeAction | un
                   <>
                     <span className="text-body-medium numbers">{formatLpAmount(position.amount, position.token)}</span>
                     <span className="text-body-small text-typography-secondary numbers">
-                      {formatUsdValue(position.initialValueUsd)} · {formatGt(position.unclaimedGt)}
+                      {formatUsdValue(position.initialValueUsd)}
                     </span>
                   </>
                 )}
@@ -60,13 +60,15 @@ export function StakeReviewModal({ action, onClose }: { action: StakeAction | un
           value={<span className="font-medium text-typography-primary numbers">{formatGt(totalGt)}</span>}
         />
 
-        {!isClaim ? (
-          <span className="text-body-small text-typography-secondary">
+        <span className="text-body-small text-typography-secondary">
+          {isClaim ? (
+            <Trans>Claiming early may reduce your total GT rewards. For maximum rewards, claim when you unstake.</Trans>
+          ) : (
             <Trans>
               The tokens go back to your wallet. If you stake them again, the new position starts at 0% APR.
             </Trans>
-          </span>
-        ) : null}
+          )}
+        </span>
 
         <Button variant="primary-action" className="w-full" onClick={confirm}>
           {isClaim ? (

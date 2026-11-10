@@ -7,8 +7,8 @@ const STAKE_FAQ_ITEMS: FaqItem[] = [
     title: <Trans>How are GT rewards calculated?</Trans>,
     content: (
       <Trans>
-        Each stake position earns GT on its staked value at its current APR. The GT adds up as unclaimed GT until you
-        claim it.
+        GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when
+        you claim.
       </Trans>
     ),
   },
@@ -26,15 +26,18 @@ const STAKE_FAQ_ITEMS: FaqItem[] = [
     title: <Trans>How do I claim GT?</Trans>,
     content: (
       <Trans>
-        Use Claim GT on a position, or select several positions and use Claim GT above the table. Claimed GT goes to
-        your wallet and shows in your GT history.
+        Unstaking automatically claims the position's GT rewards. You can also claim GT without unstaking. Both actions
+        support selecting multiple positions at once.
       </Trans>
     ),
   },
   {
     title: <Trans>Does claiming early or often reduce my rewards?</Trans>,
     content: (
-      <Trans>No. Claiming doesn't change a position's staking time or APR, so you can claim whenever you like.</Trans>
+      <Trans>
+        Yes. Each claim uses your position's Avg APR at that time. Rewards claimed earlier are not recalculated as Avg
+        APR increases. To maximize your total GT rewards, claim once when you unstake.
+      </Trans>
     ),
   },
   {

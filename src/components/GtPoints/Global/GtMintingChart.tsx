@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { format } from "date-fns";
 import { useMemo, useState } from "react";
 import {
   ComposedChart,
@@ -16,11 +15,16 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
+import { CHART_PERIOD_DAYS, type ChartPeriod, useChartPeriodTabs } from "../chartPeriods";
+import {
+  filterChartPeriod,
+  formatChartAmount,
+  formatChartPrice,
+  formatUtcDay,
+  getAxisWidth,
+  getChartAxis,
+} from "../gtPointsFormat";
 import type { GtMintingPoint } from "../gtPointsTypes";
-
-type Period = "30d" | "90d" | "180d" | "all";
-
-const PERIOD_DAYS: Record<Period, number | undefined> = { "30d": 30, "90d": 90, "180d": 180, all: undefined };
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-slate-100)",
@@ -33,19 +37,13 @@ const CHART_MARGIN = { top: 16, right: 8, bottom: 8, left: 0 };
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 const CHART_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: "var(--color-slate-100)", fill: "var(--color-slate-900)" };
 
-function formatMillions(value: number) {
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`;
-  if (value >= 1_000) return `${Math.round(value / 1_000)}k`;
-  return String(Math.round(value));
-}
-
 function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
   const point = payload[0]!.payload as GtMintingPoint;
 
   return (
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
-      <StatsTooltipRow label={t`Date`} value={format(point.timestamp * 1000, "dd MMM yyyy")} showDollar={false} />
+      <StatsTooltipRow label={t`Date`} value={formatUtcDay(point.timestamp, "dd MMM yyyy")} showDollar={false} />
       <StatsTooltipRow
         label={t`Total minted`}
         value={`${Math.round(point.totalMinted).toLocaleString("en-US")} GT`}
@@ -58,25 +56,25 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
 
 export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefined }) {
   const { isMobile } = useBreakpoints();
-  const [period, setPeriod] = useState<Period>("all");
+  const [period, setPeriod] = useState<ChartPeriod>("all");
 
-  const data = useMemo(() => {
-    if (!points?.length) return [];
-    const days = PERIOD_DAYS[period];
-    if (!days) return points;
-    const from = points[points.length - 1].timestamp - days * 86_400;
-    return points.filter((point) => point.timestamp >= from);
-  }, [points, period]);
+  const data = useMemo(() => filterChartPeriod(points ?? [], CHART_PERIOD_DAYS[period]), [points, period]);
 
-  const periodTabs = useMemo(
-    () => [
-      { value: "30d" as const, label: t`30d` },
-      { value: "90d" as const, label: t`90d` },
-      { value: "180d" as const, label: t`180d` },
-      { value: "all" as const, label: t`All` },
-    ],
-    []
+  // Each axis fits the selected period on its own, with padding, instead of starting at 0.
+  const mintedAxis = useMemo(() => getChartAxis(data.map((point) => point.totalMinted)), [data]);
+  const priceAxis = useMemo(() => getChartAxis(data.map((point) => point.mintingPrice)), [data]);
+  const mintedStep = mintedAxis?.step ?? 1;
+  const priceStep = priceAxis?.step ?? 1;
+  const mintedWidth = getAxisWidth(
+    mintedAxis?.ticks.map((tick) => formatChartAmount(tick, mintedStep)),
+    44
   );
+  const priceWidth = getAxisWidth(
+    priceAxis?.ticks.map((tick) => formatChartPrice(tick, priceStep)),
+    48
+  );
+
+  const periodTabs = useChartPeriodTabs();
 
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
@@ -84,7 +82,7 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
         <h3 className="text-body-large font-medium text-typography-primary">
           <Trans>GT minting</Trans>
         </h3>
-        <PoolsTabs<Period> tabs={periodTabs} selected={period} setSelected={setPeriod} />
+        <PoolsTabs<ChartPeriod> tabs={periodTabs} selected={period} setSelected={setPeriod} />
       </div>
 
       <div className="flex flex-wrap items-center gap-24 px-20 pt-8 text-typography-secondary">
@@ -137,7 +135,7 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
                   minTickGap={isMobile ? 16 : 40}
                   tick={CHART_TICK_PROPS}
                   tickMargin={10}
-                  tickFormatter={(value: number) => format(value * 1000, "d MMM")}
+                  tickFormatter={(value: number) => formatUtcDay(value)}
                 />
                 <YAxis
                   yAxisId="minted"
@@ -145,8 +143,10 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
                   axisLine={false}
                   tickLine={false}
                   tickMargin={8}
-                  width={44}
-                  tickFormatter={formatMillions}
+                  width={mintedWidth}
+                  domain={mintedAxis?.domain}
+                  ticks={mintedAxis?.ticks}
+                  tickFormatter={(value: number) => formatChartAmount(value, mintedStep)}
                   tick={CHART_TICK_PROPS}
                 />
                 <YAxis
@@ -156,8 +156,10 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
                   axisLine={false}
                   tickLine={false}
                   tickMargin={8}
-                  width={48}
-                  tickFormatter={(value: number) => `$${value.toFixed(2)}`}
+                  width={priceWidth}
+                  domain={priceAxis?.domain}
+                  ticks={priceAxis?.ticks}
+                  tickFormatter={(value: number) => formatChartPrice(value, priceStep)}
                   tick={CHART_TICK_PROPS}
                 />
               </ComposedChart>

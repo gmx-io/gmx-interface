@@ -417,6 +417,11 @@ msgstr "Remises sur l'impact sur le prix prêtes à être récupérées. <0>En s
 msgid "Execute Market Swap"
 msgstr "Market Swap exécuté"
 
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+#: src/components/GtPoints/Buyback/SellGtModal.tsx
+msgid "Minimum sell amount is {0} GT."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "One-Click Trading is unavailable for smart wallets"
 msgstr "One-Click Trading n'est pas disponible pour les portefeuilles smart contract"
@@ -583,6 +588,10 @@ msgstr "Obtenez {gasPaymentTokenSymbol} par <0>échange</0> ou via un <1>bridge<
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr "Les remises sont versées dans les jetons de garantie utilisés par vos filleuls. Par exemple, si un filleul effectue des transactions avec une garantie en USDC, votre part de remise sera versée en USDC."
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select {0}"
+msgstr ""
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Idea stage, nothing shipped yet"
 msgstr "Au stade de l'idée, rien de livré pour l'instant"
@@ -697,6 +706,10 @@ msgstr "Financement"
 #: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "Dépôt de marge"
+
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "Yes. Each claim uses your position's Avg APR at that time. Rewards claimed earlier are not recalculated as Avg APR increases. To maximize your total GT rewards, claim once when you unstake."
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
@@ -1041,6 +1054,10 @@ msgstr "Toutes les positions appartiennent au même portefeuille connecté et so
 msgid "High external swap impact"
 msgstr "Impact d'échange externe élevé"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Daily value"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "Conservez davantage de vos gains"
@@ -1134,6 +1151,11 @@ msgstr "Disponible à partir du"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "Liquidité disponible"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Buyback price"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code"
@@ -1495,6 +1517,10 @@ msgstr "Vous avez activé le code de parrainage {activatedReferralCodeLabel}. Vo
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Facteur de frais d'échange (PI négatif)"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback price"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
@@ -1937,6 +1963,10 @@ msgstr "Sélectionnez au moins un marché"
 msgid "Virtual long token ID"
 msgstr "Identifiant du jeton long virtuel"
 
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+msgid "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "Désactivation..."
@@ -2249,6 +2279,10 @@ msgstr "Effet de levier maximum dépassé. La marge restante {remainingCollatera
 msgid "Set TP price below limit price"
 msgstr "Définissez le prix TP en dessous du prix limite"
 
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr "Hash de la transaction de bridge"
@@ -2389,7 +2423,12 @@ msgid "Optimal usage factor short"
 msgstr "Facteur d'utilisation optimal short"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Avg APR"
+msgstr ""
+
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "You have no GLV or GM to stake. Buy some on the Pools page first."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -2595,6 +2634,10 @@ msgstr "Fonctionnement"
 msgid "Order is already frozen"
 msgstr "L'ordre est déjà gelé"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Bought"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2628,6 +2671,10 @@ msgstr "EIP-4844"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
 msgstr "Le rapprochement complet du cycle de vie est indisponible car une partie de l'historique de cette position n'a pas pu être associée de façon fiable"
+
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "Unstaking automatically claims the position's GT rewards. You can also claim GT without unstaking. Both actions support selecting multiple positions at once."
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
@@ -2814,6 +2861,10 @@ msgstr "Gagnez sur chaque trade qu'ils effectuent"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "Valeur totale des jetons dans les pools GM"
+
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "The referral discount applies only when you trade with a referral code."
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Frozen"
@@ -3007,10 +3058,6 @@ msgstr "Définir un ordre Stop Market long @ {0}"
 msgid "Your discounts"
 msgstr "Vos réductions"
 
-#: src/components/GtPoints/Buyback/SellGtModal.tsx
-msgid "The final price is set at the buyback. If more GT is submitted before then, you get less per GT. The sale counts toward {seasonName} only."
-msgstr ""
-
 #: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
 msgid "How much GT you can sell this season. You earn quota when the traders you refer use GMX on Solana."
 msgstr ""
@@ -3050,10 +3097,6 @@ msgstr "Optimiseur de rendement sur Avalanche"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "Retrait de {0} effectué sur {positionText}"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "No. Claiming doesn't change a position's staking time or APR, so you can claim whenever you like."
-msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} for {1}"
@@ -3115,6 +3158,7 @@ msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "La position dépasse l'effet de levier maximal autorisé. <0>En savoir plus</0>."
 
 #: src/components/GtPoints/My/UnclaimedGtCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Unclaimed GT"
 msgstr ""
@@ -3463,6 +3507,8 @@ msgstr "Aidez-nous à améliorer GMX. Pour des raisons de sécurité, nous ne vo
 msgid "Cancel margin deposit"
 msgstr "Annuler le dépôt de marge"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 msgid "Minting price"
@@ -4435,6 +4481,10 @@ msgstr "Portefeuille Arbitrum"
 msgid "Claim <0/> of <1/>"
 msgstr "Récupérer <0/> sur <1/>"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Minimum stake is {minStakeText} (≈{minStakeUsdText})."
+msgstr ""
+
 #: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
 msgid "Next buyback in"
 msgstr ""
@@ -4507,6 +4557,10 @@ msgstr "Statut du réseau"
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "Impact sur le prix trop élevé. Impact : {negativeImpactAmountText}, entrée : {amountAfterFeesText}"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Minting price {0}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "Quels réseaux sont pris en charge ?"
@@ -4542,6 +4596,7 @@ msgstr "Téléversement..."
 msgid "Unstake requested"
 msgstr "Unstaking demandé"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Initial value"
 msgstr ""
@@ -5928,10 +5983,6 @@ msgstr "Réclamation en cours..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> conclut un partenariat de données avec Token Terminal. GMX est une plateforme d'échange perpétuel sans permission de premier plan, construite sur <2>@Arbitrum</2> et <3>@Avax</3>.</0><4>Le protocole sert de couche de liquidité fondamentale pour la DeFi multichaîne.</4><5>Avec environ 280 milliards de dollars de volume de négociation notionnel et en croissance, GMX a reconnu la nécessité d'un reporting fiable et axé sur les données pour les parties prenantes.</5>"
 
-#: src/components/GtPoints/Stake/StakeModal.tsx
-msgid "You have no GLV or GM to stake yet."
-msgstr ""
-
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "No staking history yet"
 msgstr ""
@@ -5941,7 +5992,7 @@ msgstr ""
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -6176,6 +6227,7 @@ msgstr "v :"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeReviewModal.tsx
 msgid "Unstake"
 msgstr "Unstaker"
@@ -6191,6 +6243,10 @@ msgstr "Signature :"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "Cette action est désactivée"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "No buybacks yet"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6342,7 +6398,7 @@ msgstr "Forcer l'échec des swaps externes"
 msgid "Withdraw"
 msgstr "Retirer"
 
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 msgid "180d"
 msgstr ""
 
@@ -6400,6 +6456,10 @@ msgstr "Demande de transfert envoyée"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "Le plafond de vente de GM du pool {0} [{1}] a été atteint, car des jetons sont réservés par les traders. Choisissez un autre pool, réduisez le montant de la vente ou répartissez le retrait entre plusieurs pools."
+
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "VIP {0} discount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
@@ -7054,6 +7114,10 @@ msgstr "Marge au moment de la liquidation"
 msgid "Permits testing"
 msgstr "Test des permits"
 
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "Total with referral"
+msgstr ""
+
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 msgid "Total minted"
@@ -7376,6 +7440,7 @@ msgstr "Récompenses esGMX"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Token"
 msgstr ""
@@ -7832,6 +7897,7 @@ msgstr "Perpétuels"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeReviewModal.tsx
 msgid "Claim GT"
 msgstr ""
@@ -7863,6 +7929,10 @@ msgstr "Moins de détails"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "Exposition mixte : short sur {indexSymbol} + exposition long à {collateralSymbol} via la garantie. Le prix de liquidation varie selon le prix de {collateralSymbol}."
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "USDC paid per GT in the most recent buyback. It never goes above the minting price."
+msgstr ""
 
 #: src/components/GtPoints/Stake/StakeFaq.tsx
 msgid "How are GT rewards calculated?"
@@ -8345,6 +8415,10 @@ msgstr "La taille de la position dépasse la valeur du pool"
 msgid "Apply referral code"
 msgstr "Appliquer le code de parrainage"
 
+#: src/components/GtPoints/Stake/StakeReviewModal.tsx
+msgid "Claiming early may reduce your total GT rewards. For maximum rewards, claim when you unstake."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "Exposant d'impact (positif)"
@@ -8360,10 +8434,6 @@ msgstr "Si vous continuez, vous perdrez {0} de récompenses"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Prices, markets, positions, orders — one call away"
 msgstr "Prix, marchés, positions, ordres — en un seul appel"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "Each stake position earns GT on its staked value at its current APR. The GT adds up as unclaimed GT until you claim it."
-msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
@@ -8779,6 +8849,10 @@ msgstr "Gas"
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "Retrait de {balanceFormatted} vers le compte principal…"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Buy GLV / GM"
+msgstr ""
+
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Symbol (A to Z)"
 msgstr "Symbole (A à Z)"
@@ -9024,7 +9098,6 @@ msgstr "Ce type d'ordre n'est pas pris en charge"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Asset"
 msgstr "Actif"
 
@@ -9217,7 +9290,7 @@ msgid "Now"
 msgstr "Maintenant"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30j"
@@ -9639,7 +9712,7 @@ msgid "Position fee factor (negative PI)"
 msgstr "Facteur de frais de position (PI négatif)"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 msgid "90d"
 msgstr "90j"
 
@@ -10061,6 +10134,10 @@ msgstr "Fermé aux nouveaux ordres à cours limité"
 msgid "No topics"
 msgstr "Aucun topic"
 
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+msgid "What is GT buyback?"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
 msgstr "<0>🔷 Volume 24h : 1,01 milliard $.</0><1>Merci aux centaines de milliers d'utilisateurs GMX qui continuent de soutenir le trading onchain sans permission.</1>"
@@ -10425,6 +10502,10 @@ msgstr "Total des rétrocommissions"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL after fees and price impact. Hover the value to see the breakdown."
 msgstr "PnL total après frais et impact sur le prix. Survolez la valeur pour voir la répartition."
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback · {0}"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -10954,6 +11035,10 @@ msgstr "Meilleures positions"
 msgid "Send remaining margin to"
 msgstr "Envoyer la marge restante vers"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select all positions"
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "Acheter des GM avec {0} jusqu'aux plafonds ci-dessous"
@@ -11107,6 +11192,10 @@ msgstr "Sélectionner la langue"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "Valeur inconnue"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Buyback history"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11450,6 +11539,7 @@ msgid "Margin"
 msgstr "Marge"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "Durée"
@@ -11683,6 +11773,7 @@ msgstr "Réclamations"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -11878,6 +11969,7 @@ msgstr "En bref"
 msgid "Closed to new stop market orders"
 msgstr "Fermé aux nouveaux ordres Stop Marché"
 
+#: src/components/GtPoints/My/VipTiers.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -11929,6 +12021,10 @@ msgstr "Transaction envoyée"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Unstake request cancelled"
 msgstr "Demande d’unstaking annulée"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "GT bought back in the most recent completed buyback. Buybacks run once a day."
+msgstr ""
 
 #: src/components/GtPoints/Global/TopHolders.tsx
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
@@ -12590,6 +12686,10 @@ msgstr "Changer de réseau"
 msgid "Requesting unstake..."
 msgstr "Demande d’unstaking..."
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM est le jeton de fournisseur de liquidité pour les marchés GMX V2. Il accumule 63 % des frais générés par les marchés V2."
@@ -12981,6 +13081,10 @@ msgstr "Cumulez-les."
 msgid "Ecosystem projects"
 msgstr "Projets de l'écosystème"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "All GT bought back since buybacks started."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "In progress..."
 msgstr "En cours..."
@@ -12996,10 +13100,6 @@ msgstr "Vault d'affiliation"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Vendre des GM contre {0} jusqu'aux plafonds ci-dessous. Les jetons restants sont réservés aux positions ouvertes."
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "Use Claim GT on a position, or select several positions and use Claim GT above the table. Claimed GT goes to your wallet and shows in your GT history."
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -13264,6 +13364,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr "GMX | plateforme d’échange décentralisée de contrats perpétuels"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
@@ -13287,6 +13388,7 @@ msgstr "Liquidité disponible uniquement sur {chainNames} ou {lastChainName}. Ch
 msgid "Transfer history"
 msgstr "Historique des transferts"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Current APR"
 msgstr ""
@@ -13685,6 +13787,11 @@ msgstr "Indices"
 msgid "Download as CSV"
 msgstr "Télécharger en CSV"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Total bought"
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Fee discounts up to 25%"
 msgstr "Jusqu'à 25 % de remise sur les frais"
@@ -13876,6 +13983,10 @@ msgstr "Une erreur inattendue s'est produite. Réessayez"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Get optimized exposure to the highest-utilized pools"
 msgstr "Obtenez une exposition optimisée aux pools les plus utilisés"
+
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select all"
+msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -14087,6 +14198,10 @@ msgstr "Transaction annulée"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Demande de Market Decrease"
+
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Minimum stake is {minStakeUsdText}."
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"

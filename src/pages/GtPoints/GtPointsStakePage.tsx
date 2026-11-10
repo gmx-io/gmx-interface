@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { EMPTY_ARRAY } from "lib/objects";
 
@@ -15,6 +15,12 @@ export default function GtPointsStakePage() {
   const data = useGtPointsData();
   const [isStakeOpen, setIsStakeOpen] = useState(false);
   const [action, setAction] = useState<StakeAction | undefined>(undefined);
+
+  // A wallet switch closes the modals, so nothing from the previous wallet can be confirmed.
+  useEffect(() => {
+    setIsStakeOpen(false);
+    setAction(undefined);
+  }, [data.account]);
 
   const isConnected = Boolean(data.account) && !data.isWalletInitializing;
   const isLoading = data.isWalletInitializing || data.isLoading;

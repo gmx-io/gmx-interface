@@ -417,6 +417,11 @@ msgstr "价格影响返还已可领取。<0>了解更多</0>。"
 msgid "Execute Market Swap"
 msgstr "Market Swap 已执行"
 
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+#: src/components/GtPoints/Buyback/SellGtModal.tsx
+msgid "Minimum sell amount is {0} GT."
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "One-Click Trading is unavailable for smart wallets"
 msgstr "One-Click Trading 不适用于智能合约钱包"
@@ -583,6 +588,10 @@ msgstr "请<0>兑换</0>或通过<1>跨链桥</1>转入 {gasPaymentTokenSymbol}�
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr "返佣以您所推荐用户使用的抵押品代币支付。例如，如果一名被推荐用户使用 USDC 作为抵押品进行交易，您获得的返佣份额将以 USDC 支付。"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select {0}"
+msgstr ""
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Idea stage, nothing shipped yet"
 msgstr "还在想法阶段，尚未发布任何产品"
@@ -697,6 +706,10 @@ msgstr "资金费"
 #: src/components/TVChartContainer/constants.ts
 msgid "Deposit margin"
 msgstr "存入保证金"
+
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "Yes. Each claim uses your position's Avg APR at that time. Rewards claimed earlier are not recalculated as Avg APR increases. To maximize your total GT rewards, claim once when you unstake."
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
@@ -1041,6 +1054,10 @@ msgstr "所有仓位均归属于同一已连接钱包，无论是使用钱包资
 msgid "High external swap impact"
 msgstr "外部兑换影响较高"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Daily value"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "留住更多收益"
@@ -1134,6 +1151,11 @@ msgstr "可用时间"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Available liquidity"
 msgstr "可用流动性"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Buyback price"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code"
@@ -1495,6 +1517,10 @@ msgstr "您已激活推荐码 {activatedReferralCodeLabel}。您的优惠费率�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "兑换手续费因子（负 PI）"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback price"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
@@ -1937,6 +1963,10 @@ msgstr "请至少选择一个市场"
 msgid "Virtual long token ID"
 msgstr "虚拟做多代币 ID"
 
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+msgid "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "停用中..."
@@ -2249,6 +2279,10 @@ msgstr "已超过最大杠杆。剩余保证金 {remainingCollateralUsdText} 低
 msgid "Set TP price below limit price"
 msgstr "将 TP 价格设为低于限价"
 
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr "跨链桥交易哈希"
@@ -2389,7 +2423,12 @@ msgid "Optimal usage factor short"
 msgstr "最优使用率系数（做空）"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Avg APR"
+msgstr ""
+
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "You have no GLV or GM to stake. Buy some on the Pools page first."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -2595,6 +2634,10 @@ msgstr "运作方式"
 msgid "Order is already frozen"
 msgstr "订单已被冻结"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Bought"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -2628,6 +2671,10 @@ msgstr "EIP-4844"
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
 msgstr "由于该仓位的部分历史记录无法可靠匹配，暂无法提供完整的生命周期对账"
+
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "Unstaking automatically claims the position's GT rewards. You can also claim GT without unstaking. Both actions support selecting multiple positions at once."
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
@@ -2814,6 +2861,10 @@ msgstr "他们每次交易，您都能赚取收益"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代币的总价值"
+
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "The referral discount applies only when you trade with a referral code."
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Frozen"
@@ -3007,10 +3058,6 @@ msgstr "在 {0} 设置做多触发市价单"
 msgid "Your discounts"
 msgstr "您的折扣"
 
-#: src/components/GtPoints/Buyback/SellGtModal.tsx
-msgid "The final price is set at the buyback. If more GT is submitted before then, you get less per GT. The sale counts toward {seasonName} only."
-msgstr ""
-
 #: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
 msgid "How much GT you can sell this season. You earn quota when the traders you refer use GMX on Solana."
 msgstr ""
@@ -3050,10 +3097,6 @@ msgstr "Avalanche 上的收益优化器"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Withdrew {0} from {positionText}"
 msgstr "已从 {positionText} 提取 {0}"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "No. Claiming doesn't change a position's staking time or APR, so you can claim whenever you like."
-msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{orderTypeText} {0} for {1}"
@@ -3115,6 +3158,7 @@ msgid "Position exceeds max allowed leverage. <0>Read more</0>."
 msgstr "仓位超过最大允许杠杆。<0>了解更多</0>。"
 
 #: src/components/GtPoints/My/UnclaimedGtCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Unclaimed GT"
 msgstr ""
@@ -3463,6 +3507,8 @@ msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系�
 msgid "Cancel margin deposit"
 msgstr "取消保证金存入"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 msgid "Minting price"
@@ -4435,6 +4481,10 @@ msgstr "Arbitrum 钱包"
 msgid "Claim <0/> of <1/>"
 msgstr "领取 <0/>（共 <1/>）"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Minimum stake is {minStakeText} (≈{minStakeUsdText})."
+msgstr ""
+
 #: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
 msgid "Next buyback in"
 msgstr ""
@@ -4507,6 +4557,10 @@ msgstr "网络状态"
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "价格影响过高。影响：{negativeImpactAmountText}，输入：{amountAfterFeesText}"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Minting price {0}"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "支持哪些网络？"
@@ -4542,6 +4596,7 @@ msgstr "正在上传..."
 msgid "Unstake requested"
 msgstr "已申请解除质押"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Initial value"
 msgstr ""
@@ -5928,10 +5983,6 @@ msgstr "领取中..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> 与 Token Terminal 达成数据合作。GMX 是建立在 <2>@Arbitrum</2> 和 <3>@Avax</3> 上的领先无许可永续合约交易所。</0><4>该协议是多链 DeFi 的基础流动性底层。</4><5>凭借约 2800 亿美元的名义交易量且仍在增长，GMX 认识到需要可靠的、数据驱动的利益相关者报告。</5>"
 
-#: src/components/GtPoints/Stake/StakeModal.tsx
-msgid "You have no GLV or GM to stake yet."
-msgstr ""
-
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "No staking history yet"
 msgstr ""
@@ -5941,7 +5992,7 @@ msgstr ""
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -6176,6 +6227,7 @@ msgstr "v:"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeReviewModal.tsx
 msgid "Unstake"
 msgstr "解除质押"
@@ -6191,6 +6243,10 @@ msgstr "签名："
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "此操作已禁用"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "No buybacks yet"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6342,7 +6398,7 @@ msgstr "强制外部兑换失败"
 msgid "Withdraw"
 msgstr "提取"
 
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 msgid "180d"
 msgstr ""
 
@@ -6400,6 +6456,10 @@ msgstr "Shift 请求已发送"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "池内 GM（{0} [{1}]）的可卖出上限已达到，因为代币已预留给交易者。请选择其他池、减少卖出数量，或将提取拆分至多个池。"
+
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "VIP {0} discount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
@@ -7054,6 +7114,10 @@ msgstr "清算时的保证金"
 msgid "Permits testing"
 msgstr "许可测试"
 
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "Total with referral"
+msgstr ""
+
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 msgid "Total minted"
@@ -7376,6 +7440,7 @@ msgstr "esGMX 奖励"
 msgid "TP"
 msgstr "TP"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Token"
 msgstr ""
@@ -7832,6 +7897,7 @@ msgstr "永续合约"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeReviewModal.tsx
 msgid "Claim GT"
 msgstr ""
@@ -7863,6 +7929,10 @@ msgstr "收起详情"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "混合敞口：做空 {indexSymbol} + 做多 {collateralSymbol} 抵押品。清算价格会随 {collateralSymbol} 价格变化。"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "USDC paid per GT in the most recent buyback. It never goes above the minting price."
+msgstr ""
 
 #: src/components/GtPoints/Stake/StakeFaq.tsx
 msgid "How are GT rewards calculated?"
@@ -8345,6 +8415,10 @@ msgstr "仓位大小超过池价值"
 msgid "Apply referral code"
 msgstr "应用推荐码"
 
+#: src/components/GtPoints/Stake/StakeReviewModal.tsx
+msgid "Claiming early may reduce your total GT rewards. For maximum rewards, claim when you unstake."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "影响指数（正值）"
@@ -8360,10 +8434,6 @@ msgstr "如果继续，您将损失价值 {0} 的奖励"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Prices, markets, positions, orders — one call away"
 msgstr "价格、市场、仓位、订单——一次调用即可获取"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "Each stake position earns GT on its staked value at its current APR. The GT adds up as unclaimed GT until you claim it."
-msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
@@ -8779,6 +8849,10 @@ msgstr "Gas"
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "正在向主账户提取 {balanceFormatted}…"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Buy GLV / GM"
+msgstr ""
+
 #: src/components/PositionList/SymbolSortDropdown.tsx
 msgid "Symbol (A to Z)"
 msgstr "代码（A 到 Z）"
@@ -9024,7 +9098,6 @@ msgstr "不支持此订单类型"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Asset"
 msgstr "资产"
 
@@ -9217,7 +9290,7 @@ msgid "Now"
 msgstr "立即"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30 天"
@@ -9639,7 +9712,7 @@ msgid "Position fee factor (negative PI)"
 msgstr "仓位费用因子（负 PI）"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
-#: src/components/GtPoints/Global/GtMintingChart.tsx
+#: src/components/GtPoints/chartPeriods.ts
 msgid "90d"
 msgstr "90 天"
 
@@ -10061,6 +10134,10 @@ msgstr "不再接受新的限价单"
 msgid "No topics"
 msgstr "暂无主题"
 
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+msgid "What is GT buyback?"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>🔷 24h Volume: $1.01 Billion.</0><1>Thank you to the hundreds of thousands of GMX users who continue to support permissionless onchain trading.</1>"
 msgstr "<0>🔷 24 小时交易量：10.1 亿美元。</0><1>感谢数十万 GMX 用户继续支持无许可链上交易。</1>"
@@ -10425,6 +10502,10 @@ msgstr "返佣总额"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL after fees and price impact. Hover the value to see the breakdown."
 msgstr "扣除费用和价格影响后的总 PnL。将鼠标悬停在数值上可查看明细。"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback · {0}"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -10954,6 +11035,10 @@ msgstr "排名仓位"
 msgid "Send remaining margin to"
 msgstr "将剩余保证金转至"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select all positions"
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 买入 GM，上限如下"
@@ -11107,6 +11192,10 @@ msgstr "选择语言"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "未知值"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Buyback history"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -11450,6 +11539,7 @@ msgid "Margin"
 msgstr "保证金"
 
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Duration"
 msgstr "持续时间"
@@ -11683,6 +11773,7 @@ msgstr "领取"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
@@ -11878,6 +11969,7 @@ msgstr "快速要点"
 msgid "Closed to new stop market orders"
 msgstr "不再接受新的触发市价单"
 
+#: src/components/GtPoints/My/VipTiers.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -11929,6 +12021,10 @@ msgstr "交易已发送"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Unstake request cancelled"
 msgstr "解除质押请求已取消"
+
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "GT bought back in the most recent completed buyback. Buybacks run once a day."
+msgstr ""
 
 #: src/components/GtPoints/Global/TopHolders.tsx
 #: src/components/ShareModal/ShareCardReferralCodeStat.tsx
@@ -12590,6 +12686,10 @@ msgstr "更换网络"
 msgid "Requesting unstake..."
 msgstr "正在申请解除质押..."
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Last buyback"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM 是 GMX V2 市场的流动性提供者代币。它可累积 V2 市场所产生费用的 63%。"
@@ -12981,6 +13081,10 @@ msgstr "叠加使用。"
 msgid "Ecosystem projects"
 msgstr "生态系统项目"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "All GT bought back since buybacks started."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "In progress..."
 msgstr "处理中..."
@@ -12996,10 +13100,6 @@ msgstr "推荐人金库"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "卖出 GM 以获取 {0}，上限如下所示。剩余代币为未平仓仓位保留。"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "Use Claim GT on a position, or select several positions and use Claim GT above the table. Claimed GT goes to your wallet and shows in your GT history."
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved positive impact"
@@ -13264,6 +13364,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr "GMX | 去中心化永续交易所"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
 #: src/components/GtPoints/Global/GtMintingChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
@@ -13287,6 +13388,7 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 msgid "Transfer history"
 msgstr "转账历史记录"
 
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 msgid "Current APR"
 msgstr ""
@@ -13685,6 +13787,11 @@ msgstr "指数"
 msgid "Download as CSV"
 msgstr "下载为 CSV"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "Total bought"
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Fee discounts up to 25%"
 msgstr "最高 25% 费用折扣"
@@ -13876,6 +13983,10 @@ msgstr "发生意外错误。请重试"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Get optimized exposure to the highest-utilized pools"
 msgstr "获得对利用率最高资金池的优化敞口"
+
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
+msgid "Select all"
+msgstr ""
 
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -14087,6 +14198,10 @@ msgstr "交易已取消"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "已请求 Market Decrease"
+
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Minimum stake is {minStakeUsdText}."
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"

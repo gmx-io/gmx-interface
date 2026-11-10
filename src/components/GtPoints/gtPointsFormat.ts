@@ -1,3 +1,6 @@
+import { tz } from "@date-fns/tz";
+import { format as formatDateFn } from "date-fns";
+
 import { getReferralCodeLinkParam } from "domain/referrals/utils/referralCode";
 import { SOLANA_SEARCH_PARAM } from "lib/chains/chainIdSearchParam";
 import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
@@ -5,9 +8,115 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { GT_DECIMALS, SOL_DECIMALS, VIP_TIERS, type GtBuybackPool, type VipTier } from "./gtPointsTypes";
+import {
+  GT_DECIMALS,
+  LP_TOKEN_DECIMALS,
+  MIN_STAKE_USD,
+  REFERRAL_FEE_DISCOUNT,
+  SOL_DECIMALS,
+  VIP_TIERS,
+  type GtBuybackPool,
+  type GtWalletLpToken,
+  type VipTier,
+} from "./gtPointsTypes";
 
 const USD_DECIMALS = 30;
+
+/** Smallest amount of a wallet token worth MIN_STAKE_USD at its current price (undefined without a price) */
+export function getMinStakeAmount({ balance, valueUsd }: Pick<GtWalletLpToken, "balance" | "valueUsd">) {
+  if (balance === 0n || valueUsd === 0n) return undefined;
+  return (MIN_STAKE_USD * balance + valueUsd - 1n) / valueUsd;
+}
+
+/** The minimum as shown to users ("0.79 GLV"), rounded up so typing the shown amount always passes */
+export function formatMinStakeAmount(minAmount: bigint, kind: string) {
+  const decimals = minAmount >= 10n ** BigInt(LP_TOKEN_DECIMALS - 1) ? 2 : 5;
+  const step = 10n ** BigInt(LP_TOKEN_DECIMALS - decimals);
+  const roundedUp = ((minAmount + step - 1n) / step) * step;
+  return `${formatAmount(roundedUp, LP_TOKEN_DECIMALS, decimals, true)} ${kind}`;
+}
+
+/**
+ * A chart Y axis that fits the values shown: from their min to their max, plus 10% padding on each
+ * side (never below 0), with ticks on round steps inside it. Each line gets its own axis this way.
+ */
+export function getChartAxis(values: number[], { padding = 0.1, fromZero = false } = {}) {
+  const finite = values.filter((value) => Number.isFinite(value));
+  if (finite.length === 0) return undefined;
+  const min = Math.min(...finite);
+  const max = Math.max(...finite);
+  // A flat line still gets some room around it
+  const span = max - min || Math.abs(max) * 0.1 || 1;
+  // Bars always start at 0, so their length shows the value
+  const lo = fromZero ? 0 : Math.max(0, min - span * padding);
+  const hi = max + span * padding;
+  const step = getRoundStep((hi - lo) / 5);
+  const ticks: number[] = [];
+  for (let index = Math.ceil(lo / step); index * step <= hi; index++) ticks.push(index * step);
+  return { domain: [lo, hi] as [number, number], ticks, step };
+}
+
+function getRoundStep(roughStep: number) {
+  const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+  const multiplier = [1, 2, 2.5, 5].find((value) => value * magnitude >= roughStep) ?? 10;
+  return multiplier * magnitude;
+}
+
+/** How many decimals a tick step needs, e.g. 2.5 -> 1, 0.25 -> 2 (at most 6) */
+function getStepDecimals(step: number) {
+  for (let decimals = 0; decimals < 6; decimals++) {
+    const scaled = step * 10 ** decimals;
+    if (Math.abs(Math.round(scaled) - scaled) < 1e-6) return decimals;
+  }
+  return 6;
+}
+
+const AMOUNT_UNITS: [number, string][] = [
+  [1_000_000_000, "B"],
+  [1_000_000, "M"],
+  [1_000, "k"],
+];
+
+/** Axis label for amounts in k / M / B, with just enough decimals for the step: "22.5M", "$60k" */
+export function formatChartAmount(value: number, step: number, prefix = "") {
+  if (value === 0) return `${prefix}0`;
+  for (const [unit, suffix] of AMOUNT_UNITS) {
+    if (Math.abs(value) >= unit) return `${prefix}${(value / unit).toFixed(getStepDecimals(step / unit))}${suffix}`;
+  }
+  return `${prefix}${value.toFixed(getStepDecimals(step))}`;
+}
+
+/** Axis label for USD prices: "$3.20", "$3.825", and whole dollars with commas for big steps: "$1,750" */
+export function formatChartPrice(value: number, step: number) {
+  const decimals = step >= 1 ? getStepDecimals(step) : Math.max(2, getStepDecimals(step));
+  return `$${value.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}`;
+}
+
+/** Y axis width that fits its longest tick label (11px labels) */
+export function getAxisWidth(labels: string[] | undefined, minWidth: number) {
+  if (!labels?.length) return minWidth;
+  const longest = Math.max(...labels.map((label) => label.length));
+  return Math.max(minWidth, Math.ceil(longest * 6.5) + 12);
+}
+
+/** Points of the last `days` UTC days, counted from the newest point's day (all points without `days`) */
+export function filterChartPeriod<T extends { timestamp: number }>(points: T[], days: number | undefined) {
+  if (!days || points.length === 0) return points;
+  const lastDay = Math.floor(points[points.length - 1].timestamp / 86_400);
+  return points.filter((point) => Math.floor(point.timestamp / 86_400) > lastDay - days);
+}
+
+const UTC = { in: tz("UTC") };
+
+/** A day on a chart, in UTC like the daily data: "9 Nov" */
+export function formatUtcDay(timestamp: number, pattern = "d MMM") {
+  return formatDateFn(timestamp * 1000, pattern, UTC);
+}
+
+/** Table date + time with two-digit hours so rows line up: "07 Nov 2026, 04:40 PM" */
+export function formatTableDateTime(timestamp: number) {
+  return formatDateFn(timestamp * 1000, "dd MMM yyyy, hh:mm a");
+}
 
 /** "$3.8939/GT" */
 export function formatGtPrice(priceUsd: bigint) {
@@ -43,9 +152,9 @@ export function getGtReferralLink(code: string) {
   return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${getReferralCodeLinkParam(code)}&chainId=${SOLANA_SEARCH_PARAM}`;
 }
 
-/** Solana address → "DemoWa…xx0001" */
-export function shortenSolanaAddress(address: string) {
-  return address.length > 14 ? `${address.slice(0, 6)}…${address.slice(-6)}` : address;
+/** Solana address → "DemoWa…xx0001" (or "Demo…0001" with `chars: 4`) */
+export function shortenSolanaAddress(address: string, chars = 6) {
+  return address.length > chars * 2 + 2 ? `${address.slice(0, chars)}…${address.slice(-chars)}` : address;
 }
 
 /** Seconds → "03h 46m 12s" (days added when needed) */
@@ -70,6 +179,11 @@ export function formatGt(
   const decimals = fixedDecimals ?? (abs !== 0n && abs < ONE_GT ? 4 : 2);
   const sign = amount < 0n ? "−" : signed && amount > 0n ? "+" : "";
   return `${sign}${formatAmount(abs, GT_DECIMALS, decimals, true)} GT`;
+}
+
+/** VIP and referral discounts multiply: 1 - (1 - VIP) x (1 - referral), in percent. VIP 8 (9%): 18.1 */
+export function getCombinedFeeDiscount(vipDiscount: number, referralDiscount = REFERRAL_FEE_DISCOUNT) {
+  return Math.round((1 - (1 - vipDiscount / 100) * (1 - referralDiscount / 100)) * 1000) / 10;
 }
 
 export function formatPercent(value: number) {

@@ -10,7 +10,7 @@ export type VipTier = {
   level: number;
   /** GT needed to reach the tier */
   minGt: bigint;
-  /** Trading fee discount, in percent */
+  /** VIP trading fee discount, in percent, without the referral discount */
   feeDiscount: number;
   /** Share of referral rewards, in percent */
   referralRewards: number;
@@ -18,17 +18,24 @@ export type VipTier = {
 
 const gtUnits = (value: number) => BigInt(value) * 10n ** BigInt(GT_DECIMALS);
 
+/** Smallest GT amount one sale can submit: 0.01 GT */
+export const MIN_SELL_GT = 10n ** BigInt(GT_DECIMALS - 2);
+
+/** Extra trading fee discount for traders with an active referral code, in percent.
+ * A flat 10% on Solana (product team), to confirm with the program. */
+export const REFERRAL_FEE_DISCOUNT = 10;
+
 export const VIP_TIERS: VipTier[] = [
-  { level: 0, minGt: gtUnits(0), feeDiscount: 10, referralRewards: 50 },
-  { level: 1, minGt: gtUnits(600), feeDiscount: 11.8, referralRewards: 60 },
-  { level: 2, minGt: gtUnits(2_000), feeDiscount: 12.7, referralRewards: 65 },
-  { level: 3, minGt: gtUnits(6_000), feeDiscount: 13.6, referralRewards: 70 },
-  { level: 4, minGt: gtUnits(20_000), feeDiscount: 14.5, referralRewards: 75 },
-  { level: 5, minGt: gtUnits(60_000), feeDiscount: 15.4, referralRewards: 80 },
-  { level: 6, minGt: gtUnits(200_000), feeDiscount: 16.3, referralRewards: 85 },
-  { level: 7, minGt: gtUnits(600_000), feeDiscount: 17.2, referralRewards: 90 },
-  { level: 8, minGt: gtUnits(2_000_000), feeDiscount: 18.1, referralRewards: 95 },
-  { level: 9, minGt: gtUnits(6_000_000), feeDiscount: 19, referralRewards: 100 },
+  { level: 0, minGt: gtUnits(0), feeDiscount: 0, referralRewards: 50 },
+  { level: 1, minGt: gtUnits(600), feeDiscount: 2, referralRewards: 60 },
+  { level: 2, minGt: gtUnits(2_000), feeDiscount: 3, referralRewards: 65 },
+  { level: 3, minGt: gtUnits(6_000), feeDiscount: 4, referralRewards: 70 },
+  { level: 4, minGt: gtUnits(20_000), feeDiscount: 5, referralRewards: 75 },
+  { level: 5, minGt: gtUnits(60_000), feeDiscount: 6, referralRewards: 80 },
+  { level: 6, minGt: gtUnits(200_000), feeDiscount: 7, referralRewards: 85 },
+  { level: 7, minGt: gtUnits(600_000), feeDiscount: 8, referralRewards: 90 },
+  { level: 8, minGt: gtUnits(2_000_000), feeDiscount: 9, referralRewards: 95 },
+  { level: 9, minGt: gtUnits(6_000_000), feeDiscount: 10, referralRewards: 100 },
 ];
 
 export type GtHistoryAction = "tradingReward" | "referralReward" | "stakingReward" | "gtSale";
@@ -65,6 +72,7 @@ export type GtMintingPoint = {
 };
 
 export type GtHolder = {
+  /** Unique, starting at 1 */
   rank: number;
   address: string;
   /** Known accounts, e.g. the GT vault */
@@ -121,6 +129,27 @@ export type GtRentAccount = {
   sol: bigint;
 };
 
+/**
+ * One completed buyback, as a chart point. Buybacks run once a day: one point per UTC day, oldest first.
+ * Plain numbers for the chart: whole GT, whole USDC and USD per GT (not bigints with decimals).
+ */
+export type GtBuybackHistoryPoint = {
+  /** Unix seconds of the buyback run */
+  timestamp: number;
+  /** GT bought back; 0 on a day when nobody sold */
+  amountGt: number;
+  /** USDC spent; 0 on a day when nobody sold */
+  valueUsdc: number;
+  /** USDC paid per GT; null on a day when nobody sold (the price line has a gap there) */
+  buybackPrice: number | null;
+  /** Minting price at the time of the buyback, USD per GT: the cap for the buyback price */
+  mintingPrice: number;
+  /** GT bought back by all buybacks so far, this one included */
+  totalAmountGt: number;
+  /** USDC spent by all buybacks so far, this one included */
+  totalValueUsdc: number;
+};
+
 export type GtPointsBuybackData = {
   season: GtBuybackSeason;
   /** Undefined before the season starts */
@@ -129,9 +158,14 @@ export type GtPointsBuybackData = {
   quota: GtSellableQuota | undefined;
   participation: { queuedGt: bigint; estProceedsUsd: bigint } | undefined;
   rentAccounts: GtRentAccount[] | undefined;
+  /** Completed buybacks, oldest first; empty before the first one */
+  history: GtBuybackHistoryPoint[] | undefined;
 };
 
 export const LP_TOKEN_DECIMALS = 18;
+
+/** Smallest stake per token: $1.00 worth (USD with 30 decimals), to confirm with the program */
+export const MIN_STAKE_USD = 10n ** 30n;
 
 export type GtStakeToken = {
   id: string;
@@ -164,7 +198,8 @@ export type GtStakePosition = {
 export type GtWalletLpToken = {
   token: GtStakeToken;
   balance: bigint;
-  /** USD with 30 decimals */
+  /** USD with 30 decimals, priced the way the staking program prices the token.
+   * The $1 minimum stake is worked out from it; without a price the token can't be staked. */
   valueUsd: bigint;
 };
 
@@ -182,7 +217,7 @@ export type GtPointsStakeData = {
   totalStakedUsd: bigint;
   unclaimedGt: bigint;
   positions: GtStakePosition[];
-  /** GLV/GM in the wallet that can be staked */
+  /** GLV/GM in the wallet that can be staked: tokens with a balance only */
   wallet: GtWalletLpToken[];
   history: GtStakeHistoryItem[];
 };

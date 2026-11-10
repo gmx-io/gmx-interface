@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AccountRentCard } from "components/GtPoints/Buyback/AccountRentCard";
 import { BuybackFaq } from "components/GtPoints/Buyback/BuybackFaq";
+import { BuybackHistoryCard } from "components/GtPoints/Buyback/BuybackHistoryCard";
 import { BuybackPoolCard, MyParticipationCard } from "components/GtPoints/Buyback/BuybackPoolCards";
 import { BuybackSeasonCard } from "components/GtPoints/Buyback/BuybackSeasonCard";
 import { SellableQuotaCard } from "components/GtPoints/Buyback/SellableQuotaCard";
@@ -12,6 +13,11 @@ import { useGtPointsData } from "components/GtPoints/useGtPointsData";
 export default function GtPointsBuybackPage() {
   const data = useGtPointsData();
   const [isSellOpen, setIsSellOpen] = useState(false);
+
+  // A wallet switch closes Sell GT, so an amount typed for the previous wallet is dropped.
+  useEffect(() => {
+    setIsSellOpen(false);
+  }, [data.account]);
 
   const isConnected = Boolean(data.account) && !data.isWalletInitializing;
   const isLoading = data.isWalletInitializing || data.isLoading;
@@ -39,6 +45,7 @@ export default function GtPointsBuybackPage() {
                 isLoading={isLoading}
               />
             </div>
+            <BuybackHistoryCard history={buyback?.history} isLoading={isLoading} />
             <AccountRentCard accounts={buyback?.rentAccounts} isConnected={isConnected} />
           </>
         }
@@ -50,7 +57,6 @@ export default function GtPointsBuybackPage() {
         setIsVisible={setIsSellOpen}
         availableToSell={buyback?.quota?.availableToSell ?? 0n}
         pool={buyback?.pool}
-        seasonName={season?.name}
       />
     </GtPointsPageLayout>
   );

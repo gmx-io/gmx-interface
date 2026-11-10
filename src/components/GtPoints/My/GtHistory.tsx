@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { ReactNode, useMemo, useState } from "react";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { formatDateTime } from "lib/dates";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import Button from "components/Button/Button";
@@ -16,7 +15,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-import { formatGt } from "../gtPointsFormat";
+import { formatGt, formatTableDateTime } from "../gtPointsFormat";
 import { GT_HISTORY_ACTIONS, type GtHistoryAction, type GtHistoryItem } from "../gtPointsTypes";
 
 const PAGE_SIZE = 10;
@@ -98,7 +97,7 @@ export function GtHistory({ history, isConnected, isLoading }: Props) {
                   <TableTd className="text-body-medium font-medium">{labels[item.action]}</TableTd>
                   <TableTd className="text-body-medium numbers">{formatGt(item.amount, { signed: true })}</TableTd>
                   <TableTd className="text-body-medium text-typography-secondary numbers">
-                    {formatDateTime(item.timestamp)}
+                    {formatTableDateTime(item.timestamp)}
                   </TableTd>
                 </TableTr>
               ))}
