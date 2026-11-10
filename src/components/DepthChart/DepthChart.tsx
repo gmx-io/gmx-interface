@@ -24,7 +24,6 @@ import type { CategoricalChartFunc } from "recharts/types/chart/generateCategori
 import type { ImplicitLabelType } from "recharts/types/component/Label";
 import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 
-import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
@@ -33,7 +32,6 @@ import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
-import { useChainId } from "lib/chains";
 import {
   bigintToNumber,
   calculateDisplayDecimals,
@@ -47,7 +45,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
-import { getDepthChartPreviewMarket } from "./previewMarket";
 
 const getYAxisLabel = (): LabelProps => ({
   value: t`Size, $`,
@@ -98,12 +95,6 @@ const MIN_FACTOR_THRESHOLD_BIGINT = 2000000000000000n;
 
 export const DepthChart = memo(
   ({ marketInfo, jitLiquidityInfo }: { marketInfo: MarketInfo; jitLiquidityInfo?: JitLiquidityInfo }) => {
-    const { networkId } = useChainId();
-    const isImpactPreview = import.meta.env.DEV && isSolanaNetwork(networkId);
-    const chartMarketInfo = useMemo(
-      () => getDepthChartPreviewMarket(marketInfo, isImpactPreview),
-      [marketInfo, isImpactPreview]
-    );
     const containerRef = useRef<HTMLDivElement>(null);
     const isZeroPriceImpact =
       marketInfo.positionImpactFactorPositive <= MIN_FACTOR_THRESHOLD_BIGINT &&
@@ -123,7 +114,7 @@ export const DepthChart = memo(
       realRightMax,
       isLeftEmpty,
       isRightEmpty,
-    } = useEdgePoints(chartMarketInfo, zoom, jitLiquidityInfo);
+    } = useEdgePoints(marketInfo, zoom, jitLiquidityInfo);
 
     const theme = useTheme();
 
@@ -136,7 +127,7 @@ export const DepthChart = memo(
       isZeroPriceImpact,
     });
 
-    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(chartMarketInfo, {
+    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
       leftMax,
       rightMax,
       leftMin,
