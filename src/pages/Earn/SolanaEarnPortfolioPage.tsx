@@ -3,6 +3,7 @@ import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import { SolanaAssetsList } from "components/Earn/Solana/SolanaAssetsList";
 import { SolanaEarningsOverview } from "components/Earn/Solana/SolanaEarningsOverview";
+import { SolanaEarnTesterPanel } from "components/Earn/Solana/tester/SolanaEarnTesterPanel"; // rewards-tester
 import { useSolanaEarnData } from "components/Earn/Solana/useSolanaEarnData";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import Loader from "components/Loader/Loader";
@@ -15,6 +16,8 @@ export default function SolanaEarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
+      <SolanaEarnTesterPanel /* rewards-tester */ />
+
       {isConnected && (
         <ErrorBoundary id="SolanaEarnPortfolio-EarningsOverview" variant="block" wrapperClassName="rounded-t-8">
           <SolanaEarningsOverview data={data} />
