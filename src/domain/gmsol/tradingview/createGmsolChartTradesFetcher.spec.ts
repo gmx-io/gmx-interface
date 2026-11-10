@@ -89,6 +89,7 @@ describe("Solana chart trades", () => {
       from: new Date(FROM * 1000).toISOString(),
       to: new Date(TO * 1000).toISOString(),
       cursor: undefined,
+      after: undefined,
     });
   });
 
@@ -205,5 +206,92 @@ describe("Solana chart trades", () => {
     await expect(fetcher(params())).rejects.toThrow("Indexer unavailable");
     expect(await fetcher(params())).toHaveLength(1);
     expect(postJson).toHaveBeenCalledTimes(2);
+  });
+
+  it("retains 201 historical fills while polling new events and changing the visible range", async () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(100_000);
+    const history = Array.from({ length: 201 }, (_, i) => event(String(201 - i).padStart(3, "0")));
+    const postJson = vi
+      .fn()
+      .mockResolvedValueOnce({ data: { tradeEvents: history.slice(0, 100) } })
+      .mockResolvedValueOnce({ data: { tradeEvents: history.slice(100, 200) } })
+      .mockResolvedValueOnce({ data: { tradeEvents: history.slice(200) } })
+      .mockResolvedValue({ data: { tradeEvents: [] } });
+    const fetcher = createGmsolChartTradesFetcher({ postJson });
+    const initial = await fetcher(params());
+    expect(initial).toHaveLength(201);
+    expect(postJson).toHaveBeenCalledTimes(3);
+
+    now.mockReturnValue(115_000);
+    expect(await fetcher({ ...params(), to: TO + 15 })).toEqual(initial);
+    expect(postJson).toHaveBeenCalledTimes(4);
+    expect(postJson.mock.calls[3][1].variables.after).toBe("201");
+
+    // The indexer can publish a fill later, even within an already fetched second.
+    postJson.mockResolvedValueOnce({ data: { tradeEvents: [event("202")] } });
+    now.mockReturnValue(130_000);
+    const updated = await fetcher({ ...params(), to: TO + 30 });
+    expect(updated.map((trade) => trade.id)).toEqual([...initial.map((trade) => trade.id), "202"]);
+    expect(postJson).toHaveBeenCalledTimes(5);
+
+    expect(await fetcher({ ...params(), from: FROM + 200, to: TO + 30 })).toEqual([]);
+    expect(await fetcher({ ...params(), to: TO + 30 })).toEqual(updated);
+    expect(postJson).toHaveBeenCalledTimes(5);
+
+    postJson.mockResolvedValueOnce({
+      data: { tradeEvents: [event("000", { timestamp: new Date((FROM - 60) * 1000).toISOString() })] },
+    });
+    const expanded = await fetcher({ ...params(), from: FROM - 120, to: TO + 30 });
+    expect(expanded.map((trade) => trade.id)).toEqual(["000", ...updated.map((trade) => trade.id)]);
+    expect(postJson).toHaveBeenCalledTimes(6);
+    expect(postJson.mock.calls[5][1].variables).toMatchObject({
+      from: new Date((FROM - 120) * 1000).toISOString(),
+      to: new Date(FROM * 1000).toISOString(),
+      after: undefined,
+    });
+    expect(await fetcher({ ...params(), to: TO + 30 })).toEqual(updated);
+    expect(await fetcher({ ...params(), from: FROM - 120, to: TO + 30 })).toEqual(expanded);
+    expect(postJson).toHaveBeenCalledTimes(6);
+  });
+
+  it("retains history and retries the same incremental cursor after a failed poll", async () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(100_000);
+    const postJson = vi.fn().mockResolvedValueOnce({ data: { tradeEvents: [event()] } });
+    const fetcher = createGmsolChartTradesFetcher({ postJson });
+    await fetcher(params());
+
+    now.mockReturnValue(115_000);
+    const page = Array.from({ length: 100 }, (_, i) => event(String(200 - i).padStart(3, "0")));
+    postJson
+      .mockResolvedValueOnce({ data: { tradeEvents: page } })
+      .mockRejectedValueOnce(new Error("Indexer unavailable"));
+    await expect(fetcher(params())).rejects.toThrow("Indexer unavailable");
+    postJson.mockResolvedValueOnce({ data: { tradeEvents: [event("003")] } });
+    expect((await fetcher(params())).map((trade) => trade.id)).toEqual(["002", "003"]);
+    expect(postJson.mock.calls[3][1].variables.after).toBe("002");
+  });
+
+  it("paginates a burst of new fills without fetching the historical pages again", async () => {
+    const now = vi.spyOn(Date, "now").mockReturnValue(100_000);
+    const postJson = vi.fn().mockResolvedValueOnce({ data: { tradeEvents: [event()] } });
+    const fetcher = createGmsolChartTradesFetcher({ postJson });
+    const initial = await fetcher(params());
+    const page = Array.from({ length: 100 }, (_, i) => event(String(103 - i).padStart(3, "0")));
+    postJson
+      .mockResolvedValueOnce({ data: { tradeEvents: page } })
+      .mockResolvedValueOnce({ data: { tradeEvents: [event("003")] } });
+
+    now.mockReturnValue(115_000);
+    const pending = fetcher(params());
+    now.mockReturnValue(130_000);
+    expect(fetcher(params())).toBe(pending);
+    const trades = await pending;
+    expect(trades).toHaveLength(102);
+    expect(trades[0]).toEqual(initial[0]);
+    expect(trades[1].id).toBe("003");
+    expect(trades[101].id).toBe("103");
+    expect(postJson).toHaveBeenCalledTimes(3);
+    expect(postJson.mock.calls[1][1].variables).toMatchObject({ after: "002", cursor: undefined });
+    expect(postJson.mock.calls[2][1].variables).toMatchObject({ after: "002", cursor: "004" });
   });
 });

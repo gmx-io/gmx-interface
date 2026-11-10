@@ -49,10 +49,20 @@ async function query<T>(api: Pick<IHttp, "postJson">, query: string, variables: 
   return result.data;
 }
 
-// Each widget owns its cache. Base58 addresses stay case-sensitive, and simultaneous marks requests
-// share the same pending fetch. A new position snapshot invalidates the cache immediately.
+// Each widget retains its loaded history independently of the visible range and position snapshot.
 export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new HttpClient(GMSOL_GRAPHQL_URL)) {
-  let cache: { key: string; fetchedAt: number; promise: Promise<ChartTrade[]> } | undefined;
+  let cache: { key: string; fetchedAt: number; pending: boolean; promise: Promise<ChartTrade[]> } | undefined;
+  let history:
+    | {
+        key: string;
+        events: Map<string, TradeEvent>;
+        range?: { from: number; to: number };
+        latestId?: string;
+        fetchedAt: number;
+        positionKey?: string;
+        pending: Promise<void>;
+      }
+    | undefined;
 
   return (params: Params): Promise<ChartTrade[]> => {
     const { account, markets, positions, mode, from, to } = params;
@@ -64,16 +74,27 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
       .map((p) => `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}`)
       .sort();
     const key = JSON.stringify([account, marketAddresses, mode, from, to, positionKey]);
-    if (cache?.key === key && Date.now() - cache.fetchedAt < CACHE_TTL_MS) {
+    if (cache?.key === key && (cache.pending || Date.now() - cache.fetchedAt < CACHE_TTL_MS)) {
       return cache.promise;
     }
 
+    const historyKey = JSON.stringify([account, marketAddresses]);
+    if (history?.key !== historyKey) {
+      history = { key: historyKey, events: new Map(), fetchedAt: 0, pending: Promise.resolve() };
+    }
+    const entryHistory = history;
     const promise = fetchTrades();
-    const entry = { key, fetchedAt: Date.now(), promise };
+    const entry = { key, fetchedAt: Date.now(), pending: true, promise };
     cache = entry;
-    promise.catch(() => {
-      if (cache === entry) cache = undefined;
-    });
+    promise.then(
+      () => {
+        entry.pending = false;
+        entry.fetchedAt = Date.now();
+      },
+      () => {
+        if (cache === entry) cache = undefined;
+      }
+    );
     return promise;
 
     async function fetchTrades(): Promise<ChartTrade[]> {
@@ -115,7 +136,70 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
         if (genesisByPosition.size === 0) return [];
       }
 
+      // Serialize range extensions so overlapping marks requests cannot discard each other's pages.
+      const update = entryHistory.pending.then(async () => {
+        const range = entryHistory.range;
+        const events: TradeEvent[] = [];
+        const snapshotKey = JSON.stringify(positionKey);
+        const refresh =
+          !range ||
+          to > range.to ||
+          Date.now() - entryHistory.fetchedAt >= CACHE_TTL_MS ||
+          entryHistory.positionKey !== snapshotKey;
+        if (!range) {
+          events.push(...(await fetchEvents(from, to)));
+        } else {
+          if (refresh) {
+            events.push(...(await fetchEvents(range.from, Math.max(to, range.to), entryHistory.latestId)));
+          }
+          if (from < range.from) {
+            events.push(...(await fetchEvents(from, range.from)));
+          }
+        }
+
+        // Commit only complete reads: a failed page must leave the previous cursor and coverage retryable.
+        for (const event of events) {
+          entryHistory.events.set(event.id, event);
+          if (!entryHistory.latestId || event.id > entryHistory.latestId) entryHistory.latestId = event.id;
+        }
+        entryHistory.range = { from: Math.min(from, range?.from ?? from), to: Math.max(to, range?.to ?? to) };
+        if (refresh) {
+          entryHistory.fetchedAt = Date.now();
+        }
+        entryHistory.positionKey = snapshotKey;
+      });
+      entryHistory.pending = update.catch(() => undefined);
+      await update;
+
       const trades: ChartTrade[] = [];
+      for (const event of entryHistory.events.values()) {
+        const market = markets[event.marketToken];
+        if (!market || BigInt(event.beforeSizeInUsd) === BigInt(event.afterSizeInUsd)) continue;
+        const ts = Date.parse(event.timestamp) / 1000;
+        if (!Number.isFinite(ts) || ts < from || ts > to) continue;
+        const flags = BigInt(event.flags);
+        const isLong = (flags & 1n) !== 0n;
+        if (mode === "current") {
+          const opening = genesisByPosition.get(event.position);
+          const position = activePositions.find((p) => p.contractKey === event.position);
+          if (!opening || !position || position.isLong !== isLong || event.id < opening.id) continue;
+        }
+        trades.push({
+          id: event.id,
+          ts,
+          marketAddress: event.marketToken,
+          isLong,
+          isIncrease: (flags & 4n) !== 0n,
+          // Solana prices are USD ×10^20 per smallest token unit; the chart uses USD ×10^30.
+          executionPrice: BigInt(event.executionPrice) * 10n ** BigInt(10 + market.indexToken.decimals),
+        });
+      }
+
+      return trades.sort((a, b) => a.ts - b.ts || a.id.localeCompare(b.id));
+    }
+
+    async function fetchEvents(from: number, to: number, after?: string): Promise<TradeEvent[]> {
+      const events: TradeEvent[] = [];
       let cursor: string | undefined;
       let hasMore = true;
       while (hasMore) {
@@ -123,11 +207,11 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
           api,
           `query ChartTradeEvents(
             $owner: String!, $store: String!, $markets: [String!]!,
-            $from: DateTime!, $to: DateTime!, $cursor: String
+            $from: DateTime!, $to: DateTime!, $cursor: String, $after: String
           ) {
             tradeEvents(limit: ${PAGE_SIZE}, orderBy: id_DESC, where: {
               user_eq: $owner, store_eq: $store, marketToken_in: $markets,
-              timestamp_gte: $from, timestamp_lte: $to, id_lt: $cursor
+              timestamp_gte: $from, timestamp_lte: $to, id_lt: $cursor, id_gt: $after
             }) { ${FIELDS} }
           }`,
           {
@@ -137,31 +221,11 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
             from: new Date(from * 1000).toISOString(),
             to: new Date(to * 1000).toISOString(),
             cursor,
+            after,
           }
         );
 
-        for (const event of tradeEvents) {
-          const market = markets[event.marketToken];
-          if (!market || BigInt(event.beforeSizeInUsd) === BigInt(event.afterSizeInUsd)) continue;
-          const ts = Date.parse(event.timestamp) / 1000;
-          if (!Number.isFinite(ts) || ts < from || ts > to) continue;
-          const flags = BigInt(event.flags);
-          const isLong = (flags & 1n) !== 0n;
-          if (mode === "current") {
-            const opening = genesisByPosition.get(event.position);
-            const position = activePositions.find((p) => p.contractKey === event.position);
-            if (!opening || !position || position.isLong !== isLong || event.id < opening.id) continue;
-          }
-          trades.push({
-            id: event.id,
-            ts,
-            marketAddress: event.marketToken,
-            isLong,
-            isIncrease: (flags & 4n) !== 0n,
-            // Solana prices are USD ×10^20 per smallest token unit; the chart uses USD ×10^30.
-            executionPrice: BigInt(event.executionPrice) * 10n ** BigInt(10 + market.indexToken.decimals),
-          });
-        }
+        events.push(...tradeEvents);
 
         hasMore = tradeEvents.length === PAGE_SIZE;
         if (!hasMore) break;
@@ -170,7 +234,7 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
         cursor = nextCursor;
       }
 
-      return trades.sort((a, b) => a.ts - b.ts || a.id.localeCompare(b.id));
+      return events;
     }
   };
 }
