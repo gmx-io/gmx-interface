@@ -130,8 +130,8 @@ export function MarketGraphs({
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
   const marketToken = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken : getByKey(marketTokensData, address);
-  // wait for the supply too, otherwise a low-supply pool flashes its broken chart while loading
-  const isChartHidden = marketToken === undefined || getIsLowSupplyMarketToken(marketToken);
+  // wait for the supply too, otherwise a low-supply pool flashes its broken values while loading
+  const isGraphHidden = marketToken === undefined || getIsLowSupplyMarketToken(marketToken);
 
   const isMobile = usePoolsIsMobilePage();
 
@@ -183,17 +183,21 @@ export function MarketGraphs({
         <div className="flex grow flex-col gap-20">
           <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
-              value={getGraphValue({
-                marketGraphType,
-                glvOrMarketInfo,
-                performance,
-                glvApyInfoData,
-                marketsTokensApyData,
-                marketTokensData,
-              })}
+              value={
+                isGraphHidden
+                  ? undefined
+                  : getGraphValue({
+                      marketGraphType,
+                      glvOrMarketInfo,
+                      performance,
+                      glvApyInfoData,
+                      marketsTokensApyData,
+                      marketTokensData,
+                    })
+              }
               label={graphTitleLabelMap[marketGraphType]}
               valueClassName={cx("normal-nums", {
-                "text-green-300": marketGraphType === "performance" && performance[address] > 0n,
+                "text-green-300": !isGraphHidden && marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
@@ -203,7 +207,7 @@ export function MarketGraphs({
             priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
-            isChartHidden={isChartHidden}
+            isChartHidden={isGraphHidden}
           />
         </div>
       </div>
