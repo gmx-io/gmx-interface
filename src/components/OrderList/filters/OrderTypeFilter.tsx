@@ -3,7 +3,9 @@ import { msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { useMemo } from "react";
 
+import { getNetworkFeatures, type NetworkFeature } from "config/features";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import { useChainId } from "lib/chains";
 
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 
@@ -19,6 +21,15 @@ type Group = {
 };
 
 type Groups = Group[];
+
+// Options for order types the selected network has no orders of; on EVM every feature is on and nothing is removed.
+// Swap limit orders exist on Solana although the trade box cannot create swaps yet, so they do not need `swap`.
+const REQUIRED_FEATURES: Partial<Record<OrderTypeFilterValue, NetworkFeature[]>> = {
+  "trigger-stop-market": ["stopMarket"],
+  twap: ["twap"],
+  "twap-increase": ["twap"],
+  "swaps-twap": ["twap"],
+};
 
 const GROUPS: Groups = [
   {
@@ -80,11 +91,15 @@ type Props = {
 
 export function OrderTypeFilter({ value, onChange, asButton }: Props) {
   const { i18n } = useLingui();
+  const { networkId } = useChainId();
   const localizedGroups = useMemo(() => {
-    return GROUPS.map((group) => {
+    const features = getNetworkFeatures(networkId);
+    const isSupported = (item: Item) => (REQUIRED_FEATURES[item.data] ?? []).every((feature) => features[feature]);
+
+    return GROUPS.filter((group) => group.items.some(isSupported)).map((group) => {
       return {
         groupName: i18n._(group.groupName),
-        items: group.items.map((item) => {
+        items: group.items.filter(isSupported).map((item) => {
           return {
             data: item.data,
             text: i18n._(item.text),
@@ -93,7 +108,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
         }),
       };
     });
-  }, [i18n]);
+  }, [i18n, networkId]);
 
   return (
     <TableOptionsFilter<OrderTypeFilterValue>

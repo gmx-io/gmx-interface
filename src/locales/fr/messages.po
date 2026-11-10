@@ -547,6 +547,10 @@ msgstr "Profiter de ce taux"
 msgid "position size"
 msgstr "taille de la position"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "Confirmer le retrait"
@@ -10413,6 +10417,7 @@ msgid "Max reserved + JIT {directionLabel}"
 msgstr "Maximum réservé + JIT {directionLabel}"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "Impact sur le prix à la clôture"
@@ -11314,6 +11319,10 @@ msgstr "Compte important"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"
 msgstr "Frais de réallocation"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -12742,6 +12751,7 @@ msgid "Arrives"
 msgstr "Arrivée"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "Accumulé"
 
