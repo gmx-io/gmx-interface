@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
@@ -8,9 +8,11 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import Badge from "components/Badge/Badge";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { EarningValue } from "components/EarningValue/EarningValue";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import { formatGt, formatPercent, getVipProgress } from "../gtPointsFormat";
-import { VIP_TIERS, type VipTier } from "../gtPointsTypes";
+import { formatGt, formatPercent, getCombinedFeeDiscount, getVipProgress } from "../gtPointsFormat";
+import { REFERRAL_FEE_DISCOUNT, VIP_TIERS, type VipTier } from "../gtPointsTypes";
 
 // The track runs from the first dot to the last: 10 columns, dots in the middle of each.
 const TRACK_STYLE = { left: "5%", right: "5%" };
@@ -113,6 +115,7 @@ export function VipTiers({ balance, isConnected, isLoading }: Props) {
             value={selectedTier ? formatPercent(selectedTier.feeDiscount) : undefined}
             isLoading={isLoading}
             label={<Trans>Trading fee discount</Trans>}
+            tooltip={selectedTier ? <FeeDiscountTooltip tier={selectedTier} /> : undefined}
           />
           <BenefitTile
             value={selectedTier ? formatPercent(selectedTier.referralRewards) : undefined}
@@ -249,13 +252,48 @@ function TierRequirement({ tier, balance }: { tier: VipTier; balance: bigint | u
   );
 }
 
-function BenefitTile({ value, isLoading, label }: { value: string | undefined; isLoading: boolean; label: ReactNode }) {
+// The VIP discount, the referral discount on top of it, and how the two combine.
+function FeeDiscountTooltip({ tier }: { tier: VipTier }) {
+  const vip = formatPercent(tier.feeDiscount);
+  const referral = formatPercent(REFERRAL_FEE_DISCOUNT);
+  const total = formatPercent(getCombinedFeeDiscount(tier.feeDiscount));
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div>
+        <StatsTooltipRow label={t`VIP ${tier.level} discount`} value={vip} showDollar={false} />
+        <StatsTooltipRow label={t`Referral discount`} value={referral} showDollar={false} />
+        <StatsTooltipRow label={t`Total with referral`} value={total} showDollar={false} />
+      </div>
+      <span>
+        <Trans>The referral discount applies only when you trade with a referral code.</Trans>
+      </span>
+      <span className="numbers">
+        1 − (1 − {vip}) × (1 − {referral}) = {total}
+      </span>
+    </div>
+  );
+}
+
+function BenefitTile({
+  value,
+  isLoading,
+  label,
+  tooltip,
+}: {
+  value: string | undefined;
+  isLoading: boolean;
+  label: ReactNode;
+  tooltip?: ReactNode;
+}) {
   return (
     <div className="flex min-w-[148px] flex-col gap-2 rounded-8 bg-slate-800 px-16 py-12 max-md:min-w-0 max-md:grow">
       <span className="text-h3 font-medium text-typography-primary numbers">
         {value ?? (isLoading ? <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={56} /> : "–")}
       </span>
-      <span className="text-body-small text-typography-secondary">{label}</span>
+      <span className="text-body-small text-typography-secondary">
+        {tooltip ? <TooltipWithPortal variant="iconStroke" handle={label} content={tooltip} /> : label}
+      </span>
     </div>
   );
 }

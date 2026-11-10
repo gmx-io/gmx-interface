@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { formatDate } from "lib/dates";
+import { formatAmount } from "lib/numbers";
 
 import Button from "components/Button/Button";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -13,7 +14,7 @@ import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import { GtMetric } from "../GtMetric";
 import { formatGt } from "../gtPointsFormat";
-import type { GtBuybackSeason, GtSellableQuota } from "../gtPointsTypes";
+import { GT_DECIMALS, MIN_SELL_GT, type GtBuybackSeason, type GtSellableQuota } from "../gtPointsTypes";
 import { useNowSeconds } from "./useNowSeconds";
 
 export const REFERRALS_AFFILIATES_PATH = "/referrals/affiliates";
@@ -36,7 +37,12 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
       : undefined;
   const isUnavailable = isConnected && !isLoading && !quota;
   const cantSellReason =
-    closedReason ?? (quota && quota.availableToSell === 0n ? t`You have no GT to sell right now` : undefined);
+    closedReason ??
+    (quota && quota.availableToSell === 0n
+      ? t`You have no GT to sell right now`
+      : quota && quota.availableToSell < MIN_SELL_GT
+        ? t`Minimum sell amount is ${formatAmount(MIN_SELL_GT, GT_DECIMALS, 2)} GT.`
+        : undefined);
 
   const sellButton = (
     <Button variant="primary" disabled={!quota || cantSellReason !== undefined} onClick={onSell}>

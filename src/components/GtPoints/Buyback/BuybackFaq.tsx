@@ -4,6 +4,15 @@ import { Faq, FaqItem } from "components/Faq/Faq";
 
 const BUYBACK_FAQ_ITEMS: FaqItem[] = [
   {
+    title: <Trans>What is GT buyback?</Trans>,
+    content: (
+      <Trans>
+        GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every
+        day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards.
+      </Trans>
+    ),
+  },
+  {
     title: <Trans>How is the buyback price set?</Trans>,
     content: (
       <Trans>

@@ -14,8 +14,11 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 import LockIcon from "img/ic_lock.svg?react";
 
-import { LP_TOKEN_DECIMALS, type GtWalletLpToken } from "../gtPointsTypes";
+import { formatMinStakeAmount, getMinStakeAmount } from "../gtPointsFormat";
+import { LP_TOKEN_DECIMALS, MIN_STAKE_USD, type GtWalletLpToken } from "../gtPointsTypes";
 import { formatLpAmount, formatUsdValue, StakeTokenLabel } from "./StakeTokenLabel";
+
+const minStakeUsdText = formatUsdValue(MIN_STAKE_USD);
 
 type Props = {
   isVisible: boolean;
@@ -33,12 +36,25 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
 
   const isClosed = (item: GtWalletLpToken) => item.token.closedUntil !== undefined && item.token.closedUntil > now;
 
+  const tokens = useMemo(() => wallet.filter((item) => item.balance > 0n), [wallet]);
+
   const picked = useMemo(
     () =>
-      wallet
+      tokens
         .filter((item) => inputs[item.token.id] !== undefined)
-        .map((item) => ({ item, amount: parseValue(inputs[item.token.id] || "0", LP_TOKEN_DECIMALS) ?? 0n })),
-    [wallet, inputs]
+        .map((item) => {
+          const amount = parseValue(inputs[item.token.id] || "0", LP_TOKEN_DECIMALS) ?? 0n;
+          // Each picked token is checked on its own against $1 worth at its current price.
+          // Without a price the minimum can't be checked, so the token is blocked.
+          const minAmount = getMinStakeAmount(item);
+          return {
+            item,
+            amount,
+            minAmount,
+            isBelowMin: amount > 0n && (minAmount === undefined || amount < minAmount),
+          };
+        }),
+    [tokens, inputs]
   );
 
   const totalValueUsd = picked.reduce(
@@ -55,6 +71,8 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
           ? t`Max amount exceeded`
           : undefined;
 
+  const hasBelowMin = picked.some(({ isBelowMin }) => isBelowMin);
+
   const stake = () => {
     helperToast.success(
       picked.length === 1
@@ -66,20 +84,31 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
 
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={<Trans>Stake GLV / GM</Trans>}>
-      <div className="flex w-[480px] max-w-full flex-col gap-16">
-        <span className="text-body-small text-typography-secondary">
-          <Trans>Pick the tokens to stake and enter the amounts. Each one becomes its own stake position.</Trans>
-        </span>
+      {tokens.length === 0 ? (
+        // Nothing to stake yet: explain, and point to Pools, where GLV and GM are bought.
+        <div className="flex w-[480px] max-w-full flex-col gap-16">
+          <span className="text-body-medium text-typography-secondary">
+            <Trans>You have no GLV or GM to stake. Buy some on the Pools page first.</Trans>
+          </span>
+          <Button variant="primary-action" className="w-full" to="/pools">
+            <Trans>Buy GLV / GM</Trans>
+          </Button>
+        </div>
+      ) : (
+        <div className="flex w-[480px] max-w-full flex-col gap-16">
+          <span className="text-body-small text-typography-secondary">
+            <Trans>Pick the tokens to stake and enter the amounts. Each one becomes its own stake position.</Trans>
+          </span>
 
-        {wallet.length === 0 ? (
-          <div className="rounded-8 bg-slate-800 p-16 text-center text-typography-secondary">
-            <Trans>You have no GLV or GM to stake yet.</Trans>
-          </div>
-        ) : (
           <div className="flex flex-col gap-8">
-            {wallet.map((item) => {
+            {tokens.map((item) => {
               const closed = isClosed(item);
               const isPicked = inputs[item.token.id] !== undefined;
+              const belowMin = picked.find((entry) => entry.item === item && entry.isBelowMin);
+              const minStakeText =
+                belowMin?.minAmount !== undefined
+                  ? formatMinStakeAmount(belowMin.minAmount, item.token.kind)
+                  : undefined;
 
               return (
                 <div
@@ -91,6 +120,7 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
                 >
                   <div className="flex items-center gap-10">
                     <Checkbox
+                      className="grow text-left"
                       isChecked={isPicked}
                       disabled={closed}
                       setIsChecked={(isChecked) =>
@@ -98,10 +128,11 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
                           isChecked ? { ...rest, [item.token.id]: "" } : rest
                         )
                       }
-                    />
-                    <span className={cx("grow", { "opacity-50": closed })}>
-                      <StakeTokenLabel token={item.token} size={28} />
-                    </span>
+                    >
+                      <span className={cx({ "opacity-50": closed })}>
+                        <StakeTokenLabel token={item.token} size={28} />
+                      </span>
+                    </Checkbox>
                     <span className={cx("flex flex-col items-end", { "opacity-50": closed })}>
                       <span className="text-body-medium numbers">{formatLpAmount(item.balance, item.token)}</span>
                       <span className="text-body-small text-typography-secondary numbers">
@@ -121,48 +152,66 @@ export function StakeModal({ isVisible, setIsVisible, wallet }: Props) {
                   ) : null}
 
                   {isPicked ? (
-                    <div className="flex items-center gap-8 rounded-8 bg-slate-900 px-12 py-8">
-                      <NumberInput
-                        value={inputs[item.token.id]}
-                        onValueChange={(event) =>
-                          setInputs((current) => ({ ...current, [item.token.id]: event.target.value }))
-                        }
-                        className="bg-transparent text-body-large min-w-0 grow font-medium outline-none numbers"
-                        placeholder="0.0"
-                      />
-                      <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() =>
-                          setInputs((current) => ({
-                            ...current,
-                            [item.token.id]: formatAmountFree(item.balance, LP_TOKEN_DECIMALS),
-                          }))
-                        }
-                      >
-                        <Trans>Max</Trans>
-                      </Button>
+                    <div className="flex flex-col gap-8">
+                      <div className="flex items-center gap-8 rounded-8 bg-slate-900 px-12 py-8">
+                        <NumberInput
+                          value={inputs[item.token.id]}
+                          onValueChange={(event) =>
+                            setInputs((current) => ({ ...current, [item.token.id]: event.target.value }))
+                          }
+                          className="bg-transparent text-body-large min-w-0 grow font-medium outline-none numbers"
+                          placeholder="0.0"
+                        />
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          onClick={() =>
+                            setInputs((current) => ({
+                              ...current,
+                              [item.token.id]: formatAmountFree(item.balance, LP_TOKEN_DECIMALS),
+                            }))
+                          }
+                        >
+                          <Trans>Max</Trans>
+                        </Button>
+                      </div>
+                      {belowMin ? (
+                        <span className="text-body-small text-red-500">
+                          {minStakeText !== undefined ? (
+                            <Trans>
+                              Minimum stake is {minStakeText} (≈{minStakeUsdText}).
+                            </Trans>
+                          ) : (
+                            <Trans>Minimum stake is {minStakeUsdText}.</Trans>
+                          )}
+                        </span>
+                      ) : null}
                     </div>
                   ) : null}
                 </div>
               );
             })}
           </div>
-        )}
 
-        <div className="flex flex-col gap-10">
-          <SyntheticsInfoRow label={<Trans>Tokens to stake</Trans>} value={picked.length} />
-          <SyntheticsInfoRow
-            label={<Trans>Total value</Trans>}
-            value={<span className="numbers">{formatUsdValue(totalValueUsd)}</span>}
-          />
-          <SyntheticsInfoRow label={<Trans>Starting APR</Trans>} value={<Trans>0%, rising from week 1</Trans>} />
+          <div className="flex flex-col gap-10">
+            <SyntheticsInfoRow label={<Trans>Tokens to stake</Trans>} value={picked.length} />
+            <SyntheticsInfoRow
+              label={<Trans>Total value</Trans>}
+              value={<span className="numbers">{formatUsdValue(totalValueUsd)}</span>}
+            />
+            <SyntheticsInfoRow label={<Trans>Starting APR</Trans>} value={<Trans>0%, rising from week 1</Trans>} />
+          </div>
+
+          <Button
+            variant="primary-action"
+            className="w-full"
+            disabled={error !== undefined || hasBelowMin}
+            onClick={stake}
+          >
+            {error ?? <Plural value={picked.length} one="Stake # token" other="Stake # tokens" />}
+          </Button>
         </div>
-
-        <Button variant="primary-action" className="w-full" disabled={error !== undefined} onClick={stake}>
-          {error ?? <Plural value={picked.length} one="Stake # token" other="Stake # tokens" />}
-        </Button>
-      </div>
+      )}
     </Modal>
   );
 }
