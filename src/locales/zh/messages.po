@@ -4020,7 +4020,6 @@ msgid "Up to 25% earnings"
 msgstr "最高 25% 收益"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
-#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "No assets yet"
 msgstr "暂无资产"
 
@@ -4032,6 +4031,10 @@ msgstr "AB 测试开关"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
 msgstr "钱包 & GMX Account"
+
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
+msgid "No GM or GLV yet"
+msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
@@ -11594,6 +11597,10 @@ msgstr "市价订单"
 msgid "Buying"
 msgstr "买入"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"
 msgstr "解除质押请求已提交"
@@ -12603,6 +12610,10 @@ msgstr "钱包"
 msgid "Enter a trigger price"
 msgstr "输入触发价格"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT buybacks"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "总统计"
@@ -13501,10 +13512,6 @@ msgstr "今年"
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or leave, the USDG stays in your account."
 msgstr "系统会先将 USDC 转换为 USDG，然后订单会请求第二次签名。如果您拒绝或离开，USDG 将保留在您的账户中。"
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Sell GT in buyback"
-msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "Withdraw {glvOrGm}: {0}"

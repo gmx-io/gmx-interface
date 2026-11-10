@@ -140,13 +140,13 @@ function TotalLifetimeEarnedValue({
       handle={valueElement}
       content={
         <div className="flex flex-col gap-8">
+          <Group title={<Trans>Lifetime GT rewards</Trans>}>
+            <LeafRow label={<Trans>GT buybacks</Trans>} usd={breakdown.gtBuybackUsd} />
+          </Group>
+
           <Group title={<Trans>Lifetime LP rewards</Trans>}>
             <LeafRow label={<Trans>GM pools</Trans>} usd={breakdown.gmUsd} />
             <LeafRow label={<Trans>GLV vaults</Trans>} usd={breakdown.glvUsd} />
-          </Group>
-
-          <Group title={<Trans>Lifetime GT rewards</Trans>}>
-            <LeafRow label={<Trans>Sell GT in buyback</Trans>} usd={breakdown.gtBuybackUsd} />
           </Group>
 
           <div className="border-t-1/2 border-slate-600" />
