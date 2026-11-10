@@ -87,6 +87,21 @@ describe("useTradeboxState network isolation", () => {
     localStorage.clear();
   });
 
+  it("fills in missing collateral when restoring an Arbitrum market FESOL-15", () => {
+    seedNetwork(ARBITRUM, {
+      tradeType: TradeType.Short,
+      indexTokenAddress: ETH_ADDRESS,
+      market: MOCK_MARKET_ADDRESS,
+    });
+
+    renderTradebox(ARBITRUM);
+
+    expect(tradebox.marketAddress).toBe(MOCK_MARKET_ADDRESS);
+    expect(tradebox.collateralAddress).toBe(USDC_ADDRESS);
+    expect(tradebox.collateralToken).toBe(USDC_TOKEN);
+    expect(readStoredTradeOptions(ARBITRUM)?.collaterals?.[MOCK_MARKET_ADDRESS]?.short).toBe(USDC_ADDRESS);
+  });
+
   it.each([ARBITRUM, SOLANA_NETWORK_ID] as const)(
     "restores and accepts Swap only on supported networks FESOL-15 (%s)",
     (networkId) => {
