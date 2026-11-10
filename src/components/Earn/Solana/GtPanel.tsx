@@ -84,35 +84,29 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
             </EarningValue>
           }
         />
-      </div>
-
-      <div className="mt-auto">
-        <div className="border-t-1/2 border-slate-600" />
-        <div className="flex flex-col gap-8 p-20">
-          <SyntheticsInfoRow
-            label={
-              <TooltipWithPortal
-                variant="iconStroke"
-                handle={<Trans>Potential GT value</Trans>}
-                content={
-                  <Trans>
-                    Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual
-                    realizable value depends on future sellable quota and buyback prices.
-                  </Trans>
-                }
-              />
-            }
-            value={
-              <EarningValue value={gt?.potentialValueUsd} isLoading={isLoading} isAvailable={isLoading || isAvailable}>
-                {(usd) => (
-                  <span className="text-blue-100 numbers">
-                    ~<UsdValue usd={usd} />
-                  </span>
-                )}
-              </EarningValue>
-            }
-          />
-        </div>
+        <SyntheticsInfoRow
+          label={
+            <TooltipWithPortal
+              variant="iconStroke"
+              handle={<Trans>Potential GT value</Trans>}
+              content={
+                <Trans>
+                  Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual
+                  realizable value depends on future sellable quota and buyback prices.
+                </Trans>
+              }
+            />
+          }
+          value={
+            <EarningValue value={gt?.potentialValueUsd} isLoading={isLoading} isAvailable={isLoading || isAvailable}>
+              {(usd) => (
+                <span className="text-blue-100 numbers">
+                  ~<UsdValue usd={usd} />
+                </span>
+              )}
+            </EarningValue>
+          }
+        />
       </div>
     </div>
   );
