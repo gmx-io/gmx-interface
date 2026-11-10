@@ -507,7 +507,9 @@ export function usePaxosTransitState({
   ]);
 
   const usdgStepAmount = isDeposit ? quote?.amountOut : amountIn;
-  const sentSellAmountOut = isWithdrawalSent && hasAmountIn ? transitAmountOut : undefined;
+  // The estimate is in USDC, so it doesn't fit the Receive field while USDG is picked there
+  const sentSellAmountOut =
+    isWithdrawalSent && hasAmountIn && collateralSwapTokens !== undefined ? transitAmountOut : undefined;
   const hasUsdgCollateral =
     paxosTransitConfig !== undefined &&
     (longTokenAddress === paxosTransitConfig.usdgAddress || shortTokenAddress === paxosTransitConfig.usdgAddress);
