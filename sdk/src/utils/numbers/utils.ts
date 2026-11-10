@@ -260,9 +260,12 @@ export function formatUsd(usd?: bigint, opts: FormatUsdOptions = {}) {
 }
 
 export function formatBigUsdParts(amount: bigint, opts: { displayDecimals?: number } = {}) {
+  // whole dollars would show a few cents as $0
+  const defaultDisplayDecimals = amount !== 0n && roundsToZero(amount, USD_DECIMALS, 0) ? 2 : 0;
+
   return formatUsdParts(amount, {
     maxThreshold: "9999999999999999999999999",
-    displayDecimals: opts.displayDecimals ?? 0,
+    displayDecimals: opts.displayDecimals ?? defaultDisplayDecimals,
   })!;
 }
 
