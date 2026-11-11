@@ -4,8 +4,10 @@ import type { SortDirection } from "context/SorterContext/types";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { MarketTokensAPRData, MarketsInfoData } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
-import { ProgressiveTokensData } from "sdk/utils/tokens/types";
+import { getByKey } from "lib/objects";
+import { ProgressiveTokenData, ProgressiveTokensData } from "sdk/utils/tokens/types";
 
 import type { SortField } from "./GmList";
 import { sortGmTokensDefault } from "./sortGmTokensDefault";
@@ -72,30 +74,31 @@ export function sortGmTokensByField({
     });
   }
 
+  // invalid-price pools show N/A for APY and performance, so sort them like pools without data
+  const getIsPriceInvalid = (token: ProgressiveTokenData) => {
+    const marketInfo = getByKey(marketsInfo, token.address);
+    return marketInfo !== undefined && getIsPoolTokenPriceInvalid(marketInfo, token);
+  };
+
   if (orderBy === "apy") {
-    return gmTokens.sort((a, b) => {
-      const bonusAprA = marketsTokensIncentiveAprData?.[a.address] ?? 0n;
-      const lidoAprA = marketsTokensLidoAprData?.[a.address] ?? 0n;
-      const launchBoostAprA = marketsTokensLaunchBoostAprData?.[a.address] ?? 0n;
-      let aprA = bonusAprA + lidoAprA + launchBoostAprA;
+    const getApr = (token: ProgressiveTokenData) => {
+      if (getIsPriceInvalid(token)) return 0n;
 
-      aprA += marketsTokensApyData?.[a.address] ?? 0n;
+      return (
+        (marketsTokensIncentiveAprData?.[token.address] ?? 0n) +
+        (marketsTokensLidoAprData?.[token.address] ?? 0n) +
+        (marketsTokensLaunchBoostAprData?.[token.address] ?? 0n) +
+        (marketsTokensApyData?.[token.address] ?? 0n)
+      );
+    };
 
-      const bonusAprB = marketsTokensIncentiveAprData?.[b.address] ?? 0n;
-      const lidoAprB = marketsTokensLidoAprData?.[b.address] ?? 0n;
-      const launchBoostAprB = marketsTokensLaunchBoostAprData?.[b.address] ?? 0n;
-      let aprB = bonusAprB + lidoAprB + launchBoostAprB;
-
-      aprB += marketsTokensApyData?.[b.address] ?? 0n;
-
-      return aprA > aprB ? directionMultiplier : -directionMultiplier;
-    });
+    return gmTokens.sort((a, b) => (getApr(a) > getApr(b) ? directionMultiplier : -directionMultiplier));
   }
 
   if (orderBy === "performance") {
     return gmTokens.sort((a, b) => {
-      const performanceA = performance?.[a.address] ?? 0n;
-      const performanceB = performance?.[b.address] ?? 0n;
+      const performanceA = getIsPriceInvalid(a) ? 0n : performance?.[a.address] ?? 0n;
+      const performanceB = getIsPriceInvalid(b) ? 0n : performance?.[b.address] ?? 0n;
 
       return performanceA > performanceB ? directionMultiplier : -directionMultiplier;
     });
