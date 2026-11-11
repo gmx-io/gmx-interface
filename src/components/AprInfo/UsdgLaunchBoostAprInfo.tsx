@@ -1,10 +1,10 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 
-import { USDG_LAUNCH_BOOST_PERIOD_1_END, USDG_LAUNCH_BOOST_PERIOD_1_START } from "config/usdgPools";
+import { USDG_LAUNCH_BOOST_GLV_SCHEDULE, UsdgLaunchBoostScheduleItem } from "config/usdgPools";
 import { UsdgLaunchBoost, getIsUsdgLaunchBoostIncluded } from "domain/synthetics/usdgLaunchBoost/utils";
-import { formatDate } from "lib/dates";
-import { formatPercentage } from "lib/numbers";
+import { formatDateRange, formatDayMonthYear } from "lib/dates";
+import { formatPercentage, formatPercentageDisplay } from "lib/numbers";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -77,15 +77,33 @@ export function UsdgLaunchBoostStatusNote({ launchBoost }: { launchBoost: UsdgLa
   }
 }
 
-export function UsdgLaunchBoostProgramNote() {
-  const periodStart = formatDate(USDG_LAUNCH_BOOST_PERIOD_1_START, { timezone: "utc" });
-  const periodEnd = formatDate(USDG_LAUNCH_BOOST_PERIOD_1_END, { timezone: "utc" });
+function formatLaunchBoostScheduleApr({ aprPercent, aprKind }: UsdgLaunchBoostScheduleItem) {
+  const apr = formatPercentageDisplay(aprPercent);
+  return aprKind === "estimate" ? t`Est. ${apr}` : `${apr}+`;
+}
 
+function formatLaunchBoostScheduleLine(item: UsdgLaunchBoostScheduleItem) {
+  const apr = formatLaunchBoostScheduleApr(item);
+
+  if (item.start === undefined) {
+    const endDate = formatDayMonthYear(item.end, { timezone: "utc" });
+    return t`Until ${endDate}: ${apr}`;
+  }
+
+  const dateRange = formatDateRange(item.start, item.end, { timezone: "utc" });
+  return t`${dateRange}: ${apr}`;
+}
+
+function UsdgLaunchBoostGlvSchedule() {
   return (
-    <Trans>
-      First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG
-      program with GMX. Period 1: {periodStart} – {periodEnd}.
-    </Trans>
+    <div>
+      <div>
+        <Trans>Launch boost schedule</Trans>
+      </div>
+      {USDG_LAUNCH_BOOST_GLV_SCHEDULE.map((item) => (
+        <div key={item.end}>{formatLaunchBoostScheduleLine(item)}</div>
+      ))}
+    </div>
   );
 }
 
@@ -124,9 +142,7 @@ function UsdgLaunchBoostTooltipContent({
       <div>
         <Trans>Paid into the {tokenSymbol} price every 4 hours. Nothing to claim.</Trans>
       </div>
-      <div>
-        <UsdgLaunchBoostProgramNote />
-      </div>
+      {launchBoost.isGlv && <UsdgLaunchBoostGlvSchedule />}
     </div>
   );
 }
