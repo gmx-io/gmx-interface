@@ -74,7 +74,7 @@ import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addres
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
-import { parseError } from "lib/errors";
+import { type ErrorLike, parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
@@ -735,18 +735,23 @@ export const DepositView = () => {
 
     setIsSubmitting(true);
 
-    await wrapChainAction(settlementChainId, setSettlementChainId, async (signer) => {
-      await sendSameChainDepositTxn({
-        chainId: settlementChainId as SettlementChainId,
-        signer,
-        tokenAddress: depositViewTokenAddress,
-        amount: inputAmount,
-        account,
-        callback: sameChainCallback,
-        walletTxnTokenPermits,
-        walletCallsBatch: approvalBatch,
+    try {
+      await wrapChainAction(settlementChainId, setSettlementChainId, async (signer) => {
+        await sendSameChainDepositTxn({
+          chainId: settlementChainId as SettlementChainId,
+          signer,
+          tokenAddress: depositViewTokenAddress,
+          amount: inputAmount,
+          account,
+          callback: sameChainCallback,
+          walletTxnTokenPermits,
+          walletCallsBatch: approvalBatch,
+        });
       });
-    });
+    } catch (error) {
+      setIsSubmitting(false);
+      throwUnlessUserRejected(error);
+    }
   }, [
     account,
     approvalBatch,
@@ -887,24 +892,29 @@ export const DepositView = () => {
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
-    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
-      await sendCrossChainDepositTxn({
-        chainId: depositViewChain,
-        signer,
-        tokenAddress: selectedTokenSourceChainTokenId.address,
-        stargateAddress: selectedTokenSourceChainTokenId.stargate,
-        amount: amountLD,
-        quoteSendNativeFee,
-        sendParams: sendParamsWithSlippage,
-        account,
-        callback: makeCrossChainCallback({
-          depositViewChain,
-          metricId: metricData.metricId,
+    try {
+      await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
+        await sendCrossChainDepositTxn({
+          chainId: depositViewChain,
+          signer,
+          tokenAddress: selectedTokenSourceChainTokenId.address,
+          stargateAddress: selectedTokenSourceChainTokenId.stargate,
+          amount: amountLD,
+          quoteSendNativeFee,
           sendParams: sendParamsWithSlippage,
-          tokenAddress: depositViewTokenAddress,
-        }),
+          account,
+          callback: makeCrossChainCallback({
+            depositViewChain,
+            metricId: metricData.metricId,
+            sendParams: sendParamsWithSlippage,
+            tokenAddress: depositViewTokenAddress,
+          }),
+        });
       });
-    });
+    } catch (error) {
+      setIsSubmitting(false);
+      throwUnlessUserRejected(error);
+    }
 
     return true;
   }, [
@@ -1582,6 +1592,14 @@ export const DepositView = () => {
     </form>
   );
 };
+
+// A wallet reject (of the txn or of the network switch) is the user cancelling, so it is not an error here.
+// Other errors are rethrown so the global unhandled rejection handler still reports them.
+function throwUnlessUserRejected(error: unknown) {
+  if (!parseError(error as ErrorLike)?.isUserRejectedError) {
+    throw error;
+  }
+}
 
 function tryDecodeStargateError(data: Hex) {
   try {
