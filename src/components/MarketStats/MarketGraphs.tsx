@@ -15,6 +15,7 @@ import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
 import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
@@ -128,6 +129,10 @@ export function MarketGraphs({
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
+  const marketToken = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken : getByKey(marketTokensData, address);
+  // wait for the token too, otherwise an invalid-price pool flashes its broken values while loading
+  const isGraphHidden = marketToken === undefined || getIsPoolTokenPriceInvalid(glvOrMarketInfo, marketToken);
+
   const isMobile = usePoolsIsMobilePage();
 
   const timeRangeTabs = useMemo(
@@ -178,17 +183,21 @@ export function MarketGraphs({
         <div className="flex grow flex-col gap-20">
           <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
-              value={getGraphValue({
-                marketGraphType,
-                glvOrMarketInfo,
-                performance,
-                glvApyInfoData,
-                marketsTokensApyData,
-                marketTokensData,
-              })}
+              value={
+                isGraphHidden
+                  ? undefined
+                  : getGraphValue({
+                      marketGraphType,
+                      glvOrMarketInfo,
+                      performance,
+                      glvApyInfoData,
+                      marketsTokensApyData,
+                      marketTokensData,
+                    })
+              }
               label={graphTitleLabelMap[marketGraphType]}
               valueClassName={cx("normal-nums", {
-                "text-green-300": marketGraphType === "performance" && performance[address] > 0n,
+                "text-green-300": !isGraphHidden && marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
@@ -198,6 +207,7 @@ export function MarketGraphs({
             priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
+            isChartHidden={isGraphHidden}
           />
         </div>
       </div>
@@ -277,11 +287,13 @@ const GraphChart = ({
   priceSnapshots,
   marketGraphType,
   aprSnapshots,
+  isChartHidden,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
   aprSnapshots: AprSnapshot[];
+  isChartHidden: boolean;
 }) => {
   const performanceData = useMemo(
     () =>
@@ -350,7 +362,7 @@ const GraphChart = ({
     }
   }, [performanceData, priceData, priceSnapshots.length, apyData, marketGraphType, prevMarketGraphType]);
 
-  if (data.length === 0) {
+  if (isChartHidden || data.length === 0) {
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
         <p className="text-body-medium text-typography-secondary">
