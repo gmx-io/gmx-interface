@@ -7,6 +7,7 @@ import { GMSOL_PRECISION_SCALE } from "./constants";
 export { GMSOL_PRECISION_SCALE } from "./constants";
 export { getGmsolFractionalPower } from "./numbers";
 export type { GmsolMarketConfig } from "./types";
+export * from "./units";
 
 export function getGmsolUsdAmount(value: bigint): bigint {
   return bigMath.mulDiv(value, 1n, GMSOL_PRECISION_SCALE) * GMSOL_PRECISION_SCALE;
