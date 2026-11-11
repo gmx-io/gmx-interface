@@ -46,7 +46,11 @@ import { resolveSettlementChainDepositToken } from "domain/multichain/depositTok
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
-import { estimateSameChainDepositGas, sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositTxn";
+import {
+  SAME_CHAIN_DEPOSIT_GAS_LIMIT,
+  estimateSameChainDepositGas,
+  sendSameChainDepositTxn,
+} from "domain/multichain/sendSameChainDepositTxn";
 import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
@@ -59,7 +63,11 @@ import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedErr
 import { WALLET_NETWORK_FEE_SOURCE, getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ValidationBannerErrorName, getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
+import {
+  ERC20_APPROVE_GAS_LIMIT,
+  ValidationBannerErrorName,
+  getInsufficientFeeButtonMessage,
+} from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -1119,11 +1127,17 @@ export const DepositView = () => {
     depositViewChain !== undefined &&
     networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
 
+  let sameChainNativeFeeAmount = sameChainNetworkFeeDetails?.amount;
+  if (needTokenApprove) {
+    sameChainNativeFeeAmount =
+      gasPrice !== undefined ? (ERC20_APPROVE_GAS_LIMIT + SAME_CHAIN_DEPOSIT_GAS_LIMIT) * gasPrice : undefined;
+  }
+
   const isInsufficientSameChainNativeGasBalance =
     depositViewChain === settlementChainId &&
     gasPaymentTokenBalanceForDeposit !== undefined &&
-    sameChainNetworkFeeDetails?.amount !== undefined &&
-    sameChainNetworkFeeDetails.amount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
+    sameChainNativeFeeAmount !== undefined &&
+    sameChainNativeFeeAmount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
       gasPaymentTokenBalanceForDeposit;
 
   let buttonState: {
