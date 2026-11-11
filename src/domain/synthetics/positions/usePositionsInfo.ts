@@ -23,7 +23,10 @@ import { usePositionsConstantsRequest } from "./usePositionsConstants";
 // cold RPC detour is slower than waiting, so we give API a grace window before paying RPC load.
 const RPC_WARMUP_DELAY_MS = 5_000;
 
-function composeApiPositionInfo(apiPosition: ApiPositionInfo, marketsInfoData: MarketsInfoData): PositionInfo | null {
+export function composeApiPositionInfo(
+  apiPosition: ApiPositionInfo,
+  marketsInfoData: MarketsInfoData
+): PositionInfo | null {
   const marketInfo = getByKey(marketsInfoData, apiPosition.marketAddress);
 
   if (!marketInfo) {
@@ -51,6 +54,7 @@ export type PositionsInfoResult = {
   isLoading: boolean;
   error?: Error;
   dataSource?: ApiDataSource;
+  refetch?: () => Promise<unknown>;
 };
 
 export function usePositionsInfoRequest(

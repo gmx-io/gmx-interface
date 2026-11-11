@@ -1,10 +1,15 @@
 import { Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
-import { useMedia } from "react-use";
+import { useAsyncFn, useMedia } from "react-use";
 
+import { isSolanaNetwork } from "config/chains";
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectPositionsInfoError,
+  selectRefetchPositions,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -12,11 +17,14 @@ import { PositionInfo } from "domain/synthetics/positions";
 import type { PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { usePositionsLifecycleFees } from "domain/synthetics/positions/usePositionsLifecycleFees";
 import { TradeMode } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
@@ -50,6 +58,13 @@ export function PositionList(p: Props) {
     hideOrderActions,
   } = p;
   const positionsInfoData = usePositionsInfoData();
+  const { networkId } = useChainId();
+  const positionsInfoError = useSelector(selectPositionsInfoError);
+  const refetchPositions = useSelector(selectRefetchPositions);
+  const showPositionsError = isSolanaNetwork(networkId) && Boolean(positionsInfoError);
+  const [{ loading: isRetrying }, retryPositions] = useAsyncFn(async () => {
+    await refetchPositions?.();
+  }, [refetchPositions]);
   const chainId = useSelector(selectChainId);
   const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
@@ -80,11 +95,25 @@ export function PositionList(p: Props) {
 
   return (
     <div className="flex grow flex-col">
+      {showPositionsError && (
+        <AlertInfo type="warning" compact textColor="text-yellow-300">
+          {positions.length > 0 ? (
+            <Trans>Unable to refresh positions. Displayed data may be outdated.</Trans>
+          ) : (
+            <Trans>Unable to load positions. Please try again.</Trans>
+          )}
+          {refetchPositions && (
+            <Button variant="link" onClick={retryPositions} disabled={isRetrying}>
+              <Trans>Retry</Trans>
+            </Button>
+          )}
+        </AlertInfo>
+      )}
       {isMobile && (
         <>
           <EmptyTableContent
             isLoading={isLoading}
-            isEmpty={positions.length === 0}
+            isEmpty={!showPositionsError && positions.length === 0}
             emptyText={<Trans>No open positions</Trans>}
           />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
@@ -184,7 +213,7 @@ export function PositionList(p: Props) {
 
           <EmptyTableContent
             isLoading={isLoading}
-            isEmpty={positions.length === 0}
+            isEmpty={!showPositionsError && positions.length === 0}
             emptyText={<Trans>No open positions</Trans>}
           />
         </TableScrollFadeContainer>

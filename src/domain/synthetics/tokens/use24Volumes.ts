@@ -3,8 +3,10 @@ import { useMemo } from "react";
 import useSWR from "swr";
 import type { Address } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useChainId } from "lib/chains";
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { getByKey } from "sdk/utils/objects";
@@ -23,10 +25,18 @@ const MARKET_VOLUMES_QUERY = gql`
 export function use24hVolumes() {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const { networkId } = useChainId();
+  // On Solana chainId stays Arbitrum; its indexer has no Solana markets, so volumes come from the Solana host.
+  const isSolana = isSolanaNetwork(networkId);
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    [chainId, "24hVolume"],
+    [isSolana ? networkId : chainId, "24hVolume"],
     async () => {
+      if (isSolana) {
+        const { fetchGmsol24hVolumes } = await import("domain/gmsol/markets/fetchGmsol24hVolumes");
+        return fetchGmsol24hVolumes() as Promise<PositionVolumeInfosResponse>;
+      }
+
       const client = getSubsquidGraphClient(chainId);
 
       if (!client) {
