@@ -8,6 +8,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
+import { getStoredTpSlTriggerPrice } from "./triggerPriceInput";
 import { EditingOrderState, OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
 
 export type OrderEditorState = ReturnType<typeof useOrderEditorState>;
@@ -64,6 +65,11 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
 
   const triggerPrice = useMemo(() => {
     const order = getByKey(ordersInfoData, editingOrderState?.orderKey);
+    const storedTriggerPrice = getStoredTpSlTriggerPrice(order, triggerPriceInputValue);
+
+    if (storedTriggerPrice !== undefined) {
+      return storedTriggerPrice;
+    }
 
     let triggerPrice = parseValue(triggerPriceInputValue || "0", USD_DECIMALS);
 

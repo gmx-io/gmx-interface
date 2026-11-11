@@ -1,6 +1,6 @@
-import { USD_DECIMALS } from "config/factors";
+import { formatTriggerPriceInputValue } from "domain/synthetics/orders/triggerPriceInput";
 import type { PositionEditorAtPriceOpenRequest } from "domain/synthetics/trade/usePositionEditorState";
-import { calculateDisplayDecimals, formatAmount, formatAmountFree } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 
 export type MarginDepositReplacedOrder = {
   initialCollateralDeltaAmount: bigint;
@@ -12,20 +12,8 @@ export type MarginDepositPrefill = {
   triggerPriceInputValue: string | undefined;
 };
 
-/** Mirrors OrderEditor's trigger price input formatting. */
 export function formatMarginDepositPriceInput(price: bigint | undefined, visualMultiplier: number | undefined): string {
-  if (price === undefined) {
-    return "";
-  }
-
-  return formatAmount(
-    price,
-    USD_DECIMALS,
-    calculateDisplayDecimals(price, USD_DECIMALS, visualMultiplier),
-    undefined,
-    undefined,
-    visualMultiplier
-  );
+  return price === undefined ? "" : formatTriggerPriceInputValue(price, visualMultiplier);
 }
 
 /** Request values win, the replaced order fills the rest; undefined until that order loads (caller retries). */

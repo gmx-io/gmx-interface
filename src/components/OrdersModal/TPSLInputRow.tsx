@@ -5,7 +5,7 @@ import cx from "classnames";
 import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { getCappedTpSlLossUsd } from "domain/tpsl/utils";
+import { getCappedTpSlEstimatedPnl, getCappedTpSlLossUsd, getTpSlCollateralUsdAtPrice } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
@@ -84,13 +84,9 @@ export function TPSLInputRow({
   const tokenPrecision = expandDecimals(1, indexTokenDecimals);
 
   const getCollateralUsdForPnl = useCallback(
-    (price: bigint | undefined) => {
-      if (collateralAmountInIndexTokens === undefined) return collateralUsd;
-      if (price === undefined || price === 0n) return collateralUsd;
-
-      return bigMath.mulDiv(collateralAmountInIndexTokens, price, tokenPrecision);
-    },
-    [collateralAmountInIndexTokens, collateralUsd, tokenPrecision]
+    (price: bigint | undefined) =>
+      getTpSlCollateralUsdAtPrice({ collateralUsd, collateralAmountInIndexTokens, indexTokenDecimals, price }),
+    [collateralAmountInIndexTokens, collateralUsd, indexTokenDecimals]
   );
 
   const isStopLoss = type === "stopLoss";
@@ -389,21 +385,13 @@ export function TPSLInputRow({
     const base = estimatedPnlProp ?? derivedEstimatedPnl;
     if (!base) return base;
 
-    const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
-    const cappedPnlUsd = getCappedTpSlLossUsd({
-      pnlUsd: base.pnlUsd,
-      collateralUsd: pnlCollateralUsd,
+    return getCappedTpSlEstimatedPnl({
+      estimatedPnl: base,
+      collateralUsd: getCollateralUsdForPnl(currentPriceValue),
       triggerPrice: currentPriceValue,
       liquidationPrice,
       isLong,
     });
-    if (cappedPnlUsd === base.pnlUsd) return base;
-
-    return {
-      pnlUsd: cappedPnlUsd,
-      pnlPercentage:
-        pnlCollateralUsd > 0n ? bigMath.mulDiv(cappedPnlUsd, 10000n, pnlCollateralUsd) : base.pnlPercentage,
-    };
   }, [
     priceError,
     estimatedPnlProp,

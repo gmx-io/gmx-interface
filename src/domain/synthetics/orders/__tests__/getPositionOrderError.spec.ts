@@ -181,3 +181,30 @@ describe("getPositionOrderError — regular limit increase orders", () => {
     expect(error).toBe("Max leverage: 100.0x");
   });
 });
+
+describe("getPositionOrderError — take-profit orders", () => {
+  // a zero-size update of an order that withdraws collateral turns it into a withdrawal at the trigger price
+  it.each<[string, number, number, number, string | undefined]>([
+    ["blocks a close size cleared to zero", 5_000, 0, 56_000, "Enter an amount"],
+    ["keeps a zero-size collateral withdrawal editable", 0, 0, 56_000, undefined],
+    ["allows a new close size", 5_000, 2_000, 56_000, undefined],
+    ["blocks a price at the mark price", 5_000, 2_000, 50_000, "Set trigger price above mark price"],
+  ])("%s", (_, orderSizeUsd, sizeUsd, priceUsd, expected) => {
+    const takeProfitOrder = {
+      ...makeIncreaseOrder(),
+      orderType: OrderType.LimitDecrease,
+      sizeDeltaUsd: expandDecimals(orderSizeUsd, 30),
+      triggerPrice: expandDecimals(55_000, 30),
+    };
+
+    const error = getPositionOrderError({
+      ...baseParams,
+      positionOrder: takeProfitOrder,
+      sizeDeltaUsd: expandDecimals(sizeUsd, 30),
+      triggerPrice: expandDecimals(priceUsd, 30),
+      existingPosition: makePosition(expandDecimals(40_000, 30)),
+    });
+
+    expect(error).toBe(expected);
+  });
+});

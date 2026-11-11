@@ -5032,6 +5032,7 @@ msgstr "止損減倉"
 msgid "Wallet balance"
 msgstr "錢包餘額"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Est. PnL"
@@ -10356,6 +10357,7 @@ msgstr "24 小時交易量"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

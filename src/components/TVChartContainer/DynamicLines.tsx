@@ -28,9 +28,10 @@ import {
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { formatTriggerPriceInputValue } from "domain/synthetics/orders/triggerPriceInput";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { helperToast } from "lib/helperToast";
-import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
+import { numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -178,16 +179,11 @@ export function DynamicLines({
 
       const indexToken = order.indexToken;
 
-      const decimals = calculateDisplayDecimals(order.triggerPrice, USD_DECIMALS, indexToken?.visualMultiplier);
-      const formattedInitialPrice = formatAmount(
-        order.triggerPrice,
-        USD_DECIMALS,
-        decimals,
-        undefined,
-        undefined,
-        indexToken?.visualMultiplier
+      setTriggerPriceInputValue(
+        price !== undefined
+          ? String(price)
+          : formatTriggerPriceInputValue(order.triggerPrice, indexToken?.visualMultiplier)
       );
-      setTriggerPriceInputValue(price !== undefined ? String(price) : formattedInitialPrice);
     },
     [ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );

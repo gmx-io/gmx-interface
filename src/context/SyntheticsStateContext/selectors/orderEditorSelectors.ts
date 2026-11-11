@@ -22,8 +22,12 @@ import {
   OrderType,
   PositionOrderInfo,
 } from "domain/synthetics/orders";
-import { getPositionOrderError } from "domain/synthetics/orders/getPositionOrderError";
+import {
+  getPositionOrderError,
+  getTriggerDecreaseMarkPriceError,
+} from "domain/synthetics/orders/getPositionOrderError";
 import { getMarginDepositProjections, isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
+import { getStoredTpSlTriggerPrice } from "domain/synthetics/orders/triggerPriceInput";
 import { getIsPositionInfoLoaded, PositionInfoLoaded } from "domain/synthetics/positions";
 import {
   convertToTokenAmount,
@@ -41,11 +45,13 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
-import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
+import { getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { getCappedTpSlEstimatedPnl, getTpSlCollateralUsdAtPrice, getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
+import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import {
@@ -66,6 +72,7 @@ import {
   selectOrdersInfoData,
   makeSelectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -187,6 +194,10 @@ export const selectOrderEditorTriggerPrice = createSelector((q) => {
   const indexToken = q(selectOrderEditorIndexToken);
 
   if (!triggerPriceInputValue || !indexToken) return undefined;
+
+  const storedTriggerPrice = getStoredTpSlTriggerPrice(q(selectOrderEditorOrder), triggerPriceInputValue);
+
+  if (storedTriggerPrice !== undefined) return storedTriggerPrice;
 
   let triggerPrice = parseValue(triggerPriceInputValue, USD_DECIMALS);
 
@@ -383,6 +394,13 @@ export const selectOrderEditorIndexToken = createSelector((q) => {
   const token = getTokenData(tokensData, indexTokenAddress);
 
   return token;
+});
+
+const selectOrderEditorMarkPrice = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+  const indexToken = q(selectOrderEditorIndexToken);
+
+  return order?.isLong ? indexToken?.prices.minPrice : indexToken?.prices.maxPrice;
 });
 
 export const selectOrderEditorMarkRatio = createSelector((q) => {
@@ -749,9 +767,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
 
   const positionOrder = order as PositionOrderInfo;
 
-  const indexToken = q(selectOrderEditorIndexToken);
-  const markPrice = positionOrder.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
-
+  const markPrice = q(selectOrderEditorMarkPrice);
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = q(selectOrderEditorTriggerPrice);
   const acceptablePrice = q(selectOrderEditorAcceptablePrice);
@@ -789,6 +805,74 @@ export const selectOrderEditorTpSlLiqPriceWarning = createSelector((q) => {
     triggerPrice,
     liquidationPrice: existingPosition?.liquidationPrice,
     isLong: Boolean(existingPosition?.isLong),
+  });
+});
+
+export const selectOrderEditorTpSlEstimatedPnl = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order || !isTriggerDecreaseOrderType(order.orderType)) {
+    return undefined;
+  }
+
+  const position = q(selectOrderEditorExistingPosition);
+  const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
+  const triggerPrice = q(selectOrderEditorTriggerPrice);
+  const markPrice = q(selectOrderEditorMarkPrice);
+
+  if (
+    !position ||
+    sizeDeltaUsd === undefined ||
+    sizeDeltaUsd <= 0n ||
+    sizeDeltaUsd > position.sizeInUsd ||
+    triggerPrice === undefined ||
+    markPrice === undefined ||
+    getTriggerDecreaseMarkPriceError({ orderType: order.orderType, isLong: order.isLong, triggerPrice, markPrice })
+  ) {
+    return undefined;
+  }
+
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(order.marketAddress));
+
+  const decreaseAmounts = getAvailableTradeQuote(position.marketInfo.tradeMath, () =>
+    getTpSlDecreaseAmounts({
+      position,
+      closeSizeUsd: sizeDeltaUsd,
+      triggerPrice,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
+      keepLeverage: false,
+      isLimit: false,
+      limitPrice: undefined,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor: order.uiFeeFactor ?? q(selectUiFeeFactor),
+      userReferralInfo: q(selectUserReferralInfo),
+      isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
+      proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
+    })
+  );
+
+  if (!decreaseAmounts) {
+    return undefined;
+  }
+
+  return getCappedTpSlEstimatedPnl({
+    estimatedPnl: { pnlUsd: decreaseAmounts.realizedPnl, pnlPercentage: decreaseAmounts.realizedPnlPercentage },
+    collateralUsd: getTpSlCollateralUsdAtPrice({
+      collateralUsd: position.collateralUsd,
+      collateralAmountInIndexTokens: getCollateralAmountInIndexTokens({
+        collateralToken: position.collateralToken,
+        indexToken: position.indexToken,
+        collateralAmount: position.collateralAmount,
+        isLong: position.isLong,
+      }),
+      indexTokenDecimals: position.indexToken.decimals,
+      price: triggerPrice,
+    }),
+    triggerPrice,
+    liquidationPrice: position.liquidationPrice,
+    isLong: position.isLong,
   });
 });
 
