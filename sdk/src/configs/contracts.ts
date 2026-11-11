@@ -34,6 +34,8 @@ export const CONTRACTS = {
     GmxVester: "0x199070DDfd1CFb69173aa2F7e20906F26B363004",
     GlpVester: "0xA75287d2f8b217273E7FCD7E86eF07D33972042E",
     AffiliateVester: "0x7c100c0F55A15221A4c1C5a25Db8C98A81df49B2",
+    OrphanRatioVester: "0x0ccF3836DAd54eD9abcc6C5D5dB0Ccd19291B4F6",
+    RatioVesterReader: "0x04a6502933c8ac23ffE73B566970309040074CF0",
 
     PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
 
@@ -113,6 +115,8 @@ export const CONTRACTS = {
     GmxVester: "0x472361d3cA5F49c8E633FB50385BfaD1e018b445",
     GlpVester: "0x62331A7Bd1dfB3A7642B7db50B5509E57CA3154A",
     AffiliateVester: "0x754eC029EF9926184b4CFDeA7756FbBAE7f326f7",
+    OrphanRatioVester: "0x3A664088D3db8Cc13d5201cB28E70176D4DDd0f1",
+    RatioVesterReader: "0x7915aF2a4771B98dd7E6f2336960D8A956DFf188",
 
     PositionRouter: "0xffF6D276Bc37c61A23f06410Dce4A400f66420f8",
 
@@ -227,6 +231,8 @@ export const CONTRACTS = {
     GmxVester: zeroAddress,
     GlpVester: zeroAddress,
     AffiliateVester: zeroAddress,
+    OrphanRatioVester: zeroAddress,
+    RatioVesterReader: zeroAddress,
     Router: zeroAddress,
     GovToken: zeroAddress,
     ES_GMX_IOU: zeroAddress,
@@ -269,6 +275,8 @@ export const CONTRACTS = {
     GmxVester: zeroAddress,
     GlpVester: zeroAddress,
     AffiliateVester: zeroAddress,
+    OrphanRatioVester: zeroAddress,
+    RatioVesterReader: zeroAddress,
 
     PositionRouter: zeroAddress,
 
@@ -379,6 +387,8 @@ export const CONTRACTS = {
     GmxVester: zeroAddress,
     GlpVester: zeroAddress,
     AffiliateVester: zeroAddress,
+    OrphanRatioVester: zeroAddress,
+    RatioVesterReader: zeroAddress,
     Router: zeroAddress,
     VaultReader: zeroAddress,
     Reader: zeroAddress,

@@ -30,6 +30,7 @@ import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
 import MultichainVault from "./MultichainVault";
 import Pausable from "./Pausable";
+import RatioVesterReader from "./RatioVesterReader";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
 import ReferralStorage from "./ReferralStorage";
@@ -91,6 +92,7 @@ export const abis = {
   MultichainTransferRouter,
   MultichainVault,
   Pausable,
+  RatioVesterReader,
   ReferralStorage,
   RelayParams,
   RewardReader,
