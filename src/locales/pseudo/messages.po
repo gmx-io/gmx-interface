@@ -4998,10 +4998,6 @@ msgstr ""
 msgid "Withdraw failed"
 msgstr ""
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Account transfers are paused during the staking upgrade."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Only GMX adds liquidity to this pool. To provide USDG liquidity, use GLV [USDG]."
 msgstr ""
@@ -7044,6 +7040,10 @@ msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "The request was sent, but its result could not be confirmed. It may have gone through — retry to check and finish the deactivation"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Account transfers are paused. Try again later."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
