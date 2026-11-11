@@ -10,6 +10,7 @@ import {
   formatMinStakeAmount,
   formatTableDateTime,
   getChartAxis,
+  getPairedChartAxes,
   getCombinedFeeDiscount,
   getGtReferralLink,
   getMinStakeAmount,
@@ -152,16 +153,16 @@ describe("minimum stake", () => {
 });
 
 describe("getChartAxis", () => {
-  it("fits the values with 10% padding and round ticks, not from zero", () => {
+  it("fits the values with padding, snapped out to whole steps, not from zero", () => {
     const axis = getChartAxis([20_000_000, 42_000_000, 60_000_000])!;
-    expect(axis.domain).toEqual([16_000_000, 64_000_000]);
-    expect(axis.ticks).toEqual([20_000_000, 30_000_000, 40_000_000, 50_000_000, 60_000_000]);
+    expect(axis.domain).toEqual([10_000_000, 70_000_000]);
+    expect(axis.ticks).toEqual([10_000_000, 20_000_000, 30_000_000, 40_000_000, 50_000_000, 60_000_000, 70_000_000]);
   });
 
   it("zooms in on small ranges", () => {
     const axis = getChartAxis([3.2, 3.5, 3.9])!;
     expect(axis.step).toBeCloseTo(0.2, 10);
-    expect(axis.ticks.map((tick) => tick.toFixed(2))).toEqual(["3.20", "3.40", "3.60", "3.80"]);
+    expect(axis.ticks).toEqual([3, 3.2, 3.4, 3.6, 3.8, 4]);
   });
 
   it("never goes below zero and still pads a flat line", () => {
@@ -220,5 +221,57 @@ describe("filterChartPeriod", () => {
     }));
     expect(filterChartPeriod(points, 30)).toHaveLength(30);
     expect(filterChartPeriod(points, undefined)).toHaveLength(40);
+  });
+});
+
+describe("getChartAxis on two lines", () => {
+  it("doesn't make two lines on separate axes start and end at the same height", () => {
+    // 180 days of the demo data: total minted 44.9M -> 60.3M, minting price $0.84 -> $3.88
+    const minted = getChartAxis([44_900_000, 60_300_000])!;
+    const price = getChartAxis([0.84, 3.88])!;
+    const startHeight = (value: number, [lo, hi]: [number, number]) => (value - lo) / (hi - lo);
+    expect(startHeight(44_900_000, minted.domain)).not.toBeCloseTo(startHeight(0.84, price.domain), 2);
+    expect(minted.ticks[0]).toBe(minted.domain[0]);
+    expect(minted.ticks[minted.ticks.length - 1]).toBe(minted.domain[1]);
+  });
+});
+
+describe("getPairedChartAxes", () => {
+  it("gives both axes the same rows, with round values on each side", () => {
+    // 30 days of the demo data: total minted 57.3M -> 60.3M, minting price $3.07 -> $3.88
+    const { left, right } = getPairedChartAxes([57_300_000, 60_300_000], [3.07, 3.88]);
+    expect(left!.ticks.length).toBe(right!.ticks.length);
+    for (const tick of left!.ticks) expect(tick % 500_000).toBe(0);
+    for (const tick of right!.ticks) expect(Math.round(tick * 100) % 5).toBe(0);
+    expect(left!.domain[0]).toBeLessThanOrEqual(57_300_000);
+    expect(right!.domain[1]).toBeGreaterThanOrEqual(3.88);
+  });
+
+  it("keeps bars from zero and still gives the other side an axis when one side is empty", () => {
+    const { left, right } = getPairedChartAxes([60_000, 140_000], [2.9, 3.6], { leftFromZero: true });
+    expect(left!.domain[0]).toBe(0);
+    expect(left!.ticks.length).toBe(right!.ticks.length);
+    expect(getPairedChartAxes([], [1, 2]).right).toBeDefined();
+  });
+});
+
+describe("chart axes for flat and empty periods", () => {
+  it("spreads a line that only moves by float noise over distinct labels", () => {
+    const axis = getChartAxis([3.88, 3.8800000000000003])!;
+    expect(new Set(axis.ticks).size).toBe(axis.ticks.length);
+    expect(axis.domain[0]).toBeLessThan(3.88);
+    expect(axis.domain[1]).toBeGreaterThan(3.88);
+  });
+
+  it("lets the moving line pick the rows when the other side is flat", () => {
+    const { left, right } = getPairedChartAxes([44_900_000, 60_300_000], [3.88, 3.88]);
+    expect(left!.domain).toEqual([40_000_000, 65_000_000]);
+    expect(right!.ticks.length).toBe(left!.ticks.length);
+  });
+
+  it("gives all-zero bars whole steps from $0", () => {
+    const axis = getChartAxis([0, 0, 0], { fromZero: true })!;
+    expect(axis.domain[0]).toBe(0);
+    expect(axis.ticks.every((tick) => Number.isInteger(tick))).toBe(true);
   });
 });

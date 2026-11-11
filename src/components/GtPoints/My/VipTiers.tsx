@@ -112,7 +112,7 @@ export function VipTiers({ balance, isConnected, isLoading }: Props) {
 
         <div className="flex gap-8 max-lg:w-full">
           <BenefitTile
-            value={selectedTier ? formatPercent(selectedTier.feeDiscount) : undefined}
+            value={selectedTier ? formatPercent(getCombinedFeeDiscount(selectedTier.feeDiscount)) : undefined}
             isLoading={isLoading}
             label={<Trans>Trading fee discount</Trans>}
             tooltip={selectedTier ? <FeeDiscountTooltip tier={selectedTier} /> : undefined}

@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import {
   Bar,
+  CartesianGrid,
   ComposedChart,
   Line,
   ResponsiveContainer,
@@ -18,6 +19,17 @@ import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import { CHART_PERIOD_DAYS, type ChartPeriod, useChartPeriodTabs } from "../chartPeriods";
+import {
+  CHART_ACTIVE_DOT,
+  CHART_CURSOR_PROPS,
+  CHART_GRID_PROPS,
+  CHART_MARGIN,
+  CHART_TICK_PROPS,
+  CHART_TOOLTIP_WRAPPER_STYLE,
+  getEdgeTickProps,
+  X_AXIS_LINE_PROPS,
+  Y_TICK_MARGIN,
+} from "../chartStyles";
 import { GtMetric } from "../GtMetric";
 import {
   filterChartPeriod,
@@ -25,20 +37,9 @@ import {
   formatChartPrice,
   formatUtcDay,
   getAxisWidth,
-  getChartAxis,
+  getPairedChartAxes,
 } from "../gtPointsFormat";
 import type { GtBuybackHistoryPoint } from "../gtPointsTypes";
-
-const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
-  fill: "var(--color-slate-100)",
-  fontSize: 11,
-  fontWeight: 500,
-};
-const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = { stroke: "var(--color-slate-600)", strokeWidth: 0.5 };
-const CHART_CURSOR_PROPS = { stroke: "var(--color-slate-500)", strokeWidth: 1, strokeDasharray: "2 2" };
-const CHART_MARGIN = { top: 16, right: 8, bottom: 8, left: 0 };
-const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
-const CHART_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: "var(--color-slate-100)", fill: "var(--color-slate-900)" };
 
 const TWO_DECIMALS = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
 const formatAmountGt = (value: number) => `${value.toLocaleString("en-US", TWO_DECIMALS)} GT`;
@@ -83,24 +84,21 @@ export function BuybackHistoryCard({
 
   const data = useMemo(() => filterChartPeriod(history ?? [], CHART_PERIOD_DAYS[period]), [history, period]);
 
-  // Bars start at 0; the price axis fits the period, like the GT minting chart.
-  const valueAxis = useMemo(
+  // Bars start at 0; the price axis fits the period. Both use the same number of round steps,
+  // so their labels share rows and the grid lines.
+  const axes = useMemo(
     () =>
-      getChartAxis(
+      getPairedChartAxes(
         data.map((point) => point.valueUsdc),
-        { fromZero: true }
-      ),
-    [data]
-  );
-  const priceAxis = useMemo(
-    () =>
-      getChartAxis(
         data.flatMap((point) =>
           point.buybackPrice === null ? [point.mintingPrice] : [point.buybackPrice, point.mintingPrice]
-        )
+        ),
+        { leftFromZero: true }
       ),
     [data]
   );
+  const valueAxis = axes.left;
+  const priceAxis = axes.right;
   const valueStep = valueAxis?.step ?? 1;
   const priceStep = priceAxis?.step ?? 1;
   const valueWidth = getAxisWidth(
@@ -165,6 +163,7 @@ export function BuybackHistoryCard({
           <div className="absolute size-full">
             <ResponsiveContainer debounce={300}>
               <ComposedChart data={data} barCategoryGap="25%" margin={CHART_MARGIN}>
+                <CartesianGrid vertical={false} syncWithTicks {...CHART_GRID_PROPS} />
                 <RechartsTooltip
                   cursor={CHART_CURSOR_PROPS}
                   content={<ChartTooltip />}
@@ -212,12 +211,12 @@ export function BuybackHistoryCard({
                   type="number"
                   axisLine={false}
                   tickLine={false}
-                  tickMargin={8}
+                  tickMargin={Y_TICK_MARGIN}
                   width={valueWidth}
                   domain={valueAxis?.domain}
                   ticks={valueAxis?.ticks}
                   tickFormatter={(value: number) => formatChartAmount(value, valueStep, "$")}
-                  tick={CHART_TICK_PROPS}
+                  tick={getEdgeTickProps("left", valueWidth)}
                 />
                 <YAxis
                   yAxisId="price"
@@ -225,12 +224,12 @@ export function BuybackHistoryCard({
                   orientation="right"
                   axisLine={false}
                   tickLine={false}
-                  tickMargin={8}
+                  tickMargin={Y_TICK_MARGIN}
                   width={priceWidth}
                   domain={priceAxis?.domain}
                   ticks={priceAxis?.ticks}
                   tickFormatter={(value: number) => formatChartPrice(value, priceStep)}
-                  tick={CHART_TICK_PROPS}
+                  tick={getEdgeTickProps("right", priceWidth)}
                 />
               </ComposedChart>
             </ResponsiveContainer>

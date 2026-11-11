@@ -36,24 +36,80 @@ export function formatMinStakeAmount(minAmount: bigint, kind: string) {
   return `${formatAmount(roundedUp, LP_TOKEN_DECIMALS, decimals, true)} ${kind}`;
 }
 
+type ChartAxis = { domain: [number, number]; ticks: number[]; step: number };
+type AxisOptions = { padding?: number; fromZero?: boolean };
+
+// 5 rows first, so it wins ties; then 4 and 6
+const INTERVAL_CHOICES = [5, 4, 6];
+
 /**
- * A chart Y axis that fits the values shown: from their min to their max, plus 10% padding on each
- * side (never below 0), with ticks on round steps inside it. Each line gets its own axis this way.
+ * Fit one Y axis with exactly `intervals` round steps: from the values' min to max, plus 10% padding
+ * on each side (never below 0), snapped out to whole steps. `coverage` is the share of the height the line uses.
  */
-export function getChartAxis(values: number[], { padding = 0.1, fromZero = false } = {}) {
+function fitAxis(values: number[], intervals: number, { padding = 0.1, fromZero = false }: AxisOptions = {}) {
   const finite = values.filter((value) => Number.isFinite(value));
   if (finite.length === 0) return undefined;
   const min = Math.min(...finite);
   const max = Math.max(...finite);
-  // A flat line still gets some room around it
-  const span = max - min || Math.abs(max) * 0.1 || 1;
-  // Bars always start at 0, so their length shows the value
+  const range = max - min;
+  // A flat line (or one that only moves by float noise) gets some room around it,
+  // and doesn't decide the number of rows for the other axis
+  const isFlat = range <= Math.abs(max) * 1e-4;
+  const span = isFlat ? Math.abs(max) * 0.1 || 1 : range;
+  // Bars always start at 0, so their length shows the value; all-zero bars get whole steps
   const lo = fromZero ? 0 : Math.max(0, min - span * padding);
-  const hi = max + span * padding;
-  const step = getRoundStep((hi - lo) / 5);
-  const ticks: number[] = [];
-  for (let index = Math.ceil(lo / step); index * step <= hi; index++) ticks.push(index * step);
-  return { domain: [lo, hi] as [number, number], ticks, step };
+  const hi = fromZero && max <= 0 ? intervals : max + span * padding;
+  for (let step = getRoundStep((hi - lo) / intervals); ; step = getNextRoundStep(step)) {
+    const first = Math.floor(lo / step + 1e-9);
+    if ((first + intervals) * step < hi - step * 1e-9) continue;
+    const ticks = Array.from({ length: intervals + 1 }, (_, index) => roundTick((first + index) * step));
+    const axis: ChartAxis = { domain: [ticks[0], ticks[intervals]], ticks, step };
+    const used = fromZero ? max : isFlat ? 0 : range;
+    return { axis, coverage: used / (axis.domain[1] - axis.domain[0]) };
+  }
+}
+
+/** A chart Y axis on round steps, with the number of steps (4–6) that lets the line fill the height best */
+export function getChartAxis(values: number[], options?: AxisOptions): ChartAxis | undefined {
+  let best: { axis: ChartAxis; coverage: number } | undefined;
+  for (const intervals of INTERVAL_CHOICES) {
+    const fit = fitAxis(values, intervals, options);
+    if (fit && (!best || fit.coverage > best.coverage + 1e-9)) best = fit;
+  }
+  return best?.axis;
+}
+
+/**
+ * The left and right Y axes of one chart: the same number of round steps on both, so their labels
+ * share rows and one set of grid lines (as on the reference charts), with round values on each side.
+ */
+export function getPairedChartAxes(
+  left: number[],
+  right: number[],
+  { leftFromZero = false } = {}
+): { left: ChartAxis | undefined; right: ChartAxis | undefined } {
+  let best: { left: ChartAxis; right: ChartAxis; coverage: number } | undefined;
+  for (const intervals of INTERVAL_CHOICES) {
+    const leftFit = fitAxis(left, intervals, { fromZero: leftFromZero });
+    const rightFit = fitAxis(right, intervals);
+    if (!leftFit || !rightFit) continue;
+    const coverage = leftFit.coverage + rightFit.coverage;
+    if (!best || coverage > best.coverage + 1e-9) best = { left: leftFit.axis, right: rightFit.axis, coverage };
+  }
+  // One side without values: the other side still gets its own axis
+  return best ?? { left: getChartAxis(left, { fromZero: leftFromZero }), right: getChartAxis(right) };
+}
+
+/** Drops float noise like 3.0000000000000004 */
+function roundTick(value: number) {
+  return Number(value.toPrecision(12));
+}
+
+/** The next bigger round step: 1 → 2 → 2.5 → 5 → 10 (times a power of 10) */
+function getNextRoundStep(step: number) {
+  const magnitude = 10 ** Math.floor(Math.log10(step) + 1e-9);
+  const multiplier = [2, 2.5, 5, 10].find((value) => value * magnitude > step * (1 + 1e-9)) ?? 10;
+  return multiplier * magnitude;
 }
 
 function getRoundStep(roughStep: number) {

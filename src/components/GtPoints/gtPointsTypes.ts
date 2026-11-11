@@ -18,11 +18,11 @@ export type VipTier = {
 
 const gtUnits = (value: number) => BigInt(value) * 10n ** BigInt(GT_DECIMALS);
 
-/** Smallest GT amount one sale can submit: 0.01 GT */
+/** Smallest GT amount one sale can submit: 0.01 GT. A frontend rule, as in the reference product. */
 export const MIN_SELL_GT = 10n ** BigInt(GT_DECIMALS - 2);
 
 /** Extra trading fee discount for traders with an active referral code, in percent.
- * A flat 10% on Solana (product team), to confirm with the program. */
+ * The reference product reads it from the on-chain Store configuration; 10% is the fallback. */
 export const REFERRAL_FEE_DISCOUNT = 10;
 
 export const VIP_TIERS: VipTier[] = [
@@ -164,7 +164,8 @@ export type GtPointsBuybackData = {
 
 export const LP_TOKEN_DECIMALS = 18;
 
-/** Smallest stake per token: $1.00 worth (USD with 30 decimals), to confirm with the program */
+/** Smallest stake per token: $1.00 worth (USD with 30 decimals).
+ * The reference product reads it from the on-chain Stake global state. */
 export const MIN_STAKE_USD = 10n ** 30n;
 
 export type GtStakeToken = {
@@ -208,8 +209,6 @@ export type GtStakeHistoryItem = {
   action: "stake" | "unstake";
   token: GtStakeToken;
   amount: bigint;
-  /** USD with 30 decimals */
-  valueUsd: bigint;
   timestamp: number;
 };
 
