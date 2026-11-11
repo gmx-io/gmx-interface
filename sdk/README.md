@@ -238,7 +238,7 @@ Use the v2 API client to get the current increase-order capacity for one market 
 ```typescript
 import { GmxApiSdk } from "@gmx-io/sdk/v2";
 
-const api = new GmxApiSdk({ chainId: 42161 });
+const api = new GmxApiSdk({ networkId: 42161 });
 const capacity = await api.getTradingCapacity({
   symbol: "ETH/USD [WETH-USDC]",
   direction: "long",

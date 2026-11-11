@@ -150,7 +150,7 @@ export function buildSubaccountStatusResponse(
 export function getTestSdk() {
   // eslint-disable-next-line no-restricted-globals
   const apiUrl = process.env.GMX_TEST_API_URL;
-  return new GmxApiSdk({ chainId: TEST_CHAIN_ID, ...(apiUrl && { apiUrl }) });
+  return new GmxApiSdk({ networkId: TEST_CHAIN_ID, ...(apiUrl && { apiUrl }) });
 }
 
 export function getTestSigner(): PrivateKeySigner | undefined {

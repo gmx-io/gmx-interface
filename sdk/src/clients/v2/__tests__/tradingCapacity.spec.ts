@@ -71,7 +71,7 @@ function buildCapacity() {
 describe("GmxApiSdk.getTradingCapacity", () => {
   it("reads the dedicated capacity endpoint and parses bigint values", async () => {
     const api = new TradingCapacityApi(buildCapacity());
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
+    const sdk = new GmxApiSdk({ networkId: ARBITRUM, api });
 
     const capacity = await sdk.getTradingCapacity({ symbol: SYMBOL, direction: "long" });
 
@@ -93,7 +93,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 
   it("accepts safe integer, bigint, and decimal string capacity amounts", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new TradingCapacityApi({
         ...buildCapacity(),
         availableLiquidity: 100,
@@ -120,7 +120,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
     ["an unknown market data status", { marketDataStatus: "futureStatus" }],
   ])("rejects %s", async (_description, override) => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new TradingCapacityApi({ ...buildCapacity(), ...override }),
     });
 
@@ -131,7 +131,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 
   it.each(["available", "stale", "unavailable"] as const)("preserves the %s JIT status", async (jitDataStatus) => {
     const response = { ...buildCapacity(), jitDataStatus };
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: new TradingCapacityApi(response) });
+    const sdk = new GmxApiSdk({ networkId: ARBITRUM, api: new TradingCapacityApi(response) });
 
     const capacity = await sdk.getTradingCapacity({ symbol: SYMBOL, direction: "short" });
 
@@ -140,7 +140,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 
   it("passes a market alias to the dedicated endpoint", async () => {
     const api = new TradingCapacityApi(buildCapacity());
-    const sdk = new GmxApiSdk({ chainId: ARBITRUM, api });
+    const sdk = new GmxApiSdk({ networkId: ARBITRUM, api });
 
     await expect(sdk.getTradingCapacity({ symbol: "ETH/USD", direction: "long" })).resolves.toMatchObject({
       availableLiquidity: MAX_UINT256,
@@ -155,7 +155,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 
   it("propagates API errors", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new TradingCapacityApi(new Error("Market not found")),
     });
 
@@ -166,7 +166,7 @@ describe("GmxApiSdk.getTradingCapacity", () => {
 describe("GmxApiSdk.fetchMarketsTickers trading capacity", () => {
   it("parses valid capacities and drops malformed capacities", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new TradingCapacityApi([
         {
           symbol: SYMBOL,
@@ -196,7 +196,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
   it("parses capacity estimates and both typed validation warnings", async () => {
     const capacity = buildCapacity();
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new PrepareCapacityApi({
         requestId: "request-1",
         payloadType: "transaction",
@@ -270,7 +270,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
 
   it("drops a malformed capacity estimate", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new PrepareCapacityApi({
         requestId: "request-1",
         payloadType: "transaction",
@@ -297,7 +297,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
 
   it("degrades malformed capacity warning details to an unknown warning", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new PrepareCapacityApi({
         requestId: "request-1",
         payloadType: "transaction",
@@ -337,7 +337,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
     "drops a structurally invalid warning %p",
     async (warning) => {
       const sdk = new GmxApiSdk({
-        chainId: ARBITRUM,
+        networkId: ARBITRUM,
         api: new PrepareCapacityApi({
           requestId: "request-1",
           payloadType: "transaction",
@@ -363,7 +363,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
 
   it("drops a non-array validationWarnings value", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new PrepareCapacityApi({
         requestId: "request-1",
         payloadType: "transaction",
@@ -388,7 +388,7 @@ describe("GmxApiSdk.prepareOrder trading capacity", () => {
 
   it("preserves unknown validation warnings for forward compatibility", async () => {
     const sdk = new GmxApiSdk({
-      chainId: ARBITRUM,
+      networkId: ARBITRUM,
       api: new PrepareCapacityApi({
         requestId: "request-1",
         payloadType: "transaction",

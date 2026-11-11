@@ -44,7 +44,7 @@ afterEach(() => {
 
 describe("Solana API reads", () => {
   it("uses the current network for approvals through both context interfaces", () => {
-    for (const options of [{ chainId: ARBITRUM }, { networkId: ARBITRUM }, { networkId: SOLANA_NETWORK_ID }] as const) {
+    for (const options of [{ networkId: ARBITRUM }, { networkId: SOLANA_NETWORK_ID }] as const) {
       for (const update of [
         "chainId",
         "networkId",

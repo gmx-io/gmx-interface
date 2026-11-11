@@ -103,7 +103,7 @@ async function fixture(context: unknown) {
     requestedFeeProfile: "economy",
     rpcUrl: "https://rpc.example.com",
     sourceRpcUrl: "https://base.example.com",
-    sdk: new GmxApiSdk({ chainId: 42161 }),
+    sdk: new GmxApiSdk({ networkId: 42161 }),
   });
   const forbidden = async () => {
     throw new Error("Unexpected paid operation in readiness");

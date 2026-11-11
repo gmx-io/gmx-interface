@@ -317,10 +317,11 @@ export type {
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
-type GmxApiSdkOptions = (
-  | { networkId: NetworkId; chainId?: never }
-  | { chainId: ContractsChainId; networkId?: never }
-) & { apiUrl?: string; api?: IHttp };
+type GmxApiSdkOptions = {
+  networkId: NetworkId;
+  apiUrl?: string;
+  api?: IHttp;
+};
 
 class GmxApiContext {
   constructor(
@@ -346,10 +347,9 @@ export class GmxApiSdk {
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
 
   constructor(options: GmxApiSdkOptions) {
-    const { apiUrl, api } = options;
-    const networkId = options.networkId ?? options.chainId;
+    const { networkId, apiUrl, api } = options;
     if (networkId === undefined) {
-      throw new Error("chainId or networkId is required");
+      throw new Error("networkId is required");
     }
 
     let resolvedApi = api;

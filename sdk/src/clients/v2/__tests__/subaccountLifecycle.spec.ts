@@ -59,8 +59,8 @@ describe("GmxApiSdk — subaccount (1CT) live flow", () => {
   it("e2e applies approval once and uses noop approval for the next order", async () => {
     const account = signer.address;
     const recordingApi = new RecordingApi(getTestSdk().ctx.api);
-    const sdkSub = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api: recordingApi });
-    const cleanupSdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api: recordingApi });
+    const sdkSub = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api: recordingApi });
+    const cleanupSdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api: recordingApi });
 
     try {
       const subaccountAddress = await sdkSub.generateSubaccount(signer);
