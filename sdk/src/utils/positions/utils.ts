@@ -225,6 +225,7 @@ export function getLiquidationPrice(p: {
   collateralToken: TokenData;
   marketInfo: MarketInfo;
   pendingFundingFeesUsd: bigint;
+  fundingFeeAmount?: bigint;
   pendingBorrowingFeesUsd: bigint;
   pendingImpactAmount: bigint;
   minCollateralUsd: bigint;
@@ -289,7 +290,27 @@ export function getLiquidationPrice(p: {
 
   let liquidationPrice: bigint;
 
-  if (getIsEquivalentTokens(collateralToken, indexToken)) {
+  if (marketInfo.tradeMath === "gmsol" && getIsEquivalentTokens(collateralToken, indexToken)) {
+    const fundingAmount =
+      p.fundingFeeAmount ??
+      convertToTokenAmount(pendingFundingFeesUsd, collateralToken.decimals, collateralToken.prices.minPrice);
+    if (fundingAmount === undefined || collateralUsd + priceImpactDeltaUsd - totalFeesUsd < 0n) {
+      return undefined;
+    }
+
+    // Collateral and funding both move with the index price being solved for.
+    const netCollateralAmount = collateralAmount - fundingAmount;
+    const denominator = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
+    if (denominator <= 0n) {
+      return undefined;
+    }
+
+    const surchargeUsd = pendingBorrowingFeesUsd + closingFeeUsd - priceImpactDeltaUsd;
+    const numerator = isLong
+      ? sizeInUsd + liquidationCollateralUsd + surchargeUsd
+      : sizeInUsd - liquidationCollateralUsd - surchargeUsd;
+    liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
+  } else if (getIsEquivalentTokens(collateralToken, indexToken)) {
     if (isLong) {
       const denominator = sizeInTokens + collateralAmount;
 
@@ -822,6 +843,7 @@ export function getPositionInfo(p: {
     minCollateralUsd,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
+    fundingFeeAmount: position.fundingFeeAmount,
     isLong: position.isLong,
   });
 
