@@ -6,22 +6,9 @@ const UNIT = 10n ** 18n;
 const YEAR = 365n * 86400n;
 const RATIO_10 = 10n ** 31n;
 
-const orphanWith = (overrides: Partial<Record<"cap" | "balance" | "claimable", bigint>>) =>
+const orphanWith = ({ cap = 0n }: { cap?: bigint }) =>
   parseOrphanVestingInfo({
-    vestingInfo: [
-      overrides.balance ?? 0n,
-      0n,
-      overrides.claimable ?? 0n,
-      0n,
-      0n,
-      0n,
-      0n,
-      overrides.cap ?? 0n,
-      0n,
-      YEAR,
-      0n,
-      RATIO_10,
-    ],
+    vestingInfo: [0n, 0n, 0n, 0n, 0n, 0n, 0n, cap, 0n, YEAR, 0n, RATIO_10],
     trancheStartTimes: [],
   });
 
@@ -59,14 +46,8 @@ describe("getVisibleVestVaults", () => {
   it.each([
     { name: "before the vesting data loads", orphan: undefined, oldVaults: NO_POSITIONS, expected: ["gmx"] },
     {
-      name: "eligible amount without a deposit yet",
-      orphan: orphanWith({ cap: 10n * UNIT }),
-      oldVaults: NO_POSITIONS,
-      expected: ["orphan"],
-    },
-    {
-      name: "claimable GMX left after the cap is used up",
-      orphan: orphanWith({ claimable: UNIT }),
+      name: "Legacy vault without an eligible amount",
+      orphan: orphanWith({}),
       oldVaults: NO_POSITIONS,
       expected: ["orphan"],
     },
@@ -77,13 +58,12 @@ describe("getVisibleVestVaults", () => {
       expected: ["orphan", "gmx", "glp"],
     },
     {
-      name: "preview hosts show the Legacy vault before the snapshot",
-      orphan: orphanWith({}),
-      oldVaults: { gmx: 5n * UNIT, glp: 0n, affiliate: undefined },
-      isOrphanAlwaysVisible: true,
-      expected: ["orphan", "gmx"],
+      name: "chain without the Legacy vault",
+      orphan: undefined,
+      oldVaults: { gmx: 0n, glp: undefined, affiliate: 3n * UNIT },
+      expected: ["affiliate"],
     },
-  ])("$name", ({ orphan, oldVaults, isOrphanAlwaysVisible = false, expected }) => {
-    expect(getVisibleVestVaults({ orphan, oldVaultVestedAmounts: oldVaults, isOrphanAlwaysVisible })).toEqual(expected);
+  ])("$name", ({ orphan, oldVaults, expected }) => {
+    expect(getVisibleVestVaults({ orphan, oldVaultVestedAmounts: oldVaults })).toEqual(expected);
   });
 });
