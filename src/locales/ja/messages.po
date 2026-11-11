@@ -60,6 +60,10 @@ msgstr "注文コストを支払うための資金が不足しています。残
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "既存の指値注文は{symbol}担保を使用しています。<0>{symbol}担保に切り替える</0>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
+msgstr "各Express注文の署名前に確認ウィンドウを表示します。承認、入金、出金、One-Clickでは常に確認が求められます。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "正の値：トレーダーがファンディングを受け取ります"
@@ -3554,6 +3558,10 @@ msgstr "現在の価格"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "マーク価格:"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "注文署名を確認"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx

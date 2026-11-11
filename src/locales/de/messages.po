@@ -60,6 +60,10 @@ msgstr "Unzureichende Mittel für Orderkosten. Verbleibend: {remainingCostUsdTex
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "Bestehende Limitorder verwendet {symbol} als Sicherheit. <0>Zu {symbol}-Sicherheit wechseln</0>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
+msgstr "Vor jeder Signatur einer Express-Order das Bestätigungsfenster anzeigen. Genehmigungen, Einzahlungen, Abhebungen und One-Click fragen immer nach einer Bestätigung."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "Positiver Wert: Trader erhalten Funding"
@@ -3554,6 +3558,10 @@ msgstr "Aktueller Preis"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "Markpreis:"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "Order-Signaturen bestätigen"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx

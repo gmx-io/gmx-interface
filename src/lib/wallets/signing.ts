@@ -19,6 +19,7 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
+import { silentEmbeddedWalletSigner } from "./silentEmbeddedWalletSigner";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -49,6 +50,8 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  /** Signs without the Privy confirmation window when the embedded wallet has registered a silent signer */
+  canSkipEmbeddedWalletConfirmation?: boolean;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -289,6 +292,7 @@ export async function signTypedData({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  canSkipEmbeddedWalletConfirmation = false,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -340,7 +344,18 @@ export async function signTypedData({
     message: messageToSign,
   };
 
-  const requestSignature = (signWith: AnySigner) => {
+  const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
+
+  const requestSignature = async (signWith: AnySigner) => {
+    if (silentSigner) {
+      try {
+        return await silentSigner.signTypedData(eip712);
+      } catch (error) {
+        // the prompted flow can still succeed, so a failure here must not fail the order
+        metrics.pushError(error, "signing.silentEmbeddedWallet");
+      }
+    }
+
     if (shouldUseSignerMethod && signWith.signTypedData) {
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;

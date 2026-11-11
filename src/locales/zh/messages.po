@@ -60,6 +60,10 @@ msgstr "用于支付订单费用的资金不足。尚需：{remainingCostUsdText
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "现有限价单使用 {symbol} 抵押品。<0>切换至 {symbol} 抵押品</0>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
+msgstr "在签署每笔 Express 订单前显示确认窗口。批准、存入、提取和 One-Click 始终需要确认。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "正值：交易者收取资金费用"
@@ -3554,6 +3558,10 @@ msgstr "当前价格"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "标记价："
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "确认订单签名"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx

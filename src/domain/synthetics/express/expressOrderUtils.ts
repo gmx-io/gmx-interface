@@ -48,6 +48,7 @@ import {
   getBatchTotalPayCollateralAmount,
   getExpressBatchOrderParams,
   getIsEmptyBatch,
+  getIsInvalidBatchReceiver,
 } from "sdk/utils/orderTransactions";
 import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
 import { hashSubaccountApproval } from "sdk/utils/subaccount";
@@ -305,6 +306,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
       verificationChainId: chainId,
+      canSkipEmbeddedWalletConfirmation: !getIsInvalidBatchReceiver(expressBatchParams, signer.address),
     };
 
     signature = await signTypedData(signatureParams);

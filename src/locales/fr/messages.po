@@ -60,6 +60,10 @@ msgstr "Fonds insuffisants pour les coûts de l'ordre. Restant : {remainingCostU
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "L'ordre à cours limité existant utilise la garantie {symbol}. <0>Passer à la garantie {symbol}</0>"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
+msgstr "Afficher la fenêtre de confirmation avant la signature de chaque ordre Express. Les approbations, dépôts, retraits et One-Click demandent toujours une confirmation."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "Valeur positive : les traders reçoivent du financement"
@@ -3554,6 +3558,10 @@ msgstr "Prix actuel"
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
 msgstr "Prix de marque :"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "Confirmer les signatures d'ordres"
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx

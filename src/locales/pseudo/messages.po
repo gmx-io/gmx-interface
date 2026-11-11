@@ -60,6 +60,10 @@ msgstr ""
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr ""
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr ""
@@ -3553,6 +3557,10 @@ msgstr ""
 #: src/components/PositionEditor/PositionEditor.tsx
 #: src/components/TradeboxMarginFields/PriceField.tsx
 msgid "Mark:"
+msgstr ""
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
