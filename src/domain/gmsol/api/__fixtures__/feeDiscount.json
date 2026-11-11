@@ -1,0 +1,20 @@
+{
+  "userReferralCode": "",
+  "userReferralCodeString": "",
+  "referralCodeForTxn": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "attachedOnChain": true,
+  "affiliate": "",
+  "tierId": 0,
+  "totalRebate": "1000",
+  "totalRebateFactor": "100000000000000000000000000000",
+  "discountShare": "10000",
+  "discountFactor": "1000000000000000000000000000000",
+  "account": "<TEST_WALLET>",
+  "orderFeeDiscountFactor": "100000000000000000000000000000",
+  "gtRank": 0,
+  "rankDiscountFactor": "0",
+  "referrer": "<REFERRER_WALLET>",
+  "referredUserDiscountFactor": "100000000000000000000000000000",
+  "hasUserAccount": true,
+  "updatedAt": 1792089677286
+}

@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { isSolanaNetwork } from "config/chains";
 import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
-import { ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
+import { type ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
 import { useSettled } from "lib/useSettled";
@@ -92,11 +92,11 @@ function EvmAnnouncementToasts({
     })),
     ...(closingPoolsLp.notice
       ? [
-        {
-          key: "closing-pools-lp",
-          node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
-        },
-      ]
+          {
+            key: "closing-pools-lp",
+            node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
+          },
+        ]
       : []),
   ];
 
@@ -131,20 +131,20 @@ export function WhatsNewToastContainer() {
   const { networkId } = useChainId();
   const { pathname } = useLocation();
   const isAnnouncementsPage = pathname === "/announcements";
+  const uiFlagEvents = useUiFlagEvents();
   const [isScrolled, setIsScrolled] = useState(false);
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
   const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
     ? {
-      key: "app-update",
-      node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
-    }
+        key: "app-update",
+        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
+      }
     : undefined;
-  const uiFlagEvents = useUiFlagEvents();
-  const solanaMessages: TopRightMessage[] = [
+  const solanaMessage = [
     ...uiFlagEvents.filter(isOutageWarning).map(toUiFlagEventMessage),
     ...(appUpdate ? [appUpdate] : []),
     ...uiFlagEvents.filter((event) => !isOutageWarning(event)).map(toUiFlagEventMessage),
-  ];
+  ][0];
 
   useEffect(() => {
     setIsScrolled(false);
@@ -176,7 +176,7 @@ export function WhatsNewToastContainer() {
     >
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
         {isSolanaNetwork(networkId) ? (
-          <TopRightMessageSlot message={solanaMessages[0]} />
+          <TopRightMessageSlot message={solanaMessage} />
         ) : (
           <EvmAnnouncementToasts
             isAnnouncementsPage={isAnnouncementsPage}
