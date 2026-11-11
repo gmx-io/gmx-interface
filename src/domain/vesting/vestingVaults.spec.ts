@@ -92,6 +92,15 @@ describe("getVisibleVestVaults", () => {
       expected: ["gmx", "glp"],
     },
     {
+      name: "preview hosts show the Legacy vault before the snapshot",
+      orphan: orphanWith({}),
+      gmx: open,
+      glp: open,
+      affiliate: open,
+      isOrphanAlwaysVisible: true,
+      expected: ["orphan", "gmx", "affiliate"],
+    },
+    {
       name: "nothing left anywhere",
       orphan: orphanWith({}),
       gmx: closed,
@@ -99,7 +108,9 @@ describe("getVisibleVestVaults", () => {
       affiliate: closed,
       expected: ["gmx"],
     },
-  ])("$name", ({ orphan, gmx, glp, affiliate, expected }) => {
-    expect(getVisibleVestVaults({ orphan, oldVaults: { gmx, glp, affiliate } })).toEqual(expected);
+  ])("$name", ({ orphan, gmx, glp, affiliate, isOrphanAlwaysVisible = false, expected }) => {
+    expect(getVisibleVestVaults({ orphan, oldVaults: { gmx, glp, affiliate }, isOrphanAlwaysVisible })).toEqual(
+      expected
+    );
   });
 });

@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { type ReactNode, useMemo, useState } from "react";
 
+import { isDevelopment } from "config/env";
 import useVestingData from "domain/vesting/useVestingData";
 import { useVestingVaultsData } from "domain/vesting/useVestingVaultsData";
 import { getVisibleVestVaults, type VestVault } from "domain/vesting/vestingVaults";
@@ -36,6 +37,8 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     () =>
       getVisibleVestVaults({
         orphan: vaultsData?.orphan,
+        // no account has an eligible amount until the snapshot, so previews show the vault anyway for review
+        isOrphanAlwaysVisible: isDevelopment(),
         oldVaults: {
           gmx: { isClosed: vaultsData?.closedOldVaults.gmx, vestedAmount: vestingData?.gmxVesterVestedAmount },
           glp: { isClosed: vaultsData?.closedOldVaults.glp, vestedAmount: vestingData?.glpVesterVestedAmount },

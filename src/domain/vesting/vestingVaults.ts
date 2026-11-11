@@ -76,13 +76,15 @@ export function getHasOrphanVaultEntry(orphan: OrphanVestingData | undefined) {
 export function getVisibleVestVaults({
   orphan,
   oldVaults,
+  isOrphanAlwaysVisible,
 }: {
   orphan: OrphanVestingData | undefined;
   oldVaults: Record<OldVestVault, OldVestVaultState>;
+  isOrphanAlwaysVisible: boolean;
 }): VestVault[] {
   const vaults: VestVault[] = [];
 
-  if (getHasOrphanVaultEntry(orphan)) {
+  if (getHasOrphanVaultEntry(orphan) || (orphan !== undefined && isOrphanAlwaysVisible)) {
     vaults.push("orphan");
   }
 
