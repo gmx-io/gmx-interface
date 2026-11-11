@@ -107,8 +107,7 @@ function useTokenPermitAccountType(chainId: number, account: string | undefined)
 
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId, networkId } = useChainId();
-  const { signer } = useWallet();
-  const account = signer?.address;
+  const { signer, account } = useWallet();
   const { uiFlags } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
   const accountType = useTokenPermitAccountType(chainId, isSolanaNetwork(networkId) ? undefined : account);

@@ -9,6 +9,7 @@ import {
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
 import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
+import type { WalletSigner } from "lib/wallets";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { TokenPermitsContextProvider, TokenPermitsState, useTokenPermitsContext } from "./TokenPermitsContextProvider";
@@ -25,13 +26,17 @@ const mocks = vi.hoisted(() => ({
   accountType: "eoa" as string,
   account: "0x0000000000000000000000000000000000000001",
   hasProvider: true,
+  hasSigner: true,
   createAndSignTokenPermit: vi.fn(),
   isPermitSignatureValid: true,
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
 vi.mock("lib/wallets/useWallet", () => ({
-  default: () => ({ signer: { address: mocks.account, provider: mocks.hasProvider ? {} : undefined } }),
+  default: () => ({
+    account: mocks.account,
+    signer: mocks.hasSigner ? { address: mocks.account, provider: mocks.hasProvider ? {} : undefined } : undefined,
+  }),
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
@@ -116,6 +121,7 @@ describe("TokenPermitsContextProvider", () => {
     mocks.account = ACCOUNT;
     mocks.isPermitSignatureValid = true;
     mocks.hasProvider = true;
+    mocks.hasSigner = true;
   });
 
   afterEach(() => {
@@ -289,6 +295,19 @@ describe("TokenPermitsContextProvider", () => {
     expect(
       JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
     ).toEqual([]);
+  });
+
+  it("signs with a passed signer while the wallet's own one reloads after a network switch", async () => {
+    const { rerender } = await setup();
+    mocks.hasSigner = false;
+    rerender();
+    mocks.createAndSignTokenPermit.mockResolvedValue({ permit: permit(USDC) });
+
+    await act(async () => {
+      await state.addTokenPermit(USDC, ROUTER, 100n, { signer: { address: ACCOUNT, provider: {} } as WalletSigner });
+    });
+
+    expect(readStoredTokens()).toEqual([USDC]);
   });
 
   it("fails instead of reporting a signed permit when the wallet isn't ready", async () => {
