@@ -594,7 +594,6 @@ export function usePositionEditorButtonState(
       selectedCollateralAddress,
       marketInfo: position?.marketInfo,
       collateralDeltaAmount,
-      // order events rebuild the metric id from the order's swap path, so a USDC deposit must carry its conversion
       swapPath: batchParams?.createOrderParams[0]?.orderPayload.addresses.swapPath,
       subaccount: expressParams?.subaccount,
       isExpress: Boolean(expressParams),
@@ -605,6 +604,7 @@ export function usePositionEditorButtonState(
       fastExpressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: isCollateralTokenFromGmxAccount,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
