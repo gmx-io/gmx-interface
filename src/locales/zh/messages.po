@@ -9512,10 +9512,6 @@ msgstr "Squid GraphQL"
 msgid "Express transaction data is still loading. Retry in a few seconds"
 msgstr "Express 交易数据仍在加载中。请几秒后重试"
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Solana market data is unavailable right now. Prices and positions will appear once it is back."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
 msgstr "Dolomite"

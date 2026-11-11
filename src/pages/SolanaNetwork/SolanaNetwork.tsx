@@ -2,10 +2,6 @@ import { Trans, t } from "@lingui/macro";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { selectMarketsInfoError } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
-
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 
 function SolanaNetworkMessage({ title, children }: { title: string; children: ReactNode }) {
@@ -30,23 +26,5 @@ export function EvmNetworksOnlyNotice() {
         .
       </Trans>
     </SolanaNetworkMessage>
-  );
-}
-
-// Solana markets come only from gmx-api's Solana host and GMX's oracle keeper, with no RPC fallback,
-// so a failed or stale response is shown instead of an empty trade page.
-export function SolanaMarketsUnavailableNotice() {
-  const marketsInfoError = useSelector(selectMarketsInfoError);
-
-  if (!marketsInfoError) {
-    return null;
-  }
-
-  return (
-    <div className="px-16 pt-16">
-      <AlertInfo type="warning" noMargin textColor="text-yellow-300">
-        <Trans>Solana market data is unavailable right now. Prices and positions will appear once it is back.</Trans>
-      </AlertInfo>
-    </div>
   );
 }

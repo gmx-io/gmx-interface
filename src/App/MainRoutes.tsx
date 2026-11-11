@@ -31,7 +31,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import { EvmNetworksOnlyNotice, SolanaMarketsUnavailableNotice } from "pages/SolanaNetwork/SolanaNetwork";
+import { EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -128,7 +128,6 @@ function SolanaTradePage({ openSettings }: { openSettings: () => void }) {
   return (
     <Suspense fallback={<Trans>Loading...</Trans>}>
       <LazyGmsolSyntheticsStateProvider>
-        <SolanaMarketsUnavailableNotice />
         <SyntheticsPage openSettings={openSettings} />
       </LazyGmsolSyntheticsStateProvider>
     </Suspense>
