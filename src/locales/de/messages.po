@@ -3678,6 +3678,10 @@ msgstr "LP-Belohnungen gesamt"
 msgid "Invalid decrease size"
 msgstr "Ungültige Verringerungsgröße"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
+msgstr "Der Express-Relayer ist vorübergehend nicht verfügbar.<0/><1/>Versuchen Sie es in Kürze erneut oder wechseln Sie in den <2>Einstellungen</2> zu Classic Trading"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Abonnieren"
@@ -10234,6 +10238,10 @@ msgstr "für {comment}"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "Eingesetztes Kapital = max(Summe der Sicherheiten offener Positionen - realisierter PnL + anfänglicher ausstehender PnL)."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable. Try again shortly"
+msgstr "Der Express-Relayer ist vorübergehend nicht verfügbar. Versuchen Sie es in Kürze erneut"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"

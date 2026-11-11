@@ -3678,6 +3678,10 @@ msgstr "累計 LP 獎勵"
 msgid "Invalid decrease size"
 msgstr "減倉規模無效"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
+msgstr "Express 中繼器暫時無法使用。<0/><1/>請稍後再試，或前往 <2>設定</2>，切換至 Classic Trading"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "訂閱"
@@ -10234,6 +10238,10 @@ msgstr "（{comment}）"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "已用資本 = max(未平倉倉位抵押品總和 - 已實現盈虧（PnL） + 初始待處理 PnL)。"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable. Try again shortly"
+msgstr "Express 中繼器暫時無法使用。請稍後再試"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"

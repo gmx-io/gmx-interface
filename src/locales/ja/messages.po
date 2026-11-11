@@ -3678,6 +3678,10 @@ msgstr "LP報酬（累計）"
 msgid "Invalid decrease size"
 msgstr "無効な減少サイズ"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
+msgstr "Expressリレイヤーは一時的に利用できません。<0/><1/>しばらくしてから再度お試しいただくか、<2>設定</2>でClassic Tradingに切り替えてください"
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "購読"
@@ -10234,6 +10238,10 @@ msgstr "（{comment}）"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
 msgstr "使用資本 = max(オープンポジションの担保合計 - 確定損益（PnL） + 開始時の保留PnL)。"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Express relayer is temporarily unavailable. Try again shortly"
+msgstr "Expressリレイヤーは一時的に利用できません。しばらくしてから再度お試しください"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "D2.Finance"

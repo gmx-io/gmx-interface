@@ -37,6 +37,7 @@ import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
+import { getIsRelayUnavailableError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -397,6 +398,7 @@ function ClaimModalMultichain(p: Props) {
 
         const toastParams = getTxnErrorToast(chainId, errorData, {
           defaultMessage: getClaimFundingFailureToastContent(),
+          isRelayUnavailable: getIsRelayUnavailableError(error),
           expressTxn: { gasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress, isGmxAccount: true },
         });
         helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
