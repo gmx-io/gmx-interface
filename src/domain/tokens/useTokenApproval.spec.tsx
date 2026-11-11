@@ -1,8 +1,10 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
+import type { TokenPermitUnavailableReason } from "./tokenPermitsEligibility";
 import { useTokenApproval } from "./useTokenApproval";
 
 const mocks = vi.hoisted(() => ({
@@ -20,6 +22,7 @@ const mocks = vi.hoisted(() => ({
   toastContent: vi.fn(),
   tokenPermits: [] as { token: string; spender: string; value: bigint }[],
   isPermitAvailable: false,
+  permitUnavailableReason: "tokenNotAllowed" as TokenPermitUnavailableReason | undefined,
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -68,6 +71,7 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
     getIsPermitAvailable: () => mocks.isPermitAvailable,
+    getPermitUnavailableReason: () => mocks.permitUnavailableReason,
     addTokenPermit: vi.fn(),
     disableTokenPermits: vi.fn(),
   }),
@@ -88,10 +92,12 @@ let latestResult: HookResult | undefined;
 function TestComponent({
   amount,
   allowPermit,
+  permitBlockReason,
   tokenAddress = mocks.TOKEN,
 }: {
   amount: bigint;
   allowPermit?: boolean;
+  permitBlockReason?: ExpressTokenPermitBlockReason;
   tokenAddress?: string;
 }) {
   latestResult = useTokenApproval({
@@ -99,13 +105,21 @@ function TestComponent({
     spenderAddress: mocks.SPENDER,
     tokens: [{ tokenAddress, amount }],
     allowPermit,
-    metric: { flow: "trade", isExpress: true, gasPaymentTokenAddress: mocks.TOKEN, payTokenAddress: mocks.PAY_TOKEN },
+    metric: {
+      flow: "trade",
+      isExpress: true,
+      gasPaymentTokenAddress: mocks.TOKEN,
+      payTokenAddress: mocks.PAY_TOKEN,
+      permitBlockReason,
+    },
   });
   return null;
 }
 
-function setup(amount: bigint, allowPermit?: boolean) {
-  const view = render(<TestComponent amount={amount} allowPermit={allowPermit} />);
+function setup(amount: bigint, allowPermit?: boolean, permitBlockReason?: ExpressTokenPermitBlockReason) {
+  const view = render(
+    <TestComponent amount={amount} allowPermit={allowPermit} permitBlockReason={permitBlockReason} />
+  );
 
   return {
     get result() {
@@ -132,6 +146,7 @@ async function approve(view: ReturnType<typeof setup>) {
 describe("useTokenApproval", () => {
   beforeEach(() => {
     mocks.isPermitAvailable = false;
+    mocks.permitUnavailableReason = "tokenNotAllowed";
     mocks.allowanceData = { [mocks.TOKEN]: 0n };
     mocks.approveTokens.mockResolvedValue({ hash: mocks.HASH });
     mocks.waitForTransactionReceipt.mockResolvedValue({ status: "success", blockNumber: 105n, from: mocks.OWNER });
@@ -280,6 +295,65 @@ describe("useTokenApproval", () => {
     expect(mocks.approveTokens).toHaveBeenCalledWith(
       expect.objectContaining({
         metric: { flow: "trade", isExpress: true, isGasPaymentToken: true },
+      })
+    );
+  });
+
+  it.each([
+    {
+      name: "the flow blocks permits",
+      allowPermit: false,
+      permitBlockReason: "notEnoughGasToken" as const,
+      permitUnavailableReason: "flagOff" as const,
+      expected: "notEnoughGasToken",
+    },
+    {
+      name: "the flow never uses permits",
+      allowPermit: undefined,
+      permitBlockReason: undefined,
+      permitUnavailableReason: undefined,
+      expected: "notInFlow",
+    },
+    {
+      name: "the account type is still loading",
+      allowPermit: true,
+      permitBlockReason: undefined,
+      permitUnavailableReason: "accountTypeNotLoaded" as const,
+      expected: "accountTypeNotLoaded",
+    },
+    {
+      name: "the token can't be permitted at all",
+      allowPermit: false,
+      permitBlockReason: "noExpressParams" as const,
+      permitUnavailableReason: "tokenNotAllowed" as const,
+      expected: undefined,
+    },
+  ])(
+    "logs why an approval is a transaction: $name -> $expected",
+    async ({ allowPermit, permitBlockReason, permitUnavailableReason, expected }) => {
+      mocks.permitUnavailableReason = permitUnavailableReason;
+
+      await approve(setup(1000n, allowPermit, permitBlockReason));
+
+      expect(mocks.approveTokens).toHaveBeenCalledWith(
+        expect.objectContaining({
+          permitParams: undefined,
+          metric: expect.objectContaining({ permitSkipReason: expected }),
+        })
+      );
+    }
+  );
+
+  it("signs a permit without a skip reason when the flow and the account allow it", async () => {
+    mocks.isPermitAvailable = true;
+    mocks.permitUnavailableReason = undefined;
+
+    await approve(setup(1000n, true));
+
+    expect(mocks.approveTokens).toHaveBeenCalledWith(
+      expect.objectContaining({
+        permitParams: expect.objectContaining({ accountType: "eoa" }),
+        metric: expect.objectContaining({ permitSkipReason: undefined }),
       })
     );
   });

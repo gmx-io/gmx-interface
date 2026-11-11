@@ -8,7 +8,8 @@ import { TokensData } from "domain/tokens";
 import { InsufficientGmxAccountGasTokenBalanceMessage } from "components/Errors/gasErrors";
 
 import {
-  getCanUseTokenPermits,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "../validateMultichainExpressSubmit";
@@ -32,12 +33,13 @@ function makeExpressParams(overrides: {
   isGmxAccount: boolean;
   isOutGasTokenBalance: boolean;
   needGasPaymentTokenApproval?: boolean;
+  isGasPaymentTokenBalanceLoaded?: boolean;
 }): ExpressTxnParams {
   return {
     chainId: ARBITRUM,
     isGmxAccount: overrides.isGmxAccount,
     gasPaymentValidations: {
-      isGasPaymentTokenBalanceLoaded: true,
+      isGasPaymentTokenBalanceLoaded: overrides.isGasPaymentTokenBalanceLoaded ?? true,
       isOutGasTokenBalance: overrides.isOutGasTokenBalance,
       needGasPaymentTokenApproval: overrides.needGasPaymentTokenApproval ?? false,
       isValid: !overrides.isOutGasTokenBalance && !overrides.needGasPaymentTokenApproval,
@@ -45,18 +47,19 @@ function makeExpressParams(overrides: {
     gasPaymentParams: {
       gasPaymentTokenAddress: USDC,
       gasPaymentToken: { symbol: "USDC" },
+      gasPaymentTokenAmount: 5n,
       totalRelayerFeeTokenAmount: 10n,
     },
   } as unknown as ExpressTxnParams;
 }
 
-describe("getCanUseTokenPermits", () => {
+describe("getExpressTokenPermitBlockReason", () => {
   it.each([
-    { name: "no express params", expressParams: undefined, expected: false },
+    { name: "no express params", expressParams: undefined, expected: "noExpressParams" },
     {
       name: "a relayed order",
       expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: false }),
-      expected: true,
+      expected: undefined,
     },
     {
       name: "a relay blocked only by the gas payment token approval",
@@ -65,20 +68,59 @@ describe("getCanUseTokenPermits", () => {
         isOutGasTokenBalance: false,
         needGasPaymentTokenApproval: true,
       }),
-      expected: true,
+      expected: undefined,
+    },
+    {
+      name: "a gas payment token balance that is still loading",
+      expressParams: makeExpressParams({
+        isGmxAccount: false,
+        isOutGasTokenBalance: true,
+        isGasPaymentTokenBalanceLoaded: false,
+        needGasPaymentTokenApproval: true,
+      }),
+      expected: undefined,
     },
     {
       name: "a Classic transaction fallback",
       expressParams: makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true }),
-      expected: false,
+      expected: "notEnoughGasToken",
     },
     {
       name: "a GMX Account relay",
       expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: false }),
-      expected: false,
+      expected: "gmxAccount",
     },
   ])("$name -> $expected", ({ expressParams, expected }) => {
-    expect(getCanUseTokenPermits(expressParams)).toBe(expected);
+    expect(getExpressTokenPermitBlockReason(expressParams)).toBe(expected);
+  });
+});
+
+describe("getGasPaymentTokenToApprove", () => {
+  it("approves the fee amount of a relayed order", () => {
+    const expressParams = makeExpressParams({
+      isGmxAccount: false,
+      isOutGasTokenBalance: false,
+      needGasPaymentTokenApproval: true,
+    });
+
+    expect(getGasPaymentTokenToApprove(expressParams)).toEqual({ tokenAddress: USDC, amount: 5n });
+  });
+
+  it("keeps the fee while the gas payment token balance is still loading", () => {
+    const expressParams = makeExpressParams({
+      isGmxAccount: false,
+      isOutGasTokenBalance: true,
+      isGasPaymentTokenBalanceLoaded: false,
+    });
+
+    expect(getGasPaymentTokenToApprove(expressParams)).toEqual({ tokenAddress: USDC, amount: 5n });
+  });
+
+  it("asks for nothing when a wallet short of the gas payment token falls back to Classic", () => {
+    const expressParams = makeExpressParams({ isGmxAccount: false, isOutGasTokenBalance: true });
+
+    expect(getGasPaymentTokenToApprove(expressParams)).toBeUndefined();
+    expect(getGasPaymentTokenToApprove(undefined)).toBeUndefined();
   });
 });
 

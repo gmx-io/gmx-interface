@@ -1,8 +1,8 @@
 import { isAddressEqual, type Address, type PublicClient } from "viem";
 
 import {
-  getIsTokenPermitsEoaEnabled,
-  getIsTokenPermitsEip7702Enabled,
+  IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
 import { AccountType, getAccountType } from "lib/wallets/useAccountType";
@@ -60,7 +60,12 @@ export async function getTokenPermitAccountType(
     : "unsupported";
 }
 
-export function getIsTokenPermitsEnabled({
+export type TokenPermitsDisabledReason = "accountTypeNotLoaded" | "unsupportedAccount" | "flagNotLoaded" | "flagOff";
+
+// tokenDisabled: a permit for the token failed in a way a retry won't fix, so it stays on approvals for the account
+export type TokenPermitUnavailableReason = TokenPermitsDisabledReason | "tokenNotAllowed" | "tokenDisabled";
+
+export function getTokenPermitsDisabledReason({
   uiFlags,
   accountType,
   isQaOverrideEnabled,
@@ -68,14 +73,27 @@ export function getIsTokenPermitsEnabled({
   uiFlags: UiFlags | undefined;
   accountType: TokenPermitAccountType | undefined;
   isQaOverrideEnabled: boolean;
-}): boolean {
-  if (accountType === undefined || accountType === "unsupported") {
-    return false;
+}): TokenPermitsDisabledReason | undefined {
+  if (accountType === undefined) {
+    return "accountTypeNotLoaded";
+  }
+
+  if (accountType === "unsupported") {
+    return "unsupportedAccount";
   }
 
   if (isQaOverrideEnabled) {
-    return true;
+    return undefined;
   }
 
-  return accountType === "eoa" ? getIsTokenPermitsEoaEnabled(uiFlags) : getIsTokenPermitsEip7702Enabled(uiFlags);
+  const flag =
+    uiFlags?.[accountType === "eoa" ? IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG : IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG];
+
+  // fail-closed: permits stay off until the keeper explicitly enables them for the account type, and the
+  // flags restored from storage on first paint leave the permit flags out
+  if (flag === undefined) {
+    return "flagNotLoaded";
+  }
+
+  return flag.enabled === true ? undefined : "flagOff";
 }

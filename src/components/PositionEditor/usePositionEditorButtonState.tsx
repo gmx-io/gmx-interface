@@ -40,8 +40,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
@@ -340,15 +341,15 @@ export function usePositionEditorButtonState(
       list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -359,7 +360,7 @@ export function usePositionEditorButtonState(
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -367,6 +368,7 @@ export function usePositionEditorButtonState(
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+      permitBlockReason,
     },
   });
 

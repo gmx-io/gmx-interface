@@ -46,8 +46,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -505,14 +506,11 @@ export function PositionSeller() {
   });
 
   const approvalTokens = useMemo(() => {
-    if (!expressParams?.gasPaymentParams) return [];
-    return [
-      {
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      },
-    ];
-  }, [expressParams?.gasPaymentParams]);
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    return gasPaymentTokenToApprove ? [gasPaymentTokenToApprove] : [];
+  }, [expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -523,13 +521,14 @@ export function PositionSeller() {
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
     metric: {
       flow: "closePosition",
       isExpress: Boolean(expressParams),
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      permitBlockReason,
     },
   });
 
