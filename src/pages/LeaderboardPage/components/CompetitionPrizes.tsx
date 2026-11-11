@@ -17,7 +17,8 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import { BodyScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import rank1Icon from "img/rank1.svg";
@@ -198,23 +199,27 @@ function CompetitionPrizeWinners({ winners }: { winners: LeaderboardAccount[] })
   }
 
   const renderTooltipContent = useCallback(() => {
-    return winners.map((winner) => (
-      <Link
-        target="_blank"
-        to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
-        className="flex items-center gap-4 px-12 py-8 !text-typography-primary !no-underline hover:bg-fill-surfaceHover"
-        key={winner.account}
-      >
-        <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
-        <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 20)}</div>
-      </Link>
-    ));
+    return (
+      <TooltipRows>
+        {winners.map((winner) => (
+          <Link
+            target="_blank"
+            to={buildAccountDashboardUrl(winner.account as Address, undefined, 2)}
+            className="flex items-center gap-4"
+            key={winner.account}
+          >
+            <Jazzicon diameter={20} seed={jsNumberForAddress(winner.account)} />
+            <div className="CompetitionPrizes__prize-rest">{shortenAddress(winner.account, 20)}</div>
+          </Link>
+        ))}
+      </TooltipRows>
+    );
   }, [winners]);
 
   if (winners.length === 0) return null;
 
   return winners.length > 1 ? (
-    <TooltipWithPortal position="bottom" handle={handle} renderContent={renderTooltipContent} variant="none" />
+    <StandardTooltip position="bottom" handle={handle} renderContent={renderTooltipContent} variant="none" />
   ) : (
     handle
   );

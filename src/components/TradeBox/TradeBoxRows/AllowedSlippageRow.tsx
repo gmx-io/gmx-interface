@@ -10,10 +10,10 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { useTradeboxChanges } from "../hooks/useTradeboxChanges";
 
@@ -33,25 +33,27 @@ export function AllowedSlippageRow({ slippageInputId }: { slippageInputId: strin
   return (
     <SyntheticsInfoRow
       label={
-        <TooltipWithPortal
+        <StandardTooltip
           handle={t`Allowed slippage`}
-          position="left-start"
-          variant="iconStroke"
           content={
-            <div className="text-typography-primary">
-              <Trans>
-                The difference between expected and actual execution price due to volatility. Orders won't execute if
-                slippage exceeds your maximum. Adjust the default in settings.
-                <br />
-                <br />A low value (e.g. less than -
-                {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during
-                volatility.
-                <br />
-                <br />
-                Slippage differs from price impact, which is based on open interest imbalances.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#slippage">Read more</ExternalLink>.
-              </Trans>
-            </div>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  The difference between expected and actual execution price due to volatility. Orders won't execute if
+                  slippage exceeds your maximum. Adjust the default in settings.
+                  <br />
+                  <br />A low value (e.g. less than -
+                  {formatPercentage(BigInt(DEFAULT_SLIPPAGE_AMOUNT), { signed: false })}) may cause failed orders during
+                  volatility.
+                  <br />
+                  <br />
+                  Slippage differs from price impact, which is based on open interest imbalances.
+                </Trans>
+              </TooltipText>
+              <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
+                <Trans>Read more</Trans>
+              </TooltipLink>
+            </TooltipContent>
           }
         />
       }

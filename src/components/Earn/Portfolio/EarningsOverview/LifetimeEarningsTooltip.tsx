@@ -9,7 +9,14 @@ import {
 } from "components/EarningValue/EarningValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipTitle,
+  TooltipTotal,
+} from "components/Tooltip/TooltipBlocks";
 
 import { formatUsdExpandedParts } from "./EarningsStat";
 
@@ -24,9 +31,8 @@ export type LifetimeEarningsBreakdown = {
 
 function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) {
   return (
-    <StatsTooltipRow
+    <TooltipRow
       label={label}
-      showDollar={false}
       value={
         usd === undefined ? (
           <EarningNotAvailable />
@@ -40,10 +46,10 @@ function LeafRow({ label, usd }: { label: ReactNode; usd: bigint | undefined }) 
 
 function Group({ title, children }: { title: ReactNode; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-8">
-      <span className="text-body-medium font-medium text-typography-secondary">{title}</span>
-      <div className="flex flex-col">{children}</div>
-    </div>
+    <TooltipRows>
+      <TooltipTitle>{title}</TooltipTitle>
+      {children}
+    </TooltipRows>
   );
 }
 
@@ -59,7 +65,7 @@ export function LifetimeEarningsTooltipContent({
   lpAttributionScope: EarningAttributionScope | undefined;
 }) {
   return (
-    <div className="flex flex-col gap-8">
+    <TooltipContent>
       <Group title={<Trans>Lifetime staking rewards</Trans>}>
         <LeafRow label={<Trans>GMX rewards</Trans>} usd={breakdown.stakingGmxUsd} />
         <LeafRow label={<Trans>esGMX rewards</Trans>} usd={breakdown.stakingEsGmxUsd} />
@@ -71,11 +77,8 @@ export function LifetimeEarningsTooltipContent({
         <LeafRow label={<Trans>GLV vaults</Trans>} usd={breakdown.glvUsd} />
       </Group>
 
-      <div className="border-t-1/2 border-slate-600" />
-
-      <StatsTooltipRow
+      <TooltipTotal
         label={<Trans>Total</Trans>}
-        showDollar={false}
         value={
           breakdown.totalUsd === undefined ? (
             <EarningNotAvailable />
@@ -85,12 +88,20 @@ export function LifetimeEarningsTooltipContent({
         }
       />
 
-      <span className="text-typography-tertiary">
+      <TooltipFootnote>
         <Trans>GM and GLV include markets you no longer hold</Trans>
-      </span>
+      </TooltipFootnote>
 
-      {isLpUnavailable && <EarningUnavailableNote />}
-      {lpAttributionScope && <EarningAttributionNote scope={lpAttributionScope} />}
-    </div>
+      {isLpUnavailable && (
+        <TooltipFootnote>
+          <EarningUnavailableNote />
+        </TooltipFootnote>
+      )}
+      {lpAttributionScope && (
+        <TooltipFootnote>
+          <EarningAttributionNote scope={lpAttributionScope} />
+        </TooltipFootnote>
+      )}
+    </TooltipContent>
   );
 }
