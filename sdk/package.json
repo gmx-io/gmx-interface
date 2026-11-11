@@ -158,6 +158,9 @@
       ],
       "utils/twap/uiFeeReceiver": [
         "./build/types/src/utils/twap/uiFeeReceiver.d.ts"
+      ],
+      "utils/gmsol": [
+        "./build/types/src/utils/gmsol/index.d.ts"
       ]
     }
   },
@@ -497,6 +500,12 @@
       "import": "./build/esm/src/utils/twap/uiFeeReceiver.js",
       "require": "./build/cjs/src/utils/twap/uiFeeReceiver.js",
       "default": "./build/cjs/src/utils/twap/uiFeeReceiver.js"
+    },
+    "./utils/gmsol": {
+      "types": "./build/types/src/utils/gmsol/index.d.ts",
+      "import": "./build/esm/src/utils/gmsol/index.js",
+      "require": "./build/cjs/src/utils/gmsol/index.js",
+      "default": "./build/cjs/src/utils/gmsol/index.js"
     }
   },
   "scripts": {

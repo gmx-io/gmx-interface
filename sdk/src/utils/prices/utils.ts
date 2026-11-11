@@ -1,6 +1,11 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "utils/fees";
+import {
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getCappedPositionImpactUsd,
+  getPriceImpactByAcceptablePrice,
+} from "utils/fees";
+import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
 import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
@@ -96,6 +101,8 @@ export function getAcceptablePriceInfo(p: {
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
   sizeDeltaInTokens?: bigint;
+  positionSizeInUsd?: bigint;
+  positionSizeInTokens?: bigint;
 }) {
   const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
@@ -190,6 +197,44 @@ export function getAcceptablePriceInfo(p: {
     sizeDeltaUsd,
     priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice,
   });
+
+  if (marketInfo.tradeMath === "gmsol") {
+    const cappedImpact = isIncrease
+      ? priceImpactDeltaUsdForAcceptablePrice
+      : capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsdForAcceptablePrice);
+    if (isIncrease) {
+      const baseSize =
+        p.sizeDeltaInTokens ??
+        (isLong
+          ? bigMath.mulDiv(sizeDeltaUsd, expandDecimals(1, indexToken.decimals), indexPrice)
+          : roundUpMagnitudeDivision(sizeDeltaUsd * expandDecimals(1, indexToken.decimals), indexPrice));
+      const size = getGmsolIncreaseSizeDeltaInTokens({
+        baseSizeDeltaInTokens: baseSize,
+        priceImpactDeltaUsd: cappedImpact,
+        indexToken,
+        isLong,
+      });
+      values.acceptablePrice = bigMath.mulDiv(sizeDeltaUsd, expandDecimals(1, indexToken.decimals), size);
+    } else {
+      // The impact is paid on the removed tokens, whose entry price may differ from today's oracle.
+      const adjustment =
+        p.positionSizeInUsd && p.positionSizeInTokens
+          ? bigMath.mulDiv(
+              bigMath.mulDiv(p.positionSizeInUsd, cappedImpact, sizeDeltaUsd),
+              expandDecimals(1, indexToken.decimals),
+              p.positionSizeInTokens
+            )
+          : p.sizeDeltaInTokens && p.sizeDeltaInTokens > 0n
+            ? bigMath.mulDiv(cappedImpact, expandDecimals(1, indexToken.decimals), p.sizeDeltaInTokens)
+            : bigMath.mulDiv(indexPrice, cappedImpact, sizeDeltaUsd);
+      values.acceptablePrice = indexPrice + (isLong ? adjustment : -adjustment);
+    }
+    values.acceptablePriceDeltaBps = getBasisPoints(
+      (values.acceptablePrice - indexPrice) * (shouldFlipPriceImpact ? -1n : 1n),
+      indexPrice
+    );
+    return values;
+  }
 
   values.acceptablePrice = acceptablePriceValues.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceValues.acceptablePriceDeltaBps;
