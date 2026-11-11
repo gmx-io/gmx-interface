@@ -45,6 +45,51 @@ const EARN_FAQ_ITEMS: FaqItem[] = [
   },
 ];
 
+const SOLANA_EARN_FAQ_ITEMS: FaqItem[] = [
+  {
+    title: <Trans>How do LPs earn rewards?</Trans>,
+    content: (
+      <Trans>
+        Buying GLV/GM tokens means providing liquidity to GMX markets and becoming a liquidity provider (LP). On Solana,
+        1% of fees generated from trading, liquidations, borrowing, and swaps goes to LPs. They can also stake GLV/GM to
+        earn GT rewards, which can be converted into USDC through GT buybacks.
+      </Trans>
+    ),
+  },
+  {
+    title: <Trans>What's the difference between GLV and GM?</Trans>,
+    content: (
+      <Trans>
+        GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both
+        auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools.
+      </Trans>
+    ),
+  },
+  {
+    title: <Trans>Can LPs unstake or sell GLV/GM anytime?</Trans>,
+    content: (
+      <Trans>
+        Yes, GLV/GM can generally be unstaked and sold at any time. However, for markets with trading hours, selling is
+        only available while the market is open. In rare cases where your liquidity is being used for active trades, you
+        can sell once those positions are closed.
+      </Trans>
+    ),
+  },
+  {
+    title: <Trans>What networks are supported?</Trans>,
+    content: (
+      <Trans>
+        The full GT Points system and features are currently available only on Solana. GLV vaults and GM tokens vary by
+        chain. Visit the Pools page to see the liquidity options available on your connected network.
+      </Trans>
+    ),
+  },
+];
+
 export default function EarnFaq() {
   return <Faq items={EARN_FAQ_ITEMS} title={<Trans>FAQ</Trans>} />;
+}
+
+export function SolanaEarnFaq() {
+  return <Faq items={SOLANA_EARN_FAQ_ITEMS} title={<Trans>FAQ</Trans>} />;
 }
