@@ -5,7 +5,9 @@ import type { AnyChainId, SettlementChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { getLayerZeroEndpointId } from "configs/multichain";
 import { getToken } from "configs/tokens";
+import { buildTokenPermitsCall, encodeExchangeRouterMulticall } from "utils/orderTransactions/utils";
 import type { IAbstractSigner } from "utils/signer";
+import type { SignedTokenPermit } from "utils/tokens/types";
 
 export type BridgeFeeParams = {
   feeToken: string;
@@ -37,18 +39,25 @@ export type SameChainDepositRequest = {
   amount: bigint;
   /** Receiving GMX account address (typically the same as `signer.address`). */
   account: string;
+  /** Signed GMX Router permits for `tokenAddress`, so the deposit needs no approval transaction */
+  tokenPermits?: SignedTokenPermit[];
 };
 
 /**
  * Wallet sits on the settlement chain and funds the GMX account directly via
- * `MultichainTransferRouter.multicall([sendWnt|sendTokens, bridgeIn])`.
+ * `MultichainTransferRouter.multicall([sendWnt|sendTokens, bridgeIn])`, or via ExchangeRouter when it carries permits.
  */
 export function buildSameChainDepositTxn(request: SameChainDepositRequest): BuildTxnResult {
-  const { chainId, tokenAddress, amount, account } = request;
+  const { chainId, tokenAddress, amount, account, tokenPermits = [] } = request;
   const multichainVault = getContract(chainId, "MultichainVault");
   const router = getContract(chainId, "MultichainTransferRouter");
 
   const isNative = tokenAddress === zeroAddress;
+
+  if (!isNative && tokenPermits.length > 0) {
+    return buildSameChainDepositWithPermitsTxn({ chainId, tokenAddress, amount, account, tokenPermits });
+  }
+
   let depositTokenAddress = tokenAddress;
   let sendCall: string;
 
@@ -87,6 +96,39 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
     to: router,
     data,
     value: isNative ? amount : 0n,
+  };
+}
+
+/**
+ * MultichainTransferRouter can't run the permit, so ExchangeRouter sets the allowance, pulls the tokens into
+ * MultichainVault and calls `bridgeIn` through ExternalHandler. `bridgeIn` is permissionless and credits any account
+ * with what reached the vault unrecorded, so it must stay in the same transaction as the transfer.
+ */
+function buildSameChainDepositWithPermitsTxn({
+  chainId,
+  tokenAddress,
+  amount,
+  account,
+  tokenPermits,
+}: Required<SameChainDepositRequest>): BuildTxnResult {
+  const transferRouter = getContract(chainId, "MultichainTransferRouter");
+
+  const bridgeInCall = encodeFunctionData({
+    abi: getAbi(chainId, "MultichainTransferRouter"),
+    functionName: "bridgeIn",
+    args: [account, tokenAddress],
+  });
+
+  const { callData } = encodeExchangeRouterMulticall(chainId, [
+    buildTokenPermitsCall(tokenPermits),
+    { method: "sendTokens", params: [tokenAddress, getContract(chainId, "MultichainVault"), amount] },
+    { method: "makeExternalCalls", params: [[transferRouter], [bridgeInCall], [], []] },
+  ]);
+
+  return {
+    to: getContract(chainId, "ExchangeRouter"),
+    data: callData,
+    value: 0n,
   };
 }
 

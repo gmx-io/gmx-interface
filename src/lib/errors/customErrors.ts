@@ -108,8 +108,8 @@ export function getIsOutdatedSubaccountApprovalError(error: ErrorLike) {
 }
 
 /**
- * `isAnyContext`: for a multicall whose only external call is the permit, where a pre-send revert can come without
- * the simulation context
+ * `isAnyContext`: for a multicall where only the permit's external call can fail with a permit reason, and a pre-send
+ * revert can come without the simulation context
  */
 type PermitErrorOptions = { isAnyContext?: boolean };
 
