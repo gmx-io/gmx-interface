@@ -17,7 +17,7 @@ import CopyIcon from "img/ic_copy.svg?react";
 import rank1Icon from "img/rank1.svg";
 import rank2Icon from "img/rank2.svg";
 import rank3Icon from "img/rank3.svg";
-import gtIcon from "img/tokens/ic_gt.svg";
+import gmxIcon from "img/tokens/ic_gmx.svg";
 
 import { formatGt, getGtReferralLink, shortenSolanaAddress } from "../gtPointsFormat";
 import type { GtHolder } from "../gtPointsTypes";
@@ -162,15 +162,22 @@ function RankCell({ rank, className }: { rank: number; className?: string }) {
   );
 }
 
-// Identicon for wallets (the same avatar as the wallet menu); the GT mark for named protocol accounts.
+// Identicon for wallets (the same avatar as the wallet menu). Named protocol accounts, like the GMX GT Vault,
+// get the GMX logo on a dark circle, so they stand out from traders' wallets.
 function HolderAvatar({ holder, size = 24 }: { holder: GtHolder; size?: 24 | 28 }) {
+  const sizeClass = size === 28 ? "size-28" : "size-24";
+
+  if (holder.name) {
+    return (
+      <span className={cx("flex shrink-0 items-center justify-center rounded-full bg-slate-700", sizeClass)}>
+        <img src={gmxIcon} alt="" className="size-[62%]" />
+      </span>
+    );
+  }
+
   return (
-    <span className={cx("flex shrink-0 overflow-hidden rounded-full", size === 28 ? "size-28" : "size-24")}>
-      {holder.name ? (
-        <img src={gtIcon} alt="" className="size-full" />
-      ) : (
-        <Avatar size={size} address={holder.address} />
-      )}
+    <span className={cx("flex shrink-0 overflow-hidden rounded-full", sizeClass)}>
+      <Avatar size={size} address={holder.address} />
     </span>
   );
 }
