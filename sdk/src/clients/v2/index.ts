@@ -429,8 +429,8 @@ export class GmxApiSdk {
     return this._streamClient;
   }
 
-  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
-    return fetchApiTokenPrices(this.ctx);
+  fetchTokenPrices(opts?: { signal?: AbortSignal }): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx, opts);
   }
 
   watchTokenPrices(): Subscription<TokenPricesData> {

@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 
+import { combineAbortSignals } from "utils/abort";
 import { buildUrl } from "utils/buildUrl";
 
 import { IHttp, ServedResult } from "./types";
@@ -49,7 +50,7 @@ export class HttpClient implements IHttp {
 
   async fetchJson<TResult>(
     path: string,
-    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
+    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult; signal?: AbortSignal }
   ): Promise<TResult> {
     const query = opts?.query
       ? Object.fromEntries(Object.entries(opts.query).filter(([, value]) => value !== undefined && value !== null))
@@ -57,37 +58,33 @@ export class HttpClient implements IHttp {
 
     const url = buildUrl(this.url, path, query);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timeoutSignal = AbortSignal.timeout(this.timeoutMs);
+    const signal = opts?.signal ? combineAbortSignals(timeoutSignal, opts.signal).signal : timeoutSignal;
 
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Accept: "application/json",
-        },
-        signal: controller.signal as any,
-      });
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+      signal: signal as any,
+    });
 
-      if (!response.ok) {
-        let errorBody: Record<string, any> | undefined;
-        try {
-          errorBody = await response.json();
-        } catch {
-          // ignore parse errors
-        }
-        throwHttpError(response.status, response.statusText, errorBody);
+    if (!response.ok) {
+      let errorBody: Record<string, any> | undefined;
+      try {
+        errorBody = await response.json();
+      } catch {
+        // ignore parse errors
       }
-
-      const json = await response.json();
-
-      if (opts?.transform) {
-        return opts.transform(json);
-      }
-
-      return json as TResult;
-    } finally {
-      clearTimeout(timeoutId);
+      throwHttpError(response.status, response.statusText, errorBody);
     }
+
+    const json = await response.json();
+
+    if (opts?.transform) {
+      return opts.transform(json);
+    }
+
+    return json as TResult;
   }
 
   async postJson<TResult>(
