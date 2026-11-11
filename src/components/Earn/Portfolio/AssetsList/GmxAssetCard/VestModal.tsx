@@ -4,7 +4,7 @@ import { type ReactNode, useMemo, useState } from "react";
 import { isDevelopment } from "config/env";
 import useVestingData from "domain/vesting/useVestingData";
 import { useVestingVaultsData } from "domain/vesting/useVestingVaultsData";
-import { getVisibleVestVaults, type VestVault } from "domain/vesting/vestingVaults";
+import { getVisibleVestVaults, type OldVestVault, type VestVault } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import useWallet from "lib/wallets/useWallet";
@@ -22,6 +22,8 @@ type VestModalProps = {
   reservedAmount: bigint;
 };
 
+const ALL_OLD_VAULTS_CLOSED: Record<OldVestVault, boolean> = { gmx: true, glp: true, affiliate: true };
+
 const VAULT_GROUP_DIVIDER_CLASS =
   "relative before:absolute before:left-0 before:top-9 before:block before:h-22 before:w-[1.5px] before:bg-slate-600";
 
@@ -33,22 +35,23 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
   const [pickedVault, setPickedVault] = useState<VestVault>();
 
+  // until the migration no account has an eligible amount and no old vault is closed,
+  // so previews show the post-migration state for testing
+  const isMigrationPreview = isDevelopment() && vaultsData !== undefined;
+  const closedOldVaults = isMigrationPreview ? ALL_OLD_VAULTS_CLOSED : vaultsData?.closedOldVaults;
+
   const visibleVaults = useMemo(
     () =>
       getVisibleVestVaults({
         orphan: vaultsData?.orphan,
-        // no account has an eligible amount until the snapshot, so previews show the vault anyway for review
-        isOrphanAlwaysVisible: isDevelopment(),
+        isOrphanAlwaysVisible: isMigrationPreview,
         oldVaults: {
-          gmx: { isClosed: vaultsData?.closedOldVaults.gmx, vestedAmount: vestingData?.gmxVesterVestedAmount },
-          glp: { isClosed: vaultsData?.closedOldVaults.glp, vestedAmount: vestingData?.glpVesterVestedAmount },
-          affiliate: {
-            isClosed: vaultsData?.closedOldVaults.affiliate,
-            vestedAmount: vestingData?.affiliateVesterVestedAmount,
-          },
+          gmx: { isClosed: closedOldVaults?.gmx, vestedAmount: vestingData?.gmxVesterVestedAmount },
+          glp: { isClosed: closedOldVaults?.glp, vestedAmount: vestingData?.glpVesterVestedAmount },
+          affiliate: { isClosed: closedOldVaults?.affiliate, vestedAmount: vestingData?.affiliateVesterVestedAmount },
         },
       }),
-    [vaultsData, vestingData]
+    [closedOldVaults, isMigrationPreview, vaultsData?.orphan, vestingData]
   );
 
   const selectedVault =
@@ -113,7 +116,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
         ) : (
           <OldVaultPanel
             vault={selectedVault}
-            isClosed={vaultsData?.closedOldVaults[selectedVault] ?? false}
+            isClosed={closedOldVaults?.[selectedVault] ?? false}
             processedData={processedData}
             reservedAmount={reservedAmount}
             onTxSent={() => handleSetIsVisible(false)}
