@@ -34,6 +34,7 @@ import {
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
+  getIsRelayUnavailableError,
   getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -444,6 +445,7 @@ export function useOrderTxnCallbacks() {
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
             isOutdatedSubaccountApproval,
+            isRelayUnavailable: getIsRelayUnavailableError(error),
             setIsSettingsVisible,
             expressTxn: expressParams
               ? {

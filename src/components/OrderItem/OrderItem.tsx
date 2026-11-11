@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -59,21 +59,18 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipUnderline } from "components/Tooltip/Tooltip";
+import { TooltipContent, TooltipRow, TooltipRows, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
 import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
-
-import "./OrderItem.scss";
-
-const TOOLTIP_HANDLE_CLASSNAME = "cursor-help underline decoration-dashed decoration-1 underline-offset-2";
 
 type Props = {
   order: OrderInfo;
@@ -149,23 +146,21 @@ function OrderSize({
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
       return (
-        <TooltipWithPortal
-          variant="none"
+        <StandardTooltip
           handle={<SizeWithIcon order={order} className={className} />}
-          position="bottom-start"
           content={
-            <>
-              <StatsTooltipRow
+            <TooltipRows>
+              <TooltipRow
                 label={t`Key`}
-                value={<div className="debug-key muted">{order.key}</div>}
-                showDollar={false}
+                value={<div className="debug-key">{order.key}</div>}
+                valueClassName="min-w-0 !shrink !whitespace-normal"
               />
-              <StatsTooltipRow
+              <TooltipRow
                 label={t`Amount`}
-                value={<div className="debug-key muted">{order.minOutputAmount.toString()}</div>}
-                showDollar={false}
+                value={<div className="debug-key">{order.minOutputAmount.toString()}</div>}
+                valueClassName="min-w-0 !shrink !whitespace-normal"
               />
-            </>
+            </TooltipRows>
           }
         />
       );
@@ -227,21 +222,16 @@ function OrderSize({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={<SizeWithIcon order={order} className={className} positionSizeUsd={position?.sizeInUsd} />}
-      position="bottom-start"
-      tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
-      maxAllowedWidth={400}
-      variant="none"
+      size={isTwapOrder(order) ? "wide" : "default"}
       content={
         isTwapOrder(order) ? (
           <TwapOrdersList order={order} />
         ) : (
-          <>
-            <StatsTooltipRow label={getCollateralLabel()} value={getCollateralText()} showDollar={false} />
-
+          <TooltipContent>
             {isCollateralSwap && (
-              <div className="OrderItem-tooltip-row">
+              <TooltipText>
                 <Trans>
                   {formatBalanceAmount(
                     positionOrder.initialCollateralDeltaAmount,
@@ -257,19 +247,19 @@ function OrderSize({
                     : positionOrder.targetCollateralToken.symbol}{" "}
                   when executed
                 </Trans>
-              </div>
+              </TooltipText>
             )}
-
-            {showDebugValues && (
-              <div className="OrderItem-tooltip-row">
-                <StatsTooltipRow
+            <TooltipRows>
+              <TooltipRow label={getCollateralLabel()} value={getCollateralText()} />
+              {showDebugValues && (
+                <TooltipRow
                   label={t`Key`}
-                  value={<div className="debug-key muted">{positionOrder.key}</div>}
-                  showDollar={false}
+                  value={<div className="debug-key">{positionOrder.key}</div>}
+                  valueClassName="min-w-0 !shrink !whitespace-normal"
                 />
-              </div>
-            )}
-          </>
+              )}
+            </TooltipRows>
+          </TooltipContent>
         )
       }
     />
@@ -326,14 +316,7 @@ function SizeWithIcon({
     return (
       <div className={cx("inline-flex flex-wrap gap-y-8 whitespace-pre-wrap")}>
         {isTwapOrder(order) ? (
-          <TooltipWithPortal
-            handle={handle}
-            position="bottom-start"
-            content={<TwapOrdersList order={order} />}
-            tooltipClassName="!p-0"
-            maxAllowedWidth={450}
-            variant="none"
-          />
+          <StandardTooltip handle={handle} size="wide" content={<TwapOrdersList order={order} />} />
         ) : (
           handle
         )}
@@ -405,7 +388,7 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
     const text = isSwapOrderType(order.orderType) ? markSwapRatioText : <NumericValue parts={markPriceParts} />;
 
     return (
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
         className={className}
         disabled={!isTruncated}
@@ -420,7 +403,7 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
         disabled={!isTruncated}
         handle={markSwapRatioText}
@@ -432,26 +415,33 @@ function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; classN
     const positionOrder = order as PositionOrderInfo;
 
     return (
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
-        handle={<NumericValue parts={markPriceParts} className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)} />}
+        handle={
+          <>
+            <NumericValue parts={markPriceParts} className="numbers" />
+            <TooltipUnderline />
+          </>
+        }
         position="bottom-end"
         renderContent={() => {
           return (
-            <>
+            <TooltipContent>
               {isTruncated && (
-                <div className="mb-4">
+                <TooltipText>
                   <NumericValue parts={markPriceParts} />
-                </div>
+                </TooltipText>
               )}
-              <Trans>
-                Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
-                {formatUsd(positionOrder.triggerPrice, {
-                  displayDecimals: priceDecimals,
-                  visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                })}
-              </Trans>
-            </>
+              <TooltipText>
+                <Trans>
+                  Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
+                  {formatUsd(positionOrder.triggerPrice, {
+                    displayDecimals: priceDecimals,
+                    visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                  })}
+                </Trans>
+              </TooltipText>
+            </TooltipContent>
           );
         }}
       />
@@ -499,11 +489,11 @@ function TriggerPrice({
     return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
-      <TooltipWithPortal
+      <StandardTooltip
         position="bottom-end"
         handle={handle}
         content={
-          <StatsTooltipRow
+          <TooltipRow
             label={t`Acceptable price`}
             value={
               <UsdValue
@@ -512,7 +502,6 @@ function TriggerPrice({
                 visualMultiplier={positionOrder.indexToken?.visualMultiplier}
               />
             }
-            showDollar={false}
           />
         }
       />
@@ -531,24 +520,29 @@ function TriggerPrice({
     return (
       <>
         {!hideActions ? (
-          <TooltipWithPortal
+          <StandardTooltip
             as="span"
             position="bottom-end"
-            handle={<span className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)}>{swapRatioText}</span>}
-            renderContent={() => (
+            handle={
               <>
-                {isTruncated && <div className="mb-4">{swapRatioText}</div>}
-                {isSetAcceptablePriceImpactEnabled && (
-                  <div className="pb-8">
-                    <StatsTooltipRow label={t`Acceptable price`} value={acceptablePriceText} showDollar={false} />
-                  </div>
-                )}
-                {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
+                <span className="numbers">{swapRatioText}</span>
+                <TooltipUnderline />
               </>
+            }
+            renderContent={() => (
+              <TooltipContent>
+                {isTruncated && <TooltipText>{swapRatioText}</TooltipText>}
+                <TooltipText>
+                  {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
+                </TooltipText>
+                {isSetAcceptablePriceImpactEnabled && (
+                  <TooltipRow label={t`Acceptable price`} value={acceptablePriceText} />
+                )}
+              </TooltipContent>
             )}
           />
         ) : (
-          <TooltipWithPortal
+          <StandardTooltip
             as="span"
             disabled={!isTruncated}
             handle={swapRatioText}
@@ -577,7 +571,7 @@ function TriggerPrice({
     );
 
     return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
         disabled={!isTruncated}
         handle={<NumericValue parts={triggerPriceParts} />}
@@ -585,18 +579,23 @@ function TriggerPrice({
         variant="none"
       />
     ) : (
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
-        handle={<NumericValue parts={triggerPriceParts} className={TOOLTIP_HANDLE_CLASSNAME} />}
+        handle={
+          <>
+            <NumericValue parts={triggerPriceParts} />
+            <TooltipUnderline />
+          </>
+        }
         position="bottom-end"
         renderContent={() => (
-          <>
+          <TooltipContent>
             {isTruncated && (
-              <div className="mb-4">
+              <TooltipText>
                 <NumericValue parts={triggerPriceParts} />
-              </div>
+              </TooltipText>
             )}
-            <StatsTooltipRow
+            <TooltipRow
               label={t`Acceptable price`}
               value={
                 isStopLossOrderType(positionOrder.orderType) ||
@@ -615,9 +614,8 @@ function TriggerPrice({
                   />
                 )
               }
-              showDollar={false}
             />
-          </>
+          </TooltipContent>
         )}
       />
     );
@@ -715,13 +713,11 @@ function OrderItemLarge({
       )}
       <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
         {isSwap ? (
-          <TooltipWithPortal
+          <StandardTooltip
             handle={
-              <SwapMarketLabel
-                bordered
-                fromSymbol={swapPathTokenSymbols?.at(0)}
-                toSymbol={swapPathTokenSymbols?.at(-1)}
-              />
+              <span className="font-medium">
+                <SwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
+              </span>
             }
             content={
               <>
@@ -734,20 +730,12 @@ function OrderItemLarge({
                 ))}
               </>
             }
-            variant="none"
           />
         ) : (
-          <TooltipWithPortal
-            handle={
-              <MarketWithDirectionLabel
-                bordered
-                indexName={indexName}
-                isLong={order.isLong}
-                tokenSymbol={tokenSymbol}
-              />
-            }
+          <StandardTooltip
+            handle={<MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />}
             content={
-              <StatsTooltipRow
+              <TooltipRow
                 label={t`Market`}
                 value={
                   <div className="flex items-center">
@@ -755,10 +743,8 @@ function OrderItemLarge({
                     <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
-                showDollar={false}
               />
             }
-            variant="none"
           />
         )}
       </TableTd>
@@ -794,7 +780,12 @@ function OrderItemLarge({
             )}
             {onCancelOrder ? (
               disabledCancelMarketOrderMessage ? (
-                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+                <StandardTooltip
+                  handle={cancelButton}
+                  variant="none"
+                  isHandlerDisabled
+                  content={disabledCancelMarketOrderMessage}
+                />
               ) : (
                 cancelButton
               )
@@ -954,7 +945,12 @@ function OrderItemSmall({
 
             {onCancelOrder ? (
               disabledCancelMarketOrderMessage ? (
-                <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
+                <StandardTooltip
+                  handle={cancelButton}
+                  variant="none"
+                  isHandlerDisabled
+                  content={disabledCancelMarketOrderMessage}
+                />
               ) : (
                 cancelButton
               )
@@ -1017,13 +1013,12 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
   }
 
   const typeLabelWithErrors = (
-    <TooltipWithPortal
-      variant="none"
+    <StandardTooltip
       handle={
         <span
-          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-red-500 decoration-red-500/50": level === "error",
-            "text-yellow-300 decoration-yellow-300/50": level === "warning",
+          className={cx({
+            "text-red-500": level === "error",
+            "text-yellow-300": level === "warning",
           })}
         >
           {handle}
@@ -1031,20 +1026,23 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
       }
       content={
         errors.length ? (
-          <div className="flex flex-col gap-20">
+          <TooltipContent>
             {errors.map((error) => (
-              <div key={error.key}>
-                <span
-                  className={cx({
-                    "text-red-500": error!.level === "error",
-                    "text-yellow-300": error!.level === "warning",
-                  })}
-                >
-                  {error.msg}
-                </span>
-              </div>
+              <Fragment key={error.key}>
+                <TooltipText>
+                  <span
+                    className={cx({
+                      "text-red-500": error.level === "error",
+                      "text-yellow-300": error.level === "warning",
+                    })}
+                  >
+                    {error.msg}
+                  </span>
+                </TooltipText>
+                {error.action}
+              </Fragment>
             ))}
-          </div>
+          </TooltipContent>
         ) : null
       }
     />
@@ -1059,10 +1057,10 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
   return (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
       {typeLabelWithErrors}
-      <TooltipWithPortal
+      <StandardTooltip
         as="span"
         variant="none"
-        className="min-w-0 cursor-help truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        className="min-w-0 truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
         handle={<Trans>Frozen</Trans>}
         content={<span className={cx({ "text-red-500": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />

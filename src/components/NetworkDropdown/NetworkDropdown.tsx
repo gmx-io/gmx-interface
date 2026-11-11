@@ -1,5 +1,7 @@
 import { Menu } from "@headlessui/react";
-import { Trans, t } from "@lingui/macro";
+import type { MessageDescriptor } from "@lingui/core";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import partition from "lodash/partition";
 import { useMemo, useState, type ReactNode } from "react";
@@ -22,7 +24,7 @@ import { getChainName, isContractsChain } from "sdk/configs/chains";
 import Button from "components/Button/Button";
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
@@ -111,14 +113,14 @@ function getNetworkDisabledReason({
   network: NetworkOption;
   unavailableChains: number[] | undefined;
   canSignTypedData: boolean;
-}): ReactNode {
+}): MessageDescriptor | undefined {
   if (unavailableChains?.includes(network.value)) {
-    return <Trans>Your wallet is not connected to this network</Trans>;
+    return msg`Your wallet is not connected to this network`;
   }
 
   // Source-only chains trade through the GMX Account, which is express-only and always needs a signature.
   if (!canSignTypedData && !isContractsChain(network.value, true)) {
-    return <Trans>Your wallet cannot sign messages, which trading from this network requires</Trans>;
+    return msg`Your wallet cannot sign messages, which trading from this network requires`;
   }
 
   return undefined;
@@ -139,13 +141,15 @@ function NetworkMenuItems({
   const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
   const isVerdictPending = isAvailabilityLoading || isCanSignLoading;
 
+  const { _ } = useLingui();
   const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
-    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
-      ...network,
-      disabledReason: isVerdictPending
+    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => {
+      const disabledReason = isVerdictPending
         ? undefined
-        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
-    }));
+        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData });
+
+      return { ...network, disabledReason: disabledReason && _(disabledReason) };
+    });
 
     const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
       partition(networks, (network) => !network.disabledReason).flat();
@@ -159,7 +163,7 @@ function NetworkMenuItems({
         displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
       ),
     };
-  }, [networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
+  }, [_, networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
 
   return (
     <>
@@ -169,16 +173,12 @@ function NetworkMenuItems({
             <span className="text-13 font-medium text-typography-secondary">
               <Trans>Wallet & GMX Account</Trans>
             </span>
-            <TooltipWithPortal
+            <StandardTooltip
               handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
-              position="top"
+              position="bottom"
               variant="none"
               className="flex"
-              content={
-                <Trans>
-                  Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.
-                </Trans>
-              }
+              content={t`Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.`}
             />
           </div>
           {walletAndGmxAccountNetworks.map((network) => (
@@ -193,12 +193,12 @@ function NetworkMenuItems({
             <span className="text-13 font-medium text-typography-secondary">
               <Trans>Wallet-only</Trans>
             </span>
-            <TooltipWithPortal
+            <StandardTooltip
               handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
-              position="top"
+              position="bottom"
               variant="none"
               className="flex"
-              content={<Trans>Wallet trading only on these networks</Trans>}
+              content={t`Wallet trading only on these networks`}
             />
           </div>
           {walletOnlyNetworks.map((network) => (
@@ -215,7 +215,7 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
   const { isConnected } = useAccount();
   const isSelected = !isSolanaNetwork(useChainId().networkId) && chainId === network.value;
   const disabled = Boolean(network.disabledReason);
-  const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
+  const Wrapper = disabled ? StandardTooltip : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
@@ -256,12 +256,12 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
                 {network.label}
               </span>
               {isValidVisualSettlementChain(network.value) && isSelected && (
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={<WalletIcon className="size-16 text-typography-secondary" />}
-                  position="top"
+                  position="bottom"
                   variant="none"
                   className="flex"
-                  content={<Trans>Trade from wallet or GMX Account</Trans>}
+                  content={t`Trade from wallet or GMX Account`}
                 />
               )}
             </div>

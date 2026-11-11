@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
+import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
@@ -65,6 +66,7 @@ import {
 } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/uiFlags";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
 import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
@@ -358,6 +360,12 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
     multichainMarketTokensBalancesResult,
+    // Relay router flags still loading count as on, so Express users don't see the wallet on every page load
+    isExpressAvailable:
+      settings.expressOrdersEnabled &&
+      isUiApiSupported(chainId) &&
+      getIsExpressAvailable(uiFlags) &&
+      features?.relayRouterEnabled !== false,
   });
 
   const gasLimits = useGasLimits(chainId);

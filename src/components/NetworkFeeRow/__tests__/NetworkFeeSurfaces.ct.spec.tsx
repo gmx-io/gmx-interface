@@ -49,6 +49,7 @@ const GM_MARKET_TOKEN_ADDRESSES = [
 ];
 const GM_TOKEN_TOTAL_SUPPLY = 2_600_000n * 10n ** 18n;
 const WETH_ADDRESS = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
+const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const NO_APPROVED_GAS_TOKENS: string[] = [];
 const ONLY_WETH_APPROVED = [WETH_ADDRESS];
 
@@ -145,7 +146,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(WALLET_CLASSIC_EXPLANATION)).toBeVisible();
-      const maxFeeLine = page.getByText("Max network fee:", { exact: true }).locator("..");
+      const maxFeeLine = page.getByText("Max network fee", { exact: true }).locator("..");
       await expect(maxFeeLine).toBeVisible();
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
     });
@@ -164,7 +165,7 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
 
       await feeValueHandle(row).hover();
       await expect(page.getByText(WALLET_EXPRESS_EXPLANATION)).toBeVisible();
-      const maxFeeLine = page.getByText("Max network fee:", { exact: true }).locator("..");
+      const maxFeeLine = page.getByText("Max network fee", { exact: true }).locator("..");
       await expect(maxFeeLine).toContainText("USDC");
       expect(await getUsdValue(row)).toBeLessThan(await getUsdValue(maxFeeLine));
       const refundLine = page.getByText("Estimated fee refund").locator("..");
@@ -366,7 +367,10 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await page.locator(getDataQALocator("open-order-editor")).click();
       await page.getByText("Fees", { exact: true }).locator("..").locator(".Tooltip-handle").first().hover();
 
-      const networkFeeLine = page.locator(".Tooltip-row").filter({ hasText: "Network fee:" });
+      const networkFeeLine = page
+        .locator(".Tooltip-popup--standard")
+        .getByText("Network fee", { exact: true })
+        .locator("..");
       await expect(networkFeeLine).toContainText(/-[\d.,<]+\sETH\s\(-\$\s?[\d.,<]+\)/, { timeout: 20_000 });
       await expect(sourceIcon(networkFeeLine, "Wallet")).toBeVisible();
     });
@@ -578,6 +582,22 @@ test.describe("Network fee row: token, USD and paying balance (FEDEV-4282)", () 
       await page.locator(getDataQALocator("gm-first-token-input")).fill("1000");
       await openExecutionDetails(page);
       await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+    });
+
+    test("Buy GM in Classic: picking a GMX Account token turns Express on and quotes the fee (PRO-4567)", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<NetworkFeeSurfaceStory surface="gmBuy" classicWithRelay />);
+
+      await page.locator(getDataQALocator("gm-first-token")).getByText("USDC", { exact: true }).click();
+      await page.locator(getDataQALocator(`available-token-${USDC_ADDRESS}-0`)).click();
+      await expect(page.getByText(/Express Trading enabled/)).toBeVisible();
+
+      await page.locator(getDataQALocator("gm-first-token-input")).fill("1000");
+      await openExecutionDetails(page);
+      await expectFeeValue(feeRow(page), "USDC", "GMX Account");
+      await expect(page.getByRole("button", { name: "Buy GM" })).toBeEnabled();
     });
   });
 

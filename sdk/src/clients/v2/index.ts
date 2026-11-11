@@ -120,14 +120,16 @@ import type {
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
-import { fetchApiOhlcv } from "utils/prices/api";
-import type { OhlcvParams } from "utils/prices/types";
+import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/prices/api";
+import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
 import { fetchApiFeeDiscount } from "utils/referrals/api";
 import type { IAbstractSigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
+import type { StreamCandlePeriod, Subscription, WebSocketCtor } from "utils/stream";
+import { WsStreamClient, createChannelSubscription, toStreamUrl } from "utils/stream";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
@@ -150,6 +152,7 @@ import {
 } from "utils/subaccount/sdkClient";
 import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
 import { fetchApiTokens } from "utils/tokens/api";
+import type { TokenPricesData } from "utils/tokens/types";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
 import { fetchApiUsdgBoostApr } from "utils/usdgBoostApr/api";
@@ -308,6 +311,7 @@ export { HttpClientWithFallback } from "utils/http/httpFallback";
 export type { IHttp, HttpResponseMetadata } from "utils/http/types";
 export type { SolanaReadOptions } from "utils/http/solana";
 export type { FeeDiscount } from "utils/referrals/types";
+export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
@@ -321,6 +325,8 @@ type GmxApiSdkOptions = {
   networkId: NetworkId;
   apiUrl?: string;
   api?: IHttp;
+  streamUrl?: string;
+  webSocketImpl?: WebSocketCtor;
 };
 
 class GmxApiContext {
@@ -345,9 +351,14 @@ export class GmxApiSdk {
   private _ctx: GmxApiContext;
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
+  private readonly streamUrlOverride?: string;
+  private readonly webSocketImpl?: WebSocketCtor;
+  private _streamClient?: WsStreamClient;
 
   constructor(options: GmxApiSdkOptions) {
-    const { networkId, apiUrl, api } = options;
+    const { networkId, apiUrl, api, streamUrl, webSocketImpl } = options;
+    this.streamUrlOverride = streamUrl;
+    this.webSocketImpl = webSocketImpl;
     if (networkId === undefined) {
       throw new Error("networkId is required");
     }
@@ -441,6 +452,30 @@ export class GmxApiSdk {
 
   fetchTokens() {
     return fetchApiTokens(this.ctx);
+  }
+
+  private getStreamClient(): WsStreamClient {
+    if (!this._streamClient) {
+      const url = this.streamUrlOverride ?? toStreamUrl(this.ctx.api.url);
+      this._streamClient = new WsStreamClient({ url, webSocketImpl: this.webSocketImpl });
+    }
+    return this._streamClient;
+  }
+
+  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx);
+  }
+
+  watchTokenPrices(): Subscription<TokenPricesData> {
+    return createChannelSubscription(this.getStreamClient(), "prices", parseApiTokenPrices);
+  }
+
+  watchCandles(params: { symbol: string; timeframe: StreamCandlePeriod }): Subscription<OhlcvCandle> {
+    return createChannelSubscription(
+      this.getStreamClient(),
+      `candles:${params.symbol}:${params.timeframe}`,
+      (raw) => raw as OhlcvCandle
+    );
   }
 
   fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean } & SolanaReadOptions) {

@@ -29,6 +29,7 @@ export type PrepareOrderRequest = {
   manualSwapPath?: string[];
   acceptablePriceImpactBps?: bigint;
   executionFeeBufferBps?: number;
+  skipExecutionFeePriorityFeeAllowance?: boolean;
   twapConfig?: { duration: number; parts: number; frequency?: number };
   tpsl?: { type: "take-profit" | "stop-loss"; triggerPrice: bigint; size?: bigint }[];
   gasPaymentToken?: string;
@@ -204,6 +205,7 @@ export type PrepareCollateralRequest = {
   amount: bigint;
   slippage?: number;
   executionFeeBufferBps?: number;
+  skipExecutionFeePriorityFeeAllowance?: boolean;
   gasPaymentToken?: string;
   uiFeeReceiver?: string;
   mode: TransactionMode;
