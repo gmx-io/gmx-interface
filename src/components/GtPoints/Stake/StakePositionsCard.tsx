@@ -420,7 +420,7 @@ function StakeHistory({ stake, isLoading }: { stake: GtPointsStakeData | undefin
                     <StakeTokenLabel token={item.token} size={24} />
                   </TableTd>
                   <TableTd>
-                    <TwoLines top={formatLpAmount(item.amount, item.token)} bottom={formatUsdValue(item.valueUsd)} />
+                    <span className="text-body-medium numbers">{formatLpAmount(item.amount, item.token)}</span>
                   </TableTd>
                   <TableTd className="text-body-medium text-typography-secondary numbers">
                     {formatTableDateTime(item.timestamp)}
