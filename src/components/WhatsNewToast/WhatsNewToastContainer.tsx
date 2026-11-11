@@ -21,6 +21,9 @@ import { ClosingPoolsLpNoticeBanner } from "components/ClosingPoolsLpNotice/Clos
 import { ClosingPoolsNotice } from "components/ClosingPoolsNotice/ClosingPoolsNotice";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { MorphoLoopAnnouncement } from "components/MorphoLoopAnnouncement/MorphoLoopAnnouncement";
+import { MORPHO_LOOP_ANNOUNCEMENT_CAMPAIGN } from "components/MorphoLoopAnnouncement/morphoLoopAnnouncementCampaign";
+import { useLazyTargetedAnnouncement } from "components/TargetedAnnouncement/useLazyTargetedAnnouncement";
 import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";
 import { UsdgPoolsAnnouncement } from "components/UsdgPoolsAnnouncement/UsdgPoolsAnnouncement";
 import { USDG_POOLS_ANNOUNCEMENT_CAMPAIGN } from "components/UsdgPoolsAnnouncement/usdgPoolsAnnouncementCampaign";
@@ -67,6 +70,7 @@ function EvmAnnouncementToasts({
   const closingPoolsLp = useClosingPoolsLpNotice();
   const usdgPools = useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
   const balancerProgram = useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
+  const morphoLoop = useLazyTargetedAnnouncement(MORPHO_LOOP_ANNOUNCEMENT_CAMPAIGN);
   const whatsNew = useWhatsNewAnnouncements();
 
   const isAnySourceLoading =
@@ -74,6 +78,7 @@ function EvmAnnouncementToasts({
     delisting.isLoading ||
     closingPools.isLoading ||
     closingPoolsLp.isLoading ||
+    morphoLoop.isLoading ||
     whatsNew.isLoading;
   const isInitialLoadSettled = useSettled(!isAnySourceLoading, INITIAL_LOAD_MAX_WAIT_MS);
 
@@ -99,14 +104,19 @@ function EvmAnnouncementToasts({
       : []),
   ];
 
-  const targetedMessages: TopRightMessage[] = [
-    ...(usdgPools.isVisible && !isAnnouncementsPage
-      ? [{ key: "usdg-pools", node: <UsdgPoolsAnnouncement onDismiss={usdgPools.dismiss} /> }]
-      : []),
-    ...(balancerProgram.isVisible
-      ? [{ key: "balancer-program", node: <BalancerProgramAnnouncement onDismiss={balancerProgram.dismiss} /> }]
-      : []),
-  ];
+  const targetedMessages: TopRightMessage[] = morphoLoop.isLoading
+    ? []
+    : [
+        ...(morphoLoop.isVisible
+          ? [{ key: "morpho-loop", node: <MorphoLoopAnnouncement onDismiss={morphoLoop.dismiss} /> }]
+          : []),
+        ...(usdgPools.isVisible && !isAnnouncementsPage
+          ? [{ key: "usdg-pools", node: <UsdgPoolsAnnouncement onDismiss={usdgPools.dismiss} /> }]
+          : []),
+        ...(balancerProgram.isVisible
+          ? [{ key: "balancer-program", node: <BalancerProgramAnnouncement onDismiss={balancerProgram.dismiss} /> }]
+          : []),
+      ];
 
   const appHints: TopRightMessage[] = [
     ...(appUpdate ? [appUpdate] : []),
