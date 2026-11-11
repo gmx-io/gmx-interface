@@ -60,10 +60,6 @@ msgstr "注文コストを支払うための資金が不足しています。残
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "既存の指値注文は{symbol}担保を使用しています。<0>{symbol}担保に切り替える</0>"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
-msgstr "各Express注文の署名前に確認ウィンドウを表示します。承認、入金、出金、One-Clickでは常に確認が求められます。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "正の値：トレーダーがファンディングを受け取ります"
@@ -11170,6 +11166,10 @@ msgstr "USDC-USDGプールを双方向で制限します。安全マージンの
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "これらのネットワークではウォレット取引のみ利用可能です"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Express注文に署名する際、編集、キャンセル、担保の変更を含めて確認ウィンドウを表示します。承認、プールへの入金、One-Clickの有効化などその他の署名では常に確認が求められます。"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"

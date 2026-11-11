@@ -241,8 +241,9 @@ export function TradingSettings({
                   label={t`Confirm order signatures`}
                   tooltip={
                     <Trans>
-                      Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals
-                      and One-Click always ask for confirmation.
+                      Show the confirmation window when signing Express orders, including edits, cancellations and
+                      collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation,
+                      always ask for confirmation.
                     </Trans>
                   }
                 />

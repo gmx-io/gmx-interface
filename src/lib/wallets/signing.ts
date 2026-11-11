@@ -344,9 +344,10 @@ export async function signTypedData({
     message: messageToSign,
   };
 
-  const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
-
   const requestSignature = async (signWith: AnySigner) => {
+    // looked up per attempt: the setting or the session can change while the chain checks await
+    const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
+
     if (silentSigner) {
       try {
         return await silentSigner.signTypedData(eip712);

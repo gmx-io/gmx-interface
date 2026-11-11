@@ -60,10 +60,6 @@ msgstr "Fondos insuficientes para los costes de la orden. Restante: {remainingCo
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "La orden limitada existente utiliza garantía {symbol}. <0>Cambiar a garantía {symbol}</0>"
 
-#: src/components/SettingsModal/TradingSettings.tsx
-msgid "Show the confirmation window before each Express order is signed. Approvals, deposits, withdrawals and One-Click always ask for confirmation."
-msgstr "Mostrar la ventana de confirmación antes de firmar cada orden Express. Las aprobaciones, depósitos, retiros y One-Click siempre piden confirmación."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "Valor positivo: los operadores reciben financiación"
@@ -11170,6 +11166,10 @@ msgstr "Limita el pool USDC-USDG en ambas direcciones. Los importes mostrados so
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "Operaciones solo con monedero en estas redes"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Mostrar la ventana de confirmación al firmar órdenes Express, incluidas ediciones, cancelaciones y cambios de garantía. Otras firmas, como aprobaciones, depósitos en pools y la activación de One-Click, siempre piden confirmación."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
