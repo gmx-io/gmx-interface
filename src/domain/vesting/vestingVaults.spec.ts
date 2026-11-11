@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getVisibleVestVaults, type OldVestVaultState, parseOrphanVestingInfo } from "./vestingVaults";
+import { getVisibleVestVaults, parseOrphanVestingInfo } from "./vestingVaults";
 
 const UNIT = 10n ** 18n;
 const YEAR = 365n * 86400n;
@@ -25,9 +25,7 @@ const orphanWith = (overrides: Partial<Record<"cap" | "balance" | "claimable", b
     trancheStartTimes: [],
   });
 
-const open: OldVestVaultState = { isClosed: false, vestedAmount: 0n };
-const closed: OldVestVaultState = { isClosed: true, vestedAmount: 0n };
-const closedWithPosition: OldVestVaultState = { isClosed: true, vestedAmount: 5n * UNIT };
+const NO_POSITIONS = { gmx: 0n, glp: 0n, affiliate: 0n };
 
 describe("parseOrphanVestingInfo", () => {
   it("splits the session into converted and deposited amounts and ends a year after the last tranche", () => {
@@ -59,58 +57,33 @@ describe("parseOrphanVestingInfo", () => {
 
 describe("getVisibleVestVaults", () => {
   it.each([
-    {
-      name: "before the migration",
-      orphan: undefined,
-      gmx: open,
-      glp: open,
-      affiliate: open,
-      expected: ["gmx", "affiliate"],
-    },
+    { name: "before the vesting data loads", orphan: undefined, oldVaults: NO_POSITIONS, expected: ["gmx"] },
     {
       name: "eligible amount without a deposit yet",
       orphan: orphanWith({ cap: 10n * UNIT }),
-      gmx: open,
-      glp: open,
-      affiliate: open,
-      expected: ["orphan", "gmx", "affiliate"],
+      oldVaults: NO_POSITIONS,
+      expected: ["orphan"],
     },
     {
       name: "claimable GMX left after the cap is used up",
       orphan: orphanWith({ claimable: UNIT }),
-      gmx: closed,
-      glp: closed,
-      affiliate: closed,
+      oldVaults: NO_POSITIONS,
       expected: ["orphan"],
     },
     {
-      name: "closed vaults stay only while they hold a position",
-      orphan: orphanWith({}),
-      gmx: closedWithPosition,
-      glp: closedWithPosition,
-      affiliate: closed,
-      expected: ["gmx", "glp"],
+      name: "old vaults show only while they hold a position",
+      orphan: orphanWith({ cap: 10n * UNIT }),
+      oldVaults: { gmx: 5n * UNIT, glp: 2n * UNIT, affiliate: 0n },
+      expected: ["orphan", "gmx", "glp"],
     },
     {
       name: "preview hosts show the Legacy vault before the snapshot",
       orphan: orphanWith({}),
-      gmx: open,
-      glp: open,
-      affiliate: open,
+      oldVaults: { gmx: 5n * UNIT, glp: 0n, affiliate: undefined },
       isOrphanAlwaysVisible: true,
-      expected: ["orphan", "gmx", "affiliate"],
+      expected: ["orphan", "gmx"],
     },
-    {
-      name: "nothing left anywhere",
-      orphan: orphanWith({}),
-      gmx: closed,
-      glp: closed,
-      affiliate: closed,
-      expected: ["gmx"],
-    },
-  ])("$name", ({ orphan, gmx, glp, affiliate, isOrphanAlwaysVisible = false, expected }) => {
-    expect(getVisibleVestVaults({ orphan, oldVaults: { gmx, glp, affiliate }, isOrphanAlwaysVisible })).toEqual(
-      expected
-    );
+  ])("$name", ({ orphan, oldVaults, isOrphanAlwaysVisible = false, expected }) => {
+    expect(getVisibleVestVaults({ orphan, oldVaultVestedAmounts: oldVaults, isOrphanAlwaysVisible })).toEqual(expected);
   });
 });

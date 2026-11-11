@@ -60,7 +60,6 @@ import VaultV2 from "./VaultV2";
 import VaultV2b from "./VaultV2b";
 import VenusVToken from "./VenusVToken";
 import Vester from "./Vester";
-import VesterCapZeroer from "./VesterCapZeroer";
 import WETH from "./WETH";
 
 export const abis = {
@@ -123,7 +122,6 @@ export const abis = {
   VaultV2b,
   VenusVToken,
   Vester,
-  VesterCapZeroer,
   WETH,
   IStargate,
 } satisfies Record<string, any>;

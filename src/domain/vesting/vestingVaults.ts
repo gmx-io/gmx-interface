@@ -17,11 +17,6 @@ export type OrphanVestingData = {
   vestingEndTime: bigint | undefined;
 };
 
-export type OldVestVaultState = {
-  isClosed: boolean | undefined;
-  vestedAmount: bigint | undefined;
-};
-
 // vestingInfo is the 12-value layout of RatioVesterReader.getVestingInfo for a single vester
 export function parseOrphanVestingInfo({
   vestingInfo,
@@ -75,11 +70,11 @@ export function getHasOrphanVaultEntry(orphan: OrphanVestingData | undefined) {
 
 export function getVisibleVestVaults({
   orphan,
-  oldVaults,
+  oldVaultVestedAmounts,
   isOrphanAlwaysVisible,
 }: {
   orphan: OrphanVestingData | undefined;
-  oldVaults: Record<OldVestVault, OldVestVaultState>;
+  oldVaultVestedAmounts: Record<OldVestVault, bigint | undefined>;
   isOrphanAlwaysVisible: boolean;
 }): VestVault[] {
   const vaults: VestVault[] = [];
@@ -88,13 +83,11 @@ export function getVisibleVestVaults({
     vaults.push("orphan");
   }
 
+  // the old vaults take no deposits, so they only matter to accounts that still have a position there
   for (const vault of OLD_VEST_VAULTS) {
-    const { isClosed, vestedAmount } = oldVaults[vault];
-    const hasPosition = vestedAmount !== undefined && vestedAmount > 0n;
-    // GLP vesting has no deposit flow here, so the GLP vault only matters to accounts with a position
-    const acceptsDeposits = vault !== "glp" && isClosed !== true;
+    const vestedAmount = oldVaultVestedAmounts[vault];
 
-    if (hasPosition || acceptsDeposits) {
+    if (vestedAmount !== undefined && vestedAmount > 0n) {
       vaults.push(vault);
     }
   }

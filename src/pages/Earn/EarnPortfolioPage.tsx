@@ -11,8 +11,8 @@ import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
 import useVestingData from "domain/vesting/useVestingData";
-import { useVestingVaultsData } from "domain/vesting/useVestingVaultsData";
 import { getHasOrphanVaultEntry } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
@@ -65,7 +65,7 @@ export default function EarnPortfolioPage() {
   }, [marketTokensData, marketsInfoData, multichainMarketTokensBalances]);
 
   const vestingData = useVestingData(account);
-  const vestingVaultsData = useVestingVaultsData(chainId, account);
+  const orphanVestingData = useOrphanVestingData(chainId, account);
 
   const hasGmxAssets = processedData
     ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
@@ -76,7 +76,7 @@ export default function EarnPortfolioPage() {
       (vestingData?.gmxVesterVestedAmount ?? 0n) > 0n ||
       (vestingData?.glpVesterVestedAmount ?? 0n) > 0n ||
       (vestingData?.affiliateVesterVestedAmount ?? 0n) > 0n ||
-      getHasOrphanVaultEntry(vestingVaultsData?.orphan)
+      getHasOrphanVaultEntry(orphanVestingData)
     : false;
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;

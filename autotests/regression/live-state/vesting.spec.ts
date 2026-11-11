@@ -1,5 +1,4 @@
 import { expect } from "@playwright/test";
-import { formatUnits } from "viem";
 import { formatBalanceAmount, formatAmount } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 
@@ -20,7 +19,7 @@ test("13.18 live esGMX: portfolio shows the on-chain staked and wallet balances"
   }
 });
 
-test("13.20 live vesting: vault capacity and deposit validation reflect the real vested amount", async ({
+test("13.20 live vesting: the closed GMX vault shows the real vested amount and guards withdraw", async ({
   page,
   liveAccount,
   liveWallet,
@@ -28,22 +27,17 @@ test("13.20 live vesting: vault capacity and deposit validation reflect the real
   await liveWallet.connect(page, "/earn/portfolio");
   await page.getByRole("button", { name: "Vest", exact: true }).click();
   const modal = page.locator(".Modal-content").filter({ has: page.getByText("Vesting", { exact: true }) });
-  const { vested, maxVestable, walletEsGmx } = liveAccount.vesting!;
-  const capacity = modal.getByText("Vault capacity", { exact: true }).locator("..");
-  await expect(capacity).toContainText(
-    `${formatAmount(vested, 18, 4, true)} / ${formatAmount(maxVestable, 18, 4, true)}`,
+  await modal.locator('[data-qa="vesting-vaults"]').getByRole("button", { name: "GMX vault", exact: true }).click();
+  await expect(modal.getByText("Deposits are closed.", { exact: true })).toBeVisible({ timeout: 45_000 });
+  await expect(modal.getByText("Vesting status", { exact: true }).locator("..")).toContainText(
+    `/ ${formatAmount(liveAccount.vesting!.vested, 18, 4, true)}`,
     { timeout: 45_000 }
   );
-  await expect(modal.getByText("Vesting status", { exact: true }).locator("..")).toContainText(
-    `/ ${formatAmount(vested, 18, 4, true)}`
-  );
-  await modal.getByRole("textbox").fill(formatUnits(walletEsGmx + maxVestable + 10n ** 18n, 18));
-  await expect(modal.getByRole("button", { name: "Max amount exceeded", exact: true })).toBeDisabled();
-  await modal.getByRole("textbox").clear();
-  await expect(modal.getByRole("button", { name: "Enter an amount", exact: true })).toBeDisabled();
-  await modal.getByRole("button", { name: "Withdraw", exact: true }).click();
-  await expect(modal.getByRole("textbox")).toBeDisabled();
-  await expect(modal.getByRole("button", { name: "Withdraw and unreserve GMX", exact: true })).toBeEnabled();
+  await expect(modal.getByRole("textbox")).toHaveCount(0);
+  const withdraw = modal.getByRole("button", { name: "Stop vesting & withdraw", exact: true });
+  await expect(withdraw).toBeDisabled();
+  await modal.getByText("I understand that esGMX withdrawn now can't be vested anywhere", { exact: true }).click();
+  await expect(withdraw).toBeEnabled();
   await page.keyboard.press("Escape");
   await expect(modal).not.toBeVisible();
 });

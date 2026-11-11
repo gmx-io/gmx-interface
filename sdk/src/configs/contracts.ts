@@ -36,9 +36,6 @@ export const CONTRACTS = {
     AffiliateVester: "0x7c100c0F55A15221A4c1C5a25Db8C98A81df49B2",
     OrphanRatioVester: "0x0ccF3836DAd54eD9abcc6C5D5dB0Ccd19291B4F6",
     RatioVesterReader: "0x04a6502933c8ac23ffE73B566970309040074CF0",
-    GmxVesterCapZeroer: "0xa41597C9cbC1b1D2Aa02A26Fe12361C0F476fB3F",
-    GlpVesterCapZeroer: "0x3156090BeD235135dc50864D04fc4436c35d7902",
-    ReferralVesterCapZeroer: "0xC74b076C07ed9431a34B34eD043e8757504631f1",
 
     PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
 
@@ -120,9 +117,6 @@ export const CONTRACTS = {
     AffiliateVester: "0x754eC029EF9926184b4CFDeA7756FbBAE7f326f7",
     OrphanRatioVester: "0x3A664088D3db8Cc13d5201cB28E70176D4DDd0f1",
     RatioVesterReader: "0x7915aF2a4771B98dd7E6f2336960D8A956DFf188",
-    GmxVesterCapZeroer: "0xe712613aB0FBbAfad964FbC8A404932cF88832D1",
-    GlpVesterCapZeroer: "0x04639Ec0EA334C7237548384012720adbB5195c4",
-    ReferralVesterCapZeroer: "0x3b88a8a2077317db11e57c17cfB89407C91Bf993",
 
     PositionRouter: "0xffF6D276Bc37c61A23f06410Dce4A400f66420f8",
 
@@ -239,9 +233,6 @@ export const CONTRACTS = {
     AffiliateVester: zeroAddress,
     OrphanRatioVester: zeroAddress,
     RatioVesterReader: zeroAddress,
-    GmxVesterCapZeroer: zeroAddress,
-    GlpVesterCapZeroer: zeroAddress,
-    ReferralVesterCapZeroer: zeroAddress,
     Router: zeroAddress,
     GovToken: zeroAddress,
     ES_GMX_IOU: zeroAddress,
@@ -286,9 +277,6 @@ export const CONTRACTS = {
     AffiliateVester: zeroAddress,
     OrphanRatioVester: zeroAddress,
     RatioVesterReader: zeroAddress,
-    GmxVesterCapZeroer: zeroAddress,
-    GlpVesterCapZeroer: zeroAddress,
-    ReferralVesterCapZeroer: zeroAddress,
 
     PositionRouter: zeroAddress,
 
@@ -401,9 +389,6 @@ export const CONTRACTS = {
     AffiliateVester: zeroAddress,
     OrphanRatioVester: zeroAddress,
     RatioVesterReader: zeroAddress,
-    GmxVesterCapZeroer: zeroAddress,
-    GlpVesterCapZeroer: zeroAddress,
-    ReferralVesterCapZeroer: zeroAddress,
     Router: zeroAddress,
     VaultReader: zeroAddress,
     Reader: zeroAddress,
