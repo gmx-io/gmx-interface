@@ -27,6 +27,7 @@ import { helperToast } from "lib/helperToast";
 import type { TokenApprovalFlow } from "lib/metrics";
 import { adjustForDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { isMarketTokenAddress } from "sdk/configs/markets";
@@ -38,6 +39,8 @@ type TokensToApproveResult = {
   isAllowanceLoaded: boolean;
   approve: () => void;
   isApproving: boolean;
+  /** Set when the approvals go in the same wallet confirmation as the buy or sell, instead of the Approve step */
+  approvalBatch?: WalletCallsBatch;
 };
 
 function getPoolApprovalFlow({
@@ -106,15 +109,17 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     ]
   );
 
-  const { tokensToApprove, isApproving, isAllowanceLoading, isAllowanceLoaded, handleApprove } = useTokenApproval({
-    chainId,
-    spenderAddress: routerAddress,
-    tokens,
-    // only buys carry the permit in their multicall
-    allowPermit: isDeposit && isClassicTokenPermitsEnabled,
-    skip: paySource !== "settlementChain",
-    metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }) },
-  });
+  const { tokensToApprove, isApproving, isAllowanceLoading, isAllowanceLoaded, handleApprove, approvalBatch } =
+    useTokenApproval({
+      chainId,
+      spenderAddress: routerAddress,
+      tokens,
+      // only buys carry the permit in their multicall
+      allowPermit: isDeposit && isClassicTokenPermitsEnabled,
+      allowBatch: true,
+      skip: paySource !== "settlementChain",
+      metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }) },
+    });
 
   const approve = useCallback(() => {
     userAnalytics.pushEvent<TokenApproveClickEvent>({ event: "TokenApproveAction", data: { action: "ApproveClick" } });
@@ -148,6 +153,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
     isAllowanceLoaded,
     isAllowanceLoading,
     tokensToApproveSymbols,
+    approvalBatch,
   };
 };
 

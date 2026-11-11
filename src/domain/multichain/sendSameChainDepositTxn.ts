@@ -5,6 +5,7 @@ import { getContract } from "config/contracts";
 import { getTokenPermitIssueType, type WalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
 import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "domain/tokens/walletTxnTokenPermits";
 import { TxnCallback, TxnEventBuilder, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
@@ -24,6 +25,7 @@ export async function sendSameChainDepositTxn({
   account,
   callback,
   walletTxnTokenPermits,
+  walletCallsBatch,
 }: {
   chainId: SettlementChainId;
   signer: WalletSigner;
@@ -32,6 +34,7 @@ export async function sendSameChainDepositTxn({
   account: string;
   callback?: TxnCallback<SameChainDepositTxnCtx>;
   walletTxnTokenPermits?: WalletTxnTokenPermits;
+  walletCallsBatch?: WalletCallsBatch;
 }) {
   const eventBuilder = new TxnEventBuilder<SameChainDepositTxnCtx>({ tokenPermits: [] });
   let tokenPermits: SignedTokenPermit[];
@@ -78,6 +81,7 @@ export async function sendSameChainDepositTxn({
         value: txn.value,
         gasLimit,
         callback: callback ? (event) => callback(eventBuilder.extend<WalletTxnCtx>(event)) : undefined,
+        walletCallsBatch,
       });
 
       if (onPendingTxnSuccess) {

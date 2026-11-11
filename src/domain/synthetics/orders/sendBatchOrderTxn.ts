@@ -12,6 +12,7 @@ import { TokensData } from "domain/tokens";
 import { checkTokenPermitsBeforeSend, getWalletTxnTokenPermits } from "domain/tokens/checkTokenPermitsBeforeSend";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import type { WalletCall, WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
@@ -62,6 +63,7 @@ export async function sendBatchOrderTxn({
   simulationParams,
   callback,
   tokenPermits,
+  walletCallsBatch,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -73,6 +75,7 @@ export async function sendBatchOrderTxn({
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
   /** Stored permits a wallet-sent batch may carry; only the ones for tokens it spends go in */
   tokenPermits?: SignedTokenPermit[];
+  walletCallsBatch?: WalletCallsBatch;
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
@@ -89,6 +92,10 @@ export async function sendBatchOrderTxn({
 
     if (isGmxAccount && !provider) {
       throw new Error("provider is required for multichain txns");
+    }
+
+    if (expressParams && walletCallsBatch) {
+      throw new Error("A relayed order can't share a wallet batch with approvals");
     }
 
     if (expressParams && expressParams.relayParamsPayload.tokenPermits.length > 0) {
@@ -123,6 +130,7 @@ export async function sendBatchOrderTxn({
           tokensData: simulationParams.tokensData,
           expressParams,
           walletTokenPermits,
+          preCalls: walletCallsBatch?.calls,
           provider,
           isGmxAccount,
           jitShiftParamsList: simulationParams.jitShiftParamsList,
@@ -201,6 +209,7 @@ export async function sendBatchOrderTxn({
       callData,
       value,
       runSimulation,
+      walletCallsBatch,
       callback: (event) => {
         callback?.(eventBuilder.extend(event));
       },
@@ -256,6 +265,7 @@ const makeBatchOrderSimulation = async ({
   tokensData,
   expressParams,
   walletTokenPermits,
+  preCalls,
   jitShiftParamsList,
   nativeReserveLiquidity,
 }: {
@@ -268,6 +278,7 @@ const makeBatchOrderSimulation = async ({
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
   walletTokenPermits: SignedTokenPermit[];
+  preCalls: WalletCall[] | undefined;
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
 }): Promise<void> => {
@@ -398,6 +409,7 @@ const makeBatchOrderSimulation = async ({
           isExpress: Boolean(expressParams),
           method: simulationMethod,
           jitShiftParamsList: needsJit ? jitShiftParamsList : undefined,
+          preCalls,
         });
       } catch (error) {
         if (needsJit && isJitShiftError(error)) {

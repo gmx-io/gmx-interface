@@ -36,6 +36,13 @@ export function getIsTokenPermitsEip7702Enabled(uiFlags: UiFlags | undefined): b
   return uiFlags?.[IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG]?.enabled === true;
 }
 
+export const IS_WALLET_BATCHING_ENABLED_UI_FLAG = "isWalletBatchingEnabled";
+
+/** Fail-closed: approvals stay separate transactions until the keeper turns batching on */
+export function getIsWalletBatchingEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_WALLET_BATCHING_ENABLED_UI_FLAG]?.enabled === true;
+}
+
 export const IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG = "isClassicTokenPermitsEnabled";
 
 /** Fail-closed, on top of the account-type flags: permits inside wallet transactions roll out separately */

@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { Contract, Overrides, Wallet } from "ethers";
 import React, { ReactNode } from "react";
+import type { Address, Hex } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import {
@@ -15,6 +16,7 @@ import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { toAddress } from "lib/transactions/iSigner";
+import { sendWalletCalls, type WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -49,6 +51,7 @@ export async function callContract(
     /** Runs once the transaction is mined successfully; needs `setPendingTxns` */
     onPendingTxnSuccess?: () => void;
     metricId?: OrderMetricId;
+    walletCallsBatch?: WalletCallsBatch;
   }
 ) {
   try {
@@ -117,6 +120,28 @@ export async function callContract(
 
       if (!cntrct.runner?.provider) {
         throw new Error("No provider found on contract.");
+      }
+
+      if (opts.walletCallsBatch) {
+        if (opts.metricId) {
+          sendOrderTxnSubmittedMetric(opts.metricId);
+        }
+
+        const { transactionHash } = await sendWalletCalls({
+          chainId,
+          account: wallet.address,
+          calls: [
+            ...opts.walletCallsBatch.calls,
+            {
+              to: (await toAddress(cntrct.target)) as Address,
+              data: cntrct.interface.encodeFunctionData(method, params) as Hex,
+              value: opts.value !== undefined ? BigInt(opts.value) : undefined,
+            },
+          ],
+          batch: opts.walletCallsBatch,
+        });
+
+        return { hash: transactionHash, wait: () => cntrct.runner!.provider!.waitForTransaction(transactionHash) };
       }
 
       async function retrieveGasLimit() {
