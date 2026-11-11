@@ -7,6 +7,8 @@ import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs"
 import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import "components/GtPoints/tester/gtPointsTesterBootstrap"; // rewards-tester
+import { GtPointsTesterPanel } from "components/GtPoints/tester/GtPointsTesterPanel"; // rewards-tester
 import PageTitle from "components/PageTitle/PageTitle";
 
 import { GT_POINTS_BUYBACK_PATH, GT_POINTS_GLOBAL_PATH, GT_POINTS_MY_PATH } from "./gtPointsTypes";
@@ -25,6 +27,7 @@ export function GtPointsPageLayout({ children }: { children?: ReactNode }) {
 
   return (
     <AppPageLayout title={t`GT Points`} header={<ChainContentHeader />}>
+      <GtPointsTesterPanel /* rewards-tester */ />
       <PageTitle title={t`GT Points`} subtitle={t`Earn GT by trading, staking and referring`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">
@@ -74,6 +77,7 @@ export function GtPointsSubpageLayout({
 
   return (
     <AppPageLayout title={title} header={<ChainContentHeader breadcrumbs={breadcrumbs} />}>
+      <GtPointsTesterPanel /* rewards-tester */ />
       <PageTitle title={title} subtitle={subtitle} isTop />
       <div className="mt-12 flex grow flex-col gap-8">
         <ErrorBoundary id="GtPointsSubpageLayout" variant="block" wrapperClassName="rounded-t-8">
