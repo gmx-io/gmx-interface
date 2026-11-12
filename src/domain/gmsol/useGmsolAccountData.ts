@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
@@ -16,7 +18,7 @@ const FEE_DISCOUNT_REFRESH_INTERVAL = 60_000;
 type GmsolAccountRequest = "gmsolPositions" | "gmsolOrders" | "gmsolFeeDiscount";
 
 // Highest X-Solana-Slot accepted for this host, wallet and request. Older responses cannot replace it.
-const acceptedGmsolSnapshots = new Map<string, { slot: number; data: unknown }>();
+const acceptedGmsolSlots = new Map<string, number>();
 
 export function getGmsolAccountDataKey(request: GmsolAccountRequest, apiCacheKey: string, owner: string) {
   return [request, SOLANA_NETWORK_ID, apiCacheKey, owner] as const;
@@ -36,27 +38,32 @@ function useGmsolAccountRequest<T>(
 ): GmsolAccountDataResult<T> {
   const key = owner ? getGmsolAccountDataKey(request, getGmsolApiCacheKey(), owner) : null;
 
-  const { data, error, isLoading } = useSWRWithFreshness<T>(
+  const { data, error, isLoading, freshness } = useSWRWithFreshness<T>(
     key,
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) => fetcher(keyOwner, keyApiCacheKey),
     { refreshInterval }
   );
+  const isOverdue = freshness.isStale && !error;
+  const overdueError = useMemo(
+    () => (isOverdue ? new Error(`${request} has not refreshed within its grace period`) : undefined),
+    [isOverdue, request]
+  );
 
-  return { data: key ? data : undefined, isLoading: key ? isLoading : false, error: key ? error : undefined };
+  return {
+    data: key ? data : undefined,
+    isLoading: key ? isLoading : false,
+    error: key ? error ?? overdueError : undefined,
+  };
 }
 
 function takeGmsolSnapshot<T>(key: string, responseSlot: number | undefined, response: T): T {
-  const previous = acceptedGmsolSnapshots.get(key) as { slot: number; data: T } | undefined;
   const next = commitGmsolSnapshot({
-    acceptedSlot: previous?.slot,
+    acceptedSlot: acceptedGmsolSlots.get(key),
     responseSlot,
     response,
-    previous: previous?.data,
   });
 
-  if (next.accepted && next.slot !== undefined) {
-    acceptedGmsolSnapshots.set(key, { slot: next.slot, data: next.data });
-  }
+  acceptedGmsolSlots.set(key, next.slot);
 
   return next.data;
 }
@@ -85,10 +92,12 @@ export function useGmsolOrders(owner: string | undefined) {
 }
 
 export function useGmsolFeeDiscount(owner: string | undefined) {
-  return useGmsolAccountRequest<FeeDiscount>(
+  const result = useGmsolAccountRequest<FeeDiscount>(
     "gmsolFeeDiscount",
     owner,
     (address, apiCacheKey) => getGmsolApiSdk(apiCacheKey).fetchFeeDiscount({ address }),
     FEE_DISCOUNT_REFRESH_INTERVAL
   );
+
+  return result.error ? { ...result, data: undefined } : result;
 }

@@ -1,46 +1,65 @@
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
-import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
-import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
+import { buildGmsolTokensData } from "./buildGmsolTokensData";
+import type { GmsolTokenPricesData } from "../gmsolOracleFetcher";
 
-export type GmsolTokensSnapshot = { tokensData: TokensData; receivedAt: number };
-
-type ResolvedGmsolTokensData = {
+export type GmsolTokensSnapshot = {
+  scope: string;
+  prices: GmsolTokenPricesData;
   tokensData: TokensData | undefined;
   pricesUpdatedAt: number | undefined;
-  lastComplete: GmsolTokensSnapshot | undefined;
 };
 
-// Within PRICES_CACHE_TTL a missing ticker keeps its last price. Past that the partial map is returned and
-// compose drops only the markets that still lack a price.
+// A client clock a few seconds behind the keeper's still reads a just-updated ticker as current.
+const MAX_CLOCK_SKEW = 10_000;
+
+function isCurrent(updatedAt: number, now: number) {
+  return Number.isFinite(updatedAt) && updatedAt - now <= MAX_CLOCK_SKEW && now - updatedAt < PRICES_CACHE_TTL;
+}
+
 export function resolveGmsolTokensData({
-  tokensData,
-  receivedAt,
-  rawMarketsInfoData,
-  lastComplete,
+  previous,
+  scope,
+  response,
+  now,
 }: {
-  tokensData: TokensData;
-  receivedAt: number;
-  rawMarketsInfoData: RawMarketsInfoData | undefined;
-  lastComplete: GmsolTokensSnapshot | undefined;
-}): ResolvedGmsolTokensData {
-  if (!rawMarketsInfoData) {
-    return { tokensData, pricesUpdatedAt: receivedAt, lastComplete };
-  }
+  previous: GmsolTokensSnapshot | undefined;
+  scope: string;
+  response: GmsolTokenPricesData | undefined;
+  now: number;
+}): GmsolTokensSnapshot {
+  const accepted = previous?.scope === scope ? previous.prices : {};
+  const prices: GmsolTokenPricesData = {};
 
-  if (hasGmsolListedMarketPrices(rawMarketsInfoData, tokensData)) {
-    return { tokensData, pricesUpdatedAt: receivedAt, lastComplete: { tokensData, receivedAt } };
-  }
+  for (const address of new Set([...Object.keys(accepted), ...Object.keys(response ?? {})])) {
+    const kept = accepted[address];
+    const received = response?.[address];
+    const price =
+      received && isCurrent(received.updatedAt, now) && !(kept && kept.updatedAt >= received.updatedAt)
+        ? received
+        : kept;
 
-  if (lastComplete && receivedAt - lastComplete.receivedAt < PRICES_CACHE_TTL) {
-    const filled = { ...lastComplete.tokensData, ...tokensData };
-
-    if (hasGmsolListedMarketPrices(rawMarketsInfoData, filled)) {
-      // The reused prices are the oldest in the set.
-      return { tokensData: filled, pricesUpdatedAt: lastComplete.receivedAt, lastComplete };
+    if (price && isCurrent(price.updatedAt, now)) {
+      prices[address] = price;
     }
   }
 
-  return { tokensData, pricesUpdatedAt: receivedAt, lastComplete };
+  const addresses = Object.keys(prices);
+
+  if (
+    previous?.scope === scope &&
+    addresses.length === Object.keys(accepted).length &&
+    addresses.every((address) => prices[address] === accepted[address])
+  ) {
+    return previous;
+  }
+
+  return {
+    scope,
+    prices,
+    tokensData: addresses.length > 0 ? buildGmsolTokensData(prices) : undefined,
+    pricesUpdatedAt:
+      addresses.length > 0 ? Math.min(...addresses.map((address) => prices[address].updatedAt)) : undefined,
+  };
 }

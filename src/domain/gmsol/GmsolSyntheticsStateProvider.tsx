@@ -140,10 +140,11 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const feeDiscountRequest = useGmsolFeeDiscount(owner);
 
   const marketsInfoData = marketsInfo.marketsInfoData;
+  const isMarketsLoading = marketsInfo.isLoading;
   const lastPositionsRef = useRef<{ owner: string; data: PositionsInfoData }>();
 
   const composedPositions = useMemo(() => {
-    if (!positionsRequest.data) {
+    if (!positionsRequest.data || isMarketsLoading) {
       return undefined;
     }
 
@@ -153,14 +154,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       showPnlInLeverage: settings.isPnlInLeverage,
       previousData: owner && lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined,
     });
-  }, [owner, positionsRequest.data, marketsInfoData, settings.isPnlInLeverage]);
+  }, [owner, positionsRequest.data, isMarketsLoading, marketsInfoData, settings.isPnlInLeverage]);
   if (owner && composedPositions) {
     lastPositionsRef.current = { owner, data: composedPositions.data };
   }
 
   const lastOrdersRef = useRef<{ owner: string; data: NonNullable<AggregatedOrdersDataResult["ordersInfoData"]> }>();
   const composedOrders = useMemo(() => {
-    if (!ordersRequest.data) {
+    if (!ordersRequest.data || isMarketsLoading) {
       return undefined;
     }
 
@@ -169,7 +170,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       tokensData: tokensData ?? EMPTY_OBJECT,
       previousData: owner && lastOrdersRef.current?.owner === owner ? lastOrdersRef.current.data : undefined,
     });
-  }, [owner, ordersRequest.data, marketsInfoData, tokensData]);
+  }, [owner, ordersRequest.data, isMarketsLoading, marketsInfoData, tokensData]);
   if (owner && composedOrders) {
     lastOrdersRef.current = { owner, data: composedOrders.data };
   }
@@ -282,6 +283,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace | undefined>(undefined);
 
   const feeDiscount = feeDiscountRequest.data;
+  const feeDiscountError = feeDiscountRequest.error;
 
   const state = useMemo((): SyntheticsState => {
     return {
@@ -303,6 +305,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         userReferralInfo: feeDiscount?.userReferralInfo,
         // The host's one combined factor (GT rank and referrer); the fee math applies the larger discount.
         proDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
+        feeDiscountError,
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: EMPTY_OBJECT, isLoading: false },
@@ -365,6 +368,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     positionsInfo,
     tokensDataResult,
     feeDiscount,
+    feeDiscountError,
     closingPositionKey,
     setClosingPositionKey,
     closingPositionOrderOption,

@@ -6,15 +6,24 @@ import { afterEach, expect, it, vi } from "vitest";
 import { GMSOL_MARKETS } from "config/gmsol/markets";
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import type { FeeDiscount } from "sdk/clients/v2";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
+import type { GmsolTokenPricesData } from "./gmsolOracleFetcher";
 import { composeGmsolMarkets, hasGmsolListedMarketPrices } from "./markets/composeGmsolMarkets";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsolPrices } from "./tokens/fetchGmsolPrices";
-import { resolveGmsolTokensData } from "./tokens/resolveGmsolTokensData";
+import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./tokens/resolveGmsolTokensData";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
+import { useGmsolFeeDiscount, useGmsolOrders } from "./useGmsolAccountData";
 
+const gmsolApi = vi.hoisted(() => ({ fetchOrders: vi.fn(), fetchFeeDiscount: vi.fn() }));
+
+vi.mock("./api/gmsolApiSdk", () => ({
+  getGmsolApiCacheKey: () => "http://gmsol.test",
+  getGmsolApiSdk: () => gmsolApi,
+}));
 vi.mock("./tokens/fetchGmsolPrices", () => ({ fetchGmsolPrices: vi.fn() }));
 vi.mock("lib/oracleKeeperFetcher/useOracleKeeperFetcher", () => {
   const fetcher = { url: "http://oracle.test" };
@@ -67,31 +76,30 @@ const raw = {
   },
 } as unknown as RawMarketsInfoData;
 
-it("keeps a missing ticker's last price only within the cache TTL", () => {
-  const complete = resolveGmsolTokensData({
-    tokensData: tokens(true),
-    receivedAt: 0,
-    rawMarketsInfoData: raw,
-    lastComplete: undefined,
-  });
-  const withinTtl = resolveGmsolTokensData({
-    tokensData: tokens(false),
-    receivedAt: PRICES_CACHE_TTL - 1,
-    rawMarketsInfoData: raw,
-    lastComplete: complete.lastComplete,
-  });
-  const pastTtl = resolveGmsolTokensData({
-    tokensData: tokens(false),
-    receivedAt: PRICES_CACHE_TTL,
-    rawMarketsInfoData: raw,
-    lastComplete: complete.lastComplete,
-  });
+const price = (updatedAt: number) => ({ minPrice: 1n, maxPrice: 1n, updatedAt });
 
-  expect(withinTtl.tokensData?.[market.indexTokenAddress]).toBe(complete.tokensData?.[market.indexTokenAddress]);
-  expect(withinTtl.pricesUpdatedAt).toBe(0);
-  expect(pastTtl.tokensData?.[market.indexTokenAddress]).toBeUndefined();
+it("ages each price from its ticker updatedAt and keeps a missing one only within the cache TTL FESOL-52", () => {
+  const { indexTokenAddress: index, longTokenAddress: long, shortTokenAddress: short } = market;
+  const resolve = (previous: GmsolTokensSnapshot | undefined, response: GmsolTokenPricesData, now: number) =>
+    resolveGmsolTokensData({ previous, scope: "keeper", response, now });
+
+  const complete = resolve(undefined, { [index]: price(0), [long]: price(0), [short]: price(0) }, 1_000);
+  const partial = resolve(complete, { [long]: price(10_000), [short]: price(10_000) }, PRICES_CACHE_TTL - 1);
+  const lagging = { [index]: price(0), [long]: price(5_000), [short]: price(5_000) };
+  const pastTtl = resolve(partial, lagging, PRICES_CACHE_TTL);
+
+  expect(partial.prices[index]).toBe(complete.prices[index]);
+  expect(partial.pricesUpdatedAt).toBe(0);
+  expect(resolve(partial, lagging, PRICES_CACHE_TTL - 1)).toBe(partial);
+  expect(pastTtl.prices).toEqual({ [long]: partial.prices[long], [short]: partial.prices[short] });
   expect(composeGmsolMarkets(raw, pastTtl.tokensData!).marketsAddresses).not.toContain(market.marketTokenAddress);
-  expect(composeGmsolMarkets(raw, complete.tokensData!).marketsAddresses).toContain(market.marketTokenAddress);
+  expect(composeGmsolMarkets(raw, partial.tokensData!).marketsAddresses).toContain(market.marketTokenAddress);
+  for (const updatedAt of [61_000, Number.NaN, 1_000 - PRICES_CACHE_TTL]) {
+    expect(resolve(undefined, { [index]: price(updatedAt) }, 1_000).tokensData).toBeUndefined();
+  }
+  expect(
+    resolveGmsolTokensData({ previous: partial, scope: "fallback keeper", response: undefined, now: 1_000 }).tokensData
+  ).toBeUndefined();
 });
 
 it("keeps a disabled market so its positions stay listed", () => {
@@ -108,7 +116,7 @@ it("marks partial prices unavailable and retains missing account items without r
   vi.setSystemTime(1_000);
   let includeIndex = true;
   vi.mocked(fetchGmsolPrices).mockImplementation(async () =>
-    Object.fromEntries(Object.entries(tokens(includeIndex)).map(([address, token]) => [address, token.prices]))
+    Object.fromEntries(Object.keys(tokens(includeIndex)).map((address) => [address, price(Date.now())]))
   );
   let result: ReturnType<typeof useGmsolTokensData>;
   await renderHook(() => {
@@ -157,20 +165,65 @@ it("expires a snapshot while its refresh is pending and recovers when it resolve
           resolveRefresh = resolve;
         })
     );
+  let resolveOrders: () => void;
+  type OrdersRead = { onResponse: (metadata: { slot: number }) => void };
+  gmsolApi.fetchOrders
+    .mockImplementationOnce(async ({ onResponse }: OrdersRead) => {
+      onResponse({ slot: 1 });
+      return ["cached"];
+    })
+    .mockImplementation(
+      ({ onResponse }: OrdersRead) =>
+        new Promise((resolve) => {
+          resolveOrders = () => {
+            onResponse({ slot: 2 });
+            resolve(["refreshed"]);
+          };
+        })
+    );
   let result: ReturnType<typeof useSWRWithFreshness<number>>;
+  let orders: ReturnType<typeof useGmsolOrders>;
   await renderHook(() => {
     result = useSWRWithFreshness("pending-refresh", fetcher);
+    orders = useGmsolOrders("owner");
   });
   expect(result!.freshness.isStale).toBe(false);
+  expect(orders!).toMatchObject({ data: ["cached"], error: undefined });
   await act(async () => {
     await vi.advanceTimersByTimeAsync(15_001);
   });
   expect(result!.data).toBe(1);
   expect(result!.error).toBeUndefined();
   expect(result!.freshness.isStale).toBe(true);
+  expect(orders!).toMatchObject({ data: ["cached"], error: expect.any(Error) });
   await act(async () => {
     resolveRefresh(2);
+    resolveOrders();
   });
   expect(result!.data).toBe(2);
   expect(result!.freshness.isStale).toBe(false);
+  expect(orders!).toMatchObject({ data: ["refreshed"], error: undefined });
+});
+
+it("stops applying a fee discount it could not refresh and restores it on recovery FESOL-52", async () => {
+  vi.useFakeTimers();
+  vi.setSystemTime(1_000);
+  const discount = { orderFeeDiscountFactor: 1n } as FeeDiscount;
+  gmsolApi.fetchFeeDiscount
+    .mockResolvedValueOnce(discount)
+    .mockRejectedValueOnce(new Error("429"))
+    .mockResolvedValue(discount);
+  let result: ReturnType<typeof useGmsolFeeDiscount>;
+  await renderHook(() => {
+    result = useGmsolFeeDiscount("owner");
+  });
+  expect(result!).toMatchObject({ data: discount, error: undefined });
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(60_000);
+  });
+  expect(result!).toMatchObject({ data: undefined, error: expect.any(Error) });
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(60_000);
+  });
+  expect(result!).toMatchObject({ data: discount, error: undefined });
 });

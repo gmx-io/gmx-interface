@@ -122,6 +122,7 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;

@@ -3292,6 +3292,10 @@ msgstr "由社群驅動"
 msgid "Choose:"
 msgstr "請選擇："
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "解除質押 GMX 和 esGMX"

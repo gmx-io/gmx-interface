@@ -4,32 +4,24 @@ import type { ApiPositionInfo } from "sdk/utils/positions/types";
 
 export type GmsolSlotted<T> = { data: T; slot: number | undefined };
 
-// A later snapshot replaces the accepted one. An older slot does not.
-// A 200 without X-Solana-Slot is the current read: keeping the previous body would freeze the list.
 export function commitGmsolSnapshot<T>({
   acceptedSlot,
   responseSlot,
   response,
-  previous,
 }: {
   acceptedSlot: number | undefined;
   responseSlot: number | undefined;
   response: T;
-  previous: T | undefined;
-}): { slot: number | undefined; data: T; accepted: boolean } {
+}): { slot: number; data: T } {
   if (responseSlot === undefined) {
-    return { slot: acceptedSlot, data: response, accepted: true };
+    throw new Error("Missing or invalid X-Solana-Slot response header");
   }
 
-  if (acceptedSlot === undefined || responseSlot >= acceptedSlot) {
-    return { slot: responseSlot, data: response, accepted: true };
+  if (acceptedSlot !== undefined && responseSlot < acceptedSlot) {
+    throw new Error("Solana response slot is older than the accepted snapshot");
   }
 
-  if (previous !== undefined) {
-    return { slot: acceptedSlot, data: previous, accepted: false };
-  }
-
-  return { slot: acceptedSlot, data: response, accepted: false };
+  return { slot: responseSlot, data: response };
 }
 
 async function readGmsolAccount<T>(
