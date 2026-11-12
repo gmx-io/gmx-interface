@@ -764,6 +764,11 @@ export function getPositionInfo(p: {
     priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
   });
 
+  // gmsol withholds the impact beyond the cap from the close output
+  const closeCostImpactDeltaUsd =
+    netPriceImpactValues.totalImpactDeltaUsd -
+    (marketInfo.tradeMath === "gmsol" ? netPriceImpactValues.priceImpactDiffUsd : 0n);
+
   const netValue = getPositionNetValue({
     collateralUsd,
     pnl,
@@ -784,7 +789,7 @@ export function getPositionInfo(p: {
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    netPriceImpactDeltaUsd: closeCostImpactDeltaUsd,
     closingFeeUsd,
   });
 
@@ -792,7 +797,7 @@ export function getPositionInfo(p: {
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    netPriceImpactDeltaUsd: closeCostImpactDeltaUsd,
     closingFeeUsd,
   });
 
@@ -894,10 +899,7 @@ export function getPositionInfo(p: {
     netPriceImapctDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
     priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
     pendingImpactUsd: netPriceImpactValues.proportionalPendingImpactDeltaUsd,
-    closePriceImpactDeltaUsd:
-      marketInfo.tradeMath === "gmsol"
-        ? netPriceImpactValues.totalImpactDeltaUsd
-        : closeAcceptablePriceInfo.priceImpactDeltaUsd,
+    closePriceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
     closingFeeUsd,
     uiFeeUsd,
     pendingFundingFeesUsd,

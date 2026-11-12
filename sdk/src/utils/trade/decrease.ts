@@ -81,7 +81,7 @@ export function getDecreasePositionAmounts(p: {
   receiveToken?: TokenData;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   isTwap?: boolean;
-}) {
+}): DecreasePositionAmounts {
   const {
     marketInfo,
     collateralToken,
@@ -258,14 +258,17 @@ export function getDecreasePositionAmounts(p: {
     estimatedCollateralDeltaUsd = bigMath.mulDiv(values.sizeDeltaUsd, estimatedCollateralUsd, position.sizeInUsd);
   }
 
-  values.isFullClose = getIsFullClose({
-    position,
-    sizeDeltaUsd: values.sizeDeltaUsd,
-    indexPrice: values.indexPrice,
-    remainingCollateralUsd: estimatedCollateralUsd - estimatedCollateralDeltaUsd,
-    minCollateralUsd,
-    minPositionSizeUsd,
-  });
+  values.isFullClose =
+    marketInfo.tradeMath === "gmsol"
+      ? getIsGmsolFullSizeClose(position, values.sizeDeltaUsd, minPositionSizeUsd)
+      : getIsFullClose({
+          position,
+          sizeDeltaUsd: values.sizeDeltaUsd,
+          indexPrice: values.indexPrice,
+          remainingCollateralUsd: estimatedCollateralUsd - estimatedCollateralDeltaUsd,
+          minCollateralUsd,
+          minPositionSizeUsd,
+        });
 
   if (values.isFullClose) {
     values.sizeDeltaUsd = position.sizeInUsd;
@@ -470,7 +473,7 @@ export function getDecreasePositionAmounts(p: {
         ? remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl)
         : 0n;
 
-    if (isMarketDecrease && values.collateralDeltaUsd < 0n) {
+    if ((isMarketDecrease || marketInfo.tradeMath === "gmsol") && values.collateralDeltaUsd < 0n) {
       values.collateralDeltaUsd = 0n;
     }
 
@@ -479,13 +482,14 @@ export function getDecreasePositionAmounts(p: {
       collateralToken.decimals,
       values.collateralPrice
     )!;
-    netCollateralOutputAmount = isMarketDecrease
-      ? getCollateralDeltaAmountAfterPriceImpactDiff({
-          collateralDeltaAmount: values.collateralDeltaAmount,
-          priceImpactDiffUsd: values.priceImpactDiffUsd,
-          collateralToken,
-        })
-      : values.collateralDeltaAmount;
+    netCollateralOutputAmount =
+      isMarketDecrease || marketInfo.tradeMath === "gmsol"
+        ? getCollateralDeltaAmountAfterPriceImpactDiff({
+            collateralDeltaAmount: values.collateralDeltaAmount,
+            priceImpactDiffUsd: values.priceImpactDiffUsd,
+            collateralToken,
+          })
+        : values.collateralDeltaAmount;
     netCollateralOutputUsd =
       netCollateralOutputAmount === values.collateralDeltaAmount
         ? values.collateralDeltaUsd
@@ -496,6 +500,33 @@ export function getDecreasePositionAmounts(p: {
     values.collateralDeltaUsd = 0n;
     values.collateralDeltaAmount = 0n;
     values.receiveTokenAmount = payedInfo.outputAmount;
+  }
+
+  if (marketInfo.tradeMath === "gmsol" && !values.isFullClose) {
+    const collateralDeltaUsd = convertToUsd(
+      values.collateralDeltaAmount,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
+    const closeState = getGmsolCloseState({
+      position,
+      sizeDeltaUsd: values.sizeDeltaUsd,
+      indexPrice: values.indexPrice,
+      remainingCollateralUsd: estimatedCollateralUsd - collateralDeltaUsd,
+      collateralDeltaUsd,
+      minCollateralUsd,
+      minPositionSizeUsd,
+    });
+    if (closeState.isFullClose) {
+      return getDecreasePositionAmounts({ ...p, closeSizeUsd: position.sizeInUsd });
+    }
+    if (closeState.shouldCancelWithdrawal) {
+      values.collateralDeltaUsd = 0n;
+      values.collateralDeltaAmount = 0n;
+      netCollateralOutputAmount = 0n;
+      netCollateralOutputUsd = 0n;
+      values.receiveTokenAmount = payedInfo.outputAmount;
+    }
   }
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
@@ -571,6 +602,47 @@ export function getDecreasePositionAmounts(p: {
   return values;
 }
 
+function getIsGmsolFullSizeClose(position: PositionInfoLoaded, sizeDeltaUsd: bigint, minPositionSizeUsd: bigint) {
+  return (
+    sizeDeltaUsd >= position.sizeInUsd ||
+    position.sizeInUsd - sizeDeltaUsd < minPositionSizeUsd ||
+    getDecreasePositionSizeDeltaInTokens({ ...position, sizeDeltaUsd }) >= position.sizeInTokens
+  );
+}
+
+function getGmsolCloseState(p: Parameters<typeof getIsFullClose>[0] & { collateralDeltaUsd: bigint }): {
+  isFullClose: boolean;
+  shouldCancelWithdrawal: boolean;
+} {
+  const { position, sizeDeltaUsd, indexPrice, collateralDeltaUsd } = p;
+  const minPositionSizeUsd = position.marketInfo.minPositionSizeUsd ?? p.minPositionSizeUsd;
+  if (getIsGmsolFullSizeClose(position, sizeDeltaUsd, minPositionSizeUsd)) {
+    return { isFullClose: true, shouldCancelWithdrawal: false };
+  }
+  const pnl = getPositionPnlUsd({
+    marketInfo: position.marketInfo,
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    markPrice: indexPrice,
+    isLong: position.isLong,
+  });
+  const realizedPnl = bigMath.mulDiv(pnl, sizeDeltaUsd, position.sizeInUsd);
+  let remainingCollateralUsd = p.remainingCollateralUsd + bigMath.min(realizedPnl, 0n);
+  const minCollateralForLeverage = applyFactor(
+    position.sizeInUsd - sizeDeltaUsd,
+    getMinCollateralFactorForPosition(position, -sizeDeltaUsd)
+  );
+  const shouldCancelWithdrawal = remainingCollateralUsd < minCollateralForLeverage;
+  if (shouldCancelWithdrawal) {
+    remainingCollateralUsd += collateralDeltaUsd;
+  }
+  return {
+    isFullClose:
+      remainingCollateralUsd + pnl - realizedPnl < (position.marketInfo.minCollateralUsd ?? p.minCollateralUsd),
+    shouldCancelWithdrawal,
+  };
+}
+
 export function getIsFullClose(p: {
   position: PositionInfoLoaded;
   sizeDeltaUsd: bigint;
@@ -578,30 +650,17 @@ export function getIsFullClose(p: {
   remainingCollateralUsd: bigint;
   minCollateralUsd: bigint;
   minPositionSizeUsd: bigint;
-}) {
-  const {
-    position,
-    sizeDeltaUsd,
-    indexPrice,
-    remainingCollateralUsd,
-    minCollateralUsd: suppliedMinCollateralUsd,
-    minPositionSizeUsd: suppliedMinPositionSizeUsd,
-  } = p;
-  const minPositionSizeUsd =
-    position.marketInfo.tradeMath === "gmsol"
-      ? position.marketInfo.minPositionSizeUsd ?? suppliedMinPositionSizeUsd
-      : suppliedMinPositionSizeUsd;
-  const minCollateralUsd =
-    position.marketInfo.tradeMath === "gmsol"
-      ? position.marketInfo.minCollateralUsd ?? suppliedMinCollateralUsd
-      : suppliedMinCollateralUsd;
+}): boolean {
+  if (p.position.marketInfo.tradeMath === "gmsol") {
+    return getGmsolCloseState({
+      ...p,
+      collateralDeltaUsd: bigMath.max(p.position.collateralUsd - p.remainingCollateralUsd, 0n),
+    }).isFullClose;
+  }
+  const { position, sizeDeltaUsd, indexPrice, remainingCollateralUsd, minCollateralUsd, minPositionSizeUsd } = p;
   const { marketInfo, isLong } = position;
 
   if (position.sizeInUsd - sizeDeltaUsd < expandDecimals(1, USD_DECIMALS)) {
-    return true;
-  }
-
-  if (marketInfo.tradeMath === "gmsol" && position.sizeInUsd - sizeDeltaUsd < minPositionSizeUsd) {
     return true;
   }
 
@@ -616,13 +675,6 @@ export function getIsFullClose(p: {
   const realizedPnl = bigMath.mulDiv(estimatedPnl, sizeDeltaUsd, position.sizeInUsd);
 
   const estimatedRemainingPnl = estimatedPnl - realizedPnl;
-
-  if (
-    marketInfo.tradeMath === "gmsol" &&
-    remainingCollateralUsd + estimatedRemainingPnl + bigMath.min(realizedPnl, 0n) < minCollateralUsd
-  ) {
-    return true;
-  }
 
   if (realizedPnl < 0) {
     const estimatedRemainingCollateralUsd = remainingCollateralUsd - realizedPnl;
@@ -959,7 +1011,7 @@ function applyAcceptablePrice(p: {
   const acceptablePriceInfo = getAcceptablePriceInfo({
     marketInfo,
     isIncrease: false,
-    isLimit: false,
+    isLimit: marketInfo.tradeMath === "gmsol" && isTrigger,
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
@@ -997,6 +1049,7 @@ function applyAcceptablePrice(p: {
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.closePriceImpactDeltaUsd,
         acceptablePriceImpactBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+        executionPrice: marketInfo.tradeMath === "gmsol" ? acceptablePriceInfo.acceptablePrice : undefined,
       });
 
       if (maxNegativePriceImpactBps === undefined) {
@@ -1006,7 +1059,7 @@ function applyAcceptablePrice(p: {
       const triggerAcceptablePriceInfo = getAcceptablePriceInfo({
         marketInfo,
         isIncrease: false,
-        isLimit: false,
+        isLimit: marketInfo.tradeMath === "gmsol",
         isLong,
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
@@ -1279,7 +1332,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     feeDiscountFactor,
     minCollateralUsd: suppliedMinCollateralUsd,
     minPositionSizeUsd: suppliedMinPositionSizeUsd,
-    uiFeeFactor,
+    uiFeeFactor: suppliedUiFeeFactor,
     triggerOrderType,
     isSetAcceptablePriceImpactEnabled,
     receiveToken,
@@ -1298,6 +1351,8 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     p.marketInfo.tradeMath === "gmsol"
       ? p.marketInfo.minPositionSizeUsd ?? suppliedMinPositionSizeUsd
       : suppliedMinPositionSizeUsd;
+
+  const uiFeeFactor = marketInfo.tradeMath === "gmsol" ? 0n : suppliedUiFeeFactor;
 
   const decreaseBaseParams = {
     marketInfo,

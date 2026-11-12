@@ -104,7 +104,14 @@ export function getAcceptablePriceInfo(p: {
   positionSizeInUsd?: bigint;
   positionSizeInTokens?: bigint;
 }) {
-  const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const { isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const marketInfo =
+    p.marketInfo.tradeMath === "gmsol" && p.isLimit
+      ? {
+          ...p.marketInfo,
+          indexToken: { ...p.marketInfo.indexToken, prices: { minPrice: indexPrice, maxPrice: indexPrice } },
+        }
+      : p.marketInfo;
   const { indexToken } = marketInfo;
 
   const values = {
@@ -214,6 +221,9 @@ export function getAcceptablePriceInfo(p: {
         indexToken,
         isLong,
       });
+      if (size === 0n) {
+        return values;
+      }
       values.acceptablePrice = bigMath.mulDiv(sizeDeltaUsd, expandDecimals(1, indexToken.decimals), size);
     } else {
       // The impact is paid on the removed tokens, whose entry price may differ from today's oracle.
@@ -281,13 +291,24 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   sizeDeltaUsd: bigint;
   priceImpactDeltaUsd: bigint;
   acceptablePriceImpactBuffer?: number;
+  executionPrice?: bigint;
 }) {
   const {
     indexPrice,
     sizeDeltaUsd,
     priceImpactDeltaUsd,
     acceptablePriceImpactBuffer = DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+    executionPrice,
   } = p;
+
+  if (executionPrice !== undefined && executionPrice > 0n && indexPrice > 0n) {
+    const adversePriceDelta = (executionPrice - indexPrice) * (getShouldUseMaxPrice(p.isIncrease, p.isLong) ? 1n : -1n);
+
+    return (
+      (adversePriceDelta > 0n ? getBasisPoints(adversePriceDelta, indexPrice, true) : 0n) +
+      BigInt(acceptablePriceImpactBuffer)
+    );
+  }
 
   if (priceImpactDeltaUsd > 0) {
     return BigInt(acceptablePriceImpactBuffer);

@@ -336,6 +336,10 @@ export function getIncreaseResultingPositionState(
         })
       : sizeDeltaInTokens;
 
+  if (executedSizeDeltaInTokens <= 0n) {
+    return undefined;
+  }
+
   const nextSizeInUsd = (existingPosition?.sizeInUsd ?? 0n) + sizeDeltaUsd;
   const nextSizeInTokens = (existingPosition?.sizeInTokens ?? 0n) + executedSizeDeltaInTokens;
   const nextCollateralAmount = (existingPosition?.collateralAmount ?? 0n) + collateralDeltaAmount;

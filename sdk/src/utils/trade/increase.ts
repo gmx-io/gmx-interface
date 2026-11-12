@@ -904,6 +904,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
         acceptablePriceImpactBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+        executionPrice: marketInfo.tradeMath === "gmsol" ? acceptablePriceInfo.acceptablePrice : undefined,
       });
 
       if (maxNegativePriceImpactBps === undefined) {
@@ -933,6 +934,10 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       indexToken: impactMarketInfo.indexToken,
       isLong,
     });
+
+    if (values.sizeDeltaInTokens === 0n) {
+      values.sizeDeltaUsd = 0n;
+    }
   }
 
   return values;

@@ -9,7 +9,7 @@ export type GmsolMarketConfig = {
   minPositionSizeUsd?: bigint;
 };
 
-/** The impact is settled in the entry size; it never becomes pending collateral. */
+/** The impact is settled in the entry size; it never becomes pending collateral. 0 means the order fills no tokens. */
 export function getGmsolIncreaseSizeDeltaInTokens(p: {
   baseSizeDeltaInTokens: bigint;
   priceImpactDeltaUsd: bigint;
@@ -22,11 +22,7 @@ export function getGmsolIncreaseSizeDeltaInTokens(p: {
     priceImpactDeltaUsd > 0n
       ? bigMath.mulDiv(priceImpactDeltaUsd, unit, indexToken.prices.maxPrice)
       : roundUpMagnitudeDivision(priceImpactDeltaUsd * unit, indexToken.prices.minPrice);
-  const sizeDeltaInTokens = baseSizeDeltaInTokens + (isLong ? impactAmount : -impactAmount);
-  if (sizeDeltaInTokens <= 0n && baseSizeDeltaInTokens > 0n) {
-    throw new Error("Price impact larger than order size");
-  }
-  return sizeDeltaInTokens;
+  return bigMath.max(baseSizeDeltaInTokens + (isLong ? impactAmount : -impactAmount), 0n);
 }
 
 /** Rent is a refundable deposit. The maximum keeper fee can be spent even on a cancelled execution. */
