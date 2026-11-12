@@ -33,7 +33,7 @@ export function GtAssetCard({ gtAmount, gtAmountUsd }: { gtAmount: bigint; gtAmo
       }
       footer={
         <Button variant="secondary" className="w-full" disabled>
-          <Trans>Open buyback</Trans>
+          <Trans>Buyback available soon</Trans>
         </Button>
       }
     >
@@ -49,9 +49,7 @@ export function GtAssetCard({ gtAmount, gtAmountUsd }: { gtAmount: bigint; gtAmo
           }
         />
         <p className="text-body-small text-typography-secondary">
-          <Trans>
-            GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future.
-          </Trans>
+          <Trans>GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees.</Trans>
         </p>
       </div>
     </BaseAssetCard>
