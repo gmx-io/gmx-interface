@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/pages/Stats/statsData.ts
+msgid "Shown as the amount vesting (a stock); the alternative is esGMX vested per period (a flow)."
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "Trade more, pay less.<0/>Refer, and earn"
 msgstr ""
@@ -45,6 +49,7 @@ msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Monthly"
 msgstr ""
 
@@ -169,6 +174,10 @@ msgstr ""
 msgid "BonsaiDAO"
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Latest day · {latestDay} (UTC)"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr ""
@@ -195,6 +204,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Rewards paused"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Share of total fees"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
@@ -250,6 +263,7 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Type"
 msgstr ""
 
@@ -343,6 +357,8 @@ msgstr "[!! Open fees !!]"
 msgid "May take a few minutes"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Other"
 msgstr ""
@@ -422,6 +438,7 @@ msgid "At price"
 msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Volume"
 msgstr ""
 
@@ -442,6 +459,7 @@ msgid "Roadmap"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "To"
 msgstr ""
 
@@ -484,6 +502,10 @@ msgstr ""
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Fees"
 msgstr ""
 
@@ -656,12 +678,22 @@ msgstr ""
 msgid "Select token"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Top users by volume"
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
 msgstr "[!! Crypto !!]"
 
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Interval"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -883,6 +915,10 @@ msgstr ""
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Buyback reserve"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -901,6 +937,9 @@ msgstr ""
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Treasury"
 msgstr ""
 
@@ -1008,6 +1047,10 @@ msgstr ""
 msgid "Realized PnL"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "{totalText} total fees · {periodText}"
+msgstr ""
+
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "{chainName} wallet"
 msgstr ""
@@ -1056,6 +1099,8 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Dashboard/DashboardV2.tsx
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/Stats/StatsPage.tsx
+#: src/pages/Stats/StatsPage.tsx
 msgid "Stats"
 msgstr ""
 
@@ -1069,6 +1114,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Volume and open interest"
 msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
@@ -1209,11 +1258,16 @@ msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $9
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Swap fees"
 msgstr "[!! Swap fees !!]"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Quarter"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -1277,6 +1331,14 @@ msgstr ""
 msgid "Worker"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "LPs (GM pools)"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Avg of last 4 weeks × 52 ÷ supply"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
 msgstr ""
@@ -1287,6 +1349,19 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Year"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "In liquidity: Uniswap {uniswap} · TraderJoe {traderJoe} · GMX V2 {gmxV2}"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "End of day, last 30 days."
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
@@ -1312,6 +1387,7 @@ msgstr ""
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Borrowing"
 msgstr ""
 
@@ -1488,6 +1564,10 @@ msgstr ""
 msgid "Claimable balance"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Wallets are counted once per period (not a sum of days); EVM and Solana wallets are separate."
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Current {symbol} pool value / max cap"
 msgstr ""
@@ -1528,6 +1608,10 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Map"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -1603,6 +1687,7 @@ msgid "{0} swapped to {1} when executed"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Weekly"
 msgstr ""
 
@@ -1645,6 +1730,10 @@ msgstr ""
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating referral code..."
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Table"
 msgstr ""
 
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -1725,6 +1814,10 @@ msgstr ""
 msgid "Paused until {reopenTime}"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Rest of supply"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
 msgstr ""
@@ -1786,6 +1879,14 @@ msgstr ""
 msgid "Buy GM: {0}"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "TVL (GM pool value)"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Each square is one holder, sized by the GMX it holds. The blue part is staked GMX and the yellow part is GMX not staked. LP pools can't stake, so their squares are green. Staked GMX is counted under its owner, so the staking contract is not one giant square. Addresses only."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
 msgstr ""
@@ -1838,6 +1939,10 @@ msgstr ""
 msgid "GMX fundamentals"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "{days, plural, one {Top 20 · last # day} other {Top 20 · last # days}}"
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr ""
@@ -1876,6 +1981,11 @@ msgstr ""
 msgid "Launch boost · {boostValue} APR · Paid into {tokenSymbol} price every 4h, nothing to claim. <0>Read more</0>."
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+msgid "GMX (own token)"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power accrues over time based on your staked GMX balance and determines your share of buyback rewards"
 msgstr ""
@@ -1909,6 +2019,7 @@ msgid "Vesting only available on {chainNames} or {lastChainName}. Switch network
 msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Protocol"
 msgstr ""
 
@@ -1920,11 +2031,16 @@ msgstr ""
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Overview"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}."
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Perps and swaps, all chains. The headline is the latest full day ({latestDay}); bars use the selected interval."
 msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -1953,6 +2069,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Convert {0} with no fee"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Net flow bars + total line"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -2076,6 +2196,11 @@ msgstr ""
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Weekly bought GMX"
+msgstr ""
+
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error"
@@ -2130,12 +2255,21 @@ msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Market cap"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "GM pool value only; GLV is not counted twice."
 msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Markets"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Gross fees; funding is excluded."
 msgstr ""
 
 #: src/components/GmList/UsdgPoolBadges.tsx
@@ -2188,6 +2322,10 @@ msgstr ""
 msgid "Set TP price below limit price"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Where every dollar of trading fees goes. Inputs are coloured by chain; the split is applied per chain, then merged. EVM: 63% LPs · 27% buys GMX for stakers · 8.8% treasury · 1.2% Chainlink. Solana: ~99% GT buybacks · 1% LPs. Funding fees are excluded."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr ""
@@ -2198,6 +2336,11 @@ msgstr ""
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Select pool"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+msgid "Liquidity"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -2235,6 +2378,8 @@ msgstr ""
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsChartCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Total"
 msgstr ""
@@ -2283,6 +2428,10 @@ msgstr ""
 msgid "Switch to market order"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Per period"
+msgstr ""
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Withdrawing is signed on {0}. Add that network to your wallet and reconnect. Otherwise, your funds cannot be withdrawn."
 msgstr ""
@@ -2303,6 +2452,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close (GMX balance)"
+msgstr ""
+
+#: src/pages/Stats/StatsRangeSelector.tsx
+msgid "Range start"
 msgstr ""
 
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
@@ -2327,6 +2480,8 @@ msgid "Built for those<0/>who do more"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "In liquidity"
 msgstr ""
 
@@ -2563,6 +2718,10 @@ msgstr ""
 msgid "AVAIL. LIQ."
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Number of trades"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr ""
@@ -2615,6 +2774,10 @@ msgstr ""
 msgid "Gain"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Revenue"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
@@ -2631,6 +2794,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Breakdown"
 msgstr ""
 
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
@@ -2701,6 +2868,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "GMX pools"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Value and % share of each GM market in the vault. Same-asset vaults on different chains are merged."
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
@@ -2847,6 +3018,10 @@ msgstr ""
 msgid "Search pools"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "GMX distribution"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding increase factor"
 msgstr ""
@@ -2924,6 +3099,7 @@ msgid "Tier {0}: {currentRebatePercentage}% rebate"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Annualized rate"
 msgstr ""
 
@@ -2955,6 +3131,15 @@ msgstr ""
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "No fees in this period."
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Group by"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
@@ -3070,6 +3255,8 @@ msgid "Max deposit limit reached"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Total staked"
 msgstr ""
 
@@ -3152,6 +3339,11 @@ msgstr ""
 msgid "VI SWAPS"
 msgstr ""
 
+#. Chart interval button: one bar per day
+#: src/pages/Stats/StatsOverview.tsx
+msgid "1D"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor longs"
 msgstr ""
@@ -3221,6 +3413,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Incl. GMX stablecoin pools"
 msgstr ""
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
@@ -3357,6 +3553,10 @@ msgstr ""
 msgid "No eligible holdings detected"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Market = bucket?"
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr ""
@@ -3426,6 +3626,10 @@ msgstr ""
 msgid "Update available"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Exchange"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -3449,6 +3653,10 @@ msgstr ""
 msgid "RESPONSE TIME"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Top 20"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order is in {0} pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -3459,6 +3667,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Perps and swaps, all chains"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
@@ -3672,6 +3884,7 @@ msgid "Done!"
 msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Address"
 msgstr ""
 
@@ -4017,6 +4230,11 @@ msgstr ""
 msgid "Allowed slippage"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Total staked (end of period)"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "The request was sent, but its result could not be confirmed. Retry to check: if it didn't go through, deactivation continues with a wallet transaction."
 msgstr ""
@@ -4040,6 +4258,10 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet & GMX Account"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Fee flow"
 msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
@@ -4199,6 +4421,10 @@ msgstr ""
 msgid "Community-led Telegram groups"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Vault"
+msgstr ""
+
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr ""
@@ -4222,6 +4448,10 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No matches for selected filters"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Holdings"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -4310,6 +4540,10 @@ msgstr ""
 msgid "Total borrow fee"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "esGMX staked"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Zero-fee capacity is used up for this amount. Convert now at the standard fee, convert a smaller amount, or wait for the next zero-fee window."
 msgstr ""
@@ -4328,6 +4562,11 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Bar"
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -4438,6 +4677,11 @@ msgstr ""
 msgid "Permit signed"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Day"
+msgstr ""
+
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Collapse"
 msgstr ""
@@ -4491,6 +4735,10 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "By fee type"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -4566,6 +4814,8 @@ msgid "Trade confirmations"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Month"
 msgstr ""
 
@@ -4695,6 +4945,10 @@ msgstr ""
 msgid "No events in the past {DAYS_BACK} days"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Buyback"
+msgstr ""
+
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Ready to withdraw"
 msgstr ""
@@ -4723,6 +4977,10 @@ msgstr ""
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact / fees"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Stacked bar"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -4816,6 +5074,11 @@ msgstr ""
 msgid "<0>No. There is no GMX-controlled account holding your money at any point. Traders trade directly from their own wallet, or from their funded GMX Account — a contract you control and withdraw from at will.</0><1>Affiliates never deposit anything. Rewards accrue in the contracts, and you claim them yourself, on-chain, to your address.</1>"
 msgstr ""
 
+#: src/pages/Stats/StatsControls.tsx
+#: src/pages/Stats/StatsControls.tsx
+msgid "Date range"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "Converting USDC to USDG..."
 msgstr ""
@@ -4848,11 +5111,21 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Cumulative"
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter amount"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Stablecoins"
 msgstr ""
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
@@ -4871,6 +5144,10 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "all time"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -4899,6 +5176,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Connected to {sourceChainName}"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Bar + cumulative line"
 msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
@@ -4983,6 +5264,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Active traders"
 msgstr ""
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -5225,11 +5510,17 @@ msgid "Accrued price impact rebates"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Total volume"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Shown by market group; a per-asset view is to be decided."
 msgstr ""
 
 #: src/components/PositionList/PositionList.tsx
@@ -5375,6 +5666,10 @@ msgstr ""
 msgid "Read the rules"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "The four treasury wallets: DAO Treasury, POL multisig, and the old fee treasuries on Arbitrum and Avalanche. Valued at end of day. Excludes the buyback reserve, which is shown under Buyback."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Source chain supports single token only"
 msgstr ""
@@ -5393,6 +5688,8 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Open interest"
 msgstr ""
 
@@ -5640,6 +5937,10 @@ msgstr ""
 msgid "stop market"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "USD = GMX × average GMX price of the period (estimate). No daily view: the source is weekly or monthly."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the settlement chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens."
 msgstr ""
@@ -5698,6 +5999,8 @@ msgstr ""
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "All"
 msgstr ""
 
@@ -5850,6 +6153,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Period"
 msgstr ""
 
@@ -6107,6 +6414,10 @@ msgstr ""
 msgid "Accumulating..."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "From {chainName}"
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
 msgstr ""
@@ -6208,6 +6519,11 @@ msgstr ""
 msgid "Received before close (GMX balance)"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+msgid "Other tokens"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr ""
@@ -6235,6 +6551,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Excludes GM deposits and withdrawals."
 msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
@@ -6366,6 +6686,10 @@ msgstr ""
 msgid "Net value"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Cash and stable pools"
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6465,6 +6789,10 @@ msgstr ""
 msgid "Assumes Builder Code at 7.5 bps plus Referral Fee at 1.25 bps.<0/>You set your own Builder Code rate (5 to 10 bps is typical)."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Total TVL"
+msgstr ""
+
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "Cancel all"
 msgstr ""
@@ -6483,6 +6811,11 @@ msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
+msgstr ""
+
+#. Chart granularity button: one bar per week
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "W"
 msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
@@ -6576,6 +6909,11 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Fees exceed pay amount"
+msgstr ""
+
+#. Chart interval button: one bar per quarter
+#: src/pages/Stats/StatsOverview.tsx
+msgid "3M"
 msgstr ""
 
 #: landing/src/pages/Builders/HeroSection/HeroSection.tsx
@@ -6702,6 +7040,10 @@ msgstr ""
 msgid "Earn from every referral"
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Gross, funding excluded"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LEV."
 msgstr ""
@@ -6789,6 +7131,10 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GLV"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "All-time"
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -6899,6 +7245,10 @@ msgstr ""
 msgid "2–10 min"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Stocks show the end-of-period value."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6926,6 +7276,10 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Net flow (stake minus unstake)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7030,6 +7384,10 @@ msgstr ""
 msgid "Can't fill: {poolName} pool is closed to new size. Cancel and re-place it in the {targetPoolName} pool."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Weekly rate"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Toros"
 msgstr ""
@@ -7062,6 +7420,10 @@ msgstr ""
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "In liquidity (LP pools)"
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
@@ -7103,6 +7465,13 @@ msgstr ""
 msgid "Account transfers are paused. Try again later."
 msgstr ""
 
+#. Chart granularity button: one bar per month
+#. Fee flow period button: one month
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "M"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr ""
@@ -7113,6 +7482,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Total users"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -7126,6 +7499,7 @@ msgid "Paxos zero-fee"
 msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "Daily"
 msgstr ""
 
@@ -7174,6 +7548,10 @@ msgstr ""
 msgid "GMX vault"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "GMX holders map"
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request..."
 msgstr ""
@@ -7215,6 +7593,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "{period} (partial)"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -7312,6 +7694,10 @@ msgstr ""
 msgid "s:"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "(partial)"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr ""
@@ -7372,6 +7758,14 @@ msgstr ""
 msgid "Price impact / fees"
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "The headline is the last 30 days. Gross fees, funding excluded."
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Share of supply"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals"
 msgstr ""
@@ -7415,6 +7809,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "All networks"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Annualized"
 msgstr ""
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -7479,6 +7877,10 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your staked GMX and esGMX that is not already requested"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Labels TBD"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -7558,6 +7960,10 @@ msgstr ""
 
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "This page is available on EVM networks only. Switch the network in the header, or go to <0>Trade</0>."
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Period TBD"
 msgstr ""
 
 #: src/components/GmList/GmList.tsx
@@ -7782,6 +8188,8 @@ msgstr ""
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "All time"
 msgstr ""
 
@@ -7947,6 +8355,13 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
+msgstr ""
+
+#. Chart granularity button: one bar per year
+#. Fee flow period button: one year
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Y"
 msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -8128,10 +8543,15 @@ msgstr ""
 msgid "ParaSwap"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "End of day {day}."
+msgstr ""
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Ensures available liquidity."
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8167,12 +8587,17 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/Stats/statsDataState.tsx
 msgid "Loading..."
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Trade now"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Treasury over time"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -8185,6 +8610,8 @@ msgstr ""
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Share"
 msgstr ""
 
@@ -8196,8 +8623,17 @@ msgstr ""
 msgid "Multicall events"
 msgstr ""
 
+#. Fee flow period button: one quarter
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Q"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Gross fees by chain; funding is excluded."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -8214,6 +8650,7 @@ msgstr ""
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/AccountDashboard/PerformanceShareCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trades"
 msgstr ""
@@ -8374,6 +8811,7 @@ msgstr ""
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TVChart/Chart.tsx
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Price"
 msgstr ""
 
@@ -8425,12 +8863,21 @@ msgstr ""
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "GMX token"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
+msgstr ""
+
+#. Chart granularity button: one bar per day
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "D"
 msgstr ""
 
 #: src/domain/synthetics/express/useGasPaymentTokenUnavailableToast.ts
@@ -8603,6 +9050,10 @@ msgstr ""
 msgid "{chainName} address"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Share of total supply, Arbitrum and Avalanche."
+msgstr ""
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Current endpoints ({0})"
 msgstr ""
@@ -8617,6 +9068,13 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
+msgstr ""
+
+#. Chart interval button: one bar per week
+#. Period button: the last 7 days
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "7D"
 msgstr ""
 
 #: src/pages/Announcements/Announcements.tsx
@@ -8637,6 +9095,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Addresses only, no labels. A wallet on two EVM chains appears once (EVM addresses are merged)."
 msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -8707,6 +9169,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has staked GMX/GLP"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "GMX staked"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -8866,8 +9332,10 @@ msgstr ""
 msgid "Now"
 msgstr ""
 
+#. Change against 30 days earlier
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
+#: src/pages/Stats/StatsOverview.tsx
 msgid "30d"
 msgstr ""
 
@@ -9039,6 +9507,8 @@ msgid "Available"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Last 7 days"
 msgstr ""
 
@@ -9070,6 +9540,10 @@ msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Excluding GMX token"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -9151,6 +9625,10 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GlvList.tsx
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Borrowing fees"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9248,6 +9726,11 @@ msgstr ""
 msgid "Max deposit capacity reached for this pool"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/statsData.ts
+msgid "Net flow"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
 msgstr ""
@@ -9278,6 +9761,7 @@ msgstr ""
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Liquidation"
 msgstr ""
 
@@ -9328,6 +9812,10 @@ msgstr ""
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Receive to wallet"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Holder"
 msgstr ""
 
 #: src/components/TVChart/ChartHeader.tsx
@@ -9441,6 +9929,7 @@ msgid "Edit"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Total supply"
 msgstr ""
 
@@ -9506,6 +9995,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "From"
 msgstr ""
 
@@ -9605,6 +10095,11 @@ msgstr ""
 msgid "Dolomite"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Table view"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr ""
@@ -9625,6 +10120,10 @@ msgstr ""
 msgid "GLP reimbursement (test)"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "By asset"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 msgid "Convert, then buy"
 msgstr ""
@@ -9635,6 +10134,10 @@ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Metric TBD"
 msgstr ""
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
@@ -9833,6 +10336,10 @@ msgstr ""
 msgid "Long liquidity"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "This period"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
 msgstr ""
@@ -9884,6 +10391,10 @@ msgstr ""
 msgid "If you plan to keep trading or reusing margin on GMX"
 msgstr ""
 
+#: src/pages/Stats/StatsPage.tsx
+msgid "Data through {dataDay} (UTC)"
+msgstr ""
+
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
@@ -9899,6 +10410,10 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total received (GMX balance)"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Total treasury"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
@@ -10097,6 +10612,10 @@ msgstr ""
 msgid "More info"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "By market"
+msgstr ""
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -10114,6 +10633,7 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Trading volume"
 msgstr ""
 
@@ -10156,6 +10676,8 @@ msgstr ""
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Amount"
 msgstr ""
 
@@ -10206,6 +10728,9 @@ msgid "POSITION IMPACT POOL"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Not staked"
 msgstr ""
 
@@ -10450,6 +10975,10 @@ msgstr ""
 msgid "Debug controls"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "GMX bought since {startDay}, held for stakers. At today’s price; not part of Treasury."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardNavigation.tsx
 msgid "Concluded"
 msgstr ""
@@ -10480,6 +11009,10 @@ msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} short is in the {poolName} pool, which is closed to new size. This order opens a separate position."
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "GMX bought"
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
@@ -10544,6 +11077,10 @@ msgstr ""
 msgid "Top positions"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Arbitrum and Avalanche."
+msgstr ""
+
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Send remaining margin to"
@@ -10551,6 +11088,11 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
+msgstr ""
+
+#. Period button: the last 30 days
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "30D"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10618,6 +11160,7 @@ msgstr ""
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
 #: src/lib/contracts/notifications.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr ""
@@ -10736,6 +11279,10 @@ msgstr ""
 msgid "Not enough zero-fee capacity for this amount. Capacity left now: {0}. Your amount is {1} over."
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Quarterly"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing exponent short"
@@ -10772,6 +11319,10 @@ msgstr ""
 msgid "It accrues to the code owner ({0})."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Open/close fees"
+msgstr ""
+
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/TradeBoxRows/SwapRouteRow.tsx
 msgid "Retry external route"
@@ -10779,6 +11330,11 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "{poolName} pool: won't fill after {closingDate}. Cancel and re-place it in the {targetPoolName} pool."
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Chart type"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -10803,6 +11359,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Wallets, not people"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -10946,6 +11506,10 @@ msgstr ""
 msgid "Receive"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Asset type"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr ""
@@ -10987,6 +11551,15 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Show all"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+msgid "{period} · partial"
 msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
@@ -11153,6 +11726,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Receive (approximate)"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "Fee split"
 msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
@@ -11322,6 +11899,10 @@ msgstr ""
 msgid "Continue to convert"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Granularity"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required"
 msgstr ""
@@ -11336,6 +11917,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "% share"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -11431,6 +12016,10 @@ msgstr ""
 msgid "Negative impact factor"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Weekly bought ÷ total supply"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete transfer"
 msgstr ""
@@ -11499,6 +12088,11 @@ msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
+
+#. Chart interval button: one bar per month
+#: src/pages/Stats/StatsOverview.tsx
+msgid "1M"
 msgstr ""
 
 #: src/lib/contracts/callContract.tsx
@@ -11640,6 +12234,10 @@ msgstr ""
 msgid "shift"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Top 20 · all time"
+msgstr ""
+
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
 msgstr ""
@@ -11683,6 +12281,10 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Area"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -11872,6 +12474,7 @@ msgid "Receive tokens separately"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/pages/Stats/StatsChartCard.tsx
 msgid "USD estimate"
 msgstr ""
 
@@ -12057,6 +12660,10 @@ msgstr ""
 msgid "Two revenue streams."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Top N"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr ""
@@ -12078,6 +12685,9 @@ msgid "Failed to export image"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Staked"
 msgstr ""
 
@@ -12090,6 +12700,7 @@ msgid "This margin deposit may not execute before liquidation: its trigger is at
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Traders"
 msgstr ""
 
@@ -12115,6 +12726,11 @@ msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{0} a short position at the current price"
+msgstr ""
+
+#. Chart interval button: one bar per year
+#: src/pages/Stats/StatsOverview.tsx
+msgid "1Y"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -12153,6 +12769,10 @@ msgstr ""
 msgid "Integrating or shipping"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "{share} · {stakedPct}% staked"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
 msgstr "[!! Total PnL percentage after fees and price impact. Hover the value to see the breakdown. !!]"
@@ -12184,6 +12804,11 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Select at least one distribution to claim"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+msgid "esGMX vesting"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
@@ -12263,6 +12888,7 @@ msgid "No tokens on source chain"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Liquidation fees"
 msgstr "[!! Liquidation fees !!]"
 
@@ -12276,6 +12902,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Testnet LayerZero scan"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Current snapshot · Arbitrum and Avalanche · {supplyText}"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -12461,8 +13091,17 @@ msgstr ""
 msgid "Use the Pay amount"
 msgstr ""
 
+#: src/pages/Stats/StatsChartCard.tsx
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Line"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute."
+msgstr ""
+
+#: src/pages/Stats/StatsPage.tsx
+msgid "One protocol across EVM (Arbitrum and Avalanche) and Solana"
 msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
@@ -12553,6 +13192,10 @@ msgstr ""
 msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Other holders"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Conversion fee"
 msgstr ""
@@ -12582,8 +13225,17 @@ msgstr ""
 msgid "Escrowed GMX APR"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "New traders"
+msgstr ""
+
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} on {chainName} for this transaction. <0>Bridge</0> {nativeTokenSymbol}."
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Total fees"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -12610,6 +13262,7 @@ msgstr ""
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/synthetics/fees/networkFeeSource.ts
+#: src/pages/Stats/StatsSpecialCards.tsx
 msgid "Wallet"
 msgstr ""
 
@@ -12688,6 +13341,10 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "RPC error. Update your wallet's RPC via <0>chainlist.org</0>. <1>Read more</1>."
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "ETH and BTC"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -12775,6 +13432,7 @@ msgstr ""
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/Stats/statsDataState.tsx
 msgid "No data available"
 msgstr ""
 
@@ -12832,6 +13490,10 @@ msgstr ""
 msgid "{count, plural, one {# action in this lifecycle} other {# actions in this lifecycle}}"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "A wallet counts on the day of its first trade."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
 msgstr ""
@@ -12850,6 +13512,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "GT buyback (Solana)"
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
@@ -13000,6 +13666,10 @@ msgstr ""
 msgid "Default sorting"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Last 30 days"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr ""
@@ -13057,6 +13727,10 @@ msgstr ""
 msgid "Unstake request failed"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Top 50"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
 msgstr ""
@@ -13085,6 +13759,10 @@ msgstr ""
 msgid "Where can I read more?"
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Daily avg"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr ""
@@ -13097,6 +13775,7 @@ msgstr ""
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/Stats/statsData.ts
 msgid "Swap"
 msgstr ""
 
@@ -13142,6 +13821,10 @@ msgstr ""
 msgid "Switch to a market order to enable external routes."
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Stakers (buys GMX)"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Distribution"
 msgstr ""
@@ -13158,6 +13841,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "The same asset on different chains is one group."
 msgstr ""
 
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -13321,8 +14008,16 @@ msgstr ""
 msgid "Proportional stored impact"
 msgstr ""
 
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Value"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "By chain"
 msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
@@ -13367,6 +14062,10 @@ msgstr ""
 msgid "Step 1: Convert"
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "GMX bought per period"
+msgstr ""
+
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Convert, then place order"
 msgstr ""
@@ -13387,9 +14086,18 @@ msgstr ""
 msgid "Get optimized exposure to the highest-utilized pools"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "LP pool"
+msgstr ""
+
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
 msgid "No markets found"
+msgstr ""
+
+#. Change against one day earlier
+#: src/pages/Stats/StatsOverview.tsx
+msgid "1d"
 msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
@@ -13488,6 +14196,14 @@ msgstr ""
 msgid "Anonymous chat with GMX team"
 msgstr ""
 
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "GM pool value, all chains (EVM and Solana) · end of day"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Excludes the buyback reserve"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Borrow fees"
 msgstr "[!! Borrow fees !!]"
@@ -13528,6 +14244,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
+msgstr ""
+
+#: src/pages/Stats/StatsRangeSelector.tsx
+msgid "Range end"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -13577,6 +14297,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
+msgstr ""
+
+#: src/pages/Stats/StatsSpecialCards.tsx
+msgid "Chain"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -13925,12 +14649,20 @@ msgstr ""
 msgid "Position may liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+msgid "Open/close"
+msgstr ""
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Include reviewed"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
+msgstr ""
+
+#: src/pages/Stats/statsData.ts
+msgid "GLV composition"
 msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
@@ -14038,6 +14770,11 @@ msgstr ""
 msgid "Code already taken on: {takenNetworkNamesJoined}. No rebates received from this network."
 msgstr ""
 
+#: src/pages/Stats/statsData.ts
+#: src/pages/Stats/statsData.ts
+msgid "Swap volume"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Margin before borrow/funding"
@@ -14084,6 +14821,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"
+msgstr ""
+
+#: src/pages/Stats/StatsOverview.tsx
+msgid "Yearly"
 msgstr ""
 
 #: src/domain/multichain/progress/walletCrossChainSendToast.tsx
@@ -14134,6 +14875,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
+msgstr ""
+
+#: src/pages/Stats/StatsChartCard.tsx
+msgid "Week"
 msgstr ""
 
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
