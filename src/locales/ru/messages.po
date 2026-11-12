@@ -10126,6 +10126,7 @@ msgstr "Оплачивается из вашего GMX Account, потому ч�
 msgid "Copy"
 msgstr "Копировать"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -11231,6 +11232,10 @@ msgstr "Редактировать ордер"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Error simulating withdrawal"
 msgstr "Ошибка симуляции вывода"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
+msgstr "GT — токен экосистемы GMX. Функция обратного выкупа GT станет доступна в будущем."
 
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -13996,6 +14001,10 @@ msgstr "Установите цену активации выше расчётн
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "В этой сети пока нет возможностей"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Open buyback"
+msgstr "Открыть обратный выкуп"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
