@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { DOCS_LINKS } from "config/links";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -14,6 +15,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
+import { useChainId } from "lib/chains";
 import { formatPercentage, PRECISION } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
@@ -26,6 +28,8 @@ import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/Too
 import sparkleIcon from "img/sparkle.svg";
 
 export function PriceImpactFeesRow() {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const chainId = useSelector(selectChainId);
   const fees = useSelector(selectTradeboxFees);
   const feesPercentage = useSelector(selectTradeboxFeesPercentage);
@@ -57,7 +61,11 @@ export function PriceImpactFeesRow() {
       return { formattedPriceImpactPercentage: "-", isPriceImpactPositive: false };
     }
 
-    const priceImpactPercentage = isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap }) : 0n;
+    const priceImpactPercentage = isSolana
+      ? (isTrigger ? fees?.decreasePositionPriceImpact : fees?.increasePositionPriceImpact)?.precisePercentage
+      : isTrigger || isSwap
+        ? getCappedPriceImpactPercentageFromFees({ fees, isSwap })
+        : 0n;
     return {
       formattedPriceImpactPercentage:
         priceImpactPercentage === undefined
@@ -69,7 +77,7 @@ export function PriceImpactFeesRow() {
             }),
       isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
     };
-  }, [fees, isTrigger, isSwap, isExternalSwap]);
+  }, [fees, isTrigger, isSwap, isExternalSwap, isSolana]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
@@ -84,7 +92,7 @@ export function PriceImpactFeesRow() {
 
     let adjustedFeesPercentage = feesPercentage;
 
-    if (feesType !== "swap") {
+    if (!isSolana && feesType !== "swap") {
       let referralDiscountPercentageOfSize = 0n;
       if (userReferralInfo) {
         referralDiscountPercentageOfSize = bigMath.mulDiv(
@@ -115,7 +123,7 @@ export function PriceImpactFeesRow() {
       }),
       isTotalFeePositive: adjustedFeesPercentage > 0,
     };
-  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage]);
+  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage, isSolana]);
 
   if (isTrigger) {
     return (
@@ -161,7 +169,7 @@ export function PriceImpactFeesRow() {
     );
   }
 
-  if (isSwap) {
+  if (isSwap || isSolana) {
     return (
       <div className="flex flex-col gap-4">
         <SyntheticsInfoRow

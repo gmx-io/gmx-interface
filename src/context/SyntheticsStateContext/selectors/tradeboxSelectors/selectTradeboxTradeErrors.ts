@@ -167,6 +167,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? q(selectProDiscountFactor) : undefined,
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
         triggerPrice: q(selectTradeboxTriggerPrice),
