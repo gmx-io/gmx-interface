@@ -1,9 +1,13 @@
-import { type Abi, encodeErrorResult } from "viem";
+import { type Abi, encodeErrorResult, parseAbi } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { extractRelayTaskError } from "context/SyntheticsEvents/utils";
 import { parseError } from "lib/errors";
-import { getInsufficientFeeError, getIsOutdatedSubaccountApprovalError } from "lib/errors/customErrors";
+import {
+  getInsufficientFeeError,
+  getIsOutdatedSubaccountApprovalError,
+  getIsPermitSignatureErrorOnSimulation,
+} from "lib/errors/customErrors";
 import { abis } from "sdk/abis";
 import { StatusCode } from "sdk/utils/express";
 
@@ -62,6 +66,28 @@ describe("getInsufficientFeeError", () => {
       isErrorMatched: false,
     });
     expect(getInsufficientFeeError(undefined)).toEqual({ isErrorMatched: false });
+  });
+});
+
+describe("getIsPermitSignatureErrorOnSimulation", () => {
+  function permitRevert() {
+    const permitError = encodeErrorResult({
+      abi: parseAbi(["error Error(string)"]),
+      errorName: "Error",
+      args: ["EIP2612: invalid signature"],
+    });
+
+    return getRevertError("ExternalCallFailed", [permitError]);
+  }
+
+  it("matches a failed permit only on a simulation, unless any context is allowed", () => {
+    const error = permitRevert();
+
+    expect(getIsPermitSignatureErrorOnSimulation(error)).toBe(false);
+    expect(getIsPermitSignatureErrorOnSimulation(error, { isAnyContext: true })).toBe(true);
+    expect(getIsPermitSignatureErrorOnSimulation(Object.assign(error, { errorContext: "simulation" as const }))).toBe(
+      true
+    );
   });
 });
 

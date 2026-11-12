@@ -108,18 +108,32 @@ export function getIsOutdatedSubaccountApprovalError(error: ErrorLike) {
   );
 }
 
-export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
-  return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
+/**
+ * `isAnyContext`: for a multicall whose only external call is the permit, where a pre-send revert can come without
+ * the simulation context
+ */
+type PermitErrorOptions = { isAnyContext?: boolean };
+
+export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike, options?: PermitErrorOptions) {
+  return isPermitExternalCallFailedOnSimulation(error, "invalid signature", options);
 }
 
-export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike) {
-  return isPermitExternalCallFailedOnSimulation(error, "expired deadline");
+export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike, options?: PermitErrorOptions) {
+  return isPermitExternalCallFailedOnSimulation(error, "expired deadline", options);
 }
 
-function isPermitExternalCallFailedOnSimulation(error: ErrorLike, errorSubstring: string) {
+function isPermitExternalCallFailedOnSimulation(
+  error: ErrorLike,
+  errorSubstring: string,
+  { isAnyContext = false }: PermitErrorOptions = {}
+) {
   const parsedError = parseError(error);
 
-  if (!parsedError || parsedError.errorContext !== "simulation" || parsedError.contractError !== "ExternalCallFailed") {
+  if (
+    !parsedError ||
+    (!isAnyContext && parsedError.errorContext !== "simulation") ||
+    parsedError.contractError !== "ExternalCallFailed"
+  ) {
     return false;
   }
 

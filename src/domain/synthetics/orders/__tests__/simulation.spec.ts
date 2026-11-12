@@ -91,6 +91,72 @@ describe("simulation", () => {
     );
   });
 
+  describe("with calls the wallet batch sends first", () => {
+    const ROUTER = "0x1111111111111111111111111111111111111111";
+    const ACCOUNT = "0x2222222222222222222222222222222222222222";
+    const APPROVE = { to: "0x3333333333333333333333333333333333333333", data: "0x095ea7b3" } as const;
+
+    function revert(errorName: string) {
+      return new ContractFunctionExecutionError(
+        new ContractFunctionRevertedError({
+          abi: [],
+          functionName: "multicall",
+          data: encodeErrorResult({ abi: abis.CustomErrors, errorName: errorName as any, args: [] as any }),
+        }),
+        { abi: [], functionName: "multicall" }
+      );
+    }
+
+    function simulate(simulateCalls: ReturnType<typeof vi.fn>) {
+      return simulateContractWithRetry({
+        client: { simulateCalls } as unknown as PublicClient,
+        address: ROUTER,
+        abi: abis.ExchangeRouter,
+        args: [[]],
+        value: 1n,
+        account: ACCOUNT,
+        blockNumber: undefined,
+        isExpress: false,
+        preCalls: [APPROVE],
+      });
+    }
+
+    it("runs the approvals before the multicall in one simulated block and accepts the sentinel revert", async () => {
+      const simulateCalls = vi.fn().mockResolvedValue({
+        results: [{ status: "success" }, { status: "failure", error: revert("EndOfOracleSimulation") }],
+      });
+
+      await expect(simulate(simulateCalls)).resolves.toBeUndefined();
+      expect(simulateCalls).toHaveBeenCalledWith(
+        expect.objectContaining({
+          account: ACCOUNT,
+          calls: [APPROVE, expect.objectContaining({ to: ROUTER, value: 1n })],
+        })
+      );
+    });
+
+    it("fails when an approval of the batch fails", async () => {
+      const simulateCalls = vi.fn().mockResolvedValue({
+        results: [
+          { status: "failure", error: new Error("ERC20: approve from the zero address") },
+          { status: "success" },
+        ],
+      });
+
+      const error = await simulate(simulateCalls).catch((e) => e);
+
+      expect(parseError(error)).toEqual(expect.objectContaining({ errorContext: "simulation" }));
+    });
+
+    it("fails instead of sending the batch unchecked when the RPC can't run eth_simulateV1", async () => {
+      const simulateCalls = vi.fn().mockRejectedValue(Object.assign(new Error("method not found"), { code: -32601 }));
+
+      const error = await simulate(simulateCalls).catch((e) => e);
+
+      expect(parseError(error)).toEqual(expect.objectContaining({ errorContext: "simulation" }));
+    });
+  });
+
   describe("isTemporaryError", () => {
     it("should return true for RpcRequestError with header not found message", () => {
       const error = new ContractFunctionExecutionError(

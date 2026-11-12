@@ -59,6 +59,49 @@ describe("Exchange Router Multicall", () => {
   } satisfies Partial<IncreasePositionOrderParams>;
 
   describe("getBatchOrderMulticallPayload", () => {
+    it("starts with the token permits, before any order pulls the token", () => {
+      const payAmount = parseValue("1000", USDC.decimals)!;
+      const firstOrder = buildIncreaseOrderPayload({
+        ...commonParams,
+        payTokenAddress: USDC.address,
+        payTokenAmount: payAmount,
+      });
+      const secondOrder = buildIncreaseOrderPayload({
+        ...commonParams,
+        payTokenAddress: USDC.address,
+        payTokenAmount: payAmount,
+      });
+      const permit = {
+        token: USDC.address,
+        owner: RECEIVER,
+        spender: getContract(CHAIN_ID, "SyntheticsRouter"),
+        value: 2n * payAmount,
+        deadline: 2000000000n,
+        v: 27,
+        r: `0x${"11".repeat(32)}`,
+        s: `0x${"22".repeat(32)}`,
+        onchainParams: { name: "USD Coin", version: "2", nonce: 0n },
+      };
+
+      const result = getBatchOrderMulticallPayload({
+        chainId: CHAIN_ID,
+        params: { createOrderParams: [firstOrder, secondOrder], updateOrderParams: [], cancelOrderParams: [] },
+        tokenPermits: [permit],
+      });
+
+      expect(result.multicall.map((call) => call.method)).toEqual([
+        "makeExternalCalls",
+        "sendWnt",
+        "sendTokens",
+        "createOrder",
+        "sendWnt",
+        "sendTokens",
+        "createOrder",
+      ]);
+      expect(result.multicall[0].params[0]).toEqual([USDC.address]);
+      expect(result.multicall[0].params.slice(2)).toEqual([[], []]);
+    });
+
     it("Token transfers with native only payment", () => {
       const params = {
         ...commonParams,

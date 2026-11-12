@@ -57,6 +57,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
@@ -70,7 +71,7 @@ export const useWithdrawalTransactions = ({
   technicalFees,
   shouldDisableValidation,
 }: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">): {
-  onCreateWithdrawal: () => Promise<void>;
+  onCreateWithdrawal: (walletCallsBatch?: WalletCallsBatch) => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
 } => {
@@ -236,7 +237,7 @@ export const useWithdrawalTransactions = ({
   const { setMultichainTransferProgress } = useSyntheticsEvents();
 
   const onCreateGlvWithdrawal = useCallback(
-    async function onCreateWithdrawal(): Promise<void> {
+    async function onCreateWithdrawal(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -380,6 +381,7 @@ export const useWithdrawalTransactions = ({
           blockTimestampData,
           glvTokenAmount: glvTokenAmount!,
           skipSimulation: shouldDisableValidation,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -418,7 +420,7 @@ export const useWithdrawalTransactions = ({
   );
 
   const onCreateGmWithdrawal = useCallback(
-    async function onCreateWithdrawal(): Promise<void> {
+    async function onCreateWithdrawal(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -542,6 +544,7 @@ export const useWithdrawalTransactions = ({
           setPendingTxns,
           setPendingWithdrawal: isTransitRoute ? undefined : setPendingWithdrawal,
           blockTimestampData,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);

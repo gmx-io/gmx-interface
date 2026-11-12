@@ -21,6 +21,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
   selectSettlementChainGasPaymentToken,
   selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -63,6 +64,7 @@ import {
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
@@ -152,6 +154,8 @@ export function useTradeboxButtonState({
   canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
+  const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
 
@@ -231,11 +235,14 @@ export function useTradeboxButtonState({
     isApproving,
     handleApprove,
     getIsPermitApproval,
+    approvalBatch,
   } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams) || isClassicTokenPermitsEnabled,
+    // a relayed order can't share the wallet's confirmation, so only Classic orders batch the approvals
+    allowBatch: !isExpressTransactionAvailable,
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -248,11 +255,12 @@ export function useTradeboxButtonState({
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
-  const isApprovalRequired = !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0;
+  const isApprovalRequired =
+    !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined;
   // until allowances are known an order could be sent without the approval it needs
   const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
-  const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
+  const pendingApprovalTokenAddress = isApprovalRequired && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
     pendingApprovalTokenAddress !== undefined &&
     getIsGasPaymentTokenApproval({
@@ -639,9 +647,9 @@ export function useTradeboxButtonState({
     if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
-      txnPromise = onSubmitSwap();
+      txnPromise = onSubmitSwap(approvalBatch);
     } else if (isIncrease) {
-      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder(approvalBatch));
     } else {
       txnPromise = onSubmitDecreaseOrder();
     }
@@ -665,6 +673,7 @@ export function useTradeboxButtonState({
     return true;
   }, [
     account,
+    approvalBatch,
     chainId,
     expressParams?.subaccount,
     fromToken,
@@ -797,7 +806,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if ((isApproving || isAllowanceLoaded) && tokensToApprove.length) {
+    if ((isApproving || isAllowanceLoaded) && tokensToApprove.length && approvalBatch === undefined) {
       const tokenToApprove = tokensToApprove[0];
       const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
       const isGasPaymentTokenApproval = getIsGasPaymentTokenApproval({
@@ -899,6 +908,7 @@ export function useTradeboxButtonState({
     takeProfit.error?.percentage,
     isApproving,
     tokensToApprove,
+    approvalBatch,
     isAllowanceLoaded,
     isAllowancePending,
     isApprovalRequired,

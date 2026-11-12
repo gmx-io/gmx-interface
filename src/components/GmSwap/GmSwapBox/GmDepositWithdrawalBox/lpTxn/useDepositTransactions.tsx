@@ -59,6 +59,7 @@ import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/create
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { getTransitRouteProgressForMarket } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { ERC20Address, TokenBalanceType } from "domain/tokens";
+import { useWalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
 import { helperToast } from "lib/helperToast";
 import {
   initGLVSwapMetricData,
@@ -68,6 +69,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { makeUserAnalyticsOrderFailResultHandler, sendUserAnalyticsOrderConfirmClickEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
@@ -81,7 +83,7 @@ export const useDepositTransactions = ({
   shouldDisableValidation,
   technicalFees,
 }: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees">): {
-  onCreateDeposit: () => Promise<void>;
+  onCreateDeposit: (walletCallsBatch?: WalletCallsBatch) => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
 } => {
@@ -92,6 +94,7 @@ export const useDepositTransactions = ({
     useSyntheticsEvents();
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const { setPendingTxns } = usePendingTxns();
+  const walletTxnTokenPermits = useWalletTxnTokenPermits();
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
 
@@ -274,7 +277,7 @@ export const useDepositTransactions = ({
   const { setMultichainTransferProgress } = useSyntheticsEvents();
 
   const onCreateGmDeposit = useCallback(
-    async function onCreateGmDeposit(): Promise<void> {
+    async function onCreateGmDeposit(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isDeposit) {
         return Promise.reject();
       }
@@ -456,6 +459,8 @@ export const useDepositTransactions = ({
           params: params as CreateDepositParams,
           setPendingTxns,
           setPendingDeposit: isBuyTrackedByTransitToast ? undefined : setPendingDeposit,
+          walletTxnTokenPermits,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -469,6 +474,7 @@ export const useDepositTransactions = ({
     [
       isDeposit,
       getDepositMetricData,
+      walletTxnTokenPermits,
       tokensData,
       signer,
       rawParams,
@@ -497,7 +503,7 @@ export const useDepositTransactions = ({
   );
 
   const onCreateGlvDeposit = useCallback(
-    async function onCreateGlvDeposit(): Promise<void> {
+    async function onCreateGlvDeposit(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isDeposit) {
         return Promise.reject();
       }
@@ -707,6 +713,8 @@ export const useDepositTransactions = ({
           blockTimestampData,
           setPendingTxns,
           setPendingDeposit: isBuyTrackedByTransitToast ? undefined : setPendingDeposit,
+          walletTxnTokenPermits,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitDeposit(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -720,6 +728,7 @@ export const useDepositTransactions = ({
     [
       isDeposit,
       getDepositMetricData,
+      walletTxnTokenPermits,
       glvInfo,
       tokensData,
       signer,

@@ -2,6 +2,7 @@ import type { PublicClient } from "viem";
 
 import type { SettlementChainId } from "config/chains";
 import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletSigner } from "lib/wallets";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { buildSameChainDepositTxn } from "sdk/utils/multichain/api";
@@ -15,6 +16,7 @@ export async function sendSameChainDepositTxn({
   amount,
   account,
   callback,
+  walletCallsBatch,
 }: {
   chainId: SettlementChainId;
   signer: WalletSigner;
@@ -22,6 +24,7 @@ export async function sendSameChainDepositTxn({
   amount: bigint;
   account: string;
   callback?: TxnCallback<WalletTxnCtx>;
+  walletCallsBatch?: WalletCallsBatch;
 }) {
   const txn = buildSameChainDepositTxn({ chainId, tokenAddress, amount, account });
 
@@ -32,6 +35,7 @@ export async function sendSameChainDepositTxn({
     callData: txn.data,
     value: txn.value,
     callback,
+    walletCallsBatch,
   });
 }
 

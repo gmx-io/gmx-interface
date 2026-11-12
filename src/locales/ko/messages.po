@@ -5568,6 +5568,10 @@ msgstr "양수 팩터"
 msgid "Full position close"
 msgstr "포지션 전체 종료"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "UI 플래그와 관계없이 지갑 일괄 처리 활성화"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "모든 예상 보상 및 예상 분배액은 최선의 노력을 바탕으로 산정한 추정치일 뿐입니다. 실제 분배는 DAO 거버넌스에 따라 결정됩니다."

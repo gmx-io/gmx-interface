@@ -5568,6 +5568,10 @@ msgstr "正向因子"
 msgid "Full position close"
 msgstr "完全平倉"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "忽略 UI 旗標啟用錢包批次交易"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "所有預估獎勵與預計分配均僅為依現有資訊盡力作出的估算。實際分配取決於 DAO 治理。"

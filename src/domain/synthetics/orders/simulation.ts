@@ -9,6 +9,8 @@ import {
   WebSocketRequestError,
   encodeFunctionData,
   withRetry,
+  type Address,
+  type Hex,
 } from "viem";
 
 import { getContract, tryGetContract } from "config/contracts";
@@ -19,13 +21,14 @@ import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "d
 import { SignedTokenPermit } from "domain/tokens";
 import { decodeSimulationErrorFromViemError } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import type { WalletCall } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
-import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { buildTokenPermitsCall, CreateOrderTxnParams } from "sdk/utils/orderTransactions";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
 
 import type { GlvShiftParam } from "../jit/utils";
@@ -49,6 +52,8 @@ export type SimulateExecuteParams = {
   swapPricingType?: SwapPricingType;
   blockTimestampData: BlockTimestampData | undefined;
   jitShiftParamsList?: GlvShiftParam[];
+  /** Calls the same wallet batch sends first, e.g. the approvals the order needs */
+  preCalls?: WalletCall[];
 };
 
 export function isInsufficientFundsError(error: any): boolean {
@@ -211,36 +216,13 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
   let simulationPayloadData: string[] = [];
 
   if (p.tokenPermits.length > 0) {
-    const externalCalls: ExternalCallsPayload = {
-      sendTokens: [],
-      sendAmounts: [],
-      externalCallTargets: [],
-      externalCallDataList: [],
-      refundTokens: [],
-      refundReceivers: [],
-    };
-
-    for (const permit of p.tokenPermits) {
-      externalCalls.externalCallTargets.push(permit.token);
-      externalCalls.externalCallDataList.push(
-        encodeFunctionData({
-          abi: abis.ERC20PermitInterface,
-          functionName: "permit",
-          args: [permit.owner, permit.spender, permit.value, permit.deadline, permit.v, permit.r, permit.s],
-        })
-      );
-    }
+    const permitsCall = buildTokenPermitsCall(p.tokenPermits);
 
     simulationPayloadData.push(
       encodeFunctionData({
         abi: abis.ExchangeRouter,
         functionName: "makeExternalCalls",
-        args: [
-          externalCalls.externalCallTargets,
-          externalCalls.externalCallDataList,
-          externalCalls.refundTokens,
-          externalCalls.refundReceivers,
-        ],
+        args: permitsCall.params as [Hex[], Hex[], Hex[], Hex[]],
       })
     );
   }
@@ -312,7 +294,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -334,12 +316,13 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else if (simulationRouterAddress) {
     simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: exchangeRouterAddress,
@@ -361,13 +344,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   } else {
     simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -389,6 +373,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       account: p.account,
       blockNumber,
       isExpress: p.isExpress,
+      preCalls: p.preCalls,
     });
   }
 }
@@ -402,6 +387,7 @@ export async function simulateContractWithRetry({
   account,
   blockNumber,
   isExpress,
+  preCalls,
 }: {
   client: PublicClient;
   address: string;
@@ -411,10 +397,21 @@ export async function simulateContractWithRetry({
   account: string;
   blockNumber: bigint | undefined;
   isExpress: boolean;
+  preCalls?: WalletCall[];
 }) {
   try {
     await withRetry(
-      () => {
+      (): Promise<unknown> => {
+        if (preCalls?.length) {
+          return simulateCallsAfterPreCalls({
+            client,
+            account,
+            blockNumber,
+            preCalls,
+            call: { to: address, data: encodeFunctionData({ abi, functionName: "multicall", args }), value },
+          });
+        }
+
         return client.simulateContract({
           address: address,
           abi: abi,
@@ -462,6 +459,36 @@ export async function simulateContractWithRetry({
   throw extendError(new Error("Execution simulation did not revert with EndOfOracleSimulation."), {
     errorContext: "simulation",
   });
+}
+
+/**
+ * A wallet batch runs the approvals and the action in one transaction, so the approvals aren't mined yet when the
+ * action is simulated. Throws the first failing call's error, as simulateContract would.
+ */
+export async function simulateCallsAfterPreCalls({
+  client,
+  account,
+  blockNumber,
+  preCalls,
+  call,
+}: {
+  client: PublicClient;
+  account: string;
+  blockNumber: bigint | undefined;
+  preCalls: WalletCall[];
+  call: { to: string; data: Hex; value: bigint };
+}) {
+  const { results } = await client.simulateCalls({
+    account: account as Address,
+    blockNumber,
+    calls: [...preCalls, { ...call, to: call.to as Address }],
+  });
+
+  const failedCall = results.find((result) => result.status === "failure");
+
+  if (failedCall) {
+    throw failedCall.error ?? new Error("Batched call simulation failed");
+  }
 }
 
 export function getOrdersTriggerPriceOverrides(createOrderPayloads: CreateOrderTxnParams<any>[]) {

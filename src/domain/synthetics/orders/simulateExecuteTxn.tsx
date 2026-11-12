@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ReactNode } from "react";
-import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem";
+import { type Abi, ContractFunctionParameters, encodeFunctionData, withRetry } from "viem";
 
 import { getContract, tryGetContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
@@ -10,6 +10,7 @@ import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
+import type { WalletCall } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
@@ -23,7 +24,7 @@ import { getErrorMessage } from "components/Errors/errorToasts";
 import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-import { getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
+import { getBlockTimestampAndNumber, isTemporaryError, simulateCallsAfterPreCalls } from "./simulation";
 import { isGlvEnabled } from "../markets/glv";
 
 type PriceOverrides = {
@@ -52,6 +53,8 @@ export type SimulateExecuteParams = {
     slippageInputId?: string;
   };
   externalSwapQuote?: ExternalSwapQuote;
+  /** Calls the same wallet batch sends first, e.g. the approvals the action needs */
+  preCalls?: WalletCall[];
 };
 
 /**
@@ -156,12 +159,39 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     },
   };
 
+  const simulateMulticall = (address: string, abi: Abi) =>
+    withRetry((): Promise<unknown> => {
+      if (p.preCalls?.length) {
+        return simulateCallsAfterPreCalls({
+          client,
+          account: p.account,
+          blockNumber,
+          preCalls: p.preCalls,
+          call: {
+            to: address,
+            data: encodeFunctionData({ abi, functionName: "multicall", args: [simulationPayloadData] }),
+            value: p.value,
+          },
+        });
+      }
+
+      return client.simulateContract({
+        address,
+        abi,
+        functionName: "multicall",
+        args: [simulationPayloadData],
+        value: p.value,
+        account: p.account,
+        blockNumber: blockNumber,
+      });
+    }, retryConfig);
+
   if (isGlv) {
     simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -175,17 +205,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      await withRetry(() => {
-        return client.simulateContract({
-          address: routerAddress,
-          abi: routerAbi,
-          functionName: "multicall",
-          args: [simulationPayloadData],
-          value: p.value,
-          account: p.account,
-          blockNumber: blockNumber,
-        });
-      }, retryConfig);
+      await simulateMulticall(routerAddress, routerAbi);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
@@ -195,7 +215,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     simulationPayloadData.push(encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData));
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: exchangeRouterAddress,
@@ -209,17 +229,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      await withRetry(() => {
-        return client.simulateContract({
-          address: exchangeRouterAddress,
-          abi: abis.ExchangeRouter,
-          functionName: "multicall",
-          args: [simulationPayloadData],
-          value: p.value,
-          account: p.account,
-          blockNumber: blockNumber,
-        });
-      }, retryConfig);
+      await simulateMulticall(exchangeRouterAddress, abis.ExchangeRouter);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
@@ -230,7 +240,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 
-    if (tenderlyConfig) {
+    if (tenderlyConfig && !p.preCalls?.length) {
       await simulateTxWithTenderly({
         chainId,
         address: routerAddress,
@@ -244,17 +254,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      await withRetry(() => {
-        return client.simulateContract({
-          address: routerAddress,
-          abi: routerAbi,
-          functionName: "multicall",
-          args: [simulationPayloadData],
-          value: p.value,
-          account: p.account,
-          blockNumber: blockNumber,
-        });
-      }, retryConfig);
+      await simulateMulticall(routerAddress, routerAbi);
     } catch (txnError) {
       return handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }

@@ -5568,6 +5568,10 @@ msgstr "Factor positivo"
 msgid "Full position close"
 msgstr "Cierre total de posición"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "Activar el batching de wallet independientemente de los flags de UI"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "Todas las recompensas proyectadas y las distribuciones estimadas son únicamente estimaciones realizadas según el mejor criterio posible. La distribución efectiva está sujeta a la gobernanza de la DAO."

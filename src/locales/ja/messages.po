@@ -5568,6 +5568,10 @@ msgstr "プラスファクター"
 msgid "Full position close"
 msgstr "ポジション全決済"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "UI フラグに関係なくウォレットのバッチ処理を有効にする"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "予測報酬および推定分配額は、いずれも可能な範囲で算出した推定値にすぎません。実際の分配はDAOガバナンスに従います。"
