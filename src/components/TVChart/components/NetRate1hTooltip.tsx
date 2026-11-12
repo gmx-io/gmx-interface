@@ -2,6 +2,7 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import MarketNetFee from "components/MarketNetFee/MarketNetFee";
+import { TooltipContent, TooltipDivider } from "components/Tooltip/TooltipBlocks";
 
 export function NetRate1hTooltip() {
   const info = useSelector(selectChartHeaderInfo);
@@ -9,18 +10,18 @@ export function NetRate1hTooltip() {
   if (info?.fundingRateLong === undefined || info?.fundingRateShort === undefined) return null;
 
   return (
-    <div>
+    <TooltipContent>
       <MarketNetFee
         borrowRateHourly={info?.borrowingRateLong}
         fundingRateHourly={info?.fundingRateLong}
         isLong={true}
       />
-      <br />
+      <TooltipDivider />
       <MarketNetFee
         borrowRateHourly={info?.borrowingRateShort}
         fundingRateHourly={info?.fundingRateShort}
         isLong={false}
       />
-    </div>
+    </TooltipContent>
   );
 }

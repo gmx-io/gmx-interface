@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { plural, t } from "@lingui/macro";
 
 import { isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
 import type { TokenData } from "domain/synthetics/tokens";
@@ -18,7 +18,7 @@ import {
   getFeesBreakdown,
   hasSecondaryOutputRisk,
 } from "./position";
-import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText } from "./shared";
+import { Line, TooltipString, TooltipValue, infoRow, lines, numberToState, numericText, titleRow } from "./shared";
 
 export type LifecycleTokenLeg = {
   token: TokenData;
@@ -42,6 +42,8 @@ export type LifecycleAggregate = {
   netResult: LifecycleCashflow;
   lifecycleRpnlUsd: bigint;
   netFeesUsd: bigint;
+  closeFeesUsd: bigint;
+  transactionsCount: number;
   source: SettlementSource;
 };
 
@@ -301,6 +303,8 @@ export function aggregateLifecycleSettlement({
     ),
     lifecycleRpnlUsd,
     netFeesUsd,
+    closeFeesUsd: getFeesBreakdown(closeRow).totalUsd,
+    transactionsCount: rows.length,
     source: getSettlementSource(rows),
   };
 }
@@ -365,13 +369,20 @@ function getLifecycleCashflowLabels(source: SettlementSource) {
   };
 }
 
+function getDeltaUsdValue(usd: bigint): TooltipString {
+  return { text: formatDeltaUsdParts(usd), state: numberToState(usd) };
+}
+
 export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line[] {
-  const { tier, source } = aggregate;
+  const { tier, source, transactionsCount } = aggregate;
   const labels = getLifecycleCashflowLabels(source);
 
   return lines(
     "",
-    t`Lifecycle settlement`,
+    plural(transactionsCount, {
+      one: "Whole position (# transaction)",
+      other: "Whole position (# transactions)",
+    }),
     "",
     infoRow(labels.funded, getCashflowValue(aggregate.funded, tier)),
     infoRow(labels.receivedBeforeClose, getCashflowValue(aggregate.receivedBeforeClose, tier)),
@@ -379,14 +390,11 @@ export function getLifecycleSettlementLines(aggregate: LifecycleAggregate): Line
     infoRow(labels.totalReceived, getCashflowValue(aggregate.totalReceived, tier)),
     infoRow(labels.netResult, getCashflowValue(aggregate.netResult, tier)),
     "",
-    infoRow(t`Lifecycle RPNL`, {
-      text: formatDeltaUsdParts(aggregate.lifecycleRpnlUsd),
-      state: numberToState(aggregate.lifecycleRpnlUsd),
-    }),
-    infoRow(t`Net lifecycle fees / impact`, {
-      text: formatDeltaUsdParts(aggregate.netFeesUsd),
-      state: numberToState(aggregate.netFeesUsd),
-    }),
+    infoRow(t`RPNL, all closes`, getDeltaUsdValue(aggregate.lifecycleRpnlUsd)),
+    "",
+    titleRow(t`Net fees / price impact, all transactions`, getDeltaUsdValue(aggregate.netFeesUsd)),
+    infoRow(t`This close`, getDeltaUsdValue(aggregate.closeFeesUsd)),
+    infoRow(t`Earlier transactions`, getDeltaUsdValue(aggregate.netFeesUsd - aggregate.closeFeesUsd)),
     "",
     ...getSettlementNotes(source)
   );
@@ -441,7 +449,7 @@ export function getUsdgPartialClosePayoutLines({
 
 export function getUnreconcilableLifecycleLines(): Line[] {
   return lines({
-    text: t`Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably`,
+    text: t`Whole position totals are unavailable because part of this position's history could not be matched reliably`,
     state: "muted" as const,
   });
 }

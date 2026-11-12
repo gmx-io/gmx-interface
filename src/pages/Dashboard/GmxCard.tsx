@@ -18,8 +18,8 @@ import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/TooltipBlocks";
 
 export function GmxCard({
   chainId,
@@ -138,7 +138,7 @@ export function GmxCard({
                   <Trans>Total supply</Trans>
                 </div>
                 <div>
-                  <TooltipComponent
+                  <StandardTooltip
                     position="bottom-end"
                     handle={<AmountHumanValue amount={totalGmxSupply} decimals={GMX_DECIMALS} displayDecimals={2} />}
                     handleClassName="numbers"
@@ -151,9 +151,8 @@ export function GmxCard({
                   <Trans>Total staked</Trans>
                 </div>
                 <div>
-                  <TooltipComponent
+                  <StandardTooltip
                     position="bottom-end"
-                    tooltipClassName="!max-w-[450px]"
                     handle={
                       <AmountHumanValue
                         amount={totalStakedGmxUsd}
@@ -164,8 +163,8 @@ export function GmxCard({
                     }
                     handleClassName="numbers"
                     content={
-                      <>
-                        <StatsTooltipRow
+                      <TooltipRows>
+                        <TooltipRow
                           label={t`Staked on Arbitrum`}
                           value={
                             <AmountWithUsdHuman
@@ -175,9 +174,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                        <StatsTooltipRow
+                        <TooltipRow
                           label={t`Staked on Avalanche`}
                           value={
                             <AmountWithUsdHuman
@@ -187,10 +185,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                        <div className="!my-8 h-1 bg-gray-800" />
-                        <StatsTooltipRow
+                        <TooltipTotal
                           label={t`Total`}
                           value={
                             <AmountWithUsdHuman
@@ -200,9 +196,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                      </>
+                      </TooltipRows>
                     }
                   />
                 </div>

@@ -174,49 +174,53 @@ test("8.09 live position: margin editor rejects empty and oversized withdrawals 
   await expect(confirm).toBeDisabled();
 });
 
-test("8.06 8.10 live position: Close opens the position seller, receive-token search and leverage retention keep the partial close size, Max uses the real size and dismissal preserves the position", async ({
-  page,
-  liveAccount,
-  liveWallet,
-}) => {
-  await liveWallet.connect(page);
-  await configureClassicTrading(page);
-  const row = positionRow(page, liveAccount);
-  await row.getByTestId("position-close-button").click({ timeout: 45_000 });
-  const modal = page.getByTestId("position-close-modal");
-  await expect(modal.locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' Modal ')][1]")).toHaveCSS(
-    "opacity",
-    "1"
-  );
-  const input = modal.getByTestId("amount-input-input");
-  const half = (Number(liveAccount.position!.sizeInUsd) / 1e30 / 2).toFixed(2);
-  await input.fill(half);
-  for (const symbol of ["ETH", "USDC"]) {
-    await modal.locator(".PositionSelector-selected-receive-token").click();
-    const picker = page.locator(".TokenSelector-modal .Modal-content");
-    await picker.getByPlaceholder("Search", { exact: true }).fill(symbol);
-    await picker.getByText(symbol, { exact: true }).click();
-    await expect(picker).toBeHidden();
-    await expect(modal.locator(".PositionSelector-selected-receive-token")).toContainText(symbol);
+test.describe("Keep leverage", () => {
+  test.use({ liveProfile: "keepLeverage" });
+
+  test("8.06 8.10 live position: Close opens the position seller, receive-token search and leverage retention keep the partial close size, Max uses the real size and dismissal preserves the position", async ({
+    page,
+    liveAccount,
+    liveWallet,
+  }) => {
+    await liveWallet.connect(page);
+    await configureClassicTrading(page);
+    const row = positionRow(page, liveAccount);
+    await row.getByTestId("position-close-button").click({ timeout: 45_000 });
+    const modal = page.getByTestId("position-close-modal");
+    await expect(modal.locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' Modal ')][1]")).toHaveCSS(
+      "opacity",
+      "1"
+    );
+    const input = modal.getByTestId("amount-input-input");
+    const half = (Number(liveAccount.position!.sizeInUsd) / 1e30 / 2).toFixed(2);
+    await input.fill(half);
+    for (const symbol of ["ETH", "USDC"]) {
+      await modal.locator(".PositionSelector-selected-receive-token").click();
+      const picker = page.locator(".TokenSelector-modal .Modal-content");
+      await picker.getByPlaceholder("Search", { exact: true }).fill(symbol);
+      await picker.getByText(symbol, { exact: true }).click();
+      await expect(picker).toBeHidden();
+      await expect(modal.locator(".PositionSelector-selected-receive-token")).toContainText(symbol);
+      await expect.poll(() => inputNumber(input)).toBe(Number(half));
+    }
+    const toggle = modal
+      .getByText(/^Keep leverage at/)
+      .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
+      .locator("div.cursor-pointer");
+    await expect(toggle).not.toHaveClass(/pointer-events-none/);
+    const checked = (await toggle.getAttribute("class"))!.includes("bg-blue-400");
+    await toggle.click();
+    if (checked) await expect(toggle).not.toHaveClass(/bg-blue-400/);
+    else await expect(toggle).toHaveClass(/bg-blue-400/);
     await expect.poll(() => inputNumber(input)).toBe(Number(half));
-  }
-  const toggle = modal
-    .getByText(/^Keep leverage at/)
-    .locator("xpath=ancestor::div[contains(@class, 'inline-flex')][1]")
-    .locator("div.cursor-pointer");
-  await expect(toggle).not.toHaveClass(/pointer-events-none/);
-  const checked = (await toggle.getAttribute("class"))!.includes("bg-blue-400");
-  await toggle.click();
-  if (checked) await expect(toggle).not.toHaveClass(/bg-blue-400/);
-  else await expect(toggle).toHaveClass(/bg-blue-400/);
-  await expect.poll(() => inputNumber(input)).toBe(Number(half));
-  await modal.getByRole("button", { name: /^Max:/ }).click();
-  await expect(toggle).toHaveClass(/pointer-events-none/);
-  await expect.poll(() => inputNumber(input)).toBeCloseTo(Number(liveAccount.position!.sizeInUsd) / 1e30, 2);
-  await expect(modal).not.toContainText(/NaN|Infinity|undefined/);
-  await page.keyboard.press("Escape");
-  await expect(modal).not.toBeVisible();
-  await expect(row).toBeVisible();
+    await modal.getByRole("button", { name: /^Max:/ }).click();
+    await expect(toggle).toHaveClass(/pointer-events-none/);
+    await expect.poll(() => inputNumber(input)).toBeCloseTo(Number(liveAccount.position!.sizeInUsd) / 1e30, 2);
+    await expect(modal).not.toContainText(/NaN|Infinity|undefined/);
+    await page.keyboard.press("Escape");
+    await expect(modal).not.toBeVisible();
+    await expect(row).toBeVisible();
+  });
 });
 
 test(

@@ -14,6 +14,9 @@ import type { MarketsInfoData } from "../markets";
 import type { Position, PositionInfo, PositionsData, PositionsInfoData } from "./types";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
+// Enough for order execution and the next positions fetch. After that a position that the server
+// does not return is closed or was never opened, even if its events were missed.
+const MAX_PENDING_MOCK_AGE = 60 * 1000;
 
 function applyEventChanges<T extends Position>(position: T, event: PositionIncreaseEvent | PositionDecreaseEvent): T {
   const nextPosition = { ...position };
@@ -69,6 +72,9 @@ export function applyOptimisticUpdates<T extends Position>({
       const isPendingUpdateFresh =
         rawPendingUpdate !== undefined && rawPendingUpdate.updatedAt + MAX_PENDING_UPDATE_AGE > now;
 
+      const isPendingMockFresh =
+        rawPendingUpdate !== undefined && rawPendingUpdate.updatedAt + MAX_PENDING_MOCK_AGE > now;
+
       const pendingUpdate =
         rawPendingUpdate &&
         isPendingUpdateFresh &&
@@ -82,7 +88,7 @@ export function applyOptimisticUpdates<T extends Position>({
         position = { ...getByKey(positionsData, key)! };
       } else if (
         rawPendingUpdate &&
-        isPendingUpdateFresh &&
+        isPendingMockFresh &&
         rawPendingUpdate.isIncrease &&
         (pendingUpdate || lastIncreaseEvent)
       ) {

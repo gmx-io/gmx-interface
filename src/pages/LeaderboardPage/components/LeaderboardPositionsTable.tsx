@@ -32,7 +32,6 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { TopPositionsSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import {
   MarketFilterLongShort,
@@ -40,8 +39,8 @@ import {
 } from "components/TableMarketFilter/MarketFilterLongShort";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipDivider, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { filterLeaderboardPositions } from "./leaderboardPositionFilters";
 import { formatDeltaUsdSignedParts, getSignedValueClassName } from "./shared";
@@ -125,9 +124,8 @@ export function LeaderboardPositionsTable({
   const indexFrom = (page - 1) * PER_PAGE;
   const rowsData = useMemo(
     () =>
-      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((position, i) => ({
+      filteredStats.slice(indexFrom, indexFrom + PER_PAGE).map((position) => ({
         position,
-        index: i,
         rank: position.rank,
       })),
     [filteredStats, indexFrom]
@@ -140,8 +138,8 @@ export function LeaderboardPositionsTable({
     <TopPositionsSkeleton count={PER_PAGE} />
   ) : isEmpty ? null : (
     <>
-      {rowsData.map(({ position: position, index, rank }) => {
-        return <TableRow key={position.key} position={position} index={index} rank={rank} />;
+      {rowsData.map(({ position: position, rank }) => {
+        return <TableRow key={position.key} position={position} rank={rank} />;
       })}
       {rowsData.length < PER_PAGE && <TopPositionsSkeleton invisible count={PER_PAGE - rowsData.length} />}
     </>
@@ -215,7 +213,7 @@ const TableHeaderCell = memo(
   }: {
     title: string;
     tooltip?: ReactNode;
-    tooltipPosition?: TooltipPosition;
+    tooltipPosition?: StandardTooltipPosition;
     onChange?: (direction: SortDirection) => void;
     width?: number | ((breakpoint?: string) => number);
     breakpoint?: string;
@@ -228,8 +226,6 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
-
     const isSortable = onChange !== undefined;
 
     if (isSortable) {
@@ -237,10 +233,10 @@ const TableHeaderCell = memo(
         <TableTh style={style}>
           <Sorter direction={direction!} onChange={onChange}>
             {tooltip ? (
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={<span className="whitespace-nowrap">{title}</span>}
                 position={tooltipPosition || "bottom"}
-                content={<div onClick={stopPropagation}>{tooltip}</div>}
+                content={tooltip}
                 variant="iconStroke"
               />
             ) : (
@@ -254,10 +250,10 @@ const TableHeaderCell = memo(
     return (
       <TableTh style={style}>
         {tooltip ? (
-          <TooltipWithPortal
+          <StandardTooltip
             handle={<span className="whitespace-nowrap">{title}</span>}
             position={tooltipPosition || "bottom"}
-            content={<div onClick={stopPropagation}>{tooltip}</div>}
+            content={tooltip}
             variant="iconStroke"
           />
         ) : (
@@ -268,221 +264,200 @@ const TableHeaderCell = memo(
   }
 );
 
-const TableRow = memo(
-  ({ position, rank, index }: { position: LeaderboardPosition; index: number; rank: number | null }) => {
-    const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent position={position} />, [position]);
-    const { minCollateralUsd } = useSelector(selectPositionConstants);
-    const userReferralInfo = useSelector(selectUserReferralInfo);
+const TableRow = memo(({ position, rank }: { position: LeaderboardPosition; rank: number | null }) => {
+  const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent position={position} />, [position]);
+  const { minCollateralUsd } = useSelector(selectPositionConstants);
+  const userReferralInfo = useSelector(selectUserReferralInfo);
 
-    const collateralToken = useTokenInfo(position.collateralToken);
-    const marketInfo = useMarketInfo(position.market);
-    const indexToken = marketInfo?.indexToken;
+  const collateralToken = useTokenInfo(position.collateralToken);
+  const marketInfo = useMarketInfo(position.market);
+  const indexToken = marketInfo?.indexToken;
 
-    const liquidationPrice = useMemo(() => {
-      if (!collateralToken || !marketInfo || minCollateralUsd === undefined) return undefined;
+  const liquidationPrice = useMemo(() => {
+    if (!collateralToken || !marketInfo || minCollateralUsd === undefined) return undefined;
 
-      return getLiquidationPrice({
-        marketInfo,
-        collateralToken,
-        sizeInUsd: position.sizeInUsd,
-        sizeInTokens: position.sizeInTokens,
-        collateralUsd: position.collateralUsd,
-        collateralAmount: position.collateralAmount,
-        minCollateralUsd,
-        pendingImpactAmount: 0n,
-        pendingBorrowingFeesUsd: position.unrealizedFees - position.closingFeeUsd,
-        pendingFundingFeesUsd: 0n,
-        isLong: position.isLong,
-        userReferralInfo,
-      });
-    }, [
-      collateralToken,
+    return getLiquidationPrice({
       marketInfo,
+      collateralToken,
+      sizeInUsd: position.sizeInUsd,
+      sizeInTokens: position.sizeInTokens,
+      collateralUsd: position.collateralUsd,
+      collateralAmount: position.collateralAmount,
       minCollateralUsd,
-      position.closingFeeUsd,
-      position.collateralAmount,
-      position.collateralUsd,
-      position.isLong,
-      position.sizeInTokens,
-      position.sizeInUsd,
-      position.unrealizedFees,
+      pendingImpactAmount: 0n,
+      pendingBorrowingFeesUsd: position.unrealizedFees - position.closingFeeUsd,
+      pendingFundingFeesUsd: 0n,
+      isLong: position.isLong,
       userReferralInfo,
-    ]);
+    });
+  }, [
+    collateralToken,
+    marketInfo,
+    minCollateralUsd,
+    position.closingFeeUsd,
+    position.collateralAmount,
+    position.collateralUsd,
+    position.isLong,
+    position.sizeInTokens,
+    position.sizeInUsd,
+    position.unrealizedFees,
+    userReferralInfo,
+  ]);
 
-    const marketDecimals = useSelector(makeSelectMarketPriceDecimals(marketInfo?.indexTokenAddress));
+  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(marketInfo?.indexTokenAddress));
 
-    const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
-    const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
+  const indexName = marketInfo ? getMarketIndexName(marketInfo) : "";
+  const poolName = marketInfo ? getMarketPoolName(marketInfo) : "";
 
-    const renderPositionTooltip = useCallback(() => {
-      return (
-        <>
-          <div className="mr-5 inline-flex items-start leading-1">
-            <span>{indexName}</span>
-            <span className="subtext">[{poolName}]</span>
-          </div>
-          <span className={cx(position.isLong ? "positive" : "negative")}>{position.isLong ? t`Long` : t`Short`}</span>
-        </>
-      );
-    }, [indexName, poolName, position.isLong]);
+  const renderPositionTooltip = useCallback(() => {
+    return (
+      <>
+        <div className="mr-5 inline-flex items-start leading-1">
+          <span>{indexName}</span>
+          <span className="subtext">[{poolName}]</span>
+        </div>
+        <span className={cx(position.isLong ? "positive" : "negative")}>{position.isLong ? t`Long` : t`Short`}</span>
+      </>
+    );
+  }, [indexName, poolName, position.isLong]);
 
-    const renderSizeTooltip = useCallback(() => {
-      return (
-        <>
-          <StatsTooltipRow
-            label={t`Margin`}
-            showDollar={false}
-            value={
-              <AmountWithUsdBalance
-                amount={position.collateralAmount}
-                decimals={collateralToken?.decimals ?? 0}
-                symbol={collateralToken?.symbol}
-                usd={position.collateralUsd}
-                isStable={collateralToken?.isStable}
-              />
-            }
+  const renderSizeTooltip = useCallback(() => {
+    return (
+      <TooltipRow
+        label={t`Margin`}
+        value={
+          <AmountWithUsdBalance
+            amount={position.collateralAmount}
+            decimals={collateralToken?.decimals ?? 0}
+            symbol={collateralToken?.symbol}
+            usd={position.collateralUsd}
+            isStable={collateralToken?.isStable}
           />
-        </>
-      );
-    }, [collateralToken, position.collateralAmount, position.collateralUsd]);
+        }
+      />
+    );
+  }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
-    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Margin covers any losses.`, []);
+  const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Margin covers any losses.`, []);
 
-    const renderLiquidationTooltip = useCallback(() => {
-      const markPrice = indexToken?.prices.maxPrice;
-      const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
-      return (
-        <>
-          <StatsTooltipRow
-            label={t`Mark price`}
+  const renderLiquidationTooltip = useCallback(() => {
+    const markPrice = indexToken?.prices.maxPrice;
+    const shouldRenderPriceChangeToLiq = markPrice !== undefined && liquidationPrice !== undefined;
+    return (
+      <TooltipRows>
+        <TooltipRow
+          label={t`Mark price`}
+          value={
+            <UsdValue
+              usd={markPrice}
+              displayDecimals={calculateDisplayDecimals(markPrice, undefined, marketInfo?.indexToken.visualMultiplier)}
+              visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+            />
+          }
+        />
+        {shouldRenderPriceChangeToLiq && (
+          <TooltipRow
+            label={t`Price change to liquidation`}
             value={
               <UsdValue
-                usd={markPrice}
+                usd={liquidationPrice - markPrice}
+                maxThreshold="1000000"
                 displayDecimals={calculateDisplayDecimals(
                   markPrice,
                   undefined,
                   marketInfo?.indexToken.visualMultiplier
                 )}
                 visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+              />
+            }
+          />
+        )}
+      </TooltipRows>
+    );
+  }, [indexToken?.prices.maxPrice, liquidationPrice, marketInfo?.indexToken.visualMultiplier]);
+
+  return (
+    <TableTr hoverable={true} key={position.key}>
+      <TableTd className="relative">
+        <span className={cx("numbers", getWinnerRankClassname(rank))}>
+          <RankInfo rank={rank} hasSomeCapital />
+        </span>
+      </TableTd>
+      <TableTd>
+        <AddressView size={20} address={position.account} breakpoint="XL" />
+      </TableTd>
+      <TableTd>
+        <StandardTooltip
+          handle={<NumericValue parts={formatDeltaUsdSignedParts(position.qualifyingPnl)} className="numbers" />}
+          handleClassName={getSignedValueClassName(position.qualifyingPnl)}
+          position="bottom"
+          renderContent={renderPnlTooltipContent}
+        />
+      </TableTd>
+      <TableTd>
+        <StandardTooltip
+          handle={
+            <span>
+              {indexToken ? (
+                <TokenIcon className="PositionList-token-icon" symbol={indexToken.symbol} displaySize={20} />
+              ) : null}
+              <span>
+                {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
+              </span>
+
+              <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
+                {position.isLong ? t`Long` : t`Short`}
+              </span>
+            </span>
+          }
+          position="bottom"
+          renderContent={renderPositionTooltip}
+        />
+      </TableTd>
+      <TableTd className="numbers">
+        <UsdValue
+          usd={position.entryPrice}
+          displayDecimals={marketDecimals}
+          visualMultiplier={marketInfo?.indexToken.visualMultiplier}
+        />
+      </TableTd>
+      <TableTd>
+        <StandardTooltip
+          handle={<UsdValue usd={position.sizeInUsd} className="numbers" />}
+          position="bottom-end"
+          renderContent={renderSizeTooltip}
+        />
+      </TableTd>
+      <TableTd className="numbers">
+        <LeverageValue leverage={position.leverage} />
+      </TableTd>
+      <TableTd className="text-right">
+        {liquidationPrice ? (
+          <StandardTooltip
+            position="bottom-end"
+            renderContent={renderLiquidationTooltip}
+            handle={
+              <UsdValue
+                usd={liquidationPrice}
+                maxThreshold="1000000"
+                displayDecimals={marketDecimals}
+                visualMultiplier={marketInfo?.indexToken.visualMultiplier}
                 className="numbers"
               />
             }
-            showDollar={false}
           />
-          {shouldRenderPriceChangeToLiq && (
-            <StatsTooltipRow
-              label={t`Price change to liquidation`}
-              value={
-                <UsdValue
-                  usd={liquidationPrice - markPrice}
-                  maxThreshold="1000000"
-                  displayDecimals={calculateDisplayDecimals(
-                    markPrice,
-                    undefined,
-                    marketInfo?.indexToken.visualMultiplier
-                  )}
-                  visualMultiplier={marketInfo?.indexToken.visualMultiplier}
-                  className="numbers"
-                />
-              }
-              showDollar={false}
-            />
-          )}
-        </>
-      );
-    }, [indexToken?.prices.maxPrice, liquidationPrice, marketInfo?.indexToken.visualMultiplier]);
-
-    return (
-      <TableTr hoverable={true} key={position.key}>
-        <TableTd className="relative">
-          <span className={cx("numbers", getWinnerRankClassname(rank))}>
-            <RankInfo rank={rank} hasSomeCapital />
-          </span>
-        </TableTd>
-        <TableTd>
-          <AddressView size={20} address={position.account} breakpoint="XL" />
-        </TableTd>
-        <TableTd>
-          <TooltipWithPortal
-            handle={<NumericValue parts={formatDeltaUsdSignedParts(position.qualifyingPnl)} className="numbers" />}
-            handleClassName={getSignedValueClassName(position.qualifyingPnl)}
-            position={index > 9 ? "top" : "bottom"}
-            className="nowrap"
-            renderContent={renderPnlTooltipContent}
-            variant="underline"
+        ) : (
+          <StandardTooltip
+            position="bottom-end"
+            renderContent={renderNaLiquidationTooltip}
+            handle={t`N/A`}
+            handleClassName="numbers"
           />
-        </TableTd>
-        <TableTd>
-          <TooltipWithPortal
-            handle={
-              <span>
-                {indexToken ? (
-                  <TokenIcon className="PositionList-token-icon" symbol={indexToken.symbol} displaySize={20} />
-                ) : null}
-                <span>
-                  {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
-                </span>
-
-                <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
-                  {position.isLong ? t`Long` : t`Short`}
-                </span>
-              </span>
-            }
-            position={index > 9 ? "top" : "bottom"}
-            className="nowrap"
-            renderContent={renderPositionTooltip}
-            variant="underline"
-          />
-        </TableTd>
-        <TableTd className="numbers">
-          <UsdValue
-            usd={position.entryPrice}
-            displayDecimals={marketDecimals}
-            visualMultiplier={marketInfo?.indexToken.visualMultiplier}
-          />
-        </TableTd>
-        <TableTd>
-          <TooltipWithPortal
-            handle={<UsdValue usd={position.sizeInUsd} className="numbers" />}
-            position={index > 9 ? "top-end" : "bottom-end"}
-            renderContent={renderSizeTooltip}
-            tooltipClassName="Table-SizeTooltip"
-            variant="underline"
-          />
-        </TableTd>
-        <TableTd className="numbers">
-          <LeverageValue leverage={position.leverage} />
-        </TableTd>
-        <TableTd className="text-right">
-          {liquidationPrice ? (
-            <TooltipWithPortal
-              position={index > 9 ? "top-end" : "bottom-end"}
-              renderContent={renderLiquidationTooltip}
-              handle={
-                <UsdValue
-                  usd={liquidationPrice}
-                  maxThreshold="1000000"
-                  displayDecimals={marketDecimals}
-                  visualMultiplier={marketInfo?.indexToken.visualMultiplier}
-                  className="numbers"
-                />
-              }
-              variant="underline"
-            />
-          ) : (
-            <TooltipWithPortal
-              position={index > 9 ? "top-end" : "bottom-end"}
-              renderContent={renderNaLiquidationTooltip}
-              handle={t`N/A`}
-              handleClassName="numbers"
-              variant="underline"
-            />
-          )}
-        </TableTd>
-      </TableTr>
-    );
-  }
-);
+        )}
+      </TableTd>
+    </TableTr>
+  );
+});
 
 const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeCapital: boolean }) => {
   const isCompetition = useLeaderboardIsCompetition();
@@ -502,12 +477,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
 
   if (rank === null)
     return (
-      <TooltipWithPortal
-        handleClassName="text-typography-secondary"
-        handle={t`N/A`}
-        renderContent={tooltipContent}
-        variant="underline"
-      />
+      <StandardTooltip handleClassName="text-typography-secondary" handle={t`N/A`} renderContent={tooltipContent} />
     );
 
   return <span className="font-medium text-typography-secondary numbers">{rank}</span>;
@@ -528,64 +498,42 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
   );
 
   return (
-    <div>
-      <StatsTooltipRow
-        label={t`Realized PnL`}
-        showDollar={false}
-        value={
-          <NumericValue
-            parts={formatDeltaUsdSignedParts(realizedPnl)}
-            className={cx("numbers", getSignedValueClassName(realizedPnl))}
-          />
-        }
-      />
-      <StatsTooltipRow
-        label={t`Unrealized PnL`}
-        showDollar={false}
-        value={
-          <NumericValue
-            parts={formatDeltaUsdSignedParts(unrealizedPnl)}
-            className={cx("numbers", getSignedValueClassName(unrealizedPnl))}
-          />
-        }
-      />
-
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow
+          label={t`Realized PnL`}
+          value={<NumericValue parts={formatDeltaUsdSignedParts(realizedPnl)} />}
+          valueClassName={getSignedValueClassName(realizedPnl)}
+        />
+        <TooltipRow
+          label={t`Unrealized PnL`}
+          value={<NumericValue parts={formatDeltaUsdSignedParts(unrealizedPnl)} />}
+          valueClassName={getSignedValueClassName(unrealizedPnl)}
+        />
+      </TooltipRows>
       {!isPnlAfterFees && (
         <>
-          <br />
-          <StatsTooltipRow
-            label={t`Realized fees`}
-            showDollar={false}
-            value={
-              <NumericValue
-                parts={formatDeltaUsdSignedParts(realizedFees)}
-                className={cx("numbers", getSignedValueClassName(realizedFees))}
-              />
-            }
-          />
-          <StatsTooltipRow
-            label={t`Unrealized fees`}
-            showDollar={false}
-            value={
-              <NumericValue
-                parts={formatDeltaUsdSignedParts(unrealizedFees)}
-                className={cx("numbers", getSignedValueClassName(unrealizedFees))}
-              />
-            }
-          />
-          <br />
-          <StatsTooltipRow
+          <TooltipDivider />
+          <TooltipRows>
+            <TooltipRow
+              label={t`Realized fees`}
+              value={<NumericValue parts={formatDeltaUsdSignedParts(realizedFees)} />}
+              valueClassName={getSignedValueClassName(realizedFees)}
+            />
+            <TooltipRow
+              label={t`Unrealized fees`}
+              value={<NumericValue parts={formatDeltaUsdSignedParts(unrealizedFees)} />}
+              valueClassName={getSignedValueClassName(unrealizedFees)}
+            />
+          </TooltipRows>
+          <TooltipDivider />
+          <TooltipRow
             label={t`Realized price impact`}
-            showDollar={false}
-            value={
-              <NumericValue
-                parts={formatDeltaUsdSignedParts(position.realizedPriceImpact)}
-                className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}
-              />
-            }
+            value={<NumericValue parts={formatDeltaUsdSignedParts(position.realizedPriceImpact)} />}
+            valueClassName={getSignedValueClassName(position.realizedPriceImpact)}
           />
         </>
       )}
-    </div>
+    </TooltipContent>
   );
 });

@@ -19,9 +19,9 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
@@ -173,7 +173,7 @@ export function StatsCard() {
             <Trans>Treasury</Trans>
           </div>
           <div>
-            <TooltipWithPortal
+            <StandardTooltip
               handle={
                 <AmountHumanValue
                   amount={treasuryData?.totalUsd}
@@ -185,18 +185,30 @@ export function StatsCard() {
               handleClassName="numbers"
               position="bottom-end"
               content={
-                <div>
-                  <StatsTooltipRow
-                    label={<Trans>In other tokens:</Trans>}
+                <TooltipRows>
+                  <TooltipRow
+                    label={<Trans>In other tokens</Trans>}
                     value={
-                      <AmountHumanValue amount={treasuryWithoutGmxUsd} decimals={USD_DECIMALS} displayDecimals={2} />
+                      <AmountHumanValue
+                        amount={treasuryWithoutGmxUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
                     }
                   />
-                  <StatsTooltipRow
-                    label={<Trans>In GMX:</Trans>}
-                    value={<AmountHumanValue amount={gmxInTreasuryUsd} decimals={USD_DECIMALS} displayDecimals={2} />}
+                  <TooltipRow
+                    label={<Trans>In GMX</Trans>}
+                    value={
+                      <AmountHumanValue
+                        amount={gmxInTreasuryUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
+                    }
                   />
-                </div>
+                </TooltipRows>
               }
             />
           </div>
