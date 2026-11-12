@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import TooltipWithPortal from "./TooltipWithPortal";
+import StandardTooltip from "./StandardTooltip";
 
 type Props = {
   children: ReactNode;
@@ -14,7 +14,7 @@ export function ButtonTooltipWrapper({ children, content, isHandlerDisabled = tr
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       content={content}
       position="bottom"
       variant="none"
@@ -24,6 +24,6 @@ export function ButtonTooltipWrapper({ children, content, isHandlerDisabled = tr
       shouldPreventDefault={false}
     >
       {children}
-    </TooltipWithPortal>
+    </StandardTooltip>
   );
 }

@@ -6,8 +6,8 @@ import { UsdgLaunchBoost, getIsUsdgLaunchBoostIncluded } from "domain/synthetics
 import { formatDateRange, formatDayMonthYear } from "lib/dates";
 import { formatPercentage, formatPercentageDisplay } from "lib/numbers";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -119,31 +119,24 @@ function UsdgLaunchBoostTooltipContent({
   const tokenSymbol = launchBoost.isGlv ? "GLV" : "GM";
 
   return (
-    <div className="flex flex-col gap-y-14">
-      <div>
-        <StatsTooltipRow
-          showDollar={false}
-          label={t`Fee APY`}
-          value={formatFeeApy(apy, isApyLoading)}
-          valueClassName="numbers"
-        />
-        <StatsTooltipRow
-          showDollar={false}
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow label={t`Fee APY`} value={formatFeeApy(apy, isApyLoading)} />
+        <TooltipRow
           label={launchBoost.status === "target" ? t`Launch boost (target)` : t`Launch boost`}
           value={formatUsdgLaunchBoostValue(launchBoost)}
-          valueClassName="numbers"
         />
-      </div>
+      </TooltipRows>
       {launchBoost.status !== "loading" && (
-        <div>
+        <TooltipFootnote>
           <UsdgLaunchBoostStatusNote launchBoost={launchBoost} />
-        </div>
+        </TooltipFootnote>
       )}
-      <div>
+      <TooltipFootnote>
         <Trans>Paid into the {tokenSymbol} price every 4 hours. Nothing to claim.</Trans>
-      </div>
+      </TooltipFootnote>
       {launchBoost.isGlv && <UsdgLaunchBoostGlvSchedule />}
-    </div>
+    </TooltipContent>
   );
 }
 
@@ -179,8 +172,7 @@ export function UsdgLaunchBoostAprInfo({
   }
 
   return (
-    <TooltipWithPortal
-      maxAllowedWidth={280}
+    <StandardTooltip
       handle={handle}
       position="bottom-end"
       content={<UsdgLaunchBoostTooltipContent apy={apy} isApyLoading={isApyLoading} launchBoost={launchBoost} />}

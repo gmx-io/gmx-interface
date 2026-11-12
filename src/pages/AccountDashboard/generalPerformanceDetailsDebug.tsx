@@ -4,71 +4,73 @@ import { PnlSummaryPoint } from "domain/synthetics/accountStats";
 import { formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+} from "components/Tooltip/TooltipBlocks";
 
 export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <>
-      <StatsTooltipRow
-        label={t`Realized base PnL`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.realizedBasePnlUsd)}
-        value={formatUsd(row.realizedBasePnlUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Unrealized base PnL`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.unrealizedBasePnlUsd)}
-        value={formatUsd(row.unrealizedBasePnlUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Start unrealized PnL`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.startUnrealizedBasePnlUsd)}
-        value={formatUsd(row.startUnrealizedBasePnlUsd)}
-      />
-      <br />
-      <StatsTooltipRow
-        label={t`Realized fees`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(-row.realizedFeesUsd)}
-        value={formatUsd(-row.realizedFeesUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Realized swap fees`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(-row.realizedSwapFeesUsd)}
-        value={formatUsd(-row.realizedSwapFeesUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Unrealized fees`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(-row.unrealizedFeesUsd)}
-        value={formatUsd(-row.unrealizedFeesUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Start unrealized fees`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(-row.startUnrealizedFeesUsd)}
-        value={formatUsd(-row.startUnrealizedFeesUsd)}
-      />
-      <br />
-      <StatsTooltipRow
-        label={t`Realized price impact`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.realizedPriceImpactUsd)}
-        value={formatUsd(row.realizedPriceImpactUsd)}
-      />
-      <StatsTooltipRow
-        label={t`Realized swap impact`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.realizedSwapImpactUsd)}
-        value={formatUsd(row.realizedSwapImpactUsd)}
-      />
-      <br />
-      <div className="text-body-small text-typography-secondary">
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow
+          label={t`Realized base PnL`}
+          valueClassName={getPositiveOrNegativeClass(row.realizedBasePnlUsd)}
+          value={formatUsd(row.realizedBasePnlUsd)}
+        />
+        <TooltipRow
+          label={t`Unrealized base PnL`}
+          valueClassName={getPositiveOrNegativeClass(row.unrealizedBasePnlUsd)}
+          value={formatUsd(row.unrealizedBasePnlUsd)}
+        />
+        <TooltipRow
+          label={t`Start unrealized PnL`}
+          valueClassName={getPositiveOrNegativeClass(row.startUnrealizedBasePnlUsd)}
+          value={formatUsd(row.startUnrealizedBasePnlUsd)}
+        />
+      </TooltipRows>
+      <TooltipDivider />
+      <TooltipRows>
+        <TooltipRow
+          label={t`Realized fees`}
+          valueClassName={getPositiveOrNegativeClass(-row.realizedFeesUsd)}
+          value={formatUsd(-row.realizedFeesUsd)}
+        />
+        <TooltipRow
+          label={t`Realized swap fees`}
+          valueClassName={getPositiveOrNegativeClass(-row.realizedSwapFeesUsd)}
+          value={formatUsd(-row.realizedSwapFeesUsd)}
+        />
+        <TooltipRow
+          label={t`Unrealized fees`}
+          valueClassName={getPositiveOrNegativeClass(-row.unrealizedFeesUsd)}
+          value={formatUsd(-row.unrealizedFeesUsd)}
+        />
+        <TooltipRow
+          label={t`Start unrealized fees`}
+          valueClassName={getPositiveOrNegativeClass(-row.startUnrealizedFeesUsd)}
+          value={formatUsd(-row.startUnrealizedFeesUsd)}
+        />
+      </TooltipRows>
+      <TooltipDivider />
+      <TooltipRows>
+        <TooltipRow
+          label={t`Realized price impact`}
+          valueClassName={getPositiveOrNegativeClass(row.realizedPriceImpactUsd)}
+          value={formatUsd(row.realizedPriceImpactUsd)}
+        />
+        <TooltipRow
+          label={t`Realized swap impact`}
+          valueClassName={getPositiveOrNegativeClass(row.realizedSwapImpactUsd)}
+          value={formatUsd(row.realizedSwapImpactUsd)}
+        />
+      </TooltipRows>
+      <TooltipFootnote>
         <Trans>Outstanding claimable amounts are not included</Trans>
-      </div>
-    </>
+      </TooltipFootnote>
+    </TooltipContent>
   );
 }

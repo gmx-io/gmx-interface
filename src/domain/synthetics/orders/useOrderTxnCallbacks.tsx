@@ -30,10 +30,11 @@ import { parseError } from "lib/errors";
 import {
   getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
-  getIsInvalidSubaccountApprovalNonceError,
+  getIsOutdatedSubaccountApprovalError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
+  getIsRelayUnavailableError,
   getIsSwapPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -404,7 +405,7 @@ export function useOrderTxnCallbacks() {
 
           const sentSubaccountApproval = expressParams?.subaccount?.signedApproval;
           const isOutdatedSubaccountApproval =
-            sentSubaccountApproval !== undefined && getIsInvalidSubaccountApprovalNonceError(error);
+            sentSubaccountApproval !== undefined && getIsOutdatedSubaccountApprovalError(error);
 
           const fallbackToInternalSwap =
             !isOutdatedSubaccountApproval &&
@@ -444,6 +445,7 @@ export function useOrderTxnCallbacks() {
             isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
             isOutdatedSubaccountApproval,
+            isRelayUnavailable: getIsRelayUnavailableError(error),
             setIsSettingsVisible,
             expressTxn: expressParams
               ? {

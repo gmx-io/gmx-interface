@@ -426,10 +426,6 @@
   color: var(--error-red);
 }
 
-.order-error .Tooltip-popup {
-  white-space: pre-line;
-}
-
 .Order-list-item-text {
   line-height: 1.4;
 }
@@ -439,11 +435,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.Exchange-list .Tooltip-popup,
-.Exchange-list .App-card .Tooltip-popup {
-  min-width: 32rem;
 }
 
 .Exchange-list-item-error {
@@ -827,14 +818,6 @@ table.Exchange-list-small td {
   margin-top: -1.05rem;
 }
 
-.Position-list-active-orders .Tooltip-popup {
-  max-width: 5rem;
-}
-
-.Position-list-active-orders .Tooltip-popup .order__list {
-  max-height: 350px;
-  overflow-y: auto;
-}
 .Exchange-list-muted {
   font-size: var(--font-size-body-medium);
 }
@@ -1145,10 +1128,5 @@ table.Exchange-list-small td {
 @media (max-width: 375px) {
   .ExchangeChart-header {
     grid-column-gap: 0.5rem;
-  }
-
-  .Exchange-list .Tooltip-popup,
-  .Exchange-list .App-card .Tooltip-popup {
-    min-width: 27rem;
   }
 }

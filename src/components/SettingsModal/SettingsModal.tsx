@@ -11,7 +11,6 @@ import {
   getIsSubaccountActionsExceeded,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
-  getIsSubaccountNonceExpired,
 } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -191,7 +190,7 @@ export function SettingsModal({
             break;
           }
           case TradingMode.Express1CT: {
-            const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
+            const isSubaccountActivated = await subaccountState.tryEnableSubaccount(subaccountState.initialSettings);
 
             if (!isSubaccountActivated) {
               setTradingMode(prevMode);
@@ -225,15 +224,13 @@ export function SettingsModal({
         const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, Boolean(srcChainId));
         const isOneClickExpired = getIsSubaccountExpired(subaccountState.subaccount);
         const isOneClickActionsExceeded = getIsSubaccountActionsExceeded(subaccountState.subaccount, 1);
-        const isOneClickStructurallyInvalid =
-          getIsSubaccountNonceExpired(subaccountState.subaccount) ||
-          getIsSubaccountApprovalInvalid({
-            chainId,
-            signerChainId: srcChainId ?? chainId,
-            onchainData: subaccountState.subaccount.onchainData,
-            signedApproval: subaccountState.subaccount.signedApproval,
-            subaccountRouterAddress,
-          });
+        const isOneClickStructurallyInvalid = getIsSubaccountApprovalInvalid({
+          chainId,
+          signerChainId: srcChainId ?? chainId,
+          onchainData: subaccountState.subaccount.onchainData,
+          signedApproval: subaccountState.subaccount.signedApproval,
+          subaccountRouterAddress,
+        });
 
         const shouldFallbackFromOneClickToExpress =
           !isOneClickStructurallyInvalid && (isOneClickExpired || isOneClickActionsExceeded);

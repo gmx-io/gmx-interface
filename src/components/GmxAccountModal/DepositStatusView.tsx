@@ -49,7 +49,7 @@ export const DepositStatusView = () => {
     });
     setIsSubaccountActivating(true);
     subaccountState
-      .tryEnableSubaccount({ withTokenPermits: false })
+      .tryEnableSubaccount({ ...subaccountState.initialSettings, withTokenPermits: false })
       .then((isSubaccountActivated) => {
         if (isSubaccountActivated) {
           userAnalytics.pushEvent<OneClickPromotionEvent>({

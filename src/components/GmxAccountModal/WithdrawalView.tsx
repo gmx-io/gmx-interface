@@ -105,6 +105,7 @@ import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { CustomErrorName } from "sdk/utils/errors";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 import { convertToTokenAmount, getMidPrice } from "sdk/utils/tokens";
 import { applySlippageToMinOut } from "sdk/utils/trade";
 
@@ -724,6 +725,7 @@ export const WithdrawalView = () => {
         minAmountOut: fakeAmount,
         data: "0x",
         provider: zeroAddress,
+        bridgeFee: getEmptyBridgeFeeParams(),
       };
     }
 
@@ -748,6 +750,7 @@ export const WithdrawalView = () => {
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [
     withdrawalViewChain,
@@ -777,6 +780,7 @@ export const WithdrawalView = () => {
         minAmountOut: inputAmount, // Ignored by the same-chain transferOut path
         data: "0x",
         provider: zeroAddress,
+        bridgeFee: getEmptyBridgeFeeParams(),
       };
     }
 
@@ -801,6 +805,7 @@ export const WithdrawalView = () => {
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [
     withdrawalViewChain,

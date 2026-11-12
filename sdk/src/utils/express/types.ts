@@ -30,6 +30,7 @@ export type RelayParamsPayload = {
   deadline: bigint;
   desChainId: bigint;
   userNonce: bigint;
+  eip6492SignatureWrapperHash: string;
 };
 
 export type RelayParamsPayloadWithSignature = RelayParamsPayload & {

@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
 import useSWR from "swr";
@@ -87,9 +87,7 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
   return (
     <div className={cx("flex justify-end max-md:w-full", className)}>
       <ButtonTooltipWrapper
-        content={
-          hasClaimableRewards ? undefined : <Trans>Nothing is claimable on {getChainName(chainId)} right now</Trans>
-        }
+        content={hasClaimableRewards ? undefined : t`Nothing is claimable on ${getChainName(chainId)} right now`}
       >
         {button}
       </ButtonTooltipWrapper>

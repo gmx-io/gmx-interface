@@ -52,6 +52,7 @@ function createOnchainData(overrides: Partial<SubaccountOnchainData> = {}): Suba
     approvalNonce: APPROVAL_NONCE,
     multichainApprovalNonce: MULTICHAIN_APPROVAL_NONCE,
     integrationId: zeroHash,
+    revocationCounter: 0n,
     ...overrides,
   };
 }
@@ -69,6 +70,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: gelatoRouterAddress,
     signatureChainId: ARBITRUM,
     ...overrides,
@@ -391,7 +394,10 @@ describe("One-Click session limits", () => {
   });
 
   describe("getInitialSubaccountApproval", () => {
-    function activate(onchain: Partial<SubaccountOnchainState> = {}) {
+    function activate(
+      onchain: Partial<SubaccountOnchainState> = {},
+      limits: { remainingActions?: bigint; remainingSeconds?: bigint } = {}
+    ) {
       const chain = new MockChain({
         walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
         subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
@@ -407,6 +413,7 @@ describe("One-Click session limits", () => {
         provider,
         subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
         isGmxAccount: false,
+        ...limits,
       });
     }
 
@@ -430,6 +437,27 @@ describe("One-Click session limits", () => {
       expect(approval.shouldAdd).toBe(false);
       expect(approval.expiresAt).toBe(BigInt(NOW + 60 * DAY));
       expect(approval.maxAllowedCount).toBe(425n);
+    });
+
+    it("signs the limits saved before activation even over a longer on-chain expiry", async () => {
+      const approval = await activate(
+        { currentActionsCount: 12n, maxAllowedCount: 90n, expiresAt: BigInt(NOW + 30 * DAY) },
+        { remainingActions: 2n, remainingSeconds: BigInt(DAY) }
+      );
+
+      expect(approval.maxAllowedCount).toBe(14n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + DAY));
+    });
+
+    it("rejects zero or negative limits", async () => {
+      for (const [remainingActions, remainingSeconds] of [
+        [0n, BigInt(DAY)],
+        [-1n, BigInt(DAY)],
+        [2n, 0n],
+        [2n, -1n],
+      ]) {
+        await expect(activate({}, { remainingActions, remainingSeconds })).rejects.toThrow("positive");
+      }
     });
   });
 

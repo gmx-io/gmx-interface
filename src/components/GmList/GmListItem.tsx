@@ -30,6 +30,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
 import { getDirectDepositAccess } from "domain/synthetics/whitelists/utils";
@@ -166,8 +167,9 @@ export function GmListItem({
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
-  const marketPerformance = performance?.[token.address];
-  const marketPerformanceSnapshots = performanceSnapshots?.[token.address];
+  const isPriceInvalid = getIsPoolTokenPriceInvalid(marketOrGlv, token);
+  const marketPerformance = isPriceInvalid ? undefined : performance?.[token.address];
+  const marketPerformanceSnapshots = isPriceInvalid ? undefined : performanceSnapshots?.[token.address];
 
   if (isMobile) {
     return (
@@ -256,14 +258,18 @@ export function GmListItem({
           <SyntheticsInfoRow
             label={<FeeApyLabel />}
             value={
-              <AprInfo
-                apy={apy}
-                incentiveApr={incentiveApr}
-                lidoApr={lidoApr}
-                launchBoost={launchBoost}
-                isApyLoading={apyLoading}
-                marketAddress={token.address}
-              />
+              isPriceInvalid ? (
+                "N/A"
+              ) : (
+                <AprInfo
+                  apy={apy}
+                  incentiveApr={incentiveApr}
+                  lidoApr={lidoApr}
+                  launchBoost={launchBoost}
+                  isApyLoading={apyLoading}
+                  marketAddress={token.address}
+                />
+              )
             }
           />
           <SyntheticsInfoRow
@@ -288,7 +294,7 @@ export function GmListItem({
     ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
     : "N/A";
 
-  const shouldShowApy = (apy !== undefined && apy !== 0n) || launchBoost !== undefined;
+  const shouldShowApy = !isPriceInvalid && ((apy !== undefined && apy !== 0n) || launchBoost !== undefined);
 
   const apyValue = shouldShowApy ? (
     <AprInfo

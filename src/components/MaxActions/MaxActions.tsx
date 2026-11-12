@@ -1,13 +1,12 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { MouseEvent, ReactNode, useCallback, useId } from "react";
+import { MouseEvent, ReactNode, useCallback } from "react";
 
 import type { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { userAnalytics } from "lib/userAnalytics";
 import type { MaxActionClickEvent } from "lib/userAnalytics/types";
 
-import type { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
 
 type Props = {
   state: MaxActionsState;
@@ -15,14 +14,21 @@ type Props = {
   onKeepGas?: () => void;
   qa?: string;
   className?: string;
-  tooltipPosition?: TooltipPosition;
+  tooltipPosition?: StandardTooltipPosition;
 };
 
 export function getIsMaxActionDisabled(state: MaxActionsState): boolean {
   return state.isLoading || state.isFeeUnavailable || state.isInsufficientForFee;
 }
 
-export function MaxActions({ state, onMax, onKeepGas, qa = "input", className, tooltipPosition = "top-end" }: Props) {
+export function MaxActions({
+  state,
+  onMax,
+  onKeepGas,
+  qa = "input",
+  className,
+  tooltipPosition = "bottom-end",
+}: Props) {
   const handleMax = useCallback(() => {
     userAnalytics.pushEvent<MaxActionClickEvent>({ event: "MaxAction", data: { action: "MaxClick" } });
     onMax();
@@ -78,7 +84,7 @@ function MaxActionPill({
   isDisabled: boolean;
   isLoading: boolean;
   tooltip: string | undefined;
-  tooltipPosition: TooltipPosition;
+  tooltipPosition: StandardTooltipPosition;
   onClick: () => void;
   children: ReactNode;
 }) {
@@ -92,26 +98,21 @@ function MaxActionPill({
     [isDisabled, onClick]
   );
 
-  const descriptionId = useId();
-
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       content={tooltip}
       disabled={tooltip === undefined}
       isHandlerDisabled={isDisabled}
       handleClassName={isDisabled ? "!cursor-not-allowed" : undefined}
-      tooltipClassName="pointer-events-none"
       shouldPreventDefault={false}
       variant="none"
       position={tooltipPosition}
-      flipOnlyToOppositeSide
     >
       <button
         type="button"
         data-qa={qa}
         aria-pressed={isSelected}
         aria-busy={isLoading || undefined}
-        aria-describedby={tooltip !== undefined ? descriptionId : undefined}
         disabled={isDisabled}
         onClick={handleClick}
         className={cx("whitespace-nowrap rounded-full px-8 py-2 text-12 font-medium transition-colors", {
@@ -122,11 +123,6 @@ function MaxActionPill({
       >
         {children}
       </button>
-      {tooltip !== undefined && (
-        <span id={descriptionId} className="sr-only">
-          {tooltip}
-        </span>
-      )}
-    </TooltipWithPortal>
+    </StandardTooltip>
   );
 }

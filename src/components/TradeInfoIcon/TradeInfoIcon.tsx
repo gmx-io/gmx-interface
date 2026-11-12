@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipTitledText } from "components/Tooltip/TooltipBlocks";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 
@@ -26,130 +26,96 @@ const getTradeTypeLabel = (tradeMode: TradeMode, tradePlace: TradePlace) => {
 };
 
 interface Props {
-  isMobile: boolean;
   tradeType: TradeType;
   tradePlace: TradePlace;
 }
 
-const UL_CLASS_NAME = "text-body-medium flex list-disc flex-col gap-2";
-const LI_CLASS_NAME = "p-0";
-
-export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMobile }: Props) {
+export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType }: Props) {
   const isTradeBox = tradePlace === "tradebox";
   const typeString = isTradeBox ? "" : t`Close`;
   const contentByTradeType: Record<TradeType, ReactNode> = {
     [TradeType.Long]: (
-      <ul className={UL_CLASS_NAME}>
-        <li className={LI_CLASS_NAME}>
+      <TooltipContent>
+        <TooltipTitledText title={<Trans>{typeString} Long Market</Trans>}>
+          <Trans>{getTradeTypeLabel(TradeMode.Market, tradePlace)} a long position at the current price</Trans>
+        </TooltipTitledText>
+        {isTradeBox ? (
+          <TooltipTitledText title={<Trans>{typeString} Long Limit</Trans>}>
+            <Trans>
+              {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a long position when the price is below the trigger
+              price.
+            </Trans>
+          </TooltipTitledText>
+        ) : null}
+        {isTradeBox ? (
+          <TooltipTitledText title={<Trans>{typeString} Long Stop Market</Trans>}>
+            <Trans>
+              {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position when the price is above the trigger
+              price.
+            </Trans>
+          </TooltipTitledText>
+        ) : null}
+        <TooltipTitledText title={<Trans>{typeString} Long TWAP</Trans>}>
           <Trans>
-            {typeString} Long Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a long position at the current
-            price
+            {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly distributed parts over a specified
+            time.
           </Trans>
-        </li>
-        {isTradeBox ? (
-          <li className={LI_CLASS_NAME}>
-            <Trans>
-              {typeString} Long Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a long position when the price
-              is below the trigger price.
-            </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-          </li>
-        ) : null}
-        {isTradeBox ? (
-          <li className={LI_CLASS_NAME}>
-            <Trans>
-              {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position when
-              the price is above the trigger price.
-            </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-          </li>
-        ) : null}
-        <li className={LI_CLASS_NAME}>
-          <Trans>
-            {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly
-            distributed parts over a specified time.
-          </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
-            <Trans>Read more</Trans>
-          </ExternalLink>
-          .
-        </li>
-      </ul>
+        </TooltipTitledText>
+        <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/">
+          <Trans>Read more</Trans>
+        </TooltipLink>
+      </TooltipContent>
     ),
     [TradeType.Short]: (
-      <ul className={UL_CLASS_NAME}>
-        <li className={LI_CLASS_NAME}>
+      <TooltipContent>
+        <TooltipTitledText title={<Trans>{typeString} Short Market</Trans>}>
+          <Trans>{getTradeTypeLabel(TradeMode.Market, tradePlace)} a short position at the current price</Trans>
+        </TooltipTitledText>
+        {isTradeBox ? (
+          <TooltipTitledText title={<Trans>{typeString} Short Limit</Trans>}>
+            <Trans>
+              {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a short position when the price is above the trigger
+              price.
+            </Trans>
+          </TooltipTitledText>
+        ) : null}
+        {isTradeBox ? (
+          <TooltipTitledText title={<Trans>{typeString} Short Stop Market</Trans>}>
+            <Trans>
+              {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position when the price is below the trigger
+              price.
+            </Trans>
+          </TooltipTitledText>
+        ) : null}
+        <TooltipTitledText title={<Trans>{typeString} Short TWAP</Trans>}>
           <Trans>
-            {typeString} Short Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a short position at the current
-            price
+            {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a short position in evenly distributed parts over a
+            specified time.
           </Trans>
-        </li>
-        {isTradeBox ? (
-          <li className={LI_CLASS_NAME}>
-            <Trans>
-              {typeString} Short Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a short position when the price
-              is above the trigger price.
-            </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-          </li>
-        ) : null}
-        {isTradeBox ? (
-          <li className={LI_CLASS_NAME}>
-            <Trans>
-              {typeString} Short Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position
-              when the price is below the trigger price.
-            </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-          </li>
-        ) : null}
-        <li className={LI_CLASS_NAME}>
-          <Trans>
-            {typeString} Short TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a short position in evenly
-            distributed parts over a specified time.
-          </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
-            <Trans>Read more</Trans>
-          </ExternalLink>
-          .
-        </li>
-      </ul>
+        </TooltipTitledText>
+        <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/">
+          <Trans>Read more</Trans>
+        </TooltipLink>
+      </TooltipContent>
     ),
     [TradeType.Swap]: (
-      <ul className={UL_CLASS_NAME}>
-        <li className={LI_CLASS_NAME}>
-          <Trans>Swap Market: Swap tokens at the current market price</Trans>
-        </li>
-        <li className={LI_CLASS_NAME}>
-          <Trans>Swap Limit: Swap tokens when the trigger price is reached</Trans>
-        </li>
-        <li className={LI_CLASS_NAME}>
-          <Trans>Swap TWAP: Swap tokens in evenly distributed parts over a specified time</Trans>
-        </li>
-      </ul>
+      <TooltipContent>
+        <TooltipTitledText title={<Trans>Swap Market</Trans>}>
+          <Trans>Swap tokens at the current market price</Trans>
+        </TooltipTitledText>
+        <TooltipTitledText title={<Trans>Swap Limit</Trans>}>
+          <Trans>Swap tokens when the trigger price is reached</Trans>
+        </TooltipTitledText>
+        <TooltipTitledText title={<Trans>Swap TWAP</Trans>}>
+          <Trans>Swap tokens in evenly distributed parts over a specified time</Trans>
+        </TooltipTitledText>
+      </TooltipContent>
     ),
   };
 
   return (
-    <Tooltip
-      position={isMobile ? "bottom-end" : "top-end"}
-      content={contentByTradeType[tradeType]}
-      tooltipClassName="p-10"
-      className="flex"
-      variant="none"
-    >
-      <InfoCircleIcon className="box-content h-16 w-16 cursor-pointer p-8 text-typography-secondary gmx-hover:text-typography-primary" />
-    </Tooltip>
+    <StandardTooltip position="bottom-end" content={contentByTradeType[tradeType]} className="flex" variant="none">
+      <InfoCircleIcon className="box-content h-16 w-16 p-8 text-typography-secondary gmx-hover:text-typography-primary" />
+    </StandardTooltip>
   );
 }

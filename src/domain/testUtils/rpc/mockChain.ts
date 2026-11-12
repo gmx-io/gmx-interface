@@ -21,6 +21,7 @@ const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBACCOUNT_A
 const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
+const SUBACCOUNT_REVOCATION_COUNTER = hashString("SUBACCOUNT_REVOCATION_COUNTER");
 export const SUBACCOUNT_ORDER_ACTION_HASH = hashString("SUBACCOUNT_ORDER_ACTION");
 
 export function subaccountListKey(account: string): string {
@@ -50,6 +51,10 @@ export function subaccountExpiresAtKey(account: string, subaccount: string): str
 
 export function subaccountIntegrationIdKey(account: string, subaccount: string): string {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
+}
+
+export function subaccountRevocationCounterKey(account: string, subaccount: string): string {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_REVOCATION_COUNTER, account, subaccount]);
 }
 
 export const ARBITRUM_CONTRACTS = {
@@ -126,6 +131,7 @@ export type SubaccountOnchainState = {
   approvalNonce: bigint;
   multichainApprovalNonce: bigint;
   integrationId: string;
+  revocationCounter: bigint;
 };
 
 export type SentTransaction = {
@@ -151,6 +157,7 @@ export type MockChainOptions = {
   walletPrivateKey: string;
   subaccountAddress?: string;
   onchain?: Partial<SubaccountOnchainState>;
+  isContractAccount?: boolean;
 };
 
 /** Synthetic, stateful chain: the test sets the state it wants and the mock derives every answer. */
@@ -158,6 +165,7 @@ export class MockChain implements RpcResponder {
   wallet: ethers.Wallet;
   account: string;
   subaccountAddress: string | undefined;
+  isContractAccount: boolean;
 
   onchain: SubaccountOnchainState = {
     active: false,
@@ -167,6 +175,7 @@ export class MockChain implements RpcResponder {
     approvalNonce: 0n,
     multichainApprovalNonce: 0n,
     integrationId: ZERO_HASH,
+    revocationCounter: 0n,
   };
 
   balances: Record<string, bigint> = {};
@@ -203,6 +212,7 @@ export class MockChain implements RpcResponder {
     this.wallet = new ethers.Wallet(options.walletPrivateKey);
     this.account = this.wallet.address;
     this.subaccountAddress = options.subaccountAddress;
+    this.isContractAccount = options.isContractAccount ?? false;
     Object.assign(this.onchain, options.onchain);
   }
 
@@ -274,7 +284,7 @@ export class MockChain implements RpcResponder {
         return "0x" + balance.toString(16);
       }
       case "eth_getCode":
-        return "0x";
+        return this.isContractAccount && isSameAddress(params[0] as string, this.account) ? "0x6080604052" : "0x";
       case "eth_getTransactionCount":
         return "0x0";
       case "eth_estimateGas":
@@ -572,6 +582,9 @@ export class MockChain implements RpcResponder {
     }
     if (key === subaccountExpiresAtKey(this.account, this.subaccountAddress)) {
       return this.onchain.expiresAt;
+    }
+    if (key === subaccountRevocationCounterKey(this.account, this.subaccountAddress)) {
+      return this.onchain.revocationCounter;
     }
 
     return 0n;

@@ -19,7 +19,7 @@ import Loader from "components/Loader/Loader";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -87,21 +87,15 @@ export function GlvList({
   const titleNode = isMegaethPointsActive ? (
     <span className="flex flex-wrap items-center gap-8">
       <span>{t`GLV vaults`}</span>
-      <TooltipWithPortal
+      <StandardTooltip
         variant="none"
-        maxAllowedWidth={350}
         handle={
           <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
             <img className="h-10" src={sparkleIcon} alt="" />
             <Trans>Earns MegaETH points</Trans>
           </span>
         }
-        content={
-          <Trans>
-            Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the
-            epoch
-          </Trans>
-        }
+        content={t`Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch`}
       />
     </span>
   ) : (
@@ -142,11 +136,11 @@ export function GlvList({
                     <PerformanceLabel upperCase variant="iconStroke" />
                   </TableTh>
                   <TableTh>
-                    <TooltipWithPortal
+                    <StandardTooltip
                       handle={t`SNAPSHOT`}
                       className="normal-case"
                       position="bottom-end"
-                      content={<Trans>Performance vs benchmark over the selected period</Trans>}
+                      content={t`Performance vs benchmark over the selected period`}
                       variant="iconStroke"
                     />
                   </TableTh>

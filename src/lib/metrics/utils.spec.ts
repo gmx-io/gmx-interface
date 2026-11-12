@@ -28,6 +28,7 @@ const tokenAmounts = {
   executionFeeTokenAmount: undefined,
   executionFeeTokenDecimals: undefined,
   isFirstBuy: undefined,
+  rawParams: undefined,
 };
 
 const cancelledEvent: EventLogData = {
@@ -59,6 +60,7 @@ describe.each([
               ...context,
               executionFee: undefined,
               fromMarketToken: undefined,
+              fromMarketTokenAmount: undefined,
               toMarketToken: undefined,
               minMarketTokenAmount: undefined,
             })
