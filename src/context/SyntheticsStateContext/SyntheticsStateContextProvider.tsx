@@ -57,6 +57,7 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import type { PriceDelta } from "domain/synthetics/tokens/priceDelta";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -76,6 +77,7 @@ import {
   useAccountWhitelistsRequest,
 } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import type { CandlesFetcher } from "domain/tradingview/DataFeed";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -105,6 +107,12 @@ export type SyntheticsPageType =
   | "gmxAccount"
   | "referrals"
   | "rpcDebug";
+
+export type ChartDataProvider = {
+  candlesFetcher: CandlesFetcher;
+  fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
+  fetch24hVolumes: () => Promise<Record<string, bigint>>;
+};
 
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
@@ -157,6 +165,8 @@ export type SyntheticsState = {
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
+
+    chartDataProvider?: ChartDataProvider;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];

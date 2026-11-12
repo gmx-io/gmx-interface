@@ -1,9 +1,10 @@
 import { ReactNode, useMemo, useRef, useState } from "react";
 
+import { ARBITRUM } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
-import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { ChartDataProvider, SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useLeaderboardState } from "context/SyntheticsStateContext/useLeaderboardState";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -21,12 +22,16 @@ import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
+import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/types";
 
+import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
 import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
+import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
+import { fetchGmsol24hPriceDeltas } from "./tokens/fetchGmsol24hPriceDeltas";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
@@ -95,6 +100,16 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     rawMarketsInfoData: rawMarkets.rawMarketsInfoData,
   });
   const tokensData = tokensDataResult.tokensData;
+
+  const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
+  const chartDataProvider = useMemo(
+    (): ChartDataProvider => ({
+      candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+      fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
+      fetch24hVolumes: fetchGmsol24hVolumes,
+    }),
+    [oracleFetcher]
+  );
 
   const composedMarkets = useMemo(
     () =>
@@ -337,6 +352,8 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
         accountWhitelistsResult: { accountWhitelists: undefined },
         usdgBoostAprResult: { usdgBoostAprResponse: undefined },
+
+        chartDataProvider,
       },
       claims: { accruedPositionPriceImpactFees: EMPTY_ARRAY, claimablePositionPriceImpactFees: EMPTY_ARRAY },
       leaderboard,
@@ -376,6 +393,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     keepLeverage,
     setKeepLeverage,
     isCandlesLoaded,
+    chartDataProvider,
     leaderboard,
     settings,
     subaccountState,
