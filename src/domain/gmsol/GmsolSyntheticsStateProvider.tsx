@@ -1,7 +1,8 @@
 import { ReactNode, useMemo, useRef, useState } from "react";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { ChartDataProvider, SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -101,14 +102,16 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   });
   const tokensData = tokensDataResult.tokensData;
 
+  const sdk = useGmxSdk(SOLANA_NETWORK_ID);
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const chartDataProvider = useMemo(
-    (): ChartDataProvider => ({
-      candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
-      fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
-      fetch24hVolumes: fetchGmsol24hVolumes,
-    }),
-    [oracleFetcher]
+    (): ChartDataProvider | undefined =>
+      sdk && {
+        candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+        fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
+        fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
+      },
+    [oracleFetcher, sdk]
   );
 
   const composedMarkets = useMemo(
