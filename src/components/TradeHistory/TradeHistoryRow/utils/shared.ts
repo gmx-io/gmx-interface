@@ -75,6 +75,10 @@ export type Line =
   | {
       key: string;
       value: TooltipValue;
+    }
+  | {
+      title: string;
+      value: TooltipValue;
     };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
@@ -83,6 +87,12 @@ export function lines(...args: TooltipContent): TooltipContent {
 export function infoRow(key: string, value: TooltipValue): Line {
   return {
     key,
+    value,
+  };
+}
+export function titleRow(title: string, value: TooltipValue): Line {
+  return {
+    title,
     value,
   };
 }

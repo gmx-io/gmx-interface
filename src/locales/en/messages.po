@@ -2555,10 +2555,6 @@ msgstr "Virtual short token ID"
 msgid "EIP-4844"
 msgstr "EIP-4844"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
-msgstr "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
-
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
@@ -2636,10 +2632,6 @@ msgstr "GMX balance"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle RPNL"
-msgstr "Lifecycle RPNL"
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
@@ -6944,10 +6936,6 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 msgid "Deposit {tokenSymbol}."
 msgstr "Deposit {tokenSymbol}."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle settlement"
-msgstr "Lifecycle settlement"
-
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
 msgstr "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
@@ -8504,6 +8492,10 @@ msgstr "What makes GMX one of the best places to earn yield on my crypto?"
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
 msgstr "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "RPNL, all closes"
+msgstr "RPNL, all closes"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Approving {tokenSymbol}..."
@@ -8974,10 +8966,6 @@ msgstr "Realized PnL before fees"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
 msgstr "24H%"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Net lifecycle fees / impact"
-msgstr "Net lifecycle fees / impact"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
@@ -9539,6 +9527,10 @@ msgstr "Transferring..."
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Send from wallet"
 msgstr "Send from wallet"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
+msgstr "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -10812,6 +10804,10 @@ msgstr "Buy GM with {0} and {1} up to the caps below"
 msgid "Excludes"
 msgstr "Excludes"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net fees / price impact, all transactions"
+msgstr "Net fees / price impact, all transactions"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11038,6 +11034,10 @@ msgstr "Permit signing cancelled"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 rebates"
 msgstr "V2 rebates"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Whole position totals are unavailable because part of this position's history could not be matched reliably"
+msgstr "Whole position totals are unavailable because part of this position's history could not be matched reliably"
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -11467,6 +11467,10 @@ msgstr "Performance and chart data are based on UTC times"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Sell {operationTokenSymbol}"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This close"
+msgstr "This close"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
@@ -12782,6 +12786,10 @@ msgstr "Received at close"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "Token permit testing"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Earlier transactions"
+msgstr "Earlier transactions"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

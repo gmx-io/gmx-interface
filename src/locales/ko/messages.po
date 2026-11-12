@@ -2555,10 +2555,6 @@ msgstr "가상 숏 토큰 ID"
 msgid "EIP-4844"
 msgstr "EIP-4844"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
-msgstr "이 포지션 내역의 일부를 안정적으로 매칭할 수 없어 전체 라이프사이클 대사는 제공되지 않습니다"
-
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "레버리지 {0} 유지"
@@ -2636,10 +2632,6 @@ msgstr "GMX 잔액"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle RPNL"
-msgstr "라이프사이클 RPNL"
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
@@ -6944,10 +6936,6 @@ msgstr "<0>알림은 Notifi에서 제공되며 GMX와 무관합니다. 구독 �
 msgid "Deposit {tokenSymbol}."
 msgstr "{tokenSymbol}을(를) 입금하십시오."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle settlement"
-msgstr "라이프사이클 정산"
-
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
 msgstr "이 거래의 수수료로 약 {holdback} {symbol}을(를) 확보합니다. 향후 Express 수수료를 위한 {symbol}은(는) {source}에 남지 않습니다."
@@ -8504,6 +8492,10 @@ msgstr "GMX가 암호화폐로 수익률을 얻기에 가장 좋은 곳 중 하�
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
 msgstr "모든 포지션은 동일한 연결된 지갑에 속하며, {settlementChainName} 지갑 자금으로 개설되었든 GMX Account 자금으로 개설되었든 함께 표시됩니다."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "RPNL, all closes"
+msgstr "RPNL, 모든 종료"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol} 승인 중..."
@@ -8974,10 +8966,6 @@ msgstr "수수료 차감 전 실현 손익(PnL)"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
 msgstr "24시간 %"
-
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Net lifecycle fees / impact"
-msgstr "라이프사이클 순 수수료 / 가격 영향"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
@@ -9539,6 +9527,10 @@ msgstr "전송 중..."
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Send from wallet"
 msgstr "지갑에서 보내기"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
+msgstr "{transactionsCount, plural, other {전체 포지션 (트랜잭션 #건)}}"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -10812,6 +10804,10 @@ msgstr "아래 한도까지 {0} 및 {1}(으)로 GM을 구매할 수 있습니다
 msgid "Excludes"
 msgstr "제외"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net fees / price impact, all transactions"
+msgstr "순 수수료 / 가격 영향, 모든 트랜잭션"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11038,6 +11034,10 @@ msgstr "Permit 서명이 취소되었습니다"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 rebates"
 msgstr "V2 리베이트"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Whole position totals are unavailable because part of this position's history could not be matched reliably"
+msgstr "이 포지션 내역의 일부를 안정적으로 매칭할 수 없어 전체 포지션 합계는 제공되지 않습니다"
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -11467,6 +11467,10 @@ msgstr "실적 및 차트 데이터는 UTC 시간 기준입니다"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} 판매"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This close"
+msgstr "이번 종료"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
@@ -12782,6 +12786,10 @@ msgstr "청산 시 수령액"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "토큰 허용 테스트"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Earlier transactions"
+msgstr "이전 트랜잭션"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
