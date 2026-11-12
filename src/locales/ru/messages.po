@@ -4699,6 +4699,10 @@ msgstr "Рабочий поток"
 msgid "Cheaper option for your amount"
 msgstr "Выгоднее для вашей суммы"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "Обратный выкуп скоро будет доступен"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Не удалось обновить ордера"
@@ -7372,6 +7376,10 @@ msgstr "Этот ордер может не исполниться, так ка�
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "Подробнее"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GT — это баллы GMX на Solana. GMX выкупает GT за счёт 99% комиссий протокола на Solana."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -11233,10 +11241,6 @@ msgstr "Редактировать ордер"
 msgid "Error simulating withdrawal"
 msgstr "Ошибка симуляции вывода"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
-msgstr "GT — токен экосистемы GMX. Функция обратного выкупа GT станет доступна в будущем."
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -14001,10 +14005,6 @@ msgstr "Установите цену активации выше расчётн
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "В этой сети пока нет возможностей"
-
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "Open buyback"
-msgstr "Открыть обратный выкуп"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."

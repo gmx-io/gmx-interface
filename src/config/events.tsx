@@ -75,8 +75,8 @@ export const appEventsData: EventData[] = [
           GMX. The GT card shows the amount and its USD value. No GT card means no allocation.
         </span>
         <span>
-          <span className="font-medium text-typography-primary">Buyback:</span> selling GT is not open yet, so the Open
-          buyback button is disabled. Selling GT comes in a later update. No date is set yet.
+          <span className="font-medium text-typography-primary">Buyback:</span> selling GT is not open yet, so the
+          buyback button on the GT card is disabled. Selling GT comes in a later update. No date is set yet.
         </span>
         <span>
           Full rules in governance proposal GMLabs-002.{" "}

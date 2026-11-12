@@ -4699,6 +4699,10 @@ msgstr "ワーカースレッド"
 msgid "Cheaper option for your amount"
 msgstr "この金額ではより安いオプション"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "買い戻しは近日公開"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "注文の更新に失敗しました"
@@ -7372,6 +7376,10 @@ msgstr "結果として生じるポジションが最大許容レバレッジを
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "詳細を見る"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GTはSolana上のGMXのポイントです。GMXはSolanaのプロトコル手数料の99%でGTを買い戻します。"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -11233,10 +11241,6 @@ msgstr "注文を編集"
 msgid "Error simulating withdrawal"
 msgstr "引き出しシミュレーションエラー"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
-msgstr "GTはGMXエコシステム内のトークンです。GTの買い戻し機能は今後利用可能になる予定です。"
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -14001,10 +14005,6 @@ msgstr "トリガー価格をマーク価格より高く設定してください
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "このチェーンにはまだ機会がありません"
-
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "Open buyback"
-msgstr "買い戻しを開く"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."

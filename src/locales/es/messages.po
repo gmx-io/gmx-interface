@@ -4699,6 +4699,10 @@ msgstr "Hilo de trabajo"
 msgid "Cheaper option for your amount"
 msgstr "Opción más barata para este importe"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "Recompra disponible pronto"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Error al actualizar las órdenes"
@@ -7372,6 +7376,10 @@ msgstr "Es posible que esta orden no se ejecute porque la posición resultante e
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "Ver más"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GT son los puntos de GMX en Solana. GMX recompra GT con el 99 % de las comisiones del protocolo en Solana."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -11233,10 +11241,6 @@ msgstr "Editar orden"
 msgid "Error simulating withdrawal"
 msgstr "Error al simular la retirada"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
-msgstr "GT es un token del ecosistema GMX. La función de recompra de GT estará disponible en el futuro."
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -14001,10 +14005,6 @@ msgstr "Establezca el precio de activación por encima del precio de referencia"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aún no hay oportunidades en esta cadena"
-
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "Open buyback"
-msgstr "Abrir recompra"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."

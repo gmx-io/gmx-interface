@@ -4699,6 +4699,10 @@ msgstr ""
 msgid "Cheaper option for your amount"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr ""
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr ""
@@ -7371,6 +7375,10 @@ msgstr ""
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -11233,10 +11241,6 @@ msgstr ""
 msgid "Error simulating withdrawal"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
-msgstr ""
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -14000,10 +14004,6 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
-msgstr ""
-
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "Open buyback"
 msgstr ""
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx

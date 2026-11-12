@@ -4699,6 +4699,10 @@ msgstr "Thread worker"
 msgid "Cheaper option for your amount"
 msgstr "Option la moins chère pour votre montant"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "Rachat bientôt disponible"
+
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
 msgstr "Échec de la mise à jour des ordres"
@@ -7372,6 +7376,10 @@ msgstr "Cet ordre pourrait ne pas s'exécuter car la position résultante dépas
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "Voir plus"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "Les GT sont les points de GMX sur Solana. GMX rachète les GT avec 99 % des frais du protocole sur Solana."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -11233,10 +11241,6 @@ msgstr "Modifier l'ordre"
 msgid "Error simulating withdrawal"
 msgstr "Erreur de simulation de retrait"
 
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "GT is a token within the GMX ecosystem. GT buyback functionality will become available in the future."
-msgstr "GT est un token de l’écosystème GMX. La fonction de rachat de GT sera disponible prochainement."
-
 #: src/pages/AccountDashboard/HistoricalLists.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -14001,10 +14005,6 @@ msgstr "Définissez un prix de déclenchement supérieur au prix de référence"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aucune opportunité sur cette chaîne pour le moment"
-
-#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
-msgid "Open buyback"
-msgstr "Ouvrir le rachat"
 
 #: src/components/TradeBox/ResultingMarginWarningCard.tsx
 msgid "One or more later TWAP parts may fail because the resulting position would exceed the maximum allowed leverage. Increase margin or reduce the total size."
