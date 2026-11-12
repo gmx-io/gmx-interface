@@ -162,12 +162,12 @@ export function OneClickSessions() {
                 <div className="flex flex-wrap items-center gap-6 text-13 text-typography-primary">
                   <span>{shortenAddress(session.address, 13)}</span>
                   {isCurrent && (
-                    <Chip variant="outline">
+                    <Chip variant="gray">
                       <Trans>This browser</Trans>
                     </Chip>
                   )}
                   {isLegacy && (
-                    <Chip variant="outline">
+                    <Chip variant="gray">
                       <Trans>Old session</Trans>
                     </Chip>
                   )}
