@@ -74,7 +74,7 @@ describe("stream integration (real client <-> real ws server)", () => {
     server = startServer();
     const port = await server.ready();
     sdk = new GmxApiSdk({
-      networkId: ARBITRUM,
+      chainId: ARBITRUM,
       apiUrl: `http://localhost:${port}`,
     });
   });

@@ -25,7 +25,7 @@ export function GmxSdkProvider({ children }: PropsWithChildren) {
 
         if (!sdk) {
           const apiUrl = getUiApiOverrideUrl(chainId);
-          sdk = new GmxApiSdk({ networkId: chainId, ...(apiUrl && { apiUrl }) });
+          sdk = new GmxApiSdk({ chainId, ...(apiUrl && { apiUrl }) });
           sdkCache.current.set(cacheKey, sdk);
         }
 

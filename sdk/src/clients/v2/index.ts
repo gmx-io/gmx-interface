@@ -322,7 +322,7 @@ export type {
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
 type GmxApiSdkOptions = {
-  networkId: NetworkId;
+  chainId: NetworkId;
   apiUrl?: string;
   api?: IHttp;
   streamUrl?: string;
@@ -356,18 +356,18 @@ export class GmxApiSdk {
   private _streamClient?: WsStreamClient;
 
   constructor(options: GmxApiSdkOptions) {
-    const { networkId, apiUrl, api, streamUrl, webSocketImpl } = options;
+    const { chainId: networkId, apiUrl, api, streamUrl, webSocketImpl } = options;
     this.streamUrlOverride = streamUrl;
     this.webSocketImpl = webSocketImpl;
     if (networkId === undefined) {
-      throw new Error("networkId is required");
+      throw new Error("chainId is required");
     }
 
     let resolvedApi = api;
     if (!resolvedApi) {
       const resolvedApiUrl = apiUrl ?? getApiUrl(networkId);
       if (!resolvedApiUrl) {
-        throw new Error("api is not supported for current networkId");
+        throw new Error("api is not supported for current chainId");
       }
       const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(networkId);
       const allUrls = [resolvedApiUrl, ...fallbackUrls];

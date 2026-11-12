@@ -15,7 +15,7 @@ export function getGmsolApiSdk(cacheKey = getGmsolApiCacheKey()): GmxApiSdk {
 
   if (!sdk) {
     sdk = new GmxApiSdk({
-      networkId: SOLANA_NETWORK_ID,
+      chainId: SOLANA_NETWORK_ID,
       apiUrl: cacheKey === getApiUrl(SOLANA_NETWORK_ID) ? undefined : cacheKey,
     });
     sdkCache.set(cacheKey, sdk);

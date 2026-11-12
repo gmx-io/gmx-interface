@@ -39,7 +39,7 @@ function buildTestPrepareRequest(from: string): PrepareOrderRequest {
 describe("GmxApiSdk — subaccount (1CT)", () => {
   it("rejects external subaccount details for SDK-managed signing", async () => {
     const api = new ScriptedOrderApi(buildPreparedOrderResponse("request-1"));
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     const subaccountAddress = await sdk.generateSubaccount(signer);
 
     await expect(
@@ -77,7 +77,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       ],
       [buildSubaccountStatusResponse()]
     );
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     const subaccountAddress = await sdk.generateSubaccount(signer);
     const subaccountApproval = getEmptySubaccountApproval(TEST_CHAIN_ID, subaccountAddress);
 
@@ -122,7 +122,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
         }),
       ]
     );
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     await sdk.generateSubaccount(signer);
     await sdk.refreshSubaccountState(signer.address);
 
@@ -159,7 +159,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
         }),
       ]
     );
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     await sdk.generateSubaccount(signer);
     await sdk.refreshSubaccountState(signer.address);
 
@@ -194,7 +194,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
         }),
       ]
     );
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     await sdk.generateSubaccount(signer);
     await sdk.refreshSubaccountState(signer.address);
 
@@ -215,7 +215,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
         }),
       ]
     );
-    const sdk = new GmxApiSdk({ networkId: TEST_CHAIN_ID, api });
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     const subaccountAddress = await sdk.generateSubaccount(signer);
     await sdk.refreshSubaccountState(signer.address);
 

@@ -44,7 +44,7 @@ afterEach(() => {
 
 describe("Solana API reads", () => {
   it("uses the current network for approvals through both context interfaces", () => {
-    for (const options of [{ networkId: ARBITRUM }, { networkId: SOLANA_NETWORK_ID }] as const) {
+    for (const options of [{ chainId: ARBITRUM }, { chainId: SOLANA_NETWORK_ID }] as const) {
       for (const update of [
         "chainId",
         "networkId",
@@ -85,7 +85,7 @@ describe("Solana API reads", () => {
   });
 
   it("preserves referral case and fee precision, rejecting malformed required fields", async () => {
-    const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
+    const sdk = new GmxApiSdk({ chainId: SOLANA_NETWORK_ID });
     const fields = ["totalRebate", "totalRebateFactor", "discountShare", "discountFactor", "orderFeeDiscountFactor"];
     for (const value of [amount, 0]) {
       vi.mocked(fetch).mockResolvedValueOnce(response(fee(Object.fromEntries(fields.map((key) => [key, value])))));
@@ -126,7 +126,7 @@ describe("Solana API reads", () => {
   });
 
   it("passes slot floors and returns each response slot without changing account data", async () => {
-    const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
+    const sdk = new GmxApiSdk({ chainId: SOLANA_NETWORK_ID });
     const headers = [undefined, "", "-1", "1.5", "9007199254740992", "invalid", "0", "123"];
     for (const method of ["fetchOrders", "fetchPositionsInfo"] as const) {
       for (const minContextSlot of [undefined, 0, 123]) {
@@ -158,7 +158,7 @@ describe("Solana API reads", () => {
 
   it("keeps response metadata local when account reads finish out of order", async () => {
     const sdk = new GmxApiSdk({
-      networkId: SOLANA_NETWORK_ID,
+      chainId: SOLANA_NETWORK_ID,
       api: new HttpClientWithFallback(["https://first.example", "https://second.example"]),
     });
     let resolveFirst!: (value: Response) => void;
