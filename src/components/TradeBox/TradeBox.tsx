@@ -1,10 +1,11 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 import { zeroAddress } from "viem";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { getIsSolanaNetworkEnabled } from "config/ab";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, isSolanaNetwork } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -72,6 +73,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import type { SolanaTradeboxState } from "domain/solana/solanaTradebox";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   getNetworkFeeSource,
@@ -91,6 +93,7 @@ import { getConvertFirstPayAmount, getIsOrderStepGasCovered } from "domain/synth
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -113,6 +116,7 @@ import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -187,6 +191,8 @@ import { UsdgAddMarginReturnBanner } from "./UsdgAddMarginReturnBanner";
 
 import "./TradeBox.scss";
 
+const GmsolTradeboxAdapter = lazy(() => import("domain/gmsol/tradebox/GmsolTradeboxAdapter"));
+
 const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
 
 export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; activeFormId: string }) {
@@ -219,7 +225,17 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const feeDiscountError = useSelector(selectFeeDiscountError);
 
   const srcChainId = useSelector(selectSrcChainId);
-  const { account, active } = useWallet();
+  const evmWallet = useWallet();
+  const solanaWallet = useSolanaWalletSession();
+  const { networkId } = useChainId();
+  const isSolana = getIsSolanaNetworkEnabled() && isSolanaNetwork(networkId);
+  const account = isSolana ? solanaWallet.address : evmWallet.account;
+  const active = isSolana ? Boolean(solanaWallet.address) : evmWallet.active;
+  const solanaSessionId = useMemo(
+    () => ({ isSolana, owner: solanaWallet.address, signTransaction: solanaWallet.signTransaction }),
+    [isSolana, solanaWallet.address, solanaWallet.signTransaction]
+  );
+  const [solanaSubmitState, setSolanaSubmitState] = useState<SolanaTradeboxState>();
   const { openConnectModal } = useConnectModal();
 
   const walletIconUrls = useWalletIconUrls();
@@ -314,7 +330,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const offHoursLiqRisk = useSelector(selectTradeboxOffHoursLiqRisk);
   const showOffHoursWarning = offHoursLiqRisk.shouldWarn;
   const fees = useSelector(selectTradeboxFees);
-  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const storedExpressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const expressOrdersEnabled = !isSolana && storedExpressOrdersEnabled;
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
   const settlementChainGasPaymentTokenData = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentTokenData = useSelector(selectGmxAccountGasPaymentToken);
@@ -437,6 +454,32 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     });
 
   const submitButtonState = useMemo(() => {
+    if (isSolana) {
+      const state = solanaSubmitState?.sessionId === solanaSessionId ? solanaSubmitState : undefined;
+      return {
+        ...gmxSubmitButtonState,
+        text: state?.text ?? t`Loading...`,
+        disabled: state?.disabled ?? true,
+        onSubmit: async () => {
+          if (!solanaWallet.address) {
+            openConnectModal?.();
+            return false;
+          }
+          return state && !state.disabled ? state.onSubmit() : false;
+        },
+        tooltipContent: null,
+        bannerErrorContent: null,
+        expressParams: undefined,
+        batchParams: undefined,
+        totalExecutionFee: undefined,
+        expressGasPaymentToken: undefined,
+        isExpressLoading: false,
+        isFeeInPayToken: false,
+        approvalTokenAddress: undefined,
+        isApproving: false,
+        isAllowanceLoaded: true,
+      };
+    }
     if (paxosRoute.buttonState) {
       return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
     }
@@ -472,6 +515,11 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
     return gmxSubmitButtonState;
   }, [
+    isSolana,
+    solanaSubmitState,
+    solanaSessionId,
+    solanaWallet.address,
+    openConnectModal,
     gmxSubmitButtonState,
     isConvertStepShown,
     isFromTokenGmxAccount,
@@ -963,11 +1011,11 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const handleFormSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
+      if (!isCursorInside && (!submitButtonState.disabled || (!isSolana && shouldDisableValidation))) {
         wrappedOnSubmit();
       }
     },
-    [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation]
+    [isCursorInside, wrappedOnSubmit, submitButtonState, shouldDisableValidation, isSolana]
   );
 
   const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
@@ -1276,12 +1324,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   useKey(
     "Enter",
     () => {
-      if (isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
+      if (isCursorInside && (!submitButtonState.disabled || (!isSolana && shouldDisableValidation))) {
         wrappedOnSubmit();
       }
     },
     {},
-    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, wrappedOnSubmit]
+    [submitButtonState.disabled, shouldDisableValidation, isCursorInside, wrappedOnSubmit, isSolana]
   );
 
   const buttonContent = (
@@ -1294,7 +1342,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
       onClick={wrappedOnSubmit}
-      disabled={submitButtonState.disabled && !shouldDisableValidation}
+      disabled={submitButtonState.disabled && (isSolana || !shouldDisableValidation)}
     >
       {submitButtonState.text}
     </Button>
@@ -1366,6 +1414,15 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef} {...orderAutoSubmitHandlers}>
+      {isSolana && (
+        <Suspense fallback={null}>
+          <GmsolTradeboxAdapter
+            key={solanaWallet.address ?? "disconnected"}
+            sessionId={solanaSessionId}
+            onChange={setSolanaSubmitState}
+          />
+        </Suspense>
+      )}
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex items-center justify-between">
           <Tabs
@@ -1492,7 +1549,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             </AlertInfoCard>
           )}
 
-          {!isPaxosRouteActive && (
+          {!isSolana && !isPaxosRouteActive && (
             <ExpressTradingWarningCard
               expressParams={submitButtonState.expressParams}
               payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}

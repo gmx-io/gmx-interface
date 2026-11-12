@@ -304,6 +304,7 @@ export const makeSelectIncreasePositionAmounts = ({
       findSwapPath,
       userReferralInfo,
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? q(selectProDiscountFactor) : undefined,
       uiFeeFactor,
       strategy,
       marketsInfoData,
@@ -416,6 +417,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           userReferralInfo,
           proDiscountFactor,
+          feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? proDiscountFactor : undefined,
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,
@@ -492,8 +494,17 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,
+        selectProDiscountFactor,
       ],
-      ({ minCollateralUsd }, marketsInfoData, tokensData, increaseAmounts, positionsInfoData, userReferralInfo) => {
+      (
+        { minCollateralUsd },
+        marketsInfoData,
+        tokensData,
+        increaseAmounts,
+        positionsInfoData,
+        userReferralInfo,
+        feeDiscountFactor
+      ) => {
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
@@ -526,6 +537,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             minCollateralUsd,
             userReferralInfo,
             collateralPrice: increaseAmounts.collateralPrice,
+            feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? feeDiscountFactor : undefined,
           });
         }
       }

@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -44,10 +45,11 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const tradingIncentives = useTradingIncentives(chainId);
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
-  const shouldShowRebate = p.shouldShowRebate ?? true;
+  const shouldShowRebate = !isSolana && (p.shouldShowRebate ?? true);
   const showDebugValues = useShowDebugValues();
   const { breakdownNetPriceImpactEnabled } = useSettings();
 
@@ -243,7 +245,7 @@ export function TradeFeesRow(p: Props) {
     const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd !== 0n)
       ? {
           id: "feeDiscount",
-          label: <Trans>Referral discount</Trans>,
+          label: isSolana ? <Trans>GT VIP and referral discount</Trans> : <Trans>Referral discount</Trans>,
           value: <DeltaUsdValue deltaUsd={p.feeDiscountUsd} />,
           className: "text-green-500",
         }
@@ -446,6 +448,7 @@ export function TradeFeesRow(p: Props) {
     return [];
   }, [
     p,
+    isSolana,
     chainId,
     tradingIncentives,
     rebateIsApplicable,

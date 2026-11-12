@@ -1,11 +1,13 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import {
   selectIsSetAcceptablePriceImpactEnabled,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectTradeboxAllowedSlippage,
   selectTradeboxAdvancedOptions,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
@@ -20,6 +22,7 @@ import {
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
+  selectTradeboxToToken,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxCollateralSpreadInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxCollateralSpreadInfo";
 import { selectTradeboxLiquidityInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxLiquidityInfo";
@@ -28,16 +31,21 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { OrderType } from "domain/synthetics/orders";
 import { formatLeverageParts } from "domain/synthetics/positions";
+import { useChainId } from "lib/chains";
 import { formatUsdParts } from "lib/numbers";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { isStopIncreaseOrderType } from "sdk/utils/orders";
+import { getEntryPrice } from "sdk/utils/positions";
 import { convertToUsd } from "sdk/utils/tokens";
+import { applySlippageToPrice } from "sdk/utils/trade/trade";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -156,6 +164,10 @@ export function TradeBoxAdvancedGroups({
   totalExecutionFee: ExecutionFee | undefined;
   feeSource: NetworkFeeSource | undefined;
 }) {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
+  const toToken = useSelector(selectTradeboxToToken);
+  const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const options = useSelector(selectTradeboxAdvancedOptions);
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -240,9 +252,57 @@ export function TradeBoxAdvancedGroups({
         </>
       )}
 
+      {isSolana && !isSwap && (
+        <SyntheticsInfoRow
+          label={t`Execution price`}
+          value={
+            <StandardTooltip
+              handle={
+                <UsdPriceValue
+                  price={
+                    isTrigger
+                      ? decreaseAmounts?.indexPrice
+                      : increaseAmounts && toToken
+                        ? getEntryPrice({
+                            sizeInUsd: increaseAmounts.sizeDeltaUsd,
+                            sizeInTokens: increaseAmounts.sizeDeltaInTokens,
+                            indexToken: toToken,
+                          })
+                        : undefined
+                  }
+                  visualMultiplier={toToken?.visualMultiplier}
+                />
+              }
+              content={
+                <div>
+                  <Trans>Acceptable price</Trans>
+                  {": "}
+                  <UsdPriceValue
+                    price={
+                      isTrigger
+                        ? decreaseAmounts?.acceptablePrice
+                        : increaseAmounts
+                          ? applySlippageToPrice(
+                              isMarket ? allowedSlippage : 0,
+                              increaseAmounts.acceptablePrice,
+                              true,
+                              isLong
+                            )
+                          : undefined
+                    }
+                    visualMultiplier={toToken?.visualMultiplier}
+                  />
+                </div>
+              }
+            />
+          }
+        />
+      )}
       <TradeFeesRow {...fees} feesType={feesType} />
       {showDebugValues && <SwapDebugRow />}
-      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
+      {!isSolana && (
+        <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} feeSource={feeSource} />
+      )}
 
       {isTwap && isSwap ? (
         <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
@@ -257,7 +317,7 @@ export function TradeBoxAdvancedGroups({
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
           {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-          {!isSwap && <NextStoredImpactRows />}
+          {!isSwap && !isSolana && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />
           <ExistingPositionInfoRows />
