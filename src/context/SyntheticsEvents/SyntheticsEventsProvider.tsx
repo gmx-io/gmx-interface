@@ -21,12 +21,10 @@ import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/market
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
-  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
   isMarketOrderType,
-  isSwapOrderType,
   OrderTxnType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
@@ -53,14 +51,14 @@ import {
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import {
-  getGLVSwapMetricId,
-  getGMSwapMetricId,
-  getPositionOrderMetricId,
-  getShiftGMMetricId,
-  getSwapOrderMetricId,
-  sendOrderCancelledMetric,
-  sendOrderCreatedMetric,
-  sendOrderExecutedMetric,
+  getDepositCreationKey,
+  getGlvDepositCreationKey,
+  getOrderCreationKey,
+  getShiftCreationKey,
+  getWithdrawalCreationKey,
+  sendTrackedOrderCancelledMetric,
+  sendTrackedOrderCreatedMetric,
+  sendTrackedOrderExecutedMetric,
   sendTxnErrorMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -91,11 +89,9 @@ import { OrdersStatusNotificiation } from "components/StatusNotification/OrderSt
 
 import {
   ApprovalStatuses,
-  DepositCreatedEventData,
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
@@ -110,16 +106,23 @@ import {
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   RelayTaskStatus,
-  ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
-  WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
 import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
 import { useTransitRouteEvents } from "./useTransitRouteEvents";
-import { extractRelayTaskError, getPendingOrderKey } from "./utils";
+import {
+  extractRelayTaskError,
+  getPendingOrderKey,
+  parseDepositCreatedEventData,
+  parseGlvDepositCreatedEventData,
+  parseGlvWithdrawalCreatedEventData,
+  parseOrderCreatedEventData,
+  parseShiftCreatedEventData,
+  parseWithdrawalCreatedEventData,
+} from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -226,45 +229,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver);
-
-      const data: OrderCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
-        swapPath: eventData.addressItems.arrayItems.swapPath,
-        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
-        initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
-        contractTriggerPrice: eventData.uintItems.items.triggerPrice,
-        contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        minOutputAmount: eventData.uintItems.items.minOutputAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        orderType: Number(eventData.uintItems.items.orderType),
-        decreasePositionSwapType: Number(
-          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
-        ) as DecreasePositionSwapType,
-        isLong: eventData.boolItems.items.isLong,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        isFrozen: eventData.boolItems.items.isFrozen,
-        uiFeeReceiver: uiFeeReceiver,
-        externalSwapQuote: undefined,
-        key: eventData.bytes32Items.items.key,
-        isTwap: twapParams !== undefined,
-      };
+      const data = parseOrderCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
-      sendOrderCreatedMetric(metricId);
+      const metricId = sendTrackedOrderCreatedMetric(getOrderCreationKey(data), data.key);
 
-      if (!isMarketOrderType(data.orderType)) {
+      if (metricId && !isMarketOrderType(data.orderType)) {
+        const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, data.uiFeeReceiver);
+
         sendUserAnalyticsOrderResultEvent(
           chainId,
           metricId,
@@ -350,16 +325,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const key = eventData.bytes32Items.items.key;
 
       const order = orderStatuses[key]?.data;
+      const metricId = sendTrackedOrderExecutedMetric(key);
 
-      if (order) {
-        const metricId = isSwapOrderType(order.orderType)
-          ? getSwapOrderMetricId(order)
-          : getPositionOrderMetricId(order);
-
-        sendOrderExecutedMetric(metricId);
-        if (!order.isTwap) {
-          sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
-        }
+      if (metricId && order && !order.isTwap) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) => {
@@ -412,13 +381,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setAwaitingBackfillOrders((old) => old.filter((awaitingOrder) => awaitingOrder.orderKey !== key));
 
       const order = orderStatuses[key]?.data;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
 
-      if (order) {
-        const metricId = isSwapOrderType(order.orderType)
-          ? getSwapOrderMetricId(order)
-          : getPositionOrderMetricId(order);
-
-        sendOrderCancelledMetric(metricId, eventData);
+      if (metricId) {
         sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
       }
 
@@ -435,35 +400,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: GLVDepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        glvAddress: eventData.addressItems.items.glv,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minGlvTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: true,
-      };
+      const depositData = parseGlvDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGLVSwapMetricId(depositData);
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getGlvDepositCreationKey(depositData), depositData.key);
 
       setDepositStatuses((old) =>
         setByKey(old, depositData.key, {
@@ -478,33 +421,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: DepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: false,
-      };
+      const depositData = parseDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGMSwapMetricId(depositData);
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getDepositCreationKey(depositData), depositData.key);
 
       setDepositStatuses((old) =>
         setByKey(old, depositData.key, {
@@ -520,12 +443,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
-      if (depositStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
+      const metricId = sendTrackedOrderExecutedMetric(key);
 
-        sendOrderExecutedMetric(metricId);
+      if (metricId) {
         sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+      }
 
+      if (depositStatuses[key]?.data) {
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -534,12 +458,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderExecutedMetric(key);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
-
-        sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -548,12 +473,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
-
-        sendOrderCancelledMetric(metricId, eventData);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -562,13 +488,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
-
-        sendOrderCancelledMetric(metricId, eventData);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
-
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -576,31 +502,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGMSwapMetricId({
-        marketAddress: data.marketAddress,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getWithdrawalCreationKey(data), data.key);
 
       setWithdrawalStatuses((old) =>
         setByKey(old, data.key, {
@@ -615,31 +523,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvWithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.glv,
-        marketTokenAmount: eventData.uintItems.items.glvTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseGlvWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGLVSwapMetricId({
-        glvAddress: data.marketAddress,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getWithdrawalCreationKey(data), data.key);
 
       setWithdrawalStatuses((old) =>
         setByKey(old, data.key, {
@@ -655,14 +545,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderExecutedMetric(key);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderExecutedMetric(metricId);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -671,13 +556,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
-      if (withdrawalStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId({
-          glvAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderExecutedMetric(metricId);
+      sendTrackedOrderExecutedMetric(key);
 
+      if (withdrawalStatuses[key]?.data) {
         setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -686,14 +567,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId({
-          glvAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderCancelledMetric(metricId, eventData);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -702,43 +578,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderCancelledMetric(metricId, eventData);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
 
     ShiftCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const data: ShiftCreatedEventData = {
-        key: eventData.bytes32Items.items.key,
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        fromMarket: eventData.addressItems.items.fromMarket,
-        toMarket: eventData.addressItems.items.toMarket,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtTime: eventData.uintItems.items.updatedAtTime,
-        executionFee: eventData.uintItems.items.executionFee,
-      };
+      const data = parseShiftCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getShiftGMMetricId({
-        fromMarketAddress: data.fromMarket,
-        toMarketAddress: data.toMarket,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getShiftCreationKey(data), data.key);
 
       setShiftStatuses((old) =>
         setByKey(old, data.key, {
@@ -754,16 +608,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderExecutedMetric(key);
 
       if (shiftStatuses[key]?.data) {
-        const metricId = getShiftGMMetricId({
-          fromMarketAddress: shiftStatuses[key].data!.fromMarket,
-          toMarketAddress: shiftStatuses[key].data!.toMarket,
-          executionFee: shiftStatuses[key].data!.executionFee,
-        });
-
-        sendOrderExecutedMetric(metricId);
-
         setShiftStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -772,16 +619,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
-      if (shiftStatuses[key].data) {
-        const metricId = getShiftGMMetricId({
-          fromMarketAddress: shiftStatuses[key].data!.fromMarket,
-          toMarketAddress: shiftStatuses[key].data!.toMarket,
-          executionFee: shiftStatuses[key].data!.executionFee,
-        });
-
-        sendOrderCancelledMetric(metricId, eventData);
-
+      if (shiftStatuses[key]?.data) {
         setShiftStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },

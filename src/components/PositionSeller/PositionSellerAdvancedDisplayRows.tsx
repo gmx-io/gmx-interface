@@ -21,7 +21,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatDeltaUsdParts, formatUsdParts } from "lib/numbers";
 
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -158,16 +158,9 @@ export function PositionSellerAdvancedRows({
           {sizeRow}
           <SyntheticsInfoRow
             label={
-              <Tooltip
+              <StandardTooltip
                 handle={<Trans>Margin ({position?.collateralToken?.symbol})</Trans>}
-                position="top-start"
-                content={
-                  <Trans>
-                    Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and
-                    settled fees.
-                  </Trans>
-                }
-                variant="iconStroke"
+                content={t`Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and settled fees.`}
               />
             }
             value={

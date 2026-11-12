@@ -881,10 +881,12 @@ __metadata:
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
     "@types/lodash": "npm:4.14.198"
     "@types/node": "npm:18.7.13"
+    "@types/ws": "npm:^8.5.10"
     cross-fetch: "npm:4.0.0"
     crypto-js: "npm:4.2.0"
     graphql: "npm:15.8.0"
     isomorphic-performance: "npm:5.1.1"
+    isomorphic-ws: "npm:^5.0.0"
     lint-staged: "npm:12.3.4"
     lodash: "npm:4.18.1"
     prettier: "npm:3.2.5"
@@ -896,6 +898,7 @@ __metadata:
     universal-perf-hooks: "npm:1.0.1"
     viem: "npm:2.48.11"
     vitest: "npm:4.1.11"
+    ws: "npm:8.22.0"
   languageName: unknown
   linkType: soft
 
@@ -1902,7 +1905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ws@npm:^8.0.0":
+"@types/ws@npm:^8.0.0, @types/ws@npm:^8.5.10":
   version: 8.18.1
   resolution: "@types/ws@npm:8.18.1"
   dependencies:
@@ -5865,6 +5868,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/725964438d752f0ab0de582cd48d6eeada58d1511c3f613485b5598a83680bedac6187c765b0fe082e2d8cc4341fc57707c813ae780feee82d0c5efe6a4c61b6
+  languageName: node
+  linkType: hard
+
+"ws@npm:8.22.0":
+  version: 8.22.0
+  resolution: "ws@npm:8.22.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/ed771c2766bdb5724a66872f60ffc1a39f06e1a5bc8849f453c273e97c91a40ed5a224f06dc0e22f44b4a9e03938bf746fc5938d6887433cc0f4c416237d3b10
   languageName: node
   linkType: hard
 

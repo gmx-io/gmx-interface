@@ -85,6 +85,8 @@ export type NetworkFeeSurfaceStoryProps = {
   surface: NetworkFeeSurface;
   /** Express available (relay features + sponsored calls) and the Express setting on; off = Classic */
   express?: boolean;
+  /** Classic with the relay features still on, as prod Arbitrum is */
+  classicWithRelay?: boolean;
   /** Connect on Base: srcChainId is set and the GMX Account pays every fee */
   multichain?: boolean;
   /** Close position: send the remaining margin to the GMX Account (Express only) */
@@ -448,6 +450,7 @@ function OrderEditorSurface({ orderKey }: { orderKey: string }) {
 function SurfaceState({
   surface,
   express,
+  classicWithRelay,
   multichain,
   gmPaySource,
   isGasPaymentTokenApproved,
@@ -457,6 +460,7 @@ function SurfaceState({
 }: {
   surface: NetworkFeeSurface;
   express: boolean;
+  classicWithRelay: boolean;
   multichain: boolean;
   gmPaySource: GmPaySource;
   isGasPaymentTokenApproved: boolean;
@@ -465,7 +469,7 @@ function SurfaceState({
   children: ReactNode;
 }) {
   const { srcChainId } = useChainId();
-  const isExpressAvailable = express || multichain;
+  const isExpressAvailable = express || classicWithRelay || multichain;
   const gasPaymentTokenAllowance = useMemo(() => {
     if (approvedGasPaymentTokens) {
       return getGasPaymentTokenAllowance((address) => (approvedGasPaymentTokens.includes(address) ? HUGE_BALANCE : 0n));
@@ -549,6 +553,7 @@ function Surface({
 export function NetworkFeeSurfaceStory({
   surface,
   express = false,
+  classicWithRelay = false,
   multichain = false,
   receiveToGmxAccount = false,
   collateralFromGmxAccount = false,
@@ -609,6 +614,7 @@ export function NetworkFeeSurfaceStory({
       <SurfaceState
         surface={surface}
         express={express}
+        classicWithRelay={classicWithRelay}
         multichain={multichain}
         gmPaySource={gmPaySource}
         isGasPaymentTokenApproved={isGasPaymentTokenApproved}
