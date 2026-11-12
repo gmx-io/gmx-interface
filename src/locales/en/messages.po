@@ -2633,6 +2633,10 @@ msgstr "GMX balance"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "Est. {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "on GMX."
@@ -4273,6 +4277,10 @@ msgstr "Trade from your wallet"
 msgid "Deposit USD capacity"
 msgstr "Deposit USD capacity"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "Until {endDate}: {apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -5758,6 +5766,10 @@ msgstr "Enter withdrawal amount"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Active orders"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "Launch boost schedule"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -9076,6 +9088,10 @@ msgstr "For me"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "Fees and impacts"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}: {apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -12948,10 +12964,6 @@ msgstr "Your funds are safe. Contact support for help."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "NET VALUE"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

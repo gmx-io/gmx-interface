@@ -7,6 +7,10 @@ export type TargetedAnnouncementCampaign = {
   addressHashes: Set<Hash>;
 };
 
+export type LazyTargetedAnnouncementCampaign = Omit<TargetedAnnouncementCampaign, "addressHashes"> & {
+  addressHashesUrl: string;
+};
+
 export function getTargetedAnnouncementAddressHash(address: string | undefined): Hash | undefined {
   if (!address) return undefined;
 

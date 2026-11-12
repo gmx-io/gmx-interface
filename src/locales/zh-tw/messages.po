@@ -2633,6 +2633,10 @@ msgstr "GMX 餘額"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>費用以您的 Gas 支付代幣從操作所使用的餘額中支付。"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "預估 {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "在 GMX。"
@@ -4273,6 +4277,10 @@ msgstr "從您的錢包交易"
 msgid "Deposit USD capacity"
 msgstr "存入 USD 容量"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "截至 {endDate}：{apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -5758,6 +5766,10 @@ msgstr "請輸入提取金額"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "進行中的訂單"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "上線加成時間表"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -9076,6 +9088,10 @@ msgstr "為我推薦"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "費用和價格影響"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}：{apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -12948,10 +12964,6 @@ msgstr "您的資金是安全的。如需協助請聯繫客服。"
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "淨值"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "前 8 週：GLV 8% 或更高，GM 池 5%。計畫 TVL 超過 $100M 後收益率將被稀釋。由 Arbitrum 的 USDG 計畫與 GMX 共同資助。第 1 期：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

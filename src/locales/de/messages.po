@@ -2633,6 +2633,10 @@ msgstr "GMX-Guthaben"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Transaktionen off-chain signieren. Premium-RPCs gewährleisten Zuverlässigkeit bei Netzwerküberlastung.<0/><1/>Gebühren werden mit Ihrem Token für Gasgebühren aus dem Guthaben bezahlt, das die Aktion verwendet."
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "Gesch. {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "auf GMX."
@@ -4273,6 +4277,10 @@ msgstr "Aus Ihrer Wallet handeln"
 msgid "Deposit USD capacity"
 msgstr "Einzahlungskapazität in USD"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "Bis {endDate}: {apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -5758,6 +5766,10 @@ msgstr "Abhebungsbetrag eingeben"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Aktive Orders"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "Launch-Boost-Zeitplan"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -9076,6 +9088,10 @@ msgstr "Für mich"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "Gebühren und Preiseinflüsse"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}: {apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -12948,10 +12964,6 @@ msgstr "Ihre Mittel sind sicher. Kontaktieren Sie den Support für Hilfe."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "NETTOWERT"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "Erste 8 Wochen: GLV 8% oder mehr, GM-Pools 5%. Über $100M Programm-TVL werden die Renditen verwässert. Finanziert durch das USDG-Programm von Arbitrum mit GMX. Zeitraum 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

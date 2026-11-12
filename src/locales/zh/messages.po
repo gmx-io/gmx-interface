@@ -2633,6 +2633,10 @@ msgstr "GMX 余额"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "链下签署交易。优质 RPC 确保在网络拥堵时的可靠性。<0/><1/>费用将从该操作所使用的余额中以您的 Gas 支付代币支付。"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "预计 {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "在 GMX。"
@@ -4273,6 +4277,10 @@ msgstr "从您的钱包交易"
 msgid "Deposit USD capacity"
 msgstr "存入 USD 容量"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "截至 {endDate}：{apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -5758,6 +5766,10 @@ msgstr "输入提取金额"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "活跃订单"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "上线加成时间表"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -9076,6 +9088,10 @@ msgstr "适合我"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "费用与价格影响"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}：{apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -12948,10 +12964,6 @@ msgstr "您的资金是安全的。请联系客服获取帮助。"
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "净值"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "前 8 周：GLV 8% 或更高，GM 池 5%。计划 TVL 超过 $100M 后收益率将被稀释。由 Arbitrum 的 USDG 计划与 GMX 共同资助。第 1 期：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

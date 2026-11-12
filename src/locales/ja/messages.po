@@ -2633,6 +2633,10 @@ msgstr "GMX 残高"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "オフチェーンでトランザクションに署名します。プレミアムRPCがネットワーク混雑時の信頼性を確保します。<0/><1/>手数料は、アクションが使用する残高からGas支払いトークンで支払われます。"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "推定 {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "GMXで。"
@@ -4273,6 +4277,10 @@ msgstr "ウォレットから取引"
 msgid "Deposit USD capacity"
 msgstr "入金USD上限"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "{endDate}まで：{apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -5758,6 +5766,10 @@ msgstr "引き出し金額を入力"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "有効な注文"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "ローンチブーストのスケジュール"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -9076,6 +9088,10 @@ msgstr "おすすめ"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "手数料と価格への影響"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}：{apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -12948,10 +12964,6 @@ msgstr "お客様の資金は安全です。サポートにお問い合わせく
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "純価値"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "最初の8週間：GLV 8%以上、GM プール 5%。プログラムTVLが$100Mを超えるとレートは希薄化します。ArbitrumのUSDGプログラムとGMXによる資金提供。期間1：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx
