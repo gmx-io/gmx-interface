@@ -64,7 +64,7 @@ const symbol = "ETH/USD [WETH-USDC]";
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class FundedSession {
-  readonly sdk = new GmxApiSdk({ chainId: 42161 });
+  readonly sdk = new GmxApiSdk({ networkId: 42161 });
   private readonly account;
   readonly address: Address;
   readonly directory: string;

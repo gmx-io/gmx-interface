@@ -547,6 +547,10 @@ msgstr "鎖定此費率"
 msgid "position size"
 msgstr "倉位規模"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "確認提取"
@@ -1265,6 +1269,10 @@ msgstr "金庫與池中的 TVL"
 msgid "GMX on Solana"
 msgstr "Solana 上的 GMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "您推薦的交易者所產生的交易量"
@@ -1387,6 +1395,10 @@ msgstr "存入完成"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "編輯止盈：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1669,6 @@ msgstr "日期"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3326,6 +3337,10 @@ msgstr "排名"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -7327,7 +7342,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "編輯 Limit Increase：{suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "沒有未結訂單"
 
@@ -8119,6 +8133,7 @@ msgstr "確保可用流動性。"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8788,7 +8803,6 @@ msgstr "目前影響：{0}。請增加 0.30% 緩衝，以獲得更好的訂單�
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "輸入推薦碼即可享有交易手續費折扣。<0/> 視推薦等級而定，所有<1/>開倉和平倉手續費最高可節省 10%。"
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9708,10 +9722,6 @@ msgstr "扣除費用後保證金偏低。請存入更多資金以降低清算風
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solana 上的交易功能即將推出。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "最低存入金額：{0}"
@@ -10398,6 +10408,7 @@ msgstr "已收資金費用總計"
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "{directionLabel} 最大預留量 + JIT"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -11309,6 +11320,10 @@ msgstr "大型帳戶"
 msgid "Shift fee"
 msgstr "轉換費用"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "正常"
@@ -11989,6 +12004,10 @@ msgstr "傳送方已從 GLP 歸屬期金庫提領所有代幣"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在相關市場間自動再平衡。兩者的收益均自動複利。選擇 GM 獲取單一市場曝險，或選擇 GLV 分散投資於多個池。"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12736,6 +12755,7 @@ msgid "Arrives"
 msgstr "到帳時間"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "已累計"
 

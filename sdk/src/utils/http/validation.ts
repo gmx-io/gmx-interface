@@ -1,9 +1,36 @@
+import { getString } from "utils/objects";
+
 export type ApiFieldType = "bigint" | "boolean" | "number" | "numberOrNull" | "string";
 
 export type ApiFieldSpec = {
   name: string;
   type: ApiFieldType;
 };
+
+type ApiFieldParams = {
+  record: Record<string, unknown>;
+  name: string;
+  endpoint: string;
+};
+
+export function readApiString({ record, name, endpoint }: ApiFieldParams): string {
+  const value = getString(record[name]);
+  if (value === undefined) {
+    throw new Error(`${endpoint}: expected string field "${name}"`);
+  }
+  return value;
+}
+
+export function readApiUnsignedBigInt({ record, name, endpoint }: ApiFieldParams): bigint {
+  const value = record[name];
+  if (typeof value === "string" && /^\d+$/.test(value)) {
+    return BigInt(value);
+  }
+  if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) {
+    return BigInt(value);
+  }
+  throw new Error(`${endpoint}: expected bigint field "${name}"`);
+}
 
 export function assertApiRecords(value: unknown, endpoint: string): asserts value is Record<string, unknown>[] {
   if (!Array.isArray(value)) {

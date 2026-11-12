@@ -547,6 +547,10 @@ msgstr "Diesen Satz sichern"
 msgid "position size"
 msgstr "Positionsgröße"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "Abhebung bestätigen"
@@ -1265,6 +1269,10 @@ msgstr "TVL in Vaults und Pools"
 msgid "GMX on Solana"
 msgstr "GMX auf Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Handelsvolumen Ihrer geworbenen Trader"
@@ -1387,6 +1395,10 @@ msgstr "Einzahlung abgeschlossen"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Take-Profit bearbeiten: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1669,6 @@ msgstr "DATUM"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3326,6 +3337,10 @@ msgstr "RANG"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0}-Order für"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -7327,7 +7342,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "Limit Increase bearbeiten: {suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Keine offenen Orders"
 
@@ -8119,6 +8133,7 @@ msgstr "Stellt verfügbare Liquidität sicher."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8788,7 +8803,6 @@ msgstr "Aktueller Einfluss: {0}. Fügen Sie einen Puffer von 0.30% hinzu, um die
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Geben Sie einen Empfehlungscode ein, um einen Rabatt auf die Handelsgebühr zu erhalten.<0/> Je nach Empfehlungsstufe können Sie bei allen<1/> Gebühren für Eröffnung und Schließung bis zu 10 % sparen."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9708,10 +9722,6 @@ msgstr "Niedrige Margin nach Gebühren. Zahlen Sie mehr ein, um das Liquidations
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} und {collateralTokenSymbol} separat erhalten"
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Trading auf Solana ist in Kürze verfügbar."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "Mindesteinzahlung: {0}"
@@ -10398,6 +10408,7 @@ msgstr "Erhaltene Finanzierungsgebühr gesamt"
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "Maximale Reservierung + JIT {directionLabel}"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -11309,6 +11320,10 @@ msgstr "Großes Konto"
 msgid "Shift fee"
 msgstr "Shift-Gebühr"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Aktiv"
@@ -11989,6 +12004,10 @@ msgstr "Der Absender hat alle Token aus dem GLP Vesting Vault abgehoben"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM erzielt Gebühren aus einem Markt. GLV hält mehrere GM Token und gewichtet diese automatisch über verwandte Märkte neu. Beide reinvestieren Erträge automatisch. Wählen Sie GM für ein Engagement in einem einzelnen Markt oder GLV zur Diversifizierung über mehrere Pools."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12736,6 +12755,7 @@ msgid "Arrives"
 msgstr "Eingang"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "Angesammelt"
 
