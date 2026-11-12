@@ -9,6 +9,8 @@ import Tabs from "components/Tabs/Tabs";
 import { StatsChartCard } from "./StatsChartCard";
 import { type CardConfig, END, fmtDate, getStatsTabs, type SectionTop, TAB_IDS, type TabId } from "./statsData";
 import { type StatsDataState, StatsDataStateProvider } from "./statsDataState";
+import { StatsTesterPanel } from "./tester/StatsTesterPanel"; // rewards-tester
+import { useStatsTesterState } from "./tester/statsTester"; // rewards-tester
 import { OverviewTop, SectionHeading } from "./StatsOverview";
 import {
   BuybackKpis,
@@ -64,7 +66,7 @@ export function StatsPage() {
 
   // The mock data is always ready. With real data the page is "loading" until every source behind it has answered
   // (at most 5 s) and "empty" when a source returns no data; a card can also get its own provider.
-  const dataState: StatsDataState = "ready";
+  const dataState: StatsDataState = useStatsTesterState() ?? "ready"; // rewards-tester
 
   const current = tabs.find((x) => x.id === tab) ?? tabs[0];
   const dataDay = fmtDate(END, "D", true);
@@ -109,6 +111,7 @@ export function StatsPage() {
           </div>
         </div>
       </StatsDataStateProvider>
+      <StatsTesterPanel /* rewards-tester */ />
     </AppPageLayout>
   );
 }
