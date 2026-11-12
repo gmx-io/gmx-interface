@@ -6,10 +6,10 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import PercentageInput from "components/PercentageInput/PercentageInput";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
-import InfoIcon from "img/ic_info.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 export enum TradingMode {
   Classic = "classic",
@@ -104,7 +104,7 @@ export function SettingButton({
     }
   };
 
-  const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : NoopWrapper;
+  const Wrapper = disabled && disabledTooltip ? StandardTooltip : NoopWrapper;
 
   return (
     <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
@@ -130,10 +130,10 @@ export function SettingButton({
             <div className="flex items-center gap-4">
               <div>{title}</div>
               {info && (
-                <TooltipWithPortal
+                <StandardTooltip
                   content={info}
                   handleClassName="-mb-6"
-                  handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
+                  handle={<InfoIconStroke className="size-12" onClickCapture={handleInfoClick} />}
                   variant="none"
                 />
               )}

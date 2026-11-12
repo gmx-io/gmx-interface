@@ -231,6 +231,31 @@ sdk.orders.swap({
 
 Note the distinction between `payTokenAddress` and `collateralTokenAddress`. These represent the ERC20 token addresses for payment and collateral respectively. Some markets use synthetic tokens, so you'll need to provide the correct underlying token address. For example, the BTC/USD [WETH-USDC] market has a synthetic BTC token as its `indexTokenAddress`, so you should pass the WBTC address instead of BTC.
 
+### Execution-fee deposits with a zero-tip bundler
+
+The v2 API client's `prepareOrder` and `prepareCollateral` methods accept
+`skipExecutionFeePriorityFeeAllowance?: boolean`, which defaults to `false`:
+
+```typescript
+const prepared = await api.prepareOrder({
+  ...request,
+  mode: "classic",
+  skipExecutionFeePriorityFeeAllowance: true,
+});
+```
+
+Set this to `true` only when the outer transaction your bundler submits to Arbitrum uses zero priority
+fee, including retries and wallet fallbacks. A zero tip on a UserOperation alone is not sufficient.
+This removes only the 0.03 gwei-per-gas wallet-tip allowance and preserves `executionFeeBufferBps`,
+including the default 30% buffer, and the remaining execution-fee calculation. It applies to attached
+TP/SL orders, every TWAP part and collateral operations. Express and other chains retain their current
+calculation.
+
+The keeper executes separately later, so this does not guarantee future gas costs or a refund.
+A later tipped submission or order edit can fail with `InsufficientExecutionFee`; use
+`executionFeeTopUp` when an edit needs more funding. The API deployment must support the option before
+clients send it; older deployments reject the unknown field. Malformed values return HTTP 400.
+
 ### JIT-aware trading capacity
 
 Use the v2 API client to get the current increase-order capacity for one market side:

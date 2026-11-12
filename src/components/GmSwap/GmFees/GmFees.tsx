@@ -10,11 +10,9 @@ import { bigMath } from "sdk/utils/bigmath";
 import { FeeItem } from "sdk/utils/fees/types";
 
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-
-import "./GmFees.scss";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 type Props = {
   totalFees?: FeeItem;
@@ -56,8 +54,7 @@ export function GmFees(p: Props) {
       bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0
     ) {
       return (
-        <Tooltip
-          className="GmFees-tooltip"
+        <StandardTooltip
           handle={
             <span>
               <span
@@ -85,14 +82,14 @@ export function GmFees(p: Props) {
               </span>
             </span>
           }
-          position="top-end"
+          position="bottom-end"
           renderContent={() => (
-            <div>
+            <TooltipRows>
               {bigMath.abs(p.swapPriceImpact?.deltaUsd ?? 0n) > 0 && (
-                <StatsTooltipRow
+                <TooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Price impact`}:</div>
+                      <div>{t`Price impact`}</div>
                       <div>
                         <Trans>
                           (
@@ -108,9 +105,7 @@ export function GmFees(p: Props) {
                     </div>
                   }
                   value={<DeltaUsdValue deltaUsd={p.swapPriceImpact?.deltaUsd} />}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(
+                  valueClassName={getPositiveOrNegativeClass(
                     p.swapPriceImpact === undefined ? undefined : p.swapPriceImpact.deltaUsd
                   )}
                 />
@@ -118,12 +113,10 @@ export function GmFees(p: Props) {
 
               {p.swapFee && (
                 <>
-                  <StatsTooltipRow
+                  <TooltipRow
                     label={
                       <div>
-                        <div className="text-typography-primary">
-                          {p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}:
-                        </div>
+                        <div>{p.operation === Operation.Deposit ? t`Buy fee` : t`Sell fee`}</div>
                         <div>
                           <Trans>
                             (
@@ -139,18 +132,16 @@ export function GmFees(p: Props) {
                       </div>
                     }
                     value={<DeltaUsdValue deltaUsd={p.swapFee.deltaUsd} />}
-                    valueClassName="numbers"
-                    showDollar={false}
-                    textClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
+                    valueClassName={getPositiveOrNegativeClass(p.swapFee.deltaUsd)}
                   />
                 </>
               )}
 
               {bigMath.abs(p.collateralSwapFee?.deltaUsd ?? 0n) > 0 && (
-                <StatsTooltipRow
+                <TooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Swap fee`}:</div>
+                      <div>{t`Swap fee`}</div>
                       <div>
                         <Trans>
                           (
@@ -166,17 +157,15 @@ export function GmFees(p: Props) {
                     </div>
                   }
                   value={<DeltaUsdValue deltaUsd={p.collateralSwapFee?.deltaUsd} />}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(p.collateralSwapFee?.deltaUsd)}
+                  valueClassName={getPositiveOrNegativeClass(p.collateralSwapFee?.deltaUsd)}
                 />
               )}
 
               {bigMath.abs(p.transitFee?.deltaUsd ?? 0n) > 0 && (
-                <StatsTooltipRow
+                <TooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Conversion fee`}:</div>
+                      <div>{t`Conversion fee`}</div>
                       <div>
                         <Trans>
                           (
@@ -192,17 +181,15 @@ export function GmFees(p: Props) {
                     </div>
                   }
                   value={<DeltaUsdValue deltaUsd={p.transitFee?.deltaUsd} />}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(p.transitFee?.deltaUsd)}
+                  valueClassName={getPositiveOrNegativeClass(p.transitFee?.deltaUsd)}
                 />
               )}
 
               {bigMath.abs(p.uiFee?.deltaUsd ?? 0n) > 0 && (
-                <StatsTooltipRow
+                <TooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`UI fee`}:</div>
+                      <div>{t`UI fee`}</div>
                       <div>
                         <Trans>
                           (
@@ -218,17 +205,15 @@ export function GmFees(p: Props) {
                     </div>
                   }
                   value={<DeltaUsdValue deltaUsd={p.uiFee?.deltaUsd} />}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName="text-red-500"
+                  valueClassName="text-red-500"
                 />
               )}
 
               {p.shiftFee !== undefined && (
-                <StatsTooltipRow
+                <TooltipRow
                   label={
                     <div>
-                      <div className="text-typography-primary">{t`Shift fee`}:</div>
+                      <div>{t`Shift fee`}</div>
                       <div>
                         <Trans>
                           (
@@ -244,11 +229,9 @@ export function GmFees(p: Props) {
                     </div>
                   }
                   value={<DeltaUsdValue deltaUsd={p.shiftFee.deltaUsd} />}
-                  valueClassName="numbers"
-                  showDollar={false}
                 />
               )}
-            </div>
+            </TooltipRows>
           )}
         />
       );

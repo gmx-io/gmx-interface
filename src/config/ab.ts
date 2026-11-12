@@ -16,6 +16,8 @@ const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
   solanaNetwork: 0,
+  abWebsocket: 0,
+  keepOrderToastOpen: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;

@@ -47,3 +47,8 @@ export function useGmxSdk(chainId: ContractsChainId): GmxApiSdk | undefined {
 
   return ctx.getSdk(chainId);
 }
+
+// the price and candle streams are optional, so their hooks also run in trees without the provider, such as component tests
+export function useOptionalGmxSdk(chainId: ContractsChainId): GmxApiSdk | undefined {
+  return useContext(context)?.getSdk(chainId);
+}

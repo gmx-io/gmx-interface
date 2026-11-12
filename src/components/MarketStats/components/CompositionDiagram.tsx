@@ -6,7 +6,8 @@ import { USD_DECIMALS } from "sdk/configs/factors";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow } from "components/Tooltip/TooltipBlocks";
 
 import { CompositionItem, getCompositionPercentage } from "../hooks/useCompositionData";
 
@@ -75,12 +76,16 @@ const TooltipContent = ({
   const dotStyle = useMemo(() => ({ backgroundColor: color }), [color]);
 
   return (
-    <div className="flex w-max items-center gap-4">
-      <div className="mr-2 h-8 w-8 shrink-0 grow rounded-full" style={dotStyle} />
-      <TokenIcon symbol={symbol} displaySize={16} />
-      <p className="text-body-medium">{name}:</p>
-      <p className="text-body-medium numbers">{getCompositionPercentage(value, sum)}%</p>
-    </div>
+    <TooltipRow
+      label={
+        <span className="flex items-center gap-4">
+          <span className="mr-2 h-8 w-8 shrink-0 rounded-full" style={dotStyle} />
+          <TokenIcon symbol={symbol} displaySize={16} />
+          {name}
+        </span>
+      }
+      value={<>{getCompositionPercentage(value, sum)}%</>}
+    />
   );
 };
 
@@ -113,12 +118,11 @@ function CompositionChart({ items, label }: CompositionChartProps) {
       <div className="flex w-full gap-2">
         {itemsWithStyles.map((item) => (
           <div key={item.key} className="h-12 rounded-2" style={item.style}>
-            <Tooltip
-              content={<div className="w-fit">{item.tooltipContent}</div>}
+            <StandardTooltip
+              content={item.tooltipContent}
               handle={<div></div>}
               handleClassName="!block h-full w-full"
               className="block h-full w-full"
-              tooltipClassName="!min-w-fit"
               position="bottom"
               variant="none"
             />

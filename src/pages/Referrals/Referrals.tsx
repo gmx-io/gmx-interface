@@ -142,11 +142,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
           <PageTitle
             isTop
             title={t`Referrals`}
-            subtitle={
-              <Trans>
-                Get fee discounts and earn up to 25% commission through the GMX <br /> referral program
-              </Trans>
-            }
+            subtitle={<Trans>Get fee discounts and earn up to 25% commission through the GMX referral program</Trans>}
             qa="referrals-page"
           />
           <div className="flex grow flex-col">

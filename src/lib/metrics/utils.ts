@@ -1,8 +1,23 @@
 import { USD_DECIMALS } from "config/factors";
-import { EventLogData } from "context/SyntheticsEvents";
+import type {
+  DepositCreatedEventData,
+  EventLogData,
+  GLVDepositCreatedEventData,
+  OrderCreatedEventData,
+  ShiftCreatedEventData,
+  WithdrawalCreatedEventData,
+} from "context/SyntheticsEvents";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { ExecutionFee } from "domain/synthetics/fees";
-import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
+import {
+  getMarketIndexName,
+  getMarketPoolName,
+  MarketInfo,
+  RawCreateDepositParams,
+  RawCreateGlvDepositParams,
+  RawCreateGlvWithdrawalParams,
+  RawCreateWithdrawalParams,
+} from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TokenData } from "domain/synthetics/tokens";
@@ -10,6 +25,7 @@ import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts, TradeMod
 import { ErrorLike, extendError, OrderErrorContext, parseError } from "lib/errors";
 import { bigintToNumber, formatPercentage, formatRatePercentage, getBasisPoints, roundToOrder } from "lib/numbers";
 import { getToken } from "sdk/configs/tokens";
+import { isDecreaseOrderType } from "sdk/utils/orders";
 import { CreateOrderPayload } from "sdk/utils/orderTransactions";
 import { TwapDuration } from "sdk/utils/twap/types";
 
@@ -38,6 +54,8 @@ import {
   SwapMetricData,
 } from "./types";
 
+const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = ["simulation", "gasLimit", "gasPrice", "minting"];
+
 export function initSwapMetricData({
   fromToken,
   toToken,
@@ -60,6 +78,7 @@ export function initSwapMetricData({
   fastExpressParams,
   chainId,
   isCollateralFromMultichain,
+  orderPayloads,
 }: {
   fromToken: TokenData | undefined;
   toToken: TokenData | undefined;
@@ -82,6 +101,7 @@ export function initSwapMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
   chainId: number;
   isCollateralFromMultichain: boolean;
+  orderPayloads: CreateOrderPayload[] | undefined;
 }) {
   let metricType: SwapMetricData["metricType"] = "swap";
   if (tradeMode === TradeMode.Twap) {
@@ -96,14 +116,10 @@ export function initSwapMetricData({
     expressData = getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams });
   }
 
-  return metrics.setCachedMetricData<SwapMetricData>({
-    metricId: getSwapOrderMetricId({
-      initialCollateralTokenAddress: fromToken?.wrappedAddress || fromToken?.address,
-      swapPath: swapAmounts?.swapStrategy.swapPathStats?.swapPath,
-      orderType,
-      initialCollateralDeltaAmount: swapAmounts?.amountIn,
-      executionFee: executionFee?.feeTokenAmount,
-    }),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<SwapMetricData>(getOrderPayloadsCreationKeys(orderPayloads), {
+    metricId: `swap:${requestId}`,
     metricType,
     initialCollateralTokenAddress: fromToken?.address,
     initialCollateralAllowance: initialCollateralAllowance?.toString(),
@@ -122,7 +138,7 @@ export function initSwapMetricData({
     isTwap,
     isExpress: isExpress ?? false,
     isExpress1CT: Boolean(subaccount),
-    requestId: getRequestId(),
+    requestId,
     isFirstOrder,
     duration,
     executionFeeBufferBps,
@@ -153,7 +169,7 @@ export function initIncreaseOrderMetricData({
   slCount,
   tpCount,
   priceImpactDeltaUsd,
-  orderPayload,
+  orderPayloads,
   priceImpactPercentage,
   executionFeeBufferBps,
   netRate1h,
@@ -171,7 +187,7 @@ export function initIncreaseOrderMetricData({
 }: {
   fromToken: TokenData | undefined;
   increaseAmounts: IncreasePositionAmounts | undefined;
-  orderPayload: CreateOrderPayload | undefined;
+  orderPayloads: CreateOrderPayload[] | undefined;
   initialCollateralAllowance: bigint | undefined;
   leverage: string | undefined;
   executionFee: ExecutionFee | undefined;
@@ -209,17 +225,11 @@ export function initIncreaseOrderMetricData({
     metricType = "limitOrder";
   }
 
-  return metrics.setCachedMetricData<IncreaseOrderMetricData>({
-    metricId: getPositionOrderMetricId({
-      marketAddress: marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: orderPayload?.addresses.initialCollateralToken,
-      swapPath: orderPayload?.addresses.swapPath,
-      isLong: orderPayload?.isLong,
-      orderType,
-      sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
-      initialCollateralDeltaAmount: increaseAmounts?.initialCollateralAmount,
-    }),
-    requestId: getRequestId(),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<IncreaseOrderMetricData>(getOrderPayloadsCreationKeys(orderPayloads), {
+    metricId: `position:${requestId}`,
+    requestId,
     isExpress,
     isTwap,
     isExpress1CT: Boolean(subaccount),
@@ -287,7 +297,6 @@ export function initDecreaseOrderMetricData({
   hasExistingPosition,
   executionFee,
   orderType,
-  swapPath,
   hasReferralCode,
   subaccount,
   triggerPrice,
@@ -309,12 +318,12 @@ export function initDecreaseOrderMetricData({
   fastExpressParams,
   chainId,
   isCollateralFromMultichain,
+  orderPayloads,
 }: {
   collateralToken: TokenData | undefined;
   decreaseAmounts: DecreasePositionAmounts | undefined;
   executionFee: ExecutionFee | undefined;
   orderType: OrderType | undefined;
-  swapPath: string[] | undefined;
   allowedSlippage: number | undefined;
   hasReferralCode: boolean | undefined;
   hasExistingPosition: boolean | undefined;
@@ -338,6 +347,7 @@ export function initDecreaseOrderMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
   chainId: number;
   isCollateralFromMultichain: boolean;
+  orderPayloads: CreateOrderPayload[] | undefined;
 }) {
   let metricType: DecreaseOrderMetricData["metricType"] = "decreasePosition";
   if (orderType === OrderType.LimitDecrease) {
@@ -346,16 +356,10 @@ export function initDecreaseOrderMetricData({
     metricType = "stopLossOrder";
   }
 
-  return metrics.setCachedMetricData<DecreaseOrderMetricData>({
-    metricId: getPositionOrderMetricId({
-      marketAddress: marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath,
-      isLong,
-      orderType,
-      sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
-      initialCollateralDeltaAmount: decreaseAmounts?.collateralDeltaAmount,
-    }),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<DecreaseOrderMetricData>(getOrderPayloadsCreationKeys(orderPayloads), {
+    metricId: `position:${requestId}`,
     metricType,
     place,
     isStandalone: true,
@@ -385,7 +389,7 @@ export function initDecreaseOrderMetricData({
     isExpress,
     isExpress1CT: Boolean(subaccount),
     isTwap,
-    requestId: getRequestId(),
+    requestId,
     priceImpactDeltaUsd:
       priceImpactDeltaUsd !== undefined ? bigintToNumber(roundToOrder(priceImpactDeltaUsd, 2), USD_DECIMALS) : 0,
     priceImpactPercentage: formatPercentageForMetrics(priceImpactPercentage) ?? 0,
@@ -416,6 +420,7 @@ export function initEditCollateralMetricData({
   fastExpressParams,
   chainId,
   isCollateralFromMultichain,
+  orderPayloads,
 }: {
   collateralToken: TokenData | undefined;
   executionFee: ExecutionFee | undefined;
@@ -432,17 +437,12 @@ export function initEditCollateralMetricData({
   fastExpressParams: ExpressTxnParams | undefined;
   chainId: number;
   isCollateralFromMultichain: boolean;
+  orderPayloads: CreateOrderPayload[] | undefined;
 }) {
-  return metrics.setCachedMetricData<EditCollateralMetricData>({
-    metricId: getPositionOrderMetricId({
-      marketAddress: marketInfo?.marketTokenAddress,
-      initialCollateralTokenAddress: collateralToken?.wrappedAddress || collateralToken?.address,
-      swapPath,
-      isLong,
-      orderType,
-      sizeDeltaUsd: 0n,
-      initialCollateralDeltaAmount: collateralDeltaAmount,
-    }),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<EditCollateralMetricData>(getOrderPayloadsCreationKeys(orderPayloads), {
+    metricId: `position:${requestId}`,
     metricType: orderType === OrderType.MarketIncrease ? "depositCollateral" : "withdrawCollateral",
     marketAddress: marketInfo?.marketTokenAddress,
     isStandalone: true,
@@ -456,7 +456,7 @@ export function initEditCollateralMetricData({
     executionFee: formatAmountForMetrics(executionFee?.feeTokenAmount, executionFee?.feeToken.decimals),
     isExpress,
     isExpress1CT: Boolean(subaccount),
-    requestId: getRequestId(),
+    requestId,
     expressData: getExpressMetricData({ expressParams, asyncExpressParams, fastExpressParams }),
     chainId,
     isCollateralFromMultichain,
@@ -481,6 +481,7 @@ export function initGMSwapMetricData({
   isExpress,
   isExpress1CT,
   isCollateralFromMultichain,
+  rawParams,
 }: {
   longTokenAddress: string | undefined;
   shortTokenAddress: string | undefined;
@@ -499,14 +500,14 @@ export function initGMSwapMetricData({
   isExpress: boolean;
   isExpress1CT: boolean;
   isCollateralFromMultichain: boolean;
+  rawParams: LpCreationParams | undefined;
 }) {
-  return metrics.setCachedMetricData<SwapGmMetricData>({
-    metricId: getGMSwapMetricId({
-      marketAddress: marketInfo?.marketTokenAddress,
-      executionFee: executionFeeTokenAmount,
-    }),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<SwapGmMetricData>(getLpCreationKeys(rawParams), {
+    metricId: `gm:${requestId}`,
     metricType: isDeposit ? "buyGM" : "sellGM",
-    requestId: getRequestId(),
+    requestId,
     chainId: srcChainId ?? chainId,
     isExpress,
     isExpress1CT,
@@ -550,6 +551,7 @@ export function initGLVSwapMetricData({
   shortTokenAmount,
   glvTokenUsd,
   isFirstBuy,
+  rawParams,
 }: {
   chainId: number;
   srcChainId: number | undefined;
@@ -571,14 +573,14 @@ export function initGLVSwapMetricData({
   glvTokenUsd: bigint | undefined;
   glvToken: TokenData | undefined;
   isFirstBuy: boolean | undefined;
+  rawParams: LpCreationParams | undefined;
 }) {
-  return metrics.setCachedMetricData<SwapGLVMetricData>({
-    metricId: getGLVSwapMetricId({
-      glvAddress,
-      executionFee: executionFeeTokenAmount,
-    }),
+  const requestId = getRequestId();
+
+  return cacheOrderMetricData<SwapGLVMetricData>(getLpCreationKeys(rawParams), {
+    metricId: `glv:${requestId}`,
     metricType: isDeposit ? "buyGLV" : "sellGLV",
-    requestId: getRequestId(),
+    requestId,
     chainId: srcChainId ?? chainId,
     isExpress,
     isExpress1CT,
@@ -643,6 +645,7 @@ export function initShiftGmMetricData({
   isCollateralFromMultichain,
   executionFee,
   fromMarketToken,
+  fromMarketTokenAmount,
   toMarketToken,
   minMarketTokenAmount,
 }: {
@@ -652,17 +655,26 @@ export function initShiftGmMetricData({
   isCollateralFromMultichain: boolean;
   executionFee: ExecutionFee | undefined;
   fromMarketToken: TokenData | undefined;
+  fromMarketTokenAmount: bigint | undefined;
   toMarketToken: TokenData | undefined;
   minMarketTokenAmount: bigint | undefined;
 }) {
-  return metrics.setCachedMetricData<ShiftGmMetricData>({
-    metricId: getShiftGMMetricId({
-      fromMarketAddress: fromMarketToken?.address,
-      toMarketAddress: toMarketToken?.address,
-      executionFee: executionFee?.feeTokenAmount,
-    }),
+  const requestId = getRequestId();
+  const creationKeys =
+    fromMarketToken && toMarketToken && fromMarketTokenAmount !== undefined
+      ? [
+          getShiftCreationKey({
+            fromMarket: fromMarketToken.address,
+            toMarket: toMarketToken.address,
+            marketTokenAmount: fromMarketTokenAmount,
+          }),
+        ]
+      : [];
+
+  return cacheOrderMetricData<ShiftGmMetricData>(creationKeys, {
+    metricId: `shift:${requestId}`,
     metricType: "shiftGM",
-    requestId: getRequestId(),
+    requestId,
     chainId,
     isExpress,
     isExpress1CT,
@@ -730,58 +742,167 @@ export function initMultichainWithdrawalMetricData({
   });
 }
 
-export function getGMSwapMetricId(p: {
-  marketAddress: string | undefined;
-  executionFee: bigint | undefined;
-}): SwapGmMetricData["metricId"] {
-  return `gm:${[p.marketAddress || "marketTokenAddress", p.executionFee?.toString || "marketTokenAmount"].join(":")}`;
+type LpCreationParams =
+  | RawCreateDepositParams
+  | RawCreateGlvDepositParams
+  | RawCreateWithdrawalParams
+  | RawCreateGlvWithdrawalParams;
+
+function cacheOrderMetricData<TData extends OrderMetricData = never>(creationKeys: string[], metricData: TData) {
+  const cached = metrics.setCachedMetricData<TData>(metricData);
+
+  metrics.orderCreationTracker.prune(new Set(metrics.getCachedMetricIds()));
+  metrics.orderCreationTracker.expect(cached.metricId, creationKeys);
+
+  return cached;
 }
 
-export function getGLVSwapMetricId(p: {
-  glvAddress: string | undefined;
-  executionFee: bigint | undefined;
-}): SwapGLVMetricData["metricId"] {
-  return `glv:${[p.glvAddress || "glvAddress", p.executionFee?.toString() || "executionFee"].join(":")}`;
+function joinCreationKey(kind: string, parts: (string | bigint | number | boolean | string[])[]) {
+  return [kind, ...parts.map((part) => (Array.isArray(part) ? part.join("-") : String(part)))].join(":");
 }
 
-export function getShiftGMMetricId(p: {
-  fromMarketAddress: string | undefined;
-  toMarketAddress: string | undefined;
-  executionFee: bigint | undefined;
-}): ShiftGmMetricData["metricId"] {
-  return `shift:${[p.fromMarketAddress || "fromMarketAddress", p.toMarketAddress || "toMarketAddress", p.executionFee?.toString() || "marketTokenAmount"].join(":")}`;
+export function getOrderCreationKey(
+  p: Pick<
+    OrderCreatedEventData,
+    | "orderType"
+    | "marketAddress"
+    | "initialCollateralTokenAddress"
+    | "swapPath"
+    | "isLong"
+    | "sizeDeltaUsd"
+    | "initialCollateralDeltaAmount"
+    | "contractTriggerPrice"
+    | "contractAcceptablePrice"
+    | "minOutputAmount"
+    | "decreasePositionSwapType"
+  >
+) {
+  return joinCreationKey("order", [
+    p.orderType,
+    p.marketAddress,
+    p.initialCollateralTokenAddress,
+    p.swapPath,
+    p.isLong,
+    p.sizeDeltaUsd,
+    isDecreaseOrderType(p.orderType) ? p.initialCollateralDeltaAmount : "",
+    p.contractTriggerPrice,
+    p.contractAcceptablePrice,
+    p.minOutputAmount,
+    p.decreasePositionSwapType,
+  ]);
 }
 
-export function getSwapOrderMetricId(p: {
-  initialCollateralTokenAddress: string | undefined;
-  swapPath: string[] | undefined;
-  orderType: OrderType | undefined;
-  initialCollateralDeltaAmount: bigint | undefined;
-  executionFee: bigint | undefined;
-}): SwapMetricData["metricId"] {
-  return `swap:${[
-    p.initialCollateralTokenAddress || "initialColltateralTokenAddress",
-    p.swapPath?.join("-") || "swapPath",
-    p.orderType || "orderType",
-  ].join(":")}`;
+export function getOrderPayloadsCreationKeys(orderPayloads: CreateOrderPayload[] | undefined) {
+  return (orderPayloads ?? []).map((payload) =>
+    getOrderCreationKey({
+      orderType: payload.orderType,
+      marketAddress: payload.addresses.market,
+      initialCollateralTokenAddress: payload.addresses.initialCollateralToken,
+      swapPath: payload.addresses.swapPath,
+      isLong: payload.isLong,
+      sizeDeltaUsd: payload.numbers.sizeDeltaUsd,
+      initialCollateralDeltaAmount: payload.numbers.initialCollateralDeltaAmount,
+      contractTriggerPrice: payload.numbers.triggerPrice,
+      contractAcceptablePrice: payload.numbers.acceptablePrice,
+      minOutputAmount: payload.numbers.minOutputAmount,
+      decreasePositionSwapType: payload.decreasePositionSwapType,
+    })
+  );
 }
 
-export function getPositionOrderMetricId(p: {
-  marketAddress: string | undefined;
-  initialCollateralTokenAddress: string | undefined;
-  swapPath: string[] | undefined;
-  isLong: boolean | undefined;
-  orderType: OrderType | undefined;
-  sizeDeltaUsd: bigint | undefined;
-  initialCollateralDeltaAmount: bigint | undefined;
-}): IncreaseOrderMetricData["metricId"] {
-  return `position:${[
-    p.marketAddress || "marketAddress",
-    p.initialCollateralTokenAddress || "initialCollateralTokenAddress",
-    p.swapPath?.join("-") || "swapPath",
-    p.isLong || "isLong",
-    p.orderType || "orderType",
-  ].join(":")}`;
+export function getDepositCreationKey(
+  p: Pick<
+    DepositCreatedEventData,
+    | "marketAddress"
+    | "initialLongTokenAddress"
+    | "initialShortTokenAddress"
+    | "longTokenSwapPath"
+    | "shortTokenSwapPath"
+    | "minMarketTokens"
+  >
+) {
+  return joinCreationKey("deposit", [
+    p.marketAddress,
+    p.initialLongTokenAddress,
+    p.initialShortTokenAddress,
+    p.longTokenSwapPath,
+    p.shortTokenSwapPath,
+    p.minMarketTokens,
+  ]);
+}
+
+export function getGlvDepositCreationKey(
+  p: Pick<
+    GLVDepositCreatedEventData,
+    | "glvAddress"
+    | "marketAddress"
+    | "initialLongTokenAddress"
+    | "initialShortTokenAddress"
+    | "longTokenSwapPath"
+    | "shortTokenSwapPath"
+    | "minMarketTokens"
+  >
+) {
+  return joinCreationKey("glvDeposit", [
+    p.glvAddress,
+    p.marketAddress,
+    p.initialLongTokenAddress,
+    p.initialShortTokenAddress,
+    p.longTokenSwapPath,
+    p.shortTokenSwapPath,
+    p.minMarketTokens,
+  ]);
+}
+
+export function getWithdrawalCreationKey(
+  p: Pick<WithdrawalCreatedEventData, "marketAddress" | "minLongTokenAmount" | "minShortTokenAmount">
+) {
+  return joinCreationKey("withdrawal", [p.marketAddress, p.minLongTokenAmount, p.minShortTokenAmount]);
+}
+
+export function getShiftCreationKey(p: Pick<ShiftCreatedEventData, "fromMarket" | "toMarket" | "marketTokenAmount">) {
+  return joinCreationKey("shift", [p.fromMarket, p.toMarket, p.marketTokenAmount]);
+}
+
+function getLpCreationKeys(p: LpCreationParams | undefined): string[] {
+  if (!p) {
+    return [];
+  }
+
+  if ("minGlvTokens" in p) {
+    return [
+      getGlvDepositCreationKey({
+        glvAddress: p.addresses.glv,
+        marketAddress: p.addresses.market,
+        initialLongTokenAddress: p.addresses.initialLongToken,
+        initialShortTokenAddress: p.addresses.initialShortToken,
+        longTokenSwapPath: p.addresses.longTokenSwapPath,
+        shortTokenSwapPath: p.addresses.shortTokenSwapPath,
+        minMarketTokens: p.minGlvTokens,
+      }),
+    ];
+  }
+
+  if ("minMarketTokens" in p) {
+    return [
+      getDepositCreationKey({
+        marketAddress: p.addresses.market,
+        initialLongTokenAddress: p.addresses.initialLongToken,
+        initialShortTokenAddress: p.addresses.initialShortToken,
+        longTokenSwapPath: p.addresses.longTokenSwapPath,
+        shortTokenSwapPath: p.addresses.shortTokenSwapPath,
+        minMarketTokens: p.minMarketTokens,
+      }),
+    ];
+  }
+
+  return [
+    getWithdrawalCreationKey({
+      marketAddress: "glv" in p.addresses ? p.addresses.glv : p.addresses.market,
+      minLongTokenAmount: p.minLongTokenAmount,
+      minShortTokenAmount: p.minShortTokenAmount,
+    }),
+  ];
 }
 
 export function getMultichainDepositMetricId(p: {
@@ -843,6 +964,8 @@ export function sendOrderTxnSubmittedMetric(metricId: OrderMetricId) {
     return;
   }
 
+  metrics.orderCreationTracker.markSent(metricId);
+
   const timings = getOrderStepTimings(metricId, OrderStage.TxnSubmitted);
 
   metrics.pushEvent<OrderTxnSubmittedEvent>({
@@ -867,6 +990,8 @@ export function sendTxnSentMetric(metricId: OrderMetricId) {
     return;
   }
 
+  metrics.orderCreationTracker.markSent(metricId);
+
   const timings = getOrderStepTimings(metricId, OrderStage.Sent);
 
   metrics.pushEvent<OrderSentEvent>({
@@ -880,6 +1005,8 @@ export function sendTxnSentMetric(metricId: OrderMetricId) {
 }
 
 export function sendTxnValidationErrorMetric(metricId: OrderMetricId) {
+  metrics.orderCreationTracker.drop(metricId);
+
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
@@ -903,19 +1030,28 @@ export function sendTxnErrorMetric(
   error: ErrorLike | undefined,
   errorContext: OrderErrorContext
 ) {
+  const errorData = parseError(error);
+
+  if (metricId) {
+    if (errorData?.isUserRejectedError || NEVER_CREATED_ERROR_CONTEXTS.includes(errorContext)) {
+      metrics.orderCreationTracker.drop(metricId);
+    } else {
+      metrics.orderCreationTracker.markFailed(metricId);
+    }
+  }
+
   const metricData = metricId ? metrics.getCachedMetricData<OrderMetricData>(metricId) : undefined;
 
   if (!metricData) {
     const err = extendError(new Error("Order metric data not found"), {
       data: {
-        originalError: parseError(error),
+        originalError: errorData,
       },
     });
     metrics.pushError(err, "sendTxnErrorMetric");
     return;
   }
 
-  const errorData = parseError(error);
   const timings = metricId ? getOrderStepTimings(metricId, OrderStage.Failed) : undefined;
 
   const eventName =
@@ -940,7 +1076,7 @@ export function makeTxnErrorMetricsHandler(metricId: OrderMetricId) {
   };
 }
 
-export function sendOrderCreatedMetric(metricId: OrderMetricId) {
+export function sendOrderCreatedMetric(metricId: OrderMetricId, hasMoreCreations = false) {
   const metricData = metrics.getCachedMetricData<OrderMetricData>(metricId);
 
   if (!metricData) {
@@ -948,7 +1084,7 @@ export function sendOrderCreatedMetric(metricId: OrderMetricId) {
     return;
   }
 
-  const timings = getOrderStepTimings(metricId, OrderStage.Created);
+  const timings = getOrderStepTimings(metricId, OrderStage.Created, { keepTimers: hasMoreCreations });
 
   metrics.pushEvent<OrderCreatedEvent>({
     event: `${metricData.metricType}.created`,
@@ -997,6 +1133,36 @@ export function sendOrderCancelledMetric(metricId: OrderMetricId, eventData: Eve
   });
 }
 
+export function sendTrackedOrderCreatedMetric(creationKey: string, orderKey: string) {
+  const trackedOrder = metrics.orderCreationTracker.trackCreated(creationKey, orderKey);
+
+  if (trackedOrder) {
+    sendOrderCreatedMetric(trackedOrder.metricId, trackedOrder.hasMoreCreations);
+  }
+
+  return trackedOrder?.metricId;
+}
+
+export function sendTrackedOrderExecutedMetric(orderKey: string) {
+  const metricId = metrics.orderCreationTracker.takeCreated(orderKey);
+
+  if (metricId) {
+    sendOrderExecutedMetric(metricId);
+  }
+
+  return metricId;
+}
+
+export function sendTrackedOrderCancelledMetric(orderKey: string, eventData: EventLogData) {
+  const metricId = metrics.orderCreationTracker.takeCreated(orderKey);
+
+  if (metricId) {
+    sendOrderCancelledMetric(metricId, eventData);
+  }
+
+  return metricId;
+}
+
 export function formatAmountForMetrics(
   amount?: bigint,
   decimals = USD_DECIMALS,
@@ -1030,7 +1196,7 @@ export function formatPercentageForMetrics(percentage?: bigint, roundToDecimals 
   return parseFloat(formatted);
 }
 
-function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
+function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage, { keepTimers = false } = {}) {
   const timingIds = {
     [OrderStage.Submitted]: metricId,
     [OrderStage.Simulated]: `${metricId}.simulated`,
@@ -1039,7 +1205,7 @@ function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
     [OrderStage.Created]: `${metricId}.created`,
   };
 
-  const clear = step === OrderStage.Created || step === OrderStage.Failed;
+  const clear = !keepTimers && (step === OrderStage.Created || step === OrderStage.Failed);
 
   const currentTimings: OrderStepTimings = {
     timeFromSubmitted: metrics.getTime(timingIds[OrderStage.Submitted], clear) ?? 0,
