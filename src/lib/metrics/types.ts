@@ -408,6 +408,7 @@ export type ExpressOrderMetricData = {
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
+  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;

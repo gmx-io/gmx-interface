@@ -50,6 +50,7 @@ export function getSubaccountValidations({
   return {
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
+    isNonceExpired: getIsSubaccountNonceExpired(subaccount),
     isApprovalInvalid: getIsSubaccountApprovalInvalid({
       chainId: subaccount.chainId,
       signerChainId: subaccount.signerChainId,
@@ -282,6 +283,7 @@ export function getIsInvalidSubaccount({
   subaccountRouterAddress: string;
 }): boolean {
   const isExpired = getIsSubaccountExpired(subaccount);
+  const isNonceExpired = getIsSubaccountNonceExpired(subaccount);
   const actionsExceeded = getIsSubaccountActionsExceeded(subaccount, requiredActions);
   const isApprovalInvalid = getIsSubaccountApprovalInvalid({
     chainId: subaccount.chainId,
@@ -291,7 +293,7 @@ export function getIsInvalidSubaccount({
     onchainData: subaccount.onchainData,
   });
 
-  return isExpired || actionsExceeded || isApprovalInvalid;
+  return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
 function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubaccountApproval {
@@ -331,16 +333,20 @@ export async function getInitialSubaccountApproval({
   provider,
   subaccountAddress,
   isGmxAccount,
+  remainingSeconds = BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+  remainingActions = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
+  remainingSeconds?: bigint;
+  remainingActions?: bigint;
 }) {
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_ONE_CLICK_SESSION_DURATION);
+  const defaultExpiresAt = BigInt(nowInSeconds()) + remainingSeconds;
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
@@ -351,8 +357,7 @@ export async function getInitialSubaccountApproval({
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
-  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
+  const maxAllowedCount = onchainData.currentActionsCount + remainingActions;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
@@ -400,11 +405,16 @@ function getIsSubaccountApprovalSynced(params: {
 }): boolean {
   const { signedApproval, onchainData } = params;
 
-  /**
-   * If nonce is expired or the subaccount was revoked, we believe a newer settings have been applied in some other way e.g. different browser
-   */
-  if (getIsSubaccountNonceExpired(params) || getIsSubaccountRevoked(params)) {
+  if (getIsSubaccountRevoked(params)) {
     return true;
+  }
+
+  /**
+   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser.
+   * An address the contract has never seen keeps its approval, so the UI can ask to re-sign it
+   */
+  if (getIsSubaccountNonceExpired(params)) {
+    return onchainData.expiresAt > 0n;
   }
 
   return (
@@ -534,7 +544,7 @@ async function getSubaccountApprovalNonceForProvider(
   });
 }
 
-async function getSubaccountOnchainData({
+export async function getSubaccountOnchainData({
   chainId,
   signer,
   provider,

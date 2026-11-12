@@ -147,15 +147,12 @@ export function SettingButton({
   );
 }
 
-export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
+export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" | "gray" }) {
   const variantClass = {
-    blue: "bg-blue-600 text-white",
-    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+    blue: "bg-blue-600 py-4 pb-3 text-[10px] text-white",
+    outline: "py-4 pb-3 text-[10px] text-typography-primary ring-1 ring-inset ring-typography-primary",
+    gray: "bg-slate-600 py-2 text-body-small text-typography-secondary",
   }[variant];
 
-  return (
-    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
-      {children}
-    </div>
-  );
+  return <div className={cx("whitespace-nowrap rounded-full px-8 font-medium", variantClass)}>{children}</div>;
 }

@@ -160,7 +160,7 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
     await expectModeActive(modeButton(page, "Express"));
     await expectModeInactive(modeButton(page, "Express + One-Click"));
 
-    expect(await readLocalStorage(page, CONFIG_KEY)).not.toContain(SEEDED_SUBACCOUNT_ADDRESS);
+    expect(await readLocalStorage(page, CONFIG_KEY)).toBeFalsy();
     expect(await readLocalStorage(page, SETTLEMENT_APPROVAL_KEY)).toBeFalsy();
     expect(await readLocalStorage(page, BASE_APPROVAL_KEY)).toBeFalsy();
   });

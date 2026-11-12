@@ -33,6 +33,7 @@ import { MarginDestinationSelector } from "components/MarginDestinationSelector/
 import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import { OneClickSessions } from "components/OneClickSessions/OneClickSessions";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
@@ -228,6 +229,8 @@ export function TradingSettings({
             {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
               <OneClickAdvancedSettings />
             )}
+
+            <OneClickSessions />
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">

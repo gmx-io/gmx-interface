@@ -337,6 +337,33 @@ describe("getActualApproval", () => {
     expect(actual.signature).toBe(ZERO_DATA);
   });
 
+  it("keeps an approval with a consumed nonce only while the contract has never seen the address PRO-4458", () => {
+    const signedApproval = createSettlementContextApproval({ nonce: APPROVAL_NONCE - 1n });
+
+    const neverOnchain = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ maxAllowedCount: 0n, expiresAt: 0n }),
+    });
+    const removedInAnotherBrowser = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ currentActionsCount: 1n }),
+    });
+    const revokedOnV2_2_1 = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ maxAllowedCount: 0n, expiresAt: 0n, revocationCounter: 1n }),
+    });
+
+    expect(neverOnchain).toBe(signedApproval);
+    expect(removedInAnotherBrowser.signature).toBe(ZERO_DATA);
+    expect(revokedOnV2_2_1.signature).toBe(ZERO_DATA);
+  });
+
   it("returns an empty approval when the settlement-context approval nonce is consumed", () => {
     const actual = getActualApproval({
       chainId: ARBITRUM,

@@ -44,6 +44,10 @@ msgstr "가격 영향 리베이트가 수령되었습니다"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "이 브라우저"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "월별"
@@ -671,6 +675,10 @@ msgstr "미실현 수수료 기여분"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{0} a short position when the price is above the trigger price."
 msgstr "가격이 조건가보다 높을 때 숏 포지션을 {0}합니다."
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "이전 세션이 제거되었습니다"
 
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -1484,6 +1492,10 @@ msgstr "추천인 코드 {activatedReferralCodeLabel}이(가) 활성화되었습
 msgid "Swap fee factor (negative PI)"
 msgstr "스왑 수수료 계수 (음의 PI)"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "남은 작업 없음"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "청구 가능 잔액"
@@ -1541,6 +1553,10 @@ msgstr "GMX 스테이킹 보상"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Receive amount below minimum"
 msgstr "수령 금액이 최소 금액 미만입니다"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "다른 모든 세션 제거"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -2033,10 +2049,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "수수료 할인은 어떻게 적용됩니까?"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "세션 생성 실패"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2795,6 +2807,10 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Instant via {instantLabel}"
 msgstr "{instantLabel} 경유 즉시"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, {actionsText}"
+msgstr "{expiryDate}까지 활성, {actionsText}"
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "기존 포지션은 WETH-USDC 풀에 있지만 해당 풀에는 이 주문에 필요한 유동성이 부족합니다"
@@ -3309,6 +3325,10 @@ msgstr "{0, plural, one {주문 취소} other {주문 #건 취소}}"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM:"
 msgstr "GM:"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "One-Click 세션 ({0})"
 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
@@ -3919,6 +3939,10 @@ msgstr "주문 유형"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "이 거래에 필요한 {symbol}이(가) GMX Account에 부족합니다. <0>{symbol} 입금</0>"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "이전 세션 제거 중..."
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "이중 익스포저: 포지션의 {indexSymbol} 롱 + 담보의 {collateralSymbol} 롱. 청산가는 {collateralSymbol} 가격에 따라 변동합니다."
@@ -4362,6 +4386,10 @@ msgstr "지원되는 네트워크는 무엇인가요?"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "다크 테마"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "브라우저마다 별도의 세션이 있습니다. 다른 브라우저의 세션은 첫 거래 후 여기에 표시됩니다. 대신 거래하는 봇과 앱도 표시됩니다."
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -5512,14 +5540,27 @@ msgstr "안전한 언스테이킹 한도: {0} GMX / esGMX"
 msgid "Swap submitted"
 msgstr "스왑 제출 완료"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "만료됨"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} 데이터"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "제거 중..."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "이 시장의 순이율 내역이 없습니다"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still active. Remove it in One-Click sessions"
+msgstr "이전 세션이 아직 활성 상태입니다. One-Click 세션에서 제거하세요"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6052,6 +6093,10 @@ msgstr "출금"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | 암호화폐, 금속, 주식, 에너지 무기한 DEX"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "제거 취소됨"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "스탑 마켓 업데이트"
@@ -6205,6 +6250,10 @@ msgstr "미결제약정 {directionLabel}"
 msgid "Approval failed"
 msgstr "승인 실패"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "이전 세션"
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
 msgstr "설정 업데이트 중..."
@@ -6220,6 +6269,10 @@ msgstr "bps"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP"
 msgstr "TWAP 생성"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, {actionsText}"
+msgstr "활성, 만료 없음, {actionsText}"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In other tokens"
@@ -7498,6 +7551,10 @@ msgstr "\"Close\" 버튼을 사용하여 시장가 또는 TWAP 주문으로 포�
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "모두 제거"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "간략히 보기"
@@ -7634,6 +7691,10 @@ msgstr "졸업"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "스톱 가격은 기준가보다 낮게 설정해야 합니다"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "unlimited actions"
+msgstr "작업 무제한"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total received"
@@ -9108,6 +9169,7 @@ msgstr "모든 거래에서 더 많이 가져가십시오"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9132,6 +9194,10 @@ msgstr "포인트는 에폭 동안 GLV [USDM-USDM] 볼트에서 귀하가 보유
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram 그룹"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{activeText}, pending next trade"
+msgstr "{activeText}, 다음 거래 대기 중"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
@@ -9514,6 +9580,10 @@ msgstr "GM 구매에 성공하였으나 Base로의 브릿지가 실패하였습�
 msgid "Disable One-Click Trading"
 msgstr "One-Click Trading 비활성화"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "제거됨"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -9889,6 +9959,10 @@ msgstr "{tokenSymbol}을(를) 스왑하거나 브릿지하십시오."
 msgid "{0} a short position in evenly distributed parts over a specified time."
 msgstr "지정된 시간 동안 숏 포지션을 균등하게 분할하여 {0}합니다."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, {actionsText}"
+msgstr "첫 거래 대기 중, {actionsText}"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
@@ -10125,6 +10199,10 @@ msgstr "지갑에 수수료에 필요한 {walletGasTokenSymbol}이(가) 부족�
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "복사"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "대신 거래하는 봇과 앱의 세션도 제거됩니다. 다시 승인할 때까지 작동하지 않습니다."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10410,6 +10488,10 @@ msgstr "새 탭에서 GMTrade를 엽니다"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
 msgstr "상위 주소"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+msgstr "One-Click Trading 승인 nonce가 만료되었습니다. One-Click Trading을 계속 사용하려면 다시 서명하십시오."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -11792,6 +11874,10 @@ msgstr "GMX란 무엇입니까?"
 msgid "Deposit submitted"
 msgstr "입금이 제출되었습니다"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "제거 실패"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11948,6 +12034,10 @@ msgstr "견적 로딩 중…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "익절매"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {# action left} other {# actions left}}"
+msgstr "{0, plural, one {남은 작업 #개} other {남은 작업 #개}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12549,6 +12639,10 @@ msgstr "이 프로그램이 적합합니까?"
 msgid "Gained"
 msgstr "획득"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "{expiryDate}에 만료됨"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "주문 업데이트 중..."
@@ -12656,6 +12750,10 @@ msgstr "PnL 숏"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "전담 매니저"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "제거"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -12913,6 +13011,7 @@ msgstr "예상 절감액 확인하기"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "재서명"
 
@@ -12923,6 +13022,10 @@ msgstr "GMX Account에 입금 중..."
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied"
 msgstr "주소가 복사되었습니다"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "재서명 필요"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
@@ -14037,6 +14140,12 @@ msgstr "안정성 향상을 위해 설정에서 <0>Express Trading</0>을(를) �
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "비율 입력"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "1CT 세션 제거"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
