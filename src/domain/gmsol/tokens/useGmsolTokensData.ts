@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef } from "react";
 
+import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
@@ -9,7 +10,6 @@ import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
-import { getGmsolApiCacheKey } from "../api/gmsolApiSdk";
 import type { GmsolTokenPricesData } from "../gmsolOracleFetcher";
 import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
 
@@ -21,7 +21,9 @@ export function useGmsolTokensData({
   rawMarketsInfoData: RawMarketsInfoData | undefined;
 }): TokensDataResult & { isUnavailable: boolean } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
-  const key = enabled ? ["gmsolPrices", SOLANA_NETWORK_ID, getGmsolApiCacheKey(), oracleFetcher.url] : null;
+  const key = enabled
+    ? ["gmsolPrices", SOLANA_NETWORK_ID, getUiApiCacheKey(SOLANA_NETWORK_ID), oracleFetcher.url]
+    : null;
   const {
     data: pricesData,
     error,

@@ -20,10 +20,7 @@ import { useGmsolFeeDiscount, useGmsolOrders } from "./useGmsolAccountData";
 
 const gmsolApi = vi.hoisted(() => ({ fetchOrders: vi.fn(), fetchFeeDiscount: vi.fn() }));
 
-vi.mock("./api/gmsolApiSdk", () => ({
-  getGmsolApiCacheKey: () => "http://gmsol.test",
-  getGmsolApiSdk: () => gmsolApi,
-}));
+vi.mock("context/GmxSdkContext/GmxSdkContext", () => ({ useGmxSdk: () => gmsolApi }));
 vi.mock("./tokens/fetchGmsolPrices", () => ({ fetchGmsolPrices: vi.fn() }));
 vi.mock("lib/oracleKeeperFetcher/useOracleKeeperFetcher", () => {
   const fetcher = { url: "http://oracle.test" };

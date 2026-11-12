@@ -1,6 +1,8 @@
 import { useMemo, useRef } from "react";
 
+import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import {
   getIsValuesSnapshotFrozen,
   hasIncompleteMarketValues,
@@ -12,8 +14,6 @@ import { CONFIG_UPDATE_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConsta
 import { isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import { mergeMarketsConfigValues } from "sdk/utils/markets";
 import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
-
-import { getGmsolApiCacheKey, getGmsolApiSdk } from "./api/gmsolApiSdk";
 
 export type GmsolRawMarketsInfoResult = {
   rawMarketsInfoData: RawMarketsInfoData | undefined;
@@ -32,19 +32,18 @@ export function getGmsolMarketsValuesKey(apiCacheKey: string) {
 }
 
 export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): GmsolRawMarketsInfoResult {
-  const apiCacheKey = getGmsolApiCacheKey();
+  const sdk = useGmxSdk(SOLANA_NETWORK_ID);
+  const apiCacheKey = getUiApiCacheKey(SOLANA_NETWORK_ID);
 
   const config = useSWRWithFreshness<RawMarketConfig[]>(
-    enabled ? getGmsolMarketsConfigKey(apiCacheKey) : null,
-    ([, , keyApiCacheKey]: ReturnType<typeof getGmsolMarketsConfigKey>) =>
-      getGmsolApiSdk(keyApiCacheKey).fetchMarketsConfig(),
+    enabled && sdk ? getGmsolMarketsConfigKey(apiCacheKey) : null,
+    () => sdk!.fetchMarketsConfig(),
     { refreshInterval: CONFIG_UPDATE_INTERVAL }
   );
 
   const values = useSWRWithFreshness<RawMarketValues[]>(
-    enabled ? getGmsolMarketsValuesKey(apiCacheKey) : null,
-    ([, , keyApiCacheKey]: ReturnType<typeof getGmsolMarketsValuesKey>) =>
-      getGmsolApiSdk(keyApiCacheKey).fetchMarketsValues(),
+    enabled && sdk ? getGmsolMarketsValuesKey(apiCacheKey) : null,
+    () => sdk!.fetchMarketsValues(),
     { refreshInterval: FREQUENT_UPDATE_INTERVAL }
   );
 
@@ -88,7 +87,7 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined };
   }
 
-  const isUnavailable = Boolean(error) || isStale || isIncomplete || isExpired;
+  const isUnavailable = !sdk || Boolean(error) || isStale || isIncomplete || isExpired;
   // A failed read keeps the last good snapshot until the same grace window EVM uses, then drops it.
   const keepSnapshot = Boolean(rawMarketsInfoData) && !isStale && !isIncomplete && !isExpired;
 

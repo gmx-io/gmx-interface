@@ -43,7 +43,6 @@ const USDG_ADD_MARGIN_RETURN_POSITION_KEY = "usdg-add-margin-return-position";
 export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
 export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
 export const STATS_API_URL_KEY = "stats-api-url";
-export const SOLANA_API_URL_KEY = "solana-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
