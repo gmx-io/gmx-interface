@@ -18,6 +18,17 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
+// lists scroll in nested elements (e.g. VerticalScrollFadeContainer), not in the content wrapper itself
+function getIsContentScrolled(target: EventTarget, container: HTMLElement) {
+  for (let el = target instanceof Element ? target : null; el && container.contains(el); el = el.parentElement) {
+    if (el.scrollTop > 0) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function MobileSlideModal({
   children,
   label,
@@ -63,6 +74,7 @@ function MobileSlideModal({
   const animationRef = useRef<Animation | null>(null);
 
   const isPointerDownRef = useRef(false);
+  const isContentGestureRef = useRef(false);
   const isDraggingRef = useRef(false);
   const currentRelativeY = useRef(0);
   const prevScreenY = useRef(0);
@@ -109,13 +121,12 @@ function MobileSlideModal({
     }
     e.stopPropagation();
 
-    if (e.currentTarget === scrollableContainerRef.current) {
-      const scrollTop = scrollableContainerRef.current?.scrollTop;
-      if (scrollTop !== 0) {
-        return;
-      }
+    const isContentGesture = e.currentTarget === scrollableContainerRef.current;
+    if (isContentGesture && getIsContentScrolled(e.target, e.currentTarget)) {
+      return;
     }
 
+    isContentGestureRef.current = isContentGesture;
     isPointerDownRef.current = true;
     isDirectionLocked.current = false;
     isDraggingRef.current = false;
@@ -141,7 +152,8 @@ function MobileSlideModal({
 
       if (Math.abs(offsetX) > MOVEMENT_THRESHOLD || Math.abs(offsetY) > MOVEMENT_THRESHOLD) {
         isDirectionLocked.current = true;
-        isDraggingRef.current = isVertical;
+        // an upward stroke over the content scrolls it, and iOS keeps sending pointer moves while it scrolls
+        isDraggingRef.current = isVertical && (!isContentGestureRef.current || offsetY > 0);
         if (!isVertical) return;
       }
     }
@@ -202,12 +214,21 @@ function MobileSlideModal({
     [handleAnimate, setIsOpen]
   );
 
-  const handlePointerCancel = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    e.stopPropagation();
+  const handlePointerCancel = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      e.stopPropagation();
 
-    isPointerDownRef.current = false;
-    isDraggingRef.current = false;
-  }, []);
+      const wasDragging = isDraggingRef.current;
+      isPointerDownRef.current = false;
+      isDraggingRef.current = false;
+
+      if (wasDragging && curtainRef.current) {
+        curtainRef.current.style.willChange = "";
+        handleAnimate(isOpen);
+      }
+    },
+    [handleAnimate, isOpen]
+  );
 
   useEffect(() => {
     if (!isDraggingRef.current) {
@@ -293,6 +314,7 @@ function MobileSlideModal({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
           >
             <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
