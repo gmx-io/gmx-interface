@@ -1,7 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { isAddress, keccak256, recoverTypedDataAddress } from "viem";
+import { generatePrivateKey } from "viem/accounts";
+import { describe, expect, it, vi } from "vitest";
 
+import { getContract } from "configs/contracts";
+import { OLD_SUBACCOUNT_MESSAGE, SUBACCOUNT_MESSAGE } from "configs/express";
 import type { PrepareOrderRequest, SubmitOrderRequest } from "utils/orderTransactions/api";
-import { getEmptySubaccountApproval } from "utils/subaccount";
+import { PrivateKeySigner } from "utils/signer";
+import { deriveLegacySubaccount, getEmptySubaccountApproval } from "utils/subaccount";
 
 import { GmxApiSdk } from "../index";
 import {
@@ -40,7 +45,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
   it("rejects external subaccount details for SDK-managed signing", async () => {
     const api = new ScriptedOrderApi(buildPreparedOrderResponse("request-1"));
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    const subaccountAddress = await sdk.generateSubaccount(signer);
+    const subaccountAddress = sdk.generateSubaccount();
 
     await expect(
       sdk.prepareOrder({
@@ -78,7 +83,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       [buildSubaccountStatusResponse()]
     );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    const subaccountAddress = await sdk.generateSubaccount(signer);
+    const subaccountAddress = sdk.generateSubaccount();
     const subaccountApproval = getEmptySubaccountApproval(TEST_CHAIN_ID, subaccountAddress);
 
     await sdk.prepareOrder({
@@ -123,7 +128,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       ]
     );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    await sdk.generateSubaccount(signer);
+    sdk.generateSubaccount();
     await sdk.refreshSubaccountState(signer.address);
 
     await sdk.prepareOrder(buildTestPrepareRequest(signer.address));
@@ -160,7 +165,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       ]
     );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    await sdk.generateSubaccount(signer);
+    sdk.generateSubaccount();
     await sdk.refreshSubaccountState(signer.address);
 
     await sdk.prepareOrder(buildTestPrepareRequest(signer.address));
@@ -195,7 +200,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       ]
     );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    await sdk.generateSubaccount(signer);
+    sdk.generateSubaccount();
     await sdk.refreshSubaccountState(signer.address);
 
     await expect(sdk.prepareOrder(buildTestPrepareRequest(signer.address))).rejects.toThrow("Subaccount is not active");
@@ -216,7 +221,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       ]
     );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
-    const subaccountAddress = await sdk.generateSubaccount(signer);
+    const subaccountAddress = sdk.generateSubaccount();
     await sdk.refreshSubaccountState(signer.address);
 
     await expect(
@@ -230,39 +235,119 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(api.prepareRequests).toHaveLength(0);
   });
 
-  it("generateSubaccount derives address deterministically", async () => {
-    const sdk1 = getTestSdk();
-    const sdk2 = getTestSdk();
+  it("generateSubaccount returns a new address each time", () => {
+    const addr1 = getTestSdk().generateSubaccount();
+    const addr2 = getTestSdk().generateSubaccount();
 
-    const addr1 = await sdk1.generateSubaccount(signer);
-    const addr2 = await sdk2.generateSubaccount(signer);
+    expect(isAddress(addr1)).toBe(true);
+    expect(addr1).not.toBe(addr2);
+  });
 
-    expect(addr1).toBeDefined();
-    expect(addr1.startsWith("0x")).toBe(true);
-    expect(addr1).toBe(addr2);
+  it("importSubaccount resumes an exported key and signs orders as the same address", async () => {
+    const exportingSdk = getTestSdk();
+    const address = exportingSdk.generateSubaccount();
+    const exported = exportingSdk.exportSubaccount()!;
+
+    const typedData = {
+      domain: {
+        name: "GmxBaseGelatoRelayRouter",
+        version: "1",
+        chainId: TEST_CHAIN_ID,
+        verifyingContract: getContract(TEST_CHAIN_ID, "SubaccountGelatoRelayRouter"),
+      },
+      types: { Batch: [{ name: "nonce", type: "uint256" }] },
+      primaryType: "Batch",
+      message: { nonce: 1n },
+    };
+    const prepared = buildPreparedOrderResponse("request-1");
+    prepared.payload.typedData = typedData;
+
+    const api = new ScriptedOrderApi(prepared, [], [buildSubaccountStatusResponse()]);
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
+
+    expect(sdk.importSubaccount(exported.privateKey, signer.address)).toBe(address);
+    expect(sdk.exportSubaccount()).toEqual(exported);
+
+    await sdk.refreshSubaccountState(signer.address);
+    const signature = await sdk.signOrder(await sdk.prepareOrder(buildTestPrepareRequest(signer.address)), signer);
+
+    expect(api.prepareRequests[0].subaccountApproval?.signature).toBe("0x");
+    expect(
+      await recoverTypedDataAddress({
+        domain: { ...typedData.domain, verifyingContract: typedData.domain.verifyingContract as `0x${string}` },
+        types: typedData.types,
+        primaryType: "Batch",
+        message: typedData.message,
+        signature: signature as `0x${string}`,
+      })
+    ).toBe(address);
+  });
+
+  it("activateSubaccount keeps an imported key and signs nothing while the session is usable", async () => {
+    const exportingSdk = getTestSdk();
+    const address = exportingSdk.generateSubaccount();
+    const exported = exportingSdk.exportSubaccount()!;
+
+    const api = new ScriptedOrderApi(buildPreparedOrderResponse("request-1"), [], [buildSubaccountStatusResponse()]);
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
+    const signTypedData = vi.spyOn(signer, "signTypedData");
+
+    sdk.importSubaccount(exported.privateKey, signer.address);
+
+    expect(await sdk.activateSubaccount(signer, { expiresInSeconds: 3600, maxAllowedCount: 5 })).toBe(address);
+    expect(sdk.exportSubaccount()).toEqual(exported);
+    expect(signTypedData).not.toHaveBeenCalled();
+
+    signTypedData.mockRestore();
+  });
+
+  it("keeps an imported key bound to its account", async () => {
+    const exportingSdk = getTestSdk();
+    exportingSdk.generateSubaccount();
+    const exported = exportingSdk.exportSubaccount()!;
+    const otherSigner = new PrivateKeySigner(generatePrivateKey() as `0x${string}`);
+
+    const sdk = getTestSdk();
+    sdk.importSubaccount(exported.privateKey, signer.address);
+
+    await expect(sdk.activateSubaccount(otherSigner)).rejects.toThrow("belongs to account");
+    await expect(sdk.prepareOrder(buildTestPrepareRequest(otherSigner.address))).rejects.toThrow("belongs to account");
+    expect(sdk.exportSubaccount()).toEqual(exported);
+  });
+
+  it("deriveLegacySubaccount rebuilds the key of each retired message", async () => {
+    const getExpectedAddress = async (message: string) =>
+      new PrivateKeySigner(keccak256((await signer.signMessage(message)) as `0x${string}`) as `0x${string}`).address;
+
+    expect((await deriveLegacySubaccount(signer)).address).toBe(await getExpectedAddress(SUBACCOUNT_MESSAGE));
+    expect((await deriveLegacySubaccount(signer, OLD_SUBACCOUNT_MESSAGE)).address).toBe(
+      await getExpectedAddress(OLD_SUBACCOUNT_MESSAGE)
+    );
   });
 
   it("subaccountAddress getter works after generate", async () => {
     const sdk = getTestSdk();
     expect(sdk.subaccountAddress).toBeUndefined();
 
-    await sdk.generateSubaccount(signer);
+    sdk.generateSubaccount();
     expect(sdk.subaccountAddress).toBeDefined();
     expect(sdk.hasActiveSubaccount).toBe(false);
   });
 
   it("clearSubaccount resets state", async () => {
     const sdk = getTestSdk();
-    await sdk.generateSubaccount(signer);
+    sdk.generateSubaccount();
 
     expect(sdk.subaccountAddress).toBeDefined();
     sdk.clearSubaccount();
     expect(sdk.subaccountAddress).toBeUndefined();
+    expect(sdk.exportSubaccount()).toBeUndefined();
     expect(sdk.hasActiveSubaccount).toBe(false);
   });
 
   it("activateSubaccount prepares and signs approval", async () => {
     const sdk = getTestSdk();
+    const signMessage = vi.spyOn(signer, "signMessage");
 
     const address = await sdk.activateSubaccount(signer, {
       expiresInSeconds: 86400,
@@ -272,11 +357,14 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(address).toBeDefined();
     expect(sdk.subaccountAddress).toBe(address);
     expect(sdk.hasActiveSubaccount).toBe(true);
+    expect(signMessage).not.toHaveBeenCalled();
+
+    signMessage.mockRestore();
   });
 
   it("fetchSubaccountStatus returns data", async () => {
     const sdk = getTestSdk();
-    const subAddr = await sdk.generateSubaccount(signer);
+    const subAddr = sdk.generateSubaccount();
 
     const status = await sdk.fetchSubaccountStatus({
       account: signer.address,
