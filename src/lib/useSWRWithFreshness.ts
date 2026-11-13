@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import useSWR, { type Key, type SWRConfiguration } from "swr";
+import useSWR, { type Key, type SWRConfiguration, useSWRConfig } from "swr";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -28,7 +28,7 @@ function asError(error: unknown): Error | undefined {
 }
 
 // Keep the same age limit as useApiDataRequest, including requests that have not failed yet.
-export const API_STALE_MS = 10_000;
+const API_STALE_MS = 10_000;
 
 export function isSnapshotPastGrace(asOf: number | undefined, refreshInterval: number, now = Date.now()) {
   return asOf !== undefined && now - asOf > refreshInterval + API_STALE_MS;
@@ -54,28 +54,31 @@ export const retryAtRefreshCadence: NonNullable<SWRConfiguration["onErrorRetry"]
 export function useSWRWithFreshness<Data, Arg = any>(
   key: Key,
   fetcher: (arg: Arg) => Promise<Data>,
-  config?: SWRConfiguration<Fetched<Data>> & { maxAgeMs?: number }
+  config?: SWRConfiguration<Fetched<Data>>
 ): SWRWithFreshnessResult<Data> {
-  const { maxAgeMs, ...swrConfig } = config ?? {};
+  const { refreshInterval: inheritedRefreshInterval } = useSWRConfig();
   const {
     data,
     error: swrError,
     isLoading,
   } = useSWR<Fetched<Data>>(key, async (arg: Arg) => ({ value: await fetcher(arg), fetchedAt: Date.now() }), {
     onErrorRetry: retryAtRefreshCadence,
-    ...swrConfig,
+    ...config,
   });
   const error = asError(swrError);
+  const configuredRefreshInterval = config?.refreshInterval ?? inheritedRefreshInterval;
+  const refreshInterval =
+    typeof configuredRefreshInterval === "number" ? configuredRefreshInterval : CONFIG_UPDATE_INTERVAL;
   const asOf = data?.fetchedAt;
-  const isExpired = asOf !== undefined && maxAgeMs !== undefined && Date.now() - asOf > maxAgeMs;
+  const isExpired = isSnapshotPastGrace(asOf, refreshInterval);
   const [, checkFreshness] = useReducer((tick: number) => tick + 1, 0);
 
   useEffect(() => {
-    if (asOf === undefined || maxAgeMs === undefined || isExpired) return;
+    if (asOf === undefined || isExpired) return;
 
-    const timeout = setTimeout(checkFreshness, Math.max(0, asOf + maxAgeMs + 1 - Date.now()));
+    const timeout = setTimeout(checkFreshness, Math.max(0, asOf + refreshInterval + API_STALE_MS + 1 - Date.now()));
     return () => clearTimeout(timeout);
-  }, [asOf, maxAgeMs, isExpired]);
+  }, [asOf, refreshInterval, isExpired]);
 
   return {
     data: data?.value,
