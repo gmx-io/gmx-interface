@@ -2,6 +2,10 @@ import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { mutate } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { getUiApiCacheKey } from "config/api";
+import { SOLANA_NETWORK_ID } from "config/chains";
+import { GmxSdkProvider, useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+
 import {
   getGmsolAccountDataKey,
   refreshGmsolAccountDataAfterTransaction,
@@ -17,34 +21,37 @@ const source = vi.hoisted(() => ({
   requests: [] as { kind: string; minContextSlot: number | undefined }[],
 }));
 
-vi.mock("./api/gmsolApiSdk", () => ({
-  getGmsolApiCacheKey: () => "account-refresh-regression",
-  getGmsolApiSdk: () => ({
-    fetchOrders: async ({
-      minContextSlot,
-      onResponse,
-    }: {
-      minContextSlot?: number;
-      onResponse: (metadata: { slot: number }) => void;
-    }) => {
-      source.requests.push({ kind: "orders", minContextSlot });
-      if (source.error) throw source.error;
-      onResponse({ slot: source.slot });
-      return source.orders;
-    },
-    fetchPositionsInfo: async ({
-      minContextSlot,
-      onResponse,
-    }: {
-      minContextSlot?: number;
-      onResponse: (metadata: { slot: number }) => void;
-    }) => {
-      source.requests.push({ kind: "positions", minContextSlot });
-      if (source.error) throw source.error;
-      onResponse({ slot: source.slot });
-      return source.positions;
-    },
-  }),
+vi.mock("sdk/clients/v2", () => ({
+  GmxApiSdk: class {
+    constructor() {
+      return {
+        fetchOrders: async ({
+          minContextSlot,
+          onResponse,
+        }: {
+          minContextSlot?: number;
+          onResponse: (metadata: { slot: number }) => void;
+        }) => {
+          source.requests.push({ kind: "orders", minContextSlot });
+          if (source.error) throw source.error;
+          onResponse({ slot: source.slot });
+          return source.orders;
+        },
+        fetchPositionsInfo: async ({
+          minContextSlot,
+          onResponse,
+        }: {
+          minContextSlot?: number;
+          onResponse: (metadata: { slot: number }) => void;
+        }) => {
+          source.requests.push({ kind: "positions", minContextSlot });
+          if (source.error) throw source.error;
+          onResponse({ slot: source.slot });
+          return source.positions;
+        },
+      };
+    }
+  },
 }));
 
 let ownerIndex = 0;
@@ -62,15 +69,24 @@ async function mountAccount() {
   const owner = `account-refresh-owner-${++ownerIndex}`;
   const result = {
     current: undefined as unknown as {
+      sdk: NonNullable<ReturnType<typeof useGmxSdk>>;
       orders: ReturnType<typeof useGmsolOrders>;
       positions: ReturnType<typeof useGmsolPositions>;
     },
   };
   function Probe() {
-    result.current = { orders: useGmsolOrders(owner), positions: useGmsolPositions(owner) };
+    result.current = {
+      sdk: useGmxSdk(SOLANA_NETWORK_ID)!,
+      orders: useGmsolOrders(owner),
+      positions: useGmsolPositions(owner),
+    };
     return null;
   }
-  render(<Probe />);
+  render(
+    <GmxSdkProvider>
+      <Probe />
+    </GmxSdkProvider>
+  );
   await waitFor(() => {
     expect(result.current.orders.data).toEqual(source.orders);
     expect(result.current.positions.data).toEqual(source.positions);
@@ -83,8 +99,12 @@ describe("confirmed transaction account refresh", () => {
     const { owner, result } = await mountAccount();
     source.error = new Error("Snapshot service unavailable");
     await act(async () => {
-      await expect(refreshGmsolAccountDataAfterTransaction(owner, 3)).rejects.toThrow("unavailable");
-      await expect(refreshGmsolAccountDataAfterTransaction(owner, 2)).rejects.toThrow("unavailable");
+      await expect(refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 3)).rejects.toThrow(
+        "unavailable"
+      );
+      await expect(refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2)).rejects.toThrow(
+        "unavailable"
+      );
     });
     expect(result.current.orders.error).toBeDefined();
     expect(result.current.positions.error).toBeDefined();
@@ -92,7 +112,7 @@ describe("confirmed transaction account refresh", () => {
     const poll = () =>
       Promise.all(
         (["gmsolOrders", "gmsolPositions"] as const).map((request) =>
-          mutate(getGmsolAccountDataKey(request, "account-refresh-regression", owner))
+          mutate(getGmsolAccountDataKey(request, getUiApiCacheKey(SOLANA_NETWORK_ID), owner))
         )
       );
     source.error = undefined;
@@ -127,7 +147,7 @@ describe("confirmed transaction account refresh", () => {
     source.requests = [];
 
     await act(async () => {
-      await refreshGmsolAccountDataAfterTransaction(owner, 2);
+      await refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2);
     });
 
     expect(result.current.orders.data).toEqual(source.orders);
@@ -148,14 +168,14 @@ describe("confirmed transaction account refresh", () => {
     source.orders = [{ key: "confirmed-order" }];
     source.positions = [{ key: "confirmed-position" }];
     await act(async () => {
-      await refreshGmsolAccountDataAfterTransaction(owner, 3);
+      await refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 3);
     });
     source.slot = 2;
     source.orders = [{ key: "stale-order" }];
     source.positions = [{ key: "stale-position" }];
 
     await act(async () => {
-      await expect(refreshGmsolAccountDataAfterTransaction(owner, 3)).rejects.toThrow(
+      await expect(refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 3)).rejects.toThrow(
         "older than the accepted snapshot"
       );
     });
@@ -169,7 +189,9 @@ describe("confirmed transaction account refresh", () => {
     source.error = new Error("Snapshot service unavailable");
 
     await act(async () => {
-      await expect(refreshGmsolAccountDataAfterTransaction(owner, 2)).rejects.toThrow("Snapshot service unavailable");
+      await expect(refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2)).rejects.toThrow(
+        "Snapshot service unavailable"
+      );
     });
 
     expect(result.current.orders.data).toEqual([{ key: "order-before" }]);
