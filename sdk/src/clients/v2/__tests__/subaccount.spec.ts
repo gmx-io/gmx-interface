@@ -261,7 +261,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(sdk.hasActiveSubaccount).toBe(false);
   });
 
-  it.skip("activateSubaccount prepares and signs approval", async () => {
+  it("activateSubaccount prepares and signs approval", async () => {
     const sdk = getTestSdk();
 
     const address = await sdk.activateSubaccount(signer, {
@@ -288,7 +288,7 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(status.approvalNonce).toBeDefined();
   });
 
-  it.skip("signOrder uses subaccount signer when active", async () => {
+  it("signOrder uses subaccount signer when active", async () => {
     const sdk = getTestSdk();
     await sdk.activateSubaccount(signer, {
       expiresInSeconds: 86400,
