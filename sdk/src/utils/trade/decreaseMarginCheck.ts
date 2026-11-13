@@ -40,6 +40,7 @@ export type DecreaseResultingPositionMarginStateParams = {
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
 };
 
@@ -58,11 +59,20 @@ export function getDecreaseResultingPositionMarginState(
     sizeDeltaInTokens,
     payedRemainingCollateralAmount,
     priceImpactDiffUsd,
-    minCollateralUsd,
-    minPositionSizeUsd,
+    minCollateralUsd: suppliedMinCollateralUsd,
+    minPositionSizeUsd: suppliedMinPositionSizeUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
   } = p;
+  const minCollateralUsd =
+    p.marketInfo.tradeMath === "gmsol"
+      ? p.marketInfo.minCollateralUsd ?? suppliedMinCollateralUsd
+      : suppliedMinCollateralUsd;
+  const minPositionSizeUsd =
+    p.marketInfo.tradeMath === "gmsol"
+      ? p.marketInfo.minPositionSizeUsd ?? suppliedMinPositionSizeUsd
+      : suppliedMinPositionSizeUsd;
 
   const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
     marketInfo: p.marketInfo,
@@ -132,8 +142,13 @@ export function getDecreaseResultingPositionMarginState(
     estimatedRemainingCollateralUsd >= 0n && estimatedRemainingCollateralUsd >= minCollateralUsdForOpenInterest;
 
   let isCollateralWithdrawalCancelled = false;
+  const isBelowMinCollateralUsd = estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd;
 
-  if (!willCollateralBeSufficient || estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd) {
+  if (
+    !willCollateralBeSufficient ||
+    // gmsol cancels the withdrawal only for leverage, a partial close below its dollar minimum closes in full
+    (isBelowMinCollateralUsd && (p.marketInfo.tradeMath !== "gmsol" || sizeDeltaUsd === 0n))
+  ) {
     if (sizeDeltaUsd === 0n) {
       return {
         isLiquidatable: true,
@@ -200,6 +215,7 @@ export function getDecreaseResultingPositionMarginState(
     isLong,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     shouldValidateMinCollateralUsd: false,
   });
 
@@ -217,6 +233,7 @@ export type TriggerDecreaseRemainingPositionMarginStateParams = {
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 };
 
 /**
@@ -261,6 +278,7 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     minPositionSizeUsd: p.minPositionSizeUsd,
     userReferralInfo: p.userReferralInfo,
     proDiscountFactor: p.proDiscountFactor,
+    feeDiscountFactor: p.feeDiscountFactor,
     indexPriceForEvaluation: triggerPrice,
   });
 }

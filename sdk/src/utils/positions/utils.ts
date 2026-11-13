@@ -16,6 +16,7 @@ import {
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
   getPositiveMarketPnl,
+  getMarketPnl,
 } from "utils/markets";
 import { Market, MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
@@ -63,7 +64,10 @@ export function getPositionPnlUsd(p: {
     return totalPnl;
   }
 
-  const poolPnl = getPositiveMarketPnl(marketInfo, isLong, false);
+  const poolPnl =
+    marketInfo.tradeMath === "gmsol"
+      ? getMarketPnl(marketInfo, isLong, false)
+      : getPositiveMarketPnl(marketInfo, isLong, false);
   const poolUsd = getPoolUsdWithoutPnl(marketInfo, isLong, "minPrice");
 
   const cappedPnl = getCappedPoolPnl({
@@ -73,7 +77,7 @@ export function getPositionPnlUsd(p: {
     isLong,
   });
 
-  if (cappedPnl !== poolPnl && cappedPnl > 0 && poolPnl > 0) {
+  if (cappedPnl !== poolPnl && (cappedPnl > 0 || marketInfo.tradeMath === "gmsol") && poolPnl > 0) {
     totalPnl = bigMath.mulDiv(totalPnl, cappedPnl, poolPnl);
   }
 
@@ -195,7 +199,7 @@ export function getLiquidationPriceImpactDeltaUsd(p: {
   }
 
   const pendingImpactUsd = convertToUsd(
-    pendingImpactAmount,
+    marketInfo.tradeMath === "gmsol" ? 0n : pendingImpactAmount,
     marketInfo.indexToken.decimals,
     pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
   )!;
@@ -221,12 +225,14 @@ export function getLiquidationPrice(p: {
   collateralToken: TokenData;
   marketInfo: MarketInfo;
   pendingFundingFeesUsd: bigint;
+  fundingFeeAmount?: bigint;
   pendingBorrowingFeesUsd: bigint;
   pendingImpactAmount: bigint;
   minCollateralUsd: bigint;
   isLong: boolean;
   useMaxPriceImpact?: boolean;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
 }) {
   const {
     sizeInUsd,
@@ -250,7 +256,19 @@ export function getLiquidationPrice(p: {
 
   const { indexToken } = marketInfo;
 
-  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
+  const closingFeeUsd = getPositionFee(
+    marketInfo,
+    sizeInUsd,
+    marketInfo.tradeMath === "gmsol" &&
+      getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+        fallbackToZero: true,
+        sizeDeltaInTokens: sizeInTokens,
+      }).balanceWasImproved,
+    userReferralInfo,
+    undefined,
+    undefined,
+    p.feeDiscountFactor
+  ).positionFeeUsd;
   const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
   const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
 
@@ -263,14 +281,36 @@ export function getLiquidationPrice(p: {
     useMaxPriceImpact,
   });
 
+  const effectiveMinCollateralUsd =
+    marketInfo.tradeMath === "gmsol" ? marketInfo.minCollateralUsd ?? minCollateralUsd : minCollateralUsd;
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
-  if (liquidationCollateralUsd < minCollateralUsd) {
-    liquidationCollateralUsd = minCollateralUsd;
+  if (liquidationCollateralUsd < effectiveMinCollateralUsd) {
+    liquidationCollateralUsd = effectiveMinCollateralUsd;
   }
 
   let liquidationPrice: bigint;
 
-  if (getIsEquivalentTokens(collateralToken, indexToken)) {
+  if (marketInfo.tradeMath === "gmsol" && getIsEquivalentTokens(collateralToken, indexToken)) {
+    const fundingAmount =
+      p.fundingFeeAmount ??
+      convertToTokenAmount(pendingFundingFeesUsd, collateralToken.decimals, collateralToken.prices.minPrice);
+    if (fundingAmount === undefined || collateralUsd + priceImpactDeltaUsd - totalFeesUsd < 0n) {
+      return undefined;
+    }
+
+    // Collateral and funding both move with the index price being solved for.
+    const netCollateralAmount = collateralAmount - fundingAmount;
+    const denominator = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
+    if (denominator <= 0n) {
+      return undefined;
+    }
+
+    const surchargeUsd = pendingBorrowingFeesUsd + closingFeeUsd - priceImpactDeltaUsd;
+    const numerator = isLong
+      ? sizeInUsd + liquidationCollateralUsd + surchargeUsd
+      : sizeInUsd - liquidationCollateralUsd - surchargeUsd;
+    liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
+  } else if (getIsEquivalentTokens(collateralToken, indexToken)) {
     if (isLong) {
       const denominator = sizeInTokens + collateralAmount;
 
@@ -326,6 +366,7 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
   pnl: bigint;
   isLong: boolean;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
 }): bigint {
   const { sizeInUsd, sizeInTokens, marketInfo, pendingImpactAmount, minCollateralUsd, pnl, isLong, userReferralInfo } =
     p;
@@ -334,7 +375,19 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
     return 0n;
   }
 
-  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
+  const closingFeeUsd = getPositionFee(
+    marketInfo,
+    sizeInUsd,
+    marketInfo.tradeMath === "gmsol" &&
+      getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+        fallbackToZero: true,
+        sizeDeltaInTokens: sizeInTokens,
+      }).balanceWasImproved,
+    userReferralInfo,
+    undefined,
+    undefined,
+    p.feeDiscountFactor
+  ).positionFeeUsd;
 
   const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
     marketInfo,
@@ -344,9 +397,11 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
     isLong,
   });
 
+  const effectiveMinCollateralUsd =
+    marketInfo.tradeMath === "gmsol" ? marketInfo.minCollateralUsd ?? minCollateralUsd : minCollateralUsd;
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
-  if (liquidationCollateralUsd < minCollateralUsd) {
-    liquidationCollateralUsd = minCollateralUsd;
+  if (liquidationCollateralUsd < effectiveMinCollateralUsd) {
+    liquidationCollateralUsd = effectiveMinCollateralUsd;
   }
 
   return liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd;
@@ -419,7 +474,7 @@ export function getNetPriceImpactDeltaUsdForDecrease({
   const { proportionalPendingImpactDeltaUsd } = getProportionalPendingImpactValues({
     sizeInUsd,
     sizeDeltaUsd,
-    pendingImpactAmount,
+    pendingImpactAmount: marketInfo.tradeMath === "gmsol" ? 0n : pendingImpactAmount,
     indexToken: marketInfo.indexToken,
   });
 
@@ -436,6 +491,9 @@ export function getNetPriceImpactDeltaUsdForDecrease({
   }
 
   totalImpactDeltaUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, totalImpactDeltaUsd);
+  if (marketInfo.tradeMath === "gmsol") {
+    totalImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, totalImpactDeltaUsd);
+  }
 
   return {
     totalImpactDeltaUsd,
@@ -503,6 +561,7 @@ export function getContractPositionDynamicFees({
   marketInfo,
   marketFeeState,
   referralInfo,
+  feeDiscountFactor,
 }: {
   position: {
     sizeInUsd: bigint;
@@ -528,6 +587,7 @@ export function getContractPositionDynamicFees({
     claimableFundingAmountPerSizeShortShort: bigint;
   };
   referralInfo?: UserReferralInfo;
+  feeDiscountFactor?: bigint;
 }) {
   const { sizeInUsd, isLong, borrowingFactor } = position;
   const isCollateralLongToken = position.collateralTokenAddress === marketInfo.longToken.address;
@@ -586,7 +646,10 @@ export function getContractPositionDynamicFees({
     marketInfo,
     sizeInUsd,
     balanceWasImproved,
-    referralInfo
+    referralInfo,
+    undefined,
+    undefined,
+    feeDiscountFactor
   );
 
   const positionFeeAmount = convertToTokenAmount(positionFeeUsd, collateralToken.decimals, collateralMinPrice) ?? 0n;
@@ -609,6 +672,7 @@ export function getPositionInfo(p: {
   marketInfo: MarketInfo;
   minCollateralUsd: bigint;
   userReferralInfo?: UserReferralInfo;
+  feeDiscountFactor?: bigint;
   showPnlInLeverage?: boolean;
   uiFeeFactor?: bigint;
 }): PositionInfo {
@@ -675,6 +739,8 @@ export function getPositionInfo(p: {
     indexPrice: markPrice,
     sizeDeltaUsd: position.sizeInUsd,
     sizeDeltaInTokens: position.sizeInTokens,
+    positionSizeInUsd: position.sizeInUsd,
+    positionSizeInTokens: position.sizeInTokens,
   });
 
   const positionFeeInfo = getPositionFee(
@@ -682,7 +748,9 @@ export function getPositionInfo(p: {
     position.sizeInUsd,
     closeAcceptablePriceInfo.balanceWasImproved,
     userReferralInfo,
-    uiFeeFactor
+    uiFeeFactor,
+    undefined,
+    p.feeDiscountFactor
   );
 
   const closingFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -695,6 +763,11 @@ export function getPositionInfo(p: {
     sizeDeltaUsd: position.sizeInUsd,
     priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
   });
+
+  // gmsol withholds the impact beyond the cap from the close output
+  const closeCostImpactDeltaUsd =
+    netPriceImpactValues.totalImpactDeltaUsd -
+    (marketInfo.tradeMath === "gmsol" ? netPriceImpactValues.priceImpactDiffUsd : 0n);
 
   const netValue = getPositionNetValue({
     collateralUsd,
@@ -716,7 +789,7 @@ export function getPositionInfo(p: {
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    netPriceImpactDeltaUsd: closeCostImpactDeltaUsd,
     closingFeeUsd,
   });
 
@@ -724,7 +797,7 @@ export function getPositionInfo(p: {
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    netPriceImpactDeltaUsd: closeCostImpactDeltaUsd,
     closingFeeUsd,
   });
 
@@ -771,9 +844,11 @@ export function getPositionInfo(p: {
     collateralAmount: position.collateralAmount,
     pendingImpactAmount: position.pendingImpactAmount,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     minCollateralUsd,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
+    fundingFeeAmount: position.fundingFeeAmount,
     isLong: position.isLong,
   });
 
@@ -793,6 +868,7 @@ export function getPositionInfo(p: {
 
   return {
     ...position,
+    pendingImpactAmount: marketInfo.tradeMath === "gmsol" ? 0n : position.pendingImpactAmount,
     market,
     marketInfo,
     indexName,
@@ -828,5 +904,6 @@ export function getPositionInfo(p: {
     uiFeeUsd,
     pendingFundingFeesUsd,
     pendingClaimableFundingFeesUsd,
+    ...(marketInfo.tradeMath === "gmsol" ? { fundingSettlement: "nextOrder" as const } : {}),
   };
 }
