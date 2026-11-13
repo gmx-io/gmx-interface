@@ -2,6 +2,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 
 import { SOLANA_NETWORK_ID } from "config/chains";
+import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 
 import { useGmsolOrderTransactions } from "./useGmsolOrderTransactions";
 
@@ -29,7 +30,11 @@ it("does not sign or send a prepared order after its owning flow unmounts FESOL-
     state = useGmsolOrderTransactions();
     return null;
   }
-  const view = render(<Probe />);
+  const view = render(
+    <GmxSdkProvider>
+      <Probe />
+    </GmxSdkProvider>
+  );
   const submit = state.submit;
   let pending!: ReturnType<typeof submit>;
   act(() => {
