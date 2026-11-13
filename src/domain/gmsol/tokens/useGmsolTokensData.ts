@@ -1,16 +1,16 @@
 import { useEffect, useReducer, useRef } from "react";
 
-import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
-import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
-import type { GmsolTokenPricesData } from "../gmsolOracleUtils";
+import { getGmsolApiCacheKey } from "../api/gmsolApiSdk";
+import type { GmsolTokenPricesData } from "../gmsolOracleFetcher";
 import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
 
 export function useGmsolTokensData({
@@ -21,16 +21,13 @@ export function useGmsolTokensData({
   rawMarketsInfoData: RawMarketsInfoData | undefined;
 }): TokensDataResult & { isUnavailable: boolean } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
-  const key = enabled
-    ? ["gmsolPrices", SOLANA_NETWORK_ID, getUiApiCacheKey(SOLANA_NETWORK_ID), oracleFetcher.url]
-    : null;
+  const key = enabled ? ["gmsolPrices", SOLANA_NETWORK_ID, getGmsolApiCacheKey(), oracleFetcher.url] : null;
   const {
     data: pricesData,
     error,
     freshness,
   } = useSWRWithFreshness<GmsolTokenPricesData | undefined>(key, () => fetchGmsolPrices(oracleFetcher), {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS,
   });
 
   const receivedAt = freshness.asOf;

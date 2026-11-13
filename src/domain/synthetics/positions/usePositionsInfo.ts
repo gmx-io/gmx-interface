@@ -9,7 +9,6 @@ import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
-import { getIsTokenTrackingPrice } from "sdk/utils/tokens";
 
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsData, MarketsInfoData } from "../markets";
@@ -188,7 +187,7 @@ export function usePositionsInfoRequest(
         original.collateralAmount !== position.collateralAmount ||
         original.sizeInTokens !== position.sizeInTokens;
 
-      if (wasModifiedByEvent || getIsTokenTrackingPrice(position.collateralToken, position.indexToken)) {
+      if (wasModifiedByEvent) {
         const marketInfo = getByKey(marketsInfoData, position.marketAddress);
 
         if (marketInfo) {
