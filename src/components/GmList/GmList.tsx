@@ -325,12 +325,12 @@ export function GmList({
             {isLoading && <Loader />}
           </div>
         ) : (
-          <div className="flex grow flex-col p-8 pt-0">
+          <div className="flex grow flex-col pb-8">
             <TableScrollFadeContainer className="flex grow flex-col">
               <table className="w-[max(100%,1000px)]">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="!pl-12">
+                    <TableTh>
                       <Trans>POOL</Trans>
                     </TableTh>
                     <TableTh>

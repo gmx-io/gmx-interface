@@ -115,12 +115,12 @@ export function GlvList({
           {isLoading && <Loader />}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-4 p-8 pt-0">
+        <div className="overflow-hidden rounded-4 pb-8">
           <TableScrollFadeContainer>
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
-                  <TableTh className="!pl-12">
+                  <TableTh>
                     <Trans>VAULT</Trans>
                   </TableTh>
                   <TableTh>

@@ -98,7 +98,7 @@ export function GeneralPerformanceDetails({
                   <Trans>PNL (%)</Trans>
                 </StandardTooltip>
               </TableTh>
-              <TableTh className="w-0 whitespace-nowrap py-13 pl-5 pr-16 !text-right">
+              <TableTh className="w-0 !text-right">
                 <Trans>WIN/LOSS</Trans>
               </TableTh>
             </TableTheadTr>

@@ -384,7 +384,9 @@ const TableRow = memo(({ position, rank }: { position: LeaderboardPosition; rank
         </span>
       </TableTd>
       <TableTd>
-        <AddressView size={20} address={position.account} breakpoint="XL" />
+        <div className="flex [&_.AddressView]:flex">
+          <AddressView size={20} address={position.account} breakpoint="XL" />
+        </div>
       </TableTd>
       <TableTd>
         <StandardTooltip
@@ -395,24 +397,27 @@ const TableRow = memo(({ position, rank }: { position: LeaderboardPosition; rank
         />
       </TableTd>
       <TableTd>
-        <StandardTooltip
-          handle={
-            <span>
-              {indexToken ? (
-                <TokenIcon className="PositionList-token-icon" symbol={indexToken.symbol} displaySize={20} />
-              ) : null}
+        {/* The icon sits outside the tooltip handle, so the dotted line starts under the market name */}
+        <div className="flex items-center">
+          {indexToken ? (
+            <TokenIcon className="PositionList-token-icon" symbol={indexToken.symbol} displaySize={20} />
+          ) : null}
+          <StandardTooltip
+            handle={
               <span>
-                {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
-              </span>
+                <span>
+                  {marketInfo ? getMarketIndexName({ indexToken: marketInfo?.indexToken, isSpotOnly: false }) : null}
+                </span>
 
-              <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
-                {position.isLong ? t`Long` : t`Short`}
+                <span className={cx("TopPositionsDirection", position.isLong ? "positive" : "negative")}>
+                  {position.isLong ? t`Long` : t`Short`}
+                </span>
               </span>
-            </span>
-          }
-          position="bottom"
-          renderContent={renderPositionTooltip}
-        />
+            }
+            position="bottom"
+            renderContent={renderPositionTooltip}
+          />
+        </div>
       </TableTd>
       <TableTd className="numbers">
         <UsdValue

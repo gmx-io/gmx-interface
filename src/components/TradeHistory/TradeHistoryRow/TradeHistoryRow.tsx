@@ -31,7 +31,7 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericText } from "components/NumericValue/NumericValue";
-import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import { SwapMarketIcons, SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
@@ -417,10 +417,15 @@ export function TradeHistoryRow({
     () =>
       msg.swapFromTokenSymbol ? (
         <span className="font-medium">
-          <SwapMarketLabel fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} />
+          <SwapMarketLabel fromSymbol={msg.swapFromTokenSymbol!} toSymbol={msg.swapToTokenSymbol!} withIcons={false} />
         </span>
       ) : (
-        <MarketWithDirectionLabel indexName={msg.indexName!} isLong={msg.isLong!} tokenSymbol={msg.indexTokenSymbol!} />
+        <MarketWithDirectionLabel
+          indexName={msg.indexName!}
+          isLong={msg.isLong!}
+          tokenSymbol={msg.indexTokenSymbol!}
+          withIcon={false}
+        />
       ),
     [msg.indexName, msg.indexTokenSymbol, msg.isLong, msg.swapFromTokenSymbol, msg.swapToTokenSymbol]
   );
@@ -516,7 +521,15 @@ export function TradeHistoryRow({
           )}
         </TableTd>
         <TableTd>
-          <StandardTooltip handle={marketTooltipHandle} renderContent={renderMarketContent} />
+          {/* The icons sit before the tooltip handle, so the dotted line starts at the market name */}
+          <div className="flex items-center gap-4">
+            {msg.swapFromTokenSymbol ? (
+              <SwapMarketIcons fromSymbol={msg.swapFromTokenSymbol} toSymbol={msg.swapToTokenSymbol} />
+            ) : (
+              <TokenIcon className="size-20" displaySize={20} symbol={msg.indexTokenSymbol!} />
+            )}
+            <StandardTooltip handle={marketTooltipHandle} renderContent={renderMarketContent} />
+          </div>
         </TableTd>
         <TableTd>
           {msg.swapFromTokenSymbol ? (
