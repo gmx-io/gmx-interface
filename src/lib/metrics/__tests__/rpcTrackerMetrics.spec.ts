@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { emitEndpointsUpdated } from "lib/FallbackTracker/events";
+import { SOLANA_NETWORK_ID } from "config/chains";
+import { emitEndpointBanned, emitEndpointsUpdated } from "lib/FallbackTracker/events";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
 import { metrics } from "..";
@@ -42,6 +43,45 @@ describe("subscribeForRpcTrackerMetrics", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+  });
+
+  it("reports the full endpoint when banning on an EVM chain", () => {
+    const endpoint = "https://arb-mainnet.g.alchemy.com/v2/test-key";
+    const reason = "Banned by failures threshold";
+    emitEndpointBanned({ trackerKey: TRACKER_KEY, endpoint, reason });
+
+    const report = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+
+    expect(report?.payload.customFields).toMatchObject({ chainId: mockTracker.params.chainId, endpoint, reason });
+  });
+
+  it.each([
+    ["https://solana-mainnet.g.alchemy.com/v2/test-secret-key", "solana-mainnet.g.alchemy.com"],
+    ["https://user:password@rpc.example.com/private/test-secret-key?token=query-secret#fragment", "rpc.example.com"],
+  ])("reports only the hostname when banning %s on Solana", (endpoint, hostname) => {
+    const solanaTracker = {
+      trackerKey: "RpcTracker.Solana.test",
+      params: { chainId: SOLANA_NETWORK_ID },
+    } as unknown as RpcTracker;
+    const solanaCleanup = subscribeForRpcTrackerMetrics(solanaTracker);
+    const reason = "Banned by failures threshold";
+    emitEndpointBanned({ trackerKey: solanaTracker.trackerKey, endpoint, reason });
+    solanaCleanup();
+
+    const report = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+
+    expect(report?.payload.customFields).toMatchObject({
+      chainId: SOLANA_NETWORK_ID,
+      endpoint: hostname,
+      reason,
+    });
+    expect(JSON.stringify(report)).not.toContain("test-secret-key");
+    expect(JSON.stringify(report)).not.toContain("query-secret");
+    expect(JSON.stringify(report)).not.toContain("password");
   });
 
   it("reports new pairs at once and folds flapping between reported pairs into one summary per interval", () => {

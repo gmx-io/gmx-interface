@@ -6,9 +6,11 @@ import type { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import type { OracleFetcher } from "lib/oracleKeeperFetcher";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 import { parseContractPrice } from "sdk/utils/tokens";
-import type { Token, TokenPricesData } from "sdk/utils/tokens/types";
+import type { Token, TokenPrices } from "sdk/utils/tokens/types";
 
 export type GmsolPriceDeltaMap = Partial<Record<string, PriceDelta>>;
+// updatedAt is the keeper's time for the ticker, in ms.
+export type GmsolTokenPricesData = { [address: string]: TokenPrices & { updatedAt: number } };
 
 const ARBITRUM_TOKEN_ADDRESS_BY_GMSOL_ADDRESS = new Map<string, string>(
   [GMSOL_NATIVE_TOKEN, ...GMSOL_TOKENS].map((token) => [token.address, token.arbitrumTokenAddress])
@@ -34,12 +36,12 @@ export class GmsolOracleFetcher {
   constructor(private readonly arbitrumFetcher: OracleFetcher) {}
 
   // Prices are 30-decimal USD per whole token, so they do not depend on the Solana mint decimals.
-  async fetchPrices(gmsolTokenAddresses: readonly string[]): Promise<TokenPricesData> {
+  async fetchPrices(gmsolTokenAddresses: readonly string[]): Promise<GmsolTokenPricesData> {
     assertSolanaNetworkEnabled();
 
     const tickers = await this.arbitrumFetcher.fetchTickers();
     const tickersByAddress = new Map(tickers.map((ticker) => [ticker.tokenAddress.toLowerCase(), ticker]));
-    const result: TokenPricesData = {};
+    const result: GmsolTokenPricesData = {};
 
     for (const address of gmsolTokenAddresses) {
       const arbitrumToken = getArbitrumToken(address);
@@ -49,6 +51,7 @@ export class GmsolOracleFetcher {
         result[address] = {
           minPrice: parseContractPrice(BigInt(ticker.minPrice), arbitrumToken.decimals),
           maxPrice: parseContractPrice(BigInt(ticker.maxPrice), arbitrumToken.decimals),
+          updatedAt: ticker.updatedAt,
         };
       }
     }

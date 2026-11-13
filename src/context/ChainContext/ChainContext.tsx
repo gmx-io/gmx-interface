@@ -12,6 +12,8 @@ import { selectGmxAccountSetModalOpen } from "context/GmxAccountContext/selector
 import { useChainIdSearchParam } from "domain/multichain/useChainIdSearchParam";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useChainIdImpl } from "lib/chains/useChainIdImpl";
+import { syncEvmRpcTracking } from "lib/rpc/useRpcUrls";
+import { useSolanaRpcTracking } from "lib/rpc/useSolanaRpcTracking";
 import { AVALANCHE, ContractsChainId, SourceChainId } from "sdk/configs/chains";
 
 type ChainContext = {
@@ -41,6 +43,11 @@ export function ChainContextProvider({ children }: PropsWithChildren) {
   const { chainId, srcChainId, isConnectedToChainId, isSolanaNetworkSelected } =
     useChainIdImpl(gmxAccountSettlementChainId);
   const networkId: NetworkId = isSolanaNetworkSelected ? SOLANA_NETWORK_ID : chainId;
+  useSolanaRpcTracking(networkId);
+
+  useEffect(() => {
+    syncEvmRpcTracking();
+  }, [isSolanaNetworkSelected]);
 
   // GmxAccountModal remounts with EvmProviders, so it never sees this change. The modal state lives above that swap.
   const prevIsSolanaSelectedRef = useRef(isSolanaNetworkSelected);
