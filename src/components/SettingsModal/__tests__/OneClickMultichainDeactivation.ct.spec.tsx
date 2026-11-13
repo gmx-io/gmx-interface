@@ -12,7 +12,7 @@ import {
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
 } from "domain/testUtils/rpc/mockChain";
 import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
-import MultichainSubaccountRouterAbi from "sdk/abis/MultichainSubaccountRouter";
+import { getAbi } from "sdk/abis/getAbi";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
 import { OneClickMultichainDeactivationStory } from "./OneClickMultichainDeactivation.ct.stories";
@@ -21,7 +21,9 @@ const MOCK_ACCOUNT = new ethers.Wallet(MOCK_ACCOUNT_PRIVATE_KEY).address;
 
 const FAR_FUTURE = 9999999999n;
 
-const MULTICHAIN_SUBACCOUNT_ROUTER_IFACE = new ethers.Interface(MultichainSubaccountRouterAbi as ethers.InterfaceAbi);
+const MULTICHAIN_SUBACCOUNT_ROUTER_IFACE = new ethers.Interface(
+  getAbi(ARBITRUM, "MultichainSubaccountRouter") as ethers.InterfaceAbi
+);
 const REMOVE_SUBACCOUNT_SELECTOR = MULTICHAIN_SUBACCOUNT_ROUTER_IFACE.getFunction("removeSubaccount")!.selector;
 
 const CONFIG_KEY = getSubaccountConfigKey(ARBITRUM, MOCK_ACCOUNT);

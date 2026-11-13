@@ -251,6 +251,7 @@ async function signRemoveSubaccountPayload({
     typedData,
     domain,
     verificationChainId: chainId,
+    relayParams,
   });
 }
 
