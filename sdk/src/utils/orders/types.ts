@@ -48,6 +48,7 @@ export enum DecreasePositionSwapType {
 }
 
 export type Order = {
+  solana?: SolanaApiOrderFields;
   key: string;
   account: string;
   callbackContract: string;
