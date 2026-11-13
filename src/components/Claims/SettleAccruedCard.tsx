@@ -9,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { ClaimableCardUI } from "./ClaimableCardUI";
 
@@ -35,12 +35,14 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           usd: fundingFees,
           buttonText: _(buttonText),
           tooltipText: (
-            <Trans>
-              Positive funding fees accrued in positions, not yet claimable.
-              <br />
-              <br />
-              Available after changing position size, adjusting collateral, or clicking "Settle".
-            </Trans>
+            <TooltipText>
+              <Trans>
+                Positive funding fees accrued in positions, not yet claimable.
+                <br />
+                <br />
+                Available after changing position size, adjusting collateral, or clicking "Settle".
+              </Trans>
+            </TooltipText>
           ),
           onButtonClick: onSettleClick,
         },
@@ -48,13 +50,14 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           usd: priceImpactDifference,
           buttonText: _(button2Text),
           tooltipText: (
-            <Trans>
-              Price impact rebates accrued. Claimable after 5 days.{" "}
-              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>Price impact rebates accrued. Claimable after 5 days.</Trans>
+              </TooltipText>
+              <TooltipLink href={DOCS_LINKS.priceImpact}>
+                <Trans>Read more</Trans>
+              </TooltipLink>
+            </TooltipContent>
           ),
           onButtonClick: onAccruedPositionPriceImpactRebateClick,
         },

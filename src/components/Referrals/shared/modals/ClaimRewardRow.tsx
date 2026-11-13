@@ -9,7 +9,8 @@ import { getByKey } from "lib/objects";
 import Checkbox from "components/Checkbox/Checkbox";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { TableTd } from "components/Table/Table";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 export function ClaimRewardRow({
   reward,
@@ -73,16 +74,15 @@ export function ClaimRewardRow({
       </TableTd>
 
       <TableTd className="!pr-0">
-        <TooltipWithPortal
-          className="ClaimModal-row-tooltip"
+        <StandardTooltip
           handle={<UsdValue usd={rewardUsd} />}
-          position="top-end"
+          position="bottom-end"
           content={
-            <>
+            <TooltipRows>
               {claimableAmountsItems.map((item) => (
                 <div key={item}>{item}</div>
               ))}
-            </>
+            </TooltipRows>
           }
         />
       </TableTd>

@@ -82,7 +82,7 @@ test.describe("wallet RPC failure", () => {
 test.describe("relayer down", () => {
   test.use({ unsignedReviewMode: true, signableRehearsal: true });
 
-  test("26.04 an Express order signed locally fails with an error toast when the relay returns 503, and the form stays usable", async ({
+  test("26.04 an Express order signed locally fails with a relayer-unavailable toast when the relay returns 503, and the form stays usable", async ({
     page,
     context,
     accountState,
@@ -137,8 +137,9 @@ test.describe("relayer down", () => {
       .toEqual(["eth_signTypedData_v4"]);
     await expect.poll(() => relay.length, { message: "the signed order is sent to the relay" }).toBeGreaterThan(0);
 
-    const error = toast(page).filter({ hasText: "Transaction failed" });
+    const error = toast(page).filter({ hasText: "Express relayer is temporarily unavailable." });
     await expect(error).toBeVisible({ timeout: 30_000 });
+    await expect(error).toContainText("Try again shortly or switch to Classic Trading in settings");
     await error.getByText("Show error", { exact: true }).click();
     await expect(error).toContainText("GMX Relay /v1/relay/submit failed");
     expect(writes.map((request) => request.method)).toEqual(["eth_signTypedData_v4"]);
@@ -147,6 +148,10 @@ test.describe("relayer down", () => {
     await expect(button).toBeEnabled();
     await expect(page.getByTestId("margin-input")).toHaveValue("2.5");
     await expect(page.getByTestId("trade-table-large")).toContainText("No open positions");
+    await error.getByRole("button", { name: "settings", exact: true }).click();
+    const modal = page.getByTestId("settings-modal");
+    await modal.getByRole("button", { name: "Trading settings", exact: true }).click();
+    await expect(tradingMode(modal, "Classic")).toBeVisible();
   });
 });
 

@@ -2,7 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import { percentFormat } from "landing/pages/Home/utils/formatters";
 import React from "react";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
@@ -53,12 +53,10 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
               <Trans>Rewards</Trans>
             </p>
             {isRewardsSuspended ? (
-              <div onClick={(e) => e.stopPropagation()}>
-                <TooltipWithPortal
-                  variant="none"
-                  tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !tracking-[-0.448px] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
+              <div className="cursor-default" onClick={(e) => e.stopPropagation()}>
+                <StandardTooltip
                   handle={
-                    <p className="leading-heading-lg text-[28px] font-medium underline decoration-[#a4c3f9] decoration-dotted decoration-[4%] sm:text-[40px] sm:-tracking-[2px]">
+                    <p className="leading-heading-lg text-[28px] font-medium sm:text-[40px] sm:-tracking-[2px]">
                       {aprText}
                     </p>
                   }

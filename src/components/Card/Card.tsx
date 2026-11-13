@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import Tooltip from "../Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import "./Card.css";
 
@@ -33,11 +33,10 @@ function Card({
   return (
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (
-        <Tooltip
+        <StandardTooltip
           handle={<div className={cx("card-header pr-4", slimHeader ? "px-20 py-8" : "p-20")}>{title}</div>}
-          position="bottom-start"
           content={tooltipText}
-          variant="icon"
+          variant="iconStroke"
           iconClassName="text-typography-secondary"
         />
       ) : (

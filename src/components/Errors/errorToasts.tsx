@@ -54,6 +54,7 @@ export type AdditionalErrorParams = {
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   isOutdatedSubaccountApproval?: boolean;
+  isRelayUnavailable?: boolean;
   setIsSettingsVisible?: (isVisible: boolean) => void;
   expressTxn?: ExpressTxnErrorContext;
 };
@@ -209,6 +210,7 @@ export function getTxnErrorToast(
     isExternalSwapFallback,
     permitIssueType,
     isOutdatedSubaccountApproval,
+    isRelayUnavailable,
     setIsSettingsVisible,
     expressTxn,
   }: AdditionalErrorParams
@@ -255,6 +257,17 @@ export function getTxnErrorToast(
 
   if (smartWalletContent) {
     toastParams.errorContent = smartWalletContent;
+    toastParams.autoCloseToast = false;
+
+    return toastParams;
+  }
+
+  if (isRelayUnavailable) {
+    toastParams.errorContent = getRelayUnavailableToastContent({
+      defaultMessage,
+      debugErrorMessage,
+      setIsSettingsVisible: expressTxn && !expressTxn.isGmxAccount ? setIsSettingsVisible : undefined,
+    });
     toastParams.autoCloseToast = false;
 
     return toastParams;
@@ -471,6 +484,40 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+function getRelayUnavailableToastContent({
+  defaultMessage,
+  debugErrorMessage,
+  setIsSettingsVisible,
+}: {
+  defaultMessage: ReactNode;
+  debugErrorMessage: string | undefined;
+  setIsSettingsVisible: ((isVisible: boolean) => void) | undefined;
+}) {
+  return (
+    <div>
+      {defaultMessage}
+      <br />
+      <br />
+      {setIsSettingsVisible ? (
+        <Trans>
+          Express relayer is temporarily unavailable.
+          <br />
+          <br />
+          Try again shortly or switch to Classic Trading in{" "}
+          <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible(true)}>
+            settings
+          </Button>
+        </Trans>
+      ) : (
+        <Trans>Express relayer is temporarily unavailable. Try again shortly</Trans>
+      )}
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
 }
 
 function getRpcErrorToastContent(debugErrorMessage: string | undefined) {

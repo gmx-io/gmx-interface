@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 export function PoolsDetailsMarketAmount({
   value,
@@ -12,7 +12,6 @@ export function PoolsDetailsMarketAmount({
   afterValue,
   label,
   tooltipContent,
-  tooltipMaxAllowedWidth,
   valueClassName,
   secondaryValueClassName,
 }: {
@@ -21,7 +20,6 @@ export function PoolsDetailsMarketAmount({
   afterValue?: ReactNode;
   label?: ReactNode;
   tooltipContent?: ReactNode;
-  tooltipMaxAllowedWidth?: number;
   valueClassName?: string;
   secondaryValueClassName?: string;
 }) {
@@ -42,7 +40,7 @@ export function PoolsDetailsMarketAmount({
   );
 
   let valueContentWithTooltip = tooltipContent ? (
-    <TooltipWithPortal handle={valueContent} content={tooltipContent} maxAllowedWidth={tooltipMaxAllowedWidth} />
+    <StandardTooltip handle={valueContent} content={tooltipContent} />
   ) : (
     valueContent
   );

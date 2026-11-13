@@ -1,13 +1,13 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 
-import { USDG_LAUNCH_BOOST_PERIOD_1_END, USDG_LAUNCH_BOOST_PERIOD_1_START } from "config/usdgPools";
+import { USDG_LAUNCH_BOOST_GLV_SCHEDULE, UsdgLaunchBoostScheduleItem } from "config/usdgPools";
 import { UsdgLaunchBoost, getIsUsdgLaunchBoostIncluded } from "domain/synthetics/usdgLaunchBoost/utils";
-import { formatDate } from "lib/dates";
-import { formatPercentage } from "lib/numbers";
+import { formatDateRange, formatDayMonthYear } from "lib/dates";
+import { formatPercentage, formatPercentageDisplay } from "lib/numbers";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -77,15 +77,33 @@ export function UsdgLaunchBoostStatusNote({ launchBoost }: { launchBoost: UsdgLa
   }
 }
 
-export function UsdgLaunchBoostProgramNote() {
-  const periodStart = formatDate(USDG_LAUNCH_BOOST_PERIOD_1_START, { timezone: "utc" });
-  const periodEnd = formatDate(USDG_LAUNCH_BOOST_PERIOD_1_END, { timezone: "utc" });
+function formatLaunchBoostScheduleApr({ aprPercent, aprKind }: UsdgLaunchBoostScheduleItem) {
+  const apr = formatPercentageDisplay(aprPercent);
+  return aprKind === "estimate" ? t`Est. ${apr}` : `${apr}+`;
+}
 
+function formatLaunchBoostScheduleLine(item: UsdgLaunchBoostScheduleItem) {
+  const apr = formatLaunchBoostScheduleApr(item);
+
+  if (item.start === undefined) {
+    const endDate = formatDayMonthYear(item.end, { timezone: "utc" });
+    return t`Until ${endDate}: ${apr}`;
+  }
+
+  const dateRange = formatDateRange(item.start, item.end, { timezone: "utc" });
+  return t`${dateRange}: ${apr}`;
+}
+
+function UsdgLaunchBoostGlvSchedule() {
   return (
-    <Trans>
-      First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG
-      program with GMX. Period 1: {periodStart} – {periodEnd}.
-    </Trans>
+    <div>
+      <div>
+        <Trans>Launch boost schedule</Trans>
+      </div>
+      {USDG_LAUNCH_BOOST_GLV_SCHEDULE.map((item) => (
+        <div key={item.end}>{formatLaunchBoostScheduleLine(item)}</div>
+      ))}
+    </div>
   );
 }
 
@@ -101,33 +119,24 @@ function UsdgLaunchBoostTooltipContent({
   const tokenSymbol = launchBoost.isGlv ? "GLV" : "GM";
 
   return (
-    <div className="flex flex-col gap-y-14">
-      <div>
-        <StatsTooltipRow
-          showDollar={false}
-          label={t`Fee APY`}
-          value={formatFeeApy(apy, isApyLoading)}
-          valueClassName="numbers"
-        />
-        <StatsTooltipRow
-          showDollar={false}
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow label={t`Fee APY`} value={formatFeeApy(apy, isApyLoading)} />
+        <TooltipRow
           label={launchBoost.status === "target" ? t`Launch boost (target)` : t`Launch boost`}
           value={formatUsdgLaunchBoostValue(launchBoost)}
-          valueClassName="numbers"
         />
-      </div>
+      </TooltipRows>
       {launchBoost.status !== "loading" && (
-        <div>
+        <TooltipFootnote>
           <UsdgLaunchBoostStatusNote launchBoost={launchBoost} />
-        </div>
+        </TooltipFootnote>
       )}
-      <div>
+      <TooltipFootnote>
         <Trans>Paid into the {tokenSymbol} price every 4 hours. Nothing to claim.</Trans>
-      </div>
-      <div>
-        <UsdgLaunchBoostProgramNote />
-      </div>
-    </div>
+      </TooltipFootnote>
+      {launchBoost.isGlv && <UsdgLaunchBoostGlvSchedule />}
+    </TooltipContent>
   );
 }
 
@@ -163,8 +172,7 @@ export function UsdgLaunchBoostAprInfo({
   }
 
   return (
-    <TooltipWithPortal
-      maxAllowedWidth={280}
+    <StandardTooltip
       handle={handle}
       position="bottom-end"
       content={<UsdgLaunchBoostTooltipContent apy={apy} isApyLoading={isApyLoading} launchBoost={launchBoost} />}
