@@ -622,7 +622,7 @@ export const DepositView = () => {
       }
 
       if (txnEvent.event === TxnEventName.Sent) {
-        helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
+        helperToast.success(t`Deposit sent`, { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("transferHistory");
         setIsSubmitting(false);
 
