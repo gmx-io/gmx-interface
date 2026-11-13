@@ -2,8 +2,8 @@ import { useMemo, useSyncExternalStore } from "react";
 import { mutate } from "swr";
 
 import { getUiApiCacheKey } from "config/api";
-import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { SOLANA_NETWORK_ID } from "config/chains";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { FeeDiscount, GmxApiSdk } from "sdk/clients/v2";
