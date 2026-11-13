@@ -38,6 +38,7 @@ import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
+import "components/Referrals/Solana/tester/solanaReferralsTesterBootstrap"; // rewards-tester
 
 const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
 
