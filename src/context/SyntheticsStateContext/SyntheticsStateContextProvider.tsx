@@ -110,6 +110,7 @@ export type SyntheticsPageType =
 
 export type ChartDataProvider = {
   candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
   fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
   fetch24hVolumes: () => Promise<Record<string, bigint>>;
 };

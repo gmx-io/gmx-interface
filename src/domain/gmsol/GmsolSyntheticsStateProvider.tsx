@@ -28,6 +28,7 @@ import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/types";
 
 import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
+import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
 import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
@@ -108,6 +109,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     (): ChartDataProvider | undefined =>
       sdk && {
         candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+        getChartSymbol: getGmsolOracleSymbol,
         fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
         fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
       },
