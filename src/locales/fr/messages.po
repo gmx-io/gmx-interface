@@ -213,6 +213,10 @@ msgstr "Les échanges depuis le GMX Account ne peuvent pas utiliser le {0} natif
 msgid "Include rPnL in leverage display"
 msgstr "Inclure le rPnL dans l'affichage de l'effet de levier"
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr ""
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ordres ({0})"
@@ -1133,6 +1137,10 @@ msgstr "Seul GMX fournit de la liquidité à ce pool. Il sert aux échanges entr
 msgid "Funding decrease factor"
 msgstr "Facteur de diminution du financement"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr "Bonus rétroactif STIP.b"
@@ -1265,6 +1273,10 @@ msgstr "TVL dans les vaults et les pools"
 msgid "GMX on Solana"
 msgstr "GMX sur Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volume négocié par les traders que vous avez parrainés"
@@ -1387,6 +1399,10 @@ msgstr "Dépôt terminé"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Modifier le Take-Profit : {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1673,6 @@ msgstr "DATE"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3281,6 +3296,10 @@ msgstr "Propulsé par notre communauté"
 msgid "Choose:"
 msgstr "Choisissez :"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "Unstaker GMX et esGMX"
@@ -3330,6 +3349,10 @@ msgstr "RANG"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} l'ordre {0} pour"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -4726,6 +4749,7 @@ msgid "Net price impact / fees"
 msgstr "Impact net sur le prix / frais"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "Ordre annulé"
 
@@ -4973,6 +4997,7 @@ msgid "Returned margin"
 msgstr "Marge restituée"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Sending order request..."
 msgstr "Envoi de la demande d'ordre…"
 
@@ -6775,6 +6800,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "Activer les permits de token quels que soient les flags UI"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "Aucun actif dans votre portefeuille"
 
@@ -7342,7 +7368,6 @@ msgstr "Nombre de parties"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Modifier l’ordre Limit Increase : {suffix}"
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Aucun ordre ouvert"
@@ -8143,6 +8168,7 @@ msgstr "Garantit la liquidité disponible."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8698,6 +8724,7 @@ msgstr "Symbole (Z à A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "Débogage RPC"
 
@@ -8812,7 +8839,6 @@ msgstr "Impact actuel : {0}. Ajoutez un tampon de 0.30% pour une meilleure exéc
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Saisissez un code de parrainage pour bénéficier d’une réduction sur les frais de négociation.<0/> Selon le niveau de parrainage, vous pouvez économiser jusqu’à 10 % sur tous les frais<1/> d’ouverture et de clôture."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9508,6 +9534,10 @@ msgstr "TAILLE"
 msgid "Book a 30-min call"
 msgstr "Réservez un appel de 30 min"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9610,6 +9640,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "Demande d'ordre envoyée"
 
@@ -9735,10 +9766,6 @@ msgstr "Marge faible après déduction des frais. Déposez davantage pour rédui
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recevoir {profitTokenSymbol} et {collateralTokenSymbol} séparément"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Le trading sur Solana arrive prochainement."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -10963,6 +10990,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "Liquidité GM: {0} [{1}] insuffisante dans GLV. Choisissez un autre pool, réduisez le montant à vendre ou répartissez le retrait entre plusieurs pools."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "Ordre exécuté"
 
@@ -11428,6 +11456,7 @@ msgid "Show assets with small value ({0})"
 msgstr "Afficher les actifs de faible valeur ({0})"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "Exécution de la demande d'ordre…"
 
@@ -11887,6 +11916,10 @@ msgstr "SOLDE DU POOL"
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "Jusqu'à 25 % des frais de trading GMX, qui vous sont versés directement"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr "Liquidité insuffisante dans le pool WETH-USDC. Le choix d'un autre pool créera une nouvelle position."
@@ -12018,6 +12051,10 @@ msgstr "L’expéditeur a retiré tous les tokens du vault d’acquisition progr
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens GM et se rééquilibre automatiquement entre les marchés liés. Les deux réinvestissent automatiquement les rendements. Choisissez GM pour une exposition à un seul marché ou GLV pour diversifier entre plusieurs pools."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -13534,6 +13571,10 @@ msgstr "Vendre"
 msgid "Lent position impact pool amount"
 msgstr "Montant prêté du pool d'impact sur le prix des positions"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "short"
@@ -13803,6 +13844,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "Taille de position minimale"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"

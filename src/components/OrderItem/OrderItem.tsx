@@ -11,6 +11,7 @@ import {
   selectMarketsInfoData,
   selectOracleSettings,
   selectPositionsInfoData,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -140,6 +141,7 @@ function OrderSize({
 }) {
   const chainId = useSelector(selectChainId);
   const positionsInfoData = useSelector(selectPositionsInfoData);
+  const tokensData = useSelector(selectTokensData);
 
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
@@ -169,10 +171,10 @@ function OrderSize({
 
   const positionOrder = order as PositionOrderInfo;
   const isCollateralSwap =
-    positionOrder.shouldUnwrapNativeToken ||
+    (positionOrder.shouldUnwrapNativeToken && Boolean(positionOrder.initialCollateralToken.isWrapped)) ||
     positionOrder.initialCollateralToken.address !== positionOrder.targetCollateralToken.address;
 
-  const wrappedToken = getWrappedToken(chainId);
+  const wrappedToken = Object.values(tokensData ?? {}).find((token) => token.isWrapped) ?? getWrappedToken(chainId);
 
   const position = getByKey(
     positionsInfoData,

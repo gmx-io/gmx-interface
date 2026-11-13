@@ -18,7 +18,7 @@ import { getMarketIndexName, getGlvOrMarketAddress, getMarketPoolName } from "do
 import { isOrderForPosition } from "domain/synthetics/orders";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
 import { mustNeverExist } from "lib/types";
-import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
@@ -224,10 +224,12 @@ export function MarketFilterLongShort({
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
-      const collateralToken = props.item.collateralAddress
-        ? getToken(chainId, props.item.collateralAddress)
-        : undefined;
-      const collateralSymbol = collateralToken?.symbol;
+      const collateralSymbol =
+        props.item.collateralAddress === market?.longToken.address
+          ? market.longToken.symbol
+          : props.item.collateralAddress === market?.shortToken.address
+            ? market.shortToken.symbol
+            : undefined;
 
       if (props.item.direction === "long" || props.item.direction === "short") {
         return (
@@ -256,7 +258,7 @@ export function MarketFilterLongShort({
         </>
       );
     },
-    [chainId, marketsInfoData]
+    [marketsInfoData]
   );
 
   return (

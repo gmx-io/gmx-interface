@@ -456,6 +456,28 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
   });
 
   describe("shouldTrack", () => {
+    it.each([undefined, false, true])(
+      "only monitors a single endpoint with explicit opt-in: %s",
+      async (trackSingleEndpoint) => {
+        const config = createMockConfig({ endpoints: [testEndpoints.primary], trackSingleEndpoint, delay: 0 });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+        tracker.startTracking();
+        await vi.advanceTimersByTimeAsync(0);
+        expect(tracker.getLastCheckResults()?.[testEndpoints.primary]?.success).toBe(
+          trackSingleEndpoint ? true : undefined
+        );
+        tracker.getCurrentEndpoints();
+        expect(tracker.shouldTrack()).toBe(trackSingleEndpoint === true);
+        Object.defineProperty(document, "visibilityState", { writable: true, value: "hidden" });
+        expect(tracker.shouldTrack({ warmUp: true })).toBe(false);
+        Object.defineProperty(document, "visibilityState", { writable: true, value: "visible" });
+        await vi.advanceTimersByTimeAsync(config.disableUnusedTrackingTimeout + config.trackInterval);
+        expect(tracker.shouldTrack()).toBe(false);
+        tracker.getCurrentEndpoints();
+        expect(tracker.shouldTrack()).toBe(trackSingleEndpoint === true);
+      }
+    );
     it("should return false when only one endpoint exists", () => {
       const config = createMockConfig({
         endpoints: [testEndpoints.primary],

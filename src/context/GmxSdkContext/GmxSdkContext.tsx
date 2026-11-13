@@ -2,10 +2,10 @@ import { createContext, PropsWithChildren, useContext, useMemo, useRef } from "r
 
 import { getUiApiCacheKey, getUiApiOverrideUrl, isUiApiSupported } from "config/api";
 import { GmxApiSdk } from "sdk/clients/v2";
-import { ContractsChainId } from "sdk/configs/chains";
+import { NetworkId } from "sdk/configs/chains";
 
 type GmxSdkContextType = {
-  getSdk: (chainId: ContractsChainId) => GmxApiSdk | undefined;
+  getSdk: (networkId: NetworkId) => GmxApiSdk | undefined;
 };
 
 const context = createContext<GmxSdkContextType | null>(null);
@@ -15,17 +15,17 @@ export function GmxSdkProvider({ children }: PropsWithChildren) {
 
   const value = useMemo(
     (): GmxSdkContextType => ({
-      getSdk: (chainId: ContractsChainId) => {
-        if (!isUiApiSupported(chainId)) {
+      getSdk: (networkId: NetworkId) => {
+        if (!isUiApiSupported(networkId)) {
           return undefined;
         }
 
-        const cacheKey = getUiApiCacheKey(chainId);
+        const cacheKey = getUiApiCacheKey(networkId);
         let sdk = sdkCache.current.get(cacheKey);
 
         if (!sdk) {
-          const apiUrl = getUiApiOverrideUrl(chainId);
-          sdk = new GmxApiSdk({ chainId, ...(apiUrl && { apiUrl }) });
+          const apiUrl = getUiApiOverrideUrl(networkId);
+          sdk = new GmxApiSdk({ chainId: networkId, ...(apiUrl && { apiUrl }) });
           sdkCache.current.set(cacheKey, sdk);
         }
 
@@ -38,17 +38,17 @@ export function GmxSdkProvider({ children }: PropsWithChildren) {
   return <context.Provider value={value}>{children}</context.Provider>;
 }
 
-export function useGmxSdk(chainId: ContractsChainId): GmxApiSdk | undefined {
+export function useGmxSdk(networkId: NetworkId): GmxApiSdk | undefined {
   const ctx = useContext(context);
 
   if (!ctx) {
     throw new Error("useGmxSdk must be used within GmxSdkProvider");
   }
 
-  return ctx.getSdk(chainId);
+  return ctx.getSdk(networkId);
 }
 
 // the price and candle streams are optional, so their hooks also run in trees without the provider, such as component tests
-export function useOptionalGmxSdk(chainId: ContractsChainId): GmxApiSdk | undefined {
-  return useContext(context)?.getSdk(chainId);
+export function useOptionalGmxSdk(networkId: NetworkId): GmxApiSdk | undefined {
+  return useContext(context)?.getSdk(networkId);
 }

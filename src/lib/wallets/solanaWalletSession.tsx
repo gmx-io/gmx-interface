@@ -4,6 +4,7 @@ export type SolanaConnectedWallet = {
   address: string;
   walletId: string;
   disconnect: () => Promise<void>;
+  signTransaction?: (transaction: Uint8Array) => Promise<Uint8Array>;
 };
 
 export type SolanaWalletList = {
@@ -15,6 +16,7 @@ export type SolanaWalletSession = {
   address: string | undefined;
   disconnect: (() => Promise<void>) | undefined;
   isRestoring: boolean;
+  signTransaction?: (transaction: Uint8Array) => Promise<Uint8Array>;
 };
 
 export type SolanaWalletSessionContextValue = SolanaWalletSession & {

@@ -1,0 +1,1462 @@
+{
+  "schemaVersion": 1,
+  "scope": "order-event-layout-contract",
+  "status": "source-derived-not-live-validated",
+  "parser": "not-implemented",
+  "rulesDocument": "docs/solana-order-events.md",
+  "program": "Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo",
+  "idlCommit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+  "idlSha256": "9bc76f2081a1f45334208618aa1b5c1a944e6f1c885c5afb696978210ba81a94",
+  "generatorSha256": "e53e2f9aa4bdf9ff12b8d16a24f26a75eacfe2884d97f02a013a510716180d9b",
+  "anchorVersion": "0.31.1",
+  "envelope": {
+    "tagHex": "e445a52e51cb9a1d",
+    "eventDiscriminatorOffset": 8,
+    "payloadOffset": 16,
+    "accountCount": 1,
+    "eventAuthority": "8a4wJ2bMiH6XWDZ7biTnejkss8VG7GMwd9Mg6F5fDfHF",
+    "eventAuthorityBump": 255,
+    "eventAuthoritySeed": "__event_authority"
+  },
+  "sources": [
+    {
+      "path": "programs/store/src/events/mod.rs",
+      "commit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+      "sha256": "ba39db774ceb08db435ea10eef9992f2b1bdbacc571c8be7d8a397fa42bc65d1"
+    },
+    {
+      "path": "programs/store/src/events/order.rs",
+      "commit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+      "sha256": "34dbde8171f6616dc98d8c7feb981b808e8c17bdb4d1833faa53f6957904549f"
+    },
+    {
+      "path": "programs/store/src/events/trade/event.rs",
+      "commit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+      "sha256": "c5dbc1ac56879cc36b76810b2a8ffac149ddf6dd9320aee0d22427be4ffe07c6"
+    },
+    {
+      "path": "programs/store/src/constants/mod.rs",
+      "commit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+      "sha256": "47f702363f9ed430afca8cd9a1ce6c53397294fe8e6ec8ae3c486e4c8b3f0619"
+    },
+    {
+      "path": "crates/utils/src/action.rs",
+      "commit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+      "sha256": "8583e177ec807fd75763301ec3f23688db3e9e4367ee9a7cc177911942aa6ba3"
+    }
+  ],
+  "lifecycleReference": {
+    "url": "https://github.com/gmsol-labs/gmx-solana/pull/492",
+    "head": "15ab63420a531a2921d7e7a95217b55ac5e8d432",
+    "statusAtReview": "OPEN",
+    "failedTransactionsCovered": false,
+    "adoptedScanner": false
+  },
+  "events": [
+    {
+      "name": "OrderCreated",
+      "discriminatorHex": "e001e53ffe3cbe9f",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64",
+          "payloadOffset": {
+            "min": 0,
+            "max": 0
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "store",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 8,
+            "max": 8
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "order",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 40,
+            "max": 40
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "position",
+          "type": {
+            "option": "pubkey"
+          },
+          "payloadOffset": {
+            "min": 72,
+            "max": 72
+          },
+          "size": {
+            "min": 1,
+            "max": 33
+          }
+        }
+      ],
+      "size": {
+        "min": 73,
+        "max": 105
+      }
+    },
+    {
+      "name": "OrderUpdated",
+      "discriminatorHex": "ac8cd2f16c757a91",
+      "fields": [
+        {
+          "name": "is_create",
+          "type": "bool",
+          "payloadOffset": {
+            "min": 0,
+            "max": 0
+          },
+          "size": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "name": "id",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 1,
+            "max": 1
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "ts",
+          "type": "i64",
+          "payloadOffset": {
+            "min": 9,
+            "max": 9
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "slot",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 17,
+            "max": 17
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "store",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 25,
+            "max": 25
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "order",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 57,
+            "max": 57
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 89,
+            "max": 89
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "owner",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 121,
+            "max": 121
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "OrderParamsForEvent"
+            }
+          },
+          "payloadOffset": {
+            "min": 153,
+            "max": 153
+          },
+          "size": {
+            "min": 117,
+            "max": 181
+          }
+        }
+      ],
+      "size": {
+        "min": 270,
+        "max": 334
+      }
+    },
+    {
+      "name": "OrderRemoved",
+      "discriminatorHex": "549b798ef0eb9017",
+      "fields": [
+        {
+          "name": "id",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 0,
+            "max": 0
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "ts",
+          "type": "i64",
+          "payloadOffset": {
+            "min": 8,
+            "max": 8
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "slot",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 16,
+            "max": 16
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "store",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 24,
+            "max": 24
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "order",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 56,
+            "max": 56
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "kind",
+          "type": {
+            "defined": {
+              "name": "OrderKind"
+            }
+          },
+          "payloadOffset": {
+            "min": 88,
+            "max": 88
+          },
+          "size": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 89,
+            "max": 89
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "owner",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 121,
+            "max": 121
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "state",
+          "type": {
+            "defined": {
+              "name": "ActionState"
+            }
+          },
+          "payloadOffset": {
+            "min": 153,
+            "max": 153
+          },
+          "size": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "payloadOffset": {
+            "min": 154,
+            "max": 154
+          },
+          "size": {
+            "min": 4,
+            "max": null
+          }
+        }
+      ],
+      "size": {
+        "min": 158,
+        "max": null
+      }
+    },
+    {
+      "name": "TradeEvent",
+      "discriminatorHex": "bddb7fd34ee661ee",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "u8",
+          "payloadOffset": {
+            "min": 0,
+            "max": 0
+          },
+          "size": {
+            "min": 1,
+            "max": 1
+          }
+        },
+        {
+          "name": "padding_0",
+          "type": {
+            "array": ["u8", 7]
+          },
+          "payloadOffset": {
+            "min": 1,
+            "max": 1
+          },
+          "size": {
+            "min": 7,
+            "max": 7
+          }
+        },
+        {
+          "name": "trade_id",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 8,
+            "max": 8
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "authority",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 16,
+            "max": 16
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "store",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 48,
+            "max": 48
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 80,
+            "max": 80
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "user",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 112,
+            "max": 112
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "position",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 144,
+            "max": 144
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "order",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 176,
+            "max": 176
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "final_output_token",
+          "type": "pubkey",
+          "payloadOffset": {
+            "min": 208,
+            "max": 208
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "ts",
+          "type": "i64",
+          "payloadOffset": {
+            "min": 240,
+            "max": 240
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "slot",
+          "type": "u64",
+          "payloadOffset": {
+            "min": 248,
+            "max": 248
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "before",
+          "type": {
+            "defined": {
+              "name": "EventPositionState"
+            }
+          },
+          "payloadOffset": {
+            "min": 256,
+            "max": 256
+          },
+          "size": {
+            "min": 272,
+            "max": 272
+          }
+        },
+        {
+          "name": "after",
+          "type": {
+            "defined": {
+              "name": "EventPositionState"
+            }
+          },
+          "payloadOffset": {
+            "min": 528,
+            "max": 528
+          },
+          "size": {
+            "min": 272,
+            "max": 272
+          }
+        },
+        {
+          "name": "transfer_out",
+          "type": {
+            "defined": {
+              "name": "EventTransferOut"
+            }
+          },
+          "payloadOffset": {
+            "min": 800,
+            "max": 800
+          },
+          "size": {
+            "min": 72,
+            "max": 72
+          }
+        },
+        {
+          "name": "padding_1",
+          "type": {
+            "array": ["u8", 8]
+          },
+          "payloadOffset": {
+            "min": 872,
+            "max": 872
+          },
+          "size": {
+            "min": 8,
+            "max": 8
+          }
+        },
+        {
+          "name": "prices",
+          "type": {
+            "defined": {
+              "name": "EventTradePrices"
+            }
+          },
+          "payloadOffset": {
+            "min": 880,
+            "max": 880
+          },
+          "size": {
+            "min": 96,
+            "max": 96
+          }
+        },
+        {
+          "name": "execution_price",
+          "type": "u128",
+          "payloadOffset": {
+            "min": 976,
+            "max": 976
+          },
+          "size": {
+            "min": 16,
+            "max": 16
+          }
+        },
+        {
+          "name": "price_impact_value",
+          "type": "i128",
+          "payloadOffset": {
+            "min": 992,
+            "max": 992
+          },
+          "size": {
+            "min": 16,
+            "max": 16
+          }
+        },
+        {
+          "name": "price_impact_diff",
+          "type": "u128",
+          "payloadOffset": {
+            "min": 1008,
+            "max": 1008
+          },
+          "size": {
+            "min": 16,
+            "max": 16
+          }
+        },
+        {
+          "name": "pnl",
+          "type": {
+            "defined": {
+              "name": "EventTradePnl"
+            }
+          },
+          "payloadOffset": {
+            "min": 1024,
+            "max": 1024
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        },
+        {
+          "name": "fees",
+          "type": {
+            "defined": {
+              "name": "EventTradeFees"
+            }
+          },
+          "payloadOffset": {
+            "min": 1056,
+            "max": 1056
+          },
+          "size": {
+            "min": 144,
+            "max": 144
+          }
+        },
+        {
+          "name": "output_amounts",
+          "type": {
+            "defined": {
+              "name": "EventTradeOutputAmounts"
+            }
+          },
+          "payloadOffset": {
+            "min": 1200,
+            "max": 1200
+          },
+          "size": {
+            "min": 32,
+            "max": 32
+          }
+        }
+      ],
+      "size": {
+        "min": 1232,
+        "max": 1232
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "OrderCreated",
+      "docs": ["Order created event."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ts",
+            "docs": ["Event time."],
+            "type": "i64"
+          },
+          {
+            "name": "store",
+            "docs": ["Store account."],
+            "type": "pubkey"
+          },
+          {
+            "name": "order",
+            "docs": ["Order account."],
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "docs": ["Position account."],
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderUpdated",
+      "docs": [
+        "An event indicating that an order is created or updated.",
+        "",
+        "# Notes",
+        "- For compatibility reasons, the [`OrderUpdated`] event is not emitted",
+        "by the (deprecated) `create_order` and `update_order` instructions.",
+        "As a result, there is no guarantee that every order will have",
+        "corresponding [`OrderUpdated`] events."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "is_create",
+            "docs": ["Whether it is a create event."],
+            "type": "bool"
+          },
+          {
+            "name": "id",
+            "docs": ["Action id."],
+            "type": "u64"
+          },
+          {
+            "name": "ts",
+            "docs": ["Timestamp."],
+            "type": "i64"
+          },
+          {
+            "name": "slot",
+            "docs": ["Slot."],
+            "type": "u64"
+          },
+          {
+            "name": "store",
+            "docs": ["Store."],
+            "type": "pubkey"
+          },
+          {
+            "name": "order",
+            "docs": ["Order."],
+            "type": "pubkey"
+          },
+          {
+            "name": "market_token",
+            "docs": ["Market token."],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "docs": ["Owner."],
+            "type": "pubkey"
+          },
+          {
+            "name": "params",
+            "docs": ["Parameters."],
+            "type": {
+              "defined": {
+                "name": "OrderParamsForEvent"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderParamsForEvent",
+      "docs": ["Order parameters for event."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "kind",
+            "docs": ["Order kind."],
+            "type": {
+              "defined": {
+                "name": "OrderKind"
+              }
+            }
+          },
+          {
+            "name": "is_long",
+            "docs": ["Order side."],
+            "type": "bool"
+          },
+          {
+            "name": "decrease_position_swap_type",
+            "docs": ["Decrease position swap type."],
+            "type": {
+              "defined": {
+                "name": "DecreasePositionSwapType"
+              }
+            }
+          },
+          {
+            "name": "position",
+            "docs": ["Position address."],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "collateral_token",
+            "docs": ["Collateral token."],
+            "type": "pubkey"
+          },
+          {
+            "name": "initial_collateral_token",
+            "docs": ["Initial collateral token."],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "initial_collateral_delta_amount",
+            "docs": ["Initial collateral delta amount."],
+            "type": "u64"
+          },
+          {
+            "name": "size_delta_value",
+            "docs": ["Size delta value."],
+            "type": "u128"
+          },
+          {
+            "name": "min_output",
+            "docs": ["Min output."],
+            "type": "u128"
+          },
+          {
+            "name": "trigger_price",
+            "docs": ["Trigger price (in unit price)."],
+            "type": "u128"
+          },
+          {
+            "name": "acceptable_price",
+            "docs": ["Acceptable price (in unit price)."],
+            "type": "u128"
+          },
+          {
+            "name": "valid_from_ts",
+            "docs": ["Valid from this timestamp."],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderKind",
+      "docs": ["Order Kind."],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Liquidation"
+          },
+          {
+            "name": "AutoDeleveraging"
+          },
+          {
+            "name": "MarketSwap"
+          },
+          {
+            "name": "MarketIncrease"
+          },
+          {
+            "name": "MarketDecrease"
+          },
+          {
+            "name": "LimitSwap"
+          },
+          {
+            "name": "LimitIncrease"
+          },
+          {
+            "name": "LimitDecrease"
+          },
+          {
+            "name": "StopLossDecrease"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DecreasePositionSwapType",
+      "docs": ["Swap Type for the decrease position action."],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "NoSwap"
+          },
+          {
+            "name": "PnlTokenToCollateralToken"
+          },
+          {
+            "name": "CollateralToPnlToken"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderRemoved",
+      "docs": ["Order removed event."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": ["Action id."],
+            "type": "u64"
+          },
+          {
+            "name": "ts",
+            "docs": ["Timestamp."],
+            "type": "i64"
+          },
+          {
+            "name": "slot",
+            "docs": ["Slot."],
+            "type": "u64"
+          },
+          {
+            "name": "store",
+            "docs": ["Store."],
+            "type": "pubkey"
+          },
+          {
+            "name": "order",
+            "docs": ["Order."],
+            "type": "pubkey"
+          },
+          {
+            "name": "kind",
+            "docs": ["Kind."],
+            "type": {
+              "defined": {
+                "name": "OrderKind"
+              }
+            }
+          },
+          {
+            "name": "market_token",
+            "docs": ["Market token."],
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "docs": ["Owner."],
+            "type": "pubkey"
+          },
+          {
+            "name": "state",
+            "docs": ["Final state."],
+            "type": {
+              "defined": {
+                "name": "ActionState"
+              }
+            }
+          },
+          {
+            "name": "reason",
+            "docs": ["Reason."],
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ActionState",
+      "docs": ["Action State."],
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TradeEvent",
+      "docs": ["Trade event."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flags",
+            "docs": ["Trade flag."],
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": ["u8", 7]
+            }
+          },
+          {
+            "name": "trade_id",
+            "docs": ["Trade id."],
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "docs": ["Authority."],
+            "type": "pubkey"
+          },
+          {
+            "name": "store",
+            "docs": ["Store address."],
+            "type": "pubkey"
+          },
+          {
+            "name": "market_token",
+            "docs": ["Market token."],
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "docs": ["User."],
+            "type": "pubkey"
+          },
+          {
+            "name": "position",
+            "docs": ["Position address."],
+            "type": "pubkey"
+          },
+          {
+            "name": "order",
+            "docs": ["Order address."],
+            "type": "pubkey"
+          },
+          {
+            "name": "final_output_token",
+            "docs": ["Final output token."],
+            "type": "pubkey"
+          },
+          {
+            "name": "ts",
+            "docs": ["Trade ts."],
+            "type": "i64"
+          },
+          {
+            "name": "slot",
+            "docs": ["Trade slot."],
+            "type": "u64"
+          },
+          {
+            "name": "before",
+            "docs": ["Before state."],
+            "type": {
+              "defined": {
+                "name": "EventPositionState"
+              }
+            }
+          },
+          {
+            "name": "after",
+            "docs": ["After state."],
+            "type": {
+              "defined": {
+                "name": "EventPositionState"
+              }
+            }
+          },
+          {
+            "name": "transfer_out",
+            "docs": ["Transfer out."],
+            "type": {
+              "defined": {
+                "name": "EventTransferOut"
+              }
+            }
+          },
+          {
+            "name": "padding_1",
+            "type": {
+              "array": ["u8", 8]
+            }
+          },
+          {
+            "name": "prices",
+            "docs": ["Prices."],
+            "type": {
+              "defined": {
+                "name": "EventTradePrices"
+              }
+            }
+          },
+          {
+            "name": "execution_price",
+            "docs": ["Execution price."],
+            "type": "u128"
+          },
+          {
+            "name": "price_impact_value",
+            "docs": ["Price impact value."],
+            "type": "i128"
+          },
+          {
+            "name": "price_impact_diff",
+            "docs": ["Price impact diff."],
+            "type": "u128"
+          },
+          {
+            "name": "pnl",
+            "docs": ["Processed pnl."],
+            "type": {
+              "defined": {
+                "name": "EventTradePnl"
+              }
+            }
+          },
+          {
+            "name": "fees",
+            "docs": ["Fees."],
+            "type": {
+              "defined": {
+                "name": "EventTradeFees"
+              }
+            }
+          },
+          {
+            "name": "output_amounts",
+            "docs": ["Output amounts."],
+            "type": {
+              "defined": {
+                "name": "EventTradeOutputAmounts"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventPositionState",
+      "docs": ["Position State."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "trade_id",
+            "docs": ["Trade id."],
+            "type": "u64"
+          },
+          {
+            "name": "increased_at",
+            "docs": ["The time that the position last increased at."],
+            "type": "i64"
+          },
+          {
+            "name": "updated_at_slot",
+            "docs": ["Updated at slot."],
+            "type": "u64"
+          },
+          {
+            "name": "decreased_at",
+            "docs": ["The time that the position last decreased at."],
+            "type": "i64"
+          },
+          {
+            "name": "size_in_tokens",
+            "docs": ["Size in tokens."],
+            "type": "u128"
+          },
+          {
+            "name": "collateral_amount",
+            "docs": ["Collateral amount."],
+            "type": "u128"
+          },
+          {
+            "name": "size_in_usd",
+            "docs": ["Size in usd."],
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_factor",
+            "docs": ["Borrowing factor."],
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_amount_per_size",
+            "docs": ["Funding fee amount per size."],
+            "type": "u128"
+          },
+          {
+            "name": "long_token_claimable_funding_amount_per_size",
+            "docs": ["Long token claimable funding amount per size."],
+            "type": "u128"
+          },
+          {
+            "name": "short_token_claimable_funding_amount_per_size",
+            "docs": ["Short token claimable funding amount per size."],
+            "type": "u128"
+          },
+          {
+            "name": "reserved",
+            "docs": ["Reserved."],
+            "type": {
+              "array": ["u8", 128]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTransferOut",
+      "docs": ["Transfer Out."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "executed",
+            "docs": ["Executed."],
+            "type": "u8"
+          },
+          {
+            "name": "padding_0",
+            "type": {
+              "array": ["u8", 7]
+            }
+          },
+          {
+            "name": "final_output_token",
+            "docs": ["Final output token."],
+            "type": "u64"
+          },
+          {
+            "name": "secondary_output_token",
+            "docs": ["Secondary output token."],
+            "type": "u64"
+          },
+          {
+            "name": "long_token",
+            "docs": ["Long token."],
+            "type": "u64"
+          },
+          {
+            "name": "short_token",
+            "docs": ["Short token."],
+            "type": "u64"
+          },
+          {
+            "name": "long_token_for_claimable_account_of_user",
+            "docs": ["Long token amount for claimable account of user."],
+            "type": "u64"
+          },
+          {
+            "name": "short_token_for_claimable_account_of_user",
+            "docs": ["Short token amount for claimable account of user."],
+            "type": "u64"
+          },
+          {
+            "name": "long_token_for_claimable_account_of_holding",
+            "docs": ["Long token amount for claimable account of holding."],
+            "type": "u64"
+          },
+          {
+            "name": "short_token_for_claimable_account_of_holding",
+            "docs": ["Short token amount for claimable account of holding."],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTradePrices",
+      "docs": ["Trade Prices."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "index",
+            "docs": ["Index token price."],
+            "type": {
+              "defined": {
+                "name": "EventTradePrice"
+              }
+            }
+          },
+          {
+            "name": "long",
+            "docs": ["Long token price."],
+            "type": {
+              "defined": {
+                "name": "EventTradePrice"
+              }
+            }
+          },
+          {
+            "name": "short",
+            "docs": ["Short token price."],
+            "type": {
+              "defined": {
+                "name": "EventTradePrice"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTradePrice",
+      "docs": ["Price."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min",
+            "docs": ["Min price."],
+            "type": "u128"
+          },
+          {
+            "name": "max",
+            "docs": ["Max price."],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTradePnl",
+      "docs": ["Trade PnL."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pnl",
+            "docs": ["Final PnL value."],
+            "type": "i128"
+          },
+          {
+            "name": "uncapped_pnl",
+            "docs": ["Uncapped PnL value."],
+            "type": "i128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTradeFees",
+      "docs": ["Trade Fees."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "order_fee_for_receiver_amount",
+            "docs": ["Order fee for receiver amount."],
+            "type": "u128"
+          },
+          {
+            "name": "order_fee_for_pool_amount",
+            "docs": ["Order fee for pool amount."],
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_amount",
+            "docs": ["Total liquidation fee amount."],
+            "type": "u128"
+          },
+          {
+            "name": "liquidation_fee_for_receiver_amount",
+            "docs": ["Liquidation fee for pool amount."],
+            "type": "u128"
+          },
+          {
+            "name": "total_borrowing_fee_amount",
+            "docs": ["Total borrowing fee amount."],
+            "type": "u128"
+          },
+          {
+            "name": "borrowing_fee_for_receiver_amount",
+            "docs": ["Borrowing fee for receiver amount."],
+            "type": "u128"
+          },
+          {
+            "name": "funding_fee_amount",
+            "docs": ["Funding fee amount."],
+            "type": "u128"
+          },
+          {
+            "name": "claimable_funding_fee_long_token_amount",
+            "docs": ["Claimable funding fee long token amount."],
+            "type": "u128"
+          },
+          {
+            "name": "claimable_funding_fee_short_token_amount",
+            "docs": ["Claimable funding fee short token amount."],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EventTradeOutputAmounts",
+      "docs": ["Output amounts."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "output_amount",
+            "docs": ["Output amount."],
+            "type": "u128"
+          },
+          {
+            "name": "secondary_output_amount",
+            "docs": ["Secondary output amount."],
+            "type": "u128"
+          }
+        ]
+      }
+    }
+  ],
+  "pending": [
+    "real receipt fixtures",
+    "strict TS parser",
+    "offline lifecycle reducer",
+    "failed metadata and mutation acceptance",
+    "live program layout compatibility"
+  ]
+}

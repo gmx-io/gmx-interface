@@ -17,6 +17,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectFeeDiscountError,
   selectGasLimits,
   selectGasPrice,
   selectL1ExpressOrderGasReference,
@@ -215,6 +216,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const chainId = useSelector(selectChainId);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+  const feeDiscountError = useSelector(selectFeeDiscountError);
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
@@ -1476,6 +1478,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               externalSwapFeeItem={fees?.externalSwapFee}
               maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
             />
+          )}
+
+          {feeDiscountError && !isSwap && (
+            <AlertInfoCard hideClose type="warning">
+              <Trans>Could not refresh your fee discount. Fees are estimated without it.</Trans>
+            </AlertInfoCard>
           )}
 
           {submitButtonState.bannerErrorContent && (

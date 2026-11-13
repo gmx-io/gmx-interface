@@ -213,6 +213,10 @@ msgstr "GMX Account 스왑에서는 네이티브 {0}을(를) 사용할 수 없�
 msgid "Include rPnL in leverage display"
 msgstr "레버리지 표시에 rPnL 포함"
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr ""
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "주문 ({0})"
@@ -1133,6 +1137,10 @@ msgstr "이 풀에는 GMX만 유동성을 제공합니다. USDC와 USDG 스왑�
 msgid "Funding decrease factor"
 msgstr "펀딩 감소 계수"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr "STIP.b 소급 보너스"
@@ -1265,6 +1273,10 @@ msgstr "볼트 및 풀의 TVL"
 msgid "GMX on Solana"
 msgstr "Solana의 GMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "귀하가 추천한 트레이더의 거래량"
@@ -1387,6 +1399,10 @@ msgstr "입금 완료"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "익절매 수정: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1673,6 @@ msgstr "날짜"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3281,6 +3296,10 @@ msgstr "커뮤니티가 이끌어 갑니다"
 msgid "Choose:"
 msgstr "다음 중 선택하십시오:"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "GMX 및 esGMX 언스테이킹"
@@ -3330,6 +3349,10 @@ msgstr "순위"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -4726,6 +4749,7 @@ msgid "Net price impact / fees"
 msgstr "순 가격 영향 / 수수료"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "주문이 취소되었습니다"
 
@@ -4973,6 +4997,7 @@ msgid "Returned margin"
 msgstr "반환 증거금"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Sending order request..."
 msgstr "주문 요청을 전송하는 중…"
 
@@ -6775,6 +6800,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "UI 플래그와 관계없이 토큰 허가 활성화"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "지갑에 자산이 없습니다"
 
@@ -7342,7 +7368,6 @@ msgstr "분할 수"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Limit Increase 수정: {suffix}"
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "열려 있는 주문이 없습니다"
@@ -8143,6 +8168,7 @@ msgstr "유동성 확보를 보장합니다."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8698,6 +8724,7 @@ msgstr "심볼(Z~A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 디버그"
 
@@ -8812,7 +8839,6 @@ msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 0.30% 버퍼를 �
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "추천 코드를 입력하여 거래 수수료 할인을 받으십시오.<0/> 추천 등급에 따라 모든<1/> 포지션 개설 및 종료 수수료를 최대 10%까지 절감할 수 있습니다."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9508,6 +9534,10 @@ msgstr "규모"
 msgid "Book a 30-min call"
 msgstr "30분 통화 예약"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9610,6 +9640,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "주문 요청 전송됨"
 
@@ -9735,10 +9766,6 @@ msgstr "수수료 차감 후 증거금이 적습니다. 추가로 입금하여 �
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받기"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solana에서의 거래는 곧 지원될 예정입니다."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -10963,6 +10990,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "GLV 내 GM: {0} [{1}] 유동성이 부족합니다. 다른 풀을 선택하거나 판매 규모를 줄이거나 출금을 여러 풀로 나누십시오."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "주문 체결됨"
 
@@ -11428,6 +11456,7 @@ msgid "Show assets with small value ({0})"
 msgstr "가치가 낮은 자산 표시 ({0})"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "주문 요청을 실행하는 중…"
 
@@ -11887,6 +11916,10 @@ msgstr "풀 잔액"
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "GMX 거래 수수료의 최대 25%가 직접 지급됩니다"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr "WETH-USDC 풀에 유동성이 부족합니다. 다른 풀을 선택하면 새로운 포지션이 생성됩니다."
@@ -12018,6 +12051,10 @@ msgstr "발신자가 GLP 베스팅 볼트에서 모든 토큰을 출금했습니
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM 토큰을 보유하며 관련 시장 간 자동 리밸런싱을 수행합니다. 두 토큰 모두 수익을 자동으로 재투자합니다. 단일 시장 익스포저를 원하면 GM을, 여러 풀에 분산 투자하려면 GLV를 선택하십시오."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -13534,6 +13571,10 @@ msgstr "판매"
 msgid "Lent position impact pool amount"
 msgstr "포지션 영향 풀 대출 금액"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "숏"
@@ -13803,6 +13844,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "최소 포지션 규모"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"
