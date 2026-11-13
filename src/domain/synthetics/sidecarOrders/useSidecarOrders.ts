@@ -5,6 +5,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectProDiscountFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
@@ -34,6 +35,7 @@ export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const uiFeeFactor = useUiFeeFactor();
+  const combinedDiscountFactor = useSelector(selectProDiscountFactor);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
@@ -119,6 +121,7 @@ export function useSidecarOrders() {
         minCollateralUsd,
         minPositionSizeUsd,
         uiFeeFactor,
+        feeDiscountFactor: mockPositionInfo?.marketInfo.tradeMath === "gmsol" ? combinedDiscountFactor : undefined,
         userReferralInfo,
         isSetAcceptablePriceImpactEnabled,
       });
@@ -128,6 +131,7 @@ export function useSidecarOrders() {
       minCollateralUsd,
       minPositionSizeUsd,
       mockPositionInfo,
+      combinedDiscountFactor,
       triggerPrice,
       uiFeeFactor,
       userReferralInfo,

@@ -3,6 +3,7 @@ import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { AVALANCHE, SettlementChainId } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
@@ -91,6 +92,7 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -151,6 +153,8 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
   canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
@@ -209,6 +213,7 @@ export function useTradeboxButtonState({
 
   const approvalTokens = useMemo(() => {
     const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+    if (isSolana) return list;
 
     if (fromToken && payAmount !== undefined) {
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
@@ -222,7 +227,7 @@ export function useTradeboxButtonState({
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
+  }, [isSolana, fromToken, payAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -236,7 +241,7 @@ export function useTradeboxButtonState({
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
     allowPermit: getCanUseTokenPermits(expressParams),
-    skip: isFromTokenGmxAccount,
+    skip: isSolana || isFromTokenGmxAccount,
     metric: {
       flow: "trade",
       isExpress: Boolean(expressParams),
@@ -579,6 +584,7 @@ export function useTradeboxButtonState({
   }, [tokenChainDataArray, fromToken, srcChainId]);
 
   const onSubmit = useCallback(async (): Promise<boolean> => {
+    if (isSolana) return false;
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
@@ -664,6 +670,7 @@ export function useTradeboxButtonState({
 
     return true;
   }, [
+    isSolana,
     account,
     chainId,
     expressParams?.subaccount,
@@ -979,6 +986,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? proDiscountFactor : undefined,
       acceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       triggerPrice,

@@ -4,7 +4,7 @@ import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectPositionsInfoError } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -17,6 +17,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
@@ -76,17 +77,26 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
+  const positionsInfoError = useSelector(selectPositionsInfoError);
+  const hasCachedPositions = Object.keys(positionsInfoData ?? {}).length > 0;
+  const positionsEmptyText =
+    positionsInfoError && !hasCachedPositions ? (
+      <Trans>Could not load open positions</Trans>
+    ) : (
+      <Trans>No open positions</Trans>
+    );
   const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="flex grow flex-col">
+      {positionsInfoError && hasCachedPositions && (
+        <AlertInfo type="warning" compact textColor="text-yellow-300">
+          <Trans>Could not refresh open positions. This list may be out of date.</Trans>
+        </AlertInfo>
+      )}
       {isMobile && (
         <>
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
@@ -182,11 +192,7 @@ export function PositionList(p: Props) {
             </tbody>
           </Table>
 
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
         </TableScrollFadeContainer>
       )}
       {positionToShare && (

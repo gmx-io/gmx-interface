@@ -1,0 +1,108 @@
+Business Source License 1.1
+License text copyright (c) 2017 MariaDB Corporation Ab, All Rights Reserved. "Business Source License" is a trademark of MariaDB Corporation Ab.
+—----------------------------------------------------
+Parameters
+
+Licensor: gmxresearch.eth
+
+Licensed Work: GMX Synthetics Rust Contracts. The Licensed Work is (c) 2024 gmxresearch.eth
+
+Licensed Usage Grant: Uses listed and defined at https://github.com/gmsol-labs/gmx-solana/blob/main/LICENSE
+
+Change Date: The earlier of December 1 2027 or a date specified at https://github.com/gmsol-labs/gmx-solana/blob/main/LICENSE
+
+Change License: GNU General Public License v2.0 or later
+—------------------------------------------------------------------
+Terms
+The Licensor hereby grants you the right to copy, modify, create derivative works, redistribute, and make non-production use of the Licensed Work. The Licensor may make an Additional Use Grant, above, permitting limited production use.
+
+Effective on the Change Date, or the fourth anniversary of the first publicly available distribution of a specific version of the Licensed Work under this License, whichever comes first, the Licensor hereby grants you rights under the terms of the Change License, and the rights granted in the paragraph above terminate.
+If your use of the Licensed Work does not comply with the requirements currently in effect as described in this License, you must purchase a commercial license from the Licensor, its affiliated entities, or authorized resellers, or you must refrain from using the Licensed Work.
+
+All copies of the original and modified Licensed Work, and derivative works of the Licensed Work, are subject to this License. This License applies separately for each version of the Licensed Work and the Change Date may vary for each version of the Licensed Work released by Licensor.
+
+You must conspicuously display this License on each original or modified copy of the Licensed Work. If you receive the Licensed Work in original or modified form from a third party, the terms and conditions set forth in this License apply to your use of that work.
+
+Any use of the Licensed Work in violation of this License will automatically terminate your rights under this License for the current and all other versions of the Licensed Work.
+
+This License does not grant you any right in any trademark or logo of Licensor or its affiliates (provided that you may use a trademark or logo of Licensor as expressly required by this License).
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE LICENSED WORK IS PROVIDED ON AN "AS IS" BASIS. LICENSOR HEREBY DISCLAIMS ALL WARRANTIES AND CONDITIONS, EXPRESS OR IMPLIED, INCLUDING (WITHOUT LIMITATION) WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, AND TITLE.
+
+MariaDB hereby grants you permission to use this License’s text to license your works, and to refer to it using the trademark "Business Source License", as long as you comply with the Covenants of Licensor below.
+
+—-----------------------------------------------------------
+
+Covenants of Licensor
+
+In consideration of the right to use this License’s text and the "Business Source License" name and trademark, Licensor covenants to MariaDB, and to all other recipients of the licensed work to be provided by Licensor:
+
+To specify as the Change License the GPL Version 2.0 or any later version, or a license that is compatible with GPL Version 2.0 or a later version, where "compatible" means that software provided under the Change License can be included in a program with software provided under GPL Version 2.0 or a later version. Licensor may specify additional Change Licenses without limitation.
+
+To either: (a) specify an additional grant of rights to use that does not impose any additional restriction on the right granted in this License, as the Additional Use Grant; or (b) insert the text "None".
+
+To specify a Change Date.
+
+Not to modify this License in any other way.
+
+—-------------------------------------------
+
+Conditions of use
+The software licensed under this open-source agreement is provided to the Licensee for lawful purposes only, and its use must comply with all applicable laws, regulations, and ethical standards. The software may not be used for any illegal activities, including but not limited to fraud, unauthorized access to systems, or hacking. The Licensee is strictly prohibited from using the software for money laundering, including disguising the origin of illicit funds or evading legal financial reporting requirements. Additionally, the software must not be used to support or finance terrorism, organized crime, or any activities that violate international human rights standards. Any use of the software for these or other unlawful purposes will result in the immediate termination of this license and may subject the Licensee to legal action. The Licensee bears sole responsibility for ensuring compliance with these conditions.
+
+Non-exclusive and revokable
+This software license is granted on a non-exclusive basis, meaning the Licensor retains the right to license the software to other parties without limitation. The Licensor reserves the right to revoke, terminate, or modify this license at any time, at their sole discretion, without prior notice to the Licensee. Any such action may be taken for reasons including, but not limited to, misuse of the software, breach of the terms of this license, or changes in the Licensor’s policies. Upon termination or revocation, the Licensee must immediately cease all use, distribution, and modification of the software. The Licensee acknowledges that the Licensor assumes no obligation to provide continued access to or support for the software under this license.
+
+Assumption of rights and claims
+By using the software provided under this license, the Licensee acknowledges and agrees that the software is provided "as is" without any warranties, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The Licensor does not assume responsibility for the software's performance, reliability, or suitability for any specific use. The Licensee assumes all risks associated with the use, modification, or distribution of the software, including any damages, losses, or liabilities arising from its use. The Licensor expressly disclaims any liability for errors, defects, or omissions in the software or for any claims, damages, or other liabilities arising out of or in connection with the software, whether in an action of contract, tort, or otherwise. The Licensee agrees that any reliance on the software is at their own discretion and risk, and they waive all claims against the Licensor for any direct, indirect, incidental, or consequential damages arising from its use.
+
+Waiver of claims
+By accepting and using the software provided under this license, the Licensee expressly waives any and all claims, demands, or causes of action against the Licensor arising from or related to the software, including but not limited to its use, performance, functionality, or any modifications or derivative works created using the software. This waiver extends to any and all claims for direct, indirect, incidental, consequential, or punitive damages, loss of profits, data loss, or business interruption, regardless of whether such claims arise in contract, tort, negligence, strict liability, or otherwise.
+
+Furthermore, the Licensee agrees to waive all claims against the Licensor related to the actions, omissions, or failures of any third parties who use, modify, or distribute the software or any derivative works thereof. This includes, but is not limited to, claims arising from the use, performance, or functionality of any third-party modifications, derivative works, or creations developed using the software. The Licensee acknowledges that the Licensor does not endorse, vet, or assume responsibility for any third-party modifications, adaptations, or uses of the software or for any consequences resulting from such uses.
+The software is provided "as is" without warranties of any kind, express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose, or non-infringement. The Licensee assumes full responsibility for their use of the software and any modifications, creations, or derivatives they develop or distribute. The Licensor shall have no liability for any damages or losses, foreseeable or otherwise, resulting from the use, modification, distribution, or incorporation of the software into other projects by the Licensee or any third party. This waiver applies to the fullest extent permitted by law and is binding on the Licensee and any successors or assigns.
+
+You hereby wave and release any and all rights to any trial by Jury and agree to binding arbitration to be managed within the United Kingdom (England) in London.
+Indemnification
+
+The Licensee agrees to indemnify, defend, and hold harmless the Licensor, its officers, agents, affiliates, and contributors from and against any and all claims, liabilities, damages, losses, costs, or expenses (including reasonable attorneys' fees and court costs) arising out of or related to: (i) the Licensee’s use, modification, or distribution of the software; (ii) any derivative works or creations developed by the Licensee or third parties using the software; (iii) any breach by the Licensee of this license or applicable laws; or (iv) any claims by third parties alleging that the Licensee’s use or distribution of the software or any derivative work infringes or violates intellectual property rights, privacy rights, or any other legal or regulatory obligation.
+
+The Licensee acknowledges and agrees that they bear sole responsibility for their use of the software and any modifications or adaptations thereof, and they shall promptly notify the Licensor of any such claims or proceedings. The Licensor reserves the right, at its own expense, to assume the exclusive defense and control of any matter otherwise subject to indemnification by the Licensee, in which case the Licensee agrees to cooperate fully with the Licensor’s defense of such claims.
+
+This indemnification obligation survives the termination or revocation of this license and applies to any acts or omissions by the Licensee related to the software, regardless of whether such acts or omissions occur before or after the license period.
+
+Indemnification Against Regulatory Investigations
+The Licensee agrees to indemnify, defend, and hold harmless the Licensor, its officers, agents, affiliates, and contributors from and against any and all claims, liabilities, penalties, damages, losses, costs, or expenses (including reasonable attorneys' fees and court costs) arising out of or related to any regulatory investigation, inquiry, or enforcement action initiated as a result of the Licensee’s use, modification, distribution, or adaptation of the software.
+
+This includes, but is not limited to, claims or investigations related to violations of applicable laws, regulations, or industry standards governing financial transactions, data protection, intellectual property, money laundering, terrorism financing, or other unlawful activities conducted through or facilitated by the Licensee’s use of the software or any derivative works.
+
+The Licensee shall bear full responsibility for responding to and resolving any such regulatory actions, and the Licensor reserves the right, at its sole discretion, to participate in any investigation or proceeding. The Licensee agrees to cover all costs and expenses incurred by the Licensor in connection with such investigations, including any fines, penalties, or settlements resulting therefrom.
+
+This indemnification obligation survives the termination or revocation of this license and applies to any regulatory actions arising from the Licensee’s activities involving the software, whether occurring before, during, or after the license period. The Licensee acknowledges that the Licensor makes no representations or warranties regarding the compliance of the software with any specific laws or regulations and assumes no liability for the Licensee’s use thereof.
+
+Right to Amend
+The Licensor reserves the right to amend, modify, or update the terms of this license at any time, at their sole discretion, to address changes in legal, regulatory, or operational requirements or to ensure the continued functionality and integrity of the software. Such amendments may include, but are not limited to, the imposition of additional terms, conditions, or fees necessary to comply with applicable laws or to cover costs associated with the software’s maintenance, distribution, or regulatory compliance.
+
+The Licensee agrees to be bound by any such amendments upon continued use, modification, or distribution of the software following notification of the changes. Notification may be provided through any reasonable means, including but not limited to updates posted on the Licensor’s official repository, website, or other publicly accessible platform.
+
+If the Licensee does not agree to the amended terms, they must immediately cease all use, distribution, and modification of the software. Continued use or distribution of the software after the effective date of the amendments constitutes acceptance of the revised terms, including any applicable fees. The Licensor assumes no responsibility for ensuring the Licensee’s awareness of amendments beyond reasonable efforts to communicate the changes.
+
+Open Source Software Clause
+This software is provided under an open-source license, granting the Licensee the right to use, modify, and distribute the software and any derivative works, subject to the terms of this agreement. The Licensee acknowledges that while they are free to create modifications, adaptations, or derivative works based on this open-source software, they are strictly prohibited from representing or implying that such modifications or derivative works are created, endorsed, or approved by the Licensor.
+
+Any use of the Licensor’s name, trademarks, or associated branding in connection with the Licensee’s creations is prohibited without explicit written permission from the Licensor. The Licensee must include a clear and conspicuous notice in any derivative works or redistributed versions of the software indicating that such works are the Licensee’s own creation and not the work of the Licensor. This notice must comply with the following format or a substantially similar alternative:
+
+This work is based on open-source software provided under license by the Licensor. This derivative work has been created by the GMX Solana Project, and the Licensor does not endorse or assume responsibility for its content.
+
+Failure to comply with this clause constitutes a breach of this license and may result in its termination, in addition to any legal remedies available to the Licensor.
+
+Arbitration
+Any dispute, controversy, or claim arising out of or relating to this Agreement, including its validity, interpretation, breach, or termination, shall be resolved exclusively through arbitration administered by the London Court of International Arbitration (LCIA) in accordance with its Rules. The arbitration shall be conducted in London, United Kingdom, and shall be overseen by a single arbitrator appointed in accordance with the LCIA Rules.
+
+All costs and expenses related to the arbitration, including the arbitrator's fees and administrative expenses, shall be borne solely by You. The decision of the arbitrator shall be final and binding on both parties.
+
+—-----------------------------------------------------------
+
+Notice
+The Business Source License (this document, or the "License") is not an Open Source license. However, the Licensed Work will eventually be made available under an Open Source License, as stated in this License.
+The Licensor does not own or run any deployments of the Licensed Work.

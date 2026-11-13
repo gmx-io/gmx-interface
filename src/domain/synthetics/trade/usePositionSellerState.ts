@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import type { NetworkId } from "config/chains";
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -24,12 +25,13 @@ export type PositionSellerState = ReturnType<typeof usePositionSellerState>;
 export function usePositionSellerState(
   chainId: number,
   closingPosition: PositionInfo | undefined,
-  initialOrderOption: OrderOption | undefined
+  initialOrderOption: OrderOption | undefined,
+  networkId: NetworkId
 ) {
   const { savedAllowedSlippage } = useSettings();
   const [orderOption, setOrderOption] = useState<OrderOption>(initialOrderOption ?? OrderOption.Market);
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [closeUsdInputValue, setCloseUsdInputValue] = useState("");

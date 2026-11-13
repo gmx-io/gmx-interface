@@ -1,0 +1,46 @@
+name: Build gmsol WASM SDK
+
+on:
+  pull_request:
+    branches: [master, release, "release-*"]
+    paths:
+      - "vendor/gmsol-sdk/**"
+      - "scripts/build-gmsol-sdk.mjs"
+      - "scripts/gmsol-sdk.Dockerfile"
+      - "src/config/gmsol/sdk.ts"
+      - "src/domain/gmsol/sdk-entry.js"
+      - "vite.gmsol.config.ts"
+      - "package.json"
+      - "yarn.lock"
+      - ".github/workflows/gmsol-sdk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Reproduce pinned gmsol WASM
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: corepack enable
+      - name: Build pinned Linux arm64 builder
+        run: docker build --platform linux/arm64 -t gmx-gmsol-sdk -f scripts/gmsol-sdk.Dockerfile scripts
+      - name: Build from pinned source and compare every artifact
+        run: docker run --rm --platform linux/arm64 -v "$PWD:/app:ro" gmx-gmsol-sdk
+      - name: Install application dependencies
+        run: yarn install --immutable
+      - name: Build application SDK artifact and verify its WASM hash
+        run: yarn build:gmsol-sdk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gmx-gmsol-sdk-0.11.0-beta.1
+          path: |
+            vendor/gmsol-sdk/
+            public/gmsol-sdk/
+          if-no-files-found: error

@@ -3,25 +3,26 @@ import mapValues from "lodash/mapValues";
 import { useMemo } from "react";
 import useSWR from "swr";
 
+import { isSolanaNetwork } from "config/chains";
 import { useChainId } from "lib/chains";
 import type { RawIncentivesStats } from "lib/oracleKeeperFetcher";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { ContractsChainId } from "sdk/configs/chains";
 
 export default function useIncentiveStats(overrideChainId?: number) {
-  const { chainId: defaultChainId } = useChainId();
+  const { chainId: defaultChainId, networkId } = useChainId();
+  const isEvm = !isSolanaNetwork(networkId);
   const chainId = overrideChainId ?? defaultChainId;
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
 
-  return (
-    useSWR<RawIncentivesStats | null>(["incentiveStats", chainId], async () => {
-      if (!oracleKeeperFetcher) {
-        return null;
-      }
-      const res = await oracleKeeperFetcher.fetchIncentivesRewards();
-      return res;
-    }).data ?? null
-  );
+  const { data } = useSWR<RawIncentivesStats | null>(isEvm ? ["incentiveStats", chainId] : null, async () => {
+    if (!oracleKeeperFetcher) {
+      return null;
+    }
+    return oracleKeeperFetcher.fetchIncentivesRewards();
+  });
+
+  return isEvm ? data ?? null : null;
 }
 
 export const useLiquidityProvidersIncentives = (chainId: number) => {

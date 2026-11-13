@@ -353,25 +353,26 @@ export function TPSLInputRow({
 
   const convertGainLossValue = useCallback(
     (value: string, fromMode: TPSLDisplayMode, toMode: TPSLDisplayMode): string => {
-      if (collateralUsd === 0n) return "";
+      const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+      if (pnlCollateralUsd === 0n) return "";
 
       if (fromMode === "percentage" && toMode === "usd") {
         const parsed = parseValue(value, 2);
         if (parsed === undefined || parsed <= 0n) return "";
-        const targetPnlUsd = bigMath.mulDiv(collateralUsd, parsed, 10000n);
+        const targetPnlUsd = bigMath.mulDiv(pnlCollateralUsd, parsed, 10000n);
         return String(removeTrailingZeros(formatAmount(bigMath.abs(targetPnlUsd), USD_DECIMALS, 2)));
       }
 
       if (fromMode === "usd" && toMode === "percentage") {
         const parsed = parseValue(value, USD_DECIMALS);
         if (parsed === undefined || parsed <= 0n) return "";
-        const percentage = bigMath.mulDiv(parsed, 10000n, collateralUsd);
+        const percentage = bigMath.mulDiv(parsed, 10000n, pnlCollateralUsd);
         return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
       }
 
       return value;
     },
-    [collateralUsd]
+    [currentPriceValue, getCollateralUsdForPnl]
   );
 
   const handleDisplayModeChange = useCallback(

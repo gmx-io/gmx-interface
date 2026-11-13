@@ -16,12 +16,13 @@ type Props = {
   status: TransactionStatusType;
   text: ReactNode;
   txnHash?: string;
+  txnUrl?: string;
 };
 
-export function TransactionStatus({ status, text, txnHash }: Props) {
+export function TransactionStatus({ status, text, txnHash, txnUrl }: Props) {
   const { chainId } = useChainId();
 
-  const txnLink = txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined;
+  const txnLink = txnUrl ?? (txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined);
 
   return (
     <div className="text-body-small flex w-full items-center justify-between gap-8 py-2 text-14">
