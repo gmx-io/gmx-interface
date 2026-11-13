@@ -90,7 +90,10 @@ export function getCappedPositionImpactUsd(
     return { priceImpactDeltaUsd, balanceWasImproved };
   }
 
-  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsd);
+  let cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, priceImpactDeltaUsd);
+  if (marketInfo.tradeMath === "gmsol") {
+    cappedImpactUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, cappedImpactUsd);
+  }
 
   return {
     priceImpactDeltaUsd: cappedImpactUsd,
@@ -140,7 +143,7 @@ export function getMaxPositionImpactFactors(marketInfo: MarketInfo) {
   let maxPositiveImpactFactor = marketInfo.maxPositionImpactFactorPositive;
   const maxNegativeImpactFactor = marketInfo.maxPositionImpactFactorNegative;
 
-  if (maxPositiveImpactFactor > maxNegativeImpactFactor) {
+  if (marketInfo.tradeMath !== "gmsol" && maxPositiveImpactFactor > maxNegativeImpactFactor) {
     maxPositiveImpactFactor = maxNegativeImpactFactor;
   }
 
@@ -158,7 +161,7 @@ export function getPriceImpactForPosition(
 
   let effectiveUsdDelta = sizeDeltaUsd;
 
-  if (marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
     if (sizeDeltaUsd < 0n && opts.sizeDeltaInTokens === undefined) {
       throw new Error(`Missing sizeDeltaInTokens for token-OI decrease market ${marketInfo.marketTokenAddress}`);
     }
@@ -261,7 +264,7 @@ function getVirtualInventoryForPositionImpact(marketInfo: MarketInfo) {
 
   let virtualInventory = marketInfo.virtualInventoryForPositions;
 
-  if (marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
     if (typeof marketInfo.virtualInventoryForPositionsInTokens !== "bigint") {
       throw new Error(
         `Missing virtualInventoryForPositionsInTokens for token-OI market ${marketInfo.marketTokenAddress}`

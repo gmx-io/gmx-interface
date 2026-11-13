@@ -335,7 +335,11 @@ export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, forMaxPool
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
-  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
+  if (
+    marketInfo.tradeMath === "gmsol"
+      ? openInterestUsd === 0n && openInterestInTokens === 0n
+      : openInterestUsd === 0n || openInterestInTokens === 0n
+  ) {
     return 0n;
   }
 
@@ -378,7 +382,11 @@ function getMarketPnlByCollateralToken(
     return undefined;
   }
 
-  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
+  if (
+    marketInfo.tradeMath === "gmsol"
+      ? openInterestUsd === 0n && openInterestInTokens === 0n
+      : openInterestUsd === 0n || openInterestInTokens === 0n
+  ) {
     return 0n;
   }
 
@@ -480,7 +488,7 @@ export function getMarketInfoWithOpenInterestDelta({
         : marketInfo.virtualInventoryForPositions !== 0n;
 
   if (hasVirtualInventory) {
-    if (marketInfo.useOpenInterestInTokensForBalance) {
+    if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
       next.virtualInventoryForPositionsInTokens =
         marketInfo.virtualInventoryForPositionsInTokens + (isLong ? -sizeDeltaInTokens : sizeDeltaInTokens);
     } else {
@@ -548,7 +556,7 @@ export function getMarketInfoWithSwapDelta(marketInfo: MarketInfo, swapStep: Swa
 }
 
 export function getOpenInterestForBalance(marketInfo: MarketInfo, isLong: boolean): bigint {
-  if (marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
     const interestInTokens = isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
     const indexTokenPrice = getMidPrice(marketInfo.indexToken.prices);
 

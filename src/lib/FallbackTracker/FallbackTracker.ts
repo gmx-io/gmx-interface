@@ -17,6 +17,9 @@ import {
 import { NetworkStatusObserver } from "./NetworkStatusObserver";
 
 export type FallbackTrackerConfig = {
+  // Monitor a single endpoint even when there is no alternative to select.
+  trackSingleEndpoint?: boolean;
+
   // Frequency of endpoint probing
   trackInterval: number;
 
@@ -625,7 +628,7 @@ export class FallbackTracker<TCheckStats> {
       !this.state.lastUsage ||
       differenceInMilliseconds(Date.now(), this.state.lastUsage) > this.params.disableUnusedTrackingTimeout;
 
-    return hasMultipleEndpoints && (warmUp || !isUnused);
+    return (hasMultipleEndpoints || this.params.trackSingleEndpoint === true) && (warmUp || !isUnused);
   }
 
   selfSubscribe() {

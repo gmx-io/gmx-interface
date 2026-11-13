@@ -317,6 +317,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
+    progressUnit?: "slot";
   } & Partial<EndpointsPairRepeats>;
 };
 
@@ -328,11 +329,23 @@ export type RpcTrackerEndpointTiming = {
   };
 };
 
+export type RpcTrackerEndpointHealthEvent = {
+  event: "rpcTracker.endpoint.health";
+  isError: boolean;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    isHealthy: boolean;
+  };
+};
+
 export type RpcTrackerEndpointBlockGapTiming = {
   event: "rpcTracker.endpoint.blockGap";
   data: {
     endpoint: string;
     chainId: number;
+    progressUnit?: "slot";
   };
 };
 
