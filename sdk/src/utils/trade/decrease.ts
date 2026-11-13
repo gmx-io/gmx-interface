@@ -1,7 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getGmsolUsdAmount } from "utils/gmsol";
 import { getPositionFee } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import {
