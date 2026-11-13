@@ -86,19 +86,22 @@ function fetchOrders(owner: string, apiCacheKey: string) {
 export async function refreshGmsolAccountDataAfterTransaction(owner: string, slot: number) {
   const apiCacheKey = getGmsolApiCacheKey();
   const sdk = getGmsolApiSdk(apiCacheKey);
+  // These keys are consumed by useSWRWithFreshness, including its snapshot timestamp.
   await Promise.all([
     mutate(
       getGmsolAccountDataKey("gmsolPositions", apiCacheKey, owner),
-      fetchGmsolPositions(sdk, owner, slot).then((body) =>
-        takeGmsolSnapshot(`${apiCacheKey}:gmsolPositions:${owner}`, body.slot, body.data)
-      ),
+      fetchGmsolPositions(sdk, owner, slot).then((body) => ({
+        value: takeGmsolSnapshot(`${apiCacheKey}:gmsolPositions:${owner}`, body.slot, body.data),
+        fetchedAt: Date.now(),
+      })),
       { revalidate: false }
     ),
     mutate(
       getGmsolAccountDataKey("gmsolOrders", apiCacheKey, owner),
-      fetchGmsolOrders(sdk, owner, slot).then((body) =>
-        takeGmsolSnapshot(`${apiCacheKey}:gmsolOrders:${owner}`, body.slot, body.data)
-      ),
+      fetchGmsolOrders(sdk, owner, slot).then((body) => ({
+        value: takeGmsolSnapshot(`${apiCacheKey}:gmsolOrders:${owner}`, body.slot, body.data),
+        fetchedAt: Date.now(),
+      })),
       { revalidate: false }
     ),
   ]);
