@@ -1,16 +1,20 @@
 import {
   capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
-  getPositionFee,
   getPriceImpactForPosition,
 } from "utils/fees";
-import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmsol";
+import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
-import { getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
+import { PRECISION, applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
+import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
+import {
+  convertToTokenAmount,
+  convertToTokenAmountForIncrease,
+  convertToUsd,
+  getIsEquivalentTokens,
+} from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
 export enum PositionMarginFailureReason {
@@ -113,10 +117,7 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
   if (totalImpactUsd >= 0) {
     totalImpactUsd = 0n;
   } else {
-    let maxNegativeImpactUsd = -applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-    if (marketInfo.tradeMath === "gmsol") {
-      maxNegativeImpactUsd = getGmsolUsdAmount(maxNegativeImpactUsd);
-    }
+    const maxNegativeImpactUsd = -applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
 
     if (totalImpactUsd < maxNegativeImpactUsd) {
       totalImpactUsd = maxNegativeImpactUsd;
@@ -149,30 +150,25 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     }
   }
 
-  closingFeeAmount -= discountAmount;
-
   if (marketInfo.tradeMath === "gmsol") {
-    const { positionFeeUsd } = getPositionFee(
-      marketInfo,
-      sizeInUsd,
-      balanceWasImproved,
-      undefined,
-      undefined,
-      undefined,
-      feeDiscountFactor
+    discountAmount = applyFactor(
+      closingFeeAmount,
+      feeDiscountFactor === undefined
+        ? 0n
+        : feeDiscountFactor < 0n
+          ? 0n
+          : feeDiscountFactor > PRECISION
+            ? PRECISION
+            : feeDiscountFactor
     );
-    closingFeeAmount =
-      convertToTokenAmount(positionFeeUsd, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n;
   }
+  closingFeeAmount -= discountAmount;
 
   const closingCostUsd = convertToUsd(closingFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
 
   const remainingCollateralUsd = collateralUsd + positionPnlUsd + totalImpactUsd - closingCostUsd;
 
-  let minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
-  if (marketInfo.tradeMath === "gmsol") {
-    minCollateralUsdForLeverage = getGmsolUsdAmount(minCollateralUsdForLeverage);
-  }
+  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
 
   const state: Omit<PositionMarginState, "isLiquidatable" | "reason"> = {
     remainingCollateralUsd,
@@ -217,30 +213,35 @@ export type IncreaseResultingPositionMarginStateParams = {
   indexPriceForEvaluation?: bigint;
 };
 
+function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData, price: bigint): T {
+  if (!getIsEquivalentTokens(token, indexToken)) {
+    return token;
+  }
+
+  return { ...token, prices: { minPrice: price, maxPrice: price } };
+}
+
 export function getMarketInfoAtIndexPrice(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   indexPrice: bigint | undefined;
-  isLong: boolean;
 }): { marketInfo: MarketInfo; collateralToken: TokenData } {
-  const { marketInfo, collateralToken, indexPrice, isLong } = p;
+  const { marketInfo, collateralToken, indexPrice } = p;
 
   if (indexPrice === undefined || indexPrice <= 0n) {
     return { marketInfo, collateralToken };
   }
 
   const { indexToken } = marketInfo;
-  const atIndexPrice = <T extends TokenData>(token: T) =>
-    getTokenAtIndexPrice({ token, collateralToken, indexToken, indexPrice, isLong });
 
   return {
     marketInfo: {
       ...marketInfo,
-      indexToken: atIndexPrice(indexToken),
-      longToken: atIndexPrice(marketInfo.longToken),
-      shortToken: atIndexPrice(marketInfo.shortToken),
+      indexToken: withPriceOverride(indexToken, indexToken, indexPrice),
+      longToken: withPriceOverride(marketInfo.longToken, indexToken, indexPrice),
+      shortToken: withPriceOverride(marketInfo.shortToken, indexToken, indexPrice),
     },
-    collateralToken: atIndexPrice(collateralToken),
+    collateralToken: withPriceOverride(collateralToken, indexToken, indexPrice),
   };
 }
 
@@ -290,7 +291,6 @@ export function getIncreaseResultingPositionState(
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: indexPriceForEvaluation,
-    isLong,
   });
 
   const { indexToken } = marketInfo;
@@ -374,18 +374,12 @@ export function getIncreaseResultingPositionState(
     getOpenInterestUsd(nextMarketInfo, isLong),
     minCollateralFactorMultiplier
   );
-  if (marketInfo.tradeMath === "gmsol") {
-    minCollateralFactorForOpenInterest = getGmsolUsdAmount(minCollateralFactorForOpenInterest);
-  }
 
   if (nextMarketInfo.minCollateralFactor > minCollateralFactorForOpenInterest) {
     minCollateralFactorForOpenInterest = nextMarketInfo.minCollateralFactor;
   }
 
-  let minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
-  if (marketInfo.tradeMath === "gmsol") {
-    minCollateralUsdForOpenInterest = getGmsolUsdAmount(minCollateralUsdForOpenInterest);
-  }
+  const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
 
   const position: IncreasePositionState = {
     sizeInUsd: nextSizeInUsd,
