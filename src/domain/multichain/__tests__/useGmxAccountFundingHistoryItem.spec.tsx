@@ -34,10 +34,6 @@ vi.mock("config/indexers", () => ({
   getIndexerUrl: () => "https://squid.test/graphql",
 }));
 
-vi.mock("sdk/configs/tokens", () => ({
-  isValidTokenSafe: () => true,
-}));
-
 vi.mock("sdk/utils/graphqlFetcher", () => ({
   default: mocks.graphqlFetcher,
 }));

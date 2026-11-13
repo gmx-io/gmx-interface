@@ -54,6 +54,13 @@ const UiPage = () => (
   </Suspense>
 );
 
+const LazyDesignSystemPage = lazy(() => import("pages/DesignSystem/DesignSystemPage"));
+const DesignSystemPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDesignSystemPage />
+  </Suspense>
+);
+
 const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
 const RpcDebugPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
@@ -305,6 +312,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
+        </Route>,
+        <Route exact path="/ui/:slug" key="ui-design-system">
+          <DesignSystemPage />
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermitsPage />

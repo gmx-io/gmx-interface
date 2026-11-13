@@ -59,7 +59,7 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -446,15 +446,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     walletGasPaymentToken?.symbol,
   ]);
 
-  const renderTooltipContent = useCallback(
-    () => (
-      <span className="text-typography-primary">
-        <Trans>Accrued funding fees available for settlement</Trans>
-      </span>
-    ),
-    []
-  );
-
   return (
     <Modal
       activeFormId={formId}
@@ -478,11 +469,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               <Trans>POSITION</Trans>
             </div>
             <div className="ClaimSettleModal-header-right">
-              <Tooltip
-                className="ClaimSettleModal-tooltip"
-                position="top-end"
+              <StandardTooltip
+                variant="iconStroke"
+                position="bottom-end"
                 handle={<Trans>FUNDING FEE</Trans>}
-                renderContent={renderTooltipContent}
+                content={t`Accrued funding fees available for settlement`}
               />
             </div>
           </div>

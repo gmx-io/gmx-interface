@@ -10,7 +10,7 @@ import { useChainId } from "lib/chains";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getToken } from "sdk/configs/tokens";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import DocsIcon from "img/docs.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
@@ -88,17 +88,13 @@ function ChartHeaderMobile() {
             </Trans>
           }
           value={
-            <TooltipWithPortal
-              variant="none"
-              as="div"
-              className="flex items-center gap-8"
-              position="bottom-end"
-              content={<OpenInterestTooltip />}
-            >
-              <div className="flex items-center gap-4 numbers">{longOIValue}</div>
-              <span className="text-typography-inactive">/</span>
-              <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
-            </TooltipWithPortal>
+            <StandardTooltip position="bottom-end" content={<OpenInterestTooltip />}>
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-4 numbers">{longOIValue}</div>
+                <span className="text-typography-inactive">/</span>
+                <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
+              </div>
+            </StandardTooltip>
           }
         />
 
@@ -115,22 +111,18 @@ function ChartHeaderMobile() {
 
         <ChartHeaderMobileItem
           label={
-            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
+            <StandardTooltip variant="iconStroke" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
           value={
-            <TooltipWithPortal
-              variant="none"
-              as="div"
-              className="flex items-center gap-8"
-              position="bottom-end"
-              content={<NetRate1hTooltip />}
-            >
-              <div className="flex items-center gap-4 numbers">{netRateLong}</div>
-              <span className="text-typography-inactive">/</span>
-              <div className="flex items-center gap-4 numbers">{netRateShort}</div>
-            </TooltipWithPortal>
+            <StandardTooltip position="bottom-end" content={<NetRate1hTooltip />}>
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-4 numbers">{netRateLong}</div>
+                <span className="text-typography-inactive">/</span>
+                <div className="flex items-center gap-4 numbers">{netRateShort}</div>
+              </div>
+            </StandardTooltip>
           }
         />
       </div>
@@ -279,13 +271,13 @@ function ChartHeaderDesktop() {
             </Trans>
           }
           value={
-            <TooltipWithPortal variant="none" as="div" position="bottom-end" content={<OpenInterestTooltip />}>
+            <StandardTooltip position="bottom-end" content={<OpenInterestTooltip />}>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-4 numbers">{longOIValue}</div>
                 <span className="text-typography-inactive">/</span>
                 <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
               </div>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
         />
 
@@ -302,14 +294,12 @@ function ChartHeaderDesktop() {
 
         <ChartHeaderItem
           label={
-            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
+            <StandardTooltip variant="iconStroke" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
           value={
-            <TooltipWithPortal
-              variant="none"
-              as="div"
+            <StandardTooltip
               className="Chart-header-value flex flex-row items-center gap-8"
               position="bottom-end"
               content={<NetRate1hTooltip />}
@@ -319,7 +309,7 @@ function ChartHeaderDesktop() {
                 <span className="text-typography-inactive">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
         />
       </>

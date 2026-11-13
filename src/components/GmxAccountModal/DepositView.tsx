@@ -46,7 +46,11 @@ import { resolveSettlementChainDepositToken } from "domain/multichain/depositTok
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
-import { estimateSameChainDepositGas, sendSameChainDepositTxn } from "domain/multichain/sendSameChainDepositTxn";
+import {
+  SAME_CHAIN_DEPOSIT_GAS_LIMIT,
+  estimateSameChainDepositGas,
+  sendSameChainDepositTxn,
+} from "domain/multichain/sendSameChainDepositTxn";
 import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
@@ -59,7 +63,11 @@ import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedErr
 import { WALLET_NETWORK_FEE_SOURCE, getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
-import { ValidationBannerErrorName, getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
+import {
+  ERC20_APPROVE_GAS_LIMIT,
+  ValidationBannerErrorName,
+  getInsufficientFeeButtonMessage,
+} from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
@@ -67,7 +75,7 @@ import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addres
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
-import { parseError } from "lib/errors";
+import { type ErrorLike, parseError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedList } from "lib/i18n";
 import {
@@ -701,16 +709,21 @@ export const DepositView = () => {
 
     setIsSubmitting(true);
 
-    await wrapChainAction(settlementChainId, setSettlementChainId, async (signer) => {
-      await sendSameChainDepositTxn({
-        chainId: settlementChainId as SettlementChainId,
-        signer,
-        tokenAddress: depositViewTokenAddress,
-        amount: inputAmount,
-        account,
-        callback: sameChainCallback,
+    try {
+      await wrapChainAction(settlementChainId, setSettlementChainId, async (signer) => {
+        await sendSameChainDepositTxn({
+          chainId: settlementChainId as SettlementChainId,
+          signer,
+          tokenAddress: depositViewTokenAddress,
+          amount: inputAmount,
+          account,
+          callback: sameChainCallback,
+        });
       });
-    });
+    } catch (error) {
+      setIsSubmitting(false);
+      throwUnlessUserRejected(error);
+    }
   }, [account, depositViewTokenAddress, inputAmount, sameChainCallback, settlementChainId, setSettlementChainId]);
 
   const makeCrossChainCallback = useCallback(
@@ -842,24 +855,29 @@ export const DepositView = () => {
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
-    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
-      await sendCrossChainDepositTxn({
-        chainId: depositViewChain,
-        signer,
-        tokenAddress: selectedTokenSourceChainTokenId.address,
-        stargateAddress: selectedTokenSourceChainTokenId.stargate,
-        amount: amountLD,
-        quoteSendNativeFee,
-        sendParams: sendParamsWithSlippage,
-        account,
-        callback: makeCrossChainCallback({
-          depositViewChain,
-          metricId: metricData.metricId,
+    try {
+      await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
+        await sendCrossChainDepositTxn({
+          chainId: depositViewChain,
+          signer,
+          tokenAddress: selectedTokenSourceChainTokenId.address,
+          stargateAddress: selectedTokenSourceChainTokenId.stargate,
+          amount: amountLD,
+          quoteSendNativeFee,
           sendParams: sendParamsWithSlippage,
-          tokenAddress: depositViewTokenAddress,
-        }),
+          account,
+          callback: makeCrossChainCallback({
+            depositViewChain,
+            metricId: metricData.metricId,
+            sendParams: sendParamsWithSlippage,
+            tokenAddress: depositViewTokenAddress,
+          }),
+        });
       });
-    });
+    } catch (error) {
+      setIsSubmitting(false);
+      throwUnlessUserRejected(error);
+    }
 
     return true;
   }, [
@@ -1109,11 +1127,17 @@ export const DepositView = () => {
     depositViewChain !== undefined &&
     networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
 
+  let sameChainNativeFeeAmount = sameChainNetworkFeeDetails?.amount;
+  if (needTokenApprove) {
+    sameChainNativeFeeAmount =
+      gasPrice !== undefined ? (ERC20_APPROVE_GAS_LIMIT + SAME_CHAIN_DEPOSIT_GAS_LIMIT) * gasPrice : undefined;
+  }
+
   const isInsufficientSameChainNativeGasBalance =
     depositViewChain === settlementChainId &&
     gasPaymentTokenBalanceForDeposit !== undefined &&
-    sameChainNetworkFeeDetails?.amount !== undefined &&
-    sameChainNetworkFeeDetails.amount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
+    sameChainNativeFeeAmount !== undefined &&
+    sameChainNativeFeeAmount + (unwrappedSelectedTokenAddress === zeroAddress ? inputAmount ?? 0n : 0n) >
       gasPaymentTokenBalanceForDeposit;
 
   let buttonState: {
@@ -1537,6 +1561,14 @@ export const DepositView = () => {
     </form>
   );
 };
+
+// A wallet reject (of the txn or of the network switch) is the user cancelling, so it is not an error here.
+// Other errors are rethrown so the global unhandled rejection handler still reports them.
+function throwUnlessUserRejected(error: unknown) {
+  if (!parseError(error as ErrorLike)?.isUserRejectedError) {
+    throw error;
+  }
+}
 
 function tryDecodeStargateError(data: Hex) {
   try {

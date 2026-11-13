@@ -36,7 +36,6 @@ import {
 
 import {
   DepositMarginNowAction,
-  LiquidatableIncreaseMessage,
   ReplaceMarginDepositAction,
 } from "components/MarginRemediation/MarginRemediationActions";
 
@@ -167,12 +166,13 @@ function getMarginDepositOrderErrors(p: {
         msg: (
           <Trans>
             This margin deposit may not execute: it would not leave the position above the liquidation requirement at
-            the trigger price.{" "}
-            <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key}>
-              Increase the deposit amount
-            </ReplaceMarginDepositAction>{" "}
-            or move the trigger farther from liquidation.
+            the trigger price. Increase the deposit amount or move the trigger farther from liquidation.
           </Trans>
+        ),
+        action: (
+          <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key} isTooltipLine>
+            <Trans>Increase the deposit amount</Trans>
+          </ReplaceMarginDepositAction>
         ),
         level: "error",
         key: "marginDepositInsufficient",
@@ -193,15 +193,23 @@ function getMarginDepositOrderErrors(p: {
   return [];
 }
 
+function getIncreasePositionMarginAction(positionKey: string | undefined) {
+  return (
+    <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+      <Trans>Increase the position's margin</Trans>
+    </DepositMarginNowAction>
+  );
+}
+
 function getMaxLeverageOrderError(positionKey: string | undefined): OrderError {
   return {
     msg: (
       <Trans>
-        This order may fail to execute because the resulting position would exceed the maximum allowed leverage.{" "}
-        <DepositMarginNowAction positionKey={positionKey}>Increase the position's margin</DepositMarginNowAction> or
-        reduce the order size before it triggers.
+        This order may fail to execute because the resulting position would exceed the maximum allowed leverage.
+        Increase the position's margin or reduce the order size before it triggers.
       </Trans>
     ),
+    action: getIncreasePositionMarginAction(positionKey),
     key: "maxLeverage",
     level: "error",
   };
@@ -212,11 +220,10 @@ function getTwapMaxLeverageOrderError(positionKey: string | undefined): OrderErr
     msg: (
       <Trans>
         Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they
-        trigger.{" "}
-        <DepositMarginNowAction positionKey={positionKey}>Increase the position's margin</DepositMarginNowAction> or
-        cancel the order.
+        trigger. Increase the position's margin or cancel the order.
       </Trans>
     ),
+    action: getIncreasePositionMarginAction(positionKey),
     key: "maxLeverage",
     level: "error",
   };
@@ -226,7 +233,17 @@ function getResultingLiquidatableOrderError(positionKey: string | undefined): Or
   return {
     key: "resultingLiquidatable",
     level: "error",
-    msg: <LiquidatableIncreaseMessage positionKey={positionKey} />,
+    msg: (
+      <Trans>
+        Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or
+        reduce the order size.
+      </Trans>
+    ),
+    action: (
+      <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+        <Trans context="Margin remediation action">Deposit margin</Trans>
+      </DepositMarginNowAction>
+    ),
   };
 }
 
@@ -550,11 +567,10 @@ export function getOrderErrors(p: {
           msg: (
             <Trans>
               Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the
-              order or{" "}
-              <DepositMarginNowAction positionKey={position.key}>increase the position's margin</DepositMarginNowAction>
-              .
+              order or increase the position's margin.
             </Trans>
           ),
+          action: getIncreasePositionMarginAction(position.key),
           level: "error",
           key: "remainingPositionMaxLeverage",
         });
