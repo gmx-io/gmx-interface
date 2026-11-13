@@ -2562,10 +2562,6 @@ msgstr "ID del token corto virtual"
 msgid "EIP-4844"
 msgstr "EIP-4844"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Full lifecycle reconciliation is unavailable because part of this position's history could not be matched reliably"
-msgstr "La conciliación completa del ciclo de vida no está disponible porque parte del historial de esta posición no se pudo emparejar de forma fiable"
-
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Keep leverage at {0}"
 msgstr "Mantener apalancamiento en {0}"
@@ -2644,9 +2640,9 @@ msgstr "Saldo de GMX"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "Firme transacciones fuera de la cadena. Los RPC premium garantizan fiabilidad durante la congestión de la red.<0/><1/>Las comisiones se pagan con su token de pago de Gas desde el saldo que utiliza la acción."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle RPNL"
-msgstr "RPNL del ciclo de vida"
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "{apr} est."
 
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
@@ -4296,6 +4292,10 @@ msgstr "Opere desde su monedero"
 msgid "Deposit USD capacity"
 msgstr "Capacidad de depósito en USD"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "Hasta el {endDate}: {apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -4721,6 +4721,10 @@ msgstr "Hilo de trabajo"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Cheaper option for your amount"
 msgstr "Opción más barata para este importe"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "Recompra disponible pronto"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5781,6 +5785,10 @@ msgstr "Introduzca el importe de retirada"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Órdenes activas"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "Calendario del impulso de lanzamiento"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -6959,10 +6967,6 @@ msgstr "<0>Las notificaciones las proporciona Notifi, que no está afiliada a GM
 msgid "Deposit {tokenSymbol}."
 msgstr "Deposite {tokenSymbol}."
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Lifecycle settlement"
-msgstr "Compensación del ciclo de vida"
-
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Reserves ~{holdback} {symbol} for this transaction's fee. Leaves no {symbol} in your {source} for future Express fees."
 msgstr "Reserva ~{holdback} {symbol} para la comisión de esta transacción. No deja {symbol} en su {source} para futuras comisiones Express."
@@ -7398,6 +7402,10 @@ msgstr "Es posible que esta orden no se ejecute porque la posición resultante e
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "Ver más"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GT son los puntos de GMX en Solana. GMX recompra GT con el 99 % de las comisiones del protocolo en Solana."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -7882,6 +7890,10 @@ msgstr "Volumen acumulado de GMX"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "Comisión de liquidación"
+
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr "Este monedero aún no está desplegado en {0}. Vuelva a firmar para desplegarlo con esta acción"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8519,6 +8531,10 @@ msgstr "¿Qué hace de GMX uno de los mejores lugares para obtener rendimiento d
 msgid "All positions belong to the same connected wallet and are shown together, whether they were opened from {settlementChainName} wallet funds or GMX Account funds."
 msgstr "Todas las posiciones pertenecen al mismo monedero conectado y se muestran juntas, ya sea que se hayan abierto con fondos del monedero de {settlementChainName} o con fondos de GMX Account."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "RPNL, all closes"
+msgstr "RPNL, todos los cierres"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Aprobando {tokenSymbol}..."
@@ -8989,10 +9005,6 @@ msgstr "PnL realizado antes de comisiones"
 msgid "24H%"
 msgstr "24H%"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
-msgid "Net lifecycle fees / impact"
-msgstr "Comisiones / impacto netos del ciclo de vida"
-
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading settings"
 msgstr "Configuración de trading"
@@ -9102,6 +9114,10 @@ msgstr "Para mí"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "Comisiones e impactos"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}: {apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -9553,6 +9569,10 @@ msgstr "Transfiriendo..."
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Send from wallet"
 msgstr "Enviar desde el monedero"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
+msgstr "{transactionsCount, plural, one {Posición completa (# transacción)} other {Posición completa (# transacciones)}}"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
@@ -10144,6 +10164,7 @@ msgstr "Se paga desde su GMX Account porque su Monedero no tiene suficiente {wal
 msgid "Copy"
 msgstr "Copiar"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10822,6 +10843,10 @@ msgstr "Comprar GM con {0} y {1} hasta los límites indicados a continuación"
 msgid "Excludes"
 msgstr "Excluye"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Net fees / price impact, all transactions"
+msgstr "Comisiones netas / impacto en el precio, todas las transacciones"
+
 #: src/components/AddressDropdown/AddressDropdownWithMultichain.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
@@ -11048,6 +11073,10 @@ msgstr "Firma del permiso cancelada"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 rebates"
 msgstr "Reembolsos V2"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Whole position totals are unavailable because part of this position's history could not be matched reliably"
+msgstr "Los totales de la posición completa no están disponibles porque parte del historial de esta posición no se pudo emparejar de forma fiable"
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -11477,6 +11506,10 @@ msgstr "Los datos de rendimiento y gráficos se basan en la hora UTC"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vender {operationTokenSymbol}"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "This close"
+msgstr "Este cierre"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
@@ -12797,6 +12830,10 @@ msgstr "Recibido al cierre"
 msgid "Token permit testing"
 msgstr "Pruebas de permisos de tokens"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
+msgid "Earlier transactions"
+msgstr "Transacciones anteriores"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12949,10 +12986,6 @@ msgstr "Sus fondos están seguros. Contacte con el soporte para obtener ayuda."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "VALOR NETO"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "Primeras 8 semanas: GLV 8% o más, pools de GM 5%. Las tasas se diluyen por encima de $100M de TVL del programa. Financiado por el programa USDG de Arbitrum con GMX. Período 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

@@ -1,8 +1,8 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-import { getConfiguredIndexerUrl } from "config/indexers";
+import { getConfiguredIndexerUrl, type IndexerKey } from "config/indexers";
 
-export function createClient(chainId: number, indexer: "stats" | "referrals" | "syntheticsStats" | "subsquid") {
+export function createClient(chainId: number, indexer: IndexerKey) {
   const url = getConfiguredIndexerUrl(chainId, indexer);
   return new ApolloClient({
     uri: url,

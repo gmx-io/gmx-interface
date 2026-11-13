@@ -4,10 +4,8 @@ import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 
 import { createClient } from "./utils";
 
-const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
 
-const avalancheGraphClient = createClient(AVALANCHE, "stats");
 const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
 const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
 const megaethReferralsGraphClient = createClient(MEGAETH, "referrals");
@@ -72,20 +70,6 @@ export function getSubsquidGraphClient(chainId: number) {
   }
 
   return null;
-}
-
-export function getGmxGraphClient(chainId: number) {
-  if (chainId === ARBITRUM) {
-    return arbitrumGraphClient;
-  } else if (chainId === AVALANCHE) {
-    return avalancheGraphClient;
-  } else if (chainId === AVALANCHE_FUJI) {
-    return null;
-  } else if (chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH) {
-    return null;
-  }
-
-  throw new Error(`Unsupported chain ${chainId}`);
 }
 
 export function getReferralsGraphClient(chainId: number) {

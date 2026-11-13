@@ -68,5 +68,13 @@ export async function signCreateGlvDeposit({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
+  return signTypedData({
+    signer,
+    domain,
+    types,
+    typedData,
+    shouldUseSignerMethod,
+    verificationChainId: chainId,
+    relayParams,
+  });
 }
