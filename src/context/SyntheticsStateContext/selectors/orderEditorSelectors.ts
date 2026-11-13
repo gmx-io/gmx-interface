@@ -55,7 +55,7 @@ import {
   selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
@@ -283,7 +283,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = q(selectOrderEditorTriggerPrice);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(order.marketAddress));
 
   if (
     !market ||
@@ -578,11 +578,12 @@ function calcMarginDepositProjections(p: {
 
 /** Undefined for anything but a margin deposit. */
 export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
   return calcMarginDepositProjections({
-    order: q(selectOrderEditorOrder),
+    order,
     position: q(selectOrderEditorExistingPosition),
     triggerPrice: q(selectOrderEditorTriggerPrice),
-    minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+    minCollateralUsd: q(makeSelectPositionConstants(order?.marketAddress)).minCollateralUsd,
     userReferralInfo: q(selectUserReferralInfo),
     isPnlInLeverage: q(selectIsPnlInLeverage),
   });
@@ -590,11 +591,12 @@ export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
 
 const makeSelectOrderEditorMarginDepositProjections = createSelectorFactory((orderKey: string, triggerPrice: bigint) =>
   createSelector((q) => {
+    const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
     return calcMarginDepositProjections({
-      order: q((state) => getByKey(selectOrdersInfoData(state), orderKey)),
+      order,
       position: q(makeSelectOrderExistingPosition(orderKey)),
       triggerPrice,
-      minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+      minCollateralUsd: q(makeSelectPositionConstants(order?.marketAddress)).minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
       isPnlInLeverage: q(selectIsPnlInLeverage),
     });

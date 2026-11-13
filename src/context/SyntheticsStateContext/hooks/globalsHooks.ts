@@ -4,7 +4,7 @@ import {
   selectIsOrdersLoading,
   selectIsPositionsLoading,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectPositiveFeePositionsSortedByUsd,
   selectTokensData,
@@ -24,7 +24,8 @@ export const usePositiveFeePositionsSortedByUsd = () => useSelector(selectPositi
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);
 export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
 
-export const usePositionsConstants = () => useSelector(selectPositionConstants);
+export const usePositionsConstants = (marketAddress?: string) =>
+  useSelector(makeSelectPositionConstants(marketAddress));
 
 export const useClosingPositionKeyState = () => useSelector(selectClosingPositionKeyState);
 export const useAccount = () => useSelector(selectAccount);

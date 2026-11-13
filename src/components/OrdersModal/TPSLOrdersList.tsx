@@ -190,7 +190,7 @@ function useTPSLOrderViewModel({
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(order.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);

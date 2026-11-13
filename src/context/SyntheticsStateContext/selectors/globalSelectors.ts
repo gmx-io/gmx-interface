@@ -3,9 +3,10 @@ import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFea
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 import { getIsExpressAvailable } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import { getMarketPositionLimits } from "sdk/utils/markets";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectSigner = (s: SyntheticsState) => s.globals.signer;
@@ -112,6 +113,13 @@ export const selectPositionConstants = createSelectorDeprecated(
   (minCollateralUsd, minPositionSizeUsd) => ({
     minCollateralUsd,
     minPositionSizeUsd,
+  })
+);
+
+export const makeSelectPositionConstants = createSelectorFactory((marketAddress: string | undefined) =>
+  createSelector((q) => {
+    const market = q((s) => (marketAddress ? selectMarketsInfoData(s)?.[marketAddress] : undefined));
+    return getMarketPositionLimits(market, q(selectPositionConstants));
   })
 );
 

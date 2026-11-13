@@ -14,8 +14,8 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 export type PositionsConstants = {
-  minCollateralUsd: bigint;
-  minPositionSizeUsd: bigint;
+  minCollateralUsd: bigint | undefined;
+  minPositionSizeUsd: bigint | undefined;
   maxAutoCancelOrders: bigint;
   claimableCollateralDelay: bigint;
   claimableCollateralReductionFactor: bigint;

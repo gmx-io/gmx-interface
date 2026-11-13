@@ -37,7 +37,7 @@ import {
   selectGasLimits,
   selectGasPrice,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
   selectTokensData,
@@ -80,7 +80,7 @@ const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) => stat
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const position = q(selectPositionSellerPosition);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(position?.marketAddress));
   const isPnlInLeverage = q(selectIsPnlInLeverage);
   const userReferralInfo = q(selectUserReferralInfo);
   const closeSizeUsd = parseValue(q(selectPositionSellerCloseUsdInputValue) || "0", USD_DECIMALS) ?? 0n;
@@ -120,7 +120,7 @@ function getRemainingPositionMarginState(
   if (q(selectPositionSellerOrderOption) !== OrderOption.Market) return undefined;
 
   const position = q(selectPositionSellerPosition);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
 
   if (
     !getIsPositionInfoLoaded(position) ||
@@ -451,7 +451,7 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
 
   const tokensData = q(selectTokensData);
   const marketsInfoData = q(selectMarketsInfoData);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
   const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
@@ -625,7 +625,7 @@ export const selectPositionSellerDecreaseError = createSelector((q) => {
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
   const remainingPositionMarginState = q(selectPositionSellerRemainingPositionMarginState);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
 
   return getDecreaseError({
     marketInfo: position.marketInfo,

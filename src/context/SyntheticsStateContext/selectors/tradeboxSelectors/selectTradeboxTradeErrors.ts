@@ -1,7 +1,7 @@
 import {
   selectChainId,
   selectIsPositionsLoading,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectProDiscountFactor,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -111,7 +111,7 @@ export const selectTradeboxTwapIncreaseSequentialMarginState = createSelector(
     const marketInfo = q(selectTradeboxMarketInfo);
     const collateralToken = q(selectTradeboxCollateralToken);
     const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    const { minCollateralUsd } = q(selectPositionConstants);
+    const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
     if (!marketInfo || !collateralToken || !increaseAmounts || minCollateralUsd === undefined) {
       return undefined;
@@ -147,7 +147,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
     const marketInfo = q(selectTradeboxMarketInfo);
     const collateralToken = q(selectTradeboxCollateralToken);
     const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    const { minCollateralUsd } = q(selectPositionConstants);
+    const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
     if (!marketInfo || !collateralToken || !increaseAmounts || minCollateralUsd === undefined) {
       return undefined;
@@ -224,7 +224,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const existingPosition = q(selectTradeboxExistingPositionForPreview);
   const fees = q(selectTradeboxFees);
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
   const { isLong, isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const markPrice = q(selectTradeboxMarkPrice);
@@ -281,7 +281,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
   const markPrice = q(selectTradeboxMarkPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const stage = q(selectTradeboxStage);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 

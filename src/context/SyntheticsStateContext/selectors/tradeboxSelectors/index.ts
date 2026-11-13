@@ -93,7 +93,7 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectSubaccountForChainAction,
   selectTokensData,
@@ -1811,7 +1811,7 @@ export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
   }
 
   const nextPositionValues = q(selectTradeboxNextPositionValues);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
   const shouldWarn = isTradeboxOffHoursLiqRisk({
     chainId,

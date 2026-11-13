@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectProDiscountFactor,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -66,7 +66,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const { minCollateralUsd } = useSelector(selectPositionConstants);
+  const { minCollateralUsd } = useSelector(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const proDiscountFactor = useSelector(selectProDiscountFactor);
   const uiFeeFactor = useSelector(selectUiFeeFactor);

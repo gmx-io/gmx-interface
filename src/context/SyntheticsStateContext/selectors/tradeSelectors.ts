@@ -37,7 +37,7 @@ import {
   selectGasLimits,
   selectGasPrice,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
   selectTokensData,
@@ -347,7 +347,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         selectPositionsInfoData,
         selectTokensData,
         selectMarketsInfoData,
-        selectPositionConstants,
+        makeSelectPositionConstants(marketAddress),
         selectSavedAcceptablePriceImpactBuffer,
         selectIsSetAcceptablePriceImpactEnabled,
         selectUserReferralInfo,
@@ -469,7 +469,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
   }) => {
     return createSelectorDeprecated(
       [
-        selectPositionConstants,
+        makeSelectPositionConstants(marketAddress),
         selectMarketsInfoData,
         selectTokensData,
         makeSelectIncreasePositionAmounts({
@@ -560,7 +560,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     receiveTokenAddress: string | undefined;
   }) =>
     createSelector((q) => {
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(marketAddress));
       const marketsInfoData = q(selectMarketsInfoData);
       const tokensData = q(selectTokensData);
       const decreaseAmounts = q(

@@ -21,7 +21,7 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
   selectTokensData,
@@ -338,7 +338,7 @@ export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
   if (!getIsPositionInfoLoaded(position)) return 0n;
 
   const collateralToken = q(selectPositionEditorSelectedCollateralToken);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(position.marketAddress));
 
   return getMaxWithdrawAmount({
     position,

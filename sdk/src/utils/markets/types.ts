@@ -82,6 +82,8 @@ export type MarketInfo = Market &
     minCollateralFactorForLiquidation: bigint;
     minCollateralFactorForOpenInterestLong: bigint;
     minCollateralFactorForOpenInterestShort: bigint;
+    minCollateralUsd?: bigint;
+    minPositionSizeUsd?: bigint;
 
     swapImpactPoolAmountLong: bigint;
     swapImpactPoolAmountShort: bigint;

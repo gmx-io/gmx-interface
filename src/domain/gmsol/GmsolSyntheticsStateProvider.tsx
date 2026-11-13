@@ -29,7 +29,7 @@ import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/typ
 
 import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
 import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
-import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
+import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
@@ -122,11 +122,6 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         ? composeGmsolMarkets(rawMarkets.rawMarketsInfoData, tokensData)
         : undefined,
     [rawMarkets.rawMarketsInfoData, tokensData]
-  );
-
-  const positionsConstants = useMemo(
-    () => (rawMarkets.rawMarketsInfoData ? getGmsolPositionsConstants(rawMarkets.rawMarketsInfoData) : undefined),
-    [rawMarkets.rawMarketsInfoData]
   );
 
   const isMarketsUnavailable = rawMarkets.isUnavailable || tokensDataResult.isUnavailable;
@@ -316,7 +311,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         markets,
         marketsInfo,
         ordersInfo,
-        positionsConstants,
+        positionsConstants: {
+          minCollateralUsd: undefined,
+          minPositionSizeUsd: undefined,
+          maxAutoCancelOrders: 0n,
+          claimableCollateralDelay: 0n,
+          claimableCollateralReductionFactor: 0n,
+          claimableCollateralTimeDivisor: 0n,
+        },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
         positionsInfo,
         tokensDataResult,
@@ -386,7 +388,6 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     markets,
     marketsInfo,
     ordersInfo,
-    positionsConstants,
     positionsInfo,
     tokensDataResult,
     feeDiscount,

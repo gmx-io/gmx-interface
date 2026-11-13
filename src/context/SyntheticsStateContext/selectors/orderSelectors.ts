@@ -29,7 +29,7 @@ import {
   selectIsPositionsLoading,
   selectJitLiquidityMap,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectProDiscountFactor,
   selectPositionsInfoData,
   selectUiFeeFactor,
@@ -101,7 +101,7 @@ export const makeSelectOrderIncreaseNextPositionValues = createSelectorFactory(
   (orderKey: string, triggerPrice: bigint | undefined, sizeDeltaUsd: bigint | undefined, isPnlInLeverage: boolean) =>
     createSelector(function selectOrderIncreaseNextPositionValues(q) {
       const projection = q(makeSelectOrderIncreaseProjection(orderKey, triggerPrice, sizeDeltaUsd));
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(projection?.order.marketAddress));
 
       if (!projection || minCollateralUsd === undefined) {
         return undefined;
@@ -121,7 +121,7 @@ export const makeSelectOrderIncreaseResultingPositionMarginState = createSelecto
   (orderKey: string, triggerPrice: bigint | undefined, sizeDeltaUsd: bigint | undefined) =>
     createSelector(function selectOrderIncreaseResultingPositionMarginState(q) {
       const projection = q(makeSelectOrderIncreaseProjection(orderKey, triggerPrice, sizeDeltaUsd));
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(projection?.order.marketAddress));
 
       if (!projection || minCollateralUsd === undefined) {
         return undefined;
@@ -150,7 +150,7 @@ export const makeSelectOrderDecreaseRemainingPositionMarginState = createSelecto
         return undefined;
       }
 
-      const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+      const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(order.marketAddress));
 
       if (minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
         return undefined;
@@ -185,7 +185,7 @@ export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFa
         return undefined;
       }
 
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(order.marketAddress));
 
       if (minCollateralUsd === undefined) {
         return undefined;
@@ -260,7 +260,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
             ? q(makeSelectOrderDecreaseRemainingPositionMarginState(orderInfo.key, triggerPrice, sizeDeltaUsd))
             : undefined;
 
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(orderInfo.marketAddress));
       const userReferralInfo = q(selectUserReferralInfo);
 
       const { errors, level } = getOrderErrors({

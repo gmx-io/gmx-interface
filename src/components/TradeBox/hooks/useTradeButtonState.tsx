@@ -932,10 +932,9 @@ export function useDetectAndSetAvailableMaxLeverage({
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const tradeMode = useSelector(selectTradeboxTradeMode);
 
-  const { minCollateralUsd } = usePositionsConstants();
-
   const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
+  const { minCollateralUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
 

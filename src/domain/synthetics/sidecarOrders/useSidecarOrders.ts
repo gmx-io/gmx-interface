@@ -8,6 +8,7 @@ import {
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
+  selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -32,7 +33,8 @@ export * from "./types";
 
 export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
   const uiFeeFactor = useUiFeeFactor();
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 

@@ -25,10 +25,10 @@ import { Options, usePositionEditorFees } from "./usePositionEditorFees";
 export function usePositionEditorData({ operation }: Options) {
   const { isPnlInLeverage } = useSettings();
 
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
 
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
 
   const isDeposit = operation === Operation.Deposit;
 
