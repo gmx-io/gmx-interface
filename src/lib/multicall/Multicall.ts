@@ -343,12 +343,15 @@ export class Multicall {
           })
           .catch((_viemError) => {
             const e = new Error(_viemError.message.slice(0, 150));
-            // eslint-disable-next-line no-console
-            console.groupCollapsed("multicall error:");
-            // eslint-disable-next-line no-console
-            console.error(e);
-            // eslint-disable-next-line no-console
-            console.groupEnd();
+
+            if (isLastAttempt && !isWebWorker) {
+              // eslint-disable-next-line no-console
+              console.groupCollapsed("multicall error:");
+              // eslint-disable-next-line no-console
+              console.error(e);
+              // eslint-disable-next-line no-console
+              console.groupEnd();
+            }
 
             const isTimeoutError = _viemError.message === "multicall timeout";
 

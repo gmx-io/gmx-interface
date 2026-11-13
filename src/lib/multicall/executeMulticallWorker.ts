@@ -184,7 +184,7 @@ export async function executeMulticallWorker(
       });
 
       // eslint-disable-next-line no-console
-      console.error(
+      console.warn(
         `[executeMulticallWorker] Worker execution failed. Falling back to main thread. Job ID: ${id}`,
         error.message,
         error.stack
