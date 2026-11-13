@@ -1,6 +1,6 @@
 import cx from "classnames";
 
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 export function OverviewChartCard({
   label,
@@ -27,9 +27,9 @@ export function OverviewChartCard({
         <div>
           <div className="text-body-small mb-4 font-medium text-typography-secondary">
             {tooltipContent ? (
-              <Tooltip variant="iconStroke" position="right" content={tooltipContent}>
+              <StandardTooltip variant="iconStroke" content={tooltipContent}>
                 {label}
-              </Tooltip>
+              </StandardTooltip>
             ) : (
               label
             )}

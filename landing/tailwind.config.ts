@@ -21,6 +21,18 @@ const colors = {
     600: "#3C4067",
     500: "#A0A3C4",
     400: "#BEC0DA",
+    100: "#A0A3C4",
+  },
+  gray: {
+    100: "#E7E7E9",
+  },
+  typography: {
+    primary: "#FFFFFF",
+    secondary: "#A0A3C4",
+  },
+  fill: {
+    surfaceElevated: "#1E2033",
+    accent: "#363A59",
   },
   light: {
     150: "#F4F5F9",
@@ -147,7 +159,11 @@ function fontComponentsPlugin({ addComponents }) {
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [resolve(__dirname, "./index.html"), resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}")],
+  content: [
+    resolve(__dirname, "./index.html"),
+    resolve(__dirname, "./src/**/*.{js,jsx,ts,tsx}"),
+    resolve(__dirname, "../src/components/Tooltip/**/*.{ts,tsx}"),
+  ],
   theme: {
     // @see https://tailwindcss.com/docs/customizing-spacing
     spacing: fromPairs(range(0, 96 + 1).map((spacing) => [spacing, `${spacing}px`])),

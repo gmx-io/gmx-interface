@@ -325,34 +325,44 @@ function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApprov
   );
 }
 
+export type SubaccountLimits = { remainingActions: bigint; remainingSeconds: bigint };
+
 export async function getInitialSubaccountApproval({
   chainId,
   signer,
   provider,
   subaccountAddress,
   isGmxAccount,
+  remainingSeconds,
+  remainingActions = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
+  remainingSeconds?: bigint;
+  remainingActions?: bigint;
 }) {
+  if (remainingActions <= 0n || (remainingSeconds !== undefined && remainingSeconds <= 0n)) {
+    throw new Error("One-Click limits must be positive");
+  }
+
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_ONE_CLICK_SESSION_DURATION);
+  const defaultExpiresAt = BigInt(nowInSeconds()) + (remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION));
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
     signedApproval: undefined,
   });
 
-  if (expiresAt < defaultExpiresAt) {
+  // a time limit the user set wins over a longer expiry left on chain by an earlier session of this address
+  if (remainingSeconds !== undefined || expiresAt < defaultExpiresAt) {
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
-  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
+  const maxAllowedCount = onchainData.currentActionsCount + remainingActions;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
