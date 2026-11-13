@@ -744,14 +744,18 @@ export function hydrateMarketInfo({
   tokensData,
   claimableFundingData,
 }: {
-  chainId: ContractsChainId;
+  chainId?: ContractsChainId;
   rawMarketInfo: RawMarketInfo;
   tokensData: TokensData;
   claimableFundingData?: ClaimableFundingData[string];
 }): MarketInfo | undefined {
   const longToken = getByKey(tokensData, rawMarketInfo.longTokenAddress);
   const shortToken = getByKey(tokensData, rawMarketInfo.shortTokenAddress);
-  const indexToken = getByKey(tokensData, convertTokenAddress(chainId, rawMarketInfo.indexTokenAddress, "native"));
+  const indexTokenAddress =
+    chainId === undefined
+      ? rawMarketInfo.indexTokenAddress
+      : convertTokenAddress(chainId, rawMarketInfo.indexTokenAddress, "native");
+  const indexToken = getByKey(tokensData, indexTokenAddress);
 
   if (!longToken || !shortToken || !indexToken) {
     return undefined;
@@ -773,7 +777,7 @@ export function composeFullMarketsInfoData({
   tokensData,
   claimableFundingData,
 }: {
-  chainId: ContractsChainId;
+  chainId?: ContractsChainId;
   marketsAddresses: string[];
   rawMarketsInfoData: RawMarketsInfoData;
   tokensData: TokensData;
@@ -801,6 +805,16 @@ export function composeFullMarketsInfoData({
   }
 
   return data;
+}
+
+export function getMarketPositionLimits(
+  market: Pick<MarketInfo, "minCollateralUsd" | "minPositionSizeUsd"> | undefined,
+  defaults?: Pick<MarketInfo, "minCollateralUsd" | "minPositionSizeUsd">
+) {
+  return {
+    minCollateralUsd: market?.minCollateralUsd ?? defaults?.minCollateralUsd,
+    minPositionSizeUsd: market?.minPositionSizeUsd ?? defaults?.minPositionSizeUsd,
+  };
 }
 
 export function getMarketWithTiers(
@@ -834,8 +848,8 @@ export function getMarketWithTiers(
     listingDate: undefined,
     isSpotOnly: marketInfo.isSpotOnly,
     leverageTiers,
-    minPositionSizeUsd: constants.minPositionSizeUsd,
-    minCollateralUsd: constants.minCollateralUsd,
+    minPositionSizeUsd: marketInfo.minPositionSizeUsd ?? constants.minPositionSizeUsd,
+    minCollateralUsd: marketInfo.minCollateralUsd ?? constants.minCollateralUsd,
   };
 }
 
