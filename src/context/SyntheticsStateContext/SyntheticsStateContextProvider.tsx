@@ -131,6 +131,7 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
     feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;

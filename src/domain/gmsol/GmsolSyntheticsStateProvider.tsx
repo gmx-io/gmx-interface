@@ -323,8 +323,8 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         // gmsol charges no UI fee.
         uiFeeFactor: 0n,
         userReferralInfo: feeDiscount?.userReferralInfo,
-        // The host's one combined factor (GT rank and referrer); the fee math applies the larger discount.
-        proDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
+        proDiscountFactor: undefined,
+        feeDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
         feeDiscountError,
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,

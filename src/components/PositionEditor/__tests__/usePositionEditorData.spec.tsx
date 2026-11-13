@@ -28,6 +28,7 @@ vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
 vi.mock("context/SyntheticsStateContext/hooks/globalsHooks", () => ({
   usePositionsConstants: () => ({ minCollateralUsd: state.minCollateralUsd }),
   useUserReferralInfo: () => undefined,
+  useFeeDiscountFactor: () => undefined,
 }));
 
 vi.mock("context/SyntheticsStateContext/hooks/positionEditorHooks", () => ({

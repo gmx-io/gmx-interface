@@ -24,6 +24,7 @@ import {
   selectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -347,6 +348,7 @@ export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
     collateralDecimals: collateralToken?.decimals,
     userReferralInfo: q(selectUserReferralInfo),
     proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
   });
 });
 

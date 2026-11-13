@@ -40,6 +40,7 @@ import {
   selectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -108,6 +109,7 @@ export const selectPositionSellerNextPositionValuesForDecrease = createSelector(
     isLong: position.isLong,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     priceImpactDiffUsd:
       q(selectPositionSellerOrderOption) === OrderOption.Market ? decreaseAmounts.priceImpactDiffUsd : undefined,
   });
@@ -146,6 +148,7 @@ function getRemainingPositionMarginState(
     minPositionSizeUsd,
     userReferralInfo: q(selectUserReferralInfo),
     proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
   });
 }
 
@@ -519,6 +522,7 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
     acceptablePriceImpactBuffer,
     userReferralInfo,
     proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor,

@@ -31,6 +31,7 @@ import {
   selectMarketsInfoData,
   selectPositionConstants,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectPositionsInfoData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -92,6 +93,7 @@ export const makeSelectOrderIncreaseProjection = createSelectorFactory(
         isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
       });
     }),
   PER_ORDER_SELECTOR_CACHE_SIZE
@@ -112,6 +114,7 @@ export const makeSelectOrderIncreaseNextPositionValues = createSelectorFactory(
         minCollateralUsd,
         userReferralInfo: q(selectUserReferralInfo),
         isPnlInLeverage,
+        feeDiscountFactor: q(selectFeeDiscountFactor),
       });
     }),
   PER_ORDER_SELECTOR_CACHE_SIZE
@@ -132,6 +135,7 @@ export const makeSelectOrderIncreaseResultingPositionMarginState = createSelecto
         minCollateralUsd,
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
       });
     }),
   PER_ORDER_SELECTOR_CACHE_SIZE
@@ -166,6 +170,7 @@ export const makeSelectOrderDecreaseRemainingPositionMarginState = createSelecto
         uiFeeFactor: q(selectUiFeeFactor),
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
         isSetAcceptablePriceImpactEnabled: q(selectIsSetAcceptablePriceImpactEnabled),
       });
     }),
@@ -199,6 +204,7 @@ export const makeSelectTwapIncreaseOrderSequentialMarginState = createSelectorFa
         marketsInfoData: q(selectMarketsInfoData),
         userReferralInfo: q(selectUserReferralInfo),
         proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
         minCollateralUsd,
       });
     }),
@@ -272,6 +278,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory(
         nextPositionValues,
         minCollateralUsd,
         userReferralInfo,
+        feeDiscountFactor: q(selectFeeDiscountFactor),
         resultingPositionMarginState,
         closingPool: q(makeSelectOrderClosingPool(orderId)),
       });

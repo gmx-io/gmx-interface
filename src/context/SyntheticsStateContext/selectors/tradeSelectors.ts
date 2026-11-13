@@ -40,6 +40,7 @@ import {
   selectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -304,6 +305,7 @@ export const makeSelectIncreasePositionAmounts = ({
       findSwapPath,
       userReferralInfo,
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
       uiFeeFactor,
       strategy,
       marketsInfoData,
@@ -353,6 +355,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         selectUserReferralInfo,
         selectUiFeeFactor,
         selectProDiscountFactor,
+        selectFeeDiscountFactor,
       ],
       (
         positionsInfoData,
@@ -363,7 +366,8 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         isSetAcceptablePriceImpactEnabled,
         userReferralInfo,
         uiFeeFactor,
-        proDiscountFactor
+        proDiscountFactor,
+        feeDiscountFactor
       ) => {
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
@@ -416,6 +420,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
           userReferralInfo,
           proDiscountFactor,
+          feeDiscountFactor,
           minCollateralUsd,
           minPositionSizeUsd,
           uiFeeFactor,
@@ -492,8 +497,17 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,
+        selectFeeDiscountFactor,
       ],
-      ({ minCollateralUsd }, marketsInfoData, tokensData, increaseAmounts, positionsInfoData, userReferralInfo) => {
+      (
+        { minCollateralUsd },
+        marketsInfoData,
+        tokensData,
+        increaseAmounts,
+        positionsInfoData,
+        userReferralInfo,
+        feeDiscountFactor
+      ) => {
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
@@ -526,6 +540,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             minCollateralUsd,
             userReferralInfo,
             collateralPrice: increaseAmounts.collateralPrice,
+            feeDiscountFactor,
           });
         }
       }
@@ -610,6 +625,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           isLong: tradeFlags.isLong,
           minCollateralUsd,
           userReferralInfo,
+          feeDiscountFactor: q(selectFeeDiscountFactor),
         });
       }
     })

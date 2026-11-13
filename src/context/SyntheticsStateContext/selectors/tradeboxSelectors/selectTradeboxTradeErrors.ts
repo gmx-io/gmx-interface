@@ -3,6 +3,7 @@ import {
   selectIsPositionsLoading,
   selectPositionConstants,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -128,6 +129,7 @@ export const selectTradeboxTwapIncreaseSequentialMarginState = createSelector(
       minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
     });
   }
 );
@@ -167,6 +169,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
         triggerPrice: q(selectTradeboxTriggerPrice),

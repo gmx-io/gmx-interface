@@ -50,6 +50,7 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import {
   selectChainId,
+  selectFeeDiscountFactor,
   selectGasLimits,
   selectGasPrice,
   selectKeepLeverage,
@@ -315,6 +316,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
     fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
     acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
     userReferralInfo,
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     minCollateralUsd,
     minPositionSizeUsd,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
@@ -557,6 +559,7 @@ function calcMarginDepositProjections(p: {
   triggerPrice: bigint | undefined;
   minCollateralUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   isPnlInLeverage: boolean;
 }) {
   const { order, position, triggerPrice, minCollateralUsd, userReferralInfo, isPnlInLeverage } = p;
@@ -571,6 +574,7 @@ function calcMarginDepositProjections(p: {
     triggerPrice,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
     isPnlInLeverage,
   });
@@ -584,6 +588,7 @@ export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
     triggerPrice: q(selectOrderEditorTriggerPrice),
     minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
     userReferralInfo: q(selectUserReferralInfo),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     isPnlInLeverage: q(selectIsPnlInLeverage),
   });
 });
@@ -596,6 +601,7 @@ const makeSelectOrderEditorMarginDepositProjections = createSelectorFactory((ord
       triggerPrice,
       minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
       isPnlInLeverage: q(selectIsPnlInLeverage),
     });
   })
