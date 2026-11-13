@@ -22,6 +22,7 @@ import { decodeGmsolInstruction } from "./decodeInstruction";
 import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
 import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
+import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
@@ -103,7 +104,11 @@ export class GmsolTransactionError extends Error {
   constructor(
     readonly originalError: unknown,
     readonly submittedSignatures: readonly string[],
-    readonly pendingSignature: string | undefined
+    readonly pendingSignature: string | undefined,
+    readonly orders: readonly TrackedOrderAction[] = [],
+    readonly trackingRequests: readonly GmsolOrderTrackingRequest[] = [],
+    readonly failedSignature: string | undefined = undefined,
+    readonly confirmedSignatures: readonly string[] = []
   ) {
     const detail = originalError instanceof Error ? originalError.message : String(originalError);
     super(pendingSignature ? `${detail}; check signature ${pendingSignature} before retrying` : detail);
@@ -111,22 +116,43 @@ export class GmsolTransactionError extends Error {
   }
 }
 
-export type GmsolSendResult = { signatures: string[]; slot: bigint; refreshErrors: unknown[] };
+export type GmsolOrderTrackingRequest = {
+  signature: string;
+  slot: bigint;
+  owner: string;
+  orderAddresses: string[];
+};
+
+export type GmsolSendResult = {
+  signatures: string[];
+  slot: bigint;
+  refreshErrors: unknown[];
+  orders: TrackedOrderAction[];
+  trackingErrors: unknown[];
+  trackingRequests: GmsolOrderTrackingRequest[];
+};
 
 export async function sendGmsolOrderTransactions({
   plan: input,
   getWalletAddress,
   signTransaction,
   onConfirmed,
+  onSubmitted,
 }: {
   plan: GmsolTransactionPlan;
   getWalletAddress: () => string | undefined;
   signTransaction: (bytes: Uint8Array) => Promise<Uint8Array>;
   onConfirmed: (result: { signature: string; slot: bigint; owner: string }) => Promise<void>;
+  onSubmitted?: (result: GmsolSendResult) => void;
 }): Promise<GmsolSendResult> {
   const plan = structuredClone(input);
   const signatures: string[] = [];
+  const confirmedSignatures: string[] = [];
+  let failedSignature: string | undefined;
   const refreshErrors: unknown[] = [];
+  const orders: TrackedOrderAction[] = [];
+  const trackingErrors: unknown[] = [];
+  const trackingRequests: GmsolOrderTrackingRequest[] = [];
   let slot = 0n;
   let pendingSignature: string | undefined;
   try {
@@ -227,11 +253,52 @@ export async function sendGmsolOrderTransactions({
           value: [status],
         } = await rpc.getSignatureStatuses([sent], { searchTransactionHistory: true }).send(rpcOptions());
         if (status) {
-          requireGmsol(status.err === null, `Solana transaction failed: ${sent}`);
-          if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
-            slot = status.slot;
+          if (
+            status.err !== null &&
+            (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized")
+          ) {
+            failedSignature = sent;
             pendingSignature = undefined;
             setPendingGmsolSubmission(plan.owner, undefined);
+            throw new Error(`Solana transaction failed: ${sent}`);
+          }
+          if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
+            slot = status.slot;
+            confirmedSignatures.push(sent);
+            pendingSignature = undefined;
+            setPendingGmsolSubmission(plan.owner, undefined);
+            if (plan.action.type === "create") {
+              // Only track accounts from this confirmed transaction, never another group in the plan.
+              const { message } = decodeGmsolTransaction(bytes, plan);
+              const orderAddresses: string[] = [];
+              for (const instruction of message.instructions) {
+                if (instruction.programAddress !== GMSOL_STORE_PROGRAM_ID) continue;
+                const decoded = decodeGmsolInstruction(
+                  instruction.data ? copySolanaBytes(instruction.data) : new Uint8Array(),
+                  (instruction.accounts ?? []).map((account) => account.address)
+                );
+                if (decoded.name === "create_order_v2") orderAddresses.push(decoded.accounts.order);
+              }
+              if (orderAddresses.length) {
+                const request = { signature: sent, slot, owner: plan.owner, orderAddresses };
+                trackingRequests.push(request);
+                // Receipt indexing belongs to the asynchronous tracker, not submission confirmation.
+              }
+            }
+            if (confirmedSignatures.length === plan.groups.flat().length) {
+              try {
+                onSubmitted?.({
+                  signatures: [...signatures],
+                  slot,
+                  refreshErrors,
+                  orders,
+                  trackingErrors,
+                  trackingRequests,
+                });
+              } catch (error) {
+                refreshErrors.push(error);
+              }
+            }
             try {
               await onConfirmed({ signature: sent, slot, owner: plan.owner });
             } catch (error) {
@@ -245,8 +312,16 @@ export async function sendGmsolOrderTransactions({
         await new Promise((resolve) => setTimeout(resolve, 1_000));
       }
     }
-    return { signatures, slot, refreshErrors };
+    return { signatures, slot, refreshErrors, orders, trackingErrors, trackingRequests };
   } catch (error) {
-    throw new GmsolTransactionError(error, signatures, pendingSignature);
+    throw new GmsolTransactionError(
+      error,
+      signatures,
+      pendingSignature,
+      orders,
+      trackingRequests,
+      failedSignature,
+      confirmedSignatures
+    );
   }
 }
