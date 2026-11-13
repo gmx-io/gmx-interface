@@ -1,0 +1,19 @@
+{
+  "version": "0.11.0-beta.1",
+  "repository": "https://github.com/gmsol-labs/gmx-solana.git",
+  "revision": "7fe4008292ffc09061f3a733ad9b5cd2e6235fa8",
+  "cargoLockSha256": "112ddc6a6dabc3c932da7b072917b44efc5b99432d8b7fcc5ce179819085abed",
+  "rust": "1.90.0",
+  "wasmPack": "0.15.1",
+  "platform": "linux-arm64",
+  "files": {
+    "index.js": "28e2be3c407a5009b3795e80daa2b6d04d1e1d1244d09794d9eadb65aef37bb6",
+    "index_bg.js": "628aae00bbced2cafa758fbe954fc6158c63e6031b22339008003fbde0c914a2",
+    "index.d.ts": "ba219968c4ef4d154185d8cde49e8aa3d639cf13a7e59472cb191e2a8b921462",
+    "index_bg.wasm": "e82184caacc60828f024743f88a0a92d97b9d3d55db6839e0d3fab8a9b46c840",
+    "index_bg.wasm.d.ts": "64707250d1b7289015aa699641443602e36788dd114e8a95ac8bede76fe90575",
+    "package.json": "8b140a5af9531640796cc43034a8881304618c93b19bdb12144fa3f273e4330d",
+    "README.md": "e6b1adff1de1e610f40227897b6a809dc873014a101fb775ec7bc014d9777bf0",
+    "LICENSE": "a81f5783166de48b1d9d3e691b046ca17c571f57cb2b026870643e0e708ed229"
+  }
+}

@@ -66,6 +66,7 @@ export default function SolanaWalletSessionState({
       address: wallet?.address,
       disconnect,
       isRestoring: Boolean(walletId) && !wallet && !restoreTimedOut,
+      signTransaction: wallet?.signTransaction,
       rememberConnectedWallet,
     }),
     [disconnect, rememberConnectedWallet, restoreTimedOut, wallet, walletId]

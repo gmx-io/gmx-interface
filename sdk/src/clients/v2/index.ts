@@ -1,5 +1,5 @@
 import { getApiUrl, getApiFallbackUrls } from "configs/api";
-import { ContractsChainId } from "configs/chains";
+import { ContractsChainId, isContractsChain, NetworkId } from "configs/chains";
 import type { SettlementChainId } from "configs/chains";
 import { isSettlementChain } from "configs/multichain";
 import { fetchApiApy } from "utils/apy/api";
@@ -40,6 +40,7 @@ import {
 } from "utils/gmxAccountApi";
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
+import type { SolanaReadOptions } from "utils/http/solana";
 import { IHttp } from "utils/http/types";
 import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
 import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
@@ -123,6 +124,7 @@ import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/p
 import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
+import { fetchApiFeeDiscount } from "utils/referrals/api";
 import type { IAbstractSigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
@@ -306,7 +308,9 @@ export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
-export type { IHttp } from "utils/http/types";
+export type { IHttp, HttpResponseMetadata } from "utils/http/types";
+export type { SolanaReadOptions } from "utils/http/solana";
+export type { FeeDiscount } from "utils/referrals/types";
 export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
@@ -317,53 +321,82 @@ export type {
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
+type GmxApiSdkOptions = {
+  chainId: NetworkId;
+  apiUrl?: string;
+  api?: IHttp;
+  streamUrl?: string;
+  webSocketImpl?: WebSocketCtor;
+};
+
+class GmxApiContext {
+  constructor(
+    public networkId: NetworkId,
+    public api: IHttp
+  ) {}
+
+  get chainId(): ContractsChainId {
+    if (!isContractsChain(this.networkId, true)) {
+      throw new Error("EVM operations require an EVM chainId");
+    }
+    return this.networkId;
+  }
+
+  set chainId(chainId: ContractsChainId) {
+    this.networkId = chainId;
+  }
+}
+
 export class GmxApiSdk {
-  ctx: { chainId: ContractsChainId; api: IHttp };
+  private _ctx: GmxApiContext;
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
   private readonly streamUrlOverride?: string;
   private readonly webSocketImpl?: WebSocketCtor;
   private _streamClient?: WsStreamClient;
 
-  constructor({
-    chainId,
-    apiUrl,
-    api,
-    streamUrl,
-    webSocketImpl,
-  }: {
-    chainId: ContractsChainId;
-    apiUrl?: string;
-    api?: IHttp;
-    streamUrl?: string;
-    webSocketImpl?: WebSocketCtor;
-  }) {
+  constructor(options: GmxApiSdkOptions) {
+    const { chainId: networkId, apiUrl, api, streamUrl, webSocketImpl } = options;
     this.streamUrlOverride = streamUrl;
     this.webSocketImpl = webSocketImpl;
+    if (networkId === undefined) {
+      throw new Error("chainId is required");
+    }
 
-    if (api) {
-      this.ctx = { chainId, api };
+    let resolvedApi = api;
+    if (!resolvedApi) {
+      const resolvedApiUrl = apiUrl ?? getApiUrl(networkId);
+      if (!resolvedApiUrl) {
+        throw new Error("api is not supported for current chainId");
+      }
+      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(networkId);
+      const allUrls = [resolvedApiUrl, ...fallbackUrls];
+      resolvedApi = allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl);
+    }
+
+    this._ctx = new GmxApiContext(networkId, resolvedApi);
+  }
+
+  get ctx(): GmxApiContext {
+    return this._ctx;
+  }
+
+  set ctx(context: { networkId: NetworkId; api: IHttp } | { chainId: ContractsChainId; api: IHttp }) {
+    if ("chainId" in context && Object.prototype.hasOwnProperty.call(context, "chainId")) {
+      this._ctx = new GmxApiContext(context.chainId, context.api);
       return;
     }
+    this._ctx = new GmxApiContext("networkId" in context ? context.networkId : context.chainId, context.api);
+  }
 
-    const resolvedApiUrl = apiUrl ?? getApiUrl(chainId);
-
-    if (!resolvedApiUrl) {
-      throw new Error("api is not supported for current chainId");
-    }
-
-    const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(chainId);
-    const allUrls = [resolvedApiUrl, ...fallbackUrls];
-
-    this.ctx = {
-      chainId,
-      api: allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl),
-    };
+  requireEvmContext(): { chainId: ContractsChainId; api: IHttp } {
+    const { chainId, api } = this.ctx;
+    return { chainId, api };
   }
 
   private get subaccountClient(): SdkSubaccountClientContext {
     return {
-      ctx: this.ctx,
+      ctx: this.requireEvmContext(),
       owner: this,
       preparedSubaccountApprovals: this.preparedSubaccountApprovals,
       getSubaccount: () => this._subaccount,
@@ -445,12 +478,16 @@ export class GmxApiSdk {
     );
   }
 
-  fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean }) {
+  fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean } & SolanaReadOptions) {
     return fetchApiPositionsInfo(this.ctx, params);
   }
 
-  fetchOrders(params: { address: string }) {
+  fetchOrders(params: { address: string } & SolanaReadOptions) {
     return fetchApiOrders(this.ctx, params);
+  }
+
+  fetchFeeDiscount(params: { address: string }) {
+    return fetchApiFeeDiscount(this.ctx, params);
   }
 
   fetchTrades(params: FetchTradesParams): Promise<TradesListResponse> {
@@ -546,7 +583,7 @@ export class GmxApiSdk {
   }
 
   buildApproveTransaction(params: ApproveTokenParams): ApproveTokenResult {
-    return buildApproveTransaction(this.ctx, params);
+    return buildApproveTransaction(this.requireEvmContext(), params);
   }
 
   buildErc20ApproveTxn(params: Erc20ApproveParams): ApproveTokenResult {
@@ -554,14 +591,16 @@ export class GmxApiSdk {
   }
 
   executeErc20Approve(signer: IAbstractSigner, params: Erc20ApproveParams): Promise<string> {
+    this.requireEvmContext();
     return executeErc20Approve(signer, params);
   }
 
   private requireSettlementChainId(): SettlementChainId {
-    if (!isSettlementChain(this.ctx.chainId)) {
-      throw new Error(`chainId ${this.ctx.chainId} is not a settlement chain; multichain ops are unsupported`);
+    const { chainId } = this.requireEvmContext();
+    if (!isSettlementChain(chainId)) {
+      throw new Error(`chainId ${chainId} is not a settlement chain; multichain ops are unsupported`);
     }
-    return this.ctx.chainId;
+    return chainId;
   }
 
   buildSameChainDepositTxn(params: Omit<SameChainDepositRequest, "chainId">): BuildTxnResult {
@@ -602,18 +641,22 @@ export class GmxApiSdk {
   }
 
   prepareCrossChainDeposit(request: CrossChainDepositPrepareRequest): Promise<CrossChainDepositPrepareResponse> {
+    this.requireEvmContext();
     return prepareCrossChainDeposit(this.ctx, request);
   }
 
   prepareCrossChainWithdraw(request: CrossChainWithdrawPrepareRequest): Promise<CrossChainWithdrawPrepareResponse> {
+    this.requireEvmContext();
     return prepareCrossChainWithdraw(this.ctx, request);
   }
 
   signCrossChainWithdraw(prepared: CrossChainWithdrawPrepareResponse, signer: IAbstractSigner): Promise<string> {
+    this.requireEvmContext();
     return signCrossChainWithdrawPrepared(prepared, signer);
   }
 
   submitCrossChainWithdraw(request: CrossChainWithdrawSubmitRequest): Promise<CrossChainWithdrawSubmitResponse> {
+    this.requireEvmContext();
     return submitCrossChainWithdraw(this.ctx, request);
   }
 
@@ -670,12 +713,13 @@ export class GmxApiSdk {
   }
 
   prepareSubaccountApproval(request: SubaccountApprovalPrepareRequest): Promise<SubaccountApprovalPrepareResponse> {
+    this.requireEvmContext();
     return prepareSubaccountApproval(this.ctx, request);
   }
 
   signSubaccountApproval(prepared: SubaccountApprovalPrepareResponse, signer: IAbstractSigner): Promise<string> {
     return signSubaccountApproval(prepared, signer, {
-      chainId: this.ctx.chainId,
+      chainId: this.requireEvmContext().chainId,
       expectedSubaccountAddress: this._subaccount?.address,
     });
   }

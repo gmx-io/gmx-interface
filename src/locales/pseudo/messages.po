@@ -213,6 +213,10 @@ msgstr ""
 msgid "Include rPnL in leverage display"
 msgstr ""
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr ""
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr ""
@@ -1133,6 +1137,10 @@ msgstr ""
 msgid "Funding decrease factor"
 msgstr ""
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr ""
@@ -1265,6 +1273,10 @@ msgstr ""
 msgid "GMX on Solana"
 msgstr ""
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
@@ -1386,6 +1398,10 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
+msgstr ""
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1657,7 +1673,6 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr ""
 
@@ -3281,6 +3296,10 @@ msgstr ""
 msgid "Choose:"
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr ""
@@ -3329,6 +3348,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4726,6 +4749,7 @@ msgid "Net price impact / fees"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr ""
 
@@ -4973,6 +4997,7 @@ msgid "Returned margin"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Sending order request..."
 msgstr ""
 
@@ -6775,6 +6800,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr ""
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr ""
 
@@ -7342,7 +7368,6 @@ msgstr ""
 msgid "Edit Limit Increase: {suffix}"
 msgstr ""
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr ""
@@ -8143,6 +8168,7 @@ msgstr ""
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8698,6 +8724,7 @@ msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr ""
 
@@ -8812,7 +8839,6 @@ msgstr ""
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr ""
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9508,6 +9534,10 @@ msgstr ""
 msgid "Book a 30-min call"
 msgstr ""
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9610,6 +9640,7 @@ msgid "Dolomite"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr ""
 
@@ -9734,10 +9765,6 @@ msgstr ""
 
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
-msgstr ""
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10963,6 +10990,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr ""
 
@@ -11428,6 +11456,7 @@ msgid "Show assets with small value ({0})"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr ""
 
@@ -11887,6 +11916,10 @@ msgstr ""
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr ""
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr ""
@@ -12017,6 +12050,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -13534,6 +13571,10 @@ msgstr ""
 msgid "Lent position impact pool amount"
 msgstr ""
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr ""
@@ -13802,6 +13843,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
+msgstr ""
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
