@@ -459,3 +459,7 @@ export const GMSOL_TOKENS: readonly GmsolTokenConfig[] = [
     isSynthetic: true,
   },
 ];
+
+// Mints a wallet can hold as collateral or pay tokens. isSynthetic mints never are, so shared code keeps them out of
+// balances; a change that makes a mint collateral removes its flag and it joins this list.
+export const GMSOL_BALANCE_TOKENS: readonly GmsolTokenConfig[] = GMSOL_TOKENS.filter((token) => !token.isSynthetic);

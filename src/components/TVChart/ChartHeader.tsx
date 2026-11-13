@@ -6,9 +6,7 @@ import { useEffectOnce } from "react-use";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useChainId } from "lib/chains";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { getToken } from "sdk/configs/tokens";
 
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 
@@ -30,10 +28,7 @@ function ChartHeaderMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
-  const { chainId } = useChainId();
-  const chartTokenAddress = chartToken?.address;
-
-  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const selectedTokenOption = chartToken;
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const {
@@ -180,10 +175,7 @@ function ChartHeaderDesktop() {
   const [scrollRight, setScrollRight] = useState(0);
   const [maxFadeArea, setMaxFadeArea] = useState(75);
 
-  const { chainId } = useChainId();
-  const chartTokenAddress = chartToken?.address;
-
-  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const selectedTokenOption = chartToken;
 
   const setScrolls = useCallback(() => {
     const scrollable = scrollableRef.current;

@@ -1265,6 +1265,10 @@ msgstr "ボールトおよびプール内のTVL"
 msgid "GMX on Solana"
 msgstr "Solana上のGMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "紹介したトレーダーによる取引高"
@@ -1387,6 +1391,10 @@ msgstr "入金完了"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "テイクプロフィットを編集：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1665,6 @@ msgstr "日付"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3281,6 +3288,10 @@ msgstr "コミュニティ主導"
 msgid "Choose:"
 msgstr "次から選択してください："
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "GMXとesGMXをアンステーク"
@@ -3330,6 +3341,10 @@ msgstr "順位"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 注文"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -6775,6 +6790,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "UI フラグに関係なくトークン Permit を有効にする"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "ウォレットに資産がありません"
 
@@ -7342,7 +7358,6 @@ msgstr "分割数"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Limit Increaseを編集：{suffix}"
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "未約定の注文はありません"
@@ -8139,6 +8154,7 @@ msgstr "利用可能な流動性を確保します。"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8808,7 +8824,6 @@ msgstr "現在の影響: {0}。注文の約定精度を高めるために0.30%�
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "紹介コードを入力すると、取引手数料の割引を受けられます。<0/> 紹介ティアに応じて、すべての<1/>新規建ておよび決済手数料を最大10%節約できます。"
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9731,10 +9746,6 @@ msgstr "手数料控除後の証拠金が少なくなっています。清算リ
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取る"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solanaでの取引は近日公開予定です。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11883,6 +11894,10 @@ msgstr "プール残高"
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "GMX取引手数料の最大25%を直接受け取れます"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr "WETH-USDCプールの流動性が不足しています。別のプールを選択すると新しいポジションが作成されます。"
@@ -12014,6 +12029,10 @@ msgstr "送信者はGLPベスティングボールトからすべてのトーク
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GMは1つのマーケットから手数料を獲得します。GLVは複数のGMトークンを保有し、関連マーケット間で自動的にリバランスします。どちらも収益を自動的に複利運用します。単一マーケットへのエクスポージャーにはGMを、複数プールへの分散にはGLVをお選びください。"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -13799,6 +13818,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "最小ポジションサイズ"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"

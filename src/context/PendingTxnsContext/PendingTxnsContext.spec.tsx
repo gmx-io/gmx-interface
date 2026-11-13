@@ -13,6 +13,8 @@ import {
 import { waitForTransactionReceipt } from "viem/actions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SOLANA_NETWORK_ID } from "sdk/configs/chains";
+
 import { PendingTransaction, PendingTxnsContextProvider, usePendingTxns } from "./PendingTxnsContext";
 
 const mocks = vi.hoisted(() => ({
@@ -22,12 +24,13 @@ const mocks = vi.hoisted(() => ({
   getPublicClient: vi.fn(),
   success: vi.fn(),
   error: vi.fn(),
+  chain: { chainId: 43114, networkId: 43114 },
 }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
   getPublicClientWithRpc: mocks.getPublicClient,
 }));
-vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: 43114 }) }));
+vi.mock("lib/chains", () => ({ useChainId: () => mocks.chain }));
 vi.mock("lib/rpc", () => ({
   getProvider: mocks.getProvider,
   useJsonRpcProvider: () => ({ provider: { getTransactionReceipt: mocks.getReceipt } }),
@@ -89,6 +92,8 @@ async function replace(reason: ReplacementReturnType["reason"]) {
 beforeEach(() => {
   vi.useFakeTimers();
   vi.clearAllMocks();
+  mocks.chain.chainId = 43114;
+  mocks.chain.networkId = 43114;
   watchers.clear();
   i18n.load("en", {});
   i18n.activate("en");
@@ -121,7 +126,7 @@ describe("pending wallet transaction replacements", () => {
     expect(context.pendingTxns).toEqual([]);
     expect(transaction.onError).toHaveBeenCalledTimes(status === 0 ? 1 : 0);
     expect(mocks.success).toHaveBeenCalledTimes(status);
-    expect(mocks.getPublicClient).toHaveBeenCalledWith(42161);
+    expect(mocks.getPublicClient).toHaveBeenCalledWith(42161, { skipSolanaGate: true });
     expect(mocks.getProvider).toHaveBeenCalledWith(undefined, 42161);
   });
 
@@ -191,6 +196,45 @@ describe("pending wallet transaction replacements", () => {
     expect(mocks.error).not.toHaveBeenCalled();
   });
 
+  it("applies a speed-up that confirms after switching to Solana and back FESOL-52", async () => {
+    const transaction = createTransaction();
+    const view = render(
+      <SWRConfig value={swrConfig}>
+        <PendingTxnsContextProvider>
+          <Harness transaction={transaction} />
+        </PendingTxnsContextProvider>
+      </SWRConfig>
+    );
+    const watcher = watchers.get("original")!;
+
+    mocks.chain.networkId = SOLANA_NETWORK_ID;
+    view.rerender(
+      <SWRConfig value={swrConfig}>
+        <PendingTxnsContextProvider>
+          <Harness transaction={transaction} />
+        </PendingTxnsContextProvider>
+      </SWRConfig>
+    );
+    mocks.chain.networkId = 43114;
+    view.rerender(
+      <SWRConfig value={swrConfig}>
+        <PendingTxnsContextProvider>
+          <Harness transaction={transaction} />
+        </PendingTxnsContextProvider>
+      </SWRConfig>
+    );
+
+    await act(async () => {
+      watcher.params.onReplaced?.({
+        reason: "repriced",
+        transactionReceipt: { transactionHash: "replacement", status: "success" },
+      } as ReplacementReturnType);
+    });
+
+    expect(transaction.onReplaced).toHaveBeenCalledWith("replacement");
+    expect(context.pendingTxns[0].hash).toBe("replacement");
+  });
+
   it("ignores replacement callbacks after the provider unmounts", async () => {
     const transaction = mount();
     cleanup();
@@ -252,7 +296,7 @@ describe("pending wallet transaction replacements", () => {
 
   it("does not restore a cancelled transaction when an older receipt poll completes", async () => {
     mount();
-    const other = { hash: "other", message: "Other" };
+    const other = { hash: "other", chainId: 43114, message: "Other" };
     act(() => context.setPendingTxns((txns) => [...txns, other]));
     let resolveOriginal: (receipt: null) => void;
     mocks.getReceipt.mockImplementation((hash) =>
@@ -266,7 +310,7 @@ describe("pending wallet transaction replacements", () => {
       vi.advanceTimersByTime(2000);
     });
     await replace("cancelled");
-    const newer = { hash: "newer", message: "Newer" };
+    const newer = { hash: "newer", chainId: 43114, message: "Newer" };
     act(() => context.setPendingTxns((txns) => [...txns, newer]));
     await act(async () => {
       resolveOriginal(null);

@@ -1265,6 +1265,10 @@ msgstr "金库和池中的 TVL"
 msgid "GMX on Solana"
 msgstr "Solana 上的 GMX"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "您邀请的交易者产生的交易量"
@@ -1387,6 +1391,10 @@ msgstr "存入已完成"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "编辑止盈：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1665,6 @@ msgstr "日期"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3281,6 +3288,10 @@ msgstr "由我们的社区驱动"
 msgid "Choose:"
 msgstr "请选择："
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "解除质押 GMX 和 esGMX"
@@ -3330,6 +3341,10 @@ msgstr "排名"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 订单为"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -6775,6 +6790,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "忽略 UI 标志启用代币 Permit"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "您的钱包中没有资产"
 
@@ -7342,7 +7358,6 @@ msgstr "分割份数"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "编辑 Limit Increase：{suffix}"
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "暂无未完成订单"
@@ -8139,6 +8154,7 @@ msgstr "确保可用流动性。"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8808,7 +8824,6 @@ msgstr "当前影响：{0}。建议添加 0.30% 缓冲，以获得更好的订�
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "输入推荐码以获得交易手续费折扣。<0/>根据推荐等级，所有<1/>开仓和平仓手续费最高可节省 10%。"
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9731,10 +9746,6 @@ msgstr "扣除费用后保证金较低。请存入更多资金以降低清算风
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solana 上的交易功能即将推出。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11883,6 +11894,10 @@ msgstr "池余额"
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "最高可获得 GMX 交易费用的 25%，直接支付给您"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr "WETH-USDC 池流动性不足。选择其他池将创建新仓位。"
@@ -12014,6 +12029,10 @@ msgstr "发送方已从 GLP 归属期金库中提取所有代币"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 从单个市场赚取费用。GLV 持有多个 GM 代币，并在相关市场间自动再平衡。两者均自动复利回报。选择 GM 获得单一市场敞口，或选择 GLV 在多个池之间分散投资。"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -13799,6 +13818,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "最小仓位规模"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"

@@ -1265,6 +1265,10 @@ msgstr "TVL в хранилищах и пулах"
 msgid "GMX on Solana"
 msgstr "GMX в сети Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Объём торгов привлечённых вами трейдеров"
@@ -1387,6 +1391,10 @@ msgstr "Депозит завершён"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Изменить тейк-профит: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1657,7 +1665,6 @@ msgstr "ДАТА"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -3281,6 +3288,10 @@ msgstr "Развивается благодаря нашему сообщест�
 msgid "Choose:"
 msgstr "Выберите:"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "Вывести из стейкинга GMX и esGMX"
@@ -3330,6 +3341,10 @@ msgstr "РАНГ"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} ордер {0} для"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -6775,6 +6790,7 @@ msgid "Enable token permits regardless of UI flags"
 msgstr "Включить permit для токенов независимо от UI-флагов"
 
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 msgid "No assets in your wallet"
 msgstr "В вашем кошельке нет активов"
 
@@ -7342,7 +7358,6 @@ msgstr "Количество частей"
 msgid "Edit Limit Increase: {suffix}"
 msgstr "Изменить Limit Increase: {suffix}"
 
-#: src/components/OrderList/OrderList.tsx
 #: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Нет открытых ордеров"
@@ -8139,6 +8154,7 @@ msgstr "Обеспечивает доступную ликвидность."
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
@@ -8808,7 +8824,6 @@ msgstr "Текущее влияние: {0}. Добавьте буфер 0.30% д
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Введите реферальный код, чтобы получить скидку на торговую комиссию.<0/> В зависимости от уровня реферальной программы вы можете экономить до 10% на всех комиссиях<1/> за открытие и закрытие позиций."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9731,10 +9746,6 @@ msgstr "Низкая маржа после вычета комиссий. Вне
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Получать {profitTokenSymbol} и {collateralTokenSymbol} отдельно"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Торговля на Solana скоро станет доступна."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -11883,6 +11894,10 @@ msgstr "БАЛАНС ПУЛА"
 msgid "Up to 25% of GMX trading fees, paid directly to you"
 msgstr "До 25% торговых комиссий GMX — напрямую вам"
 
+#: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+msgid "Unable to load wallet balances"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr "Недостаточная ликвидность в пуле WETH-USDC. Выбор другого пула создаст новую позицию."
@@ -12014,6 +12029,10 @@ msgstr "Отправитель вывел все токены из хранил�
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -13799,6 +13818,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "Мин. размер позиции"
+
+#: src/pages/RpcDebug/parts.tsx
+msgid "SLOT"
+msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"
