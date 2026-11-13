@@ -1,12 +1,13 @@
 import {
   capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
+  getPositionFee,
   getPriceImpactForPosition,
 } from "utils/fees";
 import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { PRECISION, applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
+import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
 import {
@@ -150,19 +151,21 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
     }
   }
 
-  if (marketInfo.tradeMath === "gmsol") {
-    discountAmount = applyFactor(
-      closingFeeAmount,
-      feeDiscountFactor === undefined
-        ? 0n
-        : feeDiscountFactor < 0n
-          ? 0n
-          : feeDiscountFactor > PRECISION
-            ? PRECISION
-            : feeDiscountFactor
-    );
-  }
   closingFeeAmount -= discountAmount;
+
+  if (marketInfo.tradeMath === "gmsol") {
+    const { positionFeeUsd } = getPositionFee(
+      marketInfo,
+      sizeInUsd,
+      balanceWasImproved,
+      undefined,
+      undefined,
+      undefined,
+      feeDiscountFactor
+    );
+    closingFeeAmount =
+      convertToTokenAmount(positionFeeUsd, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n;
+  }
 
   const closingCostUsd = convertToUsd(closingFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
 

@@ -2,7 +2,14 @@ import { maxUint256 } from "viem";
 
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { bigMath } from "utils/bigmath";
-import { applySwapImpactWithCap, getNextPoolAmountsParams, getPriceImpactForSwap, getSwapFee } from "utils/fees";
+import {
+  applySwapImpactWithCap,
+  getNextPoolAmountsParams,
+  getPriceImpactForSwap,
+  getSwapFee,
+  GmsolPriceImpactError,
+} from "utils/fees";
+import { getGmsolMidPrice } from "utils/gmsol";
 import {
   getAvailableUsdLiquidityForCollateral,
   getMarketPnl,
@@ -239,10 +246,16 @@ export function getSwapStats(p: {
   let balanceWasImproved: boolean;
 
   try {
-    const priceImpactValues = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, usdIn, usdIn * -1n);
+    const impactUsd =
+      marketInfo.tradeMath === "gmsol" ? convertToUsd(amountIn, tokenIn.decimals, getGmsolMidPrice(tokenIn))! : usdIn;
+    const priceImpactValues = getPriceImpactForSwap(marketInfo, tokenIn, tokenOut, impactUsd, -impactUsd);
     priceImpactDeltaUsd = priceImpactValues.priceImpactDeltaUsd;
     balanceWasImproved = priceImpactValues.balanceWasImproved;
   } catch (e) {
+    if (e instanceof GmsolPriceImpactError) {
+      throw e;
+    }
+
     // Approximate if the market would be out of capacity
     const capacityUsd = getSwapCapacityUsd(marketInfo, isFromLongToShort);
     const swapFeeUsd = getSwapFee(marketInfo, usdIn, false, swapPricingType);

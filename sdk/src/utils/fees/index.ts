@@ -52,7 +52,14 @@ export function getPositionFee(
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
   if (marketInfo.tradeMath === "gmsol") {
-    const discountUsd = applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n)));
+    const nativeUsdPrecisionScale = 10n ** 10n;
+    positionFeeUsd = bigMath.mulDiv(positionFeeUsd, 1n, nativeUsdPrecisionScale) * nativeUsdPrecisionScale;
+    const discountUsd =
+      bigMath.mulDiv(
+        applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n))),
+        1n,
+        nativeUsdPrecisionScale
+      ) * nativeUsdPrecisionScale;
     return { positionFeeUsd: positionFeeUsd - discountUsd, discountUsd, totalRebateUsd: 0n, uiFeeUsd: 0n };
   }
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);

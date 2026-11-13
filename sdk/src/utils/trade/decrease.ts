@@ -1,5 +1,6 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getPositionFee } from "utils/fees";
 import { getMarketInfoWithOpenInterestDelta, getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
@@ -87,7 +88,7 @@ export function getDecreasePositionAmounts(p: {
     collateralToken,
     isLong,
     position,
-    closeSizeUsd,
+    closeSizeUsd: requestedCloseSizeUsd,
     keepLeverage,
     triggerPrice,
     fixedAcceptablePriceImpactBps,
@@ -113,6 +114,9 @@ export function getDecreasePositionAmounts(p: {
       ? p.marketInfo.minPositionSizeUsd ?? suppliedMinPositionSizeUsd
       : suppliedMinPositionSizeUsd;
   const uiFeeFactor = p.marketInfo.tradeMath === "gmsol" ? 0n : suppliedUiFeeFactor;
+
+  const closeSizeUsd =
+    marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(requestedCloseSizeUsd) : requestedCloseSizeUsd;
 
   const { indexToken } = marketInfo;
   const receiveToken = receiveTokenArg ?? collateralToken;
@@ -315,6 +319,16 @@ export function getDecreasePositionAmounts(p: {
   if (values.totalPendingImpactDeltaUsd > 0) {
     profitUsd = profitUsd + values.totalPendingImpactDeltaUsd;
   }
+  if (marketInfo.tradeMath === "gmsol" && profitUsd > 0n) {
+    const settledProfitAmount =
+      convertToTokenAmount(bigMath.max(values.realizedPnl, 0n), pnlToken.decimals, pnlToken.prices.maxPrice)! +
+      convertToTokenAmount(
+        bigMath.max(values.totalPendingImpactDeltaUsd, 0n),
+        pnlToken.decimals,
+        pnlToken.prices.maxPrice
+      )!;
+    profitUsd = convertToUsd(settledProfitAmount, pnlToken.decimals, pnlToken.prices.maxPrice)!;
+  }
   const profitAmount = isMarketDecrease
     ? getMarketProfitAmountInCollateralToken({
         profitUsd,
@@ -408,19 +422,22 @@ export function getDecreasePositionAmounts(p: {
       isProfitSwapReverted,
     });
 
+  const costAmount =
+    marketInfo.tradeMath === "gmsol"
+      ? getGmsolDecreaseCostAmount({ values, fundingFeeAmount: position.fundingFeeAmount, collateralToken })
+      : convertToTokenAmount(totalFeesUsd, collateralToken.decimals, values.collateralPrice)!;
+
   const payedInfo = isProfitKeptInPnlToken
     ? payForCollateralCostBeforePnlTokenProfit({
-        initialCostUsd: totalFeesUsd + (marketInfo.tradeMath === "gmsol" ? values.priceImpactDiffUsd : 0n),
+        costAmount,
         profitUsd,
         pnlToken,
         collateralToken,
         collateralPrice: values.collateralPrice,
         remainingCollateralAmount: position.collateralAmount,
       })
-    : payForCollateralCost({
-        initialCostUsd: totalFeesUsd + (marketInfo.tradeMath === "gmsol" ? values.priceImpactDiffUsd : 0n),
-        collateralToken,
-        collateralPrice: values.collateralPrice,
+    : payForCollateralCostAmount({
+        costAmount,
         outputAmount: profitAmount,
         remainingCollateralAmount: position.collateralAmount,
       });
@@ -894,20 +911,39 @@ export function getCollateralDeltaAmountAfterPriceImpactDiff(p: {
   return collateralDeltaAmount > priceImpactDiffAmount ? collateralDeltaAmount - priceImpactDiffAmount : 0n;
 }
 
+function getGmsolDecreaseCostAmount(p: {
+  values: DecreasePositionAmounts;
+  fundingFeeAmount: bigint;
+  collateralToken: TokenData;
+}) {
+  const { values, fundingFeeAmount, collateralToken } = p;
+  const getAmount = (usd: bigint) => convertToTokenAmount(usd, collateralToken.decimals, values.collateralPrice)!;
+  const getRoundedUpAmount = (usd: bigint) =>
+    usd > 0n ? roundUpDivision(usd * expandDecimals(1, collateralToken.decimals), values.collateralPrice) : 0n;
+
+  return (
+    fundingFeeAmount +
+    getRoundedUpAmount(-values.realizedPnl) +
+    getAmount(values.positionFeeUsd) +
+    getAmount(values.borrowingFeeUsd) +
+    getAmount(values.swapProfitFeeUsd) +
+    getRoundedUpAmount(-values.totalPendingImpactDeltaUsd) +
+    getRoundedUpAmount(values.priceImpactDiffUsd)
+  );
+}
+
 function payForCollateralCostBeforePnlTokenProfit(p: {
-  initialCostUsd: bigint;
+  costAmount: bigint;
   profitUsd: bigint;
   pnlToken: TokenData;
   collateralToken: TokenData;
   collateralPrice: bigint;
   remainingCollateralAmount: bigint;
 }) {
-  const { initialCostUsd, profitUsd, pnlToken, collateralToken, collateralPrice, remainingCollateralAmount } = p;
+  const { costAmount, profitUsd, pnlToken, collateralToken, collateralPrice, remainingCollateralAmount } = p;
 
-  const collateralPayedInfo = payForCollateralCost({
-    initialCostUsd,
-    collateralToken,
-    collateralPrice,
+  const collateralPayedInfo = payForCollateralCostAmount({
+    costAmount,
     outputAmount: 0n,
     remainingCollateralAmount,
   });
@@ -942,6 +978,20 @@ export function payForCollateralCost(p: {
 }) {
   const { initialCostUsd, collateralToken, collateralPrice, outputAmount, remainingCollateralAmount } = p;
 
+  return payForCollateralCostAmount({
+    costAmount: convertToTokenAmount(initialCostUsd, collateralToken.decimals, collateralPrice)!,
+    outputAmount,
+    remainingCollateralAmount,
+  });
+}
+
+function payForCollateralCostAmount(p: {
+  costAmount: bigint;
+  outputAmount: bigint;
+  remainingCollateralAmount: bigint;
+}) {
+  const { costAmount, outputAmount, remainingCollateralAmount } = p;
+
   const values = {
     outputAmount: BigInt(outputAmount),
     remainingCollateralAmount: BigInt(remainingCollateralAmount),
@@ -950,7 +1000,7 @@ export function payForCollateralCost(p: {
     unpaidCostAmount: 0n,
   };
 
-  let remainingCostAmount = convertToTokenAmount(initialCostUsd, collateralToken.decimals, collateralPrice)!;
+  let remainingCostAmount = costAmount;
 
   if (remainingCostAmount == 0n) {
     return values;

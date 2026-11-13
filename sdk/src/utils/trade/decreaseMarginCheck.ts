@@ -142,8 +142,13 @@ export function getDecreaseResultingPositionMarginState(
     estimatedRemainingCollateralUsd >= 0n && estimatedRemainingCollateralUsd >= minCollateralUsdForOpenInterest;
 
   let isCollateralWithdrawalCancelled = false;
+  const isBelowMinCollateralUsd = estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd;
 
-  if (!willCollateralBeSufficient || estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd) {
+  if (
+    !willCollateralBeSufficient ||
+    // gmsol cancels the withdrawal only for leverage, a partial close below its dollar minimum closes in full
+    (isBelowMinCollateralUsd && (p.marketInfo.tradeMath !== "gmsol" || sizeDeltaUsd === 0n))
+  ) {
     if (sizeDeltaUsd === 0n) {
       return {
         isLiquidatable: true,

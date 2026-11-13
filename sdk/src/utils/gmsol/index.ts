@@ -2,6 +2,17 @@ import { bigMath } from "utils/bigmath";
 import { expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import type { TokenData } from "utils/tokens/types";
 
+export const GMSOL_PRECISION_SCALE = 10n ** 10n;
+
+export function getGmsolUsdAmount(value: bigint): bigint {
+  return bigMath.mulDiv(value, 1n, GMSOL_PRECISION_SCALE) * GMSOL_PRECISION_SCALE;
+}
+
+export function getGmsolMidPrice(token: TokenData): bigint {
+  const scale = expandDecimals(1, token.decimals) * GMSOL_PRECISION_SCALE;
+  return bigMath.mulDiv(token.prices.minPrice + token.prices.maxPrice, 1n, 2n * scale) * scale;
+}
+
 /** Data-only opt-in, also usable by gmx-api without a selected network. */
 export type GmsolMarketConfig = {
   tradeMath?: "gmsol";

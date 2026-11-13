@@ -10,7 +10,7 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
-import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
+import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
@@ -508,7 +508,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       collateralPrice: values.collateralPrice,
       swapPathStatsAtEvaluationPrice,
     });
-    const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
+    const requestedBaseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
+    const baseSizeDeltaUsd =
+      marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(requestedBaseSizeDeltaUsd) : requestedBaseSizeDeltaUsd;
     const baseSizeDeltaInTokens = convertToTokenAmountForIncrease(
       baseSizeDeltaUsd,
       indexToken.decimals,
@@ -541,6 +543,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       leverage,
       BASIS_POINTS_DIVISOR_BIGINT
     );
+    if (marketInfo.tradeMath === "gmsol") {
+      values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+    }
 
     if (values.sizeDeltaUsd <= 0n) {
       return values;
@@ -591,6 +596,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.estimatedLeverage = leverage;
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
+    if (marketInfo.tradeMath === "gmsol") {
+      values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+    }
 
     const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
       values.sizeDeltaUsd,
@@ -738,6 +746,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     if (indexTokenAmount !== undefined && indexTokenAmount > 0) {
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
+      if (marketInfo.tradeMath === "gmsol") {
+        values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+      }
 
       const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
         values.sizeDeltaUsd,
