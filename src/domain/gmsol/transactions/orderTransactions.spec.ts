@@ -25,10 +25,10 @@ import { copySolanaBytes } from "lib/solana/bytes";
 import { mockMarginCheckMarketInfo, mockTokensData } from "sdk/test/mock";
 import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
-import { getPendingGmsolSubmission, reconcileGmsolSubmission } from "./pendingSubmission";
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
+import { getPendingGmsolSubmission, reconcileGmsolSubmission } from "./pendingSubmission";
 import {
   GmsolTransactionError,
   prepareGmsolOrderTransactions,
