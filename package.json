@@ -50,7 +50,8 @@
     "test:regression:funded:unit": "tsx --tsconfig autotests/regression/funded/tsconfig.json --test --test-concurrency=3 autotests/regression/funded/*.test.ts",
     "test:regression:funded:list": "TSX_TSCONFIG_PATH=autotests/regression/funded/tsconfig.json node --import tsx autotests/regression/funded/cli.ts list --group all",
     "test:regression:funded:types": "tsc -p autotests/regression/funded/tsconfig.json",
-    "build:gmsol-sdk": "vite build --config vite.gmsol.config.ts"
+    "build:gmsol-sdk": "vite build --config vite.gmsol.config.ts",
+    "build:gmsol-sdk:source": "node scripts/build-gmsol-sdk.mjs"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -58,7 +59,7 @@
     "@davatar/react": "1.8.1",
     "@floating-ui/dom": "1.6.7",
     "@floating-ui/react": "0.26.19",
-    "@gmsol-labs/gmsol-sdk": "0.9.0-test.2",
+    "@gmsol-labs/gmsol-sdk": "file:vendor/gmsol-sdk",
     "@headlessui/react": "1.7.19",
     "@intercom/messenger-js-sdk": "0.0.18",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",

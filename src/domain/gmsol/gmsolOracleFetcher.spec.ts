@@ -28,6 +28,7 @@ const ARB_BTC_SYNTH = {
 const ARB_USDC = { tokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", price: "999802621509980600000000" };
 // Arbitrum NEAR is a 24-decimal synthetic while the Solana NEAR mint has 9 decimals.
 const ARB_NEAR = { tokenAddress: "0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C", price: "2451200" };
+const UPDATED_AT = 1_762_000_000_123;
 
 function ticker(p: { tokenAddress: string; price: string }): TickersResponse[number] {
   return {
@@ -36,7 +37,7 @@ function ticker(p: { tokenAddress: string; price: string }): TickersResponse[num
     minPrice: p.price,
     maxPrice: p.price,
     oracleDecimals: 0,
-    updatedAt: 0,
+    updatedAt: UPDATED_AT,
   };
 }
 
@@ -92,7 +93,8 @@ describe("GmsolOracleFetcher.fetchPrices", () => {
           address,
           min: toCents(prices[address]?.minPrice),
           max: toCents(prices[address]?.maxPrice),
-        }).toEqual({ name, address, min: cents, max: cents });
+          updatedAt: prices[address]?.updatedAt,
+        }).toEqual({ name, address, min: cents, max: cents, updatedAt: cents === undefined ? undefined : UPDATED_AT });
       }
     }
   });

@@ -5,6 +5,7 @@ import path from "node:path";
 import { defineConfig } from "vite";
 
 import { GMSOL_SDK_ASSET_PATH, GMSOL_SDK_WASM_SHA256 } from "./src/config/gmsol/sdk";
+import sdkBuild from "./vendor/gmsol-sdk/build.json";
 
 const require = createRequire(import.meta.url);
 
@@ -15,9 +16,15 @@ export default defineConfig({
     {
       name: "gmsol-sdk-wasm-integrity",
       buildStart() {
-        const wasm = readFileSync(require.resolve("@gmsol-labs/gmsol-sdk/index_bg.wasm"));
-        if (createHash("sha256").update(wasm).digest("hex") !== GMSOL_SDK_WASM_SHA256) {
-          this.error("The gmsol SDK WASM does not match the approved production binary.");
+        if (sdkBuild.files["index_bg.wasm"] !== GMSOL_SDK_WASM_SHA256) {
+          this.error("The gmsol SDK build manifest does not match the approved WASM hash.");
+        }
+        const sdkDir = path.dirname(require.resolve("@gmsol-labs/gmsol-sdk/package.json"));
+        for (const [file, hash] of Object.entries(sdkBuild.files)) {
+          const bytes = readFileSync(path.join(sdkDir, file));
+          if (createHash("sha256").update(bytes).digest("hex") !== hash) {
+            this.error(`The gmsol SDK ${file} does not match the approved GMX build.`);
+          }
         }
       },
     },

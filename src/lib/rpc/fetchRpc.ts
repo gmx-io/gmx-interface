@@ -1,4 +1,20 @@
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
+
 type RequestPriority = "high" | "low" | "auto";
+
+// chainId stays the settlement chain while Solana is selected, so every EVM client has to stop here.
+// The error is shaped like an aborted fetch, the same for every client.
+export function assertEvmRpcActive() {
+  if (getIsSolanaNetworkSelected()) {
+    throw new DOMException("EVM RPC paused while Solana is selected", "AbortError");
+  }
+}
+
+export async function fetchEvmRpc(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  assertEvmRpcActive();
+
+  return fetch(input, init);
+}
 
 export async function fetchEthCall({
   url,
@@ -15,7 +31,7 @@ export async function fetchEthCall({
   signal?: AbortSignal;
   priority?: RequestPriority;
 }) {
-  const response = await fetch(url, {
+  const response = await fetchEvmRpc(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,7 +74,7 @@ export async function fetchBlockNumber({
   signal?: AbortSignal;
   priority?: RequestPriority;
 }): Promise<{ blockNumber: number }> {
-  const response = await fetch(url, {
+  const response = await fetchEvmRpc(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
