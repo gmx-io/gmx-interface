@@ -9,7 +9,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useProDiscountFactor,
-  useFeeDiscountFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -40,7 +39,6 @@ import {
   selectOrderEditorIsRemainingPositionAboveMaxLeverage,
   selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
-  selectOrderEditorMarkRatioInputValue,
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
@@ -49,7 +47,6 @@ import {
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
-  selectOrderEditorIsQuoteUnavailable,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
@@ -57,7 +54,6 @@ import {
   selectOrderEditorSetDefaultAllowedSwapSlippageBps,
   selectOrderEditorSetSelectedAllowedSwapSlippageBps,
   selectOrderEditorSizeDeltaUsd,
-  selectOrderEditorSwapTriggerPrice,
   selectOrderEditorTotalSwapImpactBps,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
@@ -147,13 +143,7 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import {
-  TooltipAction,
-  TooltipContent,
-  TooltipReadMore,
-  TooltipRow,
-  TooltipText,
-} from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipRow, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -196,16 +186,13 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
-  const isQuoteUnavailable = useSelector(selectOrderEditorIsQuoteUnavailable);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
   const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
-  const markRatioInputValue = useSelector(selectOrderEditorMarkRatioInputValue);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
-  const swapTriggerPrice = useSelector(selectOrderEditorSwapTriggerPrice);
   const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
 
   const market = useMarketInfo(p.order.marketAddress);
@@ -326,7 +313,6 @@ export function OrderEditor(p: Props) {
 
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useProDiscountFactor();
-  const feeDiscountFactor = useFeeDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -343,7 +329,7 @@ export function OrderEditor(p: Props) {
   const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
-  const { minCollateralUsd } = usePositionsConstants(p.order.marketAddress);
+  const { minCollateralUsd } = usePositionsConstants();
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
@@ -403,7 +389,6 @@ export function OrderEditor(p: Props) {
       uiFeeFactor: positionOrder.uiFeeFactor ?? uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
-      feeDiscountFactor,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
       externalSwapQuote: undefined,
@@ -433,7 +418,6 @@ export function OrderEditor(p: Props) {
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
-    feeDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,
@@ -460,8 +444,6 @@ export function OrderEditor(p: Props) {
   }, [maxLeverageIncrease, setSizeInputValue]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    if (isQuoteUnavailable) return undefined;
-
     if (!signer || !tokensData || !marketsInfoData) {
       return undefined;
     }
@@ -476,7 +458,7 @@ export function OrderEditor(p: Props) {
             orderKey: p.order.key,
             orderType: p.order.orderType,
             sizeDeltaUsd: 0n,
-            triggerPrice: swapTriggerPrice ?? p.order.triggerPrice,
+            triggerPrice: triggerRatio?.ratio ?? p.order.triggerPrice,
             acceptablePrice: 0n,
             minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
             autoCancel: p.order.autoCancel,
@@ -526,7 +508,6 @@ export function OrderEditor(p: Props) {
       };
     }
   }, [
-    isQuoteUnavailable,
     signer,
     tokensData,
     executionFee?.gasLimit,
@@ -535,7 +516,7 @@ export function OrderEditor(p: Props) {
     existingPosition,
     isMarginDeposit,
     isTriggerDecrease,
-    swapTriggerPrice,
+    triggerRatio?.ratio,
     triggerPrice,
     chainId,
     sizeDeltaUsd,
@@ -546,12 +527,7 @@ export function OrderEditor(p: Props) {
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const {
-    expressParams,
-    expressParamsPromise,
-    isLoading: isExpressLoading,
-    isMultichainSubmitDisabled,
-  } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -779,7 +755,9 @@ export function OrderEditor(p: Props) {
               )}
             </TooltipText>
             {setMaxLeverageAction}
-            <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
+            <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+              <Trans>Read more</Trans>
+            </TooltipLink>
           </TooltipContent>
         ),
         disabled: true,
@@ -805,7 +783,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    if (isExpressLoading || isMultichainSubmitDisabled) {
+    if (isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -846,7 +824,6 @@ export function OrderEditor(p: Props) {
     hasAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
-    isExpressLoading,
     isMultichainSubmitDisabled,
   ]);
 
@@ -870,7 +847,7 @@ export function OrderEditor(p: Props) {
         const ratio = (p.order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
         if (ratio) {
-          setTriggerRatioInputValue(formatAmountFree(ratio.ratio, USD_DECIMALS));
+          setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
         }
 
         if (isLimitSwapOrderType(p.order.orderType)) {
@@ -1100,15 +1077,13 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
-              {markRatio && (
+              {triggerRatio && (
                 <BuyInputSection
                   topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
-                  topRightValue={formatAmount(markRatio.ratio, USD_DECIMALS, 4)}
+                  topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
-                    if (markRatioInputValue !== undefined) {
-                      setTriggerRatioInputValue(markRatioInputValue);
-                    }
+                    setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
                   }}
                   inputValue={triggerRatioInputValue}
                   onInputValueChange={(e) => {
@@ -1117,7 +1092,7 @@ export function OrderEditor(p: Props) {
                   maxDecimals={USD_DECIMALS}
                 >
                   <Trans>
-                    {markRatio.smallestToken.symbol} per {markRatio.largestToken.symbol}
+                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
                   </Trans>
                 </BuyInputSection>
               )}

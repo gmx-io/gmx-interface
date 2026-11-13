@@ -17,7 +17,6 @@ import {
   DecreasePositionOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
-import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
 
 import { FULL_POSITION_CLOSE_SIZE_DELTA_USD } from "./utils";
 
@@ -49,7 +48,9 @@ export type TpSlInputPositionData = {
   sizeInUsd: bigint;
   sizeInTokens: bigint;
   collateralUsd: bigint;
-  collateralAmountInIndexTokens?: bigint;
+  collateralAmount?: bigint;
+  collateralTokenDecimals?: number;
+  isCollateralTokenEquivalentToIndex?: boolean;
   entryPrice: bigint;
   referencePrice?: bigint;
   liquidationPrice?: bigint;
@@ -64,9 +65,9 @@ export function buildTpSlInputPositionData(p: {
     "sizeInUsd" | "sizeInTokens" | "collateralUsd" | "collateralAmount" | "entryPrice" | "liquidationPrice" | "isLong"
   >;
   collateralUsd?: bigint;
-  collateralToken?: TokenData;
-  indexToken?: TokenData;
   indexTokenDecimals: number;
+  collateralTokenDecimals?: number;
+  isCollateralTokenEquivalentToIndex?: boolean;
   visualMultiplier?: number;
   referencePrice?: bigint;
 }): TpSlInputPositionData | undefined {
@@ -78,15 +79,9 @@ export function buildTpSlInputPositionData(p: {
     sizeInUsd: p.position.sizeInUsd ?? 0n,
     sizeInTokens: p.position.sizeInTokens ?? 0n,
     collateralUsd: p.collateralUsd ?? p.position.collateralUsd ?? 0n,
-    collateralAmountInIndexTokens:
-      p.collateralToken && p.indexToken
-        ? getCollateralAmountInIndexTokens({
-            collateralToken: p.collateralToken,
-            indexToken: p.indexToken,
-            collateralAmount: p.position.collateralAmount,
-            isLong: p.position.isLong,
-          })
-        : undefined,
+    collateralAmount: p.position.collateralAmount,
+    collateralTokenDecimals: p.collateralTokenDecimals,
+    isCollateralTokenEquivalentToIndex: p.isCollateralTokenEquivalentToIndex,
     entryPrice: p.position.entryPrice ?? 0n,
     referencePrice: p.referencePrice,
     liquidationPrice: p.position.liquidationPrice,
@@ -192,7 +187,6 @@ export function getTpSlDecreaseAmounts(p: {
   isSetAcceptablePriceImpactEnabled: boolean;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   proDiscountFactor?: bigint;
-  feeDiscountFactor?: bigint;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -226,7 +220,6 @@ export function getTpSlDecreaseAmounts(p: {
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: p.forceDecreaseSwapType,
     proDiscountFactor: p.proDiscountFactor,
-    feeDiscountFactor: p.feeDiscountFactor,
   });
 }
 
