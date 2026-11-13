@@ -15,6 +15,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { getEip6492SignatureWrapperHash, hashRelayParams, type RelayParamsPayload } from "sdk/utils/express";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
@@ -52,6 +53,7 @@ export type SignTypedDataParams = {
   verificationChainId: number;
   /** Signs without the Privy confirmation window when the embedded wallet has registered a silent signer */
   canSkipEmbeddedWalletConfirmation?: boolean;
+  relayParams?: RelayParamsPayload;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -284,7 +286,29 @@ export async function signMessage({
   );
 }
 
-export async function signTypedData({
+export async function signTypedData(params: SignTypedDataParams) {
+  const { typedData, verificationChainId, relayParams } = params;
+  const signature = await signTypedDataOnce(params);
+
+  if (!isContractsV2_2_1(verificationChainId) || getSignatureKind(signature) !== "erc6492") {
+    return signature;
+  }
+
+  if (!relayParams) {
+    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { verificationChainId } });
+  }
+
+  relayParams.eip6492SignatureWrapperHash = getEip6492SignatureWrapperHash(signature);
+  typedData.relayParams = hashRelayParams(relayParams);
+
+  helperToast.info(
+    t`This wallet is not deployed on ${getChainName(verificationChainId)} yet. Sign once more to deploy it with this action`
+  );
+
+  return signTypedDataOnce(params);
+}
+
+async function signTypedDataOnce({
   signer,
   domain,
   types,
@@ -386,11 +410,6 @@ export async function signTypedData({
       return { signature, signingChainId };
     }
   );
-
-  // 2.2.1 contracts accept an EIP-6492 signature only with its wrapper hash in the signed data, which we do not send yet
-  if (isContractsV2_2_1(verificationChainId) && getSignatureKind(firstResult.signature) === "erc6492") {
-    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { address: from, verificationChainId } });
-  }
 
   if (firstResult.signingChainId === verificationChainId) {
     return firstResult.signature;

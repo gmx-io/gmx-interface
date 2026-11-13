@@ -4,6 +4,7 @@ export * from "sdk/utils/orders/types";
 
 export type OrderError = {
   msg: ReactNode;
+  action?: ReactNode;
   key: string;
   level: "error" | "warning";
 };

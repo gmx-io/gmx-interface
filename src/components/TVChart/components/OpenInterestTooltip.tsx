@@ -6,7 +6,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatAmount } from "lib/numbers";
 
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 export function OpenInterestTooltip() {
   const info = useSelector(selectChartHeaderInfo);
@@ -52,12 +52,14 @@ export function OpenInterestTooltip() {
   }, [info]);
 
   return (
-    <div>
-      <StatsTooltipRow label={t`Long OI`} value={longOIFormatted} showDollar={false} />
-      <StatsTooltipRow label={t`Short OI`} value={shortOIFormatted} showDollar={false} />
-      <div className="mt-4">
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow label={t`Long OI`} value={longOIFormatted} />
+        <TooltipRow label={t`Short OI`} value={shortOIFormatted} />
+      </TooltipRows>
+      <TooltipFootnote>
         <Trans>Total open interest in tokens and notional value in USD</Trans>
-      </div>
-    </div>
+      </TooltipFootnote>
+    </TooltipContent>
   );
 }

@@ -1,4 +1,5 @@
 export const TOAST_AUTO_CLOSE_TIME = 7000;
+export const DEBUG_ORDER_TOAST_AUTO_CLOSE_TIME = 60_000;
 export const WS_LOST_FOCUS_TIMEOUT = 60_000;
 export const TRADE_LOST_FOCUS_TIMEOUT = 15_000;
 
@@ -12,6 +13,14 @@ export const DEFAULT_TOOLTIP_POSITION = "bottom-start";
 
 export const TOOLTIP_OPEN_DELAY = 100; // ms
 export const TOOLTIP_CLOSE_DELAY = 100; // ms
+
+export const TOOLTIP_STANDARD_OPEN_DELAY = 150; // ms
+export const TOOLTIP_GROUP_TIMEOUT = 300; // ms
+export const TOOLTIP_ENTER_DURATION = 150; // ms
+export const TOOLTIP_EXIT_DURATION = 120; // ms
+export const TOOLTIP_ENTER_SCALE = 0.96;
+export const TOOLTIP_ENTER_OFFSET = 4; // px
+export const TOOLTIP_EASING = "cubic-bezier(0.23, 1, 0.32, 1)";
 
 export const GMX_PRICE_DECIMALS = 2;
 

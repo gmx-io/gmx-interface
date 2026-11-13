@@ -2,30 +2,30 @@ import { Trans } from "@lingui/macro";
 
 import { DOCS_LINKS } from "config/links";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-
-import "./NetFeeHeaderTooltipContent.scss";
+import { TooltipContent, TooltipLink, TooltipText, TooltipTitledText } from "components/Tooltip/TooltipBlocks";
 
 export function renderNetFeeHeaderTooltipContent() {
   return (
-    <div className="NetFeeHeaderTooltipContent-netfee-header-tooltip">
-      <Trans>
-        Net rate = funding + borrowing fees.
-        <br />
-        <br />
-        Funding: Balances longs vs shorts, paid between traders.{" "}
-        <ExternalLink newTab href={DOCS_LINKS.fundingFees}>
-          Read more
-        </ExternalLink>
-        {"."}
-        <br />
-        <br />
-        Borrowing: Ensures available liquidity.{" "}
-        <ExternalLink newTab href={DOCS_LINKS.borrowingFees}>
-          Read more
-        </ExternalLink>
-        {"."}
-      </Trans>
-    </div>
+    <TooltipContent>
+      <TooltipText>
+        <Trans>Net rate = funding + borrowing fees.</Trans>
+      </TooltipText>
+      <div className="flex flex-col gap-2">
+        <TooltipTitledText title={<Trans>Funding</Trans>}>
+          <Trans>Balances longs vs shorts, paid between traders.</Trans>
+        </TooltipTitledText>
+        <TooltipLink href={DOCS_LINKS.fundingFees}>
+          <Trans>Read more</Trans>
+        </TooltipLink>
+      </div>
+      <div className="flex flex-col gap-2">
+        <TooltipTitledText title={<Trans>Borrowing</Trans>}>
+          <Trans>Ensures available liquidity.</Trans>
+        </TooltipTitledText>
+        <TooltipLink href={DOCS_LINKS.borrowingFees}>
+          <Trans>Read more</Trans>
+        </TooltipLink>
+      </div>
+    </TooltipContent>
   );
 }
