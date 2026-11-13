@@ -464,12 +464,6 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
   cursor: default;
 }
 
-.Tooltip-handle--standard .Tooltip-underline line {
-  stroke: #a0a3c4;
-  stroke-width: 1;
-  transform: translateY(0.5px);
-}
-
 .Tooltip-popup--standard a {
   color: inherit;
   text-decoration: underline;

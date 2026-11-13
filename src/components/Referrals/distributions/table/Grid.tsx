@@ -1,14 +1,17 @@
 import cx from "classnames";
 import { PropsWithChildren } from "react";
 
-type GridRowProps = PropsWithChildren<{ className?: string; onClick?: () => void }>;
+import "components/Table/Table.scss";
+
+type GridRowProps = PropsWithChildren<{ className?: string; onClick?: () => void; hoverable?: boolean }>;
 type GridCellProps = PropsWithChildren<{ className?: string }>;
 
-export function GridRow({ children, className, onClick }: GridRowProps) {
+export function GridRow({ children, className, onClick, hoverable = true }: GridRowProps) {
   return (
     <div
       role="row"
-      className={cx("group/row col-span-full grid grid-cols-subgrid", className, {
+      className={cx("TableTr col-span-full grid grid-cols-subgrid", className, {
+        TableTr_hoverable: hoverable,
         "cursor-pointer": !!onClick,
       })}
       onClick={onClick}
@@ -23,9 +26,8 @@ export function GridCell({ children, className }: GridCellProps) {
     <div
       role="cell"
       className={cx(
-        "text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
-        "bg-fill-surfaceElevated50 px-4 py-8 first-of-type:rounded-l-8 first-of-type:pl-adaptive last-of-type:rounded-r-8 last-of-type:pr-adaptive",
-        "group-hover/row:bg-fill-surfaceHover",
+        "text-body-medium last-of-type:[&:not(:first-of-type)]:text-right",
+        "px-4 py-16 first-of-type:pl-adaptive last-of-type:pr-adaptive",
         className
       )}
     >
@@ -39,7 +41,7 @@ export function GridHeaderCell({ children, className }: GridCellProps) {
     <div
       role="columnheader"
       className={cx(
-        "text-caption text-left last-of-type:text-right",
+        "TableTh text-caption whitespace-nowrap text-left last-of-type:text-right",
         "px-4 py-12 pb-8 first-of-type:pl-adaptive last-of-type:pr-adaptive",
         className
       )}

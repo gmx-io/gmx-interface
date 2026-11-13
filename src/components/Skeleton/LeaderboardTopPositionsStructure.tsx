@@ -9,7 +9,10 @@ export function LeaderboardTopPositionsStructure() {
         <Skeleton width={40} />
       </TableTd>
       <TableTd>
-        <Skeleton width={250} />
+        <div className="flex items-center gap-6">
+          <Skeleton circle width={20} height={20} inline className="!block" />
+          <Skeleton width={120} inline className="!block" />
+        </div>
       </TableTd>
       <TableTd>
         <Skeleton />
@@ -24,7 +27,7 @@ export function LeaderboardTopPositionsStructure() {
         <Skeleton width={100} />
       </TableTd>
       <TableTd>
-        <Skeleton width={50} />
+        <Skeleton width={40} />
       </TableTd>
       <TableTd>
         <Skeleton width={110} />

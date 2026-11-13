@@ -58,7 +58,7 @@ import Checkbox from "components/Checkbox/Checkbox";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import { SwapMarketIcons, SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
@@ -710,41 +710,60 @@ function OrderItemLarge({
         </TableTd>
       )}
       <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
-        {isSwap ? (
-          <StandardTooltip
-            handle={
-              <span className="font-medium">
-                <SwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
-              </span>
-            }
-            content={
-              <>
-                {swapPathMarketFullNames?.map((market, index) => (
-                  <span key={market.indexName}>
-                    {index > 0 && " → "}
-                    <span>{market.indexName}</span>
-                    <span className="subtext leading-1">[{market.poolName}]</span>
-                  </span>
-                ))}
-              </>
-            }
-          />
-        ) : (
-          <StandardTooltip
-            handle={<MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />}
-            content={
-              <TooltipRow
-                label={t`Market`}
-                value={
-                  <div className="flex items-center">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                  </div>
-                }
-              />
-            }
-          />
-        )}
+        {/* The icons sit before the tooltip handle, so the dotted line starts at the market name */}
+        <div className="flex items-center gap-4">
+          {isSwap ? (
+            <SwapMarketIcons fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
+          ) : (
+            <TokenIcon className="size-20" displaySize={20} symbol={tokenSymbol} />
+          )}
+          {isSwap ? (
+            <StandardTooltip
+              handle={
+                <span className="font-medium">
+                  <SwapMarketLabel
+                    fromSymbol={swapPathTokenSymbols?.at(0)}
+                    toSymbol={swapPathTokenSymbols?.at(-1)}
+                    withIcons={false}
+                  />
+                </span>
+              }
+              content={
+                <>
+                  {swapPathMarketFullNames?.map((market, index) => (
+                    <span key={market.indexName}>
+                      {index > 0 && " → "}
+                      <span>{market.indexName}</span>
+                      <span className="subtext leading-1">[{market.poolName}]</span>
+                    </span>
+                  ))}
+                </>
+              }
+            />
+          ) : (
+            <StandardTooltip
+              handle={
+                <MarketWithDirectionLabel
+                  indexName={indexName}
+                  isLong={order.isLong}
+                  tokenSymbol={tokenSymbol}
+                  withIcon={false}
+                />
+              }
+              content={
+                <TooltipRow
+                  label={t`Market`}
+                  value={
+                    <div className="flex items-center">
+                      <span>{indexName && indexName}</span>
+                      <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    </div>
+                  }
+                />
+              }
+            />
+          )}
+        </div>
       </TableTd>
       <TableTd>
         <OrderItemTypeLabel order={order} />

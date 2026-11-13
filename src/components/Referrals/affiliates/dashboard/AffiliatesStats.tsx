@@ -392,8 +392,8 @@ function ReferralCodesMobileTable({
   }, []);
 
   return (
-    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-y-4 px-4">
-      <GridRow>
+    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto]">
+      <GridRow hoverable={false}>
         <GridHeaderCell>
           <Trans>CODE</Trans>
         </GridHeaderCell>

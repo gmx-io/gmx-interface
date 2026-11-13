@@ -113,7 +113,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               currentData.map((stats) => <MarketsListDesktopItem key={stats.token.address} stats={stats} />)}
 
             {indexTokensStats.length > 0 && !currentData.length && (
-              <TableTr className="h-[64.5px]">
+              <TableTr className="h-72">
                 <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
                   <Trans>No markets found</Trans>
                 </TableTd>
