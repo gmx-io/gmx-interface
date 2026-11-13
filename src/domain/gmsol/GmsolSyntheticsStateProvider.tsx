@@ -1,8 +1,7 @@
 import { ReactNode, useMemo, useRef, useState } from "react";
 
-import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
+import { ARBITRUM } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
-import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { ChartDataProvider, SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -28,8 +27,7 @@ import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/types";
 
 import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
-import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
-import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
+import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
@@ -103,17 +101,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   });
   const tokensData = tokensDataResult.tokensData;
 
-  const sdk = useGmxSdk(SOLANA_NETWORK_ID);
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const chartDataProvider = useMemo(
-    (): ChartDataProvider | undefined =>
-      sdk && {
-        candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
-        getChartSymbol: getGmsolOracleSymbol,
-        fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
-        fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
-      },
-    [oracleFetcher, sdk]
+    (): ChartDataProvider => ({
+      candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+      fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
+      fetch24hVolumes: fetchGmsol24hVolumes,
+    }),
+    [oracleFetcher]
   );
 
   const composedMarkets = useMemo(
@@ -122,6 +117,11 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         ? composeGmsolMarkets(rawMarkets.rawMarketsInfoData, tokensData)
         : undefined,
     [rawMarkets.rawMarketsInfoData, tokensData]
+  );
+
+  const positionsConstants = useMemo(
+    () => (rawMarkets.rawMarketsInfoData ? getGmsolPositionsConstants(rawMarkets.rawMarketsInfoData) : undefined),
+    [rawMarkets.rawMarketsInfoData]
   );
 
   const isMarketsUnavailable = rawMarkets.isUnavailable || tokensDataResult.isUnavailable;
@@ -311,22 +311,15 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         markets,
         marketsInfo,
         ordersInfo,
-        positionsConstants: {
-          minCollateralUsd: undefined,
-          minPositionSizeUsd: undefined,
-          maxAutoCancelOrders: 0n,
-          claimableCollateralDelay: 0n,
-          claimableCollateralReductionFactor: 0n,
-          claimableCollateralTimeDivisor: 0n,
-        },
+        positionsConstants,
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
         positionsInfo,
         tokensDataResult,
         // gmsol charges no UI fee.
         uiFeeFactor: 0n,
         userReferralInfo: feeDiscount?.userReferralInfo,
-        proDiscountFactor: undefined,
-        feeDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
+        // The host's one combined factor (GT rank and referrer); the fee math applies the larger discount.
+        proDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
         feeDiscountError,
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,
@@ -388,6 +381,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     markets,
     marketsInfo,
     ordersInfo,
+    positionsConstants,
     positionsInfo,
     tokensDataResult,
     feeDiscount,

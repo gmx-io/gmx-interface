@@ -29,7 +29,6 @@ interface Props {
   executionFee: ExecutionFee | undefined;
   shouldDisableValidation: boolean;
   tokensData: TokensData | undefined;
-  onSent: () => void;
 }
 
 export function useShiftTransactions({
@@ -40,7 +39,6 @@ export function useShiftTransactions({
   executionFee,
   shouldDisableValidation,
   tokensData,
-  onSent,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainId = useSelector(selectChainId);
@@ -96,7 +94,6 @@ export function useShiftTransactions({
         setPendingShift,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -113,7 +110,6 @@ export function useShiftTransactions({
       blockTimestampData,
       setPendingTxns,
       setPendingShift,
-      onSent,
     ]
   );
 
