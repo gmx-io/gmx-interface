@@ -448,6 +448,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     return values;
   }
 
+  const getCollateralFeeUsd = (feeUsd: bigint) =>
+    marketInfo.tradeMath === "gmsol"
+      ? convertToUsd(
+          convertToTokenAmount(feeUsd, collateralToken.decimals, values.collateralPrice)!,
+          collateralToken.decimals,
+          values.collateralPrice
+        )!
+      : feeUsd;
+
   // Size and collateral
   if (
     strategy === "leverageByCollateral" &&
@@ -539,7 +548,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = bigMath.mulDiv(
-      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd - values.swapUiFeeUsd,
+      baseCollateralUsd - getCollateralFeeUsd(basePositionFeeInfo.positionFeeUsd) - baseUiFeeUsd - values.swapUiFeeUsd,
       leverage,
       BASIS_POINTS_DIVISOR_BIGINT
     );
@@ -576,8 +585,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
     values.collateralDeltaUsd =
       baseCollateralUsd -
-      values.positionFeeUsd -
-      values.borrowingFeeUsd -
+      getCollateralFeeUsd(values.positionFeeUsd) -
+      getCollateralFeeUsd(values.borrowingFeeUsd) -
       values.fundingFeeUsd -
       values.uiFeeUsd -
       values.swapUiFeeUsd;
@@ -631,8 +640,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         sizeDeltaUsd: values.sizeDeltaUsd,
         collateralPrice: values.collateralPrice,
         uiFeeFactor,
-        positionFeeUsd: values.positionFeeUsd,
-        borrowingFeeUsd: values.borrowingFeeUsd,
+        positionFeeUsd: getCollateralFeeUsd(values.positionFeeUsd),
+        borrowingFeeUsd: getCollateralFeeUsd(values.borrowingFeeUsd),
         fundingFeeUsd: values.fundingFeeUsd,
         uiFeeUsd: values.uiFeeUsd,
         swapUiFeeUsd: values.swapUiFeeUsd,
@@ -731,8 +740,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.collateralDeltaUsd =
         baseCollateralUsdAtEvaluationPrice -
-        values.positionFeeUsd -
-        values.borrowingFeeUsd -
+        getCollateralFeeUsd(values.positionFeeUsd) -
+        getCollateralFeeUsd(values.borrowingFeeUsd) -
         values.fundingFeeUsd -
         values.uiFeeUsd -
         swapUiFeeUsdAtEvaluationPrice;
@@ -832,8 +841,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.collateralDeltaUsd =
         baseCollateralUsd -
-        values.positionFeeUsd -
-        values.borrowingFeeUsd -
+        getCollateralFeeUsd(values.positionFeeUsd) -
+        getCollateralFeeUsd(values.borrowingFeeUsd) -
         values.fundingFeeUsd -
         values.uiFeeUsd -
         values.swapUiFeeUsd;
@@ -845,8 +854,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       )!;
     } else if (values.sizeDeltaUsd > 0n) {
       values.collateralDeltaUsd = -(
-        values.positionFeeUsd +
-        values.borrowingFeeUsd +
+        getCollateralFeeUsd(values.positionFeeUsd) +
+        getCollateralFeeUsd(values.borrowingFeeUsd) +
         values.fundingFeeUsd +
         values.uiFeeUsd
       );
@@ -939,6 +948,11 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   }
 
   if (marketInfo.tradeMath === "gmsol") {
+    values.collateralDeltaUsd = convertToUsd(
+      values.collateralDeltaAmount,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
     values.sizeDeltaInTokens = getGmsolIncreaseSizeDeltaInTokens({
       baseSizeDeltaInTokens: values.sizeDeltaInTokens,
       priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,

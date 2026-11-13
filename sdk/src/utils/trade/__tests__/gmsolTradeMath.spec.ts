@@ -102,6 +102,151 @@ function positionInfo(marketInfo: MarketInfo, sizeInUsd: bigint, sizeInTokens: b
 }
 
 describe("gmsol trade math", () => {
+  it("deducts increase fees in collateral token atoms FESOL-57", () => {
+    const marketInfo = market({
+      decimals: 8,
+      minPrice: 60000n * P,
+      maxPrice: 60000n * P,
+      tradeMath: "gmsol",
+      overrides: {
+        positionFeeFactorForBalanceWasImproved: P / 2500n,
+        positionFeeFactorForBalanceWasNotImproved: P / 2500n,
+      },
+    });
+    const result = getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: marketInfo.indexToken,
+      initialCollateralToken: marketInfo.longToken,
+      collateralToken: marketInfo.longToken,
+      isLong: true,
+      initialCollateralAmount: 100000n,
+      indexTokenAmount: 1667083n,
+      position: undefined,
+      externalSwapQuote: undefined,
+      userReferralInfo: undefined,
+      strategy: "independent",
+      findSwapPath: () => undefined,
+      uiFeeFactor: 0n,
+      marketsInfoData: { [marketInfo.marketTokenAddress]: marketInfo },
+      chainId: ARBITRUM,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled: false,
+    });
+    expect(result.sizeDeltaUsd).toBe((10002498n * P) / 10000n);
+    expect(result.positionFeeUsd).toBe((40009992n * P) / 100000000n);
+    expect(result.collateralDeltaAmount).toBe(99334n);
+    expect(result.collateralDeltaUsd).toBe((596004n * P) / 10000n);
+  });
+
+  it("values trigger collateral and funding at the execution price FESOL-57", () => {
+    const marketInfo = market({ decimals: 8, minPrice: 50000n * P, maxPrice: 50000n * P, tradeMath: "gmsol" });
+    const position = getPositionInfo({
+      marketInfo,
+      minCollateralUsd: 0n,
+      position: {
+        ...positionInfo(marketInfo, 600n * P, 1000000n),
+        collateralTokenAddress: marketInfo.longTokenAddress,
+        collateralAmount: 100000n,
+        fundingFeeAmount: 1000n,
+      },
+    }) as PositionInfoLoaded;
+    const result = getDecreasePositionAmounts({
+      marketInfo,
+      collateralToken: marketInfo.longToken,
+      isLong: true,
+      position,
+      closeSizeUsd: position.sizeInUsd,
+      keepLeverage: false,
+      userReferralInfo: undefined,
+      minCollateralUsd: 0n,
+      minPositionSizeUsd: 0n,
+      uiFeeFactor: 0n,
+      isSetAcceptablePriceImpactEnabled: false,
+      forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      triggerOrderType: OrderType.LimitDecrease,
+      triggerPrice: 60000n * P,
+    });
+    expect(result.fundingFeeUsd).toBe((6n * P) / 10n);
+    expect(result.collateralDeltaUsd).toBe(60n * P);
+    expect(result.receiveTokenAmount).toBe(99000n);
+    expect(result.receiveUsd).toBe((594n * P) / 10n);
+    expect(position.pendingFundingFeesUsd).toBe(P / 2n);
+  });
+
+  it("settles each collateral shortfall in PnL token atoms FESOL-57", () => {
+    const size = (250125n * P) / 100n;
+    for (const [
+      markPrice,
+      triggerPrice,
+      isTwap,
+      fundingFeeAmount,
+      feeFactor,
+      pnlAmount,
+      collateralAmount,
+      pnlUsd,
+      unpaidUsd,
+    ] of [
+      [60000n * P, undefined, false, 10_000_300n, P / 2500n, 829583n, 0n, (4977498n * P) / 10000n, 0n],
+      [60000n * P, 60000n * P, false, 10_000_300n, P / 2500n, 829583n, 0n, (4977498n * P) / 10000n, 0n],
+      [60000n * P, undefined, true, 10_000_300n, P / 2500n, 829583n, 0n, (4977498n * P) / 10000n, 0n],
+      [50000n * P, 60000n * P, false, 0n, 0n, 831250n, 10_000_000n, (49875n * P) / 100n, 0n],
+      [60000n * P, undefined, false, 509_750_000n, 0n, 0n, 0n, 0n, (9996n * P) / 10000n],
+    ] as const) {
+      const marketInfo = market({
+        decimals: 8,
+        minPrice: markPrice,
+        maxPrice: markPrice,
+        tradeMath: "gmsol",
+        overrides: {
+          longInterestUsd: size,
+          shortInterestUsd: size,
+          longInterestInTokens: 5_000_000n,
+          shortInterestInTokens: 5_000_000n,
+          longPoolAmount: 100n * 10n ** 8n,
+          shortPoolAmount: 1_000_000n * 10n ** 6n,
+          maxPnlFactorForTradersLong: P,
+          positionFeeFactorForBalanceWasImproved: feeFactor,
+          positionFeeFactorForBalanceWasNotImproved: feeFactor,
+        },
+      });
+      const position = getPositionInfo({
+        marketInfo,
+        minCollateralUsd: 0n,
+        position: {
+          ...positionInfo(marketInfo, size, 5_000_000n),
+          collateralAmount: 10_000_000n,
+          fundingFeeAmount,
+        },
+      }) as PositionInfoLoaded;
+      const result = getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        position,
+        closeSizeUsd: size,
+        keepLeverage: false,
+        userReferralInfo: undefined,
+        minCollateralUsd: 0n,
+        minPositionSizeUsd: 0n,
+        uiFeeFactor: 0n,
+        isSetAcceptablePriceImpactEnabled: false,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+        triggerOrderType: triggerPrice === undefined ? undefined : OrderType.LimitDecrease,
+        triggerPrice,
+        isTwap,
+      });
+      expect(result.primaryOutput).toEqual({
+        tokenAddress: marketInfo.longTokenAddress,
+        amount: pnlAmount,
+        usd: pnlUsd,
+      });
+      expect(result.secondaryOutput.amount).toBe(collateralAmount);
+      expect(result.payedRemainingCollateralAmount).toBe(10_000_000n - collateralAmount);
+      expect(result.unpaidCostUsd).toBe(unpaidUsd);
+      expect(marketInfo.indexToken.prices.minPrice).toBe(markPrice);
+    }
+  });
+
   it("values a gmsol close with the impact withheld beyond the cap FESOL-57", () => {
     for (const tradeMath of ["gmsol", undefined] as const) {
       const marketInfo = market({
