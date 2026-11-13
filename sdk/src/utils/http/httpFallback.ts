@@ -31,9 +31,9 @@ export class HttpClientWithFallback implements IHttp {
 
   async fetchJson<TResult>(
     path: string,
-    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
+    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult; signal?: AbortSignal }
   ): Promise<TResult> {
-    return this.withFallback((client) => client.fetchJson<TResult>(path, opts));
+    return this.withFallback((client) => client.fetchJson<TResult>(path, opts), opts?.signal);
   }
 
   async postJson<TResult>(
@@ -57,14 +57,14 @@ export class HttpClientWithFallback implements IHttp {
     return { result: opts?.transform ? opts.transform(served.result) : served.result, client: served.client };
   }
 
-  private async withFallback<T>(fn: (client: HttpClient) => Promise<T>): Promise<T> {
+  private async withFallback<T>(fn: (client: HttpClient) => Promise<T>, signal?: AbortSignal): Promise<T> {
     const order = this.getClientOrder();
 
     for (let i = 0; i < order.length; i++) {
       try {
         return await fn(order[i]);
       } catch (e) {
-        if (!isServerOrNetworkError(e) || i === order.length - 1) {
+        if (signal?.aborted || !isServerOrNetworkError(e) || i === order.length - 1) {
           throw e;
         }
 

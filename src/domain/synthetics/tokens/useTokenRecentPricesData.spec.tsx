@@ -12,13 +12,15 @@ import { getPriceTokenConfig, getWsFrameExpiresAt, useTokenRecentPricesRequest }
 import type { WsPriceStore } from "./wsPriceStreamStore";
 
 const fetchTickers = vi.fn();
+const fetchTokenPrices = vi.fn();
+const isGmxApiPricesEnabled = vi.fn();
 const fakeStore = createFakeStore();
 
 vi.mock("react-router-dom", () => ({ useLocation: () => ({ pathname: "/trade" }) }));
-vi.mock("context/GmxSdkContext/GmxSdkContext", () => ({ useOptionalGmxSdk: () => ({}) }));
+vi.mock("context/GmxSdkContext/GmxSdkContext", () => ({ useOptionalGmxSdk: () => ({ fetchTokenPrices }) }));
 vi.mock("domain/synthetics/uiFlags/useIsApiSdkEnabled", async (importOriginal) => ({
   ...(await importOriginal<object>()),
-  useIsApiSdkEnabled: () => true,
+  useIsApiSdkEnabled: (flag: string) => flag === "wsPrices" && isGmxApiPricesEnabled(),
 }));
 vi.mock("lib/oracleKeeperFetcher/useOracleKeeperFetcher", () => ({
   useOracleKeeperFetcher: () => ({ url: "keeper", fetchTickers }),
@@ -32,10 +34,8 @@ vi.mock("./wsPriceStreamStore", () => ({ getWsPriceStore: () => fakeStore }));
 const WETH = getTokenBySymbol(ARBITRUM, "WETH");
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
 const WS_PRICE = { minPrice: 1n, maxPrice: 2n };
-const REST_PRICE = {
-  minPrice: parseContractPrice(1000n, WETH.decimals),
-  maxPrice: parseContractPrice(1000n, WETH.decimals),
-};
+const GMX_API_PRICE = { minPrice: 3n, maxPrice: 4n };
+const UNKNOWN_TOKEN_ADDRESS = "0x0000000000000000000000000000000000000001";
 const SWR_CONFIG = { provider: () => new Map(), dedupingInterval: 0 };
 
 function createFakeStore() {
@@ -74,22 +74,33 @@ function createFakeStore() {
   });
 }
 
+let keeperContractPrice = 1000n;
+
 function ticker(address: string) {
   return {
     tokenAddress: address,
-    minPrice: "1000",
-    maxPrice: "1000",
+    minPrice: keeperContractPrice.toString(),
+    maxPrice: keeperContractPrice.toString(),
     oracleDecimals: 0,
     tokenSymbol: "",
     updatedAt: 0,
   };
 }
 
-function renderPrices() {
+function keeperPrice() {
+  const price = parseContractPrice(keeperContractPrice, WETH.decimals);
+  return { minPrice: price, maxPrice: price };
+}
+
+function gmxApiResponse(prices: Record<string, { minPrice: bigint; maxPrice: bigint }>) {
+  return { prices, originTs: Date.now() };
+}
+
+function renderPrices(params?: { keeperOnly?: boolean }) {
   let result: ReturnType<typeof useTokenRecentPricesRequest> | undefined;
 
   function Probe() {
-    result = useTokenRecentPricesRequest(ARBITRUM);
+    result = useTokenRecentPricesRequest(ARBITRUM, params);
     return null;
   }
 
@@ -119,11 +130,14 @@ describe("getWsFrameExpiresAt", () => {
   });
 });
 
-describe("useTokenRecentPricesRequest with the price stream", () => {
+describe("useTokenRecentPricesRequest", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     fakeStore.reset();
+    keeperContractPrice += 1n;
+    isGmxApiPricesEnabled.mockReset().mockReturnValue(true);
     fetchTickers.mockReset().mockResolvedValue([ticker(WETH.address)]);
+    fetchTokenPrices.mockReset().mockResolvedValue(gmxApiResponse({ [WETH.address]: GMX_API_PRICE }));
     vi.mocked(freshnessMetrics.clear).mockClear();
     vi.mocked(freshnessMetrics.reportThrottled).mockClear();
   });
@@ -142,11 +156,11 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
     expect(wethPrice()).toEqual(WS_PRICE);
 
     await advance(1);
-    expect(wethPrice()).toEqual(REST_PRICE);
+    expect(wethPrice()).toEqual(GMX_API_PRICE);
 
-    fetchTickers.mockClear();
+    fetchTokenPrices.mockClear();
     await advance(2_000);
-    expect(fetchTickers).toHaveBeenCalledTimes(2);
+    expect(fetchTokenPrices).toHaveBeenCalledTimes(2);
   });
 
   it("keeps the last frame after the socket drops until a newer REST response arrives", async () => {
@@ -158,7 +172,7 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
     expect(wethPrice()).toEqual(WS_PRICE);
 
     await advance(250);
-    expect(wethPrice()).toEqual(REST_PRICE);
+    expect(wethPrice()).toEqual(GMX_API_PRICE);
   });
 
   it.each([
@@ -173,8 +187,62 @@ describe("useTokenRecentPricesRequest with the price stream", () => {
       await advance(1_000);
     }
 
-    expect(fetchTickers).toHaveBeenCalledTimes(slowed ? 2 : 12);
+    expect(fetchTokenPrices).toHaveBeenCalledTimes(slowed ? 2 : 12);
     expect(freshnessMetrics.clear).toHaveBeenCalledTimes(slowed ? 1 : 0);
+  });
+
+  it.each([
+    {
+      name: "gmx-api answers, ignoring a token the UI does not know",
+      gmxApiReply: () =>
+        Promise.resolve(gmxApiResponse({ [WETH.address]: GMX_API_PRICE, [UNKNOWN_TOKEN_ADDRESS]: WS_PRICE })),
+      firstPollAt: 0,
+      firstPollSource: "gmx-api",
+      nextPollSource: "gmx-api",
+    },
+    {
+      name: "gmx-api fails",
+      gmxApiReply: () => Promise.reject(new Error("502")),
+      firstPollAt: 0,
+      firstPollSource: "keeper",
+      nextPollSource: "gmx-api",
+    },
+    {
+      name: "gmx-api hangs until the 3 s timeout aborts it",
+      gmxApiReply: ({ signal }: { signal: AbortSignal }) =>
+        new Promise((_, reject) => signal.addEventListener("abort", () => reject(new Error("aborted")))),
+      firstPollAt: 3_000,
+      firstPollSource: "keeper",
+      nextPollSource: "gmx-api",
+    },
+    {
+      name: "gmx-api knows no token",
+      gmxApiReply: () => Promise.resolve(gmxApiResponse({ [UNKNOWN_TOKEN_ADDRESS]: GMX_API_PRICE })),
+      firstPollAt: 0,
+      firstPollSource: "keeper",
+      nextPollSource: "gmx-api",
+    },
+    { name: "wsPrices is off", wsPricesOff: true, firstPollAt: 0, firstPollSource: "keeper", nextPollSource: "keeper" },
+    {
+      name: "the caller is keeper-only",
+      keeperOnly: true,
+      firstPollAt: 0,
+      firstPollSource: "keeper",
+      nextPollSource: "keeper",
+    },
+  ])("REST prices when $name: $firstPollSource, then $nextPollSource on the next poll", async (row) => {
+    isGmxApiPricesEnabled.mockReturnValue(!row.wsPricesOff);
+    if (row.gmxApiReply) {
+      fetchTokenPrices.mockImplementationOnce(row.gmxApiReply);
+    }
+    const sourcePrice = (source: string) => (source === "keeper" ? keeperPrice() : GMX_API_PRICE);
+
+    const { wethPrice } = renderPrices({ keeperOnly: row.keeperOnly });
+    await advance(row.firstPollAt);
+    expect(wethPrice()).toEqual(sourcePrice(row.firstPollSource));
+
+    await advance(1_000);
+    expect(wethPrice()).toEqual(sourcePrice(row.nextPollSource));
   });
 });
 

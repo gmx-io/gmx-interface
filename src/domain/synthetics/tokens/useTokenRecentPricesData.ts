@@ -7,13 +7,15 @@ import { GLV_MARKETS } from "config/markets";
 import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { parseContractPrice, TokenPricesData } from "domain/synthetics/tokens";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
+import { createTimeoutSignal } from "lib/abortSignalHelpers";
 import { useChainId } from "lib/chains";
-import { FreshnessMetricId, metrics, TickersErrorsCounter } from "lib/metrics";
+import { ApiDataFallbackCounter, FreshnessMetricId, metrics, TickersErrorsCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
+import type { OracleFetcher } from "lib/oracleKeeperFetcher";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { LEADERBOARD_PRICES_UPDATE_INTERVAL, PRICES_CACHE_TTL, PRICES_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { FrameMeta } from "sdk/clients/v2";
+import type { FrameMeta, GmxApiSdk } from "sdk/clients/v2";
 import { getToken, getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { isSameAddress } from "sdk/utils/address";
 import type { Token } from "sdk/utils/tokens/types";
@@ -25,6 +27,8 @@ import { getWsPriceStore, type WsPriceStore } from "./wsPriceStreamStore";
 const WS_PRICES_STALE_MS = 10_000;
 const WS_PRICES_THROTTLE_MS = 250;
 const WS_FRESH_PRICES_UPDATE_INTERVAL = 10_000;
+const GMX_API_PRICES_TIMEOUT_MS = 3_000;
+const GMX_API_PRICES_SOURCE = "gmx-api";
 
 type WsFrame = { store: WsPriceStore; prices: TokenPricesData; meta: FrameMeta; isLive: boolean };
 
@@ -42,12 +46,15 @@ export type TokenPricesDataResult = {
 
 const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
 const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
+const IS_IN_KEEPER_FALLBACK: { [chainId: number]: boolean } = {};
+
+type KeeperFallbackReason = "error" | "timeout" | "empty";
 
 export function useTokenRecentPricesRequest(
   chainId: ContractsChainId,
-  params?: { enabled?: boolean }
+  params?: { enabled?: boolean; keeperOnly?: boolean }
 ): TokenPricesDataResult {
-  const { enabled = true } = params ?? {};
+  const { enabled = true, keeperOnly = false } = params ?? {};
   const { networkId } = useChainId();
   const pricesEnabled = enabled && !isSolanaNetwork(networkId);
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
@@ -64,11 +71,9 @@ export function useTokenRecentPricesRequest(
   PRICES_CACHE_UPDATED[chainId] = PRICES_CACHE_UPDATED[chainId] || {};
 
   const sdk = useOptionalGmxSdk(chainId);
-  const isWsPricesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsPrices, chainId);
-  const store =
-    pricesEnabled && isWsPricesEnabled && sdk && refreshPricesInterval === PRICES_UPDATE_INTERVAL
-      ? getWsPriceStore(sdk)
-      : undefined;
+  const isGmxApiPricesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsPrices, chainId);
+  const pricesSdk = pricesEnabled && isGmxApiPricesEnabled && !keeperOnly ? sdk : undefined;
+  const store = pricesSdk && refreshPricesInterval === PRICES_UPDATE_INTERVAL ? getWsPriceStore(pricesSdk) : undefined;
 
   // Propagate frames at most every WS_PRICES_THROTTLE_MS: the channel carries the whole token set on
   // any token's change, so re-deriving tokensData per frame would be a render storm.
@@ -122,7 +127,8 @@ export function useTokenRecentPricesRequest(
   const isRestCoveredByStreamRef = useRef(false);
   isRestCoveredByStreamRef.current = isRestCoveredByStream;
 
-  const key = pricesEnabled ? [chainId, oracleKeeperFetcher.url, "useTokenRecentPrices"] : null;
+  const pricesSource = pricesSdk ? GMX_API_PRICES_SOURCE : oracleKeeperFetcher.url;
+  const key = pricesEnabled ? [chainId, pricesSource, "useTokenRecentPrices"] : null;
 
   const { data, error, isLoading } = useSequentialTimedSWR(key, {
     baseInterval: refreshPricesInterval,
@@ -130,29 +136,12 @@ export function useTokenRecentPricesRequest(
     refreshWhenHidden: true,
 
     fetcher: async ([chainId]) => {
-      const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
-        metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
-        return [];
-      });
+      const result = await fetchRestPrices(chainId, pricesSdk, oracleKeeperFetcher);
 
-      const result: TokenPricesData = {};
-
-      priceItems.forEach((priceItem) => {
-        const tokenConfig = getPriceTokenConfig(chainId, priceItem.tokenAddress);
-        if (!tokenConfig) {
-          return;
-        }
-
-        const formattedPrices = {
-          minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
-          maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
-        };
-
-        result[tokenConfig.address] = formattedPrices;
-
+      Object.entries(result).forEach(([address, tokenPrices]) => {
         // Update cache of new received tokens
-        PRICES_CACHE[chainId][tokenConfig.address] = formattedPrices;
-        PRICES_CACHE_UPDATED[chainId][tokenConfig.address] = Date.now();
+        PRICES_CACHE[chainId][address] = tokenPrices;
+        PRICES_CACHE_UPDATED[chainId][address] = Date.now();
       });
 
       Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
@@ -209,6 +198,90 @@ export function useTokenRecentPricesRequest(
     error,
     isPriceDataLoading: isLoading && !usableFrame,
   };
+}
+
+async function fetchRestPrices(
+  chainId: ContractsChainId,
+  pricesSdk: GmxApiSdk | undefined,
+  oracleKeeperFetcher: OracleFetcher
+): Promise<TokenPricesData> {
+  if (!pricesSdk) {
+    return fetchKeeperPrices(chainId, oracleKeeperFetcher);
+  }
+
+  const { prices, fallbackReason } = await fetchGmxApiPrices(chainId, pricesSdk);
+  trackKeeperFallback(chainId, fallbackReason);
+
+  if (!prices) {
+    return fetchKeeperPrices(chainId, oracleKeeperFetcher);
+  }
+
+  return prices;
+}
+
+function trackKeeperFallback(chainId: ContractsChainId, fallbackReason: KeeperFallbackReason | undefined) {
+  if (fallbackReason && !IS_IN_KEEPER_FALLBACK[chainId]) {
+    metrics.pushCounter<ApiDataFallbackCounter>("apiData.fallback", {
+      domain: "restPrices",
+      reason: fallbackReason,
+      chainId,
+    });
+  }
+
+  IS_IN_KEEPER_FALLBACK[chainId] = fallbackReason !== undefined;
+}
+
+async function fetchGmxApiPrices(
+  chainId: ContractsChainId,
+  sdk: GmxApiSdk
+): Promise<{ prices?: TokenPricesData; fallbackReason?: KeeperFallbackReason }> {
+  const signal = createTimeoutSignal(GMX_API_PRICES_TIMEOUT_MS);
+  const response = await sdk.fetchTokenPrices({ signal }).catch(() => undefined);
+
+  if (!response) {
+    return { fallbackReason: signal.aborted ? "timeout" : "error" };
+  }
+
+  const prices: TokenPricesData = {};
+
+  Object.entries(response.prices).forEach(([address, tokenPrices]) => {
+    const tokenConfig = getPriceTokenConfig(chainId, address);
+    if (tokenConfig) {
+      prices[tokenConfig.address] = tokenPrices;
+    }
+  });
+
+  if (Object.keys(prices).length === 0) {
+    return { fallbackReason: "empty" };
+  }
+
+  return { prices };
+}
+
+async function fetchKeeperPrices(
+  chainId: ContractsChainId,
+  oracleKeeperFetcher: OracleFetcher
+): Promise<TokenPricesData> {
+  const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {
+    metrics.pushCounter<TickersErrorsCounter>("tickersErrors");
+    return [];
+  });
+
+  const prices: TokenPricesData = {};
+
+  priceItems.forEach((priceItem) => {
+    const tokenConfig = getPriceTokenConfig(chainId, priceItem.tokenAddress);
+    if (!tokenConfig) {
+      return;
+    }
+
+    prices[tokenConfig.address] = {
+      minPrice: parseContractPrice(BigInt(priceItem.minPrice), tokenConfig.decimals),
+      maxPrice: parseContractPrice(BigInt(priceItem.maxPrice), tokenConfig.decimals),
+    };
+  });
+
+  return prices;
 }
 
 export function getPriceTokenConfig(chainId: ContractsChainId, tokenAddress: string): Token | undefined {
