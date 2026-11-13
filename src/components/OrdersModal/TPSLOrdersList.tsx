@@ -3,6 +3,7 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
 import {
+  useFeeDiscountFactor,
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -193,6 +194,7 @@ function useTPSLOrderViewModel({
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(order.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const [isCancelling, cancelOrder] = useCancelOrder(order);
   const isEditable = !useSelector(makeSelectIsSizeOrderInClosedPool(order.key));
@@ -318,6 +320,7 @@ function useTPSLOrderViewModel({
       keepLeverage: shouldKeepLeverage,
       triggerPrice: order.triggerPrice,
       userReferralInfo,
+      feeDiscountFactor,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
@@ -338,6 +341,7 @@ function useTPSLOrderViewModel({
     position,
     shouldKeepLeverage,
     userReferralInfo,
+    feeDiscountFactor,
     uiFeeFactor,
     isSetAcceptablePriceImpactEnabled,
     order.decreasePositionSwapType,

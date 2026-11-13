@@ -98,6 +98,7 @@ import {
   selectSubaccountForChainAction,
   selectTokensData,
   selectUiFeeFactor,
+  selectFeeDiscountFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
 import {
@@ -517,6 +518,7 @@ const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
     leverage,
     isLong: tradeFlags.isLong,
     userReferralInfo,
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     chainId,
     marketsInfoData,
   });

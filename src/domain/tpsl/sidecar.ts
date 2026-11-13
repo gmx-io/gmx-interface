@@ -187,6 +187,7 @@ export function getTpSlDecreaseAmounts(p: {
   isSetAcceptablePriceImpactEnabled: boolean;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -220,6 +221,7 @@ export function getTpSlDecreaseAmounts(p: {
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: p.forceDecreaseSwapType,
     proDiscountFactor: p.proDiscountFactor,
+    feeDiscountFactor: p.feeDiscountFactor,
   });
 }
 

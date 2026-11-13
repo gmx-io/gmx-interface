@@ -10,6 +10,7 @@ import {
   selectTokensData,
   selectUiFeeFactor,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectUserReferralInfo,
 } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
@@ -19,6 +20,7 @@ export const useTokensData = () => useSelector(selectTokensData);
 export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const useProDiscountFactor = () => useSelector(selectProDiscountFactor);
+export const useFeeDiscountFactor = () => useSelector(selectFeeDiscountFactor);
 export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);
 export const usePositiveFeePositionsSortedByUsd = () => useSelector(selectPositiveFeePositionsSortedByUsd);
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   makeSelectPositionConstants,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -69,6 +70,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const { minCollateralUsd } = useSelector(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const userReferralInfo = useSelector(selectUserReferralInfo);
   const proDiscountFactor = useSelector(selectProDiscountFactor);
+  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const uiFeeFactor = useSelector(selectUiFeeFactor);
   const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
@@ -134,6 +136,7 @@ export function useTradeboxManualLeverageSizeSlider({
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor,
       uiFeeFactor,
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
@@ -160,6 +163,7 @@ export function useTradeboxManualLeverageSizeSlider({
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     twap,
   ]);
 

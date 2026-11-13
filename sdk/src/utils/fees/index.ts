@@ -43,13 +43,25 @@ export function getPositionFee(
   balanceWasImproved: boolean,
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined,
   uiFeeFactor?: bigint,
-  proDiscountFactor?: bigint
+  proDiscountFactor?: bigint,
+  feeDiscountFactor?: bigint
 ) {
   const factor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+  if (marketInfo.tradeMath === "gmsol") {
+    const nativeUsdPrecisionScale = 10n ** 10n;
+    positionFeeUsd = bigMath.mulDiv(positionFeeUsd, 1n, nativeUsdPrecisionScale) * nativeUsdPrecisionScale;
+    const discountUsd =
+      bigMath.mulDiv(
+        applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n))),
+        1n,
+        nativeUsdPrecisionScale
+      ) * nativeUsdPrecisionScale;
+    return { positionFeeUsd: positionFeeUsd - discountUsd, discountUsd, totalRebateUsd: 0n, uiFeeUsd: 0n };
+  }
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
   const totalRebateUsd = referralInfo ? applyFactor(positionFeeUsd, referralInfo.totalRebateFactor) : 0n;

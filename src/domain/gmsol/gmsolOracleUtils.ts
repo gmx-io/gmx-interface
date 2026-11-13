@@ -1,8 +1,12 @@
 import { ARBITRUM } from "config/chains";
+import { getGmsolToken } from "config/gmsol/tokenLookup";
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import { type PriceDelta, getPriceDelta } from "domain/synthetics/tokens/priceDelta";
 import type { DayPriceCandle, TickersResponse } from "lib/oracleKeeperFetcher";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { GMSOL_PRECISION_SCALE } from "sdk/utils/gmsol";
+import { expandDecimals } from "sdk/utils/numbers";
 import { parseContractPrice } from "sdk/utils/tokens";
 import type { Token, TokenPrices } from "sdk/utils/tokens/types";
 
@@ -28,13 +32,17 @@ export function buildGmsolTokenPrices(
   const result: GmsolTokenPricesData = {};
 
   for (const address of gmsolTokenAddresses) {
+    const gmsolToken = getGmsolToken(address);
     const arbitrumToken = getArbitrumToken(address);
     const ticker = arbitrumToken ? tickersByAddress.get(arbitrumToken.address.toLowerCase()) : undefined;
 
-    if (arbitrumToken && ticker) {
+    if (gmsolToken && arbitrumToken && ticker) {
+      const scale = expandDecimals(1, gmsolToken.decimals) * GMSOL_PRECISION_SCALE;
       result[address] = {
-        minPrice: parseContractPrice(BigInt(ticker.minPrice), arbitrumToken.decimals),
-        maxPrice: parseContractPrice(BigInt(ticker.maxPrice), arbitrumToken.decimals),
+        minPrice:
+          bigMath.mulDiv(parseContractPrice(BigInt(ticker.minPrice), arbitrumToken.decimals), 1n, scale) * scale,
+        maxPrice:
+          bigMath.mulDiv(parseContractPrice(BigInt(ticker.maxPrice), arbitrumToken.decimals), 1n, scale) * scale,
         updatedAt: ticker.updatedAt,
       };
     }

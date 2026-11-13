@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import {
   usePositionsConstants,
+  useFeeDiscountFactor,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -33,6 +34,7 @@ export * from "./types";
 
 export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
   const uiFeeFactor = useUiFeeFactor();
@@ -122,6 +124,7 @@ export function useSidecarOrders() {
         minPositionSizeUsd,
         uiFeeFactor,
         userReferralInfo,
+        feeDiscountFactor,
         isSetAcceptablePriceImpactEnabled,
       });
     },
@@ -133,6 +136,7 @@ export function useSidecarOrders() {
       triggerPrice,
       uiFeeFactor,
       userReferralInfo,
+      feeDiscountFactor,
       isSetAcceptablePriceImpactEnabled,
     ]
   );

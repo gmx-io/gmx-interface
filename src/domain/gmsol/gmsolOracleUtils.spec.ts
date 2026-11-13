@@ -47,6 +47,23 @@ function ticker(p: { tokenAddress: string; price: string }): TickersResponse[num
 const toCents = (usd30: bigint | undefined) => (usd30 === undefined ? undefined : usd30 / 10n ** 28n);
 
 describe("buildGmsolTokenPrices", () => {
+  it("matches native mint-unit price rounding before exposing SDK USD prices", () => {
+    for (const [symbol, source, unitPrice, scale] of [
+      ["SOL", { ...ARB_SOL, price: "105485434805280281250000" }, 10548543480528n, 10n ** 19n],
+      ["WSOL", { ...ARB_SOL, price: "105485434805280281250000" }, 10548543480528n, 10n ** 19n],
+      ["ETH", { ...ARB_WETH, price: "2500000000000000" }, 2500000000000000n, 10n ** 18n],
+      ["NEAR", { ...ARB_NEAR, price: "5000000" }, 500000000000n, 10n ** 19n],
+    ] as const) {
+      const address = mint(symbol);
+      const prices = buildGmsolTokenPrices([ticker(source)], [address]);
+      expect(prices[address]).toEqual({
+        minPrice: unitPrice * scale,
+        maxPrice: unitPrice * scale,
+        updatedAt: UPDATED_AT,
+      });
+    }
+  });
+
   it("prices Solana mints in 30-decimal USD with the Arbitrum token's decimals", async () => {
     const cases: { name: string; tickers: TickersResponse; expectedCents: Record<string, bigint | undefined> }[] = [
       {

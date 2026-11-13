@@ -9,6 +9,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useProDiscountFactor,
+  useFeeDiscountFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -313,6 +314,7 @@ export function OrderEditor(p: Props) {
 
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useProDiscountFactor();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -389,6 +391,7 @@ export function OrderEditor(p: Props) {
       uiFeeFactor: positionOrder.uiFeeFactor ?? uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
       externalSwapQuote: undefined,
@@ -418,6 +421,7 @@ export function OrderEditor(p: Props) {
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,

@@ -49,6 +49,7 @@ export type CalcMaxSizeDeltaParams = {
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
   uiFeeFactor?: bigint;
   baseCollateralUsd?: bigint;
@@ -141,6 +142,7 @@ function capSizeDeltaByResultingPositionMargin({
           minCollateralUsd,
           userReferralInfo: params.userReferralInfo,
           proDiscountFactor: params.proDiscountFactor,
+          feeDiscountFactor: params.feeDiscountFactor,
         })
       );
     }
@@ -165,7 +167,8 @@ function capSizeDeltaByResultingPositionMargin({
       balanceWasImproved,
       params.userReferralInfo,
       undefined,
-      params.proDiscountFactor
+      params.proDiscountFactor,
+      params.feeDiscountFactor
     );
     const uiFeeUsd = applyFactor(sizeDeltaUsd, params.uiFeeFactor ?? 0n);
 
@@ -188,6 +191,7 @@ function capSizeDeltaByResultingPositionMargin({
       minCollateralUsd,
       userReferralInfo: params.userReferralInfo,
       proDiscountFactor: params.proDiscountFactor,
+      feeDiscountFactor: params.feeDiscountFactor,
       indexPriceForEvaluation: params.indexPriceForEvaluation,
     });
 
@@ -211,6 +215,7 @@ function capSizeDeltaByResultingPositionMargin({
         pendingImpactAmount: resultingExistingPosition.pendingImpactAmount,
         isLong,
         userReferralInfo: params.userReferralInfo,
+        feeDiscountFactor: params.feeDiscountFactor,
       });
 
       if (getIsPositionLiquidatableAtPrice({ liqPrice: nextLiqPrice, price: markPrice, isLong })) {

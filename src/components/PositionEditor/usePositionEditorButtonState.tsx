@@ -10,6 +10,7 @@ import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
+  useFeeDiscountFactor,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorPosition,
@@ -133,6 +134,7 @@ export function usePositionEditorButtonState(
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
@@ -400,12 +402,13 @@ export function usePositionEditorButtonState(
       position,
       minCollateralUsd,
       userReferralInfo,
+      feeDiscountFactor,
     });
 
     const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
 
     return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
-  }, [isDeposit, minCollateralUsd, position, userReferralInfo]);
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo, feeDiscountFactor]);
 
   const setMinDepositValue = useCallback(() => {
     if (minDepositUsd === undefined || !selectedCollateralToken) return;

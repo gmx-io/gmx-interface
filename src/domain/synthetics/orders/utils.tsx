@@ -125,6 +125,7 @@ function getMarginDepositOrderErrors(p: {
   positionsInfoData: PositionsInfoData | undefined;
   minCollateralUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
 }): OrderError[] {
   const { order, positionsInfoData, minCollateralUsd, userReferralInfo } = p;
 
@@ -150,6 +151,7 @@ function getMarginDepositOrderErrors(p: {
     triggerPrice: order.triggerPrice,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
   });
 
@@ -301,6 +303,7 @@ export function getOrderErrors(p: {
   nextPositionValues?: NextPositionValues;
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
+  feeDiscountFactor?: bigint;
   resultingPositionMarginState?: PositionMarginState;
   closingPool?: ClosingPool;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
@@ -393,6 +396,7 @@ export function getOrderErrors(p: {
         positionsInfoData,
         minCollateralUsd: p.minCollateralUsd,
         userReferralInfo: p.userReferralInfo,
+        feeDiscountFactor: p.feeDiscountFactor,
       })
     );
   } else {
@@ -736,6 +740,7 @@ export function getOrderIncreaseProjection({
   isSetAcceptablePriceImpactEnabled,
   userReferralInfo,
   proDiscountFactor,
+  feeDiscountFactor,
 }: {
   order: PositionOrderInfo;
   position: PositionInfo | undefined;
@@ -748,6 +753,7 @@ export function getOrderIncreaseProjection({
   isSetAcceptablePriceImpactEnabled: boolean;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): OrderIncreaseProjection | undefined {
   const marketInfo = order.marketInfo;
 
@@ -780,6 +786,7 @@ export function getOrderIncreaseProjection({
     findSwapPath,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
     strategy: "independent",
     marketsInfoData,
@@ -799,11 +806,13 @@ export function getOrderIncreaseNextPositionValues({
   projection,
   minCollateralUsd,
   userReferralInfo,
+  feeDiscountFactor,
   isPnlInLeverage,
 }: {
   projection: OrderIncreaseProjection | undefined;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   isPnlInLeverage: boolean;
 }): NextPositionValues | undefined {
   if (!projection || (projection.increaseAmounts.initialCollateralAmount <= 0n && !projection.position)) {
@@ -827,6 +836,7 @@ export function getOrderIncreaseNextPositionValues({
     showPnlInLeverage: isPnlInLeverage,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor,
   });
 }
 
@@ -835,11 +845,13 @@ export function getOrderIncreaseResultingPositionMarginState({
   minCollateralUsd,
   userReferralInfo,
   proDiscountFactor,
+  feeDiscountFactor,
 }: {
   projection: OrderIncreaseProjection | undefined;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): PositionMarginState | undefined {
   if (!projection) {
     return undefined;
@@ -858,6 +870,7 @@ export function getOrderIncreaseResultingPositionMarginState({
     minCollateralUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
       orderType: order.orderType,
       triggerPrice,
@@ -875,6 +888,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
   uiFeeFactor,
   userReferralInfo,
   proDiscountFactor,
+  feeDiscountFactor,
   isSetAcceptablePriceImpactEnabled,
 }: {
   order: PositionOrderInfo;
@@ -886,6 +900,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
   uiFeeFactor: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   isSetAcceptablePriceImpactEnabled: boolean;
 }): DecreasePositionMarginState | undefined {
   if (
@@ -915,6 +930,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
     isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: order.decreasePositionSwapType,
     proDiscountFactor,
+    feeDiscountFactor,
   });
 
   return getTriggerDecreaseRemainingPositionMarginState({
@@ -928,6 +944,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
     minPositionSizeUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
   });
 }
 
@@ -939,6 +956,7 @@ export function getTwapIncreaseOrderSequentialMarginState({
   marketsInfoData,
   userReferralInfo,
   proDiscountFactor,
+  feeDiscountFactor,
   minCollateralUsd,
 }: {
   order: TwapOrderInfo<PositionOrderInfo>;
@@ -948,6 +966,7 @@ export function getTwapIncreaseOrderSequentialMarginState({
   marketsInfoData: MarketsInfoData | undefined;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor: bigint | undefined;
+  feeDiscountFactor?: bigint;
   minCollateralUsd: bigint;
 }): TwapIncreaseSequentialMarginState | undefined {
   const { marketInfo } = order;
@@ -989,5 +1008,6 @@ export function getTwapIncreaseOrderSequentialMarginState({
     minCollateralUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
   });
 }

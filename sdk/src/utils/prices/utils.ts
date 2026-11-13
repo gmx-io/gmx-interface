@@ -1,6 +1,11 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getCappedPositionImpactUsd, getPriceImpactByAcceptablePrice } from "utils/fees";
+import {
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getCappedPositionImpactUsd,
+  getPriceImpactByAcceptablePrice,
+} from "utils/fees";
+import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount, GMSOL_PRECISION_SCALE } from "utils/gmsol";
 import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
@@ -87,7 +92,7 @@ export function getIncreaseEvaluationIndexPrice(p: {
   return p.triggerPrice;
 }
 
-export function getAcceptablePriceInfo(p: {
+type AcceptablePriceParams = {
   marketInfo: MarketInfo;
   isIncrease: boolean;
   isLimit: boolean;
@@ -96,8 +101,19 @@ export function getAcceptablePriceInfo(p: {
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
   sizeDeltaInTokens?: bigint;
-}) {
-  const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  positionSizeInUsd?: bigint;
+  positionSizeInTokens?: bigint;
+};
+
+export function getAcceptablePriceInfo(p: AcceptablePriceParams) {
+  const { isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
+  const marketInfo =
+    p.marketInfo.tradeMath === "gmsol" && p.isLimit
+      ? {
+          ...p.marketInfo,
+          indexToken: { ...p.marketInfo.indexToken, prices: { minPrice: indexPrice, maxPrice: indexPrice } },
+        }
+      : p.marketInfo;
   const { indexToken } = marketInfo;
 
   const values = {
@@ -149,11 +165,6 @@ export function getAcceptablePriceInfo(p: {
     }
   );
 
-  /**
-   * We display this value as price impact on action (increase or decrease)
-   * But for acceptable price calculation uncapped price impact is used
-   * Also on decrease action we calculate totalImpactUsd which will be deducted from the collateral
-   */
   values.priceImpactDeltaUsd = priceImpactDeltaUsd;
   values.balanceWasImproved = balanceWasImproved;
 
@@ -170,31 +181,82 @@ export function getAcceptablePriceInfo(p: {
     );
   }
 
-  // Use uncapped price impact for the acceptable price calculation
-  const { priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice } = getCappedPositionImpactUsd(
-    marketInfo,
-    sizeDeltaUsd,
-    isLong,
-    isIncrease,
-    {
-      fallbackToZero: !isIncrease,
-      shouldCapNegativeImpact: false,
-      sizeDeltaInTokens: p.sizeDeltaInTokens,
+  if (marketInfo.tradeMath === "gmsol") {
+    const priceParams = { ...p, marketInfo, priceImpactDeltaUsd };
+    const acceptablePrice = isIncrease
+      ? getGmsolIncreaseAcceptablePrice(priceParams)
+      : getGmsolDecreaseAcceptablePrice(priceParams);
+
+    if (acceptablePrice === undefined) {
+      return values;
     }
-  );
+
+    values.acceptablePrice = acceptablePrice;
+    values.acceptablePriceDeltaBps = getBasisPoints(
+      (values.acceptablePrice - indexPrice) * (shouldFlipPriceImpact ? -1n : 1n),
+      indexPrice
+    );
+    return values;
+  }
 
   const acceptablePriceValues = getAcceptablePriceByPriceImpact({
     isIncrease,
     isLong,
     indexPrice,
     sizeDeltaUsd,
-    priceImpactDeltaUsd: priceImpactDeltaUsdForAcceptablePrice,
+    priceImpactDeltaUsd,
   });
 
   values.acceptablePrice = acceptablePriceValues.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceValues.acceptablePriceDeltaBps;
 
   return values;
+}
+
+type GmsolAcceptablePriceParams = AcceptablePriceParams & { priceImpactDeltaUsd: bigint };
+
+function getGmsolIncreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint | undefined {
+  const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd, isLong, marketInfo } = p;
+  const { indexToken } = marketInfo;
+  const tokenUnit = expandDecimals(1, indexToken.decimals);
+  let baseSizeDeltaInTokens = p.sizeDeltaInTokens;
+
+  if (baseSizeDeltaInTokens == null) {
+    baseSizeDeltaInTokens = isLong
+      ? bigMath.mulDiv(sizeDeltaUsd, tokenUnit, indexPrice)
+      : roundUpMagnitudeDivision(sizeDeltaUsd * tokenUnit, indexPrice);
+  }
+
+  const sizeDeltaInTokens = getGmsolIncreaseSizeDeltaInTokens({
+    baseSizeDeltaInTokens,
+    priceImpactDeltaUsd,
+    indexToken,
+    isLong,
+  });
+
+  return sizeDeltaInTokens === 0n ? undefined : bigMath.mulDiv(sizeDeltaUsd, tokenUnit, sizeDeltaInTokens);
+}
+
+function getGmsolDecreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint {
+  const { marketInfo, indexPrice, sizeDeltaUsd, sizeDeltaInTokens, positionSizeInUsd, positionSizeInTokens, isLong } =
+    p;
+  const cappedImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, p.priceImpactDeltaUsd);
+  const tokenUnit = expandDecimals(1, marketInfo.indexToken.decimals);
+  let priceAdjustment: bigint;
+
+  if (positionSizeInUsd && positionSizeInTokens) {
+    const impactAtEntrySizeUsd = getGmsolUsdAmount(bigMath.mulDiv(positionSizeInUsd, cappedImpactUsd, sizeDeltaUsd));
+    priceAdjustment = bigMath.mulDiv(impactAtEntrySizeUsd, tokenUnit, positionSizeInTokens);
+  } else if (sizeDeltaInTokens && sizeDeltaInTokens > 0n) {
+    priceAdjustment = bigMath.mulDiv(cappedImpactUsd, tokenUnit, sizeDeltaInTokens);
+  } else {
+    priceAdjustment = bigMath.mulDiv(indexPrice, cappedImpactUsd, sizeDeltaUsd);
+  }
+
+  const priceUnit = tokenUnit * GMSOL_PRECISION_SCALE;
+  priceAdjustment = bigMath.mulDiv(priceAdjustment, 1n, priceUnit) * priceUnit;
+
+  return indexPrice + (isLong ? priceAdjustment : -priceAdjustment);
 }
 
 export function getAcceptablePriceByPriceImpact(p: {
@@ -236,13 +298,24 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   sizeDeltaUsd: bigint;
   priceImpactDeltaUsd: bigint;
   acceptablePriceImpactBuffer?: number;
+  executionPrice?: bigint;
 }) {
   const {
     indexPrice,
     sizeDeltaUsd,
     priceImpactDeltaUsd,
     acceptablePriceImpactBuffer = DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+    executionPrice,
   } = p;
+
+  if (executionPrice !== undefined && executionPrice > 0n && indexPrice > 0n) {
+    const adversePriceDelta = (executionPrice - indexPrice) * (getShouldUseMaxPrice(p.isIncrease, p.isLong) ? 1n : -1n);
+
+    return (
+      (adversePriceDelta > 0n ? getBasisPoints(adversePriceDelta, indexPrice, true) : 0n) +
+      BigInt(acceptablePriceImpactBuffer)
+    );
+  }
 
   if (priceImpactDeltaUsd > 0) {
     return BigInt(acceptablePriceImpactBuffer);
