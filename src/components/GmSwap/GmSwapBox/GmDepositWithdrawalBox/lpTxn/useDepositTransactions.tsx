@@ -80,8 +80,7 @@ import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpr
 export const useDepositTransactions = ({
   shouldDisableValidation,
   technicalFees,
-  onSent,
-}: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees" | "onSent">): {
+}: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees">): {
   onCreateDeposit: () => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
@@ -464,7 +463,6 @@ export const useDepositTransactions = ({
 
       return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
@@ -495,7 +493,6 @@ export const useDepositTransactions = ({
       blockTimestampData,
       shouldDisableValidation,
       setPendingTxns,
-      onSent,
     ]
   );
 
@@ -717,7 +714,6 @@ export const useDepositTransactions = ({
 
       return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
-        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
@@ -752,7 +748,6 @@ export const useDepositTransactions = ({
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,
-      onSent,
     ]
   );
 
