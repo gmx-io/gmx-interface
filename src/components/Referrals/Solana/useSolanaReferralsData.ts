@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 
 import type { SolanaReferralsData } from "./solanaReferralsTypes";
+import { useSolanaReferralsTesterData } from "./tester/solanaReferralsTester"; // rewards-tester
 
 async function notConnectedYet(): Promise<void> {
   throw new Error(t`Solana referrals are not connected yet`);
@@ -28,6 +29,9 @@ export function useSolanaReferralsData(): SolanaReferralsData {
     }),
     [solanaWallet.address, solanaWallet.isRestoring]
   );
+
+  const testerData = useSolanaReferralsTesterData(); // rewards-tester
+  if (testerData) return testerData; // rewards-tester
 
   return liveData;
 }
