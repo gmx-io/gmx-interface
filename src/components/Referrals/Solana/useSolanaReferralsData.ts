@@ -19,6 +19,7 @@ export function useSolanaReferralsData(): SolanaReferralsData {
       isWalletInitializing: solanaWallet.isRestoring,
       isLoading: false,
       appliedCode: undefined,
+      tradingFeeDiscountPercent: undefined,
       traderPoints: [],
       affiliate: undefined,
       topHolders: [],

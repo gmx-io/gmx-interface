@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 import { formatAmount } from "lib/numbers";
 
 import { SOLANA_GT_DECIMALS } from "./solanaReferralsTypes";
@@ -17,12 +19,7 @@ export function shortenSolanaAddress(address: string) {
   return address.length > 14 ? `${address.slice(0, 6)}…${address.slice(-6)}` : address;
 }
 
-// Dates in the app language, like the EVM referral tables (e.g. "Nov 9, 2026" or "9 nov 2026").
-export function formatReferralDate(seconds: number, locale: string, { withTime = false }: { withTime?: boolean } = {}) {
-  return new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    ...(withTime ? { hour: "numeric", minute: "2-digit" } : {}),
-  }).format(new Date(seconds * 1000));
+// Date and time with leading zeros, as asked in the PM review: "08 Nov 2026, 07:23 PM" (dates alone use formatDate)
+export function formatReferralDateTime(seconds: number) {
+  return format(seconds * 1000, "dd MMM yyyy, hh:mm a");
 }

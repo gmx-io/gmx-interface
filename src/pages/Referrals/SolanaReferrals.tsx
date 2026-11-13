@@ -92,12 +92,7 @@ export default function SolanaReferrals({ activeTab }: { activeTab: SolanaReferr
           <PageTitle
             isTop
             title={t`Referrals`}
-            subtitle={
-              <Trans>
-                Get fee discounts and earn GT rewards through the GMX Solana <br className="max-md:hidden" /> referral
-                program
-              </Trans>
-            }
+            subtitle={<Trans>Get fee discounts and earn GT rewards through the GMX Solana referral program</Trans>}
             qa="referrals-page"
           />
           <div className="flex grow flex-col">

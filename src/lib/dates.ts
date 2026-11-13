@@ -68,18 +68,28 @@ export function formatRelativeDateWithComma(time: number) {
   return formatDateWithComma(time);
 }
 
-export function formatTimeAgo(timeMs: number, nowMs = Date.now()) {
+/** "2 days ago"; style "narrow" gives the short form, e.g. "59m ago", "3h ago", "2d ago" */
+export function formatTimeAgo(timeMs: number, nowMs = Date.now(), style: Intl.RelativeTimeFormatStyle = "long") {
   const seconds = Math.max(0, Math.round((nowMs - timeMs) / 1000));
+  const minutes = Math.round(seconds / 60);
+  const hours = Math.round(seconds / 3600);
+  // Pick the unit after rounding, so 59m30s reads "1 hour ago", not "60 minutes ago"
   const [value, unit]: [number, Intl.RelativeTimeFormatUnit] =
     seconds < 60
       ? [seconds, "second"]
-      : seconds < 3600
-        ? [Math.round(seconds / 60), "minute"]
-        : seconds < SECONDS_IN_DAY
-          ? [Math.round(seconds / 3600), "hour"]
+      : minutes < 60
+        ? [minutes, "minute"]
+        : hours < 24
+          ? [hours, "hour"]
           : [Math.round(seconds / SECONDS_IN_DAY), "day"];
 
-  return new Intl.RelativeTimeFormat(i18n.locale || undefined, { numeric: "always" }).format(-value, unit);
+  const locale = i18n.locale || undefined;
+  const text = new Intl.RelativeTimeFormat(locale, { numeric: "always", style }).format(-value, unit);
+  // Some languages' narrow form has no "ago" and reads like a negative number ("-2 j"): use their short form
+  if (style === "narrow" && /^[-−]/.test(text)) {
+    return new Intl.RelativeTimeFormat(locale, { numeric: "always", style: "short" }).format(-value, unit);
+  }
+  return text;
 }
 
 export function formatTVDate(date: Date) {
