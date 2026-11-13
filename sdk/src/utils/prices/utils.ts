@@ -5,7 +5,7 @@ import {
   getCappedPositionImpactUsd,
   getPriceImpactByAcceptablePrice,
 } from "utils/fees";
-import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
+import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount, GMSOL_PRECISION_SCALE } from "utils/gmsol";
 import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
@@ -245,13 +245,16 @@ function getGmsolDecreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint 
   let priceAdjustment: bigint;
 
   if (positionSizeInUsd && positionSizeInTokens) {
-    const impactAtEntrySizeUsd = bigMath.mulDiv(positionSizeInUsd, cappedImpactUsd, sizeDeltaUsd);
+    const impactAtEntrySizeUsd = getGmsolUsdAmount(bigMath.mulDiv(positionSizeInUsd, cappedImpactUsd, sizeDeltaUsd));
     priceAdjustment = bigMath.mulDiv(impactAtEntrySizeUsd, tokenUnit, positionSizeInTokens);
   } else if (sizeDeltaInTokens && sizeDeltaInTokens > 0n) {
     priceAdjustment = bigMath.mulDiv(cappedImpactUsd, tokenUnit, sizeDeltaInTokens);
   } else {
     priceAdjustment = bigMath.mulDiv(indexPrice, cappedImpactUsd, sizeDeltaUsd);
   }
+
+  const priceUnit = tokenUnit * GMSOL_PRECISION_SCALE;
+  priceAdjustment = bigMath.mulDiv(priceAdjustment, 1n, priceUnit) * priceUnit;
 
   return indexPrice + (isLong ? priceAdjustment : -priceAdjustment);
 }

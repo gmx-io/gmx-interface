@@ -332,6 +332,49 @@ describe("gmsol trade math", () => {
     }
   });
 
+  it("rounds decrease execution adjustments in native price units FESOL-57", () => {
+    for (const { isLong, improved, cap, expectedUnitPrice } of [
+      { isLong: true, improved: false, cap: P, expectedUnitPrice: 74_750_000_000n },
+      { isLong: false, improved: true, cap: P, expectedUnitPrice: 76_850_000_000n },
+      { isLong: true, improved: false, cap: P / 100n, expectedUnitPrice: 79_000_000_000n },
+      { isLong: false, improved: true, cap: P / 100n, expectedUnitPrice: 79_000_000_000n },
+    ]) {
+      const sideOi = improved ? 200n : 100n;
+      const otherOi = improved ? 100n : 200n;
+      const marketInfo = market({
+        decimals: 9,
+        minPrice: (4n * P) / 5n,
+        maxPrice: (4n * P) / 5n,
+        tradeMath: "gmsol",
+        overrides: {
+          longInterestUsd: (isLong ? sideOi : otherOi) * P,
+          shortInterestUsd: (isLong ? otherOi : sideOi) * P,
+          positionImpactFactorPositive: (21n * P) / 100_000n,
+          positionImpactFactorNegative: (21n * P) / 100_000n,
+          positionImpactExponentFactorPositive: 2n * P,
+          positionImpactExponentFactorNegative: 2n * P,
+          positionImpactPoolAmount: 10_000_000_000n,
+          maxPositionImpactFactorPositive: cap,
+          maxPositionImpactFactorNegative: cap,
+        },
+      });
+      for (const sizeDeltaInTokens of [undefined, 0n, 50_000_000_000n]) {
+        const result = getAcceptablePriceInfo({
+          marketInfo,
+          isIncrease: false,
+          isLimit: false,
+          isLong,
+          indexPrice: (4n * P) / 5n,
+          sizeDeltaUsd: 50n * P,
+          sizeDeltaInTokens,
+          positionSizeInUsd: 100n * P,
+          positionSizeInTokens: 99_999_999_999n,
+        });
+        expect(result.acceptablePrice).toBe(expectedUnitPrice * 10n ** 19n);
+      }
+    }
+  });
+
   it("evaluates gmsol limit increases at the trigger and covers the execution FESOL-57", () => {
     for (const { isLong, isLimit, indexPrice, atoms } of [
       { isLong: true, isLimit: false, indexPrice: 110n * P, atoms: 889n },
