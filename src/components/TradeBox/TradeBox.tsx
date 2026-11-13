@@ -1520,7 +1520,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           )}
 
           {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
-          {maxAutoCancelOrdersWarning}
+          {!isSolana && maxAutoCancelOrdersWarning}
 
           {isSwap && fromToken && toToken && (
             <PaxosRouteAlerts paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
