@@ -17,6 +17,15 @@ msgstr ""
 msgid "Trade more, pay less.<0/>Refer, and earn"
 msgstr "もっと取引して、もっと安く。<0/>紹介して、稼ぐ"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgctxt "Market state"
+msgid "Closed"
+msgstr "休止中"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Trading is paused because this market's price feed has stopped updating. The market reopens automatically when prices resume. Until then, you can't open or increase a position."
+msgstr "このマーケットの価格フィードの更新が止まっているため、取引は一時停止中です。価格の更新が再開されると、マーケットは自動的に再開します。それまでは、ポジションを新規に建てたり増やしたりすることはできません。"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "スリッページ超過"
@@ -3114,6 +3123,10 @@ msgstr "{0}の最大払出額"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "入金可能な資産がありません"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Market closed. Close and TP/SL orders may execute late."
+msgstr "マーケット休止中。クローズ注文とTP/SL注文の執行が遅れる場合があります。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
@@ -9252,6 +9265,11 @@ msgstr "<0>送信先：</0><1>{0}</1>"
 msgid "FX"
 msgstr "FX"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Market closed"
+msgstr "マーケット休止中"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "ポジションを共有"
@@ -11777,6 +11795,7 @@ msgstr "ロング"
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx

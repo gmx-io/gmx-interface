@@ -7,7 +7,11 @@ import { useIntersection } from "react-use";
 import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectClosedMarkets,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
   selectShowPnlAfterFees,
@@ -17,6 +21,7 @@ import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContex
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -32,6 +37,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
@@ -99,6 +105,8 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const chainId = useSelector(selectChainId);
   const userReferralInfo = useSelector(selectUserReferralInfo);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = getIsMarketClosed(closedMarkets, p.position.marketAddress);
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
@@ -523,15 +531,21 @@ export function PositionItem(p: Props) {
     );
   }
 
+  const marketClosedNote = isMarketClosed ? (
+    <AlertInfo type="warning" textColor="text-yellow-300" noMargin>
+      <Trans>Market closed. Close and TP/SL orders may execute late.</Trans>
+    </AlertInfo>
+  ) : null;
+
   function renderLarge() {
     const { indexName, poolName } = p.position;
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr hoverable={true} data-qa={qaAttr}>
+      <TableTr hoverable={true} data-qa={qaAttr} className={cx({ "[&>td]:pb-36": marketClosedNote })}>
         <TableTd
           data-qa="position-handle"
-          className={cx("flex", {
+          className={cx("relative flex", {
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
@@ -595,6 +609,9 @@ export function PositionItem(p: Props) {
               </span>
             </div>
           </div>
+          {marketClosedNote && (
+            <div className="absolute bottom-12 left-20 z-[11] whitespace-nowrap">{marketClosedNote}</div>
+          )}
         </TableTd>
         <TableTd>
           <div className="flex flex-col gap-2">
@@ -746,6 +763,7 @@ export function PositionItem(p: Props) {
             {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>
+        {marketClosedNote && <AppCardSection>{marketClosedNote}</AppCardSection>}
         <div ref={topSentinelRef} />
         <AppCardSection>
           {showDebugValues && (

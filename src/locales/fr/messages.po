@@ -17,6 +17,15 @@ msgstr ""
 msgid "Trade more, pay less.<0/>Refer, and earn"
 msgstr "Tradez plus, payez moins.<0/>Parrainez et gagnez"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgctxt "Market state"
+msgid "Closed"
+msgstr "Fermé"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Trading is paused because this market's price feed has stopped updating. The market reopens automatically when prices resume. Until then, you can't open or increase a position."
+msgstr "Le trading est suspendu, car le flux de prix de ce marché ne se met plus à jour. Le marché rouvre automatiquement lorsque les prix reprennent. D'ici là, vous ne pouvez ni ouvrir ni augmenter de position."
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "Glissement dépassé"
@@ -3114,6 +3123,10 @@ msgstr "Sortie max {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "Aucun actif disponible pour le dépôt"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Market closed. Close and TP/SL orders may execute late."
+msgstr "Marché fermé. Les ordres de clôture et TP/SL peuvent être exécutés en retard."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
@@ -9252,6 +9265,11 @@ msgstr "<0>Vers </0><1>{0}</1>"
 msgid "FX"
 msgstr "Forex"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Market closed"
+msgstr "Marché fermé"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "Partager la position"
@@ -11777,6 +11795,7 @@ msgstr "Long"
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxPoolRow.tsx
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketsList/NetFeeTooltip.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
