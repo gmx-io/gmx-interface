@@ -325,3 +325,42 @@ describe("TPSLInputRow after a switch between Long and Short", () => {
     });
   });
 });
+
+describe("target-price collateral when changing gain/loss units", () => {
+  it("preserves the trigger price when switching typed gain/loss between percent and USD FESOL-19", () => {
+    for (const { isLong, type, collateral, price, pnl } of [
+      { isLong: true, type: "takeProfit", collateral: 20, price: "125", pnl: "25" },
+      { isLong: false, type: "takeProfit", collateral: 25, price: "80", pnl: "20" },
+      { isLong: true, type: "stopLoss", collateral: 25, price: "80", pnl: "20" },
+      { isLong: false, type: "stopLoss", collateral: 20, price: "125", pnl: "25" },
+    ] as const) {
+      const view = render(
+        <I18nProvider i18n={i18n}>
+          <TradeboxRow
+            type={type}
+            positionData={{
+              ...positionData,
+              isLong,
+              collateralUsd: expandDecimals(collateral, 30),
+              collateralAmount: expandDecimals(collateral, 16),
+              collateralTokenDecimals: 18,
+              isCollateralTokenEquivalentToIndex: true,
+            }}
+          />
+        </I18nProvider>
+      );
+      const inputs = () => view.getAllByRole("textbox") as HTMLInputElement[];
+      fireEvent.change(inputs()[1], { target: { value: "100" } });
+      expect(inputs()[0].value).toBe(price);
+      fireEvent.click(view.getByRole("button", { name: "%" }));
+      fireEvent.click(view.getByRole("button", { name: "$" }));
+      expect(inputs()[1].value).toBe(pnl);
+      expect(inputs()[0].value).toBe(price);
+      fireEvent.click(view.getByRole("button", { name: "$" }));
+      fireEvent.click(view.getByRole("button", { name: "%" }));
+      expect(inputs()[1].value).toBe("100");
+      expect(inputs()[0].value).toBe(price);
+      cleanup();
+    }
+  });
+});
