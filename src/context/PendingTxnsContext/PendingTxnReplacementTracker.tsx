@@ -17,7 +17,7 @@ export function PendingTxnReplacementTracker({
   useSWR(
     ["pendingTxnReplacement", chainId, transaction.hash],
     () =>
-      getPublicClientWithRpc(chainId).waitForTransactionReceipt({
+      getPublicClientWithRpc(chainId, { skipSolanaGate: true }).waitForTransactionReceipt({
         hash: transaction.hash,
         timeout: 0,
         onReplaced: (replacement) => onReplaced(transaction, replacement),

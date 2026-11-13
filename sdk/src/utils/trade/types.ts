@@ -51,7 +51,10 @@ export type SwapAmounts = {
   uiFeeUsd?: bigint;
 };
 
+export type FundingPayout = { longTokenAmount: bigint; shortTokenAmount: bigint };
+
 export type IncreasePositionAmounts = {
+  fundingPayout?: FundingPayout;
   initialCollateralAmount: bigint;
   initialCollateralUsd: bigint;
 
@@ -93,6 +96,7 @@ export type DecreasePositionOutput = {
 };
 
 export type DecreasePositionAmounts = {
+  fundingPayout?: FundingPayout;
   isFullClose: boolean;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
