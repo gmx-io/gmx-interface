@@ -169,5 +169,5 @@ async function signClaimFundingFeesPayload({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId, relayParams });
 }
