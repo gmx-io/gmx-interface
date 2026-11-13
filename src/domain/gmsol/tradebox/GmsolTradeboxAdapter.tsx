@@ -70,7 +70,7 @@ export default function GmsolTradeboxAdapter({
   sessionId: object;
 }) {
   const wallet = useSolanaWalletSession();
-  const { submit, isSubmitting } = useGmsolOrderTransactions();
+  const { submit, isSubmitting, hasPendingSubmission, pendingTrackExecution } = useGmsolOrderTransactions();
   const { begin } = useSolanaOrderNotifications();
   const { isSolanaTradingEnabled, isLoading: isTradingLoading } = useSolanaTradingEnabled({ enabled: true });
   const balances = useSolanaBalances(wallet.address);
@@ -157,12 +157,12 @@ export default function GmsolTradeboxAdapter({
     error = t`Loading...`;
   else error = tradeError.buttonErrorMessage ?? intent.error;
 
-  const current = useRef({ error, intent, owner: wallet.address });
-  current.current = { error, intent, owner: wallet.address };
+  const current = useRef({ error, intent, owner: wallet.address, hasPendingSubmission });
+  current.current = { error, intent, owner: wallet.address, hasPendingSubmission };
   const onSubmit = useCallback(async () => {
-    const { error, intent, owner } = current.current;
-    if (error || !intent.action || !owner) return false;
-    const notification = begin({ title: t`Order request`, trackExecution: isMarket });
+    const { error, intent, owner, hasPendingSubmission } = current.current;
+    if (!owner || (!hasPendingSubmission && (error || !intent.action))) return false;
+    const notification = begin({ title: t`Order request`, trackExecution: pendingTrackExecution ?? isMarket });
     try {
       const result = await submit(intent.action, { onSubmitted: notification.submitted });
       notification.submitted(result);
@@ -171,22 +171,36 @@ export default function GmsolTradeboxAdapter({
       notification.failed(error);
       return false;
     }
-  }, [begin, isMarket, submit]);
+  }, [begin, isMarket, pendingTrackExecution, submit]);
 
   const text = isSubmitting
-    ? t`Sending order request...`
+    ? hasPendingSubmission
+      ? t`Checking transaction status...`
+      : t`Sending order request...`
     : !wallet.address
       ? t`Connect wallet`
-      : error ?? (isTrigger ? t`Create TP/SL order` : isLong ? t`Long` : t`Short`);
+      : hasPendingSubmission
+        ? t`Check transaction status`
+        : error ?? (isTrigger ? t`Create TP/SL order` : isLong ? t`Long` : t`Short`);
   useEffect(() => {
     onChange({
       sessionId,
       owner: wallet.address,
       text,
-      disabled: isSubmitting || Boolean(wallet.address && error) || wallet.isRestoring,
+      disabled: isSubmitting || Boolean(wallet.address && error && !hasPendingSubmission) || wallet.isRestoring,
       isSubmitting,
       onSubmit,
     });
-  }, [error, isSubmitting, onChange, onSubmit, sessionId, text, wallet.address, wallet.isRestoring]);
+  }, [
+    error,
+    hasPendingSubmission,
+    isSubmitting,
+    onChange,
+    onSubmit,
+    sessionId,
+    text,
+    wallet.address,
+    wallet.isRestoring,
+  ]);
   return null;
 }
