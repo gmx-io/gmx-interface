@@ -213,6 +213,10 @@ msgstr "GMX Account 兑换无法使用原生 {0}。请选择 {1}，或先提取�
 msgid "Include rPnL in leverage display"
 msgstr "在杠杆显示中包含 rPnL"
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr ""
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "订单 ({0})"
@@ -1132,6 +1136,10 @@ msgstr "只有 GMX 向此池提供流动性。该池用于 USDC 与 USDG 之间�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "资金费率递减因子"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
@@ -4741,6 +4749,7 @@ msgid "Net price impact / fees"
 msgstr "净价格影响 / 费用"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "订单已取消"
 
@@ -4988,6 +4997,7 @@ msgid "Returned margin"
 msgstr "返还的保证金"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Sending order request..."
 msgstr "正在发送订单请求…"
 
@@ -8714,6 +8724,7 @@ msgstr "符号（Z 到 A）"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 调试"
 
@@ -9523,6 +9534,10 @@ msgstr "规模"
 msgid "Book a 30-min call"
 msgstr "预约 30 分钟通话"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9625,6 +9640,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "订单请求已发送"
 
@@ -10974,6 +10990,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "GLV 中 GM：{0} [{1}] 的流动性不足。请选择其他池、减少卖出数量，或分散到多个池进行提取。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "订单已成交"
 
@@ -11439,6 +11456,7 @@ msgid "Show assets with small value ({0})"
 msgstr "显示价值较低的资产（{0}）"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "正在执行订单请求…"
 
@@ -13552,6 +13570,10 @@ msgstr "卖出"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
 msgstr "借出的仓位影响池金额"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
