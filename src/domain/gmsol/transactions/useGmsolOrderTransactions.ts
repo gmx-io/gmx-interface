@@ -97,6 +97,11 @@ export function useGmsolOrderTransactions() {
     }
   }, []);
 
-  const hasPendingSubmission = Boolean(wallet.address && getPendingGmsolSubmission(wallet.address));
-  return { submit, isSubmitting, hasPendingSubmission };
+  const pendingSubmission = wallet.address ? getPendingGmsolSubmission(wallet.address) : undefined;
+  return {
+    submit,
+    isSubmitting,
+    hasPendingSubmission: Boolean(pendingSubmission),
+    pendingTrackExecution: pendingSubmission?.trackExecution,
+  };
 }

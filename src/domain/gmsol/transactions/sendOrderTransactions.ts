@@ -202,6 +202,9 @@ export async function sendGmsolOrderTransactions({
       setPendingGmsolSubmission(plan.owner, {
         signature: expectedSignature,
         orderAddresses,
+        trackExecution:
+          plan.action.type === "create" &&
+          plan.action.orders.some((order) => order.kind === "MarketIncrease" || order.kind === "MarketDecrease"),
         operation: plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type,
       });
       requireGmsol(
