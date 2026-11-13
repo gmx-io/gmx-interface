@@ -11,14 +11,17 @@ import {
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_LOOKUP_TABLE_ADDRESSES } from "config/gmsol/lookupTables";
+import { GMSOL_STORE_PROGRAM_ID } from "config/gmsol/program";
 import { copySolanaBytes } from "lib/solana/bytes";
 import { fetchGmsolLookupTables } from "lib/solana/lookupTables";
 import { getSolanaRpc } from "lib/solana/rpc";
 
 import { fetchSolanaTradingEnabled } from "../fetchSolanaTradingEnabled";
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
+import { decodeGmsolInstruction } from "./decodeInstruction";
+import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
-import { requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
+import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
 
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
@@ -127,6 +130,11 @@ export async function sendGmsolOrderTransactions({
   let slot = 0n;
   let pendingSignature: string | undefined;
   try {
+    const pending = getPendingGmsolSubmission(plan.owner);
+    if (pending) {
+      pendingSignature = pending.signature;
+      throw new GmsolPendingSubmissionError(pending.signature);
+    }
     // Tables are fetched again at the signature boundary; their authority policy and contents must still match.
     const liveTables = await fetchGmsolLookupTables();
     requireGmsol(
@@ -176,7 +184,30 @@ export async function sendGmsolOrderTransactions({
         "Solana session changed before sending"
       );
       const expectedSignature = getSignatureFromTransaction(signed);
+      const existing = getPendingGmsolSubmission(plan.owner);
+      if (existing) {
+        pendingSignature = existing.signature;
+        throw new GmsolPendingSubmissionError(existing.signature);
+      }
       pendingSignature = expectedSignature;
+      const { message } = decodeGmsolTransaction(bytes, plan);
+      const orderAddresses = [...message.instructions].flatMap((instruction) => {
+        if (instruction.programAddress !== GMSOL_STORE_PROGRAM_ID) return [];
+        const decoded = decodeGmsolInstruction(
+          instruction.data ? copySolanaBytes(instruction.data) : new Uint8Array(),
+          (instruction.accounts ?? []).map((account) => account.address)
+        );
+        return decoded.name === "create_order_v2" ? [decoded.accounts.order] : [];
+      });
+      setPendingGmsolSubmission(plan.owner, {
+        signature: expectedSignature,
+        orderAddresses,
+        operation: plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type,
+      });
+      requireGmsol(
+        getPendingGmsolSubmission(plan.owner)?.signature === expectedSignature,
+        "Unable to retain the transaction signature before sending"
+      );
       const sent = await rpc
         .sendTransaction(getBase64EncodedWireTransaction(signed), {
           encoding: "base64",
@@ -197,6 +228,7 @@ export async function sendGmsolOrderTransactions({
           if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
             slot = status.slot;
             pendingSignature = undefined;
+            setPendingGmsolSubmission(plan.owner, undefined);
             try {
               await onConfirmed({ signature: sent, slot, owner: plan.owner });
             } catch (error) {
