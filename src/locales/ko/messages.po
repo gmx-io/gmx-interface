@@ -423,6 +423,10 @@ msgstr "탐색"
 msgid "GM airdrop"
 msgstr "GM 에어드롭"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Your referrer earns GT and GT sellable quota from your trades. This doesn't reduce your discount or GT rewards, or add anything to your fees."
+msgstr ""
+
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "The share of the GT your referees earn from trading that you receive: 50% to 100%, set by your VIP tier. <0>View tiers in GT Points</0>."
 msgstr ""
@@ -651,6 +655,10 @@ msgstr "내보내기는 기록 보관 및 세금 소프트웨어 호환성을 �
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GM"
 msgstr "GM"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "How is the trading fee discount calculated?"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
@@ -1147,6 +1155,10 @@ msgstr "이용 가능 시점"
 msgid "Available liquidity"
 msgstr "가용 유동성"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "No referee rewards in this period"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code"
 msgstr "이 계정에는 활성 추천 코드가 없습니다"
@@ -1166,10 +1178,6 @@ msgstr "STIP.b 소급 보너스"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "규모의 유동성"
-
-#: src/pages/Referrals/SolanaReferrals.tsx
-msgid "Get fee discounts and earn GT rewards through the GMX Solana <0/> referral program"
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
@@ -5003,10 +5011,6 @@ msgstr "최근 {DAYS_BACK}일간 {0}개의 이벤트가 발견되었습니다"
 msgid "How you earn"
 msgstr "수익 구조"
 
-#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
-msgid "The 10% discount applies to the opening and closing fees of your positions."
-msgstr ""
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
 msgstr "{gmOrGlvLabel}을(를) 다음 체인으로 브릿지 중..."
@@ -5102,10 +5106,6 @@ msgstr "주문 요청을 전송하는 중…"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>{0}{1}<1>{poolName}</1> 판매</0>"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "GT REWARD"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -5509,6 +5509,7 @@ msgstr "규칙 읽기"
 msgid "Source chain supports single token only"
 msgstr "소스 체인은 단일 토큰만 지원합니다"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr "추천 할인은 레버리지 거래의 포지션 개설 및 종료 수수료에 적용됩니다. 스왑 수수료는 포함되지 않습니다."
@@ -7044,6 +7045,10 @@ msgstr "시프팅은 {chainNames} 또는 {lastChainName}에서만 가능합니�
 msgid "Monthly bought"
 msgstr "월간 매입량"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Total referrals includes all referees who have used your referral code. Active referees are those who traded in the last 7 days."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/PaxosTransitExecutionRows.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Zero-fee capacity left"
@@ -7283,6 +7288,7 @@ msgstr "스탑 마켓 실패"
 msgid "Settings"
 msgstr "설정"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "GT EARNED"
 msgstr ""
@@ -7885,10 +7891,6 @@ msgstr ""
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
 msgstr "GM에서 GLV로 이전하는 것은 GM 토큰으로 GLV를 구매하는 것과 유사합니다. 이 옵션을 선택하면 GLV 구매 탭으로 이동합니다."
 
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Active referees traded in the last 7 days."
-msgstr ""
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "기존 1CT 서브계정에 {balanceFormatted} 잔여"
@@ -8074,10 +8076,6 @@ msgstr "GMX 누적 거래량"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "청산 수수료"
-
-#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
-msgid "Your referrer earns GT and GT sellable quota from your trades. This doesn't reduce your discount or add anything to your fees."
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8385,6 +8383,7 @@ msgid "Trade now"
 msgstr "지금 거래하기"
 
 #: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
 msgid "Rewards show here when your referees trade."
 msgstr ""
 
@@ -8578,6 +8577,10 @@ msgstr "거버넌스 알림"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "{symbol} 잔액이 부족합니다. 이 금액으로는 향후 GMX Account 수수료를 지불하기에 여유가 거의 없습니다."
+
+#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
+msgid "You're now receiving a discount of {discountLabel} on your trades!"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9070,6 +9073,10 @@ msgstr "스왑에서 결과 보기"
 msgid "Guaranteed liquidity"
 msgstr "보장된 유동성"
 
+#: src/pages/Referrals/SolanaReferrals.tsx
+msgid "Get fee discounts and earn GT rewards through the GMX Solana referral program"
+msgstr ""
+
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 msgid "You start earning as soon as a referred trader makes their first trade with your code. GT rewards go straight to your GT balance, with nothing to claim, and show in Recent activity on the Affiliate dashboard."
 msgstr ""
@@ -9543,6 +9550,10 @@ msgstr "리베이트 수령"
 #: src/lib/tenderly.tsx
 msgid "View transaction"
 msgstr "트랜잭션 보기"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Changing your referral code isn't currently supported in the app, so pick one you're happy to share."
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not deployed on {0} yet</0><1/><2>Make any transaction from it on {1}, then try again</2>"
@@ -10826,7 +10837,7 @@ msgid "Protocol analytics"
 msgstr "프로토콜 분석"
 
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
-msgid "No. Each wallet can create one referral code, and it can't be changed later, so pick one you're happy to share."
+msgid "It combines the fixed 10% referral discount you receive from having a referrer with the VIP discount based on your GT VIP tier."
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -11265,10 +11276,6 @@ msgstr "Paxos로 변환 · 수수료 {fee}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "최대 예약 {directionLabel}"
-
-#: src/components/Referrals/Solana/SolanaTradersDashboard.tsx
-msgid "You're now receiving a permanent {SOLANA_TRADER_DISCOUNT_PERCENT}% discount on your trades!"
-msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."

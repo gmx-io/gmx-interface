@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
 import type { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
-import { formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
+import { formatDate, formatTimeAgo, SECONDS_IN_DAY } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -16,17 +16,19 @@ import { BottomTablePagination } from "components/Pagination/BottomTablePaginati
 import usePagination from "components/Pagination/usePagination";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TimeRangeFilter } from "components/Referrals/shared/TimeRangeFilter";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 
 import { SolanaAffiliatesPromoCard } from "./SolanaPromoCards";
 import { SOLANA_AFFILIATE_POST_WIZARD_FAQS } from "./solanaReferralsFaq";
-import { formatGt, formatReferralDate, shortenSolanaAddress } from "./solanaReferralsFormat";
+import { formatGt, formatReferralDateTime, shortenSolanaAddress } from "./solanaReferralsFormat";
 import {
   getSolanaReferralLink,
   GT_POINTS_BUYBACK_PATH,
@@ -41,6 +43,10 @@ enum ActivityTab {
   RecentActivity = "recentActivity",
   Referees = "referees",
 }
+
+/** A referee with what the affiliate earned from them in the chosen range */
+type RefereeRow = SolanaReferee & { gtEarned: bigint; sellableQuotaEarned: bigint };
+type RefereeSortField = "joinedAt" | "gtEarned" | "sellableQuotaEarned" | "lastTradeAt";
 
 const ACTIVITY_TIME_RANGE_INFOS: TimeRangeInfo[] = [
   { slug: "7d", days: 7, title: msg`${7}d` },
@@ -149,11 +155,20 @@ function TotalReferralsCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-adaptive">
       <div className="text-body-small font-medium text-typography-secondary">
-        <Tooltip
+        <StandardTooltip
           handle={<Trans>Total referrals</Trans>}
           variant="iconStroke"
           position="bottom-start"
-          content={<Trans>Active referees traded in the last 7 days.</Trans>}
+          content={
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  Total referrals includes all referees who have used your referral code. Active referees are those who
+                  traded in the last 7 days.
+                </Trans>
+              </TooltipText>
+            </TooltipContent>
+          }
         />
       </div>
       <div className="flex flex-wrap items-center gap-8">
@@ -181,18 +196,19 @@ function RewardRateCard({ rewardRatePercent }: { rewardRatePercent: number | und
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-adaptive">
       <div className="text-body-small font-medium text-typography-secondary">
-        <Tooltip
+        <StandardTooltip
           handle={<Trans>Referral reward rate</Trans>}
           variant="iconStroke"
           position="bottom-start"
           content={
-            <Trans>
-              The share of the GT your referees earn from trading that you receive: 50% to 100%, set by your VIP tier.{" "}
-              <Link to={GT_POINTS_MY_PATH} className="text-blue-300">
-                View tiers in GT Points
-              </Link>
-              .
-            </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  The share of the GT your referees earn from trading that you receive: 50% to 100%, set by your VIP
+                  tier. <Link to={GT_POINTS_MY_PATH}>View tiers in GT Points</Link>.
+                </Trans>
+              </TooltipText>
+            </TooltipContent>
           }
         />
       </div>
@@ -205,17 +221,18 @@ function RewardRateCard({ rewardRatePercent }: { rewardRatePercent: number | und
 
 function SellableQuotaHeader({ label }: { label: React.ReactNode }) {
   return (
-    <Tooltip
+    <StandardTooltip
       handle={label}
       position="bottom-end"
       content={
-        <Trans>
-          Sellable quota lets you sell GT in buybacks. Use it in{" "}
-          <Link to={GT_POINTS_BUYBACK_PATH} className="text-blue-300">
-            GT Points › Buyback
-          </Link>
-          .
-        </Trans>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>
+              Sellable quota lets you sell GT in buybacks. Use it in{" "}
+              <Link to={GT_POINTS_BUYBACK_PATH}>GT Points › Buyback</Link>.
+            </Trans>
+          </TooltipText>
+        </TooltipContent>
       }
     />
   );
@@ -231,6 +248,21 @@ function ActivityCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
     return affiliate.activity.filter((record) => record.timestamp >= from);
   }, [affiliate.activity, days]);
 
+  // Referees who brought rewards in the range, with what they brought in that range only
+  const refereeRows = useMemo(() => {
+    const byAddress = new Map(affiliate.referees.map((referee) => [referee.address, referee]));
+    const rows = new Map<string, RefereeRow>();
+    for (const record of activity) {
+      const referee = byAddress.get(record.referee);
+      if (!referee) continue;
+      const row = rows.get(referee.address) ?? { ...referee, gtEarned: 0n, sellableQuotaEarned: 0n };
+      row.gtEarned += record.gtReward;
+      row.sellableQuotaEarned += record.sellableQuota;
+      rows.set(referee.address, row);
+    }
+    return [...rows.values()];
+  }, [activity, affiliate.referees]);
+
   const tabOptions = useMemo(
     () => [
       { value: ActivityTab.RecentActivity, label: <Trans>Recent activity</Trans> },
@@ -241,7 +273,8 @@ function ActivityCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
 
   return (
     <div className="flex flex-col rounded-8 bg-slate-900">
-      {/* One divider under the header; the time filter moves under the tabs, padded, when the card is narrow */}
+      {/* One divider under the header; the time filter is on both tabs (same height, no jump) and moves under
+          the tabs, padded, when the card is narrow */}
       <div className="flex flex-wrap items-end justify-between border-b-1/2 border-slate-600">
         <Tabs
           type="block"
@@ -250,20 +283,18 @@ function ActivityCard({ affiliate }: { affiliate: SolanaAffiliateData }) {
           selectedValue={activeTab}
           onChange={setActiveTab}
         />
-        {activeTab === ActivityTab.RecentActivity && (
-          <div className="px-adaptive py-6">
-            <TimeRangeFilter
-              timeRange={timeRange ?? "7d"}
-              setTimeRange={setTimeRange}
-              timeRangeInfos={ACTIVITY_TIME_RANGE_INFOS}
-            />
-          </div>
-        )}
+        <div className="px-adaptive py-6">
+          <TimeRangeFilter
+            timeRange={timeRange ?? "7d"}
+            setTimeRange={setTimeRange}
+            timeRangeInfos={ACTIVITY_TIME_RANGE_INFOS}
+          />
+        </div>
       </div>
       {activeTab === ActivityTab.RecentActivity ? (
         <RecentActivityTable activity={activity} rangeDays={days} />
       ) : (
-        <RefereesTable referees={affiliate.referees} />
+        <RefereesTable rows={refereeRows} hasReferees={affiliate.referees.length > 0} rangeDays={days} />
       )}
     </div>
   );
@@ -278,7 +309,6 @@ function EmptyRow({ children }: { children: React.ReactNode }) {
 }
 
 function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferralActivity[]; rangeDays: number }) {
-  const { i18n } = useLingui();
   const { isMobile } = useBreakpoints();
   // A new time range starts again on page 1
   const { currentPage, setCurrentPage, pageCount, currentData } = usePagination(
@@ -309,7 +339,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
               <div className="flex min-w-0 flex-col gap-2">
                 <span className="font-mono text-typography-primary">{shortenSolanaAddress(record.referee)}</span>
                 <span className="text-body-small text-typography-secondary">
-                  {formatReferralDate(record.timestamp, i18n.locale, { withTime: true })}
+                  {formatReferralDateTime(record.timestamp)}
                 </span>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2 numbers">
@@ -333,7 +363,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
                   <Trans>REFEREE</Trans>
                 </TableTh>
                 <TableTh className="text-right">
-                  <Trans>GT REWARD</Trans>
+                  <Trans>GT EARNED</Trans>
                 </TableTh>
                 <TableTh>
                   <SellableQuotaHeader label={<Trans>SELLABLE QUOTA</Trans>} />
@@ -343,9 +373,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
             <tbody>
               {currentData.map((record) => (
                 <TableTr key={record.id}>
-                  <TableTd className="whitespace-nowrap">
-                    {formatReferralDate(record.timestamp, i18n.locale, { withTime: true })}
-                  </TableTd>
+                  <TableTd className="whitespace-nowrap">{formatReferralDateTime(record.timestamp)}</TableTd>
                   <TableTd className="font-mono">{shortenSolanaAddress(record.referee)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
                     {formatGt(record.gtReward, { signed: true })}
@@ -365,7 +393,6 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
 }
 
 function LastTrade({ timestamp }: { timestamp: number | undefined }) {
-  const { i18n } = useLingui();
   if (timestamp === undefined) {
     return (
       <span className="text-typography-secondary">
@@ -374,24 +401,65 @@ function LastTrade({ timestamp }: { timestamp: number | undefined }) {
     );
   }
 
-  return (
-    <span title={formatReferralDate(timestamp, i18n.locale, { withTime: true })}>
-      {formatTimeAgo(timestamp * 1000)}
-    </span>
-  );
+  return <span title={formatReferralDateTime(timestamp)}>{formatTimeAgo(timestamp * 1000, undefined, "narrow")}</span>;
 }
 
-function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
-  const { i18n } = useLingui();
-  const { isMobile } = useBreakpoints();
-  const { currentPage, setCurrentPage, pageCount, currentData } = usePagination("SolanaReferralsReferees", referees);
+// Newest last trade first until the user picks a column; referees without a trade always go last
+function sortRefereeRows(rows: RefereeRow[], field: RefereeSortField, isAscending: boolean) {
+  return [...rows].sort((a, b) => {
+    const left = a[field];
+    const right = b[field];
+    if (left === undefined || right === undefined) {
+      return left === right ? 0 : left === undefined ? 1 : -1;
+    }
+    const order = left > right ? 1 : left < right ? -1 : 0;
+    return isAscending ? order : -order;
+  });
+}
 
-  if (referees.length === 0) {
+function RefereesTable({
+  rows,
+  hasReferees,
+  rangeDays,
+}: {
+  rows: RefereeRow[];
+  hasReferees: boolean;
+  rangeDays: number;
+}) {
+  const { isMobile } = useBreakpoints();
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<RefereeSortField>("solana-referrals-referees", {
+    orderBy: "lastTradeAt",
+    direction: "desc",
+    isDefault: true,
+  });
+  const isSorted = orderBy !== "unspecified" && direction !== "unspecified";
+  const sortedRows = useMemo(
+    () => sortRefereeRows(rows, isSorted ? orderBy : "lastTradeAt", isSorted && direction === "asc"),
+    [rows, isSorted, orderBy, direction]
+  );
+  // A new range or order starts again on page 1
+  const { currentPage, setCurrentPage, pageCount, currentData } = usePagination(
+    `SolanaReferralsReferees-${rangeDays}-${orderBy}-${direction}`,
+    sortedRows
+  );
+
+  if (!hasReferees) {
     return (
       <EmptyRow>
         <Trans>No referees yet</Trans>
         <span className="text-body-small">
           <Trans>Share your referral link to start earning.</Trans>
+        </span>
+      </EmptyRow>
+    );
+  }
+
+  if (rows.length === 0) {
+    return (
+      <EmptyRow>
+        <Trans>No referee rewards in this period</Trans>
+        <span className="text-body-small">
+          <Trans>Rewards show here when your referees trade.</Trans>
         </span>
       </EmptyRow>
     );
@@ -409,13 +477,13 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
               <div className="flex min-w-0 flex-col gap-2">
                 <span className="font-mono text-typography-primary">{shortenSolanaAddress(referee.address)}</span>
                 <span className="text-body-small text-typography-secondary">
-                  <Trans>Joined {formatReferralDate(referee.joinedAt, i18n.locale)}</Trans>
+                  <Trans>Joined {formatDate(referee.joinedAt)}</Trans>
                 </span>
                 <span className="text-body-small text-typography-secondary">
                   {referee.lastTradeAt === undefined ? (
                     <Trans>No trades yet</Trans>
                   ) : (
-                    <Trans>Last trade {formatTimeAgo(referee.lastTradeAt * 1000)}</Trans>
+                    <Trans>Last trade {formatTimeAgo(referee.lastTradeAt * 1000, undefined, "narrow")}</Trans>
                   )}
                 </span>
               </div>
@@ -432,21 +500,35 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
         <TableScrollFadeContainer>
           <table className="w-full min-w-full">
             <thead>
-              <TableTheadTr>
+              {/* The 16px sort arrows sit in a 14px header line: trim them so this header keeps Recent activity's
+                  height and switching tabs doesn't move the rows */}
+              <TableTheadTr className="[&_button>svg]:-my-1">
                 <TableTh>
                   <Trans>REFEREE</Trans>
                 </TableTh>
                 <TableTh>
-                  <Trans>JOINED</Trans>
+                  <Sorter {...getSorterProps("joinedAt")}>
+                    <Trans>JOINED</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="text-right">
-                  <Trans>GT EARNED</Trans>
+                  <Sorter {...getSorterProps("gtEarned")}>
+                    <Trans>GT EARNED</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="text-right">
-                  <SellableQuotaHeader label={<Trans>SELLABLE QUOTA EARNED</Trans>} />
+                  <Sorter {...getSorterProps("sellableQuotaEarned")}>
+                    <SellableQuotaHeader label={<Trans>SELLABLE QUOTA EARNED</Trans>} />
+                  </Sorter>
                 </TableTh>
                 <TableTh>
-                  <Trans>LAST TRADE</Trans>
+                  <Sorter
+                    {...getSorterProps("lastTradeAt")}
+                    // Newest trade first is the default order, so its arrow shows until another column is picked
+                    direction={isSorted ? getSorterProps("lastTradeAt").direction : "desc"}
+                  >
+                    <Trans>LAST TRADE</Trans>
+                  </Sorter>
                 </TableTh>
               </TableTheadTr>
             </thead>
@@ -454,7 +536,7 @@ function RefereesTable({ referees }: { referees: SolanaReferee[] }) {
               {currentData.map((referee) => (
                 <TableTr key={referee.address}>
                   <TableTd className="font-mono">{shortenSolanaAddress(referee.address)}</TableTd>
-                  <TableTd className="whitespace-nowrap">{formatReferralDate(referee.joinedAt, i18n.locale)}</TableTd>
+                  <TableTd className="whitespace-nowrap">{formatDate(referee.joinedAt)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">{formatGt(referee.gtEarned)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
                     {formatGt(referee.sellableQuotaEarned)}

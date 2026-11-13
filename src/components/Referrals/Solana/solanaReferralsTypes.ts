@@ -68,14 +68,11 @@ export type SolanaReferralActivity = {
   sellableQuota: bigint;
 };
 
+/** GT earned and sellable quota earned per referee are summed from `activity` for the chosen 7d / 30d / 90d range */
 export type SolanaReferee = {
   address: string;
   /** In seconds */
   joinedAt: number;
-  /** GT the affiliate earned from this referee, with SOLANA_GT_DECIMALS */
-  gtEarned: bigint;
-  /** Sellable quota the affiliate earned from this referee, GT with SOLANA_GT_DECIMALS */
-  sellableQuotaEarned: bigint;
   /** In seconds; undefined = no trades yet */
   lastTradeAt: number | undefined;
 };
@@ -94,11 +91,14 @@ export type SolanaAffiliateData = {
   code: string;
   /** Share of the referral rewards the affiliate receives (50-100%), set by their VIP tier; undefined = not known yet */
   rewardRatePercent: number | undefined;
+  /** Every referee who has used the code */
   totalReferrals: number;
+  /** Referees who traded in the last 7 days */
   activeReferrals: number;
-  /** Every reward of the last 90 days, newest first: the page filters 7d/30d/90d and pages in the browser */
+  /** Every reward of the last 90 days, newest first: the page filters 7d/30d/90d and pages in the browser.
+   * Each `referee` must also be in `referees`, or its rewards don't show on the Referees tab. */
   activity: SolanaReferralActivity[];
-  /** Every referee, in the order shown (paged in the browser) */
+  /** Every referee; the Referees tab lists those with rewards in the chosen range (sorted and paged in the browser) */
   referees: SolanaReferee[];
 };
 
@@ -110,6 +110,9 @@ export type SolanaReferralsData = {
   isLoading: boolean;
   /** Referral code the trader applied; undefined = none */
   appliedCode: string | undefined;
+  /** The trader's whole trading fee discount, in percent (12.7 means 12.7%): 100 × (1 − (1 − VIP) × (1 − 0.10)),
+   * e.g. 12.7 for a 3% VIP discount. undefined = not known yet; the active-code card then shows the 10% referral part. */
+  tradingFeeDiscountPercent: number | undefined;
   /** Trader volume and discounts, one point per hour, in any order. Send the whole history:
    * Total shows all of it, and each range compares with the period before it. */
   traderPoints: SolanaTraderPoint[];

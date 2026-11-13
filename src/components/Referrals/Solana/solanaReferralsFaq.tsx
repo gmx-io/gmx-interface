@@ -11,8 +11,8 @@ const REFERRER_BENEFITS: FaqItem = {
   title: <Trans>What benefits does my referrer receive?</Trans>,
   content: (
     <Trans>
-      Your referrer earns GT and GT sellable quota from your trades. This doesn't reduce your discount or add anything
-      to your fees.
+      Your referrer earns GT and GT sellable quota from your trades. This doesn't reduce your discount or GT rewards, or
+      add anything to your fees.
     </Trans>
   ),
 };
@@ -61,6 +61,15 @@ export const SOLANA_TRADER_WIZARD_FAQS: FaqItem[] = [
 
 export const SOLANA_TRADER_POST_WIZARD_FAQS: FaqItem[] = [
   {
+    title: <Trans>How is the trading fee discount calculated?</Trans>,
+    content: (
+      <Trans>
+        It combines the fixed 10% referral discount you receive from having a referrer with the VIP discount based on
+        your GT VIP tier.
+      </Trans>
+    ),
+  },
+  {
     title: <Trans>How is my fee discount applied?</Trans>,
     content: (
       <Trans>
@@ -71,7 +80,11 @@ export const SOLANA_TRADER_POST_WIZARD_FAQS: FaqItem[] = [
   },
   {
     title: <Trans>Which fees get discounted?</Trans>,
-    content: <Trans>The 10% discount applies to the opening and closing fees of your positions.</Trans>,
+    content: (
+      <Trans>
+        Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included.
+      </Trans>
+    ),
   },
   REFERRER_BENEFITS,
   CHANGE_REFERRER,
@@ -120,9 +133,7 @@ const REFEREE_BENEFITS: FaqItem = {
 const CHANGE_CODE: FaqItem = {
   title: <Trans>Can I change my referral code?</Trans>,
   content: (
-    <Trans>
-      No. Each wallet can create one referral code, and it can't be changed later, so pick one you're happy to share.
-    </Trans>
+    <Trans>Changing your referral code isn't currently supported in the app, so pick one you're happy to share.</Trans>
   ),
 };
 

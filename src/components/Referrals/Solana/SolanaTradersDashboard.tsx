@@ -33,6 +33,9 @@ export function SolanaTradersDashboard({
   hasOwnAffiliateCode: boolean;
 }) {
   const [, copyToClipboard] = useCopyToClipboard();
+  // The whole trading fee discount (referral combined with VIP), at least the 10% referral part
+  const discountPercent = Math.max(SOLANA_TRADER_DISCOUNT_PERCENT, data.tradingFeeDiscountPercent ?? 0);
+  const discountLabel = `${Number(discountPercent.toFixed(2))}%`;
   const { timeRangeInfo, setTimeRange, periodStart, periodEnd } = useTimeRange(
     "solana-referrals-traders-time-range",
     REFERRALS_TIME_RANGE_INFOS
@@ -132,7 +135,7 @@ export function SolanaTradersDashboard({
           </div>
           <Card>
             <div className="text-body-medium mb-2 font-medium text-typography-primary">
-              <Trans>You're now receiving a permanent {SOLANA_TRADER_DISCOUNT_PERCENT}% discount on your trades!</Trans>
+              <Trans>You're now receiving a discount of {discountLabel} on your trades!</Trans>
             </div>
             <div className="text-body-small text-typography-secondary">
               <Trans>The reduced rate applies to every open and close fee.</Trans>
