@@ -2,11 +2,13 @@ import { act, cleanup, render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { getLeverageKey } from "config/localStorage";
+import { getLeverageKey, getSyntheticsTradeOptionsKey } from "config/localStorage";
+import type { OrderInfo } from "domain/synthetics/orders";
 import { createMockMarketInfo, createMockMarketsData, MOCK_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { BTC_ADDRESS, BTC_TOKEN, ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { ARBITRUM, type NetworkId, SOLANA_NETWORK_ID } from "sdk/configs/chains";
-import { TradeType } from "sdk/utils/trade/types";
+import { OrderType } from "sdk/utils/orders/types";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
   INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
@@ -84,6 +86,95 @@ describe("useTradeboxState network isolation", () => {
     cleanup();
     localStorage.clear();
   });
+
+  it("initializes collateral for fresh and restored position forms FESOL-15", () => {
+    for (const tradeType of [undefined, TradeType.Long, TradeType.Short]) {
+      if (tradeType !== undefined) {
+        seedNetwork(ARBITRUM, { tradeType, indexTokenAddress: BTC_ADDRESS, market: BTC_MARKET_ADDRESS });
+      }
+
+      const view = renderTradebox(ARBITRUM);
+      const marketAddress = tradeType === undefined ? MOCK_MARKET_ADDRESS : BTC_MARKET_ADDRESS;
+      const side = tradeType === TradeType.Short ? "short" : "long";
+      expect(tradebox.collateralAddress).toBe(USDC_ADDRESS);
+      expect(readStoredTradeOptions(ARBITRUM)?.collaterals?.[marketAddress]?.[side]).toBe(USDC_ADDRESS);
+      view.unmount();
+      localStorage.clear();
+    }
+  });
+
+  it.each([ARBITRUM, SOLANA_NETWORK_ID] as const)(
+    "restores and accepts Swap only on supported networks FESOL-15 (%s)",
+    (networkId) => {
+      seedNetwork(networkId, {
+        tradeType: TradeType.Swap,
+        indexTokenAddress: ETH_ADDRESS,
+        market: MOCK_MARKET_ADDRESS,
+      });
+      const key = JSON.stringify(getSyntheticsTradeOptionsKey(networkId));
+      const saved = JSON.parse(localStorage.getItem(key)!);
+      saved.tokens.swapToTokenAddress = BTC_ADDRESS;
+      saved.tradeMode = TradeMode.Twap;
+      localStorage.setItem(key, JSON.stringify(saved));
+
+      const expectedType = networkId === SOLANA_NETWORK_ID ? TradeType.Long : TradeType.Swap;
+      renderTradebox(networkId);
+      expect(tradebox.tradeType).toBe(expectedType);
+      expect(tradebox.toTokenAddress).toBe(networkId === SOLANA_NETWORK_ID ? ETH_ADDRESS : BTC_ADDRESS);
+      expect(tradebox.tradeMode).toBe(networkId === SOLANA_NETWORK_ID ? TradeMode.Market : TradeMode.Twap);
+      expect(JSON.parse(localStorage.getItem(key)!).tradeType).toBe(expectedType);
+
+      act(() => tradebox.setTradeConfig({ tradeType: TradeType.Swap, toTokenAddress: BTC_ADDRESS }));
+      expect(tradebox.tradeType).toBe(expectedType);
+      expect(tradebox.availableTradeModes.length).toBeGreaterThan(0);
+      expect(JSON.parse(localStorage.getItem(key)!).tradeType).toBe(expectedType);
+    }
+  );
+
+  it.each(["trade type", "trade config", "swap order"] as const)(
+    "preserves the Solana Short Limit form when an unsupported Swap is requested via %s",
+    (entry) => {
+      seedNetwork(SOLANA_NETWORK_ID, {
+        tradeType: TradeType.Short,
+        indexTokenAddress: ETH_ADDRESS,
+        market: MOCK_MARKET_ADDRESS,
+      });
+      renderTradebox(SOLANA_NETWORK_ID);
+      act(() => {
+        tradebox.setTradeMode(TradeMode.Limit);
+        tradebox.setFromTokenInputValue("123");
+      });
+      const previous = readStoredTradeOptions(SOLANA_NETWORK_ID);
+      expect(tradebox.tradeType).toBe(TradeType.Short);
+      expect(tradebox.tradeMode).toBe(TradeMode.Limit);
+
+      act(() => {
+        if (entry === "trade type") {
+          tradebox.setTradeType(TradeType.Swap);
+        } else if (entry === "trade config") {
+          tradebox.setTradeConfig({ tradeType: TradeType.Swap, toTokenAddress: BTC_ADDRESS });
+        } else {
+          tradebox.setActiveOrder({
+            orderType: OrderType.LimitSwap,
+            isTwap: false,
+            isSwap: true,
+            isLong: true,
+            marketAddress: MOCK_MARKET_ADDRESS,
+            swapPath: [MOCK_MARKET_ADDRESS],
+            initialCollateralTokenAddress: USDC_ADDRESS,
+            initialCollateralToken: USDC_TOKEN,
+            targetCollateralToken: BTC_TOKEN,
+          } as OrderInfo);
+        }
+      });
+
+      expect(tradebox.tradeType).toBe(TradeType.Short);
+      expect(tradebox.tradeMode).toBe(TradeMode.Limit);
+      expect(tradebox.fromTokenInputValue).toBe("123");
+      expect(tradebox.toTokenAddress).toBe(ETH_ADDRESS);
+      expect(readStoredTradeOptions(SOLANA_NETWORK_ID)).toEqual(previous);
+    }
+  );
 
   // The app remounts the tree on a network switch (SWRConfig key), a rerender covers the in-place sync effect
   it.each(["remount", "rerender"] as const)(
