@@ -33,6 +33,9 @@ jobs:
           registry-url: "https://registry.npmjs.org/"
           scope: "@gmx-io"
 
+      - name: Update npm for trusted publishing
+        run: npm install -g npm@11.21.2
+
       - name: Install dependencies
         working-directory: ./sdk
         run: yarn install --immutable
@@ -74,3 +77,15 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ./sdk
+
+      - name: Check trusted publishing
+        env:
+          VERSION: ${{ steps.npm_package.outputs.version }}
+        run: |
+          NPM_USER=$(curl -sf --retry 6 --retry-delay 10 --retry-all-errors "https://registry.npmjs.org/@gmx-io%2fsdk/$VERSION" | jq -c ._npmUser)
+          echo "_npmUser: $NPM_USER"
+          if [ -z "$NPM_USER" ]; then
+            echo "::warning::Could not read _npmUser of @gmx-io/sdk@$VERSION"
+          elif ! jq -e .trustedPublisher <<< "$NPM_USER" > /dev/null; then
+            echo "::warning::@gmx-io/sdk@$VERSION was published with NPM_TOKEN, not the npm trusted publisher"
+          fi
