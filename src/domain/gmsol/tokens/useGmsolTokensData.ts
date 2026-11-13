@@ -10,7 +10,7 @@ import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
-import type { GmsolTokenPricesData } from "../gmsolOracleFetcher";
+import type { GmsolTokenPricesData } from "../gmsolOracleUtils";
 import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
 
 export function useGmsolTokensData({

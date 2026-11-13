@@ -10,7 +10,7 @@ import type { FeeDiscount } from "sdk/clients/v2";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
-import type { GmsolTokenPricesData } from "./gmsolOracleFetcher";
+import type { GmsolTokenPricesData } from "./gmsolOracleUtils";
 import { composeGmsolMarkets, hasGmsolListedMarketPrices } from "./markets/composeGmsolMarkets";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsolPrices } from "./tokens/fetchGmsolPrices";

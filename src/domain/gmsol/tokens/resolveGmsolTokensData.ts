@@ -2,7 +2,7 @@ import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import type { TokensData } from "sdk/utils/tokens/types";
 
 import { buildGmsolTokensData } from "./buildGmsolTokensData";
-import type { GmsolTokenPricesData } from "../gmsolOracleFetcher";
+import type { GmsolTokenPricesData } from "../gmsolOracleUtils";
 
 export type GmsolTokensSnapshot = {
   scope: string;
