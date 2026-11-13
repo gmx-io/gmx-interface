@@ -1,7 +1,13 @@
 import { act, cleanup, render, waitFor } from "@testing-library/react";
+import { mutate } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { refreshGmsolAccountDataAfterTransaction, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
+import {
+  getGmsolAccountDataKey,
+  refreshGmsolAccountDataAfterTransaction,
+  useGmsolOrders,
+  useGmsolPositions,
+} from "./useGmsolAccountData";
 
 const source = vi.hoisted(() => ({
   slot: 1,
@@ -73,6 +79,46 @@ async function mountAccount() {
 }
 
 describe("confirmed transaction account refresh", () => {
+  it("keeps the highest confirmation floor through failed refreshes until polling catches up FESOL-56", async () => {
+    const { owner, result } = await mountAccount();
+    source.error = new Error("Snapshot service unavailable");
+    await act(async () => {
+      await expect(refreshGmsolAccountDataAfterTransaction(owner, 3)).rejects.toThrow("unavailable");
+      await expect(refreshGmsolAccountDataAfterTransaction(owner, 2)).rejects.toThrow("unavailable");
+    });
+    expect(result.current.orders.error).toBeDefined();
+    expect(result.current.positions.error).toBeDefined();
+
+    const poll = () =>
+      Promise.all(
+        (["gmsolOrders", "gmsolPositions"] as const).map((request) =>
+          mutate(getGmsolAccountDataKey(request, "account-refresh-regression", owner))
+        )
+      );
+    source.error = undefined;
+    source.slot = 2;
+    source.orders = [{ key: "pre-confirmation-order" }];
+    source.positions = [{ key: "pre-confirmation-position" }];
+    source.requests = [];
+    await act(async () => {
+      await poll();
+    });
+    expect(result.current.orders.data).toEqual([{ key: "order-before" }]);
+    expect(result.current.positions.data).toEqual([{ key: "position-before" }]);
+    expect(source.requests.every(({ minContextSlot }) => minContextSlot === 3)).toBe(true);
+
+    source.slot = 3;
+    source.orders = [{ key: "confirmed-order" }];
+    source.positions = [{ key: "confirmed-position" }];
+    await act(async () => {
+      await poll();
+    });
+    expect(result.current.orders.data).toEqual(source.orders);
+    expect(result.current.positions.data).toEqual(source.positions);
+    expect(result.current.orders.error).toBeUndefined();
+    expect(result.current.positions.error).toBeUndefined();
+  });
+
   it("immediately exposes the confirmed orders and positions through the real freshness hooks", async () => {
     const { owner, result } = await mountAccount();
     source.slot = 2;
