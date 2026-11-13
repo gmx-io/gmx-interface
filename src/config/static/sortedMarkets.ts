@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type NetworkId } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } f
   When adding new markets, add them to the end of the list
   or update arrays based on marketInfo sorting in runtime
 */
-export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
+export const SORTED_MARKETS: Partial<Record<NetworkId, string[]>> = {
   [ARBITRUM]: [
     "0x47c031236e19d024b42f8AE6780E44A573170703",
     "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",

@@ -1,6 +1,7 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
+import { getIsSolanaNetworkSelected } from "./solanaNetwork";
 
 export type IndexerKey = "referrals" | "syntheticsStats" | "subsquid";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
@@ -43,7 +44,8 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 };
 
-export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+// Clients are constructed once from this. The Solana gate lives in getIndexerUrl, not here.
+export function getConfiguredIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
     const url = localStorage.getItem(localStorageKey);
@@ -55,4 +57,13 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
   }
 
   return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];
+}
+
+export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+  // chainId is still Arbitrum while Solana is selected, so this is the gate for live subsquid fetches.
+  if (indexer === "subsquid" && getIsSolanaNetworkSelected()) {
+    return undefined;
+  }
+
+  return getConfiguredIndexerUrl(chainId, indexer);
 }

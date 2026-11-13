@@ -1,9 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useState } from "react";
+import useSWR from "swr";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
-import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
-import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { useChainId } from "lib/chains";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
@@ -30,12 +31,20 @@ import {
 const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 
 export default function RpcDebug() {
-  const { chainId } = useChainId();
-  const { primary: primaryRpc, fallbacks } = getCurrentRpcUrls(chainId);
+  const { chainId, networkId } = useChainId();
+  const isSolana = getIsSolanaNetworkEnabled() && isSolanaNetwork(networkId);
+  const rpcNetworkId = isSolana ? networkId : chainId;
+  const { error: trackerError } = useSWR(
+    isSolana ? ["rpcDebugTracker", networkId] : null,
+    async () => {
+      const { getSolanaRpcTracker } = await import("lib/solana/rpc");
+      return getSolanaRpcTracker();
+    },
+    { refreshInterval: 0 }
+  );
+  const { primary: primaryRpc, fallbacks } = getCurrentRpcUrls(rpcNetworkId);
   const secondaryRpc = fallbacks[0];
   const prevPrimaryRpc = usePrevious(primaryRpc);
-  const { tokensData } = useTokensDataRequest(chainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
   const [debugState, setDebugState] = useState<MulticallDebugState>(_debugMulticall?.getDebugState() ?? {});
   const [events, setEvents] = useState<GroupedEvent[]>([]);
@@ -107,10 +116,10 @@ export default function RpcDebug() {
   // Update all RPC stats
   useEffect(() => {
     const updateStats = () => {
-      const tracker = getRpcTrackerByChainId(chainId);
+      const tracker = getRpcTrackerByChainId(rpcNetworkId);
 
       if (!tracker) {
-        setAllRpcStats([]);
+        setAllRpcStats((previous) => (previous.length ? [] : previous));
         return;
       }
 
@@ -131,6 +140,7 @@ export default function RpcDebug() {
           banTime: stats.banned?.timestamp,
           responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
           blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
+          slot: latestCheckResult?.success ? latestCheckResult.stats?.slot?.toString() : undefined,
           isPrimary: stats.endpoint === primaryRpc,
           isSecondary: fallbacks.includes(stats.endpoint),
         };
@@ -144,7 +154,7 @@ export default function RpcDebug() {
     const interval = setInterval(updateStats, 1000);
 
     return () => clearInterval(interval);
-  }, [chainId, primaryRpc, fallbacks]);
+  }, [rpcNetworkId, primaryRpc, fallbacks]);
 
   // Update freshness values periodically and track last 3 diffs when data is updated
   useEffect(() => {
@@ -282,6 +292,20 @@ export default function RpcDebug() {
     };
   }, [chainId]);
 
+  if (trackerError) {
+    return (
+      <AppPageLayout title="RPC Debug">
+        <div className="default-container">
+          <Card title={t`RPC debug`}>
+            <div className="App-card-content text-typography-secondary">
+              <Trans>Unable to load the Solana RPC tracker</Trans>
+            </div>
+          </Card>
+        </div>
+      </AppPageLayout>
+    );
+  }
+
   return (
     <AppPageLayout title="RPC Debug">
       <div className="default-container">
@@ -289,16 +313,23 @@ export default function RpcDebug() {
           <div className="App-card-content">
             <div className="flex gap-8" style={GRID_STYLE}>
               <div className="flex min-w-0 flex-[2] flex-col">
-                <RpcTable allRpcStats={allRpcStats} />
-                <div className="mt-16 h-1 bg-slate-800"></div>
-                <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
+                <RpcTable allRpcStats={allRpcStats} isSolana={isSolana} />
+                {!isSolana && (
+                  <>
+                    <div className="mt-16 h-1 bg-slate-800"></div>
+                    <DataFreshnessSection freshnessValues={freshnessValues} freshnessHistory={freshnessHistory} />
+                  </>
+                )}
                 <div className="mt-16 h-1 bg-slate-800"></div>
                 <NetworkStatusSection networkObserverState={networkObserverState} />
               </div>
-              <EventsPanel events={events} idleSeconds={idleSeconds} onClearEvents={() => setEvents([])} />
+              {!isSolana && (
+                <EventsPanel events={events} idleSeconds={idleSeconds} onClearEvents={() => setEvents([])} />
+              )}
               <div className="min-w-0 flex-1">
                 <DebugControlsPanel
-                  chainId={chainId}
+                  chainId={rpcNetworkId}
+                  isSolana={isSolana}
                   primaryRpc={primaryRpc}
                   secondaryRpc={secondaryRpc}
                   debugState={debugState}
@@ -306,8 +337,12 @@ export default function RpcDebug() {
                 />
               </div>
             </div>
-            <div className="mt-16 h-1 bg-slate-800"></div>
-            <MarketsSection marketsInfoData={marketsInfoData} />
+            {!isSolana && (
+              <>
+                <div className="mt-16 h-1 bg-slate-800"></div>
+                <MarketsSection chainId={chainId} />
+              </>
+            )}
           </div>
         </Card>
       </div>

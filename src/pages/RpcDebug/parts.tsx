@@ -3,10 +3,13 @@ import { t, Trans } from "@lingui/macro";
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { useMarketsInfoRequest } from "domain/synthetics/markets/useMarketsInfoRequest";
+import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import type { MulticallDebugEvent, MulticallDebugState } from "lib/multicall/_debug";
 import { formatUsd } from "lib/numbers";
 import { getRpcTrackerByChainId } from "lib/rpc/useRpcUrls";
+import type { ContractsChainId } from "sdk/configs/chains";
 import { getMarkPrice } from "sdk/utils/prices";
 
 import Button from "components/Button/Button";
@@ -22,6 +25,7 @@ export type RpcStats = {
   banTime: number | undefined;
   responseTime: number | undefined;
   blockNumber: number | undefined;
+  slot: string | undefined;
   isPrimary: boolean;
   isSecondary: boolean;
 };
@@ -63,7 +67,7 @@ const getThreadName = (isInWorker: boolean) => {
   return isInWorker ? t`Worker` : t`Main thread`;
 };
 
-export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
+export function RpcTable({ allRpcStats, isSolana = false }: { allRpcStats: RpcStats[]; isSolana?: boolean }) {
   return (
     <div className="flex max-h-[450px] min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
@@ -97,9 +101,7 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                 <TableTh padding="compact">
                   <Trans>RESPONSE</Trans>
                 </TableTh>
-                <TableTh padding="compact">
-                  <Trans>BLOCK</Trans>
-                </TableTh>
+                <TableTh padding="compact">{isSolana ? <Trans>SLOT</Trans> : <Trans>BLOCK</Trans>}</TableTh>
               </TableTheadTr>
             </thead>
             <tbody>
@@ -161,8 +163,8 @@ export function RpcTable({ allRpcStats }: { allRpcStats: RpcStats[] }) {
                     )}
                   </TableTd>
                   <TableTd padding="compact">
-                    {rpc.blockNumber !== undefined ? (
-                      <span className="text-xs text-white">{rpc.blockNumber}</span>
+                    {(isSolana ? rpc.slot : rpc.blockNumber) !== undefined ? (
+                      <span className="text-xs text-white">{isSolana ? rpc.slot : rpc.blockNumber}</span>
                     ) : (
                       <span className="text-xs text-gray-500">—</span>
                     )}
@@ -263,12 +265,14 @@ export function EventsPanel({
 
 export function DebugControlsPanel({
   chainId,
+  isSolana = false,
   primaryRpc,
   secondaryRpc: _secondaryRpc,
   debugState,
   onDebugFlagChange,
 }: {
   chainId: number;
+  isSolana?: boolean;
   primaryRpc: string | undefined;
   secondaryRpc: string | undefined;
   debugState: MulticallDebugState;
@@ -285,18 +289,20 @@ export function DebugControlsPanel({
         <div className="overflow-x-auto">
           <Table>
             <tbody>
-              <TableTr>
-                <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
-                      <Trans>Account type</Trans>
+              {!isSolana && (
+                <TableTr>
+                  <TableTd padding="compact" colSpan={2}>
+                    <div className="py-6">
+                      <div className="text-base mb-6 font-semibold text-gray-400">
+                        <Trans>Account type</Trans>
+                      </div>
+                      <div className="text-base text-white">
+                        {getIsLargeAccount() ? t`Large account` : t`Regular account`}
+                      </div>
                     </div>
-                    <div className="text-base text-white">
-                      {getIsLargeAccount() ? t`Large account` : t`Regular account`}
-                    </div>
-                  </div>
-                </TableTd>
-              </TableTr>
+                  </TableTd>
+                </TableTr>
+              )}
               <TableTr>
                 <TableTd padding="compact" colSpan={2}>
                   <div className="py-6">
@@ -323,52 +329,56 @@ export function DebugControlsPanel({
                   </div>
                 </TableTd>
               </TableTr>
-              <TableTr>
-                <TableTd padding="compact" colSpan={2}>
-                  <div className="py-6">
-                    <div className="text-base mb-6 font-semibold text-gray-400">
-                      <Trans>Multicall simulation</Trans>
-                    </div>
-                    <div className="space-y-8">
-                      <div>
-                        <h4 className="text-sm mb-6 font-semibold text-gray-400">
-                          <Trans>Worker thread</Trans>
-                        </h4>
-                        <div className="space-y-6">
-                          <ToggleSwitch
-                            isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            <Trans>Primary failed</Trans>
-                          </ToggleSwitch>
-                          <ToggleSwitch
-                            isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            <Trans>Primary timeout</Trans>
-                          </ToggleSwitch>
+              {!isSolana && (
+                <TableTr>
+                  <TableTd padding="compact" colSpan={2}>
+                    <div className="py-6">
+                      <div className="text-base mb-6 font-semibold text-gray-400">
+                        <Trans>Multicall simulation</Trans>
+                      </div>
+                      <div className="space-y-8">
+                        <div>
+                          <h4 className="text-sm mb-6 font-semibold text-gray-400">
+                            <Trans>Worker thread</Trans>
+                          </h4>
+                          <div className="space-y-6">
+                            <ToggleSwitch
+                              isChecked={debugState.triggerPrimaryAsFailedInWorker ?? false}
+                              setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInWorker", checked)}
+                              textClassName="text-base text-white"
+                            >
+                              <Trans>Primary failed</Trans>
+                            </ToggleSwitch>
+                            <ToggleSwitch
+                              isChecked={debugState.triggerPrimaryTimeoutInWorker ?? false}
+                              setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryTimeoutInWorker", checked)}
+                              textClassName="text-base text-white"
+                            >
+                              <Trans>Primary timeout</Trans>
+                            </ToggleSwitch>
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="text-sm mb-6 font-semibold text-gray-400">
+                            <Trans>Main thread</Trans>
+                          </h4>
+                          <div className="space-y-6">
+                            <ToggleSwitch
+                              isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
+                              setIsChecked={(checked) =>
+                                onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)
+                              }
+                              textClassName="text-base text-white"
+                            >
+                              <Trans>Primary failed</Trans>
+                            </ToggleSwitch>
+                          </div>
                         </div>
                       </div>
-                      <div>
-                        <h4 className="text-sm mb-6 font-semibold text-gray-400">
-                          <Trans>Main thread</Trans>
-                        </h4>
-                        <div className="space-y-6">
-                          <ToggleSwitch
-                            isChecked={debugState.triggerPrimaryAsFailedInMainThread ?? false}
-                            setIsChecked={(checked) => onDebugFlagChange("triggerPrimaryAsFailedInMainThread", checked)}
-                            textClassName="text-base text-white"
-                          >
-                            <Trans>Primary failed</Trans>
-                          </ToggleSwitch>
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </TableTd>
-              </TableTr>
+                  </TableTd>
+                </TableTr>
+              )}
             </tbody>
           </Table>
         </div>
@@ -481,7 +491,9 @@ export function NetworkStatusSection({
   );
 }
 
-export function MarketsSection({ marketsInfoData }: { marketsInfoData: any }) {
+export function MarketsSection({ chainId }: { chainId: ContractsChainId }) {
+  const { tokensData } = useTokensDataRequest(chainId);
+  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   return (
     <div className="mt-6">
       <h3 className="text-xl mb-4 font-bold">

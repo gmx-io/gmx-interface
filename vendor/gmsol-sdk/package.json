@@ -1,0 +1,30 @@
+{
+  "name": "@gmsol-labs/gmsol-sdk",
+  "type": "module",
+  "description": "GMX-Solana is an extension of GMX on the Solana blockchain.",
+  "version": "0.11.0-beta.1",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmsol-labs/gmx-solana"
+  },
+  "files": [
+    "index_bg.wasm",
+    "index.js",
+    "index_bg.js",
+    "index.d.ts",
+    "index_bg.wasm.d.ts",
+    "LICENSE"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": [
+    "./index.js",
+    "./snippets/*"
+  ],
+  "keywords": [
+    "gmx-solana",
+    "gmx",
+    "solana"
+  ]
+}

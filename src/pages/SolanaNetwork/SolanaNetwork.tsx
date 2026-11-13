@@ -15,14 +15,6 @@ function SolanaNetworkMessage({ title, children }: { title: string; children: Re
   );
 }
 
-export function SolanaTradePlaceholder() {
-  return (
-    <SolanaNetworkMessage title={t`Solana`}>
-      <Trans>Trading on Solana is coming soon.</Trans>
-    </SolanaNetworkMessage>
-  );
-}
-
 export function EvmNetworksOnlyNotice() {
   return (
     <SolanaNetworkMessage title={t`EVM networks only`}>
