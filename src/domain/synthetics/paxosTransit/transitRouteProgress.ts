@@ -25,6 +25,8 @@ export type TransitRouteProgress = {
   glvOrMarketAddress: string | undefined;
   withdrawalTxnHash: string | undefined;
   withdrawalExecutedTxnHash: string | undefined;
+  // the box clears its inputs once the withdrawal is sent, so both steps show this until the withdrawal event arrives
+  withdrawalEstimatedUsdgAmount?: bigint;
   conversion: PaxosTransitConversion | undefined;
   depositTxnHash: string | undefined;
   isContinueRequested: boolean;
@@ -40,6 +42,7 @@ export type NewTransitRouteProgress = Pick<
   | "direction"
   | "glvOrMarketAddress"
   | "withdrawalTxnHash"
+  | "withdrawalEstimatedUsdgAmount"
   | "conversion"
   | "addMarginPositionKey"
 >;
