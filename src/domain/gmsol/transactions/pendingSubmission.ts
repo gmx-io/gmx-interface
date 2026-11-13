@@ -8,6 +8,7 @@ import { Storage } from "lib/storage/Storage";
 export type PendingGmsolSubmission = {
   signature: string;
   orderAddresses: string[];
+  trackExecution?: boolean;
   operation: "create" | "update" | "cancel" | "prepare";
 };
 
