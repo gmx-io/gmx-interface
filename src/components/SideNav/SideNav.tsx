@@ -176,6 +176,11 @@ export function NavItem({
   return <li className="p-0 first:-mt-4">{content}</li>;
 }
 
+// Pages that also work on the Solana network
+const SOLANA_MENU_KEYS = ["trade", "referrals"];
+// Pages that exist only on the Solana network
+const SOLANA_ONLY_MENU_KEYS: string[] = [];
+
 export function MenuSection({
   isCollapsed,
   onMenuItemClick,
@@ -233,7 +238,9 @@ export function MenuSection({
   return (
     <ul className="flex list-none flex-col px-0">
       {mainNavItems
-        .filter((item) => showEvmPages || item.key === "trade")
+        .filter((item) =>
+          showEvmPages ? !SOLANA_ONLY_MENU_KEYS.includes(item.key) : SOLANA_MENU_KEYS.includes(item.key)
+        )
         .map((item) => (
           <NavItem
             key={item.key}
