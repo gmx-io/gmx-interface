@@ -6,9 +6,9 @@ import { fetchOrderStatus, prepareOrder, submitOrder } from "utils/orderTransact
 const fetchMock = vi.hoisted(() => vi.fn());
 vi.mock("cross-fetch", () => ({ default: fetchMock }));
 
-const PREPARE = "/v1/orders/txns/prepare";
-const SUBMIT = "/v1/orders/txns/submit";
-const STATUS = "/v1/orders/txns/status";
+const PREPARE = "/v2/orders/txns/prepare";
+const SUBMIT = "/v2/orders/txns/submit";
+const STATUS = "/v2/orders/txns/status";
 
 function jsonResponse(status: number, body: unknown) {
   return new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
