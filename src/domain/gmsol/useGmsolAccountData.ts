@@ -4,7 +4,7 @@ import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { API_STALE_MS, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { FeeDiscount, GmxApiSdk } from "sdk/clients/v2";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { ApiPositionInfo } from "sdk/utils/positions/types";
@@ -46,7 +46,7 @@ function useGmsolAccountRequest<T>(
     key,
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) =>
       fetcher({ sdk: sdk!, owner: keyOwner, apiCacheKey: keyApiCacheKey }),
-    { refreshInterval }
+    { refreshInterval, maxAgeMs: refreshInterval + API_STALE_MS }
   );
   const isOverdue = freshness.isStale && !error;
   const overdueError = useMemo(

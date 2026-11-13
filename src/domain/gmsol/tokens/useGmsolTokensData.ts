@@ -5,7 +5,7 @@ import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
-import { isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
@@ -30,6 +30,7 @@ export function useGmsolTokensData({
     freshness,
   } = useSWRWithFreshness<GmsolTokenPricesData | undefined>(key, () => fetchGmsolPrices(oracleFetcher), {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS,
   });
 
   const receivedAt = freshness.asOf;

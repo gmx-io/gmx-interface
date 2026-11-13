@@ -149,7 +149,7 @@ it("marks partial prices unavailable and retains missing account items without r
   });
 });
 
-it("expires a snapshot while its refresh is pending and recovers when it resolves FESOL-52", async () => {
+it("expires only opted-in snapshots while preserving error and recovery behavior FESOL-52", async () => {
   vi.useFakeTimers();
   vi.setSystemTime(1_000);
   let resolveRefresh: (value: number) => void;
@@ -179,9 +179,11 @@ it("expires a snapshot while its refresh is pending and recovers when it resolve
         })
     );
   let result: ReturnType<typeof useSWRWithFreshness<number>>;
+  let defaultResult: ReturnType<typeof useSWRWithFreshness<number>>;
   let orders: ReturnType<typeof useGmsolOrders>;
   await renderHook(() => {
-    result = useSWRWithFreshness("pending-refresh", fetcher);
+    result = useSWRWithFreshness("pending-refresh", fetcher, { maxAgeMs: 15_000 });
+    defaultResult = useSWRWithFreshness("pending-refresh", fetcher);
     orders = useGmsolOrders("owner");
   });
   expect(result!.freshness.isStale).toBe(false);
@@ -192,6 +194,7 @@ it("expires a snapshot while its refresh is pending and recovers when it resolve
   expect(result!.data).toBe(1);
   expect(result!.error).toBeUndefined();
   expect(result!.freshness.isStale).toBe(true);
+  expect(defaultResult!).toMatchObject({ data: 1, error: undefined, freshness: { isStale: false } });
   expect(orders!).toMatchObject({ data: ["cached"], error: expect.any(Error) });
   await act(async () => {
     resolveRefresh(2);
@@ -199,7 +202,21 @@ it("expires a snapshot while its refresh is pending and recovers when it resolve
   });
   expect(result!.data).toBe(2);
   expect(result!.freshness.isStale).toBe(false);
+  expect(defaultResult!).toMatchObject({ data: 2, error: undefined, freshness: { isStale: false } });
   expect(orders!).toMatchObject({ data: ["refreshed"], error: undefined });
+  fetcher.mockRejectedValueOnce(new Error("offline")).mockResolvedValue(3);
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(5_000);
+  });
+  for (const snapshot of [result!, defaultResult!]) {
+    expect(snapshot).toMatchObject({ data: 2, error: expect.any(Error), freshness: { isStale: true } });
+  }
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(5_000);
+  });
+  for (const snapshot of [result!, defaultResult!]) {
+    expect(snapshot).toMatchObject({ data: 3, error: undefined, freshness: { isStale: false } });
+  }
 });
 
 it("stops applying a fee discount it could not refresh and restores it on recovery FESOL-52", async () => {
