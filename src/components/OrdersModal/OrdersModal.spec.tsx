@@ -151,17 +151,18 @@ describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
     expect(addButton.disabled).toBe(true);
     fireEvent.click(addButton);
     expect(view.queryByText("TP/SL form")).toBeNull();
-    expect(view.getByText("2,500.00")).toBeTruthy();
-    expect(view.getByText("1,500.00")).toBeTruthy();
+    // The $ is plain text in the same span as the number, so match the number at the end of the text
+    expect(view.getByText(/2,500\.00$/)).toBeTruthy();
+    expect(view.getByText(/1,500\.00$/)).toBeTruthy();
 
     fireEvent.click(view.getByRole("button", { name: /Take-Profit/ }));
     expect(view.getAllByRole("status")).toHaveLength(1);
-    expect(view.getByText("2,500.00")).toBeTruthy();
-    expect(view.queryByText("1,500.00")).toBeNull();
+    expect(view.getByText(/2,500\.00$/)).toBeTruthy();
+    expect(view.queryByText(/1,500\.00$/)).toBeNull();
     fireEvent.click(view.getByRole("button", { name: /Stop-Loss/ }));
     expect(view.getAllByRole("status")).toHaveLength(1);
-    expect(view.getByText("1,500.00")).toBeTruthy();
-    expect(view.queryByText("2,500.00")).toBeNull();
+    expect(view.getByText(/1,500\.00$/)).toBeTruthy();
+    expect(view.queryByText(/2,500\.00$/)).toBeNull();
   });
 
   it("keeps pending entries after closing and reopening directly into the add view", () => {

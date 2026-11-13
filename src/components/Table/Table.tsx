@@ -18,7 +18,9 @@ export function TableTh(props: TableTdThProps) {
   return (
     <th
       {...rest}
-      className={cx("text-caption text-left last-of-type:text-right", props.className, {
+      className={cx("TableTh text-caption whitespace-nowrap text-left last-of-type:text-right", props.className, {
+        TableTh_compact: padding === "compact",
+        TableTh_compactOneColumn: padding === "compact-one-column",
         "px-4 py-12 pb-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
         "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
         "px-8 py-8": padding === "compact-one-column",
@@ -39,7 +41,7 @@ export const TableTr = forwardRef<
     <tr
       {...props}
       ref={ref}
-      className={cx("odd:bg-fill-surfaceElevated50", className, {
+      className={cx("TableTr", className, {
         TableTr_hoverable: hoverable,
         "cursor-pointer": !!props.onClick,
       })}
@@ -51,7 +53,7 @@ export const TableTrActionable = forwardRef<
   HTMLTableRowElement,
   PropsWithChildren<{ onClick: (event: React.MouseEvent) => void }> & React.HTMLProps<HTMLTableRowElement>
 >(function TableTrInternal({ className, ...props }, ref) {
-  return <tr {...props} ref={ref} className={cx("group/tr", className)} />;
+  return <tr {...props} ref={ref} className={cx("TableTr TableTr_actionable group/tr", className)} />;
 });
 
 export const TableTdActionable = forwardRef<
@@ -63,11 +65,9 @@ export const TableTdActionable = forwardRef<
       {...props}
       ref={ref}
       className={cx(
-        "relative select-none text-[13px] last-of-type:[&:not(:first-of-type)]:text-right",
-        "px-4 py-12 pb-8 first-of-type:pl-20 first-of-type:before:rounded-l-8",
-        "last-of-type:pr-20 last-of-type:before:rounded-r-8 group-hover/tr:before:bg-fill-surfaceHover",
-        "before:absolute before:bottom-2 before:left-0 before:top-2 before:z-0 before:bg-fill-surfaceElevated50",
-        "before:h-[calc(100%-4px)] before:w-full before:content-['']",
+        "text-body-medium relative select-none last-of-type:[&:not(:first-of-type)]:text-right",
+        "px-4 py-16 first-of-type:pl-20 last-of-type:pr-20",
+        "before:absolute before:inset-0 before:z-0 before:content-[''] group-hover/tr:before:bg-fill-surfaceHover",
         className
       )}
     >
@@ -81,10 +81,10 @@ export function TableTd(props: TableTdThProps) {
   return (
     <td
       {...rest}
-      className={cx("text-[13px] last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
-        "px-4 py-8 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
-        "px-4 py-8 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
-        "px-8 py-8": padding === "compact-one-column",
+      className={cx("text-body-medium last-of-type:[&:not(:first-of-type)]:text-right", props.className, {
+        "px-4 py-16 first-of-type:pl-20 last-of-type:pr-20": padding === "all",
+        "TableTd_compact px-4 py-12 first-of-type:pl-12 last-of-type:pr-12": padding === "compact",
+        "TableTd_compactOneColumn px-8 py-12": padding === "compact-one-column",
       })}
     />
   );

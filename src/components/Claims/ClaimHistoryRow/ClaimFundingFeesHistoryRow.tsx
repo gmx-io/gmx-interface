@@ -14,6 +14,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { TableTd, TableTr } from "components/Table/Table";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "components/Tooltip/TooltipBlocks";
 import {
@@ -88,29 +89,34 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
     if (claimAction.eventName === ClaimType.SettleFundingFeeCancelled) {
       const indexName = getMarketIndexName(claimAction.markets[0]);
       return (
-        <StandardTooltip
-          handle={
-            <MarketWithDirectionLabel
-              indexName={indexName}
-              tokenSymbol={claimAction.markets[0].indexToken.symbol}
-              isLong={claimAction.isLongOrders[0]}
-            />
-          }
-          renderContent={() => (
-            <TooltipContent>
-              {claimAction.markets.map((market, index) => {
-                const indexName = getMarketIndexName(market);
-                const poolName = getMarketPoolName(market);
-                const isLong = claimAction.isLongOrders[index];
-                return (
-                  <TooltipText key={`${market.name}/${isLong}`}>
-                    {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
-                  </TooltipText>
-                );
-              })}
-            </TooltipContent>
-          )}
-        />
+        // The icon sits before the tooltip handle, so the dotted line starts at the market name
+        <div className="flex items-center gap-4">
+          <TokenIcon className="size-20" displaySize={20} symbol={claimAction.markets[0].indexToken.symbol} />
+          <StandardTooltip
+            handle={
+              <MarketWithDirectionLabel
+                indexName={indexName}
+                tokenSymbol={claimAction.markets[0].indexToken.symbol}
+                isLong={claimAction.isLongOrders[0]}
+                withIcon={false}
+              />
+            }
+            renderContent={() => (
+              <TooltipContent>
+                {claimAction.markets.map((market, index) => {
+                  const indexName = getMarketIndexName(market);
+                  const poolName = getMarketPoolName(market);
+                  const isLong = claimAction.isLongOrders[index];
+                  return (
+                    <TooltipText key={`${market.name}/${isLong}`}>
+                      {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                    </TooltipText>
+                  );
+                })}
+              </TooltipContent>
+            )}
+          />
+        </div>
       );
     }
 

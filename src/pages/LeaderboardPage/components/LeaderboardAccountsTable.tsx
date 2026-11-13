@@ -345,7 +345,9 @@ const TableRow = memo(
         </TableTd>
 
         <TableTd>
-          <AddressView size={20} address={account.account} breakpoint="XL" />
+          <div className="flex [&_.AddressView]:flex">
+            <AddressView size={20} address={account.account} breakpoint="XL" />
+          </div>
         </TableTd>
         <TableTd>
           <StandardTooltip

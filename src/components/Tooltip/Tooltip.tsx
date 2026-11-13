@@ -730,6 +730,8 @@ export default function Tooltip<T extends ElementType>({
         {...containerProps}
         className={cx("Tooltip", className, handleClassName)}
         ref={setReference}
+        // Lets a table row keep its hover while the cursor is inside this row's open tooltip
+        data-tooltip-open={visible ? "" : undefined}
         {...referenceProps}
       >
         {handle ?? children}
@@ -745,6 +747,7 @@ export default function Tooltip<T extends ElementType>({
         className={cx("Tooltip-handle group", handleClassName)}
         style={handleStyle}
         tabIndex={tabIndex}
+        data-tooltip-open={visible ? "" : undefined}
         {...disabledHandleProps}
         {...referenceProps}
       >
@@ -771,10 +774,85 @@ export default function Tooltip<T extends ElementType>({
   );
 }
 
+// The main color of a handle's text: the color most of its characters have. Values often set their color on an inner
+// element (a green PnL, a gray zero, a blue estimate), which the dotted line can't inherit from.
+function getMainTextColor(root: Element): string | undefined {
+  const lengthByColor = new Map<string, number>();
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const length = node.textContent?.trim().length ?? 0;
+    if (length === 0 || !node.parentElement) continue;
+
+    const color = getComputedStyle(node.parentElement).color;
+    lengthByColor.set(color, (lengthByColor.get(color) ?? 0) + length);
+  }
+
+  let mainColor: string | undefined;
+  let mainLength = 0;
+  lengthByColor.forEach((length, color) => {
+    if (length > mainLength) {
+      mainLength = length;
+      mainColor = color;
+    }
+  });
+
+  return mainColor;
+}
+
+// Theme switches change every color without touching the handles, so the lines listen to the root class
+const themeChangeListeners = new Set<() => void>();
+let themeObserver: MutationObserver | undefined;
+
+function subscribeToThemeChange(listener: () => void) {
+  themeChangeListeners.add(listener);
+
+  if (!themeObserver) {
+    themeObserver = new MutationObserver(() => themeChangeListeners.forEach((callback) => callback()));
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  }
+
+  return () => {
+    themeChangeListeners.delete(listener);
+  };
+}
+
 export function TooltipUnderline() {
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  // The line takes the main color of the text it underlines, and follows it when the value or its color changes
+  useLayoutEffect(() => {
+    const svg = svgRef.current;
+    const root = svg?.parentElement;
+    if (!svg || !root) return;
+
+    const update = () => {
+      svg.style.color = getMainTextColor(root) ?? "";
+    };
+
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(root, { subtree: true, childList: true, characterData: true, attributeFilter: ["class"] });
+    const unsubscribe = subscribeToThemeChange(update);
+
+    return () => {
+      observer.disconnect();
+      unsubscribe();
+    };
+  }, []);
+
   return (
-    <svg className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
-      <line stroke="currentColor" x1="0" y1="0" x2="100%" y2="0" strokeWidth="0.75" strokeDasharray="1.25,2.25" />
+    <svg ref={svgRef} className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
+      <line
+        stroke="currentColor"
+        strokeOpacity="0.7"
+        x1="0"
+        y1="0.5"
+        x2="100%"
+        y2="0.5"
+        strokeWidth="0.75"
+        strokeDasharray="1.25,2.25"
+      />
     </svg>
   );
 }
