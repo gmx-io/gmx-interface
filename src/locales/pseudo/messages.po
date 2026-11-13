@@ -521,6 +521,10 @@ msgstr ""
 msgid "Expired Market Increase"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to load trading data"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr ""
@@ -536,6 +540,7 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Connecting wallet..."
 msgstr ""
 
@@ -1738,6 +1743,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Solana trading is unavailable"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -3946,6 +3955,10 @@ msgstr ""
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Check transaction status"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
@@ -4192,6 +4205,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Checking transaction status..."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -4998,6 +5015,7 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Sending order request..."
 msgstr ""
 
@@ -5161,6 +5179,7 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable price"
 msgstr ""
 
@@ -5519,6 +5538,10 @@ msgstr ""
 msgid "Enter recipient address"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select wallet balance to trade on Solana"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr ""
@@ -5820,6 +5843,7 @@ msgstr ""
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -6358,6 +6382,7 @@ msgstr ""
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr ""
@@ -6389,6 +6414,10 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to prepare order"
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
@@ -6687,6 +6716,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7465,6 +7495,7 @@ msgstr ""
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr ""
@@ -8185,6 +8216,9 @@ msgstr ""
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/TradeBox.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8496,6 +8530,10 @@ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Create TP/SL order"
 msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -10351,6 +10389,7 @@ msgstr ""
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10681,6 +10720,7 @@ msgid "Conversion request sent"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Execution price"
 msgstr ""
 
@@ -10797,6 +10837,11 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Withdrawal unavailable"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "This order type is not supported on Solana"
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -11779,6 +11824,7 @@ msgstr ""
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -11952,6 +11998,10 @@ msgstr ""
 msgid "Link copied to clipboard"
 msgstr ""
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Order request"
+msgstr ""
+
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr ""
@@ -11988,6 +12038,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Pay with the selected collateral token"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12100,6 +12154,11 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Review your TP/SL orders"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
@@ -12259,6 +12318,10 @@ msgstr ""
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Select network"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Solana market calculations are unavailable"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -12668,6 +12731,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "This collateral token is not supported for trading yet"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -13521,6 +13588,10 @@ msgstr ""
 msgid "24H VOL."
 msgstr ""
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "GT VIP and referral discount"
+msgstr ""
+
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr ""
@@ -14129,6 +14200,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
+msgstr ""
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select a position"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
