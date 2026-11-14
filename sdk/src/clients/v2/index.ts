@@ -40,8 +40,7 @@ import {
 } from "utils/gmxAccountApi";
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
-import type { SolanaReadOptions } from "utils/http/solana";
-import { IHttp } from "utils/http/types";
+import type { IHttp, SolanaReadOptions } from "utils/http/types";
 import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
 import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
 import {
@@ -308,8 +307,7 @@ export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
-export type { IHttp, HttpResponseMetadata } from "utils/http/types";
-export type { SolanaReadOptions } from "utils/http/solana";
+export type { IHttp, HttpResponseMetadata, SolanaReadOptions } from "utils/http/types";
 export type { FeeDiscount } from "utils/referrals/types";
 export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
@@ -329,26 +327,8 @@ type GmxApiSdkOptions = {
   webSocketImpl?: WebSocketCtor;
 };
 
-class GmxApiContext {
-  constructor(
-    public networkId: NetworkId,
-    public api: IHttp
-  ) {}
-
-  get chainId(): ContractsChainId {
-    if (!isContractsChain(this.networkId, true)) {
-      throw new Error("EVM operations require an EVM chainId");
-    }
-    return this.networkId;
-  }
-
-  set chainId(chainId: ContractsChainId) {
-    this.networkId = chainId;
-  }
-}
-
 export class GmxApiSdk {
-  private _ctx: GmxApiContext;
+  public ctx: { chainId: NetworkId; api: IHttp };
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
   private readonly streamUrlOverride?: string;
@@ -356,41 +336,32 @@ export class GmxApiSdk {
   private _streamClient?: WsStreamClient;
 
   constructor(options: GmxApiSdkOptions) {
-    const { chainId: networkId, apiUrl, api, streamUrl, webSocketImpl } = options;
+    const { chainId, apiUrl, api, streamUrl, webSocketImpl } = options;
     this.streamUrlOverride = streamUrl;
     this.webSocketImpl = webSocketImpl;
-    if (networkId === undefined) {
+    if (chainId === undefined) {
       throw new Error("chainId is required");
     }
 
     let resolvedApi = api;
     if (!resolvedApi) {
-      const resolvedApiUrl = apiUrl ?? getApiUrl(networkId);
+      const resolvedApiUrl = apiUrl ?? getApiUrl(chainId);
       if (!resolvedApiUrl) {
         throw new Error("api is not supported for current chainId");
       }
-      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(networkId);
+      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(chainId);
       const allUrls = [resolvedApiUrl, ...fallbackUrls];
       resolvedApi = allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl);
     }
 
-    this._ctx = new GmxApiContext(networkId, resolvedApi);
-  }
-
-  get ctx(): GmxApiContext {
-    return this._ctx;
-  }
-
-  set ctx(context: { networkId: NetworkId; api: IHttp } | { chainId: ContractsChainId; api: IHttp }) {
-    if ("chainId" in context && Object.prototype.hasOwnProperty.call(context, "chainId")) {
-      this._ctx = new GmxApiContext(context.chainId, context.api);
-      return;
-    }
-    this._ctx = new GmxApiContext("networkId" in context ? context.networkId : context.chainId, context.api);
+    this.ctx = { chainId, api: resolvedApi };
   }
 
   requireEvmContext(): { chainId: ContractsChainId; api: IHttp } {
     const { chainId, api } = this.ctx;
+    if (!isContractsChain(chainId, true)) {
+      throw new Error("EVM operations require an EVM chainId");
+    }
     return { chainId, api };
   }
 

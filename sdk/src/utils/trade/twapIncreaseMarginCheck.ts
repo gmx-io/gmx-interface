@@ -142,7 +142,12 @@ export function getTwapIncreasePartsGrossCollateralUsd(p: TwapIncreasePartsColla
       collateralToken.decimals,
       collateralToken.prices.minPrice
     )!;
-    const swapUiFeeUsd = applyFactor(getTotalSwapVolumeFromSwapStats(swapPathStats.swapSteps), uiFeeFactor);
+    const swapUiFeeUsd = applyFactor(
+      getTotalSwapVolumeFromSwapStats(
+        swapPathStats.swapSteps.filter((swapStep) => marketsInfoData[swapStep.marketAddress].tradeMath !== "gmsol")
+      ),
+      uiFeeFactor
+    );
 
     partGrossCollateralUsds.push(grossCollateralUsd - swapUiFeeUsd);
 

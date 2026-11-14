@@ -4,7 +4,10 @@ import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import type { OracleFetcher, TickersResponse } from "lib/oracleKeeperFetcher";
 
-import { GmsolOracleFetcher } from "./gmsolOracleFetcher";
+import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
+import { buildGmsolTokenPrices, buildGmsolPriceDeltas, getGmsolOracleSymbol } from "./gmsolOracleUtils";
+import { fetchGmsol24hPriceDeltas } from "./tokens/fetchGmsol24hPriceDeltas";
+import { fetchGmsolPrices } from "./tokens/fetchGmsolPrices";
 
 vi.mock("config/ab", async (importOriginal) => ({
   ...(await importOriginal<typeof import("config/ab")>()),
@@ -43,7 +46,24 @@ function ticker(p: { tokenAddress: string; price: string }): TickersResponse[num
 
 const toCents = (usd30: bigint | undefined) => (usd30 === undefined ? undefined : usd30 / 10n ** 28n);
 
-describe("GmsolOracleFetcher.fetchPrices", () => {
+describe("buildGmsolTokenPrices", () => {
+  it("matches native mint-unit price rounding before exposing SDK USD prices", () => {
+    for (const [symbol, source, unitPrice, scale] of [
+      ["SOL", { ...ARB_SOL, price: "105485434805280281250000" }, 10548543480528n, 10n ** 19n],
+      ["WSOL", { ...ARB_SOL, price: "105485434805280281250000" }, 10548543480528n, 10n ** 19n],
+      ["ETH", { ...ARB_WETH, price: "2500000000000000" }, 2500000000000000n, 10n ** 18n],
+      ["NEAR", { ...ARB_NEAR, price: "5000000" }, 500000000000n, 10n ** 19n],
+    ] as const) {
+      const address = mint(symbol);
+      const prices = buildGmsolTokenPrices([ticker(source)], [address]);
+      expect(prices[address]).toEqual({
+        minPrice: unitPrice * scale,
+        maxPrice: unitPrice * scale,
+        updatedAt: UPDATED_AT,
+      });
+    }
+  });
+
   it("prices Solana mints in 30-decimal USD with the Arbitrum token's decimals", async () => {
     const cases: { name: string; tickers: TickersResponse; expectedCents: Record<string, bigint | undefined> }[] = [
       {
@@ -84,8 +104,7 @@ describe("GmsolOracleFetcher.fetchPrices", () => {
     ];
 
     for (const { name, tickers, expectedCents } of cases) {
-      const fetcher = new GmsolOracleFetcher({ fetchTickers: async () => tickers } as unknown as OracleFetcher);
-      const prices = await fetcher.fetchPrices(Object.keys(expectedCents));
+      const prices = buildGmsolTokenPrices(tickers, Object.keys(expectedCents));
 
       for (const [address, cents] of Object.entries(expectedCents)) {
         expect({
@@ -100,22 +119,19 @@ describe("GmsolOracleFetcher.fetchPrices", () => {
   });
 });
 
-describe("GmsolOracleFetcher candles and 24h change", () => {
+describe("Solana oracle symbols and 24h change", () => {
   it("rejects candles for a mint without an Arbitrum token", async () => {
-    const fetcher = new GmsolOracleFetcher({ fetchOracleCandles: async () => [] } as unknown as OracleFetcher);
-
-    await expect(fetcher.fetchCandles("11111111111111111111111111111111", "1h", 1)).rejects.toThrow();
+    expect(() => getGmsolOracleSymbol("11111111111111111111111111111111")).toThrow();
   });
 
   it("matches 24h candles by the Arbitrum token symbol", async () => {
-    const fetcher = new GmsolOracleFetcher({
-      fetch24hPrices: async () => [
+    const deltas = buildGmsolPriceDeltas(
+      [
         { tokenSymbol: "BTC", open: 100, close: 110, high: 0, low: 0 },
         { tokenSymbol: "ETH", open: 200, close: 190, high: 0, low: 0 },
       ],
-    } as unknown as OracleFetcher);
-
-    const deltas = await fetcher.fetch24hPriceDeltas([mint("WBTC"), mint("WETH"), mint("NEAR")]);
+      [mint("WBTC"), mint("WETH"), mint("NEAR")]
+    );
 
     expect(deltas[mint("WBTC")]?.deltaPercentageStr).toBe("+10.00%");
     expect(deltas[mint("WETH")]?.deltaPercentageStr).toBe("-5.00%");
@@ -123,15 +139,17 @@ describe("GmsolOracleFetcher candles and 24h change", () => {
   });
 });
 
-describe("GmsolOracleFetcher with the solanaNetwork flag off", () => {
+describe("Solana oracle requests with the solanaNetwork flag off", () => {
   it("rejects without calling the Arbitrum keeper", async () => {
     vi.mocked(getIsSolanaNetworkEnabled).mockReturnValue(false);
     const keeper = { fetchTickers: vi.fn(), fetchOracleCandles: vi.fn(), fetch24hPrices: vi.fn() };
-    const fetcher = new GmsolOracleFetcher(keeper as unknown as OracleFetcher);
+    const fetcher = keeper as unknown as OracleFetcher;
 
-    await expect(fetcher.fetchPrices([mint("SOL")])).rejects.toThrow("Solana network is disabled");
-    await expect(fetcher.fetchCandles(mint("SOL"), "1h", 1)).rejects.toThrow("Solana network is disabled");
-    await expect(fetcher.fetch24hPriceDeltas([mint("SOL")])).rejects.toThrow("Solana network is disabled");
+    await expect(fetchGmsolPrices(fetcher)).rejects.toThrow("Solana network is disabled");
+    await expect(createGmsolCandlesFetcher(fetcher).fetchOracleCandles("SOL", "1h", 1)).rejects.toThrow(
+      "Solana network is disabled"
+    );
+    await expect(fetchGmsol24hPriceDeltas(fetcher)).rejects.toThrow("Solana network is disabled");
     expect(
       [keeper.fetchTickers, keeper.fetchOracleCandles, keeper.fetch24hPrices].map((fn) => fn.mock.calls.length)
     ).toEqual([0, 0, 0]);
