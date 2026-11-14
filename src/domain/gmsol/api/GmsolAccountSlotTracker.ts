@@ -1,6 +1,6 @@
 import { commitGmsolSnapshot } from "./refetchAtSlot";
 
-type AccountSlots = { acceptedSlot?: number; requiredSlot?: number };
+type AccountSlots = { acceptedSlot?: number; requiredSlot?: number; error?: Error };
 
 export class GmsolAccountSlotTracker {
   slots = new Map<string, AccountSlots>();
@@ -28,6 +28,15 @@ export class GmsolAccountSlotTracker {
     return state?.requiredSlot !== undefined && (state.acceptedSlot ?? -1) < state.requiredSlot;
   }
 
+  getError(key: string | undefined) {
+    return key ? this.slots.get(key)?.error : undefined;
+  }
+
+  fail(key: string, error: unknown) {
+    this.slots.set(key, { ...this.slots.get(key), error: error instanceof Error ? error : new Error(String(error)) });
+    this.notify();
+  }
+
   requireSlot(key: string, slot: number) {
     const state = this.slots.get(key);
     if (state?.requiredSlot !== undefined && state.requiredSlot >= slot) return;
@@ -42,7 +51,7 @@ export class GmsolAccountSlotTracker {
     if (state?.requiredSlot !== undefined && next.slot < state.requiredSlot) {
       throw new Error("Solana response slot is older than the confirmed transaction");
     }
-    this.slots.set(key, { ...state, acceptedSlot: next.slot });
+    this.slots.set(key, { ...state, acceptedSlot: next.slot, error: undefined });
     this.notify();
     return next.data;
   }
