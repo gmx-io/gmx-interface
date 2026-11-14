@@ -22,6 +22,7 @@ import {
 } from "domain/synthetics/fees";
 import type { NetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { getTradeFees, TradeFees } from "domain/synthetics/trade";
 import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import { useChainId } from "lib/chains";
@@ -51,14 +52,35 @@ export function usePositionEditorFees({ operation, gasPaymentParams }: Options) 
   const gasPrice = useSelector(selectGasPrice);
 
   return useMemo(() => {
-    if (!position || !gasLimits || !tokensData || gasPrice === undefined) {
+    if (!position || !tokensData) {
+      return {};
+    }
+
+    if (position.marketInfo?.tradeMath !== "gmsol" && (!gasLimits || gasPrice === undefined)) {
       return {};
     }
 
     const collateralBasisUsd = isDeposit ? position.collateralUsd + (collateralDeltaUsd ?? 0n) : position.collateralUsd;
 
+    const borrowingFeeUsd =
+      position.marketInfo?.tradeMath === "gmsol"
+        ? convertToUsd(
+            convertToTokenAmount(
+              position.pendingBorrowingFeesUsd,
+              position.collateralToken.decimals,
+              position.collateralToken.prices.minPrice
+            ),
+            position.collateralToken.decimals,
+            position.collateralToken.prices.minPrice
+          )
+        : position.pendingBorrowingFeesUsd;
+
+    if (borrowingFeeUsd === undefined) {
+      return {};
+    }
+
     const fundingFee = getFeeItem(-position.pendingFundingFeesUsd, collateralBasisUsd);
-    const borrowFee = getFeeItem(-position.pendingBorrowingFeesUsd, collateralBasisUsd);
+    const borrowFee = getFeeItem(-borrowingFeeUsd, collateralBasisUsd);
 
     const swapPathStats = isDeposit ? depositSwapAmounts?.swapStrategy.swapPathStats : undefined;
     const swapsCount = swapPathStats?.swapPath.length ?? 0;
@@ -105,17 +127,22 @@ export function usePositionEditorFees({ operation, gasPaymentParams }: Options) 
       uiSwapFee: swapFees?.uiSwapFee,
     };
 
-    const estimatedGas = isDeposit
-      ? estimateExecuteIncreaseOrderGasLimit(gasLimits, {
-          swapsCount,
-        })
-      : estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-          swapsCount: 0,
-          decreaseSwapType: DecreasePositionSwapType.NoSwap,
-        });
+    const estimatedGas = gasLimits
+      ? isDeposit
+        ? estimateExecuteIncreaseOrderGasLimit(gasLimits, {
+            swapsCount,
+          })
+        : estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+            swapsCount: 0,
+            decreaseSwapType: DecreasePositionSwapType.NoSwap,
+          })
+      : undefined;
 
     const oraclePriceCount = estimateOrderOraclePriceCount(isDeposit ? swapsCount : 0);
-    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount);
+    const executionFee =
+      gasLimits && gasPrice !== undefined && estimatedGas !== undefined
+        ? getExecutionFee(chainId, gasLimits, tokensData, estimatedGas, gasPrice, oraclePriceCount)
+        : undefined;
 
     return {
       fees,

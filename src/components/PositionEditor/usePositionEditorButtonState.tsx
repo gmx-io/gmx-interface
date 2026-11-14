@@ -10,6 +10,7 @@ import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
+  useFeeDiscountFactor,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorPosition,
@@ -132,11 +133,12 @@ export function usePositionEditorButtonState(
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
@@ -400,12 +402,13 @@ export function usePositionEditorButtonState(
       position,
       minCollateralUsd,
       userReferralInfo,
+      feeDiscountFactor,
     });
 
     const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
 
     return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
-  }, [isDeposit, minCollateralUsd, position, userReferralInfo]);
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo, feeDiscountFactor]);
 
   const setMinDepositValue = useCallback(() => {
     if (minDepositUsd === undefined || !selectedCollateralToken) return;

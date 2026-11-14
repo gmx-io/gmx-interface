@@ -4,8 +4,10 @@ import uniq from "lodash/uniq";
 import useSWR from "swr";
 import { useAccount, type Connector } from "wagmi";
 
-import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
+import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOLANA_NETWORK_ID, SOURCE_CHAIN_IDS } from "config/chains";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { useChainId } from "lib/chains";
+import { assertEvmRpcActive } from "lib/rpc/fetchRpc";
 import { withFallback } from "lib/withFallback";
 
 import { AccountType, getAccountType } from "./useAccountType";
@@ -99,20 +101,64 @@ function useWalletSessionChains(): { sessionChains: number[] | undefined; isLoad
   return { sessionChains: data, isLoading };
 }
 
-function probeAccountType(address: string, chainId: number): Promise<AccountType | undefined> {
+async function fetchWhileEvmActive<T>(fetcher: () => Promise<T>): Promise<T> {
+  assertEvmRpcActive();
+  let interrupted = false;
+  const onNetworkChange = () => {
+    interrupted = interrupted || getIsSolanaNetworkSelected();
+  };
+  document.addEventListener("networkChange", onNetworkChange);
+
+  try {
+    const result = await fetcher();
+    if (interrupted) {
+      throw new DOMException("EVM account probe interrupted by network selection", "AbortError");
+    }
+    assertEvmRpcActive();
+    return result;
+  } finally {
+    document.removeEventListener("networkChange", onNetworkChange);
+  }
+}
+
+async function probeAccountType({
+  address,
+  chainId,
+  skipSolanaGate = false,
+}: {
+  address: string;
+  chainId: number;
+  skipSolanaGate?: boolean;
+}): Promise<AccountType | undefined> {
+  const client = getPublicClientWithRpc(chainId, { skipSolanaGate });
+  const retryPausedProbe = skipSolanaGate && getIsSolanaNetworkSelected();
   return withFallback<AccountType | undefined>(
-    getAccountType(address, getPublicClientWithRpc(chainId)),
+    getAccountType(address, client).catch((error) => {
+      // A cached passive probe can reject as a viem timeout after its Solana gate aborted it.
+      if (retryPausedProbe) {
+        return getAccountType(address, client);
+      }
+      throw error;
+    }),
     undefined,
     PROBE_STALL_TIMEOUT_MS
   );
 }
 
 /** EOAs exist on every chain, so only a contract account can be missing from one. */
-export async function getIsContractAccount(address: string, referenceChainId: number): Promise<boolean> {
+export async function getIsContractAccount({
+  address,
+  referenceChainId,
+  skipSolanaGate = false,
+}: {
+  address: string;
+  referenceChainId: number;
+  skipSolanaGate?: boolean;
+}): Promise<boolean> {
   const isTestnet = isTestnetChain(referenceChainId);
   const accountTypes = await Promise.all(
     PROBE_CHAIN_IDS.filter((chainId) => isTestnetChain(chainId) === isTestnet).map((chainId) =>
-      probeAccountType(address, chainId)
+      probeAccountType({ address, chainId, skipSolanaGate })
     )
   );
 
@@ -121,32 +167,46 @@ export async function getIsContractAccount(address: string, referenceChainId: nu
 
 export function useIsContractAccount(): { isContractAccount: boolean } {
   const { address, connector } = useAccount();
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
+  const isSolanaSelected = networkId === SOLANA_NETWORK_ID;
 
-  const { data } = useSWR<boolean>(address ? [address, chainId, connector?.uid, "isContractAccount"] : null, {
-    fetcher: () => getIsContractAccount(address!, chainId),
-    refreshInterval: 0,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateIfStale: false,
-  });
+  const { data } = useSWR<boolean>(
+    address && !isSolanaSelected ? [address, chainId, connector?.uid, "isContractAccount"] : null,
+    {
+      fetcher: () => fetchWhileEvmActive(() => getIsContractAccount({ address: address!, referenceChainId: chainId })),
+      refreshInterval: 0,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+      revalidateIfStale: false,
+    }
+  );
 
   return { isContractAccount: data ?? false };
 }
 
 // A chain list is all testnet or all mainnet, never mixed, so any of them names the realm to probe.
-async function getUndeployedChains(address: string, chainIds: number[]): Promise<number[]> {
-  if (!chainIds.length || !(await getIsContractAccount(address, chainIds[0]))) {
+async function getUndeployedChains({
+  address,
+  chainIds,
+  skipSolanaGate = false,
+}: {
+  address: string;
+  chainIds: number[];
+  skipSolanaGate?: boolean;
+}): Promise<number[]> {
+  if (!chainIds.length || !(await getIsContractAccount({ address, referenceChainId: chainIds[0], skipSolanaGate }))) {
     return [];
   }
 
-  const accountTypes = await Promise.all(chainIds.map((chainId) => probeAccountType(address, chainId)));
+  const accountTypes = await Promise.all(
+    chainIds.map((chainId) => probeAccountType({ address, chainId, skipSolanaGate }))
+  );
 
   return chainIds.filter((_, index) => accountTypes[index] === AccountType.EOA);
 }
 
 export async function isAccountMissingOnChain(address: string, chainId: number): Promise<boolean> {
-  return (await getUndeployedChains(address, [chainId])).includes(chainId);
+  return (await getUndeployedChains({ address, chainIds: [chainId], skipSolanaGate: true })).includes(chainId);
 }
 
 export async function getConnectedWalletName(address: string): Promise<string | undefined> {
@@ -173,15 +233,20 @@ export function useWalletUnavailableChains(chainIds: number[]): {
   isLoading: boolean;
 } {
   const { address } = useAccount();
+  const { networkId } = useChainId();
+  const isSolanaSelected = networkId === SOLANA_NETWORK_ID;
   const { sessionChains, isLoading: isLoadingSession } = useWalletSessionChains();
 
   // Unavailable needs both: the session will not route there and the account is not deployed there.
   const undeclaredChainIds = sessionChains ? chainIds.filter((chainId) => !sessionChains.includes(chainId)) : [];
 
   const { data, isLoading: isLoadingDeployments } = useSWR<number[] | undefined>(
-    address && sessionChains ? [address, undeclaredChainIds.join(","), "walletUnavailableChains"] : null,
+    address && sessionChains && !isSolanaSelected
+      ? [address, undeclaredChainIds.join(","), "walletUnavailableChains"]
+      : null,
     {
-      fetcher: async () => getUndeployedChains(address!, undeclaredChainIds),
+      fetcher: () =>
+        fetchWhileEvmActive(() => getUndeployedChains({ address: address!, chainIds: undeclaredChainIds })),
       refreshInterval: 0,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -191,6 +256,8 @@ export function useWalletUnavailableChains(chainIds: number[]): {
 
   return {
     unavailableChains: sessionChains ? data : undefined,
-    isLoading: isLoadingSession || (Boolean(sessionChains) && isLoadingDeployments),
+    isLoading:
+      !isSolanaSelected &&
+      (isLoadingSession || (Boolean(sessionChains) && (isLoadingDeployments || data === undefined))),
   };
 }

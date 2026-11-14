@@ -9,6 +9,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useProDiscountFactor,
+  useFeeDiscountFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
@@ -47,6 +48,7 @@ import {
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
   selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
+  selectOrderEditorIsQuoteUnavailable,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
@@ -186,6 +188,7 @@ export function OrderEditor(p: Props) {
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
   const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
+  const isQuoteUnavailable = useSelector(selectOrderEditorIsQuoteUnavailable);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
   const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
@@ -313,6 +316,7 @@ export function OrderEditor(p: Props) {
 
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useProDiscountFactor();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -329,7 +333,7 @@ export function OrderEditor(p: Props) {
   const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(p.order.marketAddress);
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
@@ -389,6 +393,7 @@ export function OrderEditor(p: Props) {
       uiFeeFactor: positionOrder.uiFeeFactor ?? uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor,
       acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
       externalSwapQuote: undefined,
@@ -418,6 +423,7 @@ export function OrderEditor(p: Props) {
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,
@@ -444,6 +450,8 @@ export function OrderEditor(p: Props) {
   }, [maxLeverageIncrease, setSizeInputValue]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (isQuoteUnavailable) return undefined;
+
     if (!signer || !tokensData || !marketsInfoData) {
       return undefined;
     }
@@ -508,6 +516,7 @@ export function OrderEditor(p: Props) {
       };
     }
   }, [
+    isQuoteUnavailable,
     signer,
     tokensData,
     executionFee?.gasLimit,

@@ -33,11 +33,11 @@ export const MOCK_L1_EXPRESS_ORDER_GAS_REFERENCE: L1ExpressOrderGasReference = {
   sizeOfData: 3000n,
 };
 
-export const MOCK_POSITIONS_CONSTANTS: PositionsConstants = {
+export const MOCK_POSITIONS_CONSTANTS = {
   minCollateralUsd: expandDecimals(1, 30),
   minPositionSizeUsd: expandDecimals(1, 30),
   maxAutoCancelOrders: 6n,
   claimableCollateralDelay: 0n,
   claimableCollateralReductionFactor: 0n,
   claimableCollateralTimeDivisor: 1n,
-};
+} satisfies PositionsConstants;

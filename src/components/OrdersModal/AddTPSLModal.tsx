@@ -7,6 +7,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useProDiscountFactor,
+  useFeeDiscountFactor,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -170,7 +171,8 @@ export function AddTPSLModal({
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useProDiscountFactor();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const feeDiscountFactor = useFeeDiscountFactor();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(position.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
   const tokensData = useTokensData();
@@ -312,6 +314,7 @@ export function AddTPSLModal({
         isSetAcceptablePriceImpactEnabled,
         forceDecreaseSwapType,
         proDiscountFactor,
+        feeDiscountFactor,
       });
     },
     [
@@ -322,6 +325,7 @@ export function AddTPSLModal({
       minPositionSizeUsd,
       position,
       proDiscountFactor,
+      feeDiscountFactor,
       uiFeeFactor,
       userReferralInfo,
     ]
@@ -424,6 +428,7 @@ export function AddTPSLModal({
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
+        tradeMath: position.marketInfo?.tradeMath,
         initialCollateralUsd: position.collateralUsd,
         sizeInUsd: position.sizeInUsd,
         collateralDeltaUsd,
@@ -486,9 +491,19 @@ export function AddTPSLModal({
         isLong,
         minCollateralUsd,
         userReferralInfo,
+        feeDiscountFactor,
       });
     },
-    [marketInfo, collateralToken, isLong, minCollateralUsd, position, userReferralInfo, isPnlInLeverage]
+    [
+      marketInfo,
+      collateralToken,
+      isLong,
+      minCollateralUsd,
+      position,
+      userReferralInfo,
+      feeDiscountFactor,
+      isPnlInLeverage,
+    ]
   );
 
   const tpNextPositionValues = useMemo(
@@ -740,6 +755,7 @@ export function AddTPSLModal({
         minPositionSizeUsd,
         userReferralInfo,
         proDiscountFactor,
+        feeDiscountFactor,
       }),
     [
       getDecreaseAmountsForTrigger,
@@ -748,6 +764,7 @@ export function AddTPSLModal({
       minPositionSizeUsd,
       position,
       proDiscountFactor,
+      feeDiscountFactor,
       receiveSwapType,
       slDecreaseAmounts,
       slPriceError,

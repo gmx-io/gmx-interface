@@ -137,14 +137,20 @@ function DepthChartContainer() {
       {!isDepthBannerDismissed && (
         <ColorfulBanner color="blue" onClose={() => setIsDepthBannerDismissed(true)}>
           <span>
-            <Trans>
-              Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price
-              impact applies only on closes (capped, usually at 0.5%).{" "}
-              <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
+            {marketInfo.tradeMath === "gmsol" ? (
+              <Trans>
+                Simulated orderbook view of Solana liquidity, including price impact when opening positions.
+              </Trans>
+            ) : (
+              <Trans>
+                Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero price impact. Net price
+                impact applies only on closes (capped, usually at 0.5%).{" "}
+                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            )}
           </span>
         </ColorfulBanner>
       )}

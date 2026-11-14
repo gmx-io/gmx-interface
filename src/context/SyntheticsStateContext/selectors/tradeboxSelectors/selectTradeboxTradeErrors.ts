@@ -1,8 +1,11 @@
+import { t } from "@lingui/macro";
+
 import {
   selectChainId,
   selectIsPositionsLoading,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -111,7 +114,7 @@ export const selectTradeboxTwapIncreaseSequentialMarginState = createSelector(
     const marketInfo = q(selectTradeboxMarketInfo);
     const collateralToken = q(selectTradeboxCollateralToken);
     const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    const { minCollateralUsd } = q(selectPositionConstants);
+    const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
     if (!marketInfo || !collateralToken || !increaseAmounts || minCollateralUsd === undefined) {
       return undefined;
@@ -128,6 +131,7 @@ export const selectTradeboxTwapIncreaseSequentialMarginState = createSelector(
       minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
     });
   }
 );
@@ -147,7 +151,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
     const marketInfo = q(selectTradeboxMarketInfo);
     const collateralToken = q(selectTradeboxCollateralToken);
     const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
-    const { minCollateralUsd } = q(selectPositionConstants);
+    const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
     if (!marketInfo || !collateralToken || !increaseAmounts || minCollateralUsd === undefined) {
       return undefined;
@@ -167,6 +171,7 @@ export const selectTradeboxIncreaseResultingPositionMarginState = createSelector
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
       indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
         orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
         triggerPrice: q(selectTradeboxTriggerPrice),
@@ -224,7 +229,7 @@ const selectTradeboxIncreaseTradeError = createSelector((q) => {
   const existingPosition = q(selectTradeboxExistingPositionForPreview);
   const fees = q(selectTradeboxFees);
   const { maxLiquidity: swapOutLiquidity } = q(selectTradeboxMaxLiquidityPath);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const { longLiquidity, shortLiquidity } = q(selectTradeboxLiquidity);
   const { isLong, isLimit, isTwap } = q(selectTradeboxTradeFlags);
   const markPrice = q(selectTradeboxMarkPrice);
@@ -281,7 +286,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
   const markPrice = q(selectTradeboxMarkPrice);
   const nextPositionValues = q(selectTradeboxNextPositionValues);
   const { isLong, isTwap } = q(selectTradeboxTradeFlags);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
   const stage = q(selectTradeboxStage);
   const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
@@ -314,6 +319,16 @@ const DEFAULT_TRADE_ERROR: ValidationResult = {};
 export const selectTradeboxTradeTypeError = createSelector((q) => {
   const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
   let tradeError: ValidationResult = DEFAULT_TRADE_ERROR;
+
+  if (!isSwap && q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+    const hasInput = isIncrease
+      ? (q(selectTradeboxFromTokenAmount) ?? 0n) > 0n || (q(selectTradeboxToTokenAmount) ?? 0n) > 0n
+      : q(selectTradeboxCloseSizeUsd) > 0n;
+    const amounts = isIncrease ? q(selectTradeboxIncreasePositionAmounts) : q(selectTradeboxDecreasePositionAmounts);
+    if (hasInput && !amounts) {
+      return { buttonErrorMessage: t`Unable to calculate this order` };
+    }
+  }
 
   if (isSwap) {
     tradeError = q(selectTradeboxSwapTradeError);

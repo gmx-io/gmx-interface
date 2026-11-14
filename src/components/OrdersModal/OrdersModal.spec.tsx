@@ -45,6 +45,7 @@ vi.mock("context/SyntheticsStateContext/hooks/globalsHooks", () => ({
   usePositionsConstants: () => ({}),
   useUiFeeFactor: () => 0n,
   useUserReferralInfo: () => undefined,
+  useFeeDiscountFactor: () => undefined,
 }));
 vi.mock("context/SyntheticsStateContext/hooks/orderEditorHooks", () => ({
   useEditingOrderState: () => [undefined, state.editingOrder],

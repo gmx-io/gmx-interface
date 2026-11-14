@@ -3,17 +3,21 @@ import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFea
 import { getIsInvalidSubaccount } from "domain/synthetics/subaccount/utils";
 import { getIsExpressAvailable } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import { getMarketPositionLimits } from "sdk/utils/markets";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
-import { createSelector, createSelectorDeprecated } from "../utils";
+import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 
 export const selectAccount = (s: SyntheticsState) => s.globals.account;
 export const selectSigner = (s: SyntheticsState) => s.globals.signer;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 export const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInfo.isLoading;
+export const selectOrdersInfoError = (s: SyntheticsState) => s.globals.ordersInfo.error;
 export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
+export const selectPositionsInfoError = (s: SyntheticsState) => s.globals.positionsInfo.error;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
+export const selectMarketsInfoError = (s: SyntheticsState) => s.globals.marketsInfo.error;
 export const selectTokensData = (s: SyntheticsState) => s.globals.tokensDataResult.tokensData;
 export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
   s.globals.tokensDataResult.isGmxAccountBalancesLoaded;
@@ -22,6 +26,8 @@ export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.markets
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectProDiscountFactor = (s: SyntheticsState) => s.globals.proDiscountFactor;
+export const selectFeeDiscountFactor = (s: SyntheticsState) => s.globals.feeDiscountFactor;
+export const selectFeeDiscountError = (s: SyntheticsState) => s.globals.feeDiscountError;
 export const selectChainId = (s: SyntheticsState) => s.globals.chainId;
 export const selectSrcChainId = (s: SyntheticsState) => s.globals.srcChainId;
 export const selectDepositMarketTokensData = (s: SyntheticsState) => s.globals.depositMarketTokensData;
@@ -108,6 +114,13 @@ export const selectPositionConstants = createSelectorDeprecated(
   (minCollateralUsd, minPositionSizeUsd) => ({
     minCollateralUsd,
     minPositionSizeUsd,
+  })
+);
+
+export const makeSelectPositionConstants = createSelectorFactory((marketAddress: string | undefined) =>
+  createSelector((q) => {
+    const market = q((s) => (marketAddress ? selectMarketsInfoData(s)?.[marketAddress] : undefined));
+    return getMarketPositionLimits(market, q(selectPositionConstants));
   })
 );
 

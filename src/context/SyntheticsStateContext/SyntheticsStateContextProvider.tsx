@@ -57,6 +57,7 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import type { PriceDelta } from "domain/synthetics/tokens/priceDelta";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -76,6 +77,7 @@ import {
   useAccountWhitelistsRequest,
 } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import type { CandlesFetcher } from "domain/tradingview/DataFeed";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -106,6 +108,13 @@ export type SyntheticsPageType =
   | "referrals"
   | "rpcDebug";
 
+export type ChartDataProvider = {
+  candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
+  fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
+  fetch24hVolumes: () => Promise<Record<string, bigint>>;
+};
+
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
@@ -122,6 +131,8 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
+    feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
@@ -156,6 +167,8 @@ export type SyntheticsState = {
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
+
+    chartDataProvider?: ChartDataProvider;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -192,7 +205,7 @@ export function SyntheticsStateContextProvider({
   pageType: SyntheticsPageType;
   overrideChainId?: ContractsChainId;
 }) {
-  const { chainId: selectedChainId, srcChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId, networkId: selectedNetworkId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
 
@@ -211,6 +224,7 @@ export function SyntheticsStateContextProvider({
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
+  const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
 
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
@@ -306,6 +320,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
+    networkId,
     marketsInfoData: marketsInfo.marketsInfoData,
     marketsData: markets.marketsData,
     tokensData: tokensDataResult.tokensData,
@@ -345,7 +360,8 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(
     chainId,
     positionsInfoData?.[closingPositionKey ?? ""],
-    closingPositionOrderOption
+    closingPositionOrderOption,
+    networkId
   );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
@@ -369,7 +385,7 @@ export function SyntheticsStateContextProvider({
   const gasPrice = useGasPrice(chainId);
   const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
 
   useCollectSyntheticsMetrics({
     tokensDataResult,

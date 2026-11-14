@@ -177,6 +177,7 @@ export async function callContract(
       const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed`;
       const pendingTxn: PendingTransaction = {
         hash: res.hash,
+        chainId,
         message,
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,

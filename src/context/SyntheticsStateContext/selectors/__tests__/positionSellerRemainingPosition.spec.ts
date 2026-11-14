@@ -120,6 +120,26 @@ function createState(p: {
 }
 
 describe("position seller — remaining position after a market partial close", () => {
+  it("passes the combined Solana discount through the close preview without changing EVM fees", () => {
+    for (const [tradeMath, expectedFeeUsd] of [
+      ["gmsol", usd(5) / 2n],
+      [undefined, usd(5)],
+    ] as const) {
+      const state = createState({
+        collateralUsd: usd(1000),
+        closeUsd: "2500",
+        keepLeverage: false,
+        pnlUsd: 0n,
+        marketInfo: { ...marketInfoWithFee, tradeMath },
+      });
+      state.globals.feeDiscountFactor = usd(1) / 2n;
+      const amounts = selectPositionSellerDecreaseAmounts(state);
+      expect(amounts?.sizeDeltaUsd).toBe(usd(2500));
+      expect(amounts?.positionFeeUsd).toBe(expectedFeeUsd);
+      expect(amounts?.feeDiscountUsd).toBe(usd(5) - expectedFeeUsd);
+    }
+  });
+
   // 2 060 of collateral and a 2 000 loss leave 60 of margin: under the 1 % regular minimum of the full
   // position (100), above its 0.5 % liquidation minimum (50)
   const OVER_LEVERAGED = usd(2_060);

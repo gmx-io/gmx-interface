@@ -4,8 +4,8 @@ import { SOLANA_NETWORK_ID } from "config/chains";
 import {
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
-  SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
+import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
@@ -20,12 +20,12 @@ export type WalletSigner = UncheckedJsonRpcSigner & {
 function selectNetworkInApp(chainId: number) {
   localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
   localStorage.setItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY, "true");
-  localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
+  setIsSolanaNetworkSelected(false);
   document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId } }));
 }
 
 export function selectSolanaNetworkInApp() {
-  localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
+  setIsSolanaNetworkSelected(true);
   document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: SOLANA_NETWORK_ID } }));
 }
 

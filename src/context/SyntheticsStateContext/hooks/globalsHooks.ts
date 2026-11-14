@@ -4,12 +4,13 @@ import {
   selectIsOrdersLoading,
   selectIsPositionsLoading,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectPositiveFeePositionsSortedByUsd,
   selectTokensData,
   selectUiFeeFactor,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectUserReferralInfo,
 } from "../selectors/globalSelectors";
 import { useSelector } from "../utils";
@@ -19,12 +20,14 @@ export const useTokensData = () => useSelector(selectTokensData);
 export const useIsOrdersLoading = () => useSelector(selectIsOrdersLoading);
 export const useUserReferralInfo = () => useSelector(selectUserReferralInfo);
 export const useProDiscountFactor = () => useSelector(selectProDiscountFactor);
+export const useFeeDiscountFactor = () => useSelector(selectFeeDiscountFactor);
 export const usePositionsInfoData = () => useSelector(selectPositionsInfoData);
 export const usePositiveFeePositionsSortedByUsd = () => useSelector(selectPositiveFeePositionsSortedByUsd);
 export const useIsPositionsLoading = () => useSelector(selectIsPositionsLoading);
 export const useUiFeeFactor = () => useSelector(selectUiFeeFactor);
 
-export const usePositionsConstants = () => useSelector(selectPositionConstants);
+export const usePositionsConstants = (marketAddress?: string) =>
+  useSelector(makeSelectPositionConstants(marketAddress));
 
 export const useClosingPositionKeyState = () => useSelector(selectClosingPositionKeyState);
 export const useAccount = () => useSelector(selectAccount);
