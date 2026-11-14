@@ -66,7 +66,10 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
-import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -214,15 +217,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
+  }, [fromToken, payAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -235,7 +238,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -243,6 +246,7 @@ export function useTradeboxButtonState({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: fromToken?.address,
+      permitBlockReason,
     },
   });
 

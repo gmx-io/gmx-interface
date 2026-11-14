@@ -7,7 +7,12 @@ import {
   type UiFlags,
 } from "domain/synthetics/uiFlags/uiFlags";
 
-import { getIsTokenPermitsEnabled, getTokenPermitAccountType, TokenPermitAccountType } from "./tokenPermitsEligibility";
+import {
+  getTokenPermitAccountType,
+  getTokenPermitsDisabledReason,
+  type TokenPermitAccountType,
+  type TokenPermitsDisabledReason,
+} from "./tokenPermitsEligibility";
 
 const mocks = vi.hoisted(() => ({ getAccountType: vi.fn() }));
 
@@ -71,35 +76,41 @@ describe("getTokenPermitAccountType", () => {
   });
 });
 
-describe("getIsTokenPermitsEnabled", () => {
+describe("getTokenPermitsDisabledReason", () => {
   const cases: {
     accountType: TokenPermitAccountType | undefined;
     uiFlags: UiFlags | undefined;
     isQaOverrideEnabled: boolean;
-    expected: boolean;
+    expected: TokenPermitsDisabledReason | undefined;
   }[] = [
-    { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: false, expected: false },
-    { accountType: "eoa", uiFlags: flags({}), isQaOverrideEnabled: false, expected: false },
-    { accountType: "eoa", uiFlags: flags({ eoa: false }), isQaOverrideEnabled: false, expected: false },
-    { accountType: "eoa", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: true },
-    { accountType: "eoa", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: false },
-    { accountType: "eip7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: false },
-    { accountType: "eip7702", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: true },
-    { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: true, expected: true },
-    { accountType: "eip7702", uiFlags: flags({ eip7702: false }), isQaOverrideEnabled: true, expected: true },
+    { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    { accountType: "eoa", uiFlags: flags({}), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    { accountType: "eoa", uiFlags: flags({ eoa: false }), isQaOverrideEnabled: false, expected: "flagOff" },
+    { accountType: "eoa", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: undefined },
+    { accountType: "eoa", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    { accountType: "eip7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    { accountType: "eip7702", uiFlags: flags({ eip7702: false }), isQaOverrideEnabled: false, expected: "flagOff" },
+    { accountType: "eip7702", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: undefined },
+    { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: true, expected: undefined },
+    { accountType: "eip7702", uiFlags: flags({ eip7702: false }), isQaOverrideEnabled: true, expected: undefined },
     {
       accountType: "unsupported",
       uiFlags: flags({ eoa: true, eip7702: true }),
       isQaOverrideEnabled: true,
-      expected: false,
+      expected: "unsupportedAccount",
     },
-    { accountType: undefined, uiFlags: flags({ eoa: true }), isQaOverrideEnabled: true, expected: false },
+    {
+      accountType: undefined,
+      uiFlags: flags({ eoa: true }),
+      isQaOverrideEnabled: true,
+      expected: "accountTypeNotLoaded",
+    },
   ];
 
   it.each(cases)(
     "$accountType account, flags $uiFlags, QA override $isQaOverrideEnabled -> $expected",
     ({ accountType, uiFlags, isQaOverrideEnabled, expected }) => {
-      expect(getIsTokenPermitsEnabled({ uiFlags, accountType, isQaOverrideEnabled })).toBe(expected);
+      expect(getTokenPermitsDisabledReason({ uiFlags, accountType, isQaOverrideEnabled })).toBe(expected);
     }
   );
 });

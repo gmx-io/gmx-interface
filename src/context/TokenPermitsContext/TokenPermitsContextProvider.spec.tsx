@@ -127,6 +127,16 @@ describe("TokenPermitsContextProvider", () => {
     expect(state.tokenPermits.map((p) => p.token)).toEqual([USDC]);
     expect(state.getIsPermitAvailable(USDC)).toBe(true);
     expect(state.getIsPermitAvailable(LINK)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBeUndefined();
+    expect(state.getPermitUnavailableReason(LINK)).toBe("tokenNotAllowed");
+  });
+
+  it("tells why an allowlisted token can't use a permit yet", async () => {
+    mocks.uiFlags = undefined;
+    await setup();
+
+    expect(state.getIsPermitAvailable(USDC)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBe("flagNotLoaded");
   });
 
   it("sends a token whose permit failed back to approvals without touching other tokens", async () => {
@@ -136,6 +146,7 @@ describe("TokenPermitsContextProvider", () => {
     act(() => state.disableTokenPermits([USDC]));
 
     expect(state.getIsPermitAvailable(USDC)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBe("tokenDisabled");
     expect(state.getIsPermitAvailable(WETH)).toBe(true);
     expect(state.tokenPermits.map((p) => p.token)).toEqual([WETH]);
   });

@@ -104,13 +104,27 @@ export async function approveTokens({
 
   const isUnlimited = approveAmount === maxUint256;
 
+  let permitFallbackReason: PermitFallbackReason | undefined;
+
   const sendMetric = (
     method: TokenApprovalEvent["data"]["method"],
     outcome: TokenApprovalEvent["data"]["outcome"],
     error?: unknown
-  ) => sendTokenApprovalMetric({ metric, method, outcome, chainId, tokenAddress, spender, isUnlimited, error });
+  ) => {
+    const permitSkipReason =
+      method === "transaction" ? (permitFallbackReason ? "permitFailed" : metric.permitSkipReason) : undefined;
 
-  let permitFallbackReason: PermitFallbackReason | undefined;
+    sendTokenApprovalMetric({
+      metric: { ...metric, permitSkipReason },
+      method,
+      outcome,
+      chainId,
+      tokenAddress,
+      spender,
+      isUnlimited,
+      error,
+    });
+  };
 
   if (permitParams) {
     const permitMetricParams = { chainId, tokenAddress, accountType: permitParams.accountType };
