@@ -1,8 +1,15 @@
 import { zeroHash } from "viem";
 
 import { bigMath } from "utils/bigmath";
-import { getGmsolMidPrice, getGmsolUsdAmount, GMSOL_PRECISION_SCALE } from "utils/gmsol";
-import { getGmsolFractionalPower } from "utils/gmsol/decimalPower";
+import { getGmsolMidPrice, getGmsolUsdAmount } from "utils/gmsol";
+import {
+  GMSOL_MAX_IMPACT_EXPONENT,
+  GMSOL_MAX_SIGNED,
+  GMSOL_MAX_UNSIGNED,
+  GMSOL_PRECISION,
+  GMSOL_PRECISION_SCALE,
+} from "utils/gmsol/constants";
+import { getGmsolFractionalPower } from "utils/gmsol/numbers";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import {
@@ -18,11 +25,6 @@ import {
 import { TokenData } from "utils/tokens/types";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd, getMidPrice } from "utils/tokens/utils";
 import { TradeFees } from "utils/trade/types";
-
-const GMSOL_PRECISION = 10n ** 20n;
-const GMSOL_MAX_UNSIGNED = (1n << 128n) - 1n;
-const GMSOL_MAX_SIGNED = (1n << 127n) - 1n;
-const GMSOL_MAX_IMPACT_EXPONENT = 128n * PRECISION;
 
 export class GmsolPriceImpactError extends Error {
   override name = "GmsolPriceImpactError";
@@ -659,32 +661,44 @@ function applyMarketImpactFactor(p: {
   }
   const base = bigMath.mulDiv(p.diff, 1n, GMSOL_PRECISION_SCALE);
   const factor = bigMath.mulDiv(p.factor, 1n, GMSOL_PRECISION_SCALE);
-  let power = GMSOL_PRECISION;
-  if (base < GMSOL_PRECISION) {
-    power = 0n;
-  } else if (base !== GMSOL_PRECISION && p.exponent !== 0n) {
-    if (p.exponent % PRECISION !== 0n) {
-      try {
-        power = getGmsolFractionalPower(base, p.exponent / GMSOL_PRECISION_SCALE);
-      } catch (error) {
-        throw new GmsolPriceImpactError(error instanceof Error ? error.message : "Solana fractional power failed");
-      }
-    } else if (p.exponent > GMSOL_MAX_IMPACT_EXPONENT) {
-      throw new GmsolPriceImpactError("Solana impact exponent is unsupported for exact calculation");
-    } else {
-      for (let remaining = p.exponent; remaining > 0n; remaining -= PRECISION) {
-        power = bigMath.mulDiv(power, base, GMSOL_PRECISION);
-        if (power > GMSOL_MAX_UNSIGNED) {
-          throw new GmsolPriceImpactError("Solana impact power exceeds native range");
-        }
-      }
-    }
-  }
+  const power = getGmsolImpactPower(base, p.exponent);
   const impact = bigMath.mulDiv(power, factor, GMSOL_PRECISION);
   if (impact > GMSOL_MAX_UNSIGNED) {
     throw new GmsolPriceImpactError("Solana impact factor exceeds native range");
   }
   return impact * GMSOL_PRECISION_SCALE;
+}
+
+function getGmsolImpactPower(base: bigint, exponent: bigint) {
+  if (base < GMSOL_PRECISION) {
+    return 0n;
+  }
+
+  if (base === GMSOL_PRECISION || exponent === 0n) {
+    return GMSOL_PRECISION;
+  }
+
+  const hasFractionalExponent = exponent % PRECISION !== 0n;
+  if (hasFractionalExponent) {
+    try {
+      return getGmsolFractionalPower(base, exponent / GMSOL_PRECISION_SCALE);
+    } catch (error) {
+      throw new GmsolPriceImpactError(error instanceof Error ? error.message : "Solana fractional power failed");
+    }
+  }
+
+  if (exponent > GMSOL_MAX_IMPACT_EXPONENT) {
+    throw new GmsolPriceImpactError("Solana impact exponent is unsupported for exact calculation");
+  }
+
+  let power = GMSOL_PRECISION;
+  for (let remaining = exponent; remaining > 0n; remaining -= PRECISION) {
+    power = bigMath.mulDiv(power, base, GMSOL_PRECISION);
+    if (power > GMSOL_MAX_UNSIGNED) {
+      throw new GmsolPriceImpactError("Solana impact power exceeds native range");
+    }
+  }
+  return power;
 }
 
 export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint) {

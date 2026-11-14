@@ -2,6 +2,11 @@ export type ServedResult<TResult> = { result: TResult; client: IHttp };
 
 export type HttpResponseMetadata = { headers: { get(name: string): string | null } };
 
+export type SolanaReadOptions = {
+  minContextSlot?: number;
+  onResponse?: (response: { slot: number | undefined }) => void;
+};
+
 export type FetchJsonOptions<TResult> = {
   query?: Record<string, any>;
   transform?: (result: any) => TResult;

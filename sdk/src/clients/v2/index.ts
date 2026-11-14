@@ -40,8 +40,7 @@ import {
 } from "utils/gmxAccountApi";
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
-import type { SolanaReadOptions } from "utils/http/solana";
-import { IHttp } from "utils/http/types";
+import type { IHttp, SolanaReadOptions } from "utils/http/types";
 import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
 import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
 import {
@@ -308,8 +307,7 @@ export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
-export type { IHttp, HttpResponseMetadata } from "utils/http/types";
-export type { SolanaReadOptions } from "utils/http/solana";
+export type { IHttp, HttpResponseMetadata, SolanaReadOptions } from "utils/http/types";
 export type { FeeDiscount } from "utils/referrals/types";
 export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";

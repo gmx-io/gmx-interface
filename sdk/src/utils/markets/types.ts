@@ -1,4 +1,4 @@
-import type { GmsolMarketConfig } from "utils/gmsol";
+import type { GmsolMarketConfig } from "utils/gmsol/types";
 import type { TokenData } from "utils/tokens/types";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
