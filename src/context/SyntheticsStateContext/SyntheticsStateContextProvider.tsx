@@ -110,6 +110,7 @@ export type SyntheticsPageType =
 
 export type ChartDataProvider = {
   candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
   fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
   fetch24hVolumes: () => Promise<Record<string, bigint>>;
 };
@@ -130,6 +131,7 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
     feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
