@@ -305,6 +305,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
       verificationChainId: chainId,
+      relayParams: relayPayload,
     };
 
     signature = await signTypedData(signatureParams);
@@ -468,7 +469,7 @@ async function signBridgeOutPayload({
     account: signer.address,
   });
 
-  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId });
+  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId, relayParams });
 }
 
 export async function signSetTraderReferralCode({
@@ -503,6 +504,7 @@ export async function signSetTraderReferralCode({
     typedData: message,
     shouldUseSignerMethod,
     verificationChainId: chainId,
+    relayParams,
   });
 }
 
@@ -538,6 +540,7 @@ export async function signRegisterCode({
     typedData: message,
     shouldUseSignerMethod,
     verificationChainId: chainId,
+    relayParams,
   });
 }
 

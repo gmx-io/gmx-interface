@@ -1,9 +1,6 @@
-import type { HttpResponseMetadata } from "./types";
+import type { HttpResponseMetadata, SolanaReadOptions } from "./types";
 
-export type SolanaReadOptions = {
-  minContextSlot?: number;
-  onResponse?: (response: { slot: number | undefined }) => void;
-};
+export type { SolanaReadOptions } from "./types";
 
 export function parseSolanaSlotHeader(value: string | null): number | undefined {
   if (value === null || value.trim() === "") {
