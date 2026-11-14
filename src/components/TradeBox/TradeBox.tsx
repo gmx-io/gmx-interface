@@ -148,6 +148,7 @@ import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
@@ -1612,6 +1613,13 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               />
             }
             valueClassName="numbers"
+          />
+        )}
+
+        {(isIncrease || isTrigger) && (
+          <FundingPayoutRow
+            fundingPayout={isIncrease ? increaseAmounts?.fundingPayout : decreaseAmounts?.fundingPayout}
+            marketInfo={marketInfo}
           />
         )}
 
