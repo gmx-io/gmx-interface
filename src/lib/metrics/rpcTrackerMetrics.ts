@@ -1,19 +1,25 @@
 import orderBy from "lodash/orderBy";
 
+import { isSolanaNetwork } from "config/chains";
 import { getChainName, getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
-import { RpcStats, RpcTracker } from "lib/rpc/RpcTracker";
+import type { EndpointStats } from "lib/FallbackTracker/FallbackTracker";
+import type { RpcCheckStats, RpcTrackerObserver } from "lib/rpc/types";
 
 import {
   metrics,
   RpcTrackerEndpointBannedEvent,
   RpcTrackerEndpointBlockGapTiming,
+  RpcTrackerEndpointHealthEvent,
   RpcTrackerEndpointTiming,
   RpcTrackerUpdateEndpointsEvent,
 } from ".";
 import { createEndpointsPairReporter } from "./endpointsPairReporter";
 
-export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
+export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
+  const isSolana = isSolanaNetwork(tracker.params.chainId);
+  const progressFields = isSolana ? { progressUnit: "slot" as const } : {};
+  const endpointHealth = new Map<string, boolean>();
   const endpointsPairReporter = createEndpointsPairReporter<RpcTrackerUpdateEndpointsEvent["data"]>((data, repeats) => {
     metrics.pushEvent<RpcTrackerUpdateEndpointsEvent>({
       event: "rpcTracker.endpoint.updated",
@@ -32,7 +38,8 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
         data: {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
-          endpoint: endpoint,
+          // The Solana RPC URL carries the Alchemy key in its path, so only the host is reported.
+          endpoint: isSolana ? new URL(endpoint).hostname : endpoint,
           reason: reason,
         },
       });
@@ -63,6 +70,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
           secondary: secondary ? getProviderNameFromUrl(secondary) : "none",
           primaryBlockGap: getBlockGap(bestBlock, primaryStats),
           secondaryBlockGap: getBlockGap(bestBlock, secondaryStats),
+          ...progressFields,
         },
       });
     }
@@ -80,7 +88,24 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
       const relevantEndpoints = [primary, secondary].filter(Boolean);
       const relevantStats = endpointsStats.filter((stat) => relevantEndpoints.includes(stat.endpoint));
 
-      relevantStats.forEach((endpointStats: RpcStats) => {
+      relevantStats.forEach((endpointStats) => {
+        const latestCheck = endpointStats.checkResults[0];
+        if (isSolana && latestCheck) {
+          const previousHealth = endpointHealth.get(endpointStats.endpoint);
+          endpointHealth.set(endpointStats.endpoint, latestCheck.success);
+          if (previousHealth !== latestCheck.success && (!latestCheck.success || previousHealth === false)) {
+            metrics.pushEvent<RpcTrackerEndpointHealthEvent>({
+              event: "rpcTracker.endpoint.health",
+              isError: !latestCheck.success,
+              data: {
+                chainId: tracker.params.chainId,
+                chainName: getChainName(tracker.params.chainId),
+                endpoint: getProviderNameFromUrl(endpointStats.endpoint),
+                isHealthy: latestCheck.success,
+              },
+            });
+          }
+        }
         const blockGap = getBlockGap(bestBlock, endpointStats);
         const responseTime = endpointStats.checkResults?.[0]?.stats?.responseTime;
 
@@ -95,6 +120,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
           metrics.pushTiming<RpcTrackerEndpointBlockGapTiming>("rpcTracker.endpoint.blockGap", blockGap, {
             endpoint: getProviderNameFromUrl(endpointStats.endpoint),
             chainId: tracker.params.chainId,
+            ...progressFields,
           });
         }
       });
@@ -109,21 +135,31 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
   };
 }
 
-const getBestBlock = (endpointsStats: RpcStats[]): number | undefined => {
-  return orderBy(endpointsStats, [(stat) => stat.checkResults?.[0]?.stats?.blockNumber ?? 0], ["desc"])[0]
-    ?.checkResults?.[0]?.stats?.blockNumber;
+type RpcStats = EndpointStats<RpcCheckStats>;
+
+const getProgress = (stats: RpcStats | undefined) => {
+  const latest = stats?.checkResults[0]?.stats;
+  return latest?.slot ?? latest?.blockNumber;
 };
 
-const getBlockGap = (bestBlock: number | undefined, endpointStats: RpcStats | undefined): number | "unknown" => {
+const getBestBlock = (endpointsStats: RpcStats[]): number | bigint | undefined => {
+  return getProgress(orderBy(endpointsStats, [(stat) => getProgress(stat) ?? 0], ["desc"])[0]);
+};
+
+const getBlockGap = (
+  bestBlock: number | bigint | undefined,
+  endpointStats: RpcStats | undefined
+): number | "unknown" => {
   if (!endpointStats) {
     return "unknown";
   }
 
-  const blockNumber = endpointStats?.checkResults?.[0]?.stats?.blockNumber;
+  const blockNumber = getProgress(endpointStats);
 
-  if (typeof blockNumber !== "number" || !bestBlock) {
-    return "unknown";
+  if (typeof bestBlock === "bigint" && typeof blockNumber === "bigint") {
+    return Number(bestBlock - blockNumber);
   }
-
-  return bestBlock - blockNumber;
+  return typeof bestBlock === "number" && typeof blockNumber === "number" && bestBlock
+    ? bestBlock - blockNumber
+    : "unknown";
 };
