@@ -1,9 +1,11 @@
-type Decimal = { coefficient: bigint; scale: number };
+import { GMSOL_PRECISION } from "./constants";
+import type { Decimal } from "./types";
 
 const MAX_COEFFICIENT = (1n << 96n) - 1n;
 const MAX_U64 = (1n << 64n) - 1n;
 const MAX_I64 = (1n << 63n) - 1n;
 const UNIT = 1_000_000_000n;
+const INPUT_SCALE = GMSOL_PRECISION / UNIT;
 const ONE: Decimal = { coefficient: 1n, scale: 0 };
 const E: Decimal = { coefficient: 27182818284590452353602874714n, scale: 28 };
 const INVERSE_E: Decimal = { coefficient: 3678794411714423215955237702n, scale: 28 };
@@ -140,8 +142,8 @@ function exponential(value: Decimal): Decimal {
 }
 
 export function getGmsolFractionalPower(base20: bigint, exponent20: bigint): bigint {
-  const base = base20 / 100_000_000_000n;
-  const exponent = exponent20 / 100_000_000_000n;
+  const base = base20 / INPUT_SCALE;
+  const exponent = exponent20 / INPUT_SCALE;
   if (base < UNIT || base > MAX_U64 || exponent < 0n || exponent > MAX_U64) {
     throw new Error("Solana fractional power input exceeds native range");
   }
@@ -172,5 +174,5 @@ export function getGmsolFractionalPower(base20: bigint, exponent20: bigint): big
     }
     if (result < 0n || result > MAX_U64) throw new Error("Solana fractional power exceeds native range");
   }
-  return result * 100_000_000_000n;
+  return result * INPUT_SCALE;
 }

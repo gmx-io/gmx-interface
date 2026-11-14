@@ -6,12 +6,13 @@ import {
   getPriceImpactByAcceptablePrice,
 } from "utils/fees";
 import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount, GMSOL_PRECISION_SCALE } from "utils/gmsol";
-import { MarketInfo } from "utils/markets/types";
 import { expandDecimals, getBasisPoints, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType } from "utils/orders/types";
 import { convertToTokenAmount } from "utils/tokens";
 import { TokenPrices } from "utils/tokens/types";
 import { TriggerThresholdType } from "utils/trade/types";
+
+import type { AcceptablePriceParams, GmsolAcceptablePriceParams } from "./types";
 
 export function getMarkPrice(p: { prices: TokenPrices; isIncrease: boolean; isLong: boolean }) {
   const { prices, isIncrease, isLong } = p;
@@ -91,19 +92,6 @@ export function getIncreaseEvaluationIndexPrice(p: {
 
   return p.triggerPrice;
 }
-
-type AcceptablePriceParams = {
-  marketInfo: MarketInfo;
-  isIncrease: boolean;
-  isLimit: boolean;
-  isLong: boolean;
-  indexPrice: bigint;
-  sizeDeltaUsd: bigint;
-  maxNegativePriceImpactBps?: bigint;
-  sizeDeltaInTokens?: bigint;
-  positionSizeInUsd?: bigint;
-  positionSizeInTokens?: bigint;
-};
 
 export function getAcceptablePriceInfo(p: AcceptablePriceParams) {
   if (p.marketInfo.tradeMath === "gmsol") {
@@ -215,8 +203,6 @@ export function getAcceptablePriceInfo(p: AcceptablePriceParams) {
 
   return values;
 }
-
-type GmsolAcceptablePriceParams = AcceptablePriceParams & { priceImpactDeltaUsd: bigint };
 
 function getGmsolIncreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint | undefined {
   const { indexPrice, sizeDeltaUsd, priceImpactDeltaUsd, isLong, marketInfo } = p;

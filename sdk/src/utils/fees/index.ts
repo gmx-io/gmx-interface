@@ -1,5 +1,6 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
 import { bigMath } from "utils/bigmath";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getOpenInterestForBalance } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
@@ -52,14 +53,10 @@ export function getPositionFee(
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
   if (marketInfo.tradeMath === "gmsol") {
-    const nativeUsdPrecisionScale = 10n ** 10n;
-    positionFeeUsd = bigMath.mulDiv(positionFeeUsd, 1n, nativeUsdPrecisionScale) * nativeUsdPrecisionScale;
-    const discountUsd =
-      bigMath.mulDiv(
-        applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n))),
-        1n,
-        nativeUsdPrecisionScale
-      ) * nativeUsdPrecisionScale;
+    positionFeeUsd = getGmsolUsdAmount(positionFeeUsd);
+    const discountUsd = getGmsolUsdAmount(
+      applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n)))
+    );
     return { positionFeeUsd: positionFeeUsd - discountUsd, discountUsd, totalRebateUsd: 0n, uiFeeUsd: 0n };
   }
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);

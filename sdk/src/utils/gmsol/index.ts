@@ -2,9 +2,11 @@ import { bigMath } from "utils/bigmath";
 import { expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import type { TokenData } from "utils/tokens/types";
 
-export { getGmsolFractionalPower } from "./decimalPower";
+import { GMSOL_PRECISION_SCALE } from "./constants";
 
-export const GMSOL_PRECISION_SCALE = 10n ** 10n;
+export { GMSOL_PRECISION_SCALE } from "./constants";
+export { getGmsolFractionalPower } from "./numbers";
+export type { GmsolMarketConfig } from "./types";
 
 export function getGmsolUsdAmount(value: bigint): bigint {
   return bigMath.mulDiv(value, 1n, GMSOL_PRECISION_SCALE) * GMSOL_PRECISION_SCALE;
@@ -14,13 +16,6 @@ export function getGmsolMidPrice(token: TokenData): bigint {
   const scale = expandDecimals(1, token.decimals) * GMSOL_PRECISION_SCALE;
   return bigMath.mulDiv(token.prices.minPrice + token.prices.maxPrice, 1n, 2n * scale) * scale;
 }
-
-/** Data-only opt-in, also usable by gmx-api without a selected network. */
-export type GmsolMarketConfig = {
-  tradeMath?: "gmsol";
-  minCollateralUsd?: bigint;
-  minPositionSizeUsd?: bigint;
-};
 
 /** The impact is settled in the entry size; it never becomes pending collateral. 0 means the order fills no tokens. */
 export function getGmsolIncreaseSizeDeltaInTokens(p: {
