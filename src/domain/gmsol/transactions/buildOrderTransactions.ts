@@ -16,7 +16,7 @@ import { copySolanaBytes } from "lib/solana/bytes";
 
 import { loadGmsolSdk } from "../loadGmsolSdk";
 import { ASSOCIATED_TOKEN_PROGRAM, COMPUTE_BUDGET_PROGRAM, WRAPPED_SOL_MINT } from "./addresses";
-import { decodeGmsolInstruction } from "./decodeInstruction";
+import { compactCreateOrderData, decodeGmsolInstruction } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
 import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
@@ -236,7 +236,19 @@ export async function buildGmsolOrderTransactions({
           const idempotent =
             ix.programAddress === ASSOCIATED_TOKEN_PROGRAM || name === "prepare_user" || name === "prepare_position";
           const key = JSON.stringify([ix.programAddress, ix.accounts, [...data]]);
-          if (!idempotent || !prepared.has(key)) instructions.push(ix);
+          if (!idempotent || !prepared.has(key)) {
+            instructions.push(
+              name === "create_order_v2"
+                ? {
+                    ...ix,
+                    data: compactCreateOrderData(
+                      data,
+                      (ix.accounts ?? []).map((account) => account.address)
+                    ),
+                  }
+                : ix
+            );
+          }
           if (idempotent) prepared.add(key);
         } else {
           const bytes = ix.data ? copySolanaBytes(ix.data) : new Uint8Array();

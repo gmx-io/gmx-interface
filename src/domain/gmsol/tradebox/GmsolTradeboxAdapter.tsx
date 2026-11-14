@@ -8,7 +8,7 @@ import {
   selectMarketsInfoError,
   selectOrdersInfoError,
   selectPositionsInfoError,
-  selectProDiscountFactor,
+  selectFeeDiscountFactor,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAllowedSlippage,
@@ -86,7 +86,7 @@ export default function GmsolTradeboxAdapter({
   const tradeError = useSelector(selectTradeboxTradeTypeError);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const feeDiscountError = useSelector(selectFeeDiscountError);
-  const feeDiscountFactor = useSelector(selectProDiscountFactor);
+  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const marketsError = useSelector(selectMarketsInfoError);
   const positionsError = useSelector(selectPositionsInfoError);
   const ordersError = useSelector(selectOrdersInfoError);
