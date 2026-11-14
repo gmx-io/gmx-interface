@@ -3607,6 +3607,10 @@ msgstr "現在の価格"
 msgid "Mark:"
 msgstr "マーク価格:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "注文署名を確認"
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "CURRENT"
@@ -11305,6 +11309,10 @@ msgstr "USDC-USDGプールを双方向で制限します。安全マージンの
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "これらのネットワークではウォレット取引のみ利用可能です"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Express注文に署名する際、編集、キャンセル、担保の変更を含めて確認ウィンドウを表示します。承認、プールへの入金、One-Clickの有効化などその他の署名では常に確認が求められます。"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"

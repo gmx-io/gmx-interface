@@ -20,6 +20,7 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
+import { silentEmbeddedWalletSigner } from "./silentEmbeddedWalletSigner";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -50,6 +51,8 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  /** Signs without the Privy confirmation window when the embedded wallet has registered a silent signer */
+  canSkipEmbeddedWalletConfirmation?: boolean;
   relayParams?: RelayParamsPayload;
 };
 
@@ -313,6 +316,7 @@ async function signTypedDataOnce({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  canSkipEmbeddedWalletConfirmation = false,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -364,7 +368,19 @@ async function signTypedDataOnce({
     message: messageToSign,
   };
 
-  const requestSignature = (signWith: AnySigner) => {
+  const requestSignature = async (signWith: AnySigner) => {
+    // looked up per attempt: the setting or the session can change while the chain checks await
+    const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
+
+    if (silentSigner) {
+      try {
+        return await silentSigner.signTypedData(eip712);
+      } catch (error) {
+        // the prompted flow can still succeed, so a failure here must not fail the order
+        metrics.pushError(error, "signing.silentEmbeddedWallet");
+      }
+    }
+
     if (shouldUseSignerMethod && signWith.signTypedData) {
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;

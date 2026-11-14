@@ -114,6 +114,8 @@ export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
 
 export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
+export const CONFIRM_ORDER_SIGNATURES_KEY = "confirm-order-signatures";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";

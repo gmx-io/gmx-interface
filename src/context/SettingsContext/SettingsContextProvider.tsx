@@ -10,6 +10,7 @@ import {
   BUY_SELL_ICONS_MODE_KEY,
   CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
+  CONFIRM_ORDER_SIGNATURES_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DEBUG_TOKEN_PERMITS_ENABLED_KEY,
@@ -136,6 +137,9 @@ export type SettingsContextType = {
 
   chartLinesSizeInTokens: boolean;
   setChartLinesSizeInTokens: (val: boolean) => void;
+
+  confirmOrderSignatures: boolean;
+  setConfirmOrderSignatures: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -312,6 +316,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [confirmOrderSignatures, setConfirmOrderSignatures] = useLocalStorageSerializeKey(
+    CONFIRM_ORDER_SIGNATURES_KEY,
+    false
+  );
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
@@ -440,6 +449,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       chartLinesSizeInTokens: chartLinesSizeInTokens!,
       setChartLinesSizeInTokens,
+
+      confirmOrderSignatures: confirmOrderSignatures!,
+      setConfirmOrderSignatures,
     };
   }, [
     showDebugValues,
@@ -507,6 +519,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setShowCloseSizeInTokens,
     chartLinesSizeInTokens,
     setChartLinesSizeInTokens,
+    confirmOrderSignatures,
+    setConfirmOrderSignatures,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

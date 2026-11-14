@@ -3607,6 +3607,10 @@ msgstr "Текущая цена"
 msgid "Mark:"
 msgstr "Маркировочная цена:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "Подтверждать подписи ордеров"
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "CURRENT"
@@ -11305,6 +11309,10 @@ msgstr "Ограничивает пул USDC-USDG в обе стороны. По
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet trading only on these networks"
 msgstr "Торговля только через кошелёк в этих сетях"
+
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Показывать окно подтверждения при подписи Express-ордеров, включая их редактирование, отмену и изменение обеспечения. Другие подписи, например одобрения, пополнения пулов и активация One-Click, всегда запрашивают подтверждение."
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
