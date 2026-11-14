@@ -10,7 +10,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/leaderboardHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -266,7 +266,7 @@ const TableHeaderCell = memo(
 
 const TableRow = memo(({ position, rank }: { position: LeaderboardPosition; rank: number | null }) => {
   const renderPnlTooltipContent = useCallback(() => <LeaderboardPnlTooltipContent position={position} />, [position]);
-  const { minCollateralUsd } = useSelector(selectPositionConstants);
+  const { minCollateralUsd } = useSelector(makeSelectPositionConstants(position.market));
   const userReferralInfo = useSelector(selectUserReferralInfo);
 
   const collateralToken = useTokenInfo(position.collateralToken);

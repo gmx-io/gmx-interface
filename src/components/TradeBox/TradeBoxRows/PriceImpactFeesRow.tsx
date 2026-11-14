@@ -2,12 +2,12 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
-import { isSolanaNetwork } from "config/chains";
 import { DOCS_LINKS } from "config/links";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxFees,
   selectTradeboxFeesPercentage,
+  selectTradeboxMarketInfo,
   selectTradeboxSwapAmounts,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
@@ -15,7 +15,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
-import { useChainId } from "lib/chains";
 import { formatPercentage, PRECISION } from "lib/numbers";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
@@ -28,8 +27,6 @@ import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/Too
 import sparkleIcon from "img/sparkle.svg";
 
 export function PriceImpactFeesRow() {
-  const { networkId } = useChainId();
-  const isSolana = isSolanaNetwork(networkId);
   const chainId = useSelector(selectChainId);
   const fees = useSelector(selectTradeboxFees);
   const feesPercentage = useSelector(selectTradeboxFeesPercentage);
@@ -39,7 +36,9 @@ export function PriceImpactFeesRow() {
   const { isTrigger, isSwap } = tradeFlags;
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const isExternalSwap = isSwap && swapAmounts?.swapStrategy.type === "externalSwap";
-  const tradingIncentives = useTradingIncentives(chainId);
+  const isGmsol = useSelector(selectTradeboxMarketInfo)?.tradeMath === "gmsol";
+  const evmTradingIncentives = useTradingIncentives(chainId);
+  const tradingIncentives = isGmsol ? null : evmTradingIncentives;
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
   const isMegaethPointsActive = useMegaethPointsActive();
 
@@ -61,11 +60,12 @@ export function PriceImpactFeesRow() {
       return { formattedPriceImpactPercentage: "-", isPriceImpactPositive: false };
     }
 
-    const priceImpactPercentage = isSolana
-      ? (isTrigger ? fees?.decreasePositionPriceImpact : fees?.increasePositionPriceImpact)?.precisePercentage
-      : isTrigger || isSwap
-        ? getCappedPriceImpactPercentageFromFees({ fees, isSwap })
-        : 0n;
+    const priceImpactPercentage =
+      isGmsol && !isSwap
+        ? fees?.positionNetPriceImpact?.precisePercentage
+        : isTrigger || isSwap
+          ? getCappedPriceImpactPercentageFromFees({ fees, isSwap })
+          : 0n;
     return {
       formattedPriceImpactPercentage:
         priceImpactPercentage === undefined
@@ -77,7 +77,7 @@ export function PriceImpactFeesRow() {
             }),
       isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
     };
-  }, [fees, isTrigger, isSwap, isExternalSwap, isSolana]);
+  }, [fees, isTrigger, isSwap, isExternalSwap, isGmsol]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
@@ -92,9 +92,9 @@ export function PriceImpactFeesRow() {
 
     let adjustedFeesPercentage = feesPercentage;
 
-    if (!isSolana && feesType !== "swap") {
+    if (feesType !== "swap") {
       let referralDiscountPercentageOfSize = 0n;
-      if (userReferralInfo) {
+      if (userReferralInfo && !isGmsol) {
         referralDiscountPercentageOfSize = bigMath.mulDiv(
           bigMath.mulDiv(feesPercentage, userReferralInfo.totalRebateFactor, PRECISION),
           userReferralInfo.discountFactor,
@@ -123,7 +123,7 @@ export function PriceImpactFeesRow() {
       }),
       isTotalFeePositive: adjustedFeesPercentage > 0,
     };
-  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage, isSolana]);
+  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage, isGmsol]);
 
   if (isTrigger) {
     return (
@@ -169,7 +169,7 @@ export function PriceImpactFeesRow() {
     );
   }
 
-  if (isSwap || isSolana) {
+  if (isSwap) {
     return (
       <div className="flex flex-col gap-4">
         <SyntheticsInfoRow
@@ -209,7 +209,11 @@ export function PriceImpactFeesRow() {
               content={
                 <TooltipContent>
                   <TooltipText>
-                    <Trans>No price impact on increases — orders execute at mark price.</Trans>
+                    {isGmsol ? (
+                      <Trans>Price impact is included in the entry price.</Trans>
+                    ) : (
+                      <Trans>No price impact on increases — orders execute at mark price.</Trans>
+                    )}
                   </TooltipText>
                   <TooltipLink href={DOCS_LINKS.priceImpact}>
                     <Trans>Read more</Trans>
@@ -223,7 +227,7 @@ export function PriceImpactFeesRow() {
         }
         value={
           <>
-            <span>0.000%</span> /{" "}
+            <span className={cx({ "text-green-500": isPriceImpactPositive })}>{formattedPriceImpactPercentage}</span> /{" "}
             <span
               className={cx("numbers", {
                 "text-green-500": isTotalFeePositive,

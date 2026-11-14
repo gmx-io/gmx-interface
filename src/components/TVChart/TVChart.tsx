@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { selectChartDataProvider } from "context/SyntheticsStateContext/selectors/chartDataSelectors";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines";
 import { selectSetIsCandlesLoaded } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -24,6 +25,7 @@ type Props = {
 export function TVChart({ onOpenTPSLModal }: Props) {
   const { chainId } = useChainId();
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
+  const chartDataProvider = useSelector(selectChartDataProvider);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
   const setIsCandlesLoaded = useSelector(selectSetIsCandlesLoaded);
 
@@ -48,7 +50,7 @@ export function TVChart({ onOpenTPSLModal }: Props) {
     () =>
       chartToken
         ? {
-            symbol: chartToken.symbol,
+            symbol: chartDataProvider?.getChartSymbol?.(chartToken.address) ?? chartToken.symbol,
             ...chartToken.prices,
           }
         : {
@@ -56,7 +58,7 @@ export function TVChart({ onOpenTPSLModal }: Props) {
             minPrice: 0n,
             maxPrice: 0n,
           },
-    [chartToken, chartTokenSymbol]
+    [chartDataProvider, chartToken, chartTokenSymbol]
   );
 
   if (!chartTokenSymbol) {
