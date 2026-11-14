@@ -2,7 +2,7 @@ import orderAbi from "./orderAbi.json";
 
 export type GmsolInstructionName = keyof typeof orderAbi;
 
-// Pinned to crates/programs/idls/gmsol_store.json at v0.9.0 (c6778dc9), verified against 0.9.0-test.2 WASM.
+// Pinned to crates/programs/idls/gmsol_store.json at 7fe40082 (SDK 0.11.0-beta.1).
 export class GmsolInstructionReader {
   offset = 0;
   constructor(readonly bytes: Uint8Array) {}
