@@ -57,7 +57,10 @@ import { hashDataMap } from "utils/hash";
 import type { MarketConfig, MarketValues, RawOpenInterestValues } from "./types";
 
 export type MarketConfigKeysHash = {
-  [K in Exclude<keyof MarketConfig, "virtualIndexTokenId">]: string;
+  [K in Exclude<
+    keyof MarketConfig,
+    "virtualIndexTokenId" | "tradeMath" | "minCollateralUsd" | "minPositionSizeUsd"
+  >]: string;
 };
 
 type RawMarketValuesKeys = Pick<

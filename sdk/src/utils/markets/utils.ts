@@ -7,6 +7,7 @@ import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } f
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
 import { applySwapImpactWithCap, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
@@ -138,7 +139,8 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
   }
 
   const maxPnlFactor: bigint = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  const maxPnl = applyFactor(poolUsd, maxPnlFactor);
+  const maxPnlUsd = applyFactor(poolUsd, maxPnlFactor);
+  const maxPnl = marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(maxPnlUsd) : maxPnlUsd;
 
   return poolPnl > maxPnl ? maxPnl : poolPnl;
 }
@@ -335,7 +337,11 @@ export function getMarketPnl(marketInfo: MarketInfo, isLong: boolean, forMaxPool
   const openInterestUsd = getOpenInterestUsd(marketInfo, isLong);
   const openInterestInTokens = getOpenInterestInTokens(marketInfo, isLong);
 
-  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
+  if (
+    marketInfo.tradeMath === "gmsol"
+      ? openInterestUsd === 0n && openInterestInTokens === 0n
+      : openInterestUsd === 0n || openInterestInTokens === 0n
+  ) {
     return 0n;
   }
 
@@ -378,7 +384,11 @@ function getMarketPnlByCollateralToken(
     return undefined;
   }
 
-  if (openInterestUsd === 0n || openInterestInTokens === 0n) {
+  if (
+    marketInfo.tradeMath === "gmsol"
+      ? openInterestUsd === 0n && openInterestInTokens === 0n
+      : openInterestUsd === 0n || openInterestInTokens === 0n
+  ) {
     return 0n;
   }
 
@@ -480,7 +490,7 @@ export function getMarketInfoWithOpenInterestDelta({
         : marketInfo.virtualInventoryForPositions !== 0n;
 
   if (hasVirtualInventory) {
-    if (marketInfo.useOpenInterestInTokensForBalance) {
+    if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
       next.virtualInventoryForPositionsInTokens =
         marketInfo.virtualInventoryForPositionsInTokens + (isLong ? -sizeDeltaInTokens : sizeDeltaInTokens);
     } else {
@@ -548,7 +558,7 @@ export function getMarketInfoWithSwapDelta(marketInfo: MarketInfo, swapStep: Swa
 }
 
 export function getOpenInterestForBalance(marketInfo: MarketInfo, isLong: boolean): bigint {
-  if (marketInfo.useOpenInterestInTokensForBalance) {
+  if (marketInfo.tradeMath !== "gmsol" && marketInfo.useOpenInterestInTokensForBalance) {
     const interestInTokens = isLong ? marketInfo.longInterestInTokens : marketInfo.shortInterestInTokens;
     const indexTokenPrice = getMidPrice(marketInfo.indexToken.prices);
 
@@ -736,14 +746,18 @@ export function hydrateMarketInfo({
   tokensData,
   claimableFundingData,
 }: {
-  chainId: ContractsChainId;
+  chainId?: ContractsChainId;
   rawMarketInfo: RawMarketInfo;
   tokensData: TokensData;
   claimableFundingData?: ClaimableFundingData[string];
 }): MarketInfo | undefined {
   const longToken = getByKey(tokensData, rawMarketInfo.longTokenAddress);
   const shortToken = getByKey(tokensData, rawMarketInfo.shortTokenAddress);
-  const indexToken = getByKey(tokensData, convertTokenAddress(chainId, rawMarketInfo.indexTokenAddress, "native"));
+  const indexTokenAddress =
+    chainId === undefined
+      ? rawMarketInfo.indexTokenAddress
+      : convertTokenAddress(chainId, rawMarketInfo.indexTokenAddress, "native");
+  const indexToken = getByKey(tokensData, indexTokenAddress);
 
   if (!longToken || !shortToken || !indexToken) {
     return undefined;
@@ -765,7 +779,7 @@ export function composeFullMarketsInfoData({
   tokensData,
   claimableFundingData,
 }: {
-  chainId: ContractsChainId;
+  chainId?: ContractsChainId;
   marketsAddresses: string[];
   rawMarketsInfoData: RawMarketsInfoData;
   tokensData: TokensData;
@@ -793,6 +807,16 @@ export function composeFullMarketsInfoData({
   }
 
   return data;
+}
+
+export function getMarketPositionLimits(
+  market: Pick<MarketInfo, "minCollateralUsd" | "minPositionSizeUsd"> | undefined,
+  defaults?: Pick<MarketInfo, "minCollateralUsd" | "minPositionSizeUsd">
+) {
+  return {
+    minCollateralUsd: market?.minCollateralUsd ?? defaults?.minCollateralUsd,
+    minPositionSizeUsd: market?.minPositionSizeUsd ?? defaults?.minPositionSizeUsd,
+  };
 }
 
 export function getMarketWithTiers(
@@ -826,8 +850,8 @@ export function getMarketWithTiers(
     listingDate: undefined,
     isSpotOnly: marketInfo.isSpotOnly,
     leverageTiers,
-    minPositionSizeUsd: constants.minPositionSizeUsd,
-    minCollateralUsd: constants.minCollateralUsd,
+    minPositionSizeUsd: marketInfo.minPositionSizeUsd ?? constants.minPositionSizeUsd,
+    minCollateralUsd: marketInfo.minCollateralUsd ?? constants.minCollateralUsd,
   };
 }
 
