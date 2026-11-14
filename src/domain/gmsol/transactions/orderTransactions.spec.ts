@@ -4,6 +4,7 @@ import {
   address,
   blockhash,
   compileTransaction,
+  compressTransactionMessageUsingAddressLookupTables,
   getTransactionEncoder,
   type Instruction,
   createKeyPairFromBytes,
@@ -19,14 +20,14 @@ import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 
 import { GMSOL_LOOKUP_TABLE_ADDRESSES } from "config/gmsol/lookupTables";
 import { GMSOL_MARKETS } from "config/gmsol/markets";
-import { GMSOL_STORE_PROGRAM_ID } from "config/gmsol/program";
+import { GMSOL_STORE_PROGRAM_ID, GMSOL_STORE_ADDRESS } from "config/gmsol/program";
 import { GMSOL_SDK_WASM_SHA256 } from "config/gmsol/sdk";
 import { copySolanaBytes } from "lib/solana/bytes";
 import { mockMarginCheckMarketInfo, mockTokensData } from "sdk/test/mock";
 import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
-import { decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
+import { compactCreateOrderData, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
 import { getPendingGmsolSubmission, reconcileGmsolSubmission } from "./pendingSubmission";
 import {
@@ -36,6 +37,8 @@ import {
 } from "./sendOrderTransactions";
 import type { GmsolCreateOrder, GmsolTransactionPlan } from "./types";
 import { decodeGmsolTransaction, validateGmsolTransactionPlan } from "./validateTransaction";
+import { validateGmsolWalletTransaction } from "./validateWalletTransaction";
+
 vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: () => true }));
 const transport = vi.hoisted(() => ({
   rpc: {} as Record<string, ReturnType<typeof vi.fn>>,
@@ -173,6 +176,16 @@ it("keeps increase and TP/SL in one size-bounded v0 transaction with lookup tabl
   expect(plan.groups[0][0].length).toBeLessThanOrEqual(1232);
   expect(decodeGmsolTransaction(plan.groups[0][0], plan).compiled.addressTableLookups?.length).toBeGreaterThan(0);
   expect((await validateGmsolTransactionPlan(plan)).orderAddresses).toHaveLength(3);
+  for (const ix of decodeGmsolTransaction(plan.groups[0][0], plan).message.instructions) {
+    if (ix.programAddress !== GMSOL_STORE_PROGRAM_ID) continue;
+    const decoded = decodeGmsolInstruction(
+      copySolanaBytes(ix.data!),
+      [...ix.accounts!].map((account) => account.address)
+    );
+    if (decoded.name !== "create_order_v2") continue;
+    decoded.reader.read(32);
+    expect(readCreateOrderParams(decoded.reader).minOutput).toBeUndefined();
+  }
 });
 function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction[]) => Instruction[]) {
   const next = structuredClone(plan);
@@ -194,6 +207,41 @@ function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction
   ];
   return next;
 }
+it("compacts only zero output bounds while preserving finite prices and strict validation FESOL-56", async () => {
+  for (const kind of ["LimitIncrease", "LimitDecrease", "StopLossDecrease"] as const)
+    for (const isLong of [true, false])
+      for (const minOutput of [0n, 10n ** 10n]) {
+        const plan = await build([{ ...order(kind, isLong), minOutput }]);
+        let saved = 0;
+        const compact = mutateInstructions(plan, (instructions) =>
+          instructions.map((ix) => {
+            if (ix.programAddress !== GMSOL_STORE_PROGRAM_ID) return ix;
+            const original = copySolanaBytes(ix.data!);
+            const accounts = [...ix.accounts!].map((account) => account.address);
+            const data = compactCreateOrderData(original, accounts);
+            saved += original.length - data.length;
+            const before = decodeGmsolInstruction(original, accounts);
+            if (before.name === "create_order_v2") {
+              const after = decodeGmsolInstruction(data, accounts);
+              before.reader.read(32);
+              after.reader.read(32);
+              const expected = readCreateOrderParams(before.reader);
+              expect(readCreateOrderParams(after.reader)).toEqual({
+                ...expected,
+                minOutput: minOutput === 0n ? undefined : expected.minOutput,
+              });
+            }
+            return { ...ix, data };
+          })
+        );
+        expect(saved).toBe(minOutput === 0n ? 16 : 0);
+        await expect(validateGmsolTransactionPlan(compact)).resolves.toBeDefined();
+        if (minOutput === 0n && compact.action.type === "create") {
+          compact.action.orders[0].minOutput = 10n ** 10n;
+          await expect(validateGmsolTransactionPlan(compact)).rejects.toThrow("Unexpected order minOutput");
+        }
+      }
+});
 it("rejects unexpected programs, gmsol instructions, receivers, amounts and truncated input FESOL-56", async () => {
   const plan = await build([order()]);
   for (const mutation of ["program", "gmsol", "receiver", "amount", "truncated"] as const) {
@@ -399,7 +447,7 @@ it("preserves gmsol price bounds through the real WASM for both sides and all or
           ix.programAddress === GMSOL_STORE_PROGRAM_ID
             ? decodeGmsolInstruction(
                 copySolanaBytes(ix.data!),
-                ix.accounts!.map((account) => account.address)
+                [...ix.accounts!].map((account) => account.address)
               )
             : undefined
         )
@@ -589,4 +637,146 @@ it("reconciles a retained broadcast before another signature and never guesses f
   });
   expect(await reconcileGmsolSubmission(owner)).toEqual({ ...retained, failed: false, slot: 3n });
   expect(getPendingGmsolSubmission(owner)).toEqual(retained);
+});
+
+// Phantom's observed account/token assertion encodings, including Borsh LogLevel ordinal 4.
+const lighthouse = address("L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95");
+const accountAssertion = Uint8Array.of(6, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+const tokenAssertion = Uint8Array.of(
+  10,
+  4,
+  4,
+  2,
+  156,
+  177,
+  63,
+  1,
+  0,
+  0,
+  0,
+  0,
+  4,
+  3,
+  0,
+  0,
+  6,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  5,
+  8
+);
+function walletMessage(plan: GmsolTransactionPlan, change: (ix: Instruction[]) => Instruction[]) {
+  const { message } = decodeGmsolTransaction(plan.groups[0][0], plan);
+  const assertion: Instruction = {
+    programAddress: lighthouse,
+    accounts: [{ address: address(owner), role: 3 }],
+    data: accountAssertion,
+  };
+  return compileTransaction(
+    compressTransactionMessageUsingAddressLookupTables(
+      {
+        version: 0,
+        feePayer: { address: address(owner) },
+        lifetimeConstraint: {
+          blockhash: blockhash(plan.recentBlockhash),
+          lastValidBlockHeight: plan.lastValidBlockHeight,
+        },
+        instructions: change([assertion, ...message.instructions, { ...assertion, data: tokenAssertion }]),
+      },
+      Object.fromEntries(Object.entries(plan.lookupTables).map(([key, values]) => [key, values.map(address)]))
+    )
+  );
+}
+
+it("accepts Phantom protection assertions with real signatures and preserved LUTs TRD-72", async () => {
+  const fixture = await sendFixture();
+  const keys = decodeGmsolTransaction(fixture.plan.groups[0][0], fixture.plan).compiled.staticAccounts.filter(
+    (k) => k !== owner
+  );
+  for (const tables of [{}, { [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: keys }]) {
+    const plan = await build([order()], false, tables);
+    const lookupTables = { ...transport.tables, ...tables };
+    plan.lookupTables = lookupTables;
+    transport.tables = lookupTables;
+    const signed = await signTransaction(
+      [signingKey],
+      walletMessage(plan, (ix) => ix)
+    );
+    const signedBytes = copySolanaBytes(getTransactionEncoder().encode(signed));
+    expect(validateGmsolWalletTransaction({ originalBytes: plan.groups[0][0], signedBytes, plan }).hasAssertions).toBe(
+      true
+    );
+    const result = await sendGmsolOrderTransactions({
+      plan,
+      getWalletAddress: () => owner,
+      signTransaction: async () => signedBytes,
+      onConfirmed: async () => undefined,
+    });
+    expect(result.signatures).toEqual([getSignatureFromTransaction(signed)]);
+    const sent = getTransactionDecoder().decode(
+      copySolanaBytes(getBase64Encoder().encode(transport.rpc.sendTransaction.mock.lastCall![0]))
+    );
+    expect(copySolanaBytes(sent.messageBytes)).toEqual(copySolanaBytes(signed.messageBytes));
+  }
+});
+
+it("rejects wallet mutations and unsupported or malformed Lighthouse instructions TRD-72", async () => {
+  const { plan } = await sendFixture();
+  const changes: Record<string, (ix: Instruction[]) => Instruction[]> = {
+    remove: (ix) => ix.filter((_, i) => i !== 2),
+    reorder: (ix) => [ix[0], ix[2], ix[1], ...ix.slice(3)],
+    fees: (ix) => ix.map((x, i) => (i === 1 ? { ...x, data: Uint8Array.of(2, 1, 0, 0, 0) } : x)),
+    program: (ix) => ix.map((x, i) => (i === 0 ? { ...x, programAddress: address(other) } : x)),
+    unrelated: (ix) => ix.map((x, i) => (i === 0 ? { ...x, accounts: [{ address: address(other), role: 0 }] } : x)),
+    permissions: (ix) =>
+      ix.map((x, i) => (i === 0 ? { ...x, accounts: [{ address: address(GMSOL_STORE_ADDRESS), role: 1 }] } : x)),
+    extraAccounts: (ix) => ix.map((x, i) => (i === 0 ? { ...x, accounts: [...x.accounts!, ...x.accounts!] } : x)),
+    memoryWrite: (ix) => ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.of(0, 4, 1) } : x)),
+    memoryClose: (ix) => ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.of(1, 4, 1) } : x)),
+    truncated: (ix) => ix.map((x, i) => (i === 0 ? { ...x, data: accountAssertion.slice(0, -1) } : x)),
+    trailing: (ix) => ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.from([...accountAssertion, 0]) } : x)),
+    unknownField: (ix) => ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.of(6, 4, 1, 9) } : x)),
+    unknownLog: (ix) =>
+      ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.of(6, 7, 1, 0, ...new Uint8Array(9)) } : x)),
+    compact: (ix) =>
+      ix.map((x, i) => (i === 0 ? { ...x, data: Uint8Array.of(6, 4, 129, 0, 0, ...new Uint8Array(9)) } : x)),
+  };
+  for (const [name, change] of Object.entries(changes)) {
+    const signedBytes = copySolanaBytes(getTransactionEncoder().encode(walletMessage(plan, change)));
+    expect(
+      () => validateGmsolWalletTransaction({ originalBytes: plan.groups[0][0], signedBytes, plan }),
+      name
+    ).toThrow();
+  }
+});
+
+it("blocks broadcast when the signed Lighthouse simulation fails TRD-72", async () => {
+  const { plan } = await sendFixture();
+  const signed = await signTransaction(
+    [signingKey],
+    walletMessage(plan, (ix) => ix)
+  );
+  transport.rpc.simulateTransaction
+    .mockReturnValueOnce({
+      send: async () => ({
+        context: { slot: 1n },
+        value: { err: null, accounts: [{ lamports: 990000000n }] },
+      }),
+    })
+    .mockReturnValueOnce({ send: async () => ({ value: { err: { InstructionError: [0, "Custom"] } } }) });
+  await expect(
+    sendGmsolOrderTransactions({
+      plan,
+      getWalletAddress: () => owner,
+      signTransaction: async () => copySolanaBytes(getTransactionEncoder().encode(signed)),
+      onConfirmed: async () => undefined,
+    })
+  ).rejects.toThrow("Solana simulation failed");
+  expect(transport.rpc.sendTransaction).not.toHaveBeenCalled();
 });
