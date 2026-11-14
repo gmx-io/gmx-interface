@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { QueryFunction } from "@taskworld.com/rereselect";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -18,6 +19,7 @@ import {
 } from "domain/synthetics/trade";
 import { getOptimalDecreaseAndSwapAmounts } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -293,16 +295,22 @@ export const selectPositionSellerFees = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const numberOfParts = q(selectPositionSellerNumberOfParts);
 
-  if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
+  if (!position || !decreaseAmounts || !tokensData) {
+    return {};
+  }
+
+  if (position.marketInfo?.tradeMath !== "gmsol" && (!gasLimits || gasPrice === undefined)) {
     return {};
   }
 
   const swapPathLength = swapAmounts?.swapStrategy.swapPathStats?.swapPath?.length || 0;
 
-  const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-    swapsCount: swapPathLength,
-    decreaseSwapType: decreaseAmounts.decreaseSwapType,
-  });
+  const estimatedGas = gasLimits
+    ? estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount: swapPathLength,
+        decreaseSwapType: decreaseAmounts.decreaseSwapType,
+      })
+    : undefined;
 
   const sizeReductionBps = bigMath.mulDiv(
     decreaseAmounts.sizeDeltaUsd,
@@ -315,6 +323,7 @@ export const selectPositionSellerFees = createSelector((q) => {
 
   return {
     fees: getTradeFees({
+      tradeMath: position.marketInfo?.tradeMath,
       initialCollateralUsd: position.collateralUsd,
       sizeInUsd: position.sizeInUsd,
       collateralDeltaUsd,
@@ -336,15 +345,18 @@ export const selectPositionSellerFees = createSelector((q) => {
       uiFeeFactor,
       type: "decrease",
     }),
-    executionFee: getExecutionFee(
-      chainId,
-      gasLimits,
-      tokensData,
-      estimatedGas,
-      gasPrice,
-      oraclePriceCount,
-      orderOption === OrderOption.Twap ? numberOfParts : undefined
-    ),
+    executionFee:
+      gasLimits && gasPrice !== undefined && estimatedGas !== undefined
+        ? getExecutionFee(
+            chainId,
+            gasLimits,
+            tokensData,
+            estimatedGas,
+            gasPrice,
+            oraclePriceCount,
+            orderOption === OrderOption.Twap ? numberOfParts : undefined
+          )
+        : undefined,
   };
 });
 
@@ -510,32 +522,34 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
   const findSwapPath = q(selectPositionSellerFindSwapPath);
   const findSwapPathFromPnl = q(selectPositionSellerFindSwapPathFromPnl);
 
-  const result = getOptimalDecreaseAndSwapAmounts({
-    marketInfo,
-    collateralToken,
-    isLong: tradeFlags.isLong,
-    position: position && getIsPositionInfoLoaded(position) ? position : undefined,
-    closeSizeUsd,
-    keepLeverage,
-    triggerPrice,
-    fixedAcceptablePriceImpactBps,
-    acceptablePriceImpactBuffer,
-    userReferralInfo,
-    proDiscountFactor: q(selectProDiscountFactor),
-    feeDiscountFactor: q(selectFeeDiscountFactor),
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    triggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-    receiveToken,
-    forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
-    isTwap: tradeFlags.isTwap,
-    findSwapPath,
-    findSwapPathFromPnl,
-    marketsInfoData,
-    chainId,
-  });
+  const result = getAvailableTradeQuote(marketInfo.tradeMath, () =>
+    getOptimalDecreaseAndSwapAmounts({
+      marketInfo,
+      collateralToken,
+      isLong: tradeFlags.isLong,
+      position: position && getIsPositionInfoLoaded(position) ? position : undefined,
+      closeSizeUsd,
+      keepLeverage,
+      triggerPrice,
+      fixedAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer,
+      userReferralInfo,
+      proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      triggerOrderType,
+      isSetAcceptablePriceImpactEnabled,
+      receiveToken,
+      forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
+      isTwap: tradeFlags.isTwap,
+      findSwapPath,
+      findSwapPathFromPnl,
+      marketsInfoData,
+      chainId,
+    })
+  );
 
   return result;
 }
@@ -627,6 +641,13 @@ export const selectPositionSellerDecreaseError = createSelector((q) => {
 
   const isTwap = q(selectPositionSellerOrderOption) === OrderOption.Twap;
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  if (
+    position.marketInfo?.tradeMath === "gmsol" &&
+    (parseValue(q(selectPositionSellerCloseUsdInputValue) || "0", USD_DECIMALS) ?? 0n) > 0n &&
+    !decreaseAmounts
+  ) {
+    return { buttonErrorMessage: t`Unable to calculate this order` };
+  }
   const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
   const remainingPositionMarginState = q(selectPositionSellerRemainingPositionMarginState);
   const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));

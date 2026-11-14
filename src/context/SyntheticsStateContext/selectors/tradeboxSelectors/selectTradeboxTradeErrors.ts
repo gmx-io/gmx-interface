@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import {
   selectChainId,
   selectIsPositionsLoading,
@@ -317,6 +319,16 @@ const DEFAULT_TRADE_ERROR: ValidationResult = {};
 export const selectTradeboxTradeTypeError = createSelector((q) => {
   const { isSwap, isIncrease, isTrigger } = q(selectTradeboxTradeFlags);
   let tradeError: ValidationResult = DEFAULT_TRADE_ERROR;
+
+  if (!isSwap && q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+    const hasInput = isIncrease
+      ? (q(selectTradeboxFromTokenAmount) ?? 0n) > 0n || (q(selectTradeboxToTokenAmount) ?? 0n) > 0n
+      : q(selectTradeboxCloseSizeUsd) > 0n;
+    const amounts = isIncrease ? q(selectTradeboxIncreasePositionAmounts) : q(selectTradeboxDecreasePositionAmounts);
+    if (hasInput && !amounts) {
+      return { buttonErrorMessage: t`Unable to calculate this order` };
+    }
+  }
 
   if (isSwap) {
     tradeError = q(selectTradeboxSwapTradeError);

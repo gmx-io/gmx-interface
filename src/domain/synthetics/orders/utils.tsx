@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -771,31 +772,33 @@ export function getOrderIncreaseProjection({
 
   const positionForProjection = isPositionLiquidatedBeforeTrigger ? undefined : position;
 
-  const increaseAmounts = getIncreasePositionAmounts({
-    marketInfo,
-    indexToken: marketInfo.indexToken,
-    initialCollateralToken: order.initialCollateralToken,
-    collateralToken: order.targetCollateralToken,
-    isLong: order.isLong,
-    initialCollateralAmount: order.initialCollateralDeltaAmount,
-    indexTokenAmount: convertToTokenAmount(sizeDeltaUsd, marketInfo.indexToken.decimals, triggerPrice),
-    externalSwapQuote: undefined,
-    triggerPrice,
-    limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
-    position: positionForProjection,
-    findSwapPath,
-    userReferralInfo,
-    proDiscountFactor,
-    feeDiscountFactor,
-    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    strategy: "independent",
-    marketsInfoData,
-    chainId,
-    externalSwapQuoteParams: undefined,
-    isSetAcceptablePriceImpactEnabled,
-  });
+  const increaseAmounts = getAvailableTradeQuote(marketInfo.tradeMath, () =>
+    getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: marketInfo.indexToken,
+      initialCollateralToken: order.initialCollateralToken,
+      collateralToken: order.targetCollateralToken,
+      isLong: order.isLong,
+      initialCollateralAmount: order.initialCollateralDeltaAmount,
+      indexTokenAmount: convertToTokenAmount(sizeDeltaUsd, marketInfo.indexToken.decimals, triggerPrice),
+      externalSwapQuote: undefined,
+      triggerPrice,
+      limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
+      position: positionForProjection,
+      findSwapPath,
+      userReferralInfo,
+      proDiscountFactor,
+      feeDiscountFactor,
+      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+      strategy: "independent",
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled,
+    })
+  );
 
-  if (order.initialCollateralDeltaAmount > 0n && increaseAmounts.swapStrategy.amountOut <= 0n) {
+  if (!increaseAmounts || (order.initialCollateralDeltaAmount > 0n && increaseAmounts.swapStrategy.amountOut <= 0n)) {
     return undefined;
   }
 
@@ -914,24 +917,28 @@ export function getOrderDecreaseRemainingPositionMarginState({
     return undefined;
   }
 
-  const decreaseAmounts = getDecreasePositionAmounts({
-    marketInfo: position.marketInfo,
-    collateralToken: position.collateralToken,
-    isLong: position.isLong,
-    position,
-    closeSizeUsd: sizeDeltaUsd,
-    keepLeverage: false,
-    triggerPrice,
-    triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
-    userReferralInfo,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    isSetAcceptablePriceImpactEnabled,
-    forceDecreaseSwapType: order.decreasePositionSwapType,
-    proDiscountFactor,
-    feeDiscountFactor,
-  });
+  const decreaseAmounts = getAvailableTradeQuote(position.marketInfo.tradeMath, () =>
+    getDecreasePositionAmounts({
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      isLong: position.isLong,
+      position,
+      closeSizeUsd: sizeDeltaUsd,
+      keepLeverage: false,
+      triggerPrice,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
+      userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+      isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: order.decreasePositionSwapType,
+      proDiscountFactor,
+      feeDiscountFactor,
+    })
+  );
+
+  if (!decreaseAmounts) return undefined;
 
   return getTriggerDecreaseRemainingPositionMarginState({
     marketInfo: position.marketInfo,

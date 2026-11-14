@@ -12,6 +12,7 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { getMarketsByChainId } from "sdk/configs/markets";
@@ -287,34 +288,36 @@ export const makeSelectIncreasePositionAmounts = ({
       ? undefined
       : existingPosition;
 
-    return getIncreasePositionAmounts({
-      position,
-      marketInfo,
-      indexToken,
-      initialCollateralToken,
-      collateralToken,
-      isLong: tradeFlags.isLong,
-      initialCollateralAmount,
-      indexTokenAmount,
-      leverage,
-      triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
-      limitOrderType,
-      fixedAcceptablePriceImpactBps,
-      acceptablePriceImpactBuffer,
-      externalSwapQuote,
-      findSwapPath,
-      userReferralInfo,
-      proDiscountFactor: q(selectProDiscountFactor),
-      feeDiscountFactor: q(selectFeeDiscountFactor),
-      uiFeeFactor,
-      strategy,
-      marketsInfoData,
-      chainId,
-      externalSwapQuoteParams,
-      isSetAcceptablePriceImpactEnabled,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
-      manualPath: debugSwapMarketsConfig?.manualPath,
-    });
+    return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+      getIncreasePositionAmounts({
+        position,
+        marketInfo,
+        indexToken,
+        initialCollateralToken,
+        collateralToken,
+        isLong: tradeFlags.isLong,
+        initialCollateralAmount,
+        indexTokenAmount,
+        leverage,
+        triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+        limitOrderType,
+        fixedAcceptablePriceImpactBps,
+        acceptablePriceImpactBuffer,
+        externalSwapQuote,
+        findSwapPath,
+        userReferralInfo,
+        proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
+        uiFeeFactor,
+        strategy,
+        marketsInfoData,
+        chainId,
+        externalSwapQuoteParams,
+        isSetAcceptablePriceImpactEnabled,
+        disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+        manualPath: debugSwapMarketsConfig?.manualPath,
+      })
+    );
   });
 };
 
@@ -408,28 +411,30 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           return undefined;
         }
 
-        return getDecreasePositionAmounts({
-          marketInfo,
-          collateralToken,
-          isLong: tradeFlags.isLong,
-          position,
-          closeSizeUsd,
-          keepLeverage: keepLeverage!,
-          triggerPrice,
-          fixedAcceptablePriceImpactBps,
-          acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-          userReferralInfo,
-          proDiscountFactor,
-          feeDiscountFactor,
-          minCollateralUsd,
-          minPositionSizeUsd,
-          uiFeeFactor,
-          receiveToken,
-          triggerOrderType,
-          isSetAcceptablePriceImpactEnabled,
-          forceDecreaseSwapType,
-          isTwap: tradeFlags.isTwap,
-        });
+        return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+          getDecreasePositionAmounts({
+            marketInfo,
+            collateralToken,
+            isLong: tradeFlags.isLong,
+            position,
+            closeSizeUsd,
+            keepLeverage: keepLeverage!,
+            triggerPrice,
+            fixedAcceptablePriceImpactBps,
+            acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+            userReferralInfo,
+            proDiscountFactor,
+            feeDiscountFactor,
+            minCollateralUsd,
+            minPositionSizeUsd,
+            uiFeeFactor,
+            receiveToken,
+            triggerOrderType,
+            isSetAcceptablePriceImpactEnabled,
+            forceDecreaseSwapType,
+            isTwap: tradeFlags.isTwap,
+          })
+        );
       }
     )
 );

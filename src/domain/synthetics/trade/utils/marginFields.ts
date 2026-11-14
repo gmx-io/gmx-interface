@@ -5,6 +5,7 @@ import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, 
 import { bigMath } from "sdk/utils/bigmath";
 import { getPositionFee } from "sdk/utils/fees";
 import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import { GMSOL_PRECISION_SCALE, getGmsolUsdAmount } from "sdk/utils/gmsol";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { applyFactor } from "sdk/utils/numbers";
 import { getLiquidationPrice } from "sdk/utils/positions";
@@ -232,16 +233,17 @@ function capSizeDeltaByResultingPositionMargin({
 
   let low = 0n;
   let high = sizeDeltaUsdBound;
+  const usdPrecision = marketInfo.tradeMath === "gmsol" ? GMSOL_PRECISION_SCALE : 1n;
 
   for (let i = 0; i < RESULTING_POSITION_BISECTION_STEPS && low < high; i++) {
-    const mid = (low + high) / 2n;
+    const mid = ((low + high) / (2n * usdPrecision)) * usdPrecision;
 
     if (mid === low) break;
 
     if (isSizeDeltaValid(mid)) {
       low = mid;
     } else {
-      high = mid - 1n;
+      high = mid - usdPrecision;
     }
   }
 
@@ -295,12 +297,16 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
 
   if (baseNumerator <= 0n) return undefined;
 
-  const conservativeBound = bigMath.mulDiv(
+  let conservativeBound = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION +
       leverageBigInt * (marketInfo.positionFeeFactorForBalanceWasNotImproved + uiFeeFactor)
   );
+
+  if (marketInfo.tradeMath === "gmsol") {
+    conservativeBound = getGmsolUsdAmount(conservativeBound);
+  }
 
   const conservativeBoundInTokens = convertToTokenAmountForIncrease(
     conservativeBound,
@@ -315,11 +321,15 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
-  const structuralBoundUsd = bigMath.mulDiv(
+  let structuralBoundUsd = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * (positionFeeFactor + uiFeeFactor)
   );
+
+  if (marketInfo.tradeMath === "gmsol") {
+    structuralBoundUsd = getGmsolUsdAmount(structuralBoundUsd);
+  }
 
   const leverageBoundUsd = capSizeDeltaByResultingPositionMargin({
     sizeDeltaUsdBound: structuralBoundUsd,

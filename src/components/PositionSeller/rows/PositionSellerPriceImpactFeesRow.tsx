@@ -3,9 +3,14 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import { DOCS_LINKS } from "config/links";
-import { selectPositionSellerFees } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
+import {
+  selectPositionSellerDecreaseAmounts,
+  selectPositionSellerFees,
+  selectPositionSellerPosition,
+} from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatPercentage } from "lib/numbers";
+import { formatPercentage, PRECISION } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -14,6 +19,8 @@ import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/Too
 
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
+  const position = useSelector(selectPositionSellerPosition);
+  const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const totalPriceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees, isSwap: false });
 
@@ -28,7 +35,12 @@ export function PositionSellerPriceImpactFeesRow() {
 
   const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
 
-  const feesPercentage = fees?.positionFee?.precisePercentage ?? 0n;
+  const feesPercentage =
+    position?.marketInfo?.tradeMath === "gmsol"
+      ? decreaseAmounts && decreaseAmounts.sizeDeltaUsd > 0n
+        ? -bigMath.mulDiv(decreaseAmounts.positionFeeUsd, PRECISION, decreaseAmounts.sizeDeltaUsd)
+        : undefined
+      : fees?.positionFee?.precisePercentage ?? 0n;
 
   const { formattedTotalFeePercentage, isTotalFeePositive } = useMemo(() => {
     if (feesPercentage === undefined) {

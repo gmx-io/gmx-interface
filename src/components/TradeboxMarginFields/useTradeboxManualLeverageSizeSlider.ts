@@ -26,6 +26,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   calcMaxSizeDeltaInUsdByLeverage,
+  getAvailableTradeQuote,
   calcSizeAmountByPercentage,
   calcSizePercentage,
 } from "domain/synthetics/trade";
@@ -122,28 +123,30 @@ export function useTradeboxManualLeverageSizeSlider({
       ? increaseAmounts.collateralDeltaUsd + increaseAmounts.positionFeeUsd + increaseAmounts.uiFeeUsd
       : undefined;
 
-    return calcMaxSizeDeltaInUsdByLeverage({
-      marketInfo,
-      initialCollateralUsd,
-      baseCollateralUsd,
-      markPrice,
-      toTokenDecimals: toToken.decimals,
-      isLong: tradeFlags.isLong,
-      longLiquidity,
-      shortLiquidity,
-      existingPosition: existingPosition ?? undefined,
-      collateralToken,
-      minCollateralUsd,
-      userReferralInfo,
-      proDiscountFactor,
-      feeDiscountFactor,
-      uiFeeFactor,
-      indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
-        orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
-        triggerPrice,
-      }),
-      twap,
-    });
+    return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+      calcMaxSizeDeltaInUsdByLeverage({
+        marketInfo,
+        initialCollateralUsd,
+        baseCollateralUsd,
+        markPrice,
+        toTokenDecimals: toToken.decimals,
+        isLong: tradeFlags.isLong,
+        longLiquidity,
+        shortLiquidity,
+        existingPosition: existingPosition ?? undefined,
+        collateralToken,
+        minCollateralUsd,
+        userReferralInfo,
+        proDiscountFactor,
+        feeDiscountFactor,
+        uiFeeFactor,
+        indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+          orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
+          triggerPrice,
+        }),
+        twap,
+      })
+    );
   }, [
     collateralToken,
     existingPosition,
