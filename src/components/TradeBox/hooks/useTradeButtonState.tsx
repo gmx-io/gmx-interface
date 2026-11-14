@@ -30,6 +30,7 @@ import {
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -939,10 +940,9 @@ export function useDetectAndSetAvailableMaxLeverage({
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const tradeMode = useSelector(selectTradeboxTradeMode);
 
-  const { minCollateralUsd } = usePositionsConstants();
-
   const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
+  const { minCollateralUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
 
@@ -959,6 +959,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useSelector(selectProDiscountFactor);
+  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
@@ -986,7 +987,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
-      feeDiscountFactor: marketInfo.tradeMath === "gmsol" ? proDiscountFactor : undefined,
+      feeDiscountFactor,
       acceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       triggerPrice,
@@ -1021,6 +1022,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
     twap,
