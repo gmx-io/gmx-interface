@@ -1,5 +1,6 @@
 import { bigMath } from "utils/bigmath";
 import { getProportionalPendingImpactValues } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
@@ -108,7 +109,9 @@ export function getDecreaseResultingPositionMarginState(
     isLong,
   });
 
-  const estimatedRealizedPnlUsd = bigMath.mulDiv(estimatedPositionPnlUsd, sizeDeltaUsd, position.sizeInUsd);
+  const proportionalPnlUsd = bigMath.mulDiv(estimatedPositionPnlUsd, sizeDeltaUsd, position.sizeInUsd);
+  const estimatedRealizedPnlUsd =
+    marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(proportionalPnlUsd) : proportionalPnlUsd;
   const estimatedRemainingPnlUsd = estimatedPositionPnlUsd - estimatedRealizedPnlUsd;
 
   const nextSizeInUsd = position.sizeInUsd - sizeDeltaUsd;
@@ -131,12 +134,18 @@ export function getDecreaseResultingPositionMarginState(
     getOpenInterestUsd(marketInfo, isLong) - sizeDeltaUsd,
     minCollateralFactorMultiplier
   );
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralFactorForOpenInterest = getGmsolUsdAmount(minCollateralFactorForOpenInterest);
+  }
 
   if (marketInfo.minCollateralFactor > minCollateralFactorForOpenInterest) {
     minCollateralFactorForOpenInterest = marketInfo.minCollateralFactor;
   }
 
-  const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  let minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForOpenInterest = getGmsolUsdAmount(minCollateralUsdForOpenInterest);
+  }
 
   const willCollateralBeSufficient =
     estimatedRemainingCollateralUsd >= 0n && estimatedRemainingCollateralUsd >= minCollateralUsdForOpenInterest;

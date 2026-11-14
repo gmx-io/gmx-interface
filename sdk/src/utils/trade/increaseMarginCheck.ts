@@ -4,7 +4,7 @@ import {
   getPositionFee,
   getPriceImpactForPosition,
 } from "utils/fees";
-import { getGmsolIncreaseSizeDeltaInTokens } from "utils/gmsol";
+import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
@@ -118,7 +118,10 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
   if (totalImpactUsd >= 0) {
     totalImpactUsd = 0n;
   } else {
-    const maxNegativeImpactUsd = -applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+    let maxNegativeImpactUsd = -applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+    if (marketInfo.tradeMath === "gmsol") {
+      maxNegativeImpactUsd = getGmsolUsdAmount(maxNegativeImpactUsd);
+    }
 
     if (totalImpactUsd < maxNegativeImpactUsd) {
       totalImpactUsd = maxNegativeImpactUsd;
@@ -171,7 +174,10 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
 
   const remainingCollateralUsd = collateralUsd + positionPnlUsd + totalImpactUsd - closingCostUsd;
 
-  const minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForLeverage = getGmsolUsdAmount(minCollateralUsdForLeverage);
+  }
 
   const state: Omit<PositionMarginState, "isLiquidatable" | "reason"> = {
     remainingCollateralUsd,
@@ -377,12 +383,18 @@ export function getIncreaseResultingPositionState(
     getOpenInterestUsd(nextMarketInfo, isLong),
     minCollateralFactorMultiplier
   );
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralFactorForOpenInterest = getGmsolUsdAmount(minCollateralFactorForOpenInterest);
+  }
 
   if (nextMarketInfo.minCollateralFactor > minCollateralFactorForOpenInterest) {
     minCollateralFactorForOpenInterest = nextMarketInfo.minCollateralFactor;
   }
 
-  const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  let minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForOpenInterest = getGmsolUsdAmount(minCollateralUsdForOpenInterest);
+  }
 
   const position: IncreasePositionState = {
     sizeInUsd: nextSizeInUsd,

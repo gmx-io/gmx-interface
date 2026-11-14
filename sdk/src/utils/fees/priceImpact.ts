@@ -1,7 +1,7 @@
 import { zeroHash } from "viem";
 
 import { bigMath } from "utils/bigmath";
-import { getGmsolMidPrice, GMSOL_PRECISION_SCALE } from "utils/gmsol";
+import { getGmsolMidPrice, getGmsolUsdAmount, GMSOL_PRECISION_SCALE } from "utils/gmsol";
 import { getGmsolFractionalPower } from "utils/gmsol/decimalPower";
 import { getOpenInterestForBalance, getTokenPoolType } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
@@ -94,6 +94,9 @@ export function getCappedPositionImpactUsd(
   isIncrease: boolean,
   opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
+  if (marketInfo.tradeMath === "gmsol") {
+    sizeDeltaUsd = getGmsolUsdAmount(sizeDeltaUsd);
+  }
   sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
 
   const { priceImpactDeltaUsd, balanceWasImproved } = getPriceImpactForPosition(marketInfo, sizeDeltaUsd, isLong, opts);
@@ -142,7 +145,9 @@ export function capPositionImpactUsdByMaxPriceImpactFactor(
 
   const maxPriceImapctFactor = positionImpactDeltaUsd > 0 ? maxPositiveImpactFactor : maxNegativeImpactFactor;
 
-  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImapctFactor);
+  const maxImpactUsd = applyFactor(bigMath.abs(sizeDeltaUsd), maxPriceImapctFactor);
+  const maxPriceImpactUsdBasedOnMaxPriceImpactFactor =
+    marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(maxImpactUsd) : maxImpactUsd;
 
   if (bigMath.abs(positionImpactDeltaUsd) > maxPriceImpactUsdBasedOnMaxPriceImpactFactor) {
     positionImpactDeltaUsd = maxPriceImpactUsdBasedOnMaxPriceImpactFactor * (positionImpactDeltaUsd > 0 ? 1n : -1n);
@@ -168,6 +173,9 @@ export function getPriceImpactForPosition(
   isLong: boolean,
   opts: { fallbackToZero?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
+  if (marketInfo.tradeMath === "gmsol") {
+    sizeDeltaUsd = getGmsolUsdAmount(sizeDeltaUsd);
+  }
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 

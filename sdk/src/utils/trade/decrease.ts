@@ -311,6 +311,9 @@ export function getDecreasePositionAmounts(p: {
   });
 
   values.realizedPnl = bigMath.mulDiv(values.estimatedPnl, values.sizeDeltaInTokens, position.sizeInTokens);
+  if (marketInfo.tradeMath === "gmsol") {
+    values.realizedPnl = getGmsolUsdAmount(values.realizedPnl);
+  }
   values.realizedPnlPercentage =
     estimatedCollateralUsd !== 0n ? getBasisPoints(values.realizedPnl, estimatedCollateralUsd) : 0n;
   values.estimatedPnlPercentage =
@@ -682,11 +685,10 @@ function getGmsolCloseState(p: Parameters<typeof getIsFullClose>[0] & { collater
     markPrice: indexPrice,
     isLong: position.isLong,
   });
-  const realizedPnl = bigMath.mulDiv(pnl, sizeDeltaUsd, position.sizeInUsd);
+  const realizedPnl = getGmsolUsdAmount(bigMath.mulDiv(pnl, sizeDeltaUsd, position.sizeInUsd));
   let remainingCollateralUsd = p.remainingCollateralUsd + bigMath.min(realizedPnl, 0n);
-  const minCollateralForLeverage = applyFactor(
-    position.sizeInUsd - sizeDeltaUsd,
-    getMinCollateralFactorForPosition(position, -sizeDeltaUsd)
+  const minCollateralForLeverage = getGmsolUsdAmount(
+    applyFactor(position.sizeInUsd - sizeDeltaUsd, getMinCollateralFactorForPosition(position, -sizeDeltaUsd))
   );
   const shouldCancelWithdrawal = remainingCollateralUsd < minCollateralForLeverage;
   if (shouldCancelWithdrawal) {
@@ -763,7 +765,8 @@ export function getIsFullClose(p: {
 
 export function getMinCollateralUsdForLeverage(position: PositionInfoLoaded, openInterestDelta: bigint) {
   const minCollateralFactor = getMinCollateralFactorForPosition(position, openInterestDelta);
-  return applyFactor(position.sizeInUsd, minCollateralFactor);
+  const minCollateralUsd = applyFactor(position.sizeInUsd, minCollateralFactor);
+  return position.marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(minCollateralUsd) : minCollateralUsd;
 }
 
 export function getMinRequiredCollateralUsdForPosition(p: {

@@ -8,6 +8,7 @@ import {
   getPriceImpactForPosition,
   getProportionalPendingImpactValues,
 } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import {
   getCappedPoolPnl,
   getMarketIndexName,
@@ -79,6 +80,9 @@ export function getPositionPnlUsd(p: {
 
   if (cappedPnl !== poolPnl && (cappedPnl > 0 || marketInfo.tradeMath === "gmsol") && poolPnl > 0) {
     totalPnl = bigMath.mulDiv(totalPnl, cappedPnl, poolPnl);
+    if (marketInfo.tradeMath === "gmsol") {
+      totalPnl = getGmsolUsdAmount(totalPnl);
+    }
   }
 
   return totalPnl;
@@ -183,7 +187,10 @@ export function getLiquidationPriceImpactDeltaUsd(p: {
 }) {
   const { marketInfo, sizeInUsd, sizeInTokens, pendingImpactAmount, isLong, useMaxPriceImpact } = p;
 
-  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+  let maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+  if (marketInfo.tradeMath === "gmsol") {
+    maxNegativePriceImpactUsd = getGmsolUsdAmount(maxNegativePriceImpactUsd);
+  }
 
   if (useMaxPriceImpact) {
     return maxNegativePriceImpactUsd;
@@ -284,6 +291,9 @@ export function getLiquidationPrice(p: {
   const effectiveMinCollateralUsd =
     marketInfo.tradeMath === "gmsol" ? marketInfo.minCollateralUsd ?? minCollateralUsd : minCollateralUsd;
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
+  if (marketInfo.tradeMath === "gmsol") {
+    liquidationCollateralUsd = getGmsolUsdAmount(liquidationCollateralUsd);
+  }
   if (liquidationCollateralUsd < effectiveMinCollateralUsd) {
     liquidationCollateralUsd = effectiveMinCollateralUsd;
   }
@@ -400,6 +410,9 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
   const effectiveMinCollateralUsd =
     marketInfo.tradeMath === "gmsol" ? marketInfo.minCollateralUsd ?? minCollateralUsd : minCollateralUsd;
   let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
+  if (marketInfo.tradeMath === "gmsol") {
+    liquidationCollateralUsd = getGmsolUsdAmount(liquidationCollateralUsd);
+  }
   if (liquidationCollateralUsd < effectiveMinCollateralUsd) {
     liquidationCollateralUsd = effectiveMinCollateralUsd;
   }
@@ -435,7 +448,11 @@ export function getIsPositionBelowMinCollateralForLeverage(position: PositionInf
     collateralToken.prices.minPrice
   )!;
 
-  if (collateralUsdAfterDelta < applyFactor(sizeInUsd, getMinCollateralFactorForPosition(position, 0n))) {
+  let minCollateralUsdForOpenInterest = applyFactor(sizeInUsd, getMinCollateralFactorForPosition(position, 0n));
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForOpenInterest = getGmsolUsdAmount(minCollateralUsdForOpenInterest);
+  }
+  if (collateralUsdAfterDelta < minCollateralUsdForOpenInterest) {
     return true;
   }
 
@@ -455,7 +472,11 @@ export function getIsPositionBelowMinCollateralForLeverage(position: PositionInf
 
   const marginUsd = remainingCollateralUsd - collateralDeltaUsd + pnl + priceImpactDeltaUsd - closingFeeUsd;
 
-  return marginUsd <= 0n || marginUsd < applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForLeverage = getGmsolUsdAmount(minCollateralUsdForLeverage);
+  }
+  return marginUsd <= 0n || marginUsd < minCollateralUsdForLeverage;
 }
 
 export function getNetPriceImpactDeltaUsdForDecrease({
@@ -515,6 +536,12 @@ export function getPriceImpactDiffUsd({
     return 0n;
   }
 
+  if (marketInfo.tradeMath === "gmsol") {
+    return (
+      capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, totalImpactDeltaUsd) - totalImpactDeltaUsd
+    );
+  }
+
   const { maxNegativeImpactFactor } = getMaxPositionImpactFactors(marketInfo);
 
   const maxNegativeImpactUsd = -applyFactor(sizeDeltaUsd, maxNegativeImpactFactor);
@@ -537,6 +564,9 @@ export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, 
     ? marketInfo.minCollateralFactorForOpenInterestLong
     : marketInfo.minCollateralFactorForOpenInterestShort;
   let minCollateralFactor = bigMath.mulDiv(openInterest, minCollateralFactorMultiplier, PRECISION);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralFactor = getGmsolUsdAmount(minCollateralFactor);
+  }
   const minCollateralFactorForMarket = marketInfo.minCollateralFactor;
 
   if (minCollateralFactorForMarket > minCollateralFactor) {

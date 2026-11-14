@@ -106,6 +106,9 @@ type AcceptablePriceParams = {
 };
 
 export function getAcceptablePriceInfo(p: AcceptablePriceParams) {
+  if (p.marketInfo.tradeMath === "gmsol") {
+    p = { ...p, sizeDeltaUsd: getGmsolUsdAmount(p.sizeDeltaUsd) };
+  }
   const { isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const marketInfo =
     p.marketInfo.tradeMath === "gmsol" && p.isLimit
@@ -234,7 +237,9 @@ function getGmsolIncreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint 
     isLong,
   });
 
-  return sizeDeltaInTokens === 0n ? undefined : bigMath.mulDiv(sizeDeltaUsd, tokenUnit, sizeDeltaInTokens);
+  return sizeDeltaInTokens === 0n
+    ? undefined
+    : getGmsolUsdAmount(bigMath.mulDiv(sizeDeltaUsd, 1n, sizeDeltaInTokens)) * tokenUnit;
 }
 
 function getGmsolDecreaseAcceptablePrice(p: GmsolAcceptablePriceParams): bigint {
