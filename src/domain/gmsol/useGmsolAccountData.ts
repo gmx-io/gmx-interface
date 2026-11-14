@@ -5,7 +5,7 @@ import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { API_STALE_MS, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { FeeDiscount, GmxApiSdk } from "sdk/clients/v2";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { ApiPositionInfo } from "sdk/utils/positions/types";
@@ -34,6 +34,7 @@ export function getGmsolAccountDataKey(request: GmsolAccountRequest, apiCacheKey
 export type GmsolAccountDataResult<T> = {
   data: T | undefined;
   isLoading: boolean;
+  isSyncing: boolean;
   error: Error | undefined;
 };
 
@@ -48,15 +49,12 @@ function useGmsolAccountRequest<T>(
   const key = owner && sdk ? getGmsolAccountDataKey(request, apiCacheKey, owner) : null;
   const slotKey = owner ? getAccountSlotKey(request, apiCacheKey, owner) : undefined;
   const isPendingConfirmation = useSyncExternalStore(subscribeToAccountSlots, () => accountSlots.isPending(slotKey));
-  const confirmationError = useMemo(
-    () => (isPendingConfirmation ? new Error(`${request} has not reached the confirmed transaction slot`) : undefined),
-    [isPendingConfirmation, request]
-  );
+  const refreshError = useSyncExternalStore(subscribeToAccountSlots, () => accountSlots.getError(slotKey));
 
   const { data, error, isLoading, freshness } = useSWRWithFreshness<T>(
     key,
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) => fetcher(sdk!, keyOwner, keyApiCacheKey),
-    { refreshInterval }
+    { refreshInterval, maxAgeMs: refreshInterval + API_STALE_MS }
   );
   const isOverdue = freshness.isStale && !error;
   const overdueError = useMemo(
@@ -67,22 +65,29 @@ function useGmsolAccountRequest<T>(
   return {
     data: key ? data : undefined,
     isLoading: key ? isLoading : false,
-    error: key ? error ?? confirmationError ?? overdueError : undefined,
+    isSyncing: Boolean(key && isPendingConfirmation),
+    error: key ? error ?? refreshError ?? overdueError : undefined,
   };
 }
 
 function fetchPositions(sdk: GmxApiSdk, owner: string, apiCacheKey: string) {
   const key = getAccountSlotKey("gmsolPositions", apiCacheKey, owner);
-  return fetchGmsolPositions(sdk, owner, accountSlots.getMinContextSlot(key)).then((body) =>
-    accountSlots.takeSnapshot(key, body.slot, body.data)
-  );
+  return fetchGmsolPositions(sdk, owner, accountSlots.getMinContextSlot(key))
+    .then((body) => accountSlots.takeSnapshot(key, body.slot, body.data))
+    .catch((error) => {
+      accountSlots.fail(key, error);
+      throw error;
+    });
 }
 
 function fetchOrders(sdk: GmxApiSdk, owner: string, apiCacheKey: string) {
   const key = getAccountSlotKey("gmsolOrders", apiCacheKey, owner);
-  return fetchGmsolOrders(sdk, owner, accountSlots.getMinContextSlot(key)).then((body) =>
-    accountSlots.takeSnapshot(key, body.slot, body.data)
-  );
+  return fetchGmsolOrders(sdk, owner, accountSlots.getMinContextSlot(key))
+    .then((body) => accountSlots.takeSnapshot(key, body.slot, body.data))
+    .catch((error) => {
+      accountSlots.fail(key, error);
+      throw error;
+    });
 }
 
 export async function refreshGmsolAccountDataAfterTransaction(sdk: GmxApiSdk, owner: string, slot: number) {
