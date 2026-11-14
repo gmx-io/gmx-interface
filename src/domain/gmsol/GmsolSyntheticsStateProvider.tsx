@@ -28,7 +28,8 @@ import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/types";
 
 import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
-import { composeGmsolMarkets, getGmsolPositionsConstants } from "./markets/composeGmsolMarkets";
+import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
+import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
@@ -108,6 +109,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     (): ChartDataProvider | undefined =>
       sdk && {
         candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+        getChartSymbol: getGmsolOracleSymbol,
         fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
         fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
       },
@@ -120,11 +122,6 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         ? composeGmsolMarkets(rawMarkets.rawMarketsInfoData, tokensData)
         : undefined,
     [rawMarkets.rawMarketsInfoData, tokensData]
-  );
-
-  const positionsConstants = useMemo(
-    () => (rawMarkets.rawMarketsInfoData ? getGmsolPositionsConstants(rawMarkets.rawMarketsInfoData) : undefined),
-    [rawMarkets.rawMarketsInfoData]
   );
 
   const isMarketsUnavailable = rawMarkets.isUnavailable || tokensDataResult.isUnavailable;
@@ -200,6 +197,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (composedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: composedPositions.data,
         isLoading: false,
         dataSource: "api",
@@ -213,6 +211,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     const cachedPositions = lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined;
     if (isMarketsUnavailable && cachedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: cachedPositions,
         isLoading: false,
         dataSource: "api",
@@ -228,7 +227,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedPositions,
+    positionsRequest.error,
+    positionsRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
@@ -240,6 +246,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (ordersInfoData) {
       return {
+        isSyncing: ordersRequest.isSyncing,
         ordersInfoData,
         count: Object.keys(ordersInfoData).length,
         isLoading: false,
@@ -259,7 +266,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedOrders, ordersRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedOrders,
+    ordersRequest.error,
+    ordersRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const positionsInfoData = positionsInfo.positionsInfoData;
 
@@ -314,15 +328,22 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         markets,
         marketsInfo,
         ordersInfo,
-        positionsConstants,
+        positionsConstants: {
+          minCollateralUsd: undefined,
+          minPositionSizeUsd: undefined,
+          maxAutoCancelOrders: 0n,
+          claimableCollateralDelay: 0n,
+          claimableCollateralReductionFactor: 0n,
+          claimableCollateralTimeDivisor: 0n,
+        },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
         positionsInfo,
         tokensDataResult,
         // gmsol charges no UI fee.
         uiFeeFactor: 0n,
         userReferralInfo: feeDiscount?.userReferralInfo,
-        // The host's one combined factor (GT rank and referrer); the fee math applies the larger discount.
-        proDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
+        proDiscountFactor: undefined,
+        feeDiscountFactor: feeDiscount?.orderFeeDiscountFactor,
         feeDiscountError,
         depositMarketTokensData: undefined,
         progressiveDepositMarketTokensData: undefined,
@@ -384,7 +405,6 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     markets,
     marketsInfo,
     ordersInfo,
-    positionsConstants,
     positionsInfo,
     tokensDataResult,
     feeDiscount,

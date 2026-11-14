@@ -551,6 +551,10 @@ msgstr "鎖定此費率"
 msgid "position size"
 msgstr "倉位規模"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "確認提取"
@@ -1231,10 +1235,6 @@ msgstr "已過期的 Market Decrease"
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "價格波動劇烈。<0>增加允許的滑點</0>"
-
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "請僅將<0>與 {chainName} 相容的資產</0>傳送至此地址！"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
@@ -1957,6 +1957,10 @@ msgstr "股票"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power share"
 msgstr "質押權重占比"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -3061,6 +3065,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "轉帳已發起"
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金額低於提取下限。請嘗試大於 <0>{lowerLimitFormatted}</0> 的金額。"
@@ -3158,6 +3166,10 @@ msgstr "正在載入網路費用..."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} 做多觸發市價單"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3689,6 +3701,13 @@ msgstr "搜尋地址"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "資料新鮮度"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4368,6 +4387,7 @@ msgstr "費用因子"
 msgid "Funding factor"
 msgstr "資金因子"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4480,6 +4500,10 @@ msgstr "費用（含兌換）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "指數（正向）"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "從交易所或錢包傳送時，請選擇<0>{chainName} 網路</0>。透過其他網路傳送的資金可能會被卡住。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -4693,6 +4717,10 @@ msgstr "已實現價格影響"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "其他已實現費用"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -7906,6 +7934,10 @@ msgstr "清算費用"
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "此錢包尚未在 {0} 上部署。請再次簽名，以便隨此操作一併部署"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "兌換影響指數"
@@ -8467,6 +8499,7 @@ msgstr "{orderText} 已更新"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前無法送出 GMX Account 操作。"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -10455,6 +10488,7 @@ msgid "Max reserved + JIT {directionLabel}"
 msgstr "{directionLabel} 最大預留量 + JIT"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "平倉價格影響"
@@ -11366,6 +11400,10 @@ msgstr "大型帳戶"
 msgid "Shift fee"
 msgstr "轉換費用"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "正常"
@@ -11907,6 +11945,10 @@ msgstr "分開接收代幣"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "USD estimate"
 msgstr "USD 估算"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12658,6 +12700,10 @@ msgstr "錢包"
 msgid "Enter a trigger price"
 msgstr "輸入觸發價格"
 
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "總計統計"
@@ -12802,6 +12848,7 @@ msgid "Arrives"
 msgstr "到帳時間"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "已累計"
 
