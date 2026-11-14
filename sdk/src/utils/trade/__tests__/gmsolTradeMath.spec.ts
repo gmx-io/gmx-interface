@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chainIds";
 import { mockMarginCheckMarketInfo, mockTokensData } from "test/mock";
-import { getPositionFee, getPriceImpactUsd, GmsolPriceImpactError } from "utils/fees";
+import {
+  capPositionImpactUsdByMaxPriceImpactFactor,
+  getCappedPositionImpactUsd,
+  getPositionFee,
+  getPriceImpactForPosition,
+  getPriceImpactUsd,
+  GmsolPriceImpactError,
+} from "utils/fees";
 import type { MarketInfo } from "utils/markets/types";
 import { PRECISION } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "utils/orders/types";
@@ -102,6 +109,146 @@ function positionInfo(marketInfo: MarketInfo, sizeInUsd: bigint, sizeInTokens: b
 }
 
 describe("gmsol trade math", () => {
+  it("accepts the native minimum margin boundary FESOL-57", () => {
+    const sizeInUsd = 10_000_000_198_019_801_980_199n * 10n ** 10n;
+    const marketInfo = market({
+      decimals: 9,
+      minPrice: P,
+      maxPrice: P,
+      tradeMath: "gmsol",
+      overrides: { longInterestUsd: sizeInUsd, minCollateralFactor: P / 100n },
+    });
+    for (const collateralDelta of [-1n, 0n, 1n]) {
+      const margin = getResultingPositionMarginState({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        sizeInUsd,
+        sizeInTokens: 100n * 10n ** 9n,
+        collateralAmount: 1_000_002n + collateralDelta,
+        pendingImpactAmount: 0n,
+        minCollateralUsd: 0n,
+        isLong: true,
+        userReferralInfo: undefined,
+      });
+      expect(margin.minCollateralUsdForLeverage).toBe(100_000_001_980_198_019_801n * 10n ** 10n);
+      expect(margin.isLiquidatable).toBe(collateralDelta < 0n);
+    }
+  });
+
+  it("quantizes capped PnL before realizing a partial close FESOL-57", () => {
+    for (const isLong of [true, false]) {
+      const marketInfo = market({
+        decimals: 9,
+        minPrice: P,
+        maxPrice: P,
+        tradeMath: "gmsol",
+        overrides: {
+          longInterestUsd: 100n * P,
+          shortInterestUsd: 100n * P,
+          longInterestInTokens: 103n * 10n ** 9n,
+          shortInterestInTokens: 97n * 10n ** 9n,
+          longPoolAmount: 500_000n * 10n ** 9n,
+          shortPoolAmount: 500_000n * 10n ** 6n,
+          maxPnlFactorForTradersLong: P / 1_000_000n,
+          maxPnlFactorForTradersShort: P / 1_000_000n,
+        },
+      });
+      const position = positionInfo(marketInfo, 100n * P, (isLong ? 101n : 99n) * 10n ** 9n, isLong);
+      const close = getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong,
+        position,
+        closeSizeUsd: 33n * P,
+        keepLeverage: false,
+        userReferralInfo: undefined,
+        minCollateralUsd: 0n,
+        minPositionSizeUsd: 0n,
+        uiFeeFactor: 0n,
+        isSetAcceptablePriceImpactEnabled: false,
+      });
+      expect(close.estimatedPnl).toBe(16_666_666_666_666_666_666n * 10n ** 10n);
+      expect(close.realizedPnl).toBe(5_499_999_999_999_999_999n * 10n ** 10n);
+    }
+  });
+
+  it("quantizes impact caps before settling collateral atoms FESOL-57", () => {
+    const nativeUnit = 10n ** 10n;
+    const canonicalSize = 100n * P + 3n * nativeUnit;
+    const cappedMarket = market({
+      decimals: 9,
+      minPrice: P,
+      maxPrice: P,
+      tradeMath: "gmsol",
+      overrides: {
+        longInterestUsd: 1000n * P,
+        shortInterestUsd: 1000n * P,
+        positionImpactFactorNegative: P,
+        maxPositionImpactFactorNegative: (3n * P) / 10n,
+      },
+    });
+    for (const sign of [-1n, 1n]) {
+      const requested = sign * (canonicalSize + nativeUnit - 1n);
+      expect(getPriceImpactForPosition(cappedMarket, requested, true)).toEqual(
+        getPriceImpactForPosition(cappedMarket, sign * canonicalSize, true)
+      );
+      expect(
+        getCappedPositionImpactUsd(cappedMarket, requested * sign, true, sign > 0n, {
+          shouldCapNegativeImpact: true,
+        }).priceImpactDeltaUsd
+      ).toBe(-30n * P);
+    }
+    expect(() => getPriceImpactForPosition({ ...cappedMarket, longInterestUsd: 1000n * P + 1n }, P, true)).toThrow(
+      GmsolPriceImpactError
+    );
+    const evmMarket = {
+      ...cappedMarket,
+      tradeMath: undefined,
+      useOpenInterestInTokensForBalance: false,
+      positionImpactExponentFactorNegative: P,
+    };
+    expect(getPriceImpactForPosition(evmMarket, canonicalSize + nativeUnit - 1n, true).priceImpactDeltaUsd).not.toBe(
+      getPriceImpactForPosition(evmMarket, canonicalSize, true).priceImpactDeltaUsd
+    );
+    for (const isLong of [true, false])
+      for (const dust of [0n, 10n ** 10n]) {
+        const marketInfo = market({
+          decimals: 9,
+          minPrice: P,
+          maxPrice: P,
+          tradeMath: "gmsol",
+          overrides: {
+            longInterestUsd: (isLong ? 100n : 200n) * P,
+            shortInterestUsd: (isLong ? 200n : 100n) * P,
+            positionImpactFactorNegative: 21n * 10n ** 25n,
+            maxPositionImpactFactorNegative: P / 100n,
+            maxPositionImpactFactorPositive: P / 100n,
+          },
+        });
+        const sizeDeltaUsd = 50n * P + dust;
+        const position = positionInfo(marketInfo, 100n * P, 100n * 10n ** 9n, isLong);
+        const close = getDecreasePositionAmounts({
+          marketInfo,
+          collateralToken: marketInfo.shortToken,
+          isLong,
+          position,
+          closeSizeUsd: sizeDeltaUsd,
+          keepLeverage: false,
+          userReferralInfo: undefined,
+          minCollateralUsd: 0n,
+          minPositionSizeUsd: 0n,
+          uiFeeFactor: 0n,
+          isSetAcceptablePriceImpactEnabled: false,
+        });
+        expect(close.totalPendingImpactDeltaUsd).toBe(-P / 2n);
+        expect(close.priceImpactDiffUsd).toBe((17n * P) / 8n);
+        expect(position.collateralAmount - close.payedRemainingCollateralAmount).toBe(97_375_000n);
+        for (const sign of [-1n, 1n]) {
+          expect(capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeDeltaUsd, sign * P)).toBe((sign * P) / 2n);
+        }
+      }
+  });
+
   it("deducts increase fees in collateral token atoms FESOL-57", () => {
     const marketInfo = market({
       decimals: 8,
@@ -376,11 +523,32 @@ describe("gmsol trade math", () => {
   });
 
   it("evaluates gmsol limit increases at the trigger and covers the execution FESOL-57", () => {
-    for (const { isLong, isLimit, indexPrice, atoms } of [
-      { isLong: true, isLimit: false, indexPrice: 110n * P, atoms: 889n },
-      { isLong: false, isLimit: false, indexPrice: 90n * P, atoms: 1111n },
-      { isLong: true, isLimit: true, indexPrice: 100n * P, atoms: 980n },
-      { isLong: false, isLimit: true, indexPrice: 100n * P, atoms: 1000n },
+    for (const isLong of [false, true]) {
+      const marketInfo = market({
+        decimals: 9,
+        minPrice: P,
+        maxPrice: P,
+        tradeMath: "gmsol",
+        overrides: { positionImpactFactorNegative: 0n, positionImpactFactorPositive: 0n },
+      });
+      for (const dust of [0n, 1n, 9_999_999_999n]) {
+        expect(
+          getAcceptablePriceInfo({
+            marketInfo,
+            sizeDeltaUsd: P + dust,
+            indexPrice: P,
+            isIncrease: true,
+            isLimit: false,
+            isLong,
+          }).acceptablePrice
+        ).toBe(P);
+      }
+    }
+    for (const { isLong, isLimit, indexPrice, nativeUnitPrice } of [
+      { isLong: true, isLimit: false, indexPrice: 110n * P, nativeUnitPrice: 111_361_079_865_016_872_890n },
+      { isLong: false, isLimit: false, indexPrice: 90n * P, nativeUnitPrice: 89_108_910_891_089_108_910n },
+      { isLong: true, isLimit: true, indexPrice: 100n * P, nativeUnitPrice: 101_020_408_163_265_306_122n },
+      { isLong: false, isLimit: true, indexPrice: 100n * P, nativeUnitPrice: 99_000_000_000_000_000_000n },
     ]) {
       const marketInfo = market({
         decimals: 2,
@@ -403,7 +571,7 @@ describe("gmsol trade math", () => {
         sizeDeltaUsd: 990n * P,
       });
 
-      expect(result.acceptablePrice).toBe((990n * P * 100n) / atoms);
+      expect(result.acceptablePrice).toBe(nativeUnitPrice * 10n ** 12n);
       expect(marketInfo.indexToken.prices).toEqual({ minPrice: 90n * P, maxPrice: 110n * P });
     }
 

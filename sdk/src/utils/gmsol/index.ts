@@ -2,6 +2,8 @@ import { bigMath } from "utils/bigmath";
 import { expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import type { TokenData } from "utils/tokens/types";
 
+export { getGmsolFractionalPower } from "./decimalPower";
+
 export const GMSOL_PRECISION_SCALE = 10n ** 10n;
 
 export function getGmsolUsdAmount(value: bigint): bigint {

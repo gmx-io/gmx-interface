@@ -7,6 +7,7 @@ import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } f
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
 import { applySwapImpactWithCap, getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
@@ -138,7 +139,8 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
   }
 
   const maxPnlFactor: bigint = isLong ? marketInfo.maxPnlFactorForTradersLong : marketInfo.maxPnlFactorForTradersShort;
-  const maxPnl = applyFactor(poolUsd, maxPnlFactor);
+  const maxPnlUsd = applyFactor(poolUsd, maxPnlFactor);
+  const maxPnl = marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(maxPnlUsd) : maxPnlUsd;
 
   return poolPnl > maxPnl ? maxPnl : poolPnl;
 }
