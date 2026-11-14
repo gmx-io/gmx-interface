@@ -13635,10 +13635,6 @@ msgstr "如何開始節省費用？"
 msgid "24H VOL."
 msgstr "24H 交易量"
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "GT VIP and referral discount"
-msgstr ""
-
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr "上一輪按平均餘額支付的費率。"

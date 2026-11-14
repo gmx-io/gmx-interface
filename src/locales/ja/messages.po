@@ -13635,10 +13635,6 @@ msgstr "取引手数料を節約するには？"
 msgid "24H VOL."
 msgstr "24時間取引量"
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "GT VIP and referral discount"
-msgstr ""
-
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr "前回のラウンドで平均残高に対して支払われたレート。"

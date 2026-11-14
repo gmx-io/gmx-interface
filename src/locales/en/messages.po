@@ -13635,10 +13635,6 @@ msgstr "How to start saving?"
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "GT VIP and referral discount"
-msgstr "GT VIP and referral discount"
-
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr "Rate paid in the last round, on average balances."

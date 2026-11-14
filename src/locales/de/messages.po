@@ -13635,10 +13635,6 @@ msgstr "Wie können Sie anfangen zu sparen?"
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: src/components/TradeFeesRow/TradeFeesRow.tsx
-msgid "GT VIP and referral discount"
-msgstr ""
-
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr "In der letzten Runde gezahlter Satz, bezogen auf durchschnittliche Guthaben."
