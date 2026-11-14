@@ -556,6 +556,10 @@ msgstr "이 요율 신청하기"
 msgid "position size"
 msgstr "포지션 규모"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "출금 확인"
@@ -1236,10 +1240,6 @@ msgstr "만료된 Market Decrease"
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오</0>"
-
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
@@ -4385,6 +4385,7 @@ msgstr "수수료 계수"
 msgid "Funding factor"
 msgstr "펀딩 계수"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4497,6 +4498,10 @@ msgstr "수수료 (스왑 포함)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "지수 (양수)"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "거래소나 지갑에서 보낼 때는 <0>{chainName} 네트워크</0>를 선택하십시오. 다른 네트워크로 보낸 자금은 묶일 수 있습니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -8501,6 +8506,7 @@ msgstr "{orderText} 업데이트 완료"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "현재 {fromSymbol}(으)로 네트워크 수수료를 지불할 수 없어, 지불이 가능해질 때까지 GMX Account 작업을 전송할 수 없습니다."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -10494,6 +10500,7 @@ msgid "Max reserved + JIT {directionLabel}"
 msgstr "최대 예약량 + JIT {directionLabel}"
 
 #: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "청산 가격 영향"
@@ -11410,6 +11417,10 @@ msgstr "대형 계정"
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Shift fee"
 msgstr "시프트 수수료"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -12869,6 +12880,7 @@ msgid "Arrives"
 msgstr "도착"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "적립됨"
 
