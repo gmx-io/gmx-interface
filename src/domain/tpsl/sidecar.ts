@@ -104,15 +104,21 @@ export function buildTpSlPositionInfo(p: BuildTpSlPositionInfoParams): PositionI
     return undefined;
   }
 
-  const pending = getPendingMockPosition({
-    isIncrease: p.isIncrease,
-    positionKey: p.positionKey,
-    sizeDeltaUsd,
-    sizeDeltaInTokens,
-    collateralDeltaAmount,
-    updatedAt: Date.now(),
-    updatedAtBlock: 0n,
-  });
+  // A Solana preview has no position account until one is returned by the API.
+  // Keep that identity absent instead of hashing base58 addresses as EVM addresses.
+  const contractKey = p.marketInfo.tradeMath === "gmsol" ? p.existingPosition?.contractKey ?? "" : undefined;
+  const pending = getPendingMockPosition(
+    {
+      isIncrease: p.isIncrease,
+      positionKey: p.positionKey,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+      collateralDeltaAmount,
+      updatedAt: Date.now(),
+      updatedAtBlock: 0n,
+    },
+    contractKey
+  );
 
   const indexName = getMarketIndexName(p.marketInfo);
   const poolName = getMarketPoolName(p.marketInfo);

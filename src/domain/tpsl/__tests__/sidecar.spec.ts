@@ -1,19 +1,67 @@
 import { describe, expect, it } from "vitest";
 
+import { hashedPositionKey } from "config/dataStore";
 import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import { DecreasePositionAmounts } from "domain/synthetics/trade";
+import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals, MaxUint256 } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chains";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol, getWrappedToken } from "sdk/configs/tokens";
+import { getPositionKey } from "sdk/utils/positions";
 
-import { buildTpSlBatchPayloads } from "../sidecar";
+import { buildTpSlBatchPayloads, buildTpSlPositionInfo } from "../sidecar";
 
 const CHAIN_ID = ARBITRUM;
 const ACCOUNT = "0x1234567890123456789012345678901234567890";
 const ETH_MARKET = MARKETS[CHAIN_ID]["0x70d95587d40A2caf56bd97485aB3Eec10Bee6336"];
 const USDC = getTokenBySymbol(CHAIN_ID, "USDC");
 const WETH = getWrappedToken(CHAIN_ID);
+
+describe("buildTpSlPositionInfo", () => {
+  it.each([true, false])("previews base58 positions without a contract identity (isLong=%s)", (isLong) => {
+    const account = "9XUH3oy5kjA4UjFeB7RM6bGJCWeWN6GPYAKVmrKRVaYz";
+    const marketAddress = "DAY6Qr1FKgJQFvjJAhFUZUWHzx8UbbbkRmt6G6AYswWG";
+    const collateralToken = { ...USDC_TOKEN, address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" };
+    const positionKey = getPositionKey(account, marketAddress, collateralToken.address, isLong);
+    const result = buildTpSlPositionInfo({
+      positionKey,
+      marketInfo: createMockMarketInfo(undefined, { marketTokenAddress: marketAddress, tradeMath: "gmsol" }),
+      collateralToken,
+      isIncrease: true,
+      sizeDeltaUsd: expandDecimals(1000, 30),
+      sizeDeltaInTokens: expandDecimals(1, 18),
+      collateralDeltaAmount: expandDecimals(100, 6),
+    });
+
+    expect(result).toMatchObject({
+      key: positionKey,
+      contractKey: "",
+      account,
+      marketAddress,
+      collateralTokenAddress: collateralToken.address,
+      isLong,
+      sizeInUsd: expandDecimals(1000, 30),
+      sizeInTokens: expandDecimals(1, 18),
+      collateralAmount: expandDecimals(100, 6),
+    });
+  });
+
+  it("preserves the EVM contract key for previews", () => {
+    const marketInfo = createMockMarketInfo();
+    const result = buildTpSlPositionInfo({
+      positionKey: getPositionKey(ACCOUNT, marketInfo.marketTokenAddress, USDC_TOKEN.address, true),
+      marketInfo,
+      collateralToken: USDC_TOKEN,
+      isIncrease: true,
+    });
+
+    expect(result?.contractKey).toBe(
+      hashedPositionKey(ACCOUNT, marketInfo.marketTokenAddress, USDC_TOKEN.address, true)
+    );
+  });
+});
 
 function makeAmounts(overrides: Partial<DecreasePositionAmounts>): DecreasePositionAmounts {
   return {
