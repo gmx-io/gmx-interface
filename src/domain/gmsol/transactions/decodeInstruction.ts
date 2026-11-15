@@ -33,7 +33,16 @@ export class GmsolInstructionReader {
   }
 }
 
-export function readCreateOrderParams(reader: GmsolInstructionReader) {
+export function readCreateOrderParams(
+  reader: GmsolInstructionReader,
+  onMinOutput?: (value: bigint | undefined, start: number, end: number) => void
+) {
+  const readMinOutput = () => {
+    const start = reader.offset;
+    const value = reader.option(() => reader.uint(16));
+    onMinOutput?.(value, start, reader.offset);
+    return value;
+  };
   return {
     kind: reader.uint(1),
     decreaseSwapType: reader.option(() => reader.uint(1)),
@@ -43,7 +52,7 @@ export function readCreateOrderParams(reader: GmsolInstructionReader) {
     size: reader.uint(16),
     isLong: reader.boolean(),
     isCollateralLong: reader.boolean(),
-    minOutput: reader.option(() => reader.uint(16)),
+    minOutput: readMinOutput(),
     triggerPrice: reader.option(() => reader.uint(16)),
     acceptablePrice: reader.option(() => reader.uint(16)),
     unwrapNative: reader.boolean(),
@@ -63,4 +72,18 @@ export function decodeGmsolInstruction(data: Uint8Array, accounts: readonly stri
   if (accounts.length !== names.length) throw new Error("Unexpected instruction account count");
   const accountMap = Object.fromEntries(names.map((key, index) => [key, accounts[index]]));
   return { name, reader, accounts: accountMap };
+}
+
+/** Normalize the zero bound for direct position orders without changing any other instruction bytes. */
+export function compactCreateOrderData(data: Uint8Array, accounts: readonly string[]) {
+  const decoded = decodeGmsolInstruction(data, accounts);
+  if (decoded.name !== "create_order_v2") return data;
+  decoded.reader.read(32); // Nonce precedes the order parameters.
+  let range: { start: number; end: number } | undefined;
+  const params = readCreateOrderParams(decoded.reader, (value, start, end) => {
+    if (value === 0n) range = { start, end };
+  });
+  // Pinned store init_increase/init_decrease normalize None to zero; swap orders are excluded.
+  if (!range || ![3n, 4n, 6n, 7n, 8n].includes(params.kind)) return data;
+  return Uint8Array.from([...data.slice(0, range.start), 0, ...data.slice(range.end)]);
 }
