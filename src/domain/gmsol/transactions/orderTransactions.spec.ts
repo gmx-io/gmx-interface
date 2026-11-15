@@ -26,7 +26,7 @@ import { mockMarginCheckMarketInfo, mockTokensData } from "sdk/test/mock";
 import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
-import { decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
+import { compactCreateOrderData, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
 import { getPendingGmsolSubmission, reconcileGmsolSubmission } from "./pendingSubmission";
 import {
@@ -173,6 +173,16 @@ it("keeps increase and TP/SL in one size-bounded v0 transaction with lookup tabl
   expect(plan.groups[0][0].length).toBeLessThanOrEqual(1232);
   expect(decodeGmsolTransaction(plan.groups[0][0], plan).compiled.addressTableLookups?.length).toBeGreaterThan(0);
   expect((await validateGmsolTransactionPlan(plan)).orderAddresses).toHaveLength(3);
+  for (const ix of decodeGmsolTransaction(plan.groups[0][0], plan).message.instructions) {
+    if (ix.programAddress !== GMSOL_STORE_PROGRAM_ID) continue;
+    const decoded = decodeGmsolInstruction(
+      copySolanaBytes(ix.data!),
+      [...ix.accounts!].map((account) => account.address)
+    );
+    if (decoded.name !== "create_order_v2") continue;
+    decoded.reader.read(32);
+    expect(readCreateOrderParams(decoded.reader).minOutput).toBeUndefined();
+  }
 });
 function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction[]) => Instruction[]) {
   const next = structuredClone(plan);
@@ -194,6 +204,41 @@ function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction
   ];
   return next;
 }
+it("compacts only zero output bounds while preserving finite prices and strict validation FESOL-56", async () => {
+  for (const kind of ["LimitIncrease", "LimitDecrease", "StopLossDecrease"] as const)
+    for (const isLong of [true, false])
+      for (const minOutput of [0n, 10n ** 10n]) {
+        const plan = await build([{ ...order(kind, isLong), minOutput }]);
+        let saved = 0;
+        const compact = mutateInstructions(plan, (instructions) =>
+          instructions.map((ix) => {
+            if (ix.programAddress !== GMSOL_STORE_PROGRAM_ID) return ix;
+            const original = copySolanaBytes(ix.data!);
+            const accounts = [...ix.accounts!].map((account) => account.address);
+            const data = compactCreateOrderData(original, accounts);
+            saved += original.length - data.length;
+            const before = decodeGmsolInstruction(original, accounts);
+            if (before.name === "create_order_v2") {
+              const after = decodeGmsolInstruction(data, accounts);
+              before.reader.read(32);
+              after.reader.read(32);
+              const expected = readCreateOrderParams(before.reader);
+              expect(readCreateOrderParams(after.reader)).toEqual({
+                ...expected,
+                minOutput: minOutput === 0n ? undefined : expected.minOutput,
+              });
+            }
+            return { ...ix, data };
+          })
+        );
+        expect(saved).toBe(minOutput === 0n ? 16 : 0);
+        await expect(validateGmsolTransactionPlan(compact)).resolves.toBeDefined();
+        if (minOutput === 0n && compact.action.type === "create") {
+          compact.action.orders[0].minOutput = 10n ** 10n;
+          await expect(validateGmsolTransactionPlan(compact)).rejects.toThrow("Unexpected order minOutput");
+        }
+      }
+});
 it("rejects unexpected programs, gmsol instructions, receivers, amounts and truncated input FESOL-56", async () => {
   const plan = await build([order()]);
   for (const mutation of ["program", "gmsol", "receiver", "amount", "truncated"] as const) {
@@ -383,7 +428,7 @@ it("preserves gmsol price bounds through the real WASM for both sides and all or
           ix.programAddress === GMSOL_STORE_PROGRAM_ID
             ? decodeGmsolInstruction(
                 copySolanaBytes(ix.data!),
-                ix.accounts!.map((account) => account.address)
+                [...ix.accounts!].map((account) => account.address)
               )
             : undefined
         )
