@@ -137,7 +137,9 @@ function assertCreateParams(
     validFromTs: expected.valid_from_ts === undefined ? undefined : BigInt(expected.valid_from_ts),
   };
   for (const key of Object.keys(fields) as (keyof typeof fields)[]) {
-    requireGmsol(actual[key] === fields[key], `Unexpected order ${key}`);
+    // The pinned store normalizes an absent direct-order min_output to zero.
+    const value = key === "minOutput" && !preparing ? actual[key] ?? 0n : actual[key];
+    requireGmsol(value === fields[key], `Unexpected order ${key}`);
   }
 }
 
