@@ -330,7 +330,7 @@ export function GmList({
               <table className="w-[max(100%,1000px)]">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="w-[28%]">
+                    <TableTh className="w-[28%] min-w-[340px]">
                       <Trans>POOL</Trans>
                     </TableTh>
                     <TableTh className="w-[12%]">

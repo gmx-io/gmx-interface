@@ -120,7 +120,7 @@ export function GlvList({
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
-                  <TableTh className="w-[28%]">
+                  <TableTh className="w-[28%] min-w-[340px]">
                     <Trans>VAULT</Trans>
                   </TableTh>
                   <TableTh className="w-[12%]">
