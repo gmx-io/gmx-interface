@@ -4,7 +4,6 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { AVALANCHE, SettlementChainId } from "config/chains";
-import { getNetworkFeatures } from "config/features";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -68,10 +67,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
-import {
-  getExpressTokenPermitBlockReason,
-  getGasPaymentTokenToApprove,
-} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -96,7 +92,6 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -120,13 +115,7 @@ import { mustNeverExist } from "sdk/utils/types";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
-import {
-  TooltipAction,
-  TooltipContent,
-  TooltipLink,
-  TooltipReadMore,
-  TooltipText,
-} from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -226,15 +215,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
-    if (gasPaymentTokenToApprove) {
-      list.push(gasPaymentTokenToApprove);
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams]);
-
-  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
+  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -247,7 +236,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: permitBlockReason === undefined,
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -255,7 +244,6 @@ export function useTradeboxButtonState({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: fromToken?.address,
-      permitBlockReason,
     },
   });
 
@@ -459,7 +447,9 @@ export function useTradeboxButtonState({
                 )}
               </TooltipText>
               {setMaxLeverageAction}
-              <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
+              <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+                <Trans>Read more</Trans>
+              </TooltipLink>
             </TooltipContent>
           );
 
@@ -1157,8 +1147,6 @@ function NoSwapPathTooltipContent({
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
-  const { networkId } = useChainId();
-  const isSwapAvailable = getNetworkFeatures(networkId).swap;
 
   const makeHandleSwapClick = useCallback(
     (fromTokenSymbol: string, toTokenSymbol: string) => () => {
@@ -1212,11 +1200,9 @@ function NoSwapPathTooltipContent({
           No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
         </Trans>
       </TooltipText>
-      {isSwapAvailable && (
-        <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
-          <Trans>Swap {collateralSymbol}</Trans>
-        </TooltipAction>
-      )}
+      <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
+        <Trans>Swap {collateralSymbol}</Trans>
+      </TooltipAction>
       <TooltipLink href={JUMPER_BRIDGE_URL}>
         <Trans>Bridge {collateralSymbol}</Trans>
       </TooltipLink>

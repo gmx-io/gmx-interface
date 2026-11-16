@@ -83,7 +83,6 @@ interface Props {
   logicalFees: GmSwapFees | undefined;
   marketsInfoData?: MarketsInfoData;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData;
-  onSent: () => void;
 }
 
 const processingTextMap = {
@@ -110,7 +109,6 @@ export const useGmSwapSubmitState = ({
   longTokenLiquidityUsd,
   shortTokenLiquidityUsd,
   shouldDisableValidation,
-  onSent,
 }: Props): SubmitButtonState => {
   const { isDeposit, isPair } = useSelector(selectPoolsDetailsFlags);
   const operation = useSelector(selectPoolsDetailsOperation);
@@ -171,7 +169,6 @@ export const useGmSwapSubmitState = ({
   } = useLpTransactions({
     shouldDisableValidation,
     technicalFees,
-    onSent,
   });
 
   const onConnectAccount = useCallback(() => {
