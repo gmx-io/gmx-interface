@@ -22,7 +22,7 @@ import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -137,9 +137,7 @@ export function PriceImpactFeesRow() {
                   <TooltipText>
                     <Trans>Net price impact and fees from your trade.</Trans>
                   </TooltipText>
-                  <TooltipLink href={DOCS_LINKS.priceImpact}>
-                    <Trans>Read more</Trans>
-                  </TooltipLink>
+                  <TooltipReadMore href={DOCS_LINKS.priceImpact} />
                 </TooltipContent>
               }
             />
@@ -215,9 +213,7 @@ export function PriceImpactFeesRow() {
                       <Trans>No price impact on increases — orders execute at mark price.</Trans>
                     )}
                   </TooltipText>
-                  <TooltipLink href={DOCS_LINKS.priceImpact}>
-                    <Trans>Read more</Trans>
-                  </TooltipLink>
+                  <TooltipReadMore href={DOCS_LINKS.priceImpact} />
                 </TooltipContent>
               }
             />

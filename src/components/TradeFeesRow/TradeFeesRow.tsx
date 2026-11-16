@@ -23,7 +23,7 @@ import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
 } from "components/Tooltip/TooltipBlocks";
@@ -578,17 +578,13 @@ export function TradeFeesRow(p: Props) {
               {incentivesBottomText && (
                 <div className="flex flex-col gap-2">
                   <TooltipFootnote>{incentivesBottomText}</TooltipFootnote>
-                  <TooltipLink href={getIncentivesV2Url(chainId)}>
-                    <Trans>Read more</Trans>
-                  </TooltipLink>
+                  <TooltipReadMore href={getIncentivesV2Url(chainId)} />
                 </div>
               )}
               {priceImpactRebatesInfo && (
                 <div className="flex flex-col gap-2">
                   <TooltipFootnote>{priceImpactRebatesInfo}</TooltipFootnote>
-                  <TooltipLink href={DOCS_LINKS.priceImpact}>
-                    <Trans>Read more</Trans>
-                  </TooltipLink>
+                  <TooltipReadMore href={DOCS_LINKS.priceImpact} />
                 </div>
               )}
             </TooltipContent>
