@@ -6,6 +6,7 @@ import { useKey, useLatest } from "react-use";
 
 import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
@@ -44,6 +45,8 @@ import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/sele
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
+import { getSolanaReceiveTokens } from "domain/solana/solanaReceiveTokens";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -96,6 +99,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -164,16 +168,28 @@ export function PositionSeller() {
     setClosingPositionKey(undefined);
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
-  const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
+  const evmReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
   const { signer, account } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
+  const solanaWallet = useSolanaWalletSession();
+  const isSolana = Boolean(solanaOrderActions);
+  const orderOptions = useMemo(
+    () =>
+      getNetworkFeatures(networkId).twap ? ORDER_OPTIONS : ORDER_OPTIONS.filter((o) => o.value !== OrderOption.Twap),
+    [networkId]
+  );
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = useSelector(selectPositionSellerPosition);
+  const availableReceiveTokens = useMemo(
+    () => (isSolana ? getSolanaReceiveTokens(position?.collateralToken, tokensData) : evmReceiveTokens),
+    [isSolana, position?.collateralToken, tokensData, evmReceiveTokens]
+  );
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
@@ -384,6 +400,13 @@ export function PositionSeller() {
 
   const slippageInputId = useId();
 
+  const isTwapUnavailable = isTwap && !orderOptions.some((option) => option.value === OrderOption.Twap);
+  useEffect(() => {
+    if (isTwapUnavailable) {
+      handleSetOrderOption(OrderOption.Market);
+    }
+  }, [handleSetOrderOption, isTwapUnavailable]);
+
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
     receiveToken,
@@ -419,6 +442,8 @@ export function PositionSeller() {
     const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
+      // EVM payload builders look tokens up by EVM chain id; Solana sends through solanaOrderActions instead
+      isSolana ||
       !account ||
       !tokensData ||
       !marketsInfoData ||
@@ -474,6 +499,7 @@ export function PositionSeller() {
       cancelOrderParams: marginDepositCancelParams,
     };
   }, [
+    isSolana,
     account,
     allowedSlippage,
     chainId,
@@ -552,9 +578,13 @@ export function PositionSeller() {
 
     const commonError = getCommonError({
       chainId,
-      isConnected: Boolean(account),
+      isConnected: isSolana ? Boolean(solanaWallet.address) : Boolean(account),
       hasOutdatedUi,
     });
+
+    if (solanaOrderActions?.error && !commonError.buttonErrorMessage) {
+      return { error: solanaOrderActions.error };
+    }
 
     const expressError = getExpressError({
       expressParams,
@@ -596,9 +626,48 @@ export function PositionSeller() {
     position,
     tokensData,
     multipleWalletExtensionsChainError,
+    isSolana,
+    solanaOrderActions?.error,
+    solanaWallet.address,
   ]);
 
+  async function onSubmitSolana(actions: NonNullable<typeof solanaOrderActions>) {
+    if (!solanaWallet.address) {
+      openConnectModal?.();
+      return;
+    }
+
+    if (actions.hasPendingSubmission) {
+      setIsSubmitting(true);
+      try {
+        await actions.checkPendingSubmission();
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    if (!position || !decreaseAmounts || !receiveToken || isTwap || error) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const isSent = await actions.closePosition({ position, decreaseAmounts, receiveToken, allowedSlippage });
+      if (isSent) {
+        onClose();
+        setDefaultReceiveToken(receiveToken.address);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   async function onSubmit() {
+    if (solanaOrderActions) {
+      return onSubmitSolana(solanaOrderActions);
+    }
+
     if (!account || !signer) {
       openConnectModal?.();
       return;
@@ -752,11 +821,15 @@ export function PositionSeller() {
   useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
-        const convertedAddress = convertTokenAddress(chainId, position?.collateralToken.address, "native");
+        // the SDK token getters know no Solana mints; like native ETH on EVM, WSOL collateral defaults to native SOL
+        const convertedAddress = isSolana
+          ? availableReceiveTokens[0]?.address
+          : convertTokenAddress(chainId, position.collateralToken.address, "native");
+        if (!convertedAddress) return;
         setReceiveTokenAddress(convertedAddress);
       }
     },
-    [chainId, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
+    [availableReceiveTokens, chainId, isSolana, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
   );
 
   useEffect(() => {
@@ -973,14 +1046,21 @@ export function PositionSeller() {
   );
 
   const buttonState = useMemo(() => {
-    if (!isAllowanceLoaded) {
+    if (isSolana && solanaOrderActions?.hasPendingSubmission) {
+      return {
+        text: isSubmitting ? t`Checking transaction status...` : t`Check transaction status`,
+        disabled: isSubmitting,
+      };
+    }
+
+    if (!isSolana && !isAllowanceLoaded) {
       return {
         text: t`Loading...`,
         disabled: true,
       };
     }
 
-    if (isExpressLoading || isMultichainSubmitDisabled) {
+    if (!isSolana && (isExpressLoading || isMultichainSubmitDisabled)) {
       return {
         text: (
           <>
@@ -1000,7 +1080,7 @@ export function PositionSeller() {
       };
     }
 
-    if (tokensToApprove.length) {
+    if (!isSolana && tokensToApprove.length) {
       const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
       const approveButtonText = getApproveButtonText({ tokenSymbol, isGasPaymentToken: true });
       return {
@@ -1049,6 +1129,9 @@ export function PositionSeller() {
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
+    isSolana,
+    isSubmitting,
+    solanaOrderActions?.hasPendingSubmission,
     isMultichainSubmitDisabled,
     localizedTradeModeLabels,
     localizedTradeTypeLabels,
@@ -1130,7 +1213,7 @@ export function PositionSeller() {
               <div className="px-20 pt-16">
                 <Tabs
                   type="inline"
-                  options={ORDER_OPTIONS}
+                  options={orderOptions}
                   selectedValue={orderOption}
                   onChange={handleSetOrderOption}
                   qa="close-order-type"
