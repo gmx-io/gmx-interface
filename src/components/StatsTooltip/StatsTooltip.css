@@ -23,7 +23,3 @@
   padding: 0.25rem 0 0 0;
   text-align: right;
 }
-
-.Tooltip-number {
-  color: var(--color-typography-primary);
-}

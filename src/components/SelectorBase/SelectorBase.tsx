@@ -20,7 +20,7 @@ import { BREAKPOINTS } from "lib/breakpoints";
 
 import { SlideModal } from "components/Modal/SlideModal";
 import { TableTr } from "components/Table/Table";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -99,40 +99,21 @@ export function SelectorBaseDesktopRow(
   props: PropsWithChildren<{
     disabled?: boolean;
     disabledMessage?: ReactNode;
-    message?: ReactNode;
     className?: string;
     onClick?: (e: React.MouseEvent) => void;
   }>
 ) {
   if (props.disabled && props.disabledMessage) {
     return (
-      <TooltipWithPortal
+      <StandardTooltip
         as={TableTr}
+        variant="none"
         className={cx("SelectorBaseUtils-row SelectorBaseUtils-row-disabled", props.className)}
         content={props.disabledMessage}
-        position="left-start"
         hoverable={false}
       >
         {props.children}
-      </TooltipWithPortal>
-    );
-  }
-
-  if (props.message) {
-    return (
-      <TooltipWithPortal
-        as={TableTr}
-        className={cx(
-          "SelectorBaseUtils-row underline decoration-gray-400 decoration-dashed decoration-1 underline-offset-4",
-          props.className
-        )}
-        content={props.message}
-        position="bottom-end"
-        hoverable={!!props.onClick}
-        onClick={props.disabled ? undefined : props.onClick}
-      >
-        {props.children}
-      </TooltipWithPortal>
+      </StandardTooltip>
     );
   }
 

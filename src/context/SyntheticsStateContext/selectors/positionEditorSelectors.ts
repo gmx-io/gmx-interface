@@ -21,9 +21,10 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -338,7 +339,7 @@ export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
   if (!getIsPositionInfoLoaded(position)) return 0n;
 
   const collateralToken = q(selectPositionEditorSelectedCollateralToken);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(position.marketAddress));
 
   return getMaxWithdrawAmount({
     position,
@@ -347,6 +348,7 @@ export const selectPositionEditorRawMaxWithdrawAmount = createSelector((q) => {
     collateralDecimals: collateralToken?.decimals,
     userReferralInfo: q(selectUserReferralInfo),
     proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
   });
 });
 

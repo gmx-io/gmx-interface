@@ -3,11 +3,10 @@ import { Trans } from "@lingui/macro";
 import { USD_DECIMALS } from "config/factors";
 
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/TooltipBlocks";
 
 import { ChainsStatsNotices } from "./ChainsStatsNotices";
 import type { ChainsStatsStaleEntry, ChainsStatsSummary } from "./summarizeChainsStats";
-
-import "./StatsTooltip.css";
 
 type Props = {
   summary: ChainsStatsSummary;
@@ -28,38 +27,34 @@ export default function ChainsStatsTooltipRow({
 
   return (
     <>
-      {knownEntries.map(([title, value]) => (
-        <p key={title} className="Tooltip-row">
-          <span className="label">
-            <Trans>{title}</Trans>:{" "}
-          </span>
-          <AmountHumanValue
-            amount={value}
-            decimals={decimalsForConversion}
-            showDollar={showDollar}
-            displayDecimals={2}
-            className="amount"
+      <TooltipRows>
+        {knownEntries.map(([title, value]) => (
+          <TooltipRow
+            key={title}
+            label={<Trans>{title}</Trans>}
+            value={
+              <AmountHumanValue
+                amount={value}
+                decimals={decimalsForConversion}
+                showDollar={showDollar}
+                displayDecimals={2}
+              />
+            }
           />
-        </p>
-      ))}
-      <div className="my-5 h-1 bg-gray-800" />
-      <p className="Tooltip-row">
-        <span className="label">
-          <Trans>Total</Trans>:{" "}
-        </span>
-        <AmountHumanValue
-          amount={total}
-          decimals={decimalsForConversion}
-          showDollar={showDollar}
-          displayDecimals={2}
-          className="amount"
+        ))}
+        <TooltipTotal
+          label={<Trans>Total</Trans>}
+          value={
+            <AmountHumanValue
+              amount={total}
+              decimals={decimalsForConversion}
+              showDollar={showDollar}
+              displayDecimals={2}
+            />
+          }
         />
-      </p>
-      <ChainsStatsNotices
-        missingTitles={missingTitles}
-        staleEntries={staleEntries}
-        className="Tooltip-row !mt-8 max-w-[260px] whitespace-normal text-yellow-300"
-      />
+      </TooltipRows>
+      <ChainsStatsNotices missingTitles={missingTitles} staleEntries={staleEntries} className="text-yellow-300" />
     </>
   );
 }

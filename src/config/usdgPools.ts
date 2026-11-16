@@ -28,5 +28,16 @@ export function getIsUsdgToken(chainId: number, tokenAddress: string | undefined
 export const USDG_LAUNCH_BOOST_TARGET_GLV_APR = expandDecimals(8, 28);
 export const USDG_LAUNCH_BOOST_TARGET_GM_APR = expandDecimals(5, 28);
 
-export const USDG_LAUNCH_BOOST_PERIOD_1_START = Date.UTC(2026, 9, 6) / 1000;
-export const USDG_LAUNCH_BOOST_PERIOD_1_END = Date.UTC(2026, 10, 30) / 1000;
+export type UsdgLaunchBoostScheduleItem = {
+  start: number | undefined;
+  end: number;
+  aprPercent: number;
+  aprKind: "minimum" | "estimate";
+};
+
+export const USDG_LAUNCH_BOOST_GLV_SCHEDULE: UsdgLaunchBoostScheduleItem[] = [
+  { start: undefined, end: Date.UTC(2026, 10, 30) / 1000, aprPercent: 10, aprKind: "minimum" },
+  { start: Date.UTC(2026, 11, 1) / 1000, end: Date.UTC(2026, 11, 28) / 1000, aprPercent: 8, aprKind: "estimate" },
+  { start: Date.UTC(2026, 11, 29) / 1000, end: Date.UTC(2027, 0, 25) / 1000, aprPercent: 7, aprKind: "estimate" },
+  { start: Date.UTC(2027, 0, 26) / 1000, end: Date.UTC(2027, 1, 22) / 1000, aprPercent: 5, aprKind: "estimate" },
+];

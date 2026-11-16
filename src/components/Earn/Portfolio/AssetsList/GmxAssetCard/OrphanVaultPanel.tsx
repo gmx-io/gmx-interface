@@ -9,7 +9,7 @@ import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ProgressRow } from "components/ProgressRow/ProgressRow";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
 
@@ -61,15 +61,9 @@ export function OrphanVaultPanel({
       <div className="flex flex-col gap-12">
         <SyntheticsInfoRow
           label={
-            <TooltipWithPortal
+            <StandardTooltip
               handle={<Trans>Eligible amount</Trans>}
-              position="top-start"
-              content={
-                <Trans>
-                  esGMX in your wallet, staked and unclaimed at the snapshot. esGMX already in the GMX, GLP and
-                  Affiliate vaults doesn't count.
-                </Trans>
-              }
+              content={t`esGMX in your wallet, staked and unclaimed at the snapshot. esGMX already in the GMX, GLP and Affiliate vaults doesn't count.`}
             />
           }
           value={<span className="numbers">{formatVaultAmount(data.eligibleAmount)} esGMX</span>}

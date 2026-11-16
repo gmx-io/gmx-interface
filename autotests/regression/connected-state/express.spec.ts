@@ -1,10 +1,15 @@
 import { expect } from "@playwright/test";
 import { zeroAddress } from "viem";
 
+import { getGasPaymentTokens } from "../../../sdk/src/configs/express";
+import { getToken } from "../../../sdk/src/configs/tokens";
 import { test } from "../fixtures/accountState";
 import { infoRow, openSettings, SELECTED_TRADING_MODE, tradingMode } from "../fixtures/trade";
 
-const wrappedNative = (chainId: number) => (chainId === 42161 ? "WETH" : "WAVAX");
+const gasPaymentTokensText = (chainId: number) =>
+  new Intl.ListFormat("en", { style: "long", type: "disjunction" }).format(
+    getGasPaymentTokens(chainId).map((address) => getToken(chainId, address).symbol)
+  );
 
 test("24.02 an empty account sees the Express out-of-gas banner and cannot pick Express or One-Click", async ({
   page,
@@ -14,7 +19,7 @@ test("24.02 an empty account sees the Express out-of-gas banner and cannot pick 
   await accountState.connect(page);
   const settings = await openSettings(page);
   await expect(settings).toContainText(
-    `Insufficient USDC, ${wrappedNative(chainId)}, or USDT in your wallet. Express Trading and One-Click Trading are unavailable.`
+    `Insufficient ${gasPaymentTokensText(chainId)} in your wallet. Express Trading and One-Click Trading are unavailable.`
   );
   await expect(settings.getByRole("link", { name: "Swap", exact: true })).toHaveAttribute(
     "href",

@@ -30,7 +30,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { JitLiquidityInfo } from "domain/synthetics/jit/utils";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets/utils";
-import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
+import { getAvailableTradeQuote, getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
 import { getMidPrice } from "domain/tokens/utils";
 import {
   bigintToNumber,
@@ -42,7 +42,12 @@ import {
 } from "lib/numbers";
 import { sendDepthChartInteractionEvent } from "lib/userAnalytics";
 import { bigMath } from "sdk/utils/bigmath";
-import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import {
+  getCappedPositionImpactUsd,
+  getPriceImpactForPosition,
+  GmsolPriceImpactError,
+} from "sdk/utils/fees/priceImpact";
+import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
 import { ChartTooltip, ChartTooltipHandle } from "./DepthChartTooltip";
 
@@ -92,29 +97,35 @@ const FLOAT_PRECISION = 10000n;
 const FLOAT_DECIMALS = 4;
 const SIDE_POINTS_COUNT = 200n;
 const MIN_FACTOR_THRESHOLD_BIGINT = 2000000000000000n;
+const EMPTY_DEPTH_DATA: DataPoint[] = [];
 
 export const DepthChart = memo(
   ({ marketInfo, jitLiquidityInfo }: { marketInfo: MarketInfo; jitLiquidityInfo?: JitLiquidityInfo }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const isZeroPriceImpact =
+      marketInfo.tradeMath !== "gmsol" &&
       marketInfo.positionImpactFactorPositive <= MIN_FACTOR_THRESHOLD_BIGINT &&
       marketInfo.positionImpactFactorNegative <= MIN_FACTOR_THRESHOLD_BIGINT;
 
     const [zoom, setZoom] = useState(1);
     const [isZooming, setIsZooming] = useState(false);
 
+    const chartData = getDepthChartData(marketInfo, zoom, isZeroPriceImpact, jitLiquidityInfo);
     const {
-      leftMaxExecutionPrice,
-      rightMaxExecutionPrice,
-      leftMax,
-      rightMax,
-      leftMin,
-      rightMin,
-      realLeftMax,
-      realRightMax,
-      isLeftEmpty,
-      isRightEmpty,
-    } = useEdgePoints(marketInfo, zoom, jitLiquidityInfo);
+      leftMaxExecutionPrice = marketInfo.indexToken.prices.minPrice,
+      rightMaxExecutionPrice = marketInfo.indexToken.prices.maxPrice,
+      leftMax = 0n,
+      rightMax = 0n,
+      leftMin = 0n,
+      rightMin = 0n,
+      realLeftMax = 0n,
+      realRightMax = 0n,
+      isLeftEmpty = true,
+      isRightEmpty = true,
+      data = EMPTY_DEPTH_DATA,
+      leftMinExecutionPrice = 0,
+      rightMinExecutionPrice = 0,
+    } = chartData ?? {};
 
     const theme = useTheme();
 
@@ -124,17 +135,10 @@ export const DepthChart = memo(
     const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
       leftExecutionPrice: leftMaxExecutionPrice,
       rightExecutionPrice: rightMaxExecutionPrice,
-      isZeroPriceImpact,
-    });
-
-    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
-      leftMax,
-      rightMax,
-      leftMin,
-      rightMin,
-      isZeroPriceImpact,
-      isLeftEmpty,
-      isRightEmpty,
+      isZeroPriceImpact:
+        isZeroPriceImpact ||
+        !chartData ||
+        (marketInfo.tradeMath === "gmsol" && leftMaxExecutionPrice === rightMaxExecutionPrice),
     });
 
     const drawLeftTransparent = leftMax > leftMin;
@@ -318,6 +322,10 @@ export const DepthChart = memo(
     const handleMouseEnter = useCallback(() => {
       sendDepthChartInteractionEvent(marketInfo.name);
     }, [marketInfo?.name]);
+
+    if (!chartData) {
+      return <div className="flex h-full items-center justify-center">{t`Unable to calculate market depth`}</div>;
+    }
 
     return (
       <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
@@ -718,7 +726,7 @@ export type DataPoint = {
   priceImpactBigInt: bigint;
 };
 
-function useDepthChartPricesData(
+function getDepthChartPricesData(
   marketInfo: MarketInfo,
   {
     leftMax,
@@ -741,20 +749,11 @@ function useDepthChartPricesData(
   let data: DataPoint[] = [];
   let leftMinExecutionPrice = 0;
   let rightMinExecutionPrice = 0;
-  const visualMultiplier = marketInfo.indexToken.visualMultiplier;
-
   if (isZeroPriceImpact) {
     // need to calculate only 2 points
     // left
 
-    const leftExecutionPrice = getDepthChartExecutionPrice({
-      isIncrease: true,
-      isLong: false,
-      priceImpactUsd: 0n,
-      sizeDeltaUsd: DOLLAR,
-      triggerPrice: marketInfo.indexToken.prices.minPrice,
-      visualMultiplier,
-    })!;
+    const leftExecutionPrice = getDepthChartQuote(marketInfo, DOLLAR, false, true).executionPrice;
 
     data.push({
       executionPrice: bigintToNumber(leftExecutionPrice, USD_DECIMALS),
@@ -775,14 +774,7 @@ function useDepthChartPricesData(
 
     // right
 
-    const rightExecutionPrice = getDepthChartExecutionPrice({
-      isIncrease: true,
-      isLong: true,
-      priceImpactUsd: 0n,
-      sizeDeltaUsd: DOLLAR,
-      triggerPrice: marketInfo.indexToken.prices.maxPrice,
-      visualMultiplier,
-    })!;
+    const rightExecutionPrice = getDepthChartQuote(marketInfo, DOLLAR, true, true).executionPrice;
 
     data.push({
       executionPrice: bigintToNumber(rightExecutionPrice, USD_DECIMALS),
@@ -809,19 +801,11 @@ function useDepthChartPricesData(
       if (leftInc === 0n) {
         // Just add single point at leftMax if it's greater than DOLLAR
         if (leftMax > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, leftMax, false, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: false,
-            priceImpactUsd,
-            sizeDeltaUsd: leftMax,
-            triggerPrice: marketInfo.indexToken.prices.minPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
+            marketInfo,
+            leftMax,
+            false
+          );
 
           data.push({
             leftOpaqueSize: leftMax <= leftMin ? bigintToNumber(leftMax, USD_DECIMALS) : null,
@@ -844,25 +828,11 @@ function useDepthChartPricesData(
 
       // from left to center
       for (let positionSize = leftMax; leftInc > 0n && positionSize >= DOLLAR; positionSize -= leftInc) {
-        const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(
+        const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
           marketInfo,
           positionSize,
-          false,
-          true,
-          {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          }
+          false
         );
-
-        const executionPrice = getDepthChartExecutionPrice({
-          isIncrease: true,
-          isLong: false,
-          priceImpactUsd,
-          sizeDeltaUsd: positionSize,
-          triggerPrice: marketInfo.indexToken.prices.minPrice,
-          visualMultiplier,
-        })!;
 
         data.push({
           leftOpaqueSize: positionSize <= leftMin ? bigintToNumber(positionSize, USD_DECIMALS) : null,
@@ -882,19 +852,11 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - leftInc < leftMin && positionSize > leftMin && leftMin > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, leftMin, false, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: false,
-            priceImpactUsd,
-            sizeDeltaUsd: leftMin,
-            triggerPrice: marketInfo.indexToken.prices.minPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
+            marketInfo,
+            leftMin,
+            false
+          );
 
           leftMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
 
@@ -918,19 +880,7 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - leftInc < DOLLAR && positionSize > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, DOLLAR, false, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: false,
-            priceImpactUsd,
-            sizeDeltaUsd: DOLLAR,
-            triggerPrice: marketInfo.indexToken.prices.minPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(marketInfo, DOLLAR, false);
 
           data.push({
             executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
@@ -960,19 +910,11 @@ function useDepthChartPricesData(
       if (rightInc === 0n) {
         // Just add single point at rightMax if it's greater than DOLLAR
         if (rightMax > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, rightMax, true, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: true,
-            priceImpactUsd,
-            sizeDeltaUsd: rightMax,
-            triggerPrice: marketInfo.indexToken.prices.maxPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
+            marketInfo,
+            rightMax,
+            true
+          );
 
           data.push({
             executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
@@ -995,25 +937,11 @@ function useDepthChartPricesData(
 
       // from right max to center
       for (let positionSize = rightMax; rightInc > 0n && positionSize >= DOLLAR; positionSize -= rightInc) {
-        const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(
+        const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
           marketInfo,
           positionSize,
-          true,
-          true,
-          {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          }
+          true
         );
-
-        const executionPrice = getDepthChartExecutionPrice({
-          isIncrease: true,
-          isLong: true,
-          priceImpactUsd,
-          sizeDeltaUsd: positionSize,
-          triggerPrice: marketInfo.indexToken.prices.maxPrice,
-          visualMultiplier,
-        })!;
 
         data.push({
           executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
@@ -1033,19 +961,11 @@ function useDepthChartPricesData(
         });
 
         if (positionSize - rightInc < rightMin && positionSize > rightMin && rightMin > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, rightMin, true, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: true,
-            priceImpactUsd,
-            sizeDeltaUsd: rightMin,
-            triggerPrice: marketInfo.indexToken.prices.maxPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(
+            marketInfo,
+            rightMin,
+            true
+          );
 
           rightMinExecutionPrice = bigintToNumber(executionPrice, USD_DECIMALS);
 
@@ -1069,19 +989,7 @@ function useDepthChartPricesData(
         }
 
         if (positionSize - rightInc < DOLLAR && positionSize > DOLLAR) {
-          const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, DOLLAR, true, true, {
-            fallbackToZero: true,
-            shouldCapNegativeImpact: true,
-          });
-
-          const executionPrice = getDepthChartExecutionPrice({
-            isIncrease: true,
-            isLong: true,
-            priceImpactUsd,
-            sizeDeltaUsd: DOLLAR,
-            triggerPrice: marketInfo.indexToken.prices.maxPrice,
-            visualMultiplier,
-          })!;
+          const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(marketInfo, DOLLAR, true);
 
           data.push({
             executionPrice: bigintToNumber(executionPrice, USD_DECIMALS),
@@ -1208,7 +1116,7 @@ function calculateTicks({
   return { ticks, marketPriceIndex };
 }
 
-function useEdgePoints(
+function getEdgePoints(
   marketInfo: MarketInfo,
   zoom: number,
   jitLiquidityInfo?: JitLiquidityInfo
@@ -1259,19 +1167,7 @@ function useEdgePoints(
     const { priceImpactDeltaUsd: uncappedPriceImpactUsd } = getPriceImpactForPosition(marketInfo, rightMax, true, {
       fallbackToZero: true,
     });
-    const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, rightMax, true, true, {
-      fallbackToZero: true,
-      shouldCapNegativeImpact: true,
-    });
-
-    const executionPrice = getDepthChartExecutionPrice({
-      isIncrease: true,
-      isLong: true,
-      priceImpactUsd,
-      sizeDeltaUsd: rightMax === 0n ? DOLLAR : rightMax,
-      triggerPrice: marketInfo.indexToken.prices.maxPrice,
-      visualMultiplier: marketInfo.indexToken.visualMultiplier,
-    })!;
+    const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(marketInfo, rightMax, true);
 
     const isCapReached = uncappedPriceImpactUsd < priceImpactUsd;
 
@@ -1281,19 +1177,7 @@ function useEdgePoints(
   const { priceImpactDeltaUsd: uncappedPriceImpactUsd } = getPriceImpactForPosition(marketInfo, leftMax, false, {
     fallbackToZero: true,
   });
-  const { priceImpactDeltaUsd: priceImpactUsd } = getCappedPositionImpactUsd(marketInfo, leftMax, false, true, {
-    fallbackToZero: true,
-    shouldCapNegativeImpact: true,
-  });
-
-  const executionPrice = getDepthChartExecutionPrice({
-    isIncrease: true,
-    isLong: false,
-    priceImpactUsd,
-    sizeDeltaUsd: leftMax === 0n ? DOLLAR : leftMax,
-    triggerPrice: marketInfo.indexToken.prices.minPrice,
-    visualMultiplier: marketInfo.indexToken.visualMultiplier,
-  })!;
+  const { priceImpactDeltaUsd: priceImpactUsd, executionPrice } = getDepthChartQuote(marketInfo, leftMax, false);
 
   const isCapReached = uncappedPriceImpactUsd < priceImpactUsd;
 
@@ -1351,16 +1235,63 @@ function YAxisTick(
   );
 }
 
-function getDepthChartExecutionPrice(
-  p: Parameters<typeof getNextPositionExecutionPrice>[0] & { visualMultiplier: number | undefined }
+function getDepthChartQuote(
+  marketInfo: MarketInfo,
+  requestedSizeUsd: bigint,
+  isLong: boolean,
+  zeroPriceImpact = false
 ) {
-  const executionPrice = getNextPositionExecutionPrice(p);
+  const triggerPrice = isLong ? marketInfo.indexToken.prices.maxPrice : marketInfo.indexToken.prices.minPrice;
+  const visualMultiplier = marketInfo.indexToken.visualMultiplier;
+  const sizeDeltaUsd = requestedSizeUsd;
 
-  if (typeof executionPrice === "bigint") {
-    return withVisualMultiplier(executionPrice, p.visualMultiplier);
+  if (marketInfo.tradeMath === "gmsol") {
+    if (sizeDeltaUsd === 0n) {
+      return { priceImpactDeltaUsd: 0n, executionPrice: withVisualMultiplier(triggerPrice, visualMultiplier) };
+    }
+    const quote = getAcceptablePriceInfo({
+      marketInfo,
+      sizeDeltaUsd,
+      indexPrice: triggerPrice,
+      isIncrease: true,
+      isLimit: false,
+      isLong,
+    });
+    if (quote.acceptablePrice <= 0n) {
+      throw new GmsolPriceImpactError("Solana depth execution price is unavailable");
+    }
+    return {
+      priceImpactDeltaUsd: quote.priceImpactDeltaUsd,
+      executionPrice: withVisualMultiplier(quote.acceptablePrice, visualMultiplier),
+    };
   }
 
-  return executionPrice;
+  const priceImpactDeltaUsd = zeroPriceImpact
+    ? 0n
+    : getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
+        fallbackToZero: true,
+        shouldCapNegativeImpact: true,
+      }).priceImpactDeltaUsd;
+  const executionPrice = getNextPositionExecutionPrice({
+    triggerPrice,
+    priceImpactUsd: priceImpactDeltaUsd,
+    sizeDeltaUsd: sizeDeltaUsd === 0n ? DOLLAR : sizeDeltaUsd,
+    isLong,
+    isIncrease: true,
+  })!;
+  return { priceImpactDeltaUsd, executionPrice: withVisualMultiplier(executionPrice, visualMultiplier) };
+}
+
+function getDepthChartData(
+  marketInfo: MarketInfo,
+  zoom: number,
+  isZeroPriceImpact: boolean,
+  jitLiquidityInfo?: JitLiquidityInfo
+) {
+  return getAvailableTradeQuote(marketInfo.tradeMath, () => {
+    const edges = getEdgePoints(marketInfo, zoom, jitLiquidityInfo);
+    return { ...edges, ...getDepthChartPricesData(marketInfo, { ...edges, isZeroPriceImpact }) };
+  });
 }
 
 function withVisualMultiplier(price: bigint, visualMultiplier: number | undefined) {

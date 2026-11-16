@@ -7,9 +7,9 @@ import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState
 import { formatPercentage } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export type Props = {
   priceImpactWarningState: WarningState;
@@ -47,11 +47,17 @@ export function HighPriceImpactOrFeesWarningCard({
         key: t`High net price impact`,
         value: undefined,
         tooltipContent: formattedCap ? (
-          <Trans>
-            High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
-            collateral. Consider reducing leverage. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>
-            .
-          </Trans>
+          <TooltipContent>
+            <TooltipText>
+              <Trans>
+                High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
+                collateral. Consider reducing leverage.
+              </Trans>
+            </TooltipText>
+            <TooltipLink href={DOCS_LINKS.priceImpact}>
+              <Trans>Read more</Trans>
+            </TooltipLink>
+          </TooltipContent>
         ) : undefined,
       });
     }
@@ -132,7 +138,12 @@ export function HighPriceImpactOrFeesWarningCard({
           );
 
           return warning.tooltipContent ? (
-            <TooltipWithPortal handle={warningContent} content={warning.tooltipContent} position="bottom" />
+            <StandardTooltip
+              key={warning.id}
+              handle={warningContent}
+              content={warning.tooltipContent}
+              position="bottom"
+            />
           ) : (
             warningContent
           );

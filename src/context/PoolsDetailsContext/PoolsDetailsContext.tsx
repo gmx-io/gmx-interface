@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
+import { resolveWithdrawalPaySource } from "domain/multichain/resolveWithdrawalPaySource";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { GmPaySource, Mode, Operation, isMode, isOperation } from "domain/synthetics/markets/types";
@@ -102,6 +103,7 @@ export function usePoolsDetailsState({
   glvData,
   withGlv,
   multichainMarketTokensBalancesResult,
+  isExpressAvailable,
 }: {
   enabled: boolean;
   marketsInfoData: MarketsInfoData | undefined;
@@ -109,6 +111,7 @@ export function usePoolsDetailsState({
   glvData: GlvInfoData | undefined;
   withGlv: boolean;
   multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
+  isExpressAvailable: boolean;
 }): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
@@ -142,7 +145,23 @@ export function usePoolsDetailsState({
     "settlementChain"
   );
 
-  const paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const savedPaySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const resolvedPaySource =
+    operation === Operation.Withdrawal
+      ? resolveWithdrawalPaySource({
+          paySource: savedPaySource,
+          srcChainId,
+          token:
+            getByKey(glvData, glvOrMarketAddress)?.glvToken ?? getByKey(withdrawalMarketTokensData, glvOrMarketAddress),
+          isSourceChainBalanceLoading: multichainMarketTokensBalancesResult.isLoading,
+        })
+      : savedPaySource;
+  // Not saved: Express reads off for a render after the account loads,
+  // and the choice should come back when Express is available again
+  const paySource =
+    resolvedPaySource === "gmxAccount" && srcChainId === undefined && !isExpressAvailable
+      ? "settlementChain"
+      : resolvedPaySource;
 
   useEffect(
     function fallbackSourceChainPaySource() {
