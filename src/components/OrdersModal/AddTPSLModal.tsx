@@ -28,6 +28,7 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsPositionActionGmxAccount } from "domain/synthetics/express/feeBalance";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
@@ -70,7 +71,7 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { getExpressError } from "domain/synthetics/trade/utils/validation";
+import { getExpressError, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
@@ -107,7 +108,7 @@ import {
   DecreaseReceiveOutputDisplay,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
-import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { InsufficientGmxAccountTokenBalanceMessage, ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -183,7 +184,7 @@ export function AddTPSLModal({
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const isPnlInLeverage = useSelector(selectIsPnlInLeverage);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
-  const { shouldDisableValidationForTesting } = useSettings();
+  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
 
   const marketInfo = position.marketInfo;
   const collateralToken = position.collateralToken;
@@ -886,16 +887,24 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
+  const isGmxAccount = getIsPositionActionGmxAccount({
+    srcChainId,
+    isExpressEnabled: expressOrdersEnabled,
+    positionLastSrcChainId: position.lastSrcChainId,
+  });
+  const isPositionFeeBalanceLoading =
+    srcChainId === undefined && expressOrdersEnabled && position.lastSrcChainId === undefined;
+
   const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount,
     canSwitchGasPaymentToken: isActiveForm,
     gasPaymentTokenFallback: "approvedToken",
   });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
-  const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
+  const feeSource = getNetworkFeeSource({ isGmxAccount });
 
   const submitError = useMemo(() => {
     if (!tpPriceInput && !slPriceInput) {
@@ -942,8 +951,6 @@ export function AddTPSLModal({
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
-      const isGmxAccount = srcChainId !== undefined;
-
       if (
         reportMultichainExpressSubmitError({
           isGmxAccount,
@@ -972,7 +979,7 @@ export function AddTPSLModal({
           collateralSymbol: position.collateralToken.symbol,
         }),
         provider,
-        isGmxAccount: srcChainId !== undefined,
+        isGmxAccount,
       }).then(() => {
         setIsVisible(false);
         onSuccess?.();
@@ -994,7 +1001,7 @@ export function AddTPSLModal({
     blockTimestampData,
     makeOrderTxnCallback,
     position.collateralToken.symbol,
-    srcChainId,
+    isGmxAccount,
     setIsVisible,
     onSuccess,
   ]);
@@ -1031,7 +1038,7 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isMultichainSubmitDisabled) {
+    if (isMultichainSubmitDisabled || isPositionFeeBalanceLoading) {
       return {
         text: (
           <>
@@ -1073,6 +1080,7 @@ export function AddTPSLModal({
     directionLabel,
     expressError.buttonErrorMessage,
     isMultichainSubmitDisabled,
+    isPositionFeeBalanceLoading,
     isSubmitting,
     isCreationPending,
     marketPairLabel,
@@ -1241,13 +1249,22 @@ export function AddTPSLModal({
 
         {expressError.bannerErrorName && (
           <AlertInfoCard type="error" hideClose>
-            <ValidationBannerErrorContent
-              validationBannerErrorName={expressError.bannerErrorName}
-              chainId={chainId}
-              srcChainId={srcChainId}
-              gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
-              onBeforeNavigation={() => setIsVisible(false)}
-            />
+            {expressError.bannerErrorName === ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance &&
+            expressParams ? (
+              <InsufficientGmxAccountTokenBalanceMessage
+                chainId={chainId}
+                tokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={() => setIsVisible(false)}
+              />
+            ) : (
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={() => setIsVisible(false)}
+              />
+            )}
           </AlertInfoCard>
         )}
 
@@ -1255,7 +1272,7 @@ export function AddTPSLModal({
           expressParams={expressParams}
           payTokenAddress={undefined}
           isWrapOrUnwrap={false}
-          isGmxAccount={srcChainId !== undefined}
+          isGmxAccount={isGmxAccount}
           onAfterAction={() => setIsVisible(false)}
         />
 

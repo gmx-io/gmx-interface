@@ -9,4 +9,9 @@ export type Position = BasePosition & {
 
 export type PositionInfo = BasePositionInfo & {
   pendingUpdate?: PendingPositionUpdate;
+  lastSrcChainId?: bigint;
+};
+
+export type PositionsInfoData = {
+  [positionKey: string]: PositionInfo;
 };

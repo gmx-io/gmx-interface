@@ -61,7 +61,7 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { useOrdersActionExpressParams } from "domain/synthetics/express/useOrdersActionExpressParams";
 import {
   getExpressParamsForSubmit,
   getNetworkFeeGasPaymentParams,
@@ -536,13 +536,15 @@ export function OrderEditor(p: Props) {
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
-    orderParams: batchParams,
-    label: "Order Editor",
-    isGmxAccount: srcChainId !== undefined,
-    canSwitchGasPaymentToken: isActiveForm,
-    gasPaymentTokenFallback: "approvedToken",
-  });
+  const orderFeeBalanceOrders = useMemo(() => [p.order], [p.order]);
+
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled, isGmxAccount } =
+    useOrdersActionExpressParams({
+      orders: orderFeeBalanceOrders,
+      orderParams: batchParams,
+      label: "Order Editor",
+      canSwitchGasPaymentToken: isActiveForm,
+    });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
 
@@ -653,8 +655,6 @@ export function OrderEditor(p: Props) {
 
     const fulfilledExpressParams = await expressParamsPromise;
 
-    const isGmxAccount = srcChainId !== undefined;
-
     if (
       reportMultichainExpressSubmitError({
         isGmxAccount,
@@ -679,7 +679,7 @@ export function OrderEditor(p: Props) {
         collateralSymbol: p.order.initialCollateralToken.symbol,
       }),
       provider,
-      isGmxAccount: srcChainId !== undefined,
+      isGmxAccount,
     });
 
     if (expressParams?.subaccount) {
@@ -712,7 +712,7 @@ export function OrderEditor(p: Props) {
     expressParamsPromise,
     chainId,
     makeOrderTxnCallback,
-    srcChainId,
+    isGmxAccount,
     expressParams?.subaccount,
     p,
     market,
@@ -1208,7 +1208,7 @@ export function OrderEditor(p: Props) {
                             decimals={networkFee.feeToken.decimals}
                             symbol={networkFee.feeToken.symbol}
                             isStable={networkFee.feeToken.isStable}
-                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                            source={getNetworkFeeSource({ isGmxAccount })}
                           />
                         }
                       />
@@ -1273,7 +1273,7 @@ export function OrderEditor(p: Props) {
             expressParams={expressParams}
             payTokenAddress={undefined}
             isWrapOrUnwrap={false}
-            isGmxAccount={srcChainId !== undefined}
+            isGmxAccount={isGmxAccount}
             onAfterAction={p.onClose}
           />
 
