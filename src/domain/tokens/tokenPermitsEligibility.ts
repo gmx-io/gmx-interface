@@ -67,10 +67,13 @@ export type TokenPermitUnavailableReason = TokenPermitsDisabledReason | "tokenNo
 
 export function getTokenPermitsDisabledReason({
   uiFlags,
+  isUiFlagsLoaded,
   accountType,
   isQaOverrideEnabled,
 }: {
   uiFlags: UiFlags | undefined;
+  /** The keeper has answered, rather than the flags being restored from storage */
+  isUiFlagsLoaded: boolean;
   accountType: TokenPermitAccountType | undefined;
   isQaOverrideEnabled: boolean;
 }): TokenPermitsDisabledReason | undefined {
@@ -89,10 +92,10 @@ export function getTokenPermitsDisabledReason({
   const flag =
     uiFlags?.[accountType === "eoa" ? IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG : IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG];
 
-  // fail-closed: permits stay off until the keeper explicitly enables them for the account type, and the
-  // flags restored from storage on first paint leave the permit flags out
+  // fail-closed: permits stay off until the keeper explicitly enables them for the account type. The flags
+  // restored from storage on first paint leave the permit flags out, and some chains' keepers never publish them
   if (flag === undefined) {
-    return "flagNotLoaded";
+    return isUiFlagsLoaded ? "flagOff" : "flagNotLoaded";
   }
 
   return flag.enabled === true ? undefined : "flagOff";

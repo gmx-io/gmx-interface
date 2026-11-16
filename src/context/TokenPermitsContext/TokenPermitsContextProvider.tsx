@@ -101,12 +101,13 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const { chainId, networkId } = useChainId();
   const { signer } = useWallet();
   const account = signer?.address;
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags, isLoaded: isUiFlagsLoaded } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
   const accountType = useTokenPermitAccountType(chainId, isSolanaNetwork(networkId) ? undefined : account);
 
   const disabledReason = getTokenPermitsDisabledReason({
     uiFlags,
+    isUiFlagsLoaded,
     accountType,
     isQaOverrideEnabled: isTokenPermitsQaOverrideEnabled,
   });

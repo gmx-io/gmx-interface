@@ -80,15 +80,25 @@ describe("getTokenPermitsDisabledReason", () => {
   const cases: {
     accountType: TokenPermitAccountType | undefined;
     uiFlags: UiFlags | undefined;
+    /** Defaults to whether there are flags at all */
+    isUiFlagsLoaded?: boolean;
     isQaOverrideEnabled: boolean;
     expected: TokenPermitsDisabledReason | undefined;
   }[] = [
     { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: false, expected: "flagNotLoaded" },
-    { accountType: "eoa", uiFlags: flags({}), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    {
+      accountType: "eoa",
+      uiFlags: flags({}),
+      isUiFlagsLoaded: false,
+      isQaOverrideEnabled: false,
+      expected: "flagNotLoaded",
+    },
+    // a chain whose keeper publishes no permit flags
+    { accountType: "eoa", uiFlags: flags({}), isQaOverrideEnabled: false, expected: "flagOff" },
     { accountType: "eoa", uiFlags: flags({ eoa: false }), isQaOverrideEnabled: false, expected: "flagOff" },
     { accountType: "eoa", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: undefined },
-    { accountType: "eoa", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
-    { accountType: "eip7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: "flagNotLoaded" },
+    { accountType: "eoa", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: "flagOff" },
+    { accountType: "eip7702", uiFlags: flags({ eoa: true }), isQaOverrideEnabled: false, expected: "flagOff" },
     { accountType: "eip7702", uiFlags: flags({ eip7702: false }), isQaOverrideEnabled: false, expected: "flagOff" },
     { accountType: "eip7702", uiFlags: flags({ eip7702: true }), isQaOverrideEnabled: false, expected: undefined },
     { accountType: "eoa", uiFlags: undefined, isQaOverrideEnabled: true, expected: undefined },
@@ -109,8 +119,10 @@ describe("getTokenPermitsDisabledReason", () => {
 
   it.each(cases)(
     "$accountType account, flags $uiFlags, QA override $isQaOverrideEnabled -> $expected",
-    ({ accountType, uiFlags, isQaOverrideEnabled, expected }) => {
-      expect(getTokenPermitsDisabledReason({ uiFlags, accountType, isQaOverrideEnabled })).toBe(expected);
+    ({ accountType, uiFlags, isUiFlagsLoaded = uiFlags !== undefined, isQaOverrideEnabled, expected }) => {
+      expect(getTokenPermitsDisabledReason({ uiFlags, isUiFlagsLoaded, accountType, isQaOverrideEnabled })).toBe(
+        expected
+      );
     }
   );
 });

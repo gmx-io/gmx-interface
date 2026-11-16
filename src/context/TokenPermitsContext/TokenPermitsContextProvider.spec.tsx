@@ -31,7 +31,7 @@ vi.mock("lib/wallets/useWallet", () => ({
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
-  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags }),
+  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags, isLoaded: mocks.uiFlags !== undefined }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
   useSettings: () => ({ isTokenPermitsQaOverrideEnabled: false }),
