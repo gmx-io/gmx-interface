@@ -96,13 +96,14 @@ export function MockSyntheticsStateProvider({
   const tokenPermitsState = useTokenPermitsContext();
   const externalSwapState = useInitExternalSwapState();
   const orderEditorState = useOrderEditorState(ordersInfoData);
-  const positionSellerState = usePositionSellerState(chainId, undefined, undefined);
+  const positionSellerState = usePositionSellerState(chainId, undefined, undefined, chainId);
   const positionEditorState = usePositionEditorState(chainId, undefined);
   const confirmationBoxState = useConfirmationBoxState();
 
   const marketsData = useMemo(() => createMockMarketsData(Object.values(marketsInfoData)), [marketsInfoData]);
 
   const tradeboxState = useTradeboxState(chainId, true, {
+    networkId: chainId,
     marketsData,
     marketsInfoData,
     tokensData,
