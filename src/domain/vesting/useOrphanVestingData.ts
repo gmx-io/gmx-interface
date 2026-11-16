@@ -10,7 +10,7 @@ import {
   incentiveVesterDepositFeatureDisabledKey,
 } from "sdk/configs/dataStore";
 
-import { getFreePairAmount, type OrphanVaultData, parseOrphanVestingInfo } from "./vestingVaults";
+import { getWalletPairAmounts, type OrphanVaultData, parseOrphanVestingInfo } from "./vestingVaults";
 
 export function useOrphanVestingData(chainId: ContractsChainId, account: string | undefined) {
   const orphanVesterAddress = getContract(chainId, "OrphanRatioVester");
@@ -79,7 +79,7 @@ function parseOrphanVaultResponse(result: MulticallResult<MulticallRequestConfig
     isOpen: rewardRouter.isOpen.returnValues[0],
     isDepositPaused: dataStore.isDepositPaused.returnValues[0],
     isClaimPaused: dataStore.isClaimPaused.returnValues[0],
-    freePairAmount: getFreePairAmount({
+    ...getWalletPairAmounts({
       walletPairAmount: feeGmxTracker.walletAmount.returnValues[0],
       stakedPairAmount: feeGmxTracker.stakedAmount.returnValues[0],
       gmxVaultPairAmount: gmxVester.pairAmount.returnValues[0],
