@@ -528,7 +528,7 @@ export function PositionItem(p: Props) {
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr hoverable={true} data-qa={qaAttr}>
+      <TableTr hoverable={true} data-qa={qaAttr} className="h-72">
         <TableTd
           data-qa="position-handle"
           className={cx("flex", {

@@ -27,7 +27,7 @@ export function GridCell({ children, className }: GridCellProps) {
       role="cell"
       className={cx(
         "text-body-medium last-of-type:[&:not(:first-of-type)]:text-right",
-        "px-4 py-16 first-of-type:pl-adaptive last-of-type:pr-adaptive",
+        "min-h-52 content-center px-4 py-8 first-of-type:pl-adaptive last-of-type:pr-adaptive",
         className
       )}
     >

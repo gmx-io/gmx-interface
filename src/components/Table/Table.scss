@@ -95,6 +95,18 @@ table:has(
   line-height: 2rem;
 }
 
+// Smaller text in a cell (dates, pool names, second lines) gets its own shorter line, so two-line rows stay compact:
+// 14px text on a 20px line, 12px on 16px, 11px on 14px. Text that sets its own line height keeps it.
+:where(.TableTr > td, .TableTr > [role="cell"]) * {
+  line-height: min(2rem, calc(2em - 0.8rem));
+}
+
+// A small second line after a line break (an amount with its USD value below) becomes its own block, so it gets
+// the shorter line too instead of the cell's 20px one
+:where(.TableTr > td, .TableTr > [role="cell"]) br + :is(.text-12, .text-body-small) {
+  display: block;
+}
+
 .TableTh {
   font-size: 1.2rem;
   line-height: 1.6rem;

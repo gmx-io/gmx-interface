@@ -120,22 +120,22 @@ export function GlvList({
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
-                  <TableTh>
+                  <TableTh className="w-[28%]">
                     <Trans>VAULT</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[10%]">
                     <Trans>BALANCE</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[10%]">
                     <FeeApyLabel upperCase variant="iconStroke" />
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[19%]">
                     <PerformanceLabel upperCase variant="iconStroke" />
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <StandardTooltip
                       handle={t`SNAPSHOT`}
                       className="normal-case"
@@ -144,7 +144,7 @@ export function GlvList({
                       variant="iconStroke"
                     />
                   </TableTh>
-                  <TableTh className="pr-16" />
+                  <TableTh className="w-[9%] pr-16" />
                 </TableTheadTr>
               </thead>
               <tbody>

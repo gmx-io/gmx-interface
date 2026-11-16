@@ -321,9 +321,9 @@ export function GmListItem({
           <div className="mr-12 flex shrink-0 items-center">
             <TokenIcon
               symbol={tokenIconName}
-              displaySize={40}
+              displaySize={36}
               badge={tokenIconBadge}
-              className="min-h-40 min-w-40"
+              className="min-h-36 min-w-36"
               badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
             />
           </div>

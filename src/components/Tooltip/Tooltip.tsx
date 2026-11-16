@@ -845,7 +845,7 @@ export function TooltipUnderline() {
     <svg ref={svgRef} className="Tooltip-underline absolute -bottom-0 left-0 h-1 w-full overflow-hidden">
       <line
         stroke="currentColor"
-        strokeOpacity="0.7"
+        strokeOpacity="0.6"
         x1="0"
         y1="0.5"
         x2="100%"

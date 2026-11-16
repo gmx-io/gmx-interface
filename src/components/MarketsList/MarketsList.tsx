@@ -75,32 +75,32 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
         <table className="w-[max(100%,900px)]">
           <thead>
             <TableTheadTr>
-              <TableTh>
+              <TableTh className="w-[27%]">
                 <Trans>MARKETS</Trans>
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[12%]">
                 <Sorter {...getSorterProps("price")}>
                   <Trans>PRICE</Trans>
                 </Sorter>
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[10%]">
                 <Sorter {...getSorterProps("tvl")}>
                   <Trans comment="Total Value Locked">TVL</Trans>
                 </Sorter>
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[12%]">
                 <Sorter {...getSorterProps("liquidity")}>
                   <Trans>LIQUIDITY</Trans>
                 </Sorter>
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[22%]">
                 <StandardTooltip
                   handle={<Trans>NET RATE / 1H</Trans>}
                   variant="iconStroke"
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
               </TableTh>
-              <TableTh>
+              <TableTh className="w-[17%]">
                 <Sorter {...getSorterProps("utilization")}>
                   <Trans>UTILIZATION</Trans>
                 </Sorter>
@@ -206,11 +206,11 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
       <TableTd>
         <div className="token-symbol-wrapper">
           <div className="flex items-center">
-            <div className="App-card-title-info-icon min-h-40">
+            <div className="App-card-title-info-icon min-h-36">
               <img
                 src={importImage("ic_" + stats.token.symbol.toLocaleLowerCase() + ".svg")}
                 alt={stats.token.symbol}
-                width="40"
+                width="36"
               />
             </div>
             <div>

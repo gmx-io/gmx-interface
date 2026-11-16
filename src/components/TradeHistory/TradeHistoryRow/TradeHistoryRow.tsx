@@ -508,6 +508,7 @@ export function TradeHistoryRow({
             </div>
           </div>
           <StandardTooltip
+            className="text-body-small block w-fit"
             handle={<span className="TradeHistoryRow-time muted">{msg.timestamp}</span>}
             renderContent={renderTimestamp}
           />
