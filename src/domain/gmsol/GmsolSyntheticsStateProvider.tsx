@@ -32,6 +32,7 @@ import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
 import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
 import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
+import { GmsolOrderActionsProvider } from "./orderActions/GmsolOrderActionsProvider";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsol24hPriceDeltas } from "./tokens/fetchGmsol24hPriceDeltas";
@@ -417,5 +418,9 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
   latestStateRef.current = state;
 
-  return <StateCtx.Provider value={state}>{children}</StateCtx.Provider>;
+  return (
+    <StateCtx.Provider value={state}>
+      <GmsolOrderActionsProvider>{children}</GmsolOrderActionsProvider>
+    </StateCtx.Provider>
+  );
 }

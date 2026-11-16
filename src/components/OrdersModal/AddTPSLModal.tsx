@@ -28,6 +28,7 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { type SolanaTriggerEntry, useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
@@ -167,6 +168,7 @@ export function AddTPSLModal({
   const srcChainId = useSelector(selectSrcChainId);
   const account = useSelector(selectAccount);
   const { signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
@@ -801,7 +803,8 @@ export function AddTPSLModal({
   const orderPayloads = useMemo(() => {
     const empty = { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
 
-    if (!account || !marketInfo || !collateralToken) {
+    // EVM payload builders look tokens up by EVM chain id; Solana sends through solanaOrderActions instead
+    if (solanaOrderActions || !account || !marketInfo || !collateralToken) {
       return empty;
     }
 
@@ -847,6 +850,7 @@ export function AddTPSLModal({
       userReferralCode: userReferralInfo?.referralCodeForTxn,
     });
   }, [
+    solanaOrderActions,
     tpDecreaseAmounts,
     slDecreaseAmounts,
     account,
@@ -861,6 +865,23 @@ export function AddTPSLModal({
     tpExecutionFee,
     slExecutionFee,
     existingFullCloseTp,
+    existingFullCloseSl,
+  ]);
+
+  // Solana sends each TP/SL as its own transaction from the decrease amounts; there are no EVM payloads or keeper fees.
+  const solanaTriggerEntries = useMemo((): SolanaTriggerEntry[] | undefined => {
+    if (!solanaOrderActions) return undefined;
+    return [
+      { amounts: tpPriceError ? undefined : tpDecreaseAmounts, existingFullCloseOrder: existingFullCloseTp },
+      { amounts: slPriceError ? undefined : slDecreaseAmounts, existingFullCloseOrder: existingFullCloseSl },
+    ];
+  }, [
+    solanaOrderActions,
+    tpPriceError,
+    tpDecreaseAmounts,
+    existingFullCloseTp,
+    slPriceError,
+    slDecreaseAmounts,
     existingFullCloseSl,
   ]);
 
@@ -915,10 +936,14 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
+    if (
+      solanaTriggerEntries
+        ? !solanaTriggerEntries.some((entry) => entry.amounts)
+        : orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0
+    ) {
       return t`Unable to calculate order`;
     }
-    return undefined;
+    return solanaOrderActions?.error;
   }, [
     tpPriceInput,
     slPriceInput,
@@ -931,9 +956,28 @@ export function AddTPSLModal({
     closeSize.showSizeInTokens,
     closeSize.formattedMaxCloseSize,
     indexTokenDecimals,
+    solanaTriggerEntries,
+    solanaOrderActions?.error,
   ]);
 
   const handleSubmit = useCallback(async () => {
+    if (solanaOrderActions) {
+      if (isSubmitting || isCreationPending || !solanaTriggerEntries) return;
+
+      setIsSubmitting(true);
+      try {
+        if (solanaOrderActions.hasPendingSubmission) {
+          await solanaOrderActions.checkPendingSubmission();
+        } else if (await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries })) {
+          setIsVisible(false);
+          onSuccess?.();
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     if (isSubmitting || isCreationPending || !signer || !provider || !batchParams || !tokensData || !marketsInfoData)
       return;
 
@@ -983,6 +1027,9 @@ export function AddTPSLModal({
   }, [
     isSubmitting,
     isCreationPending,
+    solanaOrderActions,
+    solanaTriggerEntries,
+    position,
     signer,
     provider,
     batchParams,
@@ -993,7 +1040,6 @@ export function AddTPSLModal({
     shouldDisableValidationForTesting,
     blockTimestampData,
     makeOrderTxnCallback,
-    position.collateralToken.symbol,
     srcChainId,
     setIsVisible,
     onSuccess,
@@ -1050,6 +1096,10 @@ export function AddTPSLModal({
       };
     }
 
+    if (solanaOrderActions?.hasPendingSubmission) {
+      return { text: t`Check transaction status`, disabled: false };
+    }
+
     if (submitError) {
       return {
         text: submitError,
@@ -1078,6 +1128,7 @@ export function AddTPSLModal({
     marketPairLabel,
     modePrefix,
     submitError,
+    solanaOrderActions?.hasPendingSubmission,
   ]);
 
   const currentLeverage = formatLeverage(position.leverage);
