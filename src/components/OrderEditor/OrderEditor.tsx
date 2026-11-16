@@ -63,6 +63,7 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
@@ -179,6 +180,7 @@ export function OrderEditor(p: Props) {
   const { _ } = useLingui();
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -462,7 +464,8 @@ export function OrderEditor(p: Props) {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     if (isQuoteUnavailable) return undefined;
 
-    if (!signer || !tokensData || !marketsInfoData) {
+    // EVM payload builders look tokens up by EVM chain id; Solana sends through solanaOrderActions instead
+    if (solanaOrderActions || !signer || !tokensData || !marketsInfoData) {
       return undefined;
     }
 
@@ -527,6 +530,7 @@ export function OrderEditor(p: Props) {
     }
   }, [
     isQuoteUnavailable,
+    solanaOrderActions,
     signer,
     tokensData,
     executionFee?.gasLimit,
@@ -660,6 +664,37 @@ export function OrderEditor(p: Props) {
   ]);
 
   const onSubmit = useCallback(async () => {
+    if (solanaOrderActions) {
+      if (solanaOrderActions.hasPendingSubmission) {
+        setIsSubmitting(true);
+        try {
+          await solanaOrderActions.checkPendingSubmission();
+        } finally {
+          setIsSubmitting(false);
+        }
+        return;
+      }
+
+      if (isSwapOrderType(p.order.orderType)) return;
+
+      setIsSubmitting(true);
+      try {
+        const isSent = await solanaOrderActions.updateOrder({
+          order: p.order as PositionOrderInfo,
+          changes: { sizeDeltaUsd, triggerPrice, acceptablePrice },
+        });
+        if (isSent) {
+          p.onClose();
+          if (market) {
+            sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
+          }
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
       return;
     }
@@ -731,7 +766,23 @@ export function OrderEditor(p: Props) {
     expressParams?.subaccount,
     p,
     market,
+    solanaOrderActions,
+    sizeDeltaUsd,
+    triggerPrice,
+    acceptablePrice,
   ]);
+
+  const solanaOrderError = solanaOrderActions
+    ? solanaOrderActions.getOrderError(p.order) ?? solanaOrderActions.error
+    : undefined;
+
+  const solanaUpdateError = useMemo(() => {
+    if (!solanaOrderActions || solanaOrderError || isSwapOrderType(p.order.orderType)) return undefined;
+    return solanaOrderActions.getUpdateError({
+      order: p.order as PositionOrderInfo,
+      changes: { sizeDeltaUsd, triggerPrice, acceptablePrice },
+    });
+  }, [solanaOrderActions, solanaOrderError, p.order, sizeDeltaUsd, triggerPrice, acceptablePrice]);
 
   const submitButtonState = useMemo(() => {
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
@@ -745,6 +796,19 @@ export function OrderEditor(p: Props) {
         text: getPageOutdatedError(),
         disabled: true,
       };
+    }
+
+    // The pending check does not depend on this order, so a closed or callback order does not block it
+    if (solanaOrderActions?.hasPendingSubmission && !solanaOrderActions.error) {
+      return {
+        text: isSubmitting ? t`Checking transaction status...` : t`Check transaction status`,
+        disabled: isSubmitting,
+        onClick: onSubmit,
+      };
+    }
+
+    if (solanaOrderError) {
+      return { text: solanaOrderError, disabled: true };
     }
 
     if (multipleWalletExtensionsChainError.buttonErrorMessage) {
@@ -824,6 +888,10 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (solanaUpdateError) {
+      return { text: solanaUpdateError, disabled: true };
+    }
+
     const orderTypeName = isMarginDeposit ? t`margin deposit` : getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
@@ -848,6 +916,11 @@ export function OrderEditor(p: Props) {
     existingPosition,
     isExpressLoading,
     isMultichainSubmitDisabled,
+    solanaOrderError,
+    solanaUpdateError,
+    solanaOrderActions?.hasPendingSubmission,
+    solanaOrderActions?.error,
+    isSubmitting,
   ]);
 
   useKey(
