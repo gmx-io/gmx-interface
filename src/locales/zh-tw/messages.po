@@ -213,10 +213,6 @@ msgstr "GMX Account 兌換無法使用原生 {0}。請選擇 {1}，或先提取�
 msgid "Include rPnL in leverage display"
 msgstr "在槓桿顯示中包含 rPnL"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "訂單 ({0})"
@@ -540,6 +536,7 @@ msgstr "兌換介面費用"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Connecting wallet..."
 msgstr "正在連接錢包..."
@@ -1747,11 +1744,12 @@ msgstr "您的 GMX Account 中 Gas 支付代幣餘額不足，無法支付網路
 msgid "Paused until {reopenTime}"
 msgstr "暫停至 {reopenTime}"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Solana trading is unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposited"
 msgstr "已存入"
 
@@ -3919,6 +3917,10 @@ msgstr "倉位"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>存入</0>或<1>買入</1> {wrappedNativeTokenSymbol}。"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order cannot be changed on Solana"
+msgstr ""
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Converting {offerAmount} to {0}"
 msgstr "正在將 {offerAmount} 轉換為 {0}"
@@ -3946,6 +3948,10 @@ msgstr "GMX 代幣是 GMX 協議的治理代幣。平台收入的 27% 會累積�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "最大可借出影響 USD"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Previous order request"
+msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -3976,6 +3982,9 @@ msgstr "訂單類型"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "您的 GMX Account 中的 {symbol} 不足以完成此交易。<0>存入 {symbol}</0>"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Check transaction status"
 msgstr ""
@@ -4232,6 +4241,8 @@ msgstr "GMX V2 Telegram & Discord 分析"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr "與朋友或社群分享您的推薦碼 —<0/> 每筆使用您的推薦碼進行的交易，都能讓您賺取美元獎勵"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Checking transaction status..."
 msgstr ""
@@ -5229,6 +5240,10 @@ msgstr "即時解答，就在本頁"
 msgid "Withdrawing from subaccount..."
 msgstr "正在從子帳戶提取..."
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Turn on \"Set acceptable price impact\" in settings to edit this order on Solana"
+msgstr ""
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -5508,6 +5523,10 @@ msgstr "提交中..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Estimated time: ~5 min"
 msgstr "預估時間：~5 分鐘"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Orders with a callback cannot be changed on Solana yet"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GLP vault"
@@ -5885,7 +5904,7 @@ msgstr "取消限價單"
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "Gas 代幣已切換為 {toSymbol}，以啟用外部兌換路由"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -6008,6 +6027,10 @@ msgstr "簽名："
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "此操作已停用"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order is no longer open"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6422,6 +6445,7 @@ msgstr "找不到轉帳"
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "{tokenInSymbol} 餘額不足"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
@@ -6456,6 +6480,7 @@ msgstr "池做多 USD 存入上限"
 msgid "Net value"
 msgstr "淨值"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
 msgstr ""
@@ -6506,6 +6531,10 @@ msgstr "{positionTitle}訂單"
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>您的 {walletName} 在 {0} 上無法使用</0><1/><2>請將 {1} 加入您的 {walletName}，然後重新連接並重試</2>"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Receive the position's collateral token on Solana"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -7517,6 +7546,8 @@ msgstr "Solana 上的 GMX（GMTrade）由獨立網域提供服務"
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -8248,6 +8279,7 @@ msgstr "確保可用流動性。"
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
@@ -8560,6 +8592,7 @@ msgstr "編輯保證金"
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL 訂單超過倉位"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Create TP/SL order"
 msgstr ""
@@ -8743,6 +8776,11 @@ msgstr "切換至帳戶 {receiver} 以完成此轉帳。"
 msgid "Disable validation for testing"
 msgstr "停用驗證以進行測試"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Update order"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -8789,7 +8827,6 @@ msgid "Symbol (Z to A)"
 msgstr "代幣符號（Z 到 A）"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 除錯"
@@ -10412,7 +10449,7 @@ msgstr "24 小時交易量"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10872,7 +10909,7 @@ msgid "Withdrawal unavailable"
 msgstr "提取不可用"
 
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "This order type is not supported on Solana"
 msgstr ""
 
@@ -10906,6 +10943,7 @@ msgid "You"
 msgstr "您"
 
 #: src/components/TVChartContainer/StaticLine.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Close position"
 msgstr "平倉"
 
@@ -12083,7 +12121,7 @@ msgstr "所有鏈"
 msgid "BLOCK"
 msgstr "區塊"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Pay with the selected collateral token"
 msgstr ""
 
@@ -12204,7 +12242,7 @@ msgid "Fulfilling shift request..."
 msgstr "正在處理轉換請求..."
 
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Review your TP/SL orders"
 msgstr ""
 
@@ -12367,7 +12405,7 @@ msgstr "<0>第一次試用 <1>@GMX_IO</1>。 </0><2> 體驗相當不錯——沒
 msgid "Select network"
 msgstr "選擇網路"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Solana market calculations are unavailable"
 msgstr ""
 
@@ -12780,7 +12818,7 @@ msgstr "透過GMX推薦計畫獲得手續費折扣並賺取高達25%的佣金"
 msgid "Vested GLP not withdrawn"
 msgstr "已歸屬的 GLP 未提取"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "This collateral token is not supported for trading yet"
 msgstr ""
 
@@ -12948,6 +12986,8 @@ msgid "Transfer history"
 msgstr "轉帳歷史記錄"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Cancel order"
 msgstr "取消訂單"
 
