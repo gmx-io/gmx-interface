@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { type ReactNode, useMemo, useState } from "react";
 
 import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
@@ -47,6 +48,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }
 
   const selectedVault =
     pickedVault !== undefined && visibleVaults.includes(pickedVault) ? pickedVault : visibleVaults[0];
+  const hasVaultTabs = visibleVaults.length > 1;
 
   const vaultTabs = useMemo(() => {
     const labels: Record<VestVault, ReactNode> = {
@@ -85,16 +87,18 @@ export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }
       contentPadding={false}
       withMobileBottomPosition={true}
     >
-      <div className="flex flex-col gap-20">
-        <Tabs
-          options={vaultTabs}
-          selectedValue={selectedVault}
-          onChange={setPickedVault}
-          className="!rounded-t-0 bg-fill-surfaceElevated50"
-          tabsWrapperClassName="overflow-x-auto scrollbar-hide"
-          regularOptionClassname="grow whitespace-nowrap"
-          qa="vesting-vaults"
-        />
+      <div className={cx("flex flex-col gap-20", { "pt-20": !hasVaultTabs })}>
+        {hasVaultTabs && (
+          <Tabs
+            options={vaultTabs}
+            selectedValue={selectedVault}
+            onChange={setPickedVault}
+            className="!rounded-t-0 bg-fill-surfaceElevated50"
+            tabsWrapperClassName="overflow-x-auto scrollbar-hide"
+            regularOptionClassname="grow whitespace-nowrap"
+            qa="vesting-vaults"
+          />
+        )}
 
         {selectedVault === "orphan" ? (
           orphanVaultData && (
