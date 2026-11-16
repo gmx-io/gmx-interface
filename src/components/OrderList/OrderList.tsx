@@ -20,6 +20,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -101,6 +102,7 @@ export function OrderList({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const { signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -168,6 +170,17 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
+    if (solanaOrderActions) {
+      setCancellingOrdersKeys((prev) => [...prev, order.key]);
+      try {
+        await solanaOrderActions.cancelOrders([order]);
+      } finally {
+        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
+        setSelectedOrderKeys?.(EMPTY_ARRAY);
+      }
+      return;
+    }
+
     if (!signer || !provider) return;
 
     if (hasOutdatedUi) {
