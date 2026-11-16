@@ -116,8 +116,8 @@ describe("OracleKeeperFetcher tickers completeness", () => {
     tokenSymbol: tokenAddress,
     minPrice: "1",
     maxPrice: "1",
-    oracleDecimals: 30,
     updatedAt: 0,
+    timestamp: 0,
   });
 
   const ETH = "0xeth";
