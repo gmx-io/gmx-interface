@@ -1181,6 +1181,10 @@ msgstr "Добавить {marketName} в кошелёк"
 msgid "Position impact"
 msgstr "Влияние позиции на цену"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Insufficient staked tokens"
+msgstr "Недостаточно застейканных токенов"
+
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "Создание кода..."
@@ -1542,6 +1546,10 @@ msgstr "Недопустимое значение проскальзывания
 msgid "Invalid collateral token for this market"
 msgstr "Недопустимый токен обеспечения для этого рынка"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Vault closed"
+msgstr "Хранилище закрыто"
+
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more. <0>Read more</0>."
 msgstr "Получайте 5% обратно и предоставляйте своему сообществу скидку 5% на каждую сделку. Более высокие реферальные уровни дают ещё больше преимуществ. <0>Подробнее</0>."
@@ -1719,6 +1727,10 @@ msgstr "Недостаточный баланс токена оплаты Gas в
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
 msgstr "Приостановлено до {reopenTime}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Deposited"
+msgstr "Депозит выполнен"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Signing..."
@@ -2736,6 +2748,7 @@ msgstr "Ошибка переноса"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Claim failed"
 msgstr "Не удалось получить"
@@ -3275,6 +3288,10 @@ msgstr "Нет результатов по выбранным фильтрам"
 msgid "Debug RPC endpoints ({0})"
 msgstr "Отладочные RPC-эндпоинты ({0})"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Vesting stopped"
+msgstr "Вестинг остановлен"
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Driven by our community"
 msgstr "Развивается благодаря нашему сообществу"
@@ -3742,6 +3759,10 @@ msgstr "Вознаграждения LP за всё время"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Недопустимый размер уменьшения"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Nothing to withdraw from the Legacy vault"
+msgstr "В хранилище Legacy нечего выводить"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
@@ -4233,6 +4254,10 @@ msgstr "Предоставлено недостаточно нативного �
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Conversion"
 msgstr "Конвертация"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The Legacy vault is paused. Try again later."
+msgstr "Хранилище Legacy приостановлено. Попробуйте позже."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Request cannot be canceled yet. Try again after the cancellation delay."
@@ -5584,6 +5609,10 @@ msgstr "Что строят на GMX."
 msgid "Approval cancelled"
 msgstr "Одобрение отменено"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stopping vesting returns <0>{0} esGMX</0> and <1>{1}</1> reserved staked tokens to your wallet. Vested GMX stays claimable. Depositing again restarts the {vestingDays}-day vesting."
+msgstr "При остановке вестинга на ваш кошелёк вернутся <0>{0} esGMX</0> и <1>{1}</1> зарезервированных застейканных токенов. Уже полученные GMX можно будет забрать. Новый депозит начнёт {vestingDays}-дневный вестинг заново."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -5711,6 +5740,7 @@ msgstr "Конвертировать через Paxos"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claiming..."
@@ -6134,6 +6164,10 @@ msgstr "Бонусный APR"
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Accumulating..."
 msgstr "Накапливается..."
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Not enough staked tokens. Stake {0} more GMX to deposit this amount, or deposit less."
+msgstr "Недостаточно застейканных токенов. Застейкайте ещё {0} GMX, чтобы внести эту сумму, или внесите меньше."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Help us improve GMX for liquidity providers. For security, we won't contact you first. Send \"I'm a Liquidity Provider\" to our official Telegram account:"
@@ -6628,6 +6662,10 @@ msgstr "Шаг 1: Продажа"
 msgid "Auto"
 msgstr "Авто"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The amount is more than your eligible amount left in the Legacy vault"
+msgstr "Сумма больше оставшейся доступной суммы в хранилище Legacy"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Предоставление изолированной ликвидности для каждого рынка"
@@ -7072,6 +7110,10 @@ msgstr "Выбрать рынок"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Referral code creation failed"
 msgstr "Не удалось создать реферальный код"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The Legacy vault has no GMX left for new deposits. Try again later."
+msgstr "В хранилище Legacy не осталось GMX для новых депозитов. Попробуйте позже."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Net result"
@@ -7740,6 +7782,7 @@ msgid "Price impact is stored when you increase a position and applied when you 
 msgstr "Влияние на цену сохраняется при увеличении позиции и применяется при её уменьшении."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Stake GMX"
 msgstr "Стейкать GMX"
 
@@ -9098,6 +9141,7 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "Запрос на получение отправлен"
 
@@ -9419,6 +9463,7 @@ msgstr "Стейкать вознаграждения {tokenSymbol}"
 msgid "Active Balancer Program code"
 msgstr "Активный код программы Balancer"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10101,6 +10146,7 @@ msgid "Connect your wallet to view your rebates distribution history"
 msgstr "Подключите кошелёк, чтобы просмотреть историю распределения ребейтов"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claimed"
 msgstr "Получено"
 
@@ -10261,6 +10307,7 @@ msgstr "Для бизнеса? Выпуск USDG 1:1 через Paxos"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -10346,6 +10393,7 @@ msgstr "Объём за 24ч"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
@@ -10373,6 +10421,10 @@ msgstr "Разработка"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Track volume and payouts live"
 msgstr "Отслеживайте объём и выплаты в реальном времени"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The Legacy vault is not open yet"
+msgstr "Хранилище Legacy ещё не открыто"
 
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
@@ -10558,6 +10610,10 @@ msgstr "Цена ликвидации"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Reset zoom"
 msgstr "Сбросить масштаб"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
+msgstr "Часть ваших застейканных токенов всё ещё зарезервирована в хранилище GMX. Сначала выведите средства из хранилища GMX или застейкайте больше GMX."
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -10868,6 +10924,7 @@ msgstr "Чистые комиссии / влияние на цену, все т�
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -11395,6 +11452,10 @@ msgstr "Позиция подлежала бы ликвидации при те�
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Большинством в 75.5% голосов GMX выбрал LayerZero в качестве партнера по обмену сообщениями для мультичейн-расширения! Интеграция дает GMX:</0><1><2>Возможность расширения на 125+ сетей</2><3>Полный контроль над всеми контрактами и безопасностью</3><4>Быстрые переводы без проскальзывания</4><5>Проверенную в деле инфраструктуру, которой уже доверяют активы на миллиарды долларов и сотни приложений... <6>ещё</6></5></1>"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting submitted"
+msgstr "Остановка вестинга отправлена"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr "Загрузка позиции..."
@@ -11653,6 +11714,10 @@ msgstr "Комиссия за вывод"
 msgid "Market orders"
 msgstr "Рыночные ордера"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Stop vesting failed"
+msgstr "Не удалось остановить вестинг"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Покупка"
@@ -11841,6 +11906,10 @@ msgstr "Открыть {marketName} в обозревателе"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GMX?"
 msgstr "Что такое GMX?"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Deposit submitted"
+msgstr "Депозит отправлен"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12061,6 +12130,7 @@ msgid "Dark"
 msgstr "Темный"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Confirming..."
 msgstr "Подтверждение..."
 
@@ -12923,6 +12993,7 @@ msgid "Existing limit order is in WETH-USDC pool, but that pool lacks liquidity 
 msgstr "Существующий лимитный ордер находится в пуле WETH-USDC, но в этом пуле недостаточно ликвидности для данного ордера"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Depositing..."
 msgstr "Внесение средств…"
@@ -13468,6 +13539,10 @@ msgstr "Частота"
 msgid "Graduated traders were moved to a GMX protocol code after reaching the referral program's graduation threshold"
 msgstr "Трейдеры-выпускники были переведены на реферальный код протокола GMX после достижения порога выпуска в реферальной программе"
 
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "The Legacy vault is closed"
+msgstr "Хранилище Legacy закрыто"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{0} a long position when the price is below the trigger price."
 msgstr "{0} лонг-позицию, когда цена ниже цены активации."
@@ -13860,6 +13935,10 @@ msgstr "Недействительный адрес получателя"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Withdraw submitted"
 msgstr "Вывод отправлен"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Deposits paused"
+msgstr "Депозиты приостановлены"
 
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

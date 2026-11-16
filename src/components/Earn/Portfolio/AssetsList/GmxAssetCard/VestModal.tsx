@@ -18,30 +18,31 @@ type VestModalProps = {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
   processedData: StakingProcessedData | undefined;
+  onStakeGmx: () => void;
 };
 
 const VAULT_GROUP_DIVIDER_CLASS =
   "relative before:absolute before:left-0 before:top-9 before:block before:h-22 before:w-[1.5px] before:bg-slate-600";
 
-export function VestModal({ isVisible, setIsVisible, processedData }: VestModalProps) {
+export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }: VestModalProps) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const vestingData = useVestingData(account);
-  const orphanVestingData = useOrphanVestingData(chainId, account);
+  const { orphanVaultData, mutateOrphanVaultData } = useOrphanVestingData(chainId, account);
 
   const [pickedVault, setPickedVault] = useState<VestVault>();
 
   const visibleVaults = useMemo(
     () =>
       getVisibleVestVaults({
-        orphan: orphanVestingData,
+        orphan: orphanVaultData,
         oldVaultVestedAmounts: {
           gmx: vestingData?.gmxVesterVestedAmount,
           glp: vestingData?.glpVesterVestedAmount,
           affiliate: vestingData?.affiliateVesterVestedAmount,
         },
       }),
-    [orphanVestingData, vestingData]
+    [orphanVaultData, vestingData]
   );
 
   const selectedVault =
@@ -96,11 +97,17 @@ export function VestModal({ isVisible, setIsVisible, processedData }: VestModalP
         />
 
         {selectedVault === "orphan" ? (
-          orphanVestingData && (
+          orphanVaultData && (
             <OrphanVaultPanel
-              data={orphanVestingData}
+              data={orphanVaultData}
               walletEsGmxBalance={processedData?.esGmxBalance}
               stakedAmount={processedData?.bonusGmxInFeeGmx}
+              onTxSent={() => handleSetIsVisible(false)}
+              onTxMined={() => mutateOrphanVaultData()}
+              onStakeGmx={() => {
+                handleSetIsVisible(false);
+                onStakeGmx();
+              }}
             />
           )
         ) : (

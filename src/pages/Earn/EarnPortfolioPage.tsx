@@ -66,7 +66,7 @@ export default function EarnPortfolioPage() {
   }, [marketTokensData, marketsInfoData, multichainMarketTokensBalances]);
 
   const vestingData = useVestingData(account);
-  const orphanVestingData = useOrphanVestingData(chainId, account);
+  const { orphanVaultData } = useOrphanVestingData(chainId, account);
   const gtAirdrop = useGtAirdrop({ chainId, account });
 
   const hasGmxAssets = processedData
@@ -78,7 +78,7 @@ export default function EarnPortfolioPage() {
       (vestingData?.gmxVesterVestedAmount ?? 0n) > 0n ||
       (vestingData?.glpVesterVestedAmount ?? 0n) > 0n ||
       (vestingData?.affiliateVesterVestedAmount ?? 0n) > 0n ||
-      getHasOrphanVaultEntry(orphanVestingData)
+      getHasOrphanVaultEntry(orphanVaultData)
     : false;
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;

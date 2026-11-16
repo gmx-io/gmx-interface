@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { getVisibleVestVaults, parseOrphanVestingInfo } from "./vestingVaults";
+import {
+  getFreePairAmount,
+  getOrphanDepositState,
+  getVisibleVestVaults,
+  type OrphanVaultData,
+  parseOrphanVestingInfo,
+} from "./vestingVaults";
 
 const UNIT = 10n ** 18n;
 const YEAR = 365n * 86400n;
@@ -38,6 +44,7 @@ describe("parseOrphanVestingInfo", () => {
       pairRatioFactor: RATIO_10,
       vestingDuration: YEAR,
       vestingEndTime: 5_000n + YEAR,
+      deactivatedAt: 0n,
     });
   });
 });
@@ -65,5 +72,76 @@ describe("getVisibleVestVaults", () => {
     },
   ])("$name", ({ orphan, oldVaults, expected }) => {
     expect(getVisibleVestVaults({ orphan, oldVaultVestedAmounts: oldVaults })).toEqual(expected);
+  });
+});
+
+describe("getFreePairAmount", () => {
+  it.each([
+    {
+      name: "all wallet sbfGMX is backed by the stake",
+      wallet: 6n,
+      staked: 6n,
+      gmxVault: 0n,
+      orphan: 0n,
+      expected: 6n,
+    },
+    {
+      name: "the GMX vault reserve is synced back first",
+      wallet: 10n,
+      staked: 12n,
+      gmxVault: 5n,
+      orphan: 0n,
+      expected: 7n,
+    },
+    { name: "the excess is larger than the wallet", wallet: 2n, staked: 1n, gmxVault: 4n, orphan: 0n, expected: 0n },
+  ])("$name", ({ wallet, staked, gmxVault, orphan, expected }) => {
+    expect(
+      getFreePairAmount({
+        walletPairAmount: wallet * UNIT,
+        stakedPairAmount: staked * UNIT,
+        gmxVaultPairAmount: gmxVault * UNIT,
+        orphanPairAmount: orphan * UNIT,
+      })
+    ).toBe(expected * UNIT);
+  });
+});
+
+describe("getOrphanDepositState", () => {
+  const openVault: OrphanVaultData = {
+    ...orphanWith({ cap: UNIT }),
+    isOpen: true,
+    isDepositPaused: false,
+    isClaimPaused: false,
+    // 6.573 sbfGMX backs at most 0.6573 esGMX at 10:1
+    freePairAmount: 6_573n * 10n ** 15n,
+  };
+  const NOW = 1_800_000_000n;
+
+  it.each([
+    {
+      name: "not designated on the router",
+      data: { ...openVault, isOpen: false },
+      amount: UNIT / 2n,
+      error: "notOpen",
+    },
+    { name: "deposits paused", data: { ...openVault, isDepositPaused: true }, amount: UNIT / 2n, error: "paused" },
+    {
+      name: "past the deactivation time",
+      data: { ...openVault, deactivatedAt: NOW },
+      amount: UNIT / 2n,
+      error: "closed",
+    },
+    { name: "no amount", data: openVault, amount: undefined, error: "enterAmount" },
+    { name: "more than the eligible amount", data: openVault, amount: 2n * UNIT, error: "maxExceeded" },
+    { name: "not enough staked tokens", data: openVault, amount: UNIT, error: "insufficientStaked", shortfall: 3_427n },
+    { name: "within the staked tokens", data: openVault, amount: 6_573n * 10n ** 14n, error: undefined, shortfall: 0n },
+  ])("$name", ({ data, amount, error, shortfall }) => {
+    const state = getOrphanDepositState({ data, walletEsGmxBalance: UNIT, depositAmount: amount, now: NOW });
+
+    expect(state.maxDepositAmount).toBe(6_573n * 10n ** 14n);
+    expect(state.error).toBe(error);
+    if (shortfall !== undefined) {
+      expect(state.stakeShortfallAmount).toBe(shortfall * 10n ** 15n);
+    }
   });
 });

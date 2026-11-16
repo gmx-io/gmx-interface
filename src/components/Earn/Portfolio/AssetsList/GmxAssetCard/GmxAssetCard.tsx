@@ -394,6 +394,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             isVisible={isVestModalVisible}
             setIsVisible={setIsVestModalVisible}
             processedData={processedData}
+            onStakeGmx={handleOpenGmxStakeModal}
           />
         </>
       )}
