@@ -540,6 +540,7 @@ msgstr "Tausch-UI-Gebühr"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Connecting wallet..."
 msgstr "Wallet wird verbunden..."
@@ -1749,6 +1750,7 @@ msgstr "Unzureichendes Guthaben des Tokens für Gasgebühren in Ihrem GMX Accoun
 msgid "Paused until {reopenTime}"
 msgstr "Pausiert bis {reopenTime}"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Solana trading is unavailable"
 msgstr ""
@@ -3921,6 +3923,10 @@ msgstr "POSITION"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "{wrappedNativeTokenSymbol} <0>einzahlen</0> oder <1>kaufen</1>."
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order cannot be changed on Solana"
+msgstr ""
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Converting {offerAmount} to {0}"
 msgstr "Umwandlung von {offerAmount} in {0}"
@@ -3948,6 +3954,10 @@ msgstr "Der GMX Token dient als Governancetoken des GMX Protokolls. 27 % der Pla
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "Maximal verleihbarer Impact-USD-Betrag"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Previous order request"
+msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -3978,6 +3988,9 @@ msgstr "Ordertyp"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "Nicht genügend {symbol} in Ihrem GMX Account für diese Transaktion. <0>{symbol} einzahlen</0>"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Check transaction status"
 msgstr ""
@@ -4230,6 +4243,8 @@ msgstr "GMX V2 Telegram- & Discord-Analysen"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr "Teilen Sie Ihren Referralcode mit Freunden oder Ihrer Community —<0/> jeder mit Ihrem Code ausgeführte Trade bringt Ihnen $-Belohnungen ein"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Checking transaction status..."
 msgstr ""
@@ -5504,6 +5519,10 @@ msgstr "Wird übermittelt..."
 msgid "Estimated time: ~5 min"
 msgstr "Geschätzte Dauer: ~5 Min"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Orders with a callback cannot be changed on Solana yet"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -5871,7 +5890,7 @@ msgstr "Limit abbrechen"
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "Gas-Token wurde auf {toSymbol} umgestellt, um externes Tausch-Routing zu ermöglichen"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -5994,6 +6013,10 @@ msgstr "Signatur:"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "Diese Aktion ist deaktiviert"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order is no longer open"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6410,6 +6433,7 @@ msgstr "Übertragung nicht gefunden"
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "Unzureichendes {tokenInSymbol}-Guthaben"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
@@ -6444,6 +6468,7 @@ msgstr "Maximaler Long-USD-Betrag des Pools für Einzahlung"
 msgid "Net value"
 msgstr "Nettowert"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
 msgstr ""
@@ -6494,6 +6519,10 @@ msgstr "{positionTitle} Orders"
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>Ihre {walletName} ist auf {0} nicht verfügbar</0><1/><2>Fügen Sie {1} zu Ihrer {walletName} hinzu, verbinden Sie sich dann erneut und versuchen Sie es noch einmal</2>"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Receive the position's collateral token on Solana"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -7523,6 +7552,8 @@ msgstr "GMX auf Solana (GMTrade) wird über eine separate Domain bereitgestellt"
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
@@ -8249,6 +8280,7 @@ msgstr "Stellt verfügbare Liquidität sicher."
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
@@ -8565,6 +8597,7 @@ msgstr "Margin bearbeiten"
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL-Orders überschreiten die Position"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Create TP/SL order"
 msgstr ""
@@ -8747,6 +8780,11 @@ msgstr "Wechseln Sie zum Konto {receiver}, um diese Übertragung abzuschließen.
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "Validierung für Tests deaktivieren"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Update order"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -10422,7 +10460,7 @@ msgstr "24h Volumen"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10874,7 +10912,7 @@ msgid "Withdrawal unavailable"
 msgstr "Abhebung nicht verfügbar"
 
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "This order type is not supported on Solana"
 msgstr ""
 
@@ -10908,6 +10946,7 @@ msgid "You"
 msgstr "Sie"
 
 #: src/components/TVChartContainer/StaticLine.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Close position"
 msgstr "Position schließen"
 
@@ -12082,7 +12121,7 @@ msgstr "Alle Chains"
 msgid "BLOCK"
 msgstr "BLOCK"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Pay with the selected collateral token"
 msgstr ""
 
@@ -12199,7 +12238,7 @@ msgid "Fulfilling shift request..."
 msgstr "Shift-Anfrage wird ausgeführt…"
 
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Review your TP/SL orders"
 msgstr ""
 
@@ -12362,7 +12401,7 @@ msgstr "<0>Hab <1>@GMX_IO</1> zum ersten Mal ausprobiert. </0><2> Ziemlich beein
 msgid "Select network"
 msgstr "Netzwerk auswählen"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "Solana market calculations are unavailable"
 msgstr ""
 
@@ -12779,7 +12818,7 @@ msgstr "Erhalten Sie Gebührenrabatte und verdienen Sie bis zu 25% Provision üb
 msgid "Vested GLP not withdrawn"
 msgstr "Gevestetes GLP nicht abgehoben"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 msgid "This collateral token is not supported for trading yet"
 msgstr ""
 
@@ -12947,6 +12986,8 @@ msgid "Transfer history"
 msgstr "Übertragungsverlauf"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Cancel order"
 msgstr "Order abbrechen"
 
