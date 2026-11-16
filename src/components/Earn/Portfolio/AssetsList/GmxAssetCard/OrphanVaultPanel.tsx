@@ -30,7 +30,7 @@ import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
 
-import { formatVaultAmount, VaultAmountRatio } from "./VaultAmountRatio";
+import { formatVaultAmount, formatVaultAmountRoundedUp, VaultAmountRatio } from "./VaultAmountRatio";
 
 type OrphanVaultAction = "deposit" | "claim" | "withdraw";
 
@@ -160,8 +160,8 @@ export function OrphanVaultPanel({
           <AlertInfoCard type="warning" hideClose>
             <div>
               <Trans>
-                Not enough staked tokens. Stake {formatVaultAmount(stakeShortfallAmount)} more GMX to deposit this
-                amount, or deposit less.
+                Not enough staked tokens. Stake {formatVaultAmountRoundedUp(stakeShortfallAmount)} more GMX to deposit
+                this amount, or deposit less.
               </Trans>
               <ColorfulButtonLink color="yellow" onClick={onStakeGmx}>
                 <Trans>Stake GMX</Trans>
