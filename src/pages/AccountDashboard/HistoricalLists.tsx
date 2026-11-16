@@ -11,11 +11,13 @@ import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orde
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import { ClaimsHistory } from "components/Claims/ClaimsHistory";
 import { OrderList } from "components/OrderList/OrderList";
+import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
@@ -31,6 +33,8 @@ enum TabKey {
 type Props = {
   chainId: ContractsChainId;
   account: Address;
+  dateRange: [Date | undefined, Date | undefined];
+  onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
 };
 
 function OrdersTabTitle({
@@ -93,13 +97,15 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
   return tabLabels;
 }
 
-export function HistoricalLists({ chainId, account }: Props) {
+export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange }: Props) {
   const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKey.Positions);
+  const { account: walletAccount } = useWallet();
 
   const tabLabels = useTabLabels();
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
+  const hideOrderActions = !walletAccount || walletAccount !== account;
 
   const handleOrdersClick = useCallback(() => {
     setTabKey(TabKey.Orders);
@@ -143,6 +149,7 @@ export function HistoricalLists({ chainId, account }: Props) {
           openSettings={noop}
           onCancelOrder={noop}
           hideActions
+          hideOrderActions={hideOrderActions}
         />
       )}
       {tabKey === TabKey.Orders && (
@@ -159,8 +166,12 @@ export function HistoricalLists({ chainId, account }: Props) {
           onSelectOrderClick={undefined}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} />}
+      {tabKey === TabKey.Trades && (
+        <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} hideDashboardLink />
+      )}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
+      {/* order risk tooltips here open Edit margin */}
+      <PositionEditor />
     </div>
   );
 }

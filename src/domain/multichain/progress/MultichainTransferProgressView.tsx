@@ -13,7 +13,7 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { getWagmiConfig } from "lib/wallets/walletConfig";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexToken,
@@ -23,12 +23,13 @@ import {
 } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
-import { formatTokenAmount, formatUsd } from "sdk/utils/numbers";
+import { formatTokenAmount } from "sdk/utils/numbers";
 
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { EXPAND_ANIMATION_VARIANTS } from "components/ExpandableRow";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -109,7 +110,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
           autoClose: false,
           closeButton: false,
           bodyClassName: "!p-0",
-          className: "!bg-[#161825] border-1/2 border-slate-600 !-ml-64",
+          className: "!bg-slate-900 border-1/2 border-slate-600 !-ml-64",
           hideProgressBar: true,
         }
       );
@@ -142,7 +143,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           tokenAddress: task.token.address,
           initialTx: task.initialTxHash,
           error: finishedError,
-          account: getAccount(getRainbowKitConfig()).address,
+          account: getAccount(getWagmiConfig()).address,
         },
         null,
         2
@@ -214,7 +215,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           />
 
           <div>
-            {task.operation === Operation.Deposit ? <Trans>Buying...</Trans> : <Trans>Selling...</Trans>}{" "}
+            {task.operation === Operation.Deposit ? <Trans>Buying</Trans> : <Trans>Selling</Trans>}{" "}
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
@@ -247,7 +248,11 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           {finishedState === "error" && (
             <div className="flex items-center gap-4 text-red-500">
               <AttentionIcon className="size-16 shrink-0" />
-              <Trans>Buy failed</Trans>
+              {task.operation === Operation.Deposit ? (
+                <Trans>Buy {gmOrGlvLabel} failed</Trans>
+              ) : (
+                <Trans>Sell {gmOrGlvLabel} failed</Trans>
+              )}
             </div>
           )}
         </div>
@@ -275,7 +280,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               </div>
             }
             valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
-            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Estimated time: ~5 min</Trans>}
           />
           <AnimatePresence>
             {isOpen && (
@@ -321,7 +326,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                 <SyntheticsInfoRow
                   label={<Trans>Gas</Trans>}
                   valueClassName="flex items-center"
-                  value={formatUsd(task.estimatedFeeUsd)}
+                  value={<UsdValue usd={task.estimatedFeeUsd} />}
                 />
                 {finishedState !== "completed" && (
                   <>
@@ -355,9 +360,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.creationTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.creationTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -374,9 +377,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.executionTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.executionTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -394,9 +395,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.creationTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.creationTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.creationTx, 11)}
@@ -412,9 +411,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.executionTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.executionTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.executionTx, 11)}
@@ -460,26 +457,28 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                       {finishedError instanceof MultichainTransferProgress.errors.BridgeOutFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            {gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your
-                            GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens.
+                            {gmOrGlvLabel} bought successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName}{" "}
+                            pool to withdraw your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            {gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX
-                            Account. Retry the bridge or open GMX Account to withdraw your tokens.
+                            {gmOrGlvLabel} sold successfully, but the bridge to {getChainName(task.sourceChainId)}{" "}
+                            failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to
+                            withdraw your tokens.
                           </Trans>
                         ))}
 
                       {finishedError instanceof MultichainTransferProgress.errors.ConversionFailed &&
                         (task.operation === Operation.Deposit ? (
                           <Trans>
-                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
+                            Buy {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the settlement
                             chain and go to the {indexName} pool to buy your {gmOrGlvLabel} tokens.
                           </Trans>
                         ) : (
                           <Trans>
-                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement
-                            chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
+                            Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to the
+                            settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens.
                           </Trans>
                         ))}
                     </ColorfulBanner>

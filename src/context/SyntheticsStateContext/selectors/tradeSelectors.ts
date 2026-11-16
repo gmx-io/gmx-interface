@@ -1,4 +1,3 @@
-import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "domain/synthetics/orders";
@@ -13,8 +12,10 @@ import {
   getNextPositionValuesForIncreaseTrade,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
+import { getIsPositionLiquidatedBeforeTrigger } from "domain/synthetics/trade/utils/warnings";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { MARKETS } from "sdk/configs/markets";
+import { getMarketsByChainId } from "sdk/configs/markets";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -23,18 +24,24 @@ import {
   getMaxLiquidityMarketSwapPathFromTokenSwapPaths,
   getTokenSwapPathsForTokenPairPrebuilt,
 } from "sdk/utils/swap/swapRouting";
-import { createTradeFlags } from "sdk/utils/trade";
+import { createTradeFlags, getLimitOrderTypeByTradeMode } from "sdk/utils/trade";
 import { ExternalSwapQuote, ExternalSwapQuoteParams } from "sdk/utils/trade/types";
 
-import { createSelector, createSelectorDeprecated, createSelectorFactory } from "../utils";
 import {
-  selectBotanixStakingAssetsPerShare,
+  createSelector,
+  createSelectorDeprecated,
+  createSelectorFactory,
+  PER_ORDER_SELECTOR_CACHE_SIZE,
+} from "../utils";
+import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -83,7 +90,7 @@ export const selectMarketAdjacencyGraph = isDevelopment()
       const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
       const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
+        Object.entries(getMarketsByChainId(chainId)).filter(
           ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
         )
       );
@@ -158,12 +165,15 @@ export const makeSelectMaxLiquidityPath = createSelectorFactory(
 );
 
 const ENABLE_DEBUG_SWAP_MARKETS_CONFIG = isDevelopment();
-export const makeSelectFindSwapPath = createSelectorFactory(
+const makeSelectFindSwapPathByKey = createSelectorFactory(
   (
     fromTokenAddress: string | undefined,
     toTokenAddress: string | undefined,
-    swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap
+    swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap,
+    manualPathKey?: string
   ) => {
+    const manualPath: string[] | undefined = manualPathKey === undefined ? undefined : JSON.parse(manualPathKey);
+
     return createSelector((q) => {
       const chainId = q(selectChainId);
       const marketsInfoData = q(selectMarketsInfoData);
@@ -178,14 +188,28 @@ export const makeSelectFindSwapPath = createSelectorFactory(
         marketsInfoData,
         swapPricingType,
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
-        manualPath: _debugSwapMarketsConfig?.manualPath,
+        manualPath: manualPath ?? _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,
       });
 
       return findSwapPath;
     });
-  }
+  },
+  PER_ORDER_SELECTOR_CACHE_SIZE
 );
+
+export const makeSelectFindSwapPath = (
+  fromTokenAddress: string | undefined,
+  toTokenAddress: string | undefined,
+  swapPricingType?: SwapPricingType,
+  manualPath?: string[]
+) =>
+  makeSelectFindSwapPathByKey(
+    fromTokenAddress,
+    toTokenAddress,
+    swapPricingType,
+    manualPath === undefined ? undefined : JSON.stringify(manualPath)
+  );
 
 export const makeSelectIncreasePositionAmounts = ({
   collateralTokenAddress,
@@ -231,7 +255,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const initialCollateralToken = q((state) => getByKey(selectTokensData(state), initialCollateralTokenAddress));
     const collateralToken = q((state) => getByKey(selectTokensData(state), collateralTokenAddress));
     const marketInfo = getByKey(marketsInfoData, marketAddress);
-    const position = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
+    const existingPosition = q((state) => getByKey(selectPositionsInfoData(state), positionKey));
 
     const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
     const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
@@ -243,14 +267,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
-    let limitOrderType: OrderType | undefined = undefined;
-    if (tradeFlags.isLimit) {
-      if (tradeMode === TradeMode.Limit) {
-        limitOrderType = OrderType.LimitIncrease;
-      } else if (tradeMode === TradeMode.StopMarket) {
-        limitOrderType = OrderType.StopIncrease;
-      }
-    }
+    const limitOrderType = getLimitOrderTypeByTradeMode(tradeMode);
 
     if (
       indexTokenAmount === undefined ||
@@ -263,32 +280,44 @@ export const makeSelectIncreasePositionAmounts = ({
       return undefined;
     }
 
-    return getIncreasePositionAmounts({
-      position,
-      marketInfo,
-      indexToken,
-      initialCollateralToken,
-      collateralToken,
-      isLong: tradeFlags.isLong,
-      initialCollateralAmount,
-      indexTokenAmount,
-      leverage,
+    const position = getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: existingPosition?.liquidationPrice,
       triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
-      limitOrderType,
-      fixedAcceptablePriceImpactBps,
-      acceptablePriceImpactBuffer,
-      externalSwapQuote,
-      findSwapPath,
-      userReferralInfo,
-      uiFeeFactor,
-      strategy,
-      marketsInfoData,
-      chainId,
-      externalSwapQuoteParams,
-      isSetAcceptablePriceImpactEnabled,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
-      manualPath: debugSwapMarketsConfig?.manualPath,
-    });
+      isLong: tradeFlags.isLong,
+    })
+      ? undefined
+      : existingPosition;
+
+    return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+      getIncreasePositionAmounts({
+        position,
+        marketInfo,
+        indexToken,
+        initialCollateralToken,
+        collateralToken,
+        isLong: tradeFlags.isLong,
+        initialCollateralAmount,
+        indexTokenAmount,
+        leverage,
+        triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+        limitOrderType,
+        fixedAcceptablePriceImpactBps,
+        acceptablePriceImpactBuffer,
+        externalSwapQuote,
+        findSwapPath,
+        userReferralInfo,
+        proDiscountFactor: q(selectProDiscountFactor),
+        feeDiscountFactor: q(selectFeeDiscountFactor),
+        uiFeeFactor,
+        strategy,
+        marketsInfoData,
+        chainId,
+        externalSwapQuoteParams,
+        isSetAcceptablePriceImpactEnabled,
+        disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+        manualPath: debugSwapMarketsConfig?.manualPath,
+      })
+    );
   });
 };
 
@@ -323,11 +352,13 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         selectPositionsInfoData,
         selectTokensData,
         selectMarketsInfoData,
-        selectPositionConstants,
+        makeSelectPositionConstants(marketAddress),
         selectSavedAcceptablePriceImpactBuffer,
         selectIsSetAcceptablePriceImpactEnabled,
         selectUserReferralInfo,
         selectUiFeeFactor,
+        selectProDiscountFactor,
+        selectFeeDiscountFactor,
       ],
       (
         positionsInfoData,
@@ -337,7 +368,9 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
         savedAcceptablePriceImpactBuffer,
         isSetAcceptablePriceImpactEnabled,
         userReferralInfo,
-        uiFeeFactor
+        uiFeeFactor,
+        proDiscountFactor,
+        feeDiscountFactor
       ) => {
         const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
@@ -378,25 +411,30 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           return undefined;
         }
 
-        return getDecreasePositionAmounts({
-          marketInfo,
-          collateralToken,
-          isLong: tradeFlags.isLong,
-          position,
-          closeSizeUsd,
-          keepLeverage: keepLeverage!,
-          triggerPrice,
-          fixedAcceptablePriceImpactBps,
-          acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-          userReferralInfo,
-          minCollateralUsd,
-          minPositionSizeUsd,
-          uiFeeFactor,
-          receiveToken,
-          triggerOrderType,
-          isSetAcceptablePriceImpactEnabled,
-          forceDecreaseSwapType,
-        });
+        return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+          getDecreasePositionAmounts({
+            marketInfo,
+            collateralToken,
+            isLong: tradeFlags.isLong,
+            position,
+            closeSizeUsd,
+            keepLeverage: keepLeverage!,
+            triggerPrice,
+            fixedAcceptablePriceImpactBps,
+            acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+            userReferralInfo,
+            proDiscountFactor,
+            feeDiscountFactor,
+            minCollateralUsd,
+            minPositionSizeUsd,
+            uiFeeFactor,
+            receiveToken,
+            triggerOrderType,
+            isSetAcceptablePriceImpactEnabled,
+            forceDecreaseSwapType,
+            isTwap: tradeFlags.isTwap,
+          })
+        );
       }
     )
 );
@@ -441,7 +479,7 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
   }) => {
     return createSelectorDeprecated(
       [
-        selectPositionConstants,
+        makeSelectPositionConstants(marketAddress),
         selectMarketsInfoData,
         selectTokensData,
         makeSelectIncreasePositionAmounts({
@@ -464,12 +502,28 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
         }),
         selectPositionsInfoData,
         selectUserReferralInfo,
+        selectFeeDiscountFactor,
       ],
-      ({ minCollateralUsd }, marketsInfoData, tokensData, increaseAmounts, positionsInfoData, userReferralInfo) => {
+      (
+        { minCollateralUsd },
+        marketsInfoData,
+        tokensData,
+        increaseAmounts,
+        positionsInfoData,
+        userReferralInfo,
+        feeDiscountFactor
+      ) => {
         const tradeFlags = createTradeFlags(tradeType, tradeMode);
         const marketInfo = getByKey(marketsInfoData, marketAddress);
         const collateralToken = collateralTokenAddress ? getByKey(tokensData, collateralTokenAddress) : undefined;
-        const position = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+        const existingPosition = positionKey ? getByKey(positionsInfoData, positionKey) : undefined;
+        const position = getIsPositionLiquidatedBeforeTrigger({
+          liqPrice: existingPosition?.liquidationPrice,
+          triggerPrice: tradeFlags.isLimit ? triggerPrice : undefined,
+          isLong: tradeFlags.isLong,
+        })
+          ? undefined
+          : existingPosition;
 
         if (!tradeFlags.isPosition || minCollateralUsd === undefined || !marketInfo || !collateralToken) {
           return undefined;
@@ -490,6 +544,8 @@ export const makeSelectNextPositionValuesForIncrease = createSelectorFactory(
             showPnlInLeverage: isPnlInLeverage,
             minCollateralUsd,
             userReferralInfo,
+            collateralPrice: increaseAmounts.collateralPrice,
+            feeDiscountFactor,
           });
         }
       }
@@ -524,7 +580,7 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
     receiveTokenAddress: string | undefined;
   }) =>
     createSelector((q) => {
-      const { minCollateralUsd } = q(selectPositionConstants);
+      const { minCollateralUsd } = q(makeSelectPositionConstants(marketAddress));
       const marketsInfoData = q(selectMarketsInfoData);
       const tokensData = q(selectTokensData);
       const decreaseAmounts = q(
@@ -574,19 +630,18 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           isLong: tradeFlags.isLong,
           minCollateralUsd,
           userReferralInfo,
+          feeDiscountFactor: q(selectFeeDiscountFactor),
         });
       }
     })
 );
 
 export const selectExternalSwapQuoteParams = createSelector((q): ExternalSwapQuoteParams => {
-  const botanixStakingAssetsPerShare = q(selectBotanixStakingAssetsPerShare);
   const chainId = q(selectChainId);
   const tokensData = q(selectTokensData);
   const gasPrice = q(selectGasPrice);
 
   return {
-    botanixStakingAssetsPerShare,
     chainId,
     gasPrice,
     tokensData,

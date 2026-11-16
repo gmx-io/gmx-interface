@@ -1,10 +1,10 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { REFERRALS_DOCS_URL } from "config/links";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   useAffiliateTier,
   useCodeOwner,
@@ -12,6 +12,7 @@ import {
   useTiers,
   useUserReferralCode,
 } from "domain/referrals";
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
 
@@ -62,11 +63,11 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
   const { codeOwner } = useCodeOwner(chainId, address, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
-  const { totalRebate } = useTiers(chainId, traderTier);
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
+  const { totalRebate, discountShare: tierDiscountShare } = useTiers(chainId, traderTier);
+  const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
-  const [userReferralCodeString, setUserReferralCodeString] = useState("");
+  const [activatedReferralCodeLabel, setActivatedReferralCodeLabel] = useState("");
 
   useEffect(
     function advanceStep() {
@@ -101,7 +102,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                   <Trans>Connect wallet</Trans>
                 </Button>
                 <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-300">
-                  <Trans>Learn more</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
             </>
@@ -115,17 +116,17 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col gap-12">
                 <ReferralCodeEditFormContainer
                   callAfterSuccess={(code: string) => {
-                    setUserReferralCodeString(code);
+                    setActivatedReferralCodeLabel(formatReferralCodeForDisplay(code));
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />
                 <p className="text-body-small text-typography-secondary">
                   <Trans>
-                    You can find referral code in{" "}
+                    You can find a referral code in{" "}
                     <ExternalLink href="https://x.com/search?q=$GMX" className="text-blue-300">
                       X
                     </ExternalLink>{" "}
-                    or on other social media platforms.
+                    or on other social media platforms
                   </Trans>
                 </p>
               </div>
@@ -144,8 +145,8 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
-                    You have activated the referral code {userReferralCodeString}. Every position you open or close will
-                    automatically apply your reduced rate — no extra steps needed.
+                    You have activated the referral code {activatedReferralCodeLabel}. Your reduced rate applies
+                    automatically to every position you open or close — no extra steps needed.
                   </Trans>
                 </p>
               </div>
@@ -168,7 +169,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                   className="text-body-small font-medium text-blue-300"
                   onClick={onGoToTraderDashboard}
                 >
-                  <Trans>Go to Trader Dashboard</Trans>
+                  <Trans>Go to trader dashboard</Trans>
                 </button>
               </div>
             </>

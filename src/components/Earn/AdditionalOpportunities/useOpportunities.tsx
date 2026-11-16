@@ -7,8 +7,7 @@ import { GlvAndGmMarketsInfoData, getMarketIndexName, getMarketPoolName } from "
 import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { getMarketByLabel, MarketLabel } from "sdk/configs/markets";
-import { getTokenBySymbol } from "sdk/configs/tokens";
-import { TokensData } from "sdk/utils/tokens/types";
+import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
 import beefyIcon from "img/ic_beefy.svg";
 import deltaPrimeIcon from "img/ic_delta_prime.svg";
@@ -70,20 +69,18 @@ export const getOpportunityAssetKey = (asset: OpportunityAsset): string => {
 export const getOpportunityAssetLabel = (
   asset: OpportunityAsset,
   {
+    chainId,
     marketsInfoData,
-    tokensData,
   }: {
+    chainId: ContractsChainId;
     marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-    tokensData: TokensData | undefined;
   }
 ): string | undefined => {
   switch (asset.type) {
     case "stGmx":
       return "Staked GMX";
-    case "token": {
-      const token = tokensData?.[asset.address];
-      return token?.symbol;
-    }
+    case "token":
+      return getToken(chainId, asset.address).symbol;
     case "market": {
       const marketInfo = marketsInfoData?.[asset.address];
       if (marketInfo) {

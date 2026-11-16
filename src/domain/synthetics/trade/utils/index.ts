@@ -1,6 +1,7 @@
 export * from "sdk/utils/swap/swapRouting";
 export * from "sdk/utils/swap/swapStats";
 export * from "sdk/utils/trade/decrease";
+export * from "sdk/utils/trade/decreaseOutputs";
 export * from "./common";
 export * from "./increase";
 export * from "./marginFields";

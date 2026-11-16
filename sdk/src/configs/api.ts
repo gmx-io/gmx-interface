@@ -1,31 +1,63 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId, MEGAETH } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, NetworkId, MEGAETH, SOLANA_NETWORK_ID } from "./chains";
 
-const API_URLS: Record<ContractsChainId, string | undefined> = {
-  [ARBITRUM]: "https://arbitrum.gmxapi.io/v1",
-  [AVALANCHE]: "https://avalanche.gmxapi.io/v1",
-  [AVALANCHE_FUJI]: undefined,
-  [BOTANIX]: "https://botanix.gmxapi.io/v1",
-  [ARBITRUM_SEPOLIA]: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/v1",
-  [MEGAETH]: "https://megaeth.gmxapi.io/v1",
+export type ApiEnvironment = "production" | "test";
+
+const API_URLS: Record<ApiEnvironment, Record<NetworkId, string | undefined>> = {
+  production: {
+    [ARBITRUM]: "https://arbitrum.gmxapi.io",
+    [AVALANCHE]: "https://avalanche.gmxapi.io",
+    [AVALANCHE_FUJI]: undefined,
+    [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
+    [MEGAETH]: "https://megaeth.gmxapi.io",
+    [SOLANA_NETWORK_ID]: "https://solana.gmxapi.io",
+  },
+  test: {
+    [ARBITRUM]: "https://arbitrum-test.gmxapi.ai",
+    [AVALANCHE]: undefined,
+    [AVALANCHE_FUJI]: undefined,
+    [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
+    [MEGAETH]: undefined,
+    [SOLANA_NETWORK_ID]: undefined,
+  },
 };
 
-const API_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
-  [ARBITRUM]: ["https://arbitrum.gmxapi.ai/v1"],
-  [AVALANCHE]: ["https://avalanche.gmxapi.ai/v1"],
-  [AVALANCHE_FUJI]: [],
-  [BOTANIX]: ["https://botanix.gmxapi.ai/v1"],
-  [ARBITRUM_SEPOLIA]: [],
-  [MEGAETH]: ["https://megaeth.gmxapi.ai/v1"],
+const API_FALLBACK_URLS: Record<ApiEnvironment, Record<NetworkId, string[]>> = {
+  production: {
+    [ARBITRUM]: [],
+    [AVALANCHE]: [],
+    [AVALANCHE_FUJI]: [],
+    [ARBITRUM_SEPOLIA]: [],
+    [MEGAETH]: [],
+    [SOLANA_NETWORK_ID]: [],
+  },
+  test: {
+    [ARBITRUM]: [],
+    [AVALANCHE]: [],
+    [AVALANCHE_FUJI]: [],
+    [ARBITRUM_SEPOLIA]: [],
+    [MEGAETH]: [],
+    [SOLANA_NETWORK_ID]: [],
+  },
 };
 
-export function getApiUrl(chainId: number) {
-  return API_URLS[chainId];
+export function getApiUrl(chainId: number, environment: ApiEnvironment = "production") {
+  return API_URLS[environment][chainId];
 }
 
-export function getApiFallbackUrls(chainId: number): string[] {
-  return API_FALLBACK_URLS[chainId] ?? [];
+export function getApiFallbackUrls(chainId: number, environment: ApiEnvironment = "production"): string[] {
+  return API_FALLBACK_URLS[environment][chainId] ?? [];
 }
 
-export function isApiSupported(chainId: number) {
-  return getApiUrl(chainId) !== undefined;
+export function isApiSupported(chainId: number, environment: ApiEnvironment = "production") {
+  return getApiUrl(chainId, environment) !== undefined;
+}
+
+// Stats are chain-agnostic, so one deployment per environment serves them for every network
+const STATS_API_URLS: Record<ApiEnvironment, string | undefined> = {
+  production: API_URLS.production[ARBITRUM],
+  test: API_URLS.test[ARBITRUM],
+};
+
+export function getStatsApiUrl(environment: ApiEnvironment = "production") {
+  return STATS_API_URLS[environment];
 }

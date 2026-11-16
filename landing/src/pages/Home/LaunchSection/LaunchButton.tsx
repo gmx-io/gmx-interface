@@ -4,7 +4,6 @@ import type { ComponentPropsWithoutRef } from "react";
 import type { ChainName } from "config/chains";
 
 import IcBase from "img/ic_base.svg?react";
-import IcBotanix from "img/ic_botanix_landing.svg?react";
 import IcBsc from "img/ic_bsc.svg?react";
 import MidChevronIcon from "img/ic_mid_chevron.svg?react";
 import IcArb from "img/tokens/ic_arb.svg?react";
@@ -18,7 +17,6 @@ const icons: Record<RedirectChainIds, React.ComponentType<ComponentPropsWithoutR
   [RedirectChainIds.Base]: IcBase,
   [RedirectChainIds.Solana]: IcSol,
   [RedirectChainIds.Avalanche]: IcAvax,
-  [RedirectChainIds.Botanix]: IcBotanix,
   [RedirectChainIds.MegaETH]: IcMegaeth,
   [RedirectChainIds.Bsc]: IcBsc,
   [RedirectChainIds.Ethereum]: IcEth,
@@ -29,7 +27,6 @@ const names: Record<RedirectChainIds, ChainName | "Solana"> = {
   [RedirectChainIds.Base]: "Base",
   [RedirectChainIds.Solana]: "Solana",
   [RedirectChainIds.Avalanche]: "Avalanche",
-  [RedirectChainIds.Botanix]: "Botanix",
   [RedirectChainIds.MegaETH]: "MegaETH",
   [RedirectChainIds.Bsc]: "BNB",
   [RedirectChainIds.Ethereum]: "Ethereum",

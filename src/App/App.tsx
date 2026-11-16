@@ -1,9 +1,6 @@
-import "@wagmi/connectors";
-
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { useEffect } from "react";
-import { HashRouter as Router } from "react-router-dom";
 import { SWRConfig } from "swr";
 
 import "react-toastify/dist/ReactToastify.css";
@@ -15,26 +12,29 @@ import "styles/DeprecatedExchageStyles.scss";
 import "components/Card/Card.css";
 import "./App.scss";
 
-import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { isSolanaNetwork } from "config/chains";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
+import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
-import { SubaccountContextProvider } from "context/SubaccountContext/SubaccountContextProvider";
-import { SyntheticsEventsProvider } from "context/SyntheticsEvents";
-import { ThemeProvider } from "context/ThemeContext/ThemeContext";
+import {
+  DisabledSubaccountContextProvider,
+  SubaccountContextProvider,
+} from "context/SubaccountContext/SubaccountContextProvider";
+import { DisabledSyntheticsEventsProvider, SyntheticsEventsProvider } from "context/SyntheticsEvents";
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { completeAppStartup } from "lib/appStartup";
 import { useChainId } from "lib/chains";
-import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { RainbowKitProviderWrapper } from "lib/wallets/WalletProvider";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
+import { TooltipGroup } from "components/Tooltip/TooltipGroup";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
@@ -46,19 +46,36 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
 }
 
 function SWRConfigWithKey({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { networkId } = useChainId();
   return (
-    <SWRConfig key={chainId} value={SWRConfigProp}>
+    <SWRConfig key={networkId} value={SWRConfigProp}>
       {children}
     </SWRConfig>
   );
 }
 
+function EvmProviders({ children }: { children: React.ReactNode }) {
+  const { networkId } = useChainId();
+
+  // useSubaccountContext throws outside a provider. ToastContainer remounts empty, so these
+  // stubs only cover toasts that EVM code still in flight creates after the switch.
+  if (isSolanaNetwork(networkId)) {
+    return (
+      <DisabledSubaccountContextProvider>
+        <DisabledSyntheticsEventsProvider>{children}</DisabledSyntheticsEventsProvider>
+      </DisabledSubaccountContextProvider>
+    );
+  }
+
+  return (
+    <SubaccountContextProvider>
+      <SyntheticsEventsProvider>{children}</SyntheticsEventsProvider>
+    </SubaccountContextProvider>
+  );
+}
+
 function App() {
-  useEffect(() => {
-    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
-    dynamicActivate(defaultLanguage);
-  }, []);
+  useEffect(completeAppStartup, []);
 
   let app = <AppRoutes />;
   app = (
@@ -66,24 +83,24 @@ function App() {
       {app}
     </ErrorBoundary>
   );
+  app = <TooltipGroup>{app}</TooltipGroup>;
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
-  app = <SyntheticsEventsProvider>{app}</SyntheticsEventsProvider>;
-  app = <SubaccountContextProvider>{app}</SubaccountContextProvider>;
+  app = <EvmProviders>{app}</EvmProviders>;
   app = <TokenPermitsContextProvider>{app}</TokenPermitsContextProvider>;
   app = <TokensBalancesContextProvider>{app}</TokensBalancesContextProvider>;
   app = <SEO>{app}</SEO>;
-  app = <RainbowKitProviderWrapper>{app}</RainbowKitProviderWrapper>;
+  app = <ConnectModalProvider>{app}</ConnectModalProvider>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
-  app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
+  // The networkId key remounts this subtree. Pending txns live above it so the poller can pause on
+  // Solana and resume on EVM without dropping receipt or replacement tracking.
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
+  app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
-  app = <ThemeProvider>{app}</ThemeProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;
-  app = <Router>{app}</Router>;
 
   return app;
 }

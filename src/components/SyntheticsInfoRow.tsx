@@ -9,6 +9,7 @@ export function SyntheticsInfoRow({
   className,
   onClick,
   isWarning,
+  labelClassName,
   valueClassName,
 }: PropsWithChildren<{
   label: React.ReactNode;
@@ -17,6 +18,7 @@ export function SyntheticsInfoRow({
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
   isWarning?: boolean;
+  labelClassName?: string;
   valueClassName?: string;
 }>) {
   const Component = onClick ? "button" : "div";
@@ -34,7 +36,7 @@ export function SyntheticsInfoRow({
     <Component
       type={onClick ? "button" : undefined}
       className={cx(
-        "flex w-full items-baseline justify-between gap-8 text-14",
+        "flex w-full justify-between gap-8 text-14",
         {
           "cursor-pointer": onClick,
         },
@@ -45,7 +47,7 @@ export function SyntheticsInfoRow({
       onKeyDown={handleKeyDown}
       data-qa={qa ? `info-row-${qa}` : undefined}
     >
-      <div className="font-medium text-typography-secondary">{label}</div>
+      <div className={cx("font-medium text-typography-secondary", labelClassName)}>{label}</div>
       <div className={cx("text-right", { "text-red-500": isWarning }, valueClassName)}>{children || value}</div>
     </Component>
   );

@@ -2,10 +2,17 @@ import { t } from "@lingui/macro";
 import uniqueId from "lodash/uniqueId";
 
 import { USD_DECIMALS } from "config/factors";
-import { PositionOrderInfo } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, PositionOrderInfo } from "domain/synthetics/orders";
+import type { PositionInfo } from "domain/synthetics/positions";
+import { getTpSlLiqPriceWarning, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { getCanSplitReceive } from "sdk/utils/trade/decreaseOutputs";
 
 import type { InitialEntry, EntryField, SidecarOrderEntry, SidecarOrderEntryBase } from "./types";
+
+export function getInlineDecreaseSwapType(position: PositionInfo | undefined): DecreasePositionSwapType | undefined {
+  return getCanSplitReceive(position) ? DecreasePositionSwapType.NoSwap : undefined;
+}
 
 export const MAX_PERCENTAGE = 100n;
 export const PERCENTAGE_DECIMALS = 0;
@@ -63,18 +70,46 @@ export function getDefaultEntry<T extends SidecarOrderEntryBase>(
   } as T;
 }
 
+export function getCarriedOverEntries<T extends SidecarOrderEntryBase>({
+  entries,
+  initialEntries,
+  keepTypedPrice,
+}: {
+  entries: T[];
+  initialEntries: T[];
+  keepTypedPrice: boolean;
+}): T[] {
+  const [initialEntry] = initialEntries;
+  const typedEntry = entries.find(
+    (entry) => (entry.txnType === "create" || entry.txnType === "update") && entry.price.input
+  );
+
+  if (!keepTypedPrice || !typedEntry || !initialEntry || initialEntries.some((entry) => entry.order)) {
+    return initialEntries;
+  }
+
+  return [{ ...initialEntry, price: typedEntry.price, txnType: "create" }];
+}
+
 export function prepareInitialEntries({
   positionOrders,
   sort = "desc",
   visualMultiplier,
+  positionSizeUsd,
+  onlyFullPositionClose = false,
 }: {
   positionOrders: PositionOrderInfo[] | undefined;
   sort: "desc" | "asc";
   visualMultiplier?: number;
+  positionSizeUsd?: bigint;
+  onlyFullPositionClose?: boolean;
 }): undefined | InitialEntry[] {
   if (!positionOrders) return;
 
-  return positionOrders
+  return [...positionOrders]
+    .filter((order) => {
+      return !onlyFullPositionClose || isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd);
+    })
     .sort((a, b) => {
       const [first, second] = sort === "desc" ? [a, b] : [b, a];
       const diff = first.triggerPrice - second.triggerPrice;
@@ -83,9 +118,13 @@ export function prepareInitialEntries({
       return 0;
     })
     .map((order) => {
+      const isFullClose = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd);
+      const sizeDeltaUsd = isFullClose && positionSizeUsd !== undefined ? positionSizeUsd : order.sizeDeltaUsd;
       const entry: InitialEntry = {
-        sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: order.sizeDeltaUsd }),
+        sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: sizeDeltaUsd }),
         price: getDefaultEntryField(USD_DECIMALS, { value: order.triggerPrice }, visualMultiplier),
+        percentage: isFullClose ? getDefaultEntryField(PERCENTAGE_DECIMALS, { value: MAX_PERCENTAGE }) : undefined,
+        mode: isFullClose ? "keepPercentage" : "keepSize",
         order,
       };
 
@@ -97,6 +136,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
   type: "sl" | "tp",
   {
+    liqPrice,
     triggerPrice,
     markPrice,
     isLong,
@@ -123,16 +163,16 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice < markPrice && t`TP price below mark price`
-            : inputPrice > markPrice && t`TP price above mark price`;
+            ? inputPrice < markPrice && t`Set TP price above mark price`
+            : inputPrice > markPrice && t`Set TP price below mark price`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice > markPrice && t`SL price above mark price`
-            : inputPrice < markPrice && t`SL price below mark price`;
+            ? inputPrice > markPrice && t`Set SL price below mark price`
+            : inputPrice < markPrice && t`Set SL price above mark price`;
 
           priceError = nextError || priceError;
         }
@@ -141,16 +181,16 @@ export function handleEntryError<T extends SidecarOrderEntry>(
       if (triggerPrice !== undefined && triggerPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
-            ? inputPrice < triggerPrice && t`TP price below limit price`
-            : inputPrice > triggerPrice && t`TP price above limit price`;
+            ? inputPrice < triggerPrice && t`Set TP price above limit price`
+            : inputPrice > triggerPrice && t`Set TP price below limit price`;
 
           priceError = nextError || priceError;
         }
 
         if (type === "sl") {
           const nextError = isLong
-            ? inputPrice > triggerPrice && t`SL price above limit price`
-            : inputPrice < triggerPrice && t`SL price below limit price`;
+            ? inputPrice > triggerPrice && t`Set SL price below limit price`
+            : inputPrice < triggerPrice && t`Set SL price above limit price`;
 
           priceError = nextError || priceError;
         }
@@ -162,10 +202,20 @@ export function handleEntryError<T extends SidecarOrderEntry>(
     percentageError = t`Size percentage required`;
   }
 
+  let priceWarning: string | null = null;
+  if (!priceError) {
+    priceWarning =
+      getTpSlLiqPriceWarning({
+        triggerPrice: inputPrice ?? undefined,
+        liquidationPrice: liqPrice,
+        isLong: Boolean(isLong),
+      }) ?? null;
+  }
+
   return {
     ...entry,
     sizeUsd: { ...entry.sizeUsd, error: sizeError },
-    price: { ...entry.price, error: priceError },
+    price: { ...entry.price, error: priceError, warning: priceWarning },
     percentage: { ...entry.percentage, error: percentageError },
   };
 }

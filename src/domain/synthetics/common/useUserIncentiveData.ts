@@ -1,9 +1,14 @@
 import { gql } from "@apollo/client";
 import useSWR from "swr";
+import type { Hash } from "viem";
 
 import { RebateDistributionType } from "domain/referrals";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { Distribution } from "sdk/codegen/subsquid";
+
+export type UserIncentiveDistribution = Omit<Distribution, "transactionHash"> & {
+  transactionHash: Hash;
+};
 
 // Referral program distributions should only be shown in Referrals > Distributions.
 const REFERRAL_DISTRIBUTION_TYPE_IDS = Object.values(RebateDistributionType);
@@ -31,7 +36,7 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
   const userIncentiveDataCacheKey =
     chainId && squidClient && account ? [chainId, "useUserIncentiveData", account] : null;
 
-  async function fetchUserIncentiveData(): Promise<Distribution[] | undefined> {
+  async function fetchUserIncentiveData(): Promise<UserIncentiveDistribution[] | undefined> {
     if (!account) {
       return [];
     }
@@ -41,10 +46,10 @@ export default function useUserIncentiveData(chainId: number, account?: string) 
       variables: { account: account, excludedTypeIds: REFERRAL_DISTRIBUTION_TYPE_IDS },
     });
 
-    return response.data?.distributions as Distribution[] | undefined;
+    return response.data?.distributions as UserIncentiveDistribution[] | undefined;
   }
 
-  const { data, error } = useSWR<Distribution[] | undefined>(userIncentiveDataCacheKey, {
+  const { data, error } = useSWR<UserIncentiveDistribution[] | undefined>(userIncentiveDataCacheKey, {
     fetcher: fetchUserIncentiveData,
   });
 

@@ -5,10 +5,11 @@ import { useBreakpoints } from "lib/useBreakpoints";
 
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
 import PercentageInput from "components/PercentageInput/PercentageInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
-import InfoIcon from "img/ic_info.svg?react";
+import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 export enum TradingMode {
   Classic = "classic",
@@ -34,7 +35,7 @@ export function InputSetting({
   suggestions,
   type = "percentage",
 }: {
-  title: ReactNode;
+  title: string;
   description?: ReactNode;
   defaultValue: number;
   value?: number;
@@ -45,14 +46,10 @@ export function InputSetting({
   suggestions?: number[];
   type?: "percentage" | "number";
 }) {
-  const titleComponent = <span className="text-14 font-medium">{title}</span>;
-
   const titleWithDescription = description ? (
-    <TooltipWithPortal position="bottom" content={description} variant="icon">
-      {titleComponent}
-    </TooltipWithPortal>
+    <LabelWithTooltip label={title} tooltip={description} position="bottom" labelClassName="text-14 font-medium" />
   ) : (
-    titleComponent
+    <span className="text-14 font-medium">{title}</span>
   );
 
   const Input =
@@ -107,13 +104,13 @@ export function SettingButton({
     }
   };
 
-  const Wrapper = disabled && disabledTooltip ? TooltipWithPortal : NoopWrapper;
+  const Wrapper = disabled && disabledTooltip ? StandardTooltip : NoopWrapper;
 
   return (
-    <Wrapper content={disabledTooltip} variant="none">
+    <Wrapper content={disabledTooltip} variant="none" className="w-full" handleClassName="w-full">
       <div
         className={cx(
-          `grid min-h-66 select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
+          `grid min-h-66 w-full select-none grid-cols-[66px_auto] items-center rounded-8 border border-solid hover:border-slate-100`,
           active ? "border-slate-100 text-typography-primary" : "border-slate-600",
           disabled ? "muted cursor-not-allowed" : "cursor-pointer"
         )}
@@ -133,10 +130,10 @@ export function SettingButton({
             <div className="flex items-center gap-4">
               <div>{title}</div>
               {info && (
-                <TooltipWithPortal
+                <StandardTooltip
                   content={info}
                   handleClassName="-mb-6"
-                  handle={<InfoIcon className="size-12" onClickCapture={handleInfoClick} />}
+                  handle={<InfoIconStroke className="size-12" onClickCapture={handleInfoClick} />}
                   variant="none"
                 />
               )}
@@ -150,13 +147,15 @@ export function SettingButton({
   );
 }
 
-export function Chip({ children, color }: { children: ReactNode; color: "blue" | "gray" }) {
-  const colorClass = {
-    blue: "bg-blue-600",
-    gray: "bg-slate-500",
-  }[color];
+export function Chip({ children, variant }: { children: ReactNode; variant: "blue" | "outline" }) {
+  const variantClass = {
+    blue: "bg-blue-600 text-white",
+    outline: "text-typography-primary ring-1 ring-inset ring-typography-primary",
+  }[variant];
 
   return (
-    <div className={cx(`rounded-full px-8 py-4 pb-3 text-[10px] font-medium text-white`, colorClass)}>{children}</div>
+    <div className={cx(`whitespace-nowrap rounded-full px-8 py-4 pb-3 text-[10px] font-medium`, variantClass)}>
+      {children}
+    </div>
   );
 }

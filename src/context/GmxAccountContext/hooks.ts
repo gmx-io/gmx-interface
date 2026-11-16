@@ -11,12 +11,18 @@ import {
   selectGmxAccountSetDepositViewTokenAddress,
   selectGmxAccountSetDepositViewTokenInputValue,
   selectGmxAccountSetModalOpen,
+  selectGmxAccountAvailableAssetsFilter,
+  selectGmxAccountSetAvailableAssetsFilter,
   selectGmxAccountSetSelectedTransferGuid,
   selectGmxAccountSetSettlementChainId,
   selectGmxAccountsetWithdrawalViewChain,
   selectGmxAccountSetWithdrawalViewTokenAddress,
   selectGmxAccountSetWithdrawalViewTokenInputValue,
   selectGmxAccountSettlementChainId,
+  selectGmxAccountSetWalletReceiveViewBackTo,
+  selectGmxAccountSetWalletReceiveViewChain,
+  selectGmxAccountWalletReceiveViewBackTo,
+  selectGmxAccountWalletReceiveViewChain,
   selectGmxAccountWithdrawalViewChain,
   selectGmxAccountWithdrawalViewTokenAddress,
   selectGmxAccountWithdrawalViewTokenInputValue,
@@ -85,9 +91,30 @@ export function useGmxAccountWithdrawalViewTokenInputValue() {
   ] as const;
 }
 
+export function useGmxAccountWalletReceiveViewChain() {
+  return [
+    useGmxAccountSelector(selectGmxAccountWalletReceiveViewChain),
+    useGmxAccountSelector(selectGmxAccountSetWalletReceiveViewChain),
+  ] as const;
+}
+
+export function useGmxAccountWalletReceiveViewBackTo() {
+  return [
+    useGmxAccountSelector(selectGmxAccountWalletReceiveViewBackTo),
+    useGmxAccountSelector(selectGmxAccountSetWalletReceiveViewBackTo),
+  ] as const;
+}
+
 export function useGmxAccountSelectedTransferGuid() {
   return [
     useGmxAccountSelector(selectGmxAccountSelectedTransferGuid),
     useGmxAccountSelector(selectGmxAccountSetSelectedTransferGuid),
+  ] as const;
+}
+
+export function useGmxAccountAvailableAssetsFilter() {
+  return [
+    useGmxAccountSelector(selectGmxAccountAvailableAssetsFilter),
+    useGmxAccountSelector(selectGmxAccountSetAvailableAssetsFilter),
   ] as const;
 }

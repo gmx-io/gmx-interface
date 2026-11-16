@@ -15,9 +15,12 @@ export type MarketsConstantsResult = {
   error?: Error;
 };
 
-export function useMarketsConstantsRequest(chainId: ContractsChainId): MarketsConstantsResult {
+export function useMarketsConstantsRequest(
+  chainId: ContractsChainId,
+  { enabled = true }: { enabled?: boolean } = {}
+): MarketsConstantsResult {
   const { data, error } = useMulticall(chainId, "useMarketsConstants", {
-    key: [],
+    key: enabled ? [] : null,
 
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 

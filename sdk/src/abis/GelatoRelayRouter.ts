@@ -197,6 +197,22 @@ export default [
         type: "uint256",
       },
     ],
+    name: "MaxRelayFeeSwapExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "feeUsd",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "maxFeeUsd",
+        type: "uint256",
+      },
+    ],
     name: "MaxRelayFeeSwapForSubaccountExceeded",
     type: "error",
   },
@@ -1140,6 +1156,321 @@ export default [
         internalType: "bytes32",
         name: "",
         type: "bytes32",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "tokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "providers",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "data",
+                type: "bytes[]",
+              },
+            ],
+            internalType: "struct OracleUtils.SetPricesParams",
+            name: "oracleParams",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address[]",
+                name: "sendTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "uint256[]",
+                name: "sendAmounts",
+                type: "uint256[]",
+              },
+              {
+                internalType: "address[]",
+                name: "externalCallTargets",
+                type: "address[]",
+              },
+              {
+                internalType: "bytes[]",
+                name: "externalCallDataList",
+                type: "bytes[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundTokens",
+                type: "address[]",
+              },
+              {
+                internalType: "address[]",
+                name: "refundReceivers",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.ExternalCalls",
+            name: "externalCalls",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "owner",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "spender",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "value",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "deadline",
+                type: "uint256",
+              },
+              {
+                internalType: "uint8",
+                name: "v",
+                type: "uint8",
+              },
+              {
+                internalType: "bytes32",
+                name: "r",
+                type: "bytes32",
+              },
+              {
+                internalType: "bytes32",
+                name: "s",
+                type: "bytes32",
+              },
+              {
+                internalType: "address",
+                name: "token",
+                type: "address",
+              },
+            ],
+            internalType: "struct IRelayUtils.TokenPermit[]",
+            name: "tokenPermits",
+            type: "tuple[]",
+          },
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "feeToken",
+                type: "address",
+              },
+              {
+                internalType: "uint256",
+                name: "feeAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "address[]",
+                name: "feeSwapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IRelayUtils.FeeParams",
+            name: "fee",
+            type: "tuple",
+          },
+          {
+            internalType: "uint256",
+            name: "userNonce",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "deadline",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+          {
+            internalType: "uint256",
+            name: "desChainId",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct IRelayUtils.RelayParams",
+        name: "relayParams",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "cancellationReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialCollateralToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "swapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "sizeDeltaUsd",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "initialCollateralDeltaAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "triggerPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "acceptablePrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "executionFee",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "callbackGasLimit",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minOutputAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "validFromTime",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
+            name: "numbers",
+            type: "tuple",
+          },
+          {
+            internalType: "enum Order.OrderType",
+            name: "orderType",
+            type: "uint8",
+          },
+          {
+            internalType: "enum Order.DecreasePositionSwapType",
+            name: "decreasePositionSwapType",
+            type: "uint8",
+          },
+          {
+            internalType: "bool",
+            name: "isLong",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "shouldUnwrapNativeToken",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "autoCancel",
+            type: "bool",
+          },
+          {
+            internalType: "bytes32",
+            name: "referralCode",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
+        ],
+        internalType: "struct IBaseOrderUtils.CreateOrderParams",
+        name: "params",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "twapCount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "interval",
+        type: "uint256",
+      },
+    ],
+    name: "createTwapOrder",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
       },
     ],
     stateMutability: "nonpayable",

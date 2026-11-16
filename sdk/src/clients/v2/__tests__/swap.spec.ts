@@ -1,6 +1,14 @@
 import { describe, expect, it, afterAll, beforeAll } from "vitest";
 
-import { getTestSdk, requireSigner, expressFlow, waitForOrderStatus, activateTestSubaccount, hasRpcUrl, TEST_SYMBOL } from "./testUtil";
+import {
+  getTestSdk,
+  requireSigner,
+  expressFlow,
+  waitForOrderStatus,
+  activateTestSubaccount,
+  hasRpcUrl,
+  TEST_SYMBOL,
+} from "./testUtil";
 
 const sdk = getTestSdk();
 const signer = requireSigner();
@@ -114,7 +122,7 @@ describe("swap orders", () => {
       const txHash = await signer.sendTransaction({
         to: prepared.payload.to,
         data: prepared.payload.data,
-        value: BigInt(prepared.payload.value ?? 0),
+        value: BigInt(prepared.payload.value),
       });
 
       expect(txHash).toBeDefined();

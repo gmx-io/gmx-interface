@@ -19,7 +19,6 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -32,7 +31,6 @@ export {
   ARBITRUM,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_ETHEREUM_MAINNET,
@@ -42,7 +40,7 @@ export {
   SOURCE_SEPOLIA,
 };
 
-export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH] as const;
+export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, MEGAETH] as const;
 export const CONTRACTS_CHAIN_IDS_DEV = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA] as const;
 export const SETTLEMENT_CHAIN_IDS = [ARBITRUM, AVALANCHE] as const;
 export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA, AVALANCHE_FUJI] as const;
@@ -64,8 +62,12 @@ export type SettlementChainId = (typeof SETTLEMENT_CHAIN_IDS_DEV)[number];
 export type SourceChainId = (typeof SOURCE_CHAIN_IDS)[number];
 export const GMX_ACCOUNT_PSEUDO_CHAIN_ID = 0;
 export type GmxAccountPseudoChainId = typeof GMX_ACCOUNT_PSEUDO_CHAIN_ID;
+// Solana has no EVM chain id: this id stays out of the EVM chain lists and types in this file
+export const SOLANA_NETWORK_ID = -501;
+export type SolanaNetworkId = typeof SOLANA_NETWORK_ID;
 
 export type AnyChainId = ContractsChainId | SettlementChainId | SourceChainId;
+export type NetworkId = ContractsChainId | SolanaNetworkId;
 
 const CONTRACTS_CHAIN_CONFIGS = {
   [ARBITRUM]: {
@@ -84,6 +86,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: 2000n, // 20%
     isDisabled: false,
   },
@@ -103,6 +106,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -122,6 +126,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n,
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -141,29 +146,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n,
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
-    gasPriceBuffer: undefined,
-    isDisabled: false,
-  },
-  [BOTANIX]: {
-    chainId: BOTANIX,
-    name: "Botanix",
-    slug: "botanix",
-    explorerUrl: "https://botanixscan.io/",
-    nativeTokenSymbol: "BTC",
-    wrappedTokenSymbol: "PBTC",
-    defaultCollateralSymbol: "USDC.E",
-    highExecutionFee: 5,
-    shouldUseMaxPriorityFeePerGas: true,
-    defaultExecutionFeeBufferBps: 3000, // 30%
-    maxFeePerGas: 20n,
-    gasPricePremium: undefined,
-    maxPriorityFeePerGas: 7n,
-    excessiveExecutionFee: 10, // 10 USD
-    /**
-     * avoid botanix gas spikes when chain is not actively used
-     * if set, execution fee value should not be less than this in USD equivalent
-     */
-    minExecutionFee: 1000000000000000000000000000n, // 1e27 $0.001
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -183,6 +166,12 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 500000n, // 0.0005 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    /**
+     * MegaETH execution fees are sub-cent (~$0.003 per tx with current gas params), so the global
+     * $20/$40 default would lock up balance worth hundreds of future transactions. Scale down to
+     * $1/$2 to preserve the "buffer for many future operations" semantic.
+     */
+    residualGasUsd: { min: 1, max: 2 },
     gasPriceBuffer: 2000n, // 20%
     isDisabled: false,
   },
@@ -263,42 +252,11 @@ const ALL_CHAIN_CONFIGS = {
 
 export type ContractsChainName = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["name"];
 export type SourceChainName = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["name"];
-export type ChainName = ContractsChainName | SourceChainName | "Unknown";
+export type ChainName = ContractsChainName | SourceChainName | "Solana" | "Unknown";
 
 export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof CONTRACTS_CHAIN_CONFIGS]["slug"];
 export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
-export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
-
-export const botanix: Chain = defineChain({
-  id: BOTANIX,
-  name: "Botanix",
-  nativeCurrency: {
-    name: "Bitcoin",
-    symbol: "BTC",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: [
-        // this rpc returns incorrect gas price
-        // "https://rpc.botanixlabs.com",
-
-        "https://rpc.ankr.com/botanix_mainnet",
-      ],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: "BotanixScan",
-      url: "https://botanixscan.io",
-    },
-  },
-  contracts: {
-    multicall3: {
-      address: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
-    },
-  },
-});
+export type ChainSlug = ContractsChainSlug | SourceChainSlug | "solana" | "unknown";
 
 export const megaeth: Chain = defineChain({
   id: MEGAETH,
@@ -331,7 +289,6 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
-  [BOTANIX]: botanix,
   [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
@@ -340,11 +297,23 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [SOURCE_BSC_MAINNET]: bsc,
 };
 
+export function isSolanaNetwork(networkId: number): networkId is SolanaNetworkId {
+  return networkId === SOLANA_NETWORK_ID;
+}
+
 export function getChainName(chainId: number): ChainName {
+  if (isSolanaNetwork(chainId)) {
+    return "Solana";
+  }
+
   return ALL_CHAIN_CONFIGS[chainId]?.name ?? "Unknown";
 }
 
 export function getChainSlug(chainId: number): ChainSlug {
+  if (isSolanaNetwork(chainId)) {
+    return "solana";
+  }
+
   return ALL_CHAIN_CONFIGS[chainId]?.slug ?? "unknown";
 }
 
@@ -382,12 +351,25 @@ export function getGasPricePremium(chainId: ContractsChainId): bigint | undefine
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPricePremium;
 }
 
+// Priority fee wallets may add, charged on Arbitrum One since 2026-09-23; express is relayed with a zero tip
+const EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE: Partial<Record<ContractsChainId, bigint>> = {
+  [ARBITRUM]: 30000000n, // 0.03 gwei
+};
+
+export function getExecutionFeePriorityFeeAllowance(chainId: ContractsChainId): bigint {
+  return EXECUTION_FEE_PRIORITY_FEE_ALLOWANCE[chainId] ?? 0n;
+}
+
 export function getMaxPriorityFeePerGas(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.maxPriorityFeePerGas;
 }
 
 export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
+}
+
+export function getResidualGasUsdConfig(chainId: ContractsChainId) {
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.residualGasUsd;
 }
 
 export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {
@@ -414,6 +396,10 @@ export function getChainDefaultCollateralSymbol(chainId: ContractsChainId) {
 }
 
 export function getExplorerUrl(chainId: number | "layerzero" | "layerzero-testnet"): string {
+  if (typeof chainId === "number" && isSolanaNetwork(chainId)) {
+    return "https://solscan.io/";
+  }
+
   switch (chainId as AnyChainId | "layerzero" | "layerzero-testnet") {
     case "layerzero":
       return "https://layerzeroscan.com/";

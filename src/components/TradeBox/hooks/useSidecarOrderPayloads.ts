@@ -8,8 +8,10 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { MAX_PERCENTAGE } from "domain/synthetics/sidecarOrders/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlCreatePayloads } from "domain/tpsl/sidecar";
+import { getPositionCloseSizeDeltaUsdForPayload } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";
 
@@ -19,7 +21,7 @@ import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
 export function useSidecarOrderPayloads() {
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: selectedPosition?.key });
-  const { getExecutionFeeAmountForEntry } = useTPSLSummaryExecutionFee();
+  const { getExecutionFeeAmountForEntry, getOrderExecutionFee } = useTPSLSummaryExecutionFee();
   const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useRequiredActions();
 
   const { chainId } = useChainId();
@@ -34,6 +36,17 @@ export function useSidecarOrderPayloads() {
       return undefined;
     }
 
+    const getPayloadSizeDeltaUsd = (entry: (typeof createSltpEntries)[number] | (typeof updateSltpEntries)[number]) => {
+      const amounts = entry.increaseAmounts || entry.decreaseAmounts;
+      const isFullClose = Boolean(entry.decreaseAmounts) && entry.percentage?.value === MAX_PERCENTAGE;
+
+      if (!amounts) {
+        return 0n;
+      }
+
+      return getPositionCloseSizeDeltaUsdForPayload(amounts.sizeDeltaUsd ?? 0n, isFullClose);
+    };
+
     const createPayloads = buildTpSlCreatePayloads({
       autoCancelOrdersLimit,
       chainId,
@@ -45,6 +58,8 @@ export function useSidecarOrderPayloads() {
       entries: createSltpEntries.map((entry) => ({
         amounts: entry.decreaseAmounts,
         executionFeeAmount: getExecutionFeeAmountForEntry(entry) ?? 0n,
+        executionGasLimit: getOrderExecutionFee(0, entry.decreaseAmounts?.decreaseSwapType)?.gasLimit,
+        sizeDeltaUsd: getPayloadSizeDeltaUsd(entry),
       })),
       userReferralCode: userReferralInfo?.referralCodeForTxn,
     });
@@ -58,13 +73,15 @@ export function useSidecarOrderPayloads() {
         indexTokenAddress: marketInfo.indexTokenAddress,
         orderKey: order.key,
         orderType: order.orderType,
-        sizeDeltaUsd: amounts.sizeDeltaUsd ?? 0n,
+        sizeDeltaUsd: getPayloadSizeDeltaUsd(entry),
         triggerPrice: amounts.triggerPrice ?? 0n,
         acceptablePrice: amounts.acceptablePrice ?? 0n,
         minOutputAmount: 0n,
         validFromTime: 0n,
+        decreasePositionSwapType: order.decreasePositionSwapType,
         autoCancel: order.autoCancel,
         executionFeeTopUp: getExecutionFeeAmountForEntry(entry) ?? 0n,
+        executionGasLimit: getOrderExecutionFee(0, entry.decreaseAmounts?.decreaseSwapType)?.gasLimit,
       });
     });
 
@@ -81,6 +98,7 @@ export function useSidecarOrderPayloads() {
     return secondaryOrderPayloads;
   }, [
     account,
+    getOrderExecutionFee,
     autoCancelOrdersLimit,
     cancelSltpEntries,
     chainId,

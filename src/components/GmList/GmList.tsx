@@ -1,24 +1,40 @@
 import { Trans, t } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
 import { useMemo, useState } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectDepositMarketTokensData,
   selectMarketsInfoData,
   selectProgressiveDepositMarketTokensDataWithoutGlv,
   selectSrcChainId,
+  selectUsdgBoostAprResult,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import {
+  SubCategoryTab,
+  cryptoSubCategoryOptions,
+  subCategoryTabLabels,
+  tradfiSubCategoryOptions,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo } from "domain/synthetics/markets";
+import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsListingDates";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getUsdgLaunchBoost, getUsdgLaunchBoostApr } from "domain/synthetics/usdgLaunchBoost/utils";
+import { getWhitelistedMarketAddresses } from "domain/synthetics/whitelists/utils";
+import { useLocalizedMap } from "lib/i18n";
+import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { getAddressKey } from "sdk/utils/address";
 
+import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Loader from "components/Loader/Loader";
@@ -29,7 +45,9 @@ import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmListItem } from "./GmListItem";
@@ -66,14 +84,98 @@ export function GmList({
   const marketTokensData = useSelector(selectDepositMarketTokensData);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
+  const usdgBoostAprResult = useSelector(selectUsdgBoostAprResult);
 
   const { active } = useWallet();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+    isEstimated365dFeesLoading,
+    isEstimated365dFeesUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
+  const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
+    useTokensFavorites("gm-list");
+  const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
+
+  const { listingDateByIndexToken } = useMarketsListingDates(chainId);
+
+  const recentlyListedAddressesSet = useMemo(
+    () => new Set(getRecentlyListedTokenAddresses(listingDateByIndexToken, Date.now())),
+    [listingDateByIndexToken]
+  );
+
+  const recentlyListedCount = useMemo(() => {
+    if (!marketsInfo || recentlyListedAddressesSet.size === 0) return 0;
+    return Object.values(marketsInfo).filter(
+      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(getAddressKey(m.indexTokenAddress))
+    ).length;
+  }, [marketsInfo, recentlyListedAddressesSet]);
 
   const isLoading = !marketsInfo || !progressiveMarketTokensData;
+
+  const populatedCryptoSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!marketsInfo) return set;
+    for (const cat of ["ai", "layer1", "layer2", "defi", "meme"] as const) {
+      const found = Object.values(marketsInfo).some(
+        (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken.categories?.includes(cat)
+      );
+      if (found) set.add(cat);
+    }
+    return set;
+  }, [marketsInfo]);
+
+  const populatedTradfiSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!marketsInfo) return set;
+    for (const cat of ["stocks", "pre-ipo", "commodities", "indices", "fx"] as const) {
+      const found = Object.values(marketsInfo).some(
+        (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
+      );
+      if (found) set.add(cat);
+    }
+    return set;
+  }, [marketsInfo]);
+
+  const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      cryptoSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedCryptoSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedCryptoSubCats, localizedSubCategoryLabels]
+  );
+
+  const tradfiSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      tradfiSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedTradfiSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedTradfiSubCats, localizedSubCategoryLabels]
+  );
+
+  const whitelistedMarketAddresses = useMemo(
+    () => getWhitelistedMarketAddresses(whitelistsResult.accountWhitelists),
+    [whitelistsResult]
+  );
+
+  const marketsTokensLaunchBoostAprData = useMemo(
+    () =>
+      mapValues(marketsInfo ?? {}, (market) => {
+        const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult });
+        return getUsdgLaunchBoostApr(launchBoost);
+      }),
+    [chainId, marketsInfo, usdgBoostAprResult]
+  );
 
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
@@ -83,11 +185,15 @@ export function GmList({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     searchText,
-    tab,
+    topLevelTab,
+    subCategoryTab,
+    recentlyListedAddresses: recentlyListedAddressesSet,
     favoriteTokens,
     performance,
     multichainMarketTokensBalances,
+    pinnedAddresses: whitelistedMarketAddresses,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -98,28 +204,44 @@ export function GmList({
 
   const userTotalGmInfo = useMemo(() => {
     if (!active || !marketTokensData) return;
-    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-  }, [active, marketTokensData, multichainMarketTokensBalances]);
+    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances, chainId });
+  }, [active, chainId, marketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     currentData.length > 0 &&
-    currentData.map((token) => (
-      <GmListItem
-        key={token.address}
-        token={token}
-        marketsTokensApyData={marketsTokensApyData}
-        glvTokensIncentiveAprData={undefined}
-        marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-        marketsTokensLidoAprData={marketsTokensLidoAprData}
-        glvTokensApyData={undefined}
-        apyLoading={apyLoading}
-        performance={performance}
-        performanceLoading={performanceLoading}
-        performanceSnapshots={performanceSnapshots}
-        isFavorite={favoriteTokens.includes(token.address)}
-        onFavoriteClick={toggleFavoriteToken}
-      />
-    ));
+    currentData.map((token) => {
+      const market = getByKey(marketsInfo, token.address);
+      const isRecentlyListed = Boolean(
+        market &&
+          !market.isSpotOnly &&
+          !market.isDisabled &&
+          recentlyListedAddressesSet.has(getAddressKey(market.indexTokenAddress))
+      );
+
+      return (
+        <GmListItem
+          key={token.address}
+          token={token}
+          marketsTokensApyData={marketsTokensApyData}
+          glvTokensIncentiveAprData={undefined}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={undefined}
+          apyLoading={apyLoading}
+          performance={performance}
+          performanceLoading={performanceLoading}
+          performanceSnapshots={performanceSnapshots}
+          isRecentlyListed={isRecentlyListed}
+          isFavorite={favoriteTokens.includes(token.address)}
+          onFavoriteClick={toggleFavoriteToken}
+          userEarnings={userEarnings}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
+          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+        />
+      );
+    });
 
   const isMobile = usePoolsIsMobilePage();
 
@@ -129,10 +251,19 @@ export function GmList({
       className="grow"
       description={
         <div className="flex flex-col gap-16">
-          <Trans>
-            Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options.
-          </Trans>
-          <div className="flex flex-wrap items-center justify-between gap-12 py-8">
+          <Trans>Liquidity pools for specific GMX markets with single-asset and native asset options</Trans>
+          <div className="flex flex-wrap items-center justify-between gap-12 max-md:flex-wrap-reverse">
+            <div className="max-w-full">
+              <ButtonRowScrollFadeContainer>
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  recentlyListedCount={recentlyListedCount}
+                  selectedValue={topLevelTab}
+                  type="inline"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+
             <SearchInput
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
@@ -140,16 +271,41 @@ export function GmList({
               placeholder={t`Search pools`}
               autoFocus={false}
             />
-            <div className="max-w-full">
-              <ButtonRowScrollFadeContainer>
-                <FavoriteTabs
-                  favoritesKey="gm-list"
-                  className="!text-typography-secondary hover:!text-typography-primary"
-                  activeClassName="!text-typography-primary"
+          </div>
+        </div>
+      }
+      contentHeader={
+        <div>
+          {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+            <div className="flex w-full justify-start">
+              <ButtonRowScrollFadeContainer className="grow">
+                <Tabs
+                  options={cryptoSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-20"
+                  tabsWrapperClassName="gap-16"
+                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
                 />
               </ButtonRowScrollFadeContainer>
             </div>
-          </div>
+          )}
+          {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+            <div className="flex w-full justify-start">
+              <ButtonRowScrollFadeContainer className="grow">
+                <Tabs
+                  options={tradfiSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-20"
+                  tabsWrapperClassName="gap-16"
+                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+          )}
         </div>
       }
       bottom={
@@ -174,7 +330,7 @@ export function GmList({
               <table className="w-[max(100%,1000px)]">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="pl-16">
+                    <TableTh className="!pl-12">
                       <Trans>POOL</Trans>
                     </TableTh>
                     <TableTh>
@@ -188,6 +344,11 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
+                          isUserEarningsLoading={isUserEarningsLoading}
+                          isUserEarningsUnavailable={isUserEarningsUnavailable}
+                          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+                          hasBalanceOutsideWallet={userTotalGmInfo?.hasBalanceOutsideWallet}
                           label={t`BALANCE`}
                         />
                       </Sorter>
@@ -203,11 +364,11 @@ export function GmList({
                       </Sorter>
                     </TableTh>
                     <TableTh>
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={t`SNAPSHOT`}
                         className="normal-case"
                         position="bottom-end"
-                        content={<Trans>Performance vs benchmark over the selected period</Trans>}
+                        content={t`Performance vs benchmark over the selected period`}
                         variant="iconStroke"
                       />
                     </TableTh>

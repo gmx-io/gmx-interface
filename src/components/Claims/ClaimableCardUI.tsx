@@ -1,11 +1,10 @@
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { CSSProperties, ReactNode, useCallback, useMemo } from "react";
-
-import { formatDeltaUsd } from "lib/numbers";
+import { CSSProperties, ReactNode, useCallback } from "react";
 
 import Button from "components/Button/Button";
-import Tooltip from "components/Tooltip/Tooltip";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 type Section = {
   buttonText: ReactNode;
@@ -39,7 +38,6 @@ export function ClaimableCardUI({ title, style, sections }: Props) {
 
 function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section & { title: string }) {
   const renderTooltipContent = useCallback(() => tooltipText, [tooltipText]);
-  const usdFormatted = useMemo(() => formatDeltaUsd(usd), [usd]);
 
   return (
     <div
@@ -49,14 +47,13 @@ function Section({ buttonText, onButtonClick, tooltipText, title, usd }: Section
       <div className="flex flex-col gap-4">
         <span className={cx("font-medium", { positive: usd > 0n })}>
           {tooltipText ? (
-            <Tooltip
-              handle={usdFormatted}
+            <StandardTooltip
+              handle={<DeltaUsdValue deltaUsd={usd} />}
               handleClassName="numbers"
-              position="bottom-start"
               renderContent={renderTooltipContent}
             />
           ) : (
-            <span className="numbers">{usdFormatted}</span>
+            <DeltaUsdValue deltaUsd={usd} className="numbers" />
           )}
         </span>
         <span className="text-body-small text-typography-secondary">{title}</span>

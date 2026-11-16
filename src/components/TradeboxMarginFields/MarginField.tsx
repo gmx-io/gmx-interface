@@ -1,9 +1,9 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ChangeEvent, useCallback, useRef } from "react";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { isSettlementChain } from "config/multichain";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -14,13 +14,15 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
-import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
+import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
+import { formatBalanceAmount, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
+import { getIsMaxActionDisabled, MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 
@@ -32,8 +34,9 @@ type Props = {
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   onMaxClick?: () => void;
+  onKeepGasClick?: () => void;
+  maxActions?: MaxActionsState;
   onFocus?: () => void;
   qa?: string;
 };
@@ -42,8 +45,9 @@ export function MarginField({
   inputValue,
   onInputValueChange,
   onSelectFromTokenAddress,
-  onDepositTokenAddress,
   onMaxClick,
+  onKeepGasClick,
+  maxActions = DEFAULT_MAX_ACTIONS_STATE,
   onFocus,
   qa,
 }: Props) {
@@ -55,7 +59,6 @@ export function MarginField({
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const walletIconUrls = useWalletIconUrls();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
@@ -77,10 +80,16 @@ export function MarginField({
   const handleBalanceClick = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      onMaxClick?.();
+      if (!getIsMaxActionDisabled(maxActions)) {
+        onMaxClick?.();
+      }
     },
-    [onMaxClick]
+    [maxActions, onMaxClick]
   );
+
+  const handleMaxClick = useCallback(() => {
+    onMaxClick?.();
+  }, [onMaxClick]);
 
   const showUsd = fromUsd !== undefined && !fromToken?.isStable;
 
@@ -99,26 +108,35 @@ export function MarginField({
             placeholder="0.00"
             qa={qa ? qa + "-input" : undefined}
           />
-          {showUsd && <span className="shrink-0 text-12 text-typography-secondary numbers">≈{formatUsd(fromUsd)}</span>}
+          {showUsd && (
+            <span className="shrink-0 text-12 text-typography-secondary numbers">
+              ≈<UsdValue usd={fromUsd} />
+            </span>
+          )}
         </>
       }
       rightHeadline={
         formattedBalance !== undefined ? (
-          <button
-            type="button"
-            onClick={handleBalanceClick}
-            className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
-            data-qa={qa ? qa + "-max" : undefined}
-          >
-            <WalletIcon className="size-14" />
-            <span className="numbers">{formattedBalance}</span>
-          </button>
+          <div className="flex items-center gap-6">
+            {fromToken !== undefined && fromToken.balance !== undefined && fromToken.balance > 0n && (
+              <MaxActions qa={qa} state={maxActions} onMax={handleMaxClick} onKeepGas={onKeepGasClick} />
+            )}
+            <button
+              type="button"
+              onClick={handleBalanceClick}
+              className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+              data-qa={qa ? qa + "-balance" : undefined}
+            >
+              <WalletIcon className="size-14" />
+              <span className="numbers">{formattedBalance}</span>
+            </button>
+          </div>
         ) : undefined
       }
       rightContent={
         <div data-token-selector>
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
+            (!isSettlementChain(chainId) ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
@@ -148,7 +166,6 @@ export function MarginField({
                 qa="margin-collateral-selector"
                 tokensData={tokensData}
                 multichainTokens={multichainTokens}
-                onDepositTokenAddress={onDepositTokenAddress}
                 payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : undefined}
               />
             ))}

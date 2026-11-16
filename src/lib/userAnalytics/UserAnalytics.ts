@@ -1,23 +1,31 @@
-import { AbFlag, getAbFlagUrlParams } from "config/ab";
+import { AbFlag } from "config/ab";
 import { getStoredUtmParams } from "domain/utm";
 import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
+import type { LaunchSource } from "lib/pwa/getLaunchSource";
 import { sleep } from "lib/sleep";
 
 import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
+import type { WalletAnalyticsProvenance } from "./walletProvenance";
 import { metrics } from "../metrics/Metrics";
 
-type CommonEventParams = {
-  platform?: string;
-  browserName?: string;
-  ordersCount?: number;
-  isWalletConnected?: boolean;
-  isTest: boolean;
-  isInited?: boolean;
-} & {
+type AbFlagEventParams = {
   [key in AbFlag]: boolean;
 };
 
-type ProfileProps = {
+type CommonEventParams = WalletAnalyticsProvenance &
+  AbFlagEventParams & {
+    platform?: string;
+    browserName?: string;
+    ordersCount?: number;
+    isWalletConnected?: boolean;
+    displayMode: DisplayMode;
+    launchSource?: LaunchSource;
+    isTest: boolean;
+    isInited?: boolean;
+  };
+
+type ProfileProps = WalletAnalyticsProvenance & {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;
@@ -139,10 +147,9 @@ class UserAnalytics {
 
   getSessionForwardParams() {
     const sessionIdParam = `${SESSION_ID_KEY}=${getOrSetSessionId()}`;
-    const abFlagsParams = getAbFlagUrlParams();
     const utmParams = getStoredUtmParams();
 
-    return [sessionIdParam, abFlagsParams, utmParams?.utmString].filter(Boolean).join("&");
+    return [sessionIdParam, utmParams?.utmString].filter(Boolean).join("&");
   }
 
   pushEvent = async <T extends AnalyticsEventParams = never>(

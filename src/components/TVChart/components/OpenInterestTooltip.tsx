@@ -3,9 +3,10 @@ import { ReactNode, useMemo } from "react";
 
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import { TooltipContent, TooltipFootnote, TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 export function OpenInterestTooltip() {
   const info = useSelector(selectChartHeaderInfo);
@@ -29,30 +30,36 @@ export function OpenInterestTooltip() {
 
     const longTokens = formatAmount(openInterestLongInTokens, decimals, 2, true);
     const shortTokens = formatAmount(openInterestShortInTokens, decimals, 2, true);
-    const longUsd = formatUsd(openInterestLong, { displayDecimals: 0 });
-    const shortUsd = formatUsd(openInterestShort, { displayDecimals: 0 });
 
     return {
       longOIFormatted: (
         <>
-          {longTokens} {indexTokenSymbol} <span className="text-typography-secondary">({longUsd})</span>
+          {longTokens} {indexTokenSymbol}{" "}
+          <span className="whitespace-nowrap text-typography-secondary">
+            (<UsdValue usd={openInterestLong} displayDecimals={0} />)
+          </span>
         </>
       ),
       shortOIFormatted: (
         <>
-          {shortTokens} {indexTokenSymbol} <span className="text-typography-secondary">({shortUsd})</span>
+          {shortTokens} {indexTokenSymbol}{" "}
+          <span className="whitespace-nowrap text-typography-secondary">
+            (<UsdValue usd={openInterestShort} displayDecimals={0} />)
+          </span>
         </>
       ),
     };
   }, [info]);
 
   return (
-    <div>
-      <StatsTooltipRow label={t`Long OI`} value={longOIFormatted} showDollar={false} />
-      <StatsTooltipRow label={t`Short OI`} value={shortOIFormatted} showDollar={false} />
-      <div className="mt-4">
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow label={t`Long OI`} value={longOIFormatted} />
+        <TooltipRow label={t`Short OI`} value={shortOIFormatted} />
+      </TooltipRows>
+      <TooltipFootnote>
         <Trans>Total open interest in tokens and notional value in USD</Trans>
-      </div>
-    </div>
+      </TooltipFootnote>
+    </TooltipContent>
   );
 }

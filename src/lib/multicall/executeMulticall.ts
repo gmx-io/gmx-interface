@@ -6,8 +6,10 @@ import values from "lodash/values";
 
 import { type AnyChainId } from "config/chains";
 import { isDevelopment } from "config/env";
+import { isIOS } from "lib/headlessUiIsMobile";
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
+import { assertEvmRpcActive } from "lib/rpc/fetchRpc";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL, FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { AbiId } from "sdk/abis";
 
@@ -15,7 +17,7 @@ import { debugLog, getIsMulticallBatchingDisabled } from "./debug";
 import { executeMulticallMainThread } from "./executeMulticallMainThread";
 import { executeMulticallWorker } from "./executeMulticallWorker";
 import type { ContractCallResult, MulticallError, MulticallRequestConfig, MulticallResult } from "./types";
-import { getCallId, getContractAbiKey } from "./utils";
+import { getCallId, getCallsCountBucket, getContractAbiKey } from "./utils";
 
 type CallResultHandler = (
   destination: {
@@ -35,6 +37,7 @@ type MulticallFetcherConfig = {
         abiId: AbiId;
         methodName: string;
         params: any[];
+        standalone?: boolean;
       };
       handlers: {
         [requestId: string]: {
@@ -96,7 +99,7 @@ async function executeChainMulticall(
     data: {
       chainId,
       priority,
-      callsCount: totalCallsCount,
+      callsCountBucket: getCallsCountBucket(totalCallsCount),
     },
   });
 
@@ -131,7 +134,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     } else {
@@ -140,7 +143,7 @@ async function executeChainMulticall(
         data: {
           chainId,
           priority,
-          callsCount: callCount,
+          callsCountBucket: getCallsCountBucket(callCount),
         },
       });
     }
@@ -189,6 +192,8 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
   name?: string,
   disableBatching?: boolean
 ): Promise<MulticallResult<TConfig>> {
+  assertEvmRpcActive();
+
   if (disableBatching) {
     const callsCount = Object.keys(request).reduce(
       (sum, contractAbiKey) => sum + Object.keys(request[contractAbiKey].calls).length,
@@ -265,6 +270,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
             abiId: callGroup.abiId,
             methodName: call.methodName,
             params: call.params,
+            standalone: call.standalone,
           },
           handlers: {},
         };
@@ -302,7 +308,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
 }
 
 function executeWorkerOrMainThread(chainId: AnyChainId, requestConfig: MulticallRequestConfig<any>, callCount: number) {
-  if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
+  if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isIOS()) {
     return executeMulticallWorker(chainId, requestConfig);
   } else {
     return executeMulticallMainThread(chainId, requestConfig);
@@ -368,26 +374,9 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
     requests[contractAbiKey].calls[callId] = {
       methodName: callData.methodName,
       params: callData.params,
+      standalone: callData.standalone,
     };
   }
 
   return requests;
-}
-
-function isOldIOS() {
-  // An issue was identified with sending messages from the worker to the main thread on iOS 16 and earlier versions.
-  // Therefore, it was decided not to use workers for these versions.
-  const THRESHOLD = 16;
-  const isIOS = /iPhone|iPad|iPod/i.test(navigator?.userAgent);
-
-  if (!isIOS) {
-    return false;
-  }
-
-  const versionMatch = navigator.userAgent.match(/OS (\d+)?/);
-  if (versionMatch?.[1]) {
-    return parseInt(versionMatch[1], 10) <= THRESHOLD;
-  }
-
-  return false;
 }

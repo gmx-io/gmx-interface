@@ -24,3 +24,11 @@ export function getIsValidExpressParams({
 }): boolean {
   return gasPaymentValidations.isValid;
 }
+
+export function getIsConfirmedOutOfGasPaymentTokenBalance(
+  gasPaymentValidations:
+    | Pick<GasPaymentValidations, "isOutGasTokenBalance" | "isGasPaymentTokenBalanceLoaded">
+    | undefined
+): boolean {
+  return Boolean(gasPaymentValidations?.isGasPaymentTokenBalanceLoaded && gasPaymentValidations.isOutGasTokenBalance);
+}

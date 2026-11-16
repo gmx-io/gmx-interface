@@ -6,7 +6,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getOrderInfo, isPositionOrder, isSwapOrder, isTwapPositionOrder, isTwapSwapOrder } from "sdk/utils/orders";
 import { getTwapOrderKey } from "sdk/utils/twap/index";
-import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
@@ -21,6 +21,8 @@ export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
   count?: number;
   isLoading: boolean;
+  // Set when the Solana orders read failed. Cached orders may still be present; they are not a confirmed fresh read.
+  error?: Error;
 };
 
 export function useOrdersInfoRequest(
@@ -105,7 +107,7 @@ const createOrderInfo = ({
   wrappedNativeToken: Token;
   acc: OrdersInfoData;
 }) => {
-  const twapParams = decodeTwapUiFeeReceiver(order.uiFeeReceiver);
+  const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
 
   const orderInfo = getOrderInfo({
     marketsInfoData,
@@ -151,6 +153,8 @@ const createOrderInfo = ({
     if (twapOrderInfo && isTwapPositionOrder(twapOrderInfo) && isPositionOrder(orderInfo)) {
       twapOrderInfo.orders.push(orderInfo);
     }
+
+    twapOrderInfo.isFrozen = twapOrderInfo.isFrozen || orderInfo.isFrozen;
 
     return twapOrderInfo;
   }

@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import {
   selectTradeboxMarketInfo,
+  selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxMockPosition } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
@@ -25,9 +26,11 @@ type Props = {
 export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
   const mockPosition = useSelector(selectTradeboxMockPosition);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const { isLong } = useSelector(selectTradeboxTradeFlags);
 
   const priceError = entry.price?.error ?? undefined;
+  const priceWarning = entry.price?.warning ?? undefined;
 
   const collateralUsd = useMemo(() => {
     const collateralAmount = mockPosition?.collateralAmount;
@@ -88,8 +91,11 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
       onPriceChange={handlePriceChange}
       positionData={positionData}
       priceError={priceError}
+      priceWarning={priceWarning}
       variant="compact"
       estimatedPnl={estimatedPnl}
+      carryOverKey={`${toTokenAddress}:${isLong}`}
+      existingOrderKey={entry.txnType === null ? entry.order?.key : undefined}
     />
   );
 }

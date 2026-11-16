@@ -1,11 +1,11 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { WagmiProvider } from "wagmi";
 
+import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
@@ -52,11 +52,11 @@ function TestProviders({ state, children }: { state: SyntheticsState; children: 
     <MemoryRouter>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          <RainbowKitProvider>
-            <I18nProvider i18n={i18n}>
+          <I18nProvider i18n={i18n}>
+            <GmxAccountContextProvider>
               <StateCtx.Provider value={state}>{children}</StateCtx.Provider>
-            </I18nProvider>
-          </RainbowKitProvider>
+            </GmxAccountContextProvider>
+          </I18nProvider>
         </WagmiProvider>
       </QueryClientProvider>
     </MemoryRouter>
@@ -128,7 +128,6 @@ export function IntegrationStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -195,7 +194,6 @@ export function PriceChangeStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -259,7 +257,6 @@ export function LeverageOffStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -320,7 +317,6 @@ export function EthMarginPriceChangeStory({
       <TradeboxMarginFields
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -360,7 +356,6 @@ export function IntegrationNoTriggerCallbackStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(10000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}
@@ -408,7 +403,6 @@ export function MaxAvailableDivergenceStory() {
       <TradeboxMarginFields
         maxAvailableAmount={expandDecimals(5000, 6)}
         onSelectFromTokenAddress={noop}
-        onDepositTokenAddress={noop}
         fromTokenInputValue={fromValue}
         setFromTokenInputValue={(value) => setFromValue(value)}
         setFocusedInput={setFocused}

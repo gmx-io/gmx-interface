@@ -6,20 +6,21 @@
 .Toastify__toast-container {
   width: 38rem;
   padding: 0;
+  z-index: 10001;
 
   &--top-right {
-    right: 3rem !important;
-    top: 3rem !important;
+    right: calc(3rem + var(--safe-area-inset-right)) !important;
+    top: calc(3rem + var(--safe-area-inset-top)) !important;
   }
 
   &--bottom-right {
-    bottom: 3rem !important;
-    right: 3rem !important;
+    bottom: calc(3rem + var(--safe-area-inset-bottom)) !important;
+    right: calc(3rem + var(--safe-area-inset-right)) !important;
   }
 
   @media screen and (max-width: 480px) {
     & {
-      width: 100vw;
+      width: calc(100vw - var(--safe-area-inset-left) - var(--safe-area-inset-right));
     }
   }
 }
@@ -27,7 +28,7 @@
 @media (max-width: 768px) {
   .Toastify__toast-container--bottom-right,
   .Toastify__toast-container--bottom-left {
-    bottom: 0rem !important;
+    bottom: var(--safe-area-inset-bottom) !important;
     & .Toastify__toast {
       border-bottom-left-radius: 0 !important;
       border-bottom-right-radius: 0 !important;
@@ -36,6 +37,8 @@
 }
 
 .Toastify__toast {
+  position: relative;
+  display: block;
   min-height: 4.65rem;
   cursor: default;
   backdrop-filter: blur(100px) !important;
@@ -62,12 +65,14 @@
   background: var(--color-red-900) !important;
   border-bottom: 2px solid var(--color-red-500);
 
-  .link-underline {
-    color: var(--color-white) !important;
-  }
-
   .close-toast-button > svg {
     color: var(--color-red-500) !important;
+  }
+}
+
+.Toastify__toast {
+  .link-underline {
+    color: var(--color-typography-primary) !important;
   }
 }
 
@@ -86,11 +91,18 @@
 }
 
 .Toastify__toast-body {
-  padding: 12px 0 12px 12px;
+  padding: 12px 40px 12px 12px;
   font: normal normal normal 1.4rem/1.6rem "TTHoves";
   line-height: 2rem;
 }
 
-.Toastify__toast-body:not(:has(+ .close-toast-button)) {
+.Toastify__toast-body:has(.StatusNotification) {
   padding-right: 12px;
+}
+
+.close-toast-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
 }

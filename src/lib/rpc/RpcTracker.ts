@@ -1,11 +1,11 @@
 import orderBy from "lodash/orderBy";
 import uniqBy from "lodash/uniqBy";
-import { decodeFunctionResult, encodeFunctionData } from "viem";
+import { decodeFunctionResult, encodeFunctionData, isHex } from "viem";
 
 import { ContractsChainId, isContractsChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainName, getProviderNameFromUrl, getRpcProviders, RpcConfig, RpcPurpose } from "config/rpc";
-import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import {
   CurrentEndpoints,
   EndpointStats,
@@ -97,7 +97,7 @@ export class RpcTracker {
   }
 
   getIsLargeAccount = () => {
-    return getIsLargeAccount();
+    return getIsLargeAccountChain(this.params.chainId);
   };
 
   getRpcConfig(endpoint: string): RpcConfig | undefined {
@@ -194,10 +194,15 @@ export class RpcTracker {
       data: response.result,
     });
 
+    const sampleReturnData = multicallResult[0].returnData;
+    if (!isHex(sampleReturnData)) {
+      throw new Error("Invalid RPC tracker multicall return data");
+    }
+
     const sampleFieldValue = decodeFunctionResult({
       abi: abis.DataStore,
       functionName: "getUint",
-      data: multicallResult[0].returnData,
+      data: sampleReturnData,
     });
 
     const blockNumber = Number(_blockNumber);
@@ -277,7 +282,7 @@ export class RpcTracker {
       return byPorpose && byBlockNumber;
     });
 
-    if (!getIsLargeAccount()) {
+    if (!this.getIsLargeAccount()) {
       // for default accounts set alhcemy as afallback manually because we don't test it in tracking
       const firstFallbackStats = endpointsStats.find(
         (result) => result.endpoint !== primary && this.getRpcConfig(result.endpoint)?.purpose === "fallback"

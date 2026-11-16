@@ -29,7 +29,7 @@ const StatusBadge = ({ variant }: { variant: "loading" | "success" }) => {
 export const DepositStatusView = () => {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const transfer = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
+  const { transfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid, {
     refetch: Boolean(selectedTransferGuid),
   });
   const [isSubaccountActivating, setIsSubaccountActivating] = useState(false);
@@ -49,14 +49,14 @@ export const DepositStatusView = () => {
     });
     setIsSubaccountActivating(true);
     subaccountState
-      .tryEnableSubaccount()
+      .tryEnableSubaccount({ ...subaccountState.initialSettings, withTokenPermits: false })
       .then((isSubaccountActivated) => {
         if (isSubaccountActivated) {
           userAnalytics.pushEvent<OneClickPromotionEvent>({
             event: "OneClickPromotion",
             data: { action: "EnableOneClickSuccess" },
           });
-          setIsVisibleOrView("main");
+          setIsVisibleOrView("transferHistory");
         }
       })
       .finally(() => {
@@ -69,7 +69,7 @@ export const DepositStatusView = () => {
       event: "OneClickPromotion",
       data: { action: "UserRejected" },
     });
-    setIsVisibleOrView("main");
+    setIsVisibleOrView("transferHistory");
   };
 
   const token = transfer ? getToken(transfer.settlementChainId, transfer.token) : undefined;

@@ -59,13 +59,14 @@ export function createGetMaxLongShortLiquidityPool(
 
   return (token: Token) => {
     const indexTokenAddress = token.isNative ? token.wrappedAddress : token.address;
-    const currentMarkets = groupedIndexMarkets[indexTokenAddress!];
+    const currentMarkets: TokenOption[] | undefined = groupedIndexMarkets[indexTokenAddress!];
     const maxLongLiquidityPool = maxBy(currentMarkets, (market) => market.maxLongLiquidity)!;
     const maxShortLiquidityPool = maxBy(currentMarkets, (market) => market.maxShortLiquidity)!;
 
     return {
       maxLongLiquidityPool,
       maxShortLiquidityPool,
+      indexTokenPools: currentMarkets,
     };
   };
 }

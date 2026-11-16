@@ -1,14 +1,21 @@
 import { Trans } from "@lingui/macro";
 import { type KeyboardEvent, type ReactNode } from "react";
 
+import { getChainName, isSolanaNetwork } from "config/chains";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
+import { useAccountModalMode } from "./hooks";
+import { TransferHistoryView } from "./MainView";
+import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawalView } from "./WithdrawalView";
 
 export function TitleRow({ children }: { children: ReactNode }) {
@@ -45,22 +52,143 @@ export function TitleWithBack({ backTo, children }: { backTo: GmxAccountModalVie
   );
 }
 
+const DOCS_MULTICHAIN_URL = "https://docs.gmx.io/docs/trading/overview/#multichain-trading";
+
+function WalletOnlyInfo({ chainName }: { chainName: string }) {
+  return (
+    <TooltipContent>
+      <TooltipText>
+        <Trans>You can open isolated positions on GMX using funds directly from your connected wallet.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
+      </TooltipText>
+      <TooltipLink href={DOCS_MULTICHAIN_URL}>
+        <Trans>Read more</Trans>
+      </TooltipLink>
+    </TooltipContent>
+  );
+}
+
+function GmxAccountInfo({
+  sourceChainName,
+  settlementChainName,
+}: {
+  sourceChainName: string;
+  settlementChainName: string;
+}) {
+  return (
+    <TooltipContent>
+      <TooltipText>
+        <Trans>You can open isolated positions on GMX using your GMX Account.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>Wallet funds on {sourceChainName} are not used directly for GMX trades.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to
+          your GMX Account.
+        </Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          All positions belong to the same connected wallet and are shown together, whether they were opened from{" "}
+          {settlementChainName} wallet funds or GMX Account funds.
+        </Trans>
+      </TooltipText>
+    </TooltipContent>
+  );
+}
+
+function WalletAndGmxAccountInfo() {
+  return (
+    <TooltipContent>
+      <TooltipText>
+        <Trans>You can open isolated positions on GMX using funds from either your wallet or your GMX Account.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>Wallet uses funds directly from your connected wallet.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then
+          deposit to your GMX Account.
+        </Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          All positions belong to the same connected wallet and are shown together, whether they were opened with wallet
+          funds or GMX Account funds.
+        </Trans>
+      </TooltipText>
+      <TooltipLink href={DOCS_MULTICHAIN_URL}>
+        <Trans>Read more</Trans>
+      </TooltipLink>
+    </TooltipContent>
+  );
+}
+
+export function MainViewTitle() {
+  const { chainId, srcChainId, networkId } = useChainId();
+  const [modalState] = useGmxAccountModalOpen();
+  const isSolanaSelected = isSolanaNetwork(networkId);
+  const mode = useAccountModalMode();
+
+  const isMainViewActive = modalState === true || modalState === "main";
+
+  const settlementChainName = getChainName(chainId);
+  const sourceChainName = srcChainId !== undefined ? getChainName(srcChainId) : settlementChainName;
+
+  let title: ReactNode;
+  let info: ReactNode = undefined;
+
+  if (mode === "walletOnly") {
+    title = <Trans>Wallet</Trans>;
+    // Solana has no GMX Account copy yet. The settlement-chain text names Arbitrum.
+    if (!isSolanaSelected) {
+      info = <WalletOnlyInfo chainName={settlementChainName} />;
+    }
+  } else if (mode === "gmxAccount") {
+    title = <Trans>GMX Account</Trans>;
+    info = <GmxAccountInfo sourceChainName={sourceChainName} settlementChainName={settlementChainName} />;
+  } else {
+    title = <Trans>Wallet & GMX Account</Trans>;
+    info = <WalletAndGmxAccountInfo />;
+  }
+
+  if (!info) {
+    return <>{title}</>;
+  }
+
+  return (
+    <StandardTooltip
+      handle={title}
+      variant="iconStroke"
+      iconClassName="text-typography-secondary"
+      position="bottom"
+      content={info}
+      disabled={!isMainViewActive}
+    />
+  );
+}
+
 export function AvailableToTradeAssetsTitle() {
   const { srcChainId } = useChainId();
 
   return (
     <TitleWithBack backTo="main">
-      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available to trade assets</Trans>}
+      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available assets</Trans>}
     </TitleWithBack>
   );
 }
 
 export function TransferDetailsTitle() {
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const { transfer: selectedTransfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
   return (
-    <TitleWithBack backTo="main">
+    <TitleWithBack backTo="transferHistory">
       {selectedTransfer?.operation === "withdrawal" ? (
         <Trans>Withdrawal from GMX Account</Trans>
       ) : (
@@ -70,10 +198,33 @@ export function TransferDetailsTitle() {
   );
 }
 
+export function TransferHistoryTitle() {
+  return (
+    <TitleWithBack backTo="main">
+      <Trans>Transfer history</Trans>
+    </TitleWithBack>
+  );
+}
+
 export function WithdrawalScreen() {
   return (
     <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="gmxAccount">
       <WithdrawalView />
     </SyntheticsStateContextProvider>
+  );
+}
+
+export function TransferHistoryScreen({ showDetails }: { showDetails: boolean }) {
+  return (
+    <div className="relative flex min-h-0 grow flex-col">
+      <div className="isolate flex min-h-0 grow flex-col">
+        <TransferHistoryView />
+      </div>
+      {showDetails && (
+        <div className="absolute inset-0 flex flex-col bg-slate-900">
+          <TransferDetailsView />
+        </div>
+      )}
+    </div>
   );
 }

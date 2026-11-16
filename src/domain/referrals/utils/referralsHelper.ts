@@ -2,15 +2,15 @@ import { t } from "@lingui/macro";
 import identity from "lodash/identity";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getReferralCodeOwner } from "domain/referrals";
-import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import { formatAmount, removeTrailingZeros } from "lib/numbers";
+import { isAddressZero, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { expandDecimals, formatAmount, removeTrailingZeros, trimZeroDecimals } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
-import { REFERRAL_CODE_REGEX } from "./referralCode";
+import { getReferralCodeLinkParam } from "./referralCode";
 
 export const CREATE_REFERRAL_CODE_QUERY_PARAM = "createReferralCode";
 
@@ -74,43 +74,39 @@ export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
-const tierRebateInfo: Record<number, number> = {
-  0: 5,
-  1: 10,
-  2: 15,
-};
+const BALANCER_PROGRAM_TIERS = [6, 7];
 
-const tierDiscountInfo: Record<number, number> = {
-  0: 5,
-  1: 10,
-  2: 10,
-};
+export function isBalancerProgramTier(tierId: number | undefined): boolean {
+  return tierId !== undefined && BALANCER_PROGRAM_TIERS.includes(tierId);
+}
 
 export function getSharePercentage(
-  tierId: number | undefined,
-  discountShare: bigint | undefined,
+  customDiscountShare: bigint | undefined,
+  tierDiscountShare: bigint | undefined,
   totalRebate: bigint | undefined,
   isRebate?: boolean
 ): string | number | undefined {
-  if (tierId === undefined || totalRebate === undefined) return;
-  if (discountShare === undefined || discountShare === 0n)
-    return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+  const discountShare =
+    customDiscountShare !== undefined && customDiscountShare > 0n ? customDiscountShare : tierDiscountShare;
+
+  if (discountShare === undefined || totalRebate === undefined) return;
+
   const decimals = 4;
 
-  const discount = bigMath.mulDiv(
+  const share = bigMath.mulDiv(
     totalRebate * (isRebate ? BASIS_POINTS_DIVISOR_BIGINT - discountShare : discountShare),
     BigInt(Math.pow(10, decimals)),
     BASIS_POINTS_DIVISOR_BIGINT
   );
 
-  const discountPercentage = discount / 100n;
-  return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
+  const percentage = share / 100n;
+  return removeTrailingZeros(trimZeroDecimals(formatAmount(percentage, decimals, 3, true)));
 }
 
 export function getCodeError(value: string): string {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) return "";
+  if (!value) return "";
 
+  const trimmedValue = value.trim();
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
     return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
@@ -122,5 +118,34 @@ export function getCodeError(value: string): string {
 }
 
 export function getReferralCodeTradeUrl(referralCode: string): string {
-  return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+  return `${getRootUrl()}/trade/?${REFERRAL_CODE_QUERY_PARAM}=${getReferralCodeLinkParam(referralCode)}`;
+}
+
+const SHARE_CARD_DISCOUNTS_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);
+
+export function shouldShowShareCardDiscounts(totalDiscountsUsd: bigint | undefined): boolean {
+  return totalDiscountsUsd !== undefined && totalDiscountsUsd >= SHARE_CARD_DISCOUNTS_THRESHOLD_USD;
+}
+
+export function shouldShowCreateReferralCodeTabLabel({
+  hasAddressInUrl,
+  hasAccount,
+  isReferralsDataLoading,
+  hasAnyAffiliateCode,
+}: {
+  hasAddressInUrl: boolean;
+  hasAccount: boolean;
+  isReferralsDataLoading: boolean;
+  hasAnyAffiliateCode: boolean;
+}): boolean {
+  // Another wallet's page is not yours to create a code on
+  if (hasAddressInUrl) {
+    return false;
+  }
+
+  if (!hasAccount) {
+    return true;
+  }
+
+  return !isReferralsDataLoading && !hasAnyAffiliateCode;
 }

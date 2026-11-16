@@ -2,7 +2,10 @@ import { Trans } from "@lingui/macro";
 import { ChangeEvent, useMemo } from "react";
 
 import { TokenData } from "domain/synthetics/tokens";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import { TradeInputField, DisplayMode } from "./TradeInputField";
 
@@ -31,21 +34,24 @@ export function SizeField({
   onFocus,
   qa,
 }: Props) {
+  const tokenLabel = indexToken ? `${getTokenVisualMultiplier(indexToken)}${indexToken.symbol}` : undefined;
+
   const alternateValue = useMemo(() => {
     if (displayMode === "token") {
-      return formatUsd(sizeInUsd ?? 0n, { fallbackToZero: true });
+      return <UsdValue usd={sizeInUsd ?? 0n} fallbackToZero />;
     } else {
       if (sizeInTokens === undefined || !indexToken) return "0";
       const visualMultiplier = BigInt(indexToken.visualMultiplier ?? 1);
-      return formatTokenAmount(sizeInTokens / visualMultiplier, indexToken.decimals, indexToken.symbol);
+      return formatTokenAmount(sizeInTokens / visualMultiplier, indexToken.decimals, tokenLabel);
     }
-  }, [displayMode, sizeInUsd, sizeInTokens, indexToken]);
+  }, [displayMode, sizeInUsd, sizeInTokens, indexToken, tokenLabel]);
 
   return (
     <TradeInputField
       label={<Trans>Size</Trans>}
       alternateValue={alternateValue}
       tokenSymbol={indexToken?.symbol}
+      tokenLabel={tokenLabel}
       displayMode={displayMode}
       onDisplayModeChange={onDisplayModeChange}
       inputValue={inputValue}

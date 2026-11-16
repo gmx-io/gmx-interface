@@ -7,7 +7,7 @@ import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { convertToTokenAmount } from "sdk/utils/tokens";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";
@@ -119,14 +119,12 @@ export function useUsdToNativeTokenMultichain({
   return nativeTokenAmount;
 }
 
-export function useGasMultichainUsd({
+export function useGasMultichainNativeAmount({
   sourceChainId,
   sourceChainGas,
-  targetChainId,
 }: {
   sourceChainId: AnyChainId | undefined;
   sourceChainGas: bigint | undefined;
-  targetChainId: AnyChainId | undefined;
 }): bigint | undefined {
   const [nativeWeiAmount, setNativeWeiAmount] = useState<bigint | undefined>(undefined);
 
@@ -139,6 +137,20 @@ export function useGasMultichainUsd({
       .getGasPrice()
       .then((price) => setNativeWeiAmount(sourceChainGas * price));
   }, [sourceChainGas, sourceChainId]);
+
+  return nativeWeiAmount;
+}
+
+export function useGasMultichainUsd({
+  sourceChainId,
+  sourceChainGas,
+  targetChainId,
+}: {
+  sourceChainId: AnyChainId | undefined;
+  sourceChainGas: bigint | undefined;
+  targetChainId: AnyChainId | undefined;
+}): bigint | undefined {
+  const nativeWeiAmount = useGasMultichainNativeAmount({ sourceChainId, sourceChainGas });
 
   return useNativeTokenMultichainUsd({
     sourceChainId,

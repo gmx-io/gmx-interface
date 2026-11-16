@@ -2,6 +2,8 @@ import type { ChainName } from "config/chains";
 import { EditingOrderSource } from "domain/synthetics/orders/types";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
 
+import type { WalletAnalyticsProvenance } from "./walletProvenance";
+
 export type LandingPageViewEvent = {
   event: "LandingPageAction";
   data: {
@@ -54,7 +56,7 @@ export type ConnectWalletClickEvent = {
 
 export type ConnectWalletResultEvent = {
   event: "ConnectWalletAction";
-  data: {
+  data: WalletAnalyticsProvenance & {
     action: "ConnectedSuccessfully" | "ConnectionFail";
     provider: string; // ProviderName
     ordersCount: number | undefined;
@@ -65,6 +67,7 @@ export type DisconnectWalletEvent = {
   event: "ConnectWalletAction";
   data: {
     action: "Disconnect";
+    network?: ChainName;
   };
 };
 
@@ -228,6 +231,13 @@ export type TradeBoxWarningSwitchPoolClickEvent = {
   };
 };
 
+export type MaxActionClickEvent = {
+  event: "MaxAction";
+  data: {
+    action: "MaxClick" | "KeepGasClick";
+  };
+};
+
 export type PoolsPageBuyConfirmEvent = {
   event: "PoolsPageAction";
   data: {
@@ -260,7 +270,7 @@ export type SharePositionClickEvent = {
   };
 };
 
-export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list";
+export type SharePositionActionSource = "auto-prompt" | "positions-list" | "trade-history-list" | "account-dashboard";
 
 export type SharePositionActionEvent = {
   event: "SharePositionAction";
@@ -290,13 +300,6 @@ export type ReferralShareEvent = {
   event: "ReferralCodeAction";
   data: {
     action: "ShareTwitter" | "CopyCode";
-  };
-};
-
-export type LandingPageAgreementConfirmationEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
   };
 };
 

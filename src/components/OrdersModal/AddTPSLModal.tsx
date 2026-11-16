@@ -6,6 +6,8 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
+  useProDiscountFactor,
+  useFeeDiscountFactor,
   useTokensData,
   useUiFeeFactor,
   useUserReferralInfo,
@@ -19,24 +21,38 @@ import {
   selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
   selectIsPnlInLeverage,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import {
+  DecreasePositionSwapType,
+  isLimitDecreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+  OrderType,
+} from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   PositionInfo,
   formatLeverage,
-  formatLiquidationPrice,
+  formatLeverageParts,
+  formatLiquidationPriceParts,
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
+import { SidecarSlTpOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import {
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
@@ -45,6 +61,8 @@ import {
 } from "domain/synthetics/sidecarOrders/utils";
 import {
   DecreasePositionAmounts,
+  getDecreaseReceiveOutputs,
+  getIsSplitReceiveAvailable,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
@@ -52,16 +70,25 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { getExpressError } from "domain/synthetics/trade/utils/validation";
+import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
+import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getTpSlRemainingPositionWarning,
+  isFullClosePositionOrder,
+  isTriggerBeyondLiquidation,
+  TpSlRemainingPositionWarning,
+} from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
-  formatBalanceAmount,
-  formatDeltaUsd,
+  formatDeltaUsdParts,
   formatPercentage,
   formatTokenAmount,
-  formatUsd,
+  formatUsdParts,
   parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -70,32 +97,42 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import {
-  CreateOrderTxnParams,
-  DecreasePositionOrderParams,
-  getBatchTotalExecutionFee,
-} from "sdk/utils/orderTransactions";
-import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
+import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/SplitReceiveSwapProfitFeeWarning";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
+import SpinnerIcon from "img/ic_spinner.svg?react";
+
 import { TPSLInputRow } from "./TPSLInputRow";
 
 type Props = {
   isVisible: boolean;
+  isCreationPending?: boolean;
   setIsVisible: (visible: boolean) => void;
   position: PositionInfo;
   onSuccess?: () => void;
@@ -106,6 +143,7 @@ type Props = {
 
 export function AddTPSLModal({
   isVisible,
+  isCreationPending = false,
   setIsVisible,
   position,
   onSuccess,
@@ -118,6 +156,7 @@ export function AddTPSLModal({
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState(false);
   const [executionDetailsOpen, setExecutionDetailsOpen] = useLocalStorageSerializeKey(
     "add-tpsl-execution-details-open",
     false
@@ -131,7 +170,9 @@ export function AddTPSLModal({
   const { provider } = useJsonRpcProvider(chainId);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const proDiscountFactor = useProDiscountFactor();
+  const feeDiscountFactor = useFeeDiscountFactor();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(position.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
   const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
   const tokensData = useTokensData();
@@ -243,69 +284,91 @@ export function AddTPSLModal({
     });
   }, [slTriggerPrice, markPrice, isLong]);
 
-  const tpDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (tpTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
-      return undefined;
-    }
-
-    return getTpSlDecreaseAmounts({
-      position,
+  const getDecreaseAmountsForTrigger = useCallback(
+    ({
+      triggerPrice,
+      triggerOrderType,
+      forceDecreaseSwapType,
+      isKeepLeverage = keepLeverage,
+    }: {
+      triggerPrice: bigint | undefined;
+      triggerOrderType: OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined;
+      forceDecreaseSwapType: DecreasePositionSwapType | undefined;
+      isKeepLeverage?: boolean;
+    }): DecreasePositionAmounts | undefined => {
+      if (triggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
+        return undefined;
+      }
+      return getTpSlDecreaseAmounts({
+        position,
+        closeSizeUsd,
+        triggerPrice,
+        triggerOrderType,
+        keepLeverage: isKeepLeverage,
+        isLimit: false,
+        limitPrice: undefined,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor,
+        userReferralInfo,
+        isSetAcceptablePriceImpactEnabled,
+        forceDecreaseSwapType,
+        proDiscountFactor,
+        feeDiscountFactor,
+      });
+    },
+    [
       closeSizeUsd,
-      triggerPrice: tpTriggerPrice,
-      triggerOrderType: tpTriggerOrderType,
+      isSetAcceptablePriceImpactEnabled,
       keepLeverage,
-      isLimit: false,
-      limitPrice: undefined,
       minCollateralUsd,
       minPositionSizeUsd,
-      uiFeeFactor,
-      userReferralInfo,
-      isSetAcceptablePriceImpactEnabled,
-    });
-  }, [
-    tpTriggerPrice,
-    position,
-    closeSizeUsd,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-    tpTriggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-  ]);
-
-  const slDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
-    if (slTriggerPrice === undefined || !getIsPositionInfoLoaded(position)) {
-      return undefined;
-    }
-
-    return getTpSlDecreaseAmounts({
       position,
-      closeSizeUsd,
-      triggerPrice: slTriggerPrice,
-      triggerOrderType: slTriggerOrderType,
-      keepLeverage,
-      isLimit: false,
-      limitPrice: undefined,
-      minCollateralUsd,
-      minPositionSizeUsd,
+      proDiscountFactor,
+      feeDiscountFactor,
       uiFeeFactor,
       userReferralInfo,
-      isSetAcceptablePriceImpactEnabled,
-    });
-  }, [
-    slTriggerPrice,
-    position,
-    closeSizeUsd,
-    keepLeverage,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    userReferralInfo,
-    slTriggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-  ]);
+    ]
+  );
+
+  const receiveSwapType = isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined;
+
+  const tpDecreaseAmounts = useMemo(
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: tpTriggerPrice,
+        triggerOrderType: tpTriggerOrderType,
+        forceDecreaseSwapType: receiveSwapType,
+      }),
+    [getDecreaseAmountsForTrigger, receiveSwapType, tpTriggerOrderType, tpTriggerPrice]
+  );
+  const slDecreaseAmounts = useMemo(
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: slTriggerPrice,
+        triggerOrderType: slTriggerOrderType,
+        forceDecreaseSwapType: receiveSwapType,
+      }),
+    [getDecreaseAmountsForTrigger, receiveSwapType, slTriggerOrderType, slTriggerPrice]
+  );
+  const tpSplitReceiveDecreaseAmounts = useMemo(
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: tpTriggerPrice,
+        triggerOrderType: tpTriggerOrderType,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      }),
+    [getDecreaseAmountsForTrigger, tpTriggerOrderType, tpTriggerPrice]
+  );
+  const slSplitReceiveDecreaseAmounts = useMemo(
+    () =>
+      getDecreaseAmountsForTrigger({
+        triggerPrice: slTriggerPrice,
+        triggerOrderType: slTriggerOrderType,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      }),
+    [getDecreaseAmountsForTrigger, slTriggerOrderType, slTriggerPrice]
+  );
 
   const tpPositionData = useMemo(
     () => ({
@@ -365,6 +428,7 @@ export function AddTPSLModal({
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
+        tradeMath: position.marketInfo?.tradeMath,
         initialCollateralUsd: position.collateralUsd,
         sizeInUsd: position.sizeInUsd,
         collateralDeltaUsd,
@@ -427,9 +491,19 @@ export function AddTPSLModal({
         isLong,
         minCollateralUsd,
         userReferralInfo,
+        feeDiscountFactor,
       });
     },
-    [marketInfo, collateralToken, isLong, minCollateralUsd, position, userReferralInfo, isPnlInLeverage]
+    [
+      marketInfo,
+      collateralToken,
+      isLong,
+      minCollateralUsd,
+      position,
+      userReferralInfo,
+      feeDiscountFactor,
+      isPnlInLeverage,
+    ]
   );
 
   const tpNextPositionValues = useMemo(
@@ -460,35 +534,41 @@ export function AddTPSLModal({
     [getEstimatedPnlFromAmounts, slDecreaseAmounts]
   );
 
-  const getReceiveDisplay = useCallback(
-    (amounts: DecreasePositionAmounts | undefined) => {
-      if (!amounts) return undefined;
-
-      const receiveUsd = amounts.receiveUsd ?? 0n;
-      const receiveAmount = amounts.receiveTokenAmount ?? 0n;
-
-      return {
-        text: formatBalanceAmount(receiveAmount, collateralToken.decimals, collateralToken.symbol, {
-          isStable: collateralToken.isStable,
-        }),
-        usd: formatUsd(receiveUsd),
-      };
-    },
-    [collateralToken]
+  const tpReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: tpDecreaseAmounts, tokensData }),
+    [tokensData, tpDecreaseAmounts]
   );
+  const slReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: slDecreaseAmounts, tokensData }),
+    [tokensData, slDecreaseAmounts]
+  );
+  const tpSplitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: tpSplitReceiveDecreaseAmounts, tokensData }),
+    [tokensData, tpSplitReceiveDecreaseAmounts]
+  );
+  const slSplitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: slSplitReceiveDecreaseAmounts, tokensData }),
+    [tokensData, slSplitReceiveDecreaseAmounts]
+  );
+  const isSplitReceiveAvailable =
+    getIsSplitReceiveAvailable(position, tpSplitReceiveOutputs) ||
+    getIsSplitReceiveAvailable(position, slSplitReceiveOutputs);
 
-  const tpReceiveDisplay = useMemo(() => getReceiveDisplay(tpDecreaseAmounts), [getReceiveDisplay, tpDecreaseAmounts]);
-  const slReceiveDisplay = useMemo(() => getReceiveDisplay(slDecreaseAmounts), [getReceiveDisplay, slDecreaseAmounts]);
+  useEffect(() => {
+    if (!isSplitReceiveAvailable && isReceiveSeparated) {
+      setIsReceiveSeparated(false);
+    }
+  }, [isSplitReceiveAvailable, isReceiveSeparated]);
 
   const tpPreview = useMemo(
     () => ({
       decreaseAmounts: tpDecreaseAmounts,
       nextPositionValues: tpNextPositionValues,
       fees: tpFees,
-      receiveDisplay: tpReceiveDisplay,
+      receiveOutputs: tpReceiveOutputs,
       triggerPrice: tpTriggerPrice,
     }),
-    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveDisplay, tpTriggerPrice]
+    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveOutputs, tpTriggerPrice]
   );
 
   const slPreview = useMemo(
@@ -496,19 +576,56 @@ export function AddTPSLModal({
       decreaseAmounts: slDecreaseAmounts,
       nextPositionValues: slNextPositionValues,
       fees: slFees,
-      receiveDisplay: slReceiveDisplay,
+      receiveOutputs: slReceiveOutputs,
       triggerPrice: slTriggerPrice,
     }),
-    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveDisplay, slTriggerPrice]
+    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveOutputs, slTriggerPrice]
   );
 
   const activePreview = previewTab === "tp" ? tpPreview : slPreview;
   const activeDecreaseAmounts = activePreview.decreaseAmounts;
   const activeNextPositionValues = activePreview.nextPositionValues;
   const activeFees = activePreview.fees;
-  const activeReceiveDisplay = activePreview.receiveDisplay;
+  const activeReceiveOutputs = activePreview.receiveOutputs;
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
+
+  const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(activeFees?.swapProfitFee),
+    receiveToken: position.collateralToken,
+    profitToken: position.pnlToken,
+    collateralToken: position.collateralToken,
+    swapProfitFee: activeFees?.swapProfitFee,
+  });
+
+  // Beyond the liquidation price you'll be liquidated and lose your whole margin, so show -100%.
+  const activeIsBeyondLiquidation = isTriggerBeyondLiquidation({
+    triggerPrice: activeTriggerPrice,
+    liquidationPrice: position.liquidationPrice,
+    isLong,
+  });
+  const { activeEstimatedPnl, activeEstimatedPnlPercentage } = useMemo(() => {
+    if (!activeDecreaseAmounts) {
+      return { activeEstimatedPnl: undefined, activeEstimatedPnlPercentage: undefined };
+    }
+
+    const showFullLoss = activeIsBeyondLiquidation && activeDecreaseAmounts.estimatedPnlPercentage !== 0n;
+    if (!showFullLoss) {
+      return {
+        activeEstimatedPnl: activeDecreaseAmounts.estimatedPnl,
+        activeEstimatedPnlPercentage: activeDecreaseAmounts.estimatedPnlPercentage,
+      };
+    }
+
+    return {
+      activeEstimatedPnl: bigMath.mulDiv(
+        activeDecreaseAmounts.estimatedPnl,
+        -BASIS_POINTS_DIVISOR_BIGINT,
+        activeDecreaseAmounts.estimatedPnlPercentage
+      ),
+      activeEstimatedPnlPercentage: -BASIS_POINTS_DIVISOR_BIGINT,
+    };
+  }, [activeDecreaseAmounts, activeIsBeyondLiquidation]);
 
   const netPriceImpactAndFeesDisplay = useMemo(() => {
     if (!activeFees) {
@@ -551,7 +668,7 @@ export function AddTPSLModal({
     [closeSize]
   );
 
-  const tpPriceError = useMemo(() => {
+  const tpPriceField = useMemo(() => {
     if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
@@ -566,19 +683,19 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "tp", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
+    return handleEntryError(entry, "tp", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    }).price;
   }, [markPrice, tpPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const tpPriceError = tpPriceField?.error ?? undefined;
+  const tpPriceWarning = tpPriceField?.warning ?? undefined;
 
-  const slPriceError = useMemo(() => {
+  const slPriceField = useMemo(() => {
     if (markPrice === undefined) return undefined;
 
     const entry: SidecarSlTpOrderEntry = {
@@ -593,37 +710,117 @@ export function AddTPSLModal({
       increaseAmounts: undefined,
     };
 
-    return (
-      handleEntryError(entry, "sl", {
-        liqPrice: position.liquidationPrice,
-        entryPrice: position.entryPrice,
-        markPrice,
-        isLong,
-        isLimit: false,
-        isExistingPosition: true,
-      }).price.error ?? undefined
-    );
+    return handleEntryError(entry, "sl", {
+      liqPrice: position.liquidationPrice,
+      entryPrice: position.entryPrice,
+      markPrice,
+      isLong,
+      isLimit: false,
+      isExistingPosition: true,
+    }).price;
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
+  const slPriceError = slPriceField?.error ?? undefined;
+  const slPriceWarning = slPriceField?.warning ?? undefined;
 
-  const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
+  const remainingPositionWarning = useMemo(
+    () =>
+      getTpSlRemainingPositionWarning({
+        position,
+        takeProfit: tpPriceError
+          ? undefined
+          : {
+              decreaseAmounts: tpDecreaseAmounts,
+              getDecreaseAmountsWithoutKeepLeverage: () =>
+                getDecreaseAmountsForTrigger({
+                  triggerPrice: tpTriggerPrice,
+                  triggerOrderType: tpTriggerOrderType,
+                  forceDecreaseSwapType: receiveSwapType,
+                  isKeepLeverage: false,
+                }),
+            },
+        stopLoss: slPriceError
+          ? undefined
+          : {
+              decreaseAmounts: slDecreaseAmounts,
+              getDecreaseAmountsWithoutKeepLeverage: () =>
+                getDecreaseAmountsForTrigger({
+                  triggerPrice: slTriggerPrice,
+                  triggerOrderType: slTriggerOrderType,
+                  forceDecreaseSwapType: receiveSwapType,
+                  isKeepLeverage: false,
+                }),
+            },
+        keepLeverage,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        userReferralInfo,
+        proDiscountFactor,
+        feeDiscountFactor,
+      }),
+    [
+      getDecreaseAmountsForTrigger,
+      keepLeverage,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      position,
+      proDiscountFactor,
+      feeDiscountFactor,
+      receiveSwapType,
+      slDecreaseAmounts,
+      slPriceError,
+      slTriggerOrderType,
+      slTriggerPrice,
+      tpDecreaseAmounts,
+      tpPriceError,
+      tpTriggerOrderType,
+      tpTriggerPrice,
+      userReferralInfo,
+    ]
+  );
+
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
+
+  const existingFullCloseTp = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isLimitDecreaseOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const existingFullCloseSl = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isStopLossOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const orderPayloads = useMemo(() => {
+    const empty = { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
+
     if (!account || !marketInfo || !collateralToken) {
-      return [];
+      return empty;
     }
 
     const tpCreateAmounts = tpPriceError ? undefined : tpDecreaseAmounts;
     const slCreateAmounts = slPriceError ? undefined : slDecreaseAmounts;
 
     if (!tpCreateAmounts && !slCreateAmounts) {
-      return [];
+      return empty;
     }
 
     if ((tpCreateAmounts && !tpExecutionFee) || (slCreateAmounts && !slExecutionFee)) {
-      return [];
+      return empty;
     }
 
     const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+    const tpSizeDeltaUsd = tpCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
+    const slSizeDeltaUsd = slCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
-    return buildTpSlCreatePayloads({
+    return buildTpSlBatchPayloads({
       autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
       chainId,
       account,
@@ -636,11 +833,15 @@ export function AddTPSLModal({
           amounts: tpCreateAmounts,
           executionFeeAmount: tpExecutionFee?.feeTokenAmount,
           executionGasLimit: tpExecutionFee?.gasLimit,
+          sizeDeltaUsd: tpSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseTp,
         },
         {
           amounts: slCreateAmounts,
           executionFeeAmount: slExecutionFee?.feeTokenAmount,
           executionGasLimit: slExecutionFee?.gasLimit,
+          sizeDeltaUsd: slSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseSl,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -659,14 +860,21 @@ export function AddTPSLModal({
     slPriceError,
     tpExecutionFee,
     slExecutionFee,
+    existingFullCloseTp,
+    existingFullCloseSl,
   ]);
 
   const batchParams = useMemo(() => {
-    if (orderPayloads.length === 0) return undefined;
+    if (
+      orderPayloads.createOrderParams.length === 0 &&
+      orderPayloads.updateOrderParams.length === 0 &&
+      orderPayloads.cancelOrderParams.length === 0
+    )
+      return undefined;
     return {
-      createOrderParams: orderPayloads,
-      updateOrderParams: [],
-      cancelOrderParams: [],
+      createOrderParams: orderPayloads.createOrderParams,
+      updateOrderParams: orderPayloads.updateOrderParams,
+      cancelOrderParams: orderPayloads.cancelOrderParams,
     };
   }, [orderPayloads]);
 
@@ -676,11 +884,18 @@ export function AddTPSLModal({
     return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParamsPromise } = useExpressOrdersParams({
+  const { formId, isActiveForm } = useActiveForm();
+
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
+    canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "approvedToken",
   });
+
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+  const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
 
   const submitError = useMemo(() => {
     if (!tpPriceInput && !slPriceInput) {
@@ -700,7 +915,7 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    if (orderPayloads.length === 0) {
+    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
     return undefined;
@@ -709,7 +924,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
-    orderPayloads.length,
+    orderPayloads.createOrderParams.length,
+    orderPayloads.updateOrderParams.length,
     editTPSLSize,
     closeSizeInput,
     closeSize.showSizeInTokens,
@@ -718,21 +934,33 @@ export function AddTPSLModal({
   ]);
 
   const handleSubmit = useCallback(async () => {
-    if (!signer || !provider || !batchParams || !tokensData || !marketsInfoData) return;
+    if (isSubmitting || isCreationPending || !signer || !provider || !batchParams || !tokensData || !marketsInfoData)
+      return;
 
     setIsSubmitting(true);
 
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
+      const isGmxAccount = srcChainId !== undefined;
+
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName: "Add TP/SL",
+          collateral: position.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams:
-          fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams)
-            ? fulfilledExpressParams
-            : undefined,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
         simulationParams: shouldDisableValidationForTesting
           ? undefined
           : {
@@ -745,14 +973,16 @@ export function AddTPSLModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
-
-      setIsVisible(false);
-      onSuccess?.();
+      }).then(() => {
+        setIsVisible(false);
+        onSuccess?.();
+      }, reportHandledRejection("addTPSLModal.submit"));
     } finally {
       setIsSubmitting(false);
     }
   }, [
+    isSubmitting,
+    isCreationPending,
     signer,
     provider,
     batchParams,
@@ -778,6 +1008,7 @@ export function AddTPSLModal({
       setTpPriceInput("");
       setSlPriceInput("");
       setEditTPSLSize(false);
+      setIsReceiveSeparated(false);
       closeSizeReset();
       setPreviewTab("tp");
     }
@@ -799,7 +1030,58 @@ export function AddTPSLModal({
   const hasSL = Boolean(slPriceInput);
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
+  const submitButtonState = useMemo(() => {
+    if (isMultichainSubmitDisabled) {
+      return {
+        text: (
+          <>
+            {t`Loading network fees…`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isSubmitting || isCreationPending) {
+      return {
+        text: t`Creating...`,
+        disabled: true,
+      };
+    }
+
+    if (submitError) {
+      return {
+        text: submitError,
+        disabled: true,
+      };
+    }
+
+    if (expressError.buttonErrorMessage) {
+      return {
+        text: expressError.buttonErrorMessage,
+        disabled: true,
+      };
+    }
+
+    return {
+      text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
+      disabled: false,
+    };
+  }, [
+    actionLabel,
+    directionLabel,
+    expressError.buttonErrorMessage,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    isCreationPending,
+    marketPairLabel,
+    modePrefix,
+    submitError,
+  ]);
+
   const currentLeverage = formatLeverage(position.leverage);
+  const currentLeverageParts = useMemo(() => formatLeverageParts(position.leverage), [position.leverage]);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
 
   const leverageValue: ReactNode = useMemo(() => {
@@ -812,14 +1094,14 @@ export function AddTPSLModal({
     }
 
     if (activeDecreaseAmounts?.sizeDeltaUsd && activeDecreaseAmounts.sizeDeltaUsd > 0n) {
-      return <ValueTransition from={currentLeverage} to={formatLeverage(nextLeverage)} />;
+      return <ValueTransition from={currentLeverageParts} to={formatLeverageParts(nextLeverage)} />;
     }
 
-    return currentLeverage;
+    return <NumericValue parts={currentLeverageParts} />;
   }, [
     activeDecreaseAmounts?.isFullClose,
     activeDecreaseAmounts?.sizeDeltaUsd,
-    currentLeverage,
+    currentLeverageParts,
     nextLeverage,
     position.sizeInUsd,
   ]);
@@ -866,6 +1148,7 @@ export function AddTPSLModal({
 
   return (
     <Modal
+      activeFormId={formId}
       isVisible={isVisible}
       setIsVisible={setIsVisible}
       label={`${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`}
@@ -873,7 +1156,7 @@ export function AddTPSLModal({
       withMobileBottomPosition
       contentPadding={false}
     >
-      <div className="flex flex-col gap-16 px-20 py-16">
+      <div className="flex max-w-[464px] flex-col gap-16 px-20 py-16 max-md:max-w-none">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
             type="takeProfit"
@@ -881,6 +1164,7 @@ export function AddTPSLModal({
             onPriceChange={handleTpPriceChange}
             positionData={tpPositionData}
             priceError={tpPriceError}
+            priceWarning={tpPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={tpEstimatedPnl}
@@ -894,6 +1178,7 @@ export function AddTPSLModal({
             onPriceChange={handleSlPriceChange}
             positionData={slPositionData}
             priceError={slPriceError}
+            priceWarning={slPriceWarning}
             variant="full"
             defaultDisplayMode="percentage"
             estimatedPnl={slEstimatedPnl}
@@ -907,6 +1192,11 @@ export function AddTPSLModal({
           <ToggleSwitch isChecked={editTPSLSize} setIsChecked={handleEditTPSLSizeToggle}>
             <Trans>Edit TP/SL size</Trans>
           </ToggleSwitch>
+          {isSplitReceiveAvailable && (
+            <ToggleSwitch isChecked={isReceiveSeparated} setIsChecked={setIsReceiveSeparated}>
+              <SplitReceiveTokensLabel profitToken={position.pnlToken} collateralToken={position.collateralToken} />
+            </ToggleSwitch>
+          )}
         </div>
 
         {editTPSLSize && (
@@ -924,7 +1214,7 @@ export function AddTPSLModal({
               tokenSymbol={indexToken.symbol}
               alternateValue={(() => {
                 if (closeSize.showSizeInTokens) {
-                  return formatUsd(closeSize.closeSizeUsd);
+                  return <UsdValue usd={closeSize.closeSizeUsd} />;
                 }
                 if (position.sizeInUsd === 0n) return "0";
                 const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
@@ -949,14 +1239,35 @@ export function AddTPSLModal({
           </div>
         )}
 
+        {expressError.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={expressError.bannerErrorName}
+              chainId={chainId}
+              srcChainId={srcChainId}
+              gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+              onBeforeNavigation={() => setIsVisible(false)}
+            />
+          </AlertInfoCard>
+        )}
+
+        <ExpressTradingWarningCard
+          expressParams={expressParams}
+          payTokenAddress={undefined}
+          isWrapOrUnwrap={false}
+          isGmxAccount={srcChainId !== undefined}
+          onAfterAction={() => setIsVisible(false)}
+        />
+
+        {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
+
         <Button
           variant="primary-action"
           className="w-full"
           onClick={handleSubmit}
-          disabled={!!submitError || isSubmitting}
+          disabled={submitButtonState.disabled}
         >
-          {submitError ||
-            (isSubmitting ? t`Creating...` : `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`)}
+          {submitButtonState.text}
         </Button>
 
         {hasPreviewData && (
@@ -969,22 +1280,18 @@ export function AddTPSLModal({
               <div className="flex flex-col gap-10">
                 <SyntheticsInfoRow
                   label={<Trans>Receive</Trans>}
-                  value={
-                    activeReceiveDisplay ? (
-                      <span className="numbers">
-                        {activeReceiveDisplay.text}{" "}
-                        <span className="text-typography-secondary">({activeReceiveDisplay.usd})</span>
-                      </span>
-                    ) : (
-                      "-"
-                    )
-                  }
+                  value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} layout="stacked" />}
                 />
+                {splitReceiveSwapProfitFeeWarning && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {splitReceiveSwapProfitFeeWarning}
+                  </AlertInfoCard>
+                )}
                 <SyntheticsInfoRow
                   label={<Trans>Liquidation price</Trans>}
                   value={
                     <ValueTransition
-                      from={formatLiquidationPrice(position.liquidationPrice, {
+                      from={formatLiquidationPriceParts(position.liquidationPrice, {
                         displayDecimals: priceDecimals,
                         visualMultiplier,
                       })}
@@ -992,7 +1299,7 @@ export function AddTPSLModal({
                         activeDecreaseAmounts.isFullClose
                           ? "-"
                           : activeDecreaseAmounts.sizeDeltaUsd > 0n
-                            ? formatLiquidationPrice(activeNextPositionValues?.nextLiqPrice, {
+                            ? formatLiquidationPriceParts(activeNextPositionValues?.nextLiqPrice, {
                                 displayDecimals: priceDecimals,
                                 visualMultiplier,
                               })
@@ -1005,11 +1312,8 @@ export function AddTPSLModal({
                   label={<Trans>PnL</Trans>}
                   value={
                     <ValueTransition
-                      from={formatDeltaUsd(
-                        activeDecreaseAmounts?.estimatedPnl,
-                        activeDecreaseAmounts?.estimatedPnlPercentage
-                      )}
-                      to={formatDeltaUsd(
+                      from={formatDeltaUsdParts(activeEstimatedPnl, activeEstimatedPnlPercentage)}
+                      to={formatDeltaUsdParts(
                         activeNextPositionValues?.nextPnl,
                         activeNextPositionValues?.nextPnlPercentage
                       )}
@@ -1056,7 +1360,15 @@ export function AddTPSLModal({
         >
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
-          <NetworkFeeRow executionFee={totalExecutionFee} />
+          <NetworkFeeRow
+            executionFee={totalExecutionFee}
+            gasPaymentParams={getNetworkFeeGasPaymentParams({
+              expressParams,
+              tokensData,
+              canApproveGasPaymentToken: false,
+            })}
+            feeSource={feeSource}
+          />
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
               label={t`Stored price impact`}
@@ -1064,11 +1376,11 @@ export function AddTPSLModal({
                 activeNextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
                   <ValueTransition
-                    from={formatDeltaUsd(position?.pendingImpactUsd)}
-                    to={formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)}
+                    from={formatDeltaUsdParts(position?.pendingImpactUsd)}
+                    to={formatDeltaUsdParts(activeNextPositionValues?.nextPendingImpactDeltaUsd)}
                   />
                 ) : (
-                  formatDeltaUsd(activeNextPositionValues?.nextPendingImpactDeltaUsd)
+                  <DeltaUsdValue deltaUsd={activeNextPositionValues?.nextPendingImpactDeltaUsd} />
                 )
               }
               valueClassName="numbers"
@@ -1079,28 +1391,61 @@ export function AddTPSLModal({
             label={<Trans>Size</Trans>}
             value={
               <ValueTransition
-                from={formatUsd(position.sizeInUsd)}
-                to={formatUsd(activeNextPositionValues?.nextSizeUsd)}
+                from={formatUsdParts(position.sizeInUsd)}
+                to={formatUsdParts(activeNextPositionValues?.nextSizeUsd)}
               />
             }
           />
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={<Trans>Margin ({collateralToken.symbol})</Trans>}
-                content={<Trans>Margin before pending borrow and funding fees</Trans>}
-                variant="icon"
+                content={t`Margin before pending borrow and funding fees`}
               />
             }
             value={
               <ValueTransition
-                from={formatUsd(position.collateralUsd)}
-                to={formatUsd(activeNextPositionValues?.nextCollateralUsd)}
+                from={formatUsdParts(position.collateralUsd)}
+                to={formatUsdParts(activeNextPositionValues?.nextCollateralUsd)}
               />
             }
           />
         </ExpandableRow>
       </div>
     </Modal>
+  );
+}
+
+function RemainingPositionWarningCard({ warning }: { warning: TpSlRemainingPositionWarning }) {
+  const { isTakeProfitAboveMaxLeverage, isStopLossAboveMaxLeverage, isKeepLeverageFix } = warning;
+
+  return (
+    <AlertInfoCard type="warning" hideClose>
+      <div className="flex flex-col gap-8">
+        <div>
+          {isTakeProfitAboveMaxLeverage && isStopLossAboveMaxLeverage ? (
+            <Trans>
+              At the Take-Profit and Stop-Loss prices, the remaining position would exceed max leverage and the orders
+              may not execute.
+            </Trans>
+          ) : isTakeProfitAboveMaxLeverage ? (
+            <Trans>
+              At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute.
+            </Trans>
+          ) : (
+            <Trans>
+              At the Stop-Loss price, the remaining position would exceed max leverage and the order may not execute.
+            </Trans>
+          )}
+        </div>
+        <div>
+          {isKeepLeverageFix ? (
+            <Trans>Turn off "Keep leverage", close the full position, change the trigger price, or add margin.</Trans>
+          ) : (
+            <Trans>Close the full position, change the trigger price, or add margin.</Trans>
+          )}
+        </div>
+      </div>
+    </AlertInfoCard>
   );
 }

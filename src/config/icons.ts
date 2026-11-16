@@ -4,10 +4,11 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
-  BOTANIX,
   MEGAETH,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
   GmxAccountPseudoChainId,
+  SOLANA_NETWORK_ID,
+  SolanaNetworkId,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
@@ -31,7 +32,6 @@ import arbitrumSepolia from "img/tokens/ic_arbitrum_sepolia.svg";
 import avalanche from "img/tokens/ic_avalanche.svg";
 import avalancheTestnet from "img/tokens/ic_avalanche_testnet.svg";
 import base from "img/tokens/ic_base.svg";
-import botanix from "img/tokens/ic_botanix.svg";
 import esGMXIcon from "img/tokens/ic_esgmx.svg";
 import eth from "img/tokens/ic_eth.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
@@ -40,6 +40,7 @@ import gmxIcon from "img/tokens/ic_gmx.svg";
 import megaeth from "img/tokens/ic_megaeth.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
+import solana from "img/tokens/ic_sol.svg";
 
 export type ChainIcons = {
   network?: string;
@@ -79,13 +80,6 @@ const ICONS: Record<number | "common", ChainIcons> = {
     gmx: gmxAvax,
     glp: glpAvax,
   },
-  [BOTANIX]: {
-    network: botanix,
-    glp: glpIcon,
-    gmx: gmxIcon,
-    gm: gmIcon,
-    esgmx: esGMXIcon,
-  },
   [MEGAETH]: {
     network: megaeth,
     glp: glpIcon,
@@ -103,7 +97,7 @@ const ICONS: Record<number | "common", ChainIcons> = {
   },
 };
 
-export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId, string> = {
+export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChainId | SolanaNetworkId, string> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [GMX_ACCOUNT_PSEUDO_CHAIN_ID]: gmxIcon,
@@ -113,9 +107,9 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChain
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
-  [BOTANIX]: botanix,
   [MEGAETH]: megaeth,
   [SOURCE_BSC_MAINNET]: bsc,
+  [SOLANA_NETWORK_ID]: solana,
 };
 
 /**

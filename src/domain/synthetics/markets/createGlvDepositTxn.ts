@@ -6,6 +6,7 @@ import { getContract } from "config/contracts";
 import type { SetPendingDeposit } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import type { OrderMetricId } from "lib/metrics";
+import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -15,7 +16,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import type { TokensData } from "../tokens";
+import type { TokenData, TokensData } from "../tokens";
 import type { CreateGlvDepositParams } from "./types";
 
 export async function createGlvDepositTxn({
@@ -30,6 +31,7 @@ export async function createGlvDepositTxn({
   executionFee,
   executionGasLimit,
   tokensData,
+  glvToken,
   skipSimulation,
   metricId,
   blockTimestampData,
@@ -45,14 +47,15 @@ export async function createGlvDepositTxn({
   executionFee: bigint;
   executionGasLimit: bigint;
   tokensData: TokensData;
+  glvToken: TokenData;
   skipSimulation?: boolean;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
-  setPendingDeposit: SetPendingDeposit;
+  setPendingDeposit?: SetPendingDeposit;
   params: CreateGlvDepositParams;
   marketTokenAmount: bigint;
-}) {
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 
@@ -111,11 +114,14 @@ export async function createGlvDepositTxn({
     })
   );
 
+  // GLV tokens are not regular tokensData entries; include the selected GLV price for simulation.
+  const simulationTokensData = { ...tokensData, [glvToken.address]: glvToken };
+
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
         account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData,
+        tokensData: simulationTokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvDeposit",
         errorTitle: t`Deposit error`,
@@ -147,8 +153,8 @@ export async function createGlvDepositTxn({
       estimatedExecutionFee: executionFee,
       estimatedExecutionGasLimit: executionGasLimit,
     },
-  }).then(() => {
-    setPendingDeposit({
+  }).then((res) => {
+    setPendingDeposit?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.market,
       glvAddress: params.addresses.glv,
@@ -164,5 +170,7 @@ export async function createGlvDepositTxn({
       isGlvDeposit: true,
       isMarketDeposit: params.isMarketTokenDeposit,
     });
+
+    return { transactionHash: res?.hash };
   });
 }

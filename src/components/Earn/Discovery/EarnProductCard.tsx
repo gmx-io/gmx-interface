@@ -23,7 +23,7 @@ type ProductCopy = {
   bullets: ReactNode[];
   cta: {
     label: ReactNode;
-    to: string;
+    to?: string;
   };
 };
 
@@ -42,7 +42,6 @@ const getCardContent = (type: EarnProductType) => {
       ],
       cta: {
         label: t`Buy GMX`,
-        to: "/buy_gmx",
       },
     },
     glv: {
@@ -170,7 +169,7 @@ export default function EarnProductCard({
         <Button
           variant="primary"
           className="flex-1 justify-center"
-          to={type !== "gmx" ? content.cta.to : undefined}
+          to={content.cta.to}
           onClick={handleRecommendationClick}
         >
           {content.cta.label}

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { selectPoolsDetailsDepositableGlvGmMarketAddressesKey } from "context/PoolsDetailsContext/selectors";
 import {
   selectGlvAndMarketsInfoData,
   selectMarketsInfoData,
@@ -70,4 +71,16 @@ export const useGlvGmMarketsWithComposition = (isDeposit: boolean, glvAddress?: 
       return b.composition - a.composition;
     });
   }, [allMarkets, glvAddress, marketTokensData, marketsInfoData]);
+};
+
+export const useDepositableGlvGmMarketAddresses = (): Set<string> | undefined => {
+  const key = useSelector(selectPoolsDetailsDepositableGlvGmMarketAddressesKey);
+
+  return useMemo(() => {
+    if (key === undefined) {
+      return undefined;
+    }
+
+    return new Set(key.length > 0 ? key.split(",") : []);
+  }, [key]);
 };

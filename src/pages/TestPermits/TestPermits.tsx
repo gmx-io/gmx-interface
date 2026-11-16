@@ -138,13 +138,14 @@ export function TestPermits() {
       });
 
       const tx = await signer.sendTransaction({
+        chainId,
         to: selectedToken.address,
         data,
       });
       const explorerUrl = getExplorerUrl(chainId) + "tx/" + tx.hash;
       toast.success(
         <div>
-          <Trans>Permit transaction sent for {selectedToken.symbol}!</Trans>{" "}
+          <Trans>Permit transaction sent for {selectedToken.symbol}</Trans>{" "}
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="underline">
             <Trans>View</Trans>
           </a>
@@ -194,9 +195,9 @@ export function TestPermits() {
                           <Trans>Permit supported:</Trans>
                         </span>{" "}
                         {token.isPermitSupported === true ? (
-                          <span className="text-green-500">{t`true`}</span>
+                          <span className="text-green-500">{t`True`}</span>
                         ) : (
-                          <span className="text-red-500">{t`false`}</span>
+                          <span className="text-red-500">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -204,9 +205,9 @@ export function TestPermits() {
                           <Trans>Permit disabled:</Trans>
                         </span>{" "}
                         {token.isPermitDisabled === true ? (
-                          <span className="text-red-500">{t`true`}</span>
+                          <span className="text-red-500">{t`True`}</span>
                         ) : (
-                          <span className="text-green-500">{t`false`}</span>
+                          <span className="text-green-500">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -258,9 +259,9 @@ export function TestPermits() {
                       <Trans>Permit supported:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
-                      <span className="text-green-500">{t`true`}</span>
+                      <span className="text-green-500">{t`True`}</span>
                     ) : (
-                      <span className="text-red-500">{t`false`}</span>
+                      <span className="text-red-500">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -268,9 +269,9 @@ export function TestPermits() {
                       <Trans>Permit disabled:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
-                      <span className="text-red-500">{t`true`}</span>
+                      <span className="text-red-500">{t`True`}</span>
                     ) : (
-                      <span className="text-green-500">{t`false`}</span>
+                      <span className="text-green-500">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -325,7 +326,7 @@ export function TestPermits() {
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">
                       <div>
                         <span className="font-medium">
-                          <Trans>r:</Trans>
+                          <Trans>R:</Trans>
                         </span>{" "}
                         {permitData.r}
                       </div>

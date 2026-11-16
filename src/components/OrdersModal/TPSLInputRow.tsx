@@ -5,19 +5,15 @@ import cx from "classnames";
 import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import {
-  calculateDisplayDecimals,
-  expandDecimals,
-  formatAmount,
-  formatDeltaUsd,
-  formatUsdPrice,
-  parseValue,
-  removeTrailingZeros,
-} from "lib/numbers";
+import { getCappedTpSlLossUsd } from "domain/tpsl/utils";
+import { calculateDisplayDecimals, expandDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
+import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
 import NumberInput from "components/NumberInput/NumberInput";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -43,12 +39,15 @@ type Props = {
   onPriceChange: (value: string) => void;
   positionData: PositionData;
   priceError?: string;
+  priceWarning?: string;
   variant?: "compact" | "full";
   defaultDisplayMode?: TPSLDisplayMode;
   estimatedPnl?: {
     pnlUsd: bigint;
     pnlPercentage?: bigint;
   };
+  carryOverKey?: string;
+  existingOrderKey?: string;
 };
 
 export function TPSLInputRow({
@@ -57,9 +56,12 @@ export function TPSLInputRow({
   onPriceChange,
   positionData,
   priceError,
+  priceWarning,
   variant = "compact",
   defaultDisplayMode = "percentage",
   estimatedPnl: estimatedPnlProp,
+  carryOverKey,
+  existingOrderKey,
 }: Props) {
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
@@ -117,8 +119,9 @@ export function TPSLInputRow({
 
   const currentPriceValue = useMemo(() => {
     if (!priceValue) return undefined;
-    return parseValue(priceValue, USD_DECIMALS);
-  }, [priceValue]);
+    const parsed = parseValue(priceValue, USD_DECIMALS);
+    return parsed === undefined ? undefined : parsed / BigInt(visualMultiplier);
+  }, [priceValue, visualMultiplier]);
 
   const clampPriceForStopLoss = useCallback(
     (price: bigint): bigint => {
@@ -224,38 +227,59 @@ export function TPSLInputRow({
       if (mode === "percentage") {
         const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
         if (pnlCollateralUsd > 0n) {
-          const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+          const pnlUsd = getCappedTpSlLossUsd({
+            pnlUsd: getPnlUsdForPrice(currentPriceValue),
+            collateralUsd: pnlCollateralUsd,
+            triggerPrice: currentPriceValue,
+            liquidationPrice,
+            isLong,
+          });
           const percentage = bigMath.mulDiv(bigMath.abs(pnlUsd), 10000n, pnlCollateralUsd);
           return String(removeTrailingZeros(formatAmount(percentage, 2, 2)));
         }
       } else {
-        const pnlUsd = getPnlUsdForPrice(currentPriceValue);
+        const pnlUsd = getCappedTpSlLossUsd({
+          pnlUsd: getPnlUsdForPrice(currentPriceValue),
+          collateralUsd: getCollateralUsdForPnl(currentPriceValue),
+          triggerPrice: currentPriceValue,
+          liquidationPrice,
+          isLong,
+        });
         return String(removeTrailingZeros(formatAmount(bigMath.abs(pnlUsd), USD_DECIMALS, 2)));
       }
       return "";
     },
-    [currentPriceValue, getCollateralUsdForPnl, getPnlUsdForPrice, sizeInTokens, pnlReferencePrice]
+    [
+      currentPriceValue,
+      getCollateralUsdForPnl,
+      getPnlUsdForPrice,
+      liquidationPrice,
+      isLong,
+      sizeInTokens,
+      pnlReferencePrice,
+    ]
   );
 
-  const calculateAndUpdatePrice = useCallback(
+  const calculatePriceFromGainLoss = useCallback(
     (value: string, mode: TPSLDisplayMode) => {
       const decimals = mode === "percentage" ? 2 : USD_DECIMALS;
       const parsed = parseValue(value, decimals);
-      if (parsed === undefined || parsed <= 0n) return;
+      if (parsed === undefined || parsed <= 0n) return undefined;
 
       const calculateFn = mode === "percentage" ? calculatePriceFromPnlPercentage : calculatePriceFromPnlUsd;
       const price = calculateFn(parsed);
-      if (price !== undefined && price > 0n) {
-        onPriceChange(formatPrice(price));
-      }
+      return price !== undefined && price > 0n ? formatPrice(price) : undefined;
     },
-    [calculatePriceFromPnlPercentage, calculatePriceFromPnlUsd, formatPrice, onPriceChange]
+    [calculatePriceFromPnlPercentage, calculatePriceFromPnlUsd, formatPrice]
   );
 
   useEffect(() => {
     if (lastEditedField !== "gainLoss" || !gainLossInputValue) return;
-    calculateAndUpdatePrice(gainLossInputValue, displayMode);
-  }, [lastEditedField, gainLossInputValue, displayMode, calculateAndUpdatePrice]);
+    const price = calculatePriceFromGainLoss(gainLossInputValue, displayMode);
+    if (price !== undefined && price !== priceValue) {
+      onPriceChange(price);
+    }
+  }, [lastEditedField, gainLossInputValue, displayMode, calculatePriceFromGainLoss, onPriceChange, priceValue]);
 
   const handlePriceChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -271,17 +295,47 @@ export function TPSLInputRow({
       const value = e.target.value;
       setLastEditedField("gainLoss");
       setGainLossInputValue(value);
-      calculateAndUpdatePrice(value, displayMode);
+      const price = calculatePriceFromGainLoss(value, displayMode);
+      if (price !== undefined) {
+        onPriceChange(price);
+      }
     },
-    [displayMode, calculateAndUpdatePrice]
+    [displayMode, calculatePriceFromGainLoss, onPriceChange]
   );
 
   const secondFieldValue = useMemo(() => {
     if (lastEditedField === "gainLoss") {
       return gainLossInputValue;
     }
+    if (priceError) {
+      return "";
+    }
     return formatGainLossValue(displayMode);
-  }, [lastEditedField, gainLossInputValue, formatGainLossValue, displayMode]);
+  }, [lastEditedField, gainLossInputValue, priceError, formatGainLossValue, displayMode]);
+
+  const previousSecondFieldValue = usePrevious(secondFieldValue);
+  const [prevCarryOverKey, setPrevCarryOverKey] = useState(carryOverKey);
+  if (carryOverKey !== prevCarryOverKey) {
+    setPrevCarryOverKey(carryOverKey);
+    if (
+      lastEditedField !== "gainLoss" &&
+      !existingOrderKey &&
+      previousSecondFieldValue &&
+      calculatePriceFromGainLoss(previousSecondFieldValue, displayMode) !== undefined
+    ) {
+      setLastEditedField("gainLoss");
+      setGainLossInputValue(previousSecondFieldValue);
+    }
+  }
+
+  const [prevExistingOrderKey, setPrevExistingOrderKey] = useState(existingOrderKey);
+  if (existingOrderKey !== prevExistingOrderKey) {
+    setPrevExistingOrderKey(existingOrderKey);
+    if (existingOrderKey) {
+      setLastEditedField(undefined);
+      setGainLossInputValue("");
+    }
+  }
 
   const derivedEstimatedPnl = useMemo(() => {
     if (currentPriceValue === undefined || currentPriceValue === 0n) return undefined;
@@ -340,13 +394,36 @@ export function TPSLInputRow({
     }
   };
 
-  const estimatedPnl = estimatedPnlProp ?? derivedEstimatedPnl;
-  const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
+  const estimatedPnl = useMemo(() => {
+    if (priceError) return undefined;
 
-  const formattedMarkPrice = useMemo(() => {
-    if (referencePrice === undefined) return undefined;
-    return formatUsdPrice(referencePrice, { visualMultiplier });
-  }, [referencePrice, visualMultiplier]);
+    const base = estimatedPnlProp ?? derivedEstimatedPnl;
+    if (!base) return base;
+
+    const pnlCollateralUsd = getCollateralUsdForPnl(currentPriceValue);
+    const cappedPnlUsd = getCappedTpSlLossUsd({
+      pnlUsd: base.pnlUsd,
+      collateralUsd: pnlCollateralUsd,
+      triggerPrice: currentPriceValue,
+      liquidationPrice,
+      isLong,
+    });
+    if (cappedPnlUsd === base.pnlUsd) return base;
+
+    return {
+      pnlUsd: cappedPnlUsd,
+      pnlPercentage:
+        pnlCollateralUsd > 0n ? bigMath.mulDiv(cappedPnlUsd, 10000n, pnlCollateralUsd) : base.pnlPercentage,
+    };
+  }, [
+    priceError,
+    estimatedPnlProp,
+    derivedEstimatedPnl,
+    getCollateralUsdForPnl,
+    currentPriceValue,
+    liquidationPrice,
+    isLong,
+  ]);
 
   const handleMarkPriceClick = useCallback(() => {
     if (referencePrice === undefined || referencePrice === 0n) return;
@@ -356,18 +433,19 @@ export function TPSLInputRow({
   }, [referencePrice, formatPrice, onPriceChange]);
 
   const estimatedPnlRow = (
-    <div className="text-body-small flex justify-end">
-      <span className="text-typography-secondary">
+    <div className="text-body-small flex min-w-0 justify-end">
+      <span className="shrink-0 text-typography-secondary">
         <Trans>Est. PnL</Trans>
       </span>
-      <span
-        className={cx("ml-4 numbers", {
+      <DeltaUsdValue
+        deltaUsd={estimatedPnl?.pnlUsd}
+        percentage={estimatedPnl?.pnlPercentage}
+        fallback="-"
+        className={cx("ml-4 min-w-0 truncate numbers", {
           "text-green-500": estimatedPnl && estimatedPnl.pnlUsd > 0n,
           "text-red-500": estimatedPnl && estimatedPnl.pnlUsd < 0n,
         })}
-      >
-        {estimatedPnlDisplay ?? "-"}
-      </span>
+      />
     </div>
   );
 
@@ -375,18 +453,22 @@ export function TPSLInputRow({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
-          <TooltipWithPortal
+          <StandardTooltip
             className="flex grow"
             handleClassName="grow"
             variant="none"
-            disabled={!priceError}
-            content={priceError}
+            disabled={!priceError && !priceWarning}
+            content={priceError ?? priceWarning}
           >
             <div
               className={cx(
                 "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
-                priceError ? "border-red-500" : "border-slate-800",
-                "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
+                priceError
+                  ? "border-red-500"
+                  : priceWarning
+                    ? "border-yellow-300"
+                    : "border-slate-800 focus-within:border-blue-300 active:border-blue-300",
+                "hover:bg-fill-surfaceElevatedHover"
               )}
               onClick={handleBoxClick(priceInputRef)}
             >
@@ -405,7 +487,7 @@ export function TPSLInputRow({
                 <span className="text-13 text-typography-secondary">USD</span>
               </div>
             </div>
-          </TooltipWithPortal>
+          </StandardTooltip>
 
           <div
             className={cx(
@@ -442,30 +524,39 @@ export function TPSLInputRow({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-8">
-        <TooltipWithPortal
+      <div className="flex gap-8 max-smallMobile:flex-col">
+        <StandardTooltip
           className="flex-1"
           handleClassName="w-full"
           variant="none"
-          disabled={!priceError}
-          content={priceError}
+          disabled={!priceError && !priceWarning}
+          content={priceError ?? priceWarning}
         >
           <div
             className={cx(
               "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
-              priceError ? "border-red-500" : "border-slate-800",
-              "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
+              priceError
+                ? "border-red-500"
+                : priceWarning
+                  ? "border-yellow-300"
+                  : "border-slate-800 focus-within:border-blue-300",
+              "hover:bg-fill-surfaceElevatedHover"
             )}
             onClick={handleBoxClick(priceInputRef)}
           >
             <div className="flex items-center justify-between">
               <div className="text-body-small text-typography-secondary">{priceLabel}</div>
-              {formattedMarkPrice !== undefined && (
+              {referencePrice !== undefined && (
                 <div
                   className="cursor-pointer text-12 text-typography-secondary numbers"
                   onClick={handleMarkPriceClick}
                 >
-                  <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
+                  <Trans>Mark:</Trans>{" "}
+                  <UsdPriceValue
+                    price={referencePrice}
+                    visualMultiplier={visualMultiplier}
+                    className="text-typography-primary"
+                  />
                 </div>
               )}
             </div>
@@ -482,7 +573,7 @@ export function TPSLInputRow({
               <span className="text-14 text-typography-secondary">USD</span>
             </div>
           </div>
-        </TooltipWithPortal>
+        </StandardTooltip>
         <div
           className={cx(
             "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",
@@ -500,7 +591,7 @@ export function TPSLInputRow({
               className="bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none"
               inputRef={secondInputRef}
               onValueChange={handleGainLossChange}
-              placeholder="0"
+              placeholder={priceError ? "-" : "0"}
             />
             <DisplayModeSelector
               mode={displayMode}

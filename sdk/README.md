@@ -230,3 +230,76 @@ sdk.orders.swap({
 ```
 
 Note the distinction between `payTokenAddress` and `collateralTokenAddress`. These represent the ERC20 token addresses for payment and collateral respectively. Some markets use synthetic tokens, so you'll need to provide the correct underlying token address. For example, the BTC/USD [WETH-USDC] market has a synthetic BTC token as its `indexTokenAddress`, so you should pass the WBTC address instead of BTC.
+
+### Execution-fee deposits with a zero-tip bundler
+
+The v2 API client's `prepareOrder` and `prepareCollateral` methods accept
+`skipExecutionFeePriorityFeeAllowance?: boolean`, which defaults to `false`:
+
+```typescript
+const prepared = await api.prepareOrder({
+  ...request,
+  mode: "classic",
+  skipExecutionFeePriorityFeeAllowance: true,
+});
+```
+
+Set this to `true` only when the outer transaction your bundler submits to Arbitrum uses zero priority
+fee, including retries and wallet fallbacks. A zero tip on a UserOperation alone is not sufficient.
+This removes only the 0.03 gwei-per-gas wallet-tip allowance and preserves `executionFeeBufferBps`,
+including the default 30% buffer, and the remaining execution-fee calculation. It applies to attached
+TP/SL orders, every TWAP part and collateral operations. Express and other chains retain their current
+calculation.
+
+The keeper executes separately later, so this does not guarantee future gas costs or a refund.
+A later tipped submission or order edit can fail with `InsufficientExecutionFee`; use
+`executionFeeTopUp` when an edit needs more funding. The API deployment must support the option before
+clients send it; older deployments reject the unknown field. Malformed values return HTTP 400.
+
+### JIT-aware trading capacity
+
+Use the v2 API client to get the current increase-order capacity for one market side:
+
+```typescript
+import { GmxApiSdk } from "@gmx-io/sdk/v2";
+
+const api = new GmxApiSdk({ chainId: 42161 });
+const capacity = await api.getTradingCapacity({
+  symbol: "ETH/USD [WETH-USDC]",
+  direction: "long",
+});
+
+if (capacity.marketDataStatus !== "fresh") {
+  throw new Error("Trading capacity is based on stale market data");
+}
+
+const safeAccountAgnosticSize = capacity.baseAvailableLiquidity;
+const indicativeGlobalCapacity =
+  capacity.jitDataStatus === "available" ? capacity.availableLiquidity : capacity.baseAvailableLiquidity;
+```
+
+`availableLiquidity` is the current global JIT-aware capacity and remains capped by max open interest.
+It is indicative because the keeper can restrict JIT by account. `baseAvailableLiquidity` is the native capacity without
+JIT, but it is still a market-level snapshot: a collateral swap or intervening market state can reduce the capacity
+available to a specific order. The keeper can use JIT for market, limit, stop-market, and TWAP increases, but availability
+is evaluated again when each order executes. Do not size an order while `marketDataStatus` is `stale`. Treat
+`prepareOrder` as the final request-aware validation; it returns a typed warning when capacity is not authoritative for
+the specific request.
+
+Prepare failures can be narrowed to the typed API contract:
+
+```typescript
+import { parsePrepareOrderError } from "@gmx-io/sdk/v2";
+
+try {
+  await api.prepareOrder(request);
+} catch (error) {
+  const prepareError = parsePrepareOrderError(error);
+  if (prepareError?.code === "INSUFFICIENT_LIQUIDITY") {
+    console.log(prepareError.details.availableLiquidity, prepareError.details.requestedSizeUsd);
+  }
+}
+```
+
+The helper uses the capacity returned by `/v1/markets/trading-capacity`. Existing raw JIT access through
+`fetchJitLiquidityInfo()` remains available for integrations that need shift data.

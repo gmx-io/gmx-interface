@@ -89,7 +89,7 @@ export async function callContract(
       return;
     }
 
-    const txnOpts: Overrides = {};
+    const txnOpts: Overrides = { chainId };
 
     if (opts.value) {
       txnOpts.value = opts.value;
@@ -177,6 +177,7 @@ export async function callContract(
       const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed`;
       const pendingTxn: PendingTransaction = {
         hash: res.hash,
+        chainId,
         message,
         messageDetails: opts.successDetailsMsg ?? opts.detailsMsg,
         metricId: opts.metricId,
@@ -196,7 +197,7 @@ export async function callContract(
   }
 }
 
-function showCallContractToast({
+export function showCallContractToast({
   chainId,
   hash,
   sentMsg,
@@ -217,7 +218,7 @@ function showCallContractToast({
           <br />
           <br />
           <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
-            <Trans>View status</Trans>
+            <Trans>View</Trans>
           </ExternalLink>
         </>
       )}

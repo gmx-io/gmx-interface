@@ -7,7 +7,8 @@ export class PauseableInterval<T = undefined> {
   private timerId: number | undefined;
   private wasPausedSinceLastCall = false;
   private lastReturnedValue: Awaited<T> | undefined;
-  private state: "paused" | "running" = "running";
+  private state: "paused" | "running" | "destroyed" = "running";
+  private loopId = 0;
 
   constructor(
     private cb: PauseableIntervalFunction<T>,
@@ -17,12 +18,13 @@ export class PauseableInterval<T = undefined> {
   }
 
   pause() {
-    if (this.state === "paused") {
+    if (this.state !== "running") {
       return;
     }
 
     window.clearTimeout(this.timerId);
     this.timerId = undefined;
+    this.loopId += 1;
     this.wasPausedSinceLastCall = true;
     this.state = "paused";
   }
@@ -30,10 +32,12 @@ export class PauseableInterval<T = undefined> {
   destroy() {
     window.clearTimeout(this.timerId);
     this.timerId = undefined;
+    this.loopId += 1;
+    this.state = "destroyed";
   }
 
   resume() {
-    if (this.state === "running") {
+    if (this.state !== "paused") {
       return;
     }
 
@@ -51,6 +55,7 @@ export class PauseableInterval<T = undefined> {
   }
 
   private scheduleNextExecution(delay: number) {
+    const loopId = this.loopId;
     this.timerId = window.setTimeout(async () => {
       const start = Date.now();
       const wasPausedBeforeCallback = this.wasPausedSinceLastCall;
@@ -65,8 +70,7 @@ export class PauseableInterval<T = undefined> {
         this.wasPausedSinceLastCall = false;
       }
 
-      if (this.state === "paused") {
-        this.timerId = undefined;
+      if (this.loopId !== loopId) {
         return;
       }
 

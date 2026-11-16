@@ -43,6 +43,7 @@ export function TradersVolumeChartContainer({
       rebatesUsd: point.rebatesUsd,
       rebatesUsdFloat: bigintToNumber(point.rebatesUsd, USD_DECIMALS),
       tradersGained: point.tradersGained,
+      tradersGraduated: -point.tradersGraduated,
       tradersLost: -point.tradersLost,
       tradersNet: point.tradersNet,
       tradersSumGainedLost: point.tradersGained + point.tradersLost,
@@ -52,7 +53,7 @@ export function TradersVolumeChartContainer({
   if (isLoading) {
     return (
       <div className="text-body-small flex h-[256px] w-full grow items-center justify-center text-typography-secondary">
-        <Trans>Loading…</Trans>
+        <Trans>Loading...</Trans>
       </div>
     );
   }

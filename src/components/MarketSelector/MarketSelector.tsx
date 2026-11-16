@@ -9,23 +9,25 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { importImage } from "lib/legacy";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getCategoryTokenAddresses } from "sdk/configs/tokens";
+import type { TokenCategory } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-
 import "./MarketSelector.scss";
+
+const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
 
 type Props = {
   chainId: number;
@@ -57,7 +59,6 @@ type MarketOption = {
 };
 
 export function MarketSelector({
-  chainId,
   selectedIndexName,
   className,
   selectedMarketLabel,
@@ -73,7 +74,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
+  const { topLevelTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -122,25 +123,25 @@ export function MarketSelector({
         )
       : marketsOptions;
 
-    if (tab === "all") {
-      return textMatched;
+    switch (topLevelTab) {
+      case "all":
+        return textMatched;
+      case "favorites":
+        return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
+      case "crypto":
+        return textMatched?.filter((item) =>
+          Boolean(item.marketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)))
+        );
+      case "tradfi":
+        return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
+      case "recently-listed":
+        return textMatched?.filter(() => false);
     }
-
-    if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
-    }
-
-    const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
-    const tabMatched = textMatched?.filter((item) =>
-      categoryTokenAddresses.includes(item.marketInfo.indexToken.address)
-    );
-
-    return tabMatched;
-  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !filteredOptions.length && tab === "all",
+    isEmpty: !filteredOptions.length && topLevelTab === "all",
     isLoaded: marketsOptions.length > 0,
     place: missedCoinsPlace,
     skip: !missedCoinsPlace,
@@ -192,14 +193,13 @@ export function MarketSelector({
         }
       >
         <div className="flex flex-col">
-          {filteredOptions.map((option, marketIndex) => (
+          {filteredOptions.map((option) => (
             <MarketListItem
               key={option.marketInfo.marketTokenAddress}
               {...option}
               showBalances={showBalances}
               marketToken={getByKey(marketTokensData, option.marketInfo.marketTokenAddress)}
               isFavorite={favoriteTokens?.includes(option.marketInfo.indexToken.address)}
-              isInFirstHalf={marketIndex < filteredOptions.length / 2}
               onSelectOption={onSelectOption}
               onFavoriteClick={toggleFavoriteToken}
             />
@@ -233,7 +233,6 @@ function MarketListItem(props: {
   indexName: string;
   state?: MarketState;
   isFavorite: boolean;
-  isInFirstHalf: boolean;
   showBalances?: boolean;
   onFavoriteClick: (address: string) => void;
   onSelectOption: (option: MarketOption) => void;
@@ -246,7 +245,6 @@ function MarketListItem(props: {
     state = {},
     marketToken,
     isFavorite,
-    isInFirstHalf,
     showBalances,
     onFavoriteClick,
     onSelectOption,
@@ -287,13 +285,12 @@ function MarketListItem(props: {
       data-qa={`market-selector-${indexName}`}
     >
       {state.disabled && state.message && (
-        <TooltipWithPortal
+        <StandardTooltip
           className="TokenSelector-tooltip"
           handle={<div className="TokenSelector-tooltip-backing" />}
-          position={isInFirstHalf ? "bottom" : "top"}
+          position="bottom"
           variant="none"
           closeOnDoubleClick
-          fitHandleWidth
           renderContent={() => state.message}
         />
       )}
@@ -314,7 +311,12 @@ function MarketListItem(props: {
           </div>
         )}
         <span className="text-accent">
-          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && <div>{formatUsd(balanceUsd)}</div>) || null}
+          {(showBalances && balanceUsd !== undefined && balanceUsd > 0 && (
+            <div>
+              <UsdValue usd={balanceUsd} />
+            </div>
+          )) ||
+            null}
         </span>
       </div>
       <Button variant="ghost" onClick={handleFavoriteClick}>

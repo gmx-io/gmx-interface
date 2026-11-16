@@ -13,12 +13,13 @@ import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/utils/tokens/types";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
+import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import { BannerTest } from "./BannerTest";
+import { NumericAffixes } from "./NumericAffixes";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
@@ -237,6 +238,8 @@ export default memo(function UiPage() {
           ))}
         </div>
       </main>
+
+      <NumericAffixes />
 
       <BannerTest />
 

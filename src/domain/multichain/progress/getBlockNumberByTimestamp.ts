@@ -1,4 +1,4 @@
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { bigMath } from "sdk/utils/bigmath";
 
 const BLOCKS_TO_GO_BACK = 100_000n;

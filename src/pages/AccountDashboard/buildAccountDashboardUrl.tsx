@@ -7,7 +7,7 @@ export function buildAccountDashboardUrl(
   chainId: number | undefined,
   version: number | undefined = 2
 ) {
-  let path = `/accounts`;
+  let path = `/traders`;
 
   if (account) {
     path += `/${account}`;

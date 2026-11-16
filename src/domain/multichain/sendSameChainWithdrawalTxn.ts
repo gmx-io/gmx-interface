@@ -1,11 +1,10 @@
-import { encodeFunctionData, PublicClient } from "viem";
+import { PublicClient } from "viem";
 
 import type { SettlementChainId } from "config/chains";
-import { getContract } from "config/contracts";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { sendWalletTransaction, TxnCallback, WalletTxnCtx } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import { abis } from "sdk/abis";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
+import { buildSameChainWithdrawTxn } from "sdk/utils/multichain/api";
 
 import type { BridgeOutParams } from "./types";
 
@@ -20,25 +19,14 @@ export async function sendSameChainWithdrawalTxn({
   bridgeOutParams: BridgeOutParams;
   callback?: TxnCallback<WalletTxnCtx>;
 }) {
-  const multichainTransferRouterAddress = getContract(chainId, "MultichainTransferRouter");
+  const txn = buildSameChainWithdrawTxn({ chainId, bridgeOutParams });
 
   await sendWalletTransaction({
-    chainId: chainId,
-    signer: signer,
-    to: multichainTransferRouterAddress,
-    callData: encodeFunctionData({
-      abi: abis.MultichainTransferRouter,
-      functionName: "transferOut",
-      args: [
-        {
-          token: bridgeOutParams.token,
-          amount: bridgeOutParams.amount,
-          minAmountOut: bridgeOutParams.minAmountOut,
-          provider: bridgeOutParams.provider,
-          data: bridgeOutParams.data,
-        },
-      ],
-    }),
+    chainId,
+    signer,
+    to: txn.to,
+    callData: txn.data,
+    value: txn.value,
     callback,
   });
 }
@@ -54,26 +42,12 @@ export async function estimateSameChainWithdrawalGas({
   bridgeOutParams: BridgeOutParams;
   account: string;
 }): Promise<bigint> {
-  const multichainTransferRouterAddress = getContract(chainId, "MultichainTransferRouter");
-
-  const callData = encodeFunctionData({
-    abi: abis.MultichainTransferRouter,
-    functionName: "transferOut",
-    args: [
-      {
-        token: bridgeOutParams.token,
-        amount: bridgeOutParams.amount,
-        minAmountOut: bridgeOutParams.minAmountOut,
-        provider: bridgeOutParams.provider,
-        data: bridgeOutParams.data,
-      },
-    ],
-  });
+  const txn = buildSameChainWithdrawTxn({ chainId, bridgeOutParams });
 
   const gas = await client.estimateGas({
-    account: account,
-    to: multichainTransferRouterAddress,
-    data: callData,
+    account,
+    to: txn.to,
+    data: txn.data,
   });
 
   return applyGasLimitBuffer(gas);

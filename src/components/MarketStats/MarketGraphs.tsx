@@ -13,19 +13,30 @@ import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { POOLS_TIME_RANGE_OPTIONS, convertPoolsTimeRangeToPeriod } from "domain/synthetics/markets/usePoolsTimeRange";
-import { PoolsTimeRange, usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
+import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { usePriceSnapshots } from "domain/synthetics/markets/usePriceSnapshots";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { TokensData, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { bigintToNumber, formatPercentage, formatUsdPrice, parseValue, PRECISION_DECIMALS } from "lib/numbers";
+import {
+  bigintToNumber,
+  formatPercentage,
+  formatUsdPriceParts,
+  NumberPart,
+  parseValue,
+  PRECISION_DECIMALS,
+} from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { AprSnapshot, Price as PriceSnapshot } from "sdk/codegen/subsquid";
 
+import { NumericText } from "components/NumericValue/NumericValue";
 import Tabs from "components/Tabs/Tabs";
 
+import { formatPriceGraphYAxisTick, getPriceGraphYAxisDomain } from "./marketGraphUtils";
+import type { MarketGraphYAxisDomain } from "./marketGraphUtils";
 import { FeeApyLabel } from "../GmList/FeeApyLabel";
 import { PerformanceLabel } from "../GmList/PerformanceLabel";
 import { PoolsTabs } from "../PoolsTabs/PoolsTabs";
@@ -62,20 +73,27 @@ const getGraphValue = ({
     : getByKey(marketsTokensApyData, glvOrMarketInfo.marketTokenAddress);
   const tokenPrice = marketTokensData?.[address]?.prices.minPrice;
   const marketPerformance = performance[address];
-  const valuesMap: Record<MarketGraphType, string | undefined> = {
+  const valuesMap: Record<MarketGraphType, string | NumberPart[] | undefined> = {
     performance: marketPerformance
       ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
       : undefined,
-    price: tokenPrice ? formatUsdPrice(tokenPrice) : undefined,
+    price: tokenPrice ? formatUsdPriceParts(tokenPrice) : undefined,
     feeApr: apy ? formatPercentage(apy, { bps: false }) : undefined,
   };
 
   return valuesMap[marketGraphType];
 };
 
-export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarketInfo }) {
+export function MarketGraphs({
+  glvOrMarketInfo,
+  timeRange,
+  setTimeRange,
+}: {
+  glvOrMarketInfo: GlvOrMarketInfo;
+  timeRange: PoolsTimeRange;
+  setTimeRange: (timeRange: PoolsTimeRange) => void;
+}) {
   const [marketGraphType, setMarketGraphType] = useState<MarketGraphType>(MARKET_GRAPHS_TYPES[0]);
-  const { timeRange, setTimeRange } = usePoolsTimeRange();
 
   const address = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvTokenAddress : glvOrMarketInfo.marketTokenAddress;
 
@@ -111,6 +129,10 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const aprSnapshotsByAddress = aprSnapshots?.[address] ?? EMPTY_ARRAY;
 
+  const marketToken = isGlvInfo(glvOrMarketInfo) ? glvOrMarketInfo.glvToken : getByKey(marketTokensData, address);
+  // wait for the token too, otherwise an invalid-price pool flashes its broken values while loading
+  const isGraphHidden = marketToken === undefined || getIsPoolTokenPriceInvalid(glvOrMarketInfo, marketToken);
+
   const isMobile = usePoolsIsMobilePage();
 
   const timeRangeTabs = useMemo(
@@ -123,9 +145,9 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
   );
 
   const graphTitleLabelMap = {
-    performance: <PerformanceLabel short={false} variant="none" />,
+    performance: <PerformanceLabel short={false} variant="iconStroke" />,
     price: t`Current price`,
-    feeApr: <FeeApyLabel variant="none" />,
+    feeApr: <FeeApyLabel variant="iconStroke" />,
   };
 
   const poolsTabs = (
@@ -161,17 +183,21 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
         <div className="flex grow flex-col gap-20">
           <div className={cx("grid", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
             <GraphValue
-              value={getGraphValue({
-                marketGraphType,
-                glvOrMarketInfo,
-                performance,
-                glvApyInfoData,
-                marketsTokensApyData,
-                marketTokensData,
-              })}
+              value={
+                isGraphHidden
+                  ? undefined
+                  : getGraphValue({
+                      marketGraphType,
+                      glvOrMarketInfo,
+                      performance,
+                      glvApyInfoData,
+                      marketsTokensApyData,
+                      marketTokensData,
+                    })
+              }
               label={graphTitleLabelMap[marketGraphType]}
               valueClassName={cx("normal-nums", {
-                "text-green-300": marketGraphType === "performance" && performance[address] > 0n,
+                "text-green-300": !isGraphHidden && marketGraphType === "performance" && performance[address] > 0n,
               })}
             />
             {!isMobile ? <div className="ml-auto">{poolsTabs}</div> : null}
@@ -181,6 +207,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
             priceSnapshots={priceSnapshots}
             marketGraphType={marketGraphType}
             aprSnapshots={aprSnapshotsByAddress}
+            isChartHidden={isGraphHidden}
           />
         </div>
       </div>
@@ -213,33 +240,38 @@ const formatPerformanceBps = (performance: number): string => {
   return Number((performance * 100).toFixed(2)) + "%";
 };
 
+const formatPriceTooltipValue = (value: number): NumberPart[] | undefined => {
+  return formatUsdPriceParts(parseValue(value.toFixed(USD_DECIMALS), USD_DECIMALS) ?? 0n);
+};
+
 const valueFormatter = (marketGraphType: MarketGraphType) => (value: number) => {
   if (value === 0) {
     return "0";
   }
 
-  const valueMap: Record<MarketGraphType, string> = {
+  const valueMap: Record<MarketGraphType, string | NumberPart[] | undefined> = {
     performance: formatPerformanceBps(value),
-    price: formatUsdPrice(parseValue(value.toFixed(USD_DECIMALS), USD_DECIMALS) ?? 0n) || "",
+    price: formatPriceTooltipValue(value),
     feeApr: `${Number(value.toFixed(2))}%`,
   };
 
   return valueMap[marketGraphType];
 };
 
-const axisValueFormatter = (marketGraphType: MarketGraphType) => (value: number) => {
-  if (value === 0) {
-    return "0";
-  }
+const axisValueFormatter =
+  (marketGraphType: MarketGraphType, yAxisDomain?: MarketGraphYAxisDomain) => (value: number) => {
+    if (value === 0) {
+      return "0";
+    }
 
-  const valueMap: Record<MarketGraphType, string> = {
-    performance: formatPerformanceBps(value),
-    price: value.toString(),
-    feeApr: `${Number(value.toFixed(2))}%`,
+    const valueMap: Record<MarketGraphType, string> = {
+      performance: formatPerformanceBps(value),
+      price: formatPriceGraphYAxisTick(value, yAxisDomain),
+      feeApr: `${Number(value.toFixed(2))}%`,
+    };
+
+    return valueMap[marketGraphType];
   };
-
-  return valueMap[marketGraphType];
-};
 
 const CHART_CURSOR_PROPS = {
   stroke: "var(--color-slate-500)",
@@ -248,17 +280,20 @@ const CHART_CURSOR_PROPS = {
 };
 
 const AXIS_TICK_PROPS = { fill: "var(--color-slate-100)", fontSize: 12, fontWeight: 500 };
+const Y_AXIS_WIDTH = 56;
 
 const GraphChart = ({
   performanceSnapshots,
   priceSnapshots,
   marketGraphType,
   aprSnapshots,
+  isChartHidden,
 }: {
   performanceSnapshots: PerformanceSnapshot[];
   priceSnapshots: PriceSnapshot[];
   marketGraphType: MarketGraphType;
   aprSnapshots: AprSnapshot[];
+  isChartHidden: boolean;
 }) => {
   const performanceData = useMemo(
     () =>
@@ -271,16 +306,18 @@ const GraphChart = ({
 
   const priceData = useMemo(
     () =>
-      priceSnapshots.map((snapshot) => ({
-        snapshotTimestamp: new Date((snapshot.snapshotTimestamp ?? 0) * 1000),
-        value: bigintToNumber(
-          getMidPrice({
-            minPrice: BigInt(snapshot.minPrice),
-            maxPrice: BigInt(snapshot.maxPrice),
-          }),
-          USD_DECIMALS
-        ),
-      })),
+      priceSnapshots
+        .map((snapshot) => ({
+          snapshotTimestamp: new Date((snapshot.snapshotTimestamp ?? 0) * 1000),
+          value: bigintToNumber(
+            getMidPrice({
+              minPrice: BigInt(snapshot.minPrice),
+              maxPrice: BigInt(snapshot.maxPrice),
+            }),
+            USD_DECIMALS
+          ),
+        }))
+        .filter((item) => Number.isFinite(item.value) && item.value > 0),
     [priceSnapshots]
   );
 
@@ -294,11 +331,18 @@ const GraphChart = ({
   );
 
   const formatValue = useMemo(() => valueFormatter(marketGraphType), [marketGraphType]);
-  const formatAxisValue = useMemo(() => axisValueFormatter(marketGraphType), [marketGraphType]);
 
   const isMobile = usePoolsIsMobilePage();
 
   const [data, setData] = useState<GraphData[]>([]);
+  const yAxisDomain = useMemo(
+    () => (marketGraphType === "price" ? getPriceGraphYAxisDomain(data) : undefined),
+    [data, marketGraphType]
+  );
+  const formatAxisValue = useMemo(
+    () => axisValueFormatter(marketGraphType, yAxisDomain),
+    [marketGraphType, yAxisDomain]
+  );
 
   const prevMarketGraphType = usePrevious(marketGraphType);
 
@@ -309,16 +353,20 @@ const GraphChart = ({
       feeApr: apyData,
     };
 
-    if (prevMarketGraphType !== marketGraphType || dataMap[marketGraphType].length > 0) {
+    if (
+      prevMarketGraphType !== marketGraphType ||
+      dataMap[marketGraphType].length > 0 ||
+      (marketGraphType === "price" && priceSnapshots.length > 0)
+    ) {
       setData(dataMap[marketGraphType]);
     }
-  }, [performanceData, priceData, apyData, marketGraphType, prevMarketGraphType]);
+  }, [performanceData, priceData, priceSnapshots.length, apyData, marketGraphType, prevMarketGraphType]);
 
-  if (data.length === 0) {
+  if (isChartHidden || data.length === 0) {
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
         <p className="text-body-medium text-typography-secondary">
-          <Trans>Not enough data available yet</Trans>
+          <Trans>Not enough data yet</Trans>
         </p>
       </div>
     );
@@ -364,11 +412,12 @@ const GraphChart = ({
           />
           <YAxis
             dataKey="value"
+            domain={yAxisDomain}
             tickFormatter={formatAxisValue}
             tickLine={false}
             axisLine={false}
             tick={AXIS_TICK_PROPS}
-            width={44}
+            width={Y_AXIS_WIDTH}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -386,7 +435,7 @@ const GraphTooltip = ({ active, payload, formatValue }: any) => {
       px-12 py-8 mix-blend-overlay shadow-lg`}
       >
         <span className=" text-typography-secondary">{format(item.snapshotTimestamp.getTime(), "MMMM dd, yyyy")}</span>
-        <span className="numbers">{formatValue(item.value)}</span>
+        <NumericText text={formatValue(item.value)} className="numbers" />
       </div>
     );
   }
@@ -399,13 +448,13 @@ const GraphValue = ({
   label,
   valueClassName,
 }: {
-  value: string | undefined;
+  value: string | NumberPart[] | undefined;
   label: ReactNode;
   valueClassName?: string;
 }) => {
   return (
     <div className="flex items-center gap-8">
-      <span className={cx("text-h2", valueClassName)}>{value ?? "N/A"}</span>
+      <NumericText text={value ?? "N/A"} className={cx("text-h2", valueClassName)} />
       <span className="text-body-small text-typography-secondary">{label}</span>
     </div>
   );

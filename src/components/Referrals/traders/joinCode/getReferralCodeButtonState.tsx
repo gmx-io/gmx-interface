@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 
+import { isSameReferralCode } from "domain/referrals/utils/referralCode";
 import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 
 import { ApplyReferralCodeButtonContent } from "./ApplyReferralCodeButtonContent";
@@ -49,8 +50,8 @@ export function getReferralCodeButtonState({
   if (isApproving) {
     return { text: t`Approving...`, disabled: true };
   }
-  if (isEdit && referralCode === userReferralCodeString) {
-    return { text: t`Same as current active code`, disabled: true };
+  if (isEdit && isSameReferralCode(referralCode, userReferralCodeString)) {
+    return { text: t`Same as active code`, disabled: true };
   }
   if (isEdit && isSubmitting) {
     return { text: t`Updating...`, disabled: true };

@@ -18,7 +18,8 @@ export type TradingActionName =
   | "Express Order"
   | "Pending Transaction"
   | "Settle Funding Fee"
-  | "Add TP/SL";
+  | "Add TP/SL"
+  | "Create Referral Code";
 
 export type TradingErrorInfo = {
   actionName: TradingActionName;

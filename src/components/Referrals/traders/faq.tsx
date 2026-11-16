@@ -28,7 +28,7 @@ export const WIZARD_FAQS: FaqItem[] = [
     title: <Trans>How do I know if a code is good?</Trans>,
     content: (
       <Trans>
-        All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see
+        All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see
         the exact discount percentage after the code has been applied.
       </Trans>
     ),
@@ -78,11 +78,11 @@ export const POST_WIZARD_FAQS: FaqItem[] = [
     ),
   },
   {
-    title: <Trans>Where can I learn more?</Trans>,
+    title: <Trans>Where can I read more?</Trans>,
     content: (
       <Trans>
         Visit the <ExternalLink href={REFERRALS_DOCS_URL}>Referrals Documentation</ExternalLink> or ask in the{" "}
-        <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>GMX Telegram</ExternalLink>.
+        <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>GMX Telegram</ExternalLink>
       </Trans>
     ),
   },

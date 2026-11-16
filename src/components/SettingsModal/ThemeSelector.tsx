@@ -64,6 +64,7 @@ export function ThemeSelector() {
       modalLabel={t`Theme`}
       desktopPanelClassName="!z-[10000] w-[140px] !top-[10px]"
       chevronClassName="hidden"
+      handleClassName="max-md:[&>span]:grow"
       label={
         <div className="flex w-full items-center justify-between">
           <div className="text-typography-secondary">

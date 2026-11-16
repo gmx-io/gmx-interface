@@ -1,13 +1,13 @@
-import { encodeFunctionData, type Address } from "viem";
+import { encodeFunctionData, isHex, type Address, type Hex } from "viem";
 
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { ISigner } from "lib/transactions/iSigner";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { abis } from "sdk/abis";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { getAbi } from "sdk/abis/getAbi";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { encodeExchangeRouterMulticall, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 type Params = {
@@ -23,6 +23,14 @@ type SwapExternalCalls = Pick<
   "externalCallTargets" | "externalCallDataList" | "refundTokens" | "refundReceivers"
 >;
 
+function requireHexData(data: string): Hex {
+  if (!isHex(data)) {
+    throw new Error("Invalid claim affiliate rewards call data");
+  }
+
+  return data;
+}
+
 function getClaimAffiliateRewardsAndSwapCallData({
   chainId,
   rewardsParams,
@@ -34,7 +42,7 @@ function getClaimAffiliateRewardsAndSwapCallData({
 }) {
   const externalHandlerAddress = getContract(chainId, "ExternalHandler");
 
-  return encodeExchangeRouterMulticall([
+  return encodeExchangeRouterMulticall(chainId, [
     {
       method: "claimAffiliateRewards",
       params: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, externalHandlerAddress],
@@ -52,14 +60,16 @@ function getClaimAffiliateRewardsAndSwapCallData({
 }
 
 function getClaimAffiliateRewardsCallData({
+  chainId,
   rewardsParams,
   receiver,
 }: {
+  chainId: ContractsChainId;
   rewardsParams: Params["rewardsParams"];
   receiver: string;
 }) {
   return encodeFunctionData({
-    abi: abis.ExchangeRouter,
+    abi: getAbi(chainId, "ExchangeRouter"),
     functionName: "claimAffiliateRewards",
     args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, receiver],
   });
@@ -80,6 +90,7 @@ export async function estimateClaimAffiliateRewardsGas(
         externalCalls,
       }).callData
     : getClaimAffiliateRewardsCallData({
+        chainId,
         rewardsParams,
         receiver: account,
       });
@@ -88,7 +99,7 @@ export async function estimateClaimAffiliateRewardsGas(
     .estimateGas({
       account,
       to: exchangeRouterAddress,
-      data: callData,
+      data: requireHexData(callData),
     })
     .then(applyGasLimitBuffer);
 }
@@ -101,6 +112,7 @@ export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer
     signer,
     to: getContract(chainId, "ExchangeRouter"),
     callData: getClaimAffiliateRewardsCallData({
+      chainId,
       rewardsParams,
       receiver: account,
     }),
@@ -154,7 +166,7 @@ export async function simulateAndClaimAffiliateRewardsAndSwapTxn(
     .estimateGas({
       account,
       to: exchangeRouterAddress,
-      data: callData,
+      data: requireHexData(callData),
     })
     .then(applyGasLimitBuffer);
 

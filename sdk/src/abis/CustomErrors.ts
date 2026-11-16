@@ -30,6 +30,15 @@ export default [
   },
   {
     inputs: [
+      { internalType: "uint256", name: "minRequiredFeeAmount", type: "uint256" },
+      { internalType: "uint256", name: "feeAmountCurrentChain", type: "uint256" },
+      { internalType: "uint256", name: "amountToBridgeOut", type: "uint256" },
+    ],
+    name: "AttemptedBridgeAmountTooHigh",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "address", name: "feeToken", type: "address" },
       { internalType: "address", name: "buybackToken", type: "address" },
       { internalType: "uint256", name: "availableFeeAmount", type: "uint256" },
@@ -37,15 +46,28 @@ export default [
     name: "AvailableFeeAmountIsZero",
     type: "error",
   },
+  { inputs: [], name: "BridgeOutNotSupportedDuringShift", type: "error" },
   {
     inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "prevMinOracleBlockNumber", type: "uint256" },
+      { internalType: "uint256", name: "minRequiredFeeAmount", type: "uint256" },
+      { internalType: "uint256", name: "currentChainFeeAmount", type: "uint256" },
     ],
-    name: "BlockNumbersNotSorted",
+    name: "BridgedAmountNotSufficient",
     type: "error",
   },
-  { inputs: [], name: "BridgeOutNotSupportedDuringShift", type: "error" },
+  {
+    inputs: [
+      { internalType: "uint256", name: "balancesLength", type: "uint256" },
+      { internalType: "uint256", name: "targetBalancesLength", type: "uint256" },
+    ],
+    name: "BridgingBalanceArrayMismatch",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "bytes", name: "result", type: "bytes" }],
+    name: "BridgingTransactionFailed",
+    type: "error",
+  },
   {
     inputs: [
       { internalType: "address", name: "feeToken", type: "address" },
@@ -168,6 +190,7 @@ export default [
   { inputs: [], name: "EmptyDeposit", type: "error" },
   { inputs: [], name: "EmptyDepositAmounts", type: "error" },
   { inputs: [], name: "EmptyDepositAmountsAfterSwap", type: "error" },
+  { inputs: [], name: "EmptyDesignatedVesters", type: "error" },
   { inputs: [], name: "EmptyFundingAccount", type: "error" },
   { inputs: [{ internalType: "address", name: "glv", type: "address" }], name: "EmptyGlv", type: "error" },
   { inputs: [], name: "EmptyGlvDeposit", type: "error" },
@@ -197,6 +220,7 @@ export default [
     type: "error",
   },
   { inputs: [], name: "EmptyOrder", type: "error" },
+  { inputs: [{ internalType: "uint32", name: "eid", type: "uint32" }], name: "EmptyPeer", type: "error" },
   { inputs: [], name: "EmptyPosition", type: "error" },
   { inputs: [], name: "EmptyPositionImpactWithdrawalAmount", type: "error" },
   { inputs: [{ internalType: "address", name: "token", type: "address" }], name: "EmptyPrimaryPrice", type: "error" },
@@ -206,6 +230,7 @@ export default [
   { inputs: [], name: "EmptyShift", type: "error" },
   { inputs: [], name: "EmptyShiftAmount", type: "error" },
   { inputs: [], name: "EmptySizeDeltaInTokens", type: "error" },
+  { inputs: [], name: "EmptyStakeAmount", type: "error" },
   { inputs: [], name: "EmptyTarget", type: "error" },
   { inputs: [], name: "EmptyToken", type: "error" },
   {
@@ -220,6 +245,14 @@ export default [
   { inputs: [{ internalType: "string", name: "key", type: "string" }], name: "EventItemNotFound", type: "error" },
   { inputs: [{ internalType: "bytes", name: "data", type: "bytes" }], name: "ExternalCallFailed", type: "error" },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "FeeBatchNotFound", type: "error" },
+  {
+    inputs: [
+      { internalType: "uint256", name: "lastDistributionTime", type: "uint256" },
+      { internalType: "uint256", name: "startOfCurrentWeek", type: "uint256" },
+    ],
+    name: "FeeDistributionAlreadyCompleted",
+    type: "error",
+  },
   {
     inputs: [
       { internalType: "bytes32", name: "salt", type: "bytes32" },
@@ -341,7 +374,7 @@ export default [
       { internalType: "uint256", name: "effectivePriceImpactFactor", type: "uint256" },
       { internalType: "uint256", name: "glvMaxShiftPriceImpactFactor", type: "uint256" },
     ],
-    name: "GlvShiftMaxPriceImpactExceeded",
+    name: "GlvShiftMaxLossExceeded",
     type: "error",
   },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "GlvShiftNotFound", type: "error" },
@@ -355,63 +388,12 @@ export default [
     type: "error",
   },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "GlvWithdrawalNotFound", type: "error" },
-  { inputs: [{ internalType: "uint256", name: "signerIndex", type: "uint256" }], name: "GmEmptySigner", type: "error" },
   {
     inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "currentBlockNumber", type: "uint256" },
+      { internalType: "uint256", name: "outputAmount", type: "uint256" },
+      { internalType: "uint256", name: "minAmountOut", type: "uint256" },
     ],
-    name: "GmInvalidBlockNumber",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minOracleBlockNumber", type: "uint256" },
-      { internalType: "uint256", name: "maxOracleBlockNumber", type: "uint256" },
-    ],
-    name: "GmInvalidMinMaxBlockNumber",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "oracleSigners", type: "uint256" },
-      { internalType: "uint256", name: "maxOracleSigners", type: "uint256" },
-    ],
-    name: "GmMaxOracleSigners",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "price", type: "uint256" },
-      { internalType: "uint256", name: "prevPrice", type: "uint256" },
-    ],
-    name: "GmMaxPricesNotSorted",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "signerIndex", type: "uint256" },
-      { internalType: "uint256", name: "maxSignerIndex", type: "uint256" },
-    ],
-    name: "GmMaxSignerIndex",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "oracleSigners", type: "uint256" },
-      { internalType: "uint256", name: "minOracleSigners", type: "uint256" },
-    ],
-    name: "GmMinOracleSigners",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "token", type: "address" },
-      { internalType: "uint256", name: "price", type: "uint256" },
-      { internalType: "uint256", name: "prevPrice", type: "uint256" },
-    ],
-    name: "GmMinPricesNotSorted",
+    name: "InsufficientBridgeOutputAmount",
     type: "error",
   },
   {
@@ -547,6 +529,19 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "uint256", name: "msgValue", type: "uint256" }],
+    name: "InsufficientMultichainNativeFee",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "msgValue", type: "uint256" },
+      { internalType: "uint256", name: "expectedNativeValue", type: "uint256" },
+    ],
+    name: "InsufficientNativeTokenAmount",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "uint256", name: "outputAmount", type: "uint256" },
       { internalType: "uint256", name: "minOutputAmount", type: "uint256" },
@@ -584,6 +579,14 @@ export default [
       { internalType: "uint256", name: "maxReservedUsd", type: "uint256" },
     ],
     name: "InsufficientReserveForOpenInterest",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "allowance", type: "uint256" },
+      { internalType: "uint256", name: "balance", type: "uint256" },
+    ],
+    name: "InsufficientStrictTransferAllowance",
     type: "error",
   },
   {
@@ -768,12 +771,25 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "uint256", name: "distributionStateUint", type: "uint256" }],
+    name: "InvalidDistributionState",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "address", name: "token", type: "address" },
       { internalType: "uint256", name: "bid", type: "uint256" },
       { internalType: "uint256", name: "ask", type: "uint256" },
     ],
     name: "InvalidEdgeDataStreamBidAsk",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "token", type: "address" },
+      { internalType: "uint256", name: "decimals", type: "uint256" },
+    ],
+    name: "InvalidEdgeDataStreamDecimals",
     type: "error",
   },
   {
@@ -891,40 +907,12 @@ export default [
     type: "error",
   },
   {
-    inputs: [
-      { internalType: "uint256", name: "minPrice", type: "uint256" },
-      { internalType: "uint256", name: "maxPrice", type: "uint256" },
-    ],
-    name: "InvalidGmMedianMinMaxPrice",
-    type: "error",
-  },
-  {
-    inputs: [{ internalType: "address", name: "token", type: "address" }],
-    name: "InvalidGmOraclePrice",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "address", name: "recoveredSigner", type: "address" },
-      { internalType: "address", name: "expectedSigner", type: "address" },
-    ],
-    name: "InvalidGmSignature",
-    type: "error",
-  },
-  {
-    inputs: [
-      { internalType: "uint256", name: "minPrice", type: "uint256" },
-      { internalType: "uint256", name: "maxPrice", type: "uint256" },
-    ],
-    name: "InvalidGmSignerMinMaxPrice",
-    type: "error",
-  },
-  {
     inputs: [{ internalType: "address", name: "account", type: "address" }],
     name: "InvalidHoldingAddress",
     type: "error",
   },
   { inputs: [], name: "InvalidInitializer", type: "error" },
+  { inputs: [{ internalType: "uint256", name: "interval", type: "uint256" }], name: "InvalidInterval", type: "error" },
   {
     inputs: [{ internalType: "address", name: "keeper", type: "address" }],
     name: "InvalidKeeperForFrozenOrder",
@@ -1093,6 +1081,11 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "address", name: "feedAddress", type: "address" }],
+    name: "InvalidPriceFeed",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "uint256", name: "primaryTokensLength", type: "uint256" },
       { internalType: "uint256", name: "primaryPricesLength", type: "uint256" },
@@ -1133,6 +1126,11 @@ export default [
       { internalType: "address", name: "expectedSigner", type: "address" },
     ],
     name: "InvalidRecoveredSigner",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "token", type: "address" }],
+    name: "InvalidReferralRewardToken",
     type: "error",
   },
   {
@@ -1217,6 +1215,11 @@ export default [
   { inputs: [], name: "InvalidTransferRequestsLength", type: "error" },
   { inputs: [], name: "InvalidTrustedSignerAddress", type: "error" },
   {
+    inputs: [{ internalType: "uint256", name: "twapCount", type: "uint256" }],
+    name: "InvalidTwapCount",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "uint256", name: "uiFeeFactor", type: "uint256" },
       { internalType: "uint256", name: "maxUiFeeFactor", type: "uint256" },
@@ -1226,6 +1229,37 @@ export default [
   },
   { inputs: [{ internalType: "bytes32", name: "digest", type: "bytes32" }], name: "InvalidUserDigest", type: "error" },
   { inputs: [{ internalType: "uint256", name: "version", type: "uint256" }], name: "InvalidVersion", type: "error" },
+  { inputs: [], name: "JitEmptyShiftParams", type: "error" },
+  {
+    inputs: [
+      { internalType: "address", name: "market", type: "address" },
+      { internalType: "address", name: "expectedMarket", type: "address" },
+    ],
+    name: "JitInvalidToMarket",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "uint256", name: "orderType", type: "uint256" }],
+    name: "JitUnsupportedOrderType",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "wntForKeepers", type: "uint256" },
+      { internalType: "uint256", name: "wntToKeepers", type: "uint256" },
+    ],
+    name: "KeeperAmountMismatch",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "keepersLength", type: "uint256" },
+      { internalType: "uint256", name: "keeperTargetBalancesLength", type: "uint256" },
+      { internalType: "uint256", name: "keeperVersionsLength", type: "uint256" },
+    ],
+    name: "KeeperArrayLengthMismatch",
+    type: "error",
+  },
   {
     inputs: [
       { internalType: "string", name: "reason", type: "string" },
@@ -1288,10 +1322,26 @@ export default [
   },
   {
     inputs: [
+      { internalType: "uint256", name: "collateralSum", type: "uint256" },
+      { internalType: "uint256", name: "maxCollateralSum", type: "uint256" },
+    ],
+    name: "MaxCollateralSumExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "uint256", name: "dataLength", type: "uint256" },
       { internalType: "uint256", name: "maxDataLength", type: "uint256" },
     ],
     name: "MaxDataListLengthExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "tokensForReferralRewards", type: "uint256" },
+      { internalType: "uint256", name: "maxEsGmxReferralRewards", type: "uint256" },
+    ],
+    name: "MaxEsGmxReferralRewardsAmountExceeded",
     type: "error",
   },
   {
@@ -1363,6 +1413,23 @@ export default [
   },
   {
     inputs: [
+      { internalType: "address", name: "token", type: "address" },
+      { internalType: "uint256", name: "cumulativeTransferAmount", type: "uint256" },
+      { internalType: "uint256", name: "tokensForReferralRewards", type: "uint256" },
+    ],
+    name: "MaxReferralRewardsExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "feeUsd", type: "uint256" },
+      { internalType: "uint256", name: "maxFeeUsd", type: "uint256" },
+    ],
+    name: "MaxRelayFeeSwapExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "uint256", name: "feeUsd", type: "uint256" },
       { internalType: "uint256", name: "maxFeeUsd", type: "uint256" },
     ],
@@ -1407,6 +1474,47 @@ export default [
       { internalType: "uint256", name: "maxTotalAmount", type: "uint256" },
     ],
     name: "MaxTotalContributorTokenAmountExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "count", type: "uint256" },
+      { internalType: "uint256", name: "maxCount", type: "uint256" },
+    ],
+    name: "MaxUnstakeRequestsExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "uint256", name: "count", type: "uint256" },
+    ],
+    name: "MaxUnstakeRequestsOnTransfer",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "maxWntFromTreasury", type: "uint256" },
+      { internalType: "uint256", name: "additionalWntFromTreasury", type: "uint256" },
+    ],
+    name: "MaxWntFromTreasuryExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "wntReferralRewardsInUsd", type: "uint256" },
+      { internalType: "uint256", name: "maxWntReferralRewardsInUsdAmount", type: "uint256" },
+    ],
+    name: "MaxWntReferralRewardsInUsdAmountExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "wntReferralRewardsInUsd", type: "uint256" },
+      { internalType: "uint256", name: "maxWntReferralRewardsInUsd", type: "uint256" },
+    ],
+    name: "MaxWntReferralRewardsInUsdExceeded",
     type: "error",
   },
   {
@@ -1549,6 +1657,11 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "uint256", name: "timestamp", type: "uint256" }],
+    name: "OutdatedReadResponse",
+    type: "error",
+  },
+  {
     inputs: [
       { internalType: "int256", name: "pnlToPoolFactor", type: "int256" },
       { internalType: "uint256", name: "maxPnlFactor", type: "uint256" },
@@ -1614,11 +1727,24 @@ export default [
     type: "error",
   },
   {
+    inputs: [{ internalType: "bytes32", name: "code", type: "bytes32" }],
+    name: "ReferralCodeAlreadyExists",
+    type: "error",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "calldataLength", type: "uint256" }],
     name: "RelayCalldataTooLong",
     type: "error",
   },
   { inputs: [], name: "RelayEmptyBatch", type: "error" },
+  {
+    inputs: [
+      { internalType: "bytes32", name: "listKey", type: "bytes32" },
+      { internalType: "bytes32", name: "entityKey", type: "bytes32" },
+    ],
+    name: "RemovalShouldNotBeSkipped",
+    type: "error",
+  },
   {
     inputs: [
       { internalType: "uint256", name: "requestAge", type: "uint256" },
@@ -1631,6 +1757,20 @@ export default [
   {
     inputs: [{ internalType: "address", name: "receiver", type: "address" }],
     name: "SelfTransferNotSupported",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "SelfVestingTransfer",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "keeper", type: "address" },
+      { internalType: "uint256", name: "sendAmount", type: "uint256" },
+      { internalType: "bytes", name: "result", type: "bytes" },
+    ],
+    name: "SendEthToKeeperFailed",
     type: "error",
   },
   { inputs: [], name: "SequencerDown", type: "error" },
@@ -1661,6 +1801,25 @@ export default [
     name: "SignalTimeNotYetPassed",
     type: "error",
   },
+  {
+    inputs: [
+      { internalType: "address", name: "receiver", type: "address" },
+      { internalType: "address", name: "module", type: "address" },
+    ],
+    name: "StakingReceiverNotFresh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "sender", type: "address" }],
+    name: "StakingSenderHasPairAmounts",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "sender", type: "address" }],
+    name: "StakingSenderHasVestedTokens",
+    type: "error",
+  },
+  { inputs: [{ internalType: "address", name: "token", type: "address" }], name: "StaticPriceNotSet", type: "error" },
   {
     inputs: [
       { internalType: "uint256", name: "currentTimestamp", type: "uint256" },
@@ -1755,6 +1914,22 @@ export default [
     type: "error",
   },
   {
+    inputs: [
+      { internalType: "address", name: "sender", type: "address" },
+      { internalType: "address", name: "receiver", type: "address" },
+    ],
+    name: "TransferNotSignalled",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "signalledVersion", type: "uint256" },
+      { internalType: "uint256", name: "currentVersion", type: "uint256" },
+    ],
+    name: "TransferVesterConfigChanged",
+    type: "error",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "length", type: "uint256" }],
     name: "Uint256AsBytesLengthExceeds32Bytes",
     type: "error",
@@ -1837,6 +2012,22 @@ export default [
     type: "error",
   },
   {
+    inputs: [
+      { internalType: "uint256", name: "totalRequested", type: "uint256" },
+      { internalType: "uint256", name: "stakedAmount", type: "uint256" },
+    ],
+    name: "UnstakeAmountExceedsStake",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "amount", type: "uint256" },
+      { internalType: "uint256", name: "executableAmount", type: "uint256" },
+    ],
+    name: "UnstakeNotSignalled",
+    type: "error",
+  },
+  {
     inputs: [{ internalType: "uint256", name: "orderType", type: "uint256" }],
     name: "UnsupportedOrderType",
     type: "error",
@@ -1878,5 +2069,22 @@ export default [
     name: "UsdDeltaExceedsShortOpenInterest",
     type: "error",
   },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VesterAccountFrozen",
+    type: "error",
+  },
+  { inputs: [], name: "VesterProvisioningNotComplete", type: "error" },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VestingReceiverNotFresh",
+    type: "error",
+  },
+  {
+    inputs: [{ internalType: "address", name: "account", type: "address" }],
+    name: "VestingSenderHasOpenSession",
+    type: "error",
+  },
   { inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }], name: "WithdrawalNotFound", type: "error" },
+  { inputs: [], name: "ZeroTreasuryAddress", type: "error" },
 ] as const;

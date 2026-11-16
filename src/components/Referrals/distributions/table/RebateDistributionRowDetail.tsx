@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import { RebateDistribution } from "domain/referrals";
 import { helperToast } from "lib/helperToast";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";
@@ -85,7 +85,7 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
         return (
           <Fragment key={tokenAddress}>
             <div className="py-8 pl-adaptive text-typography-secondary">
-              <Trans>{token.symbol} Amount</Trans>
+              <Trans>{token.symbol} amount</Trans>
             </div>
             <div className="col-span-4 py-8 pr-adaptive">
               <Amount

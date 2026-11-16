@@ -10,6 +10,7 @@ import { HeroSection } from "./HeroSection/HeroSection";
 import { LaunchSection } from "./LaunchSection/LaunchSection";
 import { LiqiuditySection } from "./LiqiuditySection/LiqiuditySection";
 import { RoadmapSection } from "./RoadmapSection/RoadmapSection";
+import { ProgramCards } from "./SocialSection/ProgramCards";
 import { SocialSection } from "./SocialSection/SocialSection";
 import { SponsorsSection } from "./SponsorsSection/SponsorsSection";
 
@@ -33,6 +34,9 @@ export default function Home() {
       <LaunchSection />
       <LiqiuditySection />
       <SponsorsSection />
+      <section className="w-full overflow-hidden bg-slate-900 pt-60 text-white sm:pt-[120px]">
+        <ProgramCards />
+      </section>
       <FaqSection />
       <RoadmapSection />
       <SocialSection />

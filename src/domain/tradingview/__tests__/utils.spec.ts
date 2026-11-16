@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CHART_PERIODS } from "lib/legacy";
+
 import { getCurrentCandleTime } from "../utils";
 
 describe("utils", () => {
@@ -31,6 +33,14 @@ describe("utils", () => {
       vi.advanceTimersByTime(60000);
       const result3 = getCurrentCandleTime("1m");
       expect(result3).toBe(currentTimeSeconds + 60);
+    });
+
+    it.each(["1w", "1M"] as const)("should return a finite period start for %s", (period) => {
+      const result = getCurrentCandleTime(period);
+      expect(Number.isFinite(result)).toBe(true);
+      expect(result % CHART_PERIODS[period]).toBe(0);
+      expect(result).toBeLessThanOrEqual(currentTimeSeconds);
+      expect(currentTimeSeconds - result).toBeLessThan(CHART_PERIODS[period]);
     });
   });
 });

@@ -1,4 +1,5 @@
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { getNetworkFeatures } from "config/features";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
@@ -15,22 +16,47 @@ const ARBITRUM_ETH_TOKEN_ADDRESS = NATIVE_TOKEN_ADDRESS;
 const ARBITRUM_WETH_TOKEN_ADDRESS = getTokenBySymbol(ARBITRUM, "WETH")?.address;
 const AVALANCHE_AVAX_TOKEN_ADDRESS = NATIVE_TOKEN_ADDRESS;
 const AVALANCHE_WAVAX_TOKEN_ADDRESS = getTokenBySymbol(AVALANCHE, "WAVAX")?.address;
-const BOTANIX_BTC_TOKEN_ADDRESS = NATIVE_TOKEN_ADDRESS;
-const BOTANIX_PBTC_TOKEN_ADDRESS = getTokenBySymbol(BOTANIX, "PBTC")?.address;
-const BOTANIX_STBTC_TOKEN_ADDRESS = getTokenBySymbol(BOTANIX, "STBTC")?.address;
+
+function withoutUnsupportedModes(
+  modes: readonly (TradeMode | readonly TradeMode[])[],
+  features: { twap: boolean; stopMarket: boolean }
+): (TradeMode | TradeMode[])[] {
+  return modes.flatMap((mode) => {
+    if (Array.isArray(mode)) {
+      const nested = mode.filter((item) => {
+        if (item === TradeMode.Twap) return features.twap;
+        if (item === TradeMode.StopMarket) return features.stopMarket;
+        return true;
+      });
+      return nested.length > 0 ? [nested] : [];
+    }
+
+    if (mode === TradeMode.Twap && !features.twap) return [];
+    if (mode === TradeMode.StopMarket && !features.stopMarket) return [];
+    return [mode];
+  });
+}
 
 export function getAvailableTradeModes({
   chainId,
+  networkId,
   tradeType,
   fromTokenAddress,
   toTokenAddress,
 }: {
   chainId: number;
+  networkId: number;
   tradeType: TradeType;
   fromTokenAddress: string | undefined;
   toTokenAddress: string | undefined;
 }) {
   if (!tradeType) {
+    return [];
+  }
+
+  const features = getNetworkFeatures(networkId);
+
+  if (tradeType === TradeType.Swap && !features.swap) {
     return [];
   }
 
@@ -54,28 +80,7 @@ export function getAvailableTradeModes({
         return ONLY_MARKET_TRADE_MODES;
       }
     }
-
-    if (chainId === BOTANIX) {
-      if (fromTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS && toTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS) {
-        return ONLY_MARKET_TRADE_MODES;
-      }
-
-      if (fromTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS && toTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS) {
-        return ONLY_MARKET_TRADE_MODES;
-      }
-
-      if (
-        (fromTokenAddress === BOTANIX_BTC_TOKEN_ADDRESS || fromTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS) &&
-        toTokenAddress === BOTANIX_STBTC_TOKEN_ADDRESS
-      ) {
-        return ONLY_MARKET_TRADE_MODES;
-      }
-
-      if (fromTokenAddress === BOTANIX_STBTC_TOKEN_ADDRESS && toTokenAddress === BOTANIX_PBTC_TOKEN_ADDRESS) {
-        return ONLY_MARKET_TRADE_MODES;
-      }
-    }
   }
 
-  return AVAILABLE_TRADE_MODES[tradeType];
+  return withoutUnsupportedModes(AVAILABLE_TRADE_MODES[tradeType], features);
 }

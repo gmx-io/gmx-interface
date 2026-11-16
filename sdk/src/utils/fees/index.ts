@@ -1,5 +1,6 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
 import { bigMath } from "utils/bigmath";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getOpenInterestForBalance } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
@@ -42,21 +43,34 @@ export function getPositionFee(
   sizeDeltaUsd: bigint,
   balanceWasImproved: boolean,
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined,
-  uiFeeFactor?: bigint
+  uiFeeFactor?: bigint,
+  proDiscountFactor?: bigint,
+  feeDiscountFactor?: bigint
 ) {
   const factor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+  if (marketInfo.tradeMath === "gmsol") {
+    positionFeeUsd = getGmsolUsdAmount(positionFeeUsd);
+    const discountUsd = getGmsolUsdAmount(
+      applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n)))
+    );
+    return { positionFeeUsd: positionFeeUsd - discountUsd, discountUsd, totalRebateUsd: 0n, uiFeeUsd: 0n };
+  }
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
-  if (!referralInfo) {
-    return { positionFeeUsd, discountUsd: 0n, totalRebateUsd: 0n, uiFeeUsd };
-  }
+  const totalRebateUsd = referralInfo ? applyFactor(positionFeeUsd, referralInfo.totalRebateFactor) : 0n;
+  let discountUsd = referralInfo ? applyFactor(totalRebateUsd, referralInfo.discountFactor) : 0n;
 
-  const totalRebateUsd = applyFactor(positionFeeUsd, referralInfo.totalRebateFactor);
-  const discountUsd = applyFactor(totalRebateUsd, referralInfo.discountFactor);
+  if (proDiscountFactor !== undefined && proDiscountFactor > 0n) {
+    const proDiscountUsd = applyFactor(positionFeeUsd, proDiscountFactor);
+
+    if (proDiscountUsd > discountUsd) {
+      discountUsd = proDiscountUsd;
+    }
+  }
 
   positionFeeUsd = positionFeeUsd - discountUsd;
 

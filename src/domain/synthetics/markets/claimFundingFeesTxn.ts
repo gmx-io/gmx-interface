@@ -1,14 +1,17 @@
 import { t } from "@lingui/macro";
 import { Signer, Wallet, ethers } from "ethers";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, type Address } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import { ExpressTxnData } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
-import { abis } from "sdk/abis";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { getAbi } from "sdk/abis/getAbi";
 import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { validateSignerAddress } from "components/Errors/errorToasts";
 
@@ -29,7 +32,11 @@ export async function claimFundingFeesTxn(chainId: ContractsChainId, signer: Sig
 
   await validateSignerAddress(signer, account);
 
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const contract = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    getAbi(chainId, "ExchangeRouter"),
+    signer
+  );
 
   return callContract(
     chainId,
@@ -44,6 +51,27 @@ export async function claimFundingFeesTxn(chainId: ContractsChainId, signer: Sig
       setPendingTxns,
     }
   );
+}
+
+export async function estimateClaimFundingFeesGas(
+  chainId: ContractsChainId,
+  { account, marketAddresses, tokenAddresses }: { account: string; marketAddresses: string[]; tokenAddresses: string[] }
+): Promise<bigint> {
+  const client = getPublicClientWithRpc(chainId);
+
+  const callData = encodeFunctionData({
+    abi: getAbi(chainId, "ExchangeRouter"),
+    functionName: "claimFundingFees",
+    args: [marketAddresses, tokenAddresses, account],
+  });
+
+  return client
+    .estimateGas({
+      account: account as Address,
+      to: getContract(chainId, "ExchangeRouter"),
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
 }
 
 export async function buildAndSignClaimFundingFeesTxn({
@@ -91,7 +119,7 @@ export async function buildAndSignClaimFundingFeesTxn({
   }
 
   const claimFundingFeesCallData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouter,
+    abi: getAbi(chainId, "MultichainClaimsRouter"),
     functionName: "claimFundingFees",
     args: [{ ...relayParams, signature }, account, BigInt(srcChainId), markets, tokens, receiver],
   });
@@ -121,8 +149,10 @@ async function signClaimFundingFeesPayload({
   chainId: ContractsChainId;
   srcChainId: SourceChainId;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     ClaimFundingFees: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "markets", type: "address[]" },
       { name: "tokens", type: "address[]" },
       { name: "receiver", type: "address" },
@@ -132,11 +162,12 @@ async function signClaimFundingFeesPayload({
 
   const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainClaimsRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     markets,
     tokens,
     receiver,
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId, relayParams });
 }

@@ -3,8 +3,19 @@ import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { OracleKeeperFallbackTracker } from "lib/oracleKeeperFetcher/OracleFallbackTracker";
 
 import { metrics, OracleKeeperEndpointBannedEvent, OracleKeeperUpdateEndpointsEvent } from ".";
+import { createEndpointsPairReporter } from "./endpointsPairReporter";
 
 export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTracker) {
+  const endpointsPairReporter = createEndpointsPairReporter<OracleKeeperUpdateEndpointsEvent["data"]>(
+    (data, repeats) => {
+      metrics.pushEvent<OracleKeeperUpdateEndpointsEvent>({
+        event: "oracleKeeper.endpoint.updated",
+        isError: false,
+        data: { ...data, ...repeats },
+      });
+    }
+  );
+
   const cleanupBannedSubscription = addFallbackTrackerListener(
     "endpointBanned",
     tracker.trackerKey,
@@ -27,11 +38,11 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
     tracker.trackerKey,
     (p) => {
       const { primary, fallbacks } = p;
-      const secondary = fallbacks[0];
+      const secondary: string | undefined = fallbacks[0];
 
-      metrics.pushEvent<OracleKeeperUpdateEndpointsEvent>({
-        event: "oracleKeeper.endpoint.updated",
-        isError: false,
+      endpointsPairReporter.onPairUpdated({
+        primary,
+        secondary,
         data: {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
@@ -43,6 +54,7 @@ export function subscribeForOracleTrackerMetrics(tracker: OracleKeeperFallbackTr
   );
 
   return () => {
+    endpointsPairReporter.flush();
     cleanupBannedSubscription();
     cleanupEndpointsUpdatedSubscription();
   };

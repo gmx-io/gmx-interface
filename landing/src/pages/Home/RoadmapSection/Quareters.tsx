@@ -8,7 +8,6 @@ export function Quareters() {
       <Quarter lastCompleted>
         <Trans>
           <p>Solana support</p>
-          <p>Botanix support</p>
           <p>GMX Express</p>
         </Trans>
       </Quarter>

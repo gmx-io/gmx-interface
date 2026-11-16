@@ -16,19 +16,38 @@ import {
   WalletActions,
   WalletRpcSchema,
   PublicClient as ViemPublicClient,
+  formatTransactionRequest,
+  isAddress,
+  isHex,
+  numberToHex,
+  type Address,
+  type Hex,
   zeroAddress,
 } from "viem";
+import { sendTransaction } from "viem/actions";
 
 import { mustNeverExist } from "lib/types";
 import { SignatureDomain, SignatureTypes } from "lib/wallets/signing";
+import { getViemChain } from "sdk/configs/chains";
 import { toBigInt } from "sdk/utils/numbers";
 
-export type ISignerSendTransactionParams = Pick<
+type ISignerTransactionParams = Pick<
   TransactionRequest,
-  "to" | "data" | "value" | "gasLimit" | "gasPrice" | "nonce" | "from" | "maxFeePerGas" | "maxPriorityFeePerGas"
+  | "chainId"
+  | "to"
+  | "data"
+  | "value"
+  | "gasLimit"
+  | "gasPrice"
+  | "nonce"
+  | "from"
+  | "maxFeePerGas"
+  | "maxPriorityFeePerGas"
 >;
 
-export type ISignerEstimateGasParams = ISignerSendTransactionParams & {
+export type ISignerSendTransactionParams = ISignerTransactionParams & { chainId: number };
+
+export type ISignerEstimateGasParams = ISignerTransactionParams & {
   stateOverride?: StateOverride;
 };
 
@@ -51,6 +70,18 @@ type ViemSigner = Client<
   WalletRpcSchema,
   WalletActions<Chain, Account> & PublicActions<Transport, Chain, Account>
 >;
+
+function toHexData(data: ISignerSendTransactionParams["data"] | undefined): Hex | undefined {
+  if (data === undefined || data === null) {
+    return undefined;
+  }
+
+  if (!isHex(data)) {
+    throw new Error("Invalid transaction data");
+  }
+
+  return data;
+}
 
 /**
  * Abstraction above ethers and viem signers
@@ -140,30 +171,58 @@ export class ISigner implements ISignerInterface {
   }
 
   async sendTransaction(params: ISignerSendTransactionParams): Promise<ISignerSendTransactionResult> {
+    if (!Number.isSafeInteger(params.chainId) || params.chainId <= 0) {
+      throw new Error("Transaction chainId is required");
+    }
+
     return this.match<ISignerSendTransactionResult>({
-      viem: async (signer: ViemSigner) =>
-        signer
-          .sendTransaction({
-            to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
-            value: toBigInt(params.value),
-            gas: toBigInt(params.gasLimit),
-            gasPrice: toBigInt(params.gasPrice),
-            maxFeePerGas: toBigInt(params.maxFeePerGas) as undefined,
-            maxPriorityFeePerGas: toBigInt(params.maxPriorityFeePerGas) as undefined,
-            nonce: params.nonce !== undefined ? Number(params.nonce) : undefined,
-          })
-          .then((hash) => ({
-            hash,
-            wait: () =>
-              signer.waitForTransactionReceipt({ hash }).then((receipt) => ({
-                blockNumber: Number(receipt.blockNumber),
-                status: receipt.status === "success" ? 1 : 0,
-              })),
-          })),
+      viem: async (signer: ViemSigner) => {
+        const chain = getViemChain(params.chainId);
+        if (!chain) {
+          throw new Error(`Unsupported transaction chainId: ${params.chainId}`);
+        }
+
+        const format = chain.formatters?.transactionRequest?.format ?? formatTransactionRequest;
+        const client: ViemSigner = {
+          ...signer,
+          chain: {
+            ...chain,
+            formatters: {
+              ...chain.formatters,
+              transactionRequest: {
+                type: "transactionRequest" as const,
+                // Viem's default formatter drops chainId from eth_sendTransaction.
+                format: (request: Parameters<typeof formatTransactionRequest>[0], action?: string) => ({
+                  ...format(request, action),
+                  chainId: numberToHex(params.chainId),
+                }),
+              },
+            },
+          },
+        };
+
+        return sendTransaction(client, {
+          to: await toAddress(params.to),
+          data: toHexData(params.data),
+          value: toBigInt(params.value),
+          gas: toBigInt(params.gasLimit),
+          gasPrice: toBigInt(params.gasPrice),
+          maxFeePerGas: toBigInt(params.maxFeePerGas) as undefined,
+          maxPriorityFeePerGas: toBigInt(params.maxPriorityFeePerGas) as undefined,
+          nonce: params.nonce !== undefined ? Number(params.nonce) : undefined,
+        }).then((hash) => ({
+          hash,
+          wait: () =>
+            signer.waitForTransactionReceipt({ hash }).then((receipt) => ({
+              blockNumber: Number(receipt.blockNumber),
+              status: receipt.status === "success" ? 1 : 0,
+            })),
+        }));
+      },
       ethers: (signer: EthersSigner) =>
         signer
           .sendTransaction({
+            chainId: params.chainId,
             to: params.to,
             data: params.data,
             value: params.value,
@@ -193,7 +252,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer.estimateGas({
           to: await toAddress(params.to),
-          data: (params.data ?? undefined) as string | undefined,
+          data: toHexData(params.data),
           value: toBigInt(params.value),
           account: await toAddress(params.from),
           gas: toBigInt(params.gasLimit),
@@ -221,13 +280,13 @@ export class ISigner implements ISignerInterface {
     });
   }
 
-  async call(params: ISignerSendTransactionParams): Promise<string> {
+  async call(params: ISignerTransactionParams): Promise<string> {
     return this.match<string>({
       viem: async (signer: ViemSigner) =>
         await signer
           .call({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
+            data: toHexData(params.data),
             value: toBigInt(params.value),
             account: await toAddress(params.from),
             gas: toBigInt(params.gasLimit),
@@ -277,14 +336,15 @@ export class ISigner implements ISignerInterface {
     });
   }
 
-  async getTransaction(hash: string): Promise<ISignerSendTransactionParams | undefined> {
-    return this.match<ISignerSendTransactionParams | undefined>({
+  async getTransaction(hash: string): Promise<ISignerTransactionParams | undefined> {
+    return this.match<ISignerTransactionParams | undefined>({
       viem: async (signer: ViemSigner) =>
         signer
           .getTransaction({
-            hash,
+            hash: toHexData(hash)!,
           })
-          .then((tx): ISignerSendTransactionParams | undefined => ({
+          .then((tx): ISignerTransactionParams | undefined => ({
+            chainId: tx.chainId,
             to: tx.to,
             data: tx.input,
             value: tx.value,
@@ -296,10 +356,11 @@ export class ISigner implements ISignerInterface {
             nonce: tx.nonce,
           })),
       ethers: (signer: EthersSigner) =>
-        signer.provider!.getTransaction(hash).then((tx): ISignerSendTransactionParams | undefined =>
+        signer.provider!.getTransaction(hash).then((tx): ISignerTransactionParams | undefined =>
           !tx
             ? undefined
             : {
+                chainId: tx.chainId,
                 to: tx.to,
                 data: tx.data,
                 value: tx.value,
@@ -346,11 +407,15 @@ export class ISigner implements ISignerInterface {
   }
 }
 
-export async function toAddress(address: AddressLike | undefined | null): Promise<string | undefined> {
+export async function toAddress(address: AddressLike | undefined | null): Promise<Address | undefined> {
   if (address === undefined) {
     return undefined;
   }
   if (typeof address === "string") {
+    if (!isAddress(address)) {
+      throw new Error("Invalid address");
+    }
+
     return address;
   }
   const awaitedAddress = await address;
@@ -358,7 +423,17 @@ export async function toAddress(address: AddressLike | undefined | null): Promis
     return undefined;
   }
   if (typeof awaitedAddress === "string") {
+    if (!isAddress(awaitedAddress)) {
+      throw new Error("Invalid address");
+    }
+
     return awaitedAddress;
   }
-  return await awaitedAddress.getAddress();
+  const resolvedAddress = await awaitedAddress.getAddress();
+
+  if (!isAddress(resolvedAddress)) {
+    throw new Error("Invalid address");
+  }
+
+  return resolvedAddress;
 }

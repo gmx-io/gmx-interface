@@ -1,7 +1,6 @@
 import { tz } from "@date-fns/tz";
 import { Trans, t } from "@lingui/macro";
 import { format } from "date-fns";
-import { useMemo } from "react";
 import {
   Bar,
   ComposedChart,
@@ -14,10 +13,12 @@ import {
 } from "recharts";
 
 import type { BuybackChartPoint } from "domain/buyback/useBuybackChartData";
-import { numberWithCommas } from "lib/numbers";
+import { numberWithCommas, numberWithCommasParts } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-slate-100)",
@@ -50,54 +51,54 @@ function formatCompactNumber(value: number): string {
   return String(Math.round(value));
 }
 
-function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string> & { gmxPrice: number | undefined }) {
+function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   if (!active || !payload || !payload.length) {
     return null;
   }
 
   const point = payload[0]!.payload as BuybackChartPoint;
   const utc = { in: tz("UTC") };
-  const weekRange = `${format(point.weekStart * 1000, "MMM d", utc)} - ${format((point.weekEnd - 1) * 1000, "MMM d", utc)}`;
-  const weeklyUsd =
-    gmxPrice !== undefined ? numberWithCommas(Math.round(point.weeklyAccrued * gmxPrice), { showDollar: true }) : "—";
+  const monthRange = `${format(point.monthStart * 1000, "MMM d", utc)} - ${format((point.monthEnd - 1) * 1000, "MMM d, yyyy", utc)}`;
+  const monthlyUsd =
+    point.monthlyUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.monthlyUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
   const cumulativeUsd =
-    gmxPrice !== undefined
-      ? numberWithCommas(Math.round(point.cumulativeAccrued * gmxPrice), { showDollar: true })
-      : "—";
+    point.cumulativeUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.cumulativeUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
 
   return (
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
-      <StatsTooltipRow label={t`Week`} value={weekRange} showDollar={false} />
+      <StatsTooltipRow label={t`Month`} value={monthRange} showDollar={false} />
       <StatsTooltipRow
-        label={t`Weekly Bought`}
-        value={`${numberWithCommas(Math.round(point.weeklyAccrued))} GMX (${weeklyUsd})`}
+        label={t`Monthly bought`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.monthlyAccrued))} GMX ({monthlyUsd})
+          </>
+        }
         showDollar={false}
       />
       <StatsTooltipRow
         label={t`Cumulative`}
-        value={`${numberWithCommas(Math.round(point.cumulativeAccrued))} GMX (${cumulativeUsd})`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.cumulativeAccrued))} GMX ({cumulativeUsd})
+          </>
+        }
         showDollar={false}
       />
     </div>
   );
 }
 
-export function BuybackChart({
-  chartData,
-  gmxPrice,
-}: {
-  chartData: BuybackChartPoint[];
-  gmxPrice: number | undefined;
-}) {
+export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) {
   const { isMobile } = useBreakpoints();
-
-  const tooltipContent = useMemo(
-    () =>
-      function BuybackChartTooltipWrapper(props: TooltipProps<number, string>) {
-        return <ChartTooltip {...props} gmxPrice={gmxPrice} />;
-      },
-    [gmxPrice]
-  );
 
   if (chartData.length === 0) {
     return (
@@ -109,13 +110,20 @@ export function BuybackChart({
 
   return (
     <div className="flex flex-col">
-      <div className="flex flex-wrap gap-24 pl-20 text-typography-secondary">
+      <div className="flex flex-wrap items-center gap-24 px-20 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly Bought</Trans>
+          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Monthly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>
         </div>
+        <StandardTooltip
+          variant="iconStroke"
+          className="ml-auto"
+          handleClassName="text-body-small font-medium text-typography-secondary"
+          handle={<Trans>USD estimate</Trans>}
+          content={t`USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements.`}
+        />
       </div>
 
       <div className="relative min-h-[250px] grow">
@@ -124,10 +132,10 @@ export function BuybackChart({
             <ComposedChart width={500} height={250} data={chartData} barCategoryGap="25%" margin={CHART_MARGIN}>
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}
-                content={tooltipContent}
+                content={<ChartTooltip />}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
-              <Bar yAxisId="left" dataKey="weeklyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
+              <Bar yAxisId="left" dataKey="monthlyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
               <Line
                 yAxisId="right"
                 type="monotone"
@@ -141,7 +149,7 @@ export function BuybackChart({
                 dataKey="label"
                 tickLine={false}
                 axisLine={X_AXIS_LINE_PROPS}
-                minTickGap={isMobile ? 20 : 32}
+                minTickGap={isMobile ? 8 : 32}
                 tick={CHART_TICK_PROPS}
                 tickMargin={10}
               />

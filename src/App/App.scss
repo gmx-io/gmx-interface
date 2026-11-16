@@ -752,6 +752,8 @@ button.App-button {
 
 .zoomIn {
   animation-name: zoomIn;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
 }
 
 @keyframes zoomOut {
@@ -771,10 +773,13 @@ button.App-button {
 
 .zoomOut {
   animation-name: zoomOut;
+  animation-duration: 0.3s;
+  animation-fill-mode: both;
 }
 
 .positive {
   color: var(--color-green-500);
+  --affix-color: currentColor;
 }
 
 .positive-background {
@@ -783,6 +788,7 @@ button.App-button {
 
 .negative {
   color: var(--error-red);
+  --affix-color: currentColor;
 }
 
 .negative-background {
@@ -791,6 +797,7 @@ button.App-button {
 
 .warning {
   color: var(--color-yellow-300);
+  --affix-color: currentColor;
 }
 
 .warning-decoration {

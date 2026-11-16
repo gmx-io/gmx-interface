@@ -15,11 +15,20 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  */
 function ctModuleMocks(): Plugin {
   const mockPath = path.resolve(__dirname, "playwright/mocks/rpcDebug.ts");
+  const privyReactAuthMockPath = path.resolve(__dirname, "playwright/mocks/privyReactAuth.tsx");
+  const privyWagmiMockPath = path.resolve(__dirname, "playwright/mocks/privyWagmi.tsx");
+  const syntheticsEventsMockPath = path.resolve(__dirname, "playwright/mocks/syntheticsEventsProvider.tsx");
 
   return {
     name: "ct-module-mocks",
     enforce: "pre",
     resolveId(source, importer) {
+      if (source === "@privy-io/react-auth") {
+        return privyReactAuthMockPath;
+      }
+      if (source === "@privy-io/wagmi") {
+        return privyWagmiMockPath;
+      }
       if (source === "lib/rpc/_debug") {
         return mockPath;
       }
@@ -29,6 +38,17 @@ function ctModuleMocks(): Plugin {
       }
       if (source.includes("lib/rpc/_debug")) {
         return mockPath;
+      }
+      // websocket-driven events layer, replaced with a "no events" stub
+      if (source.includes("SyntheticsEvents/SyntheticsEventsProvider")) {
+        return syntheticsEventsMockPath;
+      }
+      if (
+        source === "./SyntheticsEventsProvider" &&
+        importer &&
+        importer.includes(path.join("context", "SyntheticsEvents"))
+      ) {
+        return syntheticsEventsMockPath;
       }
     },
   };
@@ -43,6 +63,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? undefined : 3,
   reporter: "html",
 
   use: {
@@ -70,9 +91,6 @@ export default defineConfig({
         }),
         lingui(),
       ],
-      optimizeDeps: {
-        include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
-      },
       resolve: {
         alias: {
           App: path.resolve(__dirname, "src/App"),

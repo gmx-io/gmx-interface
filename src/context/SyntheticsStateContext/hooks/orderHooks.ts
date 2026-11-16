@@ -1,7 +1,11 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { helperToast } from "lib/helperToast";
@@ -12,7 +16,7 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { OrderInfo } from "sdk/utils/orders/types";
 
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
-import { selectExpressGlobalParams } from "../selectors/expressSelectors";
+import { selectExpressGlobalParams, selectUnavailableExpressFeeToken } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
   makeSelectOrderErrorByOrderKey,
@@ -41,6 +45,8 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -64,39 +70,56 @@ export function useCancelOrder(order: OrderInfo) {
         cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
       };
 
-      const expressParams = globalExpressParams
-        ? await estimateBatchExpressParams({
-            signer,
-            chainId,
-            batchParams,
-            globalExpressParams,
-            requireValidations: true,
-            estimationMethod: "approximate",
-            provider,
-            isGmxAccount: srcChainId !== undefined,
-            subaccount,
-          })
-        : undefined;
+      try {
+        const expressParams = globalExpressParams
+          ? await estimateExpressParams({
+              signer,
+              chainId,
+              batchParams,
+              globalExpressParams,
+              requireValidations: false,
+              estimationMethod: "approximate",
+              provider,
+              isGmxAccount: srcChainId !== undefined,
+              subaccount,
+            })
+          : undefined;
 
-      sendBatchOrderTxn({
-        chainId,
-        signer,
-        batchParams,
-        expressParams,
-        simulationParams: undefined,
-        callback: makeOrderTxnCallback({
-          actionName: "Cancel Order",
-          collateralSymbol: order.initialCollateralToken.symbol,
-        }),
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-      }).finally(() => {
+        if (
+          reportMultichainExpressSubmitError({
+            isGmxAccount: srcChainId !== undefined,
+            expressParams,
+            tokensData: undefined,
+            unavailableGasPaymentToken,
+            actionName: "Cancel Order",
+            collateral: order.initialCollateralToken.symbol,
+          })
+        ) {
+          return;
+        }
+
+        await sendBatchOrderTxn({
+          chainId,
+          signer,
+          batchParams,
+          expressParams: getExpressParamsForSubmit(expressParams),
+          simulationParams: undefined,
+          callback: makeOrderTxnCallback({
+            actionName: "Cancel Order",
+            collateralSymbol: order.initialCollateralToken.symbol,
+          }),
+          provider,
+          isGmxAccount: srcChainId !== undefined,
+        });
+      } finally {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
-      });
+      }
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       order,

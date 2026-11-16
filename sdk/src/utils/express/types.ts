@@ -2,7 +2,13 @@ import type { ExternalCallsPayload } from "utils/orderTransactions";
 import type { Subaccount, SubaccountValidations } from "utils/subaccount";
 import type { SignedTokenPermit, TokenData } from "utils/tokens/types";
 
-export type { Subaccount, SubaccountOnchainData, SubaccountSerializedConfig, SignedSubaccountApproval, SubaccountValidations } from "utils/subaccount";
+export type {
+  Subaccount,
+  SubaccountOnchainData,
+  SubaccountSerializedConfig,
+  SignedSubaccountApproval,
+  SubaccountValidations,
+} from "utils/subaccount";
 
 export type OracleParamsPayload = {
   tokens: string[];
@@ -24,6 +30,7 @@ export type RelayParamsPayload = {
   deadline: bigint;
   desChainId: bigint;
   userNonce: bigint;
+  eip6492SignatureWrapperHash: string;
 };
 
 export type RelayParamsPayloadWithSignature = RelayParamsPayload & {
@@ -44,6 +51,7 @@ export type GasPaymentParams = {
 };
 
 export type GasPaymentValidations = {
+  isGasPaymentTokenBalanceLoaded: boolean;
   isOutGasTokenBalance: boolean;
   needGasPaymentTokenApproval: boolean;
   isValid: boolean;

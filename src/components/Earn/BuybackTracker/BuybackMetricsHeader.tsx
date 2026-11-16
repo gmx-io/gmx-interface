@@ -1,11 +1,10 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import type { BuybackDerivedMetrics } from "domain/buyback/useBuybackChartData";
-import { numberWithCommas } from "lib/numbers";
+import { numberWithCommas, numberWithCommasParts } from "lib/numbers";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import InfoIcon from "img/ic_info_circle_stroke.svg?react";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 function formatPercent(value: number): string {
   return `${(value * 100).toFixed(2)}%`;
@@ -25,23 +24,22 @@ export function BuybackMetricsHeader({
   return (
     <div className="flex gap-28 max-md:flex-col max-md:gap-12">
       <MetricItem
-        label={<Trans>Total Bought GMX</Trans>}
-        tooltip={<Trans>Total amount of GMX bought back since tracking began.</Trans>}
+        label={<Trans>Total bought GMX</Trans>}
+        tooltip={t`Total amount of GMX bought back since tracking began. The USD value is based on the current GMX price.`}
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
-          metrics ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})` : undefined
+          metrics?.totalBoughtUsd !== undefined ? (
+            <>
+              (<NumericValue parts={numberWithCommasParts(Math.round(metrics.totalBoughtUsd), { showDollar: true })} />)
+            </>
+          ) : undefined
         }
         isLoading={isLoading}
         isUnavailable={isUnavailable}
       />
       <MetricItem
-        label={<Trans>Annualized Rate</Trans>}
-        tooltip={
-          <Trans>
-            Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to
-            total staked GMX and esGMX. Your actual rewards depend on staking power and may differ.
-          </Trans>
-        }
+        label={<Trans>Annualized rate</Trans>}
+        tooltip={t`Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR.`}
         value={metrics ? (metrics.annualizedRate !== undefined ? formatPercent(metrics.annualizedRate) : "N/A") : "N/A"}
         isLoading={isLoading}
         isUnavailable={isUnavailable}
@@ -60,21 +58,17 @@ function MetricItem({
 }: {
   label: React.ReactNode;
   tooltip: React.ReactNode;
-  value: string;
-  subtitle?: string;
+  value: React.ReactNode;
+  subtitle?: React.ReactNode;
   isLoading: boolean;
   isUnavailable: boolean;
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-4">
-      <TooltipWithPortal
-        variant="none"
-        handle={
-          <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
-            {label}
-            <InfoIcon className="size-16 text-typography-secondary" />
-          </span>
-        }
+      <StandardTooltip
+        variant="iconStroke"
+        handleClassName="text-body-small font-medium text-typography-secondary"
+        handle={label}
         content={tooltip}
       />
       <div className="flex flex-wrap items-baseline gap-x-8">

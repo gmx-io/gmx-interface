@@ -7,24 +7,24 @@ import values from "lodash/values";
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { EMPTY_ARRAY } from "lib/objects";
+
+const EMPTY_AVAILABLE_AND_DISABLED_TOKENS = {
+  availableTokens: EMPTY_ARRAY,
+  disabledTokens: EMPTY_ARRAY,
+};
 
 export const selectTradeboxAvailableAndDisabledTokensForCollateral = createSelector((q) => {
   const marketsInfo = q(selectMarketsInfoData);
 
   if (!marketsInfo) {
-    return {
-      availableTokens: [],
-      disabledTokens: [],
-    };
+    return EMPTY_AVAILABLE_AND_DISABLED_TOKENS;
   }
 
   const currentMarket = q(selectTradeboxMarketInfo);
 
   if (!currentMarket) {
-    return {
-      availableTokens: [],
-      disabledTokens: [],
-    };
+    return EMPTY_AVAILABLE_AND_DISABLED_TOKENS;
   }
 
   const availableTokens = currentMarket.isSameCollaterals

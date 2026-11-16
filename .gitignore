@@ -55,3 +55,6 @@ CLAUDE.md
 .serena
 .claude
 claude.md
+
+# Independently built Solana SDK assets
+/public/gmsol-sdk/

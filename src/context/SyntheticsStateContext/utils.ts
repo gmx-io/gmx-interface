@@ -1,7 +1,7 @@
 import { EnhancedSelector, createSelectionContext } from "@taskworld.com/rereselect";
 import { useCallback } from "react";
 import { Selector, createSelector as createSelectorCommon } from "reselect";
-import { Context, createContext, useContext, useContextSelector } from "use-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 import type { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { LRUCache } from "sdk/utils/LruCache";
@@ -13,10 +13,13 @@ import type { SyntheticsState } from "./SyntheticsStateContextProvider";
 const context = createSelectionContext<SyntheticsState>();
 export const createSelector = context.makeSelector;
 
+export const PER_ORDER_SELECTOR_CACHE_SIZE = 100;
+
 export function createSelectorFactory<SelectionResult, Args extends SupportedArg[]>(
-  factory: (...args: Args) => CachedSelector<SelectionResult>
+  factory: (...args: Args) => CachedSelector<SelectionResult>,
+  cacheSize = 20
 ): (...args: Args) => CachedSelector<SelectionResult> {
-  const cache = new LRUCache<CachedSelector<SelectionResult>>(20);
+  const cache = new LRUCache<CachedSelector<SelectionResult>>(cacheSize);
 
   return (...args: Args) => {
     const key = getKeyForArgs(...args);
@@ -69,11 +72,18 @@ export type SupportedArg = Arg | Record<string, Arg>;
 export type CachedSelector<T> = EnhancedSelector<SyntheticsState, T> | Selector<SyntheticsState, T>;
 
 function useSyntheticsStateSelector<Selected>(selector: (s: SyntheticsState) => Selected) {
-  const value = useContext(StateCtx);
-  if (!value) {
-    throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
-  }
-  return useContextSelector(StateCtx as Context<SyntheticsState>, selector) as Selected;
+  const nullableSelector = useCallback(
+    (value: SyntheticsState | null) => {
+      if (!value) {
+        throw new Error("Used useSyntheticsStateSelector outside of SyntheticsStateContextProvider");
+      }
+
+      return selector(value);
+    },
+    [selector]
+  );
+
+  return useContextSelector(StateCtx, nullableSelector) as Selected;
 }
 
 export const useSelector = useSyntheticsStateSelector;

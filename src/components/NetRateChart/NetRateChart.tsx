@@ -16,6 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RateTimeframe, useRateSnapshots } from "domain/synthetics/markets/useRateSnapshots";
@@ -35,9 +36,9 @@ type RateProjection = "1h" | "8h" | "24h" | "1y";
 
 const RATE_TYPES: RateType[] = ["netRate", "borrowingRate", "fundingRate"];
 const RATE_TYPE_LABELS: Record<RateType, MessageDescriptor> = {
-  netRate: msg`Net Rate`,
-  borrowingRate: msg`Borrowing Rate`,
-  fundingRate: msg`Funding Rate`,
+  netRate: msg`Net rate`,
+  borrowingRate: msg`Borrowing rate`,
+  fundingRate: msg`Funding rate`,
 };
 
 const TIMEFRAMES: RateTimeframe[] = ["1d", "7d", "30d"];
@@ -52,7 +53,7 @@ const PROJECTION_LABELS: Record<RateProjection, MessageDescriptor> = {
   "1h": msg`1h`,
   "8h": msg`8h`,
   "24h": msg`24h`,
-  "1y": msg`1Y`,
+  "1y": msg`1y`,
 };
 
 const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
@@ -61,6 +62,8 @@ const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
   "24h": 86400,
   "1y": 31536000,
 };
+
+const LIVE_DASH_ARRAY = "4 4";
 
 const LONG_COLOR = "var(--color-green-500)";
 const SHORT_COLOR = "var(--color-red-500)";
@@ -74,6 +77,8 @@ const CHART_CURSOR_PROPS = {
 };
 
 const CHART_MARGIN = { top: 5, right: 16, bottom: 0, left: 0 };
+
+const X_AXIS_DOMAIN: ["dataMin", "dataMax"] = ["dataMin", "dataMax"];
 
 const LONG_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: LONG_COLOR, fill: "var(--color-slate-900)" };
 const SHORT_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: SHORT_COLOR, fill: "var(--color-slate-900)" };
@@ -95,6 +100,11 @@ function rateToProjectedPercent(rateString: string, projection: RateProjection):
   return bigintToNumber(rate * multiplier * 100n, PRECISION_DECIMALS);
 }
 
+function hourlyRateToProjectedPercent(rateHourly: bigint, projection: RateProjection): number {
+  const projectionHours = PROJECTION_MULTIPLIERS[projection] / PROJECTION_MULTIPLIERS["1h"];
+  return bigintToNumber(rateHourly * BigInt(projectionHours) * 100n, PRECISION_DECIMALS);
+}
+
 /**
  * API stores borrowing rate as a positive cost magnitude. To match the convention used in the
  * rest of the UI (header, MarketNetFee tooltip — where borrowing is shown as a negative number
@@ -104,13 +114,17 @@ function borrowingRateToProjectedPercent(rateString: string, projection: RatePro
   return -rateToProjectedPercent(rateString, projection);
 }
 
-function getPercentageDisplayDecimals(values: number[]): number {
-  const maxAbs = Math.max(...values.map(Math.abs));
-  if (maxAbs >= 100) return 0;
-  if (maxAbs >= 10) return 1;
-  if (maxAbs >= 1) return 2;
-  if (maxAbs >= 0.1) return 3;
-  return 4;
+function getProjectionDisplayDecimals(projection: RateProjection): number {
+  switch (projection) {
+    case "1h":
+      return 4;
+    case "8h":
+      return 3;
+    case "24h":
+      return 3;
+    case "1y":
+      return 2;
+  }
 }
 
 function formatRate(value: number, decimals = 4): string {
@@ -122,46 +136,99 @@ function getRateDirectionLabel(rateType: RateType, direction: "long" | "short"):
   if (direction === "long") {
     switch (rateType) {
       case "netRate":
-        return t`Long Net Rate`;
+        return t`Long net rate`;
       case "borrowingRate":
-        return t`Long Borrowing Rate`;
+        return t`Long borrowing rate`;
       case "fundingRate":
-        return t`Long Funding Rate`;
+        return t`Long funding rate`;
     }
   }
   switch (rateType) {
     case "netRate":
-      return t`Short Net Rate`;
+      return t`Short net rate`;
     case "borrowingRate":
-      return t`Short Borrowing Rate`;
+      return t`Short borrowing rate`;
     case "fundingRate":
-      return t`Short Funding Rate`;
+      return t`Short funding rate`;
   }
 }
 
 type ChartDataPoint = {
   timestamp: Date;
+  timestampMs: number;
+  longRate: number | null;
+  shortRate: number | null;
+  longRateLive: number | null;
+  shortRateLive: number | null;
+  raw: RatesSnapshot | null;
+};
+
+type SnapshotChartDataPoint = ChartDataPoint & {
   longRate: number;
   shortRate: number;
   raw: RatesSnapshot;
 };
 
-function isChartDataPoint(value: unknown): value is ChartDataPoint {
+type LiveChartDataPoint = ChartDataPoint & {
+  longRateLive: number;
+  shortRateLive: number;
+  raw: null;
+};
+
+function isChartDataPoint(value: unknown): value is SnapshotChartDataPoint {
   if (value === null || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
-  return v.timestamp instanceof Date && typeof v.longRate === "number" && typeof v.shortRate === "number";
+  return (
+    v.timestamp instanceof Date &&
+    typeof v.longRate === "number" &&
+    typeof v.shortRate === "number" &&
+    v.raw !== null &&
+    typeof v.raw === "object"
+  );
+}
+
+function isLiveChartDataPoint(value: unknown): value is LiveChartDataPoint {
+  if (value === null || typeof value !== "object") return false;
+  const v = value as Record<string, unknown>;
+  return (
+    v.timestamp instanceof Date &&
+    v.raw === null &&
+    typeof v.longRateLive === "number" &&
+    typeof v.shortRateLive === "number"
+  );
 }
 
 function buildChartData(snapshots: RatesSnapshot[], rateType: RateType, projection: RateProjection): ChartDataPoint[] {
   const { longKey, shortKey } = getRateFields(rateType);
   const convert = rateType === "borrowingRate" ? borrowingRateToProjectedPercent : rateToProjectedPercent;
 
-  return snapshots.map((snapshot) => ({
-    timestamp: new Date(snapshot.timestamp * 1000),
-    longRate: convert(String(snapshot[longKey]), projection),
-    shortRate: convert(String(snapshot[shortKey]), projection),
-    raw: snapshot,
-  }));
+  return snapshots.map((snapshot) => {
+    const timestamp = new Date(snapshot.timestamp * 1000);
+    return {
+      timestamp,
+      timestampMs: timestamp.getTime(),
+      longRate: convert(String(snapshot[longKey]), projection),
+      shortRate: convert(String(snapshot[shortKey]), projection),
+      longRateLive: null,
+      shortRateLive: null,
+      raw: snapshot,
+    };
+  });
+}
+
+type LiveRateHourly = { long: bigint; short: bigint };
+
+function getLiveHourlyRate(info: ReturnType<typeof selectChartHeaderInfo>, rateType: RateType): LiveRateHourly | null {
+  if (!info) return null;
+
+  switch (rateType) {
+    case "netRate":
+      return { long: info.netRateHourlyLong, short: info.netRateHourlyShort };
+    case "borrowingRate":
+      return { long: info.borrowingRateLong, short: info.borrowingRateShort };
+    case "fundingRate":
+      return { long: info.fundingRateLong, short: info.fundingRateShort };
+  }
 }
 
 export function NetRateChart() {
@@ -184,16 +251,54 @@ export function NetRateChart() {
     timeframe: activeTimeframe,
   });
 
+  const headerInfo = useSelector(selectChartHeaderInfo);
+
+  const liveRates = useMemo(() => {
+    const hourly = getLiveHourlyRate(headerInfo, activeRateType);
+    if (!hourly) return null;
+    return {
+      longRate: hourlyRateToProjectedPercent(hourly.long, activeProjection),
+      shortRate: hourlyRateToProjectedPercent(hourly.short, activeProjection),
+    };
+  }, [headerInfo, activeRateType, activeProjection]);
+
   const chartData = useMemo(() => {
     if (!snapshots || snapshots.length === 0) return [];
-    return buildChartData(snapshots, activeRateType, activeProjection);
-  }, [snapshots, activeRateType, activeProjection]);
 
-  const yAxisDecimals = useMemo(() => {
-    if (chartData.length === 0) return 4;
-    const allValues = chartData.flatMap((d) => [d.longRate, d.shortRate]);
-    return getPercentageDisplayDecimals(allValues);
-  }, [chartData]);
+    const base = buildChartData(snapshots, activeRateType, activeProjection);
+
+    if (!liveRates) return base;
+
+    const lastIdx = base.length - 1;
+    const enriched = base.map((point, i) =>
+      i === lastIdx ? { ...point, longRateLive: point.longRate, shortRateLive: point.shortRate } : point
+    );
+
+    const now = new Date();
+    enriched.push({
+      timestamp: now,
+      timestampMs: now.getTime(),
+      longRate: null,
+      shortRate: null,
+      longRateLive: liveRates.longRate,
+      shortRateLive: liveRates.shortRate,
+      raw: null,
+    });
+
+    return enriched;
+  }, [snapshots, activeRateType, activeProjection, liveRates]);
+
+  const decimals = getProjectionDisplayDecimals(activeProjection);
+
+  const legendRates = useMemo(() => {
+    if (liveRates) return liveRates;
+    if (chartData.length === 0) return null;
+
+    const last = chartData[chartData.length - 1];
+    if (last.longRate === null || last.shortRate === null) return null;
+
+    return { longRate: last.longRate, shortRate: last.shortRate };
+  }, [chartData, liveRates]);
 
   const rateTypeTabs = useMemo(
     () => RATE_TYPES.map((type) => ({ label: rateTypeLabels[type], value: type })),
@@ -206,11 +311,12 @@ export function NetRateChart() {
   );
 
   const xAxisTickFormatter = useCallback(
-    (value: Date) => {
+    (value: number) => {
+      const date = new Date(value);
       if (activeTimeframe === "1d") {
-        return format(value, "HH:mm");
+        return format(date, "HH:mm");
       }
-      return format(value, "dd/MM");
+      return format(date, "dd/MM");
     },
     [activeTimeframe]
   );
@@ -219,17 +325,25 @@ export function NetRateChart() {
     ({ active, payload }: TooltipProps<number, string>) => {
       if (!active) return null;
       const point = payload?.[0]?.payload;
-      if (!isChartDataPoint(point)) return null;
-      return (
-        <NetRateTooltip
-          point={point}
-          rateType={activeRateType}
-          projection={activeProjection}
-          decimals={yAxisDecimals}
-        />
-      );
+      if (isChartDataPoint(point)) {
+        return (
+          <NetRateTooltip point={point} rateType={activeRateType} projection={activeProjection} decimals={decimals} />
+        );
+      }
+      if (isLiveChartDataPoint(point) && headerInfo) {
+        return (
+          <NetRateLiveTooltip
+            point={point}
+            headerInfo={headerInfo}
+            rateType={activeRateType}
+            projection={activeProjection}
+            decimals={decimals}
+          />
+        );
+      }
+      return null;
     },
-    [activeRateType, activeProjection, yAxisDecimals]
+    [activeRateType, activeProjection, decimals, headerInfo]
   );
 
   return (
@@ -245,20 +359,14 @@ export function NetRateChart() {
       <div className="flex items-center gap-16 px-4 pb-8">
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-green-500" />
-          <Trans>Long Positions</Trans>
-          {chartData.length > 0 && (
-            <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].longRate, yAxisDecimals)}
-            </span>
-          )}
+          <Trans>Long positions</Trans>
+          {legendRates && <span className="text-typography-primary">{formatRate(legendRates.longRate, decimals)}</span>}
         </span>
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-red-500" />
-          <Trans>Short Positions</Trans>
-          {chartData.length > 0 && (
-            <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].shortRate, yAxisDecimals)}
-            </span>
+          <Trans>Short positions</Trans>
+          {legendRates && (
+            <span className="text-typography-primary">{formatRate(legendRates.shortRate, decimals)}</span>
           )}
         </span>
       </div>
@@ -272,21 +380,21 @@ export function NetRateChart() {
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-typography-secondary" />
             <p className="text-body-medium font-bold text-typography-primary">
-              <Trans>Unable to load rate history.</Trans>
+              <Trans>Unable to load rate history</Trans>
             </p>
             <p className="text-body-small text-typography-secondary">
-              <Trans>Please refer to Net Rate / 1H above the chart.</Trans>
+              <Trans>Refer to Net rate / 1h above the chart</Trans>
             </p>
           </div>
         ) : chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-typography-secondary" />
             <p className="text-body-medium font-bold text-typography-primary">
-              <Trans>No net rate history available for this market.</Trans>
+              <Trans>No net rate history for this market</Trans>
             </p>
             <p className="text-body-small text-typography-secondary">
               <Trans>
-                For newer markets the history might not yet be indexed, please refer to Net Rate / 1H above the chart.
+                For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart.
               </Trans>
             </p>
           </div>
@@ -295,19 +403,21 @@ export function NetRateChart() {
             <LineChart data={chartData} margin={CHART_MARGIN}>
               <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
               <XAxis
-                dataKey="timestamp"
+                dataKey="timestampMs"
+                type="number"
+                scale="time"
+                domain={X_AXIS_DOMAIN}
                 tickFormatter={xAxisTickFormatter}
                 tickLine={false}
                 axisLine={false}
                 tick={AXIS_TICK_PROPS}
                 minTickGap={32}
-                interval="equidistantPreserveStart"
                 tickMargin={8}
               />
               <YAxis
                 tickFormatter={(value: number) => {
                   if (value === 0) return "0%";
-                  return formatRate(value, yAxisDecimals);
+                  return formatRate(value, decimals);
                 }}
                 tickLine={false}
                 axisLine={false}
@@ -326,11 +436,31 @@ export function NetRateChart() {
               />
               <Line
                 type="monotone"
+                dataKey="longRateLive"
+                stroke={LONG_COLOR}
+                strokeWidth={2}
+                strokeDasharray={LIVE_DASH_ARRAY}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
                 dataKey="shortRate"
                 stroke={SHORT_COLOR}
                 strokeWidth={2}
                 dot={false}
                 activeDot={SHORT_ACTIVE_DOT}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="shortRateLive"
+                stroke={SHORT_COLOR}
+                strokeWidth={2}
+                strokeDasharray={LIVE_DASH_ARRAY}
+                dot={false}
+                activeDot={false}
                 isAnimationActive={false}
               />
             </LineChart>
@@ -355,7 +485,7 @@ function ProjectionDropdown({ value, onChange }: { value: RateProjection; onChan
         ref={refs.setReference}
         className="text-body-small flex items-center gap-4 rounded-4 px-8 py-4 text-typography-secondary hover:text-typography-primary"
       >
-        <Trans>Net Rate Projection:</Trans> <span className="text-typography-primary">{projectionLabels[value]}</span>
+        <Trans>Net rate projection:</Trans> <span className="text-typography-primary">{projectionLabels[value]}</span>
         <ChevronDownIcon className="size-16" />
       </Popover.Button>
       <Popover.Panel
@@ -394,7 +524,7 @@ function NetRateTooltip({
   projection,
   decimals,
 }: {
-  point: ChartDataPoint;
+  point: SnapshotChartDataPoint;
   rateType: RateType;
   projection: RateProjection;
   decimals: number;
@@ -408,38 +538,100 @@ function NetRateTooltip({
       <span className="text-typography-secondary">{format(point.timestamp, "MMM dd, HH:mm")}</span>
 
       {rateType === "netRate" ? (
-        <NetRateBreakdownTooltip raw={raw} projection={projection} suffix={suffix} decimals={decimals} />
+        <NetRateBreakdownTooltip
+          longNet={rateToProjectedPercent(raw.netRateLong, projection)}
+          shortNet={rateToProjectedPercent(raw.netRateShort, projection)}
+          longFunding={rateToProjectedPercent(raw.fundingRateLong, projection)}
+          shortFunding={rateToProjectedPercent(raw.fundingRateShort, projection)}
+          longBorrowing={borrowingRateToProjectedPercent(raw.borrowingRateLong, projection)}
+          shortBorrowing={borrowingRateToProjectedPercent(raw.borrowingRateShort, projection)}
+          suffix={suffix}
+          decimals={decimals}
+        />
       ) : (
-        <SimpleRateTooltip point={point} rateType={rateType} suffix={suffix} decimals={decimals} />
+        <SimpleRateTooltip
+          longRate={point.longRate}
+          shortRate={point.shortRate}
+          rateType={rateType}
+          suffix={suffix}
+          decimals={decimals}
+        />
+      )}
+    </div>
+  );
+}
+
+function NetRateLiveTooltip({
+  point,
+  headerInfo,
+  rateType,
+  projection,
+  decimals,
+}: {
+  point: LiveChartDataPoint;
+  headerInfo: NonNullable<ReturnType<typeof selectChartHeaderInfo>>;
+  rateType: RateType;
+  projection: RateProjection;
+  decimals: number;
+}) {
+  const projectionLabels = useLocalizedMap(PROJECTION_LABELS);
+  const suffix = `/${projectionLabels[projection]}`;
+
+  return (
+    <div className="text-body-small flex min-w-[240px] flex-col gap-8 rounded-4 bg-slate-800 px-12 py-8 shadow-lg">
+      <span className="text-typography-secondary">
+        <Trans>Live</Trans> · {format(point.timestamp, "HH:mm")}
+      </span>
+
+      {rateType === "netRate" ? (
+        <NetRateBreakdownTooltip
+          longNet={hourlyRateToProjectedPercent(headerInfo.netRateHourlyLong, projection)}
+          shortNet={hourlyRateToProjectedPercent(headerInfo.netRateHourlyShort, projection)}
+          longFunding={hourlyRateToProjectedPercent(headerInfo.fundingRateLong ?? 0n, projection)}
+          shortFunding={hourlyRateToProjectedPercent(headerInfo.fundingRateShort ?? 0n, projection)}
+          longBorrowing={hourlyRateToProjectedPercent(headerInfo.borrowingRateLong ?? 0n, projection)}
+          shortBorrowing={hourlyRateToProjectedPercent(headerInfo.borrowingRateShort ?? 0n, projection)}
+          suffix={suffix}
+          decimals={decimals}
+        />
+      ) : (
+        <SimpleRateTooltip
+          longRate={point.longRateLive}
+          shortRate={point.shortRateLive}
+          rateType={rateType}
+          suffix={suffix}
+          decimals={decimals}
+        />
       )}
     </div>
   );
 }
 
 function NetRateBreakdownTooltip({
-  raw,
-  projection,
+  longNet,
+  shortNet,
+  longFunding,
+  shortFunding,
+  longBorrowing,
+  shortBorrowing,
   suffix,
   decimals,
 }: {
-  raw: RatesSnapshot;
-  projection: RateProjection;
+  longNet: number;
+  shortNet: number;
+  longFunding: number;
+  shortFunding: number;
+  longBorrowing: number;
+  shortBorrowing: number;
   suffix: string;
   decimals: number;
 }) {
-  const longNet = rateToProjectedPercent(raw.netRateLong, projection);
-  const shortNet = rateToProjectedPercent(raw.netRateShort, projection);
-  const longFunding = rateToProjectedPercent(raw.fundingRateLong, projection);
-  const shortFunding = rateToProjectedPercent(raw.fundingRateShort, projection);
-  const longBorrowing = borrowingRateToProjectedPercent(raw.borrowingRateLong, projection);
-  const shortBorrowing = borrowingRateToProjectedPercent(raw.borrowingRateShort, projection);
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-bold">
           <span className="inline-block size-6 rounded-full bg-green-500" />
-          <Trans>Long Net Rate</Trans>
+          <Trans>Long net rate</Trans>
         </span>
         <span className={cx("font-bold numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
           {formatRate(longNet, decimals)}
@@ -458,7 +650,7 @@ function NetRateBreakdownTooltip({
       <div className="mt-4 flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-bold">
           <span className="inline-block size-6 rounded-full bg-red-500" />
-          <Trans>Short Net Rate</Trans>
+          <Trans>Short net rate</Trans>
         </span>
         <span className={cx("font-bold numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
           {formatRate(shortNet, decimals)}
@@ -478,12 +670,14 @@ function NetRateBreakdownTooltip({
 }
 
 function SimpleRateTooltip({
-  point,
+  longRate,
+  shortRate,
   rateType,
   suffix,
   decimals,
 }: {
-  point: ChartDataPoint;
+  longRate: number;
+  shortRate: number;
   rateType: RateType;
   suffix: string;
   decimals: number;
@@ -495,8 +689,8 @@ function SimpleRateTooltip({
           <span className="inline-block size-6 rounded-full bg-green-500" />
           {getRateDirectionLabel(rateType, "long")}
         </span>
-        <span className={cx("numbers", { positive: point.longRate >= 0, negative: point.longRate < 0 })}>
-          {formatRate(point.longRate, decimals)}
+        <span className={cx("numbers", { positive: longRate >= 0, negative: longRate < 0 })}>
+          {formatRate(longRate, decimals)}
           {suffix}
         </span>
       </div>
@@ -505,8 +699,8 @@ function SimpleRateTooltip({
           <span className="inline-block size-6 rounded-full bg-red-500" />
           {getRateDirectionLabel(rateType, "short")}
         </span>
-        <span className={cx("numbers", { positive: point.shortRate >= 0, negative: point.shortRate < 0 })}>
-          {formatRate(point.shortRate, decimals)}
+        <span className={cx("numbers", { positive: shortRate >= 0, negative: shortRate < 0 })}>
+          {formatRate(shortRate, decimals)}
           {suffix}
         </span>
       </div>

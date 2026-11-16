@@ -1,59 +1,60 @@
 import { Trans } from "@lingui/macro";
-import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { formatAmountHuman } from "lib/numbers";
 
-import "./StatsTooltip.css";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/TooltipBlocks";
+
+import { ChainsStatsNotices } from "./ChainsStatsNotices";
+import type { ChainsStatsStaleEntry, ChainsStatsSummary } from "./summarizeChainsStats";
 
 type Props = {
-  entries: { [key: string]: bigint | number | string | undefined };
+  summary: ChainsStatsSummary;
   showDollar?: boolean;
   decimalsForConversion?: number;
-  symbol?: string;
-  subtotal?: ReactNode;
+  staleEntries: ChainsStatsStaleEntry[];
 };
 
 export default function ChainsStatsTooltipRow({
-  entries,
+  summary: { knownEntries, missingTitles, total },
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
-  symbol,
-  subtotal,
+  staleEntries,
 }: Props) {
-  const validEntries = Object.entries(entries).filter(([, value]) => value);
-  const total = validEntries.reduce((acc, [, value]) => acc + (BigInt(value || 0) ?? 0n), 0n);
-
-  if (validEntries.length === 0) {
+  if (knownEntries.length === 0) {
     return null;
   }
 
   return (
     <>
-      {validEntries.map(([title, value]) => {
-        return (
-          <p key={title} className="Tooltip-row">
-            <span className="label">
-              <Trans>{title}</Trans>:{" "}
-            </span>
-            <span className="amount">
-              {formatAmountHuman(value, decimalsForConversion, showDollar, 2)}
-              {!showDollar && symbol && " " + symbol}
-            </span>
-          </p>
-        );
-      })}
-      <div className="my-5 h-1 bg-gray-800" />
-      <p className="Tooltip-row">
-        <span className="label">
-          <Trans>Total</Trans>:{" "}
-        </span>
-        <span className="amount">
-          {formatAmountHuman(total, decimalsForConversion, showDollar, 2)}
-          {!showDollar && symbol && " " + symbol}
-        </span>
-      </p>
-      {subtotal}
+      <TooltipRows>
+        {knownEntries.map(([title, value]) => (
+          <TooltipRow
+            key={title}
+            label={<Trans>{title}</Trans>}
+            value={
+              <AmountHumanValue
+                amount={value}
+                decimals={decimalsForConversion}
+                showDollar={showDollar}
+                displayDecimals={2}
+              />
+            }
+          />
+        ))}
+        <TooltipTotal
+          label={<Trans>Total</Trans>}
+          value={
+            <AmountHumanValue
+              amount={total}
+              decimals={decimalsForConversion}
+              showDollar={showDollar}
+              displayDecimals={2}
+            />
+          }
+        />
+      </TooltipRows>
+      <ChainsStatsNotices missingTitles={missingTitles} staleEntries={staleEntries} className="text-yellow-300" />
     </>
   );
 }

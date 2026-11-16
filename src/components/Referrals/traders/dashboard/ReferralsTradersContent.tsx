@@ -1,9 +1,12 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { lightFormat } from "date-fns";
-import { useState } from "react";
-import { useCopyToClipboard } from "react-use";
+import { useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
+import { useCopyToClipboard, useMeasure } from "react-use";
+import { useAccount } from "wagmi";
 
+import { BALANCER_PROGRAM_URL, REFERRALS_DOCS_URL } from "config/links";
 import {
   useAffiliateTier,
   useCodeOwner,
@@ -12,21 +15,30 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
-import { getReferralCodeTradeUrl, getSharePercentage } from "domain/referrals/utils/referralsHelper";
+import { formatReferralCodeForDisplay, getProtocolReferralCodeType } from "domain/referrals/utils/referralCode";
+import {
+  getReferralCodeTradeUrl,
+  getSharePercentage,
+  isBalancerProgramTier,
+} from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
+import { shortenAddress } from "lib/legacy";
 
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { TraderReferralChartContainer } from "components/Referrals/shared/charts/TraderReferralChartContainer";
 import { REFERRALS_TIME_RANGE_INFOS, TimeRangeFilter } from "components/Referrals/shared/TimeRangeFilter";
 import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
@@ -35,17 +47,20 @@ import { TradersPromoCard } from "./TradersPromoCard";
 
 type ReferralsTradersContentProps = {
   account: string | undefined;
+  hasAddressInUrl?: boolean;
 };
 
-export function ReferralsTradersContent({ account }: ReferralsTradersContentProps) {
+export function ReferralsTradersContent({ account, hasAddressInUrl = false }: ReferralsTradersContentProps) {
   const { chainId } = useChainId();
+  const { address: walletAddress } = useAccount();
+  const isAccountOwner = Boolean(account && walletAddress && account === walletAddress);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);
   const { codeOwner } = useCodeOwner(chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isEditReferralCodeModalVisible, setIsEditReferralCodeModalVisible] = useState(false);
-  const { totalRebate } = useTiers(chainId, traderTier);
+  const { totalRebate, discountShare: tierDiscountShare } = useTiers(chainId, traderTier);
   const { timeRangeInfo, setTimeRange, periodStart, periodEnd } = useTimeRange(
     "referrals-traders-time-range",
     REFERRALS_TIME_RANGE_INFOS
@@ -56,8 +71,11 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
     from: periodStart,
     to: periodEnd,
   });
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
-  const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
+  const currentTierDiscount = getSharePercentage(discountShare, tierDiscountShare, totalRebate);
+  const currentTierRebate = getSharePercentage(discountShare, tierDiscountShare, totalRebate, true);
+  const isBalancerProgramCode = isBalancerProgramTier(traderTier);
+  const isCodeOwnedByAccount = Boolean(account && codeOwner && account === codeOwner);
+  const isOwnAccountView = !hasAddressInUrl || isAccountOwner;
 
   return (
     <>
@@ -76,13 +94,12 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
           <TradersPromoCard account={account} />
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <OverviewChartCard
-              label={<Trans>Trading volume</Trans>}
-              tooltipContent={<Trans>Volume traded by this account with an active referral code.</Trans>}
-              value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
+              label={isOwnAccountView ? <Trans>Your trading volume</Trans> : <Trans>Trading volume</Trans>}
+              value={<UsdValue usd={traderStats?.summary.volumeUsd ?? 0n} />}
               valueChange={
-                traderStats?.summary.volumeUsdDelta !== undefined
-                  ? formatUsdDelta(traderStats.summary.volumeUsdDelta)
-                  : undefined
+                traderStats?.summary.volumeUsdDelta !== undefined ? (
+                  <UsdValue usd={traderStats.summary.volumeUsdDelta} displayPlus />
+                ) : undefined
               }
               isValueChangePositive={
                 traderStats?.summary.volumeUsdDelta !== undefined ? traderStats.summary.volumeUsdDelta >= 0n : undefined
@@ -96,13 +113,12 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
               />
             </OverviewChartCard>
             <OverviewChartCard
-              label={<Trans>Discounts</Trans>}
-              tooltipContent={<Trans>Discounts earned by this account as a trader.</Trans>}
-              value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
+              label={isOwnAccountView ? <Trans>Your discounts</Trans> : <Trans>Discounts</Trans>}
+              value={<UsdValue usd={traderStats?.summary.discountsUsd ?? 0n} />}
               valueChange={
-                traderStats?.summary.discountsUsdDelta !== undefined
-                  ? formatUsdDelta(traderStats.summary.discountsUsdDelta)
-                  : undefined
+                traderStats?.summary.discountsUsdDelta !== undefined ? (
+                  <UsdValue usd={traderStats.summary.discountsUsdDelta} displayPlus />
+                ) : undefined
               }
               isValueChangePositive={
                 traderStats?.summary.discountsUsdDelta !== undefined
@@ -118,62 +134,91 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
               />
             </OverviewChartCard>
           </div>
-          <div className="text-body-small font-medium text-typography-secondary">
-            <span className="text-slate-500">
-              <Trans>Last Updated:</Trans>
-            </span>{" "}
-            {lastUpdated}
-          </div>
         </div>
       </div>
       <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
         <div className="rounded-8 bg-slate-900 p-adaptive">
           <div className="text-body-medium mb-8 font-medium text-typography-secondary">
-            <Trans>Active referral code</Trans>
+            {isBalancerProgramCode ? (
+              <StandardTooltip variant="iconStroke" content={<BalancerProgramTooltipContent />}>
+                <Trans>Active Balancer Program code</Trans>
+              </StandardTooltip>
+            ) : (
+              <Trans>Active referral code</Trans>
+            )}
           </div>
-          <div className="mb-12 flex items-center justify-between">
-            <div
-              className="flex cursor-pointer items-center gap-4 text-24 font-medium text-typography-primary"
-              onClick={() => {
-                if (!userReferralCodeString) return;
-                copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
-                helperToast.success(t`Referral link copied to clipboard`);
-              }}
-            >
-              {userReferralCodeString} <CopyStrokeIcon className="size-20 text-typography-secondary" />
-            </div>
-            <Button variant="secondary" onClick={() => setIsEditReferralCodeModalVisible(true)}>
-              <Trans>Edit</Trans> <EditIcon className="size-16" />
-            </Button>
-          </div>
-          <Card>
-            <Trans>
-              <div className="text-body-medium mb-2 font-medium text-typography-primary">
-                You're now receiving a {currentTierDiscount}% discount on your trades!
-              </div>
+          {!userReferralCodeString ? (
+            <Card>
               <div className="text-body-small text-typography-secondary">
-                The reduced rate applies to every open and close fee.
+                <Trans>This account has no active referral code</Trans>
               </div>
-            </Trans>
-          </Card>
+            </Card>
+          ) : (
+            <>
+              <div className="mb-12 flex items-center justify-between gap-8">
+                <div
+                  className="flex min-w-0 cursor-pointer items-center gap-4 text-typography-primary"
+                  onClick={() => {
+                    copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
+                    helperToast.success(t`Referral link copied to clipboard`);
+                  }}
+                >
+                  <ScaledText className="text-24 font-medium">
+                    {formatReferralCodeForDisplay(userReferralCodeString)}
+                  </ScaledText>
+                  <CopyStrokeIcon className="size-20 shrink-0 text-typography-secondary" />
+                </div>
+                {isAccountOwner && (
+                  <Button
+                    variant="secondary"
+                    className="shrink-0"
+                    onClick={() => setIsEditReferralCodeModalVisible(true)}
+                  >
+                    <Trans>Edit</Trans> <EditIcon className="size-16" />
+                  </Button>
+                )}
+              </div>
+              <Card>
+                {currentTierDiscount === undefined ? (
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" count={3} />
+                ) : isBalancerProgramCode ? (
+                  <BalancerProgramExplanation
+                    currentTierRebate={currentTierRebate}
+                    codeOwner={codeOwner}
+                    isCodeOwnedByAccount={isCodeOwnedByAccount}
+                    affiliatesTabUrl={
+                      hasAddressInUrl && account ? `/referrals/affiliates/${account}` : "/referrals/affiliates"
+                    }
+                  />
+                ) : (
+                  <ActiveCodeExplanation
+                    currentTierDiscount={currentTierDiscount}
+                    codeString={userReferralCodeString}
+                  />
+                )}
+              </Card>
+            </>
+          )}
         </div>
         <ReferralsDocsCard />
         <Faq items={POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
-      <ModalWithPortal
-        className="Connect-wallet-modal"
-        isVisible={isEditReferralCodeModalVisible}
-        setIsVisible={setIsEditReferralCodeModalVisible}
-        label={t`Edit referral code`}
-      >
-        <div className="w-[31rem]">
-          <ReferralCodeEditFormContainer
-            type="edit"
-            userReferralCodeString={userReferralCodeString}
-            callAfterSuccess={() => setIsEditReferralCodeModalVisible(false)}
-          />
-        </div>
-      </ModalWithPortal>
+      {isAccountOwner && (
+        <ModalWithPortal
+          className="Connect-wallet-modal"
+          isVisible={isEditReferralCodeModalVisible}
+          setIsVisible={setIsEditReferralCodeModalVisible}
+          label={t`Edit referral code`}
+        >
+          <div className="w-[31rem]">
+            <ReferralCodeEditFormContainer
+              type="edit"
+              userReferralCodeString={userReferralCodeString}
+              callAfterSuccess={() => setIsEditReferralCodeModalVisible(false)}
+            />
+          </div>
+        </ModalWithPortal>
+      )}
     </>
   );
 }
@@ -184,6 +229,124 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
   );
 }
 
-function formatUsdDelta(value: bigint): string {
-  return formatUsd(value, { displayPlus: value >= 0n }) ?? "";
+function ScaledText({ children, className }: { children: React.ReactNode; className?: string }) {
+  const [wrapperRef, { width: wrapperWidth }] = useMeasure<HTMLDivElement>();
+  const [textRef, { width: textWidth }] = useMeasure<HTMLSpanElement>();
+
+  const isMeasured = wrapperWidth > 0;
+  const scale = isMeasured && textWidth > wrapperWidth ? wrapperWidth / textWidth : 1;
+  const scaleStyle = useMemo(() => (scale < 1 ? { transform: `scale(${scale})` } : undefined), [scale]);
+
+  return (
+    <div ref={wrapperRef} className="min-w-0 overflow-hidden">
+      <span
+        ref={textRef}
+        className={cx("inline-block origin-left whitespace-nowrap", { "opacity-0": !isMeasured }, className)}
+        style={scaleStyle}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function ActiveCodeExplanation({
+  currentTierDiscount,
+  codeString,
+}: {
+  currentTierDiscount: string | number | undefined;
+  codeString: string | undefined;
+}) {
+  const protocolCodeType = getProtocolReferralCodeType(codeString);
+
+  if (protocolCodeType === "organic") {
+    return (
+      <div className="text-body-small text-typography-primary">
+        <Trans>
+          You've reached a trading volume threshold, so GMX assigned this protocol referral code. You're receiving a{" "}
+          {currentTierDiscount}% discount on opening and closing fees.{" "}
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+            Read more
+          </ExternalLink>
+          .
+        </Trans>
+      </div>
+    );
+  }
+
+  if (protocolCodeType === "graduated") {
+    return (
+      <div className="text-body-small text-typography-primary">
+        <Trans>
+          Your previous referral code has been replaced with a GMX protocol code after your trades reached the referral
+          program's graduation threshold. You keep your {currentTierDiscount}% discount on opening and closing fees.{" "}
+          <ExternalLink href={REFERRALS_DOCS_URL} className="text-blue-300">
+            Read more
+          </ExternalLink>
+          .
+        </Trans>
+      </div>
+    );
+  }
+
+  return (
+    <Trans>
+      <div className="text-body-medium mb-2 font-medium text-typography-primary">
+        You're now receiving a {currentTierDiscount}% discount on your trades!
+      </div>
+      <div className="text-body-small text-typography-secondary">
+        The reduced rate applies to every open and close fee.
+      </div>
+    </Trans>
+  );
+}
+
+function BalancerProgramTooltipContent() {
+  return (
+    <TooltipContent>
+      <TooltipText>
+        <Trans>
+          The Balancer Program rewards traders who consistently take the underweight side of GMX markets. These codes
+          replace the trader fee discount with a higher rebate, which accrues to the code owner's affiliate account and
+          can be claimed anytime.
+        </Trans>
+      </TooltipText>
+      <TooltipLink href={BALANCER_PROGRAM_URL}>
+        <Trans>Read more</Trans>
+      </TooltipLink>
+    </TooltipContent>
+  );
+}
+
+function BalancerProgramExplanation({
+  currentTierRebate,
+  codeOwner,
+  isCodeOwnedByAccount,
+  affiliatesTabUrl,
+}: {
+  currentTierRebate: string | number | undefined;
+  codeOwner: string | undefined;
+  isCodeOwnedByAccount: boolean;
+  affiliatesTabUrl: string;
+}) {
+  return (
+    <>
+      <div className="text-body-medium mb-2 font-medium text-typography-primary">
+        <Trans>Your trades earn a {currentTierRebate}% rebate, not a discount</Trans>
+      </div>
+      <div className="text-body-small text-typography-secondary">
+        {isCodeOwnedByAccount ? (
+          <Trans>
+            Claim it anytime in the{" "}
+            <Link to={affiliatesTabUrl} className="text-blue-300">
+              Affiliates tab
+            </Link>
+            .
+          </Trans>
+        ) : (
+          <Trans>It accrues to the code owner ({shortenAddress(codeOwner, 13)}).</Trans>
+        )}
+      </div>
+    </>
+  );
 }

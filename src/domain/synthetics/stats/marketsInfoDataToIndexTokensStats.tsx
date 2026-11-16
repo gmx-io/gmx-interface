@@ -5,7 +5,7 @@ import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/s
 import {
   MarketInfo,
   MarketsInfoData,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOpenInterestForBalance,
   getUsedLiquidity,
 } from "domain/synthetics/markets";
@@ -15,7 +15,7 @@ import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMidPrice } from "sdk/utils/tokens";
 
-const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(10000, USD_DECIMALS);
+const MIN_OI_CAP_THRESHOLD_USD = expandDecimals(100, USD_DECIMALS);
 
 export type MarketStat = {
   marketInfo: MarketInfo;
@@ -123,8 +123,12 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     indexTokenStats.totalOpenInterestShort += getOpenInterestForBalance(marketInfo, false);
     indexTokenStats.maxUiAllowedLeverage = Math.max(
       indexTokenStats.maxUiAllowedLeverage,
-      getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor, marketInfo.marketTokenAddress) /
-        BASIS_POINTS_DIVISOR
+      getMaxAllowedLeverage({
+        marketAddress: marketInfo.marketTokenAddress,
+        minCollateralFactor: marketInfo.minCollateralFactor,
+        minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
+        positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
+      }) / BASIS_POINTS_DIVISOR
     );
     if (netFeeLong > indexTokenStats.bestNetFeeLong) {
       indexTokenStats.bestNetFeeLong = netFeeLong;

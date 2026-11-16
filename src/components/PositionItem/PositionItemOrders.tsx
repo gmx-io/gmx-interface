@@ -1,10 +1,14 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo } from "react";
+import { Fragment, useCallback, useMemo } from "react";
 
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectOracleSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectOracleSettings,
+  selectPositionsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderErrors,
@@ -13,12 +17,17 @@ import {
   isMarketOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import { getNameByOrderType } from "domain/synthetics/positions";
-import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
+import { getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
+import { isFullClosePositionOrder } from "domain/tpsl/utils";
+import { calculateDisplayDecimals, formatBalanceAmount } from "lib/numbers";
+import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipTitle } from "components/Tooltip/TooltipBlocks";
 
 import ChevronRightIcon from "img/ic_chevron_right.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -29,9 +38,11 @@ import { TwapOrderProgress } from "../OrderItem/OrderItem";
 export function PositionItemOrdersSmall({
   positionKey,
   onOrdersClick,
+  hideActions,
 }: {
   positionKey: string;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -40,7 +51,7 @@ export function PositionItemOrdersSmall({
   return (
     <div className="flex flex-col gap-8">
       {ordersWithErrors.map((params) => (
-        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
+        <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} hideActions={hideActions} {...params} />
       ))}
     </div>
   );
@@ -49,9 +60,11 @@ export function PositionItemOrdersSmall({
 export function PositionItemOrdersLarge({
   positionKey,
   onOrdersClick,
+  hideActions,
 }: {
   positionKey: string;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const ordersWithErrors = usePositionOrdersWithErrors(positionKey);
 
@@ -65,8 +78,7 @@ export function PositionItemOrdersLarge({
 
   return (
     <div>
-      <TooltipWithPortal
-        className="Position-list-active-orders"
+      <StandardTooltip
         handle={
           <>
             <Trans>Orders ({ordersWithErrors.length})</Trans>
@@ -81,23 +93,21 @@ export function PositionItemOrdersLarge({
           </>
         }
         position="bottom"
-        handleClassName={cx([
-          "Exchange-list-info-label",
-          "Exchange-position-list-orders",
-          "clickable",
-          "text-typography-secondary",
-        ])}
-        maxAllowedWidth={370}
-        tooltipClassName="!z-10 w-[370px]"
+        handleClassName={cx(["Exchange-list-info-label", "Exchange-position-list-orders", "text-typography-secondary"])}
         content={
-          <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
-            <div className="font-medium">
+          <TooltipContent>
+            <TooltipTitle>
               <Trans>Active orders</Trans>
-            </div>
+            </TooltipTitle>
             {ordersWithErrors.map((params) => (
-              <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />
+              <PositionItemOrder
+                key={params.order.key}
+                onOrdersClick={onOrdersClick}
+                hideActions={hideActions}
+                {...params}
+              />
             ))}
-          </div>
+          </TooltipContent>
         }
       />
     </div>
@@ -108,10 +118,12 @@ function PositionItemOrder({
   order,
   orderErrors,
   onOrdersClick,
+  hideActions,
 }: {
   order: PositionOrderInfo;
   orderErrors: OrderErrors;
   onOrdersClick?: (key?: string) => void;
+  hideActions?: boolean;
 }) {
   const [, setEditingOrderState] = useEditingOrderState();
   const [isCancelling, cancel] = useCancelOrder(order);
@@ -127,6 +139,7 @@ function PositionItemOrder({
 
   const oracleSettings = useSelector(selectOracleSettings);
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
+  const isSizeOrderInClosedPool = useSelector(makeSelectIsSizeOrderInClosedPool(order.key));
 
   const isDisabled = isCancelling || Boolean(disabledCancelMarketOrderMessage);
 
@@ -145,30 +158,38 @@ function PositionItemOrder({
             <ChevronRightIcon className="ml-4 size-14" />
           </div>
         </Button>
-        {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
+        {!hideActions && !isSizeOrderInClosedPool && !isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
           <Button variant="secondary" onClick={handleEditClick} className="px-8">
             <EditIcon className="size-16" />
           </Button>
         )}
-        {disabledCancelMarketOrderMessage ? (
-          <TooltipWithPortal handle={cancelButton} content={disabledCancelMarketOrderMessage} />
-        ) : (
-          cancelButton
-        )}
+        {!hideActions &&
+          (disabledCancelMarketOrderMessage ? (
+            <StandardTooltip
+              handle={cancelButton}
+              variant="none"
+              isHandlerDisabled
+              content={disabledCancelMarketOrderMessage}
+            />
+          ) : (
+            cancelButton
+          ))}
       </div>
 
       {errors.length !== 0 && (
         <div className="mt-8 flex flex-col gap-8 text-start">
           {errors.map((err) => (
-            <div
-              key={err.key}
-              className={cx("hyphens-auto [overflow-wrap:anywhere]", {
-                "text-red-500": err.level === "error",
-                "text-yellow-300": err.level === "warning",
-              })}
-            >
-              {err.msg}
-            </div>
+            <Fragment key={err.key}>
+              <div
+                className={cx("hyphens-auto [overflow-wrap:anywhere]", {
+                  "text-red-500": err.level === "error",
+                  "text-yellow-300": err.level === "warning",
+                })}
+              >
+                {err.msg}
+              </div>
+              {err.action}
+            </Fragment>
           ))}
         </div>
       )}
@@ -177,30 +198,46 @@ function PositionItemOrder({
 }
 
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
+  const positionsInfoData = useSelector(selectPositionsInfoData);
   const triggerThresholdType = order.triggerThresholdType;
   const isIncrease = isIncreaseOrderType(order.orderType);
   const isTwap = isTwapOrder(order);
+  const position = getByKey(
+    positionsInfoData,
+    getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong)
+  );
+  const isFullClose = isFullClosePositionOrder(order, position?.sizeInUsd);
+  const isMarginDeposit = isMarginDepositOrder(order);
 
   return (
     <div key={order.key} className="text-start">
-      {getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
+      {isMarginDeposit ? t`Deposit margin` : getNameByOrderType(order.orderType, order.isTwap, { abbr: true })}
       {!isTwap && !isMarketOrderType(order.orderType) ? `: ${triggerThresholdType} ` : null}
       {!isTwap && !isMarketOrderType(order.orderType) && (
-        <span className="numbers">
-          {formatUsd(order.triggerPrice, {
-            displayDecimals: calculateDisplayDecimals(
-              order.triggerPrice,
-              undefined,
-              order.indexToken?.visualMultiplier
-            ),
-            visualMultiplier: order.indexToken?.visualMultiplier,
-          })}
-        </span>
+        <UsdValue
+          usd={order.triggerPrice}
+          displayDecimals={calculateDisplayDecimals(order.triggerPrice, undefined, order.indexToken?.visualMultiplier)}
+          visualMultiplier={order.indexToken?.visualMultiplier}
+          className="numbers"
+        />
       )}
       :{" "}
       <span className="numbers">
-        {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
+        {isFullClose ? (
+          <Trans>Full position close</Trans>
+        ) : isMarginDeposit ? (
+          formatBalanceAmount(
+            order.initialCollateralDeltaAmount,
+            order.initialCollateralToken.decimals,
+            order.initialCollateralToken.symbol,
+            { isStable: order.initialCollateralToken.isStable }
+          )
+        ) : (
+          <>
+            {isIncrease ? "+" : "-"}
+            <UsdValue usd={order.sizeDeltaUsd} /> {isTwap && <TwapOrderProgress order={order} />}
+          </>
+        )}
       </span>
     </div>
   );

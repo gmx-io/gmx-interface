@@ -2,7 +2,6 @@ import { zeroAddress, zeroHash } from "viem";
 
 import { Module } from "clients/v1/modules/base";
 import type { MulticallRequestConfig } from "clients/v1/multicall";
-import { BOTANIX } from "configs/chains";
 import { getContract } from "configs/contracts";
 import {
   hashedPositionKey,
@@ -142,7 +141,7 @@ export class Positions extends Module {
       const positions = res.data.reader.positions.returnValues;
 
       return positions.reduce((positionsMap: PositionsData, positionInfo: any) => {
-        const { position, fees, basePnlUsd } = positionInfo;
+        const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
         const { addresses, numbers, flags, data } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
 
@@ -175,6 +174,7 @@ export class Positions extends Module {
           positionFeeAmount: fees.positionFeeAmount,
           traderDiscountAmount: fees.referral.traderDiscountAmount,
           uiFeeAmount: fees.ui.uiFeeAmount,
+          positionValueInUsd,
           data,
         };
 
@@ -315,15 +315,6 @@ export class Positions extends Module {
   }
 
   private async getUserReferralCode() {
-    if (this.chainId === BOTANIX) {
-      return {
-        attachedOnChain: false,
-        userReferralCode: undefined,
-        userReferralCodeString: undefined,
-        referralCodeForTxn: zeroHash,
-      };
-    }
-
     const referralStorageAddress = getContract(this.chainId, "ReferralStorage");
 
     const onChainCode = await this.sdk.executeMulticall({

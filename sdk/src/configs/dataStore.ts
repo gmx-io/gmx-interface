@@ -22,6 +22,7 @@ export const MAX_POOL_AMOUNT_KEY = hashString("MAX_POOL_AMOUNT");
 export const RESERVE_FACTOR_KEY = hashString("RESERVE_FACTOR");
 export const OPEN_INTEREST_RESERVE_FACTOR_KEY = hashString("OPEN_INTEREST_RESERVE_FACTOR");
 export const MAX_OPEN_INTEREST_KEY = hashString("MAX_OPEN_INTEREST");
+export const MAX_COLLATERAL_SUM_KEY = hashString("MAX_COLLATERAL_SUM");
 export const NONCE_KEY = hashString("NONCE");
 export const BORROWING_FACTOR_KEY = hashString("BORROWING_FACTOR");
 export const BORROWING_EXPONENT_FACTOR_KEY = hashString("BORROWING_EXPONENT_FACTOR");
@@ -30,6 +31,7 @@ export const TOTAL_BORROWING_KEY = hashString("TOTAL_BORROWING");
 export const FUNDING_FACTOR_KEY = hashString("FUNDING_FACTOR");
 export const FUNDING_EXPONENT_FACTOR_KEY = hashString("FUNDING_EXPONENT_FACTOR");
 export const FUNDING_INCREASE_FACTOR_PER_SECOND = hashString("FUNDING_INCREASE_FACTOR_PER_SECOND");
+export const MIN_FUNDING_INCREASE_RATE_PER_SECOND = hashString("MIN_FUNDING_INCREASE_RATE_PER_SECOND");
 export const FUNDING_DECREASE_FACTOR_PER_SECOND = hashString("FUNDING_DECREASE_FACTOR_PER_SECOND");
 export const MIN_FUNDING_FACTOR_PER_SECOND = hashString("MIN_FUNDING_FACTOR_PER_SECOND");
 export const MAX_FUNDING_FACTOR_PER_SECOND = hashString("MAX_FUNDING_FACTOR_PER_SECOND");
@@ -55,6 +57,8 @@ export const MIN_POSITION_IMPACT_POOL_AMOUNT_KEY = hashString("MIN_POSITION_IMPA
 export const POSITION_IMPACT_POOL_DISTRIBUTION_RATE_KEY = hashString("POSITION_IMPACT_POOL_DISTRIBUTION_RATE");
 export const SWAP_IMPACT_POOL_AMOUNT_KEY = hashString("SWAP_IMPACT_POOL_AMOUNT");
 export const MIN_COLLATERAL_USD_KEY = hashString("MIN_COLLATERAL_USD");
+export const PRO_TRADER_TIER_KEY = hashString("PRO_TRADER_TIER");
+export const PRO_DISCOUNT_FACTOR_KEY = hashString("PRO_DISCOUNT_FACTOR");
 export const MIN_COLLATERAL_FACTOR_KEY = hashString("MIN_COLLATERAL_FACTOR");
 export const MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER_KEY = hashString(
   "MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER"
@@ -81,6 +85,7 @@ export const CLAIMABLE_FUNDING_AMOUNT = hashString("CLAIMABLE_FUNDING_AMOUNT");
 export const VIRTUAL_TOKEN_ID_KEY = hashString("VIRTUAL_TOKEN_ID");
 export const VIRTUAL_MARKET_ID_KEY = hashString("VIRTUAL_MARKET_ID");
 export const VIRTUAL_INVENTORY_FOR_POSITIONS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS");
+export const VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS_KEY = hashString("VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS");
 export const VIRTUAL_INVENTORY_FOR_SWAPS_KEY = hashString("VIRTUAL_INVENTORY_FOR_SWAPS");
 export const AFFILIATE_REWARD_KEY = hashString("AFFILIATE_REWARD");
 export const IS_MARKET_DISABLED_KEY = hashString("IS_MARKET_DISABLED");
@@ -90,6 +95,7 @@ export const MAX_ALLOWED_SUBACCOUNT_ACTION_COUNT = hashString("MAX_ALLOWED_SUBAC
 export const SUBACCOUNT_ACTION_COUNT = hashString("SUBACCOUNT_ACTION_COUNT");
 export const SUBACCOUNT_ORDER_ACTION = hashString("SUBACCOUNT_ORDER_ACTION");
 export const SUBACCOUNT_INTEGRATION_ID = hashString("SUBACCOUNT_INTEGRATION_ID");
+export const SUBACCOUNT_REVOCATION_COUNTER = hashString("SUBACCOUNT_REVOCATION_COUNTER");
 export const SUBACCOUNT_AUTO_TOP_UP_AMOUNT = hashString("SUBACCOUNT_AUTO_TOP_UP_AMOUNT");
 export const GLV_MAX_MARKET_TOKEN_BALANCE_USD = hashString("GLV_MAX_MARKET_TOKEN_BALANCE_USD");
 export const MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY = hashString("MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION");
@@ -108,6 +114,7 @@ export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
+export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
@@ -206,6 +213,10 @@ export function maxOpenInterestKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [MAX_OPEN_INTEREST_KEY, market, isLong]);
 }
 
+export function maxCollateralSumKey(market: string, collateralToken: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "address", "bool"], [MAX_COLLATERAL_SUM_KEY, market, collateralToken, isLong]);
+}
+
 export function borrowingFactorKey(market: string, isLong: boolean) {
   return hashData(["bytes32", "address", "bool"], [BORROWING_FACTOR_KEY, market, isLong]);
 }
@@ -234,16 +245,20 @@ export function fundingIncreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_INCREASE_FACTOR_PER_SECOND, market]);
 }
 
+export function minFundingIncreaseRatePerSecondKey(market: string) {
+  return hashData(["bytes32", "address"], [MIN_FUNDING_INCREASE_RATE_PER_SECOND, market]);
+}
+
 export function fundingDecreaseFactorPerSecondKey(market: string) {
   return hashData(["bytes32", "address"], [FUNDING_DECREASE_FACTOR_PER_SECOND, market]);
 }
 
-export function minFundingFactorPerSecondKey(market: string) {
-  return hashData(["bytes32", "address"], [MIN_FUNDING_FACTOR_PER_SECOND, market]);
+export function minFundingFactorPerSecondKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MIN_FUNDING_FACTOR_PER_SECOND, market, isLong]);
 }
 
-export function maxFundingFactorPerSecondKey(market: string) {
-  return hashData(["bytes32", "address"], [MAX_FUNDING_FACTOR_PER_SECOND, market]);
+export function maxFundingFactorPerSecondKey(market: string, isLong: boolean) {
+  return hashData(["bytes32", "address", "bool"], [MAX_FUNDING_FACTOR_PER_SECOND, market, isLong]);
 }
 
 export function thresholdForStableFundingKey(market: string) {
@@ -318,6 +333,14 @@ export function minCollateralFactorKey(market: string) {
   return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_KEY, market]);
 }
 
+export function proTraderTierKey(account: string) {
+  return hashData(["bytes32", "address"], [PRO_TRADER_TIER_KEY, account]);
+}
+
+export function proDiscountFactorKey(proTier: bigint) {
+  return hashData(["bytes32", "uint256"], [PRO_DISCOUNT_FACTOR_KEY, proTier]);
+}
+
 export function minCollateralFactorForLiquidationKey(market: string) {
   return hashData(["bytes32", "address"], [MIN_COLLATERAL_FACTOR_FOR_LIQUIDATION_KEY, market]);
 }
@@ -350,6 +373,10 @@ export function virtualInventoryForSwapsKey(virtualMarketId: string, token: stri
 
 export function virtualInventoryForPositionsKey(virtualTokenId: string) {
   return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_KEY, virtualTokenId]);
+}
+
+export function virtualInventoryForPositionsInTokensKey(virtualTokenId: string) {
+  return hashData(["bytes32", "bytes32"], [VIRTUAL_INVENTORY_FOR_POSITIONS_IN_TOKENS_KEY, virtualTokenId]);
 }
 
 export function affiliateRewardKey(market: string, token: string, account: string) {
@@ -406,6 +433,10 @@ export function subaccountIntegrationIdKey(account: string, subaccount: string) 
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_INTEGRATION_ID, account, subaccount]);
 }
 
+export function subaccountRevocationCounterKey(account: string, subaccount: string) {
+  return hashData(["bytes32", "address", "address"], [SUBACCOUNT_REVOCATION_COUNTER, account, subaccount]);
+}
+
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
 }
@@ -420,6 +451,10 @@ export function priceFeedKey(token: string) {
 
 export function gaslessFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [GASLESS_FEATURE_DISABLED_KEY, module]);
+}
+
+export function signalUnstakeFeatureDisabledKey(rewardRouter: string) {
+  return hashData(["bytes32", "address"], [SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY, rewardRouter]);
 }
 
 export function claimTermsKey(distributionId: bigint) {

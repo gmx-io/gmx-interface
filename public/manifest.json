@@ -1,17 +1,37 @@
 {
-  "short_name": "GMX",
   "name": "GMX",
-  "description": "Trade spot or perpetual with up to 100x leverage directly from your wallet.",
-  "iconPath": "logo.png",
-  "icons": [
+  "short_name": "GMX",
+  "description": "Trade crypto and commodities like Gold, Silver, WTI and Brent with up to 100x leverage, directly from your wallet.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#090A14",
+  "theme_color": "#090A14",
+  "shortcuts": [
     {
-      "src": "favicon/apple-icon.png",
-      "sizes": "32x32",
-      "type": "image/png"
+      "name": "Trade",
+      "url": "/trade?source=pwa-shortcut"
+    },
+    {
+      "name": "Pools",
+      "url": "/pools?source=pwa-shortcut"
+    },
+    {
+      "name": "Earn",
+      "url": "/earn?source=pwa-shortcut"
     }
   ],
-  "start_url": "./index.html",
-  "display": "standalone",
-  "theme_color": "#2d42fc",
-  "background_color": "#ffffff"
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

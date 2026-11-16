@@ -13,8 +13,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
-import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
+import { EntryField, GroupPrefix, InitialEntry, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
+import {
+  MAX_PERCENTAGE,
+  PERCENTAGE_DECIMALS,
+  getCarriedOverEntries,
+  getDefaultEntry,
+  getDefaultEntryField,
+} from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   prefix,
@@ -25,7 +31,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 }: {
   prefix: GroupPrefix;
   errorHandler: (entry: T) => T;
-  initialEntries?: (Partial<T> & { price: EntryField; sizeUsd: EntryField })[];
+  initialEntries?: InitialEntry[];
   canAddEntry?: boolean;
   enablePercentage?: boolean;
 }): SidecarOrderEntryGroupBase<T> {
@@ -100,8 +106,9 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const initialState = useMemo(() => {
     if (initialEntries?.length) {
       return initialEntries.map((entry) => {
-        const initialEntry = getDefaultEntry(prefix, { ...entry, mode: "keepSize" });
-        const calculatedEntry = recalculateEntryByField(initialEntry, "sizeUsd");
+        const mode = entry.mode ?? "keepSize";
+        const initialEntry = getDefaultEntry(prefix, { ...entry, mode });
+        const calculatedEntry = recalculateEntryByField(initialEntry, mode === "keepSize" ? "sizeUsd" : "percentage");
         return errorHandler(calculatedEntry);
       });
     }
@@ -197,6 +204,18 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     setIsUntouched(prefix, true);
   }, [initialState, setEntries, setIsUntouched, prefix]);
 
+  const carryOver = useCallback(
+    ({ keepTypedPrice }: { keepTypedPrice: boolean }) => {
+      setEntries((prevEntries) =>
+        getCarriedOverEntries({ entries: prevEntries, initialEntries: initialState, keepTypedPrice }).map((entry) =>
+          errorHandler(recalculateEntryByField(entry, entry.mode === "keepSize" ? "sizeUsd" : "percentage"))
+        )
+      );
+      setIsUntouched(prefix, false);
+    },
+    [errorHandler, initialState, recalculateEntryByField, setEntries, setIsUntouched, prefix]
+  );
+
   const deleteEntry = useCallback(
     (id: string) => {
       setIsUntouched(prefix, false);
@@ -268,6 +287,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
     updateEntry,
     deleteEntry,
     reset,
+    carryOver,
     canAddEntry,
     allowAddEntry: canAddEntry && totalPercentage < MAX_PERCENTAGE,
   };

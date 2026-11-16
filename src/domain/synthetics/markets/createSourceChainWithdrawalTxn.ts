@@ -5,13 +5,13 @@ import { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
 import { MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam, TransferRequests } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
 import { CreateWithdrawalParams, RawCreateWithdrawalParams } from "domain/synthetics/markets";
 import { sendWalletTransaction, WalletTxnResult } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 
 import {
   estimateSourceChainWithdrawalFees,
@@ -118,7 +118,7 @@ export async function createSourceChainWithdrawalTxn({
     callData: encodeFunctionData({
       abi: abis.IStargate,
       functionName: "send",
-      args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
+      args: [sendParams, quoteFromNativeFee(ensuredFees.txnEstimatedNativeFee), account],
     }),
     value,
     msg: t`Withdrawal sent`,

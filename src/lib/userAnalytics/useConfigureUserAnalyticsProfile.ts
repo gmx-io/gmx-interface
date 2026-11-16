@@ -1,8 +1,10 @@
 import { useLingui } from "@lingui/react";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
@@ -15,12 +17,15 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
 
 import { SESSION_ID_KEY, setSessionId } from "./sessionId";
 import { userAnalytics } from "./UserAnalytics";
+import { getWalletAnalyticsProvenance } from "./walletProvenance";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -29,10 +34,15 @@ export function useConfigureUserAnalyticsProfile() {
   const localReferralCode = useLocalReferralCode();
   const utmParams = useUtmParams();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const { account, active } = useWallet();
+  const statsAccount = isSolanaNetwork(networkId) ? undefined : account;
+  const { user } = usePrivy();
+  const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
@@ -46,20 +56,24 @@ export function useConfigureUserAnalyticsProfile() {
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
   const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {
-    account,
+    account: statsAccount,
     from: timePeriods.month[0],
     to: timePeriods.month[1],
-    enabled: true,
+    enabled: statsAccount !== undefined,
   });
 
   const { data: accountStats } = useAccountStats(chainId, {
-    account,
-    enabled: true,
+    account: statsAccount,
+    enabled: statsAccount !== undefined,
   });
 
   const last30DVolume = lastMonthAccountStats?.volume;
   const totalVolume = accountStats?.volume;
   const ordersCount = accountStats?.closedCount;
+  const walletAnalyticsProvenance = useMemo(
+    () => getWalletAnalyticsProvenance({ account, connectedWallets: wallets, user }),
+    [account, user, wallets]
+  );
 
   useEffect(
     function handleUrlParamsEff() {
@@ -72,17 +86,6 @@ export function useConfigureUserAnalyticsProfile() {
         query.delete(SESSION_ID_KEY);
         isUrlParamsChanged = true;
       }
-
-      const abFlags = getAbFlags();
-
-      Object.keys(abFlags).forEach((flag) => {
-        const urlFlagValue = query.get(flag);
-        if (urlFlagValue) {
-          setAbFlagEnabled(flag as AbFlag, urlFlagValue === "1");
-          query.delete(flag);
-          isUrlParamsChanged = true;
-        }
-      });
 
       if (isUrlParamsChanged) {
         history.replace({
@@ -99,14 +102,18 @@ export function useConfigureUserAnalyticsProfile() {
       browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
+      displayMode,
+      launchSource,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
+      ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser]);
+  }, [active, ordersCount, bowser, displayMode, launchSource, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({
+      ...walletAnalyticsProvenance,
       last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
       totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
       languageCode: currentLanguage,
@@ -141,6 +148,7 @@ export function useConfigureUserAnalyticsProfile() {
     utmParams?.campaign,
     utmParams?.term,
     utmParams?.content,
+    walletAnalyticsProvenance,
   ]);
 
   useEffect(() => {

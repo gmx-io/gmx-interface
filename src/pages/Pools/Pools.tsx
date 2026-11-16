@@ -1,20 +1,19 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
-import { BOTANIX } from "config/chains";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
-import { formatUsd } from "lib/numbers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { GlvList } from "components/GmList/GlvList";
 import { GmList } from "components/GmList/GmList";
+import { UsdValue } from "components/NumericValue/UsdValue";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
@@ -45,8 +44,6 @@ export default function Pools() {
 
   const isMobile = usePoolsIsMobilePage();
 
-  const isBotanix = chainId === BOTANIX;
-
   return (
     <AppPageLayout title={t`Pools`} header={<ChainContentHeader />}>
       <div
@@ -68,21 +65,19 @@ export default function Pools() {
       </div>
 
       <div className="flex grow flex-col gap-16 lg:overflow-hidden">
-        {!isBotanix && (
-          <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
-            <GlvList
-              marketsTokensApyData={marketsTokensApyData}
-              marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-              marketsTokensLidoAprData={marketsTokensLidoAprData}
-              glvTokensApyData={glvApyInfoData}
-              apyLoading={apyLoading}
-              performance={performance}
-              performanceLoading={performanceLoading}
-              performanceSnapshots={performanceSnapshots}
-            />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
+          <GlvList
+            marketsTokensApyData={marketsTokensApyData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            glvTokensApyData={glvApyInfoData}
+            apyLoading={apyLoading}
+            performance={performance}
+            performanceLoading={performanceLoading}
+            performanceSnapshots={performanceSnapshots}
+          />
+        </ErrorBoundary>
 
         <ErrorBoundary id="Pools-GmList" variant="block" wrapperClassName="rounded-t-8">
           <GmList
@@ -110,7 +105,7 @@ function PoolsTvl() {
 
   return (
     <div className="flex flex-col gap-8">
-      <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
+      <UsdValue usd={tvl} displayDecimals={0} className="text-h1 normal-nums" />
       <span className="text-body-medium font-medium text-typography-secondary">
         <Trans>TVL in vaults and pools</Trans>
       </span>

@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 import type { AnyChainId } from "config/chains";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
 import type { QuoteOft, SendParam } from "./types";
@@ -20,6 +20,7 @@ export function useQuoteOft({
 }): {
   data: QuoteOft | undefined;
   isLoading: boolean;
+  error: Error | undefined;
 } {
   const quoteOftCondition =
     sendParams !== undefined &&
@@ -61,5 +62,6 @@ export function useQuoteOft({
   return {
     data: quoteOftQuery.data,
     isLoading: quoteOftQuery.isLoading,
+    error: quoteOftQuery.error,
   };
 }

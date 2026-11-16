@@ -1,11 +1,17 @@
 import { useEffect } from "react";
 
 import { getAbFlags } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
+import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { useBowser } from "lib/useBowser";
 import useIsWindowVisible from "lib/useIsWindowVisible";
 import useIsMetamaskMobile, { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
@@ -13,16 +19,33 @@ import useWallet from "lib/wallets/useWallet";
 
 import { isHomeSite } from "../legacy";
 import { metrics } from "./Metrics";
+import { setStartupErrorReporter } from "./startupErrors";
+
+// trade actions only accumulate, so once an account has traded there is nothing left to poll for
+export function getHasNoTradesRefreshInterval(hasNoTrades: boolean | undefined) {
+  return hasNoTrades === false ? 0 : CONFIG_UPDATE_INTERVAL;
+}
 
 export function useConfigureMetrics() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const fetcher = useOracleKeeperFetcher(chainId);
-  const { active } = useWallet();
+  const { active, account } = useWallet();
+  const { isFirstOrder: hasNoTrades } = useIsFirstOrder(chainId, {
+    account: isSolana ? undefined : account,
+    refreshInterval: getHasNoTradesRefreshInterval,
+  });
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const isMobileMetamask = useIsMetamaskMobile();
   const isWindowVisible = useIsWindowVisible();
   const isLargeAccount = getIsLargeAccount();
   const { data: bowser } = useBowser();
+  const apiSdkMarkets = useIsApiSdkEnabled(API_UI_FLAGS.markets);
+  const apiSdkPositions = useIsApiSdkEnabled(API_UI_FLAGS.positions);
+  const apiSdkOrders = useIsApiSdkEnabled(API_UI_FLAGS.orders);
+  const wsPrices = useIsApiSdkEnabled(API_UI_FLAGS.wsPrices);
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
 
   useEffect(() => {
     metrics.subscribeToEvents();
@@ -32,6 +55,7 @@ export function useConfigureMetrics() {
   }, []);
 
   useEffect(() => {
+    setStartupErrorReporter(metrics.pushError);
     metrics.setFetcher(fetcher);
   }, [fetcher]);
 
@@ -44,8 +68,13 @@ export function useConfigureMetrics() {
       isMobileMetamask,
       isWindowVisible,
       isAuthorised: active,
-      abFlags: getAbFlags(),
+      abFlags: { ...getAbFlags(), wsPrices },
+      apiSdkMarkets,
+      apiSdkPositions,
+      apiSdkOrders,
       isMobile: getIsMobileUserAgent(),
+      displayMode,
+      launchSource,
       isHomeSite: isHomeSite(),
       isLargeAccount,
       browserName: bowser?.browser.name,
@@ -53,8 +82,25 @@ export function useConfigureMetrics() {
       platform: bowser?.platform.type,
       isInited: Boolean(bowser),
       srcChainId,
+      networkId,
+      hasNoTrades,
     });
-  }, [active, isMobileMetamask, isWindowVisible, isLargeAccount, bowser, srcChainId]);
+  }, [
+    active,
+    hasNoTrades,
+    isMobileMetamask,
+    isWindowVisible,
+    isLargeAccount,
+    bowser,
+    srcChainId,
+    networkId,
+    apiSdkMarkets,
+    apiSdkPositions,
+    apiSdkOrders,
+    wsPrices,
+    displayMode,
+    launchSource,
+  ]);
 
   useEffect(() => {
     metrics.updateWalletNames();

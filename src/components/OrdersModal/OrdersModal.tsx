@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -8,15 +9,23 @@ import {
   useEditingOrderState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectSrcChainId,
   selectSubaccountForChainAction,
+  selectUserReferralInfo,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   isIncreaseOrderType,
   isLimitDecreaseOrderType,
@@ -26,9 +35,14 @@ import {
 } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import { PositionInfo, formatLiquidationPrice, getEstimatedLiquidationTimeInHours } from "domain/synthetics/positions";
+import {
+  PositionInfo,
+  getEstimatedLiquidationTimeInHours,
+  getPositionOffHoursLiqRisk,
+} from "domain/synthetics/positions";
 import type { TokenData } from "domain/synthetics/tokens";
-import { formatUsd } from "lib/numbers";
+import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
@@ -38,6 +52,8 @@ import { getOrderKeys } from "sdk/utils/orders";
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 
 import PlusIcon from "img/ic_plus.svg?react";
@@ -91,20 +107,44 @@ export function OrdersModal({
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
 
   const effectivePositionKey = position?.key ?? positionKeyProp;
   const effectiveIsLong = position?.isLong ?? isLongProp;
   const effectiveIndexToken = position?.indexToken ?? indexTokenProp;
 
+  const pendingOrders = usePendingTpSlOrders(effectivePositionKey);
+  const hasPendingTpSlOrders = pendingOrders.length > 0;
+  const hasPendingTpSlOrdersRef = useLatest(hasPendingTpSlOrders);
+  const pendingTpOrders = useMemo(
+    () => pendingOrders.filter((order) => isLimitDecreaseOrderType(order.orderType)),
+    [pendingOrders]
+  );
+  const pendingSlOrders = useMemo(
+    () => pendingOrders.filter((order) => isStopLossOrderType(order.orderType)),
+    [pendingOrders]
+  );
+  const displayedPendingOrders =
+    activeTab === "takeProfit" ? pendingTpOrders : activeTab === "stopLoss" ? pendingSlOrders : pendingOrders;
+
   const ordersWithErrors = usePositionOrdersWithErrors(effectivePositionKey);
   const marketDecimals = useSelector(
     makeSelectMarketPriceDecimals(position?.market.indexTokenAddress ?? indexTokenProp?.address)
   );
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const estimatedLiquidationHours = useMemo(
     () => (position ? getEstimatedLiquidationTimeInHours(position, minCollateralUsd) : undefined),
     [position, minCollateralUsd]
+  );
+  const userReferralInfo = useSelector(selectUserReferralInfo);
+  const showOffHoursWarning = useMemo(
+    () =>
+      position
+        ? getPositionOffHoursLiqRisk({ chainId, position, minCollateralUsd, userReferralInfo }).showWarning
+        : false,
+    [chainId, position, minCollateralUsd, userReferralInfo]
   );
 
   const { tpOrders, slOrders, allOrders } = useMemo(() => {
@@ -141,6 +181,9 @@ export function OrdersModal({
     }
   }, [activeTab, tpOrders, slOrders, allOrders]);
 
+  const tpCount = tpOrders.length + pendingTpOrders.length;
+  const slCount = slOrders.length + pendingSlOrders.length;
+
   const tabOptions = useMemo(
     () => [
       { value: "all" as TpSlTabType, label: t`All` },
@@ -148,7 +191,7 @@ export function OrdersModal({
         value: "takeProfit" as TpSlTabType,
         label: (
           <>
-            <Trans>Take-Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
+            <Trans>Take-Profit</Trans> {tpCount > 0 ? <Badge>{tpCount}</Badge> : null}
           </>
         ),
       },
@@ -156,12 +199,12 @@ export function OrdersModal({
         value: "stopLoss" as TpSlTabType,
         label: (
           <>
-            <Trans>Stop-Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
+            <Trans>Stop-Loss</Trans> {slCount > 0 ? <Badge>{slCount}</Badge> : null}
           </>
         ),
       },
     ],
-    [tpOrders.length, slOrders.length]
+    [tpCount, slCount]
   );
 
   const handleCancelAll = useCallback(async () => {
@@ -180,12 +223,12 @@ export function OrdersModal({
 
     try {
       const expressParams = globalExpressParams
-        ? await estimateBatchExpressParams({
+        ? await estimateExpressParams({
             signer,
             chainId,
             batchParams,
             globalExpressParams,
-            requireValidations: true,
+            requireValidations: false,
             estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
@@ -193,11 +236,24 @@ export function OrdersModal({
           })
         : undefined;
 
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: srcChainId !== undefined,
+          expressParams,
+          tokensData: undefined,
+          unavailableGasPaymentToken,
+          actionName: "Cancel Order",
+          collateral: position?.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams,
+        expressParams: getExpressParamsForSubmit(expressParams),
         simulationParams: undefined,
         callback: makeOrderTxnCallback({
           actionName: "Cancel Order",
@@ -205,7 +261,7 @@ export function OrdersModal({
         }),
         provider,
         isGmxAccount: srcChainId !== undefined,
-      });
+      }).catch(reportHandledRejection("ordersModal.cancelAll"));
     } finally {
       setIsCancellingAll(false);
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
@@ -215,7 +271,9 @@ export function OrdersModal({
     provider,
     displayedOrders,
     setCancellingOrdersKeys,
+    estimateExpressParams,
     globalExpressParams,
+    unavailableGasPaymentToken,
     chainId,
     srcChainId,
     subaccount,
@@ -225,16 +283,16 @@ export function OrdersModal({
 
   useEffect(() => {
     if (isVisible) {
-      setIsAddFormVisible(initialView === "add");
+      setIsAddFormVisible(initialView === "add" && !hasPendingTpSlOrdersRef.current);
       setActiveTab(initialTab);
     } else {
       setIsAddFormVisible(false);
     }
-  }, [isVisible, initialView, initialTab]);
+  }, [isVisible, initialView, initialTab, hasPendingTpSlOrdersRef]);
 
   const handleAddTPSLOpen = useCallback(() => {
-    setIsAddFormVisible(true);
-  }, []);
+    if (!hasPendingTpSlOrders) setIsAddFormVisible(true);
+  }, [hasPendingTpSlOrders]);
 
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
@@ -288,39 +346,39 @@ export function OrdersModal({
               <span className="text-body-small text-typography-secondary">
                 <Trans>Entry price</Trans>
               </span>
-              <span className="text-body-medium numbers">
-                {formatUsd(position.entryPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                })}
-              </span>
+              <UsdValue
+                usd={position.entryPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
+                className="text-body-medium numbers"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-body-small text-typography-secondary">
                 <Trans>Mark price</Trans>
               </span>
-              <span className="text-body-medium numbers">
-                {formatUsd(position.markPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                })}
-              </span>
+              <UsdValue
+                usd={position.markPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
+                className="text-body-medium numbers"
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-body-small text-typography-secondary">
                 <Trans>Liquidation price</Trans>
               </span>
-              <span
+              <LiquidationPriceValue
+                liquidationPrice={position.liquidationPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={position.indexToken.visualMultiplier}
                 className={cx("text-body-medium numbers", {
-                  "text-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+                  "text-yellow-300":
+                    (estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7) ||
+                    (showOffHoursWarning && !(estimatedLiquidationHours && estimatedLiquidationHours < 24)),
                   "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
                 })}
-              >
-                {formatLiquidationPrice(position.liquidationPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: position.indexToken.visualMultiplier,
-                }) || "..."}
-              </span>
+              />
             </div>
           </div>
         )}
@@ -335,7 +393,7 @@ export function OrdersModal({
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
                 {!isMobile && position && (
-                  <Button variant="ghost" onClick={handleAddTPSLOpen}>
+                  <Button variant="ghost" onClick={handleAddTPSLOpen} disabled={hasPendingTpSlOrders}>
                     <Trans>Add TP/SL</Trans>
                     <PlusIcon className="size-16" />
                   </Button>
@@ -352,6 +410,9 @@ export function OrdersModal({
 
         <TPSLOrdersList
           orders={displayedOrders}
+          pendingOrders={displayedPendingOrders}
+          indexToken={effectiveIndexToken}
+          isCreationPending={hasPendingTpSlOrders}
           position={position}
           marketDecimals={marketDecimals}
           isMobile={isMobile}
@@ -361,8 +422,8 @@ export function OrdersModal({
         />
 
         {isMobile && position && (
-          <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
-            <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen}>
+          <div className="fixed bottom-[var(--safe-area-inset-bottom)] left-[var(--safe-area-inset-left)] right-[var(--safe-area-inset-right)] border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
+            <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen} disabled={hasPendingTpSlOrders}>
               <Trans>Add TP/SL</Trans>
             </Button>
           </div>
@@ -371,7 +432,8 @@ export function OrdersModal({
 
       {position && (
         <AddTPSLModal
-          isVisible={isAddFormVisible}
+          isVisible={isVisible && isAddFormVisible}
+          isCreationPending={hasPendingTpSlOrders}
           setIsVisible={handleAddFormVisibilityChange}
           position={position}
           onBack={handleAddTPSLBack}

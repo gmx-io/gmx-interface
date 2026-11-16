@@ -4,17 +4,20 @@ import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectPositionsInfoError } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
+import type { PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
+import { usePositionsLifecycleFees } from "domain/synthetics/positions/usePositionsLifecycleFees";
 import { TradeMode } from "domain/synthetics/trade";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
@@ -30,15 +33,26 @@ type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
+  onViewPositionHistory?: (position: Pick<PositionInfo, "contractKey" | "increasedAtTime">) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
   hideActions?: boolean;
+  hideOrderActions?: boolean;
 };
 
 export function PositionList(p: Props) {
-  const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
+  const {
+    onClosePositionClick,
+    onOrdersClick,
+    onViewPositionHistory,
+    onSelectPositionClick,
+    onCancelOrder,
+    hideActions,
+    hideOrderActions,
+  } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
+  const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -46,9 +60,10 @@ export function PositionList(p: Props) {
   const { orderBy, direction, getSorterProps } = useSorterHandlers<PositionSortField>("position-list");
 
   const positions = useMemo(
-    () => sortPositionsByField(defaultPositions, orderBy, direction),
-    [defaultPositions, orderBy, direction]
+    () => sortPositionsByField(defaultPositions, orderBy, direction, showPnlAfterFees),
+    [defaultPositions, orderBy, direction, showPnlAfterFees]
   );
+  const lifecycleFees = usePositionsLifecycleFees(chainId, positions);
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -62,30 +77,42 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
+  const positionsInfoError = useSelector(selectPositionsInfoError);
+  const hasCachedPositions = Object.keys(positionsInfoData ?? {}).length > 0;
+  const positionsEmptyText =
+    positionsInfoError && !hasCachedPositions ? (
+      <Trans>Could not load open positions</Trans>
+    ) : (
+      <Trans>No open positions</Trans>
+    );
   const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="flex grow flex-col">
+      {positionsInfoError && hasCachedPositions && (
+        <AlertInfo type="warning" compact textColor="text-yellow-300">
+          <Trans>Could not refresh open positions. This list may be out of date.</Trans>
+        </AlertInfo>
+      )}
       {isMobile && (
         <>
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
                 <PositionItemWrapper
                   key={position.key}
                   position={position}
+                  lifecycleFees={lifecycleFees}
                   onEditCollateralClick={setEditingPositionKey}
                   onClosePositionClick={onClosePositionClick}
                   onOrdersClick={onOrdersClick}
                   onSelectPositionClick={onSelectPositionClick}
                   isLarge={false}
+                  onViewPositionHistory={onViewPositionHistory}
                   onShareClick={handleSharePositionClick}
                   hideActions={hideActions}
+                  hideOrderActions={hideOrderActions}
                   onCancelOrder={onCancelOrder}
                 />
               ))}
@@ -149,30 +176,29 @@ export function PositionList(p: Props) {
                   <PositionItemWrapper
                     key={position.key}
                     position={position}
+                    lifecycleFees={lifecycleFees}
                     onEditCollateralClick={setEditingPositionKey}
                     onClosePositionClick={onClosePositionClick}
                     onOrdersClick={onOrdersClick}
                     onSelectPositionClick={onSelectPositionClick}
                     isLarge
+                    onViewPositionHistory={onViewPositionHistory}
                     onShareClick={handleSharePositionClick}
                     hideActions={hideActions}
+                    hideOrderActions={hideOrderActions}
                     onCancelOrder={onCancelOrder}
                   />
                 ))}
             </tbody>
           </Table>
 
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
         </TableScrollFadeContainer>
       )}
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}
-          pnlAfterFeesUsd={positionToShare.pnlAfterFees}
+          pnlAfterFeesUsd={showPnlAfterFees ? positionToShare.pnlAfterAllFees : positionToShare.pnl}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}
@@ -182,7 +208,9 @@ export function PositionList(p: Props) {
           leverageWithPnl={positionToShare.leverageWithPnl}
           markPrice={positionToShare.markPrice}
           account={positionToShare.account}
-          pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
+          pnlAfterFeesPercentage={
+            showPnlAfterFees ? positionToShare.pnlAfterAllFeesPercentage : positionToShare.pnlPercentage
+          }
           chainId={chainId}
           shareSource="positions-list"
         />
@@ -195,24 +223,30 @@ export function PositionList(p: Props) {
 const PositionItemWrapper = memo(
   ({
     position,
+    lifecycleFees,
     hideActions,
     isLarge,
     onClosePositionClick,
     onEditCollateralClick,
     onOrdersClick,
+    onViewPositionHistory,
     onSelectPositionClick,
     onShareClick,
     onCancelOrder,
+    hideOrderActions,
   }: {
     position: PositionInfo;
+    lifecycleFees: PositionsLifecycleFees | undefined;
     onEditCollateralClick: (positionKey: string) => void;
     onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
+    onViewPositionHistory?: Props["onViewPositionHistory"];
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
     onShareClick: (positionKey: string) => void;
     hideActions: boolean | undefined;
     onCancelOrder: (orderKey: string) => void;
+    hideOrderActions: boolean | undefined;
   }) => {
     const { account } = useWallet();
     const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
@@ -237,12 +271,17 @@ const PositionItemWrapper = memo(
       },
       [onOrdersClick, position.key]
     );
+    const handleViewPositionHistory = useCallback(
+      () => onViewPositionHistory?.({ contractKey: position.contractKey, increasedAtTime: position.increasedAtTime }),
+      [onViewPositionHistory, position.contractKey, position.increasedAtTime]
+    );
 
-    const isShareAvailable = account === position.account;
+    const isPositionOwner = account === position.account;
 
     return (
       <PositionItem
         position={position}
+        lifecycleFees={lifecycleFees}
         onEditCollateralClick={handleEditCollateralClick}
         onClosePositionClick={handleClosePositionClick}
         onOrdersClick={handleOrdersClick}
@@ -250,8 +289,10 @@ const PositionItemWrapper = memo(
         showPnlAfterFees={showPnlAfterFees}
         isLarge={isLarge}
         hideActions={hideActions}
+        hideOrderActions={hideOrderActions}
         onCancelOrder={handleCancelOrder}
-        onShareClick={isShareAvailable ? handleShareClick : undefined}
+        onShareClick={isPositionOwner ? handleShareClick : undefined}
+        onViewPositionHistory={onViewPositionHistory ? handleViewPositionHistory : undefined}
       />
     );
   }

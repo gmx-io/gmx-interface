@@ -12,9 +12,25 @@ body,
   color: var(--color-typography-primary);
 }
 
-#root > div {
-  height: 100%;
-  width: 100%;
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-right: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+}
+
+html[data-installed-app] {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+html[data-installed-app] #root {
+  padding-top: var(--safe-area-inset-top);
+  padding-right: var(--safe-area-inset-right);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
 }
 
 /**
@@ -57,27 +73,32 @@ code {
   box-sizing: border-box;
 }
 
-@supports (scrollbar-width: auto) {
-  :root {
-    scrollbar-color: var(--color-slate-500) var(--color-slate-900);
-  }
+:root {
+  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
 }
 
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  @media (hover: hover) and (pointer: fine) {
+    // Standard scrollbar colors override WebKit's custom scrollbar styling.
+    :root {
+      scrollbar-color: auto;
+    }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background-color: var(--color-slate-900);
-  }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--color-slate-500);
-    border-radius: 15px;
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background-color: var(--color-slate-900);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--color-slate-500);
+      border-radius: 15px;
+    }
   }
 }
 
@@ -403,4 +424,20 @@ th {
   font-weight: 500;
   font-size: 11px;
   letter-spacing: 0.08em;
+}
+
+/**
+ * FEDEV-4037: the rem-based text shrink on Privy screens (html font-size 10px vs Privy's
+ * assumed 16px root) is now fixed globally by the stylis middleware in
+ * lib/wallets/privyUiCompat.ts; only the iframe-specific hack below remains.
+ *
+ * The Copy key / Copy Phrase iframe reserves ~15px for a scrollbar gutter
+ * (its own html { scrollbar-gutter: stable }) while its button row is laid out
+ * for the full 312px passed via the width query param, so the right button gets
+ * clipped when classic (non-overlay) scrollbars are on. Widen the iframe element
+ * by the gutter so the row fits; the extra strip paints the modal background and
+ * stays invisible. Escalated to Privy; remove once fixed on their side.
+ */
+#privy-dialog iframe[src*="embedded-wallets/export"] {
+  width: 327px !important;
 }

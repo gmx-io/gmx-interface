@@ -3,16 +3,20 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
+import { ContractsChainId } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
 import { AccountDashboard } from "pages/AccountDashboard/AccountDashboard";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { NETWORK_QUERY_PARAM, NETWORK_SLUGS_ID_MAP } from "pages/AccountDashboard/constants";
 import BeginAccountTransfer from "pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer";
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
-import BuyGMX from "pages/BuyGMX/BuyGMX";
+import AnnouncementsPage from "pages/Announcements/Announcements";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import { getBuyGmxDeepLinkUrl } from "pages/Earn/buyGmxDeepLink";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
 import EarnDistributionsPage from "pages/Earn/EarnDistributionsPage";
@@ -27,16 +31,32 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
+import { EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
+const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
+
+function getChainIdFromSearch(search: string, fallbackChainId: ContractsChainId) {
+  const networkSlug = new URLSearchParams(search).get(NETWORK_QUERY_PARAM);
+
+  return (NETWORK_SLUGS_ID_MAP[networkSlug ?? ""] as ContractsChainId | undefined) ?? fallbackChainId;
+}
+
 const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyDesignSystemPage = lazy(() => import("pages/DesignSystem/DesignSystemPage"));
+const DesignSystemPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDesignSystemPage />
   </Suspense>
 );
 
@@ -81,8 +101,71 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+const EVM_ONLY_PAGE_PATHS = [
+  "/dashboard",
+  "/monitor",
+  "/stake",
+  "/buy_gmx",
+  "/price_impact_rebates_stats",
+  "/stats",
+  "/earn",
+  "/pools",
+  "/leaderboard",
+  "/competitions",
+  "/referrals",
+  "/traders",
+  "/accounts",
+  "/actions",
+  "/referrals-tier",
+  "/begin_account_transfer",
+  "/complete_account_transfer",
+  "/rpc-debug",
+  "/oracle-keeper-debug",
+  "/jobs",
+  "/ecosystem",
+  "/announcements",
+  "/parsetx",
+];
+
+// Loaded only while Solana is selected, which needs the solanaNetwork flag, so the Solana trade state
+// stays out of the startup chunks.
+const LazyGmsolSyntheticsStateProvider = lazy(() => import("domain/gmsol/GmsolSyntheticsStateProvider"));
+
+function SolanaTradePage({ openSettings }: { openSettings: () => void }) {
+  return (
+    <Suspense fallback={<Trans>Loading...</Trans>}>
+      <LazyGmsolSyntheticsStateProvider>
+        <SyntheticsPage openSettings={openSettings} />
+      </LazyGmsolSyntheticsStateProvider>
+    </Suspense>
+  );
+}
+
+function SolanaRoutes({ openSettings }: { openSettings: () => void }) {
+  return (
+    <Switch>
+      <Route exact path="/">
+        <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/trade/:tradeType?">
+        <SolanaTradePage openSettings={openSettings} />
+      </Route>
+      <RedirectWithQuery from="/v2" to="/trade" />
+      <Route exact path="/v1">
+        <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route path={EVM_ONLY_PAGE_PATHS}>
+        <EvmNetworksOnlyNotice />
+      </Route>
+      <Route path="*">
+        <PageNotFound />
+      </Route>
+    </Switch>
+  );
+}
+
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
 
   const { pathname } = useLocation();
 
@@ -91,16 +174,21 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  if (!getNetworkFeatures(networkId).evmOnlyPages) {
+    return <SolanaRoutes openSettings={openSettings} />;
+  }
+
   return (
     <Switch>
-      <Redirect exact from="/actions/v2" to="/accounts" />
-      <Redirect exact from="/actions" to="/accounts" />
-      <Redirect exact from="/actions/:account" to="/accounts/:account" />
       {/* redirect from previous dashboard url */}
       <RedirectWithQuery exact from="/dashboard" to="/stats" />
       <RedirectWithQuery exact from="/monitor/v2" to="/monitor" />
       {/* redirect from previous stake(earn) url */}
       <RedirectWithQuery exact from="/stake" to="/earn" />
+      {/* redirect from the sunset buy gmx page to the Buy GMX modal on earn portfolio */}
+      <Route exact path="/buy_gmx">
+        {({ location }) => <Redirect to={getBuyGmxDeepLinkUrl(location.search)} />}
+      </Route>
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
@@ -162,11 +250,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/jobs">
         <Jobs />
       </Route>
-      <Route exact path="/buy_gmx">
-        <BuyGMX />
-      </Route>
       <Route exact path="/ecosystem">
         <Ecosystem />
+      </Route>
+      <Route exact path="/announcements">
+        <AnnouncementsPage />
       </Route>
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
@@ -189,18 +277,28 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <ReferralsRouter />
         </SyntheticsStateContextProvider>
       </Route>
+      <Route exact path="/traders">
+        <AccountsRouter />
+      </Route>
+      <Route exact path="/traders/:account">
+        <AccountDashboard />
+      </Route>
+      <RedirectWithQuery exact from="/accounts" to="/traders" />
+      <RedirectWithQuery exact from="/actions" to="/traders" />
+      <RedirectWithQuery exact from="/actions/v2" to="/traders" />
       <Route exact path="/actions/:v/:account">
-        {({ match }) => (
+        {({ match, location }) => (
           <Redirect
-            to={buildAccountDashboardUrl(match?.params.account as Address, chainId, match?.params.v === "v1" ? 1 : 2)}
+            to={buildAccountDashboardUrl(
+              match?.params.account as Address,
+              getChainIdFromSearch(location.search, chainId),
+              match?.params.v === "v1" ? 1 : 2
+            )}
           />
         )}
       </Route>
-      <Route exact path="/accounts">
-        <AccountsRouter />
-      </Route>
-      <Route exact path="/accounts/:account">
-        <AccountDashboard />
+      <Route exact path={LEGACY_TRADER_PROFILE_PATHS}>
+        {({ match }) => <RedirectWithQuery to={`/traders/${match?.params.account}`} />}
       </Route>
       <Route exact path="/referrals-tier">
         <ReferralsTier />
@@ -225,6 +323,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
+        </Route>,
+        <Route exact path="/ui/:slug" key="ui-design-system">
+          <DesignSystemPage />
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermitsPage />

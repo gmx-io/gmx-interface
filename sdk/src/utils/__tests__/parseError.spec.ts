@@ -5,10 +5,12 @@ import {
   InvalidInputRpcError,
   RpcRequestError,
   InsufficientFundsError,
+  encodeErrorResult,
 } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ErrorLike, parseError } from "utils/errors";
+import { abis } from "abis";
+import { CustomError, decodeSimulationErrorFromViemError, ErrorLike, extendError, parseError } from "utils/errors";
 import { TxErrorType } from "utils/errors/transactionsErrors";
 
 describe("parseError", () => {
@@ -156,6 +158,72 @@ describe("parseError", () => {
           errorGroup: "Txn Error: USER_DENIED",
         })
       );
+    });
+
+    it.each([
+      ["The user rejected the request"],
+      ["Request rejected"],
+      ["MetaMask Typed Message Signature: User denied message signature."],
+    ])("should treat EIP-1193 code 4001 as a user rejection: %s", (message) => {
+      // ethers v6 ACTION_REJECTED keeps the wallet error in info.error
+      const error: ErrorLike = {
+        code: "ACTION_REJECTED",
+        message: "user rejected action",
+        info: { error: { code: 4001, message } },
+      };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          txErrorType: TxErrorType.UserDenied,
+          isUserError: true,
+          isUserRejectedError: true,
+        })
+      );
+    });
+
+    it("should trust the ethers ACTION_REJECTED code when the wallet error has another code", () => {
+      const error: ErrorLike = {
+        code: "ACTION_REJECTED",
+        message: "user rejected action",
+        info: { error: { code: -32603, message: "User denied message signature" } },
+      };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          errorMessage: "User denied message signature",
+          txErrorType: TxErrorType.UserDenied,
+          isUserRejectedError: true,
+          errorGroup: "Txn Error: USER_DENIED",
+        })
+      );
+    });
+
+    it.each([
+      ["EIP-1193", 4001],
+      ["WalletConnect CAIP-25", 5000],
+    ])("should treat a raw %s rejection code with an unknown message as a user rejection", (_standard, code) => {
+      const error: ErrorLike = { code, message: "Request rejected" };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({ txErrorType: TxErrorType.UserDenied, isUserRejectedError: true })
+      );
+    });
+
+    it("should keep message patterns ahead of code 4001", () => {
+      const error: ErrorLike = { code: 4001, message: "Request expired" };
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({ txErrorType: TxErrorType.Expired, isUserRejectedError: false })
+      );
+    });
+
+    it("should not treat other EIP-1193 provider codes as a user rejection", () => {
+      const error: ErrorLike = {
+        code: 4100,
+        message: "The requested account and/or method has not been authorized by the user.",
+      };
+
+      expect(parseError(error)).toEqual(expect.objectContaining({ isUserRejectedError: false }));
     });
 
     it("should handle ethers v6 insufficient funds error", () => {
@@ -406,6 +474,47 @@ describe("parseError", () => {
           errorGroup: "Txn Error: NOT_ENOUGH_FUNDS",
         })
       );
+    });
+  });
+
+  describe("custom errors", () => {
+    it("reads the contract error that the order simulation rethrows as a CustomError", () => {
+      const args = { estimatedRemainingCollateralUsd: 90n };
+      const error = extendError(new CustomError({ name: "UnableToWithdrawCollateral", message: "{}", args }), {
+        errorContext: "simulation",
+      });
+
+      expect(parseError(error)).toEqual(
+        expect.objectContaining({
+          contractError: "UnableToWithdrawCollateral",
+          contractErrorArgs: args,
+          errorContext: "simulation",
+        })
+      );
+    });
+  });
+});
+
+describe("decodeSimulationErrorFromViemError", () => {
+  it("decodes the nested SimulationRouter sentinel from ExternalCallFailed", () => {
+    const nestedData = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "EndOfOracleSimulation",
+    });
+    const outerData = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "ExternalCallFailed",
+      args: [nestedData],
+    });
+    const error = {
+      walk(callback: (value: unknown) => boolean) {
+        callback({ data: outerData });
+      },
+    };
+
+    expect(decodeSimulationErrorFromViemError(error)).toEqual({
+      name: "EndOfOracleSimulation",
+      args: undefined,
     });
   });
 });

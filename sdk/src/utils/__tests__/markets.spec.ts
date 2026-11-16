@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
-import { BASIS_POINTS_DIVISOR } from "configs/factors";
 import { TOKENS } from "configs/tokens";
+import { mockMarketsInfoData, mockTokensData } from "test/mock";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -12,7 +12,7 @@ import {
   getPoolUsdWithoutPnl,
   getCappedPoolPnl,
   getMaxLeverageByMinCollateralFactor,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOppositeCollateral,
   getAvailableUsdLiquidityForCollateral,
   getReservedUsd,
@@ -20,10 +20,14 @@ import {
   getMarketPnl,
   getOpenInterestUsd,
   getOpenInterestInTokens,
+  getPositiveMarketPnl,
   getPriceForPnl,
+  getMarketInfoWithOpenInterestDelta,
+  getOpenInterestForBalance,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { expandDecimals, numberToBigint, PRECISION_DECIMALS } from "utils/numbers";
+import { BASIS_POINTS_DIVISOR, expandDecimals } from "utils/numbers";
+import { convertToUsd } from "utils/tokens";
 import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
@@ -184,81 +188,169 @@ describe("getMaxLeverageByMinCollateralFactor", () => {
   it("returns correct leverage for a given factor", () => {
     expect(getMaxLeverageByMinCollateralFactor(1000000000000000000n)).toBe(10000000000000000);
   });
+
+  it("caps SPCX min-collateral-factor leverage at 10x", () => {
+    expect(
+      getMaxLeverageByMinCollateralFactor(1000000000000000000n, "0x470128853D74dab7423904a20eA5AA230e9e561B")
+    ).toBe(100000);
+  });
+
+  it("caps SPCX default min-collateral-factor leverage at 10x", () => {
+    expect(getMaxLeverageByMinCollateralFactor(undefined, "0x470128853D74dab7423904a20eA5AA230e9e561B")).toBe(100000);
+  });
 });
 
-describe("getMaxAllowedLeverageByMinCollateralFactor", () => {
-  const GOLD_MARKET = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
-  const SILVER_MARKET = "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc";
-  const WTIOIL_MARKET = "0xda81cdd397210C08cFc567f93982E148A3aac8a6";
-  const BRENTOIL_MARKET = "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74";
-  const NATGAS_MARKET = "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b";
-  const NON_MARKET_HOURS_MARKET = "0x1234567890abcdef1234567890abcdef12345678";
+describe("getMaxAllowedLeverage", () => {
+  // Factors are expressed in PRECISION units (1e30 == 100%).
+  const pct = (percent: number) => expandDecimals(percent * 100, 26); // 0.5% → 5e27
+  const bps = (lev: number) => lev * BASIS_POINTS_DIVISOR;
 
-  it("returns half of max leverage when no market address is provided", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n, undefined)).toBe(5000000000000000);
+  it("returns default 100x when any factor is undefined or zero", () => {
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: undefined,
+        minCollateralFactorForLiquidation: undefined,
+        positionFeeFactorForBalanceWasNotImproved: undefined,
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 0n,
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: 0n,
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: undefined,
+      })
+    ).toBe(bps(100));
   });
 
-  it("returns half of max leverage for a regular market", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n, NON_MARKET_HOURS_MARKET)).toBe(
-      5000000000000000
-    );
+  it("returns 100x for BTC/ETH (equal MCF and liqMCF, liquidation bound dominates)", () => {
+    // MCF = liqMCF = 0.5%, fee = 0.05%
+    // opening = 1 / (0.005 + 0.001) ≈ 166.67x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    // min floored to 5x = 100x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
   });
 
-  it("returns 100x for GOLD on on-hours MCF (0.009 → 110x contract max)", () => {
-    const onHoursFactor = 9n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, GOLD_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
+  it("returns 85x for ZEC (opening bound dominates, floors to 5x)", () => {
+    // MCF = 1%, liqMCF = 0.5%, fee = 0.06%
+    // opening = 1 / (0.01 + 0.0012) ≈ 89.29x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    // min floored to 5x = 85x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(1),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+      })
+    ).toBe(bps(85));
   });
 
-  it("returns 25x for GOLD on off-hours MCF (0.035 → 30x contract max)", () => {
-    const offHoursFactor = 35n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, GOLD_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
+  it("returns 100x for GOLD on-hours (split factors)", () => {
+    // MCF = 0.9%, liqMCF = 0.5%, fee = 0.05%
+    // opening = 1 / (0.009 + 0.001) = 100x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 9n * 10n ** 27n,
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
   });
 
-  it("returns 100x / 25x for SILVER with the same GOLD MCFs", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, SILVER_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
-    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, SILVER_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
+  it("returns 25x for GOLD off-hours (split factors, opening bound dominates)", () => {
+    // MCF = 3.5%, liqMCF = 1%, fee = 0.05%
+    // opening = 1 / (0.035 + 0.001) ≈ 27.78x
+    // liquidation = 1 / (2 × 0.01) = 50x
+    // min floored to 5x = 25x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 35n * 10n ** 27n,
+        minCollateralFactorForLiquidation: pct(1),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(25));
   });
 
-  it("returns 100x for WTIOIL on-hours MCF and 25x for off-hours MCF", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, WTIOIL_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
-    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, WTIOIL_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
+  it("floors to the nearest 5x", () => {
+    // Choose factors so opening = 47.17x exactly, should floor to 45x
+    // 1 / (MCF + 2×fee) = 47.17 → MCF + 2×fee ≈ 0.0212
+    // MCF = 2%, fee = 0.06% → 0.02 + 0.0012 = 0.0212 → 1/0.0212 ≈ 47.17
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(2),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+      })
+    ).toBe(bps(45));
   });
 
-  it("returns 100x for BRENTOIL on-hours MCF and 25x for off-hours MCF", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, BRENTOIL_MARKET)).toBe(
-      100 * BASIS_POINTS_DIVISOR
-    );
-    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, BRENTOIL_MARKET)).toBe(
-      25 * BASIS_POINTS_DIVISOR
-    );
+  it("liquidation bound dominates when MCF-for-liquidation is relatively high", () => {
+    // MCF = 0.5%, liqMCF = 2%, fee = 0.05%
+    // opening = 1 / (0.005 + 0.001) ≈ 166.67x
+    // liquidation = 1 / (2 × 0.02) = 25x → min 25x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(2),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(25));
   });
 
-  it("returns 40x for NATGAS on-hours MCF and 20x for off-hours MCF", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(22n * 10n ** 27n, NATGAS_MARKET)).toBe(40 * BASIS_POINTS_DIVISOR);
-    expect(getMaxAllowedLeverageByMinCollateralFactor(40n * 10n ** 27n, NATGAS_MARKET)).toBe(20 * BASIS_POINTS_DIVISOR);
+  it("caps SPCX UI max leverage at 10x", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(10));
   });
 
-  it("does not apply market-hours overrides to other markets with same MCF", () => {
-    const onHoursFactor = 9n * 10n ** 27n;
-    const offHoursFactor = 35n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, NON_MARKET_HOURS_MARKET)).toBe(
-      55.5 * BASIS_POINTS_DIVISOR
-    );
-    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, NON_MARKET_HOURS_MARKET)).toBe(
-      14.5 * BASIS_POINTS_DIVISOR
-    );
+  it("does not cap other markets with matching factors", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x0000000000000000000000000000000000000000",
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
   });
 
-  it("rounds allowed leverage to nearest .0 or .5", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 24, PRECISION_DECIMALS), undefined)).toBe(
-      12 * BASIS_POINTS_DIVISOR
-    );
-    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 25, PRECISION_DECIMALS), undefined)).toBe(
-      12.5 * BASIS_POINTS_DIVISOR
-    );
-    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 50, PRECISION_DECIMALS), undefined)).toBe(
-      25 * BASIS_POINTS_DIVISOR
-    );
+  it("keeps lower dynamic max leverage for SPCX when factors require it", () => {
+    expect(
+      getMaxAllowedLeverage({
+        marketAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+        minCollateralFactor: pct(10),
+        minCollateralFactorForLiquidation: pct(10),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(5));
   });
 });
 
@@ -371,6 +463,78 @@ describe("getMarketPnl", () => {
   });
 });
 
+describe("getPositiveMarketPnl", () => {
+  const price = expandDecimals(1000, 18);
+
+  function makeMarket(overrides: Partial<MarketInfo>) {
+    return {
+      indexToken: { decimals: 18, prices: { minPrice: price, maxPrice: price } },
+      ...overrides,
+    } as MarketInfo;
+  }
+
+  it("falls back to net pnl when the per-collateral open interest is missing", () => {
+    const marketInfo = makeMarket({ longInterestUsd: 500n, longInterestInTokens: 1n });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(500n);
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(getMarketPnl(marketInfo, true, true));
+  });
+
+  it("drops the losing collateral bucket for longs", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 6000n,
+      longInterestInTokens: 5n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 3n,
+      longInterestUsdUsingShortToken: 5000n,
+      longInterestInTokensUsingShortToken: 2n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+    expect(getMarketPnl(marketInfo, true, true)).toBe(-1000n);
+  });
+
+  it("drops the losing collateral bucket for shorts", () => {
+    const marketInfo = makeMarket({
+      shortInterestUsd: 6000n,
+      shortInterestInTokens: 5n,
+      shortInterestUsdUsingLongToken: 5000n,
+      shortInterestInTokensUsingLongToken: 2n,
+      shortInterestUsdUsingShortToken: 1000n,
+      shortInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, false, true)).toBe(3000n);
+    expect(getMarketPnl(marketInfo, false, true)).toBe(1000n);
+  });
+
+  it("treats an empty collateral bucket as zero pnl", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 3n,
+      longInterestUsdUsingLongToken: 0n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 1000n,
+      longInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+  });
+
+  it("returns zero pnl for a bucket that has usd open interest but no tokens", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 0n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 0n,
+      longInterestInTokensUsingShortToken: 0n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(0n);
+  });
+});
+
 describe("getOpenInterestUsd", () => {
   it("returns longInterestUsd for isLong", () => {
     expect(getOpenInterestUsd({ longInterestUsd: 1234n, shortInterestUsd: 9999n } as MarketInfo, true)).toBe(1234n);
@@ -402,5 +566,289 @@ describe("getPriceForPnl", () => {
 
   it("uses maxPrice for short when maximize=false", () => {
     expect(getPriceForPnl({ minPrice: 1000n, maxPrice: 2000n }, false, false)).toBe(2000n);
+  });
+});
+
+describe("getMarketInfoWithOpenInterestDelta", () => {
+  const tokensData = mockTokensData();
+
+  function buildMarket(overrides: Record<string, bigint | boolean | string> = {}) {
+    return mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": {
+        longInterestUsd: expandDecimals(1000, 30),
+        shortInterestUsd: expandDecimals(2000, 30),
+        longInterestInTokens: expandDecimals(1, 18),
+        shortInterestInTokens: expandDecimals(2, 18),
+        ...overrides,
+      },
+    })["ETH-ETH-USDC"];
+  }
+
+  it("returns the market unchanged when there is no delta", () => {
+    const marketInfo = buildMarket();
+
+    expect(
+      getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd: 0n,
+        sizeDeltaInTokens: 0n,
+      })
+    ).toBe(marketInfo);
+  });
+
+  it("shifts only the long side for a long increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      collateralToken: marketInfo.shortToken,
+      isLong: true,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.longInterestUsd).toBe(expandDecimals(1500, 30));
+    expect(next.longInterestInTokens).toBe(expandDecimals(15, 17));
+    expect(next.shortInterestUsd).toBe(marketInfo.shortInterestUsd);
+    expect(next.shortInterestInTokens).toBe(marketInfo.shortInterestInTokens);
+    // the source market must not be mutated, it is shared across selectors
+    expect(marketInfo.longInterestUsd).toBe(expandDecimals(1000, 30));
+  });
+
+  it("shifts only the short side for a short increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      collateralToken: marketInfo.shortToken,
+      isLong: false,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.shortInterestUsd).toBe(expandDecimals(2500, 30));
+    expect(next.shortInterestInTokens).toBe(expandDecimals(25, 17));
+    expect(next.longInterestUsd).toBe(marketInfo.longInterestUsd);
+    expect(next.longInterestInTokens).toBe(marketInfo.longInterestInTokens);
+  });
+
+  it("carries the delta into the open interest used for balance in both modes", () => {
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    const usdMarket = buildMarket({ useOpenInterestInTokensForBalance: false });
+    const usdNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: usdMarket,
+      collateralToken: usdMarket.shortToken,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    expect(getOpenInterestForBalance(usdNext, true) - getOpenInterestForBalance(usdMarket, true)).toBe(sizeDeltaUsd);
+
+    const tokensMarket = buildMarket({ useOpenInterestInTokensForBalance: true });
+    const tokensNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: tokensMarket,
+      collateralToken: tokensMarket.shortToken,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    const midPrice = (tokensMarket.indexToken.prices.minPrice + tokensMarket.indexToken.prices.maxPrice) / 2n;
+
+    expect(getOpenInterestForBalance(tokensNext, true) - getOpenInterestForBalance(tokensMarket, true)).toBe(
+      convertToUsd(sizeDeltaInTokens, tokensMarket.indexToken.decimals, midPrice)!
+    );
+  });
+
+  describe("per-collateral open interest projection", () => {
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+    const split = {
+      longInterestUsdUsingLongToken: expandDecimals(300, 30),
+      longInterestUsdUsingShortToken: expandDecimals(700, 30),
+      shortInterestUsdUsingLongToken: expandDecimals(1200, 30),
+      shortInterestUsdUsingShortToken: expandDecimals(800, 30),
+      longInterestInTokensUsingLongToken: expandDecimals(3, 17),
+      longInterestInTokensUsingShortToken: expandDecimals(7, 17),
+      shortInterestInTokensUsingLongToken: expandDecimals(12, 17),
+      shortInterestInTokensUsingShortToken: expandDecimals(8, 17),
+    };
+
+    it("moves a long increase with short-token collateral into the short-token leg", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingShortToken).toBe(expandDecimals(1200, 30));
+      expect(next.longInterestInTokensUsingShortToken).toBe(expandDecimals(12, 17));
+      expect(next.longInterestUsdUsingLongToken).toBe(split.longInterestUsdUsingLongToken);
+      expect(next.longInterestInTokensUsingLongToken).toBe(split.longInterestInTokensUsingLongToken);
+      expect(next.longInterestUsd).toBe(next.longInterestUsdUsingLongToken! + next.longInterestUsdUsingShortToken!);
+      expect(next.longInterestInTokens).toBe(
+        next.longInterestInTokensUsingLongToken! + next.longInterestInTokensUsingShortToken!
+      );
+      expect(next.shortInterestUsdUsingLongToken).toBe(split.shortInterestUsdUsingLongToken);
+      expect(next.shortInterestUsdUsingShortToken).toBe(split.shortInterestUsdUsingShortToken);
+    });
+
+    it("moves a long increase with long-token collateral into the long-token leg", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.longToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingLongToken).toBe(expandDecimals(800, 30));
+      expect(next.longInterestInTokensUsingLongToken).toBe(expandDecimals(8, 17));
+      expect(next.longInterestUsdUsingShortToken).toBe(split.longInterestUsdUsingShortToken);
+      expect(next.longInterestInTokensUsingShortToken).toBe(split.longInterestInTokensUsingShortToken);
+      expect(next.longInterestUsd).toBe(next.longInterestUsdUsingLongToken! + next.longInterestUsdUsingShortToken!);
+    });
+
+    it("moves a short increase into the collateral leg of the short side", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.shortInterestUsdUsingShortToken).toBe(expandDecimals(1300, 30));
+      expect(next.shortInterestInTokensUsingShortToken).toBe(expandDecimals(13, 17));
+      expect(next.shortInterestUsdUsingLongToken).toBe(split.shortInterestUsdUsingLongToken);
+      expect(next.shortInterestInTokensUsingLongToken).toBe(split.shortInterestInTokensUsingLongToken);
+      expect(next.shortInterestUsd).toBe(next.shortInterestUsdUsingLongToken! + next.shortInterestUsdUsingShortToken!);
+      expect(next.shortInterestInTokens).toBe(
+        next.shortInterestInTokensUsingLongToken! + next.shortInterestInTokensUsingShortToken!
+      );
+      expect(next.longInterestUsdUsingShortToken).toBe(split.longInterestUsdUsingShortToken);
+    });
+
+    it("keeps the per-collateral pnl split consistent with the projected totals", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(getPositiveMarketPnl(next, true, false)).toBe(getMarketPnl(next, true, false));
+    });
+
+    it("leaves the per-collateral fields undefined when the market does not carry them", () => {
+      const marketInfo = buildMarket();
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingShortToken).toBeUndefined();
+      expect(next.longInterestInTokensUsingShortToken).toBeUndefined();
+      expect(next.longInterestUsd).toBe(expandDecimals(1500, 30));
+    });
+  });
+
+  describe("virtual inventory projection", () => {
+    // the contract's `applyDeltaToVirtualInventoryForPositions` no-ops on a zero virtualTokenId
+    const VIRTUAL_INDEX_TOKEN_ID = `0x${"1".repeat(64)}`;
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    it("decreases the net-short virtual inventory for a long increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(-expandDecimals(200, 30));
+      expect(next.virtualInventoryForPositionsInTokens).toBe(marketInfo.virtualInventoryForPositionsInTokens);
+    });
+
+    it("increases the net-short virtual inventory for a short increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(expandDecimals(800, 30));
+    });
+
+    it("shifts the token-denominated virtual inventory on a token-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: true,
+        virtualInventoryForPositionsInTokens: expandDecimals(1, 18),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositionsInTokens).toBe(expandDecimals(5, 17));
+      expect(next.virtualInventoryForPositions).toBe(marketInfo.virtualInventoryForPositions);
+    });
+
+    it("leaves the virtual inventory untouched when the market has none configured", () => {
+      // the default mock has virtualIndexTokenId = zeroHash and zero inventory
+      const marketInfo = buildMarket();
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(0n);
+      expect(next.virtualInventoryForPositionsInTokens).toBe(0n);
+    });
   });
 });

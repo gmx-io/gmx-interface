@@ -1,31 +1,35 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
-import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
+import { useProtocolStatsFeesInfo } from "domain/protocolStats/useProtocolStatsFeesInfo";
+import {
+  getProtocolStatsNetworkFreshness,
+  useProtocolStatsSummary,
+} from "domain/protocolStats/useProtocolStatsSummary";
+import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmountHuman } from "lib/numbers";
-import { sumBigInts } from "lib/sumBigInts";
-import useWallet from "lib/wallets/useWallet";
+import { expandDecimals } from "lib/numbers";
+import { sumKnownBigInts } from "lib/sumBigInts";
+import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
+import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
 
 import { ACTIVE_CHAIN_IDS } from "./DashboardV2";
 import { getFormattedFeesDuration } from "./getFormattedFeesDuration";
 import { getPositionStats } from "./getPositionStats";
 import type { ChainStats } from "./useDashboardChainStatsMulticall";
+
+const SOLANA_ENTRY = "Solana";
 
 export function OverviewCard({
   statsArbitrum,
@@ -34,42 +38,32 @@ export function OverviewCard({
   statsArbitrum?: ChainStats;
   statsAvalanche?: ChainStats;
 }) {
-  const { active, signer } = useWallet();
-  const { chainId } = useChainId();
-
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
-  const v2BotanixOverview = useV2Stats(BOTANIX);
   const v2MegaethOverview = useV2Stats(MEGAETH);
+  const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
+  const gmtradeOverview = gmtradeSummary.data?.byNetwork.solana;
+  const gmtradeFreshness = getProtocolStatsNetworkFreshness(gmtradeSummary, "solana");
+  const gmtradeStaleEntries = getStaleEntries([gmtradeFreshness, SOLANA_ENTRY]);
+  const gmtradeFees = useProtocolStatsFeesInfo({ networks: ["solana"] });
+  const feesStaleEntries = getStaleEntries([mergeFreshness(gmtradeFreshness, gmtradeFees.freshness), SOLANA_ENTRY]);
 
-  const { data: positionStats } = useSWR<
-    {
-      totalActivePositions: number;
-      totalLongPositionSizes: string;
-      totalLongPositionCollaterals: string;
-      totalShortPositionCollaterals: string;
-      totalShortPositionSizes: string;
-      openInterest: bigint;
-    }[]
-  >(
+  const positionStats = useSWRWithFreshness(
     ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
-    {
-      fetcher: arrayURLFetcher,
-    }
+    arrayURLFetcher
+  );
+  const positionStatsInfo = getPositionStats(positionStats.data);
+  const positionsStaleEntries = getStaleEntries(
+    [positionStats.freshness, "Arbitrum", "Avalanche"],
+    [gmtradeFreshness, SOLANA_ENTRY]
   );
 
-  const positionStatsInfo = getPositionStats(positionStats);
-
-  const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
-
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
   const arbitrumPositionsMarginUsd = usePositionsTotalMargin(ARBITRUM);
   const avalanchePositionsMarginUsd = usePositionsTotalMargin(AVALANCHE);
-  const botanixPositionsMarginUsd = usePositionsTotalMargin(BOTANIX);
   const megaethPositionsMarginUsd = usePositionsTotalMargin(MEGAETH);
 
   // #region TVL and GLP Pool
@@ -101,58 +95,38 @@ export function OverviewCard({
 
   const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
-  const gmTvlBotanix = v2BotanixOverview.totalGMLiquidity;
   const gmTvlMegaeth = v2MegaethOverview.totalGMLiquidity;
+  const gmTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.pools);
+  // the store carries position collateral the way the EVM figures do, which the pool value on its own leaves out
+  const displayTvlGmtrade = parseProtocolStatsUsd(gmtradeOverview?.tvl?.store) ?? gmTvlGmtrade;
 
-  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche + gmTvlBotanix + gmTvlMegaeth;
+  const getStakedGmxUsd = (stakedGmx: bigint | undefined) =>
+    gmxPrice !== undefined && stakedGmx !== undefined
+      ? bigMath.mulDiv(gmxPrice, stakedGmx, expandDecimals(1, GMX_DECIMALS))
+      : undefined;
 
-  let displayTvlArbitrum: bigint | undefined = undefined;
-  let displayTvlAvalanche: bigint | undefined = undefined;
-  let displayTvlBotanix: bigint | undefined = undefined;
-  let displayTvlMegaeth: bigint | undefined = undefined;
-  let displayTvl: bigint | undefined = undefined;
-  if (
-    gmxPrice !== undefined &&
-    stakedGmxArbitrum !== undefined &&
-    stakedGmxAvalanche !== undefined &&
-    glpMarketCapArbitrum !== undefined &&
-    glpMarketCapAvalanche !== undefined &&
-    arbitrumPositionsMarginUsd !== undefined &&
-    avalanchePositionsMarginUsd !== undefined &&
-    botanixPositionsMarginUsd !== undefined &&
-    megaethPositionsMarginUsd !== undefined
-  ) {
-    const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
-    const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
-
-    // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
-    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
-    displayTvlBotanix = gmTvlBotanix + botanixPositionsMarginUsd;
-    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
-    displayTvl = displayTvlArbitrum + displayTvlAvalanche + displayTvlBotanix + displayTvlMegaeth;
-  }
+  // GMX staked + GLP pools + GM pools + position collateral, each network from its own inputs only
+  const displayTvlArbitrum = sumKnownBigInts(
+    getStakedGmxUsd(stakedGmxArbitrum),
+    glpMarketCapArbitrum,
+    gmTvlArbitrum,
+    arbitrumPositionsMarginUsd
+  );
+  const displayTvlAvalanche = sumKnownBigInts(
+    getStakedGmxUsd(stakedGmxAvalanche),
+    glpMarketCapAvalanche,
+    gmTvlAvalanche,
+    avalanchePositionsMarginUsd
+  );
+  const displayTvlMegaeth = sumKnownBigInts(gmTvlMegaeth, megaethPositionsMarginUsd);
 
   // #endregion TVL and GLP Pool
 
   // #region Daily Volume
-  const v1DailyVolumeInfo = useVolumeInfo();
-  const v1ArbitrumDailyVolume = v1DailyVolumeInfo?.[ARBITRUM];
-  const v1AvalancheDailyVolume = v1DailyVolumeInfo?.[AVALANCHE];
+  // v1 is left out: over the last 30 days its volume is GLP redemptions, $8.3k on Arbitrum and
+  // $51.3k on Avalanche, up to $37.1k in one day. That is still noise next to v2 (see domain/stats/v1Totals)
+  const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
-  const v2ArbitrumDailyVolume = v2ArbitrumOverview.dailyVolume;
-  const v2AvalancheDailyVolume = v2AvalancheOverview.dailyVolume;
-  const v2BotanixDailyVolume = v2BotanixOverview.dailyVolume;
-  const v2MegaethDailyVolume = v2MegaethOverview.dailyVolume;
-
-  const totalDailyVolume = sumBigInts(
-    v1ArbitrumDailyVolume,
-    v1AvalancheDailyVolume,
-    v2ArbitrumDailyVolume,
-    v2AvalancheDailyVolume,
-    v2BotanixDailyVolume,
-    v2MegaethDailyVolume
-  );
   // #endregion Daily Volume
 
   // #region Open Interest
@@ -160,17 +134,9 @@ export function OverviewCard({
   const v1AvalancheOpenInterest = positionStatsInfo?.[AVALANCHE]?.openInterest;
   const v2ArbitrumOpenInterest = v2ArbitrumOverview.openInterest;
   const v2AvalancheOpenInterest = v2AvalancheOverview.openInterest;
-  const v2BotanixOpenInterest = v2BotanixOverview.openInterest;
   const v2MegaethOpenInterest = v2MegaethOverview.openInterest;
+  const gmtradeOpenInterest = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.total);
 
-  const totalOpenInterest = sumBigInts(
-    v1ArbitrumOpenInterest,
-    v1AvalancheOpenInterest,
-    v2ArbitrumOpenInterest,
-    v2AvalancheOpenInterest,
-    v2BotanixOpenInterest,
-    v2MegaethOpenInterest
-  );
   // #endregion Open Interest
 
   // #region Long Position Sizes
@@ -179,17 +145,9 @@ export function OverviewCard({
 
   const v2ArbitrumLongPositionSizes = v2ArbitrumOverview.totalLongPositionSizes;
   const v2AvalancheLongPositionSizes = v2AvalancheOverview.totalLongPositionSizes;
-  const v2BotanixLongPositionSizes = v2BotanixOverview.totalLongPositionSizes;
   const v2MegaethLongPositionSizes = v2MegaethOverview.totalLongPositionSizes;
+  const gmtradeLongPositionSizes = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.long);
 
-  const totalLongPositionSizes = sumBigInts(
-    v1ArbitrumLongPositionSizes,
-    v1AvalancheLongPositionSizes,
-    v2ArbitrumLongPositionSizes,
-    v2AvalancheLongPositionSizes,
-    v2BotanixLongPositionSizes,
-    v2MegaethLongPositionSizes
-  );
   // #endregion Long Position Sizes
 
   // #region Short Position Sizes
@@ -198,149 +156,114 @@ export function OverviewCard({
 
   const v2ArbitrumShortPositionSizes = v2ArbitrumOverview.totalShortPositionSizes;
   const v2AvalancheShortPositionSizes = v2AvalancheOverview.totalShortPositionSizes;
-  const v2BotanixShortPositionSizes = v2BotanixOverview.totalShortPositionSizes;
   const v2MegaethShortPositionSizes = v2MegaethOverview.totalShortPositionSizes;
+  const gmtradeShortPositionSizes = parseProtocolStatsUsd(gmtradeOverview?.openInterest?.short);
 
-  const totalShortPositionSizes = sumBigInts(
-    v1ArbitrumShortPositionSizes,
-    v1AvalancheShortPositionSizes,
-    v2ArbitrumShortPositionSizes,
-    v2AvalancheShortPositionSizes,
-    v2BotanixShortPositionSizes,
-    v2MegaethShortPositionSizes
-  );
   // #endregion Short Position Sizes
 
   // #region Fees
-  const v1ArbitrumEpochFees = v1ArbitrumFees?.epochFees;
-  const v1AvalancheEpochFees = v1AvalancheFees?.epochFees;
-
+  // v1 earns no fees any more, so its epoch fees are 0 (see domain/stats/v1Totals)
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
-  const v2BotanixEpochFees = v2BotanixOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
-
-  const totalEpochFeesUsd = sumBigInts(
-    v1ArbitrumEpochFees,
-    v1AvalancheEpochFees,
-    v2ArbitrumEpochFees,
-    v2AvalancheEpochFees,
-    v2BotanixEpochFees,
-    v2MegaethEpochFees
-  );
-
-  const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
-  const v1AvalancheWeeklyFees = v1AvalancheFees?.weeklyFees;
-
-  const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
-  const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
-  const v2BotanixWeeklyFees = v2BotanixOverview?.weeklyFees;
-  const v2MegaethWeeklyFees = v2MegaethOverview?.weeklyFees;
-
-  const totalWeeklyFeesUsd = sumBigInts(
-    v1ArbitrumWeeklyFees,
-    v1AvalancheWeeklyFees,
-    v2ArbitrumWeeklyFees,
-    v2AvalancheWeeklyFees,
-    v2BotanixWeeklyFees,
-    v2MegaethWeeklyFees
-  );
+  const gmtradeEpochFees = gmtradeFees.data?.epochFees;
 
   // #endregion Fees
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.dailyVolume,
-      "V2 Avalanche": v2AvalancheOverview?.dailyVolume,
-      "V2 Botanix": v2BotanixOverview?.dailyVolume,
-      "V2 MegaETH": v2MegaethOverview?.dailyVolume,
-      "V1 Arbitrum": v1ArbitrumDailyVolume,
-      "V1 Avalanche": v1AvalancheDailyVolume,
+      Arbitrum: v2ArbitrumOverview?.dailyVolume,
+      Avalanche: v2AvalancheOverview?.dailyVolume,
+      MegaETH: v2MegaethOverview?.dailyVolume,
+      [SOLANA_ENTRY]: gmtradeDailyVolume,
     }),
     [
-      v1ArbitrumDailyVolume,
-      v1AvalancheDailyVolume,
+      gmtradeDailyVolume,
       v2ArbitrumOverview?.dailyVolume,
       v2AvalancheOverview?.dailyVolume,
-      v2BotanixOverview?.dailyVolume,
       v2MegaethOverview?.dailyVolume,
     ]
   );
 
   const openInterestEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOpenInterest,
-      "V2 Avalanche": v2AvalancheOpenInterest,
-      "V2 Botanix": v2BotanixOpenInterest,
-      "V2 MegaETH": v2MegaethOpenInterest,
-      "V1 Avalanche": v1AvalancheOpenInterest,
-      "V1 Arbitrum": v1ArbitrumOpenInterest,
+      Arbitrum: sumKnownBigInts(v2ArbitrumOpenInterest, v1ArbitrumOpenInterest),
+      Avalanche: sumKnownBigInts(v2AvalancheOpenInterest, v1AvalancheOpenInterest),
+      MegaETH: v2MegaethOpenInterest,
+      [SOLANA_ENTRY]: gmtradeOpenInterest,
     }),
     [
       v1ArbitrumOpenInterest,
       v1AvalancheOpenInterest,
       v2ArbitrumOpenInterest,
       v2AvalancheOpenInterest,
-      v2BotanixOpenInterest,
       v2MegaethOpenInterest,
+      gmtradeOpenInterest,
     ]
   );
 
   const totalLongPositionSizesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumLongPositionSizes,
-      "V2 Avalanche": v2AvalancheLongPositionSizes,
-      "V2 Botanix": v2BotanixLongPositionSizes,
-      "V2 MegaETH": v2MegaethLongPositionSizes,
-      "V1 Arbitrum": v1ArbitrumLongPositionSizes,
-      "V1 Avalanche": v1AvalancheLongPositionSizes,
+      Arbitrum: sumKnownBigInts(v2ArbitrumLongPositionSizes, v1ArbitrumLongPositionSizes),
+      Avalanche: sumKnownBigInts(v2AvalancheLongPositionSizes, v1AvalancheLongPositionSizes),
+      MegaETH: v2MegaethLongPositionSizes,
+      [SOLANA_ENTRY]: gmtradeLongPositionSizes,
     }),
     [
       v1ArbitrumLongPositionSizes,
       v1AvalancheLongPositionSizes,
       v2ArbitrumLongPositionSizes,
       v2AvalancheLongPositionSizes,
-      v2BotanixLongPositionSizes,
       v2MegaethLongPositionSizes,
+      gmtradeLongPositionSizes,
     ]
   );
 
   const totalShortPositionSizesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumShortPositionSizes,
-      "V2 Avalanche": v2AvalancheShortPositionSizes,
-      "V2 Botanix": v2BotanixShortPositionSizes,
-      "V2 MegaETH": v2MegaethShortPositionSizes,
-      "V1 Arbitrum": v1ArbitrumShortPositionSizes,
-      "V1 Avalanche": v1AvalancheShortPositionSizes,
+      Arbitrum: sumKnownBigInts(v2ArbitrumShortPositionSizes, v1ArbitrumShortPositionSizes),
+      Avalanche: sumKnownBigInts(v2AvalancheShortPositionSizes, v1AvalancheShortPositionSizes),
+      MegaETH: v2MegaethShortPositionSizes,
+      [SOLANA_ENTRY]: gmtradeShortPositionSizes,
     }),
     [
       v1ArbitrumShortPositionSizes,
       v1AvalancheShortPositionSizes,
       v2ArbitrumShortPositionSizes,
       v2AvalancheShortPositionSizes,
-      v2BotanixShortPositionSizes,
       v2MegaethShortPositionSizes,
+      gmtradeShortPositionSizes,
     ]
   );
 
   const epochFeesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumEpochFees,
-      "V2 Avalanche": v2AvalancheEpochFees,
-      "V2 Botanix": v2BotanixEpochFees,
-      "V2 MegaETH": v2MegaethEpochFees,
-      "V1 Arbitrum": v1ArbitrumEpochFees,
-      "V1 Avalanche": v1AvalancheEpochFees,
+      Arbitrum: v2ArbitrumEpochFees,
+      Avalanche: v2AvalancheEpochFees,
+      MegaETH: v2MegaethEpochFees,
+      [SOLANA_ENTRY]: gmtradeEpochFees,
     }),
-    [
-      v1ArbitrumEpochFees,
-      v1AvalancheEpochFees,
-      v2ArbitrumEpochFees,
-      v2AvalancheEpochFees,
-      v2BotanixEpochFees,
-      v2MegaethEpochFees,
-    ]
+    [v2ArbitrumEpochFees, v2AvalancheEpochFees, v2MegaethEpochFees, gmtradeEpochFees]
+  );
+
+  const tvlEntries = useMemo(
+    () => ({
+      Arbitrum: displayTvlArbitrum,
+      Avalanche: displayTvlAvalanche,
+      MegaETH: displayTvlMegaeth,
+      [SOLANA_ENTRY]: displayTvlGmtrade,
+    }),
+    [displayTvlArbitrum, displayTvlAvalanche, displayTvlMegaeth, displayTvlGmtrade]
+  );
+
+  const gmPoolEntries = useMemo(
+    () => ({
+      Arbitrum: gmTvlArbitrum,
+      Avalanche: gmTvlAvalanche,
+      MegaETH: gmTvlMegaeth,
+      [SOLANA_ENTRY]: gmTvlGmtrade,
+    }),
+    [gmTvlArbitrum, gmTvlAvalanche, gmTvlMegaeth, gmTvlGmtrade]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -351,49 +274,6 @@ export function OverviewCard({
     }, 1000 * 60);
     return () => clearInterval(interval);
   }, []);
-
-  const feesSubtotal = useMemo(() => {
-    const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
-    const v2BuyingPressure =
-      (((v2ArbitrumWeeklyFees ?? 0n) +
-        (v2AvalancheWeeklyFees ?? 0n) +
-        (v2BotanixWeeklyFees ?? 0n) +
-        (v2MegaethWeeklyFees ?? 0n)) *
-        27n) /
-      100n;
-    const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
-    const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
-    const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
-
-    return (
-      <>
-        <div className="my-5 h-1 bg-gray-800" />
-        <p className="Tooltip-row">
-          <span className="label">
-            <Trans>Annualized:</Trans>
-          </span>
-          <span className="numbers">{formatAmountHuman(annualizedTotal, USD_DECIMALS, true, 2)}</span>
-        </p>
-        <p className="Tooltip-row">
-          <span className="label">
-            <Trans>Annualized buy pressure:</Trans>
-          </span>
-          <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
-        </p>
-        <p className="Tooltip-row !mt-16">
-          <Trans>Annualized data based on the past 7 days</Trans>
-        </p>
-      </>
-    );
-  }, [
-    v1ArbitrumWeeklyFees,
-    v1AvalancheWeeklyFees,
-    v2ArbitrumWeeklyFees,
-    v2AvalancheWeeklyFees,
-    v2BotanixWeeklyFees,
-    v2MegaethWeeklyFees,
-    totalWeeklyFeesUsd,
-  ]);
 
   return (
     <AppCard>
@@ -410,13 +290,7 @@ export function OverviewCard({
                 <Trans>Fees for the past</Trans> {formattedDuration}
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalEpochFeesUsd, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={epochFeesEntries} subtotal={feesSubtotal} />}
-                />
+                <ChainsStatsTooltip entries={epochFeesEntries} staleEntries={feesStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -424,43 +298,10 @@ export function OverviewCard({
                 <Trans>TVL</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
-                      <br />
-                      <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Botanix`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label="MegaETH"
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvlMegaeth, USD_DECIMALS, true, 2)}
-                      />
-                      <div className="!my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
-                      />
-                    </>
-                  }
+                <ChainsStatsTooltip
+                  entries={tvlEntries}
+                  staleEntries={gmtradeStaleEntries}
+                  caption={<Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>}
                 />
               </div>
             </div>
@@ -469,43 +310,10 @@ export function OverviewCard({
                 <Trans>GM pools</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>Total value of tokens in GM pools</Trans>
-                      <br />
-                      <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Botanix`}
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label="MegaETH"
-                        showDollar={false}
-                        value={formatAmountHuman(gmTvlMegaeth, USD_DECIMALS, true, 2)}
-                      />
-                      <div className="!my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
-                      />
-                    </>
-                  }
+                <ChainsStatsTooltip
+                  entries={gmPoolEntries}
+                  staleEntries={gmtradeStaleEntries}
+                  caption={<Trans>Total value of tokens in GM pools</Trans>}
                 />
               </div>
             </div>
@@ -518,13 +326,7 @@ export function OverviewCard({
                 <Trans>24h volume</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalDailyVolume, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={dailyVolumeEntries} />}
-                />
+                <ChainsStatsTooltip entries={dailyVolumeEntries} staleEntries={gmtradeStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -532,13 +334,7 @@ export function OverviewCard({
                 <Trans>Open interest</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalOpenInterest, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={openInterestEntries} />}
-                />
+                <ChainsStatsTooltip entries={openInterestEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -546,13 +342,7 @@ export function OverviewCard({
                 <Trans>Long positions</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalLongPositionSizes, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalLongPositionSizesEntries} />}
-                />
+                <ChainsStatsTooltip entries={totalLongPositionSizesEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
             <div className="App-card-row">
@@ -560,13 +350,7 @@ export function OverviewCard({
                 <Trans>Short positions</Trans>
               </div>
               <div>
-                <TooltipComponent
-                  position="bottom-end"
-                  className="whitespace-nowrap"
-                  handle={formatAmountHuman(totalShortPositionSizes, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  content={<ChainsStatsTooltipRow entries={totalShortPositionSizesEntries} />}
-                />
+                <ChainsStatsTooltip entries={totalShortPositionSizesEntries} staleEntries={positionsStaleEntries} />
               </div>
             </div>
           </AppCardSection>

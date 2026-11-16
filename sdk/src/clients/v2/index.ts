@@ -1,12 +1,15 @@
 import { getApiUrl, getApiFallbackUrls } from "configs/api";
-import { ContractsChainId } from "configs/chains";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "configs/express";
+import { ContractsChainId, isContractsChain, NetworkId } from "configs/chains";
+import type { SettlementChainId } from "configs/chains";
+import { isSettlementChain } from "configs/multichain";
 import { fetchApiApy } from "utils/apy/api";
 import { ApyParams, ApyResponse } from "utils/apy/types";
 import {
   fetchWalletBalances as fetchWalletBalancesRaw,
   fetchAllowances as fetchAllowancesRaw,
   buildApproveTransaction,
+  buildErc20ApproveTxn,
+  executeErc20Approve,
 } from "utils/balances/api";
 import type {
   WalletBalance,
@@ -14,28 +17,76 @@ import type {
   SpenderType,
   ApproveTokenParams,
   ApproveTokenResult,
+  Erc20ApproveParams,
 } from "utils/balances/api";
 import { fetchApiBuybackWeeklyStats } from "utils/buyback/api";
 import { BuybackWeeklyStatsResponse } from "utils/buyback/types";
+import {
+  executeCrossChainDeposit,
+  executeCrossChainWithdraw,
+  getCrossChainWithdrawStatus,
+  prepareCrossChainDeposit,
+  prepareCrossChainWithdraw,
+  signCrossChainWithdrawPrepared,
+  submitCrossChainWithdraw,
+  type CrossChainDepositPrepareRequest,
+  type CrossChainDepositPrepareResponse,
+  type CrossChainWithdrawPrepareRequest,
+  type CrossChainWithdrawPrepareResponse,
+  type CrossChainWithdrawStatusResponse,
+  type CrossChainWithdrawSubmitRequest,
+  type CrossChainWithdrawSubmitResponse,
+  type ExecuteCrossChainDepositResult,
+} from "utils/gmxAccountApi";
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
-import { IHttp } from "utils/http/types";
-import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
-import { MarketTicker, MarketWithTiers } from "utils/markets/types";
+import type { IHttp, SolanaReadOptions } from "utils/http/types";
+import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
+import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
+import {
+  fetchApiMarkets,
+  fetchApiMarketsConfig,
+  fetchApiMarketsInfo,
+  fetchApiMarketsValues,
+  fetchApiMarketsTickers,
+  fetchApiTradingCapacity,
+  fetchApiTokensData,
+} from "utils/markets/api";
+import {
+  GetTradingCapacityParams,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+} from "utils/markets/types";
+import {
+  buildCrossChainWithdrawBridgeOutParams,
+  buildSameChainDepositTxn,
+  buildSameChainWithdrawBridgeOutParams,
+  buildSameChainWithdrawTxn,
+  executeSameChainDeposit,
+  executeSameChainWithdraw,
+  type BridgeOutParams,
+  type BuildTxnResult,
+  type SameChainDepositRequest,
+  type SameChainWithdrawRequest,
+} from "utils/multichain";
 import { fetchApiOrders } from "utils/orders/api";
 import {
   prepareOrder,
-  signPreparedOrder,
-  submitOrder,
-  executeExpressOrder as executeExpressOrderRaw,
   prepareEditOrder,
   prepareCancelOrder,
   prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
+  isPrepareOrderError,
+  parsePrepareOrderError,
 } from "utils/orderTransactions/api";
 import type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -45,17 +96,39 @@ import type {
   OrderStatusResponse,
 } from "utils/orderTransactions/api";
 import { fetchApiPairs } from "utils/pairs/api";
+import {
+  fetchApiTransitAuthorization,
+  fetchApiTransitFeeTier,
+  fetchApiTransitOrder,
+  fetchApiTransitOrders,
+  fetchApiTransitQuote,
+  fetchApiTransitRoutes,
+} from "utils/paxos/api";
+import type {
+  TransitAuthorizationParams,
+  TransitAuthorizationResponse,
+  TransitFeeTierResponse,
+  TransitOrder,
+  TransitOrdersParams,
+  TransitOrdersResponse,
+  TransitQuote,
+  TransitQuoteParams,
+  TransitRoute,
+  TransitRoutesParams,
+} from "utils/paxos/types";
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
-import { fetchApiOhlcv } from "utils/prices/api";
-import type { OhlcvParams } from "utils/prices/types";
+import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/prices/api";
+import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
+import { fetchApiFeeDiscount } from "utils/referrals/api";
 import type { IAbstractSigner } from "utils/signer";
-import { PrivateKeySigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
+import type { StreamCandlePeriod, Subscription, WebSocketCtor } from "utils/stream";
+import { WsStreamClient, createChannelSubscription, toStreamUrl } from "utils/stream";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
@@ -63,12 +136,58 @@ import type {
   SubaccountApprovalPrepareRequest,
   SubaccountApprovalPrepareResponse,
 } from "utils/subaccount/api";
-import { generateSubaccount } from "utils/subaccount/generateSubaccount";
-import { nowInSeconds } from "utils/time";
+import {
+  activateSdkSubaccount,
+  clearSdkSubaccount,
+  executeExpressOrderWithSubaccount,
+  generateSdkSubaccount,
+  getSdkSubaccountApprovalMessage,
+  hasActiveSdkSubaccount,
+  prepareWithSubaccount,
+  refreshSdkSubaccountState,
+  signOrderWithSubaccount,
+  submitOrderWithSubaccount,
+  type SdkSubaccountClientContext,
+} from "utils/subaccount/sdkClient";
+import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
 import { fetchApiTokens } from "utils/tokens/api";
+import type { TokenPricesData } from "utils/tokens/types";
+import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
+import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
+import { fetchApiUsdgBoostApr } from "utils/usdgBoostApr/api";
+import type { UsdgBoostAprResponse } from "utils/usdgBoostApr/types";
+import { fetchApiWhitelists } from "utils/whitelists/api";
+import type { AccountWhitelists } from "utils/whitelists/types";
+import { fetchApiGmPoolYieldPnl, fetchApiGmUserEarnings } from "utils/yield/api";
+import {
+  GmPoolsYieldPnlParams,
+  GmPoolsYieldPnlResponse,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+} from "utils/yield/types";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
-export type { MarketTicker, MarketWithTiers } from "utils/markets/types";
+export type {
+  GmPoolYieldPnlComponents,
+  GmPoolYieldPnlEntry,
+  GmPoolYieldPnlWindow,
+  GmPoolsYieldPnlParams,
+  GmPoolsYieldPnlResponse,
+  GmUserEarningEntry,
+  GmUserEarningsParams,
+  GmUserEarningsResponse,
+  GmUserEarningsWindow,
+} from "utils/yield/types";
+export type {
+  GetTradingCapacityParams,
+  JitDataStatus,
+  MarketDataStatus,
+  MarketTicker,
+  MarketTickerWithCapacity,
+  MarketWithTiers,
+  TradingCapacity,
+  TradingCapacityLimitingFactor,
+} from "utils/markets/types";
 export type { Pair } from "utils/pairs/types";
 export type {
   PerformanceAnnualized,
@@ -78,11 +197,80 @@ export type {
 } from "utils/performance/types";
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
-export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "utils/buyback/types";
-export type { StakingPowerResponse } from "utils/staking/types";
 export type {
+  BuybackWeekData,
+  BuybackMonthData,
+  BuybackSummary,
+  BuybackWeeklyStatsResponse,
+} from "utils/buyback/types";
+export {
+  fetchApiProtocolStatsSources,
+  fetchApiProtocolStatsSummary,
+  fetchApiProtocolStatsTimeseries,
+} from "utils/stats/api";
+export type {
+  ProtocolStatsCompleteness,
+  ProtocolStatsFilterParams,
+  ProtocolStatsMeta,
+  ProtocolStatsMetricSet,
+  ProtocolStatsNetwork,
+  ProtocolStatsSourceHealth,
+  ProtocolStatsSourceStatus,
+  ProtocolStatsSummaryResponse,
+  ProtocolStatsTimeseriesGroupBy,
+  ProtocolStatsTimeseriesMetric,
+  ProtocolStatsTimeseriesParams,
+  ProtocolStatsTimeseriesResponse,
+  ProtocolStatsVersion,
+} from "utils/stats/types";
+export type {
+  FetchJitLiquidityInfoParams,
+  GlvShiftParam,
+  JitLiquidityApiVersion,
+  JitLiquidityData,
+  JitLiquidityInfo,
+  JitLiquidityMap,
+} from "utils/jitLiquidity/types";
+export type { StakingPowerResponse } from "utils/staking/types";
+export type { UsdgBoostAprResponse, UsdgGlvBoostApr, UsdgPoolBoostApr } from "utils/usdgBoostApr/types";
+export type { AccountWhitelists } from "utils/whitelists/types";
+export type {
+  TransitAuthorizationMethod,
+  TransitAuthorizationParams,
+  TransitAuthorizationResponse,
+  TransitFeeTier,
+  TransitFeeTierResponse,
+  TransitOrder,
+  TransitOrderExecution,
+  TransitOrderStatus,
+  TransitOrdersParams,
+  TransitOrdersResponse,
+  TransitPermitData,
+  TransitQuote,
+  TransitQuoteParams,
+  TransitQuoteTransaction,
+  TransitResponseFormat,
+  TransitRoute,
+  TransitRoutesParams,
+  TransitTokenMetadata,
+} from "utils/paxos/types";
+export type {
+  ApiTradeAction,
+  FetchTradesParams,
+  MarketDirectionFilter,
+  OrderEventCombination,
+  SearchTradesParams,
+  TradeDirection,
+  TradeEventName,
+  TradesListResponse,
+} from "utils/trades/types";
+export type {
+  PrepareOrderError,
+  PrepareOrderErrorCode,
+  PrepareOrderFieldValidationErrors,
   PrepareOrderRequest,
   PrepareOrderResponse,
+  OrderValidationWarning,
   SubmitOrderRequest,
   SubmitOrderResponse,
   PrepareEditOrderRequest,
@@ -91,6 +279,7 @@ export type {
   OrderStatusRequest,
   OrderStatusResponse,
 };
+export { isPrepareOrderError, parsePrepareOrderError };
 export type {
   WalletBalance,
   TokenAllowance,
@@ -98,11 +287,29 @@ export type {
   ApproveTokenParams,
   ApproveTokenResult,
 } from "utils/balances/api";
+export type {
+  BridgeOutParams,
+  BuildTxnResult,
+  SameChainDepositRequest,
+  SameChainWithdrawRequest,
+} from "utils/multichain";
+export type {
+  CrossChainDepositPrepareRequest,
+  CrossChainDepositPrepareResponse,
+  CrossChainWithdrawPrepareRequest,
+  CrossChainWithdrawPrepareResponse,
+  CrossChainWithdrawStatusResponse,
+  CrossChainWithdrawSubmitRequest,
+  CrossChainWithdrawSubmitResponse,
+  ExecuteCrossChainDepositResult,
+} from "utils/gmxAccountApi";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
-export type { IHttp } from "utils/http/types";
+export type { IHttp, HttpResponseMetadata, SolanaReadOptions } from "utils/http/types";
+export type { FeeDiscount } from "utils/referrals/types";
+export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
@@ -110,39 +317,63 @@ export type {
   SubaccountApprovalPrepareRequest,
   SubaccountApprovalPrepareResponse,
 };
+export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
-type SubaccountState = {
-  address: string;
-  approval?: {
-    message: Record<string, any>;
-    signature: string;
-  };
+type GmxApiSdkOptions = {
+  chainId: NetworkId;
+  apiUrl?: string;
+  api?: IHttp;
+  streamUrl?: string;
+  webSocketImpl?: WebSocketCtor;
 };
 
-const subaccountSigners = new WeakMap<GmxApiSdk, PrivateKeySigner>();
-
 export class GmxApiSdk {
-  ctx: { chainId: ContractsChainId; api: IHttp };
+  public ctx: { chainId: NetworkId; api: IHttp };
   private _subaccount: SubaccountState | undefined;
+  private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
+  private readonly streamUrlOverride?: string;
+  private readonly webSocketImpl?: WebSocketCtor;
+  private _streamClient?: WsStreamClient;
 
-  constructor({ chainId, apiUrl, api }: { chainId: ContractsChainId; apiUrl?: string; api?: IHttp }) {
-    if (api) {
-      this.ctx = { chainId, api };
-      return;
+  constructor(options: GmxApiSdkOptions) {
+    const { chainId, apiUrl, api, streamUrl, webSocketImpl } = options;
+    this.streamUrlOverride = streamUrl;
+    this.webSocketImpl = webSocketImpl;
+    if (chainId === undefined) {
+      throw new Error("chainId is required");
     }
 
-    const resolvedApiUrl = apiUrl ?? getApiUrl(chainId);
-
-    if (!resolvedApiUrl) {
-      throw new Error("api is not supported for current chainId");
+    let resolvedApi = api;
+    if (!resolvedApi) {
+      const resolvedApiUrl = apiUrl ?? getApiUrl(chainId);
+      if (!resolvedApiUrl) {
+        throw new Error("api is not supported for current chainId");
+      }
+      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(chainId);
+      const allUrls = [resolvedApiUrl, ...fallbackUrls];
+      resolvedApi = allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl);
     }
 
-    const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(chainId);
-    const allUrls = [resolvedApiUrl, ...fallbackUrls];
+    this.ctx = { chainId, api: resolvedApi };
+  }
 
-    this.ctx = {
-      chainId,
-      api: allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl),
+  requireEvmContext(): { chainId: ContractsChainId; api: IHttp } {
+    const { chainId, api } = this.ctx;
+    if (!isContractsChain(chainId, true)) {
+      throw new Error("EVM operations require an EVM chainId");
+    }
+    return { chainId, api };
+  }
+
+  private get subaccountClient(): SdkSubaccountClientContext {
+    return {
+      ctx: this.requireEvmContext(),
+      owner: this,
+      preparedSubaccountApprovals: this.preparedSubaccountApprovals,
+      getSubaccount: () => this._subaccount,
+      setSubaccount: (subaccount) => {
+        this._subaccount = subaccount;
+      },
     };
   }
 
@@ -150,24 +381,40 @@ export class GmxApiSdk {
     return this._subaccount?.address;
   }
 
-  get hasActiveSubaccount(): boolean {
-    return this._subaccount?.approval !== undefined;
+  get subaccountStatus(): SdkSubaccountStatus | undefined {
+    return this._subaccount?.onchainData;
   }
 
-  get subaccountApprovalMessage(): Record<string, any> | undefined {
-    return this._subaccount?.approval?.message;
+  get hasActiveSubaccount(): boolean {
+    return hasActiveSdkSubaccount(this.subaccountClient);
+  }
+
+  get subaccountApprovalMessage(): SdkSubaccountApproval | undefined {
+    return getSdkSubaccountApprovalMessage(this.subaccountClient);
   }
 
   fetchMarketsInfo() {
     return fetchApiMarketsInfo(this.ctx);
   }
 
+  fetchMarketsConfig() {
+    return fetchApiMarketsConfig(this.ctx);
+  }
+
+  fetchMarketsValues() {
+    return fetchApiMarketsValues(this.ctx);
+  }
+
   fetchMarkets(): Promise<MarketWithTiers[]> {
     return fetchApiMarkets(this.ctx);
   }
 
-  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTicker[]> {
+  fetchMarketsTickers(params?: { addresses?: string[]; symbols?: string[] }): Promise<MarketTickerWithCapacity[]> {
     return fetchApiMarketsTickers(this.ctx, params);
+  }
+
+  getTradingCapacity(params: GetTradingCapacityParams): Promise<TradingCapacity> {
+    return fetchApiTradingCapacity(this.ctx, params);
   }
 
   fetchTokensData() {
@@ -178,12 +425,48 @@ export class GmxApiSdk {
     return fetchApiTokens(this.ctx);
   }
 
-  fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean }) {
+  private getStreamClient(): WsStreamClient {
+    if (!this._streamClient) {
+      const url = this.streamUrlOverride ?? toStreamUrl(this.ctx.api.url);
+      this._streamClient = new WsStreamClient({ url, webSocketImpl: this.webSocketImpl });
+    }
+    return this._streamClient;
+  }
+
+  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx);
+  }
+
+  watchTokenPrices(): Subscription<TokenPricesData> {
+    return createChannelSubscription(this.getStreamClient(), "prices", parseApiTokenPrices);
+  }
+
+  watchCandles(params: { symbol: string; timeframe: StreamCandlePeriod }): Subscription<OhlcvCandle> {
+    return createChannelSubscription(
+      this.getStreamClient(),
+      `candles:${params.symbol}:${params.timeframe}`,
+      (raw) => raw as OhlcvCandle
+    );
+  }
+
+  fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean } & SolanaReadOptions) {
     return fetchApiPositionsInfo(this.ctx, params);
   }
 
-  fetchOrders(params: { address: string }) {
+  fetchOrders(params: { address: string } & SolanaReadOptions) {
     return fetchApiOrders(this.ctx, params);
+  }
+
+  fetchFeeDiscount(params: { address: string }) {
+    return fetchApiFeeDiscount(this.ctx, params);
+  }
+
+  fetchTrades(params: FetchTradesParams): Promise<TradesListResponse> {
+    return fetchApiTrades(this.ctx, params);
+  }
+
+  searchTrades(params: SearchTradesParams): Promise<TradesListResponse> {
+    return searchApiTrades(this.ctx, params);
   }
 
   fetchOhlcv(params: OhlcvParams) {
@@ -210,12 +493,56 @@ export class GmxApiSdk {
     return fetchApiPerformanceSnapshots(this.ctx, params);
   }
 
+  fetchGmPoolYieldPnl(params?: GmPoolsYieldPnlParams): Promise<GmPoolsYieldPnlResponse> {
+    return fetchApiGmPoolYieldPnl(this.ctx, params);
+  }
+
+  fetchGmUserEarnings(params: GmUserEarningsParams): Promise<GmUserEarningsResponse> {
+    return fetchApiGmUserEarnings(this.ctx, params);
+  }
+
   fetchBuybackWeeklyStats(): Promise<BuybackWeeklyStatsResponse> {
     return fetchApiBuybackWeeklyStats(this.ctx);
   }
 
+  fetchJitLiquidityInfo(params?: FetchJitLiquidityInfoParams): Promise<JitLiquidityMap> {
+    return fetchApiJitLiquidityInfo(this.ctx, params);
+  }
+
   fetchStakingPower(params: { address: string }): Promise<StakingPowerResponse> {
     return fetchApiStakingPower(this.ctx, params);
+  }
+
+  fetchTransitRoutes(params?: TransitRoutesParams): Promise<TransitRoute[]> {
+    return fetchApiTransitRoutes(this.ctx, params);
+  }
+
+  fetchTransitFeeTier(params: { userAddress: string }): Promise<TransitFeeTierResponse> {
+    return fetchApiTransitFeeTier(this.ctx, params);
+  }
+
+  fetchTransitAuthorization(params: TransitAuthorizationParams): Promise<TransitAuthorizationResponse> {
+    return fetchApiTransitAuthorization(this.ctx, params);
+  }
+
+  fetchTransitQuote(params: TransitQuoteParams): Promise<TransitQuote> {
+    return fetchApiTransitQuote(this.ctx, params);
+  }
+
+  fetchTransitOrder(params: { orderId: string }): Promise<TransitOrder> {
+    return fetchApiTransitOrder(this.ctx, params);
+  }
+
+  fetchTransitOrders(params: TransitOrdersParams): Promise<TransitOrdersResponse> {
+    return fetchApiTransitOrders(this.ctx, params);
+  }
+
+  fetchWhitelists(params: { address: string }): Promise<AccountWhitelists> {
+    return fetchApiWhitelists(this.ctx, params);
+  }
+
+  fetchUsdgBoostApr(): Promise<UsdgBoostAprResponse> {
+    return fetchApiUsdgBoostApr(this.ctx);
   }
 
   fetchWalletBalances(params: { address: string }): Promise<WalletBalance[]> {
@@ -227,42 +554,109 @@ export class GmxApiSdk {
   }
 
   buildApproveTransaction(params: ApproveTokenParams): ApproveTokenResult {
-    return buildApproveTransaction(this.ctx, params);
+    return buildApproveTransaction(this.requireEvmContext(), params);
   }
 
-  // ---------------------------------------------------------------------------
-  // Order transactions: prepare → sign → submit
-  // ---------------------------------------------------------------------------
+  buildErc20ApproveTxn(params: Erc20ApproveParams): ApproveTokenResult {
+    return buildErc20ApproveTxn(params);
+  }
+
+  executeErc20Approve(signer: IAbstractSigner, params: Erc20ApproveParams): Promise<string> {
+    this.requireEvmContext();
+    return executeErc20Approve(signer, params);
+  }
+
+  private requireSettlementChainId(): SettlementChainId {
+    const { chainId } = this.requireEvmContext();
+    if (!isSettlementChain(chainId)) {
+      throw new Error(`chainId ${chainId} is not a settlement chain; multichain ops are unsupported`);
+    }
+    return chainId;
+  }
+
+  buildSameChainDepositTxn(params: Omit<SameChainDepositRequest, "chainId">): BuildTxnResult {
+    return buildSameChainDepositTxn({ ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  buildSameChainWithdrawTxn(params: Omit<SameChainWithdrawRequest, "chainId">): BuildTxnResult {
+    return buildSameChainWithdrawTxn({ ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  buildSameChainWithdrawBridgeOutParams(params: { tokenAddress: string; amount: bigint }): BridgeOutParams {
+    return buildSameChainWithdrawBridgeOutParams(params);
+  }
+
+  buildCrossChainWithdrawBridgeOutParams(
+    params: Parameters<typeof buildCrossChainWithdrawBridgeOutParams>[0]
+  ): BridgeOutParams {
+    return buildCrossChainWithdrawBridgeOutParams(params);
+  }
+
+  executeSameChainDeposit(signer: IAbstractSigner, params: Omit<SameChainDepositRequest, "chainId">): Promise<string> {
+    return executeSameChainDeposit(signer, { ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  executeSameChainWithdraw(
+    signer: IAbstractSigner,
+    params: Omit<SameChainWithdrawRequest, "chainId">
+  ): Promise<string> {
+    return executeSameChainWithdraw(signer, { ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  executeCrossChainDeposit(
+    signer: IAbstractSigner,
+    request: CrossChainDepositPrepareRequest
+  ): Promise<ExecuteCrossChainDepositResult> {
+    this.requireSettlementChainId();
+    return executeCrossChainDeposit(this.ctx, signer, request);
+  }
+
+  prepareCrossChainDeposit(request: CrossChainDepositPrepareRequest): Promise<CrossChainDepositPrepareResponse> {
+    this.requireEvmContext();
+    return prepareCrossChainDeposit(this.ctx, request);
+  }
+
+  prepareCrossChainWithdraw(request: CrossChainWithdrawPrepareRequest): Promise<CrossChainWithdrawPrepareResponse> {
+    this.requireEvmContext();
+    return prepareCrossChainWithdraw(this.ctx, request);
+  }
+
+  signCrossChainWithdraw(prepared: CrossChainWithdrawPrepareResponse, signer: IAbstractSigner): Promise<string> {
+    this.requireEvmContext();
+    return signCrossChainWithdrawPrepared(prepared, signer);
+  }
+
+  submitCrossChainWithdraw(request: CrossChainWithdrawSubmitRequest): Promise<CrossChainWithdrawSubmitResponse> {
+    this.requireEvmContext();
+    return submitCrossChainWithdraw(this.ctx, request);
+  }
+
+  executeCrossChainWithdraw(
+    signer: IAbstractSigner,
+    request: CrossChainWithdrawPrepareRequest
+  ): Promise<CrossChainWithdrawSubmitResponse> {
+    this.requireSettlementChainId();
+    return executeCrossChainWithdraw(this.ctx, signer, request);
+  }
+
+  getCrossChainWithdrawStatus(requestId: string): Promise<CrossChainWithdrawStatusResponse> {
+    return getCrossChainWithdrawStatus(this.ctx, requestId);
+  }
 
   prepareOrder(request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
-    return prepareOrder(this.ctx, request);
+    return prepareWithSubaccount(this.subaccountClient, request, prepareOrder);
   }
 
   signOrder(prepared: PrepareOrderResponse, signer: IAbstractSigner): Promise<string> {
-    const subSigner = this._subaccount?.approval ? subaccountSigners.get(this) : undefined;
-    const effectiveSigner = subSigner ?? signer;
-    const accountAddress = subSigner ? signer.address : undefined;
-    return signPreparedOrder(prepared, effectiveSigner, this.ctx.chainId, accountAddress);
+    return signOrderWithSubaccount(this.subaccountClient, prepared, signer);
   }
 
-  submitOrder(request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
-    return submitOrder(this.ctx, request);
+  async submitOrder(request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
+    return submitOrderWithSubaccount(this.subaccountClient, request);
   }
 
   async executeExpressOrder(request: PrepareOrderRequest, signer: IAbstractSigner): Promise<SubmitOrderResponse> {
-    const subSigner = subaccountSigners.get(this);
-
-    if (subSigner && this._subaccount?.approval) {
-      const enrichedRequest: PrepareOrderRequest = {
-        ...request,
-        subaccountAddress: this._subaccount.address,
-        subaccountApproval: this._subaccount.approval.message,
-      };
-
-      return executeExpressOrderRaw(this.ctx, enrichedRequest, subSigner, request.from);
-    }
-
-    return executeExpressOrderRaw(this.ctx, request, signer);
+    return executeExpressOrderWithSubaccount(this.subaccountClient, request, signer);
   }
 
   fetchOrderStatus(request: OrderStatusRequest): Promise<OrderStatusResponse> {
@@ -270,28 +664,33 @@ export class GmxApiSdk {
   }
 
   prepareEditOrder(request: PrepareEditOrderRequest): Promise<PrepareOrderResponse> {
-    return prepareEditOrder(this.ctx, request);
+    return prepareWithSubaccount(this.subaccountClient, request, prepareEditOrder);
   }
 
   prepareCancelOrder(request: PrepareCancelOrderRequest): Promise<PrepareOrderResponse> {
-    return prepareCancelOrder(this.ctx, request);
+    return prepareWithSubaccount(this.subaccountClient, request, prepareCancelOrder);
   }
 
   prepareCollateral(request: PrepareCollateralRequest): Promise<PrepareOrderResponse> {
-    return prepareCollateral(this.ctx, request);
+    return prepareWithSubaccount(this.subaccountClient, request, prepareCollateral);
   }
 
   fetchSubaccountStatus(request: SubaccountStatusRequest): Promise<SubaccountStatusResponse> {
     return fetchSubaccountStatus(this.ctx, request);
   }
 
+  async refreshSubaccountState(account: string): Promise<SdkSubaccountStatus | undefined> {
+    return refreshSdkSubaccountState(this.subaccountClient, account);
+  }
+
   prepareSubaccountApproval(request: SubaccountApprovalPrepareRequest): Promise<SubaccountApprovalPrepareResponse> {
+    this.requireEvmContext();
     return prepareSubaccountApproval(this.ctx, request);
   }
 
   signSubaccountApproval(prepared: SubaccountApprovalPrepareResponse, signer: IAbstractSigner): Promise<string> {
     return signSubaccountApproval(prepared, signer, {
-      chainId: this.ctx.chainId,
+      chainId: this.requireEvmContext().chainId,
       expectedSubaccountAddress: this._subaccount?.address,
     });
   }
@@ -305,12 +704,7 @@ export class GmxApiSdk {
    * approval and start using it for orders.
    */
   async generateSubaccount(mainSigner: IAbstractSigner): Promise<string> {
-    const result = await generateSubaccount(mainSigner);
-    subaccountSigners.set(this, result.signer);
-    this._subaccount = {
-      address: result.address,
-    };
-    return result.address;
+    return generateSdkSubaccount(this.subaccountClient, mainSigner);
   }
 
   /**
@@ -321,38 +715,12 @@ export class GmxApiSdk {
    */
   async activateSubaccount(
     mainSigner: IAbstractSigner,
-    options?: { expiresInSeconds?: number; maxAllowedCount?: number }
+    options?: { expiresInSeconds?: number; maxAllowedCount?: number | bigint }
   ): Promise<string> {
-    if (!this._subaccount) {
-      await this.generateSubaccount(mainSigner);
-    }
-
-    const expiresAt = String(nowInSeconds() + (options?.expiresInSeconds ?? DEFAULT_SUBACCOUNT_EXPIRY_DURATION));
-    const maxAllowedCount = String(options?.maxAllowedCount ?? DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT);
-
-    const prepared = await this.prepareSubaccountApproval({
-      account: mainSigner.address,
-      subaccountAddress: this._subaccount!.address,
-      shouldAdd: true,
-      expiresAt,
-      maxAllowedCount,
-    });
-
-    const signature = await signSubaccountApproval(prepared, mainSigner, {
-      chainId: this.ctx.chainId,
-      expectedSubaccountAddress: this._subaccount!.address,
-    });
-
-    this._subaccount!.approval = {
-      message: { ...prepared.message, signature },
-      signature,
-    };
-
-    return this._subaccount!.address;
+    return activateSdkSubaccount(this.subaccountClient, mainSigner, options);
   }
 
   clearSubaccount() {
-    subaccountSigners.delete(this);
-    this._subaccount = undefined;
+    clearSdkSubaccount(this.subaccountClient);
   }
 }

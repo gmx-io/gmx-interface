@@ -1,22 +1,24 @@
-import type { ReactNode } from "react";
+import type { Dispatch, ReactNode, SetStateAction } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
-import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
+import type { DecreasePositionSwapType, OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubaccountApproval } from "domain/synthetics/subaccount";
+import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import type { OrderMetricId } from "lib/metrics/types";
-import type { StatusCode } from "sdk/utils/gelatoRelay";
+import type { StatusCode } from "sdk/utils/express";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import type { MultichainEventsState } from "./useMultichainEvents";
+import type { TransitRouteEventsState } from "./useTransitRouteEvents";
 
 type MultiTransactionStatus<TEventData> = {
   key: string;
   data?: TEventData;
   createdTxnHash?: string;
   cancelledTxnHash?: string;
-  gelatoTaskId?: string;
   updatedTxnHash?: string;
   executedTxnHash?: string;
   createdAt: number;
@@ -24,6 +26,7 @@ type MultiTransactionStatus<TEventData> = {
 };
 
 export type PositionIncreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -46,6 +49,7 @@ export type PositionIncreaseEvent = {
 };
 
 export type PositionDecreaseEvent = {
+  blockNumber: number;
   positionKey: string;
   contractPositionKey: string;
   account: string;
@@ -76,29 +80,33 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+  orderKey?: string;
 };
 
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
   isGmxAccount: boolean;
+  gasPaymentTokenAddress?: string;
   subaccountApproval?: SignedSubaccountApproval;
   tokenPermits?: SignedTokenPermit[];
-  payTokenAddresses?: string[];
+  payAmounts?: { [tokenAddress: string]: bigint };
   pendingOrdersKeys?: string[];
   pendingPositionsKeys?: string[];
   estimatedExecutionFee?: bigint;
   estimatedExecutionGasLimit?: bigint;
+  estimatedOrders?: ExecutionFeeEstimate[];
   createdAt: number;
   metricId?: OrderMetricId;
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  isSubaccountApprovalErrorChecked?: boolean;
   sendFailed?: boolean;
 };
 
-export type GelatoTaskStatus = {
+export type RelayTaskStatus = {
   taskId: string;
   statusCode: StatusCode;
   message?: string;
@@ -164,33 +172,36 @@ export type EventTxnParams = {
   blockNumber: number;
 };
 
-export type SyntheticsEventsContextType = MultichainEventsState & {
-  orderStatuses: OrderStatuses;
-  depositStatuses: DepositStatuses;
-  withdrawalStatuses: WithdrawalStatuses;
-  shiftStatuses: ShiftStatuses;
-  approvalStatuses: ApprovalStatuses;
-  pendingOrdersUpdates: PendingOrdersUpdates;
-  pendingPositionsUpdates: PendingPositionsUpdates;
-  positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
-  positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
-  pendingExpressTxns: PendingExpressTxns;
-  gelatoTaskStatuses: { [taskId: string]: GelatoTaskStatus };
-  setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
-  updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
-  setPendingOrder: SetPendingOrder;
-  setPendingOrderUpdate: SetPendingOrderUpdate;
-  setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
-  setPendingPosition: SetPendingPosition;
-  setPendingDeposit: SetPendingDeposit;
-  setPendingWithdrawal: SetPendingWithdrawal;
-  setPendingShift: SetPendingShift;
-  setOrderStatusViewed: (key: string) => void;
-  setDepositStatusViewed: (key: string) => void;
-  setWithdrawalStatusViewed: (key: string) => void;
-  setShiftStatusViewed: (key: string) => void;
-  setMultichainTransferProgress: (progress: MultichainTransferProgress<string>) => void;
-};
+export type SyntheticsEventsContextType = MultichainEventsState &
+  TransitRouteEventsState & {
+    orderStatuses: OrderStatuses;
+    depositStatuses: DepositStatuses;
+    withdrawalStatuses: WithdrawalStatuses;
+    shiftStatuses: ShiftStatuses;
+    approvalStatuses: ApprovalStatuses;
+    pendingOrdersUpdates: PendingOrdersUpdates;
+    pendingTpSlOrderBatches: PendingTpSlOrderBatch[];
+    setPendingTpSlOrderBatches: Dispatch<SetStateAction<PendingTpSlOrderBatch[]>>;
+    pendingPositionsUpdates: PendingPositionsUpdates;
+    positionIncreaseEvents: PositionIncreaseEvent[] | undefined;
+    positionDecreaseEvents: PositionDecreaseEvent[] | undefined;
+    pendingExpressTxns: PendingExpressTxns;
+    relayTaskStatuses: { [taskId: string]: RelayTaskStatus };
+    setPendingExpressTxn: (params: PendingExpressTxnParams) => void;
+    updatePendingExpressTxn: (params: Partial<PendingExpressTxnParams>) => void;
+    setPendingOrder: SetPendingOrder;
+    setPendingOrderUpdate: SetPendingOrderUpdate;
+    setPendingFundingFeeSettlement: SetPendingFundingFeeSettlement;
+    setPendingPosition: SetPendingPosition;
+    setPendingDeposit: SetPendingDeposit;
+    setPendingWithdrawal: SetPendingWithdrawal;
+    setPendingShift: SetPendingShift;
+    setOrderStatusViewed: (key: string) => void;
+    setDepositStatusViewed: (key: string) => void;
+    setWithdrawalStatusViewed: (key: string) => void;
+    setShiftStatusViewed: (key: string) => void;
+    setMultichainTransferProgress: (progress: MultichainTransferProgress<string>) => void;
+  };
 
 export type SetPendingOrder = (data: PendingOrderData | PendingOrderData[]) => void;
 export type SetPendingOrderUpdate = (data: PendingOrderData, remove?: "remove") => void;
@@ -222,6 +233,7 @@ export type OrderCreatedEventData = {
   minOutputAmount: bigint;
   updatedAtBlock: bigint;
   orderType: OrderType;
+  decreasePositionSwapType: DecreasePositionSwapType;
   isLong: boolean;
   shouldUnwrapNativeToken: boolean;
   externalSwapQuote: undefined;
@@ -246,11 +258,14 @@ export type PendingOrderData = {
   expectedOutputAmount?: bigint;
   sizeDeltaUsd: bigint;
   isLong: boolean;
+  decreasePositionSwapType: DecreasePositionSwapType;
   shouldUnwrapNativeToken: boolean;
   orderType: OrderType;
   referralCode?: string;
   createdAt: number;
   txnType: OrderTxnType;
+  // the token the trader asked for on a close, even if they then switched to receiving the collateral
+  requestedReceiveTokenAddress?: string;
 };
 
 export type DepositCreatedEventData = {
@@ -346,7 +361,9 @@ export type PendingShiftData = {
   minMarketTokens: bigint;
 };
 
-export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData>;
+export type OrderStatus = MultiTransactionStatus<OrderCreatedEventData> & {
+  cancellationReasonBytes?: string;
+};
 export type DepositStatus = MultiTransactionStatus<DepositCreatedEventData | GLVDepositCreatedEventData>;
 export type WithdrawalStatus = MultiTransactionStatus<WithdrawalCreatedEventData>;
 export type ShiftStatus = MultiTransactionStatus<ShiftCreatedEventData>;

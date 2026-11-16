@@ -1,14 +1,19 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
+import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
+import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 import { helperToast } from "lib/helperToast";
+import { formatUsd, numberToBigint } from "lib/numbers";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { bigMath } from "sdk/utils/bigmath";
 
-import { chartLabelColors, orderTypeToTitle } from "./constants";
+import { chartLabelColors, getOrderLineLabel } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
@@ -27,8 +32,16 @@ export function DynamicLine({
   isPending,
   getError,
   marketName,
+  sizeData,
   lineLength,
   bodyFontSizePt = 14,
+  positionEntryPrice,
+  positionSizeInUsd,
+  sizeDeltaUsd,
+  indexTokenVisualMultiplier,
+  isPartial,
+  isMarginDeposit,
+  isEditable,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -42,6 +55,7 @@ export function DynamicLine({
 } & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
   const { theme } = useTheme();
+  const { chartLinesSizeInTokens } = useSettings();
   const lineApi = useRef<IOrderLineAdapter | undefined>(undefined);
   const latestOnEdit = useLatest(onEdit);
   const latestOnCancel = useLatest(onCancel);
@@ -60,12 +74,50 @@ export function DynamicLine({
   const orderBodyBgBorderColor = palette.bg[theme];
   const orderBodyTextColor = palette.text[theme];
 
-  const title = useMemo(() => {
-    const directionText = isLong ? t`Long` : t`Short`;
-    const orderTypeTitle = orderTypeToTitle[orderType];
-    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown Order`;
-    return `${directionText} ${marketName} · ${orderTitleText}`;
-  }, [_, isLong, marketName, orderType]);
+  const buildTitle = useCallback(
+    (triggerPriceNumber: number): string => {
+      const baseTitle = getOrderLineLabel(_, {
+        isLong,
+        marketName,
+        orderType,
+        sizeData,
+        showSizeInTokens: chartLinesSizeInTokens,
+        isPartial,
+        isMarginDeposit,
+      });
+
+      if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
+        return baseTitle;
+      }
+
+      const triggerPriceBigInt =
+        numberToBigint(triggerPriceNumber, USD_DECIMALS) / BigInt(indexTokenVisualMultiplier || 1);
+
+      const priceDiff = isLong ? triggerPriceBigInt - positionEntryPrice : positionEntryPrice - triggerPriceBigInt;
+      const closeSizeUsd = getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd, positionSizeInUsd);
+      const pnlUsd = bigMath.mulDiv(priceDiff, closeSizeUsd, positionEntryPrice);
+
+      return `${baseTitle} · ${formatUsd(pnlUsd, { displayPlus: true })}`;
+    },
+    [
+      _,
+      chartLinesSizeInTokens,
+      isLong,
+      marketName,
+      orderType,
+      sizeData,
+      isPartial,
+      isMarginDeposit,
+      positionEntryPrice,
+      positionSizeInUsd,
+      sizeDeltaUsd,
+      indexTokenVisualMultiplier,
+    ]
+  );
+
+  const title = useMemo(() => buildTitle(price), [buildTitle, price]);
+  const latestTitle = useLatest(title);
+  const buildTitleRef = useLatest(buildTitle);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -84,19 +136,21 @@ export function DynamicLine({
 
       lineApi.current = chart!
         .createOrderLine({ disableUndo: true })
-        .setText(title)
+        .setText(latestTitle.current)
         .setPrice(price)
-        .setQuantity("\u270E")
-        .setModifyTooltip(t`Edit order`)
+        .setQuantity(isEditable ? "\u270E" : "")
+        .setModifyTooltip(isEditable ? t`Edit order` : "")
         .onModify(() => {
-          latestOnEdit.current(id);
+          if (isEditable) {
+            latestOnEdit.current(id);
+          }
         })
         .setCancelTooltip(t`Cancel order`)
         .onCancel(() => {
           latestOnCancel.current(id);
         })
         .setExtendLeft(false)
-        .setEditable(true)
+        .setEditable(isEditable)
         .setLineStyle(LineStyle.Dashed)
         .setLineColor(orderLineColor)
 
@@ -108,6 +162,7 @@ export function DynamicLine({
         .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
         .setQuantityFont(`normal ${bodyFontSizePt + 4}pt "Relative", sans-serif`)
         .setQuantityBorderColor(orderBodyBgBorderColor)
+        .setQuantityTextColor(chartLabelColors.button.icon[theme])
 
         .setCancelButtonBackgroundColor(chartLabelColors.button.bg[theme])
         .setCancelButtonBorderColor(orderBodyBgBorderColor)
@@ -117,8 +172,13 @@ export function DynamicLine({
         lineApi.current
           .setLineLength(lineLengthRef.current, "pixel")
           .onMoving(() => {
-            const error = getError(id, lineApi.current!.getPrice());
+            const newPrice = lineApi.current!.getPrice();
+            const error = getError(id, newPrice);
             setError(error);
+
+            if (!error) {
+              lineApi.current!.setText(buildTitleRef.current(newPrice));
+            }
           })
           .onMove(() => {
             const error = getError(id, lineApi.current!.getPrice());
@@ -137,7 +197,7 @@ export function DynamicLine({
               lineApi.current!.setPrice(latestPrice.current);
               lineApi.current!.setBodyBackgroundColor(orderBodyBgBorderColor);
               lineApi.current!.setBodyBorderColor(orderBodyBgBorderColor);
-              lineApi.current!.setText(title);
+              lineApi.current!.setText(latestTitle.current);
               return;
             }
 
@@ -173,6 +233,7 @@ export function DynamicLine({
     _,
     getError,
     id,
+    isEditable,
     isLong,
     isMobile,
     latestOnCancel,
@@ -184,10 +245,11 @@ export function DynamicLine({
     orderBodyBgBorderColor,
     orderBodyTextColor,
     price,
-    title,
+    latestTitle,
     tvWidgetRef,
     bodyFontSizePt,
     theme,
+    buildTitleRef,
   ]);
 
   useEffect(() => {
@@ -238,7 +300,7 @@ export function DynamicLine({
 
         setTimeout(() => {
           clearInterval(interval);
-          lineApi.current?.setQuantity("\u270E");
+          lineApi.current?.setQuantity(isEditable ? "\u270E" : "");
           lineApi.current?.setPrice(latestPrice.current);
           lineApi.current?.setBodyBackgroundColor(orderBodyBgBorderColor);
           lineApi.current?.setBodyBorderColor(orderBodyBgBorderColor);
@@ -246,7 +308,7 @@ export function DynamicLine({
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, orderBodyBgBorderColor, prevIsPending, title]
+    [isEditable, isPending, latestPrice, orderBodyBgBorderColor, prevIsPending, title]
   );
 
   useEffect(() => {

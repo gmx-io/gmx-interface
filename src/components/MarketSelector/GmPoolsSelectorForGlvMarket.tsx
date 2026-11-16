@@ -17,7 +17,8 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import type { TokenCategory } from "sdk/utils/tokens/types";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { useGlvGmMarketsWithComposition } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
@@ -34,11 +35,14 @@ import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
 
+const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
+
 type Props = Omit<CommonPoolSelectorProps, "onSelectMarket"> & {
   isDeposit: boolean;
   glvInfo: GlvInfo;
   onSelectMarket?: (market: MarketInfo) => void;
   disablePoolSelector?: boolean;
+  depositableMarketAddresses?: Set<string>;
 };
 
 function PoolLabel({
@@ -82,11 +86,12 @@ export function GmPoolsSelectorForGlvMarket({
   showIndexIcon = false,
   glvInfo,
   disablePoolSelector,
+  depositableMarketAddresses,
   favoriteKey,
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { favoriteTokens, toggleFavoriteToken, tab } = useTokensFavorites(favoriteKey);
+  const { favoriteTokens, toggleFavoriteToken, topLevelTab } = useTokensFavorites(favoriteKey);
 
   const markets = useGlvGmMarketsWithComposition(isDeposit, glvInfo?.glvTokenAddress);
 
@@ -101,6 +106,10 @@ export function GmPoolsSelectorForGlvMarket({
           }
 
           if (isDeposit && (marketInfo.isDisabled || isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress))) {
+            return null;
+          }
+
+          if (depositableMarketAddresses && !depositableMarketAddresses.has(marketInfo.marketTokenAddress)) {
             return null;
           }
 
@@ -138,7 +147,7 @@ export function GmPoolsSelectorForGlvMarket({
     });
 
     return [...sortedMarketsWithBalance, ...marketsWithoutBalance];
-  }, [chainId, getMarketState, isDeposit, marketTokensData, markets]);
+  }, [chainId, depositableMarketAddresses, getMarketState, isDeposit, marketTokensData, markets]);
 
   const marketInfo = useMemo(
     () => markets.find((m) => m.market?.marketTokenAddress === selectedMarketAddress)?.market,
@@ -158,25 +167,27 @@ export function GmPoolsSelectorForGlvMarket({
         )
       : marketsOptions;
 
-    if (tab === "all") {
-      return textMatched;
-    } else if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
-    } else {
-      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
-      return textMatched?.filter((item) => {
-        if (isGlvInfo(item.glvOrMarketInfo)) {
-          return false;
-        }
-
-        if (item.glvOrMarketInfo.isSpotOnly) {
-          return false;
-        }
-
-        return categoryTokenAddresses.includes(item.glvOrMarketInfo.indexTokenAddress);
-      });
+    switch (topLevelTab) {
+      case "all":
+        return textMatched;
+      case "favorites":
+        return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
+      case "crypto":
+        return textMatched?.filter((item) => {
+          if (isGlvInfo(item.glvOrMarketInfo)) return false;
+          if (item.glvOrMarketInfo.isSpotOnly) return false;
+          return Boolean(item.glvOrMarketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)));
+        });
+      case "tradfi":
+        return textMatched?.filter((item) => {
+          if (isGlvInfo(item.glvOrMarketInfo)) return false;
+          if (item.glvOrMarketInfo.isSpotOnly) return false;
+          return Boolean(item.glvOrMarketInfo.indexToken?.categories?.includes("tradfi"));
+        });
+      case "recently-listed":
+        return textMatched?.filter(() => false);
     }
-  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 
   const onSelectGmPool = useCallback(
     function onSelectOption(option: MarketOption) {
@@ -230,13 +241,12 @@ export function GmPoolsSelectorForGlvMarket({
         }
       >
         <VerticalScrollFadeContainer className="flex flex-col gap-8">
-          {filteredOptions.map((option, marketIndex) => (
+          {filteredOptions.map((option) => (
             <PoolListItem
               key={getGlvOrMarketAddress(option.glvOrMarketInfo)}
               {...option}
               marketToken={getByKey(marketTokensData, getGlvOrMarketAddress(option.glvOrMarketInfo))}
               isFavorite={favoriteTokens?.includes(getGlvOrMarketAddress(option.glvOrMarketInfo))}
-              isInFirstHalf={marketIndex < filteredOptions.length / 2}
               showAllPools={showAllPools}
               showBalances={showBalances}
               onFavoriteClick={toggleFavoriteToken}

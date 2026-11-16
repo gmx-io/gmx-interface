@@ -2,6 +2,8 @@ import {
   CallExecutionError,
   ContractFunctionExecutionError,
   ContractFunctionRevertedError,
+  decodeFunctionData,
+  encodeErrorResult,
   HttpRequestError,
   InsufficientFundsError,
   InvalidInputRpcError,
@@ -9,11 +11,86 @@ import {
   TimeoutError,
   WebSocketRequestError,
 } from "viem";
-import { describe, expect, it } from "vitest";
+import type { PublicClient } from "viem";
+import { describe, expect, it, vi } from "vitest";
 
-import { isInsufficientFundsError, isTemporaryError } from "../simulation";
+import "lib/monkeyPatching";
+import { parseError } from "lib/errors";
+import { abis } from "sdk/abis";
+import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
+
+import { isInsufficientFundsError, isTemporaryError, simulateContractWithRetry } from "../simulation";
 
 describe("simulation", () => {
+  it("routes execution simulation through ExchangeRouter.makeExternalCalls", () => {
+    const simulationRouterAddress = "0x1111111111111111111111111111111111111111";
+    const simulateExecuteData = "0x1234";
+    const encodedCall = encodeSimulationRouterExternalCall(simulationRouterAddress, simulateExecuteData);
+    const decodedCall = decodeFunctionData({ abi: abis.ExchangeRouter, data: encodedCall });
+
+    expect(decodedCall.functionName).toBe("makeExternalCalls");
+    expect(decodedCall.args).toEqual([[simulationRouterAddress], [simulateExecuteData], [], []]);
+  });
+
+  it("rejects a simulation call that returns without the expected sentinel revert", async () => {
+    const simulateContract = vi.fn().mockResolvedValue({});
+
+    await expect(
+      simulateContractWithRetry({
+        client: { simulateContract } as unknown as PublicClient,
+        address: "0x1111111111111111111111111111111111111111",
+        abi: [],
+        args: [[]],
+        value: 0n,
+        account: "0x2222222222222222222222222222222222222222",
+        blockNumber: undefined,
+        isExpress: false,
+      })
+    ).rejects.toThrow("Execution simulation did not revert with EndOfOracleSimulation.");
+    expect(simulateContract).toHaveBeenCalledOnce();
+  });
+
+  it("rethrows a contract revert so that the error toast can read the contract error", async () => {
+    const data = encodeErrorResult({
+      abi: abis.CustomErrors,
+      errorName: "LiquidatablePosition",
+      args: ["min collateral for leverage", 100n, 5n, 180n],
+    });
+    const simulateContract = vi.fn().mockRejectedValue(
+      new ContractFunctionExecutionError(
+        new ContractFunctionRevertedError({ abi: [], functionName: "multicall", data }),
+        {
+          abi: [],
+          functionName: "multicall",
+        }
+      )
+    );
+
+    const error = await simulateContractWithRetry({
+      client: { simulateContract } as unknown as PublicClient,
+      address: "0x1111111111111111111111111111111111111111",
+      abi: [],
+      args: [[]],
+      value: 0n,
+      account: "0x2222222222222222222222222222222222222222",
+      blockNumber: undefined,
+      isExpress: false,
+    }).catch((e) => e);
+
+    expect(parseError(error)).toEqual(
+      expect.objectContaining({
+        contractError: "LiquidatablePosition",
+        contractErrorArgs: {
+          reason: "min collateral for leverage",
+          remainingCollateralUsd: 100n,
+          minCollateralUsd: 5n,
+          minCollateralUsdForLeverage: 180n,
+        },
+        errorContext: "simulation",
+      })
+    );
+  });
+
   describe("isTemporaryError", () => {
     it("should return true for RpcRequestError with header not found message", () => {
       const error = new ContractFunctionExecutionError(

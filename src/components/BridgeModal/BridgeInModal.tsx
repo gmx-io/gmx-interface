@@ -8,6 +8,7 @@ import {
   type GmxAccountPseudoChainId,
   type SettlementChainId,
   type SourceChainId,
+  getViemChain,
 } from "config/chains";
 import { getSourceChainDecimalsMapped, isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
@@ -17,18 +18,21 @@ import { selectDepositMarketTokensData } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useNativeTokenMultichainUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
+import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
 import { createBridgeInTxn, getBridgeInTxnParams } from "domain/synthetics/markets/createBridgeInTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
-import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
+import { adjustForDecimals, formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -37,8 +41,11 @@ import { getTxnErrorToast } from "components/Errors/errorToasts";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -53,6 +60,7 @@ export function BridgeInModal({
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const withdrawBlockedError = useWithdrawBlockedError();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeInChain, setBridgeInChain] = useState<SourceChainId | undefined>(srcChainId);
   const [bridgeInInputValue, setBridgeInInputValue] = useState("");
@@ -119,13 +127,11 @@ export function BridgeInModal({
       ? gmxAccountMarketTokenBalance + bridgeInAmount
       : undefined;
 
-  const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const { formattedBalance, formattedMaxAvailableAmount, maxAvailableAmount, maxActions } = useMaxAvailableAmount({
     fromToken: marketToken,
     fromTokenBalance: bridgeInChainMarketTokenBalance,
     fromTokenAmount: bridgeInAmount,
-    fromTokenInputValue: bridgeInInputValue,
     srcChainId: bridgeInChain,
-    ignoreGasPaymentToken: true,
   });
 
   const nativeFeeAsyncResult = useThrottledAsync(
@@ -176,6 +182,7 @@ export function BridgeInModal({
     paySourceChainNativeTokenAmount: undefined,
   });
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   useEffect(() => {
     if (bridgeInChain !== undefined || !multichainMarketTokenBalances?.balances) {
@@ -232,10 +239,18 @@ export function BridgeInModal({
     }
   };
 
-  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
+  const buttonState = useMemo((): { text: ReactNode; disabled?: boolean; errorDescription?: ReactNode } => {
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
+        disabled: true,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
         disabled: true,
       };
     }
@@ -285,12 +300,17 @@ export function BridgeInModal({
       };
     }
 
+    if (withdrawBlockedError) {
+      return withdrawBlockedError;
+    }
+
     return {
       text: t`Deposit`,
       disabled: false,
     };
   }, [
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     isCreatingTxn,
     bridgeInInputValue,
     bridgeInChain,
@@ -298,6 +318,7 @@ export function BridgeInModal({
     bridgeInAmount,
     sourceChainDecimals,
     sourceChainNativeFeeError,
+    withdrawBlockedError,
   ]);
 
   if (!glvOrMarketInfo) {
@@ -316,16 +337,17 @@ export function BridgeInModal({
           topLeftLabel={t`Deposit`}
           inputValue={bridgeInInputValue}
           onInputValueChange={(e) => setBridgeInInputValue(e.target.value)}
-          bottomLeftValue={formatUsd(bridgeInUsd)}
+          bottomLeftValue={<UsdValue usd={bridgeInUsd} />}
           bottomRightValue={formattedBalance}
           bottomRightLabel={t`Available`}
           onClickMax={
-            showClickMax
+            maxAvailableAmount > 0n
               ? () => {
                   setBridgeInInputValue(formattedMaxAvailableAmount);
                 }
               : undefined
           }
+          isMaxSelected={maxActions.selected === "max"}
           maxDecimals={sourceChainDecimals}
         >
           <MultichainMarketTokenSelector
@@ -354,10 +376,29 @@ export function BridgeInModal({
             />
           </AlertInfoCard>
         )}
-        <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
-          {buttonState.text}
-        </Button>
-        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(nativeFeeUsd)} />
+        <ButtonTooltipWrapper content={buttonState.errorDescription}>
+          <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
+        <SyntheticsInfoRow
+          label={t`Network fee`}
+          labelClassName="whitespace-nowrap"
+          value={
+            nativeFee !== undefined && bridgeInChain !== undefined ? (
+              <NetworkFeeValue
+                amount={nativeFee}
+                usd={nativeFeeUsd}
+                decimals={getViemChain(bridgeInChain).nativeCurrency.decimals}
+                symbol={getViemChain(bridgeInChain).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(bridgeInChain)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
+        />
         <SyntheticsInfoRow
           label={t`GMX Account balance`}
           value={

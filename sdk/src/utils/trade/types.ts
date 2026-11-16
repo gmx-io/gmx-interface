@@ -51,7 +51,10 @@ export type SwapAmounts = {
   uiFeeUsd?: bigint;
 };
 
+export type FundingPayout = { longTokenAmount: bigint; shortTokenAmount: bigint };
+
 export type IncreasePositionAmounts = {
+  fundingPayout?: FundingPayout;
   initialCollateralAmount: bigint;
   initialCollateralUsd: bigint;
 
@@ -93,6 +96,7 @@ export type DecreasePositionOutput = {
 };
 
 export type DecreasePositionAmounts = {
+  fundingPayout?: FundingPayout;
   isFullClose: boolean;
   sizeDeltaUsd: bigint;
   sizeDeltaInTokens: bigint;
@@ -128,6 +132,7 @@ export type DecreasePositionAmounts = {
 
   payedOutputUsd: bigint;
   payedRemainingCollateralUsd: bigint;
+  unpaidCostUsd: bigint;
 
   receiveTokenAmount: bigint;
   receiveUsd: bigint;
@@ -149,6 +154,8 @@ export type DepositAmounts = {
   glvTokenUsd: bigint;
   shortTokenAmount: bigint;
   shortTokenUsd: bigint;
+  initialShortTokenAmount?: bigint;
+  shortTokenSwapPathStats?: SwapPathStats;
   swapFeeUsd: bigint;
   uiFeeUsd: bigint;
   swapPriceImpactDeltaUsd: bigint;
@@ -177,6 +184,7 @@ export type NextPositionValues = {
   nextLiqPrice?: bigint;
   nextCollateralUsd?: bigint;
   nextSizeUsd?: bigint;
+  nextSizeInTokens?: bigint;
   nextPnl?: bigint;
   nextPnlPercentage?: bigint;
   nextEntryPrice?: bigint;
@@ -277,7 +285,6 @@ export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
   KyberSwap = "kyberSwap",
-  BotanixStaking = "botanixStaking",
 }
 
 export type ExternalSwapQuote = {
@@ -292,7 +299,10 @@ export type ExternalSwapQuote = {
   priceIn: bigint;
   priceOut: bigint;
   feesUsd: bigint;
+  slippage?: number;
   needSpenderApproval?: boolean;
+  // Stamped by byToValue fetches as a request fingerprint; other strategies use `amountIn`.
+  desiredAmountOut?: bigint;
   txnData: {
     to: string;
     data: string;
@@ -302,21 +312,14 @@ export type ExternalSwapQuote = {
   };
 };
 
-export type ExternalSwapPath = {
-  aggregator: ExternalSwapAggregator;
-  inTokenAddress: string;
-  outTokenAddress: string;
-};
-
 export type ExternalSwapQuoteParams = {
   chainId: number;
   receiverAddress: string;
   gasPrice: bigint | undefined;
   tokensData: TokensData | undefined;
-  botanixStakingAssetsPerShare: bigint | undefined;
 };
 
-export type ExternalSwapCalculationStrategy = "byFromValue" | "leverageBySize";
+export type ExternalSwapCalculationStrategy = "byFromValue" | "byToValue" | "leverageBySize";
 
 export type ExternalSwapInputs = {
   amountIn: bigint;
@@ -325,6 +328,7 @@ export type ExternalSwapInputs = {
   usdIn: bigint;
   usdOut: bigint;
   strategy: ExternalSwapCalculationStrategy;
+  desiredAmountOut?: bigint;
   internalSwapTotalFeesDeltaUsd?: bigint;
   internalSwapTotalFeeItem?: FeeItem;
   internalSwapAmounts: SwapAmounts;

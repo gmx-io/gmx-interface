@@ -1,26 +1,66 @@
-import { switchChain } from "@wagmi/core";
+import { getAccount, switchChain } from "@wagmi/core";
 
-import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import { SOLANA_NETWORK_ID } from "config/chains";
+import {
+  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
+} from "config/localStorage";
+import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
+import { extendError } from "lib/errors";
+import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
-import { getRainbowKitConfig } from "./rainbowKitConfig";
+import { getWillChainSwitchChangeAccount } from "./useWalletSessionChains";
+import { getWagmiConfig } from "./walletConfig";
 
 export type WalletSigner = UncheckedJsonRpcSigner & {
   address: string;
 };
 
-export async function switchNetwork(chainId: number, active: boolean): Promise<void> {
+function selectNetworkInApp(chainId: number) {
+  localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
+  localStorage.setItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY, "true");
+  setIsSolanaNetworkSelected(false);
+  document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId } }));
+}
+
+export function selectSolanaNetworkInApp() {
+  setIsSolanaNetworkSelected(true);
+  document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: SOLANA_NETWORK_ID } }));
+}
+
+export async function switchNetwork(
+  chainId: number,
+  active: boolean,
+  options: { fallbackToAppSelectionOnError?: boolean } = {}
+): Promise<void> {
   if (active) {
-    await switchChain(getRainbowKitConfig(), {
-      chainId,
-    });
-    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
-    document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId } }));
+    const config = getWagmiConfig();
+    const address = getAccount(config).address;
+
+    const willChainSwitchChangeAccount = address
+      ? await getWillChainSwitchChangeAccount(address, chainId).catch(() => false)
+      : false;
+
+    if (willChainSwitchChangeAccount) {
+      throw extendError(new Error(SMART_WALLET_CHAIN_UNAVAILABLE_ERROR), { data: { chainId, address } });
+    }
+
+    try {
+      await switchChain(config, {
+        chainId,
+      });
+    } catch (error) {
+      if (!options.fallbackToAppSelectionOnError) {
+        throw error;
+      }
+    }
+
+    selectNetworkInApp(chainId);
   } else {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
-    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
-    document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId } }));
+    selectNetworkInApp(chainId);
     document.location.reload();
     return;
   }

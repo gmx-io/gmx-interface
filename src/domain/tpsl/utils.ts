@@ -1,6 +1,200 @@
-import type { PositionOrderInfo } from "domain/synthetics/orders";
+import { t } from "@lingui/macro";
+
+import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
+import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
+import { getIsPositionInfoLoaded, type PositionInfo } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
+import type { DecreasePositionAmounts } from "domain/synthetics/trade";
+import { DUST_USD } from "lib/legacy";
+import { MaxUint256 } from "lib/numbers";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
+import { getTriggerDecreaseRemainingPositionMarginState } from "sdk/utils/trade/decreaseMarginCheck";
+
+export const FULL_POSITION_CLOSE_SIZE_DELTA_USD = MaxUint256;
+
+export function isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd: bigint | undefined, positionSizeUsd?: bigint) {
+  if (sizeDeltaUsd === undefined) {
+    return false;
+  }
+
+  if (sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+    return true;
+  }
+
+  if (positionSizeUsd === undefined || positionSizeUsd <= 0n) {
+    return false;
+  }
+
+  return sizeDeltaUsd >= positionSizeUsd || positionSizeUsd - sizeDeltaUsd < DUST_USD;
+}
+
+export function isFullClosePositionOrder(order: OrderInfo, positionSizeUsd?: bigint) {
+  if (isTwapOrder(order)) {
+    return false;
+  }
+
+  return (
+    isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd)
+  );
+}
+
+export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, positionSizeUsd?: bigint) {
+  if (sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+    return positionSizeUsd ?? 0n;
+  }
+
+  return isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd, positionSizeUsd) && positionSizeUsd !== undefined
+    ? positionSizeUsd
+    : sizeDeltaUsd;
+}
+
+export function getPositionCloseSizeDeltaUsdForPayload(sizeDeltaUsd: bigint, isFullClose: boolean) {
+  return isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : sizeDeltaUsd;
+}
+
+export function isTriggerBeyondLiquidation({
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): boolean {
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return false;
+  }
+
+  if (liquidationPrice === undefined || liquidationPrice <= 0n || liquidationPrice === MaxUint256) {
+    return false;
+  }
+
+  return isLong ? triggerPrice <= liquidationPrice : triggerPrice >= liquidationPrice;
+}
+
+export function getTpSlLiqPriceWarning({
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): string | undefined {
+  if (!isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice, isLong })) {
+    return undefined;
+  }
+
+  return t`This trigger price is beyond the current liquidation price. Your position may be liquidated before this TP/SL order can execute.`;
+}
+
+export type TpSlRemainingPositionEntry = {
+  decreaseAmounts: DecreasePositionAmounts | undefined;
+  getDecreaseAmountsWithoutKeepLeverage: () => DecreasePositionAmounts | undefined;
+};
+
+export type TpSlRemainingPositionWarning = {
+  isTakeProfitAboveMaxLeverage: boolean;
+  isStopLossAboveMaxLeverage: boolean;
+  isKeepLeverageFix: boolean;
+};
+
+export function getTpSlRemainingPositionWarning(p: {
+  position: PositionInfo;
+  takeProfit: TpSlRemainingPositionEntry | undefined;
+  stopLoss: TpSlRemainingPositionEntry | undefined;
+  keepLeverage: boolean;
+  minCollateralUsd: bigint | undefined;
+  minPositionSizeUsd: bigint | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
+}): TpSlRemainingPositionWarning | undefined {
+  const { position, minCollateralUsd, minPositionSizeUsd } = p;
+
+  if (!getIsPositionInfoLoaded(position) || minCollateralUsd === undefined || minPositionSizeUsd === undefined) {
+    return undefined;
+  }
+
+  const getIsAboveMaxLeverage = (decreaseAmounts: DecreasePositionAmounts | undefined) => {
+    if (
+      !decreaseAmounts ||
+      isTriggerBeyondLiquidation({
+        triggerPrice: decreaseAmounts.triggerPrice,
+        liquidationPrice: position.liquidationPrice,
+        isLong: position.isLong,
+      })
+    ) {
+      return false;
+    }
+
+    const marginState = getTriggerDecreaseRemainingPositionMarginState({
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      isLong: position.isLong,
+      position,
+      decreaseAmounts,
+      collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      userReferralInfo: p.userReferralInfo,
+      proDiscountFactor: p.proDiscountFactor,
+      feeDiscountFactor: p.feeDiscountFactor,
+    });
+
+    return marginState?.isLiquidatable === true;
+  };
+
+  const isTakeProfitAboveMaxLeverage = getIsAboveMaxLeverage(p.takeProfit?.decreaseAmounts);
+  const isStopLossAboveMaxLeverage = getIsAboveMaxLeverage(p.stopLoss?.decreaseAmounts);
+
+  if (!isTakeProfitAboveMaxLeverage && !isStopLossAboveMaxLeverage) {
+    return undefined;
+  }
+
+  const isKeepLeverageFix =
+    p.keepLeverage &&
+    !getIsAboveMaxLeverage(p.takeProfit?.getDecreaseAmountsWithoutKeepLeverage()) &&
+    !getIsAboveMaxLeverage(p.stopLoss?.getDecreaseAmountsWithoutKeepLeverage());
+
+  return { isTakeProfitAboveMaxLeverage, isStopLossAboveMaxLeverage, isKeepLeverageFix };
+}
+
+// You can't lose more than your collateral, so floor a displayed loss at -collateral (-100%).
+export function capLossAtCollateral(pnlUsd: bigint, collateralUsd: bigint | undefined): bigint {
+  if (collateralUsd === undefined || collateralUsd <= 0n) {
+    return pnlUsd;
+  }
+
+  return pnlUsd < -collateralUsd ? -collateralUsd : pnlUsd;
+}
+
+// Beyond the liquidation price you'll be liquidated and lose your whole margin (pending fees consume the
+// rest of it), so show -collateral; within range it's the price PnL, still bounded by your collateral.
+export function getCappedTpSlLossUsd({
+  pnlUsd,
+  collateralUsd,
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  pnlUsd: bigint;
+  collateralUsd: bigint | undefined;
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): bigint {
+  if (
+    collateralUsd !== undefined &&
+    collateralUsd > 0n &&
+    isTriggerBeyondLiquidation({ triggerPrice, liquidationPrice, isLong })
+  ) {
+    return -collateralUsd;
+  }
+
+  return capLossAtCollateral(pnlUsd, collateralUsd);
+}
 
 export function calculateTotalSizeUsd(p: {
   existingPositionSizeUsd: bigint | undefined;

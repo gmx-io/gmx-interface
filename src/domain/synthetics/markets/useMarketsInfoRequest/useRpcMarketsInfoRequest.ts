@@ -28,23 +28,25 @@ export function useRpcMarketsInfoRequest({
   tokensData: TokensData | undefined;
   enabled?: boolean;
 }) {
-  const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
+  const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId, { enabled });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId);
+  const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId, { enabled });
   const isDependenciesLoading = !marketsAddresses || !tokensData || !enabled;
-
-  const { marketsValuesData } = useMarketsValuesRequest({
-    chainId,
-    isDependenciesLoading,
-    marketsAddresses,
-    marketsData,
-    tokensData,
-  });
 
   const { marketsConfigsData } = useMarketsConfigsRequest({
     chainId,
     isDependenciesLoading,
     marketsAddresses,
+    marketsData,
+  });
+
+  const { marketsValuesData } = useMarketsValuesRequest({
+    chainId,
+    isDependenciesLoading: isDependenciesLoading || !marketsConfigsData,
+    marketsAddresses,
+    marketsData,
+    marketsConfigsData,
+    tokensData,
   });
 
   return {
@@ -62,12 +64,14 @@ function useMarketsValuesRequest({
   isDependenciesLoading,
   marketsAddresses,
   marketsData,
+  marketsConfigsData,
   tokensData,
 }: {
   chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
   marketsData: MarketsData | undefined;
+  marketsConfigsData: ReturnType<typeof parseMarketsConfigsResponse> | undefined;
   tokensData: TokensData | undefined;
 }) {
   const { data: marketsValuesData } = useMulticall(chainId, `useMarketsValuesRequest`, {
@@ -81,6 +85,7 @@ function useMarketsValuesRequest({
       buildMarketsValuesRequest(chainId, {
         marketsAddresses,
         marketsData,
+        marketsConfigsData,
         tokensData,
       }),
     parseResponse: (res) => {
@@ -104,10 +109,12 @@ function useMarketsConfigsRequest({
   chainId,
   isDependenciesLoading,
   marketsAddresses,
+  marketsData,
 }: {
   chainId: ContractsChainId;
   isDependenciesLoading: boolean;
   marketsAddresses: string[] | undefined;
+  marketsData: MarketsData | undefined;
 }) {
   const { data: marketsConfigsData } = useMulticall(chainId, "useMarketsConfigsRequest", {
     key: !isDependenciesLoading && marketsAddresses!.length > 0 && [marketsAddresses],
@@ -119,6 +126,7 @@ function useMarketsConfigsRequest({
     request: () =>
       buildMarketsConfigsRequest(chainId, {
         marketsAddresses,
+        marketsData,
       }),
     parseResponse: (res) => {
       return parseMarketsConfigsResponse(res, marketsAddresses!);

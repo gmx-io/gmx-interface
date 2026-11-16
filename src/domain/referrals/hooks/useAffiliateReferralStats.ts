@@ -23,6 +23,8 @@ export type AffiliateReferralStats = {
     rebatesUsdDelta?: bigint;
     tradersGained?: number;
     tradersGainedDelta?: number;
+    tradersGraduated?: number;
+    tradersGraduatedDelta?: number;
     tradersLost?: number;
     tradersLostDelta?: number;
     tradersNet?: number;
@@ -34,9 +36,20 @@ export type AffiliateReferralStats = {
     tradesCount: number;
     rebatesUsd: bigint;
     tradersGained: number;
+    tradersGraduated: number;
     tradersLost: number;
     tradersNet: number;
   }[];
+};
+
+type AffiliateStatsQueryResult = {
+  affiliateStats: Omit<Query["affiliateStats"], "summary" | "points"> & {
+    summary: Query["affiliateStats"]["summary"] & {
+      tradersGraduated?: number | null;
+      tradersGraduatedDelta?: number | null;
+    };
+    points: Array<Query["affiliateStats"]["points"][number] & { tradersGraduated?: number | null }>;
+  };
 };
 
 function toNumber(value: unknown): number {
@@ -68,6 +81,8 @@ const AFFILIATE_STATS_QUERY = /* GraphQL */ `
         rebatesUsdDelta
         tradersGained
         tradersGainedDelta
+        tradersGraduated
+        tradersGraduatedDelta
         tradersLost
         tradersLostDelta
         tradersNet
@@ -79,6 +94,7 @@ const AFFILIATE_STATS_QUERY = /* GraphQL */ `
         tradesCount
         rebatesUsd
         tradersGained
+        tradersGraduated
         tradersLost
         tradersNet
       }
@@ -92,13 +108,15 @@ async function fetchAffiliateReferralStats(params: {
   from: number;
   to: number;
 }): Promise<AffiliateReferralStats> {
-  const res = await graphqlFetcher<Pick<Query, "affiliateStats">>(params.endpoint, AFFILIATE_STATS_QUERY, {
+  const variables = {
     where: {
       affiliate: params.affiliate,
       from: params.from,
       to: params.to,
     },
-  });
+  };
+
+  const res = await graphqlFetcher<AffiliateStatsQueryResult>(params.endpoint, AFFILIATE_STATS_QUERY, variables);
 
   if (!res?.affiliateStats) {
     throw new Error("Failed to fetch affiliate stats");
@@ -123,6 +141,8 @@ async function fetchAffiliateReferralStats(params: {
       rebatesUsdDelta: toBigInt(summary.rebatesUsdDelta),
       tradersGained: toOptionalNumber(summary.tradersGained),
       tradersGainedDelta: toOptionalNumber(summary.tradersGainedDelta),
+      tradersGraduated: toOptionalNumber(summary.tradersGraduated),
+      tradersGraduatedDelta: toOptionalNumber(summary.tradersGraduatedDelta),
       tradersLost: toOptionalNumber(summary.tradersLost),
       tradersLostDelta: toOptionalNumber(summary.tradersLostDelta),
       tradersNet: toOptionalNumber(summary.tradersNet),
@@ -134,6 +154,7 @@ async function fetchAffiliateReferralStats(params: {
       tradesCount: toNumber(point.tradesCount),
       rebatesUsd: toBigInt(point.rebatesUsd) ?? 0n,
       tradersGained: toNumber(point.tradersGained),
+      tradersGraduated: toNumber(point.tradersGraduated),
       tradersLost: toNumber(point.tradersLost),
       tradersNet: toNumber(point.tradersNet),
     })),

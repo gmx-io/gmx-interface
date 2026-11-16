@@ -1,4 +1,8 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
+export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
+export const SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_SOLANA_NETWORK";
+export const SOLANA_WALLET_LOCAL_STORAGE_KEY = "SOLANA_WALLET";
+export const SOLANA_LINKED_EVM_CONNECTORS_LOCAL_STORAGE_KEY = "SOLANA_LINKED_EVM_CONNECTORS";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -14,11 +18,11 @@ export const IS_AUTO_CANCEL_TPSL_KEY = "is-auto-cancel-tpsl";
 export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
 export const DISABLE_SHARE_MODAL_PNL_CHECK_KEY = "disable-share-modal-pnl-check";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines-key";
+export const BUY_SELL_ICONS_MODE_KEY = "Exchange-swap-should-show-buy-sell-icons-key";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
-export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
 const LEVERAGE_OPTION_KEY = "leverage-option";
 const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
@@ -29,11 +33,21 @@ export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
 export const ORACLE_KEEPER_DEBUG_STATE_KEY = "oracle_keeper_debug_state";
 export const MULTICALL_DEBUG_STATE_KEY = "multicall_debug_state";
 export const DEBUG_ERROR_BOUNDARY_KEY = "debug-error-boundary";
+export const DEBUG_PAXOS_TRANSIT_IGNORE_WHITELIST_KEY = "debug-paxos-transit-ignore-whitelist";
+export const DEBUG_PAXOS_TRANSIT_MOCK_KEY = "debug-paxos-transit-mock";
+export const DEBUG_PAXOS_TRANSIT_FORCE_BUY_USDG_HINT_KEY = "debug-paxos-transit-force-buy-usdg-hint";
+export const DEBUG_PAXOS_TRANSIT_THRESHOLD_USD_KEY = "debug-paxos-transit-threshold-usd";
+export const DEBUG_PAXOS_TRANSIT_FORCE_STANDARD_KEY = "debug-paxos-transit-force-standard";
+export const PAXOS_TRANSIT_ROUTE_PROGRESS_KEY = "paxos-transit-route-progress";
+const USDG_ADD_MARGIN_RETURN_POSITION_KEY = "usdg-add-margin-return-position";
+export const PAXOS_TRANSIT_APPROVAL_PROPOSALS_KEY = "paxos-transit-approval-proposals";
+export const PAXOS_TRANSIT_CONVERSION_PROPOSALS_KEY = "paxos-transit-conversion-proposals";
+export const STATS_API_URL_KEY = "stats-api-url";
 const SORTED_MARKETS_KEY = "sorted-markets-key";
 export const TWAP_NUMBER_OF_PARTS_KEY = "twap-number-of-parts";
 export const TWAP_INFO_CARD_CLOSED_KEY = "twap-info-card-closed";
 // key updated with chart overrides, to update tv chart with new release
-export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-1";
+export const WAS_TV_CHART_OVERRIDDEN_KEY = "was-tv-chart-overridden-3";
 export const UTM_PARAMS_KEY = "utm_params";
 
 export const BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY = "breakdown-net-price-impact-enabled";
@@ -45,7 +59,6 @@ const SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY = "synthetics-acceptable-pri
 export const SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY = "synthetics-market-deposit-token";
 const SYNTHETICS_LIST_SECTION_KEY = "synthetics-list-section";
 const ACCOUNT_DASHBOARD_TAB_KEY = "account-dashboard-tab";
-export const LAST_EARN_TAB_KEY = "last-earn-tab";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY = "synthetics-collateral-edit-token-map";
 const SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY = "synthetics-collateral-edit-token-is-from-gmx-account";
 export const PRODUCTION_PREVIEW_KEY = "production-preview";
@@ -54,9 +67,12 @@ export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
 
-const ONE_CLICK_TRADING_PROMO_HIDDEN_KEY = "one-click-trading-promo-hidden";
 export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
+export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
+export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+
+export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
@@ -70,17 +86,33 @@ export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
+export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
+export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
+export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
+export const MORPHO_LOOP_ANNOUNCEMENT_DISMISSED_KEY = "morpho-loop-announcement-dismissed";
+export const CLOSING_POOLS_NOTICE_SEEN_KEY_PREFIX = "closing-pools-notice-seen";
+
+export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
+export const CLOSING_POOLS_LP_NOTICE_DISMISSED_KEY = "closing-pools-lp-notice-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
-export const PERMITS_DISABLED_KEY = "permits-disabled";
+// older builds set it on any permit error and never cleared it
+export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
+export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
+
+export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
+
+export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache-v2";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
 
 export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
+
+export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
@@ -90,22 +122,36 @@ const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
+const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token-address";
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
+const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
+const VERIFICATION_CHAIN_SIGNING_KEY = "verification-chain-signing";
+
 export const getIndexerUrlKey = (chainId: number, subgraph: string) => `subgraphUrl:${chainId}:${subgraph}`;
 
-export function getSubaccountApprovalKey(chainId: number, account: string | undefined) {
+export function getSubaccountApprovalKey(chainId: number, account: string | undefined, srcChainId: number | undefined) {
   if (!chainId || !account) return null;
-  return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+
+  if (srcChainId === undefined) {
+    return [chainId, account, SUBACCOUNT_APPROVAL_KEY];
+  }
+
+  return [chainId, account, srcChainId, SUBACCOUNT_APPROVAL_KEY];
 }
 
 export function getTokenPermitsKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_KEY];
+}
+
+export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {
@@ -120,28 +166,32 @@ export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
   return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY];
 }
 
-export function getSyntheticsTradeOptionsKey(chainId: number) {
-  return [chainId, SYNTHETICS_TRADE_OPTIONS];
+export function getSyntheticsTradeOptionsKey(networkId: number) {
+  return [networkId, SYNTHETICS_TRADE_OPTIONS];
 }
 
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_MAP_KEY];
 }
 
+export function getUsdgAddMarginReturnPositionKey(chainId: number) {
+  return [chainId, USDG_ADD_MARGIN_RETURN_POSITION_KEY];
+}
+
 export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: number) {
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY];
 }
 
-export function getLeverageKey(chainId: number) {
-  return [chainId, LEVERAGE_OPTION_KEY];
+export function getLeverageKey(networkId: number) {
+  return [networkId, LEVERAGE_OPTION_KEY];
 }
 
-export function getKeepLeverageKey(chainId: number) {
-  return [chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY];
+export function getKeepLeverageKey(networkId: number) {
+  return [networkId, KEEP_LEVERAGE_FOR_DECREASE_KEY];
 }
 
-export function getLeverageEnabledKey(chainId: number) {
-  return [chainId, LEVERAGE_ENABLED_KEY];
+export function getLeverageEnabledKey(networkId: number) {
+  return [networkId, LEVERAGE_ENABLED_KEY];
 }
 
 export function getAllowedSlippageKey(chainId: number) {
@@ -183,8 +233,8 @@ export function getMulticallBatchingLoggingEnabledKey() {
   return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
 }
 
-export function getSortedMarketsAddressesKey(chainId: number) {
-  return [SORTED_MARKETS_KEY, chainId].join(":");
+export function getSortedMarketsAddressesKey(networkId: number) {
+  return [SORTED_MARKETS_KEY, networkId].join(":");
 }
 
 export function getCollateralCloseDestinationKey(chainId: number, account: string | undefined) {
@@ -207,10 +257,18 @@ export function getGasPaymentTokenAddressKey(chainId: number, account: string | 
   return [chainId, account, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
-export function getOneClickTradingPromoHiddenKey(chainId: number) {
-  return `${chainId}-${ONE_CLICK_TRADING_PROMO_HIDDEN_KEY}`;
+export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
+  return [chainId, account, GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
 export function getHighLeverageWarningDismissedTimestampKey(account: string) {
   return `${account}-${HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY}`;
+}
+
+export function getVerificationChainSigningKey(
+  connectorId: string | undefined,
+  account: string,
+  verificationChainId: number
+) {
+  return [VERIFICATION_CHAIN_SIGNING_KEY, connectorId ?? "unknown", account, verificationChainId];
 }

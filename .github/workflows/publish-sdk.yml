@@ -1,11 +1,20 @@
 name: Publish SDK
 
 permissions:
-  id-token: write  # OIDC for npm
+  id-token: write # OIDC for npm
   contents: read
 
 on:
   workflow_dispatch:
+    inputs:
+      npm_tag:
+        description: "npm dist-tag"
+        required: true
+        default: "next"
+        type: choice
+        options:
+          - next
+          - latest
 
 jobs:
   publish-sdk:
@@ -35,7 +44,33 @@ jobs:
           yarn prebuild
           yarn build
 
-      - run: npm publish --provenance --access public
+      - name: Test package
+        working-directory: ./sdk
+        run: |
+          yarn test:ci
+          yarn tscheck:ci
+          npm pack --dry-run
+
+      - name: Validate npm publish target
+        id: npm_package
+        working-directory: ./sdk
+        run: |
+          VERSION=$(jq -r .version package.json)
+
+          if [ "${{ inputs.npm_tag }}" = "latest" ] && [[ "$VERSION" == *-* ]]; then
+            echo "Refusing to publish prerelease version $VERSION with latest tag"
+            exit 1
+          fi
+
+          if npm view "@gmx-io/sdk@$VERSION" version > /dev/null 2>&1; then
+            echo "@gmx-io/sdk@$VERSION is already published"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish package
+        run: npm publish --provenance --access public --tag "${{ inputs.npm_tag }}"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         working-directory: ./sdk

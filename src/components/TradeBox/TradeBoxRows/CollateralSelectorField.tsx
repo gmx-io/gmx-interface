@@ -17,7 +17,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { BlockField } from "components/BlockField/BlockField";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
 import { useCollateralInTooltipContent } from "../hooks/useCollateralInTooltipContent";
@@ -44,10 +44,9 @@ export function CollateralSelectorField(p: Props) {
       forwardClickToSelector
       disabled={disabled}
       label={
-        <TooltipWithPortal
+        <StandardTooltip
           position="bottom-end"
           content={collateralInTooltipContent}
-          variant="none"
           className="overflow-hidden"
           handleClassName="!flex overflow-hidden"
           contentClassName="overflow-hidden"
@@ -55,7 +54,7 @@ export function CollateralSelectorField(p: Props) {
           <span className="overflow-hidden text-ellipsis">
             <Trans>Collateral</Trans>
           </span>
-        </TooltipWithPortal>
+        </StandardTooltip>
       }
       labelClassName="overflow-hidden shrink-1 grow-0 flex"
       contentClassName="shrink-0 min-w-[unset]"
@@ -106,9 +105,10 @@ export function useCollateralWarnings() {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. Using the selected collateral will
+              create a separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -122,9 +122,10 @@ export function useCollateralWarnings() {
         );
       } else {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. If executed, this order will create a
+              separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -144,7 +145,7 @@ export function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
+        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral" type="warning" hideClose>
           <Trans>
             Existing limit order uses {symbol} collateral.{" "}
             <ColorfulButtonLink

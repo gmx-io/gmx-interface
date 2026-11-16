@@ -14,6 +14,9 @@ import type { MarketsInfoData } from "../markets";
 import type { Position, PositionInfo, PositionsData, PositionsInfoData } from "./types";
 
 const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
+// Enough for order execution and the next positions fetch. After that a position that the server
+// does not return is closed or was never opened, even if its events were missed.
+const MAX_PENDING_MOCK_AGE = 60 * 1000;
 
 function applyEventChanges<T extends Position>(position: T, event: PositionIncreaseEvent | PositionDecreaseEvent): T {
   const nextPosition = { ...position };
@@ -41,7 +44,7 @@ function applyEventChanges<T extends Position>(position: T, event: PositionIncre
   return nextPosition;
 }
 
-function applyOptimisticUpdates<T extends Position>({
+export function applyOptimisticUpdates<T extends Position>({
   positionsData,
   allPositionsKeys,
   positionIncreaseEvents,
@@ -60,22 +63,39 @@ function applyOptimisticUpdates<T extends Position>({
     (acc, key) => {
       const now = Date.now();
 
-      const lastIncreaseEvent = positionIncreaseEvents?.filter((e) => e.positionKey === key).pop();
-      const lastDecreaseEvent = positionDecreaseEvents?.filter((e) => e.positionKey === key).pop();
+      const increaseEvents = positionIncreaseEvents?.filter((e) => e.positionKey === key);
+      const decreaseEvents = positionDecreaseEvents?.filter((e) => e.positionKey === key);
+      const lastIncreaseEvent = increaseEvents?.[increaseEvents.length - 1];
+      const lastDecreaseEvent = decreaseEvents?.[decreaseEvents.length - 1];
+
+      const rawPendingUpdate = pendingPositionsUpdates?.[key];
+      const isPendingUpdateFresh =
+        rawPendingUpdate !== undefined && rawPendingUpdate.updatedAt + MAX_PENDING_UPDATE_AGE > now;
+
+      const isPendingMockFresh =
+        rawPendingUpdate !== undefined && rawPendingUpdate.updatedAt + MAX_PENDING_MOCK_AGE > now;
 
       const pendingUpdate =
-        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
-          ? pendingPositionsUpdates[key]
+        rawPendingUpdate &&
+        isPendingUpdateFresh &&
+        !getIsPendingUpdateCoveredByEvent(rawPendingUpdate, increaseEvents, decreaseEvents)
+          ? rawPendingUpdate
           : undefined;
 
       let position: T;
 
       if (getByKey(positionsData, key)) {
         position = { ...getByKey(positionsData, key)! };
-      } else if (pendingUpdate && pendingUpdate.isIncrease) {
-        const mock = createMockPosition(pendingUpdate);
+      } else if (
+        rawPendingUpdate &&
+        isPendingMockFresh &&
+        rawPendingUpdate.isIncrease &&
+        (pendingUpdate || lastIncreaseEvent)
+      ) {
+        // Keep covered increase mocks until the next positions fetch.
+        const mock = createMockPosition(rawPendingUpdate);
         if (!mock) return acc;
-        position = mock;
+        position = pendingUpdate ? mock : { ...mock, pendingUpdate: undefined };
       } else {
         return acc;
       }
@@ -94,12 +114,15 @@ function applyOptimisticUpdates<T extends Position>({
         position = applyEventChanges(position, lastDecreaseEvent);
       }
 
-      if (
-        pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
-      ) {
-        position.pendingUpdate = pendingUpdate;
+      if (pendingUpdate) {
+        const pendingUpdateAt = BigInt(Math.floor(pendingUpdate.updatedAt / 1000));
+
+        if (
+          (pendingUpdate.isIncrease && pendingUpdateAt > position.increasedAtTime) ||
+          (!pendingUpdate.isIncrease && pendingUpdateAt > position.decreasedAtTime)
+        ) {
+          position.pendingUpdate = pendingUpdate;
+        }
       }
 
       if (position.sizeInUsd > 0) {
@@ -110,6 +133,27 @@ function applyOptimisticUpdates<T extends Position>({
     },
     {} as Record<string, T>
   );
+}
+
+function getIsPendingUpdateCoveredByEvent(
+  pendingUpdate: PendingPositionUpdate,
+  increaseEvents: PositionIncreaseEvent[] | undefined,
+  decreaseEvents: PositionDecreaseEvent[] | undefined
+) {
+  const events = pendingUpdate.isIncrease ? increaseEvents : decreaseEvents;
+
+  if (!events?.length) {
+    return false;
+  }
+
+  if (pendingUpdate.orderKey !== undefined) {
+    return events.some((event) => event.orderKey === pendingUpdate.orderKey);
+  }
+
+  // Submission block numbers can be stale or unknown.
+  const lastEventBlockNumber = events[events.length - 1].blockNumber;
+
+  return pendingUpdate.updatedAtBlock > 0n && BigInt(lastEventBlockNumber) >= pendingUpdate.updatedAtBlock;
 }
 
 export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
@@ -125,7 +169,7 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
     collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
     sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
-    increasedAtTime: pendingUpdate.updatedAtBlock,
+    increasedAtTime: 0n,
     decreasedAtTime: 0n,
     pendingBorrowingFeesUsd: 0n,
     fundingFeeAmount: 0n,
@@ -136,6 +180,7 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     pnl: 0n,
     traderDiscountAmount: 0n,
     pendingImpactAmount: 0n,
+    positionValueInUsd: 0n,
     data: "0x",
     isOpening: true,
     pendingUpdate: pendingUpdate,
@@ -178,6 +223,9 @@ function getPendingMockPositionInfo(
     pnlAfterFees: 0n,
     pnlAfterFeesPercentage: 0n,
     netPriceImapctDeltaUsd: 0n,
+    netValueAfterAllFees: 0n,
+    pnlAfterAllFees: 0n,
+    pnlAfterAllFeesPercentage: 0n,
     priceImpactDiffUsd: 0n,
     pendingImpactUsd: 0n,
     closePriceImpactDeltaUsd: 0n,

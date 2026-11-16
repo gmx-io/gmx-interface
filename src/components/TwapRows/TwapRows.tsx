@@ -13,6 +13,7 @@ import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
 import { TwapDuration } from "sdk/utils/twap/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { ValueInput } from "components/ValueInput/ValueInput";
 
@@ -100,7 +101,7 @@ const TwapRows = ({
       </SyntheticsInfoRow>
       <SyntheticsInfoRow
         label={t`Size per part`}
-        value={formatUsd(typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)}
+        value={<UsdValue usd={typeof sizeUsd === "bigint" && numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n} />}
         valueClassName="numbers"
       />
 
@@ -127,7 +128,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">every</span> {hours} hours
+        <span className="text-typography-secondary">Every</span> {hours} hours
         {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
@@ -137,7 +138,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">every</span> {minutes} minutes
+        <span className="text-typography-secondary">Every</span> {minutes} minutes
         {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
@@ -145,7 +146,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
 
   return (
     <Trans>
-      <span className="text-typography-secondary">every</span> {seconds} seconds
+      <span className="text-typography-secondary">Every</span> {seconds} seconds
     </Trans>
   );
 };

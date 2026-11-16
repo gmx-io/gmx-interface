@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import {
   usePositionsConstants,
+  useFeeDiscountFactor,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
+  selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -15,7 +17,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxMockPosition,
-  selectTradeboxSidecarEntriesSetIsUntouched,
+  selectTradeboxSidecarOrdersExistingSlEntries,
+  selectTradeboxSidecarOrdersExistingTpEntries,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
@@ -25,15 +28,16 @@ import { usePrevious } from "lib/usePrevious";
 import { SidecarSlTpOrderEntry, SidecarSlTpOrderEntryValid } from "./types";
 import { useSidecarOrdersChanged } from "./useSidecarOrdersChanged";
 import { useSidecarOrdersGroup } from "./useSidecarOrdersGroup";
-import { getCommonError, handleEntryError } from "./utils";
+import { getCommonError, getInlineDecreaseSwapType, handleEntryError } from "./utils";
 
 export * from "./types";
 
 export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const feeDiscountFactor = useFeeDiscountFactor();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
   const uiFeeFactor = useUiFeeFactor();
-  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
@@ -42,6 +46,8 @@ export function useSidecarOrders() {
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const mockPositionInfo = useSelector(selectTradeboxMockPosition);
+  const existingSlEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
+  const existingTpEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
 
   const handleSLErrors = useCallback(
     (entry: SidecarSlTpOrderEntry) =>
@@ -74,6 +80,7 @@ export function useSidecarOrders() {
   const takeProfitEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "tp",
     errorHandler: handleTPErrors,
+    initialEntries: existingTpEntries,
     canAddEntry: false,
     enablePercentage: true,
   });
@@ -81,6 +88,7 @@ export function useSidecarOrders() {
   const stopLossEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "sl",
     errorHandler: handleSLErrors,
+    initialEntries: existingSlEntries,
     canAddEntry: false,
     enablePercentage: true,
   });
@@ -109,12 +117,14 @@ export function useSidecarOrders() {
         closeSizeUsd: sizeUsd.value,
         triggerPrice: price.value,
         triggerOrderType,
+        forceDecreaseSwapType: getInlineDecreaseSwapType(mockPositionInfo),
         isLimit,
         limitPrice: triggerPrice,
         minCollateralUsd,
         minPositionSizeUsd,
         uiFeeFactor,
         userReferralInfo,
+        feeDiscountFactor,
         isSetAcceptablePriceImpactEnabled,
       });
     },
@@ -126,6 +136,7 @@ export function useSidecarOrders() {
       triggerPrice,
       uiFeeFactor,
       userReferralInfo,
+      feeDiscountFactor,
       isSetAcceptablePriceImpactEnabled,
     ]
   );
@@ -199,20 +210,27 @@ export function useSidecarOrders() {
     takeProfit.reset();
   }, [stopLoss, takeProfit]);
 
+  const carryOver = useCallback(
+    (options: { keepTypedPrice: boolean }) => {
+      stopLoss.carryOver(options);
+      takeProfit.carryOver(options);
+    },
+    [stopLoss, takeProfit]
+  );
+
   const doesEntriesChanged = useSidecarOrdersChanged();
   const prevDoesEntriesChanged = usePrevious(doesEntriesChanged);
 
   useEffect(() => {
     if (prevDoesEntriesChanged === false && doesEntriesChanged) {
-      reset();
-      setIsUntouched("sl", false);
-      setIsUntouched("tp", false);
+      carryOver({ keepTypedPrice: true });
     }
-  }, [doesEntriesChanged, prevDoesEntriesChanged, reset, setIsUntouched]);
+  }, [carryOver, doesEntriesChanged, prevDoesEntriesChanged]);
 
   return {
     stopLoss,
     takeProfit,
     reset,
+    carryOver,
   };
 }

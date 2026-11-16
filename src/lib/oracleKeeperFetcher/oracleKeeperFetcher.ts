@@ -1,8 +1,9 @@
 import { ContractsChainId } from "config/chains";
+import type { UiFlag } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { Bar, FromNewToOldArray } from "domain/tradingview/types";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { withFallback } from "lib/FallbackTracker/withFallback";
-import { metrics, OracleKeeperFailureCounter } from "lib/metrics";
+import { metrics, OracleKeeperFailureCounter, TickersPartialDataCounter } from "lib/metrics";
 import { subscribeForOracleTrackerMetrics } from "lib/metrics/oracleTrackerMetrics";
 import {
   getOracleKeeperFallbackUrls,
@@ -15,6 +16,7 @@ import { buildUrl } from "sdk/utils/buildUrl";
 import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
+  ApiMarket,
   ApyInfo,
   ApyPeriod,
   BatchReportBody,
@@ -26,6 +28,7 @@ import {
   RawIncentivesStats,
   TickersResponse,
 } from "./types";
+import { consumeUiFlagsPrefetch } from "./uiFlagsPrefetch";
 
 function parseOracleCandle(rawCandle: number[]): Bar {
   const [time, open, high, low, close] = rawCandle;
@@ -45,8 +48,11 @@ export class OracleKeeperFetcher implements OracleFetcher {
   chainId: ContractsChainId;
   mainUrl: string;
   oracleTracker: OracleKeeperFallbackTracker;
+  expectedTickerAddresses = new Set<string>();
+  private isTracking = false;
+  private didSubscribe = false;
 
-  constructor(p: { chainId: ContractsChainId }) {
+  constructor(p: { chainId: ContractsChainId; track?: boolean }) {
     this.chainId = p.chainId;
     this.mainUrl = getOracleKeeperUrl(this.chainId);
 
@@ -58,21 +64,59 @@ export class OracleKeeperFetcher implements OracleFetcher {
       networkStatusObserver: NetworkStatusObserver.getInstance(),
     });
 
+    if (p.track !== false) {
+      this.ensureTracking();
+    }
+  }
+
+  ensureTracking() {
+    if (this.isTracking) {
+      return;
+    }
+
+    this.isTracking = true;
     this.oracleTracker.startTracking();
-    subscribeForOracleTrackerMetrics(this.oracleTracker);
+
+    if (!this.didSubscribe) {
+      subscribeForOracleTrackerMetrics(this.oracleTracker);
+      this.didSubscribe = true;
+    }
+  }
+
+  pauseTracking() {
+    if (!this.isTracking) {
+      return;
+    }
+
+    this.isTracking = false;
+    this.oracleTracker.stopTracking();
   }
 
   get url() {
     return this.oracleTracker.getCurrentEndpoints().primary;
   }
 
-  handleFailure(path: string) {
+  handleFailure(path: string, endpoint: string = this.url) {
     metrics.pushCounter<OracleKeeperFailureCounter>("oracleKeeper.failure", {
       chainId: this.chainId,
       method: path.split("?")[0],
     });
 
-    this.oracleTracker.reportFailure(this.url);
+    this.oracleTracker.reportFailure(endpoint);
+  }
+
+  handlePartialTickers(endpoint: string) {
+    // eslint-disable-next-line no-console
+    console.warn("tickersPartialData", { endpoint });
+
+    _debugOracleKeeper?.dispatchEvent({
+      type: "tickers-partial",
+      chainId: this.chainId,
+      endpoint,
+    });
+
+    metrics.pushCounter<TickersPartialDataCounter>("tickersPartialData");
+    this.handleFailure("tickers", endpoint);
   }
 
   request = (
@@ -80,14 +124,18 @@ export class OracleKeeperFetcher implements OracleFetcher {
     opts: {
       query?: Record<string, string | number | undefined | boolean>;
       validate?: (res: any) => Error | undefined;
+      isComplete?: (res: any) => boolean;
+      onIncomplete?: (endpoint: string) => void;
       // For simplicity, support only tickers debug id for now
       debugId?: "tickers";
     }
   ) => {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
+    let lastIncompleteResult: any;
 
-    return withFallback({
+    return withFallback<any, string>({
       endpoints: [endpoints.primary, ...endpoints.fallbacks],
+      shouldFallback: (error, result) => Boolean(error) || (opts.isComplete !== undefined && !opts.isComplete(result)),
       fn: (endpoint) => {
         if (opts.debugId) {
           _debugOracleKeeper?.dispatchEvent({
@@ -123,9 +171,15 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
             if (
               opts.debugId === "tickers" &&
+              endpoint === endpoints.primary &&
               _debugOracleKeeper?.getFlag(OracleKeeperDebugFlags.TriggerPartialTickers)
             ) {
-              return res.slice(0, Math.floor(res.length / 2));
+              res = res.slice(0, Math.floor(res.length / 2));
+            }
+
+            if (opts.isComplete !== undefined && !opts.isComplete(res)) {
+              lastIncompleteResult = res;
+              opts.onIncomplete?.(endpoint);
             }
 
             return res;
@@ -145,6 +199,12 @@ export class OracleKeeperFetcher implements OracleFetcher {
             throw e;
           });
       },
+    }).catch((error) => {
+      if (lastIncompleteResult !== undefined) {
+        return lastIncompleteResult;
+      }
+
+      throw error;
     });
   };
 
@@ -161,6 +221,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
   };
 
   fetchTickers(): Promise<TickersResponse> {
+    const incompleteEndpoints: string[] = [];
+
     return this.request("/prices/tickers", {
       validate: (res) => {
         if (!res.length) {
@@ -169,14 +231,24 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
         return undefined;
       },
+      isComplete: (res: TickersResponse) => this.hasExpectedTickers(res),
+      onIncomplete: (endpoint) => incompleteEndpoints.push(endpoint),
       debugId: "tickers",
-    })
-      .then((res) => {
-        return res;
-      })
-      .catch((error) => {
-        throw error;
-      });
+    }).then((tickers: TickersResponse) => {
+      if (this.hasExpectedTickers(tickers)) {
+        incompleteEndpoints.forEach((endpoint) => this.handlePartialTickers(endpoint));
+      }
+
+      this.expectedTickerAddresses = new Set(tickers.map((ticker) => ticker.tokenAddress));
+
+      return tickers;
+    });
+  }
+
+  hasExpectedTickers(tickers: TickersResponse) {
+    const received = new Set(tickers.map((ticker) => ticker.tokenAddress));
+
+    return Array.from(this.expectedTickerAddresses).every((address) => received.has(address));
   }
 
   fetch24hPrices(): Promise<DayPriceCandle[]> {
@@ -228,7 +300,24 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.request("/performance/snapshots", { query: { period, address } });
   }
 
-  fetchUiFlags(): Promise<Record<string, boolean>> {
-    return this.request("/ui-flags", {});
+  fetchUiFlags(): Promise<Record<string, UiFlag>> {
+    const prefetched = consumeUiFlagsPrefetch(
+      buildUrl(this.oracleTracker.getCurrentEndpoints().primary, "/ui-flags/v2")
+    );
+
+    if (prefetched) {
+      return prefetched.then((flags) => (flags ? (flags as Record<string, UiFlag>) : this.request("/ui-flags/v2", {})));
+    }
+
+    return this.request("/ui-flags/v2", {});
+  }
+
+  fetchMarkets(): Promise<ApiMarket[]> {
+    return this.request("/markets", {
+      validate: (res) => {
+        if (!res || !Array.isArray(res.markets)) return new Error("Invalid /markets response");
+        return undefined;
+      },
+    }).then((res) => res.markets as ApiMarket[]);
   }
 }

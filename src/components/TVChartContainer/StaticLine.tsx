@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useLatest } from "react-use";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 
@@ -15,16 +16,21 @@ export function StaticLine({
   positionData,
   lineType,
   tvWidgetRef,
+  onClose,
   lineLength = -40,
   bodyFontSizePt = 14,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
+  onClose?: (positionKey: string) => void;
   lineLength?: number;
   bodyFontSizePt?: number;
 } & StaticChartLine) {
   const { theme } = useTheme();
+  const { chartLinesSizeInTokens, setChartLinesSizeInTokens } = useSettings();
   const lineApi = useRef<IPositionLineAdapter | undefined>(undefined);
-  const [showSizeInUsd, setShowSizeInUsd] = useState(true);
+  const showSizeInUsd = !chartLinesSizeInTokens;
+  const chartLinesSizeInTokensRef = useLatest(chartLinesSizeInTokens);
+  const setChartLinesSizeInTokensRef = useLatest(setChartLinesSizeInTokens);
 
   const isPositionEntry = !!positionData;
   const isLiquidation = lineType === "liquidation";
@@ -52,9 +58,10 @@ export function StaticLine({
     return `${title} · PnL ${pnlFormatted} · ${sizeFormatted}`;
   };
 
-  const showSizeInUsdRef = useLatest(showSizeInUsd);
   const getDisplayTextRef = useLatest(getDisplayText);
   const lineLengthRef = useLatest(lineLength);
+  const latestOnClose = useLatest(onClose);
+  const positionKeyRef = useLatest(positionData?.positionKey);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -75,7 +82,7 @@ export function StaticLine({
 
       lineApi.current = positionLine;
 
-      const displayText = getDisplayTextRef.current(showSizeInUsdRef.current);
+      const displayText = getDisplayTextRef.current(!chartLinesSizeInTokensRef.current);
 
       positionLine
         .setText(displayText)
@@ -96,15 +103,22 @@ export function StaticLine({
           .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
           .setQuantityBorderColor(bodyBorderColor)
           .setQuantityTextColor(chartLabelColors.button.icon[theme])
-          .setProtectTooltip(showSizeInUsdRef.current ? t`Show size in tokens` : t`Show size in USD`)
+          .setProtectTooltip(!chartLinesSizeInTokensRef.current ? t`Show size in tokens` : t`Show size in USD`)
           .onModify(() => {
-            setShowSizeInUsd((prev) => {
-              const newValue = !prev;
-              lineApi.current?.setText(getDisplayTextRef.current(newValue));
-              lineApi.current?.setProtectTooltip(newValue ? t`Show size in tokens` : t`Show size in USD`);
-              return newValue;
-            });
+            setChartLinesSizeInTokensRef.current(!chartLinesSizeInTokensRef.current);
           });
+
+        positionLine
+          .setCloseTooltip(t`Close position`)
+          .onClose(() => {
+            const positionKey = positionKeyRef.current;
+            if (positionKey) {
+              latestOnClose.current?.(positionKey);
+            }
+          })
+          .setCloseButtonBackgroundColor(chartLabelColors.button.bg[theme])
+          .setCloseButtonBorderColor(bodyBorderColor)
+          .setCloseButtonIconColor(chartLabelColors.button.icon[theme]);
       } else {
         positionLine.setQuantity("");
       }
@@ -141,8 +155,11 @@ export function StaticLine({
     bodyBorderColor,
     isPositionEntry,
     getDisplayTextRef,
-    showSizeInUsdRef,
+    chartLinesSizeInTokensRef,
+    setChartLinesSizeInTokensRef,
     lineLengthRef,
+    latestOnClose,
+    positionKeyRef,
     bodyFontSizePt,
     theme,
   ]);
@@ -159,11 +176,13 @@ export function StaticLine({
     if (!lineApi.current || !isPositionEntry) return;
 
     lineApi.current.setText(displayText);
+    lineApi.current.setProtectTooltip(showSizeInUsd ? t`Show size in tokens` : t`Show size in USD`);
     lineApi.current.setLineColor(lineColor);
     lineApi.current.setBodyBackgroundColor(bodyBgColor);
     lineApi.current.setBodyBorderColor(bodyBorderColor);
     lineApi.current.setQuantityBorderColor(bodyBorderColor);
-  }, [displayText, bodyBgColor, bodyBorderColor, lineColor, isPositionEntry]);
+    lineApi.current.setCloseButtonBorderColor(bodyBorderColor);
+  }, [displayText, showSizeInUsd, bodyBgColor, bodyBorderColor, lineColor, isPositionEntry]);
 
   return null;
 }

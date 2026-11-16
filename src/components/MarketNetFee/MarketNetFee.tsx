@@ -1,8 +1,9 @@
-import "./MarketNetFee.scss";
 import { Trans, t } from "@lingui/macro";
 
 import { formatRatePercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
+
+import { TooltipRow, TooltipRows, TooltipText, TooltipTitle } from "components/Tooltip/TooltipBlocks";
 
 type Props = {
   fundingRateHourly: bigint;
@@ -32,32 +33,30 @@ export default function MarketNetFee(props: Props) {
   const { borrowRateHourly, fundingRateHourly, isLong } = props;
   const netFeeHourly = borrowRateHourly + fundingRateHourly;
   const positionType = isLong ? t`Long positions` : t`Short positions`;
-  const netRate = t`Net rate`;
+  const netRate = t`net rate`;
 
   return (
-    <>
-      <div className="mb-5 text-typography-secondary">
-        {positionType} {netRate}:
-      </div>
-      <ul className="net-fees-over-time">
-        {RATE_PERIODS.map((period) => {
-          const netFee = netFeeHourly * BigInt(period.hours);
-          return (
-            <li key={period.label}>
-              <span className="net-fee__period">{period.label}:</span>
-              <span className={getPositiveOrNegativeClass(netFee)}>
-                {formatRatePercentage(netFee, {
-                  displayDecimals: period.decimals,
-                })}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-      <div className="mt-5">
+    <TooltipRows>
+      <TooltipTitle>
+        {positionType} {netRate}
+      </TooltipTitle>
+      <TooltipText>
         <NetFeeMessage {...props} />
-      </div>
-    </>
+      </TooltipText>
+      {RATE_PERIODS.map((period) => {
+        const netFee = netFeeHourly * BigInt(period.hours);
+        return (
+          <TooltipRow
+            key={period.label}
+            label={period.label}
+            value={formatRatePercentage(netFee, {
+              displayDecimals: period.decimals,
+            })}
+            valueClassName={getPositiveOrNegativeClass(netFee)}
+          />
+        );
+      })}
+    </TooltipRows>
   );
 }
 

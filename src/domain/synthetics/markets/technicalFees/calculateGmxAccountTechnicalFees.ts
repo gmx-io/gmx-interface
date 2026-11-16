@@ -12,7 +12,7 @@ import { buildAndSignMultichainGlvWithdrawalTxn } from "domain/synthetics/market
 import { buildAndSignMultichainWithdrawalTxn } from "domain/synthetics/markets/createMultichainWithdrawalTxn";
 import { estimatePureLpActionExecutionFee } from "domain/synthetics/markets/feeEstimation/estimatePureLpActionExecutionFee";
 import { convertToUsd } from "domain/tokens";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
@@ -53,7 +53,7 @@ async function calculateGmxAccountDepositTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    gasPrice: params.gasPrice,
+    gasPrice: params.globalExpressParams.gasPrice,
   });
 
   const transferRequests = buildDepositTransferRequests({
@@ -193,7 +193,7 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     chainId: params.chainId,
     gasLimits: params.gasLimits,
     tokensData: params.tokensData,
-    gasPrice: params.gasPrice,
+    gasPrice: params.globalExpressParams.gasPrice,
   });
 
   const transferRequests = buildWithdrawalTransferRequests({

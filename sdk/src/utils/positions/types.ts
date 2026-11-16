@@ -24,6 +24,7 @@ export type Position = {
   traderDiscountAmount: bigint;
   uiFeeAmount: bigint;
   pendingImpactAmount: bigint;
+  positionValueInUsd: bigint;
   data: string;
 };
 
@@ -48,6 +49,9 @@ export type PositionInfo = Position & {
   pnlPercentage: bigint;
   pnlAfterFees: bigint;
   pnlAfterFeesPercentage: bigint;
+  netValueAfterAllFees: bigint;
+  pnlAfterAllFees: bigint;
+  pnlAfterAllFeesPercentage: bigint;
   netPriceImapctDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
   pendingImpactUsd: bigint;
@@ -60,6 +64,7 @@ export type PositionInfo = Position & {
   uiFeeUsd: bigint;
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
+  fundingSettlement?: "nextOrder";
 };
 
 export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };

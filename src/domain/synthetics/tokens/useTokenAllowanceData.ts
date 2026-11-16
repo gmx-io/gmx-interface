@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 import type { AnyChainId } from "config/chains";
-import { isSourceChainForAnySettlementChain, MULTICALLS_MAP } from "config/multichain";
+import { getBlockNumberCall, isSourceChainForAnySettlementChain } from "config/multichain";
 import { ApprovalStatus, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
@@ -54,14 +54,14 @@ export function useTokensAllowanceData(
         return contracts;
       }, {} as MulticallRequestConfig<any>);
 
-      const multicallAddress = MULTICALLS_MAP[currentChainId];
+      const blockNumberCall = getBlockNumberCall(currentChainId);
 
-      allowanceCalls.multicall = {
-        contractAddress: multicallAddress,
-        abiId: "Multicall",
+      allowanceCalls.blockNumber = {
+        contractAddress: blockNumberCall.contractAddress,
+        abiId: blockNumberCall.abiId,
         calls: {
           blockNumber: {
-            methodName: "getBlockNumber",
+            methodName: blockNumberCall.methodName,
             params: [],
           },
         },
@@ -72,14 +72,14 @@ export function useTokensAllowanceData(
     parseResponse: (res) => {
       const tokenAllowance: TokensAllowanceData = {};
       for (const address in res.data) {
-        if (address === "multicall") {
+        if (address === "blockNumber") {
           continue;
         }
 
         tokenAllowance[address] = res.data[address].allowance.returnValues[0];
       }
 
-      const multicallContextBlockNumber = res.data.multicall.blockNumber.returnValues[0] as bigint;
+      const multicallContextBlockNumber = res.data.blockNumber.blockNumber.returnValues[0] as bigint;
 
       return {
         tokenAllowance,

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY } from "config/localStorage";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
+import { resolveWithdrawalPaySource } from "domain/multichain/resolveWithdrawalPaySource";
 import { GlvInfoData, MarketsInfoData, useMarketTokensDataRequest } from "domain/synthetics/markets";
 import { isGlvAddress } from "domain/synthetics/markets/glv";
 import { GmPaySource, Mode, Operation, isMode, isOperation } from "domain/synthetics/markets/types";
@@ -16,7 +17,7 @@ import { useSafeState } from "lib/useSafeState";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import { getGmSwapBoxAvailableModes } from "components/GmSwap/GmSwapBox/getGmSwapBoxAvailableModes";
-import { FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
+import { ConversionRoutePreference, FocusedInput } from "components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/types";
 import {
   useMultichainMarketTokensBalancesRequest,
   useMultichainTokens,
@@ -71,6 +72,10 @@ export type PoolsDetailsState = {
   secondTokenInputValue: string;
   marketOrGlvTokenInputValue: string;
   isMarketForGlvSelectedManually: boolean;
+  isFirstTokenPinned: boolean;
+  isTransitRoute: boolean;
+  transitAmountOut: bigint | undefined;
+  conversionRoutePreference: ConversionRoutePreference;
   multichainTokensResult: ReturnType<typeof useMultichainTokens>;
 
   setOperation: (operation: Operation) => void;
@@ -85,6 +90,10 @@ export type PoolsDetailsState = {
   setSecondTokenInputValue: (value: string) => void;
   setMarketOrGlvTokenInputValue: (value: string) => void;
   setIsMarketForGlvSelectedManually: (value: boolean) => void;
+  setIsFirstTokenPinned: (value: boolean) => void;
+  setIsTransitRoute: (value: boolean) => void;
+  setTransitAmountOut: (value: bigint | undefined) => void;
+  setConversionRoutePreference: (value: ConversionRoutePreference) => void;
 };
 
 export function usePoolsDetailsState({
@@ -94,6 +103,7 @@ export function usePoolsDetailsState({
   glvData,
   withGlv,
   multichainMarketTokensBalancesResult,
+  isExpressAvailable,
 }: {
   enabled: boolean;
   marketsInfoData: MarketsInfoData | undefined;
@@ -101,6 +111,7 @@ export function usePoolsDetailsState({
   glvData: GlvInfoData | undefined;
   withGlv: boolean;
   multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
+  isExpressAvailable: boolean;
 }): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
@@ -134,7 +145,23 @@ export function usePoolsDetailsState({
     "settlementChain"
   );
 
-  const paySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const savedPaySource = fallbackPaySource({ operation, mode, paySource: rawPaySource, srcChainId });
+  const resolvedPaySource =
+    operation === Operation.Withdrawal
+      ? resolveWithdrawalPaySource({
+          paySource: savedPaySource,
+          srcChainId,
+          token:
+            getByKey(glvData, glvOrMarketAddress)?.glvToken ?? getByKey(withdrawalMarketTokensData, glvOrMarketAddress),
+          isSourceChainBalanceLoading: multichainMarketTokensBalancesResult.isLoading,
+        })
+      : savedPaySource;
+  // Not saved: Express reads off for a render after the account loads,
+  // and the choice should come back when Express is available again
+  const paySource =
+    resolvedPaySource === "gmxAccount" && srcChainId === undefined && !isExpressAvailable
+      ? "settlementChain"
+      : resolvedPaySource;
 
   useEffect(
     function fallbackSourceChainPaySource() {
@@ -153,6 +180,11 @@ export function usePoolsDetailsState({
       }
     | undefined
   >([chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "inputTokenAddresses"], undefined);
+
+  const [isFirstTokenPinned = false, setIsFirstTokenPinned] = useLocalStorageSerializeKeySafe<boolean>(
+    [chainId, SYNTHETICS_MARKET_DEPOSIT_TOKEN_KEY, isDeposit, glvOrMarketAddress, "isFirstTokenPinned"],
+    false
+  );
 
   const firstTokenAddress = inputTokenAddresses?.first;
   const secondTokenAddress =
@@ -213,6 +245,9 @@ export function usePoolsDetailsState({
   const [secondTokenInputValue, setSecondTokenInputValue] = useSafeState<string>("");
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = useSafeState<string>("");
   const [isMarketForGlvSelectedManually, setIsMarketForGlvSelectedManually] = useState(false);
+  const [isTransitRoute, setIsTransitRoute] = useState(false);
+  const [transitAmountOut, setTransitAmountOut] = useState<bigint | undefined>(undefined);
+  const [conversionRoutePreference, setConversionRoutePreference] = useState<ConversionRoutePreference>("auto");
 
   useEffect(
     function syncOperationAndModeFromQueryParams() {
@@ -284,6 +319,10 @@ export function usePoolsDetailsState({
       secondTokenInputValue,
       marketOrGlvTokenInputValue,
       isMarketForGlvSelectedManually,
+      isFirstTokenPinned,
+      isTransitRoute,
+      transitAmountOut,
+      conversionRoutePreference,
       multichainTokensResult,
       // Setters
       setOperation,
@@ -298,6 +337,10 @@ export function usePoolsDetailsState({
       setSecondTokenInputValue,
       setMarketOrGlvTokenInputValue,
       setIsMarketForGlvSelectedManually,
+      setIsFirstTokenPinned,
+      setIsTransitRoute,
+      setTransitAmountOut,
+      setConversionRoutePreference,
     };
   }, [
     enabled,
@@ -314,11 +357,16 @@ export function usePoolsDetailsState({
     secondTokenInputValue,
     marketOrGlvTokenInputValue,
     isMarketForGlvSelectedManually,
+    isFirstTokenPinned,
+    isTransitRoute,
+    transitAmountOut,
+    conversionRoutePreference,
     multichainTokensResult,
     setGlvOrMarketAddress,
     setPaySource,
     setFirstTokenAddress,
     setSecondTokenAddress,
+    setIsFirstTokenPinned,
     setFirstTokenInputValue,
     setSecondTokenInputValue,
     setMarketOrGlvTokenInputValue,

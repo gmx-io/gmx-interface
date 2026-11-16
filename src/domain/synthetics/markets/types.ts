@@ -59,6 +59,17 @@ export type ClaimableFundingData = {
   [marketAddress: string]: ClaimableFunding;
 };
 
+export type UserMarketEarnings = {
+  total: bigint;
+  recent: bigint;
+  expected365d: bigint;
+};
+
+export type UserEarningsData = {
+  byMarketAddress: Record<string, UserMarketEarnings>;
+  allMarkets: UserMarketEarnings;
+};
+
 export type CreateDepositParamsAddresses = {
   receiver: string;
   callbackContract: string;

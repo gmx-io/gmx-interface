@@ -1,0 +1,25 @@
+diff --git a/_types/types/misc.d.ts b/_types/types/misc.d.ts
+--- a/_types/types/misc.d.ts
++++ b/_types/types/misc.d.ts
+@@ -1,6 +1,6 @@
+ import type { OneOf } from './utils.js';
+ export type ByteArray = Uint8Array;
+-export type Hex = `0x${string}`;
+-export type Hash = `0x${string}`;
++export type Hex = string;
++export type Hash = string;
+ export type LogTopic = Hex | readonly Hex[] | null;
+ export type SignableMessage = string | {
+diff --git a/types/misc.ts b/types/misc.ts
+--- a/types/misc.ts
++++ b/types/misc.ts
+@@ -1,7 +1,7 @@
+ import type { OneOf } from './utils.js'
+ 
+ export type ByteArray = Uint8Array
+-export type Hex = `0x${string}`
+-export type Hash = `0x${string}`
++export type Hex = string
++export type Hash = string
+ export type LogTopic = Hex | readonly Hex[] | null
+ export type SignableMessage =

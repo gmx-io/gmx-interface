@@ -5,8 +5,9 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 interface MarginDestinationDialogProps {
   isVisible: boolean;
@@ -36,6 +37,7 @@ export function MarginDestinationDialog({
   }
 
   function handleNo() {
+    settings.setReceiveToGmxAccount(!chosenReceiveToGmxAccount);
     if (dontAskAgain) {
       setDialogHidden(true);
     }
@@ -46,7 +48,7 @@ export function MarginDestinationDialog({
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={<Trans>Update Default Destination</Trans>}
+      label={<Trans>Update default destination</Trans>}
       contentClassName="w-[380px]"
       zIndex={1002}
     >
@@ -54,33 +56,16 @@ export function MarginDestinationDialog({
         <div className="text-14 text-typography-secondary">
           <Trans>
             You chose to send the remaining margin to your{" "}
-            <span className="font-medium text-typography-primary">{chosenLabel}</span>. Do you want to make this the
-            default destination when closing positions?
+            <span className="font-medium text-typography-primary">{chosenLabel}</span>. Make this the default
+            destination when closing positions?
           </Trans>
         </div>
 
-        <TooltipWithPortal
+        <StandardTooltip
           handle={<Trans>How do I choose?</Trans>}
           handleClassName="text-14 text-typography-secondary"
           variant="iconStroke"
-          content={
-            <div>
-              <Trans>
-                Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always
-                determine where to return the margin automatically.
-                <br />
-                <br />
-                Choose:
-                <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
-                Arbitrum
-                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin on
-                GMX.
-                <br />
-                <br />
-                You can change this preference anytime in Settings or when closing a position.
-              </Trans>
-            </div>
-          }
+          content={<MarginDestinationTooltipContent />}
         />
 
         <div className="flex flex-col gap-8">

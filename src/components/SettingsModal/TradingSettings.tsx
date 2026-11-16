@@ -1,10 +1,10 @@
-import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, getViemChain } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
-import { getIsExpressSupported } from "config/features";
+import { getNetworkFeatures } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import { MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING } from "config/multichain";
 import { DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS } from "config/twap";
@@ -15,22 +15,27 @@ import { SettlementChainWarningContainer } from "domain/multichain/SettlementCha
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
+import { getBalanceByBalanceType } from "domain/synthetics/tokens";
+import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
+import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
-import { EMPTY_ARRAY } from "lib/objects";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useIsContractAccount, useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
+import { ExpressTradingCannotSignBanner } from "components/ExpressTradingCannotSignBanner/ExpressTradingCannotSignBanner";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
+import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ExpressIcon from "img/ic_express.svg?react";
 import HourGlassIcon from "img/ic_hourglass.svg?react";
@@ -59,20 +64,70 @@ export function TradingSettings({
   numberOfParts,
   onClose,
 }: TradingSettingsProps) {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
   const { isConnected } = useAccount();
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
-  const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-  const isGeminiWallet = useIsGeminiWallet();
+  const { isWalletOutOfGasPaymentBalance, isGmxAccountOutOfGasPaymentBalance } = useIsOutOfGasPaymentBalance();
+  const { canSignTypedData } = useWalletCanSignTypedData();
+  const { isContractAccount } = useIsContractAccount();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled =
-    (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const isOutOfGasPaymentBalance =
+    srcChainId === undefined
+      ? isWalletOutOfGasPaymentBalance && isGmxAccountOutOfGasPaymentBalance
+      : isGmxAccountOutOfGasPaymentBalance;
+  const isExpressTradingDisabled = !canSignTypedData || (isOutOfGasPaymentBalance && srcChainId === undefined);
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
+  const srcChainNativeTokenSymbol =
+    srcChainId === undefined ? undefined : getViemChain(srcChainId).nativeCurrency.symbol;
+  const srcChainName = srcChainId === undefined ? undefined : getChainName(srcChainId);
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const gasPaymentTokens = getGasPaymentTokens(chainId);
+
+  const hasWalletGasPaymentTokenBalance = useMemo(
+    () =>
+      gasPaymentTokens.some(
+        (tokenAddress) =>
+          (getBalanceByBalanceType(getByKey(tokensData, tokenAddress), TokenBalanceType.Wallet) ?? 0n) > 0n
+      ),
+    [gasPaymentTokens, tokensData]
+  );
+  const hasGmxAccountGasPaymentTokenBalance = useMemo(
+    () =>
+      gasPaymentTokens.some(
+        (tokenAddress) =>
+          (getBalanceByBalanceType(getByKey(tokensData, tokenAddress), TokenBalanceType.GmxAccount) ?? 0n) > 0n
+      ),
+    [gasPaymentTokens, tokensData]
+  );
+  const showWalletGasPaymentTokenSelector = srcChainId === undefined || hasWalletGasPaymentTokenBalance;
+  const showGmxAccountGasPaymentTokenSelector = srcChainId !== undefined || hasGmxAccountGasPaymentTokenBalance;
+
+  const expressDisabledTooltip = !canSignTypedData ? (
+    srcChainId !== undefined ? (
+      t`Your wallet cannot sign messages. Connect a different wallet to trade.`
+    ) : (
+      t`Your wallet cannot sign messages. Use Classic mode to trade.`
+    )
+  ) : isExpressTradingDisabled ? (
+    <TooltipContent>
+      <TooltipText>
+        <Trans>Express needs {gasPaymentTokensText} in your Wallet. Swap or bridge one of them.</Trans>
+      </TooltipText>
+      {showGmxAccountGasPaymentTokenSelector && (
+        <TooltipText>
+          <Trans>Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them.</Trans>
+        </TooltipText>
+      )}
+    </TooltipContent>
+  ) : undefined;
+
+  const oneClickDisabledTooltip =
+    expressDisabledTooltip ?? (isContractAccount ? t`One-Click Trading is unavailable for smart wallets` : undefined);
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
@@ -81,10 +136,17 @@ export function TradingSettings({
     },
     [settings]
   );
+  const handleSelectGmxAccountGasPaymentToken = useCallback(
+    (tokenAddress: string) => {
+      settings.setGmxAccountGasPaymentTokenAddress(tokenAddress);
+      window.dispatchEvent(new CustomEvent("gasPaymentTokenChanged"));
+    },
+    [settings]
+  );
 
   return (
     <div>
-      {getIsExpressSupported(chainId) && (
+      {features.express && (
         <>
           <SettingsSection>
             <div className="text-14 font-medium text-typography-primary">
@@ -116,18 +178,14 @@ export function TradingSettings({
                   Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.
                   <br />
                   <br />
-                  Gas payments in {gasPaymentTokensText}.
+                  Fees are paid in your gas payment token from the balance the action uses.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
+              disabledTooltip={expressDisabledTooltip}
               chip={
-                <Chip color="gray">
+                <Chip variant="outline">
                   <Trans>Optimal</Trans>
                 </Chip>
               }
@@ -139,23 +197,19 @@ export function TradingSettings({
               title={<Trans>Express + One-Click</Trans>}
               description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
-              disabled={isExpressTradingDisabled}
-              disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
-                ) : undefined
-              }
+              disabled={isExpressTradingDisabled || isContractAccount}
+              disabledTooltip={oneClickDisabledTooltip}
               info={
                 <Trans>
                   GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
                   reliability, even during network congestion.
                   <br />
                   <br />
-                  Gas payments in {gasPaymentTokensText}.
+                  Fees are paid in your gas payment token from the balance the action uses.
                 </Trans>
               }
               chip={
-                <Chip color="blue">
+                <Chip variant="blue">
                   <Trans>Fastest</Trans>
                 </Chip>
               }
@@ -163,21 +217,54 @@ export function TradingSettings({
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
 
-            {isOutOfGasPaymentBalance && !(isNonEoaAccountOnAnyChain || isGeminiWallet) && (
-              <ExpressTradingOutOfGasBanner onClose={onClose} />
+            {canSignTypedData ? (
+              isOutOfGasPaymentBalance && <ExpressTradingOutOfGasBanner onClose={onClose} />
+            ) : (
+              <ExpressTradingCannotSignBanner />
             )}
 
             <OldSubaccountWithdraw />
 
-            {Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) && (
-              <OneClickAdvancedSettings />
-            )}
+            {/* An active session keeps its limits visible even when express trading is unavailable. */}
+            {(Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) ||
+              (isConnected && !isExpressTradingDisabled && !isContractAccount)) && <OneClickAdvancedSettings />}
 
             {settings.expressOrdersEnabled && (
-              <GasPaymentTokenSelector
-                currentTokenAddress={settings.gasPaymentTokenAddress}
-                onSelectToken={handleSelectGasPaymentToken}
-              />
+              <div className="flex flex-col gap-8">
+                <div className="text-14 font-medium text-typography-secondary">
+                  <Trans>Gas payment token</Trans>
+                </div>
+                <div className="text-12 text-typography-secondary">
+                  {srcChainId === undefined ? (
+                    <Trans>
+                      Used for Express and One-Click fees only, paid from the balance the action uses. Classic
+                      transactions, same-chain GMX Account transfers, and bridges pay gas in {nativeTokenSymbol} from
+                      your Wallet.
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Used for Express and One-Click fees only, paid from the balance the action uses. Bridges pay gas
+                      in {srcChainNativeTokenSymbol} from your {srcChainName} wallet.
+                    </Trans>
+                  )}
+                </div>
+                {showWalletGasPaymentTokenSelector && (
+                  <GasPaymentTokenSelector
+                    balanceType={TokenBalanceType.Wallet}
+                    currentTokenAddress={settings.gasPaymentTokenAddress}
+                    label={<Trans>Wallet</Trans>}
+                    onSelectToken={handleSelectGasPaymentToken}
+                  />
+                )}
+                {showGmxAccountGasPaymentTokenSelector && (
+                  <GasPaymentTokenSelector
+                    balanceType={TokenBalanceType.GmxAccount}
+                    currentTokenAddress={settings.gmxAccountGasPaymentTokenAddress}
+                    label={<Trans>GMX Account</Trans>}
+                    onSelectToken={handleSelectGmxAccountGasPaymentToken}
+                  />
+                )}
+              </div>
             )}
           </SettingsSection>
         </>
@@ -186,15 +273,10 @@ export function TradingSettings({
       {srcChainId && !isAvalancheEmpty && isConnected && (
         <SettingsSection className="mt-2">
           <div className="flex items-center justify-between">
-            <TooltipWithPortal
+            <LabelWithTooltip
               className="font-medium"
-              variant="icon"
-              content={
-                <Trans>
-                  Network for your GMX Account and positions. Balances and positions don't transfer between networks.
-                </Trans>
-              }
-              handle={<Trans>Settlement chain</Trans>}
+              tooltip={t`Network for your GMX Account and positions. Balances and positions don't transfer between networks.`}
+              label={t`Settlement chain`}
             />
             <DropdownSelector
               slim
@@ -226,21 +308,22 @@ export function TradingSettings({
 
       <SettingsSection className="mt-2">
         <InputSetting
-          title={<Trans>Default allowed slippage</Trans>}
+          title={t`Default allowed slippage`}
           description={
-            <div>
-              <Trans>
-                The difference between expected and actual execution price due to volatility. Orders won't execute if
-                slippage exceeds your maximum.
-                <br />
-                <br />
-                Slippage differs from price impact, which is based on open interest imbalances.
-              </Trans>{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  The difference between expected and actual execution price due to volatility. Orders won't execute if
+                  slippage exceeds your maximum.
+                  <br />
+                  <br />
+                  Slippage differs from price impact, which is based on open interest imbalances.
+                </Trans>
+              </TooltipText>
+              <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
                 <Trans>Read more</Trans>
-              </ExternalLink>
-              .
-            </div>
+              </TooltipLink>
+            </TooltipContent>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
           value={parseFloat(String(settings.savedAllowedSlippage))}
@@ -248,31 +331,30 @@ export function TradingSettings({
           suggestions={EMPTY_ARRAY}
         />
 
-        <InputSetting
-          title={<Trans>TWAP number of parts</Trans>}
-          description={
-            <div>
-              <Trans>Default parts for TWAP orders</Trans>
-            </div>
-          }
-          defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
-          value={numberOfParts}
-          onChange={onChangeTwapNumberOfParts}
-          onBlur={onBlurTwapNumberOfParts}
-          type="number"
-        />
+        {features.twap && (
+          <InputSetting
+            title={t`TWAP number of parts`}
+            description={t`Default parts for TWAP orders`}
+            defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
+            value={numberOfParts}
+            onChange={onChangeTwapNumberOfParts}
+            onBlur={onBlurTwapNumberOfParts}
+            type="number"
+          />
+        )}
 
         {settings.shouldUseExecutionFeeBuffer && (
           <InputSetting
-            title={<Trans>Max network fee buffer</Trans>}
+            title={t`Max network fee buffer`}
             description={
-              <div>
-                <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>
+                </TooltipText>
+                <TooltipLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
-              </div>
+                </TooltipLink>
+              </TooltipContent>
             }
             defaultValue={30}
             value={parseFloat(String(settings.executionFeeBufferBps))}
@@ -284,28 +366,10 @@ export function TradingSettings({
 
         {chainId === ARBITRUM && srcChainId === undefined && settings.expressOrdersEnabled && (
           <div className="flex w-full items-center justify-between">
-            <TooltipWithPortal
+            <LabelWithTooltip
               className="font-medium"
-              variant="icon"
-              handle={<Trans>Send remaining margin to</Trans>}
-              content={
-                <div>
-                  <Trans>
-                    Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't
-                    always determine where to return the margin automatically.
-                    <br />
-                    <br />
-                    Choose:
-                    <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
-                    Arbitrum
-                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX.
-                    <br />
-                    <br />
-                    You can change this preference anytime in Settings or when closing a position.
-                  </Trans>
-                </div>
-              }
+              label={t`Send remaining margin to`}
+              tooltip={<MarginDestinationTooltipContent />}
             />
             <MarginDestinationSelector
               isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
@@ -316,34 +380,31 @@ export function TradingSettings({
         )}
 
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
-          <TooltipWithPortal
-            content={
-              <div>
-                <Trans>
-                  TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
-                </Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
+          <LabelWithTooltip
+            tooltip={
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>
+                    TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
+                  </Trans>
+                </TooltipText>
+                <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
                   <Trans>Read more</Trans>
-                </ExternalLink>
-                .
-              </div>
+                </TooltipLink>
+              </TooltipContent>
             }
-            handle={<Trans>Auto-cancel TP/SL</Trans>}
-            variant="icon"
+            label={t`Auto-cancel TP/SL`}
             className="font-medium"
           />
         </ToggleSwitch>
 
-        {/* External swaps are enabled by default on Botanix */}
-        {chainId !== BOTANIX && (
-          <ToggleSwitch
-            isChecked={settings.externalSwapsEnabled}
-            setIsChecked={settings.setExternalSwapsEnabled}
-            className="font-medium"
-          >
-            <Trans>Enable external swaps</Trans>
-          </ToggleSwitch>
-        )}
+        <ToggleSwitch
+          isChecked={settings.externalSwapsEnabled}
+          setIsChecked={settings.setExternalSwapsEnabled}
+          className="font-medium"
+        >
+          <Trans>Enable external swaps</Trans>
+        </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.isSetAcceptablePriceImpactEnabled}

@@ -23,12 +23,14 @@ const EARN_FAQ_ITEMS: FaqItem[] = [
     ),
   },
   {
-    title: <Trans>Can I unstake anytime?</Trans>,
+    title: <Trans>Can I unstake or withdraw anytime?</Trans>,
     content: (
       <Trans>
-        Yes, staking and liquidity provision are fully permissionless. GMX, GLV, and GM tokens can be unstaked and
-        withdrawn anytime. In rare cases where your liquidity is being used for active trades, you can withdraw as soon
-        as those positions close.
+        Unstaking GMX or esGMX takes 180 days. You request the unstake, and once the wait is over, you withdraw the
+        amount as GMX or esGMX. You can cancel a request at any time. If a request takes your staked balance below 80%
+        of your peak staked amount, all accumulated staking power resets to zero and you lose your share of the
+        GMX-at-$90 Treasury distribution. Canceling the request doesn't restore it. GLV and GM tokens can be sold at any
+        time. In rare cases where open positions use your liquidity, you can withdraw as soon as those positions close.
       </Trans>
     ),
   },

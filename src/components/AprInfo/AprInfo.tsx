@@ -7,30 +7,58 @@ import { TBTC_INFORMATION_URL, isTbtcIncentivizedMarket } from "config/tbtc";
 import { LIDO_APR_DECIMALS } from "domain/stake/useLidoStakeApr";
 import { useLiquidityProvidersIncentives } from "domain/synthetics/common/useIncentiveStats";
 import { useLpAirdroppedTokenTitle } from "domain/synthetics/tokens/useAirdroppedTokenTitle";
+import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useChainId } from "lib/chains";
 import { formatAmount } from "lib/numbers";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipLink,
+  TooltipRow,
+  TooltipRows,
+} from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
-export function AprInfo({
+import { UsdgLaunchBoostAprInfo } from "./UsdgLaunchBoostAprInfo";
+
+type Props = {
+  apy: bigint | undefined;
+  incentiveApr: bigint | undefined;
+  lidoApr: bigint | undefined;
+  launchBoost?: UsdgLaunchBoost;
+  isApyLoading?: boolean;
+  showTooltip?: boolean;
+  marketAddress: string;
+  className?: string;
+};
+
+export function AprInfo({ launchBoost, isApyLoading, ...props }: Props) {
+  if (launchBoost) {
+    return (
+      <UsdgLaunchBoostAprInfo
+        apy={props.apy}
+        isApyLoading={isApyLoading}
+        launchBoost={launchBoost}
+        showTooltip={props.showTooltip}
+        className={props.className}
+      />
+    );
+  }
+
+  return <DefaultAprInfo {...props} />;
+}
+
+function DefaultAprInfo({
   apy,
   incentiveApr,
   lidoApr,
   showTooltip = true,
   marketAddress,
   className,
-}: {
-  apy: bigint | undefined;
-  incentiveApr: bigint | undefined;
-  lidoApr: bigint | undefined;
-  showTooltip?: boolean;
-  marketAddress: string;
-  className?: string;
-}) {
+}: Omit<Props, "launchBoost" | "isApyLoading">) {
   const { chainId } = useChainId();
 
   let totalApr = (incentiveApr ?? 0n) + (lidoApr ?? 0n) + (apy ?? 0n);
@@ -44,43 +72,23 @@ export function AprInfo({
 
   const renderTooltipContent = useCallback(() => {
     return (
-      <div className="flex flex-col gap-y-14">
-        <div>
-          <StatsTooltipRow
-            showDollar={false}
-            label={t`Base APY`}
-            value={`${formatAmount(apy, 28, 2)}%`}
-            valueClassName="numbers"
-          />
-          {isIncentiveActive && (
-            <StatsTooltipRow
-              showDollar={false}
-              label={t`Bonus APR`}
-              value={`${formatAmount(incentiveApr, 28, 2)}%`}
-              valueClassName="numbers"
-            />
-          )}
-          {isLidoApr && (
-            <StatsTooltipRow
-              showDollar={false}
-              label={t`wstETH APR`}
-              value={`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`}
-              valueClassName="numbers"
-            />
-          )}
-        </div>
+      <TooltipContent>
+        <TooltipRows>
+          <TooltipRow label={t`Base APY`} value={`${formatAmount(apy, 28, 2)}%`} />
+          {isIncentiveActive && <TooltipRow label={t`Bonus APR`} value={`${formatAmount(incentiveApr, 28, 2)}%`} />}
+          {isLidoApr && <TooltipRow label={t`wstETH APR`} value={`${formatAmount(lidoApr, LIDO_APR_DECIMALS, 2)}%`} />}
+        </TooltipRows>
         {isIncentiveActive && (
-          <div>
-            <Trans>
-              Bonus APR paid as {airdropTokenTitle} airdrops.{" "}
-              <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
-                Read more
-              </ExternalLink>
-              .
-            </Trans>
-          </div>
+          <>
+            <TooltipFootnote>
+              <Trans>Bonus APR paid as {airdropTokenTitle} airdrops.</Trans>
+            </TooltipFootnote>
+            <TooltipLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
+              <Trans>Read more</Trans>
+            </TooltipLink>
+          </>
         )}
-      </div>
+      </TooltipContent>
     );
   }, [airdropTokenTitle, apy, chainId, incentiveApr, isIncentiveActive, lidoApr, isLidoApr, isTbtcIncentive]);
 
@@ -105,12 +113,7 @@ export function AprInfo({
   }, [apy, className, incentiveApr, totalApr]);
 
   return showTooltip && (isIncentiveActive || isLidoApr) ? (
-    <TooltipWithPortal
-      maxAllowedWidth={280}
-      handle={aprNode}
-      position="bottom-end"
-      renderContent={renderTooltipContent}
-    />
+    <StandardTooltip handle={aprNode} position="bottom-end" renderContent={renderTooltipContent} />
   ) : (
     aprNode
   );

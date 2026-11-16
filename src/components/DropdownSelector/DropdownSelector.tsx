@@ -2,7 +2,7 @@ import { Listbox } from "@headlessui/react";
 import cx from "classnames";
 
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -23,6 +23,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   variant,
   itemDisabled,
   itemDisabledMessage,
+  buttonRef,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;
@@ -34,11 +35,13 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   variant?: "ghost";
   itemDisabled?: (option: Option) => boolean;
   itemDisabledMessage?: (option: Option) => string;
+  buttonRef?: React.Ref<HTMLButtonElement>;
 } & WithConditionalItemKey<Id, Option>) => {
   return (
     <Listbox value={value ?? null} onChange={onChange}>
       <div className="relative">
         <Listbox.Button
+          ref={buttonRef}
           className={({ open }) =>
             cx(
               "flex w-full items-center justify-between rounded-8",
@@ -64,7 +67,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
           {options.map((option) => {
             const isDisabled = itemDisabled?.(option);
             const disabledMessage = itemDisabledMessage?.(option);
-            const Wrapper = isDisabled && disabledMessage ? TooltipWithPortal : NoopWrapper;
+            const Wrapper = isDisabled && disabledMessage ? StandardTooltip : NoopWrapper;
 
             return (
               <Listbox.Option

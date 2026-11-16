@@ -75,6 +75,7 @@ export const colors = {
     surfaceElevatedHover: { light: "#EFEFEF", dark: "#18192a" },
     surfaceHover: { light: "#696D961A", dark: "#A0A3C41A" },
     accent: { light: "#D4D4E2", dark: "#363A59" },
+    card: { light: "#FCFCFCE0", dark: "#121421E0" },
   },
   typography: {
     primary: { light: "#000000", dark: "#ffffff" },

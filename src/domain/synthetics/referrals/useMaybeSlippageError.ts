@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { decodeErrorResult } from "viem";
+import { decodeErrorResult, isHex, type Hex } from "viem";
 
 import { CustomErrorName } from "sdk/utils/errors";
 import { decodeErrorFromViemError, isCustomError } from "sdk/utils/errors/parseError";
@@ -9,14 +9,14 @@ export function isMaybeSlippageError(error: Error | undefined): boolean {
     return false;
   }
 
-  let callFailData: string | undefined = undefined;
+  let callFailData: Hex | undefined = undefined;
 
   if (isCustomError(error)) {
     if (error.name !== CustomErrorName.ExternalCallFailed) {
       return false;
     }
 
-    callFailData = error.args?.data;
+    callFailData = isHex(error.args?.data) ? error.args.data : undefined;
   } else {
     const parsedError = decodeErrorFromViemError(error);
 
@@ -24,7 +24,7 @@ export function isMaybeSlippageError(error: Error | undefined): boolean {
       return false;
     }
 
-    callFailData = parsedError.args?.data;
+    callFailData = isHex(parsedError.args?.data) ? parsedError.args.data : undefined;
   }
 
   if (!callFailData) {

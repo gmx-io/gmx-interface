@@ -2,8 +2,7 @@ import type { Provider } from "ethers";
 
 import { extendError } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
-
-const MIN_GAS_LIMIT = 22000n;
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 export async function estimateGasLimit(
   provider: Provider | ISigner,
@@ -30,12 +29,4 @@ export async function estimateGasLimit(
       });
     }
   }
-}
-
-export function applyGasLimitBuffer(gasLimit: bigint): bigint {
-  if (gasLimit < MIN_GAS_LIMIT) {
-    gasLimit = MIN_GAS_LIMIT;
-  }
-
-  return (gasLimit * 11n) / 10n; // add a 10% buffer
 }

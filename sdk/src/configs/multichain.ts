@@ -17,6 +17,24 @@ import {
   SourceChainId,
 } from "./chains";
 
+export type LayerZeroEndpointId = 40161 | 40231 | 40232 | 30184 | 30110 | 30106 | 30102 | 30101 | 40106;
+
+export const CHAIN_ID_TO_ENDPOINT_ID: Record<SettlementChainId | SourceChainId, LayerZeroEndpointId> = {
+  [ARBITRUM_SEPOLIA]: 40231,
+  [SOURCE_SEPOLIA]: 40161,
+  [SOURCE_OPTIMISM_SEPOLIA]: 40232,
+  [ARBITRUM]: 30110,
+  [SOURCE_ETHEREUM_MAINNET]: 30101,
+  [SOURCE_BASE_MAINNET]: 30184,
+  [AVALANCHE]: 30106,
+  [SOURCE_BSC_MAINNET]: 30102,
+  [AVALANCHE_FUJI]: 40106,
+};
+
+export function getLayerZeroEndpointId(chainId: number): LayerZeroEndpointId | undefined {
+  return CHAIN_ID_TO_ENDPOINT_ID[chainId as SettlementChainId | SourceChainId];
+}
+
 export function isSettlementChain(chainId: number): chainId is SettlementChainId {
   return SETTLEMENT_CHAIN_IDS.includes(chainId as any) || SETTLEMENT_CHAIN_IDS_DEV.includes(chainId as any);
 }

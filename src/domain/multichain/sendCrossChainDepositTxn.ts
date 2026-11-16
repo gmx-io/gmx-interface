@@ -5,8 +5,7 @@ import { SendParam } from "domain/multichain/types";
 import { TxnCallback, WalletTxnCtx, sendWalletTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
-
-import { sendQuoteFromNative } from "./sendQuoteFromNative";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 
 export async function sendCrossChainDepositTxn({
   chainId,
@@ -32,14 +31,14 @@ export async function sendCrossChainDepositTxn({
   const isNative = tokenAddress === zeroAddress;
   const value = quoteSendNativeFee + (isNative ? amount : 0n);
 
-  await sendWalletTransaction({
+  return await sendWalletTransaction({
     chainId: chainId,
     to: stargateAddress,
     signer: signer,
     callData: encodeFunctionData({
       abi: abis.IStargate,
       functionName: "sendToken",
-      args: [sendParams, sendQuoteFromNative(quoteSendNativeFee), account],
+      args: [sendParams, quoteFromNativeFee(quoteSendNativeFee), account],
     }),
     value,
     callback,

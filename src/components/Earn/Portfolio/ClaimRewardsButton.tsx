@@ -1,12 +1,12 @@
-import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useState } from "react";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
-import { getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
+import { getChainName, getChainNativeTokenSymbol, getChainWrappedTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
@@ -15,6 +15,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { ClaimModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
@@ -32,7 +33,6 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
 
   const [isClaimModalVisible, setIsClaimModalVisible] = useState(false);
 
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const readerAddress = getContract(chainId, "Reader");
   const gmxAddress = getContract(chainId, "GMX");
   const esGmxAddress = getContract(chainId, "ES_GMX");
@@ -75,26 +75,33 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
     mutateProcessedData?.();
   };
 
+  const hasClaimableRewards = hasGmxRewards || hasEsGmxRewards || hasNativeRewards;
+
+  const button = (
+    <Button variant="primary" onClick={handleClick} className="max-md:w-full" disabled={!hasClaimableRewards}>
+      <EarnIcon className="size-16" />
+      <Trans>Claim rewards</Trans>
+    </Button>
+  );
+
   return (
-    <div className={cx("flex justify-end max-lg:w-full", className)}>
-      <Button
-        variant="secondary"
-        onClick={handleClick}
-        className="max-lg:w-full"
-        disabled={!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards}
+    <div className={cx("flex justify-end max-md:w-full", className)}>
+      <ButtonTooltipWrapper
+        content={hasClaimableRewards ? undefined : t`Nothing is claimable on ${getChainName(chainId)} right now`}
       >
-        <EarnIcon className="size-16" />
-        <Trans>Claim rewards</Trans>
-      </Button>
+        {button}
+      </ButtonTooltipWrapper>
 
       <ClaimModal
         isVisible={isClaimModalVisible}
         setIsVisible={setIsClaimModalVisible}
-        rewardRouterAddress={rewardRouterAddress}
         signer={signer}
         chainId={chainId}
         setPendingTxns={setPendingTxns}
         totalGmxRewards={processedData?.totalGmxRewards}
+        stakingGmxRewards={processedData?.extendedGmxTrackerRewards}
+        gmxVesterRewards={processedData?.gmxVesterRewards}
+        glpVesterRewards={processedData?.glpVesterRewards}
         totalEsGmxRewards={processedData?.totalEsGmxRewards}
         totalNativeTokenRewards={processedData?.totalNativeTokenRewards}
         nativeTokenSymbol={nativeTokenSymbol}

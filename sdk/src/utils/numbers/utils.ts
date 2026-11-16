@@ -2,6 +2,8 @@ import { formatUnits, parseUnits } from "viem";
 
 import { bigMath } from "utils/bigmath";
 
+import { joinNumberParts, NumberPart, numberParts, USD_PART } from "./parts";
+
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
 
@@ -24,11 +26,26 @@ export const BN_NEGATIVE_ONE = -1n;
 export const MaxUint256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 export const MaxInt256 = BigInt("0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
+const UINT_DECIMAL_STRING_REGEX = /^(0|[1-9]\d*)$/;
+
+export function parseUint256DecimalString(value: unknown): bigint | undefined {
+  if (typeof value !== "string" || !UINT_DECIMAL_STRING_REGEX.test(value)) {
+    return undefined;
+  }
+
+  const parsed = BigInt(value);
+  return parsed <= MaxUint256 ? parsed : undefined;
+}
+
+export function isUint256(value: unknown): value is bigint {
+  return typeof value === "bigint" && value >= 0n && value <= MaxUint256;
+}
+
 export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
-
+const MIN_EXCEEDING_THRESHOLD_DECIMALS = 2;
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
@@ -80,12 +97,39 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
+export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
+  if (bpsValue === undefined) {
+    return undefined;
+  }
+
+  const sign = getPlusOrMinusSymbol(bpsValue);
+
+  return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
+}
+
+export function formatPriceImpactBps(priceImpactUsd: bigint | undefined, sizeUsd: bigint): string | undefined {
+  return formatBasisPoints(
+    priceImpactUsd !== undefined && sizeUsd > 0n ? getBasisPoints(priceImpactUsd, sizeUsd) : undefined
+  );
+}
+
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   if (a < 0n) {
     return (a - b + 1n) / b;
   }
 
   return (a + b - 1n) / b;
+}
+
+// True when the amount would render as zero at displayDecimals.
+export function roundsToZero(amount: bigint, decimals: number, displayDecimals: number) {
+  const hiddenDecimals = decimals - displayDecimals;
+
+  if (hiddenDecimals <= 0) {
+    return false;
+  }
+
+  return bigMath.abs(amount) < 10n ** BigInt(hiddenDecimals);
 }
 
 export function applyFactor(value: bigint, factor: bigint) {
@@ -166,18 +210,17 @@ export function adjustForDecimals(amount: bigint, divDecimals: number, mulDecima
   return (amount * expandDecimals(1, mulDecimals)) / expandDecimals(1, divDecimals);
 }
 
-export function formatUsd(
-  usd?: bigint,
-  opts: {
-    fallbackToZero?: boolean;
-    displayDecimals?: number;
-    maxThreshold?: string | null;
-    minThreshold?: string;
-    displayPlus?: boolean;
-    visualMultiplier?: number;
-    roundMode?: "round" | "floor";
-  } = {}
-) {
+export type FormatUsdOptions = {
+  fallbackToZero?: boolean;
+  displayDecimals?: number;
+  maxThreshold?: string | null;
+  minThreshold?: string;
+  displayPlus?: boolean;
+  visualMultiplier?: number;
+  roundMode?: "round" | "floor";
+};
+
+export function formatUsdParts(usd?: bigint, opts: FormatUsdOptions = {}): NumberPart[] | undefined {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
 
   if (typeof usd !== "bigint") {
@@ -207,22 +250,44 @@ export function formatUsd(
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol}\u00a0` : "";
-  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
-  return `${symbol}${sign}$\u200a${displayUsd}`;
+  const valueDecimals =
+    exceedingInfo.symbol === TRIGGER_PREFIX_BELOW
+      ? Math.max(displayDecimals, MIN_EXCEEDING_THRESHOLD_DECIMALS)
+      : displayDecimals;
+  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, valueDecimals, true);
+  return numberParts(symbol, sign, USD_PART, displayUsd);
+}
+
+export function formatUsd(usd?: bigint, opts: FormatUsdOptions = {}) {
+  const parts = formatUsdParts(usd, opts);
+
+  return parts && joinNumberParts(parts);
+}
+
+export function formatBigUsdParts(amount: bigint, opts: { displayDecimals?: number } = {}) {
+  // whole dollars would show a few cents as $0
+  const defaultDisplayDecimals = amount !== 0n && roundsToZero(amount, USD_DECIMALS, 0) ? 2 : 0;
+
+  return formatUsdParts(amount, {
+    maxThreshold: "9999999999999999999999999",
+    displayDecimals: opts.displayDecimals ?? defaultDisplayDecimals,
+  })!;
 }
 
 export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } = {}) {
-  return formatUsd(amount, { maxThreshold: "9999999999999999999999999", displayDecimals: opts.displayDecimals ?? 0 });
+  return joinNumberParts(formatBigUsdParts(amount, opts));
 }
 
-export function formatDeltaUsd(
+export type FormatDeltaUsdOptions = { fallbackToZero?: boolean; showPlusForZero?: boolean; hidePercentage?: boolean };
+
+export function formatDeltaUsdParts(
   deltaUsd?: bigint,
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean; hidePercentage?: boolean } = {}
-) {
+  opts: FormatDeltaUsdOptions = {}
+): NumberPart[] | undefined {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
-      return `${formatUsd(0n)} (${formatAmount(0n, 2, 2)}%)`;
+      return numberParts(formatUsdParts(0n), ` (${formatAmount(0n, 2, 2)}%)`);
     }
 
     return undefined;
@@ -236,18 +301,38 @@ export function formatDeltaUsd(
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
-  return `${symbol}${sign}$\u200a${deltaUsdStr}${percentageStr}`;
+  return numberParts(symbol, sign, USD_PART, deltaUsdStr, percentageStr);
+}
+
+export function formatDeltaUsd(deltaUsd?: bigint, percentage?: bigint, opts: FormatDeltaUsdOptions = {}) {
+  const parts = formatDeltaUsdParts(deltaUsd, percentage, opts);
+
+  return parts && joinNumberParts(parts);
 }
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    signed?: boolean;
+    displayDecimals?: number;
+    bps?: boolean;
+    showPlus?: boolean;
+    useCommas?: boolean;
+  } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
+  const {
+    fallbackToZero = false,
+    signed = false,
+    displayDecimals = 2,
+    bps = true,
+    showPlus = true,
+    useCommas = false,
+  } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
     }
 
     return undefined;
@@ -256,7 +341,7 @@ export function formatPercentage(
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
   const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
 }
 
 export function formatTokenAmount(
@@ -318,18 +403,20 @@ export function formatTokenAmount(
   return `${amountStr}${symbolStr}`;
 }
 
-export function formatTokenAmountWithUsd(
+export type FormatTokenAmountWithUsdOptions = {
+  fallbackToZero?: boolean;
+  displayDecimals?: number;
+  displayPlus?: boolean;
+  isStable?: boolean;
+};
+
+export function formatTokenAmountWithUsdParts(
   tokenAmount?: bigint,
   usdAmount?: bigint,
   tokenSymbol?: string,
   tokenDecimals?: number,
-  opts: {
-    fallbackToZero?: boolean;
-    displayDecimals?: number;
-    displayPlus?: boolean;
-    isStable?: boolean;
-  } = {}
-) {
+  opts: FormatTokenAmountWithUsdOptions = {}
+): NumberPart[] | undefined {
   if (typeof tokenAmount !== "bigint" || typeof usdAmount !== "bigint" || !tokenSymbol || !tokenDecimals) {
     if (!opts.fallbackToZero) {
       return undefined;
@@ -342,12 +429,24 @@ export function formatTokenAmountWithUsd(
     displayPlus: opts.displayPlus,
   });
 
-  const usdStr = formatUsd(usdAmount, {
+  const usdParts = formatUsdParts(usdAmount, {
     fallbackToZero: opts.fallbackToZero,
     displayPlus: opts.displayPlus,
   });
 
-  return `${tokenStr} (${usdStr})`;
+  return numberParts(`${tokenStr} (`, usdParts, ")");
+}
+
+export function formatTokenAmountWithUsd(
+  tokenAmount?: bigint,
+  usdAmount?: bigint,
+  tokenSymbol?: string,
+  tokenDecimals?: number,
+  opts: FormatTokenAmountWithUsdOptions = {}
+) {
+  const parts = formatTokenAmountWithUsdParts(tokenAmount, usdAmount, tokenSymbol, tokenDecimals, opts);
+
+  return parts && joinNumberParts(parts);
 }
 
 /**
@@ -366,21 +465,27 @@ export function formatRatePercentage(rate?: bigint, opts?: { displayDecimals?: n
   return `${plurOrMinus}\u200a${formatAmount(amount, 30, opts?.displayDecimals ?? 4)}%`;
 }
 
-export function formatUsdPrice(price?: bigint, opts: Parameters<typeof formatUsd>[1] = {}) {
+export function formatUsdPriceParts(price?: bigint, opts: FormatUsdOptions = {}): NumberPart[] | undefined {
   if (price === undefined) {
     return;
   }
 
   if (price < 0n) {
-    return "NA";
+    return numberParts("NA");
   }
 
   const decimals = calculateDisplayDecimals(price, undefined, opts.visualMultiplier);
 
-  return formatUsd(price, {
+  return formatUsdParts(price, {
     ...opts,
     displayDecimals: decimals,
   });
+}
+
+export function formatUsdPrice(price?: bigint, opts: FormatUsdOptions = {}) {
+  const parts = formatUsdPriceParts(price, opts);
+
+  return parts && joinNumberParts(parts);
 }
 
 export function formatPercentageDisplay(percentage: number, hideThreshold?: number) {
@@ -391,28 +496,49 @@ export function formatPercentageDisplay(percentage: number, hideThreshold?: numb
   return `${percentage}%`;
 }
 
-export function formatNumberHuman(n: number, showDollar = false, displayDecimals = 1) {
+export function formatNumberHumanParts(n: number, showDollar = false, displayDecimals = 1): NumberPart[] {
   // For large numbers, we can neglect the decimals to avoid decimals in cases like 9999999.99999
   if (n >= 1_000_000) {
     n = Math.round(n);
   }
   const isNegative = n < 0;
   const absN = Math.abs(n);
-  const sign = showDollar ? "$\u200a" : "";
+  const sign = isNegative ? "-" : "";
+  const currency = showDollar ? USD_PART : undefined;
 
-  if (absN >= 1_000_000_000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000_000).toFixed(displayDecimals)}b`;
+  // Promote the suffix when the displayed value rounds to 1000 in the smaller unit.
+  if (Number((absN / 1_000_000).toFixed(displayDecimals)) >= 1000) {
+    return numberParts(sign, currency, `${(absN / 1_000_000_000).toFixed(displayDecimals)}b`);
   }
 
-  if (absN >= 1_000_000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1_000_000).toFixed(displayDecimals)}m`;
+  if (Number((absN / 1_000).toFixed(displayDecimals)) >= 1000) {
+    return numberParts(sign, currency, `${(absN / 1_000_000).toFixed(displayDecimals)}m`);
   }
 
-  if (absN >= 1000) {
-    return `${isNegative ? "-" : ""}${sign}${(absN / 1_000).toFixed(displayDecimals)}k`;
+  if (Number(absN.toFixed(displayDecimals)) >= 1000) {
+    return numberParts(sign, currency, `${(absN / 1_000).toFixed(displayDecimals)}k`);
   }
 
-  return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
+  return numberParts(sign, currency, absN.toFixed(displayDecimals));
+}
+
+export function formatNumberHuman(n: number, showDollar = false, displayDecimals = 1) {
+  return joinNumberParts(formatNumberHumanParts(n, showDollar, displayDecimals));
+}
+
+export function formatAmountHumanParts(
+  amount: BigNumberish | undefined,
+  tokenDecimals: number,
+  showDollar = false,
+  displayDecimals = 1
+): NumberPart[] {
+  if (amount === undefined) {
+    return numberParts("...");
+  }
+
+  let n = Number(formatAmount(amount, tokenDecimals));
+
+  return formatNumberHumanParts(n, showDollar, displayDecimals);
 }
 
 export function formatAmountHuman(
@@ -421,13 +547,7 @@ export function formatAmountHuman(
   showDollar = false,
   displayDecimals = 1
 ) {
-  if (amount === undefined) {
-    return "...";
-  }
-
-  let n = Number(formatAmount(amount, tokenDecimals));
-
-  return formatNumberHuman(n, showDollar, displayDecimals);
+  return joinNumberParts(formatAmountHumanParts(amount, tokenDecimals, showDollar, displayDecimals));
 }
 
 export function formatBalanceAmount(
@@ -490,6 +610,13 @@ export function formatBalanceAmount(
   return `${sign}${value}`;
 }
 
+export function truncateToBalanceDisplayDecimals(amount: bigint, tokenDecimals: number, isStable = false): bigint {
+  const displayDecimals = calculateDisplayDecimals(amount, tokenDecimals, 1, isStable);
+  const displayStep = expandDecimals(1, Math.max(tokenDecimals - displayDecimals, 0));
+
+  return amount - (amount % displayStep);
+}
+
 export function formatFactor(factor: bigint) {
   if (factor == 0n) {
     return "0";
@@ -504,17 +631,21 @@ export function formatFactor(factor: bigint) {
       .abs(factor)
       .toString()
       .match(/^(.+?)(?<zeroes>0*)$/)?.groups?.zeroes?.length || 0;
-  const factorDecimals = 30 - trailingZeroes;
-  return formatAmount(factor, 30, factorDecimals);
+  const factorDecimals = Math.max(PRECISION_DECIMALS - trailingZeroes, 0);
+  return formatAmount(factor, PRECISION_DECIMALS, factorDecimals);
 }
-export function numberWithCommas(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
+export function numberWithCommasParts(x: BigNumberish, { showDollar = false }: { showDollar?: boolean } = {}) {
   if (x === undefined || x === null) {
-    return "...";
+    return numberParts("...");
   }
 
   const parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
+  return numberParts(showDollar ? USD_PART : undefined, parts.join("."));
+}
+
+export function numberWithCommas(x: BigNumberish, opts: { showDollar?: boolean } = {}) {
+  return joinNumberParts(numberWithCommasParts(x, opts));
 }
 
 export const formatAmount = (
@@ -736,8 +867,13 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
 
-  value = limitDecimals(value, tokenDecimals);
-  const amount = parseUnits(value, tokenDecimals);
+  let amount: bigint;
+  try {
+    value = limitDecimals(value, tokenDecimals);
+    amount = parseUnits(value, tokenDecimals);
+  } catch {
+    return undefined;
+  }
 
   // Cap at a safe maximum to prevent downstream BigInt overflow errors
   const MAX_ALLOWED = expandDecimals(1, 62);
@@ -783,9 +919,11 @@ export function maxbigint(...args: bigint[]) {
 }
 
 export function removeTrailingZeros(amount: string | number) {
-  const amountWithoutZeros = Number(amount);
-  if (!amountWithoutZeros) return amount;
-  return amountWithoutZeros;
+  if (typeof amount === "number" || !amount.includes(".") || amount.includes(",") || /^[-+]?0*\.0*$/.test(amount)) {
+    return amount;
+  }
+
+  return amount.replace(/0+$/, "").replace(/\.$/, "");
 }
 
 type SerializedBigIntsInObject<T> = {
@@ -804,6 +942,8 @@ type DeserializeBigIntInObject<T> = {
       : T[P];
 };
 
+const NUMERIC_STRING_REGEX = /^-?\d+$/;
+
 export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBigIntsInObject<T> {
   const result: any = Array.isArray(obj) ? [] : {};
   for (const key in obj) {
@@ -818,8 +958,6 @@ export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBi
   }
   return result;
 }
-
-const NUMERIC_STRING_REGEX = /^-?\d+$/;
 
 export function deserializeBigIntsInObject<T extends object>(
   obj: T,

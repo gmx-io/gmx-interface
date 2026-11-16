@@ -60,10 +60,17 @@ const TX_ERROR_PATTERNS: { [key in TxErrorType]: ErrorPattern[] } = {
   ],
 };
 
+// EIP-1193 and WalletConnect (CAIP-25) user rejection codes, as viem maps them; ethers' BrowserProvider maps only 4001.
+// Checked after the patterns so they only classify otherwise unknown errors
+const USER_REJECTED_REQUEST_CODES = [4001, 5000];
+
 export enum CustomErrorName {
   DisabledMarket = "DisabledMarket",
+  EmptyDesignatedVesters = "EmptyDesignatedVesters",
+  EmptyStakeAmount = "EmptyStakeAmount",
   EndOfOracleSimulation = "EndOfOracleSimulation",
   ExternalCallFailed = "ExternalCallFailed",
+  InsufficientBridgeOutputAmount = "InsufficientBridgeOutputAmount",
   InsufficientCollateralAmount = "InsufficientCollateralAmount",
   InsufficientCollateralUsd = "InsufficientCollateralUsd",
   InsufficientExecutionGas = "InsufficientExecutionGas",
@@ -75,15 +82,20 @@ export enum CustomErrorName {
   InsufficientReserveForOpenInterest = "InsufficientReserveForOpenInterest",
   OrderNotFulfillableAtAcceptablePrice = "OrderNotFulfillableAtAcceptablePrice",
   InsufficientSwapOutputAmount = "InsufficientSwapOutputAmount",
+  InsufficientStrictTransferAllowance = "InsufficientStrictTransferAllowance",
   InvalidCollateralTokenForMarket = "InvalidCollateralTokenForMarket",
   InvalidDecreaseOrderSize = "InvalidDecreaseOrderSize",
   InvalidOraclePrice = "InvalidOraclePrice",
   LiquidatablePosition = "LiquidatablePosition",
   MarketNotFound = "MarketNotFound",
   MaxOpenInterestExceeded = "MaxOpenInterestExceeded",
+  MaxCollateralSumExceeded = "MaxCollateralSumExceeded",
   MaxPoolAmountExceeded = "MaxPoolAmountExceeded",
   MaxPoolUsdForDepositExceeded = "MaxPoolUsdForDepositExceeded",
   MaxPriceAgeExceeded = "MaxPriceAgeExceeded",
+  MaxRelayFeeSwapExceeded = "MaxRelayFeeSwapExceeded",
+  MaxUnstakeRequestsExceeded = "MaxUnstakeRequestsExceeded",
+  MaxUnstakeRequestsOnTransfer = "MaxUnstakeRequestsOnTransfer",
   MinPositionSize = "MinPositionSize",
   NegativeExecutionPrice = "NegativeExecutionPrice",
   OrderNotFound = "OrderNotFound",
@@ -92,11 +104,23 @@ export enum CustomErrorName {
   PnlFactorExceededForLongs = "PnlFactorExceededForLongs",
   PnlFactorExceededForShorts = "PnlFactorExceededForShorts",
   PriceImpactLargerThanOrderSize = "PriceImpactLargerThanOrderSize",
+  SelfVestingTransfer = "SelfVestingTransfer",
+  StakingReceiverNotFresh = "StakingReceiverNotFresh",
+  StakingSenderHasPairAmounts = "StakingSenderHasPairAmounts",
+  StakingSenderHasVestedTokens = "StakingSenderHasVestedTokens",
   SwapPriceImpactExceedsAmountIn = "SwapPriceImpactExceedsAmountIn",
+  TransferNotSignalled = "TransferNotSignalled",
+  TransferVesterConfigChanged = "TransferVesterConfigChanged",
   UnableToWithdrawCollateral = "UnableToWithdrawCollateral",
+  UnstakeAmountExceedsStake = "UnstakeAmountExceedsStake",
+  UnstakeNotSignalled = "UnstakeNotSignalled",
   UsdDeltaExceedsLongOpenInterest = "UsdDeltaExceedsLongOpenInterest",
   UsdDeltaExceedsPoolValue = "UsdDeltaExceedsPoolValue",
   UsdDeltaExceedsShortOpenInterest = "UsdDeltaExceedsShortOpenInterest",
+  VesterAccountFrozen = "VesterAccountFrozen",
+  VesterProvisioningNotComplete = "VesterProvisioningNotComplete",
+  VestingReceiverNotFresh = "VestingReceiverNotFresh",
+  VestingSenderHasOpenSession = "VestingSenderHasOpenSession",
 }
 
 export function getIsUserRejectedError(errorType: TxErrorType) {
@@ -158,6 +182,10 @@ export function extractTxnError(ex: TxError): [string, TxErrorType | null, any] 
         return [message, type as TxErrorType, ex.data];
       }
     }
+  }
+
+  if (typeof code === "number" && USER_REJECTED_REQUEST_CODES.includes(code)) {
+    return [message, TxErrorType.UserDenied, ex.data];
   }
 
   return [message, null, ex.data];

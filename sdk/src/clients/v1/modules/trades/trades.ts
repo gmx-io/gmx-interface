@@ -5,6 +5,7 @@ import type { GmxSdk } from "clients/v1";
 import { Module } from "clients/v1/modules/base";
 import { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
 import { getWrappedToken } from "configs/tokens";
+import { getAddressKey } from "utils/address";
 import graphqlFetcher from "utils/graphqlFetcher";
 import { GraphQlFilters, buildFiltersBody } from "utils/indexers";
 import { MarketsInfoData } from "utils/markets/types";
@@ -114,9 +115,9 @@ export async function fetchTradeActions({
   const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
     .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
     .map((filter) => ({
-      marketAddress: filter.marketAddress.toLowerCase() as Address,
+      marketAddress: getAddressKey(filter.marketAddress) as Address,
       direction: filter.direction,
-      collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
+      collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
     }));
 
   const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
@@ -131,7 +132,7 @@ export async function fetchTradeActions({
 
   const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
     .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-    .map((filter) => filter.marketAddress.toLowerCase() as Address | "any");
+    .map((filter) => getAddressKey(filter.marketAddress) as Address | "any");
 
   const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
 
@@ -237,7 +238,7 @@ export async function fetchTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: timestamp_DESC,
+            orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
             id
@@ -247,6 +248,9 @@ export async function fetchTradeActions({
             marketAddress
             swapPath
             initialCollateralTokenAddress
+            positionKey
+            positionSizeInUsd
+            positionSizeInTokens
 
             initialCollateralDeltaAmount
             sizeDeltaUsd
@@ -258,9 +262,15 @@ export async function fetchTradeActions({
 
             priceImpactUsd
             priceImpactDiffUsd
+            swapImpactUsd
+            totalImpactUsd
             positionFeeAmount
+            traderDiscountAmount
             borrowingFeeAmount
             fundingFeeAmount
+            swapFeeUsd
+            liquidationFeeAmount
+            minCollateralFactorForLiquidation
             pnlUsd
             basePnlUsd
 

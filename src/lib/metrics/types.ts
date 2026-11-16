@@ -1,7 +1,10 @@
-import type { SourceChainId } from "config/chains";
+import type { NetworkId, SourceChainId } from "config/chains";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import type { ErrorData } from "lib/errors";
+import type { DisplayMode } from "lib/pwa/getDisplayMode";
+import type { LaunchSource } from "lib/pwa/getLaunchSource";
+import type { WalletChainCapabilitiesResult } from "lib/wallets/walletCapabilities";
 import type { TradeMode } from "sdk/utils/trade/types";
 import type { TwapDuration } from "sdk/utils/twap/types";
 
@@ -11,13 +14,20 @@ export type GlobalMetricData = {
   isAuthorised: boolean;
   isLargeAccount: boolean;
   abFlags: Record<string, boolean>;
+  apiSdkMarkets?: boolean;
+  apiSdkPositions?: boolean;
+  apiSdkOrders?: boolean;
   isMobile: boolean;
+  displayMode: DisplayMode;
+  launchSource?: LaunchSource;
   isHomeSite: boolean;
   browserName?: string;
   browserVersion?: string;
   platform?: string;
   isInited?: boolean;
   srcChainId?: SourceChainId;
+  networkId?: NetworkId;
+  hasNoTrades?: boolean;
 };
 
 export enum OrderStage {
@@ -116,6 +126,8 @@ export type ViemWsClientError = {
   };
 };
 
+export type ApiDataSource = "api" | "rpc";
+
 // Loading measurements
 export type LoadingStartEvent = {
   event: `${MeasureMetricType}.${LoadingStage.Started}`;
@@ -124,6 +136,7 @@ export type LoadingStartEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -134,6 +147,7 @@ export type LoadingSuccessEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -144,6 +158,7 @@ export type LoadingTimeoutEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -154,7 +169,17 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   } & ErrorData;
+};
+
+export type ApiDataFallbackCounter = {
+  event: "apiData.fallback";
+  data: {
+    domain: "markets" | "positions" | "orders" | "wsPrices";
+    reason: "stale" | "error" | "initial";
+    chainId: number;
+  };
 };
 
 export enum FreshnessMetricId {
@@ -166,6 +191,7 @@ export enum FreshnessMetricId {
   ApiMarketsInfo = "apiMarketsInfo",
   ApiPositionsInfo = "apiPositionsInfo",
   ApiOrders = "apiOrders",
+  ApiStakingPower = "apiStakingPower",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
@@ -177,6 +203,26 @@ export type FreshnessTiming = {
     chainId: number;
     metricId: FreshnessMetricId;
   };
+};
+
+export type WsPriceAgeAtSendTiming = {
+  event: "wsPrices.ageAtSend";
+  data: { chainId: number };
+};
+
+export type WsPriceFirstFrameTiming = {
+  event: "wsPrices.firstFrame";
+  data: { chainId: number };
+};
+
+export type WsPriceInterArrivalTiming = {
+  event: "wsPrices.interArrival";
+  data: { chainId: number };
+};
+
+export type WsStreamStatusCounter = {
+  event: "wsPrices.status";
+  data: { chainId: number; status: string };
 };
 
 // Transactions tracking
@@ -243,6 +289,12 @@ export type OrderCancelledEvent = {
 };
 
 // Fallback tracking
+export type EndpointsPairRepeats = {
+  repeatCount: number;
+  firstTs: number;
+  lastTs: number;
+};
+
 export type RpcTrackerEndpointBannedEvent = {
   event: "rpcTracker.endpoint.banned";
   isError: false;
@@ -265,7 +317,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type RpcTrackerEndpointTiming = {
@@ -292,7 +344,7 @@ export type OracleKeeperUpdateEndpointsEvent = {
     chainName: string;
     primary: string;
     secondary: string;
-  };
+  } & Partial<EndpointsPairRepeats>;
 };
 
 export type OracleKeeperEndpointBannedEvent = {
@@ -349,13 +401,13 @@ export type ErrorEvent = {
 };
 
 export type ExpressOrderMetricData = {
+  relayProvider: "gmx";
   isExpressValid: boolean;
   isOutGasTokenBalance: boolean;
   needGasTokenApproval: boolean;
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
-  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;
@@ -473,7 +525,7 @@ export type EditCollateralMetricData = {
   initialCollateralTokenAddress: string | undefined;
   initialCollateralSymbol: string | undefined;
   initialCollateralDeltaAmount: number | undefined;
-  swapPath: [];
+  swapPath: string[];
   isLong: boolean | undefined;
   orderType: OrderType | undefined;
   executionFee: number | undefined;
@@ -485,6 +537,10 @@ export type EditCollateralMetricData = {
 export type SwapGmMetricData = {
   metricId: `gm:${string}`;
   metricType: "buyGM" | "sellGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -501,6 +557,10 @@ export type SwapGmMetricData = {
 export type ShiftGmMetricData = {
   metricId: `shift:${string}`;
   metricType: "shiftGM";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   fromMarketAddress: string | undefined;
   toMarketAddress: string | undefined;
@@ -511,6 +571,10 @@ export type ShiftGmMetricData = {
 export type SwapGLVMetricData = {
   metricId: `glv:${string}`;
   metricType: "buyGLV" | "sellGLV";
+  chainId: number;
+  isExpress: boolean;
+  isExpress1CT: boolean;
+  isCollateralFromMultichain: boolean;
   requestId: string;
   initialLongTokenAddress: string | undefined;
   initialShortTokenAddress: string | undefined;
@@ -525,6 +589,27 @@ export type SwapGLVMetricData = {
   isFirstBuy: boolean | undefined;
 };
 
+// Token permits
+export type TokenPermitOutcome = "signed" | "rejected" | "failedCheck" | "fallback" | "executed";
+
+/** Unset for permits signed in place of an approval transaction */
+export type TokenPermitFlow = "oneClickActivation";
+
+export type TokenPermitEvent = {
+  event: "tokenPermit";
+  isError: boolean;
+  data: {
+    outcome: TokenPermitOutcome;
+    chainId: number;
+    token: string;
+    accountType: string | undefined;
+    reason?: string;
+    flow?: TokenPermitFlow;
+    /** Links the signed, failedCheck and executed events of one permit */
+    permitId?: string;
+  };
+};
+
 // Missed coins
 export type MissedCoinEvent = {
   event: "missedCoin.search" | "missedCoin.popup";
@@ -535,6 +620,7 @@ export type MissedCoinEvent = {
     monthVolume: number | undefined;
     place: MissedCoinsPlace;
     account?: string;
+    mode?: "perp" | "swap";
   };
 };
 
@@ -546,7 +632,7 @@ export type MulticallBatchedTiming = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -560,8 +646,8 @@ export type MulticallRequestTiming = {
   };
 };
 
-export type GelatoPollingTiming = {
-  event: "express.pollGelatoTask.finalStatus";
+export type GmxRelayPollingTiming = {
+  event: "express.pollRelayTask.finalStatus";
   data: {
     status: string;
   };
@@ -573,6 +659,14 @@ export type MissedMarketPricesCounter = {
   data: {
     marketName: string;
     source: string;
+  };
+};
+
+export type AppUpdateCounter = {
+  event: `pwa.update.${"offered" | "accepted" | "declined" | "reloaded"}`;
+  data: {
+    fromBuildId: string;
+    toBuildId: string;
   };
 };
 
@@ -591,7 +685,7 @@ export type MulticallBatchedCallCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
@@ -600,12 +694,20 @@ export type MulticallBatchedErrorCounter = {
   data: {
     chainId: number;
     priority: string;
-    callsCount: number;
+    callsCountBucket: string;
   };
 };
 
 export type KyberSwapQuoteTiming = {
   event: "kyberSwap.quote.timing";
+};
+
+export type WorkerMulticallErrorCounter = {
+  event: "worker.multicall.error";
+  data: {
+    errorName: string;
+    errorMessage: string;
+  };
 };
 
 export type MulticallRequestCounter = {
@@ -631,6 +733,141 @@ export type ImageExportError = {
 
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
+};
+
+export type SignatureProducedEvent = {
+  event: "signature.produced";
+  isError: false;
+  data: {
+    /** EIP-712 primary type ("BridgeOut", "Batch", …) or "message". */
+    signaturePurpose: string;
+    /** `local` is the One-Click session key or a fee-simulation key: no wallet prompt */
+    signerSource: "wallet" | "local";
+    signatureKind: "eoa" | "erc6492" | "erc1271" | "malformed";
+    signatureBytes: number | undefined;
+    ecdsaV: number | undefined;
+    isOnChainRecoverableShape: boolean | undefined;
+    isHighS: boolean | undefined;
+    signingChainId: number;
+    verificationChainId: number;
+    didSwitchChain: boolean;
+    isRetryAfterInvalidSignature: boolean;
+    accountTypeOnSigningChain: string | undefined;
+    accountTypeOnVerificationChain: string | undefined;
+  };
+};
+
+export type TokenApprovalFlow =
+  | "trade"
+  | "editCollateral"
+  | "closePosition"
+  | "settleFundingFees"
+  | "gmBuy"
+  | "gmSell"
+  | "glvBuy"
+  | "glvSell"
+  | "gmShift"
+  | "gmxAccountDeposit"
+  | "gmxAccountSend"
+  | "referral"
+  | "stake"
+  | "claimRewards"
+  | "accountTransfer"
+  | "paxosTransit";
+
+export type TokenApprovalMetricParams = {
+  flow: TokenApprovalFlow;
+  isGasPaymentToken?: boolean;
+  isExpress?: boolean;
+  isExpress1CT?: boolean;
+  // the spender is a user account rather than a contract, so it stays out of analytics
+  hideSpender?: boolean;
+};
+
+export type TokenApprovalEvent = {
+  event: "tokenApproval";
+  isError: false;
+  data: Omit<TokenApprovalMetricParams, "hideSpender"> & {
+    method: "transaction" | "permit";
+    outcome: "accepted" | "rejected" | "failed";
+    chainId: number;
+    tokenAddress: string;
+    tokenSymbol: string | undefined;
+    spenderAddress: string | undefined;
+    isUnlimited: boolean | undefined;
+    errorContext: string | undefined;
+    txErrorType: string | undefined;
+  };
+};
+
+export type StakingActionEvent = {
+  event: "staking.action";
+  isError: false;
+  data: {
+    action: "stake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
+    tokenSymbol: string | undefined;
+    outcome: "sent" | "rejected" | "failed";
+    chainId: number;
+  };
+};
+
+export type SubaccountActivationEvent = {
+  event: "subaccount.activation";
+  isError: false;
+  data: {
+    outcome: "activated" | "rejected" | "failed";
+    failedStep: "keyGeneration" | "approval" | undefined;
+    isNewKey: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountSettingsUpdateEvent = {
+  event: "subaccount.settingsUpdate";
+  isError: false;
+  data: {
+    outcome: "updated" | "rejected" | "failed";
+    wasExpired: boolean;
+    wasActionsExceeded: boolean;
+    isGmxAccount: boolean;
+    chainId: number;
+  };
+};
+
+export type SubaccountRemovalEvent = {
+  event: "subaccount.removal";
+  isError: false;
+  data: {
+    /** `none` when nothing was left to remove on chain; unset when it failed before a method was chosen */
+    method: "none" | "signature" | "walletTxn" | undefined;
+    /** `unknown`: the relay didn't confirm, the next attempt finds out on chain */
+    outcome: "removed" | "rejected" | "failed" | "unknown";
+    chainId: number;
+  };
+};
+
+export type WalletCapabilitiesEvent = {
+  event: "wallet.capabilities";
+  isError: false;
+  data: {
+    chainId: number;
+    walletName: string | undefined;
+    connectorId: string;
+    connectorType: string;
+    accountType: string | undefined;
+    delegateAddress: string | undefined;
+    capabilitiesStatus: WalletChainCapabilitiesResult["status"];
+    capabilitiesDurationMs: number | undefined;
+    capabilitiesTimeoutMs: number | undefined;
+    capabilitiesErrorCode: number | undefined;
+    capabilitiesErrorName: string | undefined;
+    capabilitiesErrorMessage: string | undefined;
+    capabilitiesErrorReason: WalletChainCapabilitiesResult["errorReason"];
+    atomicStatus: string | undefined;
+    hasAlternateGasFees: boolean | undefined;
+    hasPaymasterService: boolean | undefined;
+  };
 };
 
 type MultichainFundingParams = {

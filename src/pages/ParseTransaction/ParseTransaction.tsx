@@ -216,7 +216,7 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        <Trans>Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia</Trans>
+        <Trans>Specify network: arbitrum, avalanche, fuji, megaeth, arbitrum-sepolia</Trans>
       </div>
     );
   }
@@ -319,7 +319,7 @@ export function ParseTransactionPage() {
                       )
                     ) : (
                       <div className="text-body-medium text-typography-secondary">
-                        <Trans>No executed or cancelled transaction found yet</Trans>
+                        <Trans>No executed or cancelled transaction yet</Trans>
                       </div>
                     )}
                   </div>
@@ -548,7 +548,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
       <span className="flex flex-row items-center gap-8">
         <Link
           className="text-typography-secondary underline"
-          to={`/accounts/${props.value.toString()}?network=${network}&v=2`}
+          to={`/traders/${props.value.toString()}?network=${network}&v=2`}
         >
           {props.value.toString()}
         </Link>
@@ -594,7 +594,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (typeof props.value === "boolean") {
-    value = props.value ? t`true` : t`false`;
+    value = props.value ? t`True` : t`False`;
   }
 
   if (props.type === "bytes32") {

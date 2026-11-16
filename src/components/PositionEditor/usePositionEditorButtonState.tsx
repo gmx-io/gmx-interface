@@ -1,17 +1,18 @@
-import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
+  useFeeDiscountFactor,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  usePositionEditorMinCollateralFactor,
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
@@ -19,48 +20,67 @@ import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/se
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
+  selectMaxAutoCancelOrders,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
+  selectPositionEditorDepositMode,
+  selectPositionEditorDepositSwapAmounts,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
+  selectPositionEditorIsDepositSwapPathMissing,
+  selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorMaxWithdrawAmount,
+  selectPositionEditorRawMaxWithdrawAmount,
+  selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
+  selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getCanUseTokenPermits,
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
-import {
-  getIsPositionInfoLoaded,
-  substractMaxLeverageSlippage,
-  willPositionCollateralBeSufficientForPosition,
-} from "domain/synthetics/positions";
+import { addMinDepositSlippage, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { getMarkPrice, getMinRequiredCollateralUsdForPosition } from "domain/synthetics/trade";
+import { Operation } from "domain/synthetics/trade/usePositionEditorState";
 import {
   getCommonError,
+  getConditionalDepositError,
   getEditCollateralError,
   getExpressError,
+  getMarginDepositAutoCancelLimitMessage,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import {
+  getApproveButtonText,
+  getGasPaymentTokenApprovalTooltip,
+  getIsGasPaymentTokenApproval,
+} from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
-import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   initEditCollateralMetricData,
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree } from "lib/numbers";
+import { formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -75,18 +95,24 @@ import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
 } from "sdk/utils/orderTransactions";
+import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
+import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
-import { OPERATION_LABELS, Operation } from "./types";
+import { getIsAutoCancelLimitReached } from "./marginDepositAutoCancel";
+import { buildMarginDepositBatchParams } from "./marginDepositBatchParams";
+import { OPERATION_LABELS } from "./types";
 
 type PositionEditorButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
+  errorBannerContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
   expressParams: ExpressTxnParams | undefined;
@@ -94,8 +120,11 @@ type PositionEditorButtonState = {
   bannerErrorName: ValidationBannerErrorName | undefined;
 };
 
-export function usePositionEditorButtonState(operation: Operation): PositionEditorButtonState {
-  const [, setEditingPositionKey] = usePositionEditorPositionState();
+export function usePositionEditorButtonState(
+  operation: Operation,
+  canSwitchGasPaymentToken: boolean
+): PositionEditorButtonState {
+  const [editingPositionKey, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId, srcChainId } = useChainId();
   const { shouldDisableValidationForTesting } = useSettings();
@@ -104,10 +133,12 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
@@ -117,20 +148,25 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const depositMode = useSelector(selectPositionEditorDepositMode);
+  const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
+  const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
+  const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
+  const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
+  const isDepositSwapUnfillable = useSelector(selectPositionEditorIsDepositSwapUnfillable);
+  const isDepositSwapPathMissing = useSelector(selectPositionEditorIsDepositSwapPathMissing);
 
   const isDeposit = operation === Operation.Deposit;
+  const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
 
   const { executionFee } = usePositionEditorFees({
     operation,
   });
 
-  const { nextLeverage, nextLiqPrice, receiveUsd } = usePositionEditorData({
+  const { nextLeverage, nextLeverageWithoutPnl, nextLiqPrice, receiveUsd } = usePositionEditorData({
     operation,
   });
-
-  const minCollateralFactor = usePositionEditorMinCollateralFactor();
-
-  const collateralPrice = selectedCollateralToken?.prices.minPrice;
 
   const markPrice = position
     ? getMarkPrice({
@@ -156,21 +192,49 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return undefined;
     }
 
+    if (isAtPriceDeposit) {
+      if (triggerPrice === undefined) {
+        return undefined;
+      }
+
+      return buildMarginDepositBatchParams({
+        chainId,
+        receiver: account,
+        executionFeeAmount: executionFee.feeTokenAmount,
+        executionGasLimit: executionFee.gasLimit,
+        referralCode: userReferralInfo?.referralCodeForTxn,
+        collateralTokenAddress: selectedCollateralAddress,
+        collateralDeltaAmount,
+        triggerPrice,
+        isLong: position.isLong,
+        marketAddress: position.marketAddress,
+        indexTokenAddress: position.indexToken.address,
+        allowedSlippage,
+        replacingOrderKey,
+      });
+    }
+
     let createOrderParams: CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams>;
 
     if (isDeposit) {
+      const depositSwapPath = depositSwapAmounts?.swapStrategy.swapPathStats?.swapPath;
+
+      if (depositSwapAmounts && !depositSwapPath) {
+        return undefined;
+      }
+
       createOrderParams = buildIncreaseOrderPayload({
         chainId,
         receiver: account,
         executionFeeAmount: executionFee.feeTokenAmount,
         executionGasLimit: executionFee.gasLimit,
         referralCode: userReferralInfo?.referralCodeForTxn,
-        swapPath: [],
+        swapPath: depositSwapPath ?? [],
         externalSwapQuote: undefined,
         payTokenAddress: selectedCollateralAddress,
         payTokenAmount: collateralDeltaAmount,
-        collateralTokenAddress: selectedCollateralAddress,
-        collateralDeltaAmount: collateralDeltaAmount,
+        collateralTokenAddress: depositSwapAmounts ? position.collateralTokenAddress : selectedCollateralAddress,
+        collateralDeltaAmount: depositSwapAmounts ? depositSwapAmounts.amountOut : collateralDeltaAmount,
         sizeDeltaUsd: 0n,
         sizeDeltaInTokens: 0n,
         acceptablePrice: markPrice,
@@ -184,6 +248,20 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         autoCancel: false,
         validFromTime: 0n,
       });
+
+      // the SDK sends increases with no swap floor, and with no size change the acceptable price protects nothing
+      if (depositSwapAmounts) {
+        createOrderParams = {
+          ...createOrderParams,
+          orderPayload: {
+            ...createOrderParams.orderPayload,
+            numbers: {
+              ...createOrderParams.orderPayload.numbers,
+              minOutputAmount: applySlippageToMinOut(allowedSlippage, depositSwapAmounts.minOutputAmount),
+            },
+          },
+        };
+      }
     } else {
       if (receiveUsd === undefined) {
         return;
@@ -226,22 +304,27 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     allowedSlippage,
     chainId,
     collateralDeltaAmount,
+    depositSwapAmounts,
     executionFee,
+    isAtPriceDeposit,
     isDeposit,
     markPrice,
     marketsInfoData,
     position,
     receiveUsd,
+    replacingOrderKey,
     selectedCollateralAddress,
     selectedCollateralToken,
     signer,
     tokensData,
+    triggerPrice,
     userReferralInfo?.referralCodeForTxn,
   ]);
 
   const {
     expressParams,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
     fastExpressParams,
     asyncExpressParams,
     expressParamsPromise,
@@ -249,12 +332,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     label: "Position Editor",
     orderParams: batchParams,
     isGmxAccount: isCollateralTokenFromGmxAccount,
+    canSwitchGasPaymentToken,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
   const approvalTokens = useMemo(() => {
     const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
 
-    if (selectedCollateralAddress && collateralDeltaAmount !== undefined) {
+    if (isDeposit && selectedCollateralAddress && collateralDeltaAmount !== undefined) {
       list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
@@ -266,7 +351,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     }
 
     return list;
-  }, [selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
 
   const {
     tokensToApprove,
@@ -277,8 +362,15 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: getCanUseTokenPermits(expressParams),
     skip: isCollateralTokenFromGmxAccount,
+    metric: {
+      flow: "editCollateral",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+    },
   });
 
   const isAllowanceLoaded =
@@ -292,48 +384,51 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     setEditingPositionKey(undefined);
   }, [setEditingPositionKey]);
 
-  const maxWithdrawAmount = useMemo(() => {
-    if (!getIsPositionInfoLoaded(position)) return 0n;
+  const maxWithdrawAmount = useSelector(selectPositionEditorMaxWithdrawAmount);
+  const rawMaxWithdrawAmount = useSelector(selectPositionEditorRawMaxWithdrawAmount);
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
-    let _minCollateralUsd = minCollateralUsdForLeverage;
-
-    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
-      _minCollateralUsd = minCollateralUsd;
-    }
-
-    _minCollateralUsd =
-      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
-
-    if (position.collateralUsd < _minCollateralUsd) {
-      return 0n;
-    }
-
-    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
-    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, selectedCollateralToken?.decimals, collateralPrice);
-
-    return maxWithdrawAmount;
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position]);
-
-  const detectAndSetMaxSize = useCallback(() => {
-    if (maxWithdrawAmount === undefined) return;
+  const setMaxWithdrawal = useCallback(() => {
     if (!selectedCollateralToken) return;
-    if (!position) return;
-    if (minCollateralFactor === undefined) return;
 
-    const { result: safeMaxWithdrawal } = bigNumberBinarySearch(
-      BigInt(1),
-      maxWithdrawAmount,
-      expandDecimals(1, Math.ceil(selectedCollateralToken.decimals / 3)),
-      (x) => {
-        const isValid = willPositionCollateralBeSufficientForPosition(position, x, 0n, minCollateralFactor, 0n);
-        return { isValid, returnValue: null };
-      }
+    setCollateralInputValue(formatAmountFree(maxWithdrawAmount, selectedCollateralToken.decimals));
+  }, [selectedCollateralToken, maxWithdrawAmount, setCollateralInputValue]);
+
+  const minDepositUsd = useMemo(() => {
+    if (!isDeposit || !getIsPositionInfoLoaded(position) || minCollateralUsd === undefined) {
+      return undefined;
+    }
+
+    const minRequiredCollateralUsd = getMinRequiredCollateralUsdForPosition({
+      position,
+      minCollateralUsd,
+      userReferralInfo,
+      feeDiscountFactor,
+    });
+
+    const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
+
+    return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo, feeDiscountFactor]);
+
+  const setMinDepositValue = useCallback(() => {
+    if (minDepositUsd === undefined || !selectedCollateralToken) return;
+
+    const minDepositAmount = convertToTokenAmount(
+      addMinDepositSlippage(minDepositUsd),
+      selectedCollateralToken.decimals,
+      selectedCollateralToken.prices.minPrice
     );
-    setCollateralInputValue(
-      formatAmountFree(substractMaxLeverageSlippage(safeMaxWithdrawal), selectedCollateralToken.decimals)
-    );
-  }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
+
+    if (minDepositAmount === undefined) return;
+
+    setCollateralInputValue(formatAmountFree(minDepositAmount, selectedCollateralToken.decimals));
+  }, [minDepositUsd, selectedCollateralToken, setCollateralInputValue]);
+
+  // mandatory auto-cancel: the limit blocks instead of downgrading like TP/SL
+  const isAutoCancelLimitReached = useMemo(
+    () => getIsAutoCancelLimitReached({ positionOrders, replacingOrderKey, maxAutoCancelOrders }),
+    [maxAutoCancelOrders, positionOrders, replacingOrderKey]
+  );
 
   const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
@@ -347,53 +442,128 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       tokensData,
     });
 
+    if (isAtPriceDeposit) {
+      const conditionalDepositError = getConditionalDepositError({
+        collateralDeltaAmount,
+        collateralDeltaUsd,
+        depositToken: selectedCollateralToken,
+        depositAmount: collateralDeltaAmount,
+        minDepositUsd,
+        isLong: Boolean(position?.isLong),
+        markPrice,
+        triggerPrice,
+        currentLiqPrice: position?.liquidationPrice,
+        nextLiqPrice,
+        isAutoCancelLimitReached,
+      });
+
+      return takeValidationResult(
+        commonError,
+        multipleWalletExtensionsChainError,
+        conditionalDepositError,
+        expressError
+      );
+    }
+
     const editCollateralError = getEditCollateralError({
       collateralDeltaAmount,
       collateralDeltaUsd,
-      nextLeverage,
+      nextLeverage: isDeposit ? nextLeverage : nextLeverageWithoutPnl,
       nextLiqPrice,
       isDeposit,
       position,
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
-      minCollateralFactor,
-      marketAddress: position?.marketAddress,
+      minDepositUsd,
+      marketInfo: position?.marketInfo,
+      maxWithdrawAmount: rawMaxWithdrawAmount,
+      isDepositSwapUnfillable,
+      isDepositSwapPathMissing,
     });
 
-    return takeValidationResult(commonError, editCollateralError, expressError);
+    return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
   }, [
     chainId,
     account,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     expressParams,
     tokensData,
     collateralDeltaAmount,
     collateralDeltaUsd,
+    isAtPriceDeposit,
+    isAutoCancelLimitReached,
+    markPrice,
     nextLeverage,
+    nextLeverageWithoutPnl,
     nextLiqPrice,
     isDeposit,
     position,
     selectedCollateralToken,
-    minCollateralFactor,
+    minDepositUsd,
+    rawMaxWithdrawAmount,
+    triggerPrice,
+    isDepositSwapUnfillable,
+    isDepositSwapPathMissing,
   ]);
 
+  const { _ } = useLingui();
   const errorTooltipContent = useMemo(() => {
-    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
+    if (validationResult.buttonTooltipMessage) {
+      return validationResult.buttonTooltipMessage;
+    }
+
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.liqPriceGtMarkPrice) {
+      return _(msg`Position would be liquidated immediately. Reduce the withdrawal amount.`);
+    }
+
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.maxLeverage) {
+      return (
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Reduce withdrawal to match the max.</Trans>
+          </TooltipText>
+          <TooltipAction onClick={setMaxWithdrawal}>
+            <Trans>Set max withdrawal</Trans>
+          </TooltipAction>
+          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+            <Trans>Read more</Trans>
+          </TooltipLink>
+        </TooltipContent>
+      );
+    }
+
+    return null;
+  }, [_, setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+
+  const errorBannerContent = useMemo(() => {
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {
+      return getMarginDepositAutoCancelLimitMessage();
+    }
+
+    if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositInsufficient) {
+      // the deposit input is already on this screen
+      return <MarginDepositInsufficientMessage />;
+    }
+
+    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.minDeposit) {
       return null;
     }
 
     return (
-      <Trans>
-        Reduce withdrawal to match the max.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-        <br />
-        <br />
-        <span onClick={detectAndSetMaxSize} className="Tradebox-handle">
-          <Trans>Set max withdrawal</Trans>
-        </span>
-      </Trans>
+      <div>
+        <Trans>
+          Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the
+          deposit must also cover them.
+        </Trans>
+        <div className="mt-4">
+          <EmbeddedActionButton onClick={setMinDepositValue}>
+            <Trans>Set min deposit</Trans>
+          </EmbeddedActionButton>
+        </div>
+      </div>
     );
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
+  }, [setMinDepositValue, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -419,7 +589,11 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
-    const orderType = isDeposit ? OrderType.MarketIncrease : OrderType.MarketDecrease;
+    const orderType = isAtPriceDeposit
+      ? OrderType.LimitIncrease
+      : isDeposit
+        ? OrderType.MarketIncrease
+        : OrderType.MarketDecrease;
 
     const metricData = initEditCollateralMetricData({
       collateralToken: selectedCollateralToken,
@@ -427,6 +601,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       selectedCollateralAddress,
       marketInfo: position?.marketInfo,
       collateralDeltaAmount,
+      swapPath: batchParams?.createOrderParams[0]?.orderPayload.addresses.swapPath,
       subaccount: expressParams?.subaccount,
       isExpress: Boolean(expressParams),
       orderType,
@@ -436,6 +611,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       fastExpressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: isCollateralTokenFromGmxAccount,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -452,15 +628,31 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
+    setIsSubmitting(true);
+
     const fulfilledExpressParams = await expressParamsPromise;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isCollateralTokenFromGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Edit Collateral",
+        collateral: selectedCollateralToken?.symbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
 
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -478,41 +670,69 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     });
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("positionEditor.submit"));
       onClose();
       setIsSubmitting(false);
       return;
     }
 
-    txnPromise.then(onClose).finally(() => {
+    txnPromise.then(onClose, reportHandledRejection("positionEditor.submit")).finally(() => {
       setIsSubmitting(false);
     });
   }
 
   const commonParams: Pick<
     PositionEditorButtonState,
-    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "bannerErrorName"
+    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "errorBannerContent" | "bannerErrorName"
   > = {
     expressParams,
     isExpressLoading,
     onSubmit,
     tooltipContent: errorTooltipContent,
+    errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
 
-  if (isApproving && tokensToApprove.length) {
-    const tokenToApprove = tokensToApprove[0];
+  if (multipleWalletExtensionsChainError.buttonErrorMessage) {
     return {
-      text: (
-        <>
-          {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
       disabled: true,
       ...commonParams,
     };
   }
 
-  if (isExpressLoading) {
+  const getApproveButtonState = (): Pick<PositionEditorButtonState, "text" | "tooltipContent"> => {
+    const tokenToApprove = tokensToApprove[0];
+    const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
+    const isGasPaymentTokenApproval = getIsGasPaymentTokenApproval({
+      tokenAddress: tokenToApprove,
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams.gasPaymentTokenAddress,
+      payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+    });
+
+    return {
+      text: getApproveButtonText({ tokenSymbol, isGasPaymentToken: isGasPaymentTokenApproval }),
+      tooltipContent: isGasPaymentTokenApproval
+        ? getGasPaymentTokenApprovalTooltip(tokenSymbol)
+        : commonParams.tooltipContent,
+    };
+  };
+
+  if (isApproving && tokensToApprove.length) {
+    const { text, tooltipContent } = getApproveButtonState();
+    return {
+      text: (
+        <>
+          {text} <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+      ...commonParams,
+      tooltipContent,
+    };
+  }
+
+  if (isExpressLoading || isMultichainSubmitDisabled) {
     return {
       text: (
         <>
@@ -529,7 +749,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          <Trans>Creating order</Trans>
+          <Trans>Creating order...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -552,16 +772,23 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   }
 
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
-    const tokenToApprove = tokensToApprove[0];
+    const { text, tooltipContent } = getApproveButtonState();
     return {
-      text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
+      text,
       disabled: false,
       ...commonParams,
+      tooltipContent,
     };
   }
 
+  const submitLabel = isAtPriceDeposit
+    ? replacingOrderKey !== undefined
+      ? t`Replace margin deposit`
+      : t`Create margin deposit`
+    : localizedOperationLabels[operation];
+
   return {
-    text: validationResult.buttonErrorMessage || localizedOperationLabels[operation],
+    text: validationResult.buttonErrorMessage || submitLabel,
     disabled: Boolean(validationResult.buttonErrorMessage) && !shouldDisableValidationForTesting,
     ...commonParams,
   };

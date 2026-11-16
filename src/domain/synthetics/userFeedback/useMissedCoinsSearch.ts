@@ -15,12 +15,14 @@ export function useMissedCoinsSearch({
   isLoaded,
   place,
   skip,
+  mode,
 }: {
   searchText: string;
   isEmpty: boolean;
   isLoaded: boolean;
   place?: MissedCoinsPlace;
   skip?: boolean;
+  mode?: "perp" | "swap";
 }) {
   const lastMonthAccountStats = useSelector(selectLastMonthAccountStats);
   const accountStats = useSelector(selectAccountStats);
@@ -32,7 +34,8 @@ export function useMissedCoinsSearch({
         totalVolume: accountStats?.volume,
         monthVolume: lastMonthAccountStats?.volume,
         place,
+        mode,
       });
     }
-  }, [accountStats?.volume, isEmpty, isLoaded, lastMonthAccountStats?.volume, place, searchText, skip]);
+  }, [accountStats?.volume, isEmpty, isLoaded, lastMonthAccountStats?.volume, mode, place, searchText, skip]);
 }

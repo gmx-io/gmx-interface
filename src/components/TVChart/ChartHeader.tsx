@@ -6,11 +6,9 @@ import { useEffectOnce } from "react-use";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxTradeFlags } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useChainId } from "lib/chains";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { getToken } from "sdk/configs/tokens";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import DocsIcon from "img/docs.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
@@ -30,10 +28,7 @@ function ChartHeaderMobile() {
   const { chartToken } = useSelector(selectChartToken);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
 
-  const { chainId } = useChainId();
-  const chartTokenAddress = chartToken?.address;
-
-  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const selectedTokenOption = chartToken;
   const [detailsVisible, setDetailsVisible] = useState(false);
 
   const {
@@ -69,82 +64,62 @@ function ChartHeaderMobile() {
 
     if (isSwap) {
       return (
-        <div className="grid grid-cols-[1fr_1fr] gap-14">
-          <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>24h high</Trans>
-            </div>
-            <div className="numbers">{high24}</div>
-          </div>
-          <div>
-            <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>24h low</Trans>
-            </div>
-            <div className="numbers">{low24}</div>
-          </div>
+        <div className="flex flex-wrap gap-16 min-[440px]:grid min-[440px]:grid-cols-2">
+          <ChartHeaderMobileItem label={<Trans>24h high</Trans>} value={high24} />
+          <ChartHeaderMobileItem label={<Trans>24h low</Trans>} value={low24} />
         </div>
       );
     }
 
     return (
-      <div className="grid grid-cols-[1fr_1fr] grid-rows-2 gap-16">
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <Trans>24h volume</Trans>
-          </div>
-          <div className="numbers">{dailyVolume}</div>
-        </div>
+      <div className="flex flex-wrap gap-16 min-[440px]:grid min-[440px]:grid-cols-2">
+        <ChartHeaderMobileItem label={<Trans>24h volume</Trans>} value={dailyVolume} />
 
-        <div>
-          <div className="mb-4 whitespace-nowrap text-[11px] font-medium text-typography-secondary">
-            <span className="whitespace-nowrap text-[11px] font-medium uppercase text-typography-secondary">
-              <Trans>Open interest</Trans>
-            </span>
-            <span>{" ("}</span>
-            <span className="text-green-500 numbers">{longOIPercentage}</span>
-            <span>/</span>
-            <span className="text-red-500 numbers">{shortOIPercentage}</span>
-            <span>{")"}</span>
-          </div>
-          <TooltipWithPortal
-            variant="none"
-            as="div"
-            className="inline-flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<OpenInterestTooltip />}
-          >
-            <div className="flex flex-row items-center gap-8 numbers">{longOIValue}</div>
-            <div className="flex flex-row items-center gap-8 numbers">{shortOIValue}</div>
-          </TooltipWithPortal>
-        </div>
+        <ChartHeaderMobileItem
+          label={
+            <Trans>
+              Open interest (<span className="text-green-500 numbers">{longOIPercentage}</span>/
+              <span className="text-red-500 numbers">{shortOIPercentage}</span>)
+            </Trans>
+          }
+          value={
+            <StandardTooltip position="bottom-end" content={<OpenInterestTooltip />}>
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-4 numbers">{longOIValue}</div>
+                <span className="text-typography-inactive">/</span>
+                <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
+              </div>
+            </StandardTooltip>
+          }
+        />
 
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <Trans>Available liquidity</Trans>
-          </div>
-          <div className="flex flex-row items-center gap-8">
-            <div className="flex flex-row items-center gap-8 numbers">{liquidityLong}</div>
-            <div className="flex flex-row items-center gap-8 numbers">{liquidityShort}</div>
-          </div>
-        </div>
+        <ChartHeaderMobileItem
+          label={<Trans>Available liquidity</Trans>}
+          value={
+            <div className="flex items-center gap-8">
+              <span className="numbers">{liquidityLong}</span>
+              <span className="text-typography-inactive">/</span>
+              <span className="numbers">{liquidityShort}</span>
+            </div>
+          }
+        />
 
-        <div>
-          <div className="mb-4 text-[11px] font-medium uppercase text-typography-secondary">
-            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
+        <ChartHeaderMobileItem
+          label={
+            <StandardTooltip variant="iconStroke" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
-            </TooltipWithPortal>
-          </div>
-          <TooltipWithPortal
-            variant="none"
-            as="div"
-            className="inline-flex flex-row items-center gap-8"
-            position="bottom-end"
-            content={<NetRate1hTooltip />}
-          >
-            <div className="numbers">{netRateLong}</div>
-            <div className="numbers">{netRateShort}</div>
-          </TooltipWithPortal>
-        </div>
+            </StandardTooltip>
+          }
+          value={
+            <StandardTooltip position="bottom-end" content={<NetRate1hTooltip />}>
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-4 numbers">{netRateLong}</div>
+                <span className="text-typography-inactive">/</span>
+                <div className="flex items-center gap-4 numbers">{netRateShort}</div>
+              </div>
+            </StandardTooltip>
+          }
+        />
       </div>
     );
   }, [
@@ -185,7 +160,7 @@ function ChartHeaderMobile() {
         </div>
       </div>
 
-      {details ? <div className="border-t-[1px] border-t-slate-600 p-16">{details}</div> : null}
+      {details ? <div className="border-t-1/2 border-t-slate-600 p-16">{details}</div> : null}
     </div>
   );
 }
@@ -200,10 +175,7 @@ function ChartHeaderDesktop() {
   const [scrollRight, setScrollRight] = useState(0);
   const [maxFadeArea, setMaxFadeArea] = useState(75);
 
-  const { chainId } = useChainId();
-  const chartTokenAddress = chartToken?.address;
-
-  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const selectedTokenOption = chartToken;
 
   const setScrolls = useCallback(() => {
     const scrollable = scrollableRef.current;
@@ -291,13 +263,13 @@ function ChartHeaderDesktop() {
             </Trans>
           }
           value={
-            <TooltipWithPortal variant="none" as="div" position="bottom-end" content={<OpenInterestTooltip />}>
+            <StandardTooltip position="bottom-end" content={<OpenInterestTooltip />}>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-4 numbers">{longOIValue}</div>
                 <span className="text-typography-inactive">/</span>
                 <div className="flex items-center gap-4 numbers">{shortOIValue}</div>
               </div>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
         />
 
@@ -314,14 +286,12 @@ function ChartHeaderDesktop() {
 
         <ChartHeaderItem
           label={
-            <TooltipWithPortal variant="none" renderContent={renderNetFeeHeaderTooltipContent}>
+            <StandardTooltip variant="iconStroke" renderContent={renderNetFeeHeaderTooltipContent}>
               <Trans>Net rate / 1h</Trans>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
           value={
-            <TooltipWithPortal
-              variant="none"
-              as="div"
+            <StandardTooltip
               className="Chart-header-value flex flex-row items-center gap-8"
               position="bottom-end"
               content={<NetRate1hTooltip />}
@@ -331,7 +301,7 @@ function ChartHeaderDesktop() {
                 <span className="text-typography-inactive">/</span>
                 <div className="numbers">{netRateShort}</div>
               </div>
-            </TooltipWithPortal>
+            </StandardTooltip>
           }
         />
       </>
@@ -453,6 +423,15 @@ const ChartHeaderItem = ({ label, value }: { label: ReactNode; value: ReactNode 
         {label}
       </div>
       <div className="text-body-medium numbers">{value}</div>
+    </div>
+  );
+};
+
+const ChartHeaderMobileItem = ({ label, value }: { label: ReactNode; value: ReactNode }) => {
+  return (
+    <div className="flex flex-col gap-8 text-12 leading-[1.25]">
+      <div className="font-medium capitalize text-typography-secondary">{label}</div>
+      <div className="flex items-center text-typography-primary numbers">{value}</div>
     </div>
   );
 };

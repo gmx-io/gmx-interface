@@ -12,19 +12,46 @@ import {
   formatAmount,
   formatAmountHuman,
   formatBalanceAmount,
+  formatBasisPoints,
+  formatPriceImpactBps,
   formatFactor,
+  formatNumberHuman,
   formatPercentage,
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
+  isUint256,
+  MaxUint256,
   numberToBigint,
+  parseUint256DecimalString,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  parseValue,
+  removeTrailingZeros,
   trimZeroDecimals,
+  truncateToBalanceDisplayDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
+  roundsToZero,
   toBigNumberWithDecimals,
+  formatUsd,
+  formatUsdParts,
+  formatDeltaUsd,
+  formatDeltaUsdParts,
+  formatBigUsd,
+  formatBigUsdParts,
+  formatUsdPriceParts,
+  formatAmountHumanParts,
+  formatTokenAmountWithUsd,
+  formatTokenAmountWithUsdParts,
+  numberWithCommas,
+  numberWithCommasParts,
+  numberParts,
+  joinNumberParts,
+  isNumberParts,
+  NumberPart,
+  USD_PART,
 } from "utils/numbers";
 
 const ONE_USD = 1000000000000000000000000000000n;
@@ -36,6 +63,31 @@ describe("numbers utils", () => {
     expect(BN_ZERO).toBe(0n);
     expect(BN_ONE).toBe(1n);
     expect(BN_NEGATIVE_ONE).toBe(-1n);
+  });
+
+  describe("uint256", () => {
+    it.each([
+      ["0", 0n],
+      ["1", 1n],
+      [MaxUint256.toString(), MaxUint256],
+    ])("parses the canonical decimal string %s", (value, expected) => {
+      expect(parseUint256DecimalString(value)).toBe(expected);
+    });
+
+    it.each([undefined, null, 1, 1n, "", "-1", "+1", "01", "1.0", "0x10", (MaxUint256 + 1n).toString()])(
+      "rejects the non-uint256 decimal value %s",
+      (value) => {
+        expect(parseUint256DecimalString(value)).toBeUndefined();
+      }
+    );
+
+    it("recognizes uint256 bigint values", () => {
+      expect(isUint256(0n)).toBe(true);
+      expect(isUint256(MaxUint256)).toBe(true);
+      expect(isUint256(-1n)).toBe(false);
+      expect(isUint256(MaxUint256 + 1n)).toBe(false);
+      expect(isUint256("1")).toBe(false);
+    });
   });
 
   describe("expandDecimals", () => {
@@ -141,6 +193,22 @@ describe("trimZeroDecimals", () => {
 
   it("leading zeros with trailing zero decimals trims to int", () => {
     expect(trimZeroDecimals("0000123.000")).toBe("123");
+  });
+});
+
+describe("removeTrailingZeros", () => {
+  it("keeps large values in plain decimal notation", () => {
+    expect(removeTrailingZeros("9659861417460889000000.00")).toBe("9659861417460889000000");
+  });
+
+  it("removes trailing fractional zeros without converting the value to a number", () => {
+    expect(removeTrailingZeros("123.4500")).toBe("123.45");
+  });
+});
+
+describe("parseValue", () => {
+  it("returns undefined instead of throwing for scientific notation", () => {
+    expect(parseValue("9.659861417460889e+21", USD_DECIMALS)).toBeUndefined();
   });
 });
 
@@ -317,7 +385,80 @@ describe("formatUsdPrice", () => {
   });
 });
 
+describe("formatBigUsd", () => {
+  it("shows cents for sub-dollar amounts and whole dollars otherwise PRO-4565", () => {
+    const cases: [bigint, string][] = [
+      [0n, "$ 0"],
+      [ONE_USD / 200n, "< $ 0.01"],
+      [(ONE_USD * 229n) / 10_000n, "$ 0.02"],
+      [(ONE_USD * 99n) / 100n, "$ 0.99"],
+      [ONE_USD, "$ 1"],
+      [(ONE_USD * 7_058_342n) / 10n, "$ 705,834"],
+    ];
+
+    for (const [amount, expected] of cases) {
+      expect(formatBigUsd(amount)).toBe(expected);
+    }
+  });
+});
+
+describe("formatNumberHuman", () => {
+  it.each([
+    [999.94, 1, "999.9"],
+    [999.96, 1, "1.0k"],
+    [1_000, 1, "1.0k"],
+    [999_940, 1, "999.9k"],
+    [999_960, 1, "1.0m"],
+    [999_996, 1, "1.0m"],
+    [1_000_000, 1, "1.0m"],
+    [999_940_000, 1, "999.9m"],
+    [999_960_000, 1, "1.0b"],
+    [1_000_000_000, 1, "1.0b"],
+    [999.4, 0, "999"],
+    [999.6, 0, "1k"],
+    [999_400, 0, "999k"],
+    [999_600, 0, "1m"],
+    [999_400_000, 0, "999m"],
+    [999_600_000, 0, "1b"],
+    [999.994, 2, "999.99"],
+    [999.996, 2, "1.00k"],
+    [999_994, 2, "999.99k"],
+    [999_996, 2, "1.00m"],
+    [999_994_000, 2, "999.99m"],
+    [999_996_000, 2, "1.00b"],
+  ])("formats %s at %s decimal places as %s", (value, displayDecimals, expected) => {
+    expect(formatNumberHuman(value, false, displayDecimals)).toBe(expected);
+    expect(formatNumberHuman(-value, false, displayDecimals)).toBe(`-${expected}`);
+    expect(formatNumberHuman(value, true, displayDecimals)).toBe(`$\u200a${expected}`);
+    expect(formatNumberHuman(-value, true, displayDecimals)).toBe(`-$\u200a${expected}`);
+  });
+
+  it("preserves zero and small values", () => {
+    expect(formatNumberHuman(0)).toBe("0.0");
+    expect(formatNumberHuman(0, true, 2)).toBe("$\u200a0.00");
+    expect(formatNumberHuman(0.04)).toBe("0.0");
+    expect(formatNumberHuman(-0.04)).toBe("-0.0");
+  });
+});
+
 describe("formatAmountHuman", () => {
+  it.each([
+    ["999.94", "$\u200a999.9"],
+    ["999.96", "$\u200a1.0k"],
+    ["999996", "$\u200a1.0m"],
+    ["999996000", "$\u200a1.0b"],
+  ])("formats the USD amount %s as %s", (value, expected) => {
+    const amount = toBigNumberWithDecimals(value, USD_DECIMALS);
+
+    expect(formatAmountHuman(amount, USD_DECIMALS, true, 1)).toBe(expected);
+    expect(formatAmountHuman(-amount, USD_DECIMALS, true, 1)).toBe(`-${expected}`);
+  });
+
+  it("preserves loading and zero values", () => {
+    expect(formatAmountHuman(undefined, USD_DECIMALS, true)).toBe("...");
+    expect(formatAmountHuman(0n, USD_DECIMALS, true)).toBe("$\u200a0.0");
+  });
+
   it("positive", () => {
     expect(formatAmountHuman(ONE_USD, USD_DECIMALS)).toBe("1.0");
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS)).toBe("1.0k");
@@ -341,6 +482,39 @@ describe("formatAmountHuman", () => {
     expect(formatAmountHuman(ONE_USD * 1000n, USD_DECIMALS, false, 0)).toBe("1k");
     expect(formatAmountHuman(ONE_USD * 1500000n, USD_DECIMALS, false, 0)).toBe("2m");
   });
+});
+
+describe("truncateToBalanceDisplayDecimals", () => {
+  it("rounds a stable amount down to the two decimals its balance is shown with", () => {
+    // 135.938928 USDC is shown as 135.94; the largest amount that can be typed back as shown is 135.93
+    expect(truncateToBalanceDisplayDecimals(135_938_928n, 6, true)).toBe(135_930_000n);
+    expect(formatBalanceAmount(135_930_000n, 6, undefined, { isStable: true })).toBe("135.93");
+  });
+
+  it("keeps an amount that is already at display precision", () => {
+    expect(truncateToBalanceDisplayDecimals(135_930_000n, 6, true)).toBe(135_930_000n);
+    expect(truncateToBalanceDisplayDecimals(0n, 6, true)).toBe(0n);
+  });
+
+  it("uses the finer precision small and non-stable amounts are shown with", () => {
+    // 0.0494382912 ETH is shown with 6 decimals
+    const amount = 49_438_291_200_000_000n;
+    const truncated = truncateToBalanceDisplayDecimals(amount, 18);
+
+    expect(truncated).toBe(49_438_000_000_000_000n);
+    expect(formatBalanceAmount(truncated, 18)).toBe("0.049438");
+  });
+
+  it.each([135_938_928n, 99_999_999n, 1_005_000n, 104_999n, 9_999n])(
+    "never exceeds the amount and always reads back as displayed (%s)",
+    (amount) => {
+      const truncated = truncateToBalanceDisplayDecimals(amount, 6, true);
+      const displayed = formatBalanceAmount(truncated, 6, undefined, { isStable: true, showZero: true });
+
+      expect(truncated).toBeLessThanOrEqual(amount);
+      expect(parseValue(displayed.replace(/,/g, ""), 6)).toBe(truncated);
+    }
+  );
 });
 
 describe("formatBalanceAmount", () => {
@@ -408,6 +582,14 @@ describe("formatFactor", () => {
     expect(formatFactor(1000000000000000000000000000n)).toBe("0.001");
     expect(formatFactor(1000000000000000000000000000000n)).toBe("1");
   });
+
+  it("should format percentage-scaled factors", () => {
+    expect(formatFactor(PRECISION * 10n)).toBe("10");
+    expect(formatFactor(PRECISION * 30n)).toBe("30");
+    expect(formatFactor(PRECISION * 80n)).toBe("80");
+    expect(formatFactor(PRECISION * 100n)).toBe("100");
+    expect(formatFactor(PRECISION * 1000n)).toBe("1000");
+  });
 });
 
 describe("formatPercentage", () => {
@@ -429,6 +611,11 @@ describe("formatPercentage", () => {
   it("should format with different displayDecimals", () => {
     expect(formatPercentage(100n, { displayDecimals: 2 })).toBe("1.00%");
     expect(formatPercentage(123456n, { displayDecimals: 1 })).toBe("1234.6%");
+  });
+
+  it("should format with commas when requested", () => {
+    expect(formatPercentage(123456n, { useCommas: true })).toBe("1,234.56%");
+    expect(formatPercentage(-123456n, { signed: true, useCommas: true })).toBe("-\u200a1,234.56%");
   });
 
   it("should handle basis points (bps) formatting", () => {
@@ -542,5 +729,145 @@ describe("formatTokenAmount", () => {
       minThreshold: "0.00000001",
     });
     expect(result).toContain("<");
+  });
+});
+
+describe("roundsToZero", () => {
+  it("is true when the amount is below the smallest displayed unit", () => {
+    expect(roundsToZero(5n, 18, 4)).toBe(true);
+    expect(roundsToZero(-5n, 18, 4)).toBe(true);
+    expect(roundsToZero(0n, 18, 4)).toBe(true);
+  });
+
+  it("is false when the amount reaches the smallest displayed unit", () => {
+    expect(roundsToZero(10n ** 14n, 18, 4)).toBe(false);
+  });
+
+  it("is false when no decimals are hidden", () => {
+    expect(roundsToZero(1n, 6, 6)).toBe(false);
+    expect(roundsToZero(1n, 4, 6)).toBe(false);
+  });
+});
+
+describe("formatBasisPoints", () => {
+  it("formats negative bps values with sign", () => {
+    expect(formatBasisPoints(-81n)).toBe("-81 bps");
+  });
+
+  it("formats positive bps values with plus sign", () => {
+    expect(formatBasisPoints(50n)).toBe("+50 bps");
+  });
+
+  it("formats zero without sign", () => {
+    expect(formatBasisPoints(0n)).toBe("0 bps");
+  });
+
+  it("uses comma separators for large bps values", () => {
+    expect(formatBasisPoints(20000n)).toBe("+20,000 bps");
+  });
+
+  it("returns undefined for missing bps value", () => {
+    expect(formatBasisPoints(undefined)).toBeUndefined();
+  });
+});
+
+describe("formatPriceImpactBps", () => {
+  it("formats the signed bps share of size", () => {
+    expect(formatPriceImpactBps(-81n, 10000n)).toBe("-81 bps");
+    expect(formatPriceImpactBps(50n, 10000n)).toBe("+50 bps");
+    expect(formatPriceImpactBps(0n, 10000n)).toBe("0 bps");
+  });
+
+  it("returns undefined when the price impact is missing", () => {
+    expect(formatPriceImpactBps(undefined, 10000n)).toBeUndefined();
+  });
+
+  it("returns undefined when size is not positive", () => {
+    expect(formatPriceImpactBps(-81n, 0n)).toBeUndefined();
+    expect(formatPriceImpactBps(-81n, -10000n)).toBeUndefined();
+  });
+});
+
+describe("number parts", () => {
+  const usd = (amount: number) => expandDecimals(amount, USD_DECIMALS);
+
+  it("string formatters are the joined parts", () => {
+    const cases: [string | undefined, NumberPart[] | undefined][] = [
+      [formatUsd(usd(1234)), formatUsdParts(usd(1234))],
+      [
+        formatUsd(-usd(1), { displayPlus: true, displayDecimals: 4 }),
+        formatUsdParts(-usd(1), { displayPlus: true, displayDecimals: 4 }),
+      ],
+      [formatUsd(usd(2_000_000_000)), formatUsdParts(usd(2_000_000_000))],
+      [formatUsd(1n), formatUsdParts(1n)],
+      [formatUsd(undefined, { fallbackToZero: true }), formatUsdParts(undefined, { fallbackToZero: true })],
+      [formatDeltaUsd(usd(5), expandDecimals(3, 2)), formatDeltaUsdParts(usd(5), expandDecimals(3, 2))],
+      [
+        formatDeltaUsd(0n, undefined, { showPlusForZero: true }),
+        formatDeltaUsdParts(0n, undefined, { showPlusForZero: true }),
+      ],
+      [formatBigUsd(usd(123456789)), formatBigUsdParts(usd(123456789))],
+      [formatUsdPrice(usd(3)), formatUsdPriceParts(usd(3))],
+      [formatUsdPrice(-1n), formatUsdPriceParts(-1n)],
+      [
+        formatAmountHuman(usd(1_150_000_000), USD_DECIMALS, true),
+        formatAmountHumanParts(usd(1_150_000_000), USD_DECIMALS, true),
+      ],
+      [
+        formatAmountHuman(-usd(12_500), USD_DECIMALS, false, 2),
+        formatAmountHumanParts(-usd(12_500), USD_DECIMALS, false, 2),
+      ],
+      [formatAmountHuman(undefined, USD_DECIMALS), formatAmountHumanParts(undefined, USD_DECIMALS)],
+      [numberWithCommas("1234.5", { showDollar: true }), numberWithCommasParts("1234.5", { showDollar: true })],
+      [
+        formatTokenAmountWithUsd(expandDecimals(1, 18), usd(2500), "ETH", 18),
+        formatTokenAmountWithUsdParts(expandDecimals(1, 18), usd(2500), "ETH", 18),
+      ],
+    ];
+
+    for (const [text, parts] of cases) {
+      expect(parts && joinNumberParts(parts)).toBe(text);
+    }
+  });
+
+  it("marks the currency affix and keeps magnitude suffixes as text", () => {
+    expect(formatUsdParts(-usd(1234))).toEqual([
+      { kind: "text", text: "-" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1,234.00" },
+    ]);
+    expect(formatUsdParts(usd(2_000_000_000))).toEqual([
+      { kind: "text", text: "> " },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1,000,000,000.00" },
+    ]);
+    expect(formatDeltaUsdParts(usd(5), expandDecimals(3, 2))).toEqual([
+      { kind: "text", text: "+" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "5.00 (+3.00%)" },
+    ]);
+    expect(formatAmountHumanParts(usd(1_150_000_000), USD_DECIMALS, true)).toEqual([
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1.1b" },
+    ]);
+    expect(formatAmountHumanParts(expandDecimals(12_500, 18), 18)).toEqual([{ kind: "text", text: "12.5k" }]);
+    expect(formatAmountHumanParts(usd(999), USD_DECIMALS, true)).toEqual([
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "999.0" },
+    ]);
+    expect(formatUsdPriceParts(-1n)).toEqual([{ kind: "text", text: "NA" }]);
+    expect(formatUsdParts(undefined)).toBeUndefined();
+  });
+
+  it("numberParts merges adjacent text and skips empty inputs", () => {
+    expect(numberParts("> ", undefined, "", "-", USD_PART, "1.00", [{ kind: "multiplier", text: "x" }])).toEqual([
+      { kind: "text", text: "> -" },
+      { kind: "currency", text: "$ " },
+      { kind: "text", text: "1.00" },
+      { kind: "multiplier", text: "x" },
+    ]);
+    expect(isNumberParts(formatUsdParts(usd(1)))).toBe(true);
+    expect(isNumberParts(["$ 1.00"])).toBe(false);
+    expect(isNumberParts("$ 1.00")).toBe(false);
   });
 });

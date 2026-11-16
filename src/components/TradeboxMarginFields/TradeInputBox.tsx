@@ -42,7 +42,7 @@ export function TradeInputBox({
       <div
         ref={containerRef}
         className={cx(
-          "flex cursor-text rounded-8 border border-slate-800 bg-slate-800",
+          "flex cursor-text flex-col gap-2 overflow-hidden rounded-8 border border-slate-800 bg-slate-800 pb-8 pt-10",
           {
             "bg-slate-900": isDisabled,
             "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300": !isDisabled,
@@ -51,24 +51,25 @@ export function TradeInputBox({
         )}
         onClick={handleBoxClick}
       >
-        <div className="flex min-w-0 grow flex-col gap-2 pb-8 pl-12 pt-10">
-          <div className="text-body-small pr-12 text-typography-secondary">{leftHeadline}</div>
-          <div className={cx("flex items-center gap-4 pr-12", { "border-r-1/2 border-r-slate-600": !hideDivider })}>
-            {leftContent}
-          </div>
-          {bottomContent}
-        </div>
-
-        {(rightHeadline || rightContent) && (
-          <div className="flex w-[124px] shrink-0 flex-col justify-end gap-4 px-12 pb-8 pt-10">
-            {rightHeadline && (
-              <div className="text-body-small flex items-center justify-end text-typography-secondary">
-                {rightHeadline}
-              </div>
-            )}
-            {rightContent && <div className="flex min-h-20 items-center justify-end">{rightContent}</div>}
+        {(leftHeadline || rightHeadline) && (
+          <div className="text-body-small flex items-center justify-between gap-8 px-12 text-typography-secondary">
+            <div className="min-w-0 truncate">{leftHeadline}</div>
+            {rightHeadline && <div className="flex shrink-0 items-center">{rightHeadline}</div>}
           </div>
         )}
+
+        <div className="flex">
+          <div className="flex min-w-0 grow flex-col gap-2 pl-12">
+            <div className={cx("flex items-center gap-4 pr-12", { "border-r-1/2 border-r-slate-600": !hideDivider })}>
+              {leftContent}
+            </div>
+            {bottomContent}
+          </div>
+
+          {rightContent && (
+            <div className="flex min-h-20 w-[124px] shrink-0 items-center justify-end px-12">{rightContent}</div>
+          )}
+        </div>
       </div>
     </div>
   );

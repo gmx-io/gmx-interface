@@ -1,6 +1,19 @@
 import type { Address } from "viem";
 
+import type { UiFlag } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
+
+/** Single entry from the OracleKeeper `/markets` endpoint. */
+export type ApiMarket = {
+  name: string;
+  marketToken: string;
+  indexToken: string;
+  longToken: string;
+  shortToken: string;
+  isListed: boolean;
+  /** ISO 8601 timestamp, e.g. "2024-10-24T00:00:00.000Z". May be absent. */
+  listingDate?: string;
+};
 
 export type EventPayload = {
   isError: boolean;
@@ -125,8 +138,9 @@ export interface OracleFetcher {
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
-  fetchUiFlags(): Promise<Record<string, boolean>>;
-  handleFailure(method: string): void;
+  fetchUiFlags(): Promise<Record<string, UiFlag>>;
+  fetchMarkets(): Promise<ApiMarket[]>;
+  handleFailure(method: string, endpoint?: string): void;
 }
 
 export type TickersResponse = {

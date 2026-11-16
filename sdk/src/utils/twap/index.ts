@@ -20,12 +20,24 @@ export function getTwapDurationInSeconds(duration: TwapDuration) {
   return duration.hours * 60 * 60 + duration.minutes * 60;
 }
 
+export function getTwapPartDelaySeconds(duration: TwapDuration, numberOfParts: number, partIndex: number) {
+  if (numberOfParts <= 1) {
+    return 0;
+  }
+
+  return Math.floor((getTwapDurationInSeconds(duration) / (numberOfParts - 1)) * partIndex);
+}
+
 export function getTwapValidFromTime(duration: TwapDuration, numberOfParts: number, partIndex: number) {
-  const durationMinutes = duration.hours * 60 + duration.minutes;
-  const durationMs = durationMinutes * 60;
   const startTime = Math.ceil(Date.now() / 1000);
 
-  return BigInt(Math.floor(startTime + (durationMs / (numberOfParts - 1)) * partIndex));
+  return BigInt(startTime + getTwapPartDelaySeconds(duration, numberOfParts, partIndex));
+}
+
+export function getTwapPartDelaysSeconds(duration: TwapDuration, numberOfParts: number): number[] {
+  return Array.from({ length: numberOfParts }, (_, partIndex) =>
+    getTwapPartDelaySeconds(duration, numberOfParts, partIndex)
+  );
 }
 
 export function changeTwapNumberOfPartsValue(value: number) {

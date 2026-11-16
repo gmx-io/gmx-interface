@@ -8,6 +8,8 @@ export type SkipKey = null | undefined | false;
 export type ContractCallConfig = {
   methodName: string;
   params: any[];
+  /** Execute in a dedicated RPC request with its own gas budget, instead of the shared Multicall3 call. */
+  standalone?: boolean;
 };
 
 export type ContractCallsConfig<T extends { calls: any }> = {

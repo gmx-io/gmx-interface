@@ -1,0 +1,468 @@
+import { t } from "@lingui/macro";
+
+import {
+  ErrorData,
+  ErrorLike,
+  getBigIntContractErrorArg,
+  getStringContractErrorArg,
+  tryDecodeCustomError,
+} from "lib/errors";
+import { decodeInnermostCustomErrorFromError } from "lib/errors/customErrors";
+import {
+  expandDecimals,
+  formatAmount,
+  formatPercentage,
+  formatUsd,
+  PERCENT_PRECISION_DECIMALS,
+  roundUpDivision,
+  trimZeroDecimals,
+} from "lib/numbers";
+import { TOKENS_MAP } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
+import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
+import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
+
+const PNL_FACTOR_DISPLAY_STEP = expandDecimals(1, PERCENT_PRECISION_DECIMALS - 2);
+
+export function getMarginBelowMinimumErrorMessage() {
+  return t`Margin is below the minimum required for the position size`;
+}
+
+export function getUnstakeRequestsLimitMessage(maxRequests: bigint | number) {
+  return t`You have ${maxRequests} unstake requests, the maximum. Withdraw or cancel one to make a new request.`;
+}
+
+export function getUnstakeRequestsPausedMessage() {
+  return t`Unstake requests are paused. Try again later.`;
+}
+
+export function getAccountTransfersPausedMessage() {
+  return t`Account transfers are paused. Try again later.`;
+}
+
+export function getContractErrorMessageFromError({
+  chainId,
+  error,
+  isLpWithdrawal,
+}: {
+  chainId: number;
+  error: ErrorLike | undefined;
+  isLpWithdrawal?: boolean;
+}): string | undefined {
+  const parsedError = decodeInnermostCustomErrorFromError(error);
+
+  return getContractErrorMessage({
+    chainId,
+    errorData: { contractError: parsedError?.name, contractErrorArgs: parsedError?.args },
+    isLpWithdrawal,
+  });
+}
+
+export function getContractErrorMessage({
+  chainId,
+  errorData,
+  isSizeIncrease,
+  isDecrease,
+  isLpWithdrawal,
+}: {
+  chainId?: number;
+  errorData: Pick<ErrorData, "contractError" | "contractErrorArgs">;
+  isSizeIncrease?: boolean;
+  isDecrease?: boolean;
+  isLpWithdrawal?: boolean;
+}): string | undefined {
+  if (!errorData.contractError) {
+    return undefined;
+  }
+
+  const args = errorData.contractErrorArgs;
+
+  switch (errorData.contractError) {
+    case CustomErrorName.InsufficientCollateralAmount:
+      return t`Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin. Deposit more to cover them`;
+
+    case CustomErrorName.InsufficientCollateralUsd: {
+      const remainingCollateralUsd = getBigIntContractErrorArg(args, 0, "remainingCollateralUsd");
+      const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
+
+      return remainingCollateralUsdText
+        ? t`Max leverage exceeded. Remaining margin ${remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size.`
+        : t`Max leverage exceeded. Increase margin or reduce size.`;
+    }
+
+    case CustomErrorName.LiquidatablePosition: {
+      const reason = getStringContractErrorArg(args, 0, "reason");
+      const remainingCollateralUsd = getBigIntContractErrorArg(args, 1, "remainingCollateralUsd");
+
+      if (reason === PositionMarginFailureReason.MinCollateralForLeverage) {
+        const minCollateralUsdForLeverage = getBigIntContractErrorArg(args, 3, "minCollateralUsdForLeverage");
+
+        const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
+        const minCollateralUsdForLeverageText = formatUsd(minCollateralUsdForLeverage);
+
+        if (isSizeIncrease) {
+          return remainingCollateralUsdText && minCollateralUsdForLeverageText
+            ? t`The position cannot be increased at the current leverage. Increase margin or reduce size. Current margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}.`
+            : t`The position cannot be increased at the current leverage. Increase margin or reduce size.`;
+        }
+
+        if (isDecrease) {
+          return remainingCollateralUsdText && minCollateralUsdForLeverageText
+            ? t`The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first. Remaining margin: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}`
+            : t`The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first.`;
+        }
+
+        return remainingCollateralUsdText && minCollateralUsdForLeverageText
+          ? t`Margin is below the minimum required for the position size. Current: ${remainingCollateralUsdText}, required: ${minCollateralUsdForLeverageText}.`
+          : getMarginBelowMinimumErrorMessage();
+      }
+
+      const minCollateralUsd = getBigIntContractErrorArg(args, 2, "minCollateralUsd");
+
+      const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
+      const minCollateralUsdText = formatUsd(minCollateralUsd);
+
+      return remainingCollateralUsdText && minCollateralUsdText
+        ? t`Position would be liquidatable. Current: ${remainingCollateralUsdText}, required: ${minCollateralUsdText}`
+        : t`Position would be liquidatable`;
+    }
+
+    case CustomErrorName.UnableToWithdrawCollateral: {
+      const estimatedRemainingCollateralUsd = getBigIntContractErrorArg(args, 0, "estimatedRemainingCollateralUsd");
+      const estimatedRemainingCollateralUsdText = formatUsd(estimatedRemainingCollateralUsd);
+
+      return estimatedRemainingCollateralUsdText
+        ? t`Can't withdraw collateral. Remaining would be ${estimatedRemainingCollateralUsdText}, below minimum`
+        : t`Can't withdraw collateral. Remaining collateral would be below minimum`;
+    }
+
+    case CustomErrorName.MaxOpenInterestExceeded: {
+      const openInterest = getBigIntContractErrorArg(args, 0, "openInterest");
+      const maxOpenInterest = getBigIntContractErrorArg(args, 1, "maxOpenInterest");
+
+      const openInterestText = formatUsd(openInterest);
+      const maxOpenInterestText = formatUsd(maxOpenInterest);
+
+      return openInterestText && maxOpenInterestText
+        ? t`Max open interest exceeded. Current: ${openInterestText}, max: ${maxOpenInterestText}`
+        : t`Max open interest exceeded`;
+    }
+
+    case CustomErrorName.MaxCollateralSumExceeded:
+      return t`Maximum collateral capacity reached`;
+
+    case CustomErrorName.InsufficientReserveForOpenInterest: {
+      const reservedUsd = getBigIntContractErrorArg(args, 0, "reservedUsd");
+      const maxReservedUsd = getBigIntContractErrorArg(args, 1, "maxReservedUsd");
+      const availableLiquidity =
+        reservedUsd !== undefined && maxReservedUsd !== undefined ? maxReservedUsd - reservedUsd : undefined;
+      const availableLiquidityText =
+        availableLiquidity !== undefined ? formatUsd(availableLiquidity > 0n ? availableLiquidity : 0n) : undefined;
+
+      return availableLiquidityText
+        ? t`Insufficient liquidity. Available: ${availableLiquidityText}`
+        : t`Insufficient liquidity`;
+    }
+
+    case CustomErrorName.InsufficientReserve:
+      return t`Insufficient pool liquidity`;
+
+    case CustomErrorName.MaxPoolAmountExceeded:
+      return t`Max pool capacity reached`;
+
+    case CustomErrorName.MaxPoolUsdForDepositExceeded: {
+      const maxPoolUsd = getBigIntContractErrorArg(args, 1, "maxPoolUsdForDeposit");
+      const maxPoolUsdText = formatUsd(maxPoolUsd);
+
+      return maxPoolUsdText ? t`Max deposit limit reached: ${maxPoolUsdText}` : t`Max deposit limit reached`;
+    }
+
+    case CustomErrorName.InsufficientPoolAmount:
+      return t`Insufficient pool liquidity`;
+
+    case CustomErrorName.MinPositionSize: {
+      const positionSizeInUsd = getBigIntContractErrorArg(args, 0, "positionSizeInUsd");
+      const minPositionSizeUsd = getBigIntContractErrorArg(args, 1, "minPositionSizeUsd");
+
+      const minPositionSizeUsdText = formatUsd(minPositionSizeUsd);
+      const positionSizeInUsdText = formatUsd(positionSizeInUsd);
+
+      return minPositionSizeUsdText && positionSizeInUsdText
+        ? t`Position size too small. Min: ${minPositionSizeUsdText}, current: ${positionSizeInUsdText}`
+        : t`Position size too small`;
+    }
+
+    case CustomErrorName.InvalidDecreaseOrderSize: {
+      const sizeDeltaUsd = getBigIntContractErrorArg(args, 0, "sizeDeltaUsd");
+      const positionSizeInUsd = getBigIntContractErrorArg(args, 1, "positionSizeInUsd");
+      const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
+      const positionSizeInUsdText = formatUsd(positionSizeInUsd);
+
+      return sizeDeltaUsdText && positionSizeInUsdText
+        ? t`Invalid decrease size. Size delta (${sizeDeltaUsdText}) exceeds position size (${positionSizeInUsdText})`
+        : t`Invalid decrease size`;
+    }
+
+    case CustomErrorName.PnlFactorExceededForLongs:
+    case CustomErrorName.PnlFactorExceededForShorts: {
+      const [pnlToPoolFactor, maxPnlFactor] = getDisplayedPnlFactors(
+        getBigIntContractErrorArg(args, 0, "pnlToPoolFactor"),
+        getBigIntContractErrorArg(args, 1, "maxPnlFactor")
+      );
+
+      if (isLpWithdrawal && pnlToPoolFactor !== undefined && maxPnlFactor !== undefined) {
+        const pnlToPoolRatioText = formatPnlFactorPercentage(pnlToPoolFactor);
+        const maxPnlRatioText = formatPnlFactorPercentage(maxPnlFactor);
+
+        return errorData.contractError === CustomErrorName.PnlFactorExceededForLongs
+          ? t`Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to ${pnlToPoolRatioText}, above the ${maxPnlRatioText} limit. Try a smaller amount or try again later`
+          : t`Withdrawal unavailable: selling this amount would raise short traders' PnL-to-pool ratio to ${pnlToPoolRatioText}, above the ${maxPnlRatioText} limit. Try a smaller amount or try again later`;
+      }
+
+      const pnlToPoolFactorText = formatPercentage(pnlToPoolFactor, { bps: false });
+      const maxPnlFactorText = formatPercentage(maxPnlFactor, { bps: false });
+
+      return pnlToPoolFactorText && maxPnlFactorText
+        ? t`Max profit limit reached. Current: ${pnlToPoolFactorText}, max: ${maxPnlFactorText}`
+        : t`Max profit limit reached`;
+    }
+
+    case CustomErrorName.InsufficientOutputAmount:
+      return t`Slippage exceeded`;
+
+    case CustomErrorName.InsufficientBridgeOutputAmount:
+      return t`Bridge fee increased. Funds remain in your GMX Account. Try again`;
+
+    case CustomErrorName.OrderNotFound:
+      return t`Order not found. May have been canceled or already executed`;
+    case CustomErrorName.OrderNotUpdatable:
+      return t`Order can't be updated. Type doesn't support modifications`;
+    case CustomErrorName.OrderTypeCannotBeCreated:
+      return t`Order type unavailable for creation`;
+
+    case CustomErrorName.InsufficientExecutionGas: {
+      const startingGas = getBigIntContractErrorArg(args, 0, "startingGas");
+      const estimatedGasLimit = getBigIntContractErrorArg(args, 1, "estimatedGasLimit");
+      const estimatedGasLimitText =
+        estimatedGasLimit !== undefined ? formatAmount(estimatedGasLimit, 0, 0, true) : undefined;
+      const startingGasText = startingGas !== undefined ? formatAmount(startingGas, 0, 0, true) : undefined;
+
+      return estimatedGasLimitText && startingGasText
+        ? t`Insufficient gas for execution. Estimated: ${estimatedGasLimitText}, starting: ${startingGasText}.`
+        : t`Insufficient gas for execution`;
+    }
+
+    case CustomErrorName.DisabledMarket:
+      return t`Market temporarily disabled`;
+
+    case CustomErrorName.InvalidCollateralTokenForMarket: {
+      const tokenAddress = getStringContractErrorArg(args, 1, "token");
+      const tokenSymbol =
+        chainId !== undefined && tokenAddress ? TOKENS_MAP[chainId]?.[tokenAddress]?.symbol : undefined;
+      return tokenSymbol
+        ? t`Invalid collateral token. ${tokenSymbol} isn't supported as collateral`
+        : t`Invalid collateral token for this market`;
+    }
+
+    case CustomErrorName.MarketNotFound:
+      return t`Market not found. May have been removed.`;
+
+    case CustomErrorName.MaxPriceAgeExceeded:
+      return t`Oracle price is stale`;
+
+    case CustomErrorName.MaxRelayFeeSwapExceeded:
+      return t`Relay fee exceeds the maximum allowed`;
+
+    case CustomErrorName.InvalidOraclePrice: {
+      const tokenAddress = getStringContractErrorArg(args, 0, "token");
+      const tokenSymbol =
+        chainId !== undefined && tokenAddress ? TOKENS_MAP[chainId]?.[tokenAddress]?.symbol : undefined;
+      return tokenSymbol ? t`Invalid oracle price for ${tokenSymbol}` : t`Invalid oracle price`;
+    }
+
+    case CustomErrorName.EndOfOracleSimulation:
+      return t`Order simulation failed`;
+
+    case CustomErrorName.SwapPriceImpactExceedsAmountIn: {
+      const amountAfterFees = getBigIntContractErrorArg(args, 0, "amountAfterFees");
+      const negativeImpactAmount = getBigIntContractErrorArg(args, 1, "negativeImpactAmount");
+      const negativeImpactAmountText = formatUsd(
+        negativeImpactAmount !== undefined ? bigMath.abs(negativeImpactAmount) : undefined
+      );
+      const amountAfterFeesText = formatUsd(amountAfterFees);
+
+      return negativeImpactAmountText && amountAfterFeesText
+        ? t`Price impact too high. Impact: ${negativeImpactAmountText}, input: ${amountAfterFeesText}`
+        : t`Price impact too high`;
+    }
+
+    case CustomErrorName.PriceImpactLargerThanOrderSize: {
+      const priceImpactUsd = getBigIntContractErrorArg(args, 0, "priceImpactUsd");
+      const sizeDeltaUsd = getBigIntContractErrorArg(args, 1, "sizeDeltaUsd");
+      const priceImpactUsdText = formatUsd(priceImpactUsd !== undefined ? bigMath.abs(priceImpactUsd) : undefined);
+      const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
+
+      return priceImpactUsdText && sizeDeltaUsdText
+        ? t`Price impact exceeds order size. Impact: ${priceImpactUsdText}, order: ${sizeDeltaUsdText}.`
+        : t`Price impact exceeds order size`;
+    }
+
+    case CustomErrorName.ExternalCallFailed: {
+      const nestedErrorData = getStringContractErrorArg(args, 0, "data");
+      if (nestedErrorData) {
+        const decodedExternalCallError = tryDecodeCustomError(nestedErrorData);
+
+        if (decodedExternalCallError) {
+          const nestedContractErrorMessage = getContractErrorMessage({
+            chainId,
+            errorData: {
+              contractError: decodedExternalCallError.name,
+              contractErrorArgs: decodedExternalCallError.args,
+            },
+            isSizeIncrease,
+            isDecrease,
+            isLpWithdrawal,
+          });
+
+          if (nestedContractErrorMessage) {
+            return nestedContractErrorMessage;
+          }
+        }
+      }
+
+      return t`Order execution failed`;
+    }
+
+    case CustomErrorName.InsufficientFundsToPayForCosts: {
+      const remainingCostUsd = getBigIntContractErrorArg(args, 0, "remainingCostUsd");
+      const remainingCostUsdText = formatUsd(remainingCostUsd);
+
+      return remainingCostUsdText
+        ? t`Insufficient funds for order costs. Remaining: ${remainingCostUsdText}`
+        : t`Insufficient funds for order costs`;
+    }
+
+    case CustomErrorName.NegativeExecutionPrice:
+      return t`Execution price is negative`;
+
+    case CustomErrorName.UsdDeltaExceedsLongOpenInterest: {
+      const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
+      const openInterest = getBigIntContractErrorArg(args, 1, "longOpenInterest");
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const openInterestText = formatUsd(openInterest);
+
+      return usdDeltaText && openInterestText
+        ? t`Position size exceeds available open interest. Delta: ${usdDeltaText}, max OI: ${openInterestText}.`
+        : t`Position size exceeds available open interest`;
+    }
+
+    case CustomErrorName.UsdDeltaExceedsShortOpenInterest: {
+      const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
+      const openInterest = getBigIntContractErrorArg(args, 1, "shortOpenInterest");
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const openInterestText = formatUsd(openInterest);
+
+      return usdDeltaText && openInterestText
+        ? t`Position size exceeds available open interest. Delta: ${usdDeltaText}, max OI: ${openInterestText}.`
+        : t`Position size exceeds available open interest`;
+    }
+
+    case CustomErrorName.UsdDeltaExceedsPoolValue: {
+      const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
+      const poolUsd = getBigIntContractErrorArg(args, 1, "poolUsd");
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const poolUsdText = formatUsd(poolUsd);
+
+      return usdDeltaText && poolUsdText
+        ? t`Position size exceeds pool value. Delta: ${usdDeltaText}, pool: ${poolUsdText}`
+        : t`Position size exceeds pool value`;
+    }
+
+    case CustomErrorName.EmptyStakeAmount:
+      return t`Enter an amount`;
+
+    case CustomErrorName.MaxUnstakeRequestsExceeded: {
+      const maxCount = getBigIntContractErrorArg(args, 1, "maxCount");
+
+      return maxCount !== undefined
+        ? getUnstakeRequestsLimitMessage(maxCount)
+        : t`You have the maximum number of unstake requests. Withdraw or cancel one to make a new request.`;
+    }
+
+    case CustomErrorName.UnstakeAmountExceedsStake:
+      return t`The amount is more than your staked GMX and esGMX that is not already requested`;
+
+    case CustomErrorName.UnstakeNotSignalled: {
+      const executableAmount = getBigIntContractErrorArg(args, 1, "executableAmount");
+      const executableAmountText =
+        executableAmount !== undefined ? formatAmount(executableAmount, 18, 2, true) : undefined;
+
+      return executableAmountText
+        ? t`This amount is not ready to withdraw yet. Ready now: ${executableAmountText} GMX / esGMX`
+        : t`This amount is not ready to withdraw yet`;
+    }
+
+    case CustomErrorName.EmptyDesignatedVesters:
+    case CustomErrorName.VesterProvisioningNotComplete:
+      return getAccountTransfersPausedMessage();
+
+    case CustomErrorName.TransferNotSignalled:
+      return t`No pending transfer from the sender to this account. The sender has to start the transfer again.`;
+
+    case CustomErrorName.TransferVesterConfigChanged:
+      return t`The esGMX vesting vaults changed after the transfer started. The sender has to start the transfer again.`;
+
+    case CustomErrorName.StakingSenderHasVestedTokens:
+    case CustomErrorName.StakingSenderHasPairAmounts:
+      return t`Withdraw all tokens from the GMX and GLP vesting vaults before the transfer`;
+
+    case CustomErrorName.VestingSenderHasOpenSession:
+      return t`Withdraw all tokens from the esGMX vesting vault before the transfer`;
+
+    case CustomErrorName.VesterAccountFrozen:
+      return t`This account is frozen in the esGMX vesting vault`;
+
+    case CustomErrorName.StakingReceiverNotFresh:
+    case CustomErrorName.VestingReceiverNotFresh:
+      return t`The receiving account has staked or vested before. Choose a new account.`;
+
+    case CustomErrorName.InsufficientStrictTransferAllowance:
+      return t`Allow all tokens to transfer to the new account`;
+
+    case CustomErrorName.SelfVestingTransfer:
+      return t`Self-transfer not supported`;
+
+    case CustomErrorName.MaxUnstakeRequestsOnTransfer: {
+      const count = getBigIntContractErrorArg(args, 2, "count");
+
+      return count !== undefined
+        ? t`After the transfer, the receiving account would have ${count} unstake requests, more than the maximum`
+        : t`After the transfer, the receiving account would have more unstake requests than the maximum`;
+    }
+
+    default:
+      return undefined;
+  }
+}
+
+function getDisplayedPnlFactors(
+  pnlToPoolFactor: bigint | undefined,
+  maxPnlFactor: bigint | undefined
+): [bigint | undefined, bigint | undefined] {
+  if (
+    pnlToPoolFactor === undefined ||
+    maxPnlFactor === undefined ||
+    formatPercentage(pnlToPoolFactor, { bps: false }) !== formatPercentage(maxPnlFactor, { bps: false })
+  ) {
+    return [pnlToPoolFactor, maxPnlFactor];
+  }
+
+  return [
+    roundUpDivision(pnlToPoolFactor, PNL_FACTOR_DISPLAY_STEP) * PNL_FACTOR_DISPLAY_STEP,
+    (maxPnlFactor / PNL_FACTOR_DISPLAY_STEP) * PNL_FACTOR_DISPLAY_STEP,
+  ];
+}
+
+function formatPnlFactorPercentage(factor: bigint) {
+  return `${trimZeroDecimals(formatAmount(bigMath.abs(factor), PERCENT_PRECISION_DECIMALS, 2))}%`;
+}

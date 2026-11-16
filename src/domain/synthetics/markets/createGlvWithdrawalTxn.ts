@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics";
+import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { abis } from "sdk/abis";
@@ -17,7 +18,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import type { TokensData } from "../tokens";
+import type { TokenData, TokensData } from "../tokens";
 import type { CreateGlvWithdrawalParams } from "./types";
 
 export async function createGlvWithdrawalTxn({
@@ -26,6 +27,7 @@ export async function createGlvWithdrawalTxn({
   executionGasLimit,
   skipSimulation,
   tokensData,
+  glvToken,
   metricId,
   blockTimestampData,
   params,
@@ -38,13 +40,14 @@ export async function createGlvWithdrawalTxn({
   executionGasLimit: bigint;
   skipSimulation?: boolean;
   tokensData: TokensData;
+  glvToken: TokenData;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   params: CreateGlvWithdrawalParams;
   glvTokenAmount: bigint;
   setPendingTxns: (txns: any) => void;
-  setPendingWithdrawal: SetPendingWithdrawal;
-}) {
+  setPendingWithdrawal?: SetPendingWithdrawal;
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
 
@@ -87,11 +90,14 @@ export async function createGlvWithdrawalTxn({
     })
   );
 
+  // GLV tokens are not regular tokensData entries; include the selected GLV price for simulation.
+  const simulationTokensData = { ...tokensData, [glvToken.address]: glvToken };
+
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
         account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: tokensData,
+        tokensData: simulationTokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvWithdrawal",
         errorTitle: t`Withdrawal error`,
@@ -124,8 +130,8 @@ export async function createGlvWithdrawalTxn({
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,
     },
-  }).then(() => {
-    setPendingWithdrawal({
+  }).then((res) => {
+    setPendingWithdrawal?.({
       account: params.addresses.receiver,
       marketAddress: params.addresses.glv,
       marketTokenAmount: glvTokenAmount,
@@ -133,5 +139,7 @@ export async function createGlvWithdrawalTxn({
       minShortTokenAmount: params.minShortTokenAmount,
       shouldUnwrapNativeToken: params.shouldUnwrapNativeToken,
     });
+
+    return { transactionHash: res?.hash };
   });
 }

@@ -2,10 +2,12 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { isShiftIntoDisabledMarket } from "config/static/markets";
 import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
@@ -14,14 +16,18 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectShiftAvailableMarkets } from "context/SyntheticsStateContext/selectors/shiftSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { WALLET_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import { GlvOrMarketInfo, getGlvOrMarketAddress, getMarketIndexName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Operation } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import useSortedPoolsWithIndexToken from "domain/synthetics/trade/useSortedPoolsWithIndexToken";
+import { getDirectDepositAccess, getIsDirectDepositBlocked } from "domain/synthetics/whitelists/utils";
 import { ERC20Address, NativeTokenSupportedAddress } from "domain/tokens";
-import { formatAmountFree, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
+import { formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -29,8 +35,10 @@ import { ExpandableRow } from "components/ExpandableRow";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
@@ -59,6 +67,8 @@ export function GmShiftBox({
   const [toMarketText, setToMarketText] = useState("");
   const [focusedInput, setFocusedInput] = useState<"selectedMarket" | "toMarket" | undefined>(undefined);
 
+  useBlockAutoReload(getIsEnteredAmount(selectedMarketText) || getIsEnteredAmount(toMarketText));
+
   const chainId = useSelector(selectChainId);
   const uiFeeFactor = useUiFeeFactor();
   const gasLimits = useSelector(selectGasLimits);
@@ -66,6 +76,7 @@ export function GmShiftBox({
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const srcChainId = useSelector(selectSrcChainId);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: true });
   const { marketsInfo: sortedMarketsInfoByIndexToken } = useSortedPoolsWithIndexToken(
     glvAndMarketsInfoData,
@@ -102,6 +113,15 @@ export function GmShiftBox({
   const toIndexName = toMarketInfo ? getMarketIndexName(toMarketInfo) : "...";
   const toToken = getByKey(depositMarketTokensData, toMarketAddress);
 
+  const selectedMarketDirectDepositAccess = selectedMarketInfo
+    ? getDirectDepositAccess({ chainId, glvOrMarket: selectedMarketInfo, whitelistsResult })
+    : undefined;
+  // No target left when every related GM pool is whitelist-only: the selected pool's access stands in, as USDG pools are gated together
+  const toMarketDirectDepositAccess = toMarketInfo
+    ? getDirectDepositAccess({ chainId, glvOrMarket: toMarketInfo, whitelistsResult })
+    : selectedMarketDirectDepositAccess;
+  const shouldShowWhitelistOnlyHint = toMarketDirectDepositAccess === "denied";
+
   const amounts = useShiftAmounts({
     selectedMarketInfo,
     selectedToken,
@@ -117,18 +137,19 @@ export function GmShiftBox({
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees: fees,
+    isOperationDisabled:
+      getIsDirectDepositBlocked(toMarketDirectDepositAccess) ||
+      (toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)),
   });
 
-  const noAmountSet = amounts?.fromTokenAmount === undefined;
-  const balanceNotEqualToAmount = selectedToken?.balance !== amounts?.fromTokenAmount;
   const hasBalance = selectedToken?.balance !== undefined && selectedToken.balance > 0n;
-  const selectedTokenShowMaxButton = hasBalance && (noAmountSet || balanceNotEqualToAmount);
+  const isMaxSelected = selectedToken?.balance !== undefined && amounts?.fromTokenAmount === selectedToken.balance;
 
-  const selectedTokenDollarAmount = formatUsd(
-    amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n
+  const selectedTokenDollarAmount = (
+    <UsdValue usd={amounts?.fromTokenUsd !== undefined && amounts.fromTokenUsd > 0n ? amounts.fromTokenUsd : 0n} />
   );
-  const toTokenShowDollarAmount = formatUsd(
-    amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n
+  const toTokenShowDollarAmount = (
+    <UsdValue usd={amounts?.toTokenUsd !== undefined && amounts.toTokenUsd > 0n ? amounts.toTokenUsd : 0n} />
   );
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -146,6 +167,7 @@ export function GmShiftBox({
     executionFee,
     routerAddress,
     glvOrMarketInfoData: glvAndMarketsInfoData,
+    toMarketDirectDepositAccess,
   });
 
   useUpdateMarkets({
@@ -231,8 +253,7 @@ export function GmShiftBox({
   const getShiftReceiveMarketState = useCallback((glvOrMarketInfo: GlvOrMarketInfo): MarketState => {
     if (isGlvInfo(glvOrMarketInfo)) {
       return {
-        warning:
-          "Shifting From GM to GLV is similar to buying GLV with a GM token. You will be redirected to the buy GLV tab when selected.",
+        warning: t`Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab.`,
       };
     }
 
@@ -261,7 +282,8 @@ export function GmShiftBox({
                     : undefined
                 }
                 onClickBottomRightLabel={handleSelectedTokenClickMax}
-                onClickMax={selectedTokenShowMaxButton ? handleSelectedTokenClickMax : undefined}
+                onClickMax={hasBalance ? handleSelectedTokenClickMax : undefined}
+                isMaxSelected={isMaxSelected}
                 inputValue={selectedMarketText}
                 onInputValueChange={handleSelectedTokenInputValueChange}
                 onFocus={handleSelectedTokenFocus}
@@ -289,6 +311,7 @@ export function GmShiftBox({
                 >
                   <PoolSelector
                     chainId={chainId}
+                    label={t`Receive`}
                     size="l"
                     selectedMarketAddress={toMarketAddress}
                     markets={shiftAvailableRelatedMarkets}
@@ -310,15 +333,19 @@ export function GmShiftBox({
               shouldShowWarning={shouldShowWarning}
               shouldShowWarningForPosition={shouldShowWarningForPosition}
               shouldShowWarningForExecutionFee={shouldShowWarningForExecutionFee}
+              shouldShowWhitelistOnlyHint={shouldShowWhitelistOnlyHint}
+              isSpotOnlyMarket={toMarketInfo?.isSpotOnly}
             />
           </div>
 
           <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
             <SwitchToSettlementChainWarning topic="shift" />
             <SwitchToSettlementChainButtons>
-              <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-                {submitState.text}
-              </Button>
+              <ButtonTooltipWrapper content={submitState.errorDescription}>
+                <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+                  {submitState.text}
+                </Button>
+              </ButtonTooltipWrapper>
             </SwitchToSettlementChainButtons>
           </div>
         </div>
@@ -339,7 +366,7 @@ export function GmShiftBox({
             contentClassName="flex flex-col gap-12"
             wrapped
           >
-            <NetworkFeeRow rowPadding executionFee={executionFee} />
+            <NetworkFeeRow rowPadding executionFee={executionFee} feeSource={WALLET_NETWORK_FEE_SOURCE} />
           </ExpandableRow>
         </div>
       </form>

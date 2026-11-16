@@ -5,11 +5,13 @@ import type { Locale as DateLocale } from "date-fns";
 import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
-import words from "lodash/words";
 
+import { getStringContractErrorArg } from "lib/errors";
+import { NumberPart, NumberPartInput, numberParts } from "lib/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
+import { getContractErrorMessage, getMarginBelowMinimumErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -39,13 +41,19 @@ export function getOrderActionText(eventName: TradeActionType) {
   return actionText;
 }
 export type TooltipState = "success" | "error" | "muted" | undefined;
+export type FormattedText = string | NumberPart[];
 export type TooltipString =
   | undefined
   | string
   | {
-      text: string | undefined;
+      text: FormattedText | undefined;
       state?: TooltipState;
     };
+export type TooltipValue = TooltipString | TooltipString[];
+
+export function numericText(...inputs: NumberPartInput[]): { text: NumberPart[] } {
+  return { text: numberParts(...inputs) };
+}
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -66,15 +74,25 @@ export type Line =
   | TooltipString[]
   | {
       key: string;
-      value: TooltipString;
+      value: TooltipValue;
+    }
+  | {
+      title: string;
+      value: TooltipValue;
     };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
   return args;
 }
-export function infoRow(key: string, value: TooltipString): Line {
+export function infoRow(key: string, value: TooltipValue): Line {
   return {
     key,
+    value,
+  };
+}
+export function titleRow(title: string, value: TooltipValue): Line {
+  return {
+    title,
     value,
   };
 }
@@ -93,12 +111,15 @@ export type RowDetails = {
     indexName: string;
     poolName: string;
   }[];
-  size: string;
-  price: string;
+  size: FormattedText;
+  sizeComment?: TooltipContent;
+  price: FormattedText;
   priceComment: TooltipContent | null;
-  pnl?: string;
+  pnl?: FormattedText;
   pnlState?: TooltipState;
   pnlTooltip?: string;
+  fees?: FormattedText;
+  feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;
   swapFromTokenSymbol?: string;
@@ -160,14 +181,14 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
 }
 
 export function formatTradeActionTimestampUTC(timestamp: number) {
-  return `UTC: ${format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
+  return format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
     in: tz("UTC"),
-  })}`;
+  });
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
+export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, errorArgs?: unknown) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
     return t`Execution price didn't meet acceptable price. Order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
@@ -182,7 +203,70 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) 
     return t`Insufficient liquidity`;
   }
 
-  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName, errorArgs);
+
+  if (tradeHistoryErrorMessage) {
+    return tradeHistoryErrorMessage;
+  }
+
+  const contractErrorMessage = getContractErrorMessage({
+    errorData: {
+      contractError: errorName,
+      contractErrorArgs: errorArgs,
+    },
+  });
+
+  if (contractErrorMessage) {
+    return contractErrorMessage;
+  }
+
+  return t`Order failed due to a protocol validation error: ${errorName}`;
+}
+
+const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
+
+function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
+  switch (errorName) {
+    case CustomErrorName.DisabledFeature:
+      return t`This action is disabled`;
+    case CustomErrorName.InsufficientExecutionFee:
+      return t`Execution fee is too low for current network costs`;
+    case CustomErrorName.InsufficientMarketTokens:
+      return t`Insufficient GM tokens for withdrawal`;
+    case CustomErrorName.InsufficientWntAmount:
+    case CustomErrorName.InsufficientWntAmountForExecutionFee:
+      return t`Insufficient native token provided for the execution fee`;
+    case CustomErrorName.InvalidKeeperForFrozenOrder:
+      return t`Frozen order can only be executed by an authorized keeper`;
+    case CustomErrorName.InvalidOrderPrices:
+      return t`Trigger price condition has not been met`;
+    case CustomErrorName.InvalidSignature:
+      return t`Invalid signature. Try signing the request again.`;
+    case CustomErrorName.MaxPoolAmountForDepositExceeded:
+    case "MaxPoolUsdForDepositExceeded":
+      return t`Max deposit capacity reached for this pool`;
+    case CustomErrorName.OrderAlreadyFrozen:
+      return t`Order is already frozen`;
+    case CustomErrorName.EmptyPosition:
+    case CustomErrorName.PositionNotFound:
+      return t`Position not found. It may have been closed.`;
+    case CustomErrorName.RequestNotYetCancellable:
+      return t`Request cannot be canceled yet. Try again after the cancellation delay.`;
+    case CustomErrorName.UnsupportedOrderType:
+      return t`This order type is not supported`;
+    case CustomErrorName.DepositNotFound:
+      return t`Deposit not found. It may have been executed or canceled.`;
+    case CustomErrorName.WithdrawalNotFound:
+      return t`Withdrawal not found. It may have been executed or canceled.`;
+    case CustomErrorName.InsufficientFundsToPayForCosts:
+      return t`Insufficient collateral to cover order costs`;
+    case CustomErrorName.LiquidatablePosition:
+      return getStringContractErrorArg(errorArgs, 0, "reason") === MIN_COLLATERAL_FOR_LEVERAGE_REASON
+        ? getMarginBelowMinimumErrorMessage()
+        : t`Position would be liquidatable at current prices`;
+    default:
+      return undefined;
+  }
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);

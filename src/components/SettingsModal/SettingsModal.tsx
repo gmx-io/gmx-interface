@@ -3,8 +3,15 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountApprovalInvalid,
+  getIsSubaccountExpired,
+} from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -42,12 +49,14 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
+  const showTradingSettings = features.express || features.oneClickTrading || features.twap || features.stopMarket;
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
 
-  const [activeTab, setActiveTab] = useState<SettingsTab>("trading");
+  const [activeTab, setActiveTab] = useState<SettingsTab>(showTradingSettings ? "trading" : "display");
   const [tradingMode, setTradingMode] = useState<TradingMode | undefined>(undefined);
   const [isTradingModeChanging, setIsTradingModeChanging] = useState(false);
 
@@ -138,68 +147,69 @@ export function SettingsModal({
 
   const handleTradingModeChange = useCallback(
     async (mode: TradingMode) => {
+      if (isTradingModeChanging) {
+        return;
+      }
+
       const prevMode = tradingMode;
       setIsTradingModeChanging(true);
       setTradingMode(mode);
 
-      switch (mode) {
-        case TradingMode.Classic: {
-          if (srcChainId) {
-            // eslint-disable-next-line no-console
-            console.error("Express trading can not be disabled for multichain");
-            setTradingMode(prevMode);
-            setIsTradingModeChanging(false);
-            return;
-          }
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
-
-            if (!isSubaccountDeactivated) {
+      try {
+        switch (mode) {
+          case TradingMode.Classic: {
+            if (srcChainId) {
+              // eslint-disable-next-line no-console
+              console.error("Express trading can not be disabled for multichain");
               setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
               return;
             }
+            if (subaccountState.subaccount) {
+              const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
+
+              if (!isSubaccountDeactivated) {
+                setTradingMode(prevMode);
+                return;
+              }
+            }
+
+            settings.setExpressOrdersEnabled(false);
+            break;
           }
+          case TradingMode.Express: {
+            if (subaccountState.subaccount) {
+              const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
 
-          settings.setExpressOrdersEnabled(false);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express: {
-          if (subaccountState.subaccount) {
-            const isSubaccountDeactivated = await subaccountState.tryDisableSubaccount();
+              if (!isSubaccountDeactivated) {
+                setTradingMode(prevMode);
+                return;
+              }
+            }
 
-            if (!isSubaccountDeactivated) {
+            settings.setExpressOrdersEnabled(true);
+            break;
+          }
+          case TradingMode.Express1CT: {
+            const isSubaccountActivated = await subaccountState.tryEnableSubaccount(subaccountState.initialSettings);
+
+            if (!isSubaccountActivated) {
               setTradingMode(prevMode);
-              setIsTradingModeChanging(false);
               return;
             }
+
+            settings.setExpressOrdersEnabled(true);
+            break;
           }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
-        }
-        case TradingMode.Express1CT: {
-          const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
-
-          if (!isSubaccountActivated) {
-            setTradingMode(prevMode);
-            setIsTradingModeChanging(false);
-            return;
+          default: {
+            mustNeverExist(mode);
+            break;
           }
-
-          settings.setExpressOrdersEnabled(true);
-          setIsTradingModeChanging(false);
-          break;
         }
-        default: {
-          mustNeverExist(mode);
-          break;
-        }
+      } finally {
+        setIsTradingModeChanging(false);
       }
     },
-    [settings, srcChainId, subaccountState, tradingMode]
+    [isTradingModeChanging, settings, srcChainId, subaccountState, tradingMode]
   );
 
   useEffect(
@@ -211,7 +221,25 @@ export function SettingsModal({
       let nextTradingMode = tradingMode;
 
       if (subaccountState.subaccount) {
-        nextTradingMode = TradingMode.Express1CT;
+        const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, Boolean(srcChainId));
+        const isOneClickExpired = getIsSubaccountExpired(subaccountState.subaccount);
+        const isOneClickActionsExceeded = getIsSubaccountActionsExceeded(subaccountState.subaccount, 1);
+        const isOneClickStructurallyInvalid = getIsSubaccountApprovalInvalid({
+          chainId,
+          signerChainId: srcChainId ?? chainId,
+          onchainData: subaccountState.subaccount.onchainData,
+          signedApproval: subaccountState.subaccount.signedApproval,
+          subaccountRouterAddress,
+        });
+
+        const shouldFallbackFromOneClickToExpress =
+          !isOneClickStructurallyInvalid && (isOneClickExpired || isOneClickActionsExceeded);
+
+        if (shouldFallbackFromOneClickToExpress) {
+          nextTradingMode = settings.expressOrdersEnabled ? TradingMode.Express : TradingMode.Classic;
+        } else {
+          nextTradingMode = TradingMode.Express1CT;
+        }
       } else if (settings.expressOrdersEnabled) {
         nextTradingMode = TradingMode.Express;
       } else {
@@ -222,19 +250,25 @@ export function SettingsModal({
         setTradingMode(nextTradingMode);
       }
     },
-    [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
+    [chainId, isTradingModeChanging, settings.expressOrdersEnabled, srcChainId, subaccountState.subaccount, tradingMode]
   );
 
   const tabLabels = useLocalizedMap(TAB_LABELS);
 
   const tabOptions = useMemo(
     () =>
-      SETTINGS_TABS.map((tab) => ({
+      SETTINGS_TABS.filter((tab) => showTradingSettings || tab !== "trading").map((tab) => ({
         value: tab,
         label: tabLabels[tab],
       })),
-    [tabLabels]
+    [showTradingSettings, tabLabels]
   );
+
+  useEffect(() => {
+    if (!tabOptions.some((tab) => tab.value === activeTab)) {
+      setActiveTab(tabOptions[0].value);
+    }
+  }, [activeTab, tabOptions]);
 
   return (
     <SlideModal
@@ -244,22 +278,25 @@ export function SettingsModal({
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
+      desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
-          <TabWrapper tab="trading" activeTab={activeTab}>
-            <TradingSettings
-              tradingMode={tradingMode}
-              handleTradingModeChange={handleTradingModeChange}
-              onChangeSlippage={onChangeSlippage}
-              onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
-              onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
-              onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
-              numberOfParts={numberOfParts}
-              onClose={onClose}
-            />
-          </TabWrapper>
+          {showTradingSettings && (
+            <TabWrapper tab="trading" activeTab={activeTab}>
+              <TradingSettings
+                tradingMode={tradingMode}
+                handleTradingModeChange={handleTradingModeChange}
+                onChangeSlippage={onChangeSlippage}
+                onChangeExecutionFeeBufferBps={onChangeExecutionFeeBufferBps}
+                onChangeTwapNumberOfParts={onChangeTwapNumberOfParts}
+                onBlurTwapNumberOfParts={onBlurTwapNumberOfParts}
+                numberOfParts={numberOfParts}
+                onClose={onClose}
+              />
+            </TabWrapper>
+          )}
           <TabWrapper tab="display" activeTab={activeTab}>
             <DisplaySettings />
           </TabWrapper>

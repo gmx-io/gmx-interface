@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 
-import { BOTANIX } from "config/chains";
 import {
   selectGlvAndMarketsInfoData,
   selectTokensData,
@@ -150,8 +149,8 @@ export default function EarnAdditionalOpportunitiesPage() {
         const matchesName = opportunity.name.toLowerCase().includes(normalizedQuery);
         const matchesTokens = opportunity.assets.some((asset) =>
           getOpportunityAssetLabel(asset, {
+            chainId,
             marketsInfoData,
-            tokensData,
           })
             ?.toLowerCase()
             .includes(normalizedQuery)
@@ -165,13 +164,9 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return list;
-  }, [activeFilter, allOpportunities, searchQuery, userAssets, opportunityTagLabels, marketsInfoData, tokensData]);
+  }, [activeFilter, allOpportunities, searchQuery, userAssets, opportunityTagLabels, chainId, marketsInfoData]);
 
   const emptyStateMessage = useMemo(() => {
-    if (chainId === BOTANIX) {
-      return <Trans>No opportunities on Botanix yet</Trans>;
-    }
-
     if (allOpportunities.length === 0) {
       return <Trans>No opportunities on this chain yet</Trans>;
     }
@@ -189,7 +184,7 @@ export default function EarnAdditionalOpportunitiesPage() {
     }
 
     return <Trans>No matches for selected filters</Trans>;
-  }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
+  }, [activeFilter, allOpportunities.length, searchQuery, userAssets.size]);
 
   return (
     <EarnPageLayout>
@@ -201,12 +196,7 @@ export default function EarnAdditionalOpportunitiesPage() {
         ) : filteredOpportunities.length > 0 ? (
           <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
             {filteredOpportunities.map((opportunity) => (
-              <OpportunityCard
-                key={opportunity.name}
-                opportunity={opportunity}
-                marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
-              />
+              <OpportunityCard key={opportunity.name} opportunity={opportunity} marketsInfoData={marketsInfoData} />
             ))}
           </div>
         ) : (

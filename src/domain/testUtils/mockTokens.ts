@@ -12,10 +12,12 @@ import type { TokenData } from "sdk/utils/tokens/types";
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
 const WETH = getTokenBySymbol(ARBITRUM, "WETH");
 const BTC = getTokenBySymbol(ARBITRUM, "BTC");
+const NATIVE_ETH = getTokenBySymbol(ARBITRUM, "ETH");
 
 export const USDC_ADDRESS = USDC.address;
 export const ETH_ADDRESS = WETH.address;
 export const BTC_ADDRESS = BTC.address;
+export const NATIVE_ETH_ADDRESS = NATIVE_ETH.address;
 
 const usdcBalance = expandDecimals(10000, USDC.decimals);
 const ethBalance = expandDecimals(10, WETH.decimals);
@@ -46,5 +48,14 @@ export const BTC_TOKEN = {
   prices: { minPrice: expandDecimals(60000, 30), maxPrice: expandDecimals(60000, 30) },
   balance: btcBalance,
   walletBalance: btcBalance,
+  balanceType: TokenBalanceType.Wallet,
+} as TokenData;
+
+// native ETH (zero address) is required for execution fee estimation
+export const NATIVE_ETH_TOKEN = {
+  ...NATIVE_ETH,
+  prices: { minPrice: expandDecimals(2000, 30), maxPrice: expandDecimals(2000, 30) },
+  balance: ethBalance,
+  walletBalance: ethBalance,
   balanceType: TokenBalanceType.Wallet,
 } as TokenData;

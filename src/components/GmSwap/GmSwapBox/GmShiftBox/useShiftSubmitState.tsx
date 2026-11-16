@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
@@ -9,10 +9,13 @@ import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/type
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
+import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -33,6 +36,7 @@ export function useShiftSubmitState({
   toMarketInfo,
   toToken,
   glvOrMarketInfoData,
+  toMarketDirectDepositAccess,
 }: {
   amounts: ShiftAmounts | undefined;
   executionFee: ExecutionFee | undefined;
@@ -46,10 +50,13 @@ export function useShiftSubmitState({
   toMarketInfo: MarketInfo | undefined;
   toToken: TokenData | undefined;
   glvOrMarketInfoData: { [key: string]: GlvOrMarketInfo } | undefined;
+  toMarketDirectDepositAccess: DirectDepositAccess | undefined;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
+  const isWalletInitializing = useIsWalletInitializing();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const { openConnectModal } = useConnectModal();
 
@@ -74,6 +81,7 @@ export function useShiftSubmitState({
     chainId,
     spenderAddress: routerAddress,
     tokens,
+    metric: { flow: "gmShift" },
   });
 
   return useMemo(() => {
@@ -81,6 +89,16 @@ export function useShiftSubmitState({
       return {
         text: t`Submitting...`,
         disabled: true,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        error: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
+        disabled: true,
+        onSubmit,
       };
     }
 
@@ -92,6 +110,13 @@ export function useShiftSubmitState({
     }
 
     if (!account) {
+      if (isWalletInitializing) {
+        return {
+          text: t`Connecting wallet...`,
+          disabled: true,
+        };
+      }
+
       return {
         text: t`Connect wallet`,
         onSubmit: () => openConnectModal?.(),
@@ -117,14 +142,16 @@ export function useShiftSubmitState({
       toTokenAmount: amounts?.toTokenAmount,
       fees,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
+      toMarketDirectDepositAccess,
     });
 
-    const error = takeValidationResult(commonError, shiftError);
+    const error = takeValidationResult(commonError, multipleWalletExtensionsChainError, shiftError);
 
     if (error.buttonErrorMessage) {
       return {
         text: error.buttonErrorMessage,
         error: error.buttonErrorMessage,
+        errorDescription: error.buttonTooltipMessage,
         disabled: !shouldDisableValidationForTesting,
         onSubmit,
       };
@@ -175,6 +202,7 @@ export function useShiftSubmitState({
     isSubmitting,
     isAllowanceLoading,
     account,
+    isWalletInitializing,
     chainId,
     hasOutdatedUi,
     selectedMarketInfo,
@@ -187,7 +215,9 @@ export function useShiftSubmitState({
     amounts?.swapPriceImpactDeltaUsd,
     toMarketInfo,
     toToken,
+    toMarketDirectDepositAccess,
     fees,
+    multipleWalletExtensionsChainError,
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,

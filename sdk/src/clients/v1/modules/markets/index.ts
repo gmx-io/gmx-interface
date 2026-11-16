@@ -18,7 +18,14 @@ import {
   parseMarketsConfigsResponse,
   parseMarketsValuesResponse,
 } from "utils/markets/multicall";
-import { ClaimableFundingData, MarketsData, MarketSdkConfig, MarketsInfoData, MarketValues } from "utils/markets/types";
+import {
+  ClaimableFundingData,
+  MarketConfig,
+  MarketsData,
+  MarketSdkConfig,
+  MarketsInfoData,
+  MarketValues,
+} from "utils/markets/types";
 import { getByKey } from "utils/objects";
 import { TokensData } from "utils/tokens/types";
 
@@ -68,11 +75,13 @@ export class Markets extends Module {
   private async getMarketsValues({
     marketsAddresses,
     marketsData,
+    marketsConfigsData,
     tokensData,
   }: {
     account: string | undefined;
     marketsAddresses: string[] | undefined;
     marketsData: MarketsData | undefined;
+    marketsConfigsData: Record<string, MarketConfig> | undefined;
     tokensData: TokensData | undefined;
   }): Promise<{
     [marketAddress: string]: MarketValues;
@@ -80,6 +89,7 @@ export class Markets extends Module {
     const request = await buildMarketsValuesRequest(this.chainId, {
       marketsAddresses,
       marketsData,
+      marketsConfigsData,
       tokensData,
     });
 
@@ -90,9 +100,16 @@ export class Markets extends Module {
     });
   }
 
-  private async getMarketsConfigs({ marketsAddresses }: { marketsAddresses: string[] | undefined }) {
+  private async getMarketsConfigs({
+    marketsAddresses,
+    marketsData,
+  }: {
+    marketsAddresses: string[] | undefined;
+    marketsData: MarketsData | undefined;
+  }) {
     const request = await buildMarketsConfigsRequest(this.chainId, {
       marketsAddresses,
+      marketsData,
     });
 
     return this.sdk.executeMulticall(request).then((res) => {
@@ -238,15 +255,18 @@ export class Markets extends Module {
 
     const { tokensData, pricesUpdatedAt } = await this.sdk.tokens.getTokensData();
 
-    const [marketsValues, marketsConfigs, claimableFundingData, marketsConstants] = await Promise.all([
+    const marketsConfigs = await this.getMarketsConfigs({
+      marketsAddresses,
+      marketsData,
+    });
+
+    const [marketsValues, claimableFundingData, marketsConstants] = await Promise.all([
       this.getMarketsValues({
         account: this.account,
         marketsAddresses,
         marketsData,
+        marketsConfigsData: marketsConfigs,
         tokensData,
-      }),
-      this.getMarketsConfigs({
-        marketsAddresses,
       }),
       this.getClaimableFundingData(),
       this.getMarketsConstants(),

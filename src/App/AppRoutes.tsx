@@ -1,39 +1,38 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
-import { Hash, zeroHash } from "viem";
+import { zeroHash } from "viem";
 
-import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
+import { isSolanaNetwork } from "config/chains";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
-import { useSupportChat } from "domain/supportChat/useSupportChat";
-import { useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
-import { useNonEoaAccountChainWarning } from "lib/chains/useNonEoaAccountChainWarning";
+import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
+import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
+import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
-import { getAppBaseUrl, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { useAccountInitedMetric, useOpenAppMetric } from "lib/metrics";
 import { useConfigureMetrics } from "lib/metrics/useConfigureMetrics";
 import { useFreshnessMetricsControl } from "lib/metrics/useFreshnessMetricsControl";
-import { useHashQueryParams } from "lib/useHashQueryParams";
+import { useWalletCapabilitiesMetric } from "lib/metrics/useWalletCapabilitiesMetric";
 import { sendEarnPageViewEvent } from "lib/userAnalytics/earnEvents";
 import { useConfigureUserAnalyticsProfile } from "lib/userAnalytics/useConfigureUserAnalyticsProfile";
 import { useWalletConnectedUserAnalyticsEvent } from "lib/userAnalytics/useWalletConnectedEvent";
 import useRouteQuery from "lib/useRouteQuery";
 import useSearchParams from "lib/useSearchParams";
-import { switchNetwork } from "lib/wallets";
-import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
-import EventToastContainer from "components/EventToast/EventToastContainer";
-import useEventToast from "components/EventToast/useEventToast";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
-import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
 import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
+import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
 
 import { MainRoutes } from "./MainRoutes";
 
@@ -45,38 +44,50 @@ const Zoom = cssTransition({
   collapseDuration: 200,
 });
 
+/**
+ * Hooks that read EVM chains. Solana does not render them, so none of their requests run there.
+ * Metrics, the support chat, the update banner and the GMX Account modal stay mounted on both networks.
+ */
+function EvmGlobalEffects() {
+  useWalletCapabilitiesMetric();
+  useWalletConnectedUserAnalyticsEvent();
+  useMultichainFundingToast();
+  useSmartWalletSubaccountWarning();
+
+  return <SupportChatEvmAttributes />;
+}
+
 export function AppRoutes() {
   const { theme } = useTheme();
-  const location = useLocation();
   const history = useHistory();
+  const { networkId } = useChainId();
 
-  useEventToast();
-  useUiFlagEvents();
   useConfigureMetrics();
   useConfigureUserAnalyticsProfile();
   useOpenAppMetric();
   useAccountInitedMetric();
   useSupportChat();
-
-  useWalletConnectedUserAnalyticsEvent();
-  useMultichainFundingToast();
-  useHashQueryParams();
   useFreshnessMetricsControl();
 
   const query = useRouteQuery();
 
-  useEffect(() => {
-    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
-    if (!referralCode || referralCode.length === 0) {
-      const params = new URLSearchParams(window.location.search);
-      referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
-    }
+  const { pathname } = useLocation();
 
-    if (referralCode && referralCode.length <= 20) {
+  useEffect(
+    function closeTooltipsOnPageChange() {
+      closeAllTooltips();
+    },
+    [pathname]
+  );
+
+  useEffect(() => {
+    const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
+
+    if (isReferralCodeQueryParam(referralCode)) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodedReferralCode !== zeroHash) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
-        const queryParams = new URLSearchParams(location.search);
+        const queryParams = new URLSearchParams(history.location.search);
         if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
           queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
           history.replace({
@@ -85,10 +96,7 @@ export function AppRoutes() {
         }
       }
     }
-  }, [query, history, location]);
-
-  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
-  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
+  }, [query, history]);
 
   const { isSettingsVisible, setIsSettingsVisible } = useSettings();
 
@@ -96,17 +104,7 @@ export function AppRoutes() {
     setIsSettingsVisible(true);
   }, [setIsSettingsVisible]);
 
-  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
-  const baseUrl = getAppBaseUrl();
-  let appRedirectUrl = baseUrl;
-  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== zeroHash) {
-    const decodedRefCode = decodeReferralCode(localStorageCode as Hash);
-    if (decodedRefCode) {
-      appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
-    }
-  }
-
-  const { chainId, lang } = useSearchParams<{ chainId?: string; lang?: string }>();
+  const { lang, openChat } = useSearchParams<{ lang?: string; openChat?: string }>();
 
   const deleteSearchParam = useCallback(
     (param: string) => {
@@ -121,20 +119,18 @@ export function AppRoutes() {
   );
 
   useEffect(() => {
-    if (chainId && CONTRACTS_CHAIN_IDS.includes(Number(chainId) as ContractsChainId)) {
-      switchNetwork(Number(chainId), true).then(() => {
-        deleteSearchParam("chainId");
-      });
-    }
-  }, [chainId, deleteSearchParam]);
-
-  useEffect(() => {
     if (lang && Object.keys(locales).includes(lang)) {
       dynamicActivate(lang).then(() => {
         deleteSearchParam("lang");
       });
     }
   }, [lang, deleteSearchParam]);
+
+  useEffect(() => {
+    if (openChat) {
+      deleteSearchParam("openChat");
+    }
+  }, [openChat, deleteSearchParam]);
 
   const isEarnPage = history.location.pathname.startsWith("/earn");
   useEffect(() => {
@@ -144,7 +140,6 @@ export function AppRoutes() {
   }, [isEarnPage]);
 
   useRealChainIdWarning();
-  useNonEoaAccountChainWarning();
 
   return (
     <>
@@ -165,14 +160,8 @@ export function AppRoutes() {
         icon={false}
         closeButton={CloseToastButton}
       />
-      <EventToastContainer />
-      <RedirectPopupModal
-        redirectModalVisible={redirectModalVisible}
-        setRedirectModalVisible={setRedirectModalVisible}
-        appRedirectUrl={appRedirectUrl}
-        setShouldHideRedirectModal={setShouldHideRedirectModal}
-        shouldHideRedirectModal={shouldHideRedirectModal}
-      />
+      <WhatsNewToastContainer />
+      {!isSolanaNetwork(networkId) && <EvmGlobalEffects />}
       <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
       <NotifyModal />

@@ -15,7 +15,7 @@ import { parseEventLogData } from "context/WebsocketContext/subscribeToEvents";
 import { getBlockNumberBeforeTimestamp } from "domain/multichain/progress/getBlockNumberByTimestamp";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
 import AddressView from "components/AddressView/AddressView";
@@ -268,7 +268,7 @@ export function AccountEvents() {
         <div className="default-container page-layout">
           <PageTitle title={t`Account events`} className="p-12" />
           <div className="text-center text-red-500">
-            <Trans>Connect wallet or provide an account address in the URL</Trans>
+            <Trans>Connect wallet or add an address to the URL</Trans>
           </div>
         </div>
       </AppPageLayout>
@@ -291,7 +291,7 @@ export function AccountEvents() {
               {fromBlock !== null && fromTimestamp !== null && (
                 <div className="text-12 text-typography-secondary">
                   <Trans>
-                    From: Block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
+                    From: block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
                   </Trans>
                 </div>
               )}
@@ -405,7 +405,7 @@ export function AccountEvents() {
 
         {!isLoading && !error && events.length === 0 && (
           <div className="p-40 text-center text-typography-secondary">
-            <Trans>No events found for this account in the past {DAYS_BACK} days</Trans>
+            <Trans>No events in the past {DAYS_BACK} days</Trans>
           </div>
         )}
       </div>

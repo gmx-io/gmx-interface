@@ -11,7 +11,10 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountExpressGlobalParams,
+  selectSettlementChainExpressGlobalParams,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectGasLimits,
   selectGasPrice,
@@ -71,7 +74,12 @@ export function useTechnicalFees(): TechnicalFeesResult {
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams =
+    paySource === "gmxAccount" || paySource === "sourceChain"
+      ? gmxAccountGlobalExpressParams
+      : settlementChainGlobalExpressParams;
   const rawParams = useSelector(selectPoolsDetailsParams);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
 

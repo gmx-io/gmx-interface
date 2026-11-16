@@ -34,7 +34,7 @@ export function ToastifyDebug(props: { error: string }) {
           {hasCopied ? <Trans>Copied</Trans> : <Trans>Copy error</Trans>}
         </span>
       </div>
-      {open && <div className="mb-8 mt-4 max-h-[200px] overflow-auto">{props.error}</div>}
+      {open && <div className="mb-8 mt-4 max-h-[200px] overflow-auto whitespace-pre-wrap">{props.error}</div>}
     </div>
   );
 }

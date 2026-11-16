@@ -28,14 +28,20 @@ const paginate = ({ total, current, size }: PaginateParams) => {
 
 export const DEFAULT_PAGE_SIZE = 10;
 
-export default function usePagination<T>(paginationKey: string, items: T[] = [], size = DEFAULT_PAGE_SIZE) {
+export default function usePagination<T>(
+  paginationKey: string,
+  items: T[] = [],
+  size = DEFAULT_PAGE_SIZE,
+  totalItems?: number
+) {
+  const total = totalItems ?? items.length;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(Math.ceil(items.length / size));
+  const [totalPages, setTotalPages] = useState<number>(Math.ceil(total / size));
   const prevPaginationKey = usePrevious(paginationKey);
 
   useEffect(() => {
-    setTotalPages(Math.ceil(items.length / size));
-  }, [items, size]);
+    setTotalPages(Math.ceil(total / size));
+  }, [size, total]);
 
   useEffect(() => {
     if (paginationKey !== prevPaginationKey) {
@@ -44,9 +50,9 @@ export default function usePagination<T>(paginationKey: string, items: T[] = [],
   }, [paginationKey, prevPaginationKey]);
 
   const getCurrentData = useCallback((): T[] => {
-    const { start, end } = paginate({ total: items.length, current: currentPage, size });
+    const { start, end } = paginate({ total, current: currentPage, size });
     return items.slice(start, end + 1);
-  }, [items, currentPage, size]);
+  }, [items, currentPage, size, total]);
 
   const currentData = useMemo(() => getCurrentData(), [getCurrentData]);
 

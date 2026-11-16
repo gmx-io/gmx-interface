@@ -1,50 +1,55 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
+import { ContractsChainId } from "config/chains";
 import { getMarketIndexName, getMarketPoolName, GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { useChainId } from "lib/chains";
 import { mustNeverExist } from "lib/types";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
-import { TokensData } from "sdk/utils/tokens/types";
+import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import GlvRoundedIcon from "img/ic_glv_rounded.svg?react";
 import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
 
-import { getOpportunityAssetKey, OpportunityAsset } from "./useOpportunities";
+import { getOpportunityAssetKey, getOpportunityAssetLabel, OpportunityAsset } from "./useOpportunities";
 
 export function OpportunityAssets({
   assets,
   marketsInfoData,
-  tokensData,
 }: {
   assets: OpportunityAsset[];
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
 }) {
+  const { chainId } = useChainId();
   const { isSmallMobile } = useBreakpoints();
 
-  if (!assets.length) {
+  const resolvedAssets = assets.filter(
+    (asset) => getOpportunityAssetLabel(asset, { chainId, marketsInfoData }) !== undefined
+  );
+
+  if (!resolvedAssets.length) {
     return null;
   }
 
   const maxVisibleAssets = isSmallMobile ? 2 : 3;
-  const visibleAssets = assets.slice(0, maxVisibleAssets);
-  const remainingCount = assets.length - visibleAssets.length;
+  const visibleAssets = resolvedAssets.slice(0, maxVisibleAssets);
+  const remainingCount = resolvedAssets.length - visibleAssets.length;
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={
         <div className="flex items-center justify-end">
           {visibleAssets.map((token) => (
             <span key={getOpportunityAssetKey(token)} className="relative -mr-6 size-24">
               <OpportunityTokenIcon
                 asset={token}
+                chainId={chainId}
                 marketsInfoData={marketsInfoData}
-                tokensData={tokensData}
                 className="absolute left-0 border-2 border-slate-700 "
               />
             </span>
@@ -64,15 +69,15 @@ export function OpportunityAssets({
         </div>
       }
       content={
-        <div className="text-body-small flex flex-col gap-6">
-          {assets.map((token) => (
+        <TooltipRows>
+          {resolvedAssets.map((token) => (
             <span key={getOpportunityAssetKey(token)} className="flex items-center gap-6">
-              <OpportunityTokenIcon asset={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+              <OpportunityTokenIcon asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
 
-              <OpportunityTokenLabel asset={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
+              <OpportunityTokenLabel asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
             </span>
           ))}
-        </div>
+        </TooltipRows>
       }
       variant="none"
       position="bottom"
@@ -83,13 +88,13 @@ export function OpportunityAssets({
 
 function OpportunityTokenIcon({
   asset,
+  chainId,
   marketsInfoData,
-  tokensData,
   className: _className,
 }: {
   asset: OpportunityAsset;
+  chainId: ContractsChainId;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
   className?: string;
 }) {
   const className = cx("size-24 rounded-full", _className);
@@ -115,15 +120,10 @@ function OpportunityTokenIcon({
       return null;
     }
     case "token": {
-      const token = tokensData?.[asset.address];
-      const symbol = token?.symbol;
+      const { symbol } = getToken(chainId, asset.address);
 
       if (symbol === "GMX") {
         return <GmxRoundedIcon className={className} />;
-      }
-
-      if (!symbol) {
-        return <div className="size-24 rounded-full bg-slate-800" />;
       }
 
       return <TokenIcon displaySize={displaySize} symbol={symbol} className={className} />;
@@ -135,20 +135,19 @@ function OpportunityTokenIcon({
 
 const OpportunityTokenLabel = ({
   asset,
+  chainId,
   marketsInfoData,
-  tokensData,
 }: {
   asset: OpportunityAsset;
+  chainId: ContractsChainId;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
-  tokensData: TokensData | undefined;
 }) => {
   switch (asset.type) {
     case "stGmx": {
       return t`Staked GMX`;
     }
     case "token": {
-      const token = tokensData?.[asset.address];
-      return token?.symbol;
+      return getToken(chainId, asset.address).symbol;
     }
     case "glv": {
       const glvInfo = marketsInfoData?.[asset.address];
@@ -156,7 +155,7 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(glvInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium">
               <Trans>GLV</Trans>{" "}
             </span>
             <span className="text-typography-secondary">[{poolName}]</span>
@@ -172,7 +171,7 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(marketInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium">
               <Trans>GM: {indexName}</Trans>{" "}
             </span>
             <span className="text-typography-secondary">[{poolName}]</span>

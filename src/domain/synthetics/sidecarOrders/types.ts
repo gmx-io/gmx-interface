@@ -2,17 +2,22 @@ import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
 import { DecreasePositionAmounts, IncreasePositionAmounts } from "domain/synthetics/trade";
 
 export type GroupPrefix = "sl" | "tp" | "limit";
+export type SidecarOrderEntryMode = "keepSize" | "keepPercentage" | "fitPercentage";
 
 export type EntryField = {
   input: string;
   value: bigint | null;
   error: string | null;
+  /** Non-blocking warning; does not block submission. */
+  warning?: string | null;
 };
 
 export type InitialEntry = {
   order: PositionOrderInfo | null;
   sizeUsd: EntryField;
   price: EntryField;
+  percentage?: EntryField;
+  mode?: SidecarOrderEntryMode;
 };
 
 export type SidecarOrderEntryBase = {
@@ -21,7 +26,7 @@ export type SidecarOrderEntryBase = {
   sizeUsd: EntryField;
   percentage: EntryField;
   txnType: OrderTxnType | null;
-  mode: "keepSize" | "keepPercentage" | "fitPercentage";
+  mode: SidecarOrderEntryMode;
   order: null | PositionOrderInfo;
 };
 
@@ -53,6 +58,7 @@ export type SidecarOrderEntryGroupBase<T extends SidecarOrderEntryBase> = {
   updateEntry: (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => void;
   deleteEntry: (id: string) => void;
   reset: () => void;
+  carryOver: (options: { keepTypedPrice: boolean }) => void;
 };
 
 export type SidecarOrderEntryGroup = SidecarOrderEntryGroupBase<SidecarOrderEntry> & {

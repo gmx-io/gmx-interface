@@ -10,5 +10,5 @@ export function useMegaethPointsActive(): boolean {
   const { uiFlags } = useUiFlagsRequest();
 
   if (chainId !== MEGAETH) return false;
-  return uiFlags?.[MEGAETH_POINTS_FLAG_ID] === true;
+  return uiFlags?.[MEGAETH_POINTS_FLAG_ID]?.enabled === true;
 }

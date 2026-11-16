@@ -6,13 +6,12 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId } from "config/chains";
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getViemChain } from "config/chains";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
@@ -22,23 +21,26 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
-import { formatUsd } from "lib/numbers";
+import { metrics } from "lib/metrics";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
@@ -156,7 +158,7 @@ function AffiliateCodeFormMultichain({
         callData: encodeFunctionData({
           abi: abis.IStargate,
           functionName: "sendToken",
-          args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
+          args: [sendParams, quoteFromNativeFee(quoteResult.data.nativeFee), account],
         }),
         value,
         msg: t`Creating referral code...`,
@@ -177,12 +179,15 @@ function AffiliateCodeFormMultichain({
             <Trans>Referral code created</Trans>
             <br />
             <br />
-            <Trans>May take a few minutes to reflect. Check back later</Trans>
+            <Trans>May take a few minutes to appear. Check back later</Trans>
           </>
         );
+      } else {
+        throw new Error(`Transaction failed with status ${receipt.status}`);
       }
     } catch (err) {
-      toastCustomOrStargateError(chainId, err);
+      metrics.pushError(err, "referralCreateCodeMultichain");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -330,7 +335,21 @@ function AffiliateCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          labelClassName="whitespace-nowrap"
+          value={
+            quoteResult.networkFee !== undefined ? (
+              <NetworkFeeValue
+                amount={quoteResult.networkFee}
+                usd={quoteResult.networkFeeUsd}
+                decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+                symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(srcChainId)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
         />
       )}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
@@ -351,8 +370,8 @@ function AffiliateCodeFormMultichain({
       {hasNoTokensOnSourceChain && srcChainId && (
         <AlertInfoCard type="error" className="text-left" hideClose>
           <Trans>
-            You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit funds
-            or switch to a different network.
+            You need USDC and {getViemChain(srcChainId).nativeCurrency.symbol} on {getChainName(srcChainId)} to create a
+            referral code via GMX Account. Deposit funds or switch to a different network.
           </Trans>
         </AlertInfoCard>
       )}
@@ -378,7 +397,7 @@ function AffiliateCodeForm({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
@@ -435,32 +454,39 @@ function AffiliateCodeForm({
     event.preventDefault();
     setIsProcessing(true);
 
-    const trimmedCode = referralCode.trim();
-    const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-    setRpcFailedChains(failedChains);
-
-    if (["all", "current"].includes(takenStatus)) {
-      setIsProcessing(false);
-      return;
-    }
-
     try {
-      const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+      const trimmedCode = referralCode.trim();
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+      setRpcFailedChains(failedChains);
 
-      if (callAfterSuccess) {
-        callAfterSuccess(trimmedCode);
+      if (["all", "current"].includes(takenStatus)) {
+        setIsProcessing(false);
+        return;
       }
 
-      const receipt = await tx.wait();
+      const tx = await handleCreateReferralCode(trimmedCode);
+      if (!tx?.hash) {
+        throw new Error("Referral code transaction was not submitted");
+      }
 
-      if (receipt?.status === 1) {
+      const publicClient = getPublicClientWithRpc(chainId);
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+      if (receipt?.status === "success") {
         addRecentCode(trimmedCode);
-        helperToast.success(t`Referral code created`);
         setReferralCode("");
+
+        if (callAfterSuccess) {
+          callAfterSuccess(trimmedCode);
+        }
+
+        helperToast.success(t`Referral code created`);
+      } else {
+        throw new Error(`Transaction failed with status ${receipt?.status}`);
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
+      metrics.pushError(err, "referralCreateCode");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsProcessing(false);
     }
@@ -484,6 +510,11 @@ function AffiliateCodeForm({
   } else if (!debouncedReferralCode) {
     buttonState = {
       text: t`Enter a code`,
+      disabled: true,
+    };
+  } else if (error) {
+    buttonState = {
+      text: t`Create`,
       disabled: true,
     };
   } else if (referralCodeCheckStatus === "taken") {
@@ -557,7 +588,7 @@ export function AffiliateCodeFormContainer({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {

@@ -14,7 +14,18 @@ describe("withFallback", () => {
 
       expect(result).toBe("success");
       expect(fn).toHaveBeenCalledTimes(1);
-      expect(fn).toHaveBeenCalledWith(testEndpoints.primary);
+      expect(fn).toHaveBeenCalledWith(testEndpoints.primary, { isLastAttempt: false });
+    });
+
+    it("should pass isLastAttempt=true when called with a single endpoint", async () => {
+      const fn = vi.fn().mockResolvedValue("success");
+      const result = await withFallback({
+        fn,
+        endpoints: [testEndpoints.primary],
+      });
+
+      expect(result).toBe("success");
+      expect(fn).toHaveBeenCalledWith(testEndpoints.primary, { isLastAttempt: true });
     });
   });
 
@@ -32,9 +43,9 @@ describe("withFallback", () => {
 
       expect(result).toBe("success");
       expect(fn).toHaveBeenCalledTimes(3);
-      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary);
-      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary);
-      expect(fn).toHaveBeenNthCalledWith(3, testEndpoints.fallback);
+      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary, { isLastAttempt: false });
+      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary, { isLastAttempt: false });
+      expect(fn).toHaveBeenNthCalledWith(3, testEndpoints.fallback, { isLastAttempt: true });
     });
 
     it("should call onFallback callback with correct context", async () => {
@@ -154,8 +165,8 @@ describe("withFallback", () => {
       expect(result).toBe("success");
       expect(shouldFallback).toHaveBeenCalledWith(expect.any(Error));
       expect(fn).toHaveBeenCalledTimes(2);
-      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary);
-      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary);
+      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary, { isLastAttempt: false });
+      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary, { isLastAttempt: true });
     });
   });
 
@@ -238,8 +249,8 @@ describe("withFallback", () => {
       expect(result).toBe("result");
       expect(shouldFallback).toHaveBeenCalledWith(undefined, "result");
       expect(fn).toHaveBeenCalledTimes(2);
-      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary);
-      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary);
+      expect(fn).toHaveBeenNthCalledWith(1, testEndpoints.primary, { isLastAttempt: false });
+      expect(fn).toHaveBeenNthCalledWith(2, testEndpoints.secondary, { isLastAttempt: true });
     });
 
     it("should not fallback on last endpoint even if shouldFallback returns true", async () => {

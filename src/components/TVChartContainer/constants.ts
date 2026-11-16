@@ -7,7 +7,9 @@ import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { formatTVDate, formatTVTime } from "lib/dates";
-import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
+import { calculateDisplayDecimals, formatTokenAmount, formatUsd, numberToBigint } from "lib/numbers";
+
+import type { ChartLineSizeData } from "./types";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
   (["candleStyle", "hollowCandleStyle", "haStyle"] as const).reduce<Partial<WidgetOverrides>>((acc, cv) => {
@@ -27,11 +29,14 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.backgroundGradientStartColor": "#121421",
   "paneProperties.backgroundGradientEndColor": "#121421",
   "paneProperties.backgroundType": "solid",
-  "paneProperties.vertGridProperties.color": "#363A5960",
+  // No #RRGGBBAA colors in chart property overrides: the Chart settings dialog's
+  // color parser only accepts #RGB/#RRGGBB/rgb()/rgba() and throws on 8-digit hex,
+  // which crashes (closes) the dialog when the tab holding the swatch is rendered
+  "paneProperties.vertGridProperties.color": "rgba(54, 58, 89, 0.38)",
   "paneProperties.vertGridProperties.style": 2,
-  "paneProperties.horzGridProperties.color": "#363A5960",
+  "paneProperties.horzGridProperties.color": "rgba(54, 58, 89, 0.38)",
   "paneProperties.horzGridProperties.style": 2,
-  "mainSeriesProperties.priceLineColor": "#8B94B6AA",
+  "mainSeriesProperties.priceLineColor": "rgba(139, 148, 182, 0.67)",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].dark,
@@ -48,7 +53,7 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "paneProperties.vertGridProperties.style": 2,
   "paneProperties.horzGridProperties.color": "#E0E0E0",
   "paneProperties.horzGridProperties.style": 2,
-  "mainSeriesProperties.priceLineColor": "#6B7280AA",
+  "mainSeriesProperties.priceLineColor": "rgba(107, 114, 128, 0.67)",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].light,
@@ -70,7 +75,6 @@ const disabledFeatures: ChartingLibraryFeatureset[] = [
   "header_symbol_search",
   "popup_hints",
   "header_in_fullscreen_mode",
-  "use_localstorage_for_settings",
   "right_bar_stays_on_scroll",
   "symbol_info",
   "edit_buttons_in_legend",
@@ -90,7 +94,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
 export const defaultChartProps = {
   theme: "dark",
   locale: "en",
-  library_path: import.meta.env.DEV ? "public/charting_library/" : "/charting_library/",
+  library_path: "/charting_library/",
   client_id: "tradingview.com",
   user_id: "public_user_id",
   fullscreen: false,
@@ -152,6 +156,55 @@ export const orderTypeToTitle: Partial<Record<OrderType, MessageDescriptor>> = {
   [OrderType.LimitDecrease]: msg`TP`,
   [OrderType.StopLossDecrease]: msg`SL`,
 };
+
+export function getOrderLineLabel(
+  translate: (descriptor: MessageDescriptor) => string,
+  {
+    isLong,
+    marketName,
+    orderType,
+    sizeData,
+    showSizeInTokens,
+    isPartial,
+    isMarginDeposit,
+  }: {
+    isLong: boolean;
+    marketName: string;
+    orderType: OrderType;
+    sizeData?: ChartLineSizeData;
+    showSizeInTokens: boolean;
+    isPartial?: boolean;
+    isMarginDeposit?: boolean;
+  }
+) {
+  const directionText = translate(isLong ? msg`Long` : msg`Short`);
+  const orderTypeTitle = orderTypeToTitle[orderType];
+  let orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+
+  if (isMarginDeposit) {
+    orderTitleText = translate(msg`Deposit margin`);
+  }
+
+  if (isPartial) {
+    if (orderType === OrderType.LimitDecrease) {
+      orderTitleText = translate(msg`Partial TP`);
+    } else if (orderType === OrderType.StopLossDecrease) {
+      orderTitleText = translate(msg`Partial SL`);
+    }
+  }
+
+  const baseTitle = `${directionText} ${marketName} · ${orderTitleText}`;
+
+  if (!sizeData) {
+    return baseTitle;
+  }
+
+  const sizeText = showSizeInTokens
+    ? `${formatTokenAmount(sizeData.sizeInTokens, sizeData.tokenDecimals) ?? "0"} ${sizeData.tokenSymbol}`
+    : formatUsd(sizeData.sizeInUsd) ?? "$0.00";
+
+  return `${baseTitle} · ${sizeText}`;
+}
 
 export const chartLabelColors = {
   green: {

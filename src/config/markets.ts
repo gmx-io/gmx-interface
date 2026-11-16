@@ -3,7 +3,7 @@ import mapValues from "lodash/mapValues";
 import { isDevelopment } from "config/env";
 import { SETTLEMENT_CHAINS } from "config/multichain";
 import { fixTokenSymbolFromMarketLabel } from "sdk/configs/markets";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 import {
   ARBITRUM,
@@ -59,6 +59,15 @@ export const GLV_MARKETS: {
       glvTokenAddress: "0xdF03EEd325b82bC1d4Db8b49c30ecc9E05104b96",
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // GLV [USDG-USDG]
+    "0x4Cd5A94a30876320ac65F2e192493EE476f13866": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+      glvTokenAddress: "0x4Cd5A94a30876320ac65F2e192493EE476f13866",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },
   },
   [AVALANCHE]: {
@@ -183,4 +192,10 @@ for (const chainId of SETTLEMENT_CHAINS) {
 
 export function getSettlementChainTradableTokenAddresses(chainId: SettlementChainId) {
   return SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId];
+}
+
+export function isGmxAccountHoldableToken(chainId: SettlementChainId, tokenAddress: string): boolean {
+  return Boolean(
+    SETTLEMENT_CHAIN_TRADABLE_ASSETS_MAP[chainId]?.includes(convertTokenAddress(chainId, tokenAddress, "wrapped"))
+  );
 }

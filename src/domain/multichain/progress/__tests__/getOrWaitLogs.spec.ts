@@ -1,12 +1,12 @@
 import { parseAbi } from "viem";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { ARBITRUM_SEPOLIA } from "sdk/configs/chains";
 
 import { getOrWaitLogs } from "../getOrWaitLogs";
 
-vi.mock("lib/wallets/rainbowKitConfig", () => ({
+vi.mock("lib/wallets/walletConfig", () => ({
   getPublicClientWithRpc: vi.fn(),
 }));
 

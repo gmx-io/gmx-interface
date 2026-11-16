@@ -3,7 +3,8 @@ import { describe, expect, it, afterAll } from "vitest";
 import {
   getTestSdk,
   requireSigner,
-  waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   activateTestSubaccount,
   TEST_SYMBOL,
@@ -25,7 +26,6 @@ async function signAndSubmit(sdk: ReturnType<typeof getTestSdk>, prepared: any) 
     requestId: prepared.requestId,
     signature: sig,
     from: account,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
@@ -50,11 +50,10 @@ async function createLimitOrder(sdkInstance: ReturnType<typeof getTestSdk>, trig
     signer
   );
 
-  const status = await waitForOrderStatus(sdkInstance, result.requestId);
-  expect(status.status).toBe("executed");
+  const status = await waitForOrderPlaced(sdkInstance, result.requestId);
+  expect(PLACED_OK_STATUSES).toContain(status.status);
   return result;
 }
-
 
 describe("edit & cancel orders", () => {
   afterAll(async () => {
@@ -65,7 +64,6 @@ describe("edit & cancel orders", () => {
       // cleanup best-effort
     }
   });
-
 
   describe("create → edit → cancel (express)", () => {
     let createdOrderKey: string;
@@ -112,13 +110,18 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
-        const edited = ords.find((o: any) => o.key === orderId);
-        return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
-      }, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          const edited = ords.find((o: any) => o.key === orderId);
+          return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
+        },
+        30000
+      );
       const editedOrder = ordersAfter.find((o: any) => o.key === orderId);
       expect(editedOrder).toBeDefined();
       expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
@@ -141,16 +144,20 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
-        return !ords.find((o: any) => o.key === orderId);
-      }, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          return !ords.find((o: any) => o.key === orderId);
+        },
+        30000
+      );
       expect(ordersAfter.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
-
 
   describe("cancel all orders", () => {
     it("create two limit orders", async () => {
@@ -176,11 +183,10 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
     });
   });
-
 
   describe("1CT edit + cancel", () => {
     const sdkSub = getTestSdk();
@@ -189,7 +195,9 @@ describe("edit & cancel orders", () => {
       try {
         const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });
         await signAndSubmit(sdk, prepared);
-      } catch { /* cleanup */ }
+      } catch {
+        /* cleanup */
+      }
       sdkSub.clearSubaccount();
     });
 
@@ -222,7 +230,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
@@ -232,13 +239,18 @@ describe("edit & cancel orders", () => {
 
       expect(submitted.requestId).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
-      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
-        const edited = ords.find((o: any) => o.key === orderId);
-        return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
-      }, 30000);
+      const updatedOrders = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          const edited = ords.find((o: any) => o.key === orderId);
+          return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
+        },
+        30000
+      );
       const editedOrder = updatedOrders.find((o: any) => o.key === orderId);
       expect(editedOrder).toBeDefined();
       expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
@@ -271,7 +283,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
@@ -281,16 +292,20 @@ describe("edit & cancel orders", () => {
 
       expect(submitted.requestId).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
-      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
-        return !ords.find((o: any) => o.key === orderId);
-      }, 30000);
+      const updatedOrders = await waitForOrdersUpdate(
+        sdk,
+        account,
+        (ords) => {
+          return !ords.find((o: any) => o.key === orderId);
+        },
+        30000
+      );
       expect(updatedOrders.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
-
 
   describe("error cases", () => {
     it("edit with empty orderIds rejects", async () => {

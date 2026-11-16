@@ -1,11 +1,21 @@
-import { useEffect, useRef } from "react";
-import toast from "react-hot-toast";
+import { useCallback, useMemo, useState } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX } from "config/localStorage";
-import { getUiFlagEventDismissCooldown, uiFlagEventsData } from "config/uiFlagEvents";
+import {
+  UiFlagEventData,
+  getIsUiFlagEventOnNetwork,
+  getUiFlagEventDismissCooldown,
+  uiFlagEventsData,
+} from "config/uiFlagEvents";
+import { useSolanaUiFlagsRequest } from "domain/synthetics/uiFlags/useSolanaUiFlagsRequest";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { useChainId } from "lib/chains";
 
-import EventToast from "components/EventToast/EventToast";
+export type ActiveUiFlagEvent = {
+  data: UiFlagEventData;
+  dismiss: () => void;
+};
 
 function getLocalStorageKey(eventId: string) {
   return `${UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX}-${eventId}`;
@@ -21,53 +31,33 @@ function isDismissedByCooldown(eventId: string, cooldownMs: number): boolean {
   return Date.now() - dismissedAt < cooldownMs;
 }
 
-function dismissEvent(eventId: string) {
+function persistDismissal(eventId: string) {
   localStorage.setItem(getLocalStorageKey(eventId), String(Date.now()));
 }
 
-export function useUiFlagEvents() {
-  const { uiFlags } = useUiFlagsRequest();
-  const activeToastIds = useRef<Set<string>>(new Set());
+export function useUiFlagEvents(): ActiveUiFlagEvent[] {
+  const { uiFlags: evmUiFlags } = useUiFlagsRequest();
+  const { uiFlags: solanaUiFlags } = useSolanaUiFlagsRequest();
+  const { networkId } = useChainId();
+  const uiFlags = isSolanaNetwork(networkId) ? solanaUiFlags : evmUiFlags;
+  const [dismissalVersion, setDismissalVersion] = useState(0);
 
-  useEffect(() => {
-    if (!uiFlags) return;
+  const bumpVersion = useCallback(() => setDismissalVersion((v) => v + 1), []);
 
-    for (const event of uiFlagEventsData) {
-      const flagEnabled = uiFlags[event.flagName] === true;
-      const toastId = `ui-flag-${event.id}`;
-      const isShowing = activeToastIds.current.has(toastId);
+  return useMemo<ActiveUiFlagEvent[]>(() => {
+    if (!uiFlags) return [];
 
-      if (flagEnabled && !isShowing) {
-        const cooldownMs = getUiFlagEventDismissCooldown(event);
-        if (isDismissedByCooldown(event.id, cooldownMs)) continue;
-
-        activeToastIds.current.add(toastId);
-        toast.custom(
-          (t) => (
-            <EventToast
-              // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-              event={{
-                id: event.id,
-                title: event.title,
-                bodyText: event.content,
-                endDate: "",
-              }}
-              id={event.id}
-              toast={t}
-              variant={event.variant}
-              onClick={() => {
-                toast.dismiss(toastId);
-                activeToastIds.current.delete(toastId);
-                dismissEvent(event.id);
-              }}
-            />
-          ),
-          { id: toastId, style: {} }
-        );
-      } else if (!flagEnabled && isShowing) {
-        toast.dismiss(toastId);
-        activeToastIds.current.delete(toastId);
-      }
-    }
-  }, [uiFlags]);
+    return uiFlagEventsData
+      .filter((event) => getIsUiFlagEventOnNetwork(event, networkId))
+      .filter((event) => uiFlags[event.flagName]?.enabled === true)
+      .filter((event) => !isDismissedByCooldown(event.id, getUiFlagEventDismissCooldown(event)))
+      .map((event) => ({
+        data: event,
+        dismiss: () => {
+          persistDismissal(event.id);
+          bumpVersion();
+        },
+      }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uiFlags, networkId, dismissalVersion, bumpVersion]);
 }

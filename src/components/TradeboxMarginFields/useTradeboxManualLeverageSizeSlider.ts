@@ -1,25 +1,38 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
+import {
+  makeSelectPositionConstants,
+  selectProDiscountFactor,
+  selectFeeDiscountFactor,
+  selectUiFeeFactor,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
+  selectTradeboxIncreasePositionAmounts,
   selectTradeboxLiquidity,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxMarkPrice,
-  selectTradeboxSelectedPosition,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxState,
+  selectTradeboxTriggerPrice,
+  selectTradeboxTwapIncreaseSequenceParams,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   calcMaxSizeDeltaInUsdByLeverage,
+  getAvailableTradeQuote,
   calcSizeAmountByPercentage,
   calcSizePercentage,
 } from "domain/synthetics/trade";
 import { formatAmountFree } from "lib/numbers";
+import { OrderType } from "sdk/utils/orders/types";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
 import { convertToUsd } from "sdk/utils/tokens";
 
 import { SizeDisplayMode } from "./SizeField";
@@ -28,6 +41,7 @@ import { TOKEN_INPUT_DISPLAY_DECIMALS } from "./useSizeConversion";
 type Params = {
   sizeDisplayMode: SizeDisplayMode;
   canConvert: boolean;
+  maxAvailableAmount: bigint;
   tokensToUsd: (tokensValue: string) => string;
   setSizeInputValue: (value: string) => void;
   setToTokenInputValue: (value: string, resetPriceImpact: boolean) => void;
@@ -36,6 +50,7 @@ type Params = {
 export function useTradeboxManualLeverageSizeSlider({
   sizeDisplayMode,
   canConvert,
+  maxAvailableAmount,
   tokensToUsd,
   setSizeInputValue,
   setToTokenInputValue,
@@ -48,9 +63,17 @@ export function useTradeboxManualLeverageSizeSlider({
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
   const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
-  const { marketInfo } = useSelector(selectTradeboxState);
+  const { marketInfo, collateralToken } = useSelector(selectTradeboxState);
   const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
-  const existingPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const { minCollateralUsd } = useSelector(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
+  const userReferralInfo = useSelector(selectUserReferralInfo);
+  const proDiscountFactor = useSelector(selectProDiscountFactor);
+  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
+  const uiFeeFactor = useSelector(selectUiFeeFactor);
+  const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
 
   const lastInteractionRef = useRef<"slider" | "field">("field");
   const fixedPercentageRef = useRef<number>(0);
@@ -96,28 +119,55 @@ export function useTradeboxManualLeverageSizeSlider({
 
     const initialCollateralUsd = convertToUsd(fromTokenAmount, fromToken.decimals, fromToken.prices.minPrice) ?? 0n;
 
-    return calcMaxSizeDeltaInUsdByLeverage({
-      marketInfo,
-      initialCollateralUsd,
-      markPrice,
-      toTokenDecimals: toToken.decimals,
-      isLong: tradeFlags.isLong,
-      longLiquidity,
-      shortLiquidity,
-      existingPosition: existingPosition ?? undefined,
-    });
+    const baseCollateralUsd = increaseAmounts
+      ? increaseAmounts.collateralDeltaUsd + increaseAmounts.positionFeeUsd + increaseAmounts.uiFeeUsd
+      : undefined;
+
+    return getAvailableTradeQuote(marketInfo.tradeMath, () =>
+      calcMaxSizeDeltaInUsdByLeverage({
+        marketInfo,
+        initialCollateralUsd,
+        baseCollateralUsd,
+        markPrice,
+        toTokenDecimals: toToken.decimals,
+        isLong: tradeFlags.isLong,
+        longLiquidity,
+        shortLiquidity,
+        existingPosition: existingPosition ?? undefined,
+        collateralToken,
+        minCollateralUsd,
+        userReferralInfo,
+        proDiscountFactor,
+        feeDiscountFactor,
+        uiFeeFactor,
+        indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+          orderType: increaseAmounts?.limitOrderType ?? OrderType.MarketIncrease,
+          triggerPrice,
+        }),
+        twap,
+      })
+    );
   }, [
+    collateralToken,
     existingPosition,
     fromToken,
     fromTokenAmount,
+    increaseAmounts,
     isLeverageSliderEnabled,
     longLiquidity,
     markPrice,
     marketInfo,
+    minCollateralUsd,
     shortLiquidity,
     toToken,
     tradeFlags.isIncrease,
     tradeFlags.isLong,
+    triggerPrice,
+    uiFeeFactor,
+    userReferralInfo,
+    proDiscountFactor,
+    feeDiscountFactor,
+    twap,
   ]);
 
   const sizePercentage = useMemo(
@@ -127,11 +177,11 @@ export function useTradeboxManualLeverageSizeSlider({
 
   const handleSizePercentageChange = useCallback(
     (percentage: number) => {
-      lastInteractionRef.current = "slider";
-      fixedPercentageRef.current = percentage;
-
       const indexTokenAmount = calcSizeAmountByPercentage(percentage, maxSizeByMarginInTokens);
       if (indexTokenAmount === undefined) return;
+
+      lastInteractionRef.current = "slider";
+      fixedPercentageRef.current = percentage;
       applySizeByIndexTokenAmount(indexTokenAmount);
     },
     [applySizeByIndexTokenAmount, maxSizeByMarginInTokens]
@@ -148,7 +198,9 @@ export function useTradeboxManualLeverageSizeSlider({
     applySizeByIndexTokenAmount(indexTokenAmount);
   }, [isLeverageSliderEnabled, maxSizeByMarginInTokens, applySizeByIndexTokenAmount]);
 
-  const isSizeSliderDisabled = !isLeverageSliderEnabled && tradeFlags.isIncrease && fromTokenAmount <= 0n;
+  const isSizeSliderDisabled =
+    tradeFlags.isIncrease &&
+    (maxAvailableAmount <= 0n || (!isLeverageSliderEnabled && maxSizeByMarginInTokens === undefined));
 
   return {
     isLeverageSliderEnabled,

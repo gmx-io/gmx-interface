@@ -2,11 +2,11 @@ import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
-import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { formatAmountHuman } from "lib/numbers";
+import { getGlvOrMarketIconSymbol, getMarketIndexName } from "domain/synthetics/markets/utils";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 import { TOKEN_COLOR_MAP } from "sdk/configs/tokens";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -106,7 +106,7 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
         <div className="flex flex-row items-center gap-4">
           <span className="mr-8 inline-block h-10 w-10 shrink-0 rounded-10" style={tokenCircleStyles} />
           <TokenIcon
-            symbol={item.type === "market" ? item.market.indexToken.symbol : item.token.symbol}
+            symbol={item.type === "market" ? getGlvOrMarketIconSymbol(item.market) : item.token.symbol}
             displaySize={24}
           />
           {item.type === "backing" ? <span className="capitalize text-typography-secondary">{item.side}:</span> : null}
@@ -117,8 +117,21 @@ const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint
       </TableTd>
       {item.type === "market" ? (
         <TableTd>
-          <span className="numbers">{formatAmountHuman(item.tvl[0], USD_DECIMALS, true, 1)}</span>/
-          <span className="numbers">{formatAmountHuman(item.tvl[1], USD_DECIMALS, true, 1)}</span>
+          <AmountHumanValue
+            amount={item.tvl[0]}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={1}
+            className="numbers"
+          />
+          /
+          <AmountHumanValue
+            amount={item.tvl[1]}
+            decimals={USD_DECIMALS}
+            showDollar
+            displayDecimals={1}
+            className="numbers"
+          />
         </TableTd>
       ) : null}
       <TableTd className="!pr-20">

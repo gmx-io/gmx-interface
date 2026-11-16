@@ -1,19 +1,27 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
+import { Redirect } from "react-router-dom";
 
+import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import {
   selectPoolsDetailsGlvOrMarketAddress,
   selectPoolsDetailsGlvOrMarketInfo,
 } from "context/PoolsDetailsContext/selectors";
 import {
+  selectChainId,
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { isGlvAddress, isGlvInfo } from "domain/synthetics/markets/glv";
+import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { getTokenData } from "domain/synthetics/tokens";
+import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
+import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useBreakpoints } from "lib/useBreakpoints";
+import useRouteQuery from "lib/useRouteQuery";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { isMarketTokenAddress } from "sdk/configs/markets";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs/Breadcrumbs";
@@ -31,15 +39,26 @@ import { Curtain } from "components/TradeBox/Curtain";
 import { PoolsDetailsAbout } from "./PoolsDetailsAbout";
 import { PoolsDetailsCard } from "./PoolsDetailsCard";
 import { PoolsDetailsHeader } from "./PoolsDetailsHeader";
+import { UsdgLaunchBoostCard } from "./UsdgLaunchBoostCard";
 
 export function PoolsDetails() {
+  const chainId = useSelector(selectChainId);
   const depositMarketTokensData = useSelector(selectDepositMarketTokensData);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
 
   const glvOrMarketAddress = useSelector(selectPoolsDetailsGlvOrMarketAddress);
   const glvOrMarketInfo = useSelector(selectPoolsDetailsGlvOrMarketInfo);
+  const searchParams = useRouteQuery();
+  const requestedMarketAddress = searchParams.get("market");
+  const requestedChainId = Number(searchParams.get("chainId"));
+  const isChainChangePending =
+    CONTRACTS_CHAIN_IDS.includes(requestedChainId as ContractsChainId) && requestedChainId !== chainId;
+  const isValidMarketAddress =
+    requestedMarketAddress !== null &&
+    (isMarketTokenAddress(chainId, requestedMarketAddress) || isGlvAddress(chainId, requestedMarketAddress));
 
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
+  const launchBoost = useUsdgLaunchBoost(glvOrMarketInfo);
 
   const { backing: backingComposition, market: marketComposition } = useCompositionData({
     glvOrMarketInfo: glvOrMarketInfo,
@@ -47,9 +66,15 @@ export function PoolsDetails() {
     marketTokensData: depositMarketTokensData,
   });
 
+  const { timeRange, setTimeRange } = usePoolsTimeRange();
+
   const isMobile = usePoolsIsMobilePage();
 
   const { isDesktop: isInCurtain } = useBreakpoints();
+
+  if (!isValidMarketAddress && !isChainChangePending) {
+    return <Redirect to="/pools" />;
+  }
 
   const breadcrumbs = (
     <Breadcrumbs>
@@ -73,12 +98,21 @@ export function PoolsDetails() {
       <div className={cx("flex flex-col gap-8")}>
         {glvOrMarketInfo ? (
           <>
-            <PoolsDetailsHeader glvOrMarketInfo={glvOrMarketInfo} marketToken={marketToken} />
+            <PoolsDetailsHeader
+              glvOrMarketInfo={glvOrMarketInfo}
+              marketToken={marketToken}
+              timeRange={timeRange}
+              launchBoost={launchBoost}
+            />
+
+            {isInCurtain && launchBoost && <UsdgLaunchBoostCard launchBoost={launchBoost} />}
 
             <div className={cx("flex justify-between gap-8", { "flex-wrap": isInCurtain })}>
               <div className="flex grow flex-col gap-8">
                 <ErrorBoundary id="PoolsDetails-MarketGraphs" variant="block" wrapperClassName="rounded-t-8">
-                  {glvOrMarketInfo && <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} />}
+                  {glvOrMarketInfo && (
+                    <MarketGraphs glvOrMarketInfo={glvOrMarketInfo} timeRange={timeRange} setTimeRange={setTimeRange} />
+                  )}
                 </ErrorBoundary>
 
                 <ErrorBoundary id="PoolsDetails-MarketComposition" variant="block" wrapperClassName="rounded-t-8">
@@ -108,7 +142,7 @@ export function PoolsDetails() {
                 </PoolsDetailsCard>
               </div>
 
-              <PoolsDetailsGmSwapBox isInCurtain={isInCurtain} />
+              <PoolsDetailsGmSwapBox isInCurtain={isInCurtain} launchBoost={launchBoost} />
             </div>
           </>
         ) : (
@@ -119,7 +153,13 @@ export function PoolsDetails() {
   );
 }
 
-const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
+const PoolsDetailsGmSwapBox = ({
+  isInCurtain,
+  launchBoost,
+}: {
+  isInCurtain: boolean;
+  launchBoost: UsdgLaunchBoost | undefined;
+}) => {
   if (!isInCurtain) {
     return (
       <div
@@ -128,6 +168,7 @@ const PoolsDetailsGmSwapBox = ({ isInCurtain }: { isInCurtain: boolean }) => {
           "w-full max-w-none": isInCurtain,
         })}
       >
+        {launchBoost && <UsdgLaunchBoostCard className="mb-8" launchBoost={launchBoost} />}
         <GmSwapBoxHeader isInCurtain={isInCurtain} />
         <ErrorBoundary id="PoolsDetails-GmSwapBox" variant="block">
           <GmSwapBox />

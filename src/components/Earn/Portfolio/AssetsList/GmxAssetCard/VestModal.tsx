@@ -1,9 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
@@ -24,11 +24,11 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import Modal from "components/Modal/Modal";
 import { ProgressRow } from "components/ProgressRow/ProgressRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
 import GmxIcon from "img/tokens/ic_gmx.svg?react";
@@ -450,18 +450,6 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
         />
 
         <div className="flex flex-col gap-8 px-20 pb-20">
-          {!isReadVestingDetailsBannerClosed && (
-            <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
-              <div>
-                <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
-
-                <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                  <Trans>Read details</Trans>
-                </ColorfulButtonLink>
-              </div>
-            </AlertInfoCard>
-          )}
-
           <Tabs
             options={actionTabs}
             selectedValue={activeAction}
@@ -478,6 +466,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 onClickMax={
                   depositConfig.maxAmount !== undefined && depositConfig.maxAmount > 0n ? onClickMax : undefined
                 }
+                isMaxSelected={depositAmount === depositConfig.maxAmount}
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
                 maxDecimals={18}
@@ -488,6 +477,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read more</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -508,6 +508,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read more</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -528,6 +539,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="staking" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read more</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -544,18 +566,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             <ProgressRow
               label={<Trans>Vesting status</Trans>}
               value={
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
-                  position="top-end"
+                  position="bottom-end"
                   handleClassName="whitespace-nowrap"
-                  content={
-                    <span>
-                      <Trans>
-                        {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)}{" "}
-                        esGMX deposited for vesting.
-                      </Trans>
-                    </span>
-                  }
+                  content={t`${formatGmxAmount(claimSum)} tokens converted to GMX from the ${formatGmxAmount(vestedAmount)} esGMX deposited for vesting`}
                 />
               }
               currentValue={claimSum}
@@ -565,25 +580,23 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               <ProgressRow
                 label={<Trans>Staked tokens reserved for vesting</Trans>}
                 value={
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={`${formatGmxAmount(gmxReservePreview.nextReserveAmount)} / ${formatGmxAmount(
                       gmxDepositConfig.maxReserveAmount
                     )}`}
-                    position="top-end"
+                    position="bottom-end"
                     handleClassName="whitespace-nowrap"
                     content={
-                      <div>
-                        <StatsTooltipRow
-                          label={<Trans>Current reserved:</Trans>}
+                      <TooltipRows>
+                        <TooltipRow
+                          label={<Trans>Current reserved</Trans>}
                           value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
-                          showDollar={false}
                         />
-                        <StatsTooltipRow
-                          label={<Trans>Additional reserve required:</Trans>}
+                        <TooltipRow
+                          label={<Trans>Additional reserve required</Trans>}
                           value={formatGmxAmount(gmxReservePreview.additionalReserveAmount)}
-                          showDollar={false}
                         />
-                      </div>
+                      </TooltipRows>
                     }
                   />
                 }
@@ -594,24 +607,22 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
             <ProgressRow
               label={<Trans>Vault capacity</Trans>}
               value={
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={`${formatGmxAmount(
                     selectedVault === "gmx" ? gmxReservePreview.nextDepositAmount : affiliateNextDepositAmount
                   )} / ${formatGmxAmount(depositConfig.maxVestableAmount)}`}
-                  position="top-end"
+                  position="bottom-end"
                   content={
-                    <div>
-                      <StatsTooltipRow
-                        label={<Trans>Deposited:</Trans>}
+                    <TooltipRows>
+                      <TooltipRow
+                        label={<Trans context="Amount deposited into the vault">Deposited</Trans>}
                         value={formatGmxAmount(depositConfig.vestedAmount)}
-                        showDollar={false}
                       />
-                      <StatsTooltipRow
-                        label={<Trans>Max capacity:</Trans>}
+                      <TooltipRow
+                        label={<Trans>Max capacity</Trans>}
                         value={formatGmxAmount(depositConfig.maxVestableAmount)}
-                        showDollar={false}
                       />
-                    </div>
+                    </TooltipRows>
                   }
                 />
               }

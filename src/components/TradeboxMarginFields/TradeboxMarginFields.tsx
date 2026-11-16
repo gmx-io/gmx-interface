@@ -1,6 +1,5 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import { SourceChainId } from "config/chains";
 import { TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
@@ -15,8 +14,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
+import { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
+import { usePrevious } from "lib/usePrevious";
 
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
@@ -27,8 +28,9 @@ import { useTradeboxManualLeverageSizeSlider } from "./useTradeboxManualLeverage
 
 type Props = {
   maxAvailableAmount: bigint;
+  maxActions?: MaxActionsState;
+  onKeepGasClick?: () => void;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
-  onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   fromTokenInputValue: string;
   setFromTokenInputValue: (value: string, resetPriceImpact?: boolean) => void;
   setFocusedInput: (input: "from" | "to") => void;
@@ -41,8 +43,9 @@ type Props = {
 
 export function TradeboxMarginFields({
   maxAvailableAmount,
+  maxActions,
+  onKeepGasClick,
   onSelectFromTokenAddress,
-  onDepositTokenAddress,
   fromTokenInputValue,
   setFromTokenInputValue,
   setFocusedInput,
@@ -65,7 +68,10 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
+  const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
+  const tokensInputValueFromUsdRef = useRef<string | undefined>(toTokenInputValue === "" ? "" : undefined);
+  const previousToTokenInputValue = usePrevious(toTokenInputValue);
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
@@ -103,6 +109,7 @@ export function TradeboxMarginFields({
   } = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode,
     canConvert,
+    maxAvailableAmount,
     tokensToUsd,
     setSizeInputValue,
     setToTokenInputValue,
@@ -111,7 +118,7 @@ export function TradeboxMarginFields({
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
   // so we need to force a sync when the context changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     const nextContext = `${marketAddress ?? ""}:${toTokenAddress ?? ""}`;
 
     if (prevSizeSyncContextRef.current === undefined) {
@@ -125,19 +132,42 @@ export function TradeboxMarginFields({
     }
   }, [marketAddress, toTokenAddress]);
 
-  useEffect(() => {
+  // Keep USD size anchored when the limit trigger price changes.
+  useLayoutEffect(() => {
+    if (!isLimit) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current === null) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current !== triggerPrice && sizeDisplayMode === "usd") {
+      shouldForceSizeUsdSyncRef.current = true;
+    }
+
+    prevTriggerPriceRef.current = triggerPrice;
+  }, [isLimit, triggerPrice, sizeDisplayMode]);
+
+  useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
     if (shouldForceSizeUsdSyncRef.current) {
       shouldForceSizeUsdSyncRef.current = false;
       const tokensValue = usdToTokens(sizeInputValue);
+      tokensInputValueFromUsdRef.current = tokensValue;
       if (tokensValue !== toTokenInputValue) {
         setToTokenInputValue(tokensValue, false);
       }
       return;
     }
 
-    if (focusedInput === "to") return;
+    const isTokensInputValueSetElsewhere =
+      toTokenInputValue !== previousToTokenInputValue && toTokenInputValue !== tokensInputValueFromUsdRef.current;
+
+    if (focusedInput === "to" && !isTokensInputValueSetElsewhere) return;
 
     const usdValue = tokensToUsd(toTokenInputValue);
     if (usdValue !== sizeInputValue) {
@@ -148,6 +178,7 @@ export function TradeboxMarginFields({
     sizeDisplayMode,
     sizeInputValue,
     toTokenInputValue,
+    previousToTokenInputValue,
     canConvert,
     tokensToUsd,
     usdToTokens,
@@ -211,6 +242,7 @@ export function TradeboxMarginFields({
         setSizeInputValue(nextValue);
         if (canConvert) {
           const tokensValue = usdToTokens(nextValue);
+          tokensInputValueFromUsdRef.current = tokensValue;
           if (tokensValue !== toTokenInputValue) {
             setToTokenInputValue(tokensValue, false);
           }
@@ -272,8 +304,9 @@ export function TradeboxMarginFields({
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputChange}
           onSelectFromTokenAddress={onSelectFromTokenAddress}
-          onDepositTokenAddress={onDepositTokenAddress}
           onMaxClick={() => handleMarginPercentageChange(100)}
+          onKeepGasClick={onKeepGasClick}
+          maxActions={maxActions}
           onFocus={() => setFocusedInput("from")}
           qa="margin"
         />

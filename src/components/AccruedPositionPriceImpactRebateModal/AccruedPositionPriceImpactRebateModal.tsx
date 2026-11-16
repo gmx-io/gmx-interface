@@ -10,12 +10,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RebateInfoItem } from "domain/synthetics/fees/useRebatesInfo";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { getTokenData } from "domain/synthetics/tokens";
-import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { expandDecimals, formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Modal from "components/Modal/Modal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export const AccruedPositionPriceImpactRebateModal = memo(
   ({ isVisible, onClose }: { isVisible: boolean; onClose: () => void }) => {
@@ -31,12 +33,14 @@ export const AccruedPositionPriceImpactRebateModal = memo(
       >
         <div className="ConfirmationBox-main">
           <div className="text-center">
-            <Trans>Total {formatDeltaUsd(totalUsd)}</Trans>
+            <Trans>
+              Total <DeltaUsdValue deltaUsd={totalUsd} />
+            </Trans>
           </div>
         </div>
+        <div className="mb-20 mt-15 h-1 bg-slate-700" />
         <div>
           <div className="App-card-content">
-            <div className="App-card-divider" />
             <div className="ClaimSettleModal-header">
               <div>
                 <Trans>MARKET</Trans>
@@ -117,22 +121,25 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
       total = total + usd;
     });
 
-    return formatDeltaUsd(total);
+    return total;
   }, [rebateItems, tokensData]);
 
   const renderContent = useCallback(
-    () =>
-      reducedByTokenItems.map((rebateItem) => {
-        const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
-        if (!tokenData) return null;
-        return (
-          <div key={rebateItem.id}>
-            {formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol, {
-              isStable: tokenData.isStable,
-            })}
-          </div>
-        );
-      }),
+    () => (
+      <TooltipText>
+        {reducedByTokenItems.map((rebateItem) => {
+          const tokenData = getTokenData(tokensData, rebateItem.tokenAddress);
+          if (!tokenData) return null;
+          return (
+            <div key={rebateItem.id}>
+              {formatTokenAmount(rebateItem.value, tokenData?.decimals, tokenData?.symbol, {
+                isStable: tokenData.isStable,
+              })}
+            </div>
+          );
+        })}
+      </TooltipText>
+    ),
     [reducedByTokenItems, tokensData]
   );
 
@@ -140,10 +147,9 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     <div className="ClaimSettleModal-info-row">
       <div className="Exchange-info-label">{label}</div>
       <div className="ClaimSettleModal-info-label-usd">
-        <TooltipWithPortal
-          position="top-end"
-          tooltipClassName="ClaimModal-row-tooltip"
-          handle={usd}
+        <StandardTooltip
+          position="bottom-end"
+          handle={<DeltaUsdValue deltaUsd={usd} />}
           renderContent={renderContent}
         />
       </div>
