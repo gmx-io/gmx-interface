@@ -39,27 +39,8 @@ import {
   buildGmsolTradeboxOrderAction,
   buildGmsolTradeboxTriggerAction,
   GmsolTradeboxError,
-  type GmsolTradeboxErrorCode,
 } from "./buildTradeboxOrderAction";
-
-function getEntryError(code: GmsolTradeboxErrorCode) {
-  switch (code) {
-    case "market":
-      return t`Select a market`;
-    case "math":
-      return t`Solana market calculations are unavailable`;
-    case "mode":
-      return t`This order type is not supported on Solana`;
-    case "amounts":
-      return t`Enter an amount`;
-    case "swap":
-      return t`Pay with the selected collateral token`;
-    case "tokenProgram":
-      return t`This collateral token is not supported for trading yet`;
-    case "tpsl":
-      return t`Review your TP/SL orders`;
-  }
-}
+import { getGmsolTradeboxErrorMessage } from "./tradeboxErrorMessages";
 
 /** Headless lazy adapter: the shared TradeBox owns all inputs, layout and previews. */
 export default function GmsolTradeboxAdapter({
@@ -121,7 +102,10 @@ export default function GmsolTradeboxAdapter({
         }),
       };
     } catch (error) {
-      return { error: error instanceof GmsolTradeboxError ? getEntryError(error.code) : t`Unable to prepare order` };
+      return {
+        error:
+          error instanceof GmsolTradeboxError ? getGmsolTradeboxErrorMessage(error.code) : t`Unable to prepare order`,
+      };
     }
   }, [
     amounts,

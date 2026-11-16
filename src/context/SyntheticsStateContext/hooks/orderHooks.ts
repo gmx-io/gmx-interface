@@ -1,6 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -49,6 +50,7 @@ export function useCancelOrder(order: OrderInfo) {
   const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
+  const solanaOrderActions = useSolanaOrderActions();
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
@@ -58,6 +60,17 @@ export function useCancelOrder(order: OrderInfo) {
         helperToast.error(getPageOutdatedError());
         return;
       }
+
+      if (solanaOrderActions) {
+        setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
+        }
+        return;
+      }
+
       if (!signer || !provider) return;
 
       setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
@@ -126,6 +139,7 @@ export function useCancelOrder(order: OrderInfo) {
       provider,
       setCancellingOrdersKeys,
       signer,
+      solanaOrderActions,
       srcChainId,
       subaccount,
     ]
