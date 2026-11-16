@@ -1,8 +1,9 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 
 import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
+import type { SolanaBalances } from "lib/solana/balances";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
 import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
 import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
@@ -16,9 +17,11 @@ import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
 export function useGmsolTokensData({
   enabled,
   rawMarketsInfoData,
+  balancesData,
 }: {
   enabled: boolean;
   rawMarketsInfoData: RawMarketsInfoData | undefined;
+  balancesData?: SolanaBalances;
 }): TokensDataResult & { isUnavailable: boolean } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const key = enabled
@@ -62,12 +65,24 @@ export function useGmsolTokensData({
     tokensData !== undefined &&
     !hasGmsolListedMarketPrices(rawMarketsInfoData, tokensData);
 
+  const tokensWithBalances = useMemo(
+    () =>
+      tokensData &&
+      Object.fromEntries(
+        Object.entries(tokensData).map(([address, token]) => [
+          address,
+          { ...token, balance: balancesData?.[address], walletBalance: balancesData?.[address] },
+        ])
+      ),
+    [tokensData, balancesData]
+  );
+
   return {
-    tokensData,
+    tokensData: tokensWithBalances,
     pricesUpdatedAt: isExpired ? undefined : pricesUpdatedAt,
     isGmxAccountBalancesLoaded: false,
-    isWalletBalancesLoaded: false,
-    isBalancesLoaded: false,
+    isWalletBalancesLoaded: balancesData !== undefined,
+    isBalancesLoaded: balancesData !== undefined,
     error,
     isUnavailable: Boolean(error) || isExpired || isIncomplete || (receivedAt !== undefined && !tokensData),
   };
