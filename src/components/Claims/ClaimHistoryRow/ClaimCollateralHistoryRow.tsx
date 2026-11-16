@@ -14,7 +14,8 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "components/Tooltip/TooltipBlocks";
 
 import NewLink20ReactComponent from "img/ic_new_link_20.svg?react";
 
@@ -59,15 +60,14 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
   const formattedTimestamp = useMemo(() => formatTradeActionTimestamp(claimAction.timestamp), [claimAction.timestamp]);
 
   const renderIsoTimestamp = useCallback(() => {
-    return formatTradeActionTimestampUTC(claimAction.timestamp);
+    return <TooltipRow label="UTC" value={formatTradeActionTimestampUTC(claimAction.timestamp)} />;
   }, [claimAction.timestamp]);
 
   const sizeContent = useMemo(() => {
     const formattedTotalUsd = getFormattedTotalClaimAction(claimAction);
 
     return (
-      <TooltipWithPortal
-        tooltipClassName="ClaimHistoryRow-size-tooltip-portal"
+      <StandardTooltip
         content={<SizeTooltip claimAction={claimAction} />}
         handle={<NumericValue parts={formattedTotalUsd} />}
         handleClassName="numbers"
@@ -87,10 +87,8 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
             <NewLink20ReactComponent />
           </ExternalLink>
         </div>
-        <TooltipWithPortal
-          variant="none"
-          handle={<span className="ClaimHistoryRow-time muted cursor-help">{formattedTimestamp}</span>}
-          tooltipClassName="ClaimHistoryRow-tooltip-portal cursor-help *:cursor-auto"
+        <StandardTooltip
+          handle={<span className="ClaimHistoryRow-time muted">{formattedTimestamp}</span>}
           renderContent={renderIsoTimestamp}
         />
       </TableTd>
@@ -102,18 +100,18 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
 
 function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
   return (
-    <div className="flex flex-col gap-16">
+    <TooltipContent>
       {claimAction.claimItems.map(
         ({ marketInfo: market, longTokenAmount, shortTokenAmount, longTokenAmountUsd, shortTokenAmountUsd }) => {
           const indexName = getMarketIndexName(market);
           const poolName = getMarketPoolName(market);
           return (
-            <div key={market.indexTokenAddress} className="flex flex-col gap-4">
-              <div className="flex items-baseline text-typography-primary">
-                <span>{indexName}</span>
+            <div key={market.indexTokenAddress} className="flex flex-col gap-2">
+              <TooltipTitle>
+                {indexName}
                 <span className="subtext">[{poolName}]</span>
-              </div>
-              <div>
+              </TooltipTitle>
+              <TooltipText>
                 {longTokenAmount > 0 && (
                   <div>
                     <AmountWithUsdBalance
@@ -136,11 +134,11 @@ function SizeTooltip({ claimAction }: { claimAction: ClaimCollateralAction }) {
                     />
                   </div>
                 )}
-              </div>
+              </TooltipText>
             </div>
           );
         }
       )}
-    </div>
+    </TooltipContent>
   );
 }

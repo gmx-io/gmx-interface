@@ -67,9 +67,11 @@ import {
 import { selectShowDebugValues } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { paySourceToTokenBalanceType } from "domain/multichain/paySourceToTokenBalanceType";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { getExpressExecutionFeeAmount, getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import type { GmPaySource } from "domain/synthetics/markets/types";
 import {
   getAvailableUsdLiquidityForCollateral,
   getGlvOrMarketAddress,
@@ -87,6 +89,7 @@ import { formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useAttentionHighlight } from "lib/useAttentionHighlight";
 import { switchNetwork } from "lib/wallets";
+import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, type AnyChainId, type GmxAccountPseudoChainId } from "sdk/configs/chains";
 import { getRelayerFeeToken } from "sdk/configs/express";
 import { MARKETS } from "sdk/configs/markets";
@@ -109,7 +112,7 @@ import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainMarketTokenSelector } from "components/TokenSelector/MultichainMarketTokenSelector";
 import { MultichainTokenSelectorForLp } from "components/TokenSelector/MultichainTokenSelectorForLp";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { GmSwapBoxPoolRow } from "../GmSwapBoxPoolRow";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
@@ -129,7 +132,8 @@ import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
 import { useUpdateTokens } from "./useUpdateTokens";
 
 export function GmSwapBoxDepositWithdrawal() {
-  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
+  const { shouldDisableValidationForTesting, expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } =
+    useSettings();
   const { chainId, srcChainId } = useChainId();
 
   const gasLimits = useGasLimits(chainId);
@@ -603,6 +607,22 @@ export function GmSwapBoxDepositWithdrawal() {
     [setFirstTokenAddress, glvInfo, setSelectedMarketAddressForGlv]
   );
 
+  const { canSignTypedData } = useWalletCanSignTypedData();
+
+  const handleSelectPaySource = useCallback(
+    (newPaySource: GmPaySource) => {
+      // GMX Account balance can only be spent via Express, Classic would never get a network fee.
+      // Express stays off for wallets that can't sign messages, so the toast would be wrong there
+      if (newPaySource === "gmxAccount" && !expressOrdersEnabled && canSignTypedData) {
+        setExpressOrdersEnabled(true);
+        toastEnableExpress(() => setIsSettingsVisible(true));
+      }
+
+      setPaySource(newPaySource);
+    },
+    [canSignTypedData, expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible, setPaySource]
+  );
+
   const handleSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -654,16 +674,18 @@ export function GmSwapBoxDepositWithdrawal() {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal
+        <StandardTooltip
           content={submitState.errorDescription}
           variant="none"
           position="bottom"
           className="w-full"
           handleClassName="w-full"
           contentClassName="w-full justify-center"
+          isHandlerDisabled={submitState.disabled}
+          shouldPreventDefault={false}
         >
           {btn}
-        </TooltipWithPortal>
+        </StandardTooltip>
       );
     }
 
@@ -716,7 +738,7 @@ export function GmSwapBoxDepositWithdrawal() {
                           }
                         }
 
-                        setPaySource(
+                        handleSelectPaySource(
                           isSourceChain(newSrcChainId, chainId)
                             ? "sourceChain"
                             : isGmxAccount
@@ -844,17 +866,17 @@ export function GmSwapBoxDepositWithdrawal() {
                       paySource={paySource}
                       onSelectTokenAddress={async (newChainId) => {
                         if (newChainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID) {
-                          setPaySource("gmxAccount");
+                          handleSelectPaySource("gmxAccount");
                         } else if (newChainId === chainId) {
                           if (srcChainId !== undefined && account) {
                             await switchNetwork(chainId, true);
                           }
-                          setPaySource("settlementChain");
+                          handleSelectPaySource("settlementChain");
                         } else {
                           if (account) {
                             await switchNetwork(newChainId, true);
                           }
-                          setPaySource("sourceChain");
+                          handleSelectPaySource("sourceChain");
                         }
                       }}
                       marketInfo={glvOrMarketInfo}

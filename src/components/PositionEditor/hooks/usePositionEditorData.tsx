@@ -1,7 +1,11 @@
 import { useMemo } from "react";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useUserReferralInfo,
+  useFeeDiscountFactor,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorDepositMode,
   usePositionEditorPosition,
@@ -25,10 +29,11 @@ import { Options, usePositionEditorFees } from "./usePositionEditorFees";
 export function usePositionEditorData({ operation }: Options) {
   const { isPnlInLeverage } = useSettings();
 
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
 
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
 
   const isDeposit = operation === Operation.Deposit;
 
@@ -81,6 +86,7 @@ export function usePositionEditorData({ operation }: Options) {
         triggerPrice,
         minCollateralUsd,
         userReferralInfo,
+        feeDiscountFactor,
         pendingFeesUsd: totalFeesUsd,
         isPnlInLeverage,
       });
@@ -132,6 +138,7 @@ export function usePositionEditorData({ operation }: Options) {
       marketInfo: position.marketInfo,
       pendingImpactAmount: position.pendingImpactAmount,
       userReferralInfo,
+      feeDiscountFactor,
       pendingFundingFeesUsd: 0n,
       pendingBorrowingFeesUsd: 0n,
       isLong: position.isLong,
@@ -160,5 +167,6 @@ export function usePositionEditorData({ operation }: Options) {
     isPnlInLeverage,
     triggerPrice,
     userReferralInfo,
+    feeDiscountFactor,
   ]);
 }

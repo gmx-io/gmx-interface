@@ -6,6 +6,8 @@ import type { WalletSigner } from "lib/wallets";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { buildSameChainDepositTxn } from "sdk/utils/multichain/api";
 
+export const SAME_CHAIN_DEPOSIT_GAS_LIMIT = 300_000n;
+
 export async function sendSameChainDepositTxn({
   chainId,
   signer,

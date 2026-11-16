@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import { ARBITRUM, AVALANCHE } from "configs/chains";
+import { getNativeToken, getWrappedToken } from "configs/tokens";
 import type { IHttp } from "utils/http/types";
 import { fetchApiMarketsConfig, fetchApiMarketsInfo, fetchApiMarketsValues } from "utils/markets/api";
+import type { RawMarketInfo } from "utils/markets/types";
+import { composeFullMarketsInfoData } from "utils/markets/utils";
+import type { Token } from "utils/tokens/types";
 
 const MARKET_ADDRESS = "0x1111111111111111111111111111111111111111";
 const VIRTUAL_INDEX_TOKEN_ID = "0x2222222222222222222222222222222222222222222222222222222222222222";
@@ -126,6 +131,60 @@ describe("market API validation", () => {
   });
 
   describe("fetchApiMarketsConfig", () => {
+    it("preserves per-market minimums without requiring them from EVM FESOL-52", async () => {
+      for (const field of ["minCollateralUsd", "minPositionSizeUsd"] as const) {
+        for (const value of ["0", "50000000000000000000000000000000", 0, 5]) {
+          const [market] = await fetchApiMarketsConfig({ api: createApi([createMarketConfig({ [field]: value })]) });
+          expect(market[field]).toBe(BigInt(value));
+        }
+        const [evmMarket] = await fetchApiMarketsConfig({ api: createApi([createMarketConfig()]) });
+        expect(evmMarket[field]).toBeUndefined();
+        for (const value of [null, true, -1, "-1", "1.5", "invalid"]) {
+          await expect(
+            fetchApiMarketsConfig({ api: createApi([createMarketConfig({ [field]: value })]) })
+          ).rejects.toThrow(field);
+        }
+      }
+    });
+
+    it("keeps Solana mints and existing EVM native-token hydration FESOL-52", () => {
+      const solanaToken: Token = {
+        address: "So11111111111111111111111111111111111111112",
+        name: "Wrapped SOL",
+        symbol: "WSOL",
+        decimals: 9,
+      };
+      for (const chainId of [ARBITRUM, AVALANCHE, undefined] as const) {
+        const wrappedToken = chainId === undefined ? solanaToken : getWrappedToken(chainId);
+        const indexToken = chainId === undefined ? solanaToken : getNativeToken(chainId);
+        const prices = { minPrice: 1n, maxPrice: 1n };
+        const tokensData = {
+          [wrappedToken.address]: { ...wrappedToken, prices },
+          [indexToken.address]: { ...indexToken, prices },
+        };
+        const rawMarket = {
+          marketTokenAddress: MARKET_ADDRESS,
+          indexTokenAddress: wrappedToken.address,
+          longTokenAddress: wrappedToken.address,
+          shortTokenAddress: wrappedToken.address,
+          minCollateralUsd: 5n,
+          minPositionSizeUsd: 0n,
+        } as RawMarketInfo;
+        const result = composeFullMarketsInfoData({
+          chainId,
+          marketsAddresses: [MARKET_ADDRESS],
+          rawMarketsInfoData: { [MARKET_ADDRESS]: rawMarket },
+          tokensData,
+        });
+        expect(result[MARKET_ADDRESS]).toMatchObject({
+          ...rawMarket,
+          indexToken: tokensData[indexToken.address],
+          longToken: tokensData[wrappedToken.address],
+          shortToken: tokensData[wrappedToken.address],
+        });
+      }
+    });
+
     it("deserializes required v2.2c bigint fields", async () => {
       const result = await fetchApiMarketsConfig({
         api: createApi([createMarketConfig()]),

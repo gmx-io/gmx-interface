@@ -9,7 +9,7 @@ import { formatLeverageParts } from "domain/synthetics/positions";
 import { formatUsdParts } from "lib/numbers";
 
 import { UsdValue } from "components/NumericValue/UsdValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { ExpandableRow } from "../ExpandableRow";
@@ -52,11 +52,9 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams, feeSou
 
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal
+          <StandardTooltip
             handle={<Trans>Margin ({position?.collateralToken?.symbol})</Trans>}
-            position="left-start"
-            variant="iconStroke"
-            content={<Trans>Margin before pending borrow and funding fees</Trans>}
+            content={t`Margin before pending borrow and funding fees`}
           />
         }
         value={

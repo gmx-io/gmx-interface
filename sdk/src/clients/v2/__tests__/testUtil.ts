@@ -31,10 +31,10 @@ const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "rel
 const PLACED_STATUSES = new Set([...TERMINAL_STATUSES, "created"]);
 export const PLACED_OK_STATUSES = ["created", "executed"];
 const ORDER_PREPARE_PATHS = new Set([
-  "/v1/orders/txns/prepare",
-  "/v1/orders/txns/edit/prepare",
-  "/v1/orders/txns/cancel/prepare",
-  "/v1/orders/txns/collateral/prepare",
+  "/v2/orders/txns/prepare",
+  "/v2/orders/txns/edit/prepare",
+  "/v2/orders/txns/cancel/prepare",
+  "/v2/orders/txns/collateral/prepare",
 ]);
 
 export type RecordedOrderPrepareRequest =
@@ -62,7 +62,7 @@ export class RecordingApi implements IHttp {
   postJson<TResult>(path: string, body: unknown, opts?: { transform?: (result: any) => TResult }): Promise<TResult> {
     if (ORDER_PREPARE_PATHS.has(path)) {
       this.orderPrepareRequests.push(body as RecordedOrderPrepareRequest);
-    } else if (path === "/v1/orders/txns/submit") {
+    } else if (path === "/v2/orders/txns/submit") {
       this.orderSubmitRequests.push(body as SubmitOrderRequest);
     }
 
@@ -102,14 +102,14 @@ export class ScriptedOrderApi implements IHttp {
   }
 
   postJson<TResult>(path: string, body: unknown, opts?: { transform?: (result: any) => TResult }): Promise<TResult> {
-    if (path === "/v1/orders/txns/prepare") {
+    if (path === "/v2/orders/txns/prepare") {
       this.prepareRequests.push(body as PrepareOrderRequest);
       return Promise.resolve(
         opts?.transform ? opts.transform(this.prepareResponse) : (this.prepareResponse as TResult)
       );
     }
 
-    if (path === "/v1/orders/txns/submit") {
+    if (path === "/v2/orders/txns/submit") {
       this.submitRequests.push(body as SubmitOrderRequest);
       const response = this.submitResponses.shift();
       if (!response) {
@@ -118,7 +118,7 @@ export class ScriptedOrderApi implements IHttp {
       return Promise.resolve(response as TResult);
     }
 
-    if (path === "/v1/subaccounts/status") {
+    if (path === "/v2/subaccounts/status") {
       this.subaccountStatusRequests.push(body as SubaccountStatusRequest);
       const response = this.subaccountStatusResponses.shift();
       if (!response) {

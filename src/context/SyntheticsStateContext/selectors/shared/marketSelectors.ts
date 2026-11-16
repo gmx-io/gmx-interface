@@ -17,9 +17,9 @@ export const selectChartToken = createSelector((q) => {
   const chainId = q(selectChainId);
 
   try {
-    const toToken = getToken(chainId, toTokenAddress);
-    const chartToken = toToken;
     const tokensData = q(selectTokensData);
+    // The SDK token config has no Solana mints; the network's TokensData carries them.
+    const chartToken = tokensData?.[toTokenAddress] ?? getToken(chainId, toTokenAddress);
 
     const symbol = chartToken.symbol;
     const tokenData = getTokenData(tokensData, chartToken?.address);
@@ -34,7 +34,7 @@ export const selectChartToken = createSelector((q) => {
  * Returns 1 if swap or no visual multiplier
  */
 export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
-  const { symbol } = q(selectChartToken);
+  const { chartToken, symbol } = q(selectChartToken);
   const { isSwap } = q(selectTradeboxTradeFlags);
 
   if (!symbol) {
@@ -42,7 +42,7 @@ export const selectSelectedMarketVisualMultiplier = createSelector((q) => {
   }
 
   const chainId = q(selectChainId);
-  const token = getTokenBySymbolSafe(chainId, symbol);
+  const token = chartToken ?? getTokenBySymbolSafe(chainId, symbol);
 
   if (!token) {
     return 1;

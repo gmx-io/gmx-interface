@@ -115,7 +115,6 @@ import {
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
@@ -125,9 +124,11 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
@@ -622,7 +623,6 @@ export function PositionSeller() {
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
-      swapPath: params?.orderPayload.addresses.swapPath,
       executionFee,
       orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
@@ -647,6 +647,7 @@ export function PositionSeller() {
       expressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: srcChainId !== undefined,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -920,13 +921,17 @@ export function PositionSeller() {
   const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
 
   const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={keepLeverageText}
       content={
-        <Trans>
-          Position exceeds max allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-        </Trans>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Position exceeds max allowed leverage.</Trans>
+          </TooltipText>
+          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+            <Trans>Read more</Trans>
+          </TooltipLink>
+        </TooltipContent>
       }
     />
   ) : (
@@ -949,7 +954,7 @@ export function PositionSeller() {
         shouldHidePnlPercentage ? (
           <ValueTransition
             from={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={<DeltaUsdValue deltaUsd={position.pnl} percentage={position.pnlPercentage} hidePercentage />}
                 content={
                   <span className={position.pnl > 0n ? "text-green-500" : "text-red-500"}>
@@ -959,7 +964,7 @@ export function PositionSeller() {
               />
             }
             to={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={
                   <DeltaUsdValue
                     deltaUsd={nextPositionValues?.nextPnl}
@@ -1293,6 +1298,8 @@ export function PositionSeller() {
                 )}
 
                 <PositionSellerPriceImpactFeesRow />
+
+                <FundingPayoutRow fundingPayout={decreaseAmounts?.fundingPayout} marketInfo={position?.marketInfo} />
 
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}
