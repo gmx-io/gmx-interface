@@ -67,7 +67,7 @@ export function ShareReferralCardModal({
       ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCodeLabel}`
       : "";
     if (isSolana) {
-      return `Save ${traderDiscountPercentageLabel} on every trade on GMX Solana.${discountsText}`;
+      return `Save ${traderDiscountPercentageLabel} on every leverage trade on GMX Solana.${discountsText}`;
     }
     return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
   }, [traderDiscountPercentageLabel, showDiscountsLine, totalDiscountsFormatted, referralCodeLabel, isSolana]);
@@ -256,7 +256,7 @@ function ScaledReferralCard({
             <h3 className="text-32 font-medium leading-1 text-white">
               {isSolana ? (
                 <Trans>
-                  <AnimatedGradientText>Save {traderDiscountPercentageLabel}</AnimatedGradientText> on every
+                  <AnimatedGradientText>Save {traderDiscountPercentageLabel}</AnimatedGradientText> on every leverage
                   <br /> trade on GMX Solana
                 </Trans>
               ) : (

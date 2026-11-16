@@ -32,8 +32,8 @@ export const SOLANA_TRADER_WIZARD_FAQS: FaqItem[] = [
     title: <Trans>Why should I enter a referral code?</Trans>,
     content: (
       <Trans>
-        A referral code gives you a permanent 10% discount on opening and closing fees for every trade you make. It
-        costs you nothing, and the savings add up quickly.
+        A referral code gives you a permanent 10% discount on opening and closing fees for every leverage trade you
+        make. It costs you nothing, and the savings add up quickly.
       </Trans>
     ),
   },
@@ -82,7 +82,7 @@ export const SOLANA_TRADER_POST_WIZARD_FAQS: FaqItem[] = [
     title: <Trans>Which fees get discounted?</Trans>,
     content: (
       <Trans>
-        Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included.
+        Trading fee discounts apply to opening and closing fees for leverage trading. Swap fees are not included.
       </Trans>
     ),
   },

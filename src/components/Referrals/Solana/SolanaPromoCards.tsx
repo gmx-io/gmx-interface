@@ -58,7 +58,7 @@ export function SolanaAffiliatesPromoCard({
       subtitle={
         <Trans>
           Activate someone's referral code to receive a permanent 10% discount on all opening and closing{" "}
-          <br className="max-[1257px]:hidden" /> fees. Your savings apply automatically on every trade.{" "}
+          <br className="max-[1257px]:hidden" /> fees. Your savings apply automatically on every leverage trade.{" "}
           <ExternalLink href={REFERRALS_DOCS_URL} variant="icon-arrow" className="text-blue-300">
             <Trans>Read more</Trans>
           </ExternalLink>

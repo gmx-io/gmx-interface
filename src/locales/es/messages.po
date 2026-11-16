@@ -1183,6 +1183,10 @@ msgstr "en liquidez"
 msgid "Minimum required margin"
 msgstr "Margen mínimo requerido"
 
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "Trading fee discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+msgstr ""
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Trading fees, borrow fees, liquidations, swaps."
 msgstr "Comisiones de operaciones, comisiones de préstamo, liquidaciones, intercambios."
@@ -1302,10 +1306,6 @@ msgstr "TVL en vaults y pools"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "GMX en Solana"
-
-#: src/components/Referrals/Solana/SolanaPromoCards.tsx
-msgid "Activate someone's referral code to receive a permanent 10% discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Read more</1>."
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1831,6 +1831,10 @@ msgstr "Comprar {operationTokenSymbol}"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "Comprar GM: {0}"
+
+#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
+msgid "A referral code gives you a permanent 10% discount on opening and closing fees for every leverage trade you make. It costs you nothing, and the savings add up quickly."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
@@ -4145,10 +4149,6 @@ msgstr "Indicadores AB"
 msgid "Wallet & GMX Account"
 msgstr "Monedero y GMX Account"
 
-#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
-msgid "A referral code gives you a permanent 10% discount on opening and closing fees for every trade you make. It costs you nothing, and the savings add up quickly."
-msgstr ""
-
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Configuración de Tenderly"
@@ -5509,7 +5509,6 @@ msgstr "Lea las reglas"
 msgid "Source chain supports single token only"
 msgstr "La cadena de origen solo admite un único token"
 
-#: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr "Los descuentos por referido se aplican a las comisiones de apertura y cierre de las operaciones con apalancamiento. No se incluyen las comisiones de intercambio."
@@ -10216,6 +10215,10 @@ msgstr "Las órdenes TP/SL se cancelan automáticamente al cerrar la posición. 
 msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
 msgstr "En los pools de USDG, las órdenes límite mantienen USDG. Tus USDC se convierten primero y luego firmas la orden."
 
+#: src/components/Referrals/Solana/SolanaPromoCards.tsx
+msgid "Activate someone's referral code to receive a permanent 10% discount on all opening and closing <0/> fees. Your savings apply automatically on every leverage trade. <1>Read more</1>."
+msgstr ""
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -11276,6 +11279,10 @@ msgstr "Convertir con Paxos · comisión {fee}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "Máximo reservado {directionLabel}"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save {traderDiscountPercentageLabel}</0> on every leverage<1/> trade on GMX Solana"
+msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
@@ -12438,10 +12445,6 @@ msgstr "Contáctenos por el medio que prefiera y le responderemos con su nivel e
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Change network"
 msgstr "Cambiar red"
-
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "<0>Save {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX Solana"
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Requesting unstake..."
