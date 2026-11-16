@@ -14,6 +14,7 @@ import {
 } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "utils/orders/types";
 import {
+  getCollateralPriceAtIndexPrice,
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
@@ -167,9 +168,12 @@ export function getDecreasePositionAmounts(p: {
     values.triggerPrice = triggerPrice;
     values.indexPrice = triggerPrice ?? markPrice;
 
-    values.collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice ?? markPrice
-      : collateralToken.prices.minPrice;
+    values.collateralPrice = getCollateralPriceAtIndexPrice({
+      collateralToken,
+      indexToken,
+      indexPrice: triggerPrice ?? markPrice,
+      isLong,
+    });
 
     values.triggerThresholdType = getOrderThresholdType(orderType, isLong);
   } else {

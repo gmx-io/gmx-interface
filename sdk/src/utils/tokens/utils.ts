@@ -103,6 +103,10 @@ export function getIsEquivalentTokens(token1: Token, token2: Token) {
   return false;
 }
 
+export function getIsTokenTrackingPrice(token: Token, trackedToken: Token) {
+  return token.tracksPriceOf !== undefined && token.tracksPriceOf === (trackedToken.baseSymbol ?? trackedToken.symbol);
+}
+
 export function getTokenData(
   tokensData?: TokensData,
   address?: string,
