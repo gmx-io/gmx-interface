@@ -40,7 +40,7 @@ export function getMultichainFundingToastContent({
         {hasWithdrawals && !hasDeposits && <Trans>Withdrawing from GMX Account...</Trans>}
         {hasDeposits && hasWithdrawals && <Trans>Depositing to and withdrawing from GMX Account...</Trans>}
       </div>
-      {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
+      {Object.keys(multichainFundingPendingIds).map((staticId) => {
         const guid = multichainFundingPendingIds[staticId];
         const item = pendingItems[guid];
         if (!item) {
@@ -58,8 +58,7 @@ export function getMultichainFundingToastContent({
         return (
           <div key={staticId} className="flex items-center justify-between gap-6">
             <div className="text-typography-secondary">
-              {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
-              {array.length > 1 && <> {formattedAmount}</>}
+              {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>} {formattedAmount}
             </div>
             {isLoading && <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />}
             {isSuccess && <CheckCircleIcon className="size-15 shrink-0 text-green-500" />}

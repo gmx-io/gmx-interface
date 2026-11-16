@@ -94,7 +94,7 @@ export function PositionItem(p: Props) {
   const displayedPnlPercentage = savedShowPnlAfterFees
     ? p.position.pnlAfterAllFeesPercentage
     : p.position.pnlPercentage;
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(p.position.marketAddress);
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const chainId = useSelector(selectChainId);

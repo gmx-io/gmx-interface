@@ -1307,6 +1307,10 @@ msgstr "TVL dans les vaults et les pools"
 msgid "GMX on Solana"
 msgstr "GMX sur Solana"
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr "Volume négocié par les traders que vous avez parrainés"
@@ -1429,6 +1433,10 @@ msgstr "Dépôt terminé"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "Modifier le Take-Profit : {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1702,7 +1710,6 @@ msgstr "DATE"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -1994,6 +2001,10 @@ msgstr "Actions"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power share"
 msgstr "Part de la puissance de staking"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -3128,6 +3139,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "Transfert initié"
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "Le montant est inférieur à la limite de retrait. Essayez un montant supérieur à <0>{lowerLimitFormatted}</0>."
@@ -3225,6 +3240,10 @@ msgstr "Chargement des frais de réseau..."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} Long Stop Market"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3367,6 +3386,10 @@ msgstr "Propulsé par notre communauté"
 msgid "Choose:"
 msgstr "Choisissez :"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "Unstaker GMX et esGMX"
@@ -3417,6 +3440,10 @@ msgstr "RANG"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} l'ordre {0} pour"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3762,6 +3789,13 @@ msgstr "Rechercher une adresse"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "Fraîcheur des données"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/Solana/SolanaCreateAffiliateWizard.tsx
@@ -4465,6 +4499,7 @@ msgstr "Facteurs de frais"
 msgid "Funding factor"
 msgstr "Facteur de financement"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4792,6 +4827,10 @@ msgstr "Impact sur le prix réalisé"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "Autres frais réalisés"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -7524,7 +7563,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "Modifier l’ordre Limit Increase : {suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "Aucun ordre ouvert"
 
@@ -8076,6 +8114,14 @@ msgstr "Volume cumulé GMX"
 msgid "Liquidation fee"
 msgstr "Frais de liquidation"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr "Ce portefeuille n'est pas encore déployé sur {0}. Signez à nouveau pour le déployer avec cette action"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "Exposant d'impact d'échange"
@@ -8338,6 +8384,7 @@ msgstr "ParaSwap"
 msgid "Ensures available liquidity."
 msgstr "Garantit la liquidité disponible."
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8657,6 +8704,7 @@ msgstr "{orderText} mis à jour"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "{fromSymbol} ne peut pas payer les frais de réseau pour le moment, les actions GMX Account ne peuvent donc pas être envoyées tant que ce n'est pas possible."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -9030,7 +9078,6 @@ msgstr "Impact actuel : {0}. Ajoutez un tampon de 0.30% pour une meilleure exéc
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Saisissez un code de parrainage pour bénéficier d’une réduction sur les frais de négociation.<0/> Selon le niveau de parrainage, vous pouvez économiser jusqu’à 10 % sur tous les frais<1/> d’ouverture et de clôture."
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9994,10 +10041,6 @@ msgstr "Marge faible après déduction des frais. Déposez davantage pour rédui
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recevoir {profitTokenSymbol} et {collateralTokenSymbol} séparément"
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Le trading sur Solana arrive prochainement."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -12188,6 +12231,10 @@ msgstr "Recevoir les jetons séparément"
 msgid "USD estimate"
 msgstr "Estimation en USD"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "SOLDE DU POOL"
@@ -12327,6 +12374,10 @@ msgstr "L’expéditeur a retiré tous les tokens du vault d’acquisition progr
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens GM et se rééquilibre automatiquement entre les marchés liés. Les deux réinvestissent automatiquement les rendements. Choisissez GM pour une exposition à un seul marché ou GLV pour diversifier entre plusieurs pools."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12941,6 +12992,10 @@ msgstr "Portefeuille"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "Saisir un prix de déclenchement"
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"

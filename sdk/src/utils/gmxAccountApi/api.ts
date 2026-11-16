@@ -130,7 +130,7 @@ export async function prepareCrossChainDeposit(
   ctx: { api: IHttp },
   request: CrossChainDepositPrepareRequest
 ): Promise<CrossChainDepositPrepareResponse> {
-  return ctx.api.postJson<CrossChainDepositPrepareResponse>("/v1/gmx-account/deposit/cross-chain/prepare", request, {
+  return ctx.api.postJson<CrossChainDepositPrepareResponse>("/v2/gmx-account/deposit/cross-chain/prepare", request, {
     transform: parseDepositPrepareResponse,
   });
 }
@@ -170,7 +170,7 @@ export async function prepareCrossChainWithdraw(
 ): Promise<CrossChainWithdrawPrepareResponse> {
   return postJsonPinning(
     ctx.api,
-    "/v1/gmx-account/withdraw/cross-chain/prepare",
+    "/v2/gmx-account/withdraw/cross-chain/prepare",
     request,
     (prepared: CrossChainWithdrawPrepareResponse) => [prepared.requestId],
     { transform: parseWithdrawPrepareResponse }
@@ -184,7 +184,7 @@ export async function submitCrossChainWithdraw(
   return postJsonPinned<CrossChainWithdrawSubmitResponse>(
     ctx.api,
     [request.requestId],
-    "/v1/gmx-account/withdraw/cross-chain/submit",
+    "/v2/gmx-account/withdraw/cross-chain/submit",
     request
   );
 }
@@ -227,7 +227,7 @@ export async function getCrossChainWithdrawStatus(
   return postJsonPinned<CrossChainWithdrawStatusResponse>(
     ctx.api,
     [requestId],
-    "/v1/gmx-account/withdraw/cross-chain/status",
+    "/v2/gmx-account/withdraw/cross-chain/status",
     { requestId }
   );
 }

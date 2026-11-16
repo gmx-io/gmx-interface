@@ -1307,6 +1307,10 @@ msgstr ""
 msgid "GMX on Solana"
 msgstr ""
 
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
 msgstr ""
@@ -1428,6 +1432,10 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
+msgstr ""
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1702,7 +1710,6 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr ""
 
@@ -1993,6 +2000,10 @@ msgstr "[!! Stocks !!]"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power share"
+msgstr ""
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
 msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
@@ -3128,6 +3139,10 @@ msgstr ""
 msgid "Transfer initiated"
 msgstr ""
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr ""
@@ -3224,6 +3239,10 @@ msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -3367,6 +3386,10 @@ msgstr ""
 msgid "Choose:"
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr ""
@@ -3416,6 +3439,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -3761,6 +3788,13 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
+msgstr ""
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
 msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -4465,6 +4499,7 @@ msgstr ""
 msgid "Funding factor"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4792,6 +4827,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "[!! Other realized fees !!]"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -7524,7 +7563,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr ""
 
@@ -8076,6 +8114,14 @@ msgstr ""
 msgid "Liquidation fee"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr ""
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr ""
@@ -8338,6 +8384,7 @@ msgstr ""
 msgid "Ensures available liquidity."
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8657,6 +8704,7 @@ msgstr ""
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr ""
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -9030,7 +9078,6 @@ msgstr ""
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr ""
 
-#: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
@@ -9993,10 +10040,6 @@ msgstr ""
 
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
-msgstr ""
-
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12188,6 +12231,10 @@ msgstr ""
 msgid "USD estimate"
 msgstr ""
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr ""
@@ -12326,6 +12373,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12940,6 +12991,10 @@ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
+msgstr ""
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx

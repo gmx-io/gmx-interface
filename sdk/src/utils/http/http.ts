@@ -2,7 +2,7 @@ import fetch from "cross-fetch";
 
 import { buildUrl } from "utils/buildUrl";
 
-import { IHttp, ServedResult } from "./types";
+import { FetchJsonOptions, IHttp, ServedResult } from "./types";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 
@@ -47,10 +47,7 @@ export class HttpClient implements IHttp {
     private readonly timeoutMs: number = DEFAULT_TIMEOUT_MS
   ) {}
 
-  async fetchJson<TResult>(
-    path: string,
-    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
-  ): Promise<TResult> {
+  async fetchJson<TResult>(path: string, opts?: FetchJsonOptions<TResult>): Promise<TResult> {
     const query = opts?.query
       ? Object.fromEntries(Object.entries(opts.query).filter(([, value]) => value !== undefined && value !== null))
       : undefined;
@@ -79,12 +76,9 @@ export class HttpClient implements IHttp {
       }
 
       const json = await response.json();
-
-      if (opts?.transform) {
-        return opts.transform(json);
-      }
-
-      return json as TResult;
+      const result = opts?.transform ? opts.transform(json) : (json as TResult);
+      opts?.onResponse?.({ headers: response.headers });
+      return result;
     } finally {
       clearTimeout(timeoutId);
     }
