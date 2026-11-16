@@ -79,9 +79,9 @@ function ticker(address: string) {
     tokenAddress: address,
     minPrice: "1000",
     maxPrice: "1000",
-    oracleDecimals: 0,
     tokenSymbol: "",
     updatedAt: 0,
+    timestamp: 0,
   };
 }
 
