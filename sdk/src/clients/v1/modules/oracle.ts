@@ -9,6 +9,8 @@ export type TickersResponse = {
   minPrice: string;
   /** Contract price format: USD * 10^(30 - token decimals) */
   maxPrice: string;
+  /** @deprecated The API never sends this field. A later release deletes it. */
+  oracleDecimals: number;
   tokenSymbol: string;
   tokenAddress: string;
   /** Update time in milliseconds */
