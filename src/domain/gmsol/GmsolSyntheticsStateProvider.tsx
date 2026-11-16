@@ -356,6 +356,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         oracleSettings: undefined,
 
         jitLiquidityData: { jitLiquidityMap: undefined },
+        closedMarkets: undefined,
 
         accountWhitelistsResult: { accountWhitelists: undefined },
         usdgBoostAprResult: { usdgBoostAprResponse: undefined },
