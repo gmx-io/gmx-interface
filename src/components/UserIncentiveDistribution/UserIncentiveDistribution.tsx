@@ -121,15 +121,15 @@ export default function UserIncentiveDistribution() {
                       <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
-                      <TableTh>
+                      <TableTh className="w-[25%]">
                         <Trans>TYPE</Trans>
                       </TableTh>
                     )}
-                    <TableTh className="max-xl:text-right">
+                    <TableTh className="w-[25%] max-xl:text-right">
                       <Trans>AMOUNT</Trans>
                     </TableTh>
                     {!isMobile && (
-                      <TableTh className="text-right">
+                      <TableTh className="w-[25%] text-right">
                         <Trans>TRANSACTION</Trans>
                       </TableTh>
                     )}
