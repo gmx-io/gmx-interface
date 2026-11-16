@@ -33,6 +33,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -696,6 +697,7 @@ function useOrdersControl() {
   const chainId = useSelector(selectChainId) as ContractsChainId;
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeysRaw, setSelectedOrderKeysRaw] = useState<string[]>(EMPTY_ARRAY);
@@ -724,8 +726,22 @@ function useOrdersControl() {
         helperToast.error(getPageOutdatedError());
         return;
       }
-      if (!signer || !provider) return;
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
+
+      if (solanaOrderActions) {
+        const keys = orders.map((order) => order.key);
+        setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+        try {
+          if (await solanaOrderActions.cancelOrders(orders)) {
+            setSelectedOrderKeysRaw(EMPTY_ARRAY);
+          }
+        } finally {
+          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+        }
+        return;
+      }
+
+      if (!signer || !provider) return;
       const orderKeys = orders.flatMap(getOrderKeys);
       setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
 
@@ -790,6 +806,7 @@ function useOrdersControl() {
       selectedOrderKeys,
       setCanellingOrdersKeys,
       signer,
+      solanaOrderActions,
       srcChainId,
       subaccount,
     ]
@@ -801,9 +818,20 @@ function useOrdersControl() {
         helperToast.error(getPageOutdatedError());
         return;
       }
-      if (!signer || !provider) return;
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
+
+      if (solanaOrderActions) {
+        setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCanellingOrdersKeys((p) => p.filter((e) => e !== key));
+        }
+        return;
+      }
+
+      if (!signer || !provider) return;
 
       const orderKeys = getOrderKeys(order);
 
@@ -870,6 +898,7 @@ function useOrdersControl() {
       provider,
       setCanellingOrdersKeys,
       signer,
+      solanaOrderActions,
       srcChainId,
       subaccount,
     ]
