@@ -65,5 +65,13 @@ export function composeGmsolMarkets(rawMarketsInfoData: RawMarketsInfoData, toke
     tokensData,
   });
 
+  // TODO(TRD-108): gmx-api does not send tradeMath yet; an API value takes precedence once it does.
+  for (const address of Object.keys(marketsInfoData)) {
+    marketsInfoData[address] = {
+      ...marketsInfoData[address],
+      tradeMath: marketsInfoData[address].tradeMath ?? "gmsol",
+    };
+  }
+
   return { marketsAddresses, marketsData, marketsInfoData };
 }
