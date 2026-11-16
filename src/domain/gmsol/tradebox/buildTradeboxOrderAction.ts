@@ -7,11 +7,19 @@ import type { MarketInfo } from "sdk/utils/markets/types";
 import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { applySlippageToPrice } from "sdk/utils/trade/trade";
-import { TradeMode, type IncreasePositionAmounts } from "sdk/utils/trade/types";
+import { TradeMode, type DecreasePositionAmounts, type IncreasePositionAmounts } from "sdk/utils/trade/types";
 
 import type { GmsolCreateOrder, GmsolOrderAction } from "../transactions/types";
 
-export type GmsolTradeboxErrorCode = "market" | "math" | "mode" | "amounts" | "swap" | "tokenProgram" | "tpsl";
+export type GmsolTradeboxErrorCode =
+  | "market"
+  | "math"
+  | "mode"
+  | "amounts"
+  | "swap"
+  | "receive"
+  | "tokenProgram"
+  | "tpsl";
 
 export class GmsolTradeboxError extends Error {
   constructor(readonly code: GmsolTradeboxErrorCode) {
@@ -128,13 +136,12 @@ export function buildGmsolTradeboxTriggerAction({
 }: {
   marketInfo: MarketInfo | undefined;
   collateralToken: TokenData | undefined;
-  amounts: import("sdk/utils/trade/types").DecreasePositionAmounts | undefined;
+  amounts: DecreasePositionAmounts | undefined;
   isLong: boolean;
 }): GmsolOrderAction {
-  const market = GMSOL_MARKETS.find((item) => item.marketTokenAddress === marketInfo?.marketTokenAddress);
-  if (!market || !marketInfo || marketInfo.isDisabled) throw new GmsolTradeboxError("market");
-  if (marketInfo.tradeMath !== "gmsol") throw new GmsolTradeboxError("math");
+  const market = getGmsolDecreaseMarket(marketInfo);
   if (
+    !marketInfo ||
     !collateralToken ||
     !amounts ||
     amounts.sizeDeltaUsd <= 0n ||
@@ -144,12 +151,6 @@ export function buildGmsolTradeboxTriggerAction({
     throw new GmsolTradeboxError("amounts");
   if (amounts.triggerOrderType !== OrderType.LimitDecrease && amounts.triggerOrderType !== OrderType.StopLossDecrease)
     throw new GmsolTradeboxError("mode");
-  if (
-    [market.longTokenAddress, market.shortTokenAddress].some(
-      (mint) => GMSOL_TOKENS.find((token) => token.address === mint)?.tokenProgram !== SOLANA_TOKEN_PROGRAM_ID
-    )
-  )
-    throw new GmsolTradeboxError("tokenProgram");
   return {
     type: "create",
     atomic: false,
@@ -177,7 +178,21 @@ export function buildGmsolTradeboxTriggerAction({
   };
 }
 
-function getGmsolDecreaseSwapType(type: DecreasePositionSwapType) {
+/** The listed market a decrease order on an existing position goes to, with the checks the order builder repeats. */
+export function getGmsolDecreaseMarket(marketInfo: MarketInfo | undefined) {
+  const market = GMSOL_MARKETS.find((item) => item.marketTokenAddress === marketInfo?.marketTokenAddress);
+  if (!market || !marketInfo || marketInfo.isDisabled) throw new GmsolTradeboxError("market");
+  if (marketInfo.tradeMath !== "gmsol") throw new GmsolTradeboxError("math");
+  if (
+    [market.longTokenAddress, market.shortTokenAddress].some(
+      (mint) => GMSOL_TOKENS.find((token) => token.address === mint)?.tokenProgram !== SOLANA_TOKEN_PROGRAM_ID
+    )
+  )
+    throw new GmsolTradeboxError("tokenProgram");
+  return market;
+}
+
+export function getGmsolDecreaseSwapType(type: DecreasePositionSwapType) {
   switch (type) {
     case DecreasePositionSwapType.NoSwap:
       return "NoSwap" as const;
