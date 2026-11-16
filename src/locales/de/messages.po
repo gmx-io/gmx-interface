@@ -112,10 +112,6 @@ msgstr "Sichern Sie sich<0/><1>einen besseren Satz</1>"
 msgid "Paxos fee {fee} · ~2–10 min, can be longer"
 msgstr "Paxos-Gebühr {fee} · ~2–10 Min., kann länger dauern"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GT balance:"
-msgstr ""
-
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "Jetzt neu laden"
@@ -634,6 +630,7 @@ msgid "Exports are for record-keeping and tax-software compatibility; they do no
 msgstr "Exporte dienen der Aufzeichnung und der Kompatibilität mit Steuersoftware; sie stellen keine Steuerberatung dar."
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -877,10 +874,6 @@ msgstr "Orderausführungspreis"
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Der Handel auf Solana ist möglicherweise vorübergehend nicht verfügbar. Unser Team arbeitet an der Behebung des Problems."
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Unclaimed GT from staking:"
-msgstr ""
-
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "Aktueller Preiseinfluss des Tauschs: {0}. Fügen Sie für eine bessere Ausführung einen Puffer von 1 % hinzu."
@@ -888,10 +881,6 @@ msgstr "Aktueller Preiseinfluss des Tauschs: {0}. Fügen Sie für eine bessere A
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to Classic Trading"
 msgstr "Zu Classic Trading wechseln"
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GLV:"
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
@@ -3362,7 +3351,6 @@ msgstr "Maximalen Hebel setzen"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Order abbrechen} other {# Orders abbrechen}}"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3561,6 +3549,10 @@ msgstr "Verdienen Sie Belohnungen, indem Sie Ihren Code teilen!"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM-Märkte"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Tickers simulation"
@@ -6901,6 +6893,7 @@ msgstr "Eine eingefrorene Order kann nur von einem autorisierten Keeper ausgefü
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -13422,6 +13415,10 @@ msgstr "Abgebrochen"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics"
 msgstr "GMX Dashboards und Analysen"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"

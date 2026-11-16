@@ -12,8 +12,14 @@ import { Group, LeafRow } from "components/Earn/Portfolio/EarningsOverview/Lifet
 import { EarningValue } from "components/EarningValue/EarningValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipTotal,
+} from "components/Tooltip/TooltipBlocks";
 
 import { SOLANA_GT_DECIMALS } from "./solanaEarnTypes";
 
@@ -58,21 +64,19 @@ function TotalPortfolioValue({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
-        <div className="flex flex-col">
-          <StatsTooltipRow
-            label={<Trans>GM:</Trans>}
-            showDollar={false}
+        <TooltipRows>
+          <TooltipRow
+            label={<Trans>GM</Trans>}
             value={<NumericValue parts={formatUsdExpandedParts(breakdown.gmUsd)} className="numbers" />}
           />
-          <StatsTooltipRow
-            label={<Trans>GLV:</Trans>}
-            showDollar={false}
+          <TooltipRow
+            label={<Trans>GLV</Trans>}
             value={<NumericValue parts={formatUsdExpandedParts(breakdown.glvUsd)} className="numbers" />}
           />
-        </div>
+        </TooltipRows>
       }
     />
   );
@@ -100,21 +104,16 @@ function TotalGtValue({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
-        <div className="flex flex-col">
-          <StatsTooltipRow
-            label={<Trans>GT balance:</Trans>}
-            showDollar={false}
-            value={<span className="numbers">{formatGtAmount(breakdown.balance)}</span>}
+        <TooltipRows>
+          <TooltipRow label={<Trans>GT balance</Trans>} value={formatGtAmount(breakdown.balance)} />
+          <TooltipRow
+            label={<Trans>Unclaimed GT from staking</Trans>}
+            value={formatGtAmount(breakdown.unclaimedFromStaking)}
           />
-          <StatsTooltipRow
-            label={<Trans>Unclaimed GT from staking:</Trans>}
-            showDollar={false}
-            value={<span className="numbers">{formatGtAmount(breakdown.unclaimedFromStaking)}</span>}
-          />
-        </div>
+        </TooltipRows>
       }
     />
   );
@@ -136,10 +135,10 @@ function TotalLifetimeEarnedValue({
   }
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={valueElement}
       content={
-        <div className="flex flex-col gap-8">
+        <TooltipContent>
           <Group title={<Trans>Lifetime GT rewards</Trans>}>
             <LeafRow label={<Trans>GT buybacks</Trans>} usd={breakdown.gtBuybackUsd} />
           </Group>
@@ -149,18 +148,15 @@ function TotalLifetimeEarnedValue({
             <LeafRow label={<Trans>GLV vaults</Trans>} usd={breakdown.glvUsd} />
           </Group>
 
-          <div className="border-t-1/2 border-slate-600" />
-
-          <StatsTooltipRow
+          <TooltipTotal
             label={<Trans>Total</Trans>}
-            showDollar={false}
             value={<UsdValue usd={breakdown.totalUsd} className="numbers" />}
           />
 
-          <span className="text-typography-tertiary">
+          <TooltipFootnote>
             <Trans>GM and GLV include markets you no longer hold</Trans>
-          </span>
-        </div>
+          </TooltipFootnote>
+        </TooltipContent>
       }
     />
   );

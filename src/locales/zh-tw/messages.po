@@ -112,10 +112,6 @@ msgstr "鎖定<0/><1>更優費率</1>"
 msgid "Paxos fee {fee} · ~2–10 min, can be longer"
 msgstr "Paxos 手續費 {fee} · 約 2–10 分鐘，可能更久"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GT balance:"
-msgstr ""
-
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "立即重新載入"
@@ -634,6 +630,7 @@ msgid "Exports are for record-keeping and tax-software compatibility; they do no
 msgstr "匯出功能僅用於保存記錄及與稅務軟體相容，並不構成稅務建議。"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -877,10 +874,6 @@ msgstr "訂單成交價格"
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Solana 上的交易可能暫時無法使用。我們的團隊正在解決此問題。"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Unclaimed GT from staking:"
-msgstr ""
-
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "目前兌換影響：{0}。增加 1% 的緩衝以改善成交。"
@@ -888,10 +881,6 @@ msgstr "目前兌換影響：{0}。增加 1% 的緩衝以改善成交。"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to Classic Trading"
 msgstr "切換到 Classic Trading"
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GLV:"
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
@@ -3362,7 +3351,6 @@ msgstr "設定最大槓桿"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {取消訂單} other {取消 # 筆訂單}}"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3561,6 +3549,10 @@ msgstr "分享您的推薦碼即可賺取獎勵！"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 市場"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Tickers simulation"
@@ -6901,6 +6893,7 @@ msgstr "凍結訂單只能由授權 keeper 執行"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -13422,6 +13415,10 @@ msgstr "已取消"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics"
 msgstr "GMX 儀表板與分析"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"

@@ -112,10 +112,6 @@ msgstr "<1>더 나은 요율을</1><0/>확보하십시오"
 msgid "Paxos fee {fee} · ~2–10 min, can be longer"
 msgstr "Paxos 수수료 {fee} · ~2–10분, 더 걸릴 수 있음"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GT balance:"
-msgstr ""
-
 #: src/components/WhatsNewToast/WhatsNewToastContainer.tsx
 msgid "Reload now"
 msgstr "지금 새로고침"
@@ -634,6 +630,7 @@ msgid "Exports are for record-keeping and tax-software compatibility; they do no
 msgstr "내보내기는 기록 보관 및 세금 소프트웨어 호환성을 위한 것이며 세무 조언에 해당하지 않습니다."
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -877,10 +874,6 @@ msgstr "주문 체결가"
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Solana에서 거래가 일시적으로 불가할 수 있습니다. 팀에서 문제 해결을 위해 작업 중입니다."
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "Unclaimed GT from staking:"
-msgstr ""
-
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
 msgstr "현재 스왑 가격 영향: {0}. 더 나은 체결을 위해 1%의 버퍼를 추가하십시오."
@@ -888,10 +881,6 @@ msgstr "현재 스왑 가격 영향: {0}. 더 나은 체결을 위해 1%의 버�
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Switch to Classic Trading"
 msgstr "Classic Trading으로 전환"
-
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
-msgid "GLV:"
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on: {nonTakenNetworkNamesJoined}. Switch networks to register and earn rebates."
@@ -3362,7 +3351,6 @@ msgstr "최대 레버리지 설정"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {주문 취소} other {주문 #건 취소}}"
 
-#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3561,6 +3549,10 @@ msgstr "코드를 공유하여 보상을 받으십시오!"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 마켓"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Tickers simulation"
@@ -6901,6 +6893,7 @@ msgstr "동결된 주문은 승인된 Keeper만 실행할 수 있습니다"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -13422,6 +13415,10 @@ msgstr "취소된"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX dashboards and analytics"
 msgstr "GMX 대시보드 및 분석"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"

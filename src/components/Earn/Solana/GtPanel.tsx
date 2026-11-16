@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -7,7 +7,7 @@ import { EarningsStat, UsdStatValue, UsdText } from "components/Earn/Portfolio/E
 import { EarningValue } from "components/EarningValue/EarningValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
@@ -39,10 +39,10 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
           </EarningsStat>
           <EarningsStat
             label={
-              <TooltipWithPortal
+              <StandardTooltip
                 variant="iconStroke"
                 handle={<Trans>Last buyback</Trans>}
-                content={<Trans>USDC you received for your GT in the last buyback.</Trans>}
+                content={t`USDC you received for your GT in the last buyback.`}
               />
             }
           >
@@ -75,15 +75,9 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
         />
         <SyntheticsInfoRow
           label={
-            <TooltipWithPortal
-              variant="iconStroke"
+            <StandardTooltip
               handle={<Trans>Max sellable value</Trans>}
-              content={
-                <Trans>
-                  Maximum value of your currently sellable GT based on the current minting price, the maximum possible
-                  buyback price. Actual buyback value may be lower.
-                </Trans>
-              }
+              content={t`Maximum value of your currently sellable GT based on the current minting price, the maximum possible buyback price. Actual buyback value may be lower.`}
             />
           }
           value={
@@ -94,15 +88,9 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
         />
         <SyntheticsInfoRow
           label={
-            <TooltipWithPortal
-              variant="iconStroke"
+            <StandardTooltip
               handle={<Trans>Potential GT value</Trans>}
-              content={
-                <Trans>
-                  Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual
-                  realizable value depends on future sellable quota and buyback prices.
-                </Trans>
-              }
+              content={t`Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual realizable value depends on future sellable quota and buyback prices.`}
             />
           }
           value={
