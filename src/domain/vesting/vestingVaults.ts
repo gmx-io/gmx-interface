@@ -27,6 +27,7 @@ export type OrphanVaultData = OrphanVestingData & {
   isDepositPaused: boolean;
   isClaimPaused: boolean;
   freePairAmount: bigint;
+  unbackedPairAmount: bigint;
 };
 
 export type OrphanDepositError = "notOpen" | "closed" | "paused" | "enterAmount" | "maxExceeded" | "insufficientStaked";
@@ -72,8 +73,9 @@ export function parseOrphanVestingInfo({
   };
 }
 
-// RewardRouterV3 first moves sbfGMX held above the stake back to the GMX vault, so only the rest can back a deposit
-export function getFreePairAmount({
+// RewardRouterV3 first moves sbfGMX held above the stake back to the GMX vault, so only the rest can back a deposit,
+// and it reverts every deposit while the wallet can't cover that excess
+export function getWalletPairAmounts({
   walletPairAmount,
   stakedPairAmount,
   gmxVaultPairAmount,
@@ -83,11 +85,15 @@ export function getFreePairAmount({
   stakedPairAmount: bigint;
   gmxVaultPairAmount: bigint;
   orphanPairAmount: bigint;
-}) {
+}): { freePairAmount: bigint; unbackedPairAmount: bigint } {
   const heldAmount = walletPairAmount + gmxVaultPairAmount + orphanPairAmount;
   const excessAmount = heldAmount > stakedPairAmount ? heldAmount - stakedPairAmount : 0n;
 
-  return walletPairAmount > excessAmount ? walletPairAmount - excessAmount : 0n;
+  if (walletPairAmount >= excessAmount) {
+    return { freePairAmount: walletPairAmount - excessAmount, unbackedPairAmount: 0n };
+  }
+
+  return { freePairAmount: 0n, unbackedPairAmount: excessAmount - walletPairAmount };
 }
 
 export function getOrphanDepositState({
@@ -115,7 +121,8 @@ export function getOrphanDepositState({
     data.pairRatioFactor > 0n
       ? (availablePairAmount * RATIO_VESTER_PAIR_RATIO_PRECISION) / data.pairRatioFactor
       : walletEsGmxBalance + unvestedAmount;
-  const maxByPairAmount = maxBackedAmount > unvestedAmount ? maxBackedAmount - unvestedAmount : 0n;
+  const maxByPairAmount =
+    data.unbackedPairAmount === 0n && maxBackedAmount > unvestedAmount ? maxBackedAmount - unvestedAmount : 0n;
   const maxDepositAmount = bigMath.min(walletEsGmxBalance, leftAmount, maxByPairAmount);
 
   const requiredPairAmount = roundUpDivision(
@@ -127,7 +134,8 @@ export function getOrphanDepositState({
       ? requiredPairAmount - data.reservedAmount
       : 0n;
   const stakeShortfallAmount =
-    additionalPairAmount > data.freePairAmount ? additionalPairAmount - data.freePairAmount : 0n;
+    data.unbackedPairAmount +
+    (additionalPairAmount > data.freePairAmount ? additionalPairAmount - data.freePairAmount : 0n);
 
   let error: OrphanDepositError | undefined;
 

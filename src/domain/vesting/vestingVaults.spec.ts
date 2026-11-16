@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  getFreePairAmount,
   getOrphanDepositState,
   getVisibleVestVaults,
+  getWalletPairAmounts,
   type OrphanVaultData,
   parseOrphanVestingInfo,
 } from "./vestingVaults";
@@ -75,7 +75,7 @@ describe("getVisibleVestVaults", () => {
   });
 });
 
-describe("getFreePairAmount", () => {
+describe("getWalletPairAmounts", () => {
   it.each([
     {
       name: "all wallet sbfGMX is backed by the stake",
@@ -83,7 +83,8 @@ describe("getFreePairAmount", () => {
       staked: 6n,
       gmxVault: 0n,
       orphan: 0n,
-      expected: 6n,
+      free: 6n,
+      unbacked: 0n,
     },
     {
       name: "the GMX vault reserve is synced back first",
@@ -91,18 +92,27 @@ describe("getFreePairAmount", () => {
       staked: 12n,
       gmxVault: 5n,
       orphan: 0n,
-      expected: 7n,
+      free: 7n,
+      unbacked: 0n,
     },
-    { name: "the excess is larger than the wallet", wallet: 2n, staked: 1n, gmxVault: 4n, orphan: 0n, expected: 0n },
-  ])("$name", ({ wallet, staked, gmxVault, orphan, expected }) => {
+    {
+      name: "the excess is larger than the wallet",
+      wallet: 2n,
+      staked: 1n,
+      gmxVault: 4n,
+      orphan: 0n,
+      free: 0n,
+      unbacked: 3n,
+    },
+  ])("$name", ({ wallet, staked, gmxVault, orphan, free, unbacked }) => {
     expect(
-      getFreePairAmount({
+      getWalletPairAmounts({
         walletPairAmount: wallet * UNIT,
         stakedPairAmount: staked * UNIT,
         gmxVaultPairAmount: gmxVault * UNIT,
         orphanPairAmount: orphan * UNIT,
       })
-    ).toBe(expected * UNIT);
+    ).toEqual({ freePairAmount: free * UNIT, unbackedPairAmount: unbacked * UNIT });
   });
 });
 
@@ -114,7 +124,9 @@ describe("getOrphanDepositState", () => {
     isClaimPaused: false,
     // 6.573 sbfGMX backs at most 0.6573 esGMX at 10:1
     freePairAmount: 6_573n * 10n ** 15n,
+    unbackedPairAmount: 0n,
   };
+  const unbackedVault: OrphanVaultData = { ...openVault, freePairAmount: 0n, unbackedPairAmount: 2n * UNIT };
   const NOW = 1_800_000_000n;
 
   it.each([
@@ -135,10 +147,33 @@ describe("getOrphanDepositState", () => {
     { name: "more than the eligible amount", data: openVault, amount: 2n * UNIT, error: "maxExceeded" },
     { name: "not enough staked tokens", data: openVault, amount: UNIT, error: "insufficientStaked", shortfall: 3_427n },
     { name: "within the staked tokens", data: openVault, amount: 6_573n * 10n ** 14n, error: undefined, shortfall: 0n },
-  ])("$name", ({ data, amount, error, shortfall }) => {
+    {
+      name: "the GMX vault excess over the wallet adds to the stake shortfall",
+      data: unbackedVault,
+      amount: UNIT / 10n,
+      error: "insufficientStaked",
+      shortfall: 3_000n,
+      max: 0n,
+    },
+    {
+      // half of the session has vested, so the kept reserve already covers the new amount
+      name: "the GMX vault excess over the wallet blocks a deposit the reserve covers",
+      data: {
+        ...unbackedVault,
+        usedAmount: UNIT / 2n,
+        depositedAmount: UNIT / 2n,
+        convertedAmount: UNIT / 4n,
+        reservedAmount: 5n * UNIT,
+      },
+      amount: UNIT / 10n,
+      error: "insufficientStaked",
+      shortfall: 2_000n,
+      max: 0n,
+    },
+  ])("$name", ({ data, amount, error, shortfall, max = 6_573n * 10n ** 14n }) => {
     const state = getOrphanDepositState({ data, walletEsGmxBalance: UNIT, depositAmount: amount, now: NOW });
 
-    expect(state.maxDepositAmount).toBe(6_573n * 10n ** 14n);
+    expect(state.maxDepositAmount).toBe(max);
     expect(state.error).toBe(error);
     if (shortfall !== undefined) {
       expect(state.stakeShortfallAmount).toBe(shortfall * 10n ** 15n);
