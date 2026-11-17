@@ -7,6 +7,7 @@ import GMListSkeletonStructure from "./GMListSkeletonStructure";
 import { LeaderboardTopAccountsStructure } from "./LeaderboardTopAccountsStructure";
 import { LeaderboardTopPositionsStructure } from "./LeaderboardTopPositionsStructure";
 import MarketListSkeletonStructure from "./MarketListSkeletonStructure";
+import MarketOrderExecutionSkeletonStructure from "./MarketOrderExecutionSkeletonStructure";
 import TradesHistorySkeletonStructure from "./TradesHistorySkeletonStructure";
 
 import "react-loading-skeleton/dist/skeleton.css";
@@ -61,6 +62,10 @@ export function TopPositionsSkeleton(props: SkeletonProps<typeof LeaderboardTopP
 
 export function TradesHistorySkeleton(props: SkeletonProps<typeof TradesHistorySkeletonStructure>) {
   return <TableListSkeleton {...props} Structure={TradesHistorySkeletonStructure} />;
+}
+
+export function MarketOrderExecutionSkeleton(props: SkeletonProps<typeof MarketOrderExecutionSkeletonStructure>) {
+  return <TableListSkeleton {...props} Structure={MarketOrderExecutionSkeletonStructure} />;
 }
 
 export function ClaimsHistorySkeleton(props: SkeletonProps<typeof ClaimsHistorySkeletonStructure>) {

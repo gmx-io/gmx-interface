@@ -1,0 +1,219 @@
+.TradingCosts {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  text-align: left;
+}
+
+.TradingCosts-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1.6rem;
+
+  h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    line-height: 1.2;
+  }
+
+  p {
+    margin: 0.4rem 0 0;
+    color: var(--color-slate-100);
+    font-size: 1.3rem;
+  }
+}
+
+.TradingCosts-provider {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-slate-600);
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.2rem;
+  color: var(--color-slate-100);
+  font-size: 1.3rem;
+  white-space: nowrap;
+}
+
+.TradingCosts-controls {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  padding: 1.2rem;
+  background: var(--color-slate-900);
+
+  label {
+    display: flex;
+    flex: 0 0 14rem;
+    flex-direction: column;
+    gap: 0.6rem;
+    min-width: 0;
+    color: var(--color-slate-100);
+    font-size: 1.2rem;
+  }
+
+  .TradingCosts-holdingPeriodDropdown {
+    flex: 0 0 10rem;
+    min-width: 0;
+  }
+}
+
+.TradingCosts-search {
+  flex: 1 1 24rem;
+  max-width: 36rem;
+}
+
+.TradingCosts-input {
+  height: 3.2rem;
+  width: 100%;
+  border: 1px solid var(--color-slate-600);
+  border-radius: 0.4rem;
+  background: var(--color-slate-800);
+  padding: 0.6rem 0.8rem;
+  font-size: 1.3rem;
+}
+
+.TradingCosts-sideTabs {
+  flex: 0 0 14rem;
+  height: 3.2rem;
+  align-items: center;
+}
+
+.TradingCosts-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36rem;
+  gap: 1.6rem;
+  align-items: start;
+}
+
+.TradingCosts-tableWrap {
+  min-width: 0;
+  overflow-x: auto;
+
+  table {
+    min-width: 94rem;
+  }
+
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
+
+.TradingCosts-empty {
+  padding: 2rem;
+  background: var(--color-slate-900);
+  color: var(--color-slate-100);
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.TradingCosts-details {
+  border-left: 1px solid var(--color-slate-600);
+  padding-left: 1.6rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    line-height: 1.3;
+  }
+
+  p {
+    color: var(--color-slate-100);
+  }
+}
+
+.TradingCosts-detailTitle {
+  margin-top: 0.8rem;
+  color: var(--color-white);
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.TradingCosts-detailSection {
+  margin-top: 1.6rem;
+
+  h3 {
+    margin: 0 0 0.8rem;
+    color: var(--color-slate-100);
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+}
+
+.TradingCosts-detailRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--color-slate-700);
+  color: var(--color-slate-100);
+  font-size: 1.2rem;
+
+  span:last-child {
+    color: var(--color-white);
+    text-align: right;
+  }
+}
+
+.TradingCosts-breakdown {
+  margin-top: 1.6rem;
+
+  h3 {
+    margin: 0 0 0.8rem;
+    color: var(--color-slate-100);
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  ul {
+    margin: 0.8rem 0 0;
+    padding-left: 1.8rem;
+    color: var(--color-yellow-300);
+    font-size: 1.2rem;
+  }
+}
+
+.TradingCosts-breakdownRow,
+.TradingCosts-breakdownTotal {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-slate-700);
+  color: var(--color-slate-100);
+  font-size: 1.3rem;
+}
+
+.TradingCosts-breakdownTotal {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+@media screen and (max-width: 1100px) {
+  .TradingCosts-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .TradingCosts-details {
+    border-left: 0;
+    border-top: 1px solid var(--color-slate-600);
+    padding-top: 1.6rem;
+    padding-left: 0;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .TradingCosts-header {
+    flex-direction: column;
+  }
+
+  .TradingCosts-provider,
+  .TradingCosts-search,
+  .TradingCosts-controls label,
+  .TradingCosts-holdingPeriodDropdown,
+  .TradingCosts-sideTabs {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}

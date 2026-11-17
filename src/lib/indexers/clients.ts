@@ -15,6 +15,7 @@ const avalancheSyntheticsStatsClient = createClient(AVALANCHE, "syntheticsStats"
 const avalancheFujiSyntheticsStatsClient = createClient(AVALANCHE_FUJI, "syntheticsStats");
 const megaethSyntheticsStatsClient = createClient(MEGAETH, "syntheticsStats");
 const arbitrumSubsquidClient = createClient(ARBITRUM, "subsquid");
+const arbitrumMarketOrderExecutionClient = createClient(ARBITRUM, "marketOrderExecution");
 const avalancheSubsquidClient = createClient(AVALANCHE, "subsquid");
 const avalancheFujiSubsquidClient = createClient(AVALANCHE_FUJI, "subsquid");
 const arbitrumSepoliaSubsquidClient = createClient(ARBITRUM_SEPOLIA, "subsquid");
@@ -70,6 +71,10 @@ export function getSubsquidGraphClient(chainId: number) {
   }
 
   return null;
+}
+
+export function getMarketOrderExecutionGraphClient(chainId: number) {
+  return chainId === ARBITRUM ? arbitrumMarketOrderExecutionClient : null;
 }
 
 export function getReferralsGraphClient(chainId: number) {

@@ -177,6 +177,11 @@ msgstr "Genehmigung unterzeichnet"
 msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr "Sie können auf GMX isolierte Positionen mit Ihrem GMX Account eröffnen."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation to execution"
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "Muss ich in jedem Netzwerk Codes erstellen?"
@@ -192,6 +197,10 @@ msgstr "<0>Multichain</0><1>MegaETH-Unterstützung</1><2>Just-in-time-Liquiditä
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
 msgstr "TWAP-Swap erstellen"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load order execution stats"
+msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Rewards paused"
@@ -368,6 +377,16 @@ msgstr "App öffnen"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Virtueller Bestand für Positionen"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Cancelled / frozen"
+msgstr ""
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Showing first {0} failures out of {1}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Margin per part: {0} (min {1})"
@@ -619,6 +638,10 @@ msgstr "reduzieren"
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, one {# ausstehende Order kann nicht ausgeführt werden.} other {# ausstehende Orders können nicht ausgeführt werden.}}"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Loading events"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Unzureichende Liquidität in allen Pools für BTC/USD"
@@ -667,6 +690,10 @@ msgstr "Krypto"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "Bilderzeugung fehlgeschlagen. Aktualisieren Sie die Seite und versuchen Sie es erneut."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "No failed orders for selected filters"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
@@ -808,6 +835,10 @@ msgstr "Höchster Ertrag"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "Behält {reserve} {symbol} in {source} für zukünftige Express-Gebühren und ~{holdback} {symbol} für die Gebühr dieser Transaktion"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load events"
+msgstr ""
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Includes"
 msgstr "Enthält"
@@ -874,6 +905,10 @@ msgstr "Orderausführungspreis"
 #: src/config/uiFlagEvents.tsx
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Der Handel auf Solana ist möglicherweise vorübergehend nicht verfügbar. Unser Team arbeitet an der Behebung des Problems."
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Perp"
+msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
@@ -1125,6 +1160,10 @@ msgstr "Verfügbar ab"
 msgid "Available liquidity"
 msgstr "Verfügbare Liquidität"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search order categories"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code"
 msgstr "Dieses Konto hat keinen aktiven Empfehlungscode"
@@ -1152,6 +1191,10 @@ msgstr "Erforderliche Mindestmargin"
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Trading fees, borrow fees, liquidations, swaps."
 msgstr "Handelsgebühren, Leihgebühren, Liquidationen, Swaps."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load failure reasons"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -1277,6 +1320,11 @@ msgstr ""
 msgid "Volume traded by your referred traders"
 msgstr "Handelsvolumen Ihrer geworbenen Trader"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search order types"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr "Kann ich jederzeit entstaken oder abheben?"
@@ -1400,9 +1448,17 @@ msgstr "Take-Profit bearbeiten: {suffix}"
 msgid "Could not load open positions"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order: {0}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
 msgstr "Yield Yak Swap"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No matching executions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Vaultka"
@@ -1414,6 +1470,7 @@ msgstr "Vaultka"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1463,6 +1520,10 @@ msgctxt "Amount deposited into the vault"
 msgid "Deposited"
 msgstr "Eingezahlt"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 week"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount reached"
@@ -1483,6 +1544,11 @@ msgstr "Unzureichendes Gas-Guthaben. Zahlen Sie mehr ETH ein."
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
 msgstr "Die Ausführungsgebühr ist für die aktuellen Netzwerkkosten zu niedrig"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution"
+msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1663,6 +1729,7 @@ msgstr "Empfehlungscode wird erstellt..."
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "DATE"
 msgstr "DATUM"
 
@@ -1735,6 +1802,10 @@ msgstr "Unzureichendes Guthaben des Tokens für Gasgebühren in Ihrem GMX Accoun
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
 msgstr "Pausiert bis {reopenTime}"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above execution delay"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -1857,6 +1928,10 @@ msgstr "EREIGNISDATEN"
 msgid "Export claims history"
 msgstr "Forderungsverlauf exportieren"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search sides"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
@@ -1954,6 +2029,10 @@ msgstr "Aktien"
 msgid "Staking power share"
 msgstr "Anteil an der Stakingkraft"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "Ich bin Affiliate"
@@ -2031,6 +2110,10 @@ msgstr "V1-Oberfläche"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How do I know if a code is good?"
 msgstr "Wie erkenne ich, ob ein Code gut ist?"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failure reasons"
+msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
@@ -2361,6 +2444,8 @@ msgid "Acceptable price for the order"
 msgstr "Akzeptabler Preis für die Order"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP Swap"
 msgstr "TWAP-Swap"
 
@@ -2392,6 +2477,10 @@ msgstr "Passives Management"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram-Gruppen"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Market Execution"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -2761,6 +2850,7 @@ msgid "Total value of tokens in GM pools"
 msgstr "Gesamtwert der Token in GM-Pools"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Frozen"
 msgstr "Eingefroren"
 
@@ -2813,6 +2903,10 @@ msgstr "Sofort über {instantLabel}"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "Die bestehende Position befindet sich im WETH-USDC-Pool, aber dieser Pool verfügt nicht über genügend Liquidität für diese Order"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "tx"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
@@ -3026,6 +3120,10 @@ msgstr "Gruppierung"
 msgid "GMX claims CSV"
 msgstr "GMX Claims CSV"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "SIDE"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr "Wechsel zur externen Tauschroute. Versuchen Sie es erneut"
@@ -3040,6 +3138,7 @@ msgstr "Ratenverlauf konnte nicht geladen werden"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Account"
 msgstr "Konto"
 
@@ -3056,6 +3155,10 @@ msgstr "GMX"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer initiated"
 msgstr "Übertragung eingeleitet"
+
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
@@ -3155,6 +3258,10 @@ msgstr "Netzwerkgebühren werden geladen..."
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} Long Stop Market"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
 msgstr "Margin-Einzahlungen „Zum Preis“ nutzen nur {positionCollateralSymbol}. Um mit USDC zu zahlen, <0>verwenden Sie Jetzt</0>."
@@ -3170,6 +3277,10 @@ msgstr "Open-Interest-Reservefaktor Longs"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} of {1} eligible orders"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3239,6 +3350,10 @@ msgctxt "TWAP part status"
 msgid "Frozen"
 msgstr "Eingefroren"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay is measured from order creation to execution."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM-Bridging zu..."
@@ -3257,6 +3372,10 @@ msgstr "Limitpreis unter dem Markpreis festlegen"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
 msgstr "<0>Kein KYC, kein langwieriges Onboarding und keine Einzahlung erforderlich. Alles, was Sie brauchen, ist ein Self-Custody-Wallet:</0><1><2>Verbinden Sie ein beliebiges EVM-Wallet (z. B. MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger usw.)</2><3>Wählen Sie ein unterstütztes Blockchain-Netzwerk, auf dem Sie über Guthaben verfügen</3><4>Beginnen Sie mit dem Handel</4></1><5>Sie können direkt mit Guthaben auf Arbitrum, MegaETH, Avalanche oder Solana handeln oder auf Ihr GMX Account einzahlen, um von jedem unterstützten Multichain-Netzwerk aus zu handeln, einschließlich Ethereum, Base und BSC.</5>"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "COUNT"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
@@ -3312,6 +3431,10 @@ msgstr "Kumulierter PnL"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Pick what fits your stack. Everything's documented."
 msgstr "Wählen Sie, was zu Ihrem Stack passt. Alles ist dokumentiert."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Included"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -3406,7 +3529,11 @@ msgstr "Maximaler Hebel überschritten. Erhöhen Sie die Margin oder reduzieren 
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
-msgstr "Es kann einige Minuten dauern, bis die Änderungen angezeigt werden"
+msgstr "Änderungen können einige Minuten dauern, bis sie angezeigt werden"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Longest execution delay first · server-paginated"
+msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
@@ -3453,6 +3580,7 @@ msgstr "Update verfügbar"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Size"
 msgstr "Größe"
 
@@ -3522,6 +3650,10 @@ msgstr "Tickersimulation"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest"
 msgstr "Positionsgröße überschreitet verfügbares Open Interest"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Executed market orders"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
@@ -3685,6 +3817,13 @@ msgstr "Adresse suchen"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "Datenaktualität"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -3872,6 +4011,8 @@ msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "Transaktion fehlgeschlagen.<0/><1/><2>Anzeigen</2>"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -3935,6 +4076,7 @@ msgid "No assets in your GMX Account"
 msgstr "Keine Vermögenswerte in Ihrem GMX Account"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Order type"
 msgstr "Ordertyp"
 
@@ -4137,6 +4279,10 @@ msgstr "Die Position würde bei der Ausführung sofort liquidiert. Reduzieren Si
 msgid "Claiming affiliate rewards failed"
 msgstr "Einlösen von Partnerbelohnungen fehlgeschlagen"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "ORDER KEY"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "DATA TYPE"
@@ -4235,6 +4381,10 @@ msgstr "Umwandlung"
 msgid "Request cannot be canceled yet. Try again after the cancellation delay."
 msgstr "Die Anfrage kann noch nicht storniert werden. Versuchen Sie es nach der Stornierungsverzögerung erneut."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} with timing data"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "Relayer-Anfrage fehlgeschlagen"
@@ -4271,6 +4421,10 @@ msgstr "TRANSAKTION"
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
 msgstr "Bild kopieren"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Choose a date range of {MAX_QUERY_RANGE_CALENDAR_DAYS} days or less."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -4477,6 +4631,10 @@ msgstr "Gebühren (inkl. Tauschen)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "Exponent (positiv)"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Cancelled and frozen orders grouped by reason"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -4691,6 +4849,10 @@ msgstr "Realisierter Preiseinfluss"
 msgid "Other realized fees"
 msgstr "Sonstige realisierte Gebühren"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
 msgstr "Minten Sie tBTC mit BTC über <0>Threshold</0>"
@@ -4752,6 +4914,10 @@ msgstr "Order storniert"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled."
 msgstr "Einzahlung nicht gefunden. Sie wurde möglicherweise ausgeführt oder storniert."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TRIGGER / ACCEPTABLE"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
@@ -4970,6 +5136,10 @@ msgstr "Abbrechen des TWAP"
 msgid "4-18 places"
 msgstr "Plätze 4-18"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Order type: {0}"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set acceptable price impact"
 msgstr "Akzeptablen Preiseinfluss festlegen"
@@ -5104,6 +5274,10 @@ msgstr "Schritt 2: Erhalten"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "Der genehmigte Betrag ist niedriger als der erforderliche Betrag. Genehmigen Sie erneut oder verringern Sie den Betrag"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Research creation-to-execution delays for market orders"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -5264,6 +5438,10 @@ msgstr "Keine Gebühr · ~2–10 Min., separater Schritt"
 msgid "Sign permit"
 msgstr "Genehmigung signieren"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side: {0}"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
@@ -5313,6 +5491,10 @@ msgstr "Perpetual-Märkte"
 msgid "V1"
 msgstr "V1"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market / order"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Unstake requests are paused. Try again later."
 msgstr "Entstaking-Anfragen sind pausiert. Versuchen Sie es später erneut."
@@ -5338,6 +5520,8 @@ msgstr "{amountText} wird aus der {indexTokenText} Shortposition entnommen..."
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/positions/utils.ts
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Market"
 msgstr "Markt"
 
@@ -5375,6 +5559,10 @@ msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "Unzureichende Bridge-Liquidität nach {networkName}"
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "Ausgeführt"
@@ -5407,6 +5595,10 @@ msgstr "Empfehlungsrabatte gelten für Eröffnungs- und Schließungsgebühren be
 msgid "Nothing can be converted instantly right now."
 msgstr "Derzeit kann nichts sofort umgewandelt werden."
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Showing latest {0} of {1}"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
 msgstr "rPnL nach Gebühren anzeigen"
@@ -5423,6 +5615,10 @@ msgstr "Mehr Details"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "Maximale Gewinngrenze erreicht"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Execution success rate across terminal order events"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. Increase the position's margin or cancel the order."
@@ -5510,6 +5706,10 @@ msgstr "TWAP-Tauschvorgänge nutzen nur die Liquidität der GMX-Pools, die für 
 msgid "Withdrawal to {sourceChainName} failed"
 msgstr "Abhebung nach {sourceChainName} fehlgeschlagen"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Time"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "Empfängeradresse eingeben"
@@ -5592,6 +5792,11 @@ msgstr "Vollständige Positionsschließung"
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "Alle prognostizierten Belohnungen und geschätzten Ausschüttungen sind lediglich bestmögliche Schätzungen. Die tatsächliche Ausschüttung unterliegt der DAO Governance."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order execution analytics."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
 msgstr "Stop-Loss erstellt"
@@ -5647,6 +5852,10 @@ msgstr "in {0}"
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Infrastructure"
 msgstr "Infrastruktur"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Full selected population with creation timestamps"
+msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -5756,6 +5965,7 @@ msgstr "GMX auf Solana (bekannt als GMTrade) wird über eine separate Domain ber
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -5814,6 +6024,10 @@ msgstr "Limit abbrechen"
 #: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "Gas-Token wurde auf {toSymbol} umgestellt, um externes Tausch-Routing zu ermöglichen"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation timestamp available"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5893,6 +6107,14 @@ msgstr "Detaillierte Aufschlüsselung des Preiseinflusses in den Ausführungsdet
 msgid "Sell, then convert"
 msgstr "Erst verkaufen, dann umwandeln"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Swap"
+msgstr ""
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Wallet: {0}"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Market Swap angefordert"
@@ -5904,6 +6126,10 @@ msgstr "Möchten Sie Margin hinzufügen, ohne Ihre Positionsgröße zu erhöhen?
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Reiner {indexSymbol}-Short. Das Exposure ergibt sich ausschließlich aus der Position."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Bucket"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Read more</1>."
@@ -6139,6 +6365,10 @@ msgstr "Shift-Anfrage gesendet"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "Das Verkaufslimit für GM des Pools {0} [{1}] ist erreicht, da Token von Tradern reserviert sind. Wählen Sie einen anderen Pool, reduzieren Sie die Verkaufsgröße oder teilen Sie die Auszahlung auf mehrere Pools auf."
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "No events for this reason"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "Positiver Einflussfaktor"
@@ -6286,6 +6516,10 @@ msgstr "Nettopreiseinfluss (Eröffnung + Schließung)"
 msgid "Existing executable trigger orders"
 msgstr "Bestehende ausführbare Trigger-Orders"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TXN"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
@@ -6385,6 +6619,10 @@ msgstr "Maximaler Long-USD-Betrag des Pools für Einzahlung"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "Nettowert"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Executed orders divided by executed, cancelled, and frozen orders"
+msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6620,6 +6858,7 @@ msgstr "Schritt 1: Verkaufen"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Auto"
 msgstr "Auto"
 
@@ -6686,6 +6925,9 @@ msgstr "Abhebung nicht gefunden. Sie wurde möglicherweise ausgeführt oder stor
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -7316,6 +7558,10 @@ msgstr "Ihre Mittel sind sicher in LayerZero auf der Zielchain. Versuchen Sie di
 msgid "Umami DAO"
 msgstr "Umami DAO"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Auf Avalanche gestakt"
@@ -7561,6 +7807,11 @@ msgstr "Geben Sie oben Hex-Fehlerdaten ein, um sie zu decodieren"
 msgid "Allowed actions"
 msgstr "Erlaubte Aktionen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Filter wallet address"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "Ihr Rabatt ist jetzt aktiv!"
@@ -7583,6 +7834,10 @@ msgstr "Diese Seite ist nur in EVM-Netzwerken verfügbar. Wechseln Sie das Netzw
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "POOL"
 msgstr "POOL"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{pageFrom}-{pageTo} of {totalCount}"
+msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
@@ -7626,6 +7881,8 @@ msgstr "Der Oracle-Preis ist veraltet"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Decrease"
 msgstr "Verringern"
 
@@ -7646,11 +7903,16 @@ msgstr "Ist das ein Förderprogramm? Bekomme ich Token?"
 msgid "Set SL price above mark price"
 msgstr "SL-Preis über dem Markpreis festlegen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Shortest execution delay first · server-paginated"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "TYPE"
 msgstr "TYP"
@@ -7772,6 +8034,10 @@ msgstr "Verleihen und Leihen"
 msgid "GMX governance page"
 msgstr "GMX Governance-Seite"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "6 hours"
+msgstr ""
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Query historical chain data fast"
 msgstr "Historische Chain-Daten schnell abfragen"
@@ -7815,6 +8081,10 @@ msgstr "Hoher Nettopreiseinfluss"
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
 msgstr "Beanspruchen von Belohnungen"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Input"
+msgstr ""
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as active code"
@@ -7891,6 +8161,10 @@ msgstr "Nettowert und PnL nach allen Gebühren anzeigen"
 msgid "GMX cumulative volume"
 msgstr "GMX-Gesamtvolumen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of all orders with timing data"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
@@ -7899,6 +8173,10 @@ msgstr "Liquidationsgebühr"
 #: src/lib/wallets/signing.ts
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "Diese Wallet ist auf {0} noch nicht bereitgestellt. Signieren Sie erneut, um sie mit dieser Aktion bereitzustellen"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8119,6 +8397,10 @@ msgstr "{typeString} Long TWAP"
 msgid "0.0045 WETH remaining in the old 1CT subaccount"
 msgstr "0.0045 WETH verbleiben im alten 1CT-Unterkonto"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Newest first · server-paginated"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "Mindestsicherheit"
@@ -8278,6 +8560,11 @@ msgstr "{updateOrdersCount} TP/SL-Orders werden aktualisiert..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "Ausführungspreis hat den akzeptablen Preis nicht erreicht"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search markets"
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
 msgstr "In welchen Token erhalte ich meine Rückvergütungen?"
@@ -8323,6 +8610,11 @@ msgstr "Renditeoptimierte Vaults, die Liquidität über mehrere GMX-Märkte bere
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "Umwandlungsstatus ist nicht verfügbar"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Decrease"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -8384,6 +8676,10 @@ msgstr "Governance-Benachrichtigungen"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "Niedriges {symbol}-Guthaben. Dieser Betrag lässt nur wenig für künftige Gebühren auf Ihrem GMX Account übrig."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Bucket: {0}"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8521,6 +8817,10 @@ msgstr "Verleihen Sie Ihre Token oder beleihen Sie sie"
 msgid "GMX logo"
 msgstr "GMX Logo"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Whales"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Using Safe? Learn how to add a network"
 msgstr "Nutzen Sie Safe? Erfahren Sie, wie Sie ein Netzwerk hinzufügen"
@@ -8556,6 +8856,11 @@ msgstr "Der Auslösepreis berücksichtigt Tauschgebühren und Preiseinfluss und 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug swaps"
 msgstr "Tauschvorgänge debuggen"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Order execution stats"
+msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -8606,6 +8911,10 @@ msgstr "Reservefaktor Longs"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again."
 msgstr "Ungültige Signatur. Versuchen Sie, die Anfrage erneut zu signieren."
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "order tx"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
@@ -8870,6 +9179,10 @@ msgstr "Ergebnisse unter Tauschen anzeigen"
 msgid "Guaranteed liquidity"
 msgstr "Garantierte Liquidität"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders with timing data"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1-Rabatte"
@@ -8894,6 +9207,10 @@ msgstr "Jetzt"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30T"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "SHARE"
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
@@ -8998,6 +9315,10 @@ msgstr "Die Boost-Rate kann derzeit nicht geladen werden"
 msgid "Order submission failed"
 msgstr "Ordereinreichung fehlgeschlagen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 execution delay"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
 msgstr "One-Click Trading überspringt externe Routen, die den vollen Betrag umwandeln könnten. <0>One-Click Trading deaktivieren</0>."
@@ -9066,6 +9387,10 @@ msgstr "Verfügbar"
 msgid "Last 7 days"
 msgstr "Letzte 7 Tage"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median execution delay"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap profit fee"
 msgstr "Tauschgewinngebühr"
@@ -9080,6 +9405,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Beanspruchung eingereicht"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "Erstellt"
@@ -9091,6 +9417,10 @@ msgstr "Unzureichende Liquidität zum Tauschen der Sicherheit"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding rate"
 msgstr "Finanzierungsrate"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Order Stats"
+msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
@@ -9323,6 +9653,10 @@ msgstr "Der Empfänger hat zuvor noch keine GLP-Token gestaked"
 msgid "Already live"
 msgstr "Bereits live"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Costs comparison"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr "Rückvergütungen beanspruchen"
@@ -9494,6 +9828,10 @@ msgstr "Geben Sie einen gültigen Betrag ein"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "Hebel bei {currentLeverage} beibehalten"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay"
+msgstr ""
+
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
@@ -9521,6 +9859,7 @@ msgstr "Diese Aktion wird aus Ihrem GMX Account bezahlt, daher wird die Gebühr 
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "SIZE"
 msgstr "GRÖSSE"
 
@@ -9554,6 +9893,10 @@ msgstr "Muss ich dem Programm beitreten, um GMX zu integrieren?"
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "Wir werden ein Gespräch mit Ihnen vereinbaren. Als Dankeschön erhalten Sie <0>100 <1/></0> für Ihr Feedback."
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Stop Increase"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM erfolgreich gekauft, aber die Bridge zu Base ist fehlgeschlagen. Ihre Mittel sind in Ihrem GMX Account sicher. Versuchen Sie die Bridge erneut oder gehen Sie zum ETH/USD Pool, um Ihre GM Token abzuheben."
@@ -9569,6 +9912,10 @@ msgstr "Limit Increase"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "Übertragung läuft..."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search buckets"
+msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -9604,6 +9951,10 @@ msgstr "SL-Preis unter dem Limitpreis festlegen"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0} of {1})"
 msgstr "({0} von {1})"
+
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Request unstake"
@@ -9833,6 +10184,10 @@ msgstr "GESAMTRABATTE"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "Einseitige Liquiditätsvaults mit aktivem Hedging und Rebalancing zur Minimierung von Impermanent Loss"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay percentiles"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr "Auslösepreis unter dem Liquidationspreis festlegen"
@@ -9959,6 +10314,10 @@ msgstr "Unzureichende Pool-Liquidität"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0>Das OI von <1>#GMX V2</1> sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Mehr dazu: <4>https://tradao.xyz/#/open-interest</4></3>"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 day"
+msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
@@ -10167,6 +10526,7 @@ msgstr "Wird aus Ihrem GMX Account bezahlt, weil Ihre Wallet nicht genügend {wa
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Copy"
 msgstr "Kopieren"
 
@@ -10289,6 +10649,11 @@ msgstr "Keine Token auf {0} zum Einzahlen"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "Gesamtbetrag zum Beanspruchen"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Increase"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Min receive"
@@ -10610,6 +10975,11 @@ msgstr "~5 Min."
 msgid "New tier:"
 msgstr "Neue Stufe:"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No paired timing data"
+msgstr ""
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "Markt-Delistings"
@@ -10826,6 +11196,10 @@ msgstr "Position schließen"
 msgid "with 100x leverage"
 msgstr "mit 100x Hebel"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "REASON"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "Kein Preiseinfluss. Einzelner Ausführungspreis für das<0/>Erhöhen von Longs oder Verringern von Shorts bei<1/>dieser Größe."
@@ -10837,6 +11211,11 @@ msgstr "Positionen schließen"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals"
 msgstr "Ergebnisse sind unter „Perpetuals“ verfügbar"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Terminal orders"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -10911,6 +11290,10 @@ msgstr "Nicht genügend {tokenSymbol} in Ihrer Wallet für Gas."
 msgid "Withdrawal error"
 msgstr "Auszahlungsfehler"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "ACCOUNT"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "Dezentrale, genehmigungsfreie On-Chain-Börse mit tiefer Liquidität und niedrigen Kosten, live seit 2021"
@@ -10967,6 +11350,12 @@ msgstr "tief liquide Märkte"
 msgid "Receive"
 msgstr "Erhalten"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "ENDPOINT"
@@ -11002,9 +11391,17 @@ msgstr "VAULT"
 msgid "Looping"
 msgstr "Looping"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Unknown reason {0}"
+msgstr ""
+
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Convert with Paxos · fee {fee}"
 msgstr "Mit Paxos umwandeln · Gebühr {fee}"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Parse txn"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
@@ -11013,6 +11410,10 @@ msgstr "Max. reserviert {directionLabel}"
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr "Alle gültigen Codes gewähren Ihnen mindestens 5 % Rabatt. Premiumpartner (Tier 2/3) bieten einen Rabatt von 10 %. Der genaue Rabattsatz wird Ihnen angezeigt, nachdem der Code angewendet wurde."
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
@@ -11100,6 +11501,10 @@ msgstr "Sitzung generiert"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "GMX kaufen"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Enter a valid wallet address."
+msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -11395,6 +11800,10 @@ msgstr "Die Position wäre bei den aktuellen Preisen liquidierbar"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Mit einer Mehrheit von 75,5 % hat GMX LayerZero als Messaging-Partner für die Multichain-Erweiterung ausgewählt! Die Integration bringt GMX:</0><1><2>Die Möglichkeit zur Expansion auf 125+ Chains</2><3>Volles Eigentum an allen Contracts und volle Kontrolle über die Sicherheit</3><4>Schnelle Transfers ohne Slippage</4><5>Praxiserprobte Infrastruktur, der bereits Assets im Wert von Milliarden Dollar und Hunderte von Anwendungen vertrauen... <6>mehr anzeigen</6></5></1>"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Execution cost"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr "Position wird geladen..."
@@ -11513,6 +11922,12 @@ msgstr "Telegram-Account"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Performance and chart data are based on UTC times"
 msgstr "Leistungs- und Diagrammdaten basieren auf UTC-Zeiten"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Success rate"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
@@ -11650,6 +12065,7 @@ msgid "Withdrawal fee"
 msgstr "Abhebungsgebühr"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Market orders"
 msgstr "Market Orders"
 
@@ -11775,6 +12191,9 @@ msgstr "Order kann nicht aktualisiert werden. Der Ordertyp unterstützt keine Ä
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11899,6 +12318,10 @@ msgstr "Token separat erhalten"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "USD estimate"
 msgstr "USD-Schätzung"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12068,6 +12491,8 @@ msgstr "Preiseinflussrabatte beim Schließen können im Tab „Claims“ beanspr
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Increase"
 msgstr "Erhöhen"
 
@@ -12522,6 +12947,11 @@ msgstr "Nur zur Veranschaulichung, basierend auf einer effektiven Gebühr von ~0
 msgid "Starts with the first reward round."
 msgstr "Beginnt mit der ersten Belohnungsrunde."
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Market: {0}"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Paxos zero-fee is no longer available. Review the route options and confirm again."
 msgstr "Paxos gebührenfrei ist nicht mehr verfügbar. Prüfen Sie die Routenoptionen und bestätigen Sie erneut."
@@ -12639,12 +13069,17 @@ msgstr "Optimaler Nutzungsfaktor Long"
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/synthetics/fees/networkFeeSource.ts
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Wallet"
 msgstr "Wallet"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "Auslösepreis eingeben"
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
@@ -12805,6 +13240,7 @@ msgstr "GMX | dezentrale Perpetual-Börse"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
 
@@ -12867,6 +13303,7 @@ msgid "Multicall simulation"
 msgstr "Multicall-Simulation"
 
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Events"
 msgstr "Ereignisse"
 
@@ -13127,6 +13564,8 @@ msgstr "Hoher akzeptabler Preiseinfluss festgelegt. Aktueller Einfluss: {0}."
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Swap"
 msgstr "Tauschen"
 
@@ -13159,6 +13598,7 @@ msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, 
 msgstr "{0} ist von Paxos unterwegs. Es kommt in einem separaten Schritt in Ihrer Wallet an, manchmal in Teilen."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
 msgstr "EREIGNIS"
@@ -13213,6 +13653,10 @@ msgstr "Als CSV herunterladen"
 msgid "Fee discounts up to 25%"
 msgstr "Gebührenrabatte bis zu 25%"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order executions"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "Profitieren Sie von bis zu 100-fachem Hebel und garantierter On-Chain-Liquidität, die nicht von der Orderbuchtiefe abhängig ist"
@@ -13233,9 +13677,17 @@ msgstr "Überwachung der Oracle Keeper"
 msgid "Market not found. May have been removed."
 msgstr "Markt nicht gefunden. Möglicherweise wurde er entfernt."
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 month"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "Neue Größe oder neuen Preis eingeben"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 hour"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Copy your wallet address or scan a QR code"
@@ -13257,6 +13709,7 @@ msgstr "Die maximale Netzwerkgebühr beinhaltet Gebühren für zusätzliche Orde
 msgid "Entry price"
 msgstr "Einstiegspreis"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Cancelled"
 msgstr "Abgebrochen"
@@ -13548,6 +14001,10 @@ msgstr "Jetzt verdienen"
 msgid "{orderText} cancellation failed"
 msgstr "Stornierung von {orderText} fehlgeschlagen"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution analytics are currently available on Arbitrum only."
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "Wie und wann werde ich bezahlt oder erhalte eine Gutschrift?"
@@ -13812,6 +14269,10 @@ msgstr "Gesamt"
 msgid "{ordersText} canceled"
 msgstr "{ordersText} abgebrochen"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -13847,6 +14308,10 @@ msgstr "Ungültige Empfängeradresse"
 msgid "Withdraw submitted"
 msgstr "Abhebung eingereicht"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Perp"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -13864,6 +14329,10 @@ msgstr "Limit"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "TWAP-Tausch-Teil ausführen"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Success rate over time"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your income (at 25%)"
@@ -14145,6 +14614,10 @@ msgstr "Unzureichendes Guthaben"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr "Ab: Block {0} ({1})"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
+msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"

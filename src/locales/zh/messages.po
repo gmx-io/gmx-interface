@@ -177,6 +177,11 @@ msgstr "批准已签名"
 msgid "You can open isolated positions on GMX using your GMX Account."
 msgstr "您可以使用 GMX Account 在 GMX 上开立独立仓位。"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation to execution"
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "我是否需要在每个网络上创建推荐码？"
@@ -192,6 +197,10 @@ msgstr "<0>多链</0><1>MegaETH 支持</1><2>即时流动性</2>"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP Swap"
 msgstr "创建 TWAP 兑换"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load order execution stats"
+msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
 msgid "Rewards paused"
@@ -368,6 +377,16 @@ msgstr "打开应用"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "仓位虚拟库存"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Cancelled / frozen"
+msgstr ""
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Showing first {0} failures out of {1}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Margin per part: {0} (min {1})"
@@ -619,6 +638,10 @@ msgstr "减仓"
 msgid "{ordersCount, plural, one {# pending order can't fill.} other {# pending orders can't fill.}}"
 msgstr "{ordersCount, plural, other {# 个挂单无法成交。}}"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Loading events"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "所有 BTC/USD 池流动性不足"
@@ -667,6 +690,10 @@ msgstr "加密货币"
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Image generation failed. Refresh and try again."
 msgstr "图片生成失败。请刷新后重试。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "No failed orders for selected filters"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Unrealized fee contribution"
@@ -808,6 +835,10 @@ msgstr "到账最多"
 msgid "Keeps {reserve} {symbol} in your {source} for future Express fees and ~{holdback} {symbol} for this transaction's fee"
 msgstr "在{source}中保留 {reserve} {symbol} 用于未来的 Express 费用，并为此交易的费用预留约 {holdback} {symbol}"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load events"
+msgstr ""
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Includes"
 msgstr "包含"
@@ -874,6 +905,10 @@ msgstr "订单成交价格"
 #: src/config/uiFlagEvents.tsx
 msgid "Trading on Solana may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Solana 上的交易可能暂时不可用。我们的团队正在努力解决此问题。"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Perp"
+msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add a 1% buffer for better execution."
@@ -1125,6 +1160,10 @@ msgstr "可用时间"
 msgid "Available liquidity"
 msgstr "可用流动性"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search order categories"
+msgstr ""
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "This account has no active referral code"
 msgstr "该账户没有使用中的推荐码"
@@ -1152,6 +1191,10 @@ msgstr "最低保证金要求"
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Trading fees, borrow fees, liquidations, swaps."
 msgstr "交易费用、借贷费用、清算、兑换。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failed to load failure reasons"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -1277,6 +1320,11 @@ msgstr ""
 msgid "Volume traded by your referred traders"
 msgstr "您邀请的交易者产生的交易量"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search order types"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Can I unstake or withdraw anytime?"
 msgstr "我可以随时解除质押或提取吗？"
@@ -1400,9 +1448,17 @@ msgstr "编辑止盈：{suffix}"
 msgid "Could not load open positions"
 msgstr ""
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order: {0}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
 msgstr "Yield Yak Swap"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No matching executions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Vaultka"
@@ -1414,6 +1470,7 @@ msgstr "Vaultka"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1463,6 +1520,10 @@ msgctxt "Amount deposited into the vault"
 msgid "Deposited"
 msgstr "已存入"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 week"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max pool amount reached"
@@ -1483,6 +1544,11 @@ msgstr "Gas 余额不足。请存入更多 ETH。"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
 msgstr "执行费用低于当前网络成本"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution"
+msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1663,6 +1729,7 @@ msgstr "正在创建推荐码..."
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "DATE"
 msgstr "日期"
 
@@ -1735,6 +1802,10 @@ msgstr "您的 GMX Account 中 Gas 支付代币余额不足，无法支付网络
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
 msgstr "暂停至 {reopenTime}"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders at or above execution delay"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Deposited"
@@ -1857,6 +1928,10 @@ msgstr "事件数据"
 msgid "Export claims history"
 msgstr "导出领取历史记录"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Search sides"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
@@ -1954,6 +2029,10 @@ msgstr "股票"
 msgid "Staking power share"
 msgstr "质押权重占比"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "我是联盟伙伴"
@@ -2031,6 +2110,10 @@ msgstr "V1 界面"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How do I know if a code is good?"
 msgstr "如何判断邀请码是否有效？"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Failure reasons"
+msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
@@ -2361,6 +2444,8 @@ msgid "Acceptable price for the order"
 msgstr "订单的可接受价格"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP Swap"
 msgstr "TWAP 兑换"
 
@@ -2392,6 +2477,10 @@ msgstr "被动管理"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram 群组"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Market Execution"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -2761,6 +2850,7 @@ msgid "Total value of tokens in GM pools"
 msgstr "GM 池中代币的总价值"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Frozen"
 msgstr "已冻结"
 
@@ -2813,6 +2903,10 @@ msgstr "通过 {instantLabel} 即时"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "现有仓位位于 WETH-USDC 池中，但该池的流动性不足以执行此订单"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "tx"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
@@ -3026,6 +3120,10 @@ msgstr "分组"
 msgid "GMX claims CSV"
 msgstr "GMX 领取记录 CSV"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "SIDE"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr "正在切换至外部兑换路径。请重试"
@@ -3040,6 +3138,7 @@ msgstr "无法加载费率历史记录"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/components/TenderlySettings/TenderlySettings.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Account"
 msgstr "账户"
 
@@ -3056,6 +3155,10 @@ msgstr "GMX"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer initiated"
 msgstr "转账已发起"
+
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
@@ -3155,6 +3258,10 @@ msgstr "正在加载网络费用..."
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} 做多止损市价单"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
 msgstr "“按价格”存入保证金仅支持 {positionCollateralSymbol}。如需使用 USDC 支付，请<0>使用“立即”</0>。"
@@ -3170,6 +3277,10 @@ msgstr "做多未平仓量储备因子"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} of {1} eligible orders"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "GMX pools can't fill this swap size. It needs an external route, which isn't available with One-Click Trading. Disable One-Click Trading to proceed."
@@ -3239,6 +3350,10 @@ msgctxt "TWAP part status"
 msgid "Frozen"
 msgstr "已冻结"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay is measured from order creation to execution."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "GM bridging to..."
 msgstr "GM 跨链桥接至..."
@@ -3257,6 +3372,10 @@ msgstr "将限价设为低于标记价格"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>No KYC, no lengthy onboarding, and no deposit required. All you need is a self-custody wallet:</0><1><2>Connect any EVM wallet (such as MetaMask, Rabby, Coinbase Wallet, Trust Wallet, OKX Wallet, Ledger, etc.)</2><3>Select a supported blockchain network where you have funds available</3><4>Start trading</4></1><5>You can trade directly using funds on Arbitrum, MegaETH, Avalanche, or Solana, or deposit to your GMX Account to trade from any supported Multichain network including Ethereum, Base, and BSC.</5>"
 msgstr "<0>无需 KYC、无需冗长的注册流程、无需存入资金。您只需要一个自托管钱包：</0><1><2>连接任意 EVM 钱包（如 MetaMask、Rabby、Coinbase Wallet、Trust Wallet、OKX Wallet、Ledger 等）</2><3>选择一个您有可用资金的受支持区块链网络</3><4>开始交易</4></1><5>您可以直接使用 Arbitrum、MegaETH、Avalanche 或 Solana 上的资金进行交易，也可以存入 GMX Account，从任何受支持的 Multichain 网络（包括 Ethereum、Base 和 BSC）进行交易。</5>"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "COUNT"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
@@ -3312,6 +3431,10 @@ msgstr "累计 PnL"
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Pick what fits your stack. Everything's documented."
 msgstr "选择适合你技术栈的方式，一切都有文档。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Included"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -3408,6 +3531,10 @@ msgstr "已超过最大杠杆。请增加保证金或减小仓位规模。"
 msgid "Changes may take a few minutes to appear"
 msgstr "更改可能需要几分钟才能显示"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Longest execution delay first · server-paginated"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "不包含激励"
@@ -3453,6 +3580,7 @@ msgstr "有可用更新"
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 #: src/components/TradeboxMarginFields/SizeField.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Size"
 msgstr "规模"
 
@@ -3522,6 +3650,10 @@ msgstr "行情模拟"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest"
 msgstr "仓位规模超出可用未平仓量"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Executed market orders"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
@@ -3685,6 +3817,13 @@ msgstr "搜索地址"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "数据新鲜度"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -3872,6 +4011,8 @@ msgid "Transaction failed.<0/><1/><2>View</2>"
 msgstr "交易失败。<0/><1/><2>查看</2>"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Unknown"
 msgstr "未知"
 
@@ -3935,6 +4076,7 @@ msgid "No assets in your GMX Account"
 msgstr "您的 GMX Account 中没有资产"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Order type"
 msgstr "订单类型"
 
@@ -4137,6 +4279,10 @@ msgstr "执行后仓位将立即被清算。请减小规模。"
 msgid "Claiming affiliate rewards failed"
 msgstr "申领联盟奖励失败"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "ORDER KEY"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "DATA TYPE"
@@ -4235,6 +4381,10 @@ msgstr "转换"
 msgid "Request cannot be canceled yet. Try again after the cancellation delay."
 msgstr "请求暂时无法取消。请在取消延迟结束后重试。"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{0} with timing data"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
 msgstr "中继器请求失败"
@@ -4271,6 +4421,10 @@ msgstr "交易"
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy image"
 msgstr "复制图片"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Choose a date range of {MAX_QUERY_RANGE_CALENDAR_DAYS} days or less."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -4477,6 +4631,10 @@ msgstr "费用（含兑换）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "指数（正）"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Cancelled and frozen orders grouped by reason"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -4691,6 +4849,10 @@ msgstr "已实现价格影响"
 msgid "Other realized fees"
 msgstr "其他已实现费用"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
+
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
 msgstr "通过 <0>Threshold</0> 使用 BTC 铸造 tBTC"
@@ -4752,6 +4914,10 @@ msgstr "订单已取消"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled."
 msgstr "未找到存入请求。它可能已被执行或取消。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TRIGGER / ACCEPTABLE"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
@@ -4970,6 +5136,10 @@ msgstr "已取消 TWAP"
 msgid "4-18 places"
 msgstr "第 4-18 名"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Order type: {0}"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Set acceptable price impact"
 msgstr "设置可接受的价格影响"
@@ -5104,6 +5274,10 @@ msgstr "第 2 步：接收"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "已授权数量低于所需数量。请重新授权或减少数量"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Research creation-to-execution delays for market orders"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -5264,6 +5438,10 @@ msgstr "无手续费 · 约 2–10 分钟，单独步骤"
 msgid "Sign permit"
 msgstr "签署许可"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side: {0}"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "{daysConsidered}d earned fees"
@@ -5313,6 +5491,10 @@ msgstr "永续合约市场"
 msgid "V1"
 msgstr "V1"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market / order"
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Unstake requests are paused. Try again later."
 msgstr "解除质押请求已暂停。请稍后重试。"
@@ -5338,6 +5520,8 @@ msgstr "正在从 {indexTokenText} 做空仓位提取 {amountText}..."
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/domain/synthetics/positions/utils.ts
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Market"
 msgstr "市场"
 
@@ -5375,6 +5559,10 @@ msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "到 {networkName} 的跨链桥流动性不足"
 
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Executed"
 msgstr "已执行"
@@ -5407,6 +5595,10 @@ msgstr "推荐折扣适用于杠杆交易的开仓费和平仓费，不包括兑
 msgid "Nothing can be converted instantly right now."
 msgstr "目前无法即时转换任何金额。"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Showing latest {0} of {1}"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL after fees"
 msgstr "显示扣除费用后的 rPnL"
@@ -5423,6 +5615,10 @@ msgstr "更多详情"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "已达到最大利润上限"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Execution success rate across terminal order events"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. Increase the position's margin or cancel the order."
@@ -5510,6 +5706,10 @@ msgstr "TWAP 兑换仅使用 GMX 池流动性，无法满足此规模的订单�
 msgid "Withdrawal to {sourceChainName} failed"
 msgstr "提取到 {sourceChainName} 失败"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Time"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "输入接收方地址"
@@ -5592,6 +5792,11 @@ msgstr "全部平仓"
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "所有预计奖励和预估分配均仅为尽力作出的估算。实际分配取决于 DAO 治理。"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order execution analytics."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
 msgstr "创建止损"
@@ -5647,6 +5852,10 @@ msgstr "在 {0} 中"
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Infrastructure"
 msgstr "基础设施"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Full selected population with creation timestamps"
+msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -5756,6 +5965,7 @@ msgstr "Solana 上的 GMX（又称 GMTrade）由独立域名提供服务"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -5814,6 +6024,10 @@ msgstr "取消限价单"
 #: src/domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap.ts
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "Gas 代币已切换为 {toSymbol}，以启用外部兑换路由"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Creation timestamp available"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5893,6 +6107,14 @@ msgstr "在执行详情中显示详细的价格影响明细：存储影响（增
 msgid "Sell, then convert"
 msgstr "先卖出后转换"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Type: Swap"
+msgstr ""
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Wallet: {0}"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "请求 Market Swap"
@@ -5904,6 +6126,10 @@ msgstr "想要在不增加仓位大小的情况下增加保证金吗？"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "纯 {indexSymbol} 做空。风险敞口仅来自仓位。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Bucket"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Read more</1>."
@@ -6139,6 +6365,10 @@ msgstr "Shift 请求已发送"
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "池内 GM（{0} [{1}]）的可卖出上限已达到，因为代币已预留给交易者。请选择其他池、减少卖出数量，或将提取拆分至多个池。"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "No events for this reason"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "正向影响因子"
@@ -6286,6 +6516,10 @@ msgstr "净价格影响（开仓 + 平仓）"
 msgid "Existing executable trigger orders"
 msgstr "现有可执行触发订单"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TXN"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
@@ -6385,6 +6619,10 @@ msgstr "存入时池做多代币最大 USD"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "净值"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Executed orders divided by executed, cancelled, and frozen orders"
+msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6620,8 +6858,9 @@ msgstr "第 1 步：卖出"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Auto"
-msgstr "自动"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
@@ -6686,6 +6925,9 @@ msgstr "未找到提取请求。它可能已被执行或取消。"
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -7316,6 +7558,10 @@ msgstr "您的资金安全存放在目标链上的 LayerZero 中。请在 LayerZ
 msgid "Umami DAO"
 msgstr "Umami DAO"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Order"
+msgstr ""
+
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Avalanche"
 msgstr "Avalanche 上已质押"
@@ -7561,6 +7807,11 @@ msgstr "在上方输入十六进制错误数据以解码"
 msgid "Allowed actions"
 msgstr "允许的操作"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Filter wallet address"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "您的折扣现已生效！"
@@ -7583,6 +7834,10 @@ msgstr "此页面仅适用于 EVM 网络。请在页面顶部切换网络，或�
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "POOL"
 msgstr "池"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "{pageFrom}-{pageTo} of {totalCount}"
+msgstr ""
 
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 msgid "Voting"
@@ -7626,6 +7881,8 @@ msgstr "Oracle 价格已过期"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Decrease"
 msgstr "减少"
 
@@ -7646,11 +7903,16 @@ msgstr "这是赠款计划吗？我会获得代币吗？"
 msgid "Set SL price above mark price"
 msgstr "将止损价格设为高于标记价格"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Shortest execution delay first · server-paginated"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "TYPE"
 msgstr "类型"
@@ -7772,6 +8034,10 @@ msgstr "借贷"
 msgid "GMX governance page"
 msgstr "GMX 治理页面"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "6 hours"
+msgstr ""
+
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "Query historical chain data fast"
 msgstr "快速查询链上历史数据"
@@ -7815,6 +8081,10 @@ msgstr "净价格影响过高"
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
 msgstr "领取奖励"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Input"
+msgstr ""
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as active code"
@@ -7891,6 +8161,10 @@ msgstr "显示扣除所有费用后的净值和 PnL"
 msgid "GMX cumulative volume"
 msgstr "GMX 累计交易量"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Cumulative share of all orders with timing data"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
@@ -7899,6 +8173,10 @@ msgstr "清算费用"
 #: src/lib/wallets/signing.ts
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "此钱包尚未在 {0} 上部署。请再次签名，以便随此操作一并部署"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8119,6 +8397,10 @@ msgstr "{typeString} 做多 TWAP"
 msgid "0.0045 WETH remaining in the old 1CT subaccount"
 msgstr "旧 1CT 子账户中还剩 0.0045 WETH"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Newest first · server-paginated"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "最低抵押品"
@@ -8278,6 +8560,11 @@ msgstr "正在更新 {updateOrdersCount} 个止盈/止损订单..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "成交价格未达到可接受价格"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search markets"
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
 msgstr "我将以哪些代币收到返佣？"
@@ -8323,6 +8610,11 @@ msgstr "收益优化金库，跨多个 GMX 市场提供流动性"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Conversion status unavailable"
 msgstr "转换状态不可用"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Decrease"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -8384,6 +8676,10 @@ msgstr "治理提醒"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "{symbol} 余额较低。此金额仅为您的 GMX Account 留下少量资金用于支付后续手续费。"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Bucket: {0}"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8521,6 +8817,10 @@ msgstr "借出您的代币或以其为抵押进行借贷"
 msgid "GMX logo"
 msgstr "GMX 标志"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Whales"
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Using Safe? Learn how to add a network"
 msgstr "使用 Safe？了解如何添加网络"
@@ -8556,6 +8856,11 @@ msgstr "触发价格已计入兑换费用和价格影响，确保执行时至少
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug swaps"
 msgstr "调试兑换"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Order execution stats"
+msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Positive funding fees ready to claim.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -8606,6 +8911,10 @@ msgstr "做多储备因子"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again."
 msgstr "签名无效。请重新签署请求。"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "order tx"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
@@ -8870,6 +9179,10 @@ msgstr "在兑换中查看结果"
 msgid "Guaranteed liquidity"
 msgstr "保障流动性"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Orders with timing data"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 返佣"
@@ -8894,6 +9207,10 @@ msgstr "立即"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
 msgstr "30 天"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "SHARE"
+msgstr ""
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
@@ -8998,6 +9315,10 @@ msgstr "目前无法加载加成收益率"
 msgid "Order submission failed"
 msgstr "订单提交失败"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "P95 execution delay"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeboxUsdgConversion.tsx
 msgid "One-Click Trading skips external routes, which may convert the full amount. <0>Disable One-Click Trading</0>."
 msgstr "One-Click Trading 不使用外部路由，而外部路由可能可以转换全部金额。<0>禁用 One-Click Trading</0>。"
@@ -9066,6 +9387,10 @@ msgstr "可用"
 msgid "Last 7 days"
 msgstr "最近7天"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Median execution delay"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap profit fee"
 msgstr "兑换利润费用"
@@ -9080,6 +9405,7 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "领取已提交"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "已创建"
@@ -9091,6 +9417,10 @@ msgstr "流动性不足，无法兑换抵押品"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding rate"
 msgstr "资金费率"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Order Stats"
+msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
@@ -9323,6 +9653,10 @@ msgstr "接收方此前未质押过 GLP 代币"
 msgid "Already live"
 msgstr "已上线"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Costs comparison"
+msgstr ""
+
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr "领取返佣"
@@ -9494,6 +9828,10 @@ msgstr "请输入有效金额"
 msgid "Keep leverage at {currentLeverage}"
 msgstr "保持杠杆为 {currentLeverage}"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay"
+msgstr ""
+
 #: src/lib/dates.ts
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/pnlSummaryBuckets.ts
@@ -9521,6 +9859,7 @@ msgstr "此操作从您的 GMX Account 支付，因此其费用以您的 GMX Acc
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "SIZE"
 msgstr "规模"
 
@@ -9554,6 +9893,10 @@ msgstr "集成必须加入该计划吗？"
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "我们将为您安排一次交流。作为感谢，您将获得 <0>100 <1/></0> 的反馈奖励。"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Stop Increase"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM 买入成功，但跨链桥至 Base 失败。您的资金在 GMX Account 中是安全的。请重试跨链桥操作或前往 ETH/USD 池提取您的 GM 代币。"
@@ -9569,6 +9912,10 @@ msgstr "Limit Increase"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "转账中..."
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Search buckets"
+msgstr ""
 
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -9604,6 +9951,10 @@ msgstr "将 SL 价格设置为低于限价"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0} of {1})"
 msgstr "（占{1}的 {0}）"
+
+#: src/pages/Whales/WhalesMarketPage.tsx
+msgid "Market Whales"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Request unstake"
@@ -9833,6 +10184,10 @@ msgstr "总返佣"
 msgid "Single-sided liquidity vaults with active hedging and rebalancing to minimize impermanent loss"
 msgstr "单边流动性金库，通过主动对冲和再平衡以最小化无常损失"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Execution delay percentiles"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr "将触发价格设置为低于清算价格"
@@ -9959,6 +10314,10 @@ msgstr "池流动性不足"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1> 的 OI 看起来很棒</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>查看更多：<4>https://tradao.xyz/#/open-interest</4></3>"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 day"
+msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
@@ -10167,6 +10526,7 @@ msgstr "由于您的钱包中没有足够的 {walletGasTokenSymbol} 支付费用
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Copy"
 msgstr "复制"
 
@@ -10289,6 +10649,11 @@ msgstr "{0} 上没有可用于存入的代币"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "可领取总额"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Increase"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Min receive"
@@ -10610,6 +10975,11 @@ msgstr "约5分钟"
 msgid "New tier:"
 msgstr "新等级："
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "No paired timing data"
+msgstr ""
+
 #: src/components/DelistingExitAnnouncements/delistingExitAnnouncementsLogic.ts
 msgid "Market delistings"
 msgstr "市场下架"
@@ -10826,6 +11196,10 @@ msgstr "平仓"
 msgid "with 100x leverage"
 msgstr "使用 100x 杠杆"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "REASON"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "无价格影响。在此规模下增加做多<0/>或减少做空仓位的<1/>单一成交价格。"
@@ -10837,6 +11211,11 @@ msgstr "平仓"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Results are available in Perpetuals"
 msgstr "永续合约中有可用结果"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Terminal orders"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -10911,6 +11290,10 @@ msgstr "您钱包中用于 Gas 的 {tokenSymbol} 不足。"
 msgid "Withdrawal error"
 msgstr "提取错误"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "ACCOUNT"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "去中心化、无需许可的链上交易所，具备深度流动性和低成本，自 2021 年上线"
@@ -10967,6 +11350,12 @@ msgstr "深度流动性市场"
 msgid "Receive"
 msgstr "接收"
 
+#: src/pages/Whales/WhalesAccountPage.tsx
+#: src/pages/Whales/WhalesMarketPage.tsx
+#: src/pages/Whales/WhalesPage.tsx
+msgid "Whale Monitor"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "端点"
@@ -11002,9 +11391,17 @@ msgstr "金库"
 msgid "Looping"
 msgstr "循环策略"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Unknown reason {0}"
+msgstr ""
+
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Convert with Paxos · fee {fee}"
 msgstr "通过 Paxos 转换 · 手续费 {fee}"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Parse txn"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
@@ -11013,6 +11410,10 @@ msgstr "最大预留 {directionLabel}"
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr "所有有效代码均可为您提供至少 5% 的折扣。高级推广者（第 2/3 级）可提供 10% 的折扣。应用代码后，您将看到确切的折扣比例。"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Side"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY SHORT"
@@ -11100,6 +11501,10 @@ msgstr "会话已生成"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
 msgstr "买入 GMX"
+
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Enter a valid wallet address."
+msgstr ""
 
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Copy error"
@@ -11395,6 +11800,10 @@ msgstr "按当前价格，仓位将可被清算"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>GMX 以 75.5% 的多数票选择 LayerZero 作为其多链扩展的消息传递合作伙伴！此次集成为 GMX 带来：</0><1><2>扩展至 125+ 条链的能力</2><3>对所有合约及安全性的完全所有权</3><4>快速、零滑点的转账</4><5>久经考验的基础设施，已获数十亿美元资产和数百个应用的信赖... <6>查看更多</6></5></1>"
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Execution cost"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
 msgstr "正在加载仓位..."
@@ -11513,6 +11922,12 @@ msgstr "Telegram 账户"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Performance and chart data are based on UTC times"
 msgstr "绩效和图表数据基于 UTC 时间"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Success rate"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
@@ -11650,6 +12065,7 @@ msgid "Withdrawal fee"
 msgstr "提取费用"
 
 #: src/components/TradeHistory/filters/ActionFilter.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Market orders"
 msgstr "市价订单"
 
@@ -11775,6 +12191,9 @@ msgstr "订单无法更新。该类型不支持修改"
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -11899,6 +12318,10 @@ msgstr "分别接收代币"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "USD estimate"
 msgstr "USD 估算"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12068,6 +12491,8 @@ msgstr "平仓产生的价格影响返还可在\"领取\"标签页中领取。"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Increase"
 msgstr "增加"
 
@@ -12522,6 +12947,11 @@ msgstr "仅供参考，按约 0.05% 的实际费率估算。<0/>实际收益取�
 msgid "Starts with the first reward round."
 msgstr "从第一轮奖励开始。"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Market: {0}"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Paxos zero-fee is no longer available. Review the route options and confirm again."
 msgstr "Paxos 零费用已不可用。请查看路由选项，然后再次确认。"
@@ -12639,12 +13069,17 @@ msgstr "做多最优使用率"
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/synthetics/fees/networkFeeSource.ts
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Wallet"
 msgstr "钱包"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "输入触发价格"
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
@@ -12805,6 +13240,7 @@ msgstr "GMX | 去中心化永续交易所"
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 #: src/pages/AccountDashboard/PerformanceShare.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "No data available"
 msgstr "无可用数据"
 
@@ -12867,6 +13303,7 @@ msgid "Multicall simulation"
 msgstr "Multicall 模拟"
 
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Events"
 msgstr "事件"
 
@@ -13127,6 +13564,8 @@ msgstr "已设置较高的可接受价格影响。当前影响：{0}。"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/orders/utils.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
 msgid "Swap"
 msgstr "兑换"
 
@@ -13159,6 +13598,7 @@ msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, 
 msgstr "{0} 正在从 Paxos 发出。它将在单独步骤中到达您的钱包，有时分批到账。"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
 msgstr "事件"
@@ -13213,6 +13653,10 @@ msgstr "下载为 CSV"
 msgid "Fee discounts up to 25%"
 msgstr "最高 25% 费用折扣"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Could not load market order executions"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "享受高达 100 倍杠杆以及不依赖订单簿深度的链上保证流动性"
@@ -13233,9 +13677,17 @@ msgstr "Oracle keeper 监控"
 msgid "Market not found. May have been removed."
 msgstr "未找到市场。可能已被移除。"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 month"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "输入新规模或价格"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "1 hour"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "Copy your wallet address or scan a QR code"
@@ -13257,6 +13709,7 @@ msgstr "最大网络费用包含附加订单的费用。若未触发并被取消
 msgid "Entry price"
 msgstr "入场价格"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Cancelled"
 msgstr "已取消"
@@ -13548,6 +14001,10 @@ msgstr "开始赚取"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 取消失败"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Market order execution analytics are currently available on Arbitrum only."
+msgstr ""
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "我将如何以及何时获得付款或入账？"
@@ -13812,6 +14269,10 @@ msgstr "累计"
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 已取消"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Load more"
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -13847,6 +14308,10 @@ msgstr "接收地址无效"
 msgid "Withdraw submitted"
 msgstr "提取已提交"
 
+#: src/pages/MarketOrderExecution/MarketOrderExecution.tsx
+msgid "Perp"
+msgstr ""
+
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -13864,6 +14329,10 @@ msgstr "限价"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "执行 TWAP 兑换部分"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "Success rate over time"
+msgstr ""
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Your income (at 25%)"
@@ -14145,6 +14614,10 @@ msgstr "余额不足"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: block {0} ({1})"
 msgstr "起始区块：{0} ({1})"
+
+#: src/pages/Whales/WhalesAccountPage.tsx
+msgid "Account Whale Breakdown"
+msgstr ""
 
 #: landing/src/pages/Builders/RevenueSection/RevenueSection.tsx
 msgid "Referral revenue, built in"

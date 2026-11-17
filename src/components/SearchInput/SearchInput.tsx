@@ -22,6 +22,9 @@ type Props = {
   autoFocus?: boolean;
   qa?: string;
   noBorder?: boolean;
+  ariaLabel?: string;
+  ariaInvalid?: boolean;
+  ariaDescribedBy?: string;
   maxLength?: number;
 };
 
@@ -34,6 +37,9 @@ export default function SearchInput({
   autoFocus,
   qa = "token-search-input",
   noBorder,
+  ariaLabel,
+  ariaInvalid,
+  ariaDescribedBy,
   maxLength,
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
@@ -88,6 +94,9 @@ export default function SearchInput({
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         autoFocus={autoFocus ?? !isSmallerScreen}
+        aria-label={ariaLabel}
+        aria-invalid={ariaInvalid}
+        aria-describedby={ariaDescribedBy}
         maxLength={maxLength}
         className={cx(
           "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 pr-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",

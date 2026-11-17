@@ -37,6 +37,7 @@ export function Sorter(
 
   return (
     <button
+      type="button"
       className={cx("group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
         "text-blue-300": isActive,
       })}
@@ -44,6 +45,7 @@ export function Sorter(
     >
       {props.children}
       <Icon
+        aria-hidden
         className={cx("h-16 w-12", {
           "opacity-0 transition-opacity group-hover/sorter:opacity-100": hideIcon,
         })}
