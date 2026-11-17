@@ -17,6 +17,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectFeeDiscountError,
   selectGasLimits,
   selectGasPrice,
   selectL1ExpressOrderGasReference,
@@ -142,12 +143,12 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
@@ -216,6 +217,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const chainId = useSelector(selectChainId);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+  const feeDiscountError = useSelector(selectFeeDiscountError);
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
@@ -1299,7 +1301,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     </Button>
   );
   const button = submitButtonState.tooltipContent ? (
-    <Tooltip
+    <StandardTooltip
       className="w-full"
       content={submitButtonState.tooltipContent}
       handle={buttonContent}
@@ -1373,7 +1375,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             onChange={onSelectTradeMode}
             qa="trade-mode"
             className="w-full px-12"
-            rightContent={<TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />}
+            rightContent={<TradeInfoIcon tradeType={tradeType} tradePlace="tradebox" />}
             regularOptionClassname="!px-0"
             tabsWrapperClassName="gap-12"
           />
@@ -1479,6 +1481,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             />
           )}
 
+          {feeDiscountError && !isSwap && (
+            <AlertInfoCard hideClose type="warning">
+              <Trans>Could not refresh your fee discount. Fees are estimated without it.</Trans>
+            </AlertInfoCard>
+          )}
+
           {submitButtonState.bannerErrorContent && (
             <AlertInfoCard type="error" hideClose>
               {submitButtonState.bannerErrorContent}
@@ -1578,10 +1586,8 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
         {usdgConversion.isConvertFirst && (
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={t`Steps`}
-                position="left-start"
-                variant="iconStroke"
                 content={
                   <Trans>
                     Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or
@@ -1607,6 +1613,13 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               />
             }
             valueClassName="numbers"
+          />
+        )}
+
+        {(isIncrease || isTrigger) && (
+          <FundingPayoutRow
+            fundingPayout={isIncrease ? increaseAmounts?.fundingPayout : decreaseAmounts?.fundingPayout}
+            marketInfo={marketInfo}
           />
         )}
 
