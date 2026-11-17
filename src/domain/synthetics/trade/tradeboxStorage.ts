@@ -1,4 +1,5 @@
 import type { NetworkId } from "config/chains";
+import { getNetworkFeatures } from "config/features";
 import { getSyntheticsTradeOptionsKey } from "config/localStorage";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
@@ -66,6 +67,18 @@ function getSerializedTradeOptionsKey(networkId: NetworkId) {
   return JSON.stringify(getSyntheticsTradeOptionsKey(networkId));
 }
 
+export function normalizeTradeOptions(
+  networkId: NetworkId,
+  options: StoredTradeOptions,
+  previousOptions?: StoredTradeOptions
+): StoredTradeOptions {
+  if (options.tradeType === TradeType.Swap && !getNetworkFeatures(networkId).swap) {
+    return previousOptions ?? { ...options, tradeType: TradeType.Long, tradeMode: TradeMode.Market };
+  }
+
+  return options;
+}
+
 export function readStoredTradeOptions(networkId: NetworkId): StoredTradeOptions | undefined {
   const raw = localStorage.getItem(getSerializedTradeOptionsKey(networkId));
 
@@ -73,7 +86,12 @@ export function readStoredTradeOptions(networkId: NetworkId): StoredTradeOptions
     return undefined;
   }
 
-  return JSON.parse(raw) as StoredTradeOptions;
+  const saved = JSON.parse(raw) as StoredTradeOptions;
+  const options = normalizeTradeOptions(networkId, saved);
+  if (options !== saved) {
+    writeStoredTradeOptions(networkId, options);
+  }
+  return options;
 }
 
 export function writeStoredTradeOptions(networkId: NetworkId, options: StoredTradeOptions) {
