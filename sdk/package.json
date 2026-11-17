@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "type": "module",
   "repository": {
     "type": "git",
@@ -149,6 +149,9 @@
       ],
       "utils/common": [
         "./build/types/src/utils/common/index.d.ts"
+      ],
+      "utils/errors": [
+        "./build/types/src/utils/errors/index.d.ts"
       ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
@@ -449,6 +452,12 @@
       "import": "./build/esm/src/utils/common/index.js",
       "require": "./build/cjs/src/utils/common/index.js",
       "default": "./build/cjs/src/utils/common/index.js"
+    },
+    "./utils/errors": {
+      "types": "./build/types/src/utils/errors/index.d.ts",
+      "import": "./build/esm/src/utils/errors/index.js",
+      "require": "./build/cjs/src/utils/errors/index.js",
+      "default": "./build/cjs/src/utils/errors/index.js"
     },
     "./utils/types": {
       "types": "./build/types/src/utils/types/index.d.ts",
