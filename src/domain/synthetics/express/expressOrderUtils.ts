@@ -392,6 +392,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature = false,
   relayerFeeTokenAddress,
   relayerFeeAmount,
+  validateBeforeSign,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
@@ -402,6 +403,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
+  validateBeforeSign?: () => void;
 }): Promise<ExpressTxnData> {
   let signature: string;
 
@@ -423,6 +425,7 @@ export async function buildAndSignBridgeOutTxn({
       signer,
       chainId,
       srcChainId,
+      validateBeforeSign,
     });
   }
 
@@ -454,12 +457,14 @@ async function signBridgeOutPayload({
   params,
   chainId,
   srcChainId,
+  validateBeforeSign,
 }: {
   signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
+  validateBeforeSign?: () => void;
 }): Promise<string> {
   const { domain, types, message } = getBridgeOutTypedData({
     chainId,
@@ -469,7 +474,15 @@ async function signBridgeOutPayload({
     account: signer.address,
   });
 
-  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId, relayParams });
+  return signTypedData({
+    signer,
+    domain,
+    types,
+    typedData: message,
+    verificationChainId: chainId,
+    relayParams,
+    validateBeforeSign,
+  });
 }
 
 export async function signSetTraderReferralCode({

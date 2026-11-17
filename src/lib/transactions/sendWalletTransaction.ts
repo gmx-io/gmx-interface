@@ -31,6 +31,7 @@ export async function sendWalletTransaction({
   nonce,
   msg,
   callback,
+  validateBeforeSend,
 }: {
   chainId: number;
   signer: WalletSigner | ISigner;
@@ -46,6 +47,7 @@ export async function sendWalletTransaction({
   msg?: string;
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;
+  validateBeforeSend?: () => void;
 }): Promise<WalletTxnResult> {
   const from = signer.address;
   const eventBuilder = new TxnEventBuilder<WalletTxnCtx>({});
@@ -101,6 +103,7 @@ export async function sendWalletTransaction({
       runSimulation?.().then(() => callback?.(eventBuilder.Simulated())),
     ]);
 
+    validateBeforeSend?.();
     callback?.(eventBuilder.Sending());
 
     const txnData: ISignerSendTransactionParams = {
