@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getMarketOrderExecutionGraphClient } from "lib/indexers";
-import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import {
   MARKET_POSITION_ORDER_TYPES,
@@ -16,7 +15,6 @@ import {
 } from "./marketOrderExecutions";
 import { OrderType } from "./types";
 
-const MARKET_ORDER_EXECUTION_SAMPLE_SIZE = 0;
 const REFRESH_INTERVAL = 60 * 1000;
 
 const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
@@ -27,7 +25,6 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
     $account: String
     $orderTypes: [Int!]
     $isLong: Boolean
-    $sampleSize: Int!
   ) {
     marketOrderExecutionStats(
       fromTimestamp: $fromTimestamp
@@ -36,7 +33,6 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
       account: $account
       orderTypes: $orderTypes
       isLong: $isLong
-      sampleSize: $sampleSize
     ) {
       totalCount
       timingCount
@@ -57,33 +53,7 @@ const MARKET_ORDER_EXECUTION_STATS_QUERY = gql(`
 `);
 
 const MARKET_ORDER_EXECUTION_ROWS_QUERY = gql(`
-  query MarketOrderExecutionRows($offset: Int!, $limit: Int!, $where: TradeActionWhereInput!) {
-    marketOrderExecutions: tradeActions(
-      offset: $offset
-      limit: $limit
-      orderBy: [timestamp_DESC, id_DESC]
-      where: $where
-    ) {
-      orderKey
-      orderType
-      timestamp
-      transactionHash
-      account
-      marketAddress
-      isLong
-      shouldUnwrapNativeToken
-      initialCollateralTokenAddress
-      initialCollateralDeltaAmount
-      swapPath
-      sizeDeltaUsd
-      orderCreatedTimestamp
-      orderCreatedTxnHash
-    }
-  }
-`);
-
-const MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY = gql(`
-  query MarketOrderExecutionResolverRows(
+  query MarketOrderExecutionRows(
     $fromTimestamp: Int!
     $toTimestamp: Int!
     $marketAddress: String
@@ -156,7 +126,6 @@ type MarketOrderExecutionStatsVariables = {
   account?: string;
   orderTypes: number[];
   isLong?: boolean;
-  sampleSize: number;
 };
 
 type MarketOrderExecutionRowsQuery = {
@@ -164,12 +133,6 @@ type MarketOrderExecutionRowsQuery = {
 };
 
 type MarketOrderExecutionRowsVariables = {
-  offset: number;
-  limit: number;
-  where: Record<string, unknown>;
-};
-
-type MarketOrderExecutionResolverRowsVariables = {
   fromTimestamp: number;
   toTimestamp: number;
   marketAddress?: string;
@@ -178,7 +141,7 @@ type MarketOrderExecutionResolverRowsVariables = {
   isLong?: boolean;
   offset: number;
   limit: number;
-  sortField: "EXECUTION_TIME";
+  sortField: "EXECUTED_AT" | "EXECUTION_TIME";
   sortDirection: "ASC" | "DESC";
 };
 
@@ -275,8 +238,7 @@ export async function fetchMarketOrderExecutionStats(
       marketAddress: params.marketAddress,
       account: params.account,
       orderTypes: getOrderTypes(params),
-      isLong: params.kind === "perp" && params.side !== undefined ? params.side === "long" : undefined,
-      sampleSize: MARKET_ORDER_EXECUTION_SAMPLE_SIZE,
+      isLong: getIsLong(params),
     },
     fetchPolicy: "no-cache",
   });
@@ -300,33 +262,22 @@ export async function fetchMarketOrderExecutionRows(params: MarketOrderExecution
     throw new Error(`No Subsquid client configured for chain ${params.chainId}`);
   }
 
-  const useResolver = params.sortField === "executionTime";
-  const result = useResolver
-    ? await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionResolverRowsVariables>({
-        query: MARKET_ORDER_EXECUTION_RESOLVER_ROWS_QUERY,
-        variables: {
-          fromTimestamp: params.fromTimestamp,
-          toTimestamp: params.toTimestamp,
-          marketAddress: params.marketAddress,
-          account: params.account,
-          orderTypes: getOrderTypes(params),
-          isLong: params.side === undefined ? undefined : params.side === "long",
-          offset: params.offset,
-          limit: params.limit,
-          sortField: "EXECUTION_TIME",
-          sortDirection: params.sortDirection === "asc" ? "ASC" : "DESC",
-        },
-        fetchPolicy: "no-cache",
-      })
-    : await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionRowsVariables>({
-        query: MARKET_ORDER_EXECUTION_ROWS_QUERY,
-        variables: {
-          offset: params.offset,
-          limit: params.limit,
-          where: getExecutionWhere(params),
-        },
-        fetchPolicy: "no-cache",
-      });
+  const result = await client.query<MarketOrderExecutionRowsQuery, MarketOrderExecutionRowsVariables>({
+    query: MARKET_ORDER_EXECUTION_ROWS_QUERY,
+    variables: {
+      fromTimestamp: params.fromTimestamp,
+      toTimestamp: params.toTimestamp,
+      marketAddress: params.marketAddress,
+      account: params.account,
+      orderTypes: getOrderTypes(params),
+      isLong: getIsLong(params),
+      offset: params.offset,
+      limit: params.limit,
+      sortField: params.sortField === "executionTime" ? "EXECUTION_TIME" : "EXECUTED_AT",
+      sortDirection: params.sortDirection === "asc" ? "ASC" : "DESC",
+    },
+    fetchPolicy: "no-cache",
+  });
 
   return buildMarketOrderExecutionRows(result.data.marketOrderExecutions);
 }
@@ -347,32 +298,6 @@ function getOrderTypes(params: MarketOrderExecutionsParams) {
   return MARKET_POSITION_ORDER_TYPES;
 }
 
-function getExecutionWhere(params: MarketOrderExecutionsParams) {
-  const commonFilters = {
-    eventName_eq: TradeActionType.OrderExecuted,
-    twapGroupId_isNull: true,
-    timestamp_gte: params.fromTimestamp,
-    timestamp_lte: params.toTimestamp,
-    account_eq: params.account,
-  };
-
-  if (params.kind === "swap") {
-    return {
-      ...commonFilters,
-      orderType_eq: OrderType.MarketSwap,
-      initialCollateralDeltaAmount_not_eq: "0",
-      executionAmountOut_isNull: false,
-      swapPath_containsAny: params.marketAddress ? [params.marketAddress] : undefined,
-    };
-  }
-
-  return {
-    ...commonFilters,
-    orderType_in: getOrderTypes(params),
-    sizeDeltaUsd_not_eq: "0",
-    marketAddress_isNull: false,
-    marketAddress_eq: params.marketAddress,
-    isLong_isNull: false,
-    isLong_eq: params.side === undefined ? undefined : params.side === "long",
-  };
+function getIsLong(params: MarketOrderExecutionsParams) {
+  return params.kind === "perp" && params.side !== undefined ? params.side === "long" : undefined;
 }

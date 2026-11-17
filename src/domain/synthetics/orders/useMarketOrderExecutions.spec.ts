@@ -72,7 +72,7 @@ describe("fetchMarketOrderExecutionStats", () => {
     mocks.query.mockReset();
   });
 
-  it("returns full-population timing aggregates and disables the server sample", async () => {
+  it("returns full-population timing aggregates", async () => {
     mocks.query.mockResolvedValue(statsResult());
 
     const result = await fetchMarketOrderExecutionStats(baseParams);
@@ -85,14 +85,6 @@ describe("fetchMarketOrderExecutionStats", () => {
       percentiles: [{ percentile: 0.5, delaySeconds: 17 }],
       delayThresholds: [{ threshold: 2, count: 800, total: 999, percentage: 80.08008 }],
     });
-    expect(mocks.query).toHaveBeenCalledWith(
-      expect.objectContaining({
-        variables: expect.objectContaining({
-          sampleSize: 0,
-        }),
-      })
-    );
-
     const query = print(mocks.query.mock.calls[0][0].query);
 
     expect(query).toContain("totalCount");
@@ -137,7 +129,6 @@ describe("fetchMarketOrderExecutionStats", () => {
           marketAddress,
           orderTypes: [OrderType.MarketDecrease],
           isLong: false,
-          sampleSize: 0,
         }),
       })
     );
@@ -156,7 +147,6 @@ describe("fetchMarketOrderExecutionStats", () => {
         variables: expect.objectContaining({
           orderTypes: [OrderType.MarketSwap],
           isLong: undefined,
-          sampleSize: 0,
         }),
       })
     );
@@ -168,7 +158,7 @@ describe("fetchMarketOrderExecutionRows", () => {
     mocks.query.mockReset();
   });
 
-  it("uses newest-first entity pagination by default for perps", async () => {
+  it("pages newest first by default for perps", async () => {
     mocks.query.mockResolvedValue({ data: { marketOrderExecutions: [] } });
     const account = "0xAbCdEfabcdefABCDefabCDefAbcdefABcDefABCD";
     const marketAddress = "0xFfFfFffFffFFfffFFfFFfFffFFFffffFfFFFfFfF";
@@ -186,51 +176,45 @@ describe("fetchMarketOrderExecutionRows", () => {
     expect(mocks.query).toHaveBeenCalledWith(
       expect.objectContaining({
         variables: {
+          fromTimestamp: baseParams.fromTimestamp,
+          toTimestamp: baseParams.toTimestamp,
+          marketAddress,
+          account,
+          orderTypes: [OrderType.MarketIncrease],
+          isLong: true,
           offset: 1000,
           limit: 25,
-          where: expect.objectContaining({
-            account_eq: account,
-            marketAddress_eq: marketAddress,
-            orderType_in: [OrderType.MarketIncrease],
-            isLong_eq: true,
-          }),
+          sortField: "EXECUTED_AT",
+          sortDirection: "DESC",
         },
       })
     );
 
     const query = print(mocks.query.mock.calls[0][0].query);
 
-    expect(query).toContain("tradeActions");
-    expect(query).toContain("timestamp_DESC");
-    expect(query).toContain("id_DESC");
-    expect(query).not.toContain("marketOrderExecutionRows");
+    expect(query).toContain("marketOrderExecutionRows");
+    expect(query).not.toContain("tradeActions");
     expect(query).not.toMatch(/price|oracle|reference|fill|impact/i);
-    expect(query).not.toContain("minOutputAmount");
-    expect(query).not.toContain("executionAmountOut");
   });
 
-  it("uses newest-first entity pagination by default for swaps", async () => {
+  it("does not send a side for swaps", async () => {
     mocks.query.mockResolvedValue({ data: { marketOrderExecutions: [] } });
 
     await fetchMarketOrderExecutionRows({
       ...baseParams,
       kind: "swap",
+      side: "long",
       offset: 25,
       limit: 25,
     });
 
     expect(mocks.query).toHaveBeenCalledWith(
       expect.objectContaining({
-        variables: {
-          offset: 25,
-          limit: 25,
-          where: expect.objectContaining({
-            orderType_eq: OrderType.MarketSwap,
-            initialCollateralDeltaAmount_not_eq: "0",
-            executionAmountOut_isNull: false,
-            swapPath_containsAny: [baseParams.marketAddress],
-          }),
-        },
+        variables: expect.objectContaining({
+          orderTypes: [OrderType.MarketSwap],
+          isLong: undefined,
+          sortField: "EXECUTED_AT",
+        }),
       })
     );
   });
