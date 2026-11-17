@@ -1,82 +1,59 @@
-# Solana playground and TRD-136
+# TRD-136 local Solana integration
 
-## Final API integration verified on November 17, 2026
+Run the existing shared TradeBox, transaction builders/checks, order lifecycle and pinned GMX WASM together against real local API data. Temporary configuration changes only the Solana API host and lookup-table selection. Product fixes belong in their original issue branches and PRs.
 
-Use the merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340) revision `c82a14e990ece30103defda0ed764fea3cf65aa0` with its own immutable lockfile installation and generated tsoa routes. This revision upgrades the published SDK alias to 2.9.3 and shares native market, pending-position-fee and discount calculations. Preserve an existing fixed environment when preparing a new checkout; use separate API/indexer ports and an owned database.
+## Supported API
 
-On frontend `7455203605` (release `28ddd42ce6` plus the existing trading integration), this unmodified API globally bootstrapped 105,536 accounts and served 67 gmsol markets. Its TypeScript check and five index/account/order suites passed (72 tests). Real positions, orders and fee-discount endpoints returned 200; a requested minimum slot 470550701 returned 470550709. Pausing only the owned writer caused market and position reads to return 503 after freshness expired, and resuming it restored 200 responses.
+Use the unmodified merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340) at `c82a14e990ece30103defda0ed764fea3cf65aa0`, with its published SDK 2.9.3 dependency. Install that checkout's own immutable dependencies and generate its tsoa routes. Keep the checkout clean and preserve existing fixed environments when preparing another revision.
 
-The existing hash-verified WASM prepare/builder/validator/pre-signature pipeline passed unsigned market long/short and limit long/short simulations at slots 470550183/191/200/208: 892 bytes for market orders and 925 bytes for limit orders, without LUTs. These are local integration results, not browser signing, keeper execution, full financial-reference acceptance or evidence that the public API has deployed this revision. Keep the deferred close/cancel and original four-wallet/atomic acceptance scopes explicit.
+The upstream global index supersedes the historical wallet-scoped API patch. The patch and launcher option have been removed; do not apply a wallet filter or set `TRD136_INDEX_WALLET`. The API launcher runs only the upstream global indexer and reader with an owned local database. No API branch or PR is published by these tools.
 
-The earlier `996cf05` results below are historical and do not describe the final API revision. When following their commands, use `/path/to/gmx-api-at-c82a14` as the API checkout. The API remains local only; no API branch or PR is published by this workflow.
+On November 17, the fixed API bootstrapped 105,536 accounts and served 67 gmsol markets. Route generation, types and five index/account/order suites passed (72 tests). Account endpoints, minimum-slot waiting, stale market/position rejection and recovery passed. These results do not establish full financial-reference parity or official deployment readiness.
 
-`solana-playground` is a persistent experimental integration branch based on release. It combines Solana prerequisites and exploratory work so they can be tested together before their individual production rollouts. Keep its PR into release as a Draft; inclusion here does not establish production readiness or approval of the original issues.
+## Start and stop
 
-This first integration transfers the runtime changes from TRD-136 development `0a6277ec904c86d0470b28b7d2db6284afa3033a`, using a three-way merge onto release `28ddd42ce6`. It includes the shared TradeBox, transaction construction and validation, wallet balances, order lifecycle, and pinned WASM SDK. Existing release math and market-selector changes are retained. Personal Agent infrastructure, reference repositories, credentials, wallet data, and the superseded local API patch are excluded.
+Run from this frontend checkout with Node 22 and its locked dependencies installed. Verify Docker's actual image/virtual-disk storage location first; on the current machine it must be on the external volume. The local Docker daemon and an existing `postgres:15` image are required.
 
-## Branch workflow
-
-Create focused experiment branches from the current playground and merge tested results back here. Experimental solutions may be provisional; describe their scope and limitations in their PRs. Fixes intended for a production issue should originate in that issue's development branch and be transferred here. Do not merge this entire branch into an individual production issue or personal infrastructure branch.
-
-Synchronize release when it matters for integration. Validate the combined result after conflicts, especially SDK exports, shared consumers, feature gates, and transaction checks. Record the frontend SHA and the API revision used for each runtime test.
-
-## Deployment preview
-
-The deployed frontend uses the existing public Solana API, RPC configuration, and LUT trust configuration. It does not expose the local PostgreSQL/indexer or silently substitute local data. Enable `solanaNetwork` in Settings > Debug settings > AB flags to inspect Solana; the default remains zero. Transaction sending also requires the live keeper's explicit `solanaTrading` flag.
-
-A successful frontend deployment proves that this revision builds and serves. It does not establish that the public API has rolled out compatible math or that trusted LUTs are available. The isolated setup below supplies the previously tested local API and no-LUT configuration for real-data integration. Do not assume that a deployment preview can perform every trade verified locally.
-
-## Reproduce the isolated local setup
-
-Use Node 22, the repository's Yarn version, Docker with an existing `postgres:15` image, and a clean gmx-api checkout with its own locked dependencies and generated tsoa routes. On a machine with external Docker storage, verify the actual image/virtual-disk location before pulling images.
-
-The tested API candidate is [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340), revision `996cf05db9603d9af1689fdbac05f5a0ecf8e0e1`. Use its unmodified global index; no wallet patch is needed. API review and deployment remain separate upstream work.
-
-Set `TRD136_RPC_URL` in the process environment to an authorized RPC endpoint supporting reads and unsigned simulation. Never commit credentials. Alternatively, the API launcher accepts `--rpc-config` pointing to an existing external read-only proxy configuration and its adjacent `proxy.mjs`.
+Use an existing compatible RPC explicitly, without putting credentials in command arguments:
 
 ```sh
-NODE_OPTIONS=--max-old-space-size=8192 yarn install --immutable
-NODE_OPTIONS=--max-old-space-size=8192 yarn build-sdk
-
 NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/api.mjs \
-  --api-dir /path/to/gmx-api-at-996cf05 --port 3056 --index-port 3057
-
-# In another terminal, from this frontend checkout:
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/web.mjs \
-  --api-url http://127.0.0.1:3056 --port 3016
+  --api-dir /path/to/gmx-api-at-c82a14 \
+  --port 3066 --index-port 3067
 ```
 
-The API launcher creates an isolated owned PostgreSQL container, runs the API's migrations, and starts only its indexer and reader. It preserves real prices, fees, account decoding, slot requirements, and freshness checks. It runs the API from a separate working directory without loading the checkout's `.env` or inheriting wallet/keeper signing credentials. Keep these processes local; the API's own listener must not be forwarded publicly.
+The launcher reads `TRD136_RPC_URL` from the process environment. Alternatively, an existing local read-only RPC proxy can be selected with `--rpc-config /path/to/solana-rpc-proxy/config.json`. This optional path uses that directory's existing `proxy.mjs`; the proxy cannot broadcast transactions. Do not introduce a public RPC fallback or new provider key.
 
-The web launcher verifies and bundles the pinned WASM before starting Vite. It only transforms the Solana API host to the supplied loopback origin and supplies the same empty LUT configuration to the existing builder, validator, and sender. EVM configuration and trading checks remain intact. Use the existing browser/wallet session and confirm the selected address and network.
+The launcher verifies mainnet genesis, ports, a clean API revision and real gmsol readiness. It creates an isolated PostgreSQL container with a unique owner label and random credentials, runs the upstream migrations and starts separate reader/writer processes. It does not load the API checkout's `.env` or inherit wallet/keeper write credentials.
 
-Stop each foreground launcher with Ctrl-C. The API launcher cleans up only its owned process groups, container and anonymous volumes. Reports and logs remain under ignored `.local/trd-136/`. After an abnormal termination, use the report's owner/container/PIDs to confirm ownership before cleanup; do not stop unrelated services.
+Start the frontend against that instance:
+
+```sh
+NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/web.mjs \
+  --api-url http://127.0.0.1:3066 --port 3016
+```
+
+The web launcher first verifies and bundles the pinned browser SDK through the normal `vite.gmsol.config.ts` entry. Its local Vite transform selects the loopback API and the same empty LUT configuration for builders, validation and sending. EVM API configuration, feature flags and fresh `solanaTrading` checks remain unchanged. Missing API data remains an error.
+
+Stop each launcher with Ctrl-C. API failure or normal shutdown cleans only its owned process groups, container and anonymous volume. Reports/logs stay under `.local/trd-136/api-*`; confirm ownership from the report before recovering an interrupted run. Do not prune unrelated containers, kill processes by port alone or expose the local API publicly.
 
 ## Diagnostics
 
 ```sh
-# Offline encoding only: generated identity and fixed inputs; never broadcast.
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/measure.mjs
-
-# Real data and unsigned simulation only; requires TRD136_RPC_URL and the local API.
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/simulate.mjs \
-  --wallet YOUR_PUBLIC_SOLANA_ADDRESS --api-url http://127.0.0.1:3056
-
-# Optional read-only full-store scan diagnostics; can be expensive for the RPC provider.
 NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/probe.mjs
+NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/measure.mjs
+NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/simulate.mjs \
+  --wallet YOUR_PUBLIC_SOLANA_ADDRESS --api-url http://127.0.0.1:3066
 ```
 
-The Node simulation adapter uses the hash-verified WASM and existing prepare/builder/validator/pre-signature checks. Its 3 USDC collateral / 6 USD size inputs are diagnostic assumptions, not authorization to trade. It does not connect a signer or call the sender. It does not exercise the browser loader, wallet integration, or the entire TradeBox flow.
+`probe.mjs` reads RPC capacity. `measure.mjs` uses generated identities and fixed offline inputs only to measure encoding/size; those inputs must never enter live trading configuration. `simulate.mjs` requires the running real API and uses the actual prepare/builder/validator/pre-signature path with fresh prices, fees, blockhash and trading flag. Its public wallet argument is for read-only simulation, not API scoping.
 
-## Historical evidence and remaining coverage
+The Node simulation adapter directly initializes the hash-verified WASM and omits browser loader/tracker/sender behavior. It neither signs nor broadcasts. Its diagnostic trade parameters are not spending authorization. Four unsigned simulations against the final API passed at slots 470550183/191/200/208: market long/short 892 bytes, limit long/short 925 bytes, without LUTs.
 
-- Network: Solana mainnet, genesis `5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d`.
-- Program: `Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo`; store: `CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN`.
-- Initial market: BTC/USD [USDC-USDC], market token `Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8`.
-- WASM: `0.11.0-beta.1-gmx.1`, SHA256 `e82184caacc60828f024743f88a0a92d97b9d3d55db6839e0d3fab8a9b46c840`.
-- November 16, 2026: the user executed one approximately 40 USD market long. RPC confirmed order creation and keeper execution; API and UI position/balance refresh were observed. This occurred on the original TRD-136 integration, before this playground's release baseline.
-- November 17, 2026: the unmodified API candidate indexed 105,529 accounts and served 67 gmsol markets. Slot waiting, stale 503, and recovery were checked. Four unsigned market/limit long/short simulations passed: 892 bytes for market orders and 925 bytes for limit orders, without LUTs. These results apply to those simple single-order shapes and revisions, not arbitrary transactions.
+## Acceptance boundaries
 
-Market short, limit long/short creation and cancellation, at least one triggered limit fill, and a verified exit remain outstanding. TRD-84 minimum local close/cancel wiring was explicitly deferred. An empty wallet observed later does not prove the shared UI can close a position. Verify a usable exit before new exposure. Real trading and wallet signing remain separate user-controlled operations; this PR does not complete TRD-136's full acceptance matrix.
+One approximately 40 USD BTC market long was submitted by the user on November 16. Creation, keeper execution and API/page position and balance refresh were independently verified. That evidence belongs to the then-current combination; it is not a real-trade test of the final SDK 2.9.3 API revision or evidence of the wallet's current holdings.
 
-Issue: https://linear.app/gmx-io/issue/TRD-136/enable-lightweight-local-testing-of-real-solana-trades-before-upstream
+The first-phase scope remains one wallet, one USDC-collateral market and direct USDC payment. Market short, limit long/short creation/cancellation, at least one triggered fill and a usable exit path remain unverified. Minimum local close/cancel wiring remains deferred by the user; prefer verified TRD-84 implementation when available. Wallet signing/broadcasting and spending require their own authorization.
+
+Official API rollout is not established. The public preview uses public configuration and is distinct from this local API setup. Keep the local API host and measured no-LUT configuration until verified replacements are available. Simple no-LUT results do not cover the four-wallet/atomic TP-SL/LUT acceptance of the original issues. No diagnostic success, green CI or local trade marks those requirements production-ready.
