@@ -8,9 +8,14 @@ import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmso
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
-import { getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
+import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
+import {
+  convertToTokenAmount,
+  convertToTokenAmountForIncrease,
+  convertToUsd,
+  getIsEquivalentTokens,
+} from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
 export enum PositionMarginFailureReason {
@@ -217,30 +222,35 @@ export type IncreaseResultingPositionMarginStateParams = {
   indexPriceForEvaluation?: bigint;
 };
 
+function withPriceOverride<T extends TokenData>(token: T, indexToken: TokenData, price: bigint): T {
+  if (!getIsEquivalentTokens(token, indexToken)) {
+    return token;
+  }
+
+  return { ...token, prices: { minPrice: price, maxPrice: price } };
+}
+
 export function getMarketInfoAtIndexPrice(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   indexPrice: bigint | undefined;
-  isLong: boolean;
 }): { marketInfo: MarketInfo; collateralToken: TokenData } {
-  const { marketInfo, collateralToken, indexPrice, isLong } = p;
+  const { marketInfo, collateralToken, indexPrice } = p;
 
   if (indexPrice === undefined || indexPrice <= 0n) {
     return { marketInfo, collateralToken };
   }
 
   const { indexToken } = marketInfo;
-  const atIndexPrice = <T extends TokenData>(token: T) =>
-    getTokenAtIndexPrice({ token, collateralToken, indexToken, indexPrice, isLong });
 
   return {
     marketInfo: {
       ...marketInfo,
-      indexToken: atIndexPrice(indexToken),
-      longToken: atIndexPrice(marketInfo.longToken),
-      shortToken: atIndexPrice(marketInfo.shortToken),
+      indexToken: withPriceOverride(indexToken, indexToken, indexPrice),
+      longToken: withPriceOverride(marketInfo.longToken, indexToken, indexPrice),
+      shortToken: withPriceOverride(marketInfo.shortToken, indexToken, indexPrice),
     },
-    collateralToken: atIndexPrice(collateralToken),
+    collateralToken: withPriceOverride(collateralToken, indexToken, indexPrice),
   };
 }
 
@@ -290,7 +300,6 @@ export function getIncreaseResultingPositionState(
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: indexPriceForEvaluation,
-    isLong,
   });
 
   const { indexToken } = marketInfo;
