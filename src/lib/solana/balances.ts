@@ -39,7 +39,7 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
   const ownerAddress = address(owner);
   const encoder = getAddressEncoder();
   const tokenAccounts = await Promise.all(
-    GMSOL_TOKENS.filter((token) => !token.isSynthetic).map(async (token) => {
+    GMSOL_TOKENS.map(async (token) => {
       const [ata] = await getProgramDerivedAddress({
         programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
         seeds: [
@@ -62,7 +62,7 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
 
   tokenAccounts.forEach(({ token, ata }, index) => {
     const account = accounts[index];
-    if (!account) {
+    if (!account || (account.owner === SOLANA_SYSTEM_PROGRAM_ID && !account.executable && account.data[0] === "")) {
       balances[token.address] = 0n;
       return;
     }

@@ -28,7 +28,12 @@ describe("sendStakingActionMetric", () => {
       chainId: 42161,
       error: new Error("User denied transaction signature"),
     });
-    sendStakingActionMetric({ action: "unstake", tokenSymbol: "GMX", chainId: 42161, error: new Error("reverted") });
+    sendStakingActionMetric({
+      action: "unstakeRequest",
+      tokenSymbol: undefined,
+      chainId: 42161,
+      error: new Error("reverted"),
+    });
 
     expect(mocks.pushEvent.mock.calls.map(([event]) => event.data.outcome)).toEqual(["rejected", "failed"]);
   });

@@ -14,6 +14,7 @@ import {
   selectGmxAccountGasPaymentToken,
   selectIsExpressTransactionAvailable,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
@@ -47,6 +48,7 @@ import { getContract } from "sdk/configs/contracts";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getMarketPositionLimits } from "sdk/utils/markets";
 import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
@@ -58,7 +60,7 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -118,14 +120,20 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
-  const { minCollateralUsd } = usePositionsConstants();
+  const positionConstants = usePositionsConstants();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
-      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n, minCollateralUsd))
+      .filter((position) =>
+        shouldPreSelectPosition(
+          position,
+          feeUsd ?? 0n,
+          getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+        )
+      )
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd, minCollateralUsd]);
+  }, [positiveFeePositions, feeUsd, positionConstants]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -137,9 +145,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const selectedPositions = useMemo(
     () =>
       positiveFeePositions.filter(
-        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position, minCollateralUsd)
+        (position) =>
+          positionKeys.includes(position.key) &&
+          getIsPositionSettleable(
+            position,
+            getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+          )
       ),
-    [minCollateralUsd, positionKeys, positiveFeePositions]
+    [positionConstants, positionKeys, positiveFeePositions]
   );
   const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
@@ -215,6 +228,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     gasPaymentTokenFallback: "skipApproval",
   });
 
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
   const isSwitchPending = useMemo(
     () =>
       isVisible &&
@@ -222,7 +236,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       !isFeeSourceSwitched &&
       selectedPositions.length > 0 &&
       expressParams !== undefined &&
-      getShouldSwitchNetworkFeeSource({ chainId, tokensData, expressParams }),
+      getShouldSwitchNetworkFeeSource({ chainId, tokensData, expressParams, unavailableTokenAddresses }),
     [
       canUseGmxAccountFeeSource,
       chainId,
@@ -231,6 +245,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       isVisible,
       selectedPositions.length,
       tokensData,
+      unavailableTokenAddresses,
     ]
   );
 
@@ -443,15 +458,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     walletGasPaymentToken?.symbol,
   ]);
 
-  const renderTooltipContent = useCallback(
-    () => (
-      <span className="text-typography-primary">
-        <Trans>Accrued funding fees available for settlement</Trans>
-      </span>
-    ),
-    []
-  );
-
   return (
     <Modal
       activeFormId={formId}
@@ -475,11 +481,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               <Trans>POSITION</Trans>
             </div>
             <div className="ClaimSettleModal-header-right">
-              <Tooltip
-                className="ClaimSettleModal-tooltip"
-                position="top-end"
+              <StandardTooltip
+                variant="iconStroke"
+                position="bottom-end"
                 handle={<Trans>FUNDING FEE</Trans>}
-                renderContent={renderTooltipContent}
+                content={t`Accrued funding fees available for settlement`}
               />
             </div>
           </div>
@@ -488,7 +494,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              blockReason={getSettlementBlockReason(position, minCollateralUsd)}
+              blockReason={getSettlementBlockReason(
+                position,
+                getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+              )}
               isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />

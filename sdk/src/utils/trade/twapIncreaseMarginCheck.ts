@@ -63,6 +63,7 @@ export type TwapIncreaseSequentialMarginStateParams = TwapIncreaseSequenceParams
     minCollateralUsd: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor?: bigint;
+    feeDiscountFactor?: bigint;
   };
 
 export type TwapIncreaseSequentialMarginState = {
@@ -141,7 +142,12 @@ export function getTwapIncreasePartsGrossCollateralUsd(p: TwapIncreasePartsColla
       collateralToken.decimals,
       collateralToken.prices.minPrice
     )!;
-    const swapUiFeeUsd = applyFactor(getTotalSwapVolumeFromSwapStats(swapPathStats.swapSteps), uiFeeFactor);
+    const swapUiFeeUsd = applyFactor(
+      getTotalSwapVolumeFromSwapStats(
+        swapPathStats.swapSteps.filter((swapStep) => marketsInfoData[swapStep.marketAddress].tradeMath !== "gmsol")
+      ),
+      uiFeeFactor
+    );
 
     partGrossCollateralUsds.push(grossCollateralUsd - swapUiFeeUsd);
 
@@ -222,11 +228,17 @@ export function getTwapIncreaseSequentialMarginState(
     partGrossCollateralUsds,
     partSizeDeltaUsd,
     pendingFeesUsd,
-    uiFeeFactor,
-    minCollateralUsd,
+    uiFeeFactor: suppliedUiFeeFactor,
+    minCollateralUsd: suppliedMinCollateralUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
   } = p;
+  const minCollateralUsd =
+    p.marketInfo.tradeMath === "gmsol"
+      ? p.marketInfo.minCollateralUsd ?? suppliedMinCollateralUsd
+      : suppliedMinCollateralUsd;
+  const uiFeeFactor = p.marketInfo.tradeMath === "gmsol" ? 0n : suppliedUiFeeFactor;
 
   if (numberOfParts < 1 || partSizeDeltaUsd <= 0n || partGrossCollateralUsds.length < numberOfParts) {
     return undefined;
@@ -282,7 +294,8 @@ export function getTwapIncreaseSequentialMarginState(
       balanceWasImproved,
       userReferralInfo,
       undefined,
-      proDiscountFactor
+      proDiscountFactor,
+      feeDiscountFactor
     );
     const uiFeeUsd = applyFactor(partSizeDeltaUsd, uiFeeFactor);
     const settledFeesUsd = (partIndex === 0 ? pendingFeesUsd : 0n) + accruedFeesUsd;
@@ -300,6 +313,7 @@ export function getTwapIncreaseSequentialMarginState(
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor,
     });
 
     if (!resultingState) {

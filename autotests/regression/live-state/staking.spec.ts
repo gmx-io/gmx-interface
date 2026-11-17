@@ -12,7 +12,6 @@ const unstakeCases = [
     token: "GMX",
     stakedRow: (page: Page) => page.getByTestId("info-row-staked-gmx"),
     staked: (account: LiveAccount) => account.staking!.gmx,
-    max: (account: LiveAccount) => account.staking!.unstakeMax,
   },
   {
     ids: "13.18 ",
@@ -20,11 +19,10 @@ const unstakeCases = [
     token: "esGMX",
     stakedRow: (page: Page) => page.getByText("Staked esGMX", { exact: true }).locator(".."),
     staked: (account: LiveAccount) => account.staking!.esGmx,
-    max: (account: LiveAccount) => account.vesting!.unstakeEsGmxMax,
   },
 ] as const;
 
-for (const { ids, profile, token, stakedRow, staked, max } of unstakeCases) {
+for (const { ids, profile, token, stakedRow, staked } of unstakeCases) {
   test.describe(token, () => {
     test.use({ liveProfile: profile });
 
@@ -33,6 +31,7 @@ for (const { ids, profile, token, stakedRow, staked, max } of unstakeCases) {
       liveAccount,
       liveWallet,
     }) => {
+      const max = liveAccount.staking!.unstakeMax;
       await liveWallet.connect(page, "/earn/portfolio");
       await expect(stakedRow(page)).toContainText(
         formatBalanceAmount(staked(liveAccount), 18, token, { showZero: true }),
@@ -43,8 +42,8 @@ for (const { ids, profile, token, stakedRow, staked, max } of unstakeCases) {
       await modal.getByRole("button", { name: "Unstake", exact: true }).click();
       await modal.getByRole("button", { name: "Max", exact: true }).click();
       const input = modal.getByRole("textbox");
-      await expect.poll(() => inputNumber(input)).toBeCloseTo(Number(formatUnits(max(liveAccount), 18)), 5);
-      await input.fill(formatUnits(staked(liveAccount) + 10n ** 18n, 18));
+      await expect.poll(() => inputNumber(input)).toBeCloseTo(Number(formatUnits(max, 18)), 5);
+      await input.fill(formatUnits(max + 10n ** 18n, 18));
       await expect(modal.getByRole("button", { name: "Max amount exceeded", exact: true })).toBeDisabled();
       await input.clear();
       await expect(modal.getByRole("button", { name: "Enter an amount", exact: true })).toBeDisabled();

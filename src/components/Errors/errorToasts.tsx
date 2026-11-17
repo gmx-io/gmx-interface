@@ -17,6 +17,7 @@ import {
   getInsufficientFeeError,
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
@@ -53,6 +54,7 @@ export type AdditionalErrorParams = {
   isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   isOutdatedSubaccountApproval?: boolean;
+  isRelayUnavailable?: boolean;
   setIsSettingsVisible?: (isVisible: boolean) => void;
   expressTxn?: ExpressTxnErrorContext;
 };
@@ -208,6 +210,7 @@ export function getTxnErrorToast(
     isExternalSwapFallback,
     permitIssueType,
     isOutdatedSubaccountApproval,
+    isRelayUnavailable,
     setIsSettingsVisible,
     expressTxn,
   }: AdditionalErrorParams
@@ -254,6 +257,17 @@ export function getTxnErrorToast(
 
   if (smartWalletContent) {
     toastParams.errorContent = smartWalletContent;
+    toastParams.autoCloseToast = false;
+
+    return toastParams;
+  }
+
+  if (isRelayUnavailable) {
+    toastParams.errorContent = getRelayUnavailableToastContent({
+      defaultMessage,
+      debugErrorMessage,
+      setIsSettingsVisible: expressTxn && !expressTxn.isGmxAccount ? setIsSettingsVisible : undefined,
+    });
     toastParams.autoCloseToast = false;
 
     return toastParams;
@@ -472,6 +486,40 @@ export function getErrorMessage(
   return { failMsg, autoCloseToast };
 }
 
+function getRelayUnavailableToastContent({
+  defaultMessage,
+  debugErrorMessage,
+  setIsSettingsVisible,
+}: {
+  defaultMessage: ReactNode;
+  debugErrorMessage: string | undefined;
+  setIsSettingsVisible: ((isVisible: boolean) => void) | undefined;
+}) {
+  return (
+    <div>
+      {defaultMessage}
+      <br />
+      <br />
+      {setIsSettingsVisible ? (
+        <Trans>
+          Express relayer is temporarily unavailable.
+          <br />
+          <br />
+          Try again shortly or switch to Classic Trading in{" "}
+          <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible(true)}>
+            settings
+          </Button>
+        </Trans>
+      ) : (
+        <Trans>Express relayer is temporarily unavailable. Try again shortly</Trans>
+      )}
+      <br />
+      <br />
+      {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+    </div>
+  );
+}
+
 function getRpcErrorToastContent(debugErrorMessage: string | undefined) {
   return (
     <div>
@@ -524,6 +572,18 @@ export function getSmartWalletErrorToastContent(
         <div>
           Switch your {walletName} to {getChainName(chainId)}, then try again
         </div>
+      </Trans>
+    );
+  }
+
+  if (errorMessage === SMART_WALLET_NOT_DEPLOYED_ERROR) {
+    return (
+      <Trans>
+        <div>
+          Your {walletName} is not deployed on {getChainName(chainId)} yet
+        </div>
+        <br />
+        <div>Make any transaction from it on {getChainName(chainId)}, then try again</div>
       </Trans>
     );
   }

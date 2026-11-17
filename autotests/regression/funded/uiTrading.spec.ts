@@ -68,7 +68,6 @@ for (const scenario of fundedCases) {
       expect(journal.actions).toHaveLength(settledCount);
       expect(accountState.positions).toHaveLength(0);
       expect(accountState.orders).toHaveLength(0);
-      if (scenario.id === "staking") expect(journal.inventory?.uiStakeResetAcknowledged).toBe("true");
       expect(journal.actions.every((a) => a.purpose.startsWith("ui:"))).toBe(true);
     } finally {
       await rm(directory, { recursive: true, force: true });

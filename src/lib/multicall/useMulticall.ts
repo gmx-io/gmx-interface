@@ -3,6 +3,7 @@ import { useCallback, useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
 import { KeyedMutator, stableHash } from "swr/_internal";
 
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import type { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
 import { sleep } from "lib/sleep";
@@ -46,7 +47,10 @@ export function useMulticall<
   }
 ) {
   const defaultConfig = useSWRConfig();
-  let swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
+  let swrFullKey =
+    Array.isArray(params.key) && chainId && name && !getIsSolanaNetworkSelected()
+      ? [chainId, name, ...params.key]
+      : null;
 
   const swrOpts: SWRConfiguration & SWRGCMiddlewareConfig = {
     clearUnusedKeys: params.clearUnusedKeys,

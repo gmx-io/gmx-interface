@@ -1,7 +1,8 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
+import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
@@ -17,6 +18,11 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
+import type {
+  GasPaymentTokenReplacements,
+  GasPaymentTokensOnchainState,
+} from "domain/synthetics/express/gasPaymentTokenAvailability";
+import { useGasPaymentTokensOnchainState } from "domain/synthetics/express/useGasPaymentTokensOnchainState";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
@@ -51,6 +57,7 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import type { PriceDelta } from "domain/synthetics/tokens/priceDelta";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -60,6 +67,7 @@ import {
 } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/uiFlags";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
 import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
@@ -69,6 +77,7 @@ import {
   useAccountWhitelistsRequest,
 } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import type { CandlesFetcher } from "domain/tradingview/DataFeed";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -99,6 +108,13 @@ export type SyntheticsPageType =
   | "referrals"
   | "rpcDebug";
 
+export type ChartDataProvider = {
+  candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
+  fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
+  fetch24hVolumes: () => Promise<Record<string, bigint>>;
+};
+
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
@@ -115,6 +131,8 @@ export type SyntheticsState = {
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
+    feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
@@ -149,6 +167,8 @@ export type SyntheticsState = {
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
+
+    chartDataProvider?: ChartDataProvider;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -168,6 +188,9 @@ export type SyntheticsState = {
   features: FeaturesSettings | undefined;
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
+  gasPaymentTokensOnchainState: GasPaymentTokensOnchainState | undefined;
+  gasPaymentTokenReplacements: GasPaymentTokenReplacements;
+  setGasPaymentTokenReplacement: (isGmxAccount: boolean, tokenAddress: string | undefined) => void;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -182,7 +205,7 @@ export function SyntheticsStateContextProvider({
   pageType: SyntheticsPageType;
   overrideChainId?: ContractsChainId;
 }) {
-  const { chainId: selectedChainId, srcChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId, networkId: selectedNetworkId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
 
@@ -201,6 +224,7 @@ export function SyntheticsStateContextProvider({
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
+  const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
 
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
@@ -296,6 +320,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
+    networkId,
     marketsInfoData: marketsInfo.marketsInfoData,
     marketsData: markets.marketsData,
     tokensData: tokensDataResult.tokensData,
@@ -335,7 +360,8 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(
     chainId,
     positionsInfoData?.[closingPositionKey ?? ""],
-    closingPositionOrderOption
+    closingPositionOrderOption,
+    networkId
   );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
@@ -347,13 +373,19 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
     multichainMarketTokensBalancesResult,
+    // Relay router flags still loading count as on, so Express users don't see the wallet on every page load
+    isExpressAvailable:
+      settings.expressOrdersEnabled &&
+      isUiApiSupported(chainId) &&
+      getIsExpressAvailable(uiFlags) &&
+      features?.relayRouterEnabled !== false,
   });
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
 
   useCollectSyntheticsMetrics({
     tokensDataResult,
@@ -385,6 +417,13 @@ export function SyntheticsStateContextProvider({
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
+
+  const gasPaymentTokensOnchainState = useGasPaymentTokensOnchainState(chainId);
+  const [gasPaymentTokenReplacements, setGasPaymentTokenReplacements] = useState<GasPaymentTokenReplacements>({});
+  const setGasPaymentTokenReplacement = useCallback((isGmxAccount: boolean, tokenAddress: string | undefined) => {
+    const key = isGmxAccount ? "gmxAccount" : "wallet";
+    setGasPaymentTokenReplacements((prev) => (prev[key] === tokenAddress ? prev : { ...prev, [key]: tokenAddress }));
+  }, []);
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -455,6 +494,9 @@ export function SyntheticsStateContextProvider({
       features,
       uiFlags,
       gasPaymentTokenAllowance,
+      gasPaymentTokensOnchainState,
+      gasPaymentTokenReplacements,
+      setGasPaymentTokenReplacement,
       l1ExpressOrderGasReference,
     };
 
@@ -471,6 +513,9 @@ export function SyntheticsStateContextProvider({
     features,
     gasLimits,
     gasPaymentTokenAllowance,
+    gasPaymentTokensOnchainState,
+    gasPaymentTokenReplacements,
+    setGasPaymentTokenReplacement,
     gasPrice,
     glvInfo,
     isCandlesLoaded,

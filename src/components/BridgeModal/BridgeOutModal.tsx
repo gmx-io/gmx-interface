@@ -15,11 +15,11 @@ import { getChainIcon } from "config/icons";
 import { getLayerZeroEndpointId, getStargatePoolAddress } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
+import { selectGmxAccountExpressFeeTokenAddress } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectDepositMarketTokensData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -41,6 +41,7 @@ import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getToken, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 import { formatBalanceAmount, parseValue } from "sdk/utils/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -85,7 +86,7 @@ export function BridgeOutModal({
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
   const isGlv = isGlvInfo(glvOrMarketInfo);
-  const gasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
   const gasPaymentToken = getTokenData(tokensData, gasPaymentTokenAddress);
 
   const marketTokenDecimals = isGlv ? glvOrMarketInfo?.glvToken.decimals : marketToken?.decimals;
@@ -616,6 +617,7 @@ function useBridgeOutParams({
         [dstEid]
       ),
       provider: stargateAddress,
+      bridgeFee: getEmptyBridgeFeeParams(),
     };
   }, [bridgeOutChain, glvOrMarketAddress, bridgeOutAmount, chainId]);
 }

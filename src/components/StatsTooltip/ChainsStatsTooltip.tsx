@@ -1,13 +1,14 @@
 import { ReactNode } from "react";
 
 import { USD_DECIMALS } from "config/factors";
+import { useSettled } from "lib/useSettled";
 
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
 import { summarizeChainsStats, type ChainsStatsEntries, type ChainsStatsStaleEntry } from "./summarizeChainsStats";
-import { useSettled } from "./useSettled";
 
 type Props = {
   entries: ChainsStatsEntries;
@@ -35,9 +36,8 @@ export default function ChainsStatsTooltip({
   }
 
   return (
-    <TooltipComponent
+    <StandardTooltip
       position="bottom-end"
-      className={caption ? undefined : "whitespace-nowrap"}
       handle={
         <AmountHumanValue
           amount={summary.total}
@@ -48,21 +48,15 @@ export default function ChainsStatsTooltip({
       }
       handleClassName="numbers"
       content={
-        <>
-          {caption && (
-            <>
-              {caption}
-              <br />
-              <br />
-            </>
-          )}
+        <TooltipContent>
+          {caption && <TooltipText>{caption}</TooltipText>}
           <ChainsStatsTooltipRow
             summary={summary}
             staleEntries={staleEntries}
             showDollar={showDollar}
             decimalsForConversion={decimalsForConversion}
           />
-        </>
+        </TooltipContent>
       }
     />
   );

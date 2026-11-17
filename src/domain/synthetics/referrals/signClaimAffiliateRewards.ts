@@ -4,6 +4,7 @@ import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 
 import { getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import type { RelayParamsPayload } from "../express/types";
@@ -27,8 +28,10 @@ export async function signClaimAffiliateRewards({
   srcChainId: SourceChainId | undefined;
   shouldUseSignerMethod?: boolean;
 }) {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     ClaimAffiliateRewards: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "markets", type: "address[]" },
       { name: "tokens", type: "address[]" },
       { name: "receiver", type: "address" },
@@ -38,11 +41,20 @@ export async function signClaimAffiliateRewards({
 
   const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainClaimsRouter"));
   const typedData = {
+    ...(isV2_2_1 ? { account } : {}),
     markets: marketAddresses,
     tokens: tokenAddresses,
     receiver: account,
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod, verificationChainId: chainId });
+  return signTypedData({
+    signer,
+    domain,
+    types,
+    typedData,
+    shouldUseSignerMethod,
+    verificationChainId: chainId,
+    relayParams,
+  });
 }

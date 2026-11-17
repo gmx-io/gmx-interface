@@ -49,23 +49,43 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
-    id: "gmlabs-003-staking-changes",
+    id: "gt-airdrop-allocation",
     type: "update",
     isActive: true,
-    startDate: "22 Oct 2026, 00:00",
-    endDate: "28 Oct 2026, 00:00",
+    startDate: "12 Nov 2026, 09:00",
+    endDate: "19 Nov 2026, 09:00",
     variant: "info",
     chains: [ARBITRUM, AVALANCHE],
-    title: "Staking update: 180-day unstaking wait and Solana revenue buybacks",
-    description: (
+    title: "GT airdrop: check your allocation",
+    summary: (
       <>
-        From October 28, unstaking GMX or esGMX takes 180 days. Part of GMX's Solana revenue will buy back GMX for
-        staking rewards.{" "}
-        <ExternalLink href="https://gov.gmx.io/t/gmlabs-003-solana-revenue-buybacks-and-180-day-unstaking-timelock/5179">
-          Read more
-        </ExternalLink>
-        .
+        GMX stakers can now see their GT airdrop amount. Find it under{" "}
+        <Link to="/earn/portfolio">Earn &gt; Portfolio</Link>. Selling into GT buybacks follows in a later update.
       </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Who qualifies:</span> a daily average of at least 100
+          GMX staked on Arbitrum or Avalanche from 1 October to 1 November 2026 (00:00 UTC). Staked GMX on 1 November
+          must not be below that average. esGMX does not count.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Allocation:</span> 1 GT for each daily-average staked
+          GMX. The GT card shows the amount and its USD value. No GT card means no allocation.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Buyback:</span> selling GT is not open yet, so the
+          buyback button on the GT card is disabled. Selling GT comes in a later update. No date is set yet.
+        </span>
+        <span>
+          Full rules in governance proposal GMLabs-002.{" "}
+          <ExternalLink href="https://gov.gmx.io/t/gmlabs-002-gt-airdrop-for-gmx-stakers-and-gt-buyback-season-2/5159">
+            Read more
+          </ExternalLink>
+          .
+        </span>
+      </span>
     ),
   },
   {

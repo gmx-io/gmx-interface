@@ -31,7 +31,7 @@ export async function unstake(session: FundedSession) {
     assert.equal(amount, BigInt(inventory.stakeAmount), "Unexpected staked inventory");
     await session.nativeTransaction(
       {
-        to: getContract(42161, "RewardRouter"),
+        to: getContract(42161, "RewardRouterV3"),
         value: 0n,
         data: encodeFunctionData({ abi: routerAbi, functionName: "unstakeGmx", args: [amount] }),
       },

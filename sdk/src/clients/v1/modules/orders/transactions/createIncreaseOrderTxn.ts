@@ -73,6 +73,7 @@ export type SecondaryUpdateOrderParams = SecondaryOrderCommonParams & {
   indexToken: TokenData;
   minOutputAmount: bigint;
   autoCancel: boolean;
+  decreasePositionSwapType: DecreasePositionSwapType;
 };
 
 export async function createIncreaseOrderTxn({
@@ -140,13 +141,25 @@ export async function createIncreaseOrderTxn({
     updateOrderParams?.reduce<string[]>(
       (
         acc,
-        { orderKey, sizeDeltaUsd, executionFee, indexToken, acceptablePrice, triggerPrice, minOutputAmount, autoCancel }
+        {
+          orderKey,
+          orderType,
+          sizeDeltaUsd,
+          executionFee,
+          indexToken,
+          acceptablePrice,
+          triggerPrice,
+          minOutputAmount,
+          autoCancel,
+          decreasePositionSwapType,
+        }
       ) => {
         return [
           ...acc,
           ...createUpdateEncodedPayload({
             sdk,
             orderKey,
+            orderType,
             sizeDeltaUsd,
             executionFee,
             indexToken,
@@ -154,6 +167,7 @@ export async function createIncreaseOrderTxn({
             triggerPrice,
             minOutputAmount,
             autoCancel,
+            decreasePositionSwapType,
           }),
         ];
       },

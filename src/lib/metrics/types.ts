@@ -176,7 +176,7 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders";
+    domain: "markets" | "positions" | "orders" | "wsPrices";
     reason: "stale" | "error" | "initial";
     chainId: number;
   };
@@ -203,6 +203,26 @@ export type FreshnessTiming = {
     chainId: number;
     metricId: FreshnessMetricId;
   };
+};
+
+export type WsPriceAgeAtSendTiming = {
+  event: "wsPrices.ageAtSend";
+  data: { chainId: number };
+};
+
+export type WsPriceFirstFrameTiming = {
+  event: "wsPrices.firstFrame";
+  data: { chainId: number };
+};
+
+export type WsPriceInterArrivalTiming = {
+  event: "wsPrices.interArrival";
+  data: { chainId: number };
+};
+
+export type WsStreamStatusCounter = {
+  event: "wsPrices.status";
+  data: { chainId: number; status: string };
 };
 
 // Transactions tracking
@@ -401,7 +421,6 @@ export type ExpressOrderMetricData = {
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
-  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;
@@ -798,7 +817,7 @@ export type StakingActionEvent = {
   event: "staking.action";
   isError: false;
   data: {
-    action: "stake" | "unstake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
+    action: "stake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
     tokenSymbol: string | undefined;
     outcome: "sent" | "rejected" | "failed";
     chainId: number;

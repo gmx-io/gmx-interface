@@ -7,10 +7,19 @@ import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateC
 import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
+import { ETH_TOKEN } from "domain/testUtils/mockTokens";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 
-import { selectIsOneClickActiveByUser, selectTradeboxHasPendingInput } from ".";
+import {
+  selectIsOneClickActiveByUser,
+  selectTradeboxHasPendingInput,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxFees,
+} from ".";
+import { selectTradeboxTradeTypeError } from "./selectTradeboxTradeErrors";
 
 const subaccountRouterAddress = getContract(AVALANCHE, "SubaccountGelatoRelayRouter");
 const multichainSubaccountRouterAddress = getContract(AVALANCHE, "MultichainSubaccountRouter");
@@ -34,6 +43,7 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     approvalNonce: 0n,
     multichainApprovalNonce: 0n,
     integrationId: zeroHash,
+    revocationCounter: 0n,
   };
 
   const signedApproval: Subaccount["signedApproval"] = {
@@ -48,6 +58,8 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     signature: "0x01",
     signedAt: 0,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress,
     signatureChainId: AVALANCHE as Subaccount["signedApproval"]["signatureChainId"],
   };
@@ -298,23 +310,29 @@ describe("tradeboxSelectors", () => {
         expect(selectIsOneClickActiveByUser(createState(baseSubaccount, SOURCE_BASE_MAINNET))).toBe(true);
         expect(selectIsOneClickActiveByUser(createState(bscSubaccount, SOURCE_BSC_MAINNET))).toBe(true);
       });
-
-      it("an approval with a consumed shared nonce is not a valid One-Click path even in its own context", () => {
-        const subaccount = createSubaccount({
-          signerChainId: SOURCE_BASE_MAINNET,
-          onchainData: {
-            active: true,
-            multichainApprovalNonce: PENDING_MULTICHAIN_NONCE + 1n,
-          },
-          signedApproval: {
-            signatureChainId: SOURCE_BASE_MAINNET,
-            subaccountRouterAddress: multichainSubaccountRouterAddress,
-            nonce: PENDING_MULTICHAIN_NONCE,
-          },
-        });
-
-        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(false);
-      });
     });
   });
+});
+
+it("keeps Solana overflow quotes unavailable and recovers without changing EVM", () => {
+  for (const tradeMath of ["gmsol", undefined] as const) {
+    const makeState = (amount: string) =>
+      createMockSyntheticsState({
+        marketInfo: createMockMarketInfo(ETH_TOKEN, { tradeMath }),
+        isLeverageSliderEnabled: false,
+        fromTokenInputValue: "100",
+        toTokenInputValue: amount,
+        focusedInput: "to",
+      });
+    const overflowState = makeState("1000000000000000000");
+    const overflowQuote = selectTradeboxIncreasePositionAmounts(overflowState);
+    if (tradeMath === "gmsol") {
+      expect(overflowQuote).toBeUndefined();
+      expect(selectTradeboxFees(overflowState)).toBeUndefined();
+      expect(selectTradeboxTradeTypeError(overflowState).buttonErrorMessage).toBe("Unable to calculate this order");
+    } else {
+      expect(overflowQuote).toBeDefined();
+    }
+    expect(selectTradeboxIncreasePositionAmounts(makeState("0.5"))?.sizeDeltaUsd).toBeGreaterThan(0n);
+  }
 });

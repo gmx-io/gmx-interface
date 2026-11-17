@@ -2,10 +2,9 @@ import { plural, t, Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getIsRewardRouterChanged, getRewardRouterContract } from "domain/stake/rewardRouter";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { getReservedForVestingAmount, getUnstakeRequestStatus } from "domain/stake/unstakeRequests";
-import { useRewardRouter } from "domain/stake/useRewardRouter";
 import { useSbfGmxBalance } from "domain/stake/useSbfGmxBalance";
 import { useUnstakeRequests } from "domain/stake/useUnstakeRequests";
 import { useChainId } from "lib/chains";
@@ -16,7 +15,7 @@ import { formatAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
@@ -26,28 +25,17 @@ export function UnstakeRequests({ processedData }: { processedData: StakingProce
   const { chainId } = useChainId();
   const { account, signer } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { rewardRouter, mutateRewardRouter } = useRewardRouter(chainId);
-  const { unstakeRequestsData } = useUnstakeRequests(chainId, { rewardRouter, account });
+  const { unstakeRequestsData } = useUnstakeRequests(chainId, account);
   const sbfGmxBalance = useSbfGmxBalance(chainId, account);
   const [cancellingRequestKey, setCancellingRequestKey] = useState<string>();
   const [isWithdrawModalVisible, setIsWithdrawModalVisible] = useState(false);
 
   const handleCancel = useCallback(
     async (requestKey: string) => {
-      if (!rewardRouter) {
-        return;
-      }
-
       setCancellingRequestKey(requestKey);
 
       try {
-        if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
-          mutateRewardRouter();
-          showRewardRouterChangedToast();
-          return;
-        }
-
-        await callContract(chainId, getRewardRouterContract(rewardRouter, signer), "cancelUnstake", [requestKey], {
+        await callContract(chainId, getRewardRouterContract(chainId, signer), "cancelUnstake", [requestKey], {
           sentMsg: t`Cancel submitted`,
           failMsg: t`Cancel failed`,
           successMsg: t`Unstake request cancelled`,
@@ -62,10 +50,10 @@ export function UnstakeRequests({ processedData }: { processedData: StakingProce
         setCancellingRequestKey(undefined);
       }
     },
-    [chainId, mutateRewardRouter, rewardRouter, setPendingTxns, signer]
+    [chainId, setPendingTxns, signer]
   );
 
-  if (rewardRouter?.version !== "v3" || !unstakeRequestsData?.requests.length) {
+  if (!unstakeRequestsData?.requests.length) {
     return null;
   }
 
@@ -145,8 +133,6 @@ export function UnstakeRequests({ processedData }: { processedData: StakingProce
         setIsVisible={setIsWithdrawModalVisible}
         chainId={chainId}
         signer={signer}
-        rewardRouter={rewardRouter}
-        mutateRewardRouter={mutateRewardRouter}
         executableAmount={unstakeRequestsData.executableAmount}
         gmxInStakedGmx={gmxInStakedGmx}
         esGmxInStakedGmx={esGmxInStakedGmx}

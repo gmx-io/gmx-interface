@@ -2,6 +2,7 @@ import { decodeErrorResult } from "viem";
 
 import { SignedTokenPermit } from "domain/tokens";
 import { abis } from "sdk/abis";
+import { GmxRelayError } from "sdk/utils/express";
 
 import {
   CustomError,
@@ -23,6 +24,7 @@ export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const SMART_WALLET_CHAIN_UNAVAILABLE_ERROR = "Smart wallet unavailable on verification chain";
 export const SMART_WALLET_WRONG_CHAIN_ERROR = "Smart wallet connected to another chain";
 export const SMART_WALLET_ACCOUNT_CHANGED_ERROR = "Account changed during chain swap";
+export const SMART_WALLET_NOT_DEPLOYED_ERROR = "Smart wallet not deployed on verification chain";
 
 export function extractErrorRevertData(error: ErrorLike): string | undefined {
   const data = extractErrorDataFromViemError(error) ?? error.info?.error?.data ?? error.error?.data ?? error.data;
@@ -98,8 +100,12 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
   };
 }
 
-export function getIsInvalidSubaccountApprovalNonceError(error: ErrorLike) {
-  return parseError(error)?.contractError === "InvalidSubaccountApprovalNonce";
+export function getIsOutdatedSubaccountApprovalError(error: ErrorLike) {
+  const contractError = parseError(error)?.contractError;
+
+  return (
+    contractError === "InvalidSubaccountApprovalNonce" || contractError === "InvalidSubaccountApprovalRevocationCounter"
+  );
 }
 
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
@@ -224,4 +230,8 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
 
 export function getIsSwapPriceImpactTooLargeError(error: ErrorLike) {
   return parseError(error)?.contractError === "SwapPriceImpactExceedsAmountIn";
+}
+
+export function getIsRelayUnavailableError(error: unknown) {
+  return error instanceof GmxRelayError && !error.isPermanent;
 }

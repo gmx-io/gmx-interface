@@ -4,7 +4,7 @@ import { checkAccount, checkOrder, checkPosition, checkStake, checkLp } from "./
 import { activateUiOneClick, revokeUiOneClick } from "./uiOneClick";
 import { depositUiBridge, returnUiBridge, withdrawUiBridgeDust, changeUiBridgeGas } from "./uiBridge";
 import { changeUiAccount } from "./uiAccount";
-import { changeUiStake, claimUiRewards } from "./uiEarn";
+import { claimUiRewards, stakeUiGmx } from "./uiEarn";
 import { swapUiTokens } from "./uiSwap";
 import { changeUiLiquidity } from "./uiLiquidity";
 import { createUiTwap } from "./uiTwap";
@@ -140,13 +140,8 @@ export async function runUiJourney(
   if (scenario.id === "staking") {
     await checked(
       "stake",
-      () => changeUiStake(session, wallet, page, false),
+      () => stakeUiGmx(session, wallet, page),
       (amount) => checkStake(page, amount)
-    );
-    await checked(
-      "unstake",
-      () => changeUiStake(session, wallet, page, true),
-      () => checkStake(page, 0n)
     );
     return;
   }

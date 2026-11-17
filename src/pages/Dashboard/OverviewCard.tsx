@@ -11,16 +11,13 @@ import {
   useProtocolStatsSummary,
 } from "domain/protocolStats/useProtocolStatsSummary";
 import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
-import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
 import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
 import { GLP_DECIMALS, GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { sumKnownBigInts } from "lib/sumBigInts";
 import { mergeFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
-import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
@@ -41,9 +38,6 @@ export function OverviewCard({
   statsArbitrum?: ChainStats;
   statsAvalanche?: ChainStats;
 }) {
-  const { active, signer } = useWallet();
-  const { chainId } = useChainId();
-
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
@@ -64,10 +58,7 @@ export function OverviewCard({
     [gmtradeFreshness, SOLANA_ENTRY]
   );
 
-  const v1ArbitrumFees = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheFees = useV1FeesInfo(AVALANCHE);
-
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
@@ -132,10 +123,8 @@ export function OverviewCard({
   // #endregion TVL and GLP Pool
 
   // #region Daily Volume
-  const v1DailyVolumeInfo = useVolumeInfo();
-  const v1ArbitrumDailyVolume = v1DailyVolumeInfo?.[ARBITRUM];
-  const v1AvalancheDailyVolume = v1DailyVolumeInfo?.[AVALANCHE];
-
+  // v1 is left out: over the last 30 days its volume is GLP redemptions, $8.3k on Arbitrum and
+  // $51.3k on Avalanche, up to $37.1k in one day. That is still noise next to v2 (see domain/stats/v1Totals)
   const gmtradeDailyVolume = parseProtocolStatsUsd(gmtradeOverview?.volume24h?.total);
 
   // #endregion Daily Volume
@@ -173,9 +162,7 @@ export function OverviewCard({
   // #endregion Short Position Sizes
 
   // #region Fees
-  const v1ArbitrumEpochFees = v1ArbitrumFees?.epochFees;
-  const v1AvalancheEpochFees = v1AvalancheFees?.epochFees;
-
+  // v1 earns no fees any more, so its epoch fees are 0 (see domain/stats/v1Totals)
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
@@ -185,15 +172,13 @@ export function OverviewCard({
 
   const dailyVolumeEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.dailyVolume, v1ArbitrumDailyVolume),
-      Avalanche: sumKnownBigInts(v2AvalancheOverview?.dailyVolume, v1AvalancheDailyVolume),
+      Arbitrum: v2ArbitrumOverview?.dailyVolume,
+      Avalanche: v2AvalancheOverview?.dailyVolume,
       MegaETH: v2MegaethOverview?.dailyVolume,
       [SOLANA_ENTRY]: gmtradeDailyVolume,
     }),
     [
       gmtradeDailyVolume,
-      v1ArbitrumDailyVolume,
-      v1AvalancheDailyVolume,
       v2ArbitrumOverview?.dailyVolume,
       v2AvalancheOverview?.dailyVolume,
       v2MegaethOverview?.dailyVolume,
@@ -253,19 +238,12 @@ export function OverviewCard({
 
   const epochFeesEntries = useMemo(
     () => ({
-      Arbitrum: sumKnownBigInts(v2ArbitrumEpochFees, v1ArbitrumEpochFees),
-      Avalanche: sumKnownBigInts(v2AvalancheEpochFees, v1AvalancheEpochFees),
+      Arbitrum: v2ArbitrumEpochFees,
+      Avalanche: v2AvalancheEpochFees,
       MegaETH: v2MegaethEpochFees,
       [SOLANA_ENTRY]: gmtradeEpochFees,
     }),
-    [
-      v1ArbitrumEpochFees,
-      v1AvalancheEpochFees,
-      v2ArbitrumEpochFees,
-      v2AvalancheEpochFees,
-      v2MegaethEpochFees,
-      gmtradeEpochFees,
-    ]
+    [v2ArbitrumEpochFees, v2AvalancheEpochFees, v2MegaethEpochFees, gmtradeEpochFees]
   );
 
   const tvlEntries = useMemo(

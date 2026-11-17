@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { type ChainIcons, getIcons } from "config/icons";
 import type { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
-import { getIsRewardRouterChanged, getRewardRouterContract, RewardRouter } from "domain/stake/rewardRouter";
+import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import { getWithdrawableUnstakeAmount } from "domain/stake/unstakeRequests";
 import { callContract } from "lib/contracts";
@@ -15,7 +15,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { showRewardRouterChangedToast, showStakingErrorToast } from "components/Errors/stakingToasts";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
@@ -38,8 +38,6 @@ export function UnstakeWithdrawModal({
   setIsVisible,
   chainId,
   signer,
-  rewardRouter,
-  mutateRewardRouter,
   executableAmount,
   gmxInStakedGmx,
   esGmxInStakedGmx,
@@ -51,8 +49,6 @@ export function UnstakeWithdrawModal({
   setIsVisible: (isVisible: boolean) => void;
   chainId: ContractsChainId;
   signer: UncheckedJsonRpcSigner | undefined;
-  rewardRouter: RewardRouter;
-  mutateRewardRouter: () => void;
   executableAmount: bigint;
   gmxInStakedGmx: bigint;
   esGmxInStakedGmx: bigint;
@@ -99,15 +95,9 @@ export function UnstakeWithdrawModal({
     setIsWithdrawing(true);
 
     try {
-      if (await getIsRewardRouterChanged(chainId, rewardRouter)) {
-        mutateRewardRouter();
-        showRewardRouterChangedToast();
-        return;
-      }
-
       await callContract(
         chainId,
-        getRewardRouterContract(rewardRouter, signer),
+        getRewardRouterContract(chainId, signer),
         METHOD_NAME_BY_TOKEN[tokenSymbol],
         [amount],
         {
@@ -126,7 +116,7 @@ export function UnstakeWithdrawModal({
     } finally {
       setIsWithdrawing(false);
     }
-  }, [amount, chainId, mutateRewardRouter, rewardRouter, setIsVisible, setPendingTxns, signer, tokenSymbol]);
+  }, [amount, chainId, setIsVisible, setPendingTxns, signer, tokenSymbol]);
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {

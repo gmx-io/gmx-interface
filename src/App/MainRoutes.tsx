@@ -31,7 +31,7 @@ import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
-import { SolanaTradePlaceholder, EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
+import { EvmNetworksOnlyNotice } from "pages/SolanaNetwork/SolanaNetwork";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
@@ -50,6 +50,13 @@ const LazyUiPage = lazy(() => import("pages/UiPage/UiPage"));
 const UiPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyUiPage />
+  </Suspense>
+);
+
+const LazyDesignSystemPage = lazy(() => import("pages/DesignSystem/DesignSystemPage"));
+const DesignSystemPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDesignSystemPage />
   </Suspense>
 );
 
@@ -112,7 +119,6 @@ const EVM_ONLY_PAGE_PATHS = [
   "/referrals-tier",
   "/begin_account_transfer",
   "/complete_account_transfer",
-  "/rpc-debug",
   "/oracle-keeper-debug",
   "/jobs",
   "/ecosystem",
@@ -120,18 +126,35 @@ const EVM_ONLY_PAGE_PATHS = [
   "/parsetx",
 ];
 
-function SolanaRoutes() {
+// Loaded only while Solana is selected, which needs the solanaNetwork flag, so the Solana trade state
+// stays out of the startup chunks.
+const LazyGmsolSyntheticsStateProvider = lazy(() => import("domain/gmsol/GmsolSyntheticsStateProvider"));
+
+function SolanaTradePage({ openSettings }: { openSettings: () => void }) {
+  return (
+    <Suspense fallback={<Trans>Loading...</Trans>}>
+      <LazyGmsolSyntheticsStateProvider>
+        <SyntheticsPage openSettings={openSettings} />
+      </LazyGmsolSyntheticsStateProvider>
+    </Suspense>
+  );
+}
+
+function SolanaRoutes({ openSettings }: { openSettings: () => void }) {
   return (
     <Switch>
       <Route exact path="/">
         <RedirectWithQuery to="/trade" />
       </Route>
       <Route exact path="/trade/:tradeType?">
-        <SolanaTradePlaceholder />
+        <SolanaTradePage openSettings={openSettings} />
       </Route>
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/rpc-debug">
+        <RpcDebugPage />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
@@ -154,7 +177,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   }, [pathname]);
 
   if (!getNetworkFeatures(networkId).evmOnlyPages) {
-    return <SolanaRoutes />;
+    return <SolanaRoutes openSettings={openSettings} />;
   }
 
   return (
@@ -302,6 +325,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
+        </Route>,
+        <Route exact path="/ui/:slug" key="ui-design-system">
+          <DesignSystemPage />
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermitsPage />

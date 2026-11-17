@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test";
 import { decodeFunctionData, encodeFunctionResult, getAddress, type Hex } from "viem";
 import RewardReader from "../../../sdk/src/abis/RewardReader";
-import RewardRouter from "../../../sdk/src/abis/RewardRouter";
+import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
 import Reader from "../../../sdk/src/abis/ReaderV2";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { AccountState } from "../fixtures/accountState";
@@ -81,7 +81,7 @@ export function uiEarnRehearsal(state: AccountState, weth: string) {
         });
     },
     transact(data: Hex) {
-      const call = decodeFunctionData({ abi: RewardRouter, data });
+      const call = decodeFunctionData({ abi: RewardRouterV3, data });
       if (call.functionName === "handleRewards") {
         expect(call.args).toEqual([false, false, false, false, true, true, false]);
         state.balances.set(weth, (state.balances.get(weth) ?? 0n) + rewards);
@@ -92,11 +92,6 @@ export function uiEarnRehearsal(state: AccountState, weth: string) {
         stake = call.args[0];
         state.balances.set(gmx, state.balances.get(gmx)! - stake);
         state.balances.set(feeTracker, stake);
-      } else if (call.functionName === "unstakeGmx") {
-        expect(call.args[0]).toBe(stake);
-        state.balances.set(gmx, state.balances.get(gmx)! + stake);
-        stake = 0n;
-        state.balances.set(feeTracker, 0n);
       } else throw new Error("Unsupported simulated earn operation");
     },
   };

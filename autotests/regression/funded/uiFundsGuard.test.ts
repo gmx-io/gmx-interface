@@ -4,7 +4,7 @@ import { encodeFunctionData, getAddress, zeroAddress, zeroHash, type Hex } from 
 import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
 import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
 import IStargate from "../../../sdk/src/abis/IStargate";
-import RewardRouter from "../../../sdk/src/abis/RewardRouter";
+import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getMultichainTransferSendParams } from "../../../sdk/src/utils/multichain/sendParams";
 import { address, usdc, weth } from "./fundedQuote";
@@ -78,9 +78,9 @@ test("account UI guard binds amount, receiver, vault and operation", () => {
 test("claim UI guard permits only the bounded WETH claim flags and no ETH conversion", () => {
   const flags = [false, false, false, false, true, true, false] as const;
   const tx = {
-    to: getContract(42161, "RewardRouter"),
+    to: getContract(42161, "RewardRouterV3"),
     value: 0n,
-    data: encodeFunctionData({ abi: RewardRouter, functionName: "handleRewards", args: flags }),
+    data: encodeFunctionData({ abi: RewardRouterV3, functionName: "handleRewards", args: flags }),
   };
   inspectUiEarn(tx, "handleRewards");
   for (const index of [0, 1, 2, 3, 5, 6]) {
@@ -91,7 +91,7 @@ test("claim UI guard permits only the bounded WETH claim flags and no ETH conver
         {
           ...tx,
           data: encodeFunctionData({
-            abi: RewardRouter,
+            abi: RewardRouterV3,
             functionName: "handleRewards",
             args: args as unknown as typeof flags,
           }),

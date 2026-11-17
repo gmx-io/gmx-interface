@@ -5,6 +5,7 @@ import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getSolanaRpcUrl } from "config/rpc";
+import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { metrics } from "lib/metrics";
 import { registerRpcTracker } from "lib/rpc/registry";
 
@@ -38,6 +39,7 @@ afterEach(() => {
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
   vi.useRealTimers();
+  setIsSolanaNetworkSelected(false);
   localStorage.clear();
   setAbFlagEnabled("solanaNetwork", false);
 });
@@ -135,7 +137,7 @@ it.each([true, false])(
   async (initiallyHealthy) => {
     vi.useFakeTimers();
     setAbFlagEnabled("solanaNetwork", true);
-    localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
+    setIsSolanaNetworkSelected(true);
     const tracker = createTracker();
     const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
     if (!initiallyHealthy) probe.mockRejectedValue(new Error("RPC unavailable"));
@@ -193,8 +195,7 @@ it("stops Solana probes on EVM and resumes only while Solana is enabled and sele
     })
   );
   const selectSolana = (selected: boolean) => {
-    if (selected) localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
-    else localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
+    setIsSolanaNetworkSelected(selected);
     document.dispatchEvent(
       new CustomEvent("networkChange", { detail: { chainId: selected ? SOLANA_NETWORK_ID : ARBITRUM } })
     );
@@ -228,6 +229,28 @@ it("stops Solana probes on EVM and resumes only while Solana is enabled and sele
     selectSolana(true);
     await vi.advanceTimersByTimeAsync(20_000);
     expect(requests).toHaveLength(stoppedAt + 2);
+  } finally {
+    unregister();
+  }
+});
+
+it("keeps this tab's Solana selection when another tab changes storage", async () => {
+  vi.useFakeTimers();
+  setAbFlagEnabled("solanaNetwork", true);
+  setIsSolanaNetworkSelected(true);
+  localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
+  const tracker = createTracker();
+  const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
+  const unregister = registerRpcTracker(tracker);
+  try {
+    await vi.advanceTimersByTimeAsync(5000);
+    expect(probe).toHaveBeenCalledTimes(1);
+    setIsSolanaNetworkSelected(false);
+    localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
+    document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: ARBITRUM } }));
+    await vi.advanceTimersByTimeAsync(40_000);
+    expect(probe).toHaveBeenCalledTimes(1);
+    expect(tracker.fallbackTracker.state.trackerTimeoutId).toBeUndefined();
   } finally {
     unregister();
   }

@@ -1,6 +1,6 @@
 import { expect, type BrowserContext, type Page } from "@playwright/test";
 
-import { datedChainAnnouncements } from "../fixtures/announcements";
+import { datedChainAnnouncements, dismissOutageWarning } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -20,6 +20,10 @@ async function mockUiFlags(context: BrowserContext, overrides: Record<string, bo
 
 function banner(page: Page, title: string | RegExp) {
   return page.getByTestId("announcement-banner").filter({ hasText: title });
+}
+
+function whatsNewCard(page: Page) {
+  return page.getByRole("region", { name: "What's new" });
 }
 
 test("2.24 the KLI service-disruption banner shows while its flag is on, dismisses for a day, returns after the cooldown and hides when the flag is off", async ({
@@ -63,12 +67,13 @@ test("2.24 a KLI flag-gated listing appears in What's new only while its flag is
     .filter((candidate) => candidate.flagId && candidate.title)
     .sort((a, b) => b.start - a.start)[0];
   test.skip(!event, "No flag-gated announcement with a start date targets this chain");
+  await dismissOutageWarning(page);
   await page.clock.install({ time: event.start + 60 * 60 * 1000 });
   const flags = await mockUiFlags(context, { [event.flagId!]: true });
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
-  const whatsNew = banner(page, "What's new");
+  const whatsNew = whatsNewCard(page);
   await expect(whatsNew.getByText(event.title!, { exact: true }).last()).toBeAttached();
-  await expect(whatsNew.getByRole("link", { name: "See more" })).toBeVisible();
+  await expect(whatsNew.getByRole("link", { name: "See more" }).first()).toBeVisible();
 
   flags[event.flagId!] = false;
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -109,17 +114,24 @@ test("2.24 the Update available banner offers a reload for a newer build and its
   await expect(update).toBeVisible();
 });
 
-test("2.24 the wallet-extension connection banner shows in its window and stays dismissed across in-app navigation", async ({
+test("2.24 the top-right corner shows one message at a time: an outage warning first, What's new after it is closed", async ({
   page,
+  context,
+  chainId,
 }) => {
-  await page.clock.install({ time: Date.UTC(2026, 7, 3, 18) });
+  const latest = datedChainAnnouncements(chainId)
+    .filter((event) => event.isActive && !event.flagId && event.title)
+    .sort((a, b) => b.start - a.start)[0];
+  expect(latest, "a titled, always-on announcement in src/config/events.tsx").toBeDefined();
+  await page.clock.install({ time: latest.start + 60 * 60 * 1000 });
+  await mockUiFlags(context, { showServiceDisruptionBanner: true });
   await page.goto("/pools", { waitUntil: "domcontentloaded" });
-  const wallet = banner(page, "Wallet connection");
-  await expect(wallet).toBeVisible();
-  await expect(wallet).toContainText("Disable and reenable your wallet extension");
-  await wallet.getByTestId("announcement-banner-close").click();
-  await expect(wallet).toHaveCount(0);
-  await page.getByRole("link", { name: "Stats", exact: true }).first().click();
-  await expect(page.getByTestId("dashboard-page")).toBeVisible();
-  await expect(wallet).toHaveCount(0);
+  const cards = page.getByTestId("whats-new-toast-container").getByTestId("announcement-banner");
+  const disruption = banner(page, "Service disruption");
+  await expect(disruption).toBeVisible();
+  await expect(cards).toHaveCount(1);
+  await disruption.getByTestId("announcement-banner-close").click();
+  await expect(whatsNewCard(page)).toBeVisible();
+  await expect(whatsNewCard(page).getByText(latest.title!, { exact: true }).first()).toBeAttached();
+  await expect(cards).toHaveCount(1);
 });

@@ -16,7 +16,7 @@ const STAKED_AMOUNT = 4730123000000000000000n;
 
 let chainValues: Record<string, bigint> = {};
 
-function setChainValue(account: string, contractName: ContractName, method: string, value: bigint) {
+function setChainValue(account: string | undefined, contractName: ContractName, method: string, value: bigint) {
   chainValues[`${account}.${getContract(ARBITRUM, contractName)}.${method}`] = value;
 }
 
@@ -38,13 +38,6 @@ vi.mock("lib/wallets/useWallet", () => ({
 
 vi.mock("lib/chains", () => ({
   useChainId: () => ({ chainId: ARBITRUM }),
-}));
-
-vi.mock("domain/stake/useRewardRouter", () => ({
-  useRewardRouter: () => ({
-    rewardRouter: { address: getContract(ARBITRUM, "RewardRouter"), version: "v2" },
-    mutateRewardRouter: vi.fn(),
-  }),
 }));
 
 vi.mock("lib/contracts", () => ({
@@ -79,6 +72,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   chainValues = {};
+  setChainValue(undefined, "RewardRouterV3", "designatedVestersLength", 1n);
   setChainValue(SENDER, "FeeGmxTracker", "balanceOf", STAKED_AMOUNT);
   setChainValue(SENDER, "FeeGmxTracker", "stakedAmounts", STAKED_AMOUNT);
 });

@@ -38,7 +38,7 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTrackerObserver) {
         data: {
           chainId: tracker.params.chainId,
           chainName: getChainName(tracker.params.chainId),
-          endpoint: getProviderNameFromUrl(endpoint),
+          endpoint: isSolana ? new URL(endpoint).hostname : getProviderNameFromUrl(endpoint),
           reason: reason,
         },
       });

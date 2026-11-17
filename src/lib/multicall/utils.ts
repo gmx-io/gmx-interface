@@ -1,3 +1,5 @@
+import { BaseError, CallExecutionError, ContractFunctionRevertedError, ContractFunctionZeroDataError } from "viem";
+
 import type { AbiId } from "sdk/abis";
 
 import type { MulticallErrors } from "./types";
@@ -24,6 +26,20 @@ export function serializeMulticallErrors(errors: MulticallErrors<any>) {
   }
 
   return errorString;
+}
+
+// viem labels a whole failed chunk as reverted when the RPC answers -32603 or code 3, so a read only counts
+// as reverted when its error came from decoding aggregate3 results, not from the RPC call itself.
+export function isContractRevert(error: unknown) {
+  return (
+    error instanceof BaseError &&
+    !error.walk((cause) => cause instanceof CallExecutionError) &&
+    Boolean(
+      error.walk(
+        (cause) => cause instanceof ContractFunctionRevertedError || cause instanceof ContractFunctionZeroDataError
+      )
+    )
+  );
 }
 
 export function getCallId(contractAddress: string, abiId: AbiId, methodName: string, params: any[]) {

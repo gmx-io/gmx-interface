@@ -4,8 +4,10 @@ import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGmxAccountGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectGmxAccountExpressFeeTokenAddress,
+  selectGmxAccountGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ArbitraryExpressError,
@@ -35,6 +37,7 @@ import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
+import { getIsRelayUnavailableError } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -58,8 +61,8 @@ import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculate
 import Modal from "components/Modal/Modal";
 import { SimpleNetworkFeeRow } from "components/NetworkFeeRow/SimpleNetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CheckCircleIcon from "img/ic_check_circle.svg?react";
 import CloseCircleIcon from "img/ic_close_circle.svg?react";
@@ -284,7 +287,7 @@ function ClaimModalMultichain(p: Props) {
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
+  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountExpressFeeTokenAddress);
 
   const networkFee = useMemo((): ClaimNetworkFee => {
     const gasPaymentParams = expressTxnParamsAsyncResult.data?.gasPaymentParams;
@@ -395,6 +398,7 @@ function ClaimModalMultichain(p: Props) {
 
         const toastParams = getTxnErrorToast(chainId, errorData, {
           defaultMessage: getClaimFundingFailureToastContent(),
+          isRelayUnavailable: getIsRelayUnavailableError(error),
           expressTxn: { gasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress, isGmxAccount: true },
         });
         helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
@@ -563,10 +567,9 @@ function ClaimModalComponent(p: {
     );
 
     const rowLabel = isDisabledMarket ? (
-      <TooltipWithPortal
-        position="top-start"
+      <StandardTooltip
         handle={labelContent}
-        content={<Trans>This market has been disabled. Contact support to claim your remaining funding fees.</Trans>}
+        content={t`This market has been disabled. Contact support to claim your remaining funding fees.`}
       />
     ) : (
       labelContent
@@ -592,9 +595,8 @@ function ClaimModalComponent(p: {
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{rowLabel}</div>
         </Checkbox>
         <div className="ClaimSettleModal-info-label-usd">
-          <Tooltip
-            className="ClaimSettleModal-tooltip"
-            position="top-end"
+          <StandardTooltip
+            position="bottom-end"
             handle={
               <DeltaUsdValue
                 deltaUsd={totalFundingUsd}
@@ -602,16 +604,20 @@ function ClaimModalComponent(p: {
               />
             }
             renderContent={() => (
-              <>
-                {claimableAmountsItems.map((item) => (
-                  <div key={item}>{item}</div>
-                ))}
+              <TooltipContent>
+                <TooltipText>
+                  {claimableAmountsItems.map((item) => (
+                    <div key={item}>{item}</div>
+                  ))}
+                </TooltipText>
                 {isMarketInsufficient && (
-                  <div className="mt-5 text-yellow-500">
-                    <Trans>Insufficient pool balance to claim this funding fee</Trans>
-                  </div>
+                  <TooltipText>
+                    <span className="text-yellow-500">
+                      <Trans>Insufficient pool balance to claim this funding fee</Trans>
+                    </span>
+                  </TooltipText>
                 )}
-              </>
+              </TooltipContent>
             )}
           />
         </div>
@@ -658,15 +664,12 @@ function ClaimModalComponent(p: {
           </div>
         </div>
         <div className="ClaimSettleModal-info-label-usd">
-          <Tooltip
+          <StandardTooltip
             className="ClaimSettleModal-tooltip-text-gray"
-            position="top-end"
+            variant="iconStroke"
+            position="bottom-end"
             handle={t`FUNDING FEE`}
-            renderContent={() => (
-              <Trans>
-                <span className="text-typography-primary">Positive funding fees accrued from your positions</span>
-              </Trans>
-            )}
+            content={t`Positive funding fees accrued from your positions`}
           />
         </div>
       </div>

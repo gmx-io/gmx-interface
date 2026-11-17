@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, ContractsChainId, MEGAETH } from "config/chains";
+import { ContractsChainId, MEGAETH } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import useVestingData from "domain/vesting/useVestingData";
@@ -21,7 +21,7 @@ import type { MulticallRequestConfig, MulticallResult } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 
 export function useStakingProcessedData(targetChainId?: ContractsChainId) {
-  const { active, signer, account } = useWallet();
+  const { active, account } = useWallet();
   const { chainId: currentChainId } = useChainId();
   const chainId = targetChainId ?? currentChainId;
 
@@ -29,7 +29,7 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
 
   const vestingData = useVestingData(account, chainId);
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
+  const { gmxPrice } = useGmxPrice();
 
   const accountForQuery = account || PLACEHOLDER_ACCOUNT;
 

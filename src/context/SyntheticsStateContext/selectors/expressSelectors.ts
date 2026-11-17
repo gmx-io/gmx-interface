@@ -1,10 +1,18 @@
+import isEqual from "lodash/isEqual";
+
 import { isUiApiSupported } from "config/api";
 import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import type { GlobalExpressParams } from "domain/synthetics/express";
+import {
+  getAvailableGasPaymentTokenAddress,
+  getGasPaymentTokenUnavailableReason,
+  type GasPaymentTokenUnavailableReason,
+} from "domain/synthetics/express/gasPaymentTokenAvailability";
 import { getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
-import { EMPTY_OBJECT, getByKey } from "lib/objects";
-import { getRelayerFeeToken } from "sdk/configs/express";
+import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
+import { getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
+import { estimateBatchMinGasPaymentTokenAmount } from "sdk/utils/fees/executionFee";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { createFindSwapPath } from "sdk/utils/swap/swapPath";
 import type { FindSwapPath } from "sdk/utils/trade/types";
@@ -15,6 +23,8 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPaymentTokenAllowance,
+  selectGasPaymentTokenReplacements,
+  selectGasPaymentTokensOnchainState,
   selectGasPrice,
   selectIsExpressAvailableFlag,
   selectIsRelayRouterEnabled,
@@ -42,13 +52,123 @@ function createSelectGasPaymentToken(selectGasPaymentTokenAddressSelector: GasPa
   });
 }
 
-export const selectSettlementChainGasPaymentToken = createSelectGasPaymentToken(selectGasPaymentTokenAddress);
+const makeSelectExpressFindSwapPathForGasPaymentToken = createSelectorFactory((gasPaymentTokenAddress: string) =>
+  createSelectExpressFindSwapPath(() => gasPaymentTokenAddress)
+);
 
-export const selectGmxAccountGasPaymentToken = createSelectGasPaymentToken(selectGmxAccountGasPaymentTokenAddress);
+// prices update every second; returning the previous object while nothing changed keeps dependents from re-running
+let lastUnavailableGasPaymentTokens: Record<string, GasPaymentTokenUnavailableReason> = EMPTY_OBJECT;
+
+export const selectUnavailableGasPaymentTokens = createSelector(function selectUnavailableGasPaymentTokens(q): Record<
+  string,
+  GasPaymentTokenUnavailableReason
+> {
+  const chainId = q(selectChainId);
+  const onchainState = q(selectGasPaymentTokensOnchainState);
+  const relayerFeeToken = getByKey(q(selectTokensData), getRelayerFeeToken(chainId).address);
+
+  // until markets and price feed flags load, every fee route looks missing
+  if (!q(selectMarketsInfoData) || relayerFeeToken?.hasPriceFeedProvider === undefined) {
+    return EMPTY_OBJECT;
+  }
+
+  const unavailableTokens: Record<string, GasPaymentTokenUnavailableReason> = {};
+
+  for (const tokenAddress of getGasPaymentTokens(chainId)) {
+    const reason = getGasPaymentTokenUnavailableReason({
+      chainId,
+      tokenAddress,
+      findFeeSwapPath: q(makeSelectExpressFindSwapPathForGasPaymentToken(tokenAddress)),
+      onchainState,
+    });
+
+    if (reason !== undefined) {
+      unavailableTokens[tokenAddress] = reason;
+    }
+  }
+
+  if (!isEqual(unavailableTokens, lastUnavailableGasPaymentTokens)) {
+    lastUnavailableGasPaymentTokens = Object.keys(unavailableTokens).length > 0 ? unavailableTokens : EMPTY_OBJECT;
+  }
+
+  return lastUnavailableGasPaymentTokens;
+});
+
+export const selectUnavailableGasPaymentTokenAddresses = createSelector((q): string[] => {
+  const unavailableTokens = q(selectUnavailableGasPaymentTokens);
+
+  return unavailableTokens === EMPTY_OBJECT ? EMPTY_ARRAY : Object.keys(unavailableTokens);
+});
+
+function createSelectExpressFeeTokenAddress(
+  selectSavedGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector,
+  isGmxAccount: boolean
+) {
+  return createSelector(function selectExpressFeeTokenAddress(q) {
+    const chainId = q(selectChainId);
+    const tokensData = q(selectTokensData);
+    const gasLimits = q(selectGasLimits);
+    const gasPrice = q(selectGasPrice);
+    const l1Reference = q(selectL1ExpressOrderGasReference);
+    const relayFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
+
+    return getAvailableGasPaymentTokenAddress({
+      chainId,
+      savedTokenAddress: q(selectSavedGasPaymentTokenAddressSelector),
+      replacementTokenAddress: q(selectGasPaymentTokenReplacements)?.[isGmxAccount ? "gmxAccount" : "wallet"],
+      unavailableTokens: q(selectUnavailableGasPaymentTokens),
+      tokensData,
+      tokensAllowanceData: isGmxAccount ? undefined : q(selectGasPaymentTokenAllowance)?.tokensAllowanceData,
+      tokenPermits: isGmxAccount ? EMPTY_ARRAY : q(selectTokenPermits),
+      isGmxAccount,
+      getMinFeeAmount: (gasPaymentToken) =>
+        tokensData && relayFeeToken && gasLimits && gasPrice !== undefined
+          ? estimateBatchMinGasPaymentTokenAmount({
+              chainId,
+              gasPaymentToken,
+              isGmxAccount,
+              relayFeeToken,
+              gasPrice: getExpressGasPrice(chainId, gasPrice),
+              gasLimits,
+              l1Reference,
+              tokensData,
+              createOrdersCount: 1,
+              updateOrdersCount: 0,
+              cancelOrdersCount: 0,
+              executionFeeAmount: undefined,
+            })
+          : undefined,
+    });
+  });
+}
+
+export const selectSettlementChainExpressFeeTokenAddress = createSelectExpressFeeTokenAddress(
+  selectGasPaymentTokenAddress,
+  false
+);
+
+export const selectGmxAccountExpressFeeTokenAddress = createSelectExpressFeeTokenAddress(
+  selectGmxAccountGasPaymentTokenAddress,
+  true
+);
+
+export const selectSettlementChainGasPaymentToken = createSelectGasPaymentToken(
+  selectSettlementChainExpressFeeTokenAddress
+);
+
+export const selectGmxAccountGasPaymentToken = createSelectGasPaymentToken(selectGmxAccountExpressFeeTokenAddress);
 
 export const selectGasPaymentToken = createSelector((q) => {
   const srcChainId = q(selectSrcChainId);
   return q(srcChainId !== undefined ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken);
+});
+
+export const selectUnavailableExpressFeeToken = createSelector((q) => {
+  const gasPaymentToken = q(selectGasPaymentToken);
+
+  return gasPaymentToken !== undefined && q(selectUnavailableGasPaymentTokens)[gasPaymentToken.address] !== undefined
+    ? gasPaymentToken
+    : undefined;
 });
 
 export const selectIsExpressTransactionAvailable = createSelector((q) => {
@@ -85,9 +205,11 @@ function createSelectExpressFindSwapPath(selectGasPaymentTokenAddressSelector: G
   });
 }
 
-const selectSettlementChainExpressFindSwapPath = createSelectExpressFindSwapPath(selectGasPaymentTokenAddress);
+const selectSettlementChainExpressFindSwapPath = createSelectExpressFindSwapPath(
+  selectSettlementChainExpressFeeTokenAddress
+);
 
-const selectGmxAccountExpressFindSwapPath = createSelectExpressFindSwapPath(selectGmxAccountGasPaymentTokenAddress);
+const selectGmxAccountExpressFindSwapPath = createSelectExpressFindSwapPath(selectGmxAccountExpressFeeTokenAddress);
 
 function createSelectExpressGlobalParams(
   selectGasPaymentTokenAddressSelector: GasPaymentTokenAddressSelector,
@@ -152,16 +274,16 @@ function createSelectExpressGlobalParams(
 }
 
 export const selectSettlementChainExpressGlobalParams = createSelectExpressGlobalParams(
-  selectGasPaymentTokenAddress,
+  selectSettlementChainExpressFeeTokenAddress,
   selectSettlementChainExpressFindSwapPath
 );
 
 export const selectGmxAccountExpressGlobalParams = createSelectExpressGlobalParams(
-  selectGmxAccountGasPaymentTokenAddress,
+  selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountExpressFindSwapPath
 );
 
-export const makeSelectSettlementChainExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
+export const makeSelectExpressGlobalParamsForGasPaymentToken = createSelectorFactory(
   (gasPaymentTokenAddress: string) => {
     const selectGasPaymentTokenAddressOverride = () => gasPaymentTokenAddress;
 

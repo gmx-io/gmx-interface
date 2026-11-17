@@ -14,13 +14,14 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { getMultichainFundingToken, getMultichainFundingTokenLabel } from "domain/multichain/getMultichainFundingToken";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_EXPLORER_NAME, CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { formatAmountFree } from "lib/numbers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { Amount } from "components/Amount/Amount";
@@ -114,7 +115,10 @@ export const TransferDetailsView = () => {
     setIsTransferPending(isMultichainFundingItemLoading(selectedTransfer));
   }, [selectedTransfer]);
 
-  const token = selectedTransfer ? getToken(chainId, selectedTransfer.token) : undefined;
+  const token = selectedTransfer
+    ? getMultichainFundingToken(selectedTransfer.settlementChainId, selectedTransfer.token)
+    : undefined;
+  const tokenLabel = token ? getMultichainFundingTokenLabel(token) : undefined;
 
   let sourceChainId: number | undefined;
   let initialChainId: number | undefined;
@@ -231,7 +235,7 @@ export const TransferDetailsView = () => {
                   amount={selectedTransfer.sentAmount}
                   decimals={token.decimals}
                   isStable={token.isStable}
-                  symbol={token.symbol}
+                  symbol={tokenLabel}
                   symbolClassName="text-typography-secondary"
                 />
               ) : undefined
@@ -271,13 +275,15 @@ export const TransferDetailsView = () => {
           )}
         </AlertInfoCard>
       ) : null}
-      <Button
-        variant="secondary"
-        onClick={handleRepeatTransaction}
-        disabled={!selectedTransfer || !token || !sourceChainId}
-      >
-        <Trans>Repeat transaction</Trans>
-      </Button>
+      {!token?.isPlatformToken && (
+        <Button
+          variant="secondary"
+          onClick={handleRepeatTransaction}
+          disabled={!selectedTransfer || !token || !sourceChainId}
+        >
+          <Trans>Repeat transaction</Trans>
+        </Button>
+      )}
     </div>
   );
 };

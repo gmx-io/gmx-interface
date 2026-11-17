@@ -34,6 +34,7 @@ import { selectFinancialAccount, type FinancialProfile, type FinancialEvidence }
 
 export type LiveProfile =
   | "position"
+  | "keepLeverage"
   | "order"
   | "staking"
   | "glv"
@@ -128,7 +129,7 @@ export type LiveAccount = Candidate & {
   referralCodeCount?: number;
   transfers?: { deposit: FundingTransfer; withdrawal: FundingTransfer };
   trades?: { open: string; close: string };
-  vesting?: { vested: bigint; maxVestable: bigint; walletEsGmx: bigint; unstakeEsGmxMax: bigint };
+  vesting?: { vested: bigint; maxVestable: bigint; walletEsGmx: bigint };
   staking?: { gmx: bigint; esGmx: bigint; unstakeMax: bigint; power: StakingPowerResponse };
   distributions?: Distribution[];
 };
@@ -144,6 +145,8 @@ const fields: Record<Exclude<LiveProfile, FinancialProfile>, string> = {
     "claimActions(limit:20,orderBy:timestamp_DESC,where:{eventName_eq:ClaimFunding}) { account transactionHash timestamp }",
   referral: "referralCodeOwners(limit:20,orderBy:updatedAtTimestamp_DESC) { owner id }",
   position:
+    'positions(limit: 20, orderBy: openedAt_ASC, where: {isSnapshot_eq: false, sizeInUsd_gt: "100000000000000000000000000000000"}) { account positionKey }',
+  keepLeverage:
     'positions(limit: 20, orderBy: openedAt_ASC, where: {isSnapshot_eq: false, sizeInUsd_gt: "100000000000000000000000000000000"}) { account positionKey }',
   order:
     "orders(limit: 20, orderBy: updatedAtBlock_ASC, where: {status_eq: Created, orderType_eq: 3, twapGroupId_isNull: true}) { account id }",
@@ -169,6 +172,7 @@ const entities: Record<Exclude<LiveProfile, FinancialProfile>, string> = {
   claims: "claimActions",
   referral: "referralCodeOwners",
   position: "positions",
+  keepLeverage: "positions",
   order: "orders",
   tpsl: "tradeActions",
   transfers: "multichainFundingSendEvents",
@@ -265,7 +269,7 @@ export class LiveAccounts {
             )
           ),
           key:
-            profile === "position" || profile === "accrued"
+            profile === "position" || profile === "accrued" || profile === "keepLeverage"
               ? String(row.positionKey)
               : profile === "order"
                 ? String(row.id)
@@ -337,10 +341,12 @@ export class LiveAccounts {
       );
       return result.periodAccountStats.some((account) => getAddress(account.id) === row.account) ? {} : undefined;
     }
-    if (profile === "position" || profile === "accrued") {
+    if (profile === "position" || profile === "accrued" || profile === "keepLeverage") {
       const positions = await fetchApiPositionsInfo(this, { address: row.account });
       const position = positions.find((p) => p.contractKey === row.key && p.sizeInUsd > 0n);
       if (profile === "accrued" && (position?.pendingClaimableFundingFeesUsd ?? 0n) < 10n ** 29n) return;
+      // Once pending fees pass the collateral there is no leverage to keep, and the app disables the option.
+      if (profile === "keepLeverage" && position?.leverageWithoutPnl === undefined) return;
       return position ? { position } : undefined;
     }
     if (profile === "order") {
@@ -430,13 +436,15 @@ export class LiveAccounts {
         args: [row.account, getAddress(getContract(this.chainId, "ES_GMX"))],
       });
       const power = await fetchApiStakingPower(this, { address: row.account });
-      const available = await this.rpc.readContract({
-        address: getAddress(getContract(this.chainId, "FeeGmxTracker")),
-        abi: erc20Abi,
-        functionName: "balanceOf",
+      const pending = await this.rpc.readContract({
+        address: getAddress(getContract(this.chainId, "RewardRouterV3")),
+        abi: parseAbi(["function pendingUnstakeAmount(address) view returns(uint256)"]),
+        functionName: "pendingUnstakeAmount",
         args: [row.account],
       });
-      const unstakeMax = gmx < available ? gmx : available;
+      // RewardRouterV3.signalUnstake accepts staked GMX and esGMX together, less the amount already requested
+      const stakedTotal: bigint = gmx + esGmx;
+      const unstakeMax = stakedTotal > pending ? stakedTotal - pending : 0n;
       if (power.currentStaked <= 0n || unstakeMax <= 0n) return;
       const staking = { gmx, esGmx, unstakeMax, power };
       if (profile === "staking") return { staking };
@@ -454,10 +462,9 @@ export class LiveAccounts {
         functionName: "balanceOf",
         args: [row.account],
       });
-      const unstakeEsGmxMax = esGmx < available ? esGmx : available;
       return {
         staking,
-        vesting: { vested: vestingInfo[1], maxVestable: vestingInfo[5], walletEsGmx, unstakeEsGmxMax },
+        vesting: { vested: vestingInfo[1], maxVestable: vestingInfo[5], walletEsGmx },
       };
     }
     if (profile === "referral") {

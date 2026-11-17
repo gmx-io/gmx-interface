@@ -20,6 +20,7 @@ import {
 
 export function useClosingPoolsNotices(): {
   notices: ClosingPoolsNotice[];
+  isLoading: boolean;
   markSeen: (notice: ClosingPoolsNotice) => void;
 } {
   const { account } = useWallet();
@@ -75,5 +76,5 @@ export function useClosingPoolsNotices(): {
     [storage]
   );
 
-  return { notices, markSeen };
+  return { notices, isLoading: enabled && (!positionsData || !ordersInfoData), markSeen };
 }
