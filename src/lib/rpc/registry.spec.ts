@@ -1,13 +1,16 @@
 import { afterEach, expect, it, vi } from "vitest";
 
+import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
-import { RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS } from "config/rpc";
+import { getProviderNameFromUrl, RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS } from "config/rpc";
+import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { emitEndpointBanned, emitEndpointsUpdated, emitTrackingFinished } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { metrics } from "lib/metrics";
 
 import { getRegisteredRpcTracker, registerRpcTracker } from "./registry";
 import { RpcTracker } from "./RpcTracker";
+import { getRpcTrackerByChainId, syncEvmRpcTracking } from "./useRpcUrls";
 
 let cleanup: (() => void) | undefined;
 afterEach(() => {
@@ -74,9 +77,11 @@ it.each([ARBITRUM, SOLANA_NETWORK_ID])(
     });
     if (networkId === SOLANA_NETWORK_ID) expect(update?.payload.customFields?.progressUnit).toBe("slot");
     else expect(update?.payload.customFields).not.toHaveProperty("progressUnit");
-    expect(
-      metrics.queue.some((item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned")
-    ).toBe(true);
+    const ban = metrics.queue.find(
+      (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
+    );
+    expect(ban?.payload.customFields?.endpoint).toBe(getProviderNameFromUrl(endpoints[0]));
+    expect(JSON.stringify(ban)).not.toContain(endpoints[0]);
     const gaps = metrics.queue.filter(
       (item) => item.type === "timing" && item.payload.event === "rpcTracker.endpoint.blockGap"
     );
@@ -93,3 +98,28 @@ it.each([ARBITRUM, SOLANA_NETWORK_ID])(
     expect(metrics.queue).toEqual([]);
   }
 );
+
+it("keeps EVM probes owned by their registry across Solana switches", () => {
+  vi.useFakeTimers();
+  setAbFlagEnabled("solanaNetwork", true);
+  setIsSolanaNetworkSelected(true);
+  try {
+    syncEvmRpcTracking();
+    const tracker = getRpcTrackerByChainId(ARBITRUM)!;
+    expect(tracker.fallbackTracker.state.startDelayTimeoutId).toBeUndefined();
+    expect(tracker.fallbackTracker.state.trackerTimeoutId).toBeUndefined();
+    setIsSolanaNetworkSelected(false);
+    syncEvmRpcTracking();
+    expect(tracker.fallbackTracker.state.startDelayTimeoutId).toBeDefined();
+    setIsSolanaNetworkSelected(true);
+    syncEvmRpcTracking();
+    expect(tracker.fallbackTracker.state.startDelayTimeoutId).toBeUndefined();
+    expect(tracker.fallbackTracker.state.trackerTimeoutId).toBeUndefined();
+  } finally {
+    setIsSolanaNetworkSelected(true);
+    syncEvmRpcTracking();
+    setIsSolanaNetworkSelected(false);
+    setAbFlagEnabled("solanaNetwork", false);
+    vi.useRealTimers();
+  }
+});
