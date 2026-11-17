@@ -27,13 +27,13 @@
  * bound from the whole-token price with `appTokenPriceToGmsolUnitPrice`, which rounds once.
  */
 
-import { USD_DECIMALS } from "utils/numbers";
+import { GMSOL_MAX_UNSIGNED, GMSOL_PRECISION_SCALE } from "./constants";
 
 export const GMSOL_USD_DECIMALS = 20;
 export const MAX_GMSOL_TOKEN_DECIMALS = 30;
-export const APP_TO_GMSOL_USD_DIVISOR = 10n ** BigInt(USD_DECIMALS - GMSOL_USD_DECIMALS);
+export const APP_TO_GMSOL_USD_DIVISOR = GMSOL_PRECISION_SCALE;
 export const U64_MAX = 2n ** 64n - 1n;
-export const U128_MAX = 2n ** 128n - 1n;
+export const U128_MAX = GMSOL_MAX_UNSIGNED;
 
 export type GmsolRounding = "floor" | "ceil";
 
