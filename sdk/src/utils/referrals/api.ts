@@ -1,37 +1,41 @@
 import type { IHttp } from "utils/http/types";
-import { getApiFieldReaders } from "utils/http/validation";
+import { readApiString, readApiUnsignedBigInt, readApiUnsignedInteger } from "utils/http/validation";
+import { isRecord } from "utils/objects";
 
 import type { FeeDiscount } from "./types";
 
 const FEE_DISCOUNT_ENDPOINT = "/v1/fee-discount";
 
-const { readBigInt, readBoolean, readNullableString, readString, readUint } = getApiFieldReaders(FEE_DISCOUNT_ENDPOINT);
-
 export function parseFeeDiscount(raw: unknown): FeeDiscount {
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+  if (!isRecord(raw)) {
     throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected an object`);
   }
 
-  const record = raw as Record<string, unknown>;
+  const record = raw;
+  const endpoint = FEE_DISCOUNT_ENDPOINT;
+
+  if (typeof record.attachedOnChain !== "boolean") {
+    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected boolean field "attachedOnChain"`);
+  }
 
   return {
     userReferralInfo: {
-      userReferralCode: readString(record.userReferralCode, "userReferralCode"),
-      userReferralCodeString: readString(record.userReferralCodeString, "userReferralCodeString"),
-      referralCodeForTxn: readString(record.referralCodeForTxn, "referralCodeForTxn"),
-      attachedOnChain: readBoolean(record.attachedOnChain, "attachedOnChain"),
-      affiliate: readString(record.affiliate, "affiliate"),
-      tierId: readUint(record.tierId, "tierId"),
-      totalRebate: readBigInt(record.totalRebate, "totalRebate"),
-      totalRebateFactor: readBigInt(record.totalRebateFactor, "totalRebateFactor"),
-      discountShare: readBigInt(record.discountShare, "discountShare"),
-      discountFactor: readBigInt(record.discountFactor, "discountFactor"),
+      userReferralCode: readApiString({ record, name: "userReferralCode", endpoint }),
+      userReferralCodeString: readApiString({ record, name: "userReferralCodeString", endpoint }),
+      referralCodeForTxn: readApiString({ record, name: "referralCodeForTxn", endpoint }),
+      attachedOnChain: record.attachedOnChain,
+      affiliate: readApiString({ record, name: "affiliate", endpoint }),
+      tierId: readApiUnsignedInteger({ record, name: "tierId", endpoint }),
+      totalRebate: readApiUnsignedBigInt({ record, name: "totalRebate", endpoint }),
+      totalRebateFactor: readApiUnsignedBigInt({ record, name: "totalRebateFactor", endpoint }),
+      discountShare: readApiUnsignedBigInt({ record, name: "discountShare", endpoint }),
+      discountFactor: readApiUnsignedBigInt({ record, name: "discountFactor", endpoint }),
     },
-    orderFeeDiscountFactor: readBigInt(record.orderFeeDiscountFactor, "orderFeeDiscountFactor"),
-    gtRank: readUint(record.gtRank, "gtRank"),
-    rankDiscountFactor: readBigInt(record.rankDiscountFactor, "rankDiscountFactor"),
-    referrer: readNullableString(record.referrer, "referrer"),
-    referredUserDiscountFactor: readBigInt(record.referredUserDiscountFactor, "referredUserDiscountFactor"),
+    orderFeeDiscountFactor: readApiUnsignedBigInt({ record, name: "orderFeeDiscountFactor", endpoint }),
+    gtRank: readApiUnsignedInteger({ record, name: "gtRank", endpoint }),
+    rankDiscountFactor: readApiUnsignedBigInt({ record, name: "rankDiscountFactor", endpoint }),
+    referrer: record.referrer === null ? undefined : readApiString({ record, name: "referrer", endpoint }),
+    referredUserDiscountFactor: readApiUnsignedBigInt({ record, name: "referredUserDiscountFactor", endpoint }),
     updatedAt: typeof record.updatedAt === "number" ? record.updatedAt : undefined,
   };
 }
