@@ -422,7 +422,7 @@ export function createViteConfig(
       solanaBuildIsolation({ requireAppBootstrap }),
       optionalSolanaSystemStub(),
       sdkDedupe(),
-      tsconfigPaths(),
+      tsconfigPaths({ projects: ["./tsconfig.json", "./landing/tsconfig.json", "./sdk/tsconfig.json"] }),
       react({
         babel: {
           plugins: ["macros"],
@@ -465,6 +465,7 @@ export function createViteConfig(
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
+      include: ["{src,landing}/**/*.{test,spec}.{js,jsx,ts,tsx}"],
       exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
     },

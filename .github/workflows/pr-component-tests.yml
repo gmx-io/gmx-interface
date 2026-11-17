@@ -48,7 +48,7 @@ jobs:
           retention-days: 30
 
       - name: Deploy report to GitHub Pages
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +56,7 @@ jobs:
           destination_dir: ct-report/pr-${{ github.event.pull_request.number }}
 
       - name: Find existing report comment
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: peter-evans/find-comment@v3
         id: find-comment
         with:
@@ -65,7 +65,7 @@ jobs:
           body-includes: "Playwright Component Test Report"
 
       - name: Delete previous report comment
-        if: ${{ !cancelled() && steps.find-comment.outputs.comment-id != '' }}
+        if: ${{ !cancelled() && github.event.pull_request.head.repo.full_name == github.repository && steps.find-comment.outputs.comment-id != '' }}
         uses: actions/github-script@v7
         env:
           COMMENT_ID: ${{ steps.find-comment.outputs.comment-id }}
@@ -78,7 +78,7 @@ jobs:
             });
 
       - name: Post report link
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && github.event.pull_request.head.repo.full_name == github.repository }}
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}

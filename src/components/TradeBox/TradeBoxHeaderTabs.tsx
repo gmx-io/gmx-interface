@@ -4,6 +4,7 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { isSolanaNetwork } from "config/chains";
 import { getNetworkFeatures } from "config/features";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -40,6 +41,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     setTradeType: onSelectTradeType,
     tradeType,
     setLeverageOption,
+    setFocusedInput,
     marketInfo,
     setCollateralAddress: onSelectCollateralAddress,
   } = useSelector(selectTradeboxState);
@@ -91,6 +93,14 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
 
   const isSwap = tradeType === TradeType.Swap;
   const leverageFieldVisible = isIncrease;
+  const onLeverageChange = useCallback(
+    (value: number) => {
+      // On Solana the payment stays fixed when the leverage changes.
+      if (isSolanaNetwork(networkId)) setFocusedInput("from");
+      setLeverageOption(value);
+    },
+    [networkId, setFocusedInput, setLeverageOption]
+  );
 
   const positionFields = (
     <div className="grid grid-cols-[minmax(56px,auto)_1fr_1fr] gap-8">
@@ -98,7 +108,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
         <LeverageField
           marks={leverageSliderMarks}
           value={leverageFieldValue}
-          onChange={setLeverageOption}
+          onChange={onLeverageChange}
           disabled={!isLeverageSliderEnabled}
           tooltipContent={leverageTooltipContent}
         />
