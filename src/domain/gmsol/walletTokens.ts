@@ -1,4 +1,4 @@
-import { GMSOL_BALANCE_TOKENS, GMSOL_NATIVE_TOKEN } from "config/gmsol/tokens";
+import { GMSOL_TOKENS, GMSOL_NATIVE_TOKEN } from "config/gmsol/tokens";
 import type { OracleFetcher } from "lib/oracleKeeperFetcher";
 import type { TokenPricesData } from "sdk/utils/tokens/types";
 
@@ -7,14 +7,12 @@ import { buildGmsolTokenPrices } from "./gmsolOracleUtils";
 export type SolanaWalletToken = {
   address: string;
   symbol: string;
-  // the app ships no WSOL or WGMX icon, so wrapped tokens use their base asset's
   iconSymbol: string;
   name: string;
   decimals: number;
   isStable: boolean | undefined;
 };
 
-// Native SOL plus the non-synthetic mints; synthetic ones are never held as collateral.
 export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
   {
     address: GMSOL_NATIVE_TOKEN.address,
@@ -24,10 +22,10 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
     decimals: GMSOL_NATIVE_TOKEN.decimals,
     isStable: undefined,
   },
-  ...GMSOL_BALANCE_TOKENS.map((token) => ({
+  ...GMSOL_TOKENS.map((token) => ({
     address: token.address,
     symbol: token.symbol,
-    iconSymbol: token.baseSymbol ?? (token.symbol === "WGMX" ? "GMX" : token.symbol),
+    iconSymbol: token.symbol,
     name: token.name,
     decimals: token.decimals,
     isStable: token.isStable,
@@ -35,9 +33,8 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
 ];
 
 export async function fetchSolanaWalletPrices(arbitrumFetcher: OracleFetcher): Promise<TokenPricesData> {
-  const tickers = await arbitrumFetcher.fetchTickers();
   return buildGmsolTokenPrices(
-    tickers,
+    await arbitrumFetcher.fetchTickers(),
     SOLANA_WALLET_TOKENS.map((token) => token.address)
   );
 }
