@@ -531,7 +531,7 @@ export function PositionItem(p: Props) {
       <TableTr hoverable={true} data-qa={qaAttr} className="h-72">
         <TableTd
           data-qa="position-handle"
-          className={cx("flex", {
+          className={cx({
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
