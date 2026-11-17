@@ -311,7 +311,7 @@ function useWithdrawViewTransactions({
           bridgeOutParams,
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
-              helperToast.success("Withdrawal sent", { toastId: "same-chain-gmx-account-withdrawal" });
+              helperToast.success(t`Withdrawal sent`, { toastId: "same-chain-gmx-account-withdrawal" });
               setIsVisibleOrView("transferHistory");
               setIsSubmitting(false);
 
