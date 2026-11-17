@@ -101,6 +101,8 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+// EVM features a user reaches by switching the network. /jobs, /ecosystem, /announcements and /parsetx
+// are not listed on purpose (TRD-142): on Solana they render the 404 like unknown paths.
 const EVM_ONLY_PAGE_PATHS = [
   "/dashboard",
   "/monitor",
@@ -120,10 +122,6 @@ const EVM_ONLY_PAGE_PATHS = [
   "/begin_account_transfer",
   "/complete_account_transfer",
   "/oracle-keeper-debug",
-  "/jobs",
-  "/ecosystem",
-  "/announcements",
-  "/parsetx",
 ];
 
 // Loaded only while Solana is selected, which needs the solanaNetwork flag, so the Solana trade state
