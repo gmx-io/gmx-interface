@@ -1,4 +1,16 @@
 # Solana playground and TRD-136
+## Final API integration verified on November 17, 2026
+
+Use the merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340) revision `c82a14e990ece30103defda0ed764fea3cf65aa0` with its own immutable lockfile installation and generated tsoa routes. This revision upgrades the published SDK alias to 2.9.3 and shares native market, pending-position-fee and discount calculations. Preserve an existing fixed environment when preparing a new checkout; use separate API/indexer ports and an owned database.
+
+On frontend `7455203605` (release `28ddd42ce6` plus the existing trading integration), this unmodified API globally bootstrapped 105,536 accounts and served 67 gmsol markets. Its TypeScript check and five index/account/order suites passed (72 tests). Real positions, orders and fee-discount endpoints returned 200; a requested minimum slot 470550701 returned 470550709. Pausing only the owned writer caused market and position reads to return 503 after freshness expired, and resuming it restored 200 responses.
+
+The existing hash-verified WASM prepare/builder/validator/pre-signature pipeline passed unsigned market long/short and limit long/short simulations at slots 470550183/191/200/208: 892 bytes for market orders and 925 bytes for limit orders, without LUTs. These are local integration results, not browser signing, keeper execution, full financial-reference acceptance or evidence that the public API has deployed this revision. Keep the deferred close/cancel and original four-wallet/atomic acceptance scopes explicit.
+
+The earlier `996cf05` results below are historical and do not describe the final API revision. When following their commands, use `/path/to/gmx-api-at-c82a14` as the API checkout. The API remains local only; no API branch or PR is published by this workflow.
+
+用于把现有 Solana PR 放在同一开发集成版中验证。所有命令从本需求 frontend checkout 根目录执行，Node 22，锁定依赖已安装；Node/Vite 命令使用 8 GiB 堆。这里只改变本地运行配置，不修改生产 API 主机、LUT 信任规则或交易开关。不要把本地构建/模拟结果当作订单执行证据。
+
 
 `solana-playground` is a persistent experimental integration branch based on release. It combines Solana prerequisites and exploratory work so they can be tested together before their individual production rollouts. Keep its PR into release as a Draft; inclusion here does not establish production readiness or approval of the original issues.
 
