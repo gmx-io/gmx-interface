@@ -1,8 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
+import { getNetworkFeatures } from "config/features";
 import { DOCS_LINKS } from "config/links";
 import { BuySellIconsMode, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useChainId } from "lib/chains";
 
 import Button from "components/Button/Button";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
@@ -49,6 +51,8 @@ function BuySellIconsOption({
 
 export function DisplaySettings() {
   const settings = useSettings();
+  const { networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
 
   const buySellIconsOptions: { value: BuySellIconsMode; label: string }[] = [
     { value: "all", label: t`All trades` },
@@ -117,28 +121,30 @@ export function DisplaySettings() {
           </SelectorBase>
         </div>
 
-        <div className="flex items-center gap-8">
-          <ToggleSwitch
-            isChecked={settings.breakdownNetPriceImpactEnabled}
-            setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
-          >
-            <LabelWithTooltip
-              label={t`Break down net price impact`}
-              position="bottom"
-              tooltip={
-                <TooltipContent>
-                  <TooltipText>
-                    <Trans>
-                      Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
-                      orders) in execution details.
-                    </Trans>
-                  </TooltipText>
-                  <TooltipReadMore href={DOCS_LINKS.priceImpact} />
-                </TooltipContent>
-              }
-            />
-          </ToggleSwitch>
-        </div>
+        {features.pendingPriceImpact && (
+          <div className="flex items-center gap-8">
+            <ToggleSwitch
+              isChecked={settings.breakdownNetPriceImpactEnabled}
+              setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
+            >
+              <LabelWithTooltip
+                label={t`Break down net price impact`}
+                position="bottom"
+                tooltip={
+                  <TooltipContent>
+                    <TooltipText>
+                      <Trans>
+                        Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
+                        orders) in execution details.
+                      </Trans>
+                    </TooltipText>
+                    <TooltipReadMore href={DOCS_LINKS.priceImpact} />
+                  </TooltipContent>
+                }
+              />
+            </ToggleSwitch>
+          </div>
+        )}
       </SettingsSection>
       <SettingsSection>
         <ThemeSelector />
