@@ -8,6 +8,8 @@ import { isMarketRecentlyListed } from "components/ChartTokenSelector/marketFilt
 
 import { useMarketsListingDates } from "./useMarketsListingDates";
 
+vi.mock("lib/chains", () => ({ useChainId: () => ({ networkId: 42161 }) }));
+
 const mocks = vi.hoisted(() => ({ fetchMarkets: vi.fn() }));
 
 vi.mock("lib/oracleKeeperFetcher", () => ({
