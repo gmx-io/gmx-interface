@@ -64,6 +64,7 @@ export type PositionInfo = Position & {
   uiFeeUsd: bigint;
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
+  fundingSettlement?: "nextOrder";
 };
 
 export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };
