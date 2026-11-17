@@ -26,12 +26,14 @@ vi.mock("./fetchGmsolPrices", () => ({
     ),
 }));
 
+const usdc = GMSOL_TOKENS.find(({ symbol }) => symbol === "USDC")!.address;
+const fundedBalances = { [usdc]: 7817480n };
+const zeroBalances = { [usdc]: 0n };
+
 it("feeds wallet balances into shared token data without retaining them across scope changes TRD-70", async () => {
-  const usdc = GMSOL_TOKENS.find(({ symbol }) => symbol === "USDC")!.address;
   const cache = new Map();
-  const wrapper = ({ children }: { children?: ReactNode }) => (
-    <SWRConfig value={{ provider: () => cache, dedupingInterval: 0 }}>{children}</SWRConfig>
-  );
+  const swrConfig = { provider: () => cache, dedupingInterval: 0 };
+  const wrapper = ({ children }: { children?: ReactNode }) => <SWRConfig value={swrConfig}>{children}</SWRConfig>;
   let current: ReturnType<typeof useGmsolTokensData>;
   function Consumer({ balancesData }: { balancesData?: SolanaBalances }) {
     current = useGmsolTokensData({ enabled: true, rawMarketsInfoData: undefined, balancesData });
@@ -41,7 +43,7 @@ it("feeds wallet balances into shared token data without retaining them across s
   await waitFor(() => expect(current!.tokensData?.[usdc]).toBeDefined());
   expect(current!.tokensData![usdc].balance).toBeUndefined();
   expect(current!.isBalancesLoaded).toBe(false);
-  rerender(<Consumer balancesData={{ [usdc]: 7817480n }} />);
+  rerender(<Consumer balancesData={fundedBalances} />);
   expect(current!.tokensData![usdc]).toMatchObject({ balance: 7817480n, walletBalance: 7817480n });
   expect(current!.isWalletBalancesLoaded).toBe(true);
   expect(current!.isGmxAccountBalancesLoaded).toBe(false);
@@ -50,7 +52,7 @@ it("feeds wallet balances into shared token data without retaining them across s
   expect(current!.tokensData![usdc].balance).toBeUndefined();
   expect(current!.tokensData![usdc].walletBalance).toBeUndefined();
   expect(current!.isBalancesLoaded).toBe(false);
-  rerender(<Consumer balancesData={{ [usdc]: 0n }} />);
+  rerender(<Consumer balancesData={zeroBalances} />);
   expect(current!.tokensData![usdc].balance).toBe(0n);
   expect(current!.isBalancesLoaded).toBe(true);
 });
