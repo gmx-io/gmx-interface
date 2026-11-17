@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
 import { useAsyncFn, useMedia } from "react-use";
 
-import { isSolanaNetwork } from "config/chains";
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import {
@@ -17,7 +16,6 @@ import { PositionInfo } from "domain/synthetics/positions";
 import type { PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { usePositionsLifecycleFees } from "domain/synthetics/positions/usePositionsLifecycleFees";
 import { TradeMode } from "domain/synthetics/trade";
-import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -58,13 +56,6 @@ export function PositionList(p: Props) {
     hideOrderActions,
   } = p;
   const positionsInfoData = usePositionsInfoData();
-  const { networkId } = useChainId();
-  const positionsInfoError = useSelector(selectPositionsInfoError);
-  const refetchPositions = useSelector(selectRefetchPositions);
-  const showPositionsError = isSolanaNetwork(networkId) && Boolean(positionsInfoError);
-  const [{ loading: isRetrying }, retryPositions] = useAsyncFn(async () => {
-    await refetchPositions?.();
-  }, [refetchPositions]);
   const chainId = useSelector(selectChainId);
   const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
@@ -91,31 +82,39 @@ export function PositionList(p: Props) {
   }, []);
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
+  const positionsInfoError = useSelector(selectPositionsInfoError);
+  const refetchPositions = useSelector(selectRefetchPositions);
+  const [{ loading: isRetrying }, retryPositions] = useAsyncFn(async () => {
+    await refetchPositions?.();
+  }, [refetchPositions]);
+  const retryButton = refetchPositions && (
+    <Button variant="link" onClick={retryPositions} disabled={isRetrying}>
+      <Trans>Retry</Trans>
+    </Button>
+  );
+  const hasCachedPositions = Object.keys(positionsInfoData ?? {}).length > 0;
+  const positionsEmptyText =
+    positionsInfoError && !hasCachedPositions ? (
+      <>
+        <Trans>Could not load open positions</Trans>
+        {retryButton}
+      </>
+    ) : (
+      <Trans>No open positions</Trans>
+    );
   const isMobile = useMedia("(max-width: 1024px)");
 
   return (
     <div className="flex grow flex-col">
-      {showPositionsError && (
+      {positionsInfoError && hasCachedPositions && (
         <AlertInfo type="warning" compact textColor="text-yellow-300">
-          {positions.length > 0 ? (
-            <Trans>Unable to refresh positions. Displayed data may be outdated.</Trans>
-          ) : (
-            <Trans>Unable to load positions. Please try again.</Trans>
-          )}
-          {refetchPositions && (
-            <Button variant="link" onClick={retryPositions} disabled={isRetrying}>
-              <Trans>Retry</Trans>
-            </Button>
-          )}
+          <Trans>Could not refresh open positions. This list may be out of date.</Trans>
+          {retryButton}
         </AlertInfo>
       )}
       {isMobile && (
         <>
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={!showPositionsError && positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
           <div className="grid grid-cols-1 gap-8 min-[800px]:grid-cols-2">
             {!isLoading &&
               positions.map((position) => (
@@ -211,11 +210,7 @@ export function PositionList(p: Props) {
             </tbody>
           </Table>
 
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={!showPositionsError && positions.length === 0}
-            emptyText={<Trans>No open positions</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />
         </TableScrollFadeContainer>
       )}
       {positionToShare && (

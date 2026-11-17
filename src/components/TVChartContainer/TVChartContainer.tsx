@@ -8,8 +8,10 @@ import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
+import { selectChartDataProvider } from "context/SyntheticsStateContext/selectors/chartDataSelectors";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import {
@@ -19,12 +21,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTheme } from "context/ThemeContext/ThemeContext";
-import type { createGmsolChartTradesFetcher } from "domain/gmsol/tradingview/createGmsolChartTradesFetcher";
 import { OrderType, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
 import { useChartCandlesFetcher } from "domain/tradingview/useChartCandlesFetcher";
@@ -149,6 +151,10 @@ export default function TVChartContainer({
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
   const candlesFetcher = useChartCandlesFetcher(oracleKeeperFetcher);
+  const sdk = useOptionalGmxSdk(chainId as ContractsChainId);
+  const { networkId } = useChainId();
+  const wsCandlesFlag = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
+  const wsCandlesEnabled = !isSolanaNetwork(networkId) && wsCandlesFlag;
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -157,12 +163,11 @@ export default function TVChartContainer({
   const positionsInfoData = useSelector(selectPositionsInfoData);
   const { chartToken: selectedChartToken } = useSelector(selectChartToken);
   const dynamicChartLines = useSelector(selectChartDynamicLines);
-  const { networkId } = useChainId();
   const isSolana = isSolanaNetwork(networkId);
   const { account: evmAccount } = useWallet();
   const { address: solanaAccount } = useSolanaWalletSession();
   const account = isSolana ? solanaAccount : evmAccount;
-  const gmsolMarksFetcherRef = useRef<ReturnType<typeof createGmsolChartTradesFetcher>>();
+  const chartDataProvider = useSelector(selectChartDataProvider);
   const solanaPositionsKey = useMemo(
     () =>
       isSolana
@@ -247,9 +252,12 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    sdk,
     buySellIconsMode,
     isSolana,
     positionsInfoData,
+    chartDataProvider,
+    solanaPositionsKey,
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
@@ -300,6 +308,9 @@ export default function TVChartContainer({
       const token = Object.values(data).find((t) => t.symbol === symbol);
       return token?.prices?.minPrice;
     });
+    newDatafeed.setCandleStreamFactory((symbol, timeframe) =>
+      marksStateRef.current.sdk?.watchCandles({ symbol, timeframe })
+    );
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -315,6 +326,8 @@ export default function TVChartContainer({
         buySellIconsMode: mode,
         isSolana,
         positionsInfoData,
+        chartDataProvider,
+        solanaPositionsKey,
       } = marksStateRef.current;
       if (mode === "off") {
         return [];
@@ -389,18 +402,11 @@ export default function TVChartContainer({
 
       if (isSolana) {
         try {
-          if (!gmsolMarksFetcherRef.current) {
-            const { createGmsolChartTradesFetcher } = await import(
-              "domain/gmsol/tradingview/createGmsolChartTradesFetcher"
-            );
-            if (!gmsolMarksFetcherRef.current) {
-              gmsolMarksFetcherRef.current = createGmsolChartTradesFetcher();
-            }
-          }
+          if (!chartDataProvider?.tradesFetcher) return [];
           const chartMarkets = Object.fromEntries(
             Object.entries(markets).filter(([, market]) => isSameAddress(market.indexTokenAddress, wrappedSelected))
           );
-          const trades = await gmsolMarksFetcherRef.current({
+          const trades = await chartDataProvider.tradesFetcher({
             account: acc,
             markets: chartMarkets,
             positions: positionsInfoData,
@@ -413,7 +419,8 @@ export default function TVChartContainer({
             !latest.isSolana ||
             latest.account !== acc ||
             latest.selectedChartToken?.address !== selToken.address ||
-            latest.buySellIconsMode !== mode
+            latest.buySellIconsMode !== mode ||
+            (mode === "current" && latest.solanaPositionsKey !== solanaPositionsKey)
           ) {
             return [];
           }
@@ -767,6 +774,10 @@ export default function TVChartContainer({
   }, [tokensData, datafeed]);
 
   useEffect(() => {
+    datafeed?.setCandleStreamEnabled(wsCandlesEnabled);
+  }, [datafeed, wsCandlesEnabled]);
+
+  useEffect(() => {
     if (
       !chartReady ||
       !tvWidgetRef.current ||
@@ -896,8 +907,13 @@ export default function TVChartContainer({
   useEffect(() => {
     if (!chartReady || !isSolana || !account || buySellIconsMode === "off") return;
     // Solana fills are indexed asynchronously and do not emit EVM position events.
-    const interval = window.setInterval(() => tvWidgetRef.current?.activeChart().refreshMarks(), 15_000);
-    return () => window.clearInterval(interval);
+    let timeout: number;
+    const refresh = () => {
+      tvWidgetRef.current?.activeChart().refreshMarks();
+      timeout = window.setTimeout(refresh, 15_000);
+    };
+    timeout = window.setTimeout(refresh, 15_000);
+    return () => window.clearTimeout(timeout);
   }, [chartReady, isSolana, account, buySellIconsMode]);
 
   useEffect(() => {
