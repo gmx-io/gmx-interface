@@ -37,6 +37,21 @@ export function formatMonthDay(time: number, options?: DateFormatOptions) {
   return formatDateFn(time * 1000, "MMM\u00a0d", getDateFormatOptions(options));
 }
 
+export function formatDayMonthYear(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "d MMM yyyy", getDateFormatOptions(options));
+}
+
+export function formatDateRange(start: number, end: number, options?: DateFormatOptions) {
+  const formatOptions = getDateFormatOptions(options);
+  const isSameYear =
+    formatDateFn(start * 1000, "yyyy", formatOptions) === formatDateFn(end * 1000, "yyyy", formatOptions);
+  const startDate = isSameYear
+    ? formatDateFn(start * 1000, "d MMM", formatOptions)
+    : formatDayMonthYear(start, options);
+
+  return `${startDate} – ${formatDayMonthYear(end, options)}`;
+}
+
 function formatDateWithComma(time: number) {
   return formatDateFn(time * 1000, "MMM dd, yyyy");
 }

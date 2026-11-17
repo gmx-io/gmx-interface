@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { getChainName } from "config/chains";
 import { useChainId } from "lib/chains";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 type EarningValueProps<T> = {
   value: T | null | undefined;
@@ -50,12 +50,12 @@ export function EarningNotAvailable({ tooltip }: { tooltip?: ReactNode }) {
     return label;
   }
 
-  return <TooltipWithPortal handle={label} content={tooltip} />;
+  return <StandardTooltip handle={label} content={tooltip} />;
 }
 
 export function EarningUnavailableNote() {
   return (
-    <div className="text-typography-primary">
+    <div>
       <Trans>Fee data is temporarily unavailable</Trans>
     </div>
   );
@@ -90,7 +90,7 @@ export function EarningAttributionNote({ scope }: { scope: EarningAttributionSco
   const chainName = getChainName(chainId);
 
   return (
-    <div className="text-typography-primary">
+    <div>
       {scope === "gm" && (
         <Trans>
           Earned fees are only tracked for GM held in your wallet on {chainName}. GM in a GMX Account or on another

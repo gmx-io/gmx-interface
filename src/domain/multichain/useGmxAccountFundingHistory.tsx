@@ -4,11 +4,11 @@ import { useAccount } from "wagmi";
 
 import { getIndexerUrl } from "config/indexers";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import { getMultichainFundingToken } from "domain/multichain/getMultichainFundingToken";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useChainId } from "lib/chains";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { isValidTokenSafe } from "sdk/configs/tokens";
 import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
 const query = /* gql */ `
@@ -52,7 +52,7 @@ async function fetchGmxAccountFundingHistory(
   };
 
   return response.multichainFunding
-    .filter((item) => isValidTokenSafe(chainId, item.token))
+    .filter((item) => getMultichainFundingToken(chainId, item.token) !== undefined)
     .map(
       (item): MultichainFundingHistoryItem => ({
         ...item,

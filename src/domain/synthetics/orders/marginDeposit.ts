@@ -63,6 +63,7 @@ export function getMarginDepositProjections(p: {
   triggerPrice: bigint | undefined;
   minCollateralUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   pendingFeesUsd: bigint;
   isPnlInLeverage?: boolean;
 }): MarginDepositProjections | undefined {
@@ -116,6 +117,7 @@ export function getMarginDepositProjections(p: {
     marketInfo,
     pendingImpactAmount: position.pendingImpactAmount,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     pendingFundingFeesUsd: 0n,
     pendingBorrowingFeesUsd: 0n,
     isLong: position.isLong,
