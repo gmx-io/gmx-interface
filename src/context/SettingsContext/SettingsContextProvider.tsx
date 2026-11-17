@@ -198,7 +198,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
-    getLeverageSliderEnabledKey(chainId),
+    getLeverageSliderEnabledKey(networkId),
     true
   );
 

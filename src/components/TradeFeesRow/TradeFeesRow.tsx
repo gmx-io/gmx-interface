@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -44,8 +45,10 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
-  const { chainId } = useChainId();
-  const tradingIncentives = useTradingIncentives(chainId);
+  const { chainId, networkId } = useChainId();
+  const isGmsol = isSolanaNetwork(networkId);
+  const evmTradingIncentives = useTradingIncentives(chainId);
+  const tradingIncentives = isGmsol ? null : evmTradingIncentives;
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const showDebugValues = useShowDebugValues();
@@ -55,7 +58,11 @@ export function TradeFeesRow(p: Props) {
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
+    !isGmsol &&
+    shouldShowRebate &&
+    p.positionFee?.deltaUsd !== undefined &&
+    p.positionFee.deltaUsd <= 0 &&
+    p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
@@ -243,7 +250,7 @@ export function TradeFeesRow(p: Props) {
     const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd !== 0n)
       ? {
           id: "feeDiscount",
-          label: <Trans>Referral discount</Trans>,
+          label: isGmsol ? <Trans>Fee discount</Trans> : <Trans>Referral discount</Trans>,
           value: <DeltaUsdValue deltaUsd={p.feeDiscountUsd} />,
           className: "text-green-500",
         }
@@ -346,7 +353,7 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     const priceImpactRebatesRow =
-      p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
+      !isGmsol && p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
         ? {
             id: "priceImpactDiff",
             label: (
@@ -452,6 +459,7 @@ export function TradeFeesRow(p: Props) {
     estimatedRebatesPercentage,
     showDebugValues,
     breakdownNetPriceImpactEnabled,
+    isGmsol,
   ]);
 
   const totalFeeUsd = useMemo(() => {
@@ -509,8 +517,18 @@ export function TradeFeesRow(p: Props) {
       return null;
     }
 
+    if (isGmsol) {
+      return (
+        <Trans>
+          Additional collateral withheld: <DeltaUsdValue deltaUsd={-p.priceImpactDiff.deltaUsd} />. This amount becomes
+          claimable after execution and is excluded from the fee total. Immediate cost:{" "}
+          <DeltaUsdValue deltaUsd={p.payTotalFees?.deltaUsd} />.
+        </Trans>
+      );
+    }
+
     return <Trans>Price impact rebates from closing are claimable in the Claims tab.</Trans>;
-  }, [p.priceImpactDiff?.deltaUsd]);
+  }, [p.priceImpactDiff?.deltaUsd, p.payTotalFees?.deltaUsd, isGmsol]);
 
   const swapRouteMsg = useMemo(() => {
     if (!p.swapFees || p.swapFees.length <= 2 || p.externalSwapFee) {
@@ -521,9 +539,9 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {
-    if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
+    if (totalFeeUsd === undefined || (totalFeeUsd === 0n && !(isGmsol && priceImpactRebatesInfo))) {
       return "-";
-    } else if (!feeRows.length && !incentivesBottomText) {
+    } else if (!feeRows.length && !incentivesBottomText && !priceImpactRebatesInfo) {
       return (
         <DeltaUsdValue
           deltaUsd={totalFeeUsd}
@@ -578,7 +596,16 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg, chainId]);
+  }, [
+    totalFeeUsd,
+    feeRows,
+    incentivesBottomText,
+    shouldShowWarning,
+    priceImpactRebatesInfo,
+    swapRouteMsg,
+    chainId,
+    isGmsol,
+  ]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }
