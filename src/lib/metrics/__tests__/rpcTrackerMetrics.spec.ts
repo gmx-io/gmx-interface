@@ -45,7 +45,7 @@ describe("subscribeForRpcTrackerMetrics", () => {
     vi.useRealTimers();
   });
 
-  it("reports the full endpoint when banning on an EVM chain", () => {
+  it("reports the provider without its API key when banning on an EVM chain", () => {
     const endpoint = "https://arb-mainnet.g.alchemy.com/v2/test-key";
     const reason = "Banned by failures threshold";
     emitEndpointBanned({ trackerKey: TRACKER_KEY, endpoint, reason });
@@ -54,7 +54,11 @@ describe("subscribeForRpcTrackerMetrics", () => {
       (item) => item.type === "event" && item.payload.event === "rpcTracker.endpoint.banned"
     );
 
-    expect(report?.payload.customFields).toMatchObject({ chainId: mockTracker.params.chainId, endpoint, reason });
+    expect(report?.payload.customFields).toMatchObject({
+      chainId: mockTracker.params.chainId,
+      endpoint: "arb-mainnet.g.alchemy.com",
+      reason,
+    });
   });
 
   it.each([
