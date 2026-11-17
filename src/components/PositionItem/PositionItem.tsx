@@ -4,10 +4,14 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useIntersection } from "react-use";
 
+import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectBreakdownNetPriceImpactEnabled,
+  selectShowPnlAfterFees,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -16,14 +20,14 @@ import { OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
-  formatLeverage,
-  formatLiquidationPrice,
   getEstimatedLiquidationTimeInHours,
   getPositionOffHoursLiqRisk,
 } from "domain/synthetics/positions";
+import { getPositionLifetimeFees, type PositionsLifecycleFees } from "domain/synthetics/positions/lifetimeFees";
 import { TradeMode } from "domain/synthetics/trade";
+import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatBalanceAmount, formatDeltaUsd, formatPriceImpactBps, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
@@ -31,12 +35,24 @@ import { getMarketIndexName } from "sdk/utils/markets";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { LeverageValue } from "components/NumericValue/LeverageValue";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import PositionDropdown from "components/PositionDropdown/PositionDropdown";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipFootnote,
+  TooltipLink,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+  TooltipTitle,
+} from "components/Tooltip/TooltipBlocks";
 
 import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
@@ -50,6 +66,7 @@ import "./PositionItem.scss";
 
 export type Props = {
   position: PositionInfo;
+  lifecycleFees: PositionsLifecycleFees | undefined;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
   onClosePositionClick?: () => void;
@@ -64,14 +81,20 @@ export type Props = {
 };
 
 export function PositionItem(p: Props) {
+  const { networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
+  const canEditMargin = Boolean(
+    p.onEditCollateralClick && (features.collateralDeposit || features.collateralWithdrawal)
+  );
   const { showDebugValues } = useSettings();
   const savedShowPnlAfterFees = useSelector(selectShowPnlAfterFees);
+  const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
   const displayedNetValue = savedShowPnlAfterFees ? p.position.netValueAfterAllFees : p.position.netValue;
   const displayedPnl = savedShowPnlAfterFees ? p.position.pnlAfterAllFees : p.position.pnl;
   const displayedPnlPercentage = savedShowPnlAfterFees
     ? p.position.pnlAfterAllFeesPercentage
     : p.position.pnlPercentage;
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(p.position.marketAddress);
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const chainId = useSelector(selectChainId);
@@ -109,80 +132,81 @@ export function PositionItem(p: Props) {
     setIsTPSLModalVisible(true);
   }, []);
 
-  function renderNetValue() {
-    const netPriceImpactBps = formatPriceImpactBps(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd);
+  function renderPriceImpactRow(label: string, priceImpactUsd: bigint) {
+    const priceImpactBps = formatPriceImpactBps(priceImpactUsd, p.position.sizeInUsd);
 
     return (
-      <TooltipWithPortal
-        handle={formatUsd(displayedNetValue)}
+      <TooltipRow
+        label={label}
+        value={
+          <>
+            <DeltaUsdValue deltaUsd={priceImpactUsd} fallback="..." />
+            {priceImpactBps ? ` (${priceImpactBps})` : null}
+          </>
+        }
+        valueClassName={getPositiveOrNegativeClass(priceImpactUsd)}
+      />
+    );
+  }
+
+  function renderNetValue() {
+    return (
+      <StandardTooltip
+        handle={<UsdValue usd={displayedNetValue} />}
         handleClassName="numbers"
-        position={p.isLarge ? "bottom-start" : "bottom-end"}
         renderContent={() => (
-          <div>
-            {savedShowPnlAfterFees ? (
-              <Trans>Position value after PnL and all fees</Trans>
-            ) : (
-              <Trans>Position value after PnL and accrued fees</Trans>
-            )}
-            <br />
-            <br />
-            <StatsTooltipRow
-              label={t`Margin before borrow/funding`}
-              value={formatUsd(p.position.collateralUsd) || "..."}
-              valueClassName="numbers"
-              showDollar={false}
-            />
-            <StatsTooltipRow
-              label={t`PnL`}
-              value={formatDeltaUsd(p.position?.pnl) || "..."}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={getPositiveOrNegativeClass(p.position.pnl)}
-            />
-            <StatsTooltipRow
-              label={t`Borrow fee`}
-              value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={cx({
-                "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
-              })}
-            />
-            <StatsTooltipRow
-              label={t`Negative funding fee`}
-              value={formatUsd(-p.position.pendingFundingFeesUsd) || "..."}
-              valueClassName="numbers"
-              showDollar={false}
-              textClassName={cx({
-                "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
-              })}
-            />
-            {savedShowPnlAfterFees && (
-              <>
-                <StatsTooltipRow
-                  label={t`Net price impact`}
-                  value={
+          <TooltipContent>
+            <TooltipText>
+              {savedShowPnlAfterFees ? (
+                <Trans>Position value after PnL and all fees</Trans>
+              ) : (
+                <Trans>Position value after PnL and accrued fees</Trans>
+              )}
+            </TooltipText>
+            <TooltipRows>
+              <TooltipRow
+                label={t`Margin before borrow/funding`}
+                value={<UsdValue usd={p.position.collateralUsd} fallback="..." />}
+              />
+              <TooltipRow
+                label={t`PnL`}
+                value={<DeltaUsdValue deltaUsd={p.position?.pnl} fallback="..." />}
+                valueClassName={getPositiveOrNegativeClass(p.position.pnl)}
+              />
+              <TooltipRow
+                label={t`Borrow fee`}
+                value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
+                valueClassName={cx({
+                  "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                })}
+              />
+              <TooltipRow
+                label={t`Negative funding fee`}
+                value={<UsdValue usd={-p.position.pendingFundingFeesUsd} fallback="..." />}
+                valueClassName={cx({
+                  "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                })}
+              />
+              {savedShowPnlAfterFees && (
+                <>
+                  {breakdownNetPriceImpactEnabled && (
                     <>
-                      {formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
-                      {netPriceImpactBps ? ` (${netPriceImpactBps})` : null}
+                      {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
+                      {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
                     </>
-                  }
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}
-                />
-                <StatsTooltipRow
-                  label={t`Close fee`}
-                  value={formatUsd(-p.position.closingFeeUsd) || "..."}
-                  valueClassName="numbers"
-                  showDollar={false}
-                  textClassName={cx({
-                    "text-red-500": p.position.closingFeeUsd !== 0n,
-                  })}
-                />
-              </>
-            )}
-          </div>
+                  )}
+                  {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
+                  <TooltipRow
+                    label={t`Close fee`}
+                    value={<UsdValue usd={-p.position.closingFeeUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.closingFeeUsd !== 0n,
+                    })}
+                  />
+                </>
+              )}
+            </TooltipRows>
+          </TooltipContent>
         )}
       />
     );
@@ -212,11 +236,53 @@ export function PositionItem(p: Props) {
     };
   }, [p.position.marketInfo, p.position.isLong, p.position.sizeInUsd]);
 
+  function renderLifetimeFees() {
+    const lifetimeFees = getPositionLifetimeFees(p.position, p.lifecycleFees);
+    const totals = lifetimeFees.status === "loaded" ? lifetimeFees : undefined;
+    const fallback = lifetimeFees.status === "unavailable" ? "-" : "...";
+
+    return (
+      <>
+        <TooltipRows>
+          <TooltipTitle>
+            <Trans>Since position opened</Trans>
+          </TooltipTitle>
+          <TooltipRow
+            label={t`Total borrow fee`}
+            value={<UsdValue usd={totals && -totals.borrowingFeeUsd} fallback={fallback} />}
+            valueClassName={cx({
+              "text-red-500": totals !== undefined && totals.borrowingFeeUsd !== 0n,
+            })}
+          />
+          <TooltipRow
+            label={t`Total funding paid`}
+            value={<DeltaUsdValue deltaUsd={totals && -totals.fundingFeePaidUsd} fallback={fallback} />}
+            valueClassName={cx({
+              "text-red-500": totals !== undefined && totals.fundingFeePaidUsd !== 0n,
+            })}
+          />
+          <TooltipRow
+            label={t`Total funding received`}
+            value={<DeltaUsdValue deltaUsd={totals?.fundingFeeReceivedUsd} fallback={fallback} />}
+            valueClassName={cx({
+              "text-green-500": totals !== undefined && totals.fundingFeeReceivedUsd > 0,
+            })}
+          />
+        </TooltipRows>
+        {lifetimeFees.status === "unavailable" && (
+          <TooltipFootnote>
+            <Trans>Full history unavailable for this position</Trans>
+          </TooltipFootnote>
+        )}
+      </>
+    );
+  }
+
   function renderCollateral() {
     const isStableCollateral = p.position.collateralToken.isStable;
     const renderMarginValue = (amount: bigint, usd: bigint) =>
       isStableCollateral ? (
-        formatUsd(usd) || "..."
+        <UsdValue usd={usd} fallback="..." />
       ) : (
         <AmountWithUsdBalance
           amount={amount}
@@ -231,93 +297,86 @@ export function PositionItem(p: Props) {
     return (
       <div className="flex flex-col gap-4">
         <div className={cx("position-list-collateral", { isSmall: !p.isLarge })}>
-          <TooltipWithPortal
-            handle={formatUsd(p.position.remainingCollateralUsd)}
+          <StandardTooltip
+            handle={<UsdValue usd={p.position.remainingCollateralUsd} />}
             handleClassName={cx("numbers", { negative: p.position.hasLowCollateral })}
-            position={p.isLarge ? "bottom-start" : "bottom-end"}
-            className="PositionItem-collateral-tooltip"
             content={
-              <>
+              <TooltipContent>
                 {p.position.hasLowCollateral && (
-                  <div>
+                  <TooltipText>
                     <Trans>Low margin after fees. Deposit more to reduce liquidation risk.</Trans>
-                    <br />
-                    <br />
-                  </div>
+                  </TooltipText>
                 )}
-                <StatsTooltipRow
+                <TooltipRow
                   label={t`Current margin`}
-                  showDollar={false}
                   value={renderMarginValue(p.position.remainingCollateralAmount, p.position.remainingCollateralUsd)}
-                  valueClassName="numbers"
                 />
-                <br />
-                <StatsTooltipRow
-                  label={t`Margin before borrow/funding`}
-                  showDollar={false}
-                  value={renderMarginValue(p.position.collateralAmount, p.position.collateralUsd)}
-                  valueClassName="numbers"
-                />
-                <StatsTooltipRow
-                  label={t`Borrow fee`}
-                  showDollar={false}
-                  value={formatUsd(-p.position.pendingBorrowingFeesUsd) || "..."}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
-                  })}
-                />
-                <StatsTooltipRow
-                  label={t`Negative funding fee`}
-                  showDollar={false}
-                  value={formatDeltaUsd(-p.position.pendingFundingFeesUsd) || "..."}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
-                  })}
-                />
-                <br />
-                <div className="mb-4 text-typography-primary">
-                  <Trans>Claimable</Trans>
-                </div>
-                <StatsTooltipRow
-                  label={t`Positive funding fee`}
-                  showDollar={false}
-                  value={formatDeltaUsd(p.position.pendingClaimableFundingFeesUsd) || "..."}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
-                  })}
-                />
-                <br />
-                <div className="mb-4 text-typography-primary">
-                  <Trans>Estimated daily fees</Trans>
-                </div>
-                <StatsTooltipRow
-                  showDollar={false}
-                  label={t`Borrow fee / day`}
-                  value={borrowingFeeRateUsd !== undefined ? formatUsd(-borrowingFeeRateUsd) : "..."}
-                  valueClassName="numbers"
-                  textClassName={cx({
-                    "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
-                  })}
-                />
-                <StatsTooltipRow
-                  showDollar={false}
-                  label={t`Funding fee / day`}
-                  value={formatDeltaUsd(fundingFeeRateUsd)}
-                  valueClassName="numbers"
-                  textClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
-                />
-                <br />
-                <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
-                <br />
-                <Trans>Positive funding fees are claimable in Claims.</Trans>
-              </>
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipRow
+                    label={t`Margin before borrow/funding`}
+                    value={renderMarginValue(p.position.collateralAmount, p.position.collateralUsd)}
+                  />
+                  <TooltipRow
+                    label={t`Borrow fee`}
+                    value={<UsdValue usd={-p.position.pendingBorrowingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.pendingBorrowingFeesUsd !== 0n,
+                    })}
+                  />
+                  <TooltipRow
+                    label={t`Negative funding fee`}
+                    value={<DeltaUsdValue deltaUsd={-p.position.pendingFundingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-red-500": p.position.pendingFundingFeesUsd !== 0n,
+                    })}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipTitle>
+                    <Trans>Claimable</Trans>
+                  </TooltipTitle>
+                  <TooltipRow
+                    label={t`Positive funding fee`}
+                    value={<DeltaUsdValue deltaUsd={p.position.pendingClaimableFundingFeesUsd} fallback="..." />}
+                    valueClassName={cx({
+                      "text-green-500": p.position.pendingClaimableFundingFeesUsd > 0,
+                    })}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                {renderLifetimeFees()}
+                <TooltipDivider />
+                <TooltipRows>
+                  <TooltipTitle>
+                    <Trans>Estimated daily fees</Trans>
+                  </TooltipTitle>
+                  <TooltipRow
+                    label={t`Borrow fee / day`}
+                    value={borrowingFeeRateUsd !== undefined ? <UsdValue usd={-borrowingFeeRateUsd} /> : "..."}
+                    valueClassName={cx({
+                      "text-red-500": borrowingFeeRateUsd !== undefined && borrowingFeeRateUsd > 0,
+                    })}
+                  />
+                  <TooltipRow
+                    label={t`Funding fee / day`}
+                    value={<DeltaUsdValue deltaUsd={fundingFeeRateUsd} />}
+                    valueClassName={getPositiveOrNegativeClass(fundingFeeRateUsd)}
+                  />
+                </TooltipRows>
+                <TooltipDivider />
+                <TooltipText>
+                  <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
+                </TooltipText>
+                <TooltipText>
+                  <Trans>Positive funding fees are claimable in Claims.</Trans>
+                </TooltipText>
+              </TooltipContent>
             }
           />
 
-          {!p.position.isOpening && !p.hideActions && p.onEditCollateralClick && (
+          {!p.position.isOpening && !p.hideActions && canEditMargin && (
             <span className="edit-icon" onClick={p.onEditCollateralClick} data-qa="position-edit-button">
               <EditIcon className="text-typography-secondary" width={16} height={16} />
             </span>
@@ -372,78 +431,74 @@ export function PositionItem(p: Props) {
     }
 
     const getLiqPriceTooltipContent = () => (
-      <>
-        {liqPriceWarning && <div>{liqPriceWarning}</div>}
+      <TooltipContent>
+        {liqPriceWarning && <TooltipText>{liqPriceWarning}</TooltipText>}
         {estimatedLiquidationHours ? (
-          <div>
+          <>
             {!liqPriceWarning && (
-              <>
+              <TooltipText>
                 <Trans>Liquidation price changes with fees and margin value.</Trans>
-                <br />
-              </>
+              </TooltipText>
             )}
-            <br />
-            {liqPriceWarning ? (
-              <Trans>
-                Position may still liquidate from fees alone (funding + borrowing), reducing margin over time.
-              </Trans>
-            ) : (
-              <Trans>Position may liquidate from fees alone (funding + borrowing), reducing margin over time.</Trans>
-            )}
-            <br />
-            <br />
-            <StatsTooltipRow
+            <TooltipText>
+              {liqPriceWarning ? (
+                <Trans>
+                  Position may still liquidate from fees alone (funding + borrowing), reducing margin over time.
+                </Trans>
+              ) : (
+                <Trans>Position may liquidate from fees alone (funding + borrowing), reducing margin over time.</Trans>
+              )}
+            </TooltipText>
+            <TooltipRow
               label={t`Estimated time to liquidation`}
               value={formatEstimatedLiquidationTime(estimatedLiquidationHours)}
-              valueClassName="numbers"
-              showDollar={false}
             />
-          </div>
-        ) : (
-          ""
-        )}
+          </>
+        ) : null}
         {showOffHoursWarning && (
-          <div>
-            {(liqPriceWarning || estimatedLiquidationHours) && <br />}
-            <Trans>
-              This position is currently above liquidation risk, but it may become close to liquidation when the market
-              switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
-            </Trans>
-            <br />
-            <br />
-            <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
-            <br />
-            <br />
-            <StatsTooltipRow
+          <>
+            {(liqPriceWarning || estimatedLiquidationHours) && <TooltipDivider />}
+            <TooltipText>
+              <Trans>
+                This position is above liquidation risk, but it may become close to liquidation when the market switches
+                to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+              </Trans>
+            </TooltipText>
+            <TooltipText>
+              <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
+            </TooltipText>
+            <TooltipRow
               label={t`Estimated off-hours liquidation price`}
               value={
-                formatLiquidationPrice(offHoursLiqPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: p.position.indexToken.visualMultiplier,
-                }) || "..."
+                <LiquidationPriceValue
+                  liquidationPrice={offHoursLiqPrice}
+                  displayDecimals={marketDecimals}
+                  visualMultiplier={p.position.indexToken.visualMultiplier}
+                  fallback="..."
+                />
               }
-              valueClassName="numbers"
-              showDollar={false}
             />
-            <br />
-            <ExternalLink href={OFF_HOURS_DOCS_URL}>
+            <TooltipLink href={OFF_HOURS_DOCS_URL}>
               <Trans>Read more</Trans>
-            </ExternalLink>
-          </div>
+            </TooltipLink>
+          </>
         )}
-      </>
+      </TooltipContent>
     );
 
     if (liqPriceWarning || estimatedLiquidationHours || showOffHoursWarning) {
       return (
-        <TooltipWithPortal
+        <StandardTooltip
           handle={
-            p.position.liquidationPrice
-              ? formatLiquidationPrice(p.position.liquidationPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: p.position.indexToken.visualMultiplier,
-                })
-              : "..."
+            p.position.liquidationPrice ? (
+              <LiquidationPriceValue
+                liquidationPrice={p.position.liquidationPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
+            ) : (
+              "..."
+            )
           }
           handleClassName={cx("numbers", {
             "LiqPrice-soft-warning": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
@@ -458,12 +513,13 @@ export function PositionItem(p: Props) {
     }
 
     return (
-      <span className="numbers">
-        {formatLiquidationPrice(p.position.liquidationPrice, {
-          displayDecimals: marketDecimals,
-          visualMultiplier: p.position.indexToken.visualMultiplier,
-        }) || "..."}
-      </span>
+      <LiquidationPriceValue
+        liquidationPrice={p.position.liquidationPrice}
+        displayDecimals={marketDecimals}
+        visualMultiplier={p.position.indexToken.visualMultiplier}
+        className="numbers"
+        fallback="..."
+      />
     );
   }
 
@@ -485,49 +541,42 @@ export function PositionItem(p: Props) {
             <div className="Exchange-list-title">
               <div className="inline-flex items-center gap-4">
                 <TokenIcon className="PositionList-token-icon" symbol={p.position.indexToken.symbol} displaySize={20} />
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={
                     <span className="font-medium">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                     </span>
                   }
-                  position="bottom-start"
                   renderContent={() => (
-                    <div>
-                      <StatsTooltipRow
-                        label={t`Pool`}
-                        value={
-                          <div className="flex items-center">
-                            <span>{indexName && indexName}</span>
-                            <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                          </div>
-                        }
-                        showDollar={false}
-                      />
-
-                      <br />
-
-                      <div>
+                    <TooltipContent>
+                      <TooltipText>
                         <Trans>Click to select, then use the trade box to increase size.</Trans>
-                        <br />
-                        <br />
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
-                        <br />
-                        <br />
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
-                      </div>
-
-                      {showDebugValues && (
-                        <>
-                          <br />
-                          <StatsTooltipRow
+                      </TooltipText>
+                      <TooltipRows>
+                        <TooltipRow
+                          label={t`Pool`}
+                          value={
+                            <div className="flex items-center">
+                              <span>{indexName && indexName}</span>
+                              <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                            </div>
+                          }
+                        />
+                        {showDebugValues && (
+                          <TooltipRow
                             label={t`Key`}
-                            value={<div className="debug-key muted">{p.position.contractKey}</div>}
-                            showDollar={false}
+                            value={<div className="debug-key">{p.position.contractKey}</div>}
+                            valueClassName="min-w-0 !shrink !whitespace-normal"
                           />
-                        </>
-                      )}
-                    </div>
+                        )}
+                      </TooltipRows>
+                    </TooltipContent>
                   )}
                 />
               </div>
@@ -536,9 +585,11 @@ export function PositionItem(p: Props) {
               )}
             </div>
             <div className="Exchange-list-info-label">
-              <span className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}>
-                {formatLeverage(p.position.leverage) || "..."}
-              </span>
+              <LeverageValue
+                leverage={p.position.leverage}
+                className={cx("muted mr-4 rounded-2 px-2 pb-1 numbers")}
+                fallback="..."
+              />
               <span className={cx({ positive: p.position.isLong, negative: !p.position.isLong })}>
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
@@ -548,13 +599,15 @@ export function PositionItem(p: Props) {
         <TableTd>
           <div className="flex flex-col gap-2">
             <span className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
-              {showSizeInTokens
-                ? formatBalanceAmount(
-                    p.position.sizeInTokens / indexTokenVisualMultiplier,
-                    p.position.indexToken.decimals,
-                    indexTokenDisplaySymbol
-                  )
-                : formatUsd(p.position.sizeInUsd)}
+              {showSizeInTokens ? (
+                formatBalanceAmount(
+                  p.position.sizeInTokens / indexTokenVisualMultiplier,
+                  p.position.indexToken.decimals,
+                  indexTokenDisplaySymbol
+                )
+              ) : (
+                <UsdValue usd={p.position.sizeInUsd} />
+              )}
             </span>
             <PositionItemOrdersLarge
               positionKey={p.position.key}
@@ -580,7 +633,7 @@ export function PositionItem(p: Props) {
                   })}
                   onClick={p.onShareClick}
                 >
-                  {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                  <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
                   {p.onShareClick && <NewLinkThinIcon className="mt-1 size-14 shrink-0" />}
                 </div>
               )}
@@ -596,22 +649,22 @@ export function PositionItem(p: Props) {
           {p.position.isOpening ? (
             t`Opening...`
           ) : (
-            <span className="numbers">
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
-            </span>
+            <UsdValue
+              usd={p.position.entryPrice}
+              displayDecimals={marketDecimals}
+              visualMultiplier={p.position.indexToken.visualMultiplier}
+              className="numbers"
+            />
           )}
         </TableTd>
         <TableTd>
           {/* markPrice */}
-          <span className="numbers">
-            {formatUsd(p.position.markPrice, {
-              displayDecimals: marketDecimals,
-              visualMultiplier: p.position.indexToken.visualMultiplier,
-            })}
-          </span>
+          <UsdValue
+            usd={p.position.markPrice}
+            displayDecimals={marketDecimals}
+            visualMultiplier={p.position.indexToken.visualMultiplier}
+            className="numbers"
+          />
         </TableTd>
         <TableTd>
           {/* liqPrice */}
@@ -643,13 +696,15 @@ export function PositionItem(p: Props) {
               </Button>
 
               <PositionDropdown
-                handleEditCollateral={p.onEditCollateralClick}
+                handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                 handleMarketSelect={() => p.onSelectPositionClick?.()}
                 handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market)}
                 handleShare={p.onShareClick}
                 handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit)}
-                handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket)}
-                handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap)}
+                handleStopMarketIncreaseSize={
+                  features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket) : undefined
+                }
+                handleTwapIncreaseSize={features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap) : undefined}
                 handleTriggerClose={handleOpenAddTPSLModal}
                 handleViewPositionHistory={p.onViewPositionHistory}
                 disabled={isActionsDisabled}
@@ -678,7 +733,7 @@ export function PositionItem(p: Props) {
               {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
             </span>
             <div className="text-body-small flex items-center gap-4">
-              <span className="rounded-4 leading-1">{formatLeverage(p.position.leverage) || "..."}</span>
+              <LeverageValue leverage={p.position.leverage} className="rounded-4 leading-1" fallback="..." />
               <span
                 className={cx("Exchange-list-side", {
                   positive: p.position.isLong,
@@ -717,13 +772,15 @@ export function PositionItem(p: Props) {
               <Trans>Size</Trans>
             </div>
             <div className="cursor-pointer select-none numbers" onClick={handleSizeClick}>
-              {showSizeInTokens
-                ? formatBalanceAmount(
-                    p.position.sizeInTokens / indexTokenVisualMultiplier,
-                    p.position.indexToken.decimals,
-                    indexTokenDisplaySymbol
-                  )
-                : formatUsd(p.position.sizeInUsd)}
+              {showSizeInTokens ? (
+                formatBalanceAmount(
+                  p.position.sizeInTokens / indexTokenVisualMultiplier,
+                  p.position.indexToken.decimals,
+                  indexTokenDisplaySymbol
+                )
+              ) : (
+                <UsdValue usd={p.position.sizeInUsd} />
+              )}
             </div>
           </div>
           <div className="App-card-row">
@@ -746,7 +803,7 @@ export function PositionItem(p: Props) {
                 })}
                 onClick={p.onShareClick}
               >
-                {formatDeltaUsd(displayedPnl, displayedPnlPercentage)}
+                <DeltaUsdValue deltaUsd={displayedPnl} percentage={displayedPnlPercentage} />
                 {p.onShareClick && <NewLinkThinIcon className="mt-2 size-16 shrink-0" />}
               </span>
             </div>
@@ -764,10 +821,11 @@ export function PositionItem(p: Props) {
               <Trans>Entry price</Trans>
             </div>
             <div className="numbers">
-              {formatUsd(p.position.entryPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
+              <UsdValue
+                usd={p.position.entryPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
             </div>
           </div>
           <div className="App-card-row">
@@ -775,10 +833,11 @@ export function PositionItem(p: Props) {
               <Trans>Mark price</Trans>
             </div>
             <div className="numbers">
-              {formatUsd(p.position.markPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: p.position.indexToken.visualMultiplier,
-              })}
+              <UsdValue
+                usd={p.position.markPrice}
+                displayDecimals={marketDecimals}
+                visualMultiplier={p.position.indexToken.visualMultiplier}
+              />
             </div>
           </div>
           <div className="App-card-row">
@@ -839,13 +898,17 @@ export function PositionItem(p: Props) {
                 </Button>
                 <div>
                   <PositionDropdown
-                    handleEditCollateral={p.onEditCollateralClick}
+                    handleEditCollateral={canEditMargin ? p.onEditCollateralClick : undefined}
                     handleMarketSelect={() => p.onSelectPositionClick?.()}
                     handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
                     handleShare={p.onShareClick}
                     handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                    handleStopMarketIncreaseSize={
+                      features.stopMarket ? () => p.onSelectPositionClick?.(TradeMode.StopMarket, true) : undefined
+                    }
+                    handleTwapIncreaseSize={
+                      features.twap ? () => p.onSelectPositionClick?.(TradeMode.Twap, true) : undefined
+                    }
                     handleTriggerClose={handleOpenAddTPSLModal}
                     handleViewPositionHistory={p.onViewPositionHistory}
                     disabled={isActionsDisabled}

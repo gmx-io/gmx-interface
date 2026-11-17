@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
@@ -16,22 +16,24 @@ import {
   useTradeHistory,
 } from "domain/synthetics/tradeHistory";
 import { usePositionLifecycleIdByKey } from "domain/synthetics/tradeHistory/usePositionLifecycleIdByKey";
+import { useUsdgPartialCloseSwapLegs } from "domain/synthetics/tradeHistory/useUsdgPartialCloseSwapLegs";
 import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import type { Position } from "sdk/utils/positions/types";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
+import { HistoryExportModal, TRADE_EXPORT_OPTIONS } from "components/HistoryExport/HistoryExportModal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import DownloadIcon from "img/ic_download2.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
-import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { DateRangeSelect } from "../DateRangeSelect/DateRangeSelect";
 import { MarketFilterLongShort, MarketFilterLongShortItemData } from "../TableMarketFilter/MarketFilterLongShort";
@@ -56,8 +58,8 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
-  viewPositionKeyHistory?: string;
-  onViewPositionKeyHistoryConsumed?: () => void;
+  viewPositionHistory?: Pick<Position, "contractKey" | "increasedAtTime">;
+  onViewPositionHistoryConsumed?: () => void;
 } & (
   | {
       dateRange: [Date | undefined, Date | undefined];
@@ -70,13 +72,7 @@ type Props = {
 );
 
 export function TradeHistory(p: Props) {
-  const {
-    forAllAccounts,
-    account,
-    hideDashboardLink = false,
-    viewPositionKeyHistory,
-    onViewPositionKeyHistoryConsumed,
-  } = p;
+  const { forAllAccounts, account, hideDashboardLink = false, viewPositionHistory, onViewPositionHistoryConsumed } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
@@ -90,12 +86,10 @@ export function TradeHistory(p: Props) {
   // Resolve the opened position's lifecycle id and apply it as the filter (consumed once).
   const { isResolving: isResolvingLifecycle } = usePositionLifecycleIdByKey({
     chainId,
-    positionKey: viewPositionKeyHistory,
+    position: viewPositionHistory,
     onResolve: (lifecycleId) => {
-      if (lifecycleId) {
-        setPositionLifecycleId(lifecycleId);
-      }
-      onViewPositionKeyHistoryConsumed?.();
+      setPositionLifecycleId(lifecycleId);
+      onViewPositionHistoryConsumed?.();
     },
   });
 
@@ -156,6 +150,8 @@ export function TradeHistory(p: Props) {
     pageCount,
   } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
+  const usdgPartialCloseSwapLegsById = useUsdgPartialCloseSwapLegs(chainId, currentPageData);
+
   // Prefetch the next chunk as the user nears the end of the loaded pages.
   useEffect(() => {
     if (!hasMorePages) {
@@ -206,14 +202,15 @@ export function TradeHistory(p: Props) {
     );
   }, [account, chainId, hideDashboardLink]);
 
-  const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
+  const historyExport = useDownloadAsCsv({
     account,
     forAllAccounts,
+    startDate,
+    endDate,
     fromTxTimestamp,
     toTxTimestamp,
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
-    minCollateralUsd: minCollateralUsd,
     positionLifecycleId,
   });
 
@@ -238,10 +235,20 @@ export function TradeHistory(p: Props) {
     <>
       {pnlAnalysisButton}
 
-      <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+      <DateRangeSelect
+        startDate={startDate}
+        endDate={endDate}
+        onChange={setDateRange}
+        timezone={hasExternalDateRange ? "utc" : "device"}
+      />
 
-      <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
-        {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
+      <Button
+        variant="ghost"
+        disabled={!account && !forAllAccounts}
+        onClick={() => historyExport.setIsModalVisible(true)}
+        className="flex items-center gap-4"
+      >
+        <DownloadIcon className="size-16" />
         <Trans>CSV</Trans>
       </Button>
     </>
@@ -251,6 +258,18 @@ export function TradeHistory(p: Props) {
 
   return (
     <div className="TradeHistorySynthetics flex grow flex-col bg-slate-900">
+      <HistoryExportModal
+        isVisible={historyExport.isModalVisible}
+        setIsVisible={historyExport.setIsModalVisible}
+        title={t`Export trade history`}
+        options={TRADE_EXPORT_OPTIONS}
+        isGenerating={historyExport.isGenerating}
+        activeFormat={historyExport.activeFormat}
+        progress={historyExport.progress}
+        error={historyExport.error}
+        onSelect={historyExport.start}
+        onCancel={historyExport.cancel}
+      />
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
@@ -299,24 +318,17 @@ export function TradeHistory(p: Props) {
                 <Trans>PRICE</Trans>
               </TableTh>
               <TableTh className="w-[10%]">
-                <TooltipWithPortal
-                  variant="iconStroke"
-                  content={<Trans>Realized PnL before fees, discounts and price impact.</Trans>}
-                >
+                <StandardTooltip variant="iconStroke" content={t`Realized PnL before fees, discounts and price impact`}>
                   <Trans>RPNL</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh className="w-[10%]">
-                <TooltipWithPortal
+                <StandardTooltip
                   variant="iconStroke"
-                  content={
-                    <Trans>
-                      Net total of action-level fees, and price impact. Hover the value to see the breakdown.
-                    </Trans>
-                  }
+                  content={t`Net total of action-level fees, and price impact. Hover the value to see the breakdown.`}
                 >
                   <Trans>FEES</Trans>
-                </TooltipWithPortal>
+                </StandardTooltip>
               </TableTh>
               <TableTh className="w-[132px]" />
             </TableTheadTr>
@@ -333,6 +345,7 @@ export function TradeHistory(p: Props) {
                   showDebugValues={showDebugValues}
                   shouldDisplayAccount={forAllAccounts}
                   onSelectPositionLifecycle={positionLifecycleId ? undefined : handleSelectPositionLifecycle}
+                  usdgPartialCloseSwapLegsById={usdgPartialCloseSwapLegsById}
                 />
               ))
             )}

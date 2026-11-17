@@ -6,12 +6,13 @@ import { useMemo } from "react";
 import { getExplorerUrl } from "config/chains";
 import { RebateDistribution, RebateDistributionType } from "domain/referrals";
 import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBigUsdParts } from "lib/numbers";
 import { getNativeToken, getToken, getTokenBySymbol, isValidTokenSafe } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipDivider, TooltipRow, TooltipRows, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
@@ -84,10 +85,8 @@ export function RebateDistributionRow({
       <GridCell>{formattedDate}</GridCell>
       <GridCell>{rebateType}</GridCell>
       <GridCell>
-        <TooltipWithPortal
+        <StandardTooltip
           className="whitespace-nowrap"
-          variant="none"
-          as="div"
           handle={
             <div className="flex items-center numbers">
               {tokensWithoutPrices.length > 0 && (
@@ -96,41 +95,42 @@ export function RebateDistributionRow({
                   &nbsp;
                 </>
               )}
-              {formatBigUsd(totalUsd)}
+              <NumericValue parts={formatBigUsdParts(totalUsd)} />
             </div>
           }
           content={
-            <>
+            <TooltipContent>
               {tokensWithoutPrices.length > 0 && (
                 <>
-                  <Trans>
-                    USD value may not be accurate because prices are missing for{" "}
-                    {tokensWithoutPrices
-                      .map((address) =>
-                        isValidTokenSafe(chainId, address) ? getToken(chainId, address).symbol : address
-                      )
-                      .join(", ")}
-                  </Trans>
-                  <br />
-                  <br />
+                  <TooltipText>
+                    <Trans>
+                      USD value may not be accurate because prices are missing for{" "}
+                      {tokensWithoutPrices
+                        .map((address) =>
+                          isValidTokenSafe(chainId, address) ? getToken(chainId, address).symbol : address
+                        )
+                        .join(", ")}
+                    </Trans>
+                  </TooltipText>
+                  <TooltipDivider />
                 </>
               )}
-              {Object.keys(amountsByTokens).map((tokenAddress) => {
-                const token = getToken(chainId, tokenAddress);
+              <TooltipRows>
+                {Object.keys(amountsByTokens).map((tokenAddress) => {
+                  const token = getToken(chainId, tokenAddress);
 
-                return (
-                  <StatsTooltipRow
-                    key={tokenAddress}
-                    showDollar={false}
-                    label={token.symbol}
-                    value={formatBalanceAmount(amountsByTokens[tokenAddress], token.decimals, undefined, {
-                      isStable: token.isStable,
-                    })}
-                    valueClassName="numbers"
-                  />
-                );
-              })}
-            </>
+                  return (
+                    <TooltipRow
+                      key={tokenAddress}
+                      label={token.symbol}
+                      value={formatBalanceAmount(amountsByTokens[tokenAddress], token.decimals, undefined, {
+                        isStable: token.isStable,
+                      })}
+                    />
+                  );
+                })}
+              </TooltipRows>
+            </TooltipContent>
           }
         />
       </GridCell>

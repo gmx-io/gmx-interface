@@ -10,6 +10,7 @@ import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getAddressKey } from "sdk/utils/address";
 import { ProgressiveTokensData, TokenCategory } from "sdk/utils/tokens/types";
 
 import type { SortField } from "./GmList";
@@ -26,6 +27,7 @@ export function useFilterSortPools({
   marketsTokensApyData,
   marketsTokensIncentiveAprData,
   marketsTokensLidoAprData,
+  marketsTokensLaunchBoostAprData,
   searchText,
   topLevelTab,
   subCategoryTab,
@@ -33,6 +35,7 @@ export function useFilterSortPools({
   favoriteTokens,
   performance,
   multichainMarketTokensBalances,
+  pinnedAddresses,
 }: {
   performance: PerformanceData | undefined;
   marketsInfo: MarketsInfoData | undefined;
@@ -42,21 +45,26 @@ export function useFilterSortPools({
   marketsTokensApyData: MarketTokensAPRData | undefined;
   marketsTokensIncentiveAprData: MarketTokensAPRData | undefined;
   marketsTokensLidoAprData: MarketTokensAPRData | undefined;
+  marketsTokensLaunchBoostAprData: MarketTokensAPRData | undefined;
   searchText: string;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
   recentlyListedAddresses?: Set<string>;
   favoriteTokens: string[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  pinnedAddresses: string[];
 }) {
   const sortedTokens = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
       return [];
     }
 
-    if (searchText.trim()) {
-      return searchBy(
-        values(marketTokensData),
+    const trimmedSearchText = searchText.trim();
+
+    if (trimmedSearchText) {
+      const tokens = values(marketTokensData);
+      const matchingTokens = searchBy(
+        tokens,
         [
           (marketToken) => {
             const market = getByKey(marketsInfo, marketToken?.address);
@@ -82,12 +90,39 @@ export function useFilterSortPools({
             return (market.indexToken.searchAliases ?? []).join(" ");
           },
         ],
-        searchText
+        trimmedSearchText
       );
+
+      const hasMatchingMarket = matchingTokens.some((marketToken) => {
+        const market = getByKey(marketsInfo, marketToken?.address);
+        return market && !market.isSpotOnly && !market.isDisabled;
+      });
+
+      if (hasMatchingMarket) {
+        return matchingTokens;
+      }
+
+      const collateralMatches = searchBy(
+        tokens,
+        [
+          (marketToken) => {
+            const market = getByKey(marketsInfo, marketToken?.address);
+            return market ? getMarketPoolName(market) : "";
+          },
+        ],
+        trimmedSearchText
+      );
+
+      return Array.from(new Set([...matchingTokens, ...collateralMatches]));
     }
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      return sortGmTokensDefault({ marketsInfoData: marketsInfo, marketTokensData, multichainMarketTokensBalances });
+      return sortGmTokensDefault({
+        marketsInfoData: marketsInfo,
+        marketTokensData,
+        multichainMarketTokensBalances,
+        pinnedAddresses,
+      });
     }
 
     return sortGmTokensByField({
@@ -98,6 +133,7 @@ export function useFilterSortPools({
       marketsTokensApyData,
       marketsTokensIncentiveAprData,
       marketsTokensLidoAprData,
+      marketsTokensLaunchBoostAprData,
       multichainMarketTokensBalances,
       performance,
     });
@@ -110,8 +146,10 @@ export function useFilterSortPools({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     multichainMarketTokensBalances,
     performance,
+    pinnedAddresses,
   ]);
 
   const filteredTokens = useMemo(() => {
@@ -139,10 +177,7 @@ export function useFilterSortPools({
         case "recently-listed":
           if (market.isSpotOnly) topLevelOk = false;
           else if (!recentlyListedAddresses || recentlyListedAddresses.size === 0) topLevelOk = false;
-          else
-            topLevelOk =
-              recentlyListedAddresses.has(market.indexTokenAddress.toLowerCase()) ||
-              recentlyListedAddresses.has(market.indexTokenAddress);
+          else topLevelOk = recentlyListedAddresses.has(getAddressKey(market.indexTokenAddress));
           break;
       }
       if (!topLevelOk) return false;

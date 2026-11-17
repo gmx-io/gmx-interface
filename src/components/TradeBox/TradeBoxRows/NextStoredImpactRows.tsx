@@ -4,18 +4,19 @@ import { DOCS_LINKS } from "config/links";
 import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
-  selectTradeboxSelectedPosition,
+  selectTradeboxExistingPositionForPreview,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatDeltaUsd } from "lib/numbers";
+import { formatDeltaUsdParts } from "lib/numbers";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 export function NextStoredImpactRows() {
-  const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
 
@@ -27,28 +28,29 @@ export function NextStoredImpactRows() {
     <>
       <SyntheticsInfoRow
         label={
-          <TooltipWithPortal
+          <StandardTooltip
             handle={t`Stored price impact`}
             content={
-              <Trans>
-                Price impact is stored when you increase a position and applied when you decrease.{" "}
-                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Price impact is stored when you increase a position and applied when you decrease.</Trans>
+                </TooltipText>
+                <TooltipLink href={DOCS_LINKS.priceImpact}>
+                  <Trans>Read more</Trans>
+                </TooltipLink>
+              </TooltipContent>
             }
           />
         }
         value={
           nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
-          selectedPosition?.pendingImpactUsd !== undefined ? (
+          existingPosition?.pendingImpactUsd !== undefined ? (
             <ValueTransition
-              from={formatDeltaUsd(selectedPosition?.pendingImpactUsd)}
-              to={formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)}
+              from={formatDeltaUsdParts(existingPosition?.pendingImpactUsd)}
+              to={formatDeltaUsdParts(nextPositionValues?.nextPendingImpactDeltaUsd)}
             />
           ) : (
-            formatDeltaUsd(nextPositionValues?.nextPendingImpactDeltaUsd)
+            <DeltaUsdValue deltaUsd={nextPositionValues?.nextPendingImpactDeltaUsd} />
           )
         }
         valueClassName="numbers"
@@ -57,7 +59,7 @@ export function NextStoredImpactRows() {
         nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
           <SyntheticsInfoRow
             label={t`Estimated impact rebate`}
-            value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
+            value={<DeltaUsdValue deltaUsd={nextPositionValues?.potentialPriceImpactDiffUsd} />}
             valueClassName="numbers text-green-500"
           />
         )}

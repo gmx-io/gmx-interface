@@ -29,7 +29,7 @@ export const HeroSection = forwardRef<HTMLDivElement>(function HeroSection(_, bu
             </Trans>
           </h1>
           <p className="mt-8 max-w-[340px] text-14 -tracking-[0.448px] text-slate-400">
-            <Trans>Real onchain revenue, paid in stablecoins, every time someone trades through you.</Trans>
+            <Trans>Real onchain revenue, paid in stablecoins, every time someone trades through you</Trans>
           </p>
           <div ref={buttonsRef} className="mt-[34px] flex w-full flex-col gap-12 sm:flex-row sm:gap-20">
             <ArrowButton href={SDK_QUICKSTART_URL} variant="primary" className="sm:w-[200px]">

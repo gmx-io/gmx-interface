@@ -2,11 +2,13 @@ import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
 import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
-import { isAddressEqual, type Address } from "viem";
+import { type Address } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -23,9 +25,12 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
+import { useChartCandlesFetcher } from "domain/tradingview/useChartCandlesFetcher";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { useChainId } from "lib/chains";
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
@@ -33,13 +38,21 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
 import { convertTokenAddress } from "sdk/configs/tokens";
+import { getAddressKey, isSameAddress } from "sdk/utils/address";
 import { TradeActionType, isPositionTradeAction, type TradeAction } from "sdk/utils/tradeHistory/types";
 
 import Loader from "components/Loader/Loader";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 
 import { ChartContextMenu } from "./ChartContextMenu";
-import { chartOverridesDark, chartOverridesLight, defaultChartProps, disabledFeaturesOnMobile } from "./constants";
+import {
+  PRICE_LINE_COLOR_KEY,
+  getChartThemeOverrides,
+  getThemeOverridesToApply,
+  isAppChartValue,
+  readSavedChartValues,
+} from "./chartThemeOverrides";
+import { defaultChartProps, disabledFeaturesOnMobile } from "./constants";
 import { CrosshairPercentageLabel } from "./CrosshairPercentageLabel";
 import { DynamicLines } from "./DynamicLines";
 import { SaveLoadAdapter } from "./SaveLoadAdapter";
@@ -63,7 +76,7 @@ const MARKS_PAGE_SIZE = 100;
 const MARKS_CACHE_TTL_MS = 60_000;
 
 function getNormalizedPositionKey(account: string, market: string, collateral: string, isLong: boolean) {
-  return getPositionKey(account.toLowerCase(), market.toLowerCase(), collateral.toLowerCase(), isLong);
+  return getPositionKey(getAddressKey(account), getAddressKey(market), getAddressKey(collateral), isLong);
 }
 
 const OPENED_AT_QUERY_LIMIT = 500;
@@ -90,7 +103,7 @@ async function fetchOpenPositionsOpenedAt(chainId: number, contractKeys: string[
 
   for (const position of res.data?.positions || []) {
     if (position.positionKey && typeof position.openedAt === "number") {
-      result.set(position.positionKey.toLowerCase(), position.openedAt);
+      result.set(getAddressKey(position.positionKey), position.openedAt);
     }
   }
 
@@ -135,6 +148,11 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
+  const candlesFetcher = useChartCandlesFetcher(oracleKeeperFetcher);
+  const sdk = useOptionalGmxSdk(chainId as ContractsChainId);
+  const { networkId } = useChainId();
+  const wsCandlesFlag = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
+  const wsCandlesEnabled = !isSolanaNetwork(networkId) && wsCandlesFlag;
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -162,7 +180,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return keys;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      keys.push(pos.contractKey.toLowerCase());
+      keys.push(getAddressKey(pos.contractKey));
     }
     return keys;
   }, [positionsInfoData]);
@@ -195,7 +213,7 @@ export default function TVChartContainer({
     if (!positionsInfoData) return map;
     for (const pos of Object.values(positionsInfoData)) {
       if (!pos || pos.sizeInUsd === 0n || !pos.contractKey) continue;
-      const openedAt = openedAtByContractKey.get(pos.contractKey.toLowerCase());
+      const openedAt = openedAtByContractKey.get(getAddressKey(pos.contractKey));
       if (openedAt === undefined) continue;
       map.set(
         getNormalizedPositionKey(pos.account, pos.marketAddress, pos.collateralTokenAddress, pos.isLong),
@@ -216,6 +234,7 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    sdk,
     buySellIconsMode,
   });
   const marksHistoryCacheRef = useRef<{
@@ -225,22 +244,51 @@ export default function TVChartContainer({
   }>({});
 
   useEffect(() => {
-    if (chartReady && tvWidgetRef.current && true) {
-      const overrides = theme === "light" ? chartOverridesLight : chartOverridesDark;
-      tvWidgetRef.current.applyOverrides(overrides);
-      tvWidgetRef.current.saveChartToServer();
-      setWasChartOverridden(true);
+    const widget = tvWidgetRef.current;
+
+    if (!chartReady || !widget) {
+      return;
     }
+
+    const themeOverrides = getChartThemeOverrides(theme);
+
+    if (!wasChartOverridden || !widget.layoutName()) {
+      widget.applyOverrides(themeOverrides);
+      widget.saveChartToServer();
+      setWasChartOverridden(true);
+      return;
+    }
+
+    widget.save((state) => {
+      const overrides = getThemeOverridesToApply({
+        theme,
+        savedValues: readSavedChartValues(state, Object.keys(themeOverrides)),
+      });
+
+      if (Object.keys(overrides).length === 0 || tvWidgetRef.current !== widget) {
+        return;
+      }
+
+      widget.applyOverrides(overrides);
+      widget.saveChartToServer();
+    });
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
-    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    if (!candlesFetcher) {
+      return;
+    }
+
+    const newDatafeed = new DataFeed(chainId, candlesFetcher);
     newDatafeed.setTokenPriceGetter((symbol) => {
       const data = marksStateRef.current.tokensData;
       if (!data) return undefined;
       const token = Object.values(data).find((t) => t.symbol === symbol);
       return token?.prices?.minPrice;
     });
+    newDatafeed.setCandleStreamFactory((symbol, timeframe) =>
+      marksStateRef.current.sdk?.watchCandles({ symbol, timeframe })
+    );
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -284,7 +332,7 @@ export default function TVChartContainer({
           return null;
         }
         const marketIndexWrapped = convertTokenAddress(cid as ContractsChainId, market.indexTokenAddress, "wrapped");
-        if (!isAddressEqual(marketIndexWrapped as Address, wrappedSelected as Address)) {
+        if (!isSameAddress(marketIndexWrapped, wrappedSelected)) {
           return null;
         }
 
@@ -354,10 +402,7 @@ export default function TVChartContainer({
 
         marketAddresses = Object.values(markets)
           .filter((m) =>
-            isAddressEqual(
-              convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped") as Address,
-              wrappedSelected as Address
-            )
+            isSameAddress(convertTokenAddress(cid as ContractsChainId, m.indexTokenAddress, "wrapped"), wrappedSelected)
           )
           .map((m) => m.marketTokenAddress);
 
@@ -427,7 +472,7 @@ export default function TVChartContainer({
       if (mode === "current") {
         (inc || []).forEach((e) => {
           if (e.sizeDeltaUsd === 0n || e.sizeInUsd !== e.sizeDeltaUsd) return;
-          if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+          if (acc && e.account && !isSameAddress(e.account, acc)) return;
           const key = getNormalizedPositionKey(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong);
           const ts = Number(e.increasedAtTime);
           const prev = liveGenesisByKey.get(key);
@@ -481,7 +526,7 @@ export default function TVChartContainer({
 
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.increasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -505,7 +550,7 @@ export default function TVChartContainer({
 
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
-        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (acc && e.account && !isSameAddress(e.account, acc)) return;
         const ts = Number(e.decreasedAtTime);
         if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong, ts)) return;
         const marketForEvent = markets?.[e.marketAddress];
@@ -537,13 +582,13 @@ export default function TVChartContainer({
         }
       });
     }
-    setDatafeed((prev) => {
-      if (prev) {
-        prev.destroy();
-      }
-      return newDatafeed;
-    });
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
+    setDatafeed(newDatafeed);
+
+    // TradingView unsubscribes bars when its iframe unloads. destroy() removes the visibilitychange listener the datafeed adds.
+    return () => {
+      newDatafeed.destroy();
+    };
+  }, [chainId, candlesFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
@@ -669,6 +714,10 @@ export default function TVChartContainer({
   }, [tokensData, datafeed]);
 
   useEffect(() => {
+    datafeed?.setCandleStreamEnabled(wsCandlesEnabled);
+  }, [datafeed, wsCandlesEnabled]);
+
+  useEffect(() => {
     if (
       !chartReady ||
       !tvWidgetRef.current ||
@@ -737,7 +786,8 @@ export default function TVChartContainer({
     if (!datafeed) return;
 
     const onCurrentCandleUpdate = (event: Event) => {
-      if (!chartReady || !tvWidgetRef.current) return;
+      const widget = tvWidgetRef.current;
+      if (!chartReady || !widget) return;
 
       const detail = (event as CustomEvent).detail as {
         symbol: string;
@@ -745,24 +795,25 @@ export default function TVChartContainer({
         bar: { open: number; close: number };
       };
 
-      if (tvWidgetRef.current.activeChart().resolution() !== detail.resolution) return;
-      if (tvWidgetRef.current.activeChart().symbolExt()?.name !== detail.symbol) return;
+      if (widget.activeChart().resolution() !== detail.resolution) return;
+      if (widget.activeChart().symbolExt()?.name !== detail.symbol) return;
 
       const direction =
         detail.bar.close > detail.bar.open ? "up" : detail.bar.close < detail.bar.open ? "down" : "flat";
       if (markPriceDirectionRef.current === direction) return;
       markPriceDirectionRef.current = direction;
 
-      const neutralColor = (
-        theme === "light"
-          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]
-          : chartOverridesDark["mainSeriesProperties.priceLineColor"]
-      ) as string;
-      const priceLineColor =
-        direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+      widget.save((state) => {
+        const savedPriceLineColor = readSavedChartValues(state, [PRICE_LINE_COLOR_KEY])[PRICE_LINE_COLOR_KEY];
+        if (!isAppChartValue(PRICE_LINE_COLOR_KEY, savedPriceLineColor) || tvWidgetRef.current !== widget) return;
 
-      tvWidgetRef.current.applyOverrides({
-        "mainSeriesProperties.priceLineColor": priceLineColor,
+        const neutralColor = getChartThemeOverrides(theme)[PRICE_LINE_COLOR_KEY] as string;
+        const priceLineColor =
+          direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+
+        widget.applyOverrides({
+          [PRICE_LINE_COLOR_KEY]: priceLineColor,
+        });
       });
     };
 
@@ -815,7 +866,7 @@ export default function TVChartContainer({
       fullscreen: defaultChartProps.fullscreen,
       autosize: defaultChartProps.autosize,
       custom_css_url: defaultChartProps.custom_css_url,
-      overrides: theme === "light" ? chartOverridesLight : chartOverridesDark,
+      overrides: getChartThemeOverrides(theme),
       interval: getObjectKeyFromValue(period, supportedResolutions) as ResolutionString,
       favorites: { ...defaultChartProps.favorites, intervals: Object.keys(supportedResolutions) as ResolutionString[] },
       custom_formatters: defaultChartProps.custom_formatters,
@@ -825,9 +876,12 @@ export default function TVChartContainer({
     };
     const widget = new window.TradingView.widget(widgetOptions);
 
+    let disposed = false;
+    let pageHidden = false;
     let didTriggerOnChartReady = { current: false };
 
-    widget.onChartReady(function () {
+    function onChartReady() {
+      if (disposed || pageHidden || didTriggerOnChartReady.current) return;
       didTriggerOnChartReady.current = true;
       tvWidgetRef.current = widget;
       setChartReady(true);
@@ -865,7 +919,7 @@ export default function TVChartContainer({
       });
 
       tvWidgetRef.current?.activeChart().dataReady(() => {
-        setChartDataLoading(false);
+        if (!disposed) setChartDataLoading(false);
       });
 
       tvWidgetRef.current?.onContextMenu((_unixTime, price) => {
@@ -879,41 +933,68 @@ export default function TVChartContainer({
       tvWidgetRef.current?.subscribe("mouse_down", () => {
         closeMenuRef.current();
       });
-    });
+    }
 
     /*
     For some reason on prod TV sometimes does not get initialized properly,
     for these cases we wait some fixed amount of time and force TV into initialization
     */
+    let forceInitTimeout: ReturnType<typeof setTimeout> | undefined;
+    const scheduleForceInit = () => {
+      clearTimeout(forceInitTimeout);
+      forceInitTimeout = setTimeout(() => {
+        if (disposed || pageHidden || didTriggerOnChartReady.current || !chartContainerRef.current) {
+          return;
+        }
 
-    const forceInitTimeout = setTimeout(() => {
-      if (didTriggerOnChartReady.current || !chartContainerRef.current) {
-        return;
-      }
+        const iframe = chartContainerRef.current.querySelector("iframe");
 
-      const iframe = chartContainerRef.current.querySelector("iframe");
+        if (!iframe || !iframe.contentWindow) {
+          return;
+        }
+        const iframeWindow = iframe.contentWindow;
+        const iframeDocument = iframeWindow.document;
 
-      if (!iframe || !iframe.contentWindow) {
-        return;
-      }
-      const iframeWindow = iframe.contentWindow;
-      const iframeDocument = iframeWindow.document;
+        if (iframeDocument.readyState !== "complete") {
+          iframeDocument.addEventListener("readystatechange", () => {
+            if (!disposed && iframeDocument.readyState === "complete") {
+              iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+            }
+          });
+        } else {
+          iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        }
+      }, 800);
+    };
 
-      if (iframeDocument.readyState !== "complete") {
-        iframeDocument.addEventListener("readystatechange", () => {
-          if (iframeDocument.readyState === "complete") {
-            iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
-          }
-        });
+    const onPageHide = () => {
+      pageHidden = true;
+      // The browser can destroy the iframe before React unmounts the chart.
+      if (tvWidgetRef.current === widget) tvWidgetRef.current = null;
+    };
+    const onPageShow = () => {
+      pageHidden = false;
+      if (disposed) return;
+      if (didTriggerOnChartReady.current) {
+        tvWidgetRef.current = widget;
       } else {
-        iframeWindow.dispatchEvent(new Event("innerWindowLoad"));
+        widget.onChartReady(onChartReady);
+        // a timeout that fired while the page was hidden skipped the forced init
+        scheduleForceInit();
       }
-    }, 800);
+    };
+    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("pageshow", onPageShow);
+    widget.onChartReady(onChartReady);
+    scheduleForceInit();
 
     return () => {
+      disposed = true;
       clearTimeout(forceInitTimeout);
-      widget.remove();
+      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };

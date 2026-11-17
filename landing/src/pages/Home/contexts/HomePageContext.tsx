@@ -36,16 +36,17 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
     [setRedirectModalTo, setRedirectChainId]
   );
 
-  const handleSolanaConfirm = useCallback(() => {
-    if (redirectModalTo) {
-      window.location.href = redirectModalTo;
-    }
-  }, [redirectModalTo]);
-
   const handleCloseModal = useCallback(() => {
     setRedirectModalTo(null);
     setRedirectChainId(null);
   }, []);
+
+  const handleSolanaConfirm = useCallback(() => {
+    if (redirectModalTo) {
+      window.open(redirectModalTo, "_blank", "noopener");
+    }
+    handleCloseModal();
+  }, [redirectModalTo, handleCloseModal]);
 
   const value = useMemo(
     () => ({

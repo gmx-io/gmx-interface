@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "domain/referrals/hooks";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import useWallet from "lib/wallets/useWallet";
+import { REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
 

@@ -1,5 +1,6 @@
 import mapValues from "lodash/mapValues";
 
+import { isDevelopment } from "./env";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "./factors";
 import { AB_FLAG_STORAGE_KEY } from "./localStorage";
 
@@ -14,21 +15,26 @@ type AbStorage = {
 const abFlagsConfig = {
   abSdk3: 0,
   useTestApi: 0,
+  solanaNetwork: 0,
+  abWebsocket: 0,
+  keepOrderToastOpen: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
 
-const flags: AbFlag[] = Object.keys(abFlagsConfig) as AbFlag[];
+export const AB_FLAG_NAMES = Object.keys(abFlagsConfig) as readonly AbFlag[];
 
 let abStorage: AbStorage;
+
+function rollAbFlag(flag: AbFlag): AbFlagValue {
+  return { enabled: Math.random() < abFlagsConfig[flag] };
+}
 
 function initAbStorage() {
   abStorage = {} as AbStorage;
 
-  for (const flag of flags) {
-    abStorage[flag] = {
-      enabled: Math.random() < abFlagsConfig[flag],
-    };
+  for (const flag of AB_FLAG_NAMES) {
+    abStorage[flag] = rollAbFlag(flag);
   }
 
   localStorage.setItem(AB_FLAG_STORAGE_KEY, JSON.stringify(abStorage));
@@ -45,20 +51,23 @@ function loadAbStorage(): void {
 
       let changed = false;
 
-      for (const flag of flags) {
+      for (const flag of AB_FLAG_NAMES) {
         if (!abStorage[flag]) {
-          abStorage[flag] = {
-            enabled: Math.random() < abFlagsConfig[flag],
-          };
+          abStorage[flag] = rollAbFlag(flag);
           changed = true;
         } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
           abStorage[flag] = { enabled: true };
+          changed = true;
+        } else if (abFlagsConfig[flag] === 0 && abStorage[flag].enabled && !isDevelopment()) {
+          // a deployed build rolls nobody into a zero-share flag, so an enabled one was written by
+          // hand; clearing it here retires the values older builds accepted from the url
+          abStorage[flag] = { enabled: false };
           changed = true;
         }
       }
 
       for (const flag of Object.keys(abStorage)) {
-        if (!flags.includes(flag as AbFlag)) {
+        if (!AB_FLAG_NAMES.includes(flag as AbFlag)) {
           // @ts-ignore
           delete abStorage[flag];
           changed = true;
@@ -92,14 +101,12 @@ export function getIsFlagEnabled(flag: AbFlag): boolean {
   return Boolean(abStorage[flag]?.enabled);
 }
 
-export function getAbFlags(): Record<AbFlag, boolean> {
-  return mapValues(abStorage, ({ enabled }) => enabled);
+export function getIsSolanaNetworkEnabled(): boolean {
+  return getIsFlagEnabled("solanaNetwork");
 }
 
-export function getAbFlagUrlParams(): string {
-  return Object.entries(abStorage)
-    .map(([flag, { enabled }]) => `${flag}=${enabled ? 1 : 0}`)
-    .join("&");
+export function getAbFlags(): Record<AbFlag, boolean> {
+  return mapValues(abStorage, ({ enabled }) => enabled);
 }
 
 // Config for deterministic ab flags based on address

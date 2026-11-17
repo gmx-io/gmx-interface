@@ -1,3 +1,5 @@
+import { zeroHash } from "viem";
+
 import { SOURCE_CHAIN_IDS, type ContractsChainId, type SourceChainId } from "config/chains";
 import { getSubaccountApprovalKey } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
@@ -28,6 +30,8 @@ export function deserializeSubaccountApproval(stored: string): SignedSubaccountA
       deadline: BigInt(parsed.deadline),
       nonce: BigInt(parsed.nonce),
       desChainId: BigInt(parsed.desChainId),
+      revocationCounter: BigInt(parsed.revocationCounter ?? 0),
+      eip6492SignatureWrapperHash: parsed.eip6492SignatureWrapperHash ?? zeroHash,
     };
   } catch (e) {
     return undefined;
@@ -62,6 +66,18 @@ export function writeStoredSubaccountApproval(
   writeLocalStorageItem(key, approval, { serializer: serializeSubaccountApproval });
 }
 
+export function removeStoredSubaccountApproval(
+  chainId: ContractsChainId,
+  account: string,
+  srcChainId: SourceChainId | undefined
+): void {
+  const key = getSubaccountApprovalKey(chainId, account, srcChainId);
+
+  if (key) {
+    removeLocalStorageItem(key);
+  }
+}
+
 function getRelatedSourceChainIds(chainId: ContractsChainId): SourceChainId[] {
   return SOURCE_CHAIN_IDS.filter((sourceChainId) => isSourceChain(sourceChainId, chainId));
 }
@@ -70,11 +86,7 @@ export function removeAllStoredSubaccountApprovals(chainId: ContractsChainId, ac
   const contextSrcChainIds: (SourceChainId | undefined)[] = [undefined, ...getRelatedSourceChainIds(chainId)];
 
   for (const srcChainId of contextSrcChainIds) {
-    const key = getSubaccountApprovalKey(chainId, account, srcChainId);
-
-    if (key) {
-      removeLocalStorageItem(key);
-    }
+    removeStoredSubaccountApproval(chainId, account, srcChainId);
   }
 }
 

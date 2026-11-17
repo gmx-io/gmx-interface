@@ -12,25 +12,33 @@ import {
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectMultichainMarketTokensBalancesIsLoading } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import { getMarketBadge, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
+import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
+import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd, TokenData } from "domain/synthetics/tokens";
+import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useChainId } from "lib/chains";
-import { formatAmountHuman, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
+import { AprInfo } from "components/AprInfo/AprInfo";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { EarningValue } from "components/EarningValue/EarningValue";
+import { EarningAttributionNote, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
 } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { ShimmerText } from "components/ShimmerText/ShimmerText";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -44,9 +52,11 @@ import { PoolsDetailsMarketAmount } from "./PoolsDetailsMarketAmount";
 type Props = {
   glvOrMarketInfo: GlvOrMarketInfo | undefined;
   marketToken: TokenData | undefined;
+  timeRange: PoolsTimeRange;
+  launchBoost: UsdgLaunchBoost | undefined;
 };
 
-export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
+export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, launchBoost }: Props) {
   const { chainId, srcChainId } = useChainId();
   const canBridgeInMarket = useSelector(selectPoolsDetailsCanBridgeInMarket);
   const canBridgeOutMarket = useSelector(selectPoolsDetailsCanBridgeOutMarket);
@@ -72,6 +82,26 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   } = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
+  const {
+    marketsTokensApyData,
+    glvApyInfoData,
+    marketsTokensIncentiveAprData,
+    glvTokensIncentiveAprData,
+    marketsTokensLidoAprData,
+    isLoading: isApyLoading,
+  } = useGmMarketsApy(chainId, srcChainId, { period: timeRange });
+  const apyData = isGlv ? glvApyInfoData : marketsTokensApyData;
+  const incentiveAprData = isGlv ? glvTokensIncentiveAprData : marketsTokensIncentiveAprData;
+  const apy = getByKey(apyData, marketToken?.address);
+  const incentiveApr = getByKey(incentiveAprData, marketToken?.address);
+  const lidoApr = getByKey(marketsTokensLidoAprData, marketToken?.address);
+  const isPriceInvalid =
+    glvOrMarketInfo !== undefined &&
+    marketToken !== undefined &&
+    getIsPoolTokenPriceInvalid(glvOrMarketInfo, marketToken);
+  const shouldShowApy =
+    !isPriceInvalid && ((apy !== undefined && apy !== 0n) || launchBoost !== undefined || isApyLoading);
+
   const { isMobile } = useBreakpoints();
 
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
@@ -80,13 +110,14 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     : undefined;
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
   const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
+  const hasBalanceOutsideWallet = !isGlv && getHasBalanceOutsideWallet(multichainMarketTokenBalances, chainId);
 
   const totalBalance = multichainMarketTokenBalances?.totalBalance;
   const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
   const hasGmBalance = !isGlv && typeof totalBalance === "bigint" && totalBalance > 0n;
   const shouldShowEarningsFallback =
     !marketEarnings && hasGmBalance && (isUserEarningsLoading || isUserEarningsUnavailable);
-  const shouldShowEarningsHeader = !isGlv && (marketEarnings || shouldShowEarningsFallback);
+  const shouldShowEarningsHeader = !isGlv && (marketEarnings || shouldShowEarningsFallback || hasBalanceOutsideWallet);
 
   const [isOpen, setIsOpen] = useState(true);
 
@@ -142,21 +173,56 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
               <div className="flex gap-14 max-md:flex-col">
                 <PoolsDetailsMarketAmount
                   label={<Trans>TVL (supply)</Trans>}
-                  value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
+                  value={
+                    <AmountHumanValue
+                      amount={marketTotalSupplyUsd}
+                      decimals={USD_DECIMALS}
+                      showDollar
+                      displayDecimals={2}
+                    />
+                  }
                   secondaryValue={
-                    typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"
-                      ? `${formatAmountHuman(marketTotalSupply, marketToken?.decimals, false, 2)} ${isGlv ? "GLV" : "GM"}`
-                      : undefined
+                    typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number" ? (
+                      <>
+                        <AmountHumanValue
+                          amount={marketTotalSupply}
+                          decimals={marketToken.decimals}
+                          displayDecimals={2}
+                        />{" "}
+                        {isGlv ? "GLV" : "GM"}
+                      </>
+                    ) : undefined
                   }
                 />
+                {marketToken && (
+                  <PoolsDetailsMarketAmount
+                    label={<Trans>APY</Trans>}
+                    value={
+                      shouldShowApy ? (
+                        <AprInfo
+                          apy={apy}
+                          incentiveApr={incentiveApr}
+                          lidoApr={lidoApr}
+                          launchBoost={launchBoost}
+                          isApyLoading={isApyLoading}
+                          marketAddress={marketToken.address}
+                        />
+                      ) : (
+                        t`N/A`
+                      )
+                    }
+                  />
+                )}
                 {typeof totalBalance === "bigint" && typeof marketToken?.decimals === "number" && (
                   <PoolsDetailsMarketAmount
                     label={<Trans>Balance</Trans>}
                     value={
                       isMultichainBalancesLoading ? (
-                        <ShimmerText>{formatUsd(marketBalanceUsd)}</ShimmerText>
+                        <ShimmerText>
+                          <UsdValue usd={marketBalanceUsd} />
+                        </ShimmerText>
                       ) : (
-                        formatUsd(marketBalanceUsd)
+                        <UsdValue usd={marketBalanceUsd} />
                       )
                     }
                     secondaryValue={`${formatBalanceAmount(totalBalance, marketToken?.decimals, undefined, {
@@ -219,10 +285,13 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                     value={
                       <EarningValue
                         value={marketEarnings?.total}
-                        isLoading={!marketEarnings && isUserEarningsLoading}
-                        isAvailable={Boolean(marketEarnings) || !isUserEarningsUnavailable}
+                        isLoading={!hasBalanceOutsideWallet && !marketEarnings && isUserEarningsLoading}
+                        isAvailable={
+                          !hasBalanceOutsideWallet && (Boolean(marketEarnings) || !isUserEarningsUnavailable)
+                        }
+                        unavailableTooltip={hasBalanceOutsideWallet ? <EarningAttributionNote scope="gm" /> : undefined}
                       >
-                        {(value) => formatUsd(value)}
+                        {(value) => <UsdValue usd={value} />}
                       </EarningValue>
                     }
                   />

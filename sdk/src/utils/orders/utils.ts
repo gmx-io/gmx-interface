@@ -321,6 +321,14 @@ export function isOrderForPositionByData(
   return isMatch;
 }
 
+export function getOrderPositionKey(order: OrderInfo) {
+  const collateralAddress = isDecreaseOrderType(order.orderType)
+    ? order.initialCollateralTokenAddress
+    : order.targetCollateralToken.address;
+
+  return getPositionKey(order.account, order.marketAddress, collateralAddress, order.isLong);
+}
+
 export function getOrderTradeboxKey(order: OrderInfo) {
   if (isPositionOrder(order) || isTwapPositionOrder(order)) {
     return `POSITION-${getPositionKey(order.account, order.marketAddress, order.initialCollateralTokenAddress, order.isLong)}`;

@@ -1,16 +1,20 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
-import defaultConfig from "./vite.config";
+import { createViteConfig } from "./vite.config";
 
 export default defineConfig((props) => {
-  const config = defaultConfig(props);
+  const config = createViteConfig(props, {
+    emitAppRedirects: false,
+    requireAppBootstrap: false,
+  });
   return {
     ...config,
     publicDir: resolve(__dirname, "public"),
     root: resolve(__dirname, "landing"),
     build: {
       ...config.build,
+      emptyOutDir: true,
       sourcemap: false,
       outDir: resolve(__dirname, "build"),
       minify: "terser",

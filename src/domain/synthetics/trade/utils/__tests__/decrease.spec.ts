@@ -81,7 +81,8 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       position: POSITION_FIXTURE,
       keepLeverage,
       isLong,
-      marketInfo: MARKET_INFO_FIXTURE,
+      // the shorts reserve more than the fixture's USDC pool, which leaves no liquidity to swap the profit to
+      marketInfo: { ...MARKET_INFO_FIXTURE, shortInterestUsd: 0n },
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,

@@ -1,0 +1,63 @@
+import { ReactNode } from "react";
+
+import { USD_DECIMALS } from "config/factors";
+import { useSettled } from "lib/useSettled";
+
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
+
+import ChainsStatsTooltipRow from "./ChainsStatsTooltipRow";
+import { summarizeChainsStats, type ChainsStatsEntries, type ChainsStatsStaleEntry } from "./summarizeChainsStats";
+
+type Props = {
+  entries: ChainsStatsEntries;
+  staleEntries?: ChainsStatsStaleEntry[];
+  caption?: ReactNode;
+  showDollar?: boolean;
+  decimalsForConversion?: number;
+};
+
+const NO_STALE_ENTRIES: ChainsStatsStaleEntry[] = [];
+
+// the figure and its breakdown are drawn from one summary, so they cannot disagree about the total
+export default function ChainsStatsTooltip({
+  entries,
+  staleEntries = NO_STALE_ENTRIES,
+  caption,
+  showDollar = true,
+  decimalsForConversion = USD_DECIMALS,
+}: Props) {
+  const summary = summarizeChainsStats(entries);
+  const isSettled = useSettled(summary.missingTitles.length === 0);
+
+  if (!isSettled || summary.total === undefined) {
+    return <span className="numbers">-</span>;
+  }
+
+  return (
+    <StandardTooltip
+      position="bottom-end"
+      handle={
+        <AmountHumanValue
+          amount={summary.total}
+          decimals={decimalsForConversion}
+          showDollar={showDollar}
+          displayDecimals={2}
+        />
+      }
+      handleClassName="numbers"
+      content={
+        <TooltipContent>
+          {caption && <TooltipText>{caption}</TooltipText>}
+          <ChainsStatsTooltipRow
+            summary={summary}
+            staleEntries={staleEntries}
+            showDollar={showDollar}
+            decimalsForConversion={decimalsForConversion}
+          />
+        </TooltipContent>
+      }
+    />
+  );
+}

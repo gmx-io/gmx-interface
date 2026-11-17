@@ -4,36 +4,32 @@ import cx from "classnames";
 import sdkCardGlow from "img/builders_sdk_card_glow.svg";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 
-import { SDK_QUICKSTART_URL } from "../constants";
+import { GMX_DOCS_URL, SDK_QUICKSTART_URL } from "../constants";
 import { Eyebrow } from "../Eyebrow";
 
 export function ApiSurfacesSection() {
   const cards = [
     {
-      title: t`Rest API`,
-      description: t`Prices, markets, positions, orders — one call away.`,
-      path: "docs/api/rest-api/",
+      title: t`REST API`,
+      description: t`Prices, markets, positions, orders — one call away`,
       href: "https://docs.gmx.io/docs/api/gmx-api/gmx-io-gmx-public-api/",
       highlighted: false,
     },
     {
       title: t`TypeScript SDK`,
       description: t`Start trading in under 5 minutes`,
-      path: "docs/sdk/overview/",
       href: SDK_QUICKSTART_URL,
       highlighted: true,
     },
     {
       title: t`Squid GraphQL`,
-      description: t`Query historical chain data fast.`,
-      path: "docs/api/graphql/",
+      description: t`Query historical chain data fast`,
       href: "https://docs.gmx.io/docs/api/graphql/",
       highlighted: false,
     },
     {
-      title: t`Smart Contracts`,
+      title: t`Smart contracts`,
       description: t`Direct smart contract integration`,
-      path: "docs/api/contracts/",
       href: "https://docs.gmx.io/docs/api/contracts/",
       highlighted: false,
     },
@@ -43,10 +39,10 @@ export function ApiSurfacesSection() {
     <section className="bg-light-150 w-full px-16 py-60 text-slate-900 sm:px-40 sm:py-[120px]">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow>
-          <Trans>API Surfaces</Trans>
+          <Trans>API surfaces</Trans>
         </Eyebrow>
         <h2 className="text-heading-2 mt-20">
-          <Trans>Four ways in.</Trans>
+          <Trans>Four ways in</Trans>
         </h2>
         <p className="text-18 mt-18 text-slate-900">
           <Trans>Pick what fits your stack. Everything's documented.</Trans>
@@ -83,14 +79,14 @@ export function ApiSurfacesSection() {
               </div>
               <div
                 className={cx(
-                  "relative mt-auto flex items-center justify-between text-16 -tracking-[0.512px]",
+                  "relative mt-auto flex items-center justify-between gap-8 pt-16 text-16 -tracking-[0.512px]",
                   card.highlighted ? "text-blue-300" : "text-blue-400"
                 )}
               >
-                {card.path}
+                {card.href.replace(GMX_DOCS_URL, "")}
                 <span
                   className={cx(
-                    "flex size-16 items-center justify-center rounded-full",
+                    "flex size-16 flex-shrink-0 items-center justify-center rounded-full",
                     card.highlighted ? "bg-blue-300" : "bg-blue-400"
                   )}
                 >

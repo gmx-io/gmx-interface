@@ -42,16 +42,18 @@ import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCo
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { convertTokenAddress, getTokenVisualMultiplier, isChartAvailableForToken } from "sdk/configs/tokens";
+import { getAddressKey } from "sdk/utils/address";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -64,9 +66,11 @@ import LongIcon from "img/long.svg?react";
 import SearchIconComponent from "img/search.svg?react";
 import ShortIcon from "img/short.svg?react";
 
+import { ArbitrumRecommendation } from "./ArbitrumRecommendation";
 import {
   applySubCategoryFilter,
   applyTopLevelFilter,
+  getMarketSearchEmptyStateActions,
   getRecentlyListedTokenAddresses,
   isMarketRecentlyListed,
 } from "./marketFilters";
@@ -79,6 +83,23 @@ type Props = {
 };
 
 const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
+const MAX_MARKET_SEARCH_QUERY_LENGTH = 100;
+
+function getSearchMatchedTokens(options: Token[] | undefined, searchKeyword: string, isSwap: boolean) {
+  if (!options) return undefined;
+  const query = searchKeyword.trim();
+  if (!query) return options;
+
+  return searchBy(
+    options,
+    [
+      (item) => stripBlacklistedWords(item.name),
+      (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+      (item) => (item.searchAliases ?? []).join(" "),
+    ],
+    query
+  );
+}
 
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
@@ -189,6 +210,7 @@ function MarketsList() {
     subCategoryTab: storedSubCategoryTab,
     mode,
     setMode,
+    setModeAndResetFilters,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
@@ -215,6 +237,7 @@ function MarketsList() {
 
   const isSwap = mode === "swap";
   const availableTokens = isSwap ? swapTokens : perpTokens;
+  const otherModeAvailableTokens = isSwap ? perpTokens : swapTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
@@ -226,9 +249,14 @@ function MarketsList() {
     };
   }, [availableTokens, chainId]);
 
+  const otherModeOptions = useMemo(
+    () => otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
+    [chainId, otherModeAvailableTokens]
+  );
+
   const recentlyListedCount = useMemo(() => {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
-    return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
+    return options.filter((t) => recentlyListedAddressesSet.has(getAddressKey(t.address))).length;
   }, [options, recentlyListedAddressesSet]);
 
   const hasAvailableFavorites = useMemo(() => {
@@ -297,11 +325,21 @@ function MarketsList() {
   );
 
   const [searchKeyword, setSearchKeyword] = useState("");
+  const query = searchKeyword.trim();
+
+  const currentModeSearchResults = useMemo(
+    () => getSearchMatchedTokens(options, searchKeyword, isSwap),
+    [isSwap, options, searchKeyword]
+  );
+
+  const otherModeSearchResults = useMemo(() => {
+    if (!query || currentModeSearchResults === undefined || currentModeSearchResults.length > 0) return undefined;
+    return getSearchMatchedTokens(otherModeOptions, query, !isSwap);
+  }, [currentModeSearchResults, isSwap, otherModeOptions, query]);
 
   const sortedTokens = useFilterSortTokens({
     chainId,
-    options,
-    searchKeyword,
+    textMatchedTokens: currentModeSearchResults,
     topLevelTab,
     subCategoryTab,
     recentlyListedAddressesSet,
@@ -312,7 +350,6 @@ function MarketsList() {
     dayPriceDeltaMap,
     dayVolumes,
     indexTokenStatsMap,
-    isSwap,
   });
 
   const sortedDetails = useMemo(() => {
@@ -336,7 +373,7 @@ function MarketsList() {
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !sortedTokens?.length && topLevelTab === "all",
+    isEmpty: !currentModeSearchResults?.length,
     isLoaded: Boolean(options?.length),
     place: MissedCoinsPlace.marketDropdown,
     mode,
@@ -398,10 +435,17 @@ function MarketsList() {
   }, [isSwap]);
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
+  const marketTypeLabel = isSwap ? t`Swap tokens` : t`perpetual markets`;
+  const { shouldOfferSearchAll, shouldOfferOtherMode } = getMarketSearchEmptyStateActions({
+    hasActiveFilter: topLevelTab !== "all",
+    hasCurrentModeMatches: Boolean(currentModeSearchResults?.length),
+    hasOtherModeMatches: Boolean(otherModeSearchResults?.length),
+  });
 
   return (
     <>
       <div className="flex flex-col">
+        <ArbitrumRecommendation />
         <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
           <ModeTabs mode={mode} setMode={setMode} />
           <SearchInput
@@ -410,6 +454,7 @@ function MarketsList() {
             setValue={setSearchKeyword}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
+            maxLength={MAX_MARKET_SEARCH_QUERY_LENGTH}
           />
         </div>
 
@@ -544,18 +589,45 @@ function MarketsList() {
             isLoading={false}
             isEmpty={true}
             emptyText={
-              searchKeyword.trim() ? (
-                <div className="flex flex-col items-center gap-12">
-                  <span className="text-12">
-                    <Trans>No markets matched.</Trans>
+              query ? (
+                <div className="flex w-full flex-col items-center gap-12 px-16">
+                  <span className="w-full min-w-0 text-center text-12 text-typography-secondary [overflow-wrap:anywhere]">
+                    {shouldOfferSearchAll ? (
+                      <Trans>No results with the selected filters</Trans>
+                    ) : (
+                      <Trans>
+                        No {marketTypeLabel} match "{query}"
+                      </Trans>
+                    )}
                   </span>
-                  <Button type="button" variant="secondary" onClick={() => setMode(isSwap ? "perp" : "swap")}>
-                    {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
-                    <SearchIconComponent className="size-16" />
-                  </Button>
+                  {shouldOfferSearchAll && (
+                    <Button type="button" variant="secondary" onClick={() => setModeAndResetFilters(mode)}>
+                      <Trans>Search in all {marketTypeLabel}</Trans>
+                      <SearchIconComponent className="size-16" />
+                    </Button>
+                  )}
+                  {shouldOfferOtherMode && (
+                    <>
+                      <span className="text-12 text-typography-secondary">
+                        {isSwap ? (
+                          <Trans>Results are available in Perpetuals</Trans>
+                        ) : (
+                          <Trans>Results are available in Swap</Trans>
+                        )}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => setModeAndResetFilters(isSwap ? "perp" : "swap")}
+                      >
+                        {isSwap ? <Trans>View results in Perpetuals</Trans> : <Trans>View results in Swap</Trans>}
+                        <SearchIconComponent className="size-16" />
+                      </Button>
+                    </>
+                  )}
                 </div>
               ) : (
-                <Trans>No markets matched.</Trans>
+                <Trans>No markets matched</Trans>
               )
             }
           />
@@ -567,8 +639,7 @@ function MarketsList() {
 
 function useFilterSortTokens({
   chainId,
-  options,
-  searchKeyword,
+  textMatchedTokens,
   topLevelTab,
   subCategoryTab,
   recentlyListedAddressesSet,
@@ -579,11 +650,9 @@ function useFilterSortTokens({
   dayPriceDeltaMap,
   dayVolumes,
   indexTokenStatsMap,
-  isSwap,
 }: {
   chainId: number;
-  options: Token[] | undefined;
-  searchKeyword: string;
+  textMatchedTokens: Token[] | undefined;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
   recentlyListedAddressesSet: Set<string>;
@@ -594,31 +663,18 @@ function useFilterSortTokens({
   dayPriceDeltaMap: PriceDeltaMap | undefined;
   dayVolumes: Record<Address, bigint> | undefined;
   indexTokenStatsMap: Partial<IndexTokensStats> | undefined;
-  isSwap: boolean;
 }) {
   const filteredTokens: Token[] | undefined = useMemo(() => {
-    if (!options) return undefined;
+    if (!textMatchedTokens) return undefined;
 
-    const textMatched = searchKeyword.trim()
-      ? searchBy(
-          options,
-          [
-            (item) => stripBlacklistedWords(item.name),
-            (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
-            (item) => (item.searchAliases ?? []).join(" "),
-          ],
-          searchKeyword
-        )
-      : options;
-
-    const afterTopLevel = applyTopLevelFilter(textMatched ?? [], {
+    const afterTopLevel = applyTopLevelFilter(textMatchedTokens, {
       topLevelTab,
       favoriteAddresses: favoriteTokens,
       recentlyListedAddresses: recentlyListedAddressesSet,
     });
 
     return applySubCategoryFilter(afterTopLevel, { topLevelTab, subCategoryTab });
-  }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
+  }, [textMatchedTokens, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -772,9 +828,11 @@ function MarketListItem({
         <td className={tdClassName}>
           <div className="flex flex-col gap-4">
             <span className="numbers">
-              {tokenData
-                ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
-                : "-"}
+              {tokenData ? (
+                <UsdPriceValue price={getMidPrice(tokenData.prices)} visualMultiplier={tokenData.visualMultiplier} />
+              ) : (
+                "-"
+              )}
             </span>
             {isMobile && <span>{dayPriceDeltaComponent}</span>}
           </div>
@@ -812,29 +870,31 @@ function MarketListItem({
       <td className={tdClassName}>
         <div className="flex flex-col gap-4">
           <span className="numbers">
-            {tokenData
-              ? formatUsdPrice(getMidPrice(tokenData.prices), { visualMultiplier: tokenData.visualMultiplier })
-              : "-"}
+            {tokenData ? (
+              <UsdPriceValue price={getMidPrice(tokenData.prices)} visualMultiplier={tokenData.visualMultiplier} />
+            ) : (
+              "-"
+            )}
           </span>
           {isMobile && <span>{dayPriceDeltaComponent}</span>}
         </div>
       </td>
       {!isMobile && <td className={tdClassName}>{dayPriceDeltaComponent}</td>}
       <td className={cx(tdClassName, "numbers")}>
-        {dayVolume ? formatAmountHuman(dayVolume, USD_DECIMALS, true) : "-"}
+        {dayVolume ? <AmountHumanValue amount={dayVolume} decimals={USD_DECIMALS} showDollar /> : "-"}
       </td>
       {!isMobile && (
         <>
           <td className={cx(tdClassName, "pr-4 numbers")}>
             <span className="inline-flex items-center gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(openInterestLong ?? 0n, USD_DECIMALS, true)}
+              <AmountHumanValue amount={openInterestLong ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
           <td className={cx(tdClassName, "pl-4 numbers")}>
             <span className="inline-flex items-center gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(openInterestShort ?? 0n, USD_DECIMALS, true)}
+              <AmountHumanValue amount={openInterestShort ?? 0n} decimals={USD_DECIMALS} showDollar />
             </span>
           </td>
         </>
@@ -845,13 +905,13 @@ function MarketListItem({
           <td className={cx(tdClassName, "group pr-4 numbers hover:bg-slate-800")} onClick={handleSelectLong}>
             <div className="inline-flex items-center justify-end gap-6">
               <LongIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxLongLiquidityPool?.maxLongLiquidity, USD_DECIMALS, true)}
+              <AmountHumanValue amount={maxLongLiquidityPool?.maxLongLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
           <td className={cx(tdClassName, "group pl-4 numbers hover:bg-slate-800")} onClick={handleSelectShort}>
             <div className="inline-flex items-center justify-end gap-6">
               <ShortIcon width={12} className="relative top-1 mb-2 opacity-70" />
-              {formatAmountHuman(maxShortLiquidityPool?.maxShortLiquidity, USD_DECIMALS, true)}
+              <AmountHumanValue amount={maxShortLiquidityPool?.maxShortLiquidity} decimals={USD_DECIMALS} showDollar />
             </div>
           </td>
         </>

@@ -34,7 +34,7 @@ function HeroStat({
 
 export function HeroSection() {
   const { data: totalVolume } = useTotalVolume();
-  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume) : "-";
+  const totalVolumeText = totalVolume ? shortFormatUsd(totalVolume.total) : "-";
 
   return (
     <section className="relative w-full overflow-hidden bg-slate-900 px-16 text-white sm:px-40">
@@ -60,7 +60,7 @@ export function HeroSection() {
           <Trans>
             Trade more, pay less.
             <br />
-            Refer, and earn.
+            Refer, and earn
           </Trans>
         </h1>
         <p className="leading-body-sm mt-12 text-14 -tracking-[0.448px] text-slate-400">

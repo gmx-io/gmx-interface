@@ -8,8 +8,10 @@ import type { MarketLiquidityAndFeeStat } from "context/SyntheticsStateContext/s
 import { getMarketPoolName } from "domain/synthetics/markets/utils";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { TradeType } from "domain/synthetics/trade";
-import { formatAmountHuman, formatRatePercentage, formatUsd } from "lib/numbers";
+import { formatRatePercentage } from "lib/numbers";
 
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import { numberToState } from "components/TradeHistory/TradeHistoryRow/utils/shared";
@@ -116,7 +118,6 @@ function PoolListItemDesktop({
 } & MarketLiquidityAndFeeStat) {
   const isLong = tradeType === TradeType.Long;
   const poolName = getMarketPoolName(marketStat.marketInfo);
-  const formattedLiquidity = formatAmountHuman(liquidity, USD_DECIMALS);
 
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
   const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
@@ -140,7 +141,7 @@ function PoolListItemDesktop({
           "text-red-500": !isEnoughLiquidity,
         })}
       >
-        {formattedLiquidity}
+        <AmountHumanValue amount={liquidity} decimals={USD_DECIMALS} />
       </TableTd>
       <TableTd
         padding="compact"
@@ -192,7 +193,6 @@ function PoolListItemMobile({
   const longTokenSymbol = marketStat.marketInfo.longToken.symbol;
   const shortTokenSymbol = marketStat.marketInfo.shortToken.symbol;
   const poolName = getMarketPoolName(marketStat.marketInfo);
-  const formattedLiquidity = formatUsd(liquidity);
   const formattedNetRate = formatRatePercentage(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
 
   const netRateState = numberToState(isLong ? marketStat.netFeeLong : marketStat.netFeeShort);
@@ -223,7 +223,7 @@ function PoolListItemMobile({
             "text-red-500": !isEnoughLiquidity,
           })}
         >
-          {formattedLiquidity}
+          <UsdValue usd={liquidity} />
         </dd>
         <dt>
           <Trans>Net rate</Trans>

@@ -40,6 +40,8 @@ export function DynamicLine({
   sizeDeltaUsd,
   indexTokenVisualMultiplier,
   isPartial,
+  isMarginDeposit,
+  isEditable,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -81,6 +83,7 @@ export function DynamicLine({
         sizeData,
         showSizeInTokens: chartLinesSizeInTokens,
         isPartial,
+        isMarginDeposit,
       });
 
       if (positionEntryPrice === undefined || positionSizeInUsd === undefined || sizeDeltaUsd === undefined) {
@@ -104,6 +107,7 @@ export function DynamicLine({
       orderType,
       sizeData,
       isPartial,
+      isMarginDeposit,
       positionEntryPrice,
       positionSizeInUsd,
       sizeDeltaUsd,
@@ -134,17 +138,19 @@ export function DynamicLine({
         .createOrderLine({ disableUndo: true })
         .setText(latestTitle.current)
         .setPrice(price)
-        .setQuantity("\u270E")
-        .setModifyTooltip(t`Edit order`)
+        .setQuantity(isEditable ? "\u270E" : "")
+        .setModifyTooltip(isEditable ? t`Edit order` : "")
         .onModify(() => {
-          latestOnEdit.current(id);
+          if (isEditable) {
+            latestOnEdit.current(id);
+          }
         })
         .setCancelTooltip(t`Cancel order`)
         .onCancel(() => {
           latestOnCancel.current(id);
         })
         .setExtendLeft(false)
-        .setEditable(true)
+        .setEditable(isEditable)
         .setLineStyle(LineStyle.Dashed)
         .setLineColor(orderLineColor)
 
@@ -156,6 +162,7 @@ export function DynamicLine({
         .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
         .setQuantityFont(`normal ${bodyFontSizePt + 4}pt "Relative", sans-serif`)
         .setQuantityBorderColor(orderBodyBgBorderColor)
+        .setQuantityTextColor(chartLabelColors.button.icon[theme])
 
         .setCancelButtonBackgroundColor(chartLabelColors.button.bg[theme])
         .setCancelButtonBorderColor(orderBodyBgBorderColor)
@@ -226,6 +233,7 @@ export function DynamicLine({
     _,
     getError,
     id,
+    isEditable,
     isLong,
     isMobile,
     latestOnCancel,
@@ -292,7 +300,7 @@ export function DynamicLine({
 
         setTimeout(() => {
           clearInterval(interval);
-          lineApi.current?.setQuantity("\u270E");
+          lineApi.current?.setQuantity(isEditable ? "\u270E" : "");
           lineApi.current?.setPrice(latestPrice.current);
           lineApi.current?.setBodyBackgroundColor(orderBodyBgBorderColor);
           lineApi.current?.setBodyBorderColor(orderBodyBgBorderColor);
@@ -300,7 +308,7 @@ export function DynamicLine({
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, orderBodyBgBorderColor, prevIsPending, title]
+    [isEditable, isPending, latestPrice, orderBodyBgBorderColor, prevIsPending, title]
   );
 
   useEffect(() => {

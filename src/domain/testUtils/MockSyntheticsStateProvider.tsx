@@ -1,12 +1,12 @@
 import { ReactNode, useMemo } from "react";
 
 import { ARBITRUM, type SourceChainId } from "config/chains";
+import type { PoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import type { SponsoredCallBalanceData } from "domain/synthetics/express";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import type { FeaturesSettings } from "domain/synthetics/features/useDisabledFeatures";
 import type { MarketsInfoData } from "domain/synthetics/markets";
@@ -38,6 +38,10 @@ export const DEFAULT_MOCK_MARKETS_INFO_DATA: MarketsInfoData = {
 
 const EMPTY_POSITIONS_INFO_DATA: PositionsInfoData = {};
 const EMPTY_ORDERS_INFO_DATA: OrdersInfoData = {};
+const EMPTY_CLAIMS: SyntheticsState["claims"] = {
+  accruedPositionPriceImpactFees: [],
+  claimablePositionPriceImpactFees: [],
+};
 
 export type MockSyntheticsStateProviderProps = {
   children: ReactNode;
@@ -48,10 +52,14 @@ export type MockSyntheticsStateProviderProps = {
   uiFeeFactor?: bigint;
   isFirstOrder?: boolean;
   features?: FeaturesSettings;
-  sponsoredCallBalanceData?: SponsoredCallBalanceData;
   subaccount?: SyntheticsState["subaccountState"]["subaccount"];
   srcChainId?: SourceChainId;
   l1ExpressOrderGasReference?: L1ExpressOrderGasReference;
+  closingPositionKey?: string;
+  claims?: SyntheticsState["claims"];
+  poolsDetails?: PoolsDetailsState;
+  depositMarketTokensData?: TokensData;
+  gasPaymentTokenAllowance?: SyntheticsState["gasPaymentTokenAllowance"];
 };
 
 /**
@@ -68,10 +76,14 @@ export function MockSyntheticsStateProvider({
   uiFeeFactor = 0n,
   isFirstOrder = false,
   features,
-  sponsoredCallBalanceData,
   subaccount,
   srcChainId,
   l1ExpressOrderGasReference,
+  closingPositionKey,
+  claims = EMPTY_CLAIMS,
+  poolsDetails,
+  depositMarketTokensData,
+  gasPaymentTokenAllowance,
 }: MockSyntheticsStateProviderProps) {
   const chainId = ARBITRUM;
   const { account, signer } = useWallet();
@@ -84,13 +96,14 @@ export function MockSyntheticsStateProvider({
   const tokenPermitsState = useTokenPermitsContext();
   const externalSwapState = useInitExternalSwapState();
   const orderEditorState = useOrderEditorState(ordersInfoData);
-  const positionSellerState = usePositionSellerState(chainId, undefined, undefined);
+  const positionSellerState = usePositionSellerState(chainId, undefined, undefined, chainId);
   const positionEditorState = usePositionEditorState(chainId, undefined);
   const confirmationBoxState = useConfirmationBoxState();
 
   const marketsData = useMemo(() => createMockMarketsData(Object.values(marketsInfoData)), [marketsInfoData]);
 
   const tradeboxState = useTradeboxState(chainId, true, {
+    networkId: chainId,
     marketsData,
     marketsInfoData,
     tokensData,
@@ -123,12 +136,13 @@ export function MockSyntheticsStateProvider({
         positionsConstants: MOCK_POSITIONS_CONSTANTS,
         uiFeeFactor,
         userReferralInfo: undefined,
-        depositMarketTokensData: undefined,
+        proDiscountFactor: undefined,
+        depositMarketTokensData,
         progressiveDepositMarketTokensData: undefined,
         multichainMarketTokensBalancesResult: { tokenBalances: {}, isLoading: false },
         glvInfo: { glvs: undefined, glvData: undefined, isLoading: false },
 
-        closingPositionKey: undefined,
+        closingPositionKey,
         setClosingPositionKey: noop,
         closingPositionOrderOption: undefined,
 
@@ -153,8 +167,10 @@ export function MockSyntheticsStateProvider({
         oracleSettings: undefined,
 
         jitLiquidityData: { jitLiquidityMap: undefined },
+        accountWhitelistsResult: { accountWhitelists: undefined },
+        usdgBoostAprResult: { usdgBoostAprResponse: undefined },
       },
-      claims: { accruedPositionPriceImpactFees: [], claimablePositionPriceImpactFees: [] },
+      claims,
       // page-scoped, unrelated to trading widgets
       leaderboard: {} as SyntheticsState["leaderboard"],
       settings,
@@ -166,12 +182,14 @@ export function MockSyntheticsStateProvider({
       positionSeller: positionSellerState,
       positionEditor: positionEditorState,
       confirmationBox: confirmationBoxState,
-      poolsDetails: undefined,
+      poolsDetails,
       // populate if the component under test grows feature-gated or oracle-based behavior
       features,
       uiFlags: undefined,
-      sponsoredCallBalanceData,
-      gasPaymentTokenAllowance: undefined,
+      gasPaymentTokenAllowance,
+      gasPaymentTokensOnchainState: undefined,
+      gasPaymentTokenReplacements: {},
+      setGasPaymentTokenReplacement: () => undefined,
       l1ExpressOrderGasReference,
     };
 
@@ -189,8 +207,12 @@ export function MockSyntheticsStateProvider({
     uiFeeFactor,
     isFirstOrder,
     features,
-    sponsoredCallBalanceData,
     l1ExpressOrderGasReference,
+    closingPositionKey,
+    claims,
+    poolsDetails,
+    depositMarketTokensData,
+    gasPaymentTokenAllowance,
     settings,
     subaccountState,
     tokenPermitsState,

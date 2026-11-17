@@ -20,7 +20,6 @@ import {
   TransferHistoryTitle,
   WithdrawalScreen,
 } from "./GmxAccountModalShared";
-import { useIsActiveAccountEmbeddedWallet } from "./hooks";
 import { MainView } from "./MainView";
 import { SelectAssetToDepositView } from "./SelectAssetToDepositView";
 import { WalletReceiveOptionsView } from "./WalletReceiveOptionsView";
@@ -62,8 +61,8 @@ const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   depositStatus: <Trans>Deposit in progress...</Trans>,
   selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
   walletReceiveOptions: <Trans>Receive funds</Trans>,
-  walletReceive: <Trans>Receive to Wallet</Trans>,
-  walletSend: <Trans>Send from Wallet</Trans>,
+  walletReceive: <Trans>Receive to wallet</Trans>,
+  walletSend: <Trans>Send from wallet</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {
@@ -88,7 +87,6 @@ function OverlayContent({ view }: { view: OverlayView }) {
 export function GmxAccountModalDesktop({ account }: { account: string }) {
   const [modalState, setModalState] = useGmxAccountModalOpen();
   const [walletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
-  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
 
   const isOpen = modalState !== false;
   const view: GmxAccountModalView = typeof modalState === "string" ? modalState : "main";
@@ -97,13 +95,10 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
   const showMainViewInBackground = isOverlayView(view);
   const isMainViewContent = view === "main" || showMainViewInBackground;
 
+  const handleOverlayBack = view === "walletReceive" ? () => setModalState("walletReceiveOptions") : undefined;
+
   const handleOverlayClose = (nextVisible: boolean) => {
     if (nextVisible) return;
-
-    if (view === "walletReceive" && isEmbeddedWallet) {
-      setModalState("walletReceiveOptions");
-      return;
-    }
 
     if ((view === "walletReceive" || view === "walletReceiveOptions") && walletReceiveViewBackTo !== undefined) {
       setModalState(walletReceiveViewBackTo);
@@ -148,6 +143,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
           label={OVERLAY_MODAL_LABELS[view]}
           isVisible={isOpen}
           setIsVisible={handleOverlayClose}
+          onBack={handleOverlayBack}
           contentPadding={false}
           disableOverflowHandling={true}
           contentClassName={

@@ -11,21 +11,25 @@ const colorSchemas = {
     border: "border-l-green-700",
     bg: "bg-green-600",
     icon: "text-green-600",
+    accent: "[--colorful-banner-accent-color:var(--color-green-600)]",
   },
   red: {
     border: "border-l-red-500",
     bg: "bg-red-900",
     icon: "text-red-500",
+    accent: "[--colorful-banner-accent-color:var(--color-red-500)]",
   },
   blue: {
     border: "border-l-blue-300",
     icon: "text-blue-300",
     bg: "bg-blue-300 bg-opacity-20",
+    accent: "[--colorful-banner-accent-color:var(--color-blue-300)]",
   },
   yellow: {
     border: "border-l-yellow-300",
     icon: "text-yellow-300",
     bg: "bg-yellow-300 bg-opacity-20",
+    accent: "[--colorful-banner-accent-color:var(--color-yellow-300)]",
   },
 };
 
@@ -60,6 +64,7 @@ export function ColorfulBanner({
         "flex justify-between gap-8 rounded-8 border-l-2 p-12 text-13 leading-[1.3] text-typography-primary",
         withBorder && colorSchemas[color].border,
         colorSchemas[color].bg,
+        colorSchemas[color].accent,
         className
       )}
       onClick={onClick}

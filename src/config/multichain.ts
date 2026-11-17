@@ -1,8 +1,8 @@
 import { errors as _StargateErrorsAbi } from "@stargatefinance/stg-evm-sdk-v2";
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
-import type { Abi } from "viem";
-import { maxUint256 } from "viem";
+import type { Abi, Address } from "viem";
+import { isAddressEqual, maxUint256 } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
 import {
@@ -12,6 +12,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   ContractsChainId,
+  isContractsChain,
   MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
@@ -26,7 +27,7 @@ import {
 import { isDevelopment } from "config/env";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
-import { getContract } from "sdk/configs/contracts";
+import { getContract, tryGetContract } from "sdk/configs/contracts";
 import {
   CHAIN_ID_TO_ENDPOINT_ID,
   isSettlementChain,
@@ -161,6 +162,14 @@ export function getMappedTokenId(
   return TOKEN_GROUPS[tokenId.symbol]?.[toChainId];
 }
 
+/**
+ * GM and GLV on source chains are their own Stargate OFT: `send` burns from the sender and never
+ * spends the allowance, so they need no approval. Stargate pools and adapters pull with `transferFrom`.
+ */
+export function isSelfOftToken(tokenId: MultichainTokenId): boolean {
+  return isAddressEqual(tokenId.address as Address, tokenId.stargate as Address);
+}
+
 export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
@@ -173,6 +182,22 @@ export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [AVALANCHE_FUJI]: getContract(AVALANCHE_FUJI, "Multicall"),
   [MEGAETH]: getContract(MEGAETH, "Multicall"),
 };
+
+export type BlockNumberCall = {
+  contractAddress: string;
+  abiId: "ArbSys" | "Multicall";
+  methodName: "arbBlockNumber" | "getBlockNumber";
+};
+
+export function getBlockNumberCall(chainId: AnyChainId): BlockNumberCall {
+  const arbSysAddress = isContractsChain(chainId, true) ? tryGetContract(chainId, "ArbSys") : undefined;
+
+  if (arbSysAddress) {
+    return { contractAddress: arbSysAddress, abiId: "ArbSys", methodName: "arbBlockNumber" };
+  }
+
+  return { contractAddress: MULTICALLS_MAP[chainId], abiId: "Multicall", methodName: "getBlockNumber" };
+}
 
 export const CHAIN_ID_PREFERRED_DEPOSIT_TOKEN: Record<SettlementChainId, string> = {
   [ARBITRUM_SEPOLIA]: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773", // USDC.SG

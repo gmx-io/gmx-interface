@@ -1,37 +1,44 @@
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import type { MessageDescriptor } from "@lingui/core";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import partition from "lodash/partition";
-import { useMemo, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useAccount } from "wagmi";
 
+import { getIsSolanaNetworkEnabled } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { isValidVisualSettlementChain, isValidVisualSourceChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
+import { useChainId } from "lib/chains";
 import { extendError } from "lib/errors";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { switchNetwork } from "lib/wallets";
+import { selectSolanaNetworkInApp, switchNetwork } from "lib/wallets";
 import { useWalletCanSignTypedData, useWalletUnavailableChains } from "lib/wallets/useWalletSessionChains";
 import { getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 import { NoopWrapper } from "components/NoopWrapper/NoopWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
+import solanaIcon from "img/tokens/ic_sol.svg";
 
-import SolanaNetworkItem from "./SolanaNetworkItem";
+import { GmTradeModal, SolanaNetworkItem } from "./SolanaNetworkItem";
 
 import "./NetworkDropdown.scss";
 
 function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
-  const icon = getChainIcon(chainId);
-  const chainName = getChainName(chainId);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
+  const icon = isSolanaNetworkSelected ? solanaIcon : getChainIcon(chainId);
+  const chainName = isSolanaNetworkSelected ? t`Solana` : getChainName(chainId);
 
   return (
     <>
@@ -49,6 +56,22 @@ export default function NetworkDropdown({
   chainId: number;
   networkOptions: NetworkOption[];
 }) {
+  const [isGmTradeModalVisible, setIsGmTradeModalVisible] = useState(false);
+  const isSolanaNetworkSelected = isSolanaNetwork(useChainId().networkId);
+
+  const handleSolanaSelect = () => {
+    if (isSolanaNetworkSelected) {
+      return;
+    }
+
+    if (getIsSolanaNetworkEnabled()) {
+      selectSolanaNetworkInApp();
+      return;
+    }
+
+    setIsGmTradeModalVisible(true);
+  };
+
   return (
     <div className="relative flex items-center gap-8">
       <Menu>
@@ -65,12 +88,17 @@ export default function NetworkDropdown({
             </Menu.Button>
             <Menu.Items as="div" className="network-dropdown-items" data-qa="networks-dropdown">
               <div className="network-dropdown-list">
-                <NetworkMenuItems networkOptions={networkOptions} chainId={chainId} />
+                <NetworkMenuItems
+                  networkOptions={networkOptions}
+                  chainId={chainId}
+                  onSolanaSelect={handleSolanaSelect}
+                />
               </div>
             </Menu.Items>
           </>
         )}
       </Menu>
+      <GmTradeModal isVisible={isGmTradeModalVisible} setIsVisible={setIsGmTradeModalVisible} />
     </div>
   );
 }
@@ -85,33 +113,43 @@ function getNetworkDisabledReason({
   network: NetworkOption;
   unavailableChains: number[] | undefined;
   canSignTypedData: boolean;
-}): ReactNode {
+}): MessageDescriptor | undefined {
   if (unavailableChains?.includes(network.value)) {
-    return <Trans>Your wallet is not connected to this network</Trans>;
+    return msg`Your wallet is not connected to this network`;
   }
 
   // Source-only chains trade through the GMX Account, which is express-only and always needs a signature.
   if (!canSignTypedData && !isContractsChain(network.value, true)) {
-    return <Trans>Your wallet cannot sign messages, which trading from this network requires</Trans>;
+    return msg`Your wallet cannot sign messages, which trading from this network requires`;
   }
 
   return undefined;
 }
 
-function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
+function NetworkMenuItems({
+  networkOptions,
+  chainId,
+  onSolanaSelect,
+}: {
+  networkOptions: NetworkOption[];
+  chainId: number;
+  onSolanaSelect: () => void;
+}) {
   const { unavailableChains, isLoading: isAvailabilityLoading } = useWalletUnavailableChains(
     networkOptions.map((network) => network.value)
   );
   const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
   const isVerdictPending = isAvailabilityLoading || isCanSignLoading;
 
+  const { _ } = useLingui();
   const { walletAndGmxAccountNetworks, walletOnlyNetworks } = useMemo(() => {
-    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => ({
-      ...network,
-      disabledReason: isVerdictPending
+    const displayNetworks: DisplayNetworkOption[] = networkOptions.map((network) => {
+      const disabledReason = isVerdictPending
         ? undefined
-        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData }),
-    }));
+        : getNetworkDisabledReason({ network, unavailableChains, canSignTypedData });
+
+      return { ...network, disabledReason: disabledReason && _(disabledReason) };
+    });
 
     const orderDisabledLast = (networks: DisplayNetworkOption[]) =>
       partition(networks, (network) => !network.disabledReason).flat();
@@ -125,7 +163,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
         displayNetworks.filter((network) => !isWalletAndGmxAccountNetwork(network))
       ),
     };
-  }, [networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
+  }, [_, networkOptions, unavailableChains, canSignTypedData, isVerdictPending]);
 
   return (
     <>
@@ -135,16 +173,12 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
             <span className="text-13 font-medium text-typography-secondary">
               <Trans>Wallet & GMX Account</Trans>
             </span>
-            <TooltipWithPortal
+            <StandardTooltip
               handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
-              position="top"
+              position="bottom"
               variant="none"
               className="flex"
-              content={
-                <Trans>
-                  Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.
-                </Trans>
-              }
+              content={t`Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.`}
             />
           </div>
           {walletAndGmxAccountNetworks.map((network) => (
@@ -159,12 +193,12 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
             <span className="text-13 font-medium text-typography-secondary">
               <Trans>Wallet-only</Trans>
             </span>
-            <TooltipWithPortal
+            <StandardTooltip
               handle={<InfoIconStroke className="size-15 text-typography-secondary" />}
-              position="top"
+              position="bottom"
               variant="none"
               className="flex"
-              content={<Trans>Wallet trading only on these networks</Trans>}
+              content={t`Wallet trading only on these networks`}
             />
           </div>
           {walletOnlyNetworks.map((network) => (
@@ -172,17 +206,16 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
           ))}
         </>
       )}
-      <Menu.Item key="solana">
-        <SolanaNetworkItem />
-      </Menu.Item>
+      <SolanaNetworkItem onSelect={onSolanaSelect} />
     </>
   );
 }
 
 function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; chainId: number }) {
   const { isConnected } = useAccount();
+  const isSelected = !isSolanaNetwork(useChainId().networkId) && chainId === network.value;
   const disabled = Boolean(network.disabledReason);
-  const Wrapper = disabled ? TooltipWithPortal : NoopWrapper;
+  const Wrapper = disabled ? StandardTooltip : NoopWrapper;
 
   return (
     <Menu.Item key={network.value} disabled={disabled}>
@@ -217,22 +250,22 @@ function NetworkMenuItem({ network, chainId }: { network: DisplayNetworkOption; 
               <span
                 className={cx(
                   "network-dropdown-item-label",
-                  chainId === network.value ? "text-typography-primary" : "text-typography-secondary"
+                  isSelected ? "text-typography-primary" : "text-typography-secondary"
                 )}
               >
                 {network.label}
               </span>
-              {isValidVisualSettlementChain(network.value) && chainId === network.value && (
-                <TooltipWithPortal
+              {isValidVisualSettlementChain(network.value) && isSelected && (
+                <StandardTooltip
                   handle={<WalletIcon className="size-16 text-typography-secondary" />}
-                  position="top"
+                  position="bottom"
                   variant="none"
                   className="flex"
-                  content={<Trans>Trade from wallet or GMX Account</Trans>}
+                  content={t`Trade from wallet or GMX Account`}
                 />
               )}
             </div>
-            {chainId === network.value && (
+            {isSelected && (
               <div className="mr-[2.5px] size-[5px] rounded-full bg-green-300 shadow-[0_0_0_2.5px_rgb(var(--color-green-300-raw)/0.2)]" />
             )}
           </div>

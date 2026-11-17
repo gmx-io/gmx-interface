@@ -14,7 +14,8 @@ import icSparkle from "img/trader_affiliate_sparkle.svg";
 import { ArrowButton } from "./ArrowButton";
 import {
   AFFILIATE_VOLUME_TIERS,
-  DEFAULT_VOLUME_INDEX,
+  DEFAULT_AFFILIATE_VOLUME_INDEX,
+  DEFAULT_TRADER_VOLUME_INDEX,
   EFFECTIVE_FEE_RATE,
   FEE_SHARE_RATE,
   GRADIENT_TEXT_CLASS,
@@ -34,7 +35,9 @@ type TabContent = {
   heading: React.ReactNode;
   subtext: string;
   benefits: Benefit[];
+  calcTitle: string;
   volumeLabel: string;
+  incomeLabel: string;
   disclaimer: React.ReactNode;
   cta: string;
 };
@@ -44,29 +47,31 @@ function useTabContent(tab: TabKey): TabContent {
     if (tab === "trader") {
       return {
         badge: t`You save`,
-        heading: t`Keep more of every trade.`,
+        heading: t`Keep more of every trade`,
         subtext: t`If you're moving serious size on GMX, you shouldn't be paying list price. The desk cuts your fees and gives you a direct line to a person — not a ticket queue.`,
         benefits: [
           {
             icon: icBenefitFee,
             title: t`Fee discounts up to 25%`,
-            description: t`The more you trade, the more you keep.`,
+            description: t`The more you trade, the more you keep`,
           },
           {
             icon: icBenefitManager,
             title: t`A dedicated account manager`,
-            description: t`Your own contact on Telegram.`,
+            description: t`Your own contact on Telegram`,
           },
           {
             icon: icBenefitCustody,
             title: t`Self-custodial, always`,
-            description: t`Trade from your own wallet — no deposits.`,
+            description: t`Trade from your own wallet — no deposits`,
           },
         ],
-        volumeLabel: t`MONTHLY VOLUME`,
+        calcTitle: t`Estimate your savings`,
+        volumeLabel: t`Monthly volume`,
+        incomeLabel: t`Your savings (at 25%)`,
         disclaimer: (
           <Trans>
-            Assumes a ~0.06% effective round-trip fee on GMX perps.
+            Assumes a ~0.05% effective round-trip fee on GMX perps.
             <br className="hidden sm:block" />
             Illustrative only — your exact rate is confirmed by the desk on signup.
           </Trans>
@@ -81,31 +86,33 @@ function useTabContent(tab: TabKey): TabContent {
         <Trans>
           Turn your audience
           <br />
-          into on-chain income.
+          into on-chain income
         </Trans>
       ),
-      subtext: t`Refer traders to GMX with your unique link and earn a share of the fees they generate.`,
+      subtext: t`Refer traders to GMX with your unique link and earn a share of the fees they generate`,
       benefits: [
         {
           icon: icBenefitFee,
           title: t`Up to 25% earnings`,
-          description: t`Earn on every trade they make.`,
+          description: t`Earn on every trade they make`,
         },
         {
           icon: icBenefitDashboard,
           title: t`Real-time referral dashboard`,
-          description: t`Track volume and payouts live.`,
+          description: t`Track volume and payouts live`,
         },
         {
           icon: icBenefitMarketing,
-          title: t`Marketing Kit + Co-marketing`,
-          description: t`Banners, links and a partner manager.`,
+          title: t`Marketing kit + co-marketing`,
+          description: t`Banners, links and a partner manager`,
         },
       ],
-      volumeLabel: t`REFERRED MONTHLY VOLUME`,
+      calcTitle: t`Estimate your income`,
+      volumeLabel: t`Referred monthly volume`,
+      incomeLabel: t`Your income (at 25%)`,
       disclaimer: (
         <Trans>
-          Illustrative, based on a ~0.06% effective fee.
+          Illustrative, based on a ~0.05% effective fee.
           <br className="hidden sm:block" />
           Real earnings depend on referral tier and each trader's activity.
         </Trans>
@@ -132,8 +139,8 @@ const incomeFormatter = new Intl.NumberFormat("en-US", {
 export function TraderAffiliateWidget() {
   const [tab, setTab] = useState<TabKey>("trader");
   const [volumeIndexByTab, setVolumeIndexByTab] = useState<Record<TabKey, number>>({
-    trader: DEFAULT_VOLUME_INDEX,
-    affiliate: DEFAULT_VOLUME_INDEX,
+    trader: DEFAULT_TRADER_VOLUME_INDEX,
+    affiliate: DEFAULT_AFFILIATE_VOLUME_INDEX,
   });
 
   const content = useTabContent(tab);
@@ -214,9 +221,7 @@ export function TraderAffiliateWidget() {
         <div className="relative overflow-hidden rounded-20 bg-slate-900 p-28">
           <img src={calcBg} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover" />
           <div className="relative">
-            <div className="text-18 font-medium -tracking-[0.576px] text-white">
-              <Trans>Estimate your savings</Trans>
-            </div>
+            <div className="text-18 font-medium -tracking-[0.576px] text-white">{content.calcTitle}</div>
             <div className="mt-20 text-12 uppercase tracking-[0.864px] text-slate-500">{content.volumeLabel}</div>
             <div className="mt-8 flex flex-wrap gap-12">
               {volumeTiers.map((tierVolume, index) => (
@@ -234,7 +239,7 @@ export function TraderAffiliateWidget() {
               ))}
             </div>
             <div className={cx("mt-24 w-fit text-12 tracking-[0.024px]", GRADIENT_TEXT_CLASS)}>
-              <Trans>Your income (at 25%)</Trans>
+              {content.incomeLabel}
             </div>
             <div className="mt-12 flex items-baseline gap-8">
               <span className={cx("text-[68px] font-medium leading-[1] -tracking-[3.4px]", GRADIENT_TEXT_CLASS)}>

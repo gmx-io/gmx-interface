@@ -1,14 +1,11 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, SOURCE_ETHEREUM_MAINNET } from "config/chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH } from "config/chains";
 import { isDevelopment } from "config/env";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 
 import { createClient } from "./utils";
 
-export const chainlinkClient = createClient(SOURCE_ETHEREUM_MAINNET, "chainLink");
-
-const arbitrumGraphClient = createClient(ARBITRUM, "stats");
 const arbitrumReferralsGraphClient = createClient(ARBITRUM, "referrals");
 
-const avalancheGraphClient = createClient(AVALANCHE, "stats");
 const avalancheReferralsGraphClient = createClient(AVALANCHE, "referrals");
 const avalancheFujiReferralsGraphClient = createClient(AVALANCHE_FUJI, "referrals");
 const megaethReferralsGraphClient = createClient(MEGAETH, "referrals");
@@ -48,6 +45,11 @@ export function getSyntheticsGraphClient(chainId: number) {
 }
 
 export function getSubsquidGraphClient(chainId: number) {
+  // The client was built with the real URL. chainId stays Arbitrum on Solana, so refuse it here.
+  if (getIsSolanaNetworkSelected()) {
+    return null;
+  }
+
   if (chainId === ARBITRUM) {
     return arbitrumSubsquidClient;
   }
@@ -73,20 +75,6 @@ export function getSubsquidGraphClient(chainId: number) {
 
 export function getMarketOrderExecutionGraphClient(chainId: number) {
   return chainId === ARBITRUM ? arbitrumMarketOrderExecutionClient : null;
-}
-
-export function getGmxGraphClient(chainId: number) {
-  if (chainId === ARBITRUM) {
-    return arbitrumGraphClient;
-  } else if (chainId === AVALANCHE) {
-    return avalancheGraphClient;
-  } else if (chainId === AVALANCHE_FUJI) {
-    return null;
-  } else if (chainId === ARBITRUM_SEPOLIA || chainId === MEGAETH) {
-    return null;
-  }
-
-  throw new Error(`Unsupported chain ${chainId}`);
 }
 
 export function getReferralsGraphClient(chainId: number) {

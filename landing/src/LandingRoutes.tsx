@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from "react";
 import { Redirect, Route, RouteComponentProps, Switch, useLocation } from "react-router-dom";
 
 import Home from "./pages/Home/Home";
+import { getLandingScrollContainer } from "./utils/getLandingScrollContainer";
 
 const Builders = lazy(() => import("./pages/Builders/Builders"));
 const ReferralTerms = lazy(() => import("./pages/ReferralTerms/ReferralTerms"));
@@ -21,7 +22,7 @@ function TermsPageLoader() {
   );
 }
 
-// Preserves search so /#/trade/?ref=<code> doesn't lose the ref on redirect.
+// Preserves search so /trade/?ref=<code> doesn't lose the ref on redirect.
 function RedirectToHomeWithSearch({ location }: RouteComponentProps) {
   return <Redirect to={`/${location.search}`} />;
 }
@@ -30,7 +31,7 @@ function ScrollToTopOnNavigate() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    getLandingScrollContainer().scrollTo(0, 0);
   }, [pathname]);
 
   return null;

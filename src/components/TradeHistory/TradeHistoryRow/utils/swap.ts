@@ -7,7 +7,7 @@ import type { TokenData } from "domain/synthetics/tokens";
 import { adaptToV1TokenInfo } from "domain/synthetics/tokens/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import { getExchangeRateDisplay } from "lib/legacy";
-import { formatBalanceAmount } from "lib/numbers";
+import { formatBalanceAmount, formatDeltaUsd, formatDeltaUsdParts, NumberPart } from "lib/numbers";
 import { getTokensRatioByAmounts } from "sdk/utils/tokens";
 import type { Token, TokenInfo } from "sdk/utils/tokens/types";
 import { SwapTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/utils/tradeHistory/types";
@@ -15,6 +15,7 @@ import { SwapTradeAction, TradeActionType, USER_INITIATED_CANCEL } from "sdk/uti
 import {
   INEQUALITY_GT,
   INEQUALITY_LT,
+  Line,
   MakeOptional,
   RowDetails,
   formatTradeActionTimestamp,
@@ -22,6 +23,7 @@ import {
   getErrorTooltipTitle,
   infoRow,
   lines,
+  numericText,
 } from "./shared";
 import { getActionTitle } from "../../keys";
 
@@ -315,6 +317,21 @@ export const formatSwapMessage = (
     };
   }
 
+  let fees: NumberPart[] | undefined;
+  let feesTooltip: Line[] | undefined;
+  let priceImpact: string | undefined;
+
+  if (ev === TradeActionType.OrderExecuted) {
+    const breakdown = getSwapFeesBreakdown(tradeAction);
+
+    if (breakdown.lines.length > 0) {
+      fees = formatDeltaUsdParts(breakdown.totalUsd);
+      feesTooltip = breakdown.lines;
+    }
+
+    priceImpact = formatDeltaUsd(tradeAction.swapImpactUsd);
+  }
+
   return {
     action: actionText,
     market: market,
@@ -328,8 +345,30 @@ export const formatSwapMessage = (
     swapToTokenSymbol: tokenOut.symbol,
     swapFromTokenAmount: fromAmountText,
     ...result!,
+    ...(fees !== undefined ? { fees } : {}),
+    ...(feesTooltip !== undefined ? { feesTooltip } : {}),
+    ...(priceImpact !== undefined ? { priceImpact } : {}),
   };
 };
+
+function getSwapFeesBreakdown(tradeAction: SwapTradeAction): { totalUsd: bigint; lines: Line[] } {
+  const items: { label: string; amountUsd: bigint }[] = [];
+
+  if (tradeAction.swapFeeUsd !== undefined) {
+    items.push({ label: t`Swap fee`, amountUsd: -tradeAction.swapFeeUsd });
+  }
+
+  if (tradeAction.swapImpactUsd !== undefined) {
+    items.push({ label: t`Swap price impact`, amountUsd: tradeAction.swapImpactUsd });
+  }
+
+  const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);
+
+  return {
+    totalUsd,
+    lines: items.map((item) => infoRow(item.label, numericText(formatDeltaUsdParts(item.amountUsd)))),
+  };
+}
 
 export function getSwapPathMarketFullNames(
   marketsInfoData: MarketsInfoData | undefined,

@@ -3,12 +3,14 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
 import {
+  useFeeDiscountFactor,
   usePositionsConstants,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
+import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -19,25 +21,36 @@ import {
   OrderType,
   PositionOrderInfo,
 } from "domain/synthetics/orders";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
+import type { TokenData } from "domain/synthetics/tokens";
 import { getDecreasePositionAmounts, getDecreaseReceiveOutputs } from "domain/synthetics/trade";
+import type { PendingTpSlOrder } from "domain/tpsl/types";
 import { getPositionCloseSizeDeltaUsdForDisplay, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
-import { formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
+import { formatBalanceAmount, formatPercentage } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
 import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableTd, TableTr } from "components/Table/Table";
 
 import CloseIcon from "img/ic_close.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
+import { PendingTPSLOrder } from "./PendingTPSLOrder";
+
 type TabType = "all" | "takeProfit" | "stopLoss";
 
 type Props = {
   orders: PositionOrderInfo[];
+  pendingOrders?: PendingTpSlOrder[];
+  indexToken?: TokenData;
+  isCreationPending?: boolean;
   position?: PositionInfo;
   marketDecimals: number | undefined;
   isMobile: boolean;
@@ -46,7 +59,18 @@ type Props = {
   onAddTPSL?: () => void;
 };
 
-export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, activeTab, onEdit, onAddTPSL }: Props) {
+export function TPSLOrdersList({
+  orders,
+  pendingOrders = EMPTY_ARRAY,
+  indexToken,
+  isCreationPending = false,
+  position,
+  marketDecimals,
+  isMobile,
+  activeTab,
+  onEdit,
+  onAddTPSL,
+}: Props) {
   const [, setEditingOrderState] = useEditingOrderState();
 
   const handleEditOrder = useCallback(
@@ -70,12 +94,12 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, act
     return <Trans>No resting orders</Trans>;
   }, [activeTab]);
 
-  if (orders.length === 0) {
+  if (orders.length === 0 && pendingOrders.length === 0) {
     return (
       <div className="flex h-full grow flex-col items-center justify-center gap-8 py-32">
         <span className="text-typography-secondary">{emptyMessage}</span>
         {onAddTPSL && (
-          <Button variant="primary" onClick={onAddTPSL}>
+          <Button variant="primary" onClick={onAddTPSL} disabled={isCreationPending}>
             <Trans>Add TP/SL</Trans>
           </Button>
         )}
@@ -86,6 +110,16 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, act
   if (isMobile) {
     return (
       <div className="flex max-h-[70vh] flex-col gap-12 overflow-y-auto pb-60 pt-8">
+        {pendingOrders.map((order) => (
+          <PendingTPSLOrder
+            key={order.id}
+            order={order}
+            position={position}
+            indexToken={indexToken ?? position?.indexToken}
+            marketDecimals={marketDecimals}
+            isMobile={isMobile}
+          />
+        ))}
         {orders.map((order) => (
           <TPSLOrderCard
             key={order.key}
@@ -122,6 +156,16 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, act
         </TableTheadTr>
       </thead>
       <tbody>
+        {pendingOrders.map((order) => (
+          <PendingTPSLOrder
+            key={order.id}
+            order={order}
+            position={position}
+            indexToken={indexToken ?? position?.indexToken}
+            marketDecimals={marketDecimals}
+            isMobile={isMobile}
+          />
+        ))}
         {orders.map((order) => (
           <TPSLOrderRow
             key={order.key}
@@ -147,37 +191,63 @@ function useTPSLOrderViewModel({
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(order.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const [isCancelling, cancelOrder] = useCancelOrder(order);
+  const isEditable = !useSelector(makeSelectIsSizeOrderInClosedPool(order.key));
 
   const isIncrease = isIncreaseOrderType(order.orderType);
+  const isMarginDeposit = isMarginDepositOrder(order);
 
   const orderType = useMemo(() => {
     if (isLimitDecreaseOrderType(order.orderType)) return t`Take-Profit`;
     if (isStopLossOrderType(order.orderType)) return t`Stop-Loss`;
+    if (isMarginDeposit) return t`Deposit margin`;
     if (isLimitIncreaseOrderType(order.orderType)) return t`Limit`;
     return t`Stop Market`;
-  }, [order.orderType]);
+  }, [order.orderType, isMarginDeposit]);
 
   const triggerPriceDisplay = useMemo(
-    () =>
-      `${order.triggerThresholdType} ${formatUsd(order.triggerPrice, {
-        displayDecimals: marketDecimals,
-        visualMultiplier: order.indexToken?.visualMultiplier,
-      })}`,
+    () => (
+      <>
+        {order.triggerThresholdType}{" "}
+        <UsdValue
+          usd={order.triggerPrice}
+          displayDecimals={marketDecimals}
+          visualMultiplier={order.indexToken?.visualMultiplier}
+        />
+      </>
+    ),
     [marketDecimals, order.indexToken?.visualMultiplier, order.triggerPrice, order.triggerThresholdType]
   );
 
   const sizeDisplay = useMemo(() => {
+    if (isMarginDeposit) {
+      return (
+        <span>
+          {formatBalanceAmount(
+            order.initialCollateralDeltaAmount,
+            order.initialCollateralToken.decimals,
+            order.initialCollateralToken.symbol,
+            { isStable: order.initialCollateralToken.isStable }
+          )}
+        </span>
+      );
+    }
+
     if (isIncrease) {
-      return <span>+{formatUsd(order.sizeDeltaUsd)}</span>;
+      return <UsdValue usd={order.sizeDeltaUsd} displayPlus />;
     }
 
     if (!position) {
-      return <span>-{formatUsd(order.sizeDeltaUsd)}</span>;
+      return (
+        <span className="whitespace-nowrap">
+          -<UsdValue usd={order.sizeDeltaUsd} />
+        </span>
+      );
     }
 
     const isFullClose = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position.sizeInUsd);
@@ -191,11 +261,20 @@ function useTPSLOrderViewModel({
 
     return (
       <span>
-        <span>-{formatUsd(order.sizeDeltaUsd)}</span>
+        <span className="whitespace-nowrap">
+          -<UsdValue usd={order.sizeDeltaUsd} />
+        </span>
         <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
-  }, [order.sizeDeltaUsd, position, isIncrease]);
+  }, [
+    order.sizeDeltaUsd,
+    order.initialCollateralDeltaAmount,
+    order.initialCollateralToken,
+    position,
+    isIncrease,
+    isMarginDeposit,
+  ]);
 
   const estimatedPnl = useMemo(() => {
     if (isIncrease || !position) {
@@ -241,6 +320,7 @@ function useTPSLOrderViewModel({
       keepLeverage: shouldKeepLeverage,
       triggerPrice: order.triggerPrice,
       userReferralInfo,
+      feeDiscountFactor,
       minCollateralUsd,
       minPositionSizeUsd,
       uiFeeFactor,
@@ -261,6 +341,7 @@ function useTPSLOrderViewModel({
     position,
     shouldKeepLeverage,
     userReferralInfo,
+    feeDiscountFactor,
     uiFeeFactor,
     isSetAcceptablePriceImpactEnabled,
     order.decreasePositionSwapType,
@@ -299,6 +380,7 @@ function useTPSLOrderViewModel({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   };
 }
 
@@ -322,6 +404,7 @@ function TPSLOrderCard({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
@@ -352,9 +435,11 @@ function TPSLOrderCard({
           <span className="text-14 font-medium text-typography-secondary">
             <Trans>Est. PnL</Trans>
           </span>
-          <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-          </span>
+          <DeltaUsdValue
+            deltaUsd={estimatedPnl.pnlUsd}
+            percentage={estimatedPnl.pnlPercentage}
+            className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}
+          />
         </div>
       )}
 
@@ -368,9 +453,11 @@ function TPSLOrderCard({
       )}
 
       <div className="mt-4 flex gap-8">
-        <Button variant="secondary" className="flex-1" onClick={handleEdit}>
-          <Trans>Edit</Trans>
-        </Button>
+        {isEditable && (
+          <Button variant="secondary" className="flex-1" onClick={handleEdit}>
+            <Trans>Edit</Trans>
+          </Button>
+        )}
         <Button
           variant="secondary"
           className="hover:!text-red-300 flex-1 !bg-red-900 !text-red-400 hover:!bg-red-700/25"
@@ -405,6 +492,7 @@ export function TPSLOrderRow({
     handleEdit,
     handleCancel,
     isCancelling,
+    isEditable,
   } = useTPSLOrderViewModel({ order, position, marketDecimals, onEdit });
 
   return (
@@ -420,9 +508,11 @@ export function TPSLOrderRow({
       </TableTd>
       <TableTd>
         {estimatedPnl ? (
-          <span className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-          </span>
+          <DeltaUsdValue
+            deltaUsd={estimatedPnl.pnlUsd}
+            percentage={estimatedPnl.pnlPercentage}
+            className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}
+          />
         ) : (
           <span className="text-typography-secondary">—</span>
         )}
@@ -432,9 +522,11 @@ export function TPSLOrderRow({
       </TableTd>
       <TableTd>
         <div className="flex items-center justify-end gap-4">
-          <Button variant="ghost" className="!p-8" onClick={handleEdit}>
-            <EditIcon className="size-16" />
-          </Button>
+          {isEditable && (
+            <Button variant="ghost" className="!p-8" onClick={handleEdit}>
+              <EditIcon className="size-16" />
+            </Button>
+          )}
           <Button variant="ghost" className="!p-8" onClick={handleCancel} disabled={isCancelling}>
             <CloseIcon className="size-16" />
           </Button>

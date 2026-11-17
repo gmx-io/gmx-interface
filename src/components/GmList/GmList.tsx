@@ -1,13 +1,16 @@
 import { Trans, t } from "@lingui/macro";
+import mapValues from "lodash/mapValues";
 import { useMemo, useState } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectDepositMarketTokensData,
   selectMarketsInfoData,
   selectProgressiveDepositMarketTokensDataWithoutGlv,
   selectSrcChainId,
+  selectUsdgBoostAprResult,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -22,11 +25,14 @@ import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsList
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getUsdgLaunchBoost, getUsdgLaunchBoostApr } from "domain/synthetics/usdgLaunchBoost/utils";
+import { getWhitelistedMarketAddresses } from "domain/synthetics/whitelists/utils";
 import { useLocalizedMap } from "lib/i18n";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
+import { getAddressKey } from "sdk/utils/address";
 
 import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -41,7 +47,7 @@ import { TableTh, TableTheadTr } from "components/Table/Table";
 import { ButtonRowScrollFadeContainer, TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 import type { Option as TabOption } from "components/Tabs/types";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmListItem } from "./GmListItem";
@@ -78,6 +84,8 @@ export function GmList({
   const marketTokensData = useSelector(selectDepositMarketTokensData);
   const progressiveMarketTokensData = useSelector(selectProgressiveDepositMarketTokensDataWithoutGlv);
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
+  const usdgBoostAprResult = useSelector(selectUsdgBoostAprResult);
 
   const { active } = useWallet();
   const {
@@ -103,7 +111,7 @@ export function GmList({
   const recentlyListedCount = useMemo(() => {
     if (!marketsInfo || recentlyListedAddressesSet.size === 0) return 0;
     return Object.values(marketsInfo).filter(
-      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(m.indexTokenAddress.toLowerCase())
+      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(getAddressKey(m.indexTokenAddress))
     ).length;
   }, [marketsInfo, recentlyListedAddressesSet]);
 
@@ -155,6 +163,20 @@ export function GmList({
     [populatedTradfiSubCats, localizedSubCategoryLabels]
   );
 
+  const whitelistedMarketAddresses = useMemo(
+    () => getWhitelistedMarketAddresses(whitelistsResult.accountWhitelists),
+    [whitelistsResult]
+  );
+
+  const marketsTokensLaunchBoostAprData = useMemo(
+    () =>
+      mapValues(marketsInfo ?? {}, (market) => {
+        const launchBoost = getUsdgLaunchBoost({ chainId, glvOrMarket: market, usdgBoostAprResult });
+        return getUsdgLaunchBoostApr(launchBoost);
+      }),
+    [chainId, marketsInfo, usdgBoostAprResult]
+  );
+
   const filteredGmTokens = useFilterSortPools({
     marketsInfo,
     marketTokensData: progressiveMarketTokensData,
@@ -163,6 +185,7 @@ export function GmList({
     marketsTokensApyData,
     marketsTokensIncentiveAprData,
     marketsTokensLidoAprData,
+    marketsTokensLaunchBoostAprData,
     searchText,
     topLevelTab,
     subCategoryTab,
@@ -170,6 +193,7 @@ export function GmList({
     favoriteTokens,
     performance,
     multichainMarketTokensBalances,
+    pinnedAddresses: whitelistedMarketAddresses,
   });
 
   const { currentPage, currentData, pageCount, setCurrentPage } = usePagination(
@@ -180,8 +204,8 @@ export function GmList({
 
   const userTotalGmInfo = useMemo(() => {
     if (!active || !marketTokensData) return;
-    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances });
-  }, [active, marketTokensData, multichainMarketTokensBalances]);
+    return getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances, chainId });
+  }, [active, chainId, marketTokensData, multichainMarketTokensBalances]);
 
   const rows =
     currentData.length > 0 &&
@@ -191,7 +215,7 @@ export function GmList({
         market &&
           !market.isSpotOnly &&
           !market.isDisabled &&
-          recentlyListedAddressesSet.has(market.indexTokenAddress.toLowerCase())
+          recentlyListedAddressesSet.has(getAddressKey(market.indexTokenAddress))
       );
 
       return (
@@ -324,6 +348,7 @@ export function GmList({
                           isUserEarningsUnavailable={isUserEarningsUnavailable}
                           isEstimated365dFeesLoading={isEstimated365dFeesLoading}
                           isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+                          hasBalanceOutsideWallet={userTotalGmInfo?.hasBalanceOutsideWallet}
                           label={t`BALANCE`}
                         />
                       </Sorter>
@@ -339,11 +364,11 @@ export function GmList({
                       </Sorter>
                     </TableTh>
                     <TableTh>
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={t`SNAPSHOT`}
                         className="normal-case"
                         position="bottom-end"
-                        content={<Trans>Performance vs benchmark over the selected period</Trans>}
+                        content={t`Performance vs benchmark over the selected period`}
                         variant="iconStroke"
                       />
                     </TableTh>

@@ -1,11 +1,12 @@
 import { useEffect } from "react";
+import { usePrevious } from "react-use";
 
 import {
   selectTradeboxDecreasePositionAmounts,
-  selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
+  selectTradeboxIsAcceptablePriceImpactCustomized,
   selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps,
+  selectTradeboxSetIsAcceptablePriceImpactCustomized,
   selectTradeboxSetSelectedAcceptablePriceImpactBps,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -14,11 +15,16 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import { useTradeboxChanges } from "./useTradeboxChanges";
 
-export function useTradeboxAcceptablePriceImpactValues() {
+export function useTradeboxAcceptablePriceImpactValues({
+  isUsdgConversionActive,
+  isUsdgOrderAutoSubmitArmed,
+}: {
+  isUsdgConversionActive: boolean;
+  isUsdgOrderAutoSubmitArmed: boolean;
+}) {
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
-  const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
+  const isAcceptablePriceImpactCustomized = useSelector(selectTradeboxIsAcceptablePriceImpactCustomized);
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
@@ -28,64 +34,59 @@ export function useTradeboxAcceptablePriceImpactValues() {
     selectTradeboxSetDefaultTriggerAcceptablePriceImpactBps
   );
   const setSelectedAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
+  const setIsAcceptablePriceImpactCustomized = useSelector(selectTradeboxSetIsAcceptablePriceImpactCustomized);
 
-  const tradeboxChanges = useTradeboxChanges();
+  const { fromTokenAddress: isPayTokenChanged, ...orderChanges } = useTradeboxChanges();
+  const previousTradeFlags = usePrevious(tradeFlags);
+  const isRemountDuringConversion = isUsdgConversionActive && previousTradeFlags === undefined;
+  const isPayTokenSwitchedByConversion = isPayTokenChanged && isUsdgOrderAutoSubmitArmed;
 
-  const isAnyValueChanged = Object.values(tradeboxChanges).some(Boolean);
+  const isAnyValueChanged =
+    !isRemountDuringConversion &&
+    ((isPayTokenChanged && !isPayTokenSwitchedByConversion) || Object.values(orderChanges).some(Boolean));
 
-  /**
-   * Drop selected acceptable price impact when user changes market/pool/trade type/limit price
-   */
-  useEffect(() => {
-    if (isAnyValueChanged) {
-      setDefaultTriggerAcceptablePriceImpactBps(undefined);
-      setSelectedAcceptablePriceImpactBps(undefined);
-    }
-  }, [isAnyValueChanged, setDefaultTriggerAcceptablePriceImpactBps, setSelectedAcceptablePriceImpactBps]);
+  let recommendedAcceptablePriceImpactBps: bigint | undefined;
 
-  /**
-   * Set initial value for limit / stop market orders
-   */
-  useEffect(() => {
-    if (
-      isLimit &&
-      increaseAmounts?.acceptablePrice &&
-      defaultTriggerAcceptablePriceImpactBps === undefined &&
-      selectedTriggerAcceptablePriceImpactBps === undefined
-    ) {
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(increaseAmounts.acceptablePriceDeltaBps));
-    }
-  }, [
-    defaultTriggerAcceptablePriceImpactBps,
-    increaseAmounts?.acceptablePrice,
-    increaseAmounts?.acceptablePriceDeltaBps,
-    isLimit,
-    selectedTriggerAcceptablePriceImpactBps,
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImpactBps,
-  ]);
+  if (isLimit && increaseAmounts?.acceptablePrice) {
+    recommendedAcceptablePriceImpactBps = bigMath.abs(increaseAmounts.recommendedAcceptablePriceDeltaBps);
+  } else if (isTrigger && decreaseAmounts?.acceptablePrice !== undefined) {
+    recommendedAcceptablePriceImpactBps = bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps);
+  }
 
-  /**
-   * Set initial values from TP/SL orders
-   */
-  useEffect(() => {
-    if (
-      isTrigger &&
-      decreaseAmounts?.acceptablePrice !== undefined &&
-      defaultTriggerAcceptablePriceImpactBps === undefined &&
-      selectedTriggerAcceptablePriceImpactBps === undefined
-    ) {
-      setSelectedAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-      setDefaultTriggerAcceptablePriceImpactBps(bigMath.abs(decreaseAmounts.recommendedAcceptablePriceDeltaBps));
-    }
-  }, [
-    decreaseAmounts?.acceptablePrice,
-    decreaseAmounts?.recommendedAcceptablePriceDeltaBps,
-    defaultTriggerAcceptablePriceImpactBps,
-    isTrigger,
-    selectedTriggerAcceptablePriceImpactBps,
-    setDefaultTriggerAcceptablePriceImpactBps,
-    setSelectedAcceptablePriceImpactBps,
-  ]);
+  useEffect(
+    function resetAcceptablePriceImpactOnTradeboxChanges() {
+      if (isAnyValueChanged) {
+        setDefaultTriggerAcceptablePriceImpactBps(undefined);
+        setSelectedAcceptablePriceImpactBps(undefined);
+        setIsAcceptablePriceImpactCustomized(false);
+      }
+    },
+    [
+      isAnyValueChanged,
+      setDefaultTriggerAcceptablePriceImpactBps,
+      setIsAcceptablePriceImpactCustomized,
+      setSelectedAcceptablePriceImpactBps,
+    ]
+  );
+
+  useEffect(
+    function followRecommendedAcceptablePriceImpact() {
+      if (recommendedAcceptablePriceImpactBps === undefined) {
+        return;
+      }
+
+      if (isAnyValueChanged || !isAcceptablePriceImpactCustomized) {
+        setSelectedAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
+      }
+
+      setDefaultTriggerAcceptablePriceImpactBps(recommendedAcceptablePriceImpactBps);
+    },
+    [
+      isAcceptablePriceImpactCustomized,
+      isAnyValueChanged,
+      recommendedAcceptablePriceImpactBps,
+      setDefaultTriggerAcceptablePriceImpactBps,
+      setSelectedAcceptablePriceImpactBps,
+    ]
+  );
 }

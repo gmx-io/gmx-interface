@@ -6,11 +6,13 @@ import {
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectTokensData,
@@ -27,21 +29,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import {
-  findGasPaymentTokenWithPositiveBalance,
-  findNextGasPaymentToken,
-} from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
+import { getExternalSwapGasTokenCandidate } from "domain/synthetics/externalSwaps/useAutoSwitchGasTokenForRequiredExternalSwap";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { useChainId } from "lib/chains";
-import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
-import {
-  DEFAULT_SUBACCOUNT_EXPIRY_DURATION,
-  DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT,
-  getGasPaymentTokens,
-} from "sdk/configs/express";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -108,8 +101,8 @@ export function ExpressTradingWarningCard({
 
   const handleUpdateSubaccountSettings = useCallback(() => {
     updateSubaccountSettings({
-      nextRemainigActions: BigInt(DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT),
-      nextRemainingSeconds: BigInt(DEFAULT_SUBACCOUNT_EXPIRY_DURATION),
+      nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+      nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
       nextIsGmxAccount: isGmxAccount,
     }).then((success) => {
       if (success) {
@@ -158,7 +151,6 @@ export function ExpressTradingWarningCard({
     shouldShowNativeTokenWarning,
     shouldShowWrapOrUnwrapWarning,
     shouldShowExpiredSubaccountWarning,
-    shouldShowNonceExpiredWarning,
     shouldShowOutOfGasPaymentBalanceWarning,
     shouldShowSubaccountApprovalInvalidWarning,
     shouldShowSubaccountApprovalForAnotherNetworkWarning,
@@ -179,90 +171,44 @@ export function ExpressTradingWarningCard({
   });
 
   const conflictToken = tradeFlags?.isSwap ? swapToToken : collateralToken;
-  const currentGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
+  const selectedGasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
 
   const payAmounts = useMemo(
     () => (payTokenAddress && fromTokenAmount > 0n ? { [payTokenAddress]: fromTokenAmount } : {}),
     [payTokenAddress, fromTokenAmount]
   );
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
 
   const gasTokenCandidate = useMemo(() => {
-    const excludeTokenAddresses = conflictToken ? [conflictToken.address] : [];
-
-    if (shouldShowExternalSwapGasConflictRequiredWarning) {
-      const candidateAddress =
-        currentGasPaymentToken && expressParams
-          ? findNextGasPaymentToken({
-              chainId,
-              tokensData,
-              gasPaymentToken: currentGasPaymentToken,
-              gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-              payAmounts,
-              isGmxAccount,
-              excludeTokenAddresses,
-            })
-          : findGasPaymentTokenWithPositiveBalance({
-              chainId,
-              tokensData,
-              isGmxAccount,
-              excludeTokenAddresses: currentGasPaymentToken
-                ? [...excludeTokenAddresses, currentGasPaymentToken.address]
-                : excludeTokenAddresses,
-            });
-
-      return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
+    if (!shouldShowExternalSwapGasConflictRequiredWarning && !shouldShowExternalSwapGasConflictOptionalWarning) {
+      return undefined;
     }
 
-    if (shouldShowExternalSwapGasConflictOptionalWarning) {
-      const wrappedTokenAddress = getWrappedToken(chainId).address;
-      const wrappedToken = getByKey(tokensData, wrappedTokenAddress);
+    const candidateAddress = getExternalSwapGasTokenCandidate({
+      chainId,
+      tokensData,
+      desirability: shouldShowExternalSwapGasConflictRequiredWarning ? "required" : "optional",
+      conflictTokenAddress: conflictToken?.address,
+      savedGasTokenAddress: selectedGasPaymentToken?.address,
+      gasPaymentParams: expressParams?.gasPaymentParams,
+      payAmounts,
+      isGmxAccount,
+      unavailableTokenAddresses,
+    });
 
-      if (currentGasPaymentToken && expressParams) {
-        const findSufficientGasToken = (excluded: string[]) =>
-          findNextGasPaymentToken({
-            chainId,
-            tokensData,
-            gasPaymentToken: currentGasPaymentToken,
-            gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            payAmounts,
-            isGmxAccount,
-            excludeTokenAddresses: excluded,
-          });
-
-        const candidateAddress =
-          findSufficientGasToken(getGasPaymentTokens(chainId).filter((address) => address !== wrappedTokenAddress)) ??
-          findSufficientGasToken(excludeTokenAddresses);
-
-        return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
-      }
-
-      const wrappedTokenBalance = isGmxAccount ? wrappedToken?.gmxAccountBalance : wrappedToken?.walletBalance;
-      if ((wrappedTokenBalance ?? 0n) > 0n) return wrappedToken;
-
-      const candidateAddress = findGasPaymentTokenWithPositiveBalance({
-        chainId,
-        tokensData,
-        isGmxAccount,
-        excludeTokenAddresses: currentGasPaymentToken
-          ? [...excludeTokenAddresses, currentGasPaymentToken.address]
-          : excludeTokenAddresses,
-      });
-
-      return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
-    }
-
-    return undefined;
+    return candidateAddress ? getByKey(tokensData, candidateAddress) : undefined;
   }, [
     shouldShowExternalSwapGasConflictRequiredWarning,
     shouldShowExternalSwapGasConflictOptionalWarning,
     conflictToken,
-    currentGasPaymentToken,
+    selectedGasPaymentToken,
     expressParams,
     payAmounts,
     chainId,
     tokensData,
     isGmxAccount,
+    unavailableTokenAddresses,
   ]);
 
   const prevShouldShowSubaccountApprovalInvalidWarning = usePrevious(shouldShowSubaccountApprovalInvalidWarning);
@@ -316,8 +262,6 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapTwapNotSupportedWarning,
   ]);
 
-  const { gasPaymentTokensText, gasPaymentTokenSymbols } = useGasPaymentTokensText(chainId);
-
   let content: ReactNode | undefined = undefined;
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
@@ -350,20 +294,14 @@ export function ExpressTradingWarningCard({
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissAllowedActionsWarning;
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
-  } else if (shouldShowNonceExpiredWarning) {
-    onClick = handleUpdateSubaccountSettings;
-    icon = OneClickIcon;
-    color = "yellow";
-    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
-    buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     onCloseClick = dismissExpiredSubaccountWarning;
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
@@ -371,8 +309,8 @@ export function ExpressTradingWarningCard({
     color = "red";
     content = (
       <Trans>
-        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
-        Express Trading.
+        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click Trading to
+        use Express Trading.
       </Trans>
     );
     buttonText = <Trans>Disable One-Click Trading</Trans>;
@@ -399,9 +337,7 @@ export function ExpressTradingWarningCard({
     icon = ExpressIcon;
     color = "red";
     content = (
-      <Trans>
-        GMX pools can't fill this swap, and no external route is currently available. Try reducing the amount.
-      </Trans>
+      <Trans>GMX pools can't fill this swap, and no external route is available. Try reducing the amount.</Trans>
     );
     const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
       chainId,
@@ -417,7 +353,7 @@ export function ExpressTradingWarningCard({
     }
   } else if (shouldShowExternalSwapTwapNotSupportedWarning) {
     icon = ExpressIcon;
-    color = "yellow";
+    color = "red";
     content = (
       <Trans>
         TWAP swaps use GMX pool liquidity only, which can't fill this order size. Use a market order to enable external
@@ -427,17 +363,28 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Switch to market order</Trans>;
     onClick = handleSwitchToMarketOrder;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
+    if (!expressParams) {
+      return null;
+    }
+
+    const gasPaymentTokenSymbol = expressParams.gasPaymentParams.gasPaymentToken.symbol;
+
     icon = ExpressIcon;
-    color = "yellow";
-    content = <Trans>Express Trading and One-Click Trading are unavailable due to insufficient gas balance</Trans>;
-    buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
+    color = "blue";
+    content = (
+      <Trans>
+        Insufficient {gasPaymentTokenSymbol} in your Wallet for Express fees. Express and One-Click Trading are
+        unavailable.
+      </Trans>
+    );
+    buttonText = <Trans>Swap for {gasPaymentTokenSymbol}</Trans>;
     onClick = () => {
-      history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      history.push(`/trade/swap?to=${gasPaymentTokenSymbol}`);
       onAfterAction?.();
     };
   } else if (shouldShowSubaccountApprovalForAnotherNetworkWarning) {
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = (
       <Trans>
         One-Click Trading needs a one-time signature for the current network. Approvals signed for other networks are
@@ -448,7 +395,7 @@ export function ExpressTradingWarningCard({
     onClick = handleUpdateSubaccountSettings;
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
-    color = "yellow";
+    color = "blue";
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign

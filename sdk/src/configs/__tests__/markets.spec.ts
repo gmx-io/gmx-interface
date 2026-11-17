@@ -1,7 +1,7 @@
 import { withRetry } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { ARBITRUM, CONTRACTS_CHAIN_IDS_DEV } from "configs/chains";
+import { CONTRACTS_CHAIN_IDS_DEV, isTestnetChain } from "configs/chains";
 import { MARKETS } from "configs/markets";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
@@ -12,19 +12,11 @@ type KeeperMarket = {
   shortToken: string;
 };
 
-const SKIPPED_KEEPER_MARKETS: Partial<Record<number, Set<string>>> = {
-  [ARBITRUM]: new Set([
-    // OM/USD [WBTC-USDC]
-    "0x89EB78679921499632fF16B1be3ee48295cfCD91",
-    // WELL/USD [WETH-USDC]
-    "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4",
-    // AI16Z/USD [WBTC.e-USDC]
-    "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
-  ]),
-};
+const SKIPPED_KEEPER_MARKETS: Partial<Record<number, Set<string>>> = {};
 
 const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarket[] }> => {
   const res = await fetch(`${getOracleKeeperUrl(chainId)}/markets`);
+  if (!res.ok) throw Error(`Keeper responded with ${res.status}`);
   const data = (await res.json()) as {
     markets: KeeperMarket[];
   };
@@ -36,9 +28,13 @@ const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarke
 
 describe("markets config", () => {
   CONTRACTS_CHAIN_IDS_DEV.forEach(async (chainId) => {
-    it(`markets should be consistent with keeper for ${chainId}`, async () => {
+    it(`markets should be consistent with keeper for ${chainId}`, async ({ skip }) => {
       const keeperMarkets = await withRetry(() => getKeeperMarkets(chainId), {
         retryCount: 2,
+      }).catch((error: Error) => {
+        // A testnet keeper outage is not config drift; mainnet keepers must answer
+        if (isTestnetChain(chainId)) skip(`Keeper is unavailable: ${error.message}`);
+        throw error;
       });
 
       Object.entries(MARKETS[chainId]).forEach(([marketAddress, market]) => {

@@ -1,7 +1,8 @@
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
+import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
@@ -17,12 +18,17 @@ import {
   usePeriodAccountStats,
 } from "domain/synthetics/accountStats";
 import { OracleSettingsData, useOracleSettingsData } from "domain/synthetics/common/useOracleSettingsData";
-import { SponsoredCallBalanceData, useIsSponsoredCallBalanceAvailable } from "domain/synthetics/express";
+import type {
+  GasPaymentTokenReplacements,
+  GasPaymentTokensOnchainState,
+} from "domain/synthetics/express/gasPaymentTokenAvailability";
+import { useGasPaymentTokensOnchainState } from "domain/synthetics/express/useGasPaymentTokensOnchainState";
 import { useL1ExpressOrderGasReference } from "domain/synthetics/express/useL1ExpressGasReference";
 import { ExternalSwapState } from "domain/synthetics/externalSwaps/types";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/features/useDisabledFeatures";
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
+import { useProDiscountFactorRequest } from "domain/synthetics/fees/useProDiscountFactor";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
@@ -51,6 +57,7 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import type { PriceDelta } from "domain/synthetics/tokens/priceDelta";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -60,9 +67,17 @@ import {
 } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/uiFlags";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
+import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
+import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import {
+  AccountWhitelistsResult,
+  useAccountWhitelistsRequest,
+} from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import type { CandlesFetcher } from "domain/tradingview/DataFeed";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -70,6 +85,7 @@ import { BlockTimestampData, useBlockTimestampRequest } from "lib/useBlockTimest
 import { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
@@ -93,6 +109,13 @@ export type SyntheticsPageType =
   | "referrals"
   | "rpcDebug";
 
+export type ChartDataProvider = {
+  candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
+  fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
+  fetch24hVolumes: () => Promise<Record<string, bigint>>;
+};
+
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
@@ -108,6 +131,9 @@ export type SyntheticsState = {
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
     userReferralInfo: UserReferralInfo | undefined;
+    proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
+    feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
@@ -139,6 +165,11 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+
+    accountWhitelistsResult: AccountWhitelistsResult;
+    usdgBoostAprResult: UsdgBoostAprResult;
+
+    chartDataProvider?: ChartDataProvider;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -158,7 +189,9 @@ export type SyntheticsState = {
   features: FeaturesSettings | undefined;
   uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
-  sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
+  gasPaymentTokensOnchainState: GasPaymentTokensOnchainState | undefined;
+  gasPaymentTokenReplacements: GasPaymentTokenReplacements;
+  setGasPaymentTokenReplacement: (isGmxAccount: boolean, tokenAddress: string | undefined) => void;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
 };
 
@@ -173,7 +206,7 @@ export function SyntheticsStateContextProvider({
   pageType: SyntheticsPageType;
   overrideChainId?: ContractsChainId;
 }) {
-  const { chainId: selectedChainId, srcChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId, networkId: selectedNetworkId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
 
@@ -193,13 +226,15 @@ export function SyntheticsStateContextProvider({
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
+  const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
 
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
-  const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfoRequest = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
+  const marketsInfo = useMarketsInfoWithDebugInstantLimit(chainId, marketsInfoRequest);
 
-  const { isFirstOrder } = useIsFirstOrder(chainId, { account });
+  const { isFirstOrder = true } = useIsFirstOrder(chainId, { account });
 
   const shouldFetchGlvMarkets =
     isGlvEnabled(chainId) && (pageType === "pools" || pageType === "buy" || pageType === "earn");
@@ -236,6 +271,7 @@ export function SyntheticsStateContextProvider({
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
+  const proDiscountFactor = useProDiscountFactorRequest(chainId, account);
   const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
   const [closingPositionOrderOption, setClosingPositionOrderOption] = useState<OrderOption>();
 
@@ -262,6 +298,8 @@ export function SyntheticsStateContextProvider({
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
   const { uiFlags } = useUiFlagsRequest();
+  const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
+  const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 
   const {
     isLoading,
@@ -284,6 +322,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
+    networkId,
     marketsInfoData: marketsInfo.marketsInfoData,
     marketsData: markets.marketsData,
     tokensData: tokensDataResult.tokensData,
@@ -297,7 +336,7 @@ export function SyntheticsStateContextProvider({
 
   const timePerios = useMemo(() => getTimePeriodsInSeconds(), []);
 
-  const isLargeAccount = useIsLargeAccountTracker(walletAccount);
+  const isLargeAccount = useIsLargeAccountTracker(walletAccount, { chainId: selectedChainId, srcChainId });
 
   const { data: lastWeekAccountStats } = usePeriodAccountStats(chainId, {
     account,
@@ -323,7 +362,8 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(
     chainId,
     positionsInfoData?.[closingPositionKey ?? ""],
-    closingPositionOrderOption
+    closingPositionOrderOption,
+    networkId
   );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
@@ -335,13 +375,19 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
     multichainMarketTokensBalancesResult,
+    // Relay router flags still loading count as on, so Express users don't see the wallet on every page load
+    isExpressAvailable:
+      settings.expressOrdersEnabled &&
+      isUiApiSupported(chainId) &&
+      getIsExpressAvailable(uiFlags) &&
+      features?.relayRouterEnabled !== false,
   });
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
 
   useCollectSyntheticsMetrics({
     tokensDataResult,
@@ -356,12 +402,12 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
-  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
   const gasPaymentTokenAllowanceAddresses = useMemo(
     () =>
       Array.from(
         new Set([
+          ...getGasPaymentTokens(chainId),
           convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
           convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
         ])
@@ -373,6 +419,13 @@ export function SyntheticsStateContextProvider({
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
+
+  const gasPaymentTokensOnchainState = useGasPaymentTokensOnchainState(chainId);
+  const [gasPaymentTokenReplacements, setGasPaymentTokenReplacements] = useState<GasPaymentTokenReplacements>({});
+  const setGasPaymentTokenReplacement = useCallback((isGmxAccount: boolean, tokenAddress: string | undefined) => {
+    const key = isGmxAccount ? "gmxAccount" : "wallet";
+    setGasPaymentTokenReplacements((prev) => (prev[key] === tokenAddress ? prev : { ...prev, [key]: tokenAddress }));
+  }, []);
 
   const state = useMemo(() => {
     const s: SyntheticsState = {
@@ -394,6 +447,7 @@ export function SyntheticsStateContextProvider({
         tokensDataResult,
         uiFeeFactor,
         userReferralInfo,
+        proDiscountFactor,
         depositMarketTokensData,
         progressiveDepositMarketTokensData,
         multichainMarketTokensBalancesResult,
@@ -423,6 +477,9 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+
+        accountWhitelistsResult,
+        usdgBoostAprResult,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -438,8 +495,10 @@ export function SyntheticsStateContextProvider({
       poolsDetails: poolsDetailsState,
       features,
       uiFlags,
-      sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
+      gasPaymentTokensOnchainState,
+      gasPaymentTokenReplacements,
+      setGasPaymentTokenReplacement,
       l1ExpressOrderGasReference,
     };
 
@@ -456,11 +515,16 @@ export function SyntheticsStateContextProvider({
     features,
     gasLimits,
     gasPaymentTokenAllowance,
+    gasPaymentTokensOnchainState,
+    gasPaymentTokenReplacements,
+    setGasPaymentTokenReplacement,
     gasPrice,
     glvInfo,
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    accountWhitelistsResult,
+    usdgBoostAprResult,
     isLargeAccount,
     isLoading,
     keepLeverage,
@@ -480,12 +544,12 @@ export function SyntheticsStateContextProvider({
     setClosingPositionKey,
     setKeepLeverage,
     settings,
-    sponsoredCallBalanceData,
     subaccountState,
     tokenPermitsState,
     tokensDataResult,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
     multichainMarketTokensBalancesResult,
     missedCoinsModalPlace,
     accountStats,

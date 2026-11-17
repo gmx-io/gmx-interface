@@ -13,13 +13,12 @@ import {
 } from "recharts";
 
 import type { BuybackChartPoint } from "domain/buyback/useBuybackChartData";
-import { numberWithCommas } from "lib/numbers";
+import { numberWithCommas, numberWithCommasParts } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
+import { NumericValue } from "components/NumericValue/NumericValue";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import InfoIcon from "img/ic_info_circle_stroke.svg?react";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
   fill: "var(--color-slate-100)",
@@ -59,23 +58,39 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
 
   const point = payload[0]!.payload as BuybackChartPoint;
   const utc = { in: tz("UTC") };
-  const weekRange = `${format(point.weekStart * 1000, "MMM d", utc)} - ${format((point.weekEnd - 1) * 1000, "MMM d", utc)}`;
-  const weeklyUsd =
-    point.weeklyUsd !== undefined ? numberWithCommas(Math.round(point.weeklyUsd), { showDollar: true }) : "—";
+  const monthRange = `${format(point.monthStart * 1000, "MMM d", utc)} - ${format((point.monthEnd - 1) * 1000, "MMM d, yyyy", utc)}`;
+  const monthlyUsd =
+    point.monthlyUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.monthlyUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
   const cumulativeUsd =
-    point.cumulativeUsd !== undefined ? numberWithCommas(Math.round(point.cumulativeUsd), { showDollar: true }) : "—";
+    point.cumulativeUsd !== undefined ? (
+      <NumericValue parts={numberWithCommasParts(Math.round(point.cumulativeUsd), { showDollar: true })} />
+    ) : (
+      "—"
+    );
 
   return (
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
-      <StatsTooltipRow label={t`Week`} value={weekRange} showDollar={false} />
+      <StatsTooltipRow label={t`Month`} value={monthRange} showDollar={false} />
       <StatsTooltipRow
-        label={t`Weekly bought`}
-        value={`${numberWithCommas(Math.round(point.weeklyAccrued))} GMX (${weeklyUsd})`}
+        label={t`Monthly bought`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.monthlyAccrued))} GMX ({monthlyUsd})
+          </>
+        }
         showDollar={false}
       />
       <StatsTooltipRow
         label={t`Cumulative`}
-        value={`${numberWithCommas(Math.round(point.cumulativeAccrued))} GMX (${cumulativeUsd})`}
+        value={
+          <>
+            {numberWithCommas(Math.round(point.cumulativeAccrued))} GMX ({cumulativeUsd})
+          </>
+        }
         showDollar={false}
       />
     </div>
@@ -97,26 +112,17 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
     <div className="flex flex-col">
       <div className="flex flex-wrap items-center gap-24 px-20 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly bought</Trans>
+          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Monthly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>
         </div>
-        <TooltipWithPortal
-          variant="none"
+        <StandardTooltip
+          variant="iconStroke"
           className="ml-auto"
-          handle={
-            <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>USD estimate</Trans>
-              <InfoIcon className="size-16 text-typography-secondary" />
-            </span>
-          }
-          content={
-            <Trans>
-              USD values are estimated using the average GMX price for each displayed week. Actual buyback execution
-              amounts may differ due to execution timing, conversions, and price movements.
-            </Trans>
-          }
+          handleClassName="text-body-small font-medium text-typography-secondary"
+          handle={<Trans>USD estimate</Trans>}
+          content={t`USD values are estimated using the average GMX price for each displayed month. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements.`}
         />
       </div>
 
@@ -129,7 +135,7 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
                 content={<ChartTooltip />}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
-              <Bar yAxisId="left" dataKey="weeklyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
+              <Bar yAxisId="left" dataKey="monthlyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
               <Line
                 yAxisId="right"
                 type="monotone"
@@ -143,7 +149,7 @@ export function BuybackChart({ chartData }: { chartData: BuybackChartPoint[] }) 
                 dataKey="label"
                 tickLine={false}
                 axisLine={X_AXIS_LINE_PROPS}
-                minTickGap={isMobile ? 20 : 32}
+                minTickGap={isMobile ? 8 : 32}
                 tick={CHART_TICK_PROPS}
                 tickMargin={10}
               />

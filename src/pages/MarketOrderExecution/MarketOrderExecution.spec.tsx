@@ -117,7 +117,7 @@ describe("MarketOrderPairsTable", () => {
     const { getByRole } = renderTable({ rows: [PERP_ROW] });
 
     expect(getByRole("link", { name: shortenAddress(ACCOUNT, 13) }).getAttribute("href")).toBe(
-      `/accounts/${ACCOUNT}?network=arbitrum&v=2`
+      `/traders/${ACCOUNT}?network=arbitrum&v=2`
     );
   });
 

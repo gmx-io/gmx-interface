@@ -1,19 +1,29 @@
 import type { Locator } from "@playwright/experimental-ct-core";
 import { test, expect } from "@playwright/experimental-ct-react";
 
+import { MOCK_ACCOUNT_PRIVATE_KEY, MockChain } from "domain/testUtils/rpc/mockChain";
+import { installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
 import { getDataQALocator } from "lib/__tests__/testUtils";
 import { TradeMode } from "sdk/utils/trade/types";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
+
+const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+const WETH_ADDRESS = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
+// valid Arbitrum gas payment token that the mock tokensData doesn't include
+const USDT_ADDRESS = "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9";
 
 type PageLike = {
   locator: (selector: string) => Locator;
   getByText: (text: string | RegExp, options?: { exact?: boolean }) => Locator;
 };
 
+let chain: MockChain;
+
 test.beforeEach(async ({ page }) => {
-  // Hermetic: fixtures provide all data, requests to real backends are dropped
-  await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+  // Hermetic: fixtures provide all data, the mock chain answers RPC (unlimited allowance), other requests are dropped
+  chain = new MockChain({ walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY });
+  await installRpcResponder(page, chain);
 });
 
 async function parseInputNumber(input: Locator): Promise<number> {
@@ -73,6 +83,22 @@ test.describe("TradeBox", () => {
       await expect(submitButton).toBeEnabled();
 
       await expect(page.getByText("Liquidation price")).toBeVisible();
+    });
+  });
+
+  test.describe("Mobile curtain", () => {
+    test("keeps the curtain open after a tap that sends no trade PRO-4554", async ({ mount, page }) => {
+      await mount(<TradeBoxStory isMobile />);
+
+      const curtainState = page.locator(getDataQALocator("test-curtain-open"));
+      await expect(curtainState).toHaveText("true");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Connect wallet");
+      await submitButton.click();
+      await page.waitForTimeout(500);
+
+      await expect(curtainState).toHaveText("true");
     });
   });
 
@@ -248,7 +274,10 @@ test.describe("TradeBox", () => {
 
       await page.locator(getDataQALocator("leverage-slider")).first().click();
       await expect(page.getByText("Adjust leverage")).toBeVisible();
-      await page.getByText("5x", { exact: true }).click();
+      await page
+        .locator(".rc-slider-mark-text")
+        .filter({ hasText: /^5\s?x$/ })
+        .click();
 
       await expectInputInRange(sizeInput, 4900, 5000);
     });
@@ -419,13 +448,13 @@ test.describe("TradeBox", () => {
       await sizeInput.fill("3000");
 
       // the header leverage field displays the derived estimate (~3x)
-      await expect(leverageDisplay(page)).toContainText(/(2\.9\d*|3(\.0\d*)?)x/);
+      await expect(leverageDisplay(page)).toContainText(/(2\.9\d*|3(\.0\d*)?)\sx/);
 
       await expect(marginInput).toHaveValue("1000");
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
 
       await marginInput.fill("2000");
-      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
+      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)\sx/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
     });
 
@@ -473,7 +502,7 @@ test.describe("TradeBox", () => {
 
       await marginInput.fill("2000");
       // leverage re-derives but the manually typed size is preserved
-      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)x/);
+      await expect(leverageDisplay(page)).toContainText(/(1\.4\d*|1\.5\d*)\sx/);
       await expect(sizeInput).toHaveValue(/^3000(\.00)?$/);
     });
 
@@ -648,21 +677,21 @@ test.describe("TradeBox", () => {
   });
 
   test.describe("Seeded scenarios", () => {
-    test("native ETH pay reserves a gas buffer on max", async ({ mount, page }) => {
+    test("native ETH pay holds back the execution fee plus 40 % on max", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedPayNativeEth />);
 
       await page.locator(getDataQALocator("margin-max")).click();
 
-      // max leaves a residual gas buffer, strictly below the 10 ETH balance
+      // max holds back only the current fee + 40 %: a fraction of a cent at the mock gas price, no future reserve
       const marginInput = page.locator(getDataQALocator("margin-input"));
-      await expectInputInRange(marginInput, 9.5, 9.9999);
+      await expectInputInRange(marginInput, 9.99, 9.9999);
     });
 
     test("stored leverage above market cap is clamped on mount", async ({ mount, page }) => {
       await mount(<TradeBoxStory seedLeverageOption={150} />);
 
       // 150x is clamped to the market max rounded down to a 5x step
-      await expect(page.locator(getDataQALocator("leverage-slider")).first()).toContainText("95x");
+      await expect(page.locator(getDataQALocator("leverage-slider")).first()).toContainText("95 x");
 
       // the clamped value drives the calculation: 100 USDC * 95x minus fees
       await page.locator(getDataQALocator("margin-input")).fill("100");
@@ -692,13 +721,14 @@ test.describe("TradeBox", () => {
   });
 
   test.describe("Fixture scenarios", () => {
-    test("zero balances disable the slider and max fill", async ({ mount, page }) => {
+    test("zero balances disable the slider, hide Max and make the balance click a no-op", async ({ mount, page }) => {
       await mount(<TradeBoxStory connected zeroBalances />);
 
       await expect(page.locator(".rc-slider-disabled")).toBeVisible();
 
       const marginInput = page.locator(getDataQALocator("margin-input"));
-      await page.locator(getDataQALocator("margin-max")).click();
+      await expect(page.locator(getDataQALocator("margin-max"))).toHaveCount(0);
+      await page.locator(getDataQALocator("margin-balance")).click();
       await expect(marginInput).toHaveValue("");
 
       await marginInput.fill("100");
@@ -877,6 +907,79 @@ test.describe("TradeBox", () => {
       await page.getByText("Switch to ETH collateral").click();
 
       await expect(page.getByText(/Existing position uses ETH collateral/)).not.toBeVisible();
+    });
+  });
+
+  test.describe("Pay token allowance (PRO-3572)", () => {
+    const swapUsdcToEth = { from: USDC_ADDRESS, to: WETH_ADDRESS };
+
+    test("insufficient allowance shows the approve button instead of swap", async ({ mount, page }) => {
+      chain.allowance = 0n;
+      await mount(<TradeBoxStory connected seedSwapPair={swapUsdcToEth} />);
+
+      await page.locator(getDataQALocator("pay-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Approve USDC");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("insufficient allowance shows the approve button when the saved gas token has no data", async ({
+      mount,
+      page,
+    }) => {
+      chain.allowance = 0n;
+      await mount(<TradeBoxStory connected seedSwapPair={swapUsdcToEth} seedGasPaymentTokenAddress={USDT_ADDRESS} />);
+
+      await page.locator(getDataQALocator("pay-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Approve USDC");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("swap stays disabled until the allowance is known", async ({ mount, page }) => {
+      // the allowance read never answers
+      await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+      await mount(<TradeBoxStory connected seedSwapPair={swapUsdcToEth} />);
+
+      await page.locator(getDataQALocator("pay-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Loading…");
+      await expect(submitButton).toBeDisabled();
+    });
+
+    test("insufficient allowance shows the approve button for a long", async ({ mount, page }) => {
+      chain.allowance = 0n;
+      await mount(<TradeBoxStory connected />);
+
+      await page.locator(getDataQALocator("margin-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Approve USDC");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("native ETH pay doesn't wait for an allowance", async ({ mount, page }) => {
+      await page.route(/^https?:\/\/(?!localhost|127\.0\.0\.1)/, (route) => route.abort());
+      await mount(<TradeBoxStory connected seedPayNativeEth />);
+
+      await page.locator(getDataQALocator("margin-input")).fill("1");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Open Long");
+      await expect(submitButton).toBeEnabled();
+    });
+
+    test("sufficient allowance keeps the swap button", async ({ mount, page }) => {
+      await mount(<TradeBoxStory connected seedSwapPair={swapUsdcToEth} />);
+
+      await page.locator(getDataQALocator("pay-input")).fill("100");
+
+      const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
+      await expect(submitButton).toHaveText("Market: Swap USDC");
+      await expect(submitButton).toBeEnabled();
     });
   });
 });

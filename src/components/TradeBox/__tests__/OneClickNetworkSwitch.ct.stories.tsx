@@ -19,10 +19,10 @@ import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import type { SignedSubaccountApproval } from "sdk/utils/subaccount";
 
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import { TradeBox } from "components/TradeBox/TradeBox";
 
 const EXPRESS_AVAILABLE_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const SPONSORED_CALL_ALLOWED = { isSponsoredCallAllowed: true };
 
 function NetworkSwitchControl() {
   const { switchChainAsync } = useSwitchChain();
@@ -45,11 +45,7 @@ function SyntheticsStateWithAppChainContext({ children }: { children: ReactNode 
   const { srcChainId } = useChainId();
 
   return (
-    <MockSyntheticsStateProvider
-      features={EXPRESS_AVAILABLE_FEATURES}
-      sponsoredCallBalanceData={SPONSORED_CALL_ALLOWED}
-      srcChainId={srcChainId}
-    >
+    <MockSyntheticsStateProvider features={EXPRESS_AVAILABLE_FEATURES} srcChainId={srcChainId}>
       {children}
     </MockSyntheticsStateProvider>
   );
@@ -86,6 +82,8 @@ export function OneClickNetworkSwitchStory({
       signature: "0x01",
       signedAt: 1000,
       integrationId: "0x0000000000000000000000000000000000000000000000000000000000000000",
+      revocationCounter: 0n,
+      eip6492SignatureWrapperHash: "0x0000000000000000000000000000000000000000000000000000000000000000",
       subaccountRouterAddress: getContract(ARBITRUM, "SubaccountGelatoRelayRouter"),
       signatureChainId: ARBITRUM,
     };
@@ -102,7 +100,9 @@ export function OneClickNetworkSwitchStory({
       <SyntheticsStateWithAppChainContext>
         <NetworkSwitchControl />
         <div className="text-body-medium flex flex-col rounded-8">
-          <TradeBox isMobile={false} />
+          <ActiveFormScope formId="tradebox">
+            <TradeBox isMobile={false} activeFormId="tradebox" />
+          </ActiveFormScope>
         </div>
       </SyntheticsStateWithAppChainContext>
     </CtAppProviders>

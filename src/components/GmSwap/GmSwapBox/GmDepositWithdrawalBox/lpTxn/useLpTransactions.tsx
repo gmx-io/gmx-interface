@@ -16,7 +16,7 @@ export interface UseLpTransactionProps {
 export const useLpTransactions = (
   props: UseLpTransactionProps
 ): {
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   isSubmitting: boolean;
   error: Error | undefined;
   isLoading: boolean;
@@ -56,13 +56,9 @@ export const useLpTransactions = (
       throw new Error("Invalid operation");
     }
 
-    txnPromise
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    return txnPromise.finally(() => {
+      setIsSubmitting(false);
+    });
   }, [operation, onCreateDeposit, onCreateWithdrawal]);
 
   return {

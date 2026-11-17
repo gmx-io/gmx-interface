@@ -1,4 +1,5 @@
 import type { SourceChainId } from "configs/chains";
+import { postJsonPinned, postJsonPinning } from "utils/http/chainPins";
 import { IHttp } from "utils/http/types";
 import type { BridgeOutParams } from "utils/multichain/api";
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/signer";
@@ -86,7 +87,6 @@ export type CrossChainWithdrawStatusResponse = {
   status: string;
   txHash?: string;
   taskId?: string;
-  gelatoStatusCode?: number;
   error?: { code: string; message: string };
   createdAt: string;
   updatedAt: string;
@@ -130,7 +130,7 @@ export async function prepareCrossChainDeposit(
   ctx: { api: IHttp },
   request: CrossChainDepositPrepareRequest
 ): Promise<CrossChainDepositPrepareResponse> {
-  return ctx.api.postJson<CrossChainDepositPrepareResponse>("/v1/gmx-account/deposit/cross-chain/prepare", request, {
+  return ctx.api.postJson<CrossChainDepositPrepareResponse>("/v2/gmx-account/deposit/cross-chain/prepare", request, {
     transform: parseDepositPrepareResponse,
   });
 }
@@ -168,16 +168,25 @@ export async function prepareCrossChainWithdraw(
   ctx: { api: IHttp },
   request: CrossChainWithdrawPrepareRequest
 ): Promise<CrossChainWithdrawPrepareResponse> {
-  return ctx.api.postJson<CrossChainWithdrawPrepareResponse>("/v1/gmx-account/withdraw/cross-chain/prepare", request, {
-    transform: parseWithdrawPrepareResponse,
-  });
+  return postJsonPinning(
+    ctx.api,
+    "/v2/gmx-account/withdraw/cross-chain/prepare",
+    request,
+    (prepared: CrossChainWithdrawPrepareResponse) => [prepared.requestId],
+    { transform: parseWithdrawPrepareResponse }
+  );
 }
 
 export async function submitCrossChainWithdraw(
   ctx: { api: IHttp },
   request: CrossChainWithdrawSubmitRequest
 ): Promise<CrossChainWithdrawSubmitResponse> {
-  return ctx.api.postJson<CrossChainWithdrawSubmitResponse>("/v1/gmx-account/withdraw/cross-chain/submit", request);
+  return postJsonPinned<CrossChainWithdrawSubmitResponse>(
+    ctx.api,
+    [request.requestId],
+    "/v2/gmx-account/withdraw/cross-chain/submit",
+    request
+  );
 }
 
 export async function signCrossChainWithdrawPrepared(
@@ -215,7 +224,10 @@ export async function getCrossChainWithdrawStatus(
   ctx: { api: IHttp },
   requestId: string
 ): Promise<CrossChainWithdrawStatusResponse> {
-  return ctx.api.postJson<CrossChainWithdrawStatusResponse>("/v1/gmx-account/withdraw/cross-chain/status", {
-    requestId,
-  });
+  return postJsonPinned<CrossChainWithdrawStatusResponse>(
+    ctx.api,
+    [requestId],
+    "/v2/gmx-account/withdraw/cross-chain/status",
+    { requestId }
+  );
 }

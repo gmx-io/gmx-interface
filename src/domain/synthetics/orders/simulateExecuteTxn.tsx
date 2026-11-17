@@ -20,6 +20,7 @@ import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
+import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { getBlockTimestampAndNumber, isTemporaryError } from "./simulation";
@@ -68,7 +69,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   if (p.blockTimestampData) {
     blockTimestamp = adjustBlockTimestamp(p.blockTimestampData);
   } else {
-    const result = await getBlockTimestampAndNumber(client, multicallAddress);
+    const result = await getBlockTimestampAndNumber(client, chainId, multicallAddress);
     blockTimestamp = result.blockTimestamp;
     blockNumber = result.blockNumber;
   }
@@ -293,7 +294,17 @@ function handleSimulationTxnError(
 
     const parsedArgs = parsedError.args;
 
-    let errorContent: ReactNode = errorTitle;
+    const contractErrorMessage =
+      parsedError.name === CustomErrorName.ExternalCallFailed
+        ? undefined
+        : getContractErrorMessage({
+            chainId,
+            errorData: { contractError: parsedError.name, contractErrorArgs: parsedArgs },
+            isLpWithdrawal:
+              p.method === "simulateExecuteLatestWithdrawal" || p.method === "simulateExecuteLatestGlvWithdrawal",
+          });
+
+    let errorContent: ReactNode = contractErrorMessage ?? errorTitle;
     if (
       parsedError.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
       parsedError.name === CustomErrorName.InsufficientSwapOutputAmount

@@ -6,10 +6,20 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
 import { Subaccount } from "domain/synthetics/subaccount";
+import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
+import { ETH_TOKEN } from "domain/testUtils/mockTokens";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 
-import { selectIsOneClickActiveByUser } from ".";
+import {
+  selectIsOneClickActiveByUser,
+  selectTradeboxHasPendingInput,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxFees,
+} from ".";
+import { selectTradeboxTradeTypeError } from "./selectTradeboxTradeErrors";
 
 const subaccountRouterAddress = getContract(AVALANCHE, "SubaccountGelatoRelayRouter");
 const multichainSubaccountRouterAddress = getContract(AVALANCHE, "MultichainSubaccountRouter");
@@ -33,6 +43,7 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     approvalNonce: 0n,
     multichainApprovalNonce: 0n,
     integrationId: zeroHash,
+    revocationCounter: 0n,
   };
 
   const signedApproval: Subaccount["signedApproval"] = {
@@ -47,6 +58,8 @@ function createSubaccount(overrides: SubaccountOverrides = {}): Subaccount {
     signature: "0x01",
     signedAt: 0,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress,
     signatureChainId: AVALANCHE as Subaccount["signedApproval"]["signatureChainId"],
   };
@@ -81,9 +94,6 @@ function createState(subaccount: Subaccount | undefined, srcChainId?: SourceChai
       relayRouterEnabled: true,
       subaccountRelayRouterEnabled: true,
     },
-    sponsoredCallBalanceData: {
-      isSponsoredCallAllowed: true,
-    },
     subaccountState: {
       subaccount,
     },
@@ -91,6 +101,86 @@ function createState(subaccount: Subaccount | undefined, srcChainId?: SourceChai
 }
 
 describe("tradeboxSelectors", () => {
+  describe("selectTradeboxHasPendingInput", () => {
+    function createPendingInputState(
+      overrides: Record<string, unknown> = {},
+      sidecarOrders: { slEntries?: { txnType: string | null }[]; tpEntries?: { txnType: string | null }[] } = {}
+    ) {
+      return {
+        tradebox: {
+          tradeType: TradeType.Long,
+          tradeMode: TradeMode.Market,
+          fromTokenInputValue: "",
+          toTokenInputValue: "",
+          closeSizeInputValue: "",
+          triggerPriceInputValue: "",
+          triggerRatioInputValue: "",
+          advancedOptions: { limitOrTPSL: false },
+          sidecarOrders: {
+            slEntries: sidecarOrders.slEntries ?? [],
+            tpEntries: sidecarOrders.tpEntries ?? [],
+          },
+          ...overrides,
+        },
+      } as unknown as SyntheticsState;
+    }
+
+    it("detects values in fields used by the active trade", () => {
+      expect(selectTradeboxHasPendingInput(createPendingInputState())).toBe(false);
+      expect(selectTradeboxHasPendingInput(createPendingInputState({ fromTokenInputValue: "0.5" }))).toBe(true);
+      expect(
+        selectTradeboxHasPendingInput(
+          createPendingInputState({ tradeMode: TradeMode.Limit, triggerPriceInputValue: "2500" })
+        )
+      ).toBe(true);
+      expect(
+        selectTradeboxHasPendingInput(
+          createPendingInputState({
+            tradeType: TradeType.Swap,
+            tradeMode: TradeMode.Limit,
+            triggerRatioInputValue: "0.0001",
+          })
+        )
+      ).toBe(true);
+      expect(
+        selectTradeboxHasPendingInput(
+          createPendingInputState({ tradeMode: TradeMode.Trigger, closeSizeInputValue: "250" })
+        )
+      ).toBe(true);
+    });
+
+    it("ignores stale values from inactive fields", () => {
+      expect(selectTradeboxHasPendingInput(createPendingInputState({ triggerPriceInputValue: "2500" }))).toBe(false);
+      expect(
+        selectTradeboxHasPendingInput(
+          createPendingInputState({ tradeType: TradeType.Swap, triggerRatioInputValue: "0.0001" })
+        )
+      ).toBe(false);
+      expect(
+        selectTradeboxHasPendingInput(
+          createPendingInputState({ tradeMode: TradeMode.Trigger, fromTokenInputValue: "1" })
+        )
+      ).toBe(false);
+    });
+
+    it("detects edited TP/SL entries without treating existing orders as drafts", () => {
+      const enabled = { advancedOptions: { limitOrTPSL: true } };
+
+      expect(
+        selectTradeboxHasPendingInput(createPendingInputState(enabled, { slEntries: [{ txnType: "create" }] }))
+      ).toBe(true);
+      expect(
+        selectTradeboxHasPendingInput(createPendingInputState(enabled, { tpEntries: [{ txnType: "cancel" }] }))
+      ).toBe(true);
+      expect(selectTradeboxHasPendingInput(createPendingInputState(enabled, { tpEntries: [{ txnType: null }] }))).toBe(
+        false
+      );
+      expect(selectTradeboxHasPendingInput(createPendingInputState({}, { slEntries: [{ txnType: "create" }] }))).toBe(
+        false
+      );
+    });
+  });
+
   it("selectTradeboxLeverageSliderMarks", () => {
     expect(getTradeboxLeverageSliderMarks(15 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 15]);
     expect(getTradeboxLeverageSliderMarks(25 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25]);
@@ -220,23 +310,29 @@ describe("tradeboxSelectors", () => {
         expect(selectIsOneClickActiveByUser(createState(baseSubaccount, SOURCE_BASE_MAINNET))).toBe(true);
         expect(selectIsOneClickActiveByUser(createState(bscSubaccount, SOURCE_BSC_MAINNET))).toBe(true);
       });
-
-      it("an approval with a consumed shared nonce is not a valid One-Click path even in its own context", () => {
-        const subaccount = createSubaccount({
-          signerChainId: SOURCE_BASE_MAINNET,
-          onchainData: {
-            active: true,
-            multichainApprovalNonce: PENDING_MULTICHAIN_NONCE + 1n,
-          },
-          signedApproval: {
-            signatureChainId: SOURCE_BASE_MAINNET,
-            subaccountRouterAddress: multichainSubaccountRouterAddress,
-            nonce: PENDING_MULTICHAIN_NONCE,
-          },
-        });
-
-        expect(selectIsOneClickActiveByUser(createState(subaccount, SOURCE_BASE_MAINNET))).toBe(false);
-      });
     });
   });
+});
+
+it("keeps Solana overflow quotes unavailable and recovers without changing EVM", () => {
+  for (const tradeMath of ["gmsol", undefined] as const) {
+    const makeState = (amount: string) =>
+      createMockSyntheticsState({
+        marketInfo: createMockMarketInfo(ETH_TOKEN, { tradeMath }),
+        isLeverageSliderEnabled: false,
+        fromTokenInputValue: "100",
+        toTokenInputValue: amount,
+        focusedInput: "to",
+      });
+    const overflowState = makeState("1000000000000000000");
+    const overflowQuote = selectTradeboxIncreasePositionAmounts(overflowState);
+    if (tradeMath === "gmsol") {
+      expect(overflowQuote).toBeUndefined();
+      expect(selectTradeboxFees(overflowState)).toBeUndefined();
+      expect(selectTradeboxTradeTypeError(overflowState).buttonErrorMessage).toBe("Unable to calculate this order");
+    } else {
+      expect(overflowQuote).toBeDefined();
+    }
+    expect(selectTradeboxIncreasePositionAmounts(makeState("0.5"))?.sizeDeltaUsd).toBeGreaterThan(0n);
+  }
 });

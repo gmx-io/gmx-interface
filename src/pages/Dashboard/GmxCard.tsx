@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -7,45 +7,45 @@ import { getIcons } from "config/icons";
 import { GMX_PRICE_DECIMALS } from "config/ui";
 import { useTotalGmxStaked } from "domain/legacy";
 import { GMX_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountHuman } from "lib/numbers";
+import { expandDecimals } from "lib/numbers";
 import { sumBigInts } from "lib/sumBigInts";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection, AppCardSplit } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import { BuyGmxModal } from "components/BuyGmxModal/BuyGmxModal";
 import InteractivePieChart from "components/InteractivePieChart/InteractivePieChart";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/TooltipBlocks";
 
 export function GmxCard({
   chainId,
   gmxPrice,
-  gmxPriceFromArbitrum,
-  gmxPriceFromAvalanche,
   totalGmxSupply,
   gmxMarketCap,
   totalGmxInLiquidity,
 }: {
   chainId: number;
   gmxPrice: bigint | undefined;
-  gmxPriceFromArbitrum: bigint | undefined;
-  gmxPriceFromAvalanche: bigint | undefined;
   totalGmxSupply: bigint | undefined;
   gmxMarketCap: bigint | undefined;
   totalGmxInLiquidity: bigint;
 }) {
   const currentIcons = getIcons(chainId)!;
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum, total: totalStakedGmx } = useTotalGmxStaked();
 
   const stakedGmxArbitrumUsd =
-    gmxPriceFromArbitrum !== undefined && stakedGmxArbitrum !== undefined
-      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPriceFromArbitrum, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxArbitrum !== undefined
+      ? bigMath.mulDiv(stakedGmxArbitrum, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const stakedGmxAvalancheUsd =
-    gmxPriceFromAvalanche !== undefined && stakedGmxAvalanche !== undefined
-      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPriceFromAvalanche, expandDecimals(1, GMX_DECIMALS))
+    gmxPrice !== undefined && stakedGmxAvalanche !== undefined
+      ? bigMath.mulDiv(stakedGmxAvalanche, gmxPrice, expandDecimals(1, GMX_DECIMALS))
       : undefined;
   const totalStakedGmxUsd = sumBigInts(stakedGmxArbitrumUsd, stakedGmxAvalancheUsd);
 
@@ -85,8 +85,6 @@ export function GmxCard({
     return arr;
   }, [liquidityPercent, notStakedPercent, stakedPercent]);
 
-  const formattedTotalStakedGmxUsd = formatAmountHuman(totalStakedGmxUsd, USD_DECIMALS, true, 2);
-
   return (
     <AppCard>
       <AppCardSplit
@@ -107,10 +105,11 @@ export function GmxCard({
                   </div>
                 </div>
                 <div className="h-32">
-                  <Button size="small" variant="secondary" to="/buy_gmx">
+                  <Button size="small" variant="secondary" onClick={() => setIsBuyGmxModalVisible(true)}>
                     <img src={currentIcons.gmx} width="16" alt={t`GMX icon`} />
                     <Trans>Buy GMX</Trans>
                   </Button>
+                  <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">
@@ -130,26 +129,7 @@ export function GmxCard({
                   {gmxPrice === undefined || gmxPrice === 0n ? (
                     "..."
                   ) : (
-                    <TooltipComponent
-                      position="bottom-end"
-                      className="whitespace-nowrap"
-                      handle={"$\u200a" + formatAmount(gmxPrice, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                      handleClassName="numbers"
-                      content={
-                        <>
-                          <StatsTooltipRow
-                            label={t`Price on Arbitrum`}
-                            value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                            showDollar={true}
-                          />
-                          <StatsTooltipRow
-                            label={t`Price on Avalanche`}
-                            value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, GMX_PRICE_DECIMALS, true)}
-                            showDollar={true}
-                          />
-                        </>
-                      }
-                    />
+                    <UsdValue usd={gmxPrice} displayDecimals={GMX_PRICE_DECIMALS} className="numbers" />
                   )}
                 </div>
               </div>
@@ -158,9 +138,9 @@ export function GmxCard({
                   <Trans>Total supply</Trans>
                 </div>
                 <div>
-                  <TooltipComponent
+                  <StandardTooltip
                     position="bottom-end"
-                    handle={formatAmountHuman(totalGmxSupply, GMX_DECIMALS, false, 2)}
+                    handle={<AmountHumanValue amount={totalGmxSupply} decimals={GMX_DECIMALS} displayDecimals={2} />}
                     handleClassName="numbers"
                     content={t`Total circulating supply of GMX tokens`}
                   />
@@ -171,14 +151,20 @@ export function GmxCard({
                   <Trans>Total staked</Trans>
                 </div>
                 <div>
-                  <TooltipComponent
+                  <StandardTooltip
                     position="bottom-end"
-                    tooltipClassName="!max-w-[450px]"
-                    handle={formattedTotalStakedGmxUsd}
+                    handle={
+                      <AmountHumanValue
+                        amount={totalStakedGmxUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
+                    }
                     handleClassName="numbers"
                     content={
-                      <>
-                        <StatsTooltipRow
+                      <TooltipRows>
+                        <TooltipRow
                           label={t`Staked on Arbitrum`}
                           value={
                             <AmountWithUsdHuman
@@ -188,9 +174,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                        <StatsTooltipRow
+                        <TooltipRow
                           label={t`Staked on Avalanche`}
                           value={
                             <AmountWithUsdHuman
@@ -200,10 +185,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                        <div className="!my-8 h-1 bg-gray-800" />
-                        <StatsTooltipRow
+                        <TooltipTotal
                           label={t`Total`}
                           value={
                             <AmountWithUsdHuman
@@ -213,9 +196,8 @@ export function GmxCard({
                               symbol="GMX"
                             />
                           }
-                          showDollar={false}
                         />
-                      </>
+                      </TooltipRows>
                     }
                   />
                 </div>
@@ -225,7 +207,13 @@ export function GmxCard({
                   <Trans>Market cap</Trans>
                 </div>
                 <div>
-                  <span className="numbers">{formatAmountHuman(gmxMarketCap, USD_DECIMALS, true, 2)}</span>
+                  <AmountHumanValue
+                    amount={gmxMarketCap}
+                    decimals={USD_DECIMALS}
+                    showDollar
+                    displayDecimals={2}
+                    className="numbers"
+                  />
                 </div>
               </div>
             </AppCardSection>

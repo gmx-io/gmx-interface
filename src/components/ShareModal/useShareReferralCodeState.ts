@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePrevious } from "react-use";
 
 import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
-import { getProtocolReferralCodeType } from "domain/referrals/utils/referralsHelper";
+import { getProtocolReferralCodeType } from "domain/referrals/utils/referralCode";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";

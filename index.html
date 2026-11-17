@@ -1,29 +1,131 @@
 <!doctype html>
-<html lang="en" class="notranslate" translate="no">
+<html lang="en" class="notranslate dark" translate="no">
   <head>
     <meta name="google" content="notranslate" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <script>
+      // Apply the saved theme before the app styles load.
+      try {
+        const themeMode = JSON.parse(localStorage.getItem(JSON.stringify("app-theme-mode")) || "null") || "dark";
+        const isDark =
+          themeMode === "dark" || (themeMode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.classList.toggle("dark", isDark);
+      } catch {}
+
+      // Configure the installed viewport before WebKit performs its first layout.
+      if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+        document.documentElement.setAttribute("data-installed-app", "");
+        document.querySelector('meta[name="viewport"]').content += ", viewport-fit=cover";
+      }
+    </script>
     <meta name="theme-color" content="#090A14" />
     <style>
+      :root {
+        --color-slate-950: #090a14;
+      }
+      :root:not(.dark) {
+        --color-slate-950: #eeeef4;
+      }
       html,
       body {
         min-height: 100%;
         margin: 0;
+        background: var(--color-slate-950);
+      }
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        background: var(--color-slate-950);
+      }
+      #app-loading:not([hidden]) {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         background: #090a14;
+        color: #fff;
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      #app-loading button {
+        padding: 12px 24px;
+        border: 0;
+        border-radius: 4px;
+        background: #2d42fc;
+        color: #fff;
+        font: inherit;
+        cursor: pointer;
+      }
+      #static-copy {
+        display: none;
       }
     </style>
+    <noscript>
+      <style>
+        #app-splash {
+          display: none;
+        }
+        body {
+          color: #fff;
+          font:
+            16px/1.5 system-ui,
+            sans-serif;
+        }
+        #static-copy {
+          display: block;
+          max-width: 800px;
+          margin: 0 auto;
+          padding: 24px 16px;
+        }
+        #static-copy h1 {
+          margin: 0 0 12px;
+          font-size: 24px;
+          line-height: 1.3;
+        }
+      </style>
+    </noscript>
     <!-- gmx-pwa-metadata -->
-    <meta property="og:title" content="GMX | Decentralized Perpetual Exchange" />
-    <meta property="og:site_name" content="GMX" />
-    <meta property="og:image" content="https://gmx.io/og.png" />
+    <meta data-react-helmet="true" property="og:type" content="website" />
     <meta
-      name="og:description"
-      content="Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
+      data-react-helmet="true"
+      property="og:title"
+      content="GMX | Perpetual DEX for Crypto, Metals, Stocks &amp; Energy"
+    />
+    <meta data-react-helmet="true" property="og:site_name" content="GMX" />
+    <meta data-react-helmet="true" property="og:image" content="https://gmx.io/og.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="787" />
+    <meta property="og:image:alt" content="GMX decentralized perpetual exchange" />
+    <meta
+      data-react-helmet="true"
+      property="og:description"
+      content="GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+    />
+    <meta data-react-helmet="true" name="twitter:card" content="summary_large_image" />
+    <meta data-react-helmet="true" name="twitter:site" content="@gmx_io" />
+    <meta
+      data-react-helmet="true"
+      name="twitter:title"
+      content="GMX | Perpetual DEX for Crypto, Metals, Stocks &amp; Energy"
     />
     <meta
+      data-react-helmet="true"
+      name="twitter:description"
+      content="GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU), silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum, Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain."
+    />
+    <meta data-react-helmet="true" name="twitter:image" content="https://gmx.io/og.png" />
+    <meta name="twitter:image:alt" content="GMX decentralized perpetual exchange" />
+    <meta
+      data-react-helmet="true"
       name="description"
-      content="Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche."
+      content="GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage."
     />
     <link rel="preconnect" href="https://arbitrum.gmxapi.io" crossorigin />
     <link rel="dns-prefetch" href="//arbitrum.gmxapi.io" />
@@ -35,42 +137,56 @@
     <link rel="dns-prefetch" href="//avalanche-api.gmxinfra.io" />
     <script>
       // Warms ui-flags during HTML parse; consumed once by src/lib/oracleKeeperFetcher/uiFlagsPrefetch.ts.
-      window.__uiFlagsPrefetch = {};
-      [
-        [
-          "https://arbitrum-api.gmxinfra.io/ui-flags/v2",
-          "https://arbitrum-api-fallback.gmxinfra.io/ui-flags/v2",
-          "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
-        ],
-        [
-          "https://avalanche-api.gmxinfra.io/ui-flags/v2",
-          "https://avalanche-api-fallback.gmxinfra.io/ui-flags/v2",
-          "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
-        ],
-      ].forEach(function (urls) {
+      (function () {
+        window.__uiFlagsPrefetch = {};
+        var isSolanaSelected = false;
         try {
-          var attempt = function (i) {
-            if (i >= urls.length) return Promise.resolve(null);
-            var opts = {};
-            try {
-              if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
-                opts.signal = AbortSignal.timeout(10000);
-              }
-            } catch (e) {}
-            return fetch(urls[i], opts)
-              .then(function (res) {
-                return res.ok ? res.json() : attempt(i + 1);
-              })
-              .catch(function () {
-                return attempt(i + 1);
-              });
-          };
-          var promise = attempt(0);
-          urls.forEach(function (url) {
-            window.__uiFlagsPrefetch[url] = promise;
-          });
+          // Skip the EVM ui-flags prefetch when Solana is selected (SELECTED_SOLANA_NETWORK) and the solanaNetwork AB flag is on
+          var flags = JSON.parse(localStorage.getItem("ab-flags") || "{}");
+          isSolanaSelected =
+            localStorage.getItem("SELECTED_SOLANA_NETWORK") === "true" &&
+            flags.solanaNetwork &&
+            flags.solanaNetwork.enabled === true;
         } catch (e) {}
-      });
+        (isSolanaSelected
+          ? []
+          : [
+              [
+                "https://arbitrum-api.gmxinfra.io/ui-flags/v2",
+                "https://arbitrum-api-fallback.gmxinfra.io/ui-flags/v2",
+                "https://arbitrum-api-fallback.gmxinfra2.io/ui-flags/v2",
+              ],
+              [
+                "https://avalanche-api.gmxinfra.io/ui-flags/v2",
+                "https://avalanche-api-fallback.gmxinfra.io/ui-flags/v2",
+                "https://avalanche-api-fallback.gmxinfra2.io/ui-flags/v2",
+              ],
+            ]
+        ).forEach(function (urls) {
+          try {
+            var attempt = function (i) {
+              if (i >= urls.length) return Promise.resolve(null);
+              var opts = {};
+              try {
+                if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
+                  opts.signal = AbortSignal.timeout(10000);
+                }
+              } catch (e) {}
+              return fetch(urls[i], opts)
+                .then(function (res) {
+                  return res.ok ? res.json() : attempt(i + 1);
+                })
+                .catch(function () {
+                  return attempt(i + 1);
+                });
+            };
+            var promise = attempt(0);
+            urls.forEach(function (url) {
+              window.__uiFlagsPrefetch[url] = promise;
+            });
+          } catch (e) {}
+        });
+      })();
     </script>
     <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png" />
     <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png" />
@@ -93,7 +209,49 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="msapplication-TileColor" content="#090A14" />
     <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png" />
-    <title>GMX | Decentralized Perpetual Exchange</title>
+    <title>GMX | Perpetual DEX for Crypto, Metals, Stocks &amp; Energy</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://gmx.io/#organization",
+            "name": "GMX",
+            "url": "https://gmx.io/",
+            "logo": "https://gmx.io/android-chrome-512x512.png",
+            "sameAs": [
+              "https://github.com/gmx-io",
+              "https://x.com/GMX_IO",
+              "https://t.me/GMX_IO",
+              "https://discord.gg/H5PeQru3Aa"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://gmx.io/#website",
+            "url": "https://gmx.io/",
+            "name": "GMX",
+            "description": "GMX is a decentralized perpetual exchange with 100+ markets across crypto, gold, silver, oil, natural gas and stock indices, and up to 100x leverage.",
+            "publisher": { "@id": "https://gmx.io/#organization" },
+            "hasPart": [
+              {
+                "@type": "WebApplication",
+                "name": "GMX App",
+                "url": "https://app.gmx.io/",
+                "applicationCategory": "FinanceApplication",
+                "operatingSystem": "Web"
+              },
+              {
+                "@type": "WebSite",
+                "name": "GMX Docs",
+                "url": "https://docs.gmx.io/"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
     <!-- Addressable Pixel base code -->
     <script>
       !(function (w, d) {
@@ -114,7 +272,39 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <!-- Available before JavaScript and translations load. -->
+    <div id="app-splash" role="status">
+      <img src="/src/img/logo-icon.svg?inline" width="84" height="69" alt="GMX" />
+    </div>
+    <main id="app-loading" role="status" hidden>
+      <p id="app-loading-message">Something went wrong</p>
+      <button type="button" onclick="window.location.reload()">Reload page</button>
+    </main>
+    <script>
+      window.addEventListener(
+        "error",
+        function (event) {
+          if (event.target instanceof HTMLScriptElement && event.target.type === "module") {
+            document.getElementById("app-splash")?.remove();
+            document.getElementById("app-loading").hidden = false;
+          }
+        },
+        true
+      );
+    </script>
+    <div id="root">
+      <div id="static-copy">
+        <h1>GMX | Perpetual DEX for Crypto, Metals, Stocks &amp; Energy</h1>
+        <p>
+          GMX is a decentralized perpetual exchange for onchain trading of 100+ markets across crypto, gold (XAU),
+          silver (XAG), energy (WTI, Brent, natural gas) and US equities (SPCX, SPY, QQQ). It offers up to 100x
+          leverage, 24/7 TradFi markets and low-price-impact execution from a self-custody wallet, on Arbitrum,
+          Avalanche, MegaETH and Solana, with deposits from Ethereum, Base and BNB Chain. GMX Account lets you trade
+          from Ethereum, Base and BNB Chain without manual bridging. Provide liquidity through GM and GLV pools to earn
+          fees from trading, swaps and borrowing.
+        </p>
+      </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

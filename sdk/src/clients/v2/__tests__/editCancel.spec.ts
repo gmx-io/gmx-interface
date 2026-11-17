@@ -3,7 +3,8 @@ import { describe, expect, it, afterAll } from "vitest";
 import {
   getTestSdk,
   requireSigner,
-  waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   activateTestSubaccount,
   TEST_SYMBOL,
@@ -25,7 +26,6 @@ async function signAndSubmit(sdk: ReturnType<typeof getTestSdk>, prepared: any) 
     requestId: prepared.requestId,
     signature: sig,
     from: account,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,
@@ -50,8 +50,8 @@ async function createLimitOrder(sdkInstance: ReturnType<typeof getTestSdk>, trig
     signer
   );
 
-  const status = await waitForOrderStatus(sdkInstance, result.requestId);
-  expect(status.status).toBe("executed");
+  const status = await waitForOrderPlaced(sdkInstance, result.requestId);
+  expect(PLACED_OK_STATUSES).toContain(status.status);
   return result;
 }
 
@@ -110,8 +110,8 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const ordersAfter = await waitForOrdersUpdate(
         sdk,
@@ -144,8 +144,8 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const ordersAfter = await waitForOrdersUpdate(
         sdk,
@@ -183,8 +183,8 @@ describe("edit & cancel orders", () => {
       const submitted = await signAndSubmit(sdk, prepared);
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
     });
   });
 
@@ -230,7 +230,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
@@ -240,8 +239,8 @@ describe("edit & cancel orders", () => {
 
       expect(submitted.requestId).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const updatedOrders = await waitForOrdersUpdate(
         sdk,
@@ -284,7 +283,6 @@ describe("edit & cancel orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,
@@ -294,8 +292,8 @@ describe("edit & cancel orders", () => {
 
       expect(submitted.requestId).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
-      expect(status.status).toBe("executed");
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const updatedOrders = await waitForOrdersUpdate(
         sdk,

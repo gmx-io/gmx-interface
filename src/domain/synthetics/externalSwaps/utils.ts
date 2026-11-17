@@ -142,6 +142,7 @@ export function getExternalSwapInputsByLeverageSize({
   leverage,
   isLong,
   userReferralInfo,
+  feeDiscountFactor,
   marketsInfoData,
   chainId,
 }: {
@@ -156,6 +157,7 @@ export function getExternalSwapInputsByLeverageSize({
   isLong: boolean;
   findSwapPath: FindSwapPath;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   marketsInfoData: MarketsInfoData | undefined;
   chainId: number;
 }): ExternalSwapInputs {
@@ -169,7 +171,15 @@ export function getExternalSwapInputsByLeverageSize({
 
   const sizeDeltaUsd = convertToUsd(indexTokenAmount, marketInfo.indexToken.decimals, prices.indexPrice)!;
 
-  const positionFeeInfo = getPositionFee(marketInfo, sizeDeltaUsd, false, userReferralInfo);
+  const positionFeeInfo = getPositionFee(
+    marketInfo,
+    sizeDeltaUsd,
+    false,
+    userReferralInfo,
+    undefined,
+    undefined,
+    feeDiscountFactor
+  );
 
   const positionFeeUsd = positionFeeInfo.positionFeeUsd;
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor);

@@ -5,7 +5,7 @@ import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
-import { isHash } from "domain/referrals/utils/referralCode";
+import { isProtocolReferralCode } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
@@ -17,7 +17,7 @@ import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
-import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
+import { decodeReferralCode, encodeReferralCode, isReferralCodeHex } from "sdk/utils/referrals";
 
 import { UserReferralInfo } from "../types";
 
@@ -191,7 +191,8 @@ export async function setTraderReferralCodeByUser(
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
   const codeOwner = await contract.codeOwners(referralCodeHex);
-  if (isAddressZero(codeOwner)) {
+  // the join form's own check is debounced, so a quick submit can get here first
+  if (isAddressZero(codeOwner) || isProtocolReferralCode(referralCode)) {
     const errorMsg = "Referral code does not exist";
     helperToast.error(errorMsg);
     return Promise.reject(errorMsg);
@@ -225,7 +226,7 @@ export function useUserReferralCode(
   const referralCodeResult = useMulticall(chainId, "user-referral-code", {
     key: account && referralStorageAddress !== zeroAddress ? [account, localStorageCode] : null,
     request: () => {
-      const localCodeCall = isHash(localStorageCode)
+      const localCodeCall = isReferralCodeHex(localStorageCode)
         ? {
             codeOwners: {
               methodName: "codeOwners",
@@ -269,7 +270,12 @@ export function useUserReferralCode(
       attachedOnChain = true;
       userReferralCode = onChainCode;
       userReferralCodeString = decodeReferralCode(onChainCode);
-    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner) && isHash(localStorageCode)) {
+    } else if (
+      localStorageCode &&
+      localStorageCodeOwner &&
+      !isAddressZero(localStorageCodeOwner) &&
+      isReferralCodeHex(localStorageCode)
+    ) {
       attachedOnChain = false;
       userReferralCode = localStorageCode;
       userReferralCodeString = decodeReferralCode(localStorageCode);
@@ -401,6 +407,10 @@ export function useReferrerDiscountShare(chainId: ContractsChainId, owner: strin
 }
 
 export async function validateReferralCodeExists(referralCode: string, chainId: ContractsChainId) {
+  if (isProtocolReferralCode(referralCode)) {
+    return false;
+  }
+
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);

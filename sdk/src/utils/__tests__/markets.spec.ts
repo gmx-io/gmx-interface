@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
 import { TOKENS } from "configs/tokens";
+import { mockMarketsInfoData, mockTokensData } from "test/mock";
 import {
   getMarketFullName,
   getMarketIndexName,
@@ -19,10 +20,14 @@ import {
   getMarketPnl,
   getOpenInterestUsd,
   getOpenInterestInTokens,
+  getPositiveMarketPnl,
   getPriceForPnl,
+  getMarketInfoWithOpenInterestDelta,
+  getOpenInterestForBalance,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { BASIS_POINTS_DIVISOR, expandDecimals } from "utils/numbers";
+import { convertToUsd } from "utils/tokens";
 import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
@@ -458,6 +463,78 @@ describe("getMarketPnl", () => {
   });
 });
 
+describe("getPositiveMarketPnl", () => {
+  const price = expandDecimals(1000, 18);
+
+  function makeMarket(overrides: Partial<MarketInfo>) {
+    return {
+      indexToken: { decimals: 18, prices: { minPrice: price, maxPrice: price } },
+      ...overrides,
+    } as MarketInfo;
+  }
+
+  it("falls back to net pnl when the per-collateral open interest is missing", () => {
+    const marketInfo = makeMarket({ longInterestUsd: 500n, longInterestInTokens: 1n });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(500n);
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(getMarketPnl(marketInfo, true, true));
+  });
+
+  it("drops the losing collateral bucket for longs", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 6000n,
+      longInterestInTokens: 5n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 3n,
+      longInterestUsdUsingShortToken: 5000n,
+      longInterestInTokensUsingShortToken: 2n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+    expect(getMarketPnl(marketInfo, true, true)).toBe(-1000n);
+  });
+
+  it("drops the losing collateral bucket for shorts", () => {
+    const marketInfo = makeMarket({
+      shortInterestUsd: 6000n,
+      shortInterestInTokens: 5n,
+      shortInterestUsdUsingLongToken: 5000n,
+      shortInterestInTokensUsingLongToken: 2n,
+      shortInterestUsdUsingShortToken: 1000n,
+      shortInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, false, true)).toBe(3000n);
+    expect(getMarketPnl(marketInfo, false, true)).toBe(1000n);
+  });
+
+  it("treats an empty collateral bucket as zero pnl", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 3n,
+      longInterestUsdUsingLongToken: 0n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 1000n,
+      longInterestInTokensUsingShortToken: 3n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(2000n);
+  });
+
+  it("returns zero pnl for a bucket that has usd open interest but no tokens", () => {
+    const marketInfo = makeMarket({
+      longInterestUsd: 1000n,
+      longInterestInTokens: 0n,
+      longInterestUsdUsingLongToken: 1000n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 0n,
+      longInterestInTokensUsingShortToken: 0n,
+    });
+
+    expect(getPositiveMarketPnl(marketInfo, true, true)).toBe(0n);
+  });
+});
+
 describe("getOpenInterestUsd", () => {
   it("returns longInterestUsd for isLong", () => {
     expect(getOpenInterestUsd({ longInterestUsd: 1234n, shortInterestUsd: 9999n } as MarketInfo, true)).toBe(1234n);
@@ -489,5 +566,289 @@ describe("getPriceForPnl", () => {
 
   it("uses maxPrice for short when maximize=false", () => {
     expect(getPriceForPnl({ minPrice: 1000n, maxPrice: 2000n }, false, false)).toBe(2000n);
+  });
+});
+
+describe("getMarketInfoWithOpenInterestDelta", () => {
+  const tokensData = mockTokensData();
+
+  function buildMarket(overrides: Record<string, bigint | boolean | string> = {}) {
+    return mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": {
+        longInterestUsd: expandDecimals(1000, 30),
+        shortInterestUsd: expandDecimals(2000, 30),
+        longInterestInTokens: expandDecimals(1, 18),
+        shortInterestInTokens: expandDecimals(2, 18),
+        ...overrides,
+      },
+    })["ETH-ETH-USDC"];
+  }
+
+  it("returns the market unchanged when there is no delta", () => {
+    const marketInfo = buildMarket();
+
+    expect(
+      getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd: 0n,
+        sizeDeltaInTokens: 0n,
+      })
+    ).toBe(marketInfo);
+  });
+
+  it("shifts only the long side for a long increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      collateralToken: marketInfo.shortToken,
+      isLong: true,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.longInterestUsd).toBe(expandDecimals(1500, 30));
+    expect(next.longInterestInTokens).toBe(expandDecimals(15, 17));
+    expect(next.shortInterestUsd).toBe(marketInfo.shortInterestUsd);
+    expect(next.shortInterestInTokens).toBe(marketInfo.shortInterestInTokens);
+    // the source market must not be mutated, it is shared across selectors
+    expect(marketInfo.longInterestUsd).toBe(expandDecimals(1000, 30));
+  });
+
+  it("shifts only the short side for a short increase", () => {
+    const marketInfo = buildMarket();
+
+    const next = getMarketInfoWithOpenInterestDelta({
+      marketInfo,
+      collateralToken: marketInfo.shortToken,
+      isLong: false,
+      sizeDeltaUsd: expandDecimals(500, 30),
+      sizeDeltaInTokens: expandDecimals(5, 17),
+    });
+
+    expect(next.shortInterestUsd).toBe(expandDecimals(2500, 30));
+    expect(next.shortInterestInTokens).toBe(expandDecimals(25, 17));
+    expect(next.longInterestUsd).toBe(marketInfo.longInterestUsd);
+    expect(next.longInterestInTokens).toBe(marketInfo.longInterestInTokens);
+  });
+
+  it("carries the delta into the open interest used for balance in both modes", () => {
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    const usdMarket = buildMarket({ useOpenInterestInTokensForBalance: false });
+    const usdNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: usdMarket,
+      collateralToken: usdMarket.shortToken,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    expect(getOpenInterestForBalance(usdNext, true) - getOpenInterestForBalance(usdMarket, true)).toBe(sizeDeltaUsd);
+
+    const tokensMarket = buildMarket({ useOpenInterestInTokensForBalance: true });
+    const tokensNext = getMarketInfoWithOpenInterestDelta({
+      marketInfo: tokensMarket,
+      collateralToken: tokensMarket.shortToken,
+      isLong: true,
+      sizeDeltaUsd,
+      sizeDeltaInTokens,
+    });
+
+    const midPrice = (tokensMarket.indexToken.prices.minPrice + tokensMarket.indexToken.prices.maxPrice) / 2n;
+
+    expect(getOpenInterestForBalance(tokensNext, true) - getOpenInterestForBalance(tokensMarket, true)).toBe(
+      convertToUsd(sizeDeltaInTokens, tokensMarket.indexToken.decimals, midPrice)!
+    );
+  });
+
+  describe("per-collateral open interest projection", () => {
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+    const split = {
+      longInterestUsdUsingLongToken: expandDecimals(300, 30),
+      longInterestUsdUsingShortToken: expandDecimals(700, 30),
+      shortInterestUsdUsingLongToken: expandDecimals(1200, 30),
+      shortInterestUsdUsingShortToken: expandDecimals(800, 30),
+      longInterestInTokensUsingLongToken: expandDecimals(3, 17),
+      longInterestInTokensUsingShortToken: expandDecimals(7, 17),
+      shortInterestInTokensUsingLongToken: expandDecimals(12, 17),
+      shortInterestInTokensUsingShortToken: expandDecimals(8, 17),
+    };
+
+    it("moves a long increase with short-token collateral into the short-token leg", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingShortToken).toBe(expandDecimals(1200, 30));
+      expect(next.longInterestInTokensUsingShortToken).toBe(expandDecimals(12, 17));
+      expect(next.longInterestUsdUsingLongToken).toBe(split.longInterestUsdUsingLongToken);
+      expect(next.longInterestInTokensUsingLongToken).toBe(split.longInterestInTokensUsingLongToken);
+      expect(next.longInterestUsd).toBe(next.longInterestUsdUsingLongToken! + next.longInterestUsdUsingShortToken!);
+      expect(next.longInterestInTokens).toBe(
+        next.longInterestInTokensUsingLongToken! + next.longInterestInTokensUsingShortToken!
+      );
+      expect(next.shortInterestUsdUsingLongToken).toBe(split.shortInterestUsdUsingLongToken);
+      expect(next.shortInterestUsdUsingShortToken).toBe(split.shortInterestUsdUsingShortToken);
+    });
+
+    it("moves a long increase with long-token collateral into the long-token leg", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.longToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingLongToken).toBe(expandDecimals(800, 30));
+      expect(next.longInterestInTokensUsingLongToken).toBe(expandDecimals(8, 17));
+      expect(next.longInterestUsdUsingShortToken).toBe(split.longInterestUsdUsingShortToken);
+      expect(next.longInterestInTokensUsingShortToken).toBe(split.longInterestInTokensUsingShortToken);
+      expect(next.longInterestUsd).toBe(next.longInterestUsdUsingLongToken! + next.longInterestUsdUsingShortToken!);
+    });
+
+    it("moves a short increase into the collateral leg of the short side", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.shortInterestUsdUsingShortToken).toBe(expandDecimals(1300, 30));
+      expect(next.shortInterestInTokensUsingShortToken).toBe(expandDecimals(13, 17));
+      expect(next.shortInterestUsdUsingLongToken).toBe(split.shortInterestUsdUsingLongToken);
+      expect(next.shortInterestInTokensUsingLongToken).toBe(split.shortInterestInTokensUsingLongToken);
+      expect(next.shortInterestUsd).toBe(next.shortInterestUsdUsingLongToken! + next.shortInterestUsdUsingShortToken!);
+      expect(next.shortInterestInTokens).toBe(
+        next.shortInterestInTokensUsingLongToken! + next.shortInterestInTokensUsingShortToken!
+      );
+      expect(next.longInterestUsdUsingShortToken).toBe(split.longInterestUsdUsingShortToken);
+    });
+
+    it("keeps the per-collateral pnl split consistent with the projected totals", () => {
+      const marketInfo = buildMarket(split);
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(getPositiveMarketPnl(next, true, false)).toBe(getMarketPnl(next, true, false));
+    });
+
+    it("leaves the per-collateral fields undefined when the market does not carry them", () => {
+      const marketInfo = buildMarket();
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.longInterestUsdUsingShortToken).toBeUndefined();
+      expect(next.longInterestInTokensUsingShortToken).toBeUndefined();
+      expect(next.longInterestUsd).toBe(expandDecimals(1500, 30));
+    });
+  });
+
+  describe("virtual inventory projection", () => {
+    // the contract's `applyDeltaToVirtualInventoryForPositions` no-ops on a zero virtualTokenId
+    const VIRTUAL_INDEX_TOKEN_ID = `0x${"1".repeat(64)}`;
+    const sizeDeltaUsd = expandDecimals(500, 30);
+    const sizeDeltaInTokens = expandDecimals(5, 17);
+
+    it("decreases the net-short virtual inventory for a long increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(-expandDecimals(200, 30));
+      expect(next.virtualInventoryForPositionsInTokens).toBe(marketInfo.virtualInventoryForPositionsInTokens);
+    });
+
+    it("increases the net-short virtual inventory for a short increase on a usd-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: false,
+        virtualInventoryForPositions: expandDecimals(300, 30),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(expandDecimals(800, 30));
+    });
+
+    it("shifts the token-denominated virtual inventory on a token-OI market", () => {
+      const marketInfo = buildMarket({
+        virtualIndexTokenId: VIRTUAL_INDEX_TOKEN_ID,
+        useOpenInterestInTokensForBalance: true,
+        virtualInventoryForPositionsInTokens: expandDecimals(1, 18),
+      });
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositionsInTokens).toBe(expandDecimals(5, 17));
+      expect(next.virtualInventoryForPositions).toBe(marketInfo.virtualInventoryForPositions);
+    });
+
+    it("leaves the virtual inventory untouched when the market has none configured", () => {
+      // the default mock has virtualIndexTokenId = zeroHash and zero inventory
+      const marketInfo = buildMarket();
+
+      const next = getMarketInfoWithOpenInterestDelta({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: true,
+        sizeDeltaUsd,
+        sizeDeltaInTokens,
+      });
+
+      expect(next.virtualInventoryForPositions).toBe(0n);
+      expect(next.virtualInventoryForPositionsInTokens).toBe(0n);
+    });
   });
 });

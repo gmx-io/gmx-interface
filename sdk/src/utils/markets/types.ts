@@ -1,3 +1,4 @@
+import type { GmsolMarketConfig } from "utils/gmsol/types";
 import type { TokenData } from "utils/tokens/types";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
@@ -27,7 +28,8 @@ export type MarketPoolTokens = {
   indexToken: TokenData;
 };
 
-export type MarketInfo = Market &
+export type MarketInfo = GmsolMarketConfig &
+  Market &
   MarketPoolTokens & {
     isDisabled: boolean;
 
@@ -101,6 +103,15 @@ export type MarketInfo = Market &
     longInterestInTokens: bigint;
     shortInterestInTokens: bigint;
 
+    longInterestUsdUsingLongToken?: bigint;
+    longInterestUsdUsingShortToken?: bigint;
+    shortInterestUsdUsingLongToken?: bigint;
+    shortInterestUsdUsingShortToken?: bigint;
+    longInterestInTokensUsingLongToken?: bigint;
+    longInterestInTokensUsingShortToken?: bigint;
+    shortInterestInTokensUsingLongToken?: bigint;
+    shortInterestInTokensUsingShortToken?: bigint;
+
     positionFeeFactorForBalanceWasImproved: bigint;
     positionFeeFactorForBalanceWasNotImproved: bigint;
     positionImpactFactorPositive: bigint;
@@ -158,6 +169,14 @@ export const MARKET_VALUES_KEYS = [
   "shortInterestUsd",
   "longInterestInTokens",
   "shortInterestInTokens",
+  "longInterestUsdUsingLongToken",
+  "longInterestUsdUsingShortToken",
+  "shortInterestUsdUsingLongToken",
+  "shortInterestUsdUsingShortToken",
+  "longInterestInTokensUsingLongToken",
+  "longInterestInTokensUsingShortToken",
+  "shortInterestInTokensUsingLongToken",
+  "shortInterestInTokensUsingShortToken",
   "longPoolAmount",
   "shortPoolAmount",
   "poolValueMin",
@@ -186,6 +205,7 @@ export type MarketValues = Pick<MarketInfo, (typeof MARKET_VALUES_KEYS)[number]>
  */
 export type MarketConfig = Pick<
   MarketInfo,
+  | keyof GmsolMarketConfig
   | "isDisabled"
   | "maxLongPoolUsdForDeposit"
   | "maxShortPoolUsdForDeposit"

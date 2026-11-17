@@ -1,18 +1,39 @@
+import type { Provider } from "ethers";
 import { zeroHash } from "viem";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET } from "config/chains";
+import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
+import { createMockSubaccount } from "domain/testUtils/mockSubaccount";
+import {
+  MOCK_ACCOUNT_PRIVATE_KEY,
+  MockChain,
+  SEEDED_SUBACCOUNT_ADDRESS,
+  type SubaccountOnchainState,
+} from "domain/testUtils/rpc/mockChain";
+import type { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 import { ZERO_DATA } from "sdk/utils/hash";
-import type { SignedSubaccountApproval, SubaccountOnchainData } from "sdk/utils/subaccount";
+import type { SignedSubaccountApproval, Subaccount, SubaccountOnchainData } from "sdk/utils/subaccount";
+import { periodToSeconds } from "sdk/utils/time";
 
 import {
   getActualApproval,
+  getInitialSubaccountApproval,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountNonceExpired,
   getSubaccountApprovalContextSrcChainId,
+  signUpdatedSubaccountSettings,
 } from "./utils";
+
+vi.mock("lib/wallets/signing", () => ({
+  signTypedData: async () => `0x${"11".repeat(65)}`,
+}));
+
+vi.mock("lib/wallets/walletConfig", () => ({
+  getPublicClientWithRpc: () => ({ readContract: async () => 0n }),
+}));
 
 const SUBACCOUNT_ADDRESS = "0x0000000000000000000000000000000000000001";
 
@@ -31,6 +52,7 @@ function createOnchainData(overrides: Partial<SubaccountOnchainData> = {}): Suba
     approvalNonce: APPROVAL_NONCE,
     multichainApprovalNonce: MULTICHAIN_APPROVAL_NONCE,
     integrationId: zeroHash,
+    revocationCounter: 0n,
     ...overrides,
   };
 }
@@ -48,6 +70,8 @@ function createApproval(overrides: Partial<SignedSubaccountApproval> = {}): Sign
     signature: "0x01",
     signedAt: 1000,
     integrationId: zeroHash,
+    revocationCounter: 0n,
+    eip6492SignatureWrapperHash: zeroHash,
     subaccountRouterAddress: gelatoRouterAddress,
     signatureChainId: ARBITRUM,
     ...overrides,
@@ -341,5 +365,163 @@ describe("getActualApproval", () => {
     });
 
     expect(actual.signature).toBe(ZERO_DATA);
+  });
+});
+
+const NOW = 1_800_000_000;
+const DAY = periodToSeconds(1, "1d");
+
+function createSigner(account: string): WalletSigner {
+  return {
+    address: account,
+    provider: { getNetwork: async () => ({ chainId: BigInt(ARBITRUM) }) },
+  } as unknown as WalletSigner;
+}
+
+function createActiveSubaccount(onchainData: Partial<SubaccountOnchainData>): Subaccount {
+  const subaccount = createMockSubaccount();
+
+  return { ...subaccount, onchainData: { ...subaccount.onchainData, ...onchainData } };
+}
+
+describe("One-Click session limits", () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"], now: NOW * 1000 });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  describe("getInitialSubaccountApproval", () => {
+    function activate(
+      onchain: Partial<SubaccountOnchainState> = {},
+      limits: { remainingActions?: bigint; remainingSeconds?: bigint } = {}
+    ) {
+      const chain = new MockChain({
+        walletPrivateKey: MOCK_ACCOUNT_PRIVATE_KEY,
+        subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+        onchain,
+      });
+      const provider = {
+        call: (tx: { to: string; data: string }) => chain.handle(ARBITRUM, { method: "eth_call", params: [tx] }),
+      } as unknown as Provider;
+
+      return getInitialSubaccountApproval({
+        chainId: ARBITRUM,
+        signer: createSigner(chain.account),
+        provider,
+        subaccountAddress: SEEDED_SUBACCOUNT_ADDRESS,
+        isGmxAccount: false,
+        ...limits,
+      });
+    }
+
+    it("signs a 30-day, 400-action session for a new subaccount", async () => {
+      const approval = await activate();
+
+      expect(approval.shouldAdd).toBe(true);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 30 * DAY));
+      expect(approval.deadline).toBe(BigInt(NOW + 30 * DAY));
+      expect(approval.maxAllowedCount).toBe(400n);
+    });
+
+    it("keeps a later on-chain expiry and allows 400 more actions for an active subaccount", async () => {
+      const approval = await activate({
+        active: true,
+        currentActionsCount: 25n,
+        maxAllowedCount: 90n,
+        expiresAt: BigInt(NOW + 60 * DAY),
+      });
+
+      expect(approval.shouldAdd).toBe(false);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 60 * DAY));
+      expect(approval.maxAllowedCount).toBe(425n);
+    });
+
+    it("signs the limits saved before activation even over a longer on-chain expiry", async () => {
+      const approval = await activate(
+        { currentActionsCount: 12n, maxAllowedCount: 90n, expiresAt: BigInt(NOW + 30 * DAY) },
+        { remainingActions: 2n, remainingSeconds: BigInt(DAY) }
+      );
+
+      expect(approval.maxAllowedCount).toBe(14n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + DAY));
+    });
+
+    it("rejects zero or negative limits", async () => {
+      for (const [remainingActions, remainingSeconds] of [
+        [0n, BigInt(DAY)],
+        [-1n, BigInt(DAY)],
+        [2n, 0n],
+        [2n, -1n],
+      ]) {
+        await expect(activate({}, { remainingActions, remainingSeconds })).rejects.toThrow("positive");
+      }
+    });
+  });
+
+  describe("signUpdatedSubaccountSettings", () => {
+    function signUpdate(
+      subaccount: Subaccount,
+      next: { nextRemainigActions: bigint | undefined; nextRemainingSeconds: bigint | undefined }
+    ) {
+      return signUpdatedSubaccountSettings({
+        chainId: ARBITRUM,
+        signer: createSigner(SUBACCOUNT_ADDRESS),
+        provider: {} as Provider,
+        subaccount,
+        isGmxAccount: false,
+        ...next,
+      });
+    }
+
+    it("applies the limits set in advanced settings", async () => {
+      const subaccount = createActiveSubaccount({
+        currentActionsCount: 10n,
+        maxAllowedCount: 410n,
+        expiresAt: BigInt(NOW + 29 * DAY),
+      });
+
+      const approval = await signUpdate(subaccount, {
+        nextRemainigActions: 25n,
+        nextRemainingSeconds: BigInt(3 * DAY),
+      });
+
+      expect(approval.maxAllowedCount).toBe(35n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 3 * DAY));
+    });
+
+    it("renews a session that ran out of actions for 30 days and 400 actions", async () => {
+      const subaccount = createActiveSubaccount({
+        currentActionsCount: 90n,
+        maxAllowedCount: 90n,
+        expiresAt: BigInt(NOW + 2 * DAY),
+      });
+
+      const approval = await signUpdate(subaccount, {
+        nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+        nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+      });
+
+      expect(approval.maxAllowedCount).toBe(490n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 30 * DAY));
+    });
+
+    it("renews an expired session for 30 days from now", async () => {
+      const subaccount = createActiveSubaccount({
+        currentActionsCount: 40n,
+        maxAllowedCount: 400n,
+        expiresAt: BigInt(NOW - 10 * DAY),
+      });
+
+      const approval = await signUpdate(subaccount, {
+        nextRemainigActions: BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
+        nextRemainingSeconds: BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION),
+      });
+
+      expect(approval.maxAllowedCount).toBe(440n);
+      expect(approval.expiresAt).toBe(BigInt(NOW + 30 * DAY));
+    });
   });
 });

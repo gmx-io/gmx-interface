@@ -1,5 +1,5 @@
 import { ClaimAction } from "domain/synthetics/claimHistory";
-import { BN_ZERO, formatUsd } from "lib/numbers";
+import { BN_ZERO, formatUsdParts } from "lib/numbers";
 
 export function getFormattedTotalClaimAction(claimAction: ClaimAction) {
   let totalUsd = BN_ZERO;
@@ -12,6 +12,5 @@ export function getFormattedTotalClaimAction(claimAction: ClaimAction) {
     totalUsd = totalUsd + priceUsd;
   }
 
-  const formattedTotalUsd = formatUsd(totalUsd);
-  return formattedTotalUsd;
+  return formatUsdParts(totalUsd)!;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from "viem";
+import { Address, ContractFunctionReturnType } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -7,7 +7,7 @@ import { accountOrderListKey } from "config/dataStore";
 import { useIsApiHealthy } from "domain/api/apiHealthTracker";
 import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
-import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
+import { OrderTypeFilterValue, getIsOrderMatchingTypeFilters } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { useApiOrdersRequest } from "domain/synthetics/orders/useApiOrdersRequest";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -20,6 +20,7 @@ import { EMPTY_ARRAY } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { getAddressKey, isSameAddress, normalizeAddress } from "sdk/utils/address";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
@@ -57,49 +58,7 @@ export function useOrders(
     marketsInfoData?: MarketsInfoData;
   }
 ): OrdersResult {
-  const {
-    nonSwapRelevantDefinedFiltersLowercased,
-    hasNonSwapRelevantDefinedMarkets,
-    pureDirectionFilters,
-    hasPureDirectionFilters,
-    swapRelevantDefinedMarketsLowercased,
-    hasSwapRelevantDefinedMarkets,
-  } = useMemo(() => {
-    const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
-      .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
-      .map((filter) => ({
-        marketAddress: filter.marketAddress.toLowerCase() as Address,
-        direction: filter.direction,
-        collateralAddress: filter.collateralAddress?.toLowerCase() as Address,
-      }));
-
-    const hasNonSwapRelevantDefinedMarkets = nonSwapRelevantDefinedFiltersLowercased.length > 0;
-
-    const pureDirectionFilters = marketsDirectionsFilter
-      .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
-      .map((filter) => filter.direction);
-    const hasPureDirectionFilters = pureDirectionFilters.length > 0;
-
-    const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
-      .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
-      .map((filter) => filter.marketAddress.toLowerCase() as Address);
-
-    const hasSwapRelevantDefinedMarkets = swapRelevantDefinedMarketsLowercased.length > 0;
-
-    return {
-      nonSwapRelevantDefinedFiltersLowercased,
-      hasNonSwapRelevantDefinedMarkets,
-      pureDirectionFilters,
-      hasPureDirectionFilters,
-      swapRelevantDefinedMarketsLowercased,
-      hasSwapRelevantDefinedMarkets,
-    };
-  }, [marketsDirectionsFilter]);
-
-  const key = useMemo(
-    () => (!account ? null : ([account, marketsDirectionsFilter, orderTypesFilter] as const)),
-    [account, marketsDirectionsFilter, orderTypesFilter]
-  );
+  const key = useMemo(() => (!account ? null : ([account] as const)), [account]);
 
   // Stale markets ⇒ gmx-api unhealthy ⇒ orders fall back to RPC globally too.
   const isApiHealthy = useIsApiHealthy(chainId);
@@ -162,42 +121,19 @@ export function useOrders(
       return undefined;
     }
 
-    const filteredOrders = orders.filter((order) => {
-      if (isMarketOrderType(order.orderType)) {
-        const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
-        if (!is15SecondsPassedSinceOrderCreation) {
-          return false;
+    const filteredOrders = filterOrdersByUiFilters(
+      orders.filter((order) => {
+        if (isMarketOrderType(order.orderType)) {
+          const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
+          if (!is15SecondsPassedSinceOrderCreation) {
+            return false;
+          }
         }
-      }
 
-      if (!isVisibleOrder(order.orderType)) {
-        return false;
-      }
-
-      const matchByMarketResult = matchByMarket({
-        order,
-        nonSwapRelevantDefinedFiltersLowercased,
-        hasNonSwapRelevantDefinedMarkets,
-        pureDirectionFilters,
-        hasPureDirectionFilters,
-        swapRelevantDefinedMarketsLowercased,
-        hasSwapRelevantDefinedMarkets,
-        chainId,
-        marketsInfoData,
-      });
-
-      let matchByOrderType = true;
-
-      if (orderTypesFilter.length > 0) {
-        const { type, groupType } = convertOrderTypeFilterValues(orderTypesFilter);
-
-        const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
-        const orderGroupType = twapParams ? "twap" : "none";
-        matchByOrderType = type.includes(order.orderType) && groupType.includes(orderGroupType);
-      }
-
-      return matchByMarketResult && matchByOrderType;
-    });
+        return isVisibleOrder(order.orderType);
+      }),
+      { chainId, marketsDirectionsFilter, orderTypesFilter, marketsInfoData }
+    );
 
     return filteredOrders.reduce((acc, order) => {
       acc[order.key] = order;
@@ -208,14 +144,9 @@ export function useOrders(
     shouldUseApiOrdersData,
     rpcData?.orders,
     chainId,
-    hasNonSwapRelevantDefinedMarkets,
-    hasPureDirectionFilters,
-    hasSwapRelevantDefinedMarkets,
+    marketsDirectionsFilter,
     marketsInfoData,
-    nonSwapRelevantDefinedFiltersLowercased,
     orderTypesFilter,
-    pureDirectionFilters,
-    swapRelevantDefinedMarketsLowercased,
   ]);
 
   const count = shouldUseApiOrdersData && apiOrdersData ? Object.keys(apiOrdersData).length : rpcData?.count;
@@ -226,7 +157,7 @@ export function useOrders(
   };
 }
 
-function convertApiOrderToOrder({
+export function convertApiOrderToOrder({
   triggerPrice,
   acceptablePrice,
   cancellationReceiver: _cancellationReceiver,
@@ -242,9 +173,9 @@ function convertApiOrderToOrder({
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
     contractTriggerPrice: triggerPrice,
     contractAcceptablePrice: acceptablePrice,
-    marketAddress: getAddress(rest.marketAddress),
-    initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
-    swapPath: rest.swapPath.map((addr) => getAddress(addr)),
+    marketAddress: normalizeAddress(rest.marketAddress),
+    initialCollateralTokenAddress: normalizeAddress(rest.initialCollateralTokenAddress),
+    swapPath: rest.swapPath.map((addr) => normalizeAddress(addr)),
     data: dataList,
   };
 }
@@ -330,6 +261,81 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
   };
 }
 
+// Market and order-type filters for the orders list. Runs on the orders already in state, so Solana
+// and EVM lists share one source with the tab count.
+export function filterOrdersByUiFilters<T extends Order>(
+  orders: T[],
+  {
+    chainId,
+    marketsDirectionsFilter,
+    orderTypesFilter,
+    marketsInfoData,
+  }: {
+    chainId: number;
+    marketsDirectionsFilter: MarketFilterLongShortItemData[];
+    orderTypesFilter: OrderTypeFilterValue[];
+    marketsInfoData?: MarketsInfoData;
+  }
+): T[] {
+  const {
+    nonSwapRelevantDefinedFiltersLowercased,
+    hasNonSwapRelevantDefinedMarkets,
+    pureDirectionFilters,
+    hasPureDirectionFilters,
+    swapRelevantDefinedMarketsLowercased,
+    hasSwapRelevantDefinedMarkets,
+  } = prepareMarketDirectionFilters(marketsDirectionsFilter);
+  const isOrderMatchingTypeFilters = getIsOrderMatchingTypeFilters(orderTypesFilter);
+
+  return orders.filter((order) => {
+    const matchesMarket = matchByMarket({
+      order,
+      nonSwapRelevantDefinedFiltersLowercased,
+      hasNonSwapRelevantDefinedMarkets,
+      pureDirectionFilters,
+      hasPureDirectionFilters,
+      swapRelevantDefinedMarketsLowercased,
+      hasSwapRelevantDefinedMarkets,
+      chainId,
+      marketsInfoData,
+    });
+
+    if (!matchesMarket || orderTypesFilter.length === 0) {
+      return matchesMarket;
+    }
+
+    const twapParams = decodeOrderTwapParams(order.data, order.uiFeeReceiver);
+    return isOrderMatchingTypeFilters(order.orderType, twapParams ? "twap" : "none");
+  });
+}
+
+function prepareMarketDirectionFilters(marketsDirectionsFilter: MarketFilterLongShortItemData[]) {
+  const nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[] = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "swap" && filter.marketAddress !== "any")
+    .map((filter) => ({
+      marketAddress: getAddressKey(filter.marketAddress) as Address,
+      direction: filter.direction,
+      collateralAddress: filter.collateralAddress ? (getAddressKey(filter.collateralAddress) as Address) : undefined,
+    }));
+
+  const pureDirectionFilters = marketsDirectionsFilter
+    .filter((filter) => filter.direction !== "any" && filter.marketAddress === "any")
+    .map((filter) => filter.direction);
+
+  const swapRelevantDefinedMarketsLowercased = marketsDirectionsFilter
+    .filter((filter) => (filter.direction === "any" || filter.direction === "swap") && filter.marketAddress !== "any")
+    .map((filter) => getAddressKey(filter.marketAddress) as Address);
+
+  return {
+    nonSwapRelevantDefinedFiltersLowercased,
+    hasNonSwapRelevantDefinedMarkets: nonSwapRelevantDefinedFiltersLowercased.length > 0,
+    pureDirectionFilters,
+    hasPureDirectionFilters: pureDirectionFilters.length > 0,
+    swapRelevantDefinedMarketsLowercased,
+    hasSwapRelevantDefinedMarkets: swapRelevantDefinedMarketsLowercased.length > 0,
+  };
+}
+
 function matchByMarket({
   order,
   nonSwapRelevantDefinedFiltersLowercased,
@@ -373,17 +379,17 @@ function matchByMarket({
 
   if (isSwapOrder) {
     const sourceMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(0)!.toLowerCase() as Address
+      getAddressKey(order.swapPath.at(0)!) as Address
     );
 
     const destinationMarketInSwapPath = swapRelevantDefinedMarketsLowercased.includes(
-      order.swapPath.at(-1)!.toLowerCase() as Address
+      getAddressKey(order.swapPath.at(-1)!) as Address
     );
 
     return sourceMarketInSwapPath || destinationMarketInSwapPath;
   } else if (!isSwapOrder) {
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
-      const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
+      const marketMatch = filter.marketAddress === "any" || filter.marketAddress === getAddressKey(order.marketAddress);
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
       const initialCollateralAddress = order.initialCollateralTokenAddress;
 
@@ -405,11 +411,10 @@ function matchByMarket({
             wrappedNativeTokenAddress: wrappedToken.address,
           });
 
-          collateralMatch =
-            outTokenAddress !== undefined && isAddressEqual(outTokenAddress as Address, filter.collateralAddress);
+          collateralMatch = outTokenAddress !== undefined && isSameAddress(outTokenAddress, filter.collateralAddress);
         }
       } else if (isTriggerDecreaseOrderType(order.orderType)) {
-        collateralMatch = isAddressEqual(order.initialCollateralTokenAddress, filter.collateralAddress);
+        collateralMatch = isSameAddress(order.initialCollateralTokenAddress, filter.collateralAddress);
       }
 
       return marketMatch && directionMath && collateralMatch;

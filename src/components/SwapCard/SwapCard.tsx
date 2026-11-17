@@ -3,11 +3,13 @@ import { useMemo } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import { TokenData, TokensRatio, convertToTokenAmount, getTokensRatioByPrice } from "domain/synthetics/tokens";
-import { calculateDisplayDecimals, formatAmount, formatUsd, formatUsdPrice } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
@@ -50,39 +52,39 @@ export function SwapCard(p: Props) {
       <div className="flex flex-col gap-14">
         <SyntheticsInfoRow
           label={t`${fromToken?.symbol} price`}
-          value={formatUsdPrice(fromToken?.prices?.minPrice) || "..."}
+          value={<UsdPriceValue price={fromToken?.prices?.minPrice} fallback="..." />}
           valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
           label={t`${toToken?.symbol} price`}
-          value={formatUsdPrice(toToken?.prices?.maxPrice) || "..."}
+          value={<UsdPriceValue price={toToken?.prices?.maxPrice} fallback="..." />}
           valueClassName="numbers"
         />
 
         <SyntheticsInfoRow
           label={t`Available liquidity`}
           value={
-            <Tooltip
-              handle={formatUsd(maxLiquidityUsd) || "..."}
+            <StandardTooltip
+              handle={<UsdValue usd={maxLiquidityUsd} fallback="..." />}
               handleClassName="numbers"
-              position="left-start"
+              position="bottom-end"
               content={
-                <StatsTooltipRow
-                  textClassName="al-swap"
-                  label={t`Max ${toToken?.symbol} out`}
-                  value={
-                    <AmountWithUsdBalance
-                      multiline
-                      amount={maxLiquidityAmount}
-                      decimals={toToken?.decimals ?? 0}
-                      symbol={toToken?.symbol}
-                      usd={maxLiquidityUsd}
-                      isStable={toToken?.isStable}
-                    />
-                  }
-                  showDollar={false}
-                />
+                <TooltipRows>
+                  <TooltipRow
+                    label={t`Max ${toToken?.symbol} out`}
+                    value={
+                      <AmountWithUsdBalance
+                        multiline
+                        amount={maxLiquidityAmount}
+                        decimals={toToken?.decimals ?? 0}
+                        symbol={toToken?.symbol}
+                        usd={maxLiquidityUsd}
+                        isStable={toToken?.isStable}
+                      />
+                    }
+                  />
+                </TooltipRows>
               }
             />
           }

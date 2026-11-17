@@ -2,10 +2,12 @@ import cx from "classnames";
 import React, { PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 
 import Portal from "components/Portal/Portal";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 
 import CloseIcon from "img/ic_close.svg?react";
 
@@ -42,6 +44,8 @@ function MobileSlideModal({
   fitContent?: boolean;
   hideHeaderBorder?: boolean;
 }>) {
+  useBlockAutoReload(isOpen);
+
   const curtainStyle = useMemo(
     () =>
       fitContent
@@ -56,6 +60,7 @@ function MobileSlideModal({
     [fitContent]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
+  const animationRef = useRef<Animation | null>(null);
 
   const isPointerDownRef = useRef(false);
   const isDraggingRef = useRef(false);
@@ -73,25 +78,23 @@ function MobileSlideModal({
   const [isHideTransitionFinished, setIsHideTransitionFinished] = useState(!isOpen);
 
   const handleAnimate = useCallback((newIsOpen: boolean) => {
-    if (!curtainRef.current) return;
+    const curtain = curtainRef.current;
+    if (!curtain) return;
 
-    const oldTransition = curtainRef.current.style.transition;
-    const animation = curtainRef.current.animate(
-      {
-        transform: `translateY(${newIsOpen ? `-100%` : 0})`,
-      },
-      {
-        duration: 150,
-        easing: "ease-out",
-        fill: "both",
-      }
-    );
+    const from = getComputedStyle(curtain).transform;
+    animationRef.current?.cancel();
+    const transform = `translateY(${newIsOpen ? "-100%" : 0})`;
+    const animation = curtain.animate([{ transform: from }, { transform }], {
+      duration: 150,
+      easing: "ease-out",
+      fill: "both",
+    });
+    animationRef.current = animation;
     animation.addEventListener("finish", () => {
-      animation.commitStyles();
+      if (animationRef.current !== animation) return;
+      curtain.style.transform = transform;
       animation.cancel();
-      if (curtainRef.current) {
-        curtainRef.current.style.transition = oldTransition;
-      }
+      animationRef.current = null;
     });
   }, []);
 
@@ -218,6 +221,8 @@ function MobileSlideModal({
 
   const setCurtainRef = useCallback(
     (el: HTMLDivElement | null) => {
+      animationRef.current?.cancel();
+      animationRef.current = null;
       curtainRef.current = el;
       if (el) {
         handleAnimate(true);
@@ -235,6 +240,15 @@ function MobileSlideModal({
   const stopPropagation = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
   }, []);
+
+  useEffect(
+    function closeTooltipsOnVisible() {
+      if (isOpen) {
+        closeAllTooltips();
+      }
+    },
+    [isOpen]
+  );
 
   useEffect(
     function blurOutsideOnVisible() {
@@ -268,7 +282,7 @@ function MobileSlideModal({
           data-qa={qa}
           ref={setCurtainRef}
           className={cx(
-            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900",
+            "text-body-medium fixed left-0 right-0 z-[10000] flex flex-col rounded-t-4 border-t border-slate-700 bg-slate-900 pb-[var(--safe-area-inset-bottom)] pl-[var(--safe-area-inset-left)] pr-[var(--safe-area-inset-right)]",
             className
           )}
           style={curtainStyle}

@@ -2,8 +2,11 @@ import { erc20Abi } from "viem";
 
 import AbstractSubaccountApprovalNonceable from "./AbstractSubaccountApprovalNonceable";
 import ArbitrumNodeInterface from "./ArbitrumNodeInterface";
+import ArbSys from "./ArbSys";
+import ChainlinkPriceFeedProvider from "./ChainlinkPriceFeedProvider";
 import ClaimHandler from "./ClaimHandler";
 import CustomErrors from "./CustomErrors";
+import CustomErrorsV2_2_1 from "./CustomErrorsV2_2_1";
 import DataStore from "./DataStore";
 import ERC20PermitInterface from "./ERC20PermitInterface";
 import ERC721 from "./ERC721";
@@ -26,12 +29,14 @@ import MultichainOrderRouter from "./MultichainOrderRouter";
 import MultichainSubaccountRouter from "./MultichainSubaccountRouter";
 import MultichainTransferRouter from "./MultichainTransferRouter";
 import MultichainVault from "./MultichainVault";
+import Pausable from "./Pausable";
 import Reader from "./Reader";
 import ReaderV2 from "./ReaderV2";
 import ReferralStorage from "./ReferralStorage";
 import RelayParams from "./RelayParams";
 import RewardReader from "./RewardReader";
 import RewardRouter from "./RewardRouter";
+import RewardRouterV3 from "./RewardRouterV3";
 import RewardTracker from "./RewardTracker";
 import SimulationRouter from "./SimulationRouter";
 import SmartAccount from "./SmartAccount";
@@ -41,6 +46,7 @@ import SyntheticsReader from "./SyntheticsReader";
 import SyntheticsRouter from "./SyntheticsRouter";
 import Timelock from "./Timelock";
 import Token from "./Token";
+import TransitStation from "./TransitStation";
 import Treasury from "./Treasury";
 import UniPool from "./UniPool";
 import UniswapV2 from "./UniswapV2";
@@ -58,8 +64,10 @@ import WETH from "./WETH";
 export const abis = {
   AbstractSubaccountApprovalNonceable,
   ArbitrumNodeInterface,
+  ArbSys,
+  ChainlinkPriceFeedProvider,
   ClaimHandler,
-  CustomErrors,
+  CustomErrors: [...CustomErrors, ...CustomErrorsV2_2_1],
   DataStore,
   ERC20: erc20Abi,
   ERC20PermitInterface,
@@ -82,10 +90,12 @@ export const abis = {
   MultichainSubaccountRouter,
   MultichainTransferRouter,
   MultichainVault,
+  Pausable,
   ReferralStorage,
   RelayParams,
   RewardReader,
   RewardRouter,
+  RewardRouterV3,
   RewardTracker,
   SimulationRouter,
   SmartAccount,
@@ -95,6 +105,7 @@ export const abis = {
   SyntheticsRouter,
   Timelock,
   Token,
+  TransitStation,
   Reader,
   ReaderV2,
   Treasury,

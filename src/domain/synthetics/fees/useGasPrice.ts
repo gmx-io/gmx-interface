@@ -1,16 +1,22 @@
 import useSWR from "swr";
 
-import { ContractsChainId, getGasPricePremium } from "config/chains";
+import { ContractsChainId, getExecutionFeeConfig } from "config/chains";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getProvider } from "lib/rpc";
 import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
 
-import { estimateExecutionGasPrice, getExecutionFeeBufferBps, getMaxPriorityFeePerGas } from "./utils/executionFee";
+import {
+  estimateExecutionGasPrice,
+  getExecutionFeeBufferBps,
+  getExecutionFeeGasPricePremium,
+  getMaxPriorityFeePerGas,
+} from "./utils/executionFee";
 
 export function useGasPrice(chainId: number | undefined) {
   const settings = useSettings();
 
-  const queryCondition = chainId !== undefined;
+  const queryCondition = chainId !== undefined && !getIsSolanaNetworkSelected();
   const { data: gasPrice } = useSWR<bigint | undefined>(
     queryCondition ? ["gasPrice", chainId, settings.executionFeeBufferBps] : null,
     {
@@ -29,7 +35,9 @@ export function useGasPrice(chainId: number | undefined) {
           }
 
           try {
-            const feeData = await provider.getFeeData();
+            const feeData = getExecutionFeeConfig(chainId as ContractsChainId)?.shouldUseMaxPriorityFeePerGas
+              ? await provider.getFeeData()
+              : { gasPrice: BigInt(await provider.send("eth_gasPrice", [])), maxPriorityFeePerGas: undefined };
 
             const bufferBps =
               (settings.executionFeeBufferBps ?? 0) +
@@ -39,7 +47,7 @@ export function useGasPrice(chainId: number | undefined) {
               rawGasPrice: feeData.gasPrice ?? 0n,
               maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
               bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
-              premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
+              premium: getExecutionFeeGasPricePremium(chainId, false),
             });
 
             resolve(gasPrice);

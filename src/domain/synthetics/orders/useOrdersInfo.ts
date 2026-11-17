@@ -21,6 +21,8 @@ export type AggregatedOrdersDataResult = {
   ordersInfoData?: OrdersInfoData;
   count?: number;
   isLoading: boolean;
+  // Set when the Solana orders read failed. Cached orders may still be present; they are not a confirmed fresh read.
+  error?: Error;
 };
 
 export function useOrdersInfoRequest(
@@ -151,6 +153,8 @@ const createOrderInfo = ({
     if (twapOrderInfo && isTwapPositionOrder(twapOrderInfo) && isPositionOrder(orderInfo)) {
       twapOrderInfo.orders.push(orderInfo);
     }
+
+    twapOrderInfo.isFrozen = twapOrderInfo.isFrozen || orderInfo.isFrozen;
 
     return twapOrderInfo;
   }

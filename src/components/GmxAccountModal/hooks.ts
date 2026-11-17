@@ -1,12 +1,12 @@
-import { getEmbeddedConnectedWallet, useWallets } from "@privy-io/react-auth";
 import { useCallback, useMemo } from "react";
 import useSWRSubscription, { SWRSubscription } from "swr/subscription";
-import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
+import { ContractsChainId, getChainName, isSolanaNetwork, SettlementChainId, SourceChainId } from "config/chains";
 import { isGmxAccountHoldableToken } from "config/markets";
 import {
+  type AccountModalMode,
+  getAccountModalMode,
   getMappedTokenId,
   MULTI_CHAIN_PLATFORM_TOKENS_MAP,
   MULTI_CHAIN_TOKEN_MAPPING,
@@ -271,11 +271,10 @@ export function useMultichainMarketTokensBalancesRequest({
   isLoading: boolean;
 } {
   const platformTokens = MULTI_CHAIN_PLATFORM_TOKENS_MAP[chainId as SettlementChainId] as string[] | undefined;
+  const isSubscribed = Boolean(account && platformTokens?.length && enabled);
 
   const { data: balancesResult } = useSWRSubscription(
-    account && platformTokens?.length && enabled
-      ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined]
-      : null,
+    isSubscribed && account ? ["multichain-market-tokens-balances", chainId, account, platformTokens, undefined] : null,
     // TODO MLTCH optimistically update useSourceChainTokensDataRequest
     subscribeMultichainTokenBalances
   );
@@ -316,7 +315,7 @@ export function useMultichainMarketTokensBalancesRequest({
 
   return {
     tokenBalances: balances,
-    isLoading: balancesResult?.isLoading ?? true,
+    isLoading: isSubscribed ? balancesResult?.isLoading ?? true : false,
   };
 }
 
@@ -477,27 +476,24 @@ export function useGmxAccountDepositEligibility(): {
   }, [chainId, tokenChainDataArray, tokensData, isBalanceDataLoading, isWalletBalancesLoaded]);
 }
 
-export function useIsActiveAccountEmbeddedWallet(): boolean {
-  const { address: account } = useAccount();
-  const { wallets } = useWallets();
-
-  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-
-  return Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
-}
-
 export function useOpenWalletReceive(): (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => void {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
   const [, setWalletReceiveViewChain] = useGmxAccountWalletReceiveViewChain();
   const [, setWalletReceiveViewBackTo] = useGmxAccountWalletReceiveViewBackTo();
-  const isEmbeddedWallet = useIsActiveAccountEmbeddedWallet();
 
   return useCallback(
     (opts?: { chain?: SourceChainId; backTo?: GmxAccountModalView }) => {
       setWalletReceiveViewChain(opts?.chain);
       setWalletReceiveViewBackTo(opts?.backTo);
-      setIsVisibleOrView(isEmbeddedWallet ? "walletReceiveOptions" : "walletReceive");
+      setIsVisibleOrView("walletReceiveOptions");
     },
-    [isEmbeddedWallet, setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
+    [setIsVisibleOrView, setWalletReceiveViewBackTo, setWalletReceiveViewChain]
   );
+}
+
+// Solana has no GMX Account yet, so its modal is wallet-only.
+export function useAccountModalMode(): AccountModalMode {
+  const { chainId, srcChainId, networkId } = useChainId();
+
+  return isSolanaNetwork(networkId) ? "walletOnly" : getAccountModalMode(chainId, srcChainId);
 }

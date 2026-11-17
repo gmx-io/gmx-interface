@@ -5,9 +5,9 @@ import { zeroAddress } from "viem";
 import { getContract } from "config/contracts";
 import { Token } from "domain/tokens";
 import { callContract } from "lib/contracts";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { ContractsChainId } from "sdk/configs/chains";
-import { OrderType } from "sdk/utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "sdk/utils/orders/types";
 import {
   buildUpdateOrderMulticall,
   buildUpdateOrderPayload,
@@ -22,6 +22,7 @@ export type SetAutoCancelOrdersParams = {
   acceptablePrice: bigint;
   minOutputAmount: bigint;
   orderType: OrderType;
+  decreasePositionSwapType: DecreasePositionSwapType;
   executionFee?: bigint;
 };
 
@@ -37,7 +38,7 @@ export function setAutoCancelOrdersTxn(
   ps: SetAutoCancelOrdersParams[],
   { updateOrdersCount, totalUpdatableOrdersCount }: SetAutoCancelOrdersMeta
 ): Promise<void> {
-  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const router = new ethers.Contract(getContract(chainId, "ExchangeRouter"), getAbi(chainId, "ExchangeRouter"), signer);
 
   const encodedPayload = ps
     .map((p) => {
@@ -50,6 +51,7 @@ export function setAutoCancelOrdersTxn(
         executionFee,
         indexToken,
         orderType,
+        decreasePositionSwapType,
       } = p;
 
       const { multicall } = buildUpdateOrderMulticall(
@@ -63,12 +65,13 @@ export function setAutoCancelOrdersTxn(
           orderType,
           indexTokenAddress: indexToken?.address ?? zeroAddress,
           validFromTime: 0n,
+          decreasePositionSwapType,
           executionFeeTopUp: executionFee ?? 0n,
           autoCancel: true,
         })
       );
 
-      const { encodedMulticall } = encodeExchangeRouterMulticall(multicall);
+      const { encodedMulticall } = encodeExchangeRouterMulticall(chainId, multicall);
 
       return encodedMulticall;
     })

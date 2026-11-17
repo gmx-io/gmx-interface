@@ -7,6 +7,12 @@
  * - allowedContracts
  * - Reader -> SyntheticsReader
  * - Router -> SyntheticsRouter
+ * - Errors -> CustomErrors (read from compiled artifacts, not from deployments)
+ *
+ * CustomErrors for each contracts version:
+ *   1. In gmx-synthetics-private, check out the 2.2.1 contracts and run `npx hardhat compile`.
+ *   2. Run this script, then rename sdk/src/abis/CustomErrors.ts to CustomErrorsV2_2_1.ts.
+ *   3. Check out the 2.2c contracts, compile them and run this script again to get CustomErrors.ts.
  *
  * Usage:
  *   yarn tsx sdk/scripts/generate-synthetics-abis.ts <gmx-synthetics-private-path> --chain-name=<chainName>
@@ -81,7 +87,17 @@ function getOutputName(contractName: string) {
   if (contractName === "Router") {
     return "SyntheticsRouter";
   }
+  if (contractName === "Errors") {
+    return "CustomErrors";
+  }
   return contractName;
+}
+
+function getArtifactPath(deploymentsPath: string, chainName: string, contractName: string) {
+  if (contractName === "Errors") {
+    return path.join(path.dirname(deploymentsPath), "artifacts", "contracts", "error", "Errors.sol", "Errors.json");
+  }
+  return path.join(deploymentsPath, chainName, `${contractName}.json`);
 }
 
 function renderAbiTsFile(abi: unknown): string {
@@ -135,8 +151,8 @@ async function main(): Promise<void> {
   console.log(`Reading deployments from: ${chainPath}`);
   console.log(`Writing ABI files to: ${abiOutputDir}\n`);
 
-  for (const contractName of allowedContracts) {
-    const artifactPath = path.join(chainPath, `${contractName}.json`);
+  for (const contractName of [...allowedContracts, "Errors"]) {
+    const artifactPath = getArtifactPath(deploymentsPath, targetChainName, contractName);
 
     if (!fs.existsSync(artifactPath)) {
       console.warn(`- Skip ${contractName}: artifact not found`);

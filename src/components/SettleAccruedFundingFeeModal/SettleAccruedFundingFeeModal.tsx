@@ -1,14 +1,25 @@
 import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { ARBITRUM } from "config/chains";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  usePositionsConstants,
   usePositiveFeePositionsSortedByUsd,
   useTokensData,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+  selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getCanUseTokenPermits,
   getExpressParamsForSubmit,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -18,32 +29,49 @@ import {
   useGasLimits,
   useGasPrice,
 } from "domain/synthetics/fees";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { getExpressError } from "domain/synthetics/trade/utils/validation";
+import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
-import { formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
-import { getToken } from "sdk/configs/tokens";
+import { getNativeToken, getToken } from "sdk/configs/tokens";
+import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
+import { getMarketPositionLimits } from "sdk/utils/markets";
+import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import Modal from "components/Modal/Modal";
-import Tooltip from "components/Tooltip/Tooltip";
+import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
-import { getIsSettlementLikelyToFail, shouldPreSelectPosition } from "./utils";
+import {
+  SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
+  getIsPositionSettleable,
+  getSettlementBlockReason,
+  getShouldSwitchNetworkFeeSource,
+  shouldPreSelectPosition,
+} from "./utils";
 
 import "./SettleAccruedFundingFeeModal.scss";
 
@@ -64,6 +92,17 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const gasPrice = useGasPrice(chainId);
   const [isUntouched, setIsUntouched] = useState(true);
   const hasOutdatedUi = useHasOutdatedUi();
+  const settings = useSettings();
+  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const walletGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+
+  const canUseGmxAccountFeeSource = chainId === ARBITRUM && srcChainId === undefined && isExpressAvailable;
+  const preferGmxAccount = canUseGmxAccountFeeSource && (settings.receiveToGmxAccount ?? false);
+  const [switchedFromPreference, setSwitchedFromPreference] = useState<boolean | undefined>(undefined);
+  const isFeeSourceSwitched = canUseGmxAccountFeeSource && switchedFromPreference === preferGmxAccount;
+  const isGmxAccountFeeSource =
+    srcChainId !== undefined || (canUseGmxAccountFeeSource && preferGmxAccount !== isFeeSourceSwitched);
 
   const { executionFee, gasLimit, feeUsd } = useMemo(() => {
     if (!gasLimits || !tokensData || gasPrice === undefined) return {};
@@ -81,13 +120,20 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
+  const positionConstants = usePositionsConstants();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
-      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n))
+      .filter((position) =>
+        shouldPreSelectPosition(
+          position,
+          feeUsd ?? 0n,
+          getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+        )
+      )
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd]);
+  }, [positiveFeePositions, feeUsd, positionConstants]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -97,15 +143,19 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [preCheckedPositionKeys, isUntouched]);
 
   const selectedPositions = useMemo(
-    () => positiveFeePositions.filter((position) => positionKeys.includes(position.key)),
-    [positionKeys, positiveFeePositions]
+    () =>
+      positiveFeePositions.filter(
+        (position) =>
+          positionKeys.includes(position.key) &&
+          getIsPositionSettleable(
+            position,
+            getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+          )
+      ),
+    [positionConstants, positionKeys, positiveFeePositions]
   );
-  const hasSelectedPositionsLikelyToFail = useMemo(
-    () => selectedPositions.some(getIsSettlementLikelyToFail),
-    [selectedPositions]
-  );
+  const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
-  const totalStr = formatDeltaUsd(total);
 
   const batchParams = useMemo(() => {
     if (!account || !chainId || executionFee === undefined || gasLimit === undefined || !signer) {
@@ -120,7 +170,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           marketAddress: position.marketAddress,
           indexTokenAddress: position.indexToken.address,
           collateralTokenAddress: position.collateralTokenAddress,
-          collateralDeltaAmount: 1n,
+          collateralDeltaAmount: SETTLEMENT_COLLATERAL_DELTA_AMOUNT,
           receiveTokenAddress: position.collateralToken.address,
           sizeDeltaUsd: 0n,
           sizeDeltaInTokens: 0n,
@@ -155,14 +205,66 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const totalExecutionFee = useMemo(() => {
+    if (!batchParams || !tokensData || selectedPositions.length === 0) {
+      return undefined;
+    }
+
+    return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  }, [batchParams, chainId, selectedPositions.length, tokensData]);
+
+  const { formId, isActiveForm } = useActiveForm();
+
+  const {
+    expressParams,
+    expressParamsPromise,
+    isMultichainSubmitDisabled,
+    isLoading: isExpressLoading,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: isGmxAccountFeeSource,
+    canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "skipApproval",
   });
 
+  const unavailableTokenAddresses = useSelector(selectUnavailableGasPaymentTokenAddresses);
+  const isSwitchPending = useMemo(
+    () =>
+      isVisible &&
+      canUseGmxAccountFeeSource &&
+      !isFeeSourceSwitched &&
+      selectedPositions.length > 0 &&
+      expressParams !== undefined &&
+      getShouldSwitchNetworkFeeSource({ chainId, tokensData, expressParams, unavailableTokenAddresses }),
+    [
+      canUseGmxAccountFeeSource,
+      chainId,
+      expressParams,
+      isFeeSourceSwitched,
+      isVisible,
+      selectedPositions.length,
+      tokensData,
+      unavailableTokenAddresses,
+    ]
+  );
+
+  useEffect(() => {
+    if (isSwitchPending) setSwitchedFromPreference(preferGmxAccount);
+  }, [isSwitchPending, preferGmxAccount]);
+
+  useEffect(() => {
+    setSwitchedFromPreference(undefined);
+  }, [account]);
+
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+  const isWalletOutOfGasPaymentToken =
+    !isGmxAccountFeeSource && getIsConfirmedOutOfGasPaymentTokenBalance(expressParams?.gasPaymentValidations);
+  const isWalletClassicFallback =
+    !isSwitchPending && isWalletOutOfGasPaymentToken && expressError.buttonErrorMessage === undefined;
+
   const approvalTokens = useMemo(() => {
-    if (!expressParams?.gasPaymentParams) return [];
+    if (!expressParams?.gasPaymentParams || isWalletOutOfGasPaymentToken) return [];
 
     return [
       {
@@ -170,7 +272,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
       },
     ];
-  }, [expressParams?.gasPaymentParams]);
+  }, [expressParams?.gasPaymentParams, isWalletOutOfGasPaymentToken]);
 
   const {
     tokensToApprove,
@@ -181,8 +283,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
-    skip: Boolean(srcChainId),
+    allowPermit: getCanUseTokenPermits(expressParams),
+    skip: isGmxAccountFeeSource,
+    metric: {
+      flow: "settleFundingFees",
+      isExpress: Boolean(expressParams),
+      isExpress1CT: Boolean(expressParams?.subaccount),
+      gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+    },
   });
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
@@ -190,6 +298,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
     setIsUntouched(true);
+    setSwitchedFromPreference(undefined);
     onClose();
   }, [onClose, setPositionKeys, setIsUntouched]);
 
@@ -197,25 +306,33 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (!isVisible) setIsSubmitting(false);
   }, [isVisible]);
 
-  const [buttonText, buttonDisabled] = useMemo(() => {
+  const [buttonText, buttonDisabled, buttonTooltip] = useMemo((): [string, boolean, string?] => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
-    if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
+    if (isExpressLoading || isMultichainSubmitDisabled || isSwitchPending) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
-    if (positionKeys.length === 0) return [t`Select positions`, true];
+    if (selectedPositions.length === 0) return [t`Select positions`, true];
+    if (expressError.buttonErrorMessage) return [expressError.buttonErrorMessage, true];
 
     if (!isAllowanceLoaded) return [t`Loading...`, true];
 
     if (tokensToApprove.length) {
       const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
-      return [t`Approve ${tokenSymbol}`, isApproving];
+      return [
+        getApproveButtonText({ tokenSymbol, isGasPaymentToken: true }),
+        isApproving,
+        getGasPaymentTokenApprovalTooltip(tokenSymbol),
+      ];
     }
 
     return [t`Settle`, false];
   }, [
     hasOutdatedUi,
+    isExpressLoading,
     isMultichainSubmitDisabled,
+    isSwitchPending,
     isSubmitting,
-    positionKeys.length,
+    selectedPositions.length,
+    expressError,
     isAllowanceLoaded,
     tokensToApprove,
     isApproving,
@@ -262,11 +379,10 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     try {
       const fulfilledExpressParams = await expressParamsPromise;
-      const isGmxAccount = srcChainId !== undefined;
 
       if (
         reportMultichainExpressSubmitError({
-          isGmxAccount,
+          isGmxAccount: isGmxAccountFeeSource,
           expressParams: fulfilledExpressParams,
           tokensData,
           actionName: "Settle Funding Fee",
@@ -288,7 +404,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           actionName: "Settle Funding Fee",
         }),
         provider,
-        isGmxAccount,
+        isGmxAccount: isGmxAccountFeeSource,
       });
 
       handleOnClose();
@@ -304,25 +420,47 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     handleOnClose,
     isAllowanceLoaded,
     isApproving,
+    isGmxAccountFeeSource,
     makeOrderTxnCallback,
     provider,
     signer,
-    srcChainId,
     tokensData,
     tokensToApprove,
   ]);
 
-  const renderTooltipContent = useCallback(
-    () => (
-      <span className="text-typography-primary">
-        <Trans>Accrued funding fees available for settlement</Trans>
-      </span>
-    ),
-    []
-  );
+  const feeSourceExplanation = useMemo(() => {
+    if (srcChainId !== undefined) return undefined;
+
+    const walletGasTokenSymbol = walletGasPaymentToken?.symbol;
+    const gmxAccountGasTokenSymbol = gmxAccountGasPaymentToken?.symbol;
+
+    if (isWalletClassicFallback && walletGasTokenSymbol) {
+      const nativeTokenSymbol = getNativeToken(chainId).symbol;
+      return t`Paid in ${nativeTokenSymbol} from your Wallet because your Wallet does not have enough ${walletGasTokenSymbol} for Express`;
+    }
+
+    if (isFeeSourceSwitched && isGmxAccountFeeSource && walletGasTokenSymbol) {
+      return t`Paid from your GMX Account because your Wallet does not have enough ${walletGasTokenSymbol} for the fee`;
+    }
+
+    if (isFeeSourceSwitched && !isGmxAccountFeeSource && gmxAccountGasTokenSymbol) {
+      return t`Paid from your Wallet because your GMX Account does not have enough ${gmxAccountGasTokenSymbol} for the fee`;
+    }
+
+    return undefined;
+  }, [
+    chainId,
+    gmxAccountGasPaymentToken?.symbol,
+    isFeeSourceSwitched,
+    isGmxAccountFeeSource,
+    isWalletClassicFallback,
+    srcChainId,
+    walletGasPaymentToken?.symbol,
+  ]);
 
   return (
     <Modal
+      activeFormId={formId}
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
       setIsVisible={handleOnClose}
@@ -330,7 +468,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>Settle {totalStr}</Trans>
+          <Trans>
+            Settle <DeltaUsdValue deltaUsd={total} />
+          </Trans>
         </div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />
@@ -341,11 +481,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               <Trans>POSITION</Trans>
             </div>
             <div className="ClaimSettleModal-header-right">
-              <Tooltip
-                className="ClaimSettleModal-tooltip"
-                position="top-end"
+              <StandardTooltip
+                variant="iconStroke"
+                position="bottom-end"
                 handle={<Trans>FUNDING FEE</Trans>}
-                renderContent={renderTooltipContent}
+                content={t`Accrued funding fees available for settlement`}
               />
             </div>
           </div>
@@ -354,29 +494,48 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              isSettlementLikelyToFail={getIsSettlementLikelyToFail(position)}
-              isSelected={positionKeys.includes(position.key)}
+              blockReason={getSettlementBlockReason(
+                position,
+                getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+              )}
+              isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />
           ))}
         </div>
       </div>
-      {hasSelectedPositionsLikelyToFail && (
-        <AlertInfo type="warning" compact textColor="text-yellow-300">
-          <Trans>
-            Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is
-            likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce
-            or close enough of those positions for the realized profit to cover the shortfall.
-          </Trans>
-        </AlertInfo>
-      )}
+      <div className="mb-15">
+        <NetworkFeeRow
+          executionFee={isExpressLoading || isSwitchPending ? undefined : totalExecutionFee}
+          gasPaymentParams={
+            selectedPositions.length > 0 && !isWalletClassicFallback && !isSwitchPending
+              ? expressParams?.gasPaymentParams
+              : undefined
+          }
+          feeSource={getNetworkFeeSource({ isGmxAccount: isGmxAccountFeeSource })}
+          feeSourceExplanation={feeSourceExplanation}
+        />
+      </div>
       <AlertInfo type="info" compact>
         <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
       </AlertInfo>
-      <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
-        {buttonText}
-        {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
-      </Button>
+      {expressError.bannerErrorName && !isSwitchPending && (
+        <AlertInfoCard type="error" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={expressError.bannerErrorName}
+            chainId={chainId}
+            srcChainId={srcChainId}
+            gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+            onBeforeNavigation={handleOnClose}
+          />
+        </AlertInfoCard>
+      )}
+      <ButtonTooltipWrapper content={buttonTooltip} isHandlerDisabled={buttonDisabled}>
+        <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
+          {buttonText}
+          {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
+        </Button>
+      </ButtonTooltipWrapper>
     </Modal>
   );
 }

@@ -9,15 +9,20 @@ import {
   CreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
 import type { ContractsChainId } from "sdk/configs/chains";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import { hashString } from "sdk/utils/hash";
+import { getEmptyBridgeFeeParams } from "sdk/utils/multichain/api";
 
 import {
+  BRIDGE_FEE_PARAMS_TYPE,
   BRIDGE_OUT_PARAMS,
+  BRIDGE_OUT_PARAMS_V2_2_1,
   CREATE_DEPOSIT_PARAMS_TYPE,
   CREATE_GLV_DEPOSIT_PARAMS_TYPE,
   CREATE_GLV_WITHDRAWAL_PARAMS_TYPE,
   CREATE_WITHDRAWAL_PARAMS_TYPE,
   RELAY_PARAMS_TYPE,
+  RELAY_PARAMS_TYPE_V2_2_1,
   TRANSFER_REQUESTS_TYPE,
 } from "./hashParamsAbiItems";
 
@@ -126,20 +131,23 @@ export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 // TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
 
 export function encodeMultichainComposeActionData(action: MultichainAction): Hex {
+  const relayParamsType = isContractsV2_2_1(Number(action.actionData.relayParams.desChainId))
+    ? RELAY_PARAMS_TYPE_V2_2_1
+    : RELAY_PARAMS_TYPE;
   let actionData: Hex | undefined;
   if (action.actionType === MultichainActionType.SetTraderReferralCode) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, { type: "bytes32" }],
+      [relayParamsType, { type: "bytes32" }],
       [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]
     );
   } else if (action.actionType === MultichainActionType.RegisterCode) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, { type: "bytes32" }],
+      [relayParamsType, { type: "bytes32" }],
       [{ ...action.actionData.relayParams, signature: action.actionData.signature }, action.actionData.referralCode]
     );
   } else if (action.actionType === MultichainActionType.Deposit) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
+      [relayParamsType, TRANSFER_REQUESTS_TYPE, CREATE_DEPOSIT_PARAMS_TYPE],
       [
         { ...action.actionData.relayParams, signature: action.actionData.signature },
         action.actionData.transferRequests,
@@ -148,7 +156,7 @@ export function encodeMultichainComposeActionData(action: MultichainAction): Hex
     );
   } else if (action.actionType === MultichainActionType.GlvDeposit) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
+      [relayParamsType, TRANSFER_REQUESTS_TYPE, CREATE_GLV_DEPOSIT_PARAMS_TYPE],
       [
         { ...action.actionData.relayParams, signature: action.actionData.signature },
         action.actionData.transferRequests,
@@ -157,7 +165,7 @@ export function encodeMultichainComposeActionData(action: MultichainAction): Hex
     );
   } else if (action.actionType === MultichainActionType.Withdrawal) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
+      [relayParamsType, TRANSFER_REQUESTS_TYPE, CREATE_WITHDRAWAL_PARAMS_TYPE],
       [
         { ...action.actionData.relayParams, signature: action.actionData.signature },
         action.actionData.transferRequests,
@@ -166,7 +174,7 @@ export function encodeMultichainComposeActionData(action: MultichainAction): Hex
     );
   } else if (action.actionType === MultichainActionType.GlvWithdrawal) {
     actionData = encodeAbiParameters(
-      [RELAY_PARAMS_TYPE, TRANSFER_REQUESTS_TYPE, CREATE_GLV_WITHDRAWAL_PARAMS_TYPE],
+      [relayParamsType, TRANSFER_REQUESTS_TYPE, CREATE_GLV_WITHDRAWAL_PARAMS_TYPE],
       [
         { ...action.actionData.relayParams, signature: action.actionData.signature },
         action.actionData.transferRequests,
@@ -193,44 +201,49 @@ export function encodeMultichainComposeActionData(action: MultichainAction): Hex
 
 export function encodeMultichainBridgeOutActionData(action: BridgeOutAction): Hex {
   let actionData: Hex;
+  const isV2_2_1 = isContractsV2_2_1(action.actionData.desChainId);
 
   if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {
-    actionData = encodeAbiParameters(
-      [
-        { type: "uint256", name: "desChainId" },
-        { type: "uint256", name: "deadline" },
-        { type: "address", name: "provider" },
-        { type: "bytes", name: "providerData" },
-        { type: "uint256", name: "minAmountOut" },
-      ],
-      [
-        BigInt(action.actionData.desChainId),
-        action.actionData.deadline,
-        action.actionData.provider,
-        action.actionData.providerData,
-        action.actionData.minAmountOut,
-      ]
-    );
+    const params = [
+      { type: "uint256", name: "desChainId" },
+      { type: "uint256", name: "deadline" },
+      { type: "address", name: "provider" },
+      { type: "bytes", name: "providerData" },
+      { type: "uint256", name: "minAmountOut" },
+    ] as const;
+    const values = [
+      BigInt(action.actionData.desChainId),
+      action.actionData.deadline,
+      action.actionData.provider,
+      action.actionData.providerData,
+      action.actionData.minAmountOut,
+    ] as const;
+
+    actionData = isV2_2_1
+      ? encodeAbiParameters([...params, BRIDGE_FEE_PARAMS_TYPE], [...values, getEmptyBridgeFeeParams()])
+      : encodeAbiParameters(params, values);
   } else {
     if (action.actionData.provider === action.actionData.secondaryProvider) {
       throw new Error("Provider and secondary provider cannot be the same");
     }
 
-    actionData = encodeAbiParameters(
-      [BRIDGE_OUT_PARAMS],
-      [
-        {
-          desChainId: BigInt(action.actionData.desChainId),
-          deadline: action.actionData.deadline,
-          provider: action.actionData.provider,
-          providerData: action.actionData.providerData,
-          minAmountOut: action.actionData.minAmountOut,
-          secondaryProvider: action.actionData.secondaryProvider,
-          secondaryProviderData: action.actionData.secondaryProviderData,
-          secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
-        },
-      ]
-    );
+    const params = {
+      desChainId: BigInt(action.actionData.desChainId),
+      deadline: action.actionData.deadline,
+      provider: action.actionData.provider,
+      providerData: action.actionData.providerData,
+      minAmountOut: action.actionData.minAmountOut,
+      secondaryProvider: action.actionData.secondaryProvider,
+      secondaryProviderData: action.actionData.secondaryProviderData,
+      secondaryMinAmountOut: action.actionData.secondaryMinAmountOut,
+    };
+
+    actionData = isV2_2_1
+      ? encodeAbiParameters(
+          [BRIDGE_OUT_PARAMS_V2_2_1],
+          [{ ...params, bridgeFee: getEmptyBridgeFeeParams(), secondaryBridgeFee: getEmptyBridgeFeeParams() }]
+        )
+      : encodeAbiParameters([BRIDGE_OUT_PARAMS], [params]);
   }
 
   return encodeAbiParameters([{ type: "uint8" }, { type: "bytes" }], [action.actionType, actionData]);

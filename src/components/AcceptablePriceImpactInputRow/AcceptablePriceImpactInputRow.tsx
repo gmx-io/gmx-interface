@@ -93,7 +93,7 @@ function AcceptablePriceImpactInputRowImpl({
     ) : (
       <p>
         <Trans>
-          Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}. Add 0.30% buffer for better order
+          Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}. Add a 0.30% buffer for better order
           execution.
         </Trans>
         <br />

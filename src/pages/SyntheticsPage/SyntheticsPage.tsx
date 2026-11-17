@@ -3,6 +3,7 @@ import cx from "classnames";
 import uniq from "lodash/uniq";
 import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Address } from "viem";
 
 import { getSyntheticsListSectionKey } from "config/localStorage";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -12,7 +13,10 @@ import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hoo
 import { useOrderErrorsCount } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectClaimablesCount } from "context/SyntheticsStateContext/selectors/claimsSelectors";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectOrdersInfoData,
@@ -29,7 +33,11 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import {
   isLimitDecreaseOrderType,
@@ -43,7 +51,11 @@ import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
-import { getPositionKey } from "domain/synthetics/positions";
+import {
+  ClosingPoolOrdersView,
+  useViewClosingPoolOrdersByQueryParams,
+} from "domain/synthetics/orders/useViewClosingPoolOrdersByQueryParams";
+import { getPositionKey, type PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -61,6 +73,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { getIsMobileUserAgent } from "lib/wallets/useIsMetamaskMobile";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -137,7 +150,8 @@ export function SyntheticsPage(p: Props) {
     ListSection.Positions
   );
 
-  const [viewPositionKeyHistory, setViewPositionKeyHistory] = useState<string | undefined>();
+  const [viewPositionHistory, setViewPositionHistory] =
+    useState<Pick<PositionInfo, "contractKey" | "increasedAtTime">>();
 
   const tabsContentTabletRef = useRef<HTMLDivElement>(null);
 
@@ -205,20 +219,41 @@ export function SyntheticsPage(p: Props) {
   );
 
   const handleViewPositionHistory = useCallback(
-    (positionKey: string) => {
+    (position: Pick<PositionInfo, "contractKey" | "increasedAtTime">) => {
       setListSection(ListSection.Trades);
-      setViewPositionKeyHistory(positionKey);
+      setViewPositionHistory(position);
     },
     [setListSection]
   );
 
-  const handleViewPositionKeyHistoryConsumed = useCallback(() => {
-    setViewPositionKeyHistory(undefined);
+  const handleViewPositionHistoryConsumed = useCallback(() => {
+    setViewPositionHistory(undefined);
   }, []);
 
   const { isSwap, isTwap } = useSelector(selectTradeboxTradeFlags);
 
+  const handleViewClosingPoolOrders = useCallback(
+    ({ marketAddresses, orderTypes, orderKeys }: ClosingPoolOrdersView) => {
+      setListSection(ListSection.Orders);
+      setMarketsDirectionsFilter(
+        marketAddresses.map((marketAddress) => ({ marketAddress: marketAddress as Address, direction: "any" }))
+      );
+      setOrderTypesFilter(orderTypes);
+      setSelectedOrderKeys(orderKeys);
+      tabsContentTabletRef.current?.scrollIntoView({ behavior: "smooth" });
+    },
+    [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
+  );
+
+  useViewClosingPoolOrdersByQueryParams(handleViewClosingPoolOrders);
+
   useEffect(() => {
+    // Trust Wallet's mobile browser uses the page title as the dApp name when connecting.
+    if (getIsMobileUserAgent() && (window.ethereum?.isTrust || window.ethereum?.isTrustWallet)) {
+      document.title = t`GMX | decentralized perpetual exchange`;
+      return;
+    }
+
     if (!chartToken) return;
 
     const averagePrice = getMidPrice(chartToken.prices);
@@ -413,7 +448,7 @@ export function SyntheticsPage(p: Props) {
     [setListSection, setMarketsDirectionsFilter, setOrderTypesFilter, setSelectedOrderKeys]
   );
 
-  useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "#/trade" });
+  useMeasureComponentMountTime({ metricType: "syntheticsPage", onlyForLocation: "/trade" });
 
   const { isTablet, isMobile } = useBreakpoints();
 
@@ -512,8 +547,8 @@ export function SyntheticsPage(p: Props) {
                 <ErrorBoundary id="SyntheticsPage-TradeHistory" variant="block">
                   <TradeHistory
                     account={account}
-                    viewPositionKeyHistory={viewPositionKeyHistory}
-                    onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                    viewPositionHistory={viewPositionHistory}
+                    onViewPositionHistoryConsumed={handleViewPositionHistoryConsumed}
                   />
                 </ErrorBoundary>
               )}
@@ -608,8 +643,8 @@ export function SyntheticsPage(p: Props) {
               <ErrorBoundary id="SyntheticsPage-TradeHistory-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <TradeHistory
                   account={account}
-                  viewPositionKeyHistory={viewPositionKeyHistory}
-                  onViewPositionKeyHistoryConsumed={handleViewPositionKeyHistoryConsumed}
+                  viewPositionHistory={viewPositionHistory}
+                  onViewPositionHistoryConsumed={handleViewPositionHistoryConsumed}
                 />
               </ErrorBoundary>
             )}
@@ -663,7 +698,7 @@ function useOrdersControl() {
   const signer = useEthersSigner();
   const { provider } = useJsonRpcProvider(chainId);
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
-  const [selectedOrderKeys, setSelectedOrderKeys] = useState<string[]>(EMPTY_ARRAY);
+  const [selectedOrderKeysRaw, setSelectedOrderKeysRaw] = useState<string[]>(EMPTY_ARRAY);
   const hasOutdatedUi = useHasOutdatedUi();
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
@@ -674,7 +709,14 @@ function useOrdersControl() {
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
+
+  const selectedOrderKeys = useMemo(
+    () => selectedOrderKeysRaw.filter((key) => getByKey(ordersInfoData, key)),
+    [ordersInfoData, selectedOrderKeysRaw]
+  );
 
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
@@ -693,41 +735,54 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateBatchExpressParams({
-        signer,
-        chainId,
-        batchParams,
-        globalExpressParams,
-        requireValidations: true,
-        estimationMethod: "approximate",
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-        subaccount,
-      });
-
-      sendBatchOrderTxn({
-        chainId,
-        signer,
-        expressParams,
-        batchParams,
-        simulationParams: undefined,
-        provider,
-        callback: makeOrderTxnCallback({ actionName: "Cancel Order" }),
-        isGmxAccount: srcChainId !== undefined,
-      })
-        .then(async (tx) => {
-          const txnResult = await tx.wait();
-          if (txnResult?.status === "success") {
-            setSelectedOrderKeys(EMPTY_ARRAY);
-          }
-        })
-        .finally(() => {
-          setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
+      try {
+        const expressParams = await estimateExpressParams({
+          signer,
+          chainId,
+          batchParams,
+          globalExpressParams,
+          requireValidations: false,
+          estimationMethod: "approximate",
+          provider,
+          isGmxAccount: srcChainId !== undefined,
+          subaccount,
         });
+
+        if (
+          reportMultichainExpressSubmitError({
+            isGmxAccount: srcChainId !== undefined,
+            expressParams,
+            tokensData: undefined,
+            unavailableGasPaymentToken,
+            actionName: "Cancel Order",
+          })
+        ) {
+          return;
+        }
+
+        const tx = await sendBatchOrderTxn({
+          chainId,
+          signer,
+          expressParams: getExpressParamsForSubmit(expressParams),
+          batchParams,
+          simulationParams: undefined,
+          provider,
+          callback: makeOrderTxnCallback({ actionName: "Cancel Order" }),
+          isGmxAccount: srcChainId !== undefined,
+        });
+        const txnResult = await tx.wait();
+        if (txnResult?.status === "success") {
+          setSelectedOrderKeysRaw(EMPTY_ARRAY);
+        }
+      } finally {
+        setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
+      }
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
@@ -760,38 +815,55 @@ function useOrdersControl() {
         cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
       };
 
-      const expressParams = await estimateBatchExpressParams({
-        signer,
-        chainId,
-        batchParams,
-        globalExpressParams,
-        requireValidations: true,
-        estimationMethod: "approximate",
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-        subaccount,
-      });
+      try {
+        const expressParams = await estimateExpressParams({
+          signer,
+          chainId,
+          batchParams,
+          globalExpressParams,
+          requireValidations: false,
+          estimationMethod: "approximate",
+          provider,
+          isGmxAccount: srcChainId !== undefined,
+          subaccount,
+        });
 
-      sendBatchOrderTxn({
-        chainId,
-        signer,
-        provider,
-        expressParams,
-        batchParams,
-        simulationParams: undefined,
-        callback: makeOrderTxnCallback({
-          actionName: "Cancel Order",
-          collateralSymbol: order?.initialCollateralToken.symbol,
-        }),
-        isGmxAccount: srcChainId !== undefined,
-      }).finally(() => {
+        if (
+          reportMultichainExpressSubmitError({
+            isGmxAccount: srcChainId !== undefined,
+            expressParams,
+            tokensData: undefined,
+            unavailableGasPaymentToken,
+            actionName: "Cancel Order",
+            collateral: order.initialCollateralToken.symbol,
+          })
+        ) {
+          return;
+        }
+
+        await sendBatchOrderTxn({
+          chainId,
+          signer,
+          provider,
+          expressParams: getExpressParamsForSubmit(expressParams),
+          batchParams,
+          simulationParams: undefined,
+          callback: makeOrderTxnCallback({
+            actionName: "Cancel Order",
+            collateralSymbol: order?.initialCollateralToken.symbol,
+          }),
+          isGmxAccount: srcChainId !== undefined,
+        });
+      } finally {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));
-        setSelectedOrderKeys((prev) => prev.filter((k) => k !== key));
-      });
+        setSelectedOrderKeysRaw((prev) => prev.filter((k) => k !== key));
+      }
     },
     [
       chainId,
+      estimateExpressParams,
       globalExpressParams,
+      unavailableGasPaymentToken,
       hasOutdatedUi,
       makeOrderTxnCallback,
       ordersInfoData,
@@ -808,7 +880,7 @@ function useOrdersControl() {
     onCancelSelectedOrders,
     onCancelOrder,
     selectedOrderKeys,
-    setSelectedOrderKeys,
+    setSelectedOrderKeys: setSelectedOrderKeysRaw,
     marketsDirectionsFilter,
     setMarketsDirectionsFilter,
     orderTypesFilter,

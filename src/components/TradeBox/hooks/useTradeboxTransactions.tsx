@@ -24,7 +24,9 @@ import {
   selectTradeboxFees,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxExpressFeeTokenAddress,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxSetExpressFeeUsdByToken,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
@@ -73,9 +75,10 @@ import { useSidecarOrderPayloads } from "./useSidecarOrderPayloads";
 
 interface TradeboxTransactionsProps {
   setPendingTxns: (txns: any) => void;
+  canSwitchGasPaymentToken: boolean;
 }
 
-export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactionsProps) {
+export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentToken }: TradeboxTransactionsProps) {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -152,20 +155,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
-  const primaryExecutionFee = useMemo(() => {
-    if (isWrapOrUnwrap) {
-      return wrapOrUnwrapExecutionFee;
-    }
-    if (!tokensData || !primaryCreateOrderParams) {
-      return undefined;
-    }
-    return getBatchTotalExecutionFee({
-      batchParams: { createOrderParams: primaryCreateOrderParams, updateOrderParams: [], cancelOrderParams: [] },
-      chainId,
-      tokensData,
-      allowEmptyBatch: true,
-    });
-  }, [chainId, isWrapOrUnwrap, primaryCreateOrderParams, tokensData, wrapOrUnwrapExecutionFee]);
+  const expressFeeTokenAddress = useSelector(selectTradeboxExpressFeeTokenAddress);
+  const setExpressFeeUsdByToken = useSelector(selectTradeboxSetExpressFeeUsdByToken);
+  const payTokenFeeToken = useMemo(
+    () => ({ address: expressFeeTokenAddress, setFeeUsdByToken: setExpressFeeUsdByToken }),
+    [expressFeeTokenAddress, setExpressFeeUsdByToken]
+  );
 
   const {
     expressParams,
@@ -174,14 +169,20 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParamsPromise,
     isLoading: isExpressLoading,
     isMultichainSubmitDisabled,
+    gasPaymentToken,
   } = useExpressOrdersParams({
-    orderParams: batchParams,
+    // a wrap or unwrap is not an order: its batch is empty, so an Express fee would be quoted for a Classic transaction
+    orderParams: isWrapOrUnwrap ? undefined : batchParams,
     label: "TradeBox",
     isGmxAccount: isFromTokenGmxAccount,
+    canSwitchGasPaymentToken,
+    gasPaymentTokenFallback: "skipApproval",
+    payTokenFeeToken,
   });
 
   const initOrderMetricData = useCallback(() => {
     const primaryOrder = primaryCreateOrderParams?.[0];
+    const orderPayloads = primaryCreateOrderParams?.map((params) => params.orderPayload);
 
     if (isSwap) {
       return initSwapMetricData({
@@ -206,6 +207,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         fastExpressParams,
         chainId: srcChainId ?? chainId,
         isCollateralFromMultichain: isFromTokenGmxAccount,
+        orderPayloads,
       });
     }
 
@@ -213,7 +215,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       return initIncreaseOrderMetricData({
         fromToken,
         increaseAmounts,
-        orderPayload: primaryOrder?.orderPayload,
+        orderPayloads,
         hasExistingPosition: Boolean(selectedPosition),
         leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
@@ -259,7 +261,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       decreaseAmounts,
       hasExistingPosition: Boolean(selectedPosition),
       executionFee,
-      swapPath: [],
       executionFeeBufferBps,
       orderType: primaryOrder?.orderPayload.orderType,
       hasReferralCode: Boolean(referralCodeForTxn),
@@ -283,6 +284,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       fastExpressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: isFromTokenGmxAccount,
+      orderPayloads,
     });
   }, [
     allowedSlippage,
@@ -442,6 +444,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     isExpressLoading,
     isMultichainSubmitDisabled,
     totalExecutionFee,
-    primaryExecutionFee,
+    gasPaymentToken,
   };
 }

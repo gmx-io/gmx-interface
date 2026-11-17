@@ -1,4 +1,6 @@
+import type { WalletListEntry } from "@privy-io/react-auth";
 import { createConfig } from "@privy-io/wagmi";
+import { deserialize } from "@wagmi/core";
 import once from "lodash/once";
 import {
   Chain,
@@ -10,6 +12,7 @@ import {
   webSocket,
   WebSocketTransport,
 } from "viem";
+import type { State } from "wagmi";
 
 import { DEFAULT_SETTLEMENT_CHAIN_ID, getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -19,6 +22,7 @@ import { RpcPurpose } from "config/rpc";
 import { SECONDS_IN_DAY } from "lib/dates";
 import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
 import { getWsUrl } from "lib/rpc";
+import { fetchEvmRpc } from "lib/rpc/fetchRpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
@@ -38,6 +42,9 @@ export const PRIVY_WALLET_LIST = [
   "wallet_connect",
 ] as const;
 
+// Privy 3.35.0 shows TokenPocket for Solana but leaves it out of its WalletListEntry type.
+export const PRIVY_SOLANA_WALLET_LIST = ["phantom", "solflare", "okx_wallet", "tokenpocket"] as WalletListEntry[];
+
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;
 
 const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY * 1000;
@@ -55,6 +62,10 @@ export function getSupportedChains(): [Chain, ...Chain[]] {
   return [defaultChain, ...chains.filter((chain) => chain.id !== defaultChain.id)] as [Chain, ...Chain[]];
 }
 
+const WAGMI_STORE_KEY = "wagmi.store";
+
+let persistedWagmiState: State | undefined;
+
 export const getWagmiConfig = once(() => {
   const chains = getSupportedChains();
 
@@ -67,17 +78,44 @@ export const getWagmiConfig = once(() => {
     {} as Record<number, Transport>
   );
 
+  persistedWagmiState = readPersistedWagmiState();
+
   return createConfig({
     chains,
     transports,
   });
 });
 
+export function getWagmiInitialState(): State | undefined {
+  getWagmiConfig();
+
+  return persistedWagmiState;
+}
+
+function readPersistedWagmiState(): State | undefined {
+  if (typeof localStorage === "undefined") {
+    return undefined;
+  }
+
+  const persisted = localStorage.getItem(WAGMI_STORE_KEY);
+
+  if (persisted === null) {
+    return undefined;
+  }
+
+  try {
+    return (deserialize(persisted) as { state?: State }).state;
+  } catch {
+    return undefined;
+  }
+}
+
 const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
 
-const HTTP_TRANSPORT_OPTIONS =
-  import.meta.env.MODE === "test"
+const HTTP_TRANSPORT_OPTIONS = {
+  fetchFn: fetchEvmRpc,
+  ...(import.meta.env.MODE === "test"
     ? {
         fetchOptions: {
           headers: {
@@ -85,10 +123,15 @@ const HTTP_TRANSPORT_OPTIONS =
           },
         },
       }
-    : undefined;
+    : {}),
+};
 
-export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Transport {
-  const key = `chainId:${chainId}:purpose:${purpose}`;
+export function getRpcTransport(
+  chainId: AnyChainId,
+  purpose: RpcPurpose,
+  options?: { skipSolanaGate?: boolean }
+): Transport {
+  const key = `chainId:${chainId}:purpose:${purpose}:gate:${options?.skipSolanaGate ? 0 : 1}`;
   if (TRANSPORTS_CACHE.has(key)) {
     return TRANSPORTS_CACHE.get(key)!;
   }
@@ -98,17 +141,27 @@ export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Trans
       ? [...getRpcProviders(chainId, "express"), ...getRpcProviders(chainId, "default")]
       : getRpcProviders(chainId, purpose);
 
-  const transport = fallback(providers.map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS)));
+  const transport = fallback(
+    providers.map((provider: RpcConfig) =>
+      http(
+        provider.url,
+        options?.skipSolanaGate ? { ...HTTP_TRANSPORT_OPTIONS, fetchFn: fetch } : HTTP_TRANSPORT_OPTIONS
+      )
+    )
+  );
   TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }
 
 export function getPublicClientWithRpc(
   chainId: number,
-  options: { withWs?: boolean; withExpress?: boolean } = { withWs: false, withExpress: false }
+  options: { withWs?: boolean; withExpress?: boolean; skipSolanaGate?: boolean } = {
+    withWs: false,
+    withExpress: false,
+  }
 ): PublicClient {
   const normalizedOptions = options.withWs ? { withWs: true, withExpress: false } : options;
-  const key = `chainId:${chainId}:ws:${normalizedOptions.withWs ? 1 : 0}:express:${normalizedOptions.withExpress ? 1 : 0}`;
+  const key = `chainId:${chainId}:ws:${normalizedOptions.withWs ? 1 : 0}:express:${normalizedOptions.withExpress ? 1 : 0}:gate:${options.skipSolanaGate ? 0 : 1}`;
   if (PUBLIC_CLIENTS_CACHE.has(key)) {
     return PUBLIC_CLIENTS_CACHE.get(key)!;
   }
@@ -120,16 +173,17 @@ export function getPublicClientWithRpc(
     if (!wsUrl) {
       // eslint-disable-next-line no-console
       console.warn(`No WebSocket URL found for chain id: ${chainId}. Using HTTP instead.`);
-      transport = getRpcTransport(chainId as AnyChainId, "default");
+      transport = getRpcTransport(chainId as AnyChainId, "default", { skipSolanaGate: options.skipSolanaGate });
     } else {
-      transport = webSocket(wsUrl);
+      // watchContractEventWithReconnect owns reconnects
+      transport = webSocket(wsUrl, { reconnect: false });
 
       isWsTransport = true;
     }
   } else if (normalizedOptions.withExpress) {
-    transport = getRpcTransport(chainId as AnyChainId, "express");
+    transport = getRpcTransport(chainId as AnyChainId, "express", { skipSolanaGate: options.skipSolanaGate });
   } else {
-    transport = getRpcTransport(chainId as AnyChainId, "default");
+    transport = getRpcTransport(chainId as AnyChainId, "default", { skipSolanaGate: options.skipSolanaGate });
   }
 
   const publicClient = createPublicClient({
@@ -146,8 +200,8 @@ export function getPublicClientWithRpc(
   return publicClient;
 }
 
-function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number) {
-  (
+export function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number) {
+  return (
     publicClient.transport as unknown as ReturnType<WebSocketTransport>["config"] &
       ReturnType<WebSocketTransport>["value"]
   )
@@ -187,18 +241,25 @@ function setupWebSocketClientMetrics(publicClient: PublicClient, chainId: number
         });
       };
 
-      if (client.socket.OPEN) {
+      if (client.socket.readyState === client.socket.OPEN) {
         pushConnectedEvent();
       } else {
         client.socket.addEventListener("open", pushConnectedEvent, { once: true });
       }
 
-      if (client.socket.CLOSED) {
+      if (client.socket.readyState === client.socket.CLOSED) {
         pushDisconnectedEvent();
       } else {
         client.socket.addEventListener("close", pushDisconnectedEvent, { once: true });
       }
 
       client.socket.addEventListener("error", pushErrorEvent);
+    })
+    .catch(() => {
+      metrics.pushEvent<ViemWsClientError>({
+        event: "viemWsClient.error",
+        isError: true,
+        data: { chainId, rpcUrl: getWsUrl(chainId as AnyChainId) ?? "" },
+      });
     });
 }

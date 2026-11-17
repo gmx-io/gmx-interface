@@ -43,12 +43,274 @@ export type EventData = {
   variant?: AnnouncementVariant;
   chains?: number[];
   link?: EventLink;
-  links?: EventLink[];
 
   requiresOpenPosition?: string;
 };
 
 export const appEventsData: EventData[] = [
+  {
+    id: "gt-airdrop-allocation",
+    type: "update",
+    isActive: true,
+    startDate: "12 Nov 2026, 09:00",
+    endDate: "19 Nov 2026, 09:00",
+    variant: "info",
+    chains: [ARBITRUM, AVALANCHE],
+    title: "GT airdrop: check your allocation",
+    summary: (
+      <>
+        GMX stakers can now see their GT airdrop amount. Find it under{" "}
+        <Link to="/earn/portfolio">Earn &gt; Portfolio</Link>. Selling into GT buybacks follows in a later update.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Who qualifies:</span> a daily average of at least 100
+          GMX staked on Arbitrum or Avalanche from 1 October to 1 November 2026 (00:00 UTC). Staked GMX on 1 November
+          must not be below that average. esGMX does not count.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Allocation:</span> 1 GT for each daily-average staked
+          GMX. The GT card shows the amount and its USD value. No GT card means no allocation.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Buyback:</span> selling GT is not open yet, so the
+          buyback button on the GT card is disabled. Selling GT comes in a later update. No date is set yet.
+        </span>
+        <span>
+          Full rules in governance proposal GMLabs-002.{" "}
+          <ExternalLink href="https://gov.gmx.io/t/gmlabs-002-gt-airdrop-for-gmx-stakers-and-gt-buyback-season-2/5159">
+            Read more
+          </ExternalLink>
+          .
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "glv-usdg-launch",
+    type: "listing",
+    isActive: true,
+    startDate: "06 Oct 2026, 00:00",
+    endDate: "13 Oct 2026, 00:00",
+    title: "New: GLV [USDG-USDG] is live with an 8%+ launch boost",
+    description: (
+      <>
+        Deposit dollars, earn dollars, with no crypto price exposure on your deposit. USDC works too; the app converts
+        it for you in the same flow. For the first 8 weeks, the GMX Dollar Vault earns a launch boost of 8% APR or
+        higher on top of trading fees, paid into the GLV price every 4 hours. Nothing to claim. Rates for later periods
+        will be published before each one starts.
+      </>
+    ),
+    link: { text: "Read the announcement", href: "https://x.com/GMX_IO/status/2107458863469302101", newTab: true },
+  },
+  {
+    id: "release-127-128-129-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "02 Oct 2026, 00:00",
+    endDate: "09 Oct 2026, 00:00",
+    variant: "info",
+    title: "App Update: Clearer Network Fees, Fewer Failed Orders, Instant TP/SL",
+    summary: (
+      <>
+        Fees show the token you pay with, increases that would fail are blocked before you sign, and TP/SL shows
+        instantly.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Network fees:</span> every fee row shows the token you
+          pay with and which balance pays it
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Low balance:</span> fee messages now name the missing
+          token and how to top it up
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Max button:</span> it now shows how much it keeps back
+          for the network fee
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Tradebox:</span> a position increase that would fail is
+          now blocked before you sign
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click Trading:</span> an outdated approval no longer
+          blocks your orders
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">TP/SL:</span> your orders show in the Orders tab the
+          moment you submit them
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Startup:</span> an app update no longer leaves you on a
+          blank screen
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Chart:</span> colors you set in Chart settings now stay
+          after a reload or a theme switch
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Homepage:</span> picking a network now opens the app on
+          that network
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Earn:</span> fees earned on GM no longer show N/A with a
+          tiny GM balance
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "release-124-125-126-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "14 Sep 2026, 08:00",
+    endDate: "21 Sep 2026, 08:00",
+    variant: "info",
+    title: "App Update: Installed App, Earn Portfolio, Referrals Refresh",
+    summary: (
+      <>
+        The installed app gets shortcuts and an update prompt, Earn Portfolio is fixed and faster, and Referrals is
+        refreshed.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Earn:</span> the Portfolio overview figures are
+          corrected and now sit in a single band with Staking and LP aligned, Expected 365d fees is back, and GM earned
+          fees read N/A instead of $0.00 for balances held outside your wallet. LP earnings load in a fraction of the
+          time. The undelegated DAO voting power notice no longer blocks the Stake and Claim buttons.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Referrals:</span> your codes now sit above the overview,
+          so you see them without scrolling. The tabs are Trader Benefits and Affiliate Dashboard, the page advertises
+          up to 25% commission, and the Rebates chart no longer rounds sub-cent amounts away.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Positions and orders:</span> closing 100% of a position
+          at market now cancels that position's pending margin deposits in the same transaction and refunds the reserved
+          collateral and execution fee, and a deposit orphaned by a liquidation gets its own message on the Orders tab
+          telling you to cancel and reclaim. Settling funding fees on a position below its minimum collateral is blocked
+          with a reason instead of failing silently, and editing margin no longer switches your Express gas payment
+          token. A warning that your order may not execute now carries the fix inside the message, with Deposit margin
+          and Increase the deposit amount as links you can act on, and Gain/Loss and Est. PnL are hidden for invalid
+          TP/SL prices instead of showing a misleading number.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#", so links
+          preview properly and can be shared anywhere, and your old links still work. A link like /trade?to=BTC now
+          arrives with the market and pool already selected, without overriding the direction you were on.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Installed app and mobile:</span> the install dialog now
+          describes the app and adds Trade, Pools and Earn shortcuts, the installed app loads network-first so a new
+          release is picked up instead of the cached one, and an Update available banner offers a reload instead of
+          switching versions mid-session. Modals, toasts and the trade curtain respect the notch and home indicator.
+          Mobile Safari no longer stalls on a blank page, the Max button in mobile wallet browsers fills the full token
+          precision instead of stopping at five decimals and leaving a balance behind, and picking Solana in the network
+          dropdown opens GMTrade instead of leaving the dropdown open.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Market and token search:</span> searching inside the
+          Crypto, TradFi or Recently Listed filters now finds markets outside the active filter and offers to widen the
+          search, and empty states name what you searched for and point at the tab that has results. The Swap receive
+          list is sorted by liquidity, so the order is stable and the deepest options come first.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Stats:</span> the buyback chart plots monthly bars
+          across the full history, with total bought GMX valued at today's price, and the stats page draws each headline
+          figure and its per-chain breakdown from one source, naming a chain with missing data instead of blanking the
+          totals.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> the Trade History margin delta is correct
+          when your pay token is not the position collateral, and returning users see a loading state instead of a
+          Connect wallet flash while the session restores.
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: "qqq-spy-arbitrum-listing",
+    type: "listing",
+    flagId: "showQqqSpyArbitrumListing",
+    endDate: "01 Sep 2026, 12:00",
+    chains: [ARBITRUM],
+    title: "QQQ and SPY markets added on Arbitrum",
+    description: (
+      <>
+        <Link to="/trade">Trade</Link> QQQ and SPY perpetuals 24/7, or <Link to="/pools">provide liquidity</Link> via
+        GLV <span className="text-slate-100">[WETH-USDC]</span>. Find them under TradFi &gt; Indices in the market
+        dropdown.
+      </>
+    ),
+  },
+  {
+    id: "release-122-123-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "21 Aug 2026, 08:00",
+    endDate: "28 Aug 2026, 08:00",
+    variant: "info",
+    title: "App Update: Earnings Overview, Conditional Margin Deposits, Tax Exports",
+    summary: (
+      <>
+        Earn Portfolio now shows what you've earned, margin deposits can wait for a trigger, and history exports for tax
+        tools.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Earn Portfolio:</span> the Portfolio tab now shows what
+          you have earned without hovering. Lifetime and last-7-day totals sit above your assets, split into Staking and
+          LP, and GLV vault earnings appear for the first time. Every GM pool and GLV card carries its own 7d, expected
+          365d and lifetime line.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Margin deposits:</span> Edit margin now takes a trigger
+          price, so you can queue extra margin that only lands if the market reaches it. It shows as a Deposit margin
+          order you can edit or replace from the Orders tab.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">History exports:</span> the CSV button on Trade History
+          and Claims History now opens an export picker, with a detailed GMX format plus Koinly, CoinTracker and
+          CoinLedger. Exports cover your full filtered history, not just the rows on screen.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Trade History:</span> the settlement tooltip on a closed
+          position now reconciles the whole lifecycle, from the margin you put in through every increase, withdrawal and
+          partial close to the final payout. Executed swaps show their swap fee and price impact alongside.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Order warnings:</span> the copy for an order that cannot
+          execute is now the same across the Orders tab, the tradebox and position editing, and each one tells you what
+          to do about it. A limit increase with a trigger beyond your liquidation price is now previewed as a fresh
+          position and warns you.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Wallet funding:</span> Buy with card and Transfer from
+          another chain are available from Receive for every wallet, not just email and social logins. On desktop,
+          Receive to Wallet has a proper Back button.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Links:</span> app URLs no longer contain "#". Your old
+          links and bookmarks still work and are rewritten in place, keeping your referral code, network and page.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Fixes:</span> position PnL matches what the contract
+          settles when the pool PnL cap applies, Staking Power Share shows three decimals on the GMX card so you can see
+          small changes in your share, swap slippage no longer accepts values above 99%, and the TP/SL edit icon on the
+          chart is visible again in light mode.
+        </span>
+      </span>
+    ),
+  },
   {
     id: "release-121-highlights",
     type: "update",
@@ -67,15 +329,15 @@ export const appEventsData: EventData[] = [
       <span className="flex flex-col gap-12">
         <span>
           <span className="font-medium text-typography-primary">Builders:</span>{" "}
-          <ExternalLink href="https://gmx.io/#/builders">gmx.io/builders</ExternalLink> is a new home for teams building
+          <ExternalLink href="https://gmx.io/builders">gmx.io/builders</ExternalLink> is a new home for teams building
           on GMX, with the SDK, REST API and subgraph side by side, a calculator for what a builder code earns, and a
           direct contact route.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader &amp; Affiliate Program:</span>{" "}
-          <ExternalLink href="https://gmx.io/#/trader-affiliate-program">a new page</ExternalLink> for high-volume
-          traders and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and
-          marketing support. Apply from the page, or reach the team on Telegram or a call.
+          <ExternalLink href="https://gmx.io/trader-affiliate-program">a new page</ExternalLink> for high-volume traders
+          and affiliates covering the 25% rate, tiers from $10m volume, a dedicated account manager and marketing
+          support. Apply from the page, or reach the team on Telegram or a call.
         </span>
         <span>
           <span className="font-medium text-typography-primary">Trader profiles:</span> trader activity and address

@@ -8,15 +8,18 @@ import { extendError, parseError, type ErrorLike } from "lib/errors";
 import {
   SMART_WALLET_ACCOUNT_CHANGED_ERROR,
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
+  SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { getEip6492SignatureWrapperHash, hashRelayParams, type RelayParamsPayload } from "sdk/utils/express";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
-import { analyzeSignatureShape, reportSignatureProduced } from "./signatureDiagnostics";
+import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -47,6 +50,7 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  relayParams?: RelayParamsPayload;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -279,7 +283,29 @@ export async function signMessage({
   );
 }
 
-export async function signTypedData({
+export async function signTypedData(params: SignTypedDataParams) {
+  const { typedData, verificationChainId, relayParams } = params;
+  const signature = await signTypedDataOnce(params);
+
+  if (!isContractsV2_2_1(verificationChainId) || getSignatureKind(signature) !== "erc6492") {
+    return signature;
+  }
+
+  if (!relayParams) {
+    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { verificationChainId } });
+  }
+
+  relayParams.eip6492SignatureWrapperHash = getEip6492SignatureWrapperHash(signature);
+  typedData.relayParams = hashRelayParams(relayParams);
+
+  helperToast.info(
+    t`This wallet is not deployed on ${getChainName(verificationChainId)} yet. Sign once more to deploy it with this action`
+  );
+
+  return signTypedDataOnce(params);
+}
+
+async function signTypedDataOnce({
   signer,
   domain,
   types,
@@ -400,7 +426,7 @@ export async function signTypedData({
   }
 
   helperToast.info(
-    t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more.`
+    t`This wallet creates network-specific signatures. Approve the switch to ${getChainName(verificationChainId)} and sign once more`
   );
 
   let retryResult: { signature: string; signingChainId: number };
@@ -476,11 +502,23 @@ export async function signTypedData({
 }
 
 export function splitSignature(signature: string): { r: string; s: string; v: number } {
+  if (!/^0x[0-9a-fA-F]{130}$/.test(signature)) {
+    throw new Error(`Expected a 65-byte signature, got ${(signature.length - 2) / 2} bytes`);
+  }
+
   const sig = signature.slice(2);
   const r = "0x" + sig.substring(0, 64);
   const s = "0x" + sig.substring(64, 128);
-  const v = parseInt(sig.substring(128, 130), 16);
+  let v = parseInt(sig.substring(128, 130), 16);
 
-  // ECDSA signature components
+  // some wallets return the bare recovery id
+  if (v === 0 || v === 1) {
+    v += 27;
+  }
+
+  if (v !== 27 && v !== 28) {
+    throw new Error(`Unexpected signature v: ${v}`);
+  }
+
   return { r, s, v };
 }

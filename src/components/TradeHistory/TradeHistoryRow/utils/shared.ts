@@ -6,10 +6,12 @@ import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
 
+import { getStringContractErrorArg } from "lib/errors";
+import { NumberPart, NumberPartInput, numberParts } from "lib/numbers";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
-import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
+import { getContractErrorMessage, getMarginBelowMinimumErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -39,14 +41,19 @@ export function getOrderActionText(eventName: TradeActionType) {
   return actionText;
 }
 export type TooltipState = "success" | "error" | "muted" | undefined;
+export type FormattedText = string | NumberPart[];
 export type TooltipString =
   | undefined
   | string
   | {
-      text: string | undefined;
+      text: FormattedText | undefined;
       state?: TooltipState;
     };
 export type TooltipValue = TooltipString | TooltipString[];
+
+export function numericText(...inputs: NumberPartInput[]): { text: NumberPart[] } {
+  return { text: numberParts(...inputs) };
+}
 
 export function numberToState(value: bigint | undefined): TooltipState {
   if (value === undefined) {
@@ -68,6 +75,10 @@ export type Line =
   | {
       key: string;
       value: TooltipValue;
+    }
+  | {
+      title: string;
+      value: TooltipValue;
     };
 export type TooltipContent = Line[];
 export function lines(...args: TooltipContent): TooltipContent {
@@ -76,6 +87,12 @@ export function lines(...args: TooltipContent): TooltipContent {
 export function infoRow(key: string, value: TooltipValue): Line {
   return {
     key,
+    value,
+  };
+}
+export function titleRow(title: string, value: TooltipValue): Line {
+  return {
+    title,
     value,
   };
 }
@@ -94,14 +111,14 @@ export type RowDetails = {
     indexName: string;
     poolName: string;
   }[];
-  size: string;
+  size: FormattedText;
   sizeComment?: TooltipContent;
-  price: string;
+  price: FormattedText;
   priceComment: TooltipContent | null;
-  pnl?: string;
+  pnl?: FormattedText;
   pnlState?: TooltipState;
   pnlTooltip?: string;
-  fees?: string;
+  fees?: FormattedText;
   feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;
@@ -164,9 +181,9 @@ export function formatTradeActionTimestamp(timestamp: number, relativeTimestamp 
 }
 
 export function formatTradeActionTimestampUTC(timestamp: number) {
-  return `UTC: ${format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
+  return format(timestamp * 1000, "yyyy-MM-dd HH:mm:ss", {
     in: tz("UTC"),
-  })}`;
+  });
 }
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -186,7 +203,7 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
     return t`Insufficient liquidity`;
   }
 
-  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName);
+  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName, errorArgs);
 
   if (tradeHistoryErrorMessage) {
     return tradeHistoryErrorMessage;
@@ -206,23 +223,25 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
   return t`Order failed due to a protocol validation error: ${errorName}`;
 }
 
-function getTradeHistoryErrorMessage(errorName: string) {
+const MIN_COLLATERAL_FOR_LEVERAGE_REASON = "min collateral for leverage";
+
+function getTradeHistoryErrorMessage(errorName: string, errorArgs?: unknown) {
   switch (errorName) {
     case CustomErrorName.DisabledFeature:
-      return t`This action is currently disabled`;
+      return t`This action is disabled`;
     case CustomErrorName.InsufficientExecutionFee:
       return t`Execution fee is too low for current network costs`;
     case CustomErrorName.InsufficientMarketTokens:
       return t`Insufficient GM tokens for withdrawal`;
     case CustomErrorName.InsufficientWntAmount:
     case CustomErrorName.InsufficientWntAmountForExecutionFee:
-      return t`Not enough native token was provided for the execution fee`;
+      return t`Insufficient native token provided for the execution fee`;
     case CustomErrorName.InvalidKeeperForFrozenOrder:
       return t`Frozen order can only be executed by an authorized keeper`;
     case CustomErrorName.InvalidOrderPrices:
       return t`Trigger price condition has not been met`;
     case CustomErrorName.InvalidSignature:
-      return t`Invalid signature. Try signing the request again`;
+      return t`Invalid signature. Try signing the request again.`;
     case CustomErrorName.MaxPoolAmountForDepositExceeded:
     case "MaxPoolUsdForDepositExceeded":
       return t`Max deposit capacity reached for this pool`;
@@ -230,19 +249,21 @@ function getTradeHistoryErrorMessage(errorName: string) {
       return t`Order is already frozen`;
     case CustomErrorName.EmptyPosition:
     case CustomErrorName.PositionNotFound:
-      return t`Position not found. It may have been closed`;
+      return t`Position not found. It may have been closed.`;
     case CustomErrorName.RequestNotYetCancellable:
-      return t`Request cannot be canceled yet. Try again after the cancellation delay`;
+      return t`Request cannot be canceled yet. Try again after the cancellation delay.`;
     case CustomErrorName.UnsupportedOrderType:
       return t`This order type is not supported`;
     case CustomErrorName.DepositNotFound:
-      return t`Deposit not found. It may have been executed or canceled`;
+      return t`Deposit not found. It may have been executed or canceled.`;
     case CustomErrorName.WithdrawalNotFound:
-      return t`Withdrawal not found. It may have been executed or canceled`;
+      return t`Withdrawal not found. It may have been executed or canceled.`;
     case CustomErrorName.InsufficientFundsToPayForCosts:
       return t`Insufficient collateral to cover order costs`;
     case CustomErrorName.LiquidatablePosition:
-      return t`Position would be liquidatable at current prices`;
+      return getStringContractErrorArg(errorArgs, 0, "reason") === MIN_COLLATERAL_FOR_LEVERAGE_REASON
+        ? getMarginBelowMinimumErrorMessage()
+        : t`Position would be liquidatable at current prices`;
     default:
       return undefined;
   }

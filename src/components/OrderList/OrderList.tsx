@@ -5,19 +5,26 @@ import {
   useIsOrdersLoading,
   useMarketsInfoData,
   usePositionsInfoData,
-  useTokensData,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
-  selectAccount,
+  selectExpressGlobalParams,
+  selectUnavailableExpressFeeToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
   selectChainId,
+  selectOrdersInfoData,
+  selectOrdersInfoError,
   selectSrcChainId,
   selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -34,9 +41,10 @@ import {
 } from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
-import { useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
+import { filterOrdersByUiFilters } from "domain/synthetics/orders/useOrders";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { helperToast } from "lib/helperToast";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -44,6 +52,7 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -84,6 +93,8 @@ export function OrderList({
 }: Props) {
   const positionsData = usePositionsInfoData();
   const isLoading = useIsOrdersLoading();
+  const ordersInfoError = useSelector(selectOrdersInfoError);
+  const hasCachedOrders = Object.keys(useSelector(selectOrdersInfoData) ?? {}).length > 0;
 
   const { isTablet: isContainerSmall } = useBreakpoints();
 
@@ -94,15 +105,15 @@ export function OrderList({
 
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
-  const account = useSelector(selectAccount);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
+  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
   const subaccount = useSelector(selectSubaccountForChainAction);
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const hasOutdatedUi = useHasOutdatedUi();
 
   const orders = useFilteredOrders({
     chainId,
-    account,
     marketsDirectionsFilter: marketsDirectionsFilter,
     orderTypesFilter: orderTypesFilter,
   });
@@ -173,34 +184,49 @@ export function OrderList({
       cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
     };
 
-    const expressParams = await estimateBatchExpressParams({
-      signer,
-      chainId,
-      batchParams,
-      requireValidations: true,
-      globalExpressParams,
-      estimationMethod: "approximate",
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-      subaccount,
-    });
+    try {
+      const expressParams = await estimateExpressParams({
+        signer,
+        chainId,
+        batchParams,
+        requireValidations: false,
+        globalExpressParams,
+        estimationMethod: "approximate",
+        provider,
+        isGmxAccount: srcChainId !== undefined,
+        subaccount,
+      });
 
-    sendBatchOrderTxn({
-      chainId,
-      signer,
-      batchParams,
-      expressParams,
-      simulationParams: undefined,
-      callback: makeOrderTxnCallback({
-        actionName: "Cancel Order",
-        collateralSymbol: order.initialCollateralToken.symbol,
-      }),
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-    }).finally(() => {
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount: srcChainId !== undefined,
+          expressParams,
+          tokensData: undefined,
+          unavailableGasPaymentToken,
+          actionName: "Cancel Order",
+          collateral: order.initialCollateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
+      await sendBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        expressParams: getExpressParamsForSubmit(expressParams),
+        simulationParams: undefined,
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: order.initialCollateralToken.symbol,
+        }),
+        provider,
+        isGmxAccount: srcChainId !== undefined,
+      }).catch(reportHandledRejection("orderList.cancel"));
+    } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
-    });
+    }
   }
 
   const handleSetRef = useCallback((el: HTMLElement | null, orderKey: string) => {
@@ -211,8 +237,16 @@ export function OrderList({
     }
   }, []);
 
+  const ordersEmptyText =
+    ordersInfoError && !hasCachedOrders ? <Trans>Could not load open orders</Trans> : <Trans>No open orders</Trans>;
+
   return (
     <div className="flex grow flex-col">
+      {ordersInfoError && hasCachedOrders && (
+        <AlertInfo type="warning" compact textColor="text-yellow-300">
+          <Trans>Could not refresh open orders. This list may be out of date.</Trans>
+        </AlertInfo>
+      )}
       {isContainerSmall && !isLoading && (
         <div className="flex grow flex-col gap-8">
           <div className="flex flex-wrap items-center justify-between gap-8">
@@ -266,11 +300,7 @@ export function OrderList({
       )}
 
       {isContainerSmall && orders.length === 0 && (
-        <EmptyTableContent
-          isLoading={isLoading}
-          isEmpty={orders.length === 0}
-          emptyText={<Trans>No open orders</Trans>}
-        />
+        <EmptyTableContent isLoading={isLoading} isEmpty={orders.length === 0} emptyText={ordersEmptyText} />
       )}
 
       {!isContainerSmall && (
@@ -330,11 +360,7 @@ export function OrderList({
             </tbody>
           </Table>
 
-          <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={orders.length === 0}
-            emptyText={<Trans>No open orders</Trans>}
-          />
+          <EmptyTableContent isLoading={isLoading} isEmpty={orders.length === 0} emptyText={ordersEmptyText} />
         </TableScrollFadeContainer>
       )}
 
@@ -345,28 +371,25 @@ export function OrderList({
 
 function useFilteredOrders({
   chainId,
-  account,
   marketsDirectionsFilter,
   orderTypesFilter,
 }: {
   chainId: ContractsChainId;
-  account: string | undefined;
   marketsDirectionsFilter: MarketFilterLongShortItemData[];
   orderTypesFilter: OrderTypeFilterValue[];
 }) {
-  const ordersResponse = useOrdersInfoRequest(chainId, {
-    account: account,
-    marketsDirectionsFilter: marketsDirectionsFilter,
-    orderTypesFilter: orderTypesFilter,
-    marketsInfoData: useMarketsInfoData(),
-    tokensData: useTokensData(),
-  });
-
+  const ordersInfoData = useSelector(selectOrdersInfoData);
+  const marketsInfoData = useMarketsInfoData();
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
   const orders = useMemo(() => {
     const { sortedIndexTokensWithPoolValue, sortedLongAndShortTokens } = availableTokensOptions;
 
-    const { swapOrders, positionOrders } = Object.values(ordersResponse.ordersInfoData || {}).reduce(
+    const { swapOrders, positionOrders } = filterOrdersByUiFilters(Object.values(ordersInfoData || {}), {
+      chainId,
+      marketsDirectionsFilter,
+      orderTypesFilter,
+      marketsInfoData,
+    }).reduce(
       (acc, order) => {
         if (
           isLimitOrderType(order.orderType) ||
@@ -391,7 +414,7 @@ function useFilteredOrders({
       ...sortPositionOrders(positionOrders, sortedIndexTokensWithPoolValue),
       ...sortSwapOrders(swapOrders, sortedLongAndShortTokens),
     ];
-  }, [availableTokensOptions, ordersResponse.ordersInfoData]);
+  }, [availableTokensOptions, chainId, marketsDirectionsFilter, marketsInfoData, orderTypesFilter, ordersInfoData]);
 
   return orders;
 }

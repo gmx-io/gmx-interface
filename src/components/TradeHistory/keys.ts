@@ -12,7 +12,10 @@ import { getOrderActionText } from "./TradeHistoryRow/utils/shared";
 type OrderTypes = keyof typeof OrderType;
 
 const actionTextMapBase: Partial<
-  Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
+  Record<
+    `${OrderTypes | "Deposit" | "Withdraw" | "MarginDeposit" | "Twap" | "TwapSwap"}-${TradeActionType}`,
+    MessageDescriptor
+  >
 > = {
   "MarketSwap-OrderCreated": msg`Request Market Swap`,
   "MarketSwap-OrderExecuted": msg`Execute Market Swap`,
@@ -81,7 +84,10 @@ export const expiredActionTextMap: Partial<Record<string, MessageDescriptor>> = 
 };
 
 export const actionTextMap: Partial<
-  Record<`${OrderTypes | "Deposit" | "Withdraw" | "Twap" | "TwapSwap"}-${TradeActionType}`, MessageDescriptor>
+  Record<
+    `${OrderTypes | "Deposit" | "Withdraw" | "MarginDeposit" | "Twap" | "TwapSwap"}-${TradeActionType}`,
+    MessageDescriptor
+  >
 > = {
   ...actionTextMapBase,
 
@@ -92,6 +98,13 @@ export const actionTextMap: Partial<
   "Withdraw-OrderCreated": msg`Request withdraw`,
   "Withdraw-OrderExecuted": msg`Withdraw`,
   "Withdraw-OrderCancelled": msg`Failed withdraw`,
+
+  /** Zero-size limit increase that only adds margin at a trigger price. */
+  "MarginDeposit-OrderCreated": msg`Create margin deposit`,
+  "MarginDeposit-OrderExecuted": msg`Execute margin deposit`,
+  "MarginDeposit-OrderCancelled": msg`Cancel margin deposit`,
+  "MarginDeposit-OrderUpdated": msg`Update margin deposit`,
+  "MarginDeposit-OrderFrozen": msg`Failed margin deposit`,
 };
 
 function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {

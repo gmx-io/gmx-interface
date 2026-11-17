@@ -3,7 +3,8 @@ import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
+import { getAbFlags } from "config/ab";
+import { isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
@@ -16,6 +17,8 @@ import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { getDisplayMode } from "lib/pwa/getDisplayMode";
+import { getLaunchSource } from "lib/pwa/getLaunchSource";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
 import useWallet from "lib/wallets/useWallet";
@@ -31,12 +34,15 @@ export function useConfigureUserAnalyticsProfile() {
   const localReferralCode = useLocalReferralCode();
   const utmParams = useUtmParams();
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const { account, active } = useWallet();
+  const statsAccount = isSolanaNetwork(networkId) ? undefined : account;
   const { user } = usePrivy();
   const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
+  const displayMode = getDisplayMode();
+  const launchSource = getLaunchSource();
   const {
     shouldShowPositionLines,
     expressOrdersEnabled,
@@ -50,15 +56,15 @@ export function useConfigureUserAnalyticsProfile() {
   const timePeriods = useMemo(() => getTimePeriodsInSeconds(), []);
 
   const { data: lastMonthAccountStats } = usePeriodAccountStats(chainId, {
-    account,
+    account: statsAccount,
     from: timePeriods.month[0],
     to: timePeriods.month[1],
-    enabled: true,
+    enabled: statsAccount !== undefined,
   });
 
   const { data: accountStats } = useAccountStats(chainId, {
-    account,
-    enabled: true,
+    account: statsAccount,
+    enabled: statsAccount !== undefined,
   });
 
   const last30DVolume = lastMonthAccountStats?.volume;
@@ -81,17 +87,6 @@ export function useConfigureUserAnalyticsProfile() {
         isUrlParamsChanged = true;
       }
 
-      const abFlags = getAbFlags();
-
-      Object.keys(abFlags).forEach((flag) => {
-        const urlFlagValue = query.get(flag);
-        if (urlFlagValue) {
-          setAbFlagEnabled(flag as AbFlag, urlFlagValue === "1");
-          query.delete(flag);
-          isUrlParamsChanged = true;
-        }
-      });
-
       if (isUrlParamsChanged) {
         history.replace({
           search: query.toString(),
@@ -107,12 +102,14 @@ export function useConfigureUserAnalyticsProfile() {
       browserName: bowser?.browser.name,
       ordersCount,
       isWalletConnected: active,
+      displayMode,
+      launchSource,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
       ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser, walletAnalyticsProvenance]);
+  }, [active, ordersCount, bowser, displayMode, launchSource, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({

@@ -12,6 +12,27 @@ body,
   color: var(--color-typography-primary);
 }
 
+:root {
+  --safe-area-inset-top: 0px;
+  --safe-area-inset-right: 0px;
+  --safe-area-inset-bottom: 0px;
+  --safe-area-inset-left: 0px;
+}
+
+html[data-installed-app] {
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+}
+
+html[data-installed-app] #root {
+  padding-top: var(--safe-area-inset-top);
+  padding-right: var(--safe-area-inset-right);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+}
+
 /**
  * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
  * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
@@ -52,27 +73,32 @@ code {
   box-sizing: border-box;
 }
 
-@supports (scrollbar-width: auto) {
-  :root {
-    scrollbar-color: var(--color-slate-500) var(--color-slate-900);
-  }
+:root {
+  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
 }
 
 @supports selector(::-webkit-scrollbar) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+  @media (hover: hover) and (pointer: fine) {
+    // Standard scrollbar colors override WebKit's custom scrollbar styling.
+    :root {
+      scrollbar-color: auto;
+    }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background-color: var(--color-slate-900);
-  }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background-color: var(--color-slate-500);
-    border-radius: 15px;
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background-color: var(--color-slate-900);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background-color: var(--color-slate-500);
+      border-radius: 15px;
+    }
   }
 }
 

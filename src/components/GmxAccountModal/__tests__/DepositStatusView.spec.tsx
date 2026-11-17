@@ -23,7 +23,7 @@ vi.mock("context/SubaccountContext/SubaccountContextProvider", () => ({
 }));
 
 vi.mock("domain/multichain/useGmxAccountFundingHistory", () => ({
-  useGmxAccountFundingHistoryItem: () => undefined,
+  useGmxAccountFundingHistoryItem: () => ({ transfer: undefined, isLoading: false, error: undefined }),
 }));
 
 vi.mock("lib/userAnalytics", () => ({

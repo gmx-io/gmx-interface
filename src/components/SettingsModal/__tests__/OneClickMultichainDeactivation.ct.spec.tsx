@@ -5,16 +5,15 @@ import { ethers } from "ethers";
 import { getSubaccountApprovalKey, getSubaccountConfigKey } from "config/localStorage";
 import {
   ARBITRUM_CONTRACTS,
-  installMockChain,
   MOCK_ACCOUNT_PRIVATE_KEY,
   MockChain,
-  MockGelatoRelay,
+  MockGmxRelay,
   SEEDED_SUBACCOUNT_ADDRESS,
   SEEDED_SUBACCOUNT_PRIVATE_KEY,
-} from "domain/testUtils/oneClickCtRpcHarness";
-import MultichainSubaccountRouterAbi from "sdk/abis/MultichainSubaccountRouter";
+} from "domain/testUtils/rpc/mockChain";
+import { assertNoRpcHoles, installRpcResponder } from "domain/testUtils/rpc/playwrightAdapter";
+import { getAbi } from "sdk/abis/getAbi";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
-import { getWrappedToken } from "sdk/configs/tokens";
 
 import { OneClickMultichainDeactivationStory } from "./OneClickMultichainDeactivation.ct.stories";
 
@@ -22,20 +21,18 @@ const MOCK_ACCOUNT = new ethers.Wallet(MOCK_ACCOUNT_PRIVATE_KEY).address;
 
 const FAR_FUTURE = 9999999999n;
 
-const ARBITRUM_WETH_ADDRESS = getWrappedToken(ARBITRUM).address;
-
-const MULTICHAIN_SUBACCOUNT_ROUTER_IFACE = new ethers.Interface(MultichainSubaccountRouterAbi as ethers.InterfaceAbi);
+const MULTICHAIN_SUBACCOUNT_ROUTER_IFACE = new ethers.Interface(
+  getAbi(ARBITRUM, "MultichainSubaccountRouter") as ethers.InterfaceAbi
+);
 const REMOVE_SUBACCOUNT_SELECTOR = MULTICHAIN_SUBACCOUNT_ROUTER_IFACE.getFunction("removeSubaccount")!.selector;
-
-function extractRelayedCallData(taskData: string): string {
-  return taskData.slice(0, taskData.length - 144);
-}
 
 const CONFIG_KEY = getSubaccountConfigKey(ARBITRUM, MOCK_ACCOUNT);
 const SETTLEMENT_APPROVAL_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, undefined);
 const BASE_APPROVAL_KEY = getSubaccountApprovalKey(ARBITRUM, MOCK_ACCOUNT, SOURCE_BASE_MAINNET);
 
 test.setTimeout(90_000);
+
+test.afterEach(assertNoRpcHoles);
 
 type PageLike = {
   locator: (selector: string) => Locator;
@@ -54,11 +51,11 @@ function modeButton(page: PageLike, title: "Classic" | "Express" | "Express + On
 }
 
 function expectModeActive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-100/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-100(?:\s|$)/);
 }
 
 function expectModeInactive(button: Locator) {
-  return expect(button).toHaveClass(/border-slate-600/);
+  return expect(button).toHaveClass(/(?:^|\s)border-slate-600(?:\s|$)/);
 }
 
 function readLocalStorage(page: PageLike, key: unknown): Promise<string | null> {
@@ -86,9 +83,8 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
         expiresAt: FAR_FUTURE,
       },
     });
-    const gelatoRelay = new MockGelatoRelay(chain);
-    gelatoRelay.simulateInsufficientBalanceForToken = ARBITRUM_WETH_ADDRESS;
-    await installMockChain(page, chain, { gelatoRelay });
+    const gmxRelay = new MockGmxRelay(chain);
+    await installRpcResponder(page, chain, { gmxRelay });
 
     await mount(
       <OneClickMultichainDeactivationStory
@@ -105,39 +101,34 @@ test.describe("Trading Settings: multichain Express+1CT -> Express deactivation 
     await modeButton(page, "Express").click();
 
     await expect(page.getByText("Deactivation failed")).toBeVisible({ timeout: 30_000 });
-    await expect(
-      page.getByText(
-        "Insufficient gas payment token balance in your GMX Account to cover network fees. Deposit funds and retry."
-      )
-    ).toBeVisible();
+    await expect(page.getByText("Insufficient ETH in your GMX Account for gas. Deposit ETH.")).toBeVisible();
 
     expect(countSignatureRequests(chain)).toBe(0);
     expect(chain.signedTypedData).toHaveLength(0);
     expect(chain.signedMessages).toHaveLength(0);
     expect(chain.sentTransactions).toHaveLength(0);
-    expect(gelatoRelay.sentTransactions).toHaveLength(0);
+    expect(gmxRelay.sentTransactions).toHaveLength(0);
 
     await expectModeActive(modeButton(page, "Express + One-Click"));
     await expectModeInactive(modeButton(page, "Express"));
     expect(await readLocalStorage(page, CONFIG_KEY)).toBe(configBefore);
 
     await page.locator('[data-qa="deposit-gas-payment-token"]').click();
-    gelatoRelay.simulateInsufficientBalanceForToken = undefined;
 
     await modeButton(page, "Express").click();
 
     await expect(page.getByText("Deactivated")).toBeVisible({ timeout: 30_000 });
 
     expect(chain.sentTransactions).toHaveLength(0);
-    expect(gelatoRelay.sentTransactions).toHaveLength(1);
-    expect(ethers.getAddress(gelatoRelay.sentTransactions[0].to)).toBe(ARBITRUM_CONTRACTS.MultichainSubaccountRouter);
-    expect(gelatoRelay.sentTransactions[0].data.startsWith(REMOVE_SUBACCOUNT_SELECTOR)).toBe(true);
-    expect(gelatoRelay.sentTransactions[0].chainId).toBe(String(ARBITRUM));
+    expect(gmxRelay.sentTransactions).toHaveLength(1);
+    expect(ethers.getAddress(gmxRelay.sentTransactions[0].to)).toBe(ARBITRUM_CONTRACTS.MultichainSubaccountRouter);
+    expect(gmxRelay.sentTransactions[0].data.startsWith(REMOVE_SUBACCOUNT_SELECTOR)).toBe(true);
+    expect(gmxRelay.sentTransactions[0].chainId).toBe(String(ARBITRUM));
 
-    const relayedCallData = extractRelayedCallData(gelatoRelay.sentTransactions[0].data);
+    // GMX Relay takes bare relay-router calldata, no fee suffix appended
     const decodedRemoveCall = MULTICHAIN_SUBACCOUNT_ROUTER_IFACE.decodeFunctionData(
       "removeSubaccount",
-      relayedCallData
+      gmxRelay.sentTransactions[0].data
     );
     const [decodedRelayParams, decodedAccount, decodedSrcChainId, decodedSubaccount] = decodedRemoveCall;
     expect(ethers.getAddress(decodedAccount)).toBe(MOCK_ACCOUNT);

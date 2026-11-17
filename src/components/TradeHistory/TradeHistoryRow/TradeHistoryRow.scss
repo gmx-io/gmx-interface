@@ -14,26 +14,8 @@
   text-overflow: ellipsis;
 }
 
-.TradeHistoryRow-tooltip {
-  white-space: pre-line;
-}
-
 .TradeHistoryRow-pnl-fees {
   text-align: end !important;
-}
-
-.TradeHistoryRow-tooltip-portal {
-  .Tooltip-popup {
-    min-width: max-content;
-  }
-}
-
-.TradeHistoryRow-price-tooltip-portal {
-  .Tooltip-popup {
-    @media (min-width: 600px) {
-      width: 400px;
-    }
-  }
 }
 
 .TradeHistoryRow-action-handle {

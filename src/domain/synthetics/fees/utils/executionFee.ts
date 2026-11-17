@@ -1,10 +1,14 @@
 import {
   ContractsChainId,
   getExecutionFeeConfig,
+  getExecutionFeePriorityFeeAllowance,
+  getGasPricePremium,
   getMaxPriorityFeePerGas as getMaxPriorityFeePerGasConfig,
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { bigMath } from "sdk/utils/bigmath";
+import type { ExecutionFee } from "sdk/utils/fees/types";
+import type { ExecutionFeeEstimate } from "sdk/utils/orderTransactions";
 
 export function estimateExecutionGasPrice(p: {
   rawGasPrice: bigint | undefined;
@@ -25,6 +29,27 @@ export function getExecutionFeeBufferBps(chainId: number, settledBufferBps: numb
   return BigInt(settledBufferBps ?? getExecutionFeeConfig(chainId as ContractsChainId)?.defaultBufferBps ?? 0);
 }
 
+export function getExecutionFeeGasPricePremium(chainId: number, isExpress: boolean) {
+  const premium = getGasPricePremium(chainId as ContractsChainId) || 0n;
+
+  return isExpress ? premium : premium + getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId);
+}
+
+export function getExpressGasPrice(chainId: number, gasPrice: bigint) {
+  return bigMath.max(0n, gasPrice - getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId));
+}
+
+export function getPriorityFeeAllowanceAmount(chainId: number, executionFee: ExecutionFee) {
+  return bigMath.min(
+    executionFee.feeTokenAmount,
+    getExecutionFeePriorityFeeAllowance(chainId as ContractsChainId) * executionFee.gasLimit
+  );
+}
+
+export function getExpressExecutionFeeAmount(chainId: number, executionFee: ExecutionFee) {
+  return executionFee.feeTokenAmount - getPriorityFeeAllowanceAmount(chainId, executionFee);
+}
+
 export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePerGas: bigint | undefined | null) {
   const executionFeeConfig = getExecutionFeeConfig(chainId as ContractsChainId);
 
@@ -40,32 +65,80 @@ export function getMaxPriorityFeePerGas(chainId: number, onChainMaxPriorityFeePe
 
 export function getMinimumExecutionFeeBufferBps(p: {
   minExecutionFee: bigint;
-  estimatedExecutionFee: bigint;
+  executionFee: bigint;
+  estimatedExecutionFee: bigint | undefined;
+  estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders?: ExecutionFeeEstimate[];
   currentBufferBps: bigint;
   premium: bigint;
-  gasLimit: bigint;
 }) {
-  const { minExecutionFee, estimatedExecutionFee, currentBufferBps, premium, gasLimit } = p;
+  const {
+    minExecutionFee,
+    executionFee,
+    estimatedExecutionFee,
+    estimatedExecutionGasLimit,
+    estimatedOrders,
+    currentBufferBps,
+    premium,
+  } = p;
 
-  if (gasLimit === 0n || currentBufferBps === 0n) {
+  if (currentBufferBps === 0n) {
     return undefined;
   }
 
-  const estimatedGasPriceWithBuffer = estimatedExecutionFee / gasLimit - premium;
+  const orderGasLimit = getReportedOrderGasLimit({
+    executionFee,
+    estimatedExecutionFee,
+    estimatedExecutionGasLimit,
+    estimatedOrders,
+  });
+
+  if (orderGasLimit === undefined || orderGasLimit === 0n) {
+    return undefined;
+  }
+
+  const estimatedGasPriceWithBuffer = executionFee / orderGasLimit - premium;
 
   const baseGasPrice =
     (estimatedGasPriceWithBuffer * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT + currentBufferBps);
 
-  if (baseGasPrice === 0n) {
+  if (baseGasPrice <= 0n) {
     return undefined;
   }
 
   // Calculate target gas price (without premium)
-  const targetGasPrice = minExecutionFee / gasLimit - premium;
+  const targetGasPrice = minExecutionFee / orderGasLimit - premium;
   const bufferBps = (targetGasPrice * BASIS_POINTS_DIVISOR_BIGINT) / baseGasPrice - BASIS_POINTS_DIVISOR_BIGINT;
 
   // Add extra 5% for safety
   const requiredBufferBps = bufferBps + (BASIS_POINTS_DIVISOR_BIGINT / 100n) * 5n;
 
   return requiredBufferBps;
+}
+
+// The contract reports a single order's fee: use that order's gas limit, or its share of the batch estimate
+function getReportedOrderGasLimit(p: {
+  executionFee: bigint;
+  estimatedExecutionFee: bigint | undefined;
+  estimatedExecutionGasLimit: bigint | undefined;
+  estimatedOrders: ExecutionFeeEstimate[] | undefined;
+}) {
+  const { executionFee, estimatedExecutionFee, estimatedExecutionGasLimit, estimatedOrders } = p;
+
+  const reportedOrder = estimatedOrders?.find((order) => order.executionFee === executionFee && order.gasLimit > 0n);
+
+  if (reportedOrder) {
+    return reportedOrder.gasLimit;
+  }
+
+  if (
+    estimatedExecutionFee === undefined ||
+    estimatedExecutionFee === 0n ||
+    estimatedExecutionGasLimit === undefined ||
+    estimatedExecutionGasLimit === 0n
+  ) {
+    return undefined;
+  }
+
+  return bigMath.mulDiv(estimatedExecutionGasLimit, executionFee, estimatedExecutionFee);
 }

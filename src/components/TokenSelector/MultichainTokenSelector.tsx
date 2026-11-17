@@ -17,8 +17,8 @@ import type { TokenChainData } from "domain/multichain/types";
 import { getMarketBadge } from "domain/synthetics/markets/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { TokenBalanceType, Token, TokensData } from "domain/tokens";
-import { getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
-import { formatBalanceAmount, formatUsd } from "lib/numbers";
+import { createTokenSortSequenceComparator, getMidPrice, stripBlacklistedWords } from "domain/tokens/utils";
+import { formatBalanceAmount } from "lib/numbers";
 import { EMPTY_OBJECT } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import {
@@ -28,12 +28,13 @@ import {
   isMarketTokenAddress,
   MARKETS,
 } from "sdk/configs/markets";
-import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import { getToken, GM_STUB_ADDRESS, isValidTokenSafe } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
 import { useOpenWalletReceive } from "components/GmxAccountModal/hooks";
 import { SlideModal } from "components/Modal/SlideModal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -97,9 +98,12 @@ export function MultichainTokenSelector({
   const [searchKeyword, setSearchKeyword] = useState("");
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const openWalletReceive = useOpenWalletReceive();
+  // The SDK token config has no Solana mints; the network's TokensData carries them.
+  // getToken throws on those mints, which takes down the trade box while tokens are still loading.
+  const sdkToken = isValidTokenSafe(chainId, tokenAddress) ? getToken(chainId, tokenAddress) : undefined;
   let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
     ? getToken(chainId, GM_STUB_ADDRESS)
-    : getToken(chainId, tokenAddress);
+    : tokensData?.[tokenAddress] ?? sdkToken;
 
   const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | GmxAccountPseudoChainId) => {
     setIsModalVisible(false);
@@ -190,7 +194,7 @@ export function MultichainTokenSelector({
     ) : (
       <Button variant="secondary" size="medium" className="w-full !text-typography-primary" onClick={handleFooterClick}>
         <ArrowDownIcon className="size-20 text-blue-300" />
-        {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Receive to Wallet</Trans>}
+        {activeFilter === "gmxAccount" ? <Trans>Deposit to GMX Account</Trans> : <Trans>Receive to wallet</Trans>}
       </Button>
     );
 
@@ -405,27 +409,17 @@ function useAvailableToTradeTokenList({
       }
     }
 
+    const compareBySortSequence = createTokenSortSequenceComparator<DisplayToken>(extendedSortSequence);
+
     const sortedTokensWithBalance: DisplayToken[] = tokensWithBalance.sort((a, b) => {
-      if (a.balanceUsd === b.balanceUsd) {
-        return 0;
-      }
-      return b.balanceUsd - a.balanceUsd > 0n ? 1 : -1;
-    });
-
-    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort((a, b) => {
-      if (extendedSortSequence) {
-        // making sure to use the wrapped address if it exists in the extended sort sequence
-        const aAddress =
-          a.wrappedAddress && extendedSortSequence.includes(a.wrappedAddress) ? a.wrappedAddress : a.address;
-
-        const bAddress =
-          b.wrappedAddress && extendedSortSequence.includes(b.wrappedAddress) ? b.wrappedAddress : b.address;
-
-        return extendedSortSequence.indexOf(aAddress) - extendedSortSequence.indexOf(bAddress);
+      if (a.balanceUsd !== b.balanceUsd) {
+        return b.balanceUsd > a.balanceUsd ? 1 : -1;
       }
 
-      return 0;
+      return compareBySortSequence(a, b);
     });
+
+    const sortedTokensWithoutBalance: DisplayToken[] = tokensWithoutBalance.sort(compareBySortSequence);
 
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [
@@ -458,6 +452,7 @@ export function AvailableToTradeTokenList({
         return (
           <div
             key={`${token.address}_${token.chainId}`}
+            data-qa={`available-token-${token.address}-${token.chainId}`}
             className="flex cursor-pointer items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
             onClick={() => onSelectTokenAddress(token.address, token.chainId)}
           >
@@ -518,7 +513,7 @@ export function AvailableToTradeTokenList({
               </div>
 
               <span className="text-body-small text-typography-secondary">
-                {token.balanceUsd > 0n && formatUsd(token.balanceUsd)}
+                {token.balanceUsd > 0n && <UsdValue usd={token.balanceUsd} />}
               </span>
             </div>
           </div>

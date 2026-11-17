@@ -1,14 +1,10 @@
-import { Trans } from "@lingui/macro";
-
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { LiquidatableIncreaseMessage } from "components/MarginRemediation/MarginRemediationActions";
 
-export function LiquidatableIncreaseWarningCard() {
+export function LiquidatableIncreaseWarningCard({ positionKey }: { positionKey: string | undefined }) {
   return (
     <AlertInfoCard type="warning" hideClose>
-      <Trans>
-        This order may fail to execute with the current position state. Add collateral or reduce leverage before it
-        triggers.
-      </Trans>
+      <LiquidatableIncreaseMessage positionKey={positionKey} />
     </AlertInfoCard>
   );
 }

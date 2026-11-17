@@ -96,7 +96,7 @@ export function ContactSection() {
           <Trans>
             Lock in
             <br />
-            <span className={GRADIENT_TEXT_CLASS}>a better rate.</span>
+            <span className={GRADIENT_TEXT_CLASS}>a better rate</span>
           </Trans>
         </h2>
         <p className="mt-14 max-w-[350px] text-16 leading-[20px] -tracking-[0.512px] text-slate-400">
@@ -113,7 +113,7 @@ export function ContactSection() {
             icon={icContactChat}
             title={t`Live chat with the desk`}
             description={t`Instant answers, right on the page`}
-            buttonLabel={t`Open Live-Chat`}
+            buttonLabel={t`Open live chat`}
             primary
             onClick={openLiveChat}
           />
@@ -157,7 +157,7 @@ export function ContactSection() {
       </div>
 
       <div className="relative mt-76 flex w-full max-w-[1200px] flex-col items-center gap-16 pb-16 text-12 tracking-[0.024px] text-white sm:flex-row sm:justify-between">
-        <a href="/#/" aria-label="GMX">
+        <a href="/" aria-label="GMX">
           <img src={footerLogo} alt="GMX" className="h-16 w-[70px]" />
         </a>
         <p className="text-center">
@@ -181,7 +181,7 @@ export function ContactSection() {
             <Trans>Stats</Trans>
           </a>
           <a
-            href="/#/terms-and-conditions"
+            href="/terms-and-conditions"
             target="_blank"
             rel="noopener noreferrer"
             className="duration-180 transition-colors hover:text-white/80"

@@ -6,17 +6,22 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { type ErrorLike, parseError, TxErrorType } from "lib/errors";
+import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
-import { metrics } from "lib/metrics";
+import { metrics, type TokenApprovalEvent, type TokenApprovalMetricParams } from "lib/metrics";
+import { getTokenPermitId, sendTokenPermitMetric } from "lib/metrics/tokenPermitMetrics";
+import { getTxnErrorOutcome } from "lib/metrics/txnErrorOutcome";
 import { getProvider } from "lib/rpc";
 import TokenAbi from "sdk/abis/Token";
-import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { InfoTokens, Token, TokenInfo } from "sdk/utils/tokens/types";
+import { getNativeToken } from "sdk/configs/tokens";
+import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
+import { sendTokenApprovalMetric } from "./tokenApprovalMetric";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
@@ -24,11 +29,12 @@ type Params = {
   tokenAddress: string;
   spender: string;
   chainId: number;
+  /** Set only when a permit can stand in for the approval of this token */
   permitParams:
     | {
         addTokenPermit: AddTokenPermitFn;
-        setIsPermitsDisabled: (disabled: boolean) => void;
-        isPermitsDisabled: boolean;
+        disableTokenPermits: (tokenAddresses: string[]) => void;
+        accountType: string | undefined;
       }
     | undefined;
   onApproveSubmitted?: ({ isPermit }: { isPermit: boolean }) => void;
@@ -39,9 +45,26 @@ type Params = {
   setPendingTxns?: (txns: any[]) => void;
   includeMessage?: boolean;
   approveAmount: bigint | undefined;
+  metric: TokenApprovalMetricParams;
 };
 
-type PermitFallbackReason = "unsupported" | "disabled" | "permitsDisabled" | "failed" | "invalidSignature";
+type PermitFallbackReason = "failed" | "invalidSignature";
+
+export type ApproveTokensResult = {
+  hash: `0x${string}`;
+};
+
+// parseError patterns are case-sensitive, so keep the old case-insensitive check for rejections without code 4001
+function getPermitErrorOutcome(error: unknown): "rejected" | "failed" {
+  if (getTxnErrorOutcome(error) === "rejected") {
+    return "rejected";
+  }
+
+  const message = (error as Error | undefined)?.message;
+  const lowerMessage = typeof message === "string" ? message.toLowerCase() : "";
+
+  return lowerMessage.includes("user rejected") || lowerMessage.includes("user denied") ? "rejected" : "failed";
+}
 
 export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
   return (
@@ -71,40 +94,31 @@ export async function approveTokens({
   includeMessage,
   approveAmount,
   permitParams,
-}: Params): Promise<void> {
+  metric,
+}: Params): Promise<ApproveTokensResult | undefined> {
   setIsApproving(true);
 
   if (approveAmount === undefined) {
     approveAmount = maxUint256;
   }
 
-  let token: Token | undefined;
+  const isUnlimited = approveAmount === maxUint256;
+
+  const sendMetric = (
+    method: TokenApprovalEvent["data"]["method"],
+    outcome: TokenApprovalEvent["data"]["outcome"],
+    error?: unknown
+  ) => sendTokenApprovalMetric({ metric, method, outcome, chainId, tokenAddress, spender, isUnlimited, error });
+
   let permitFallbackReason: PermitFallbackReason | undefined;
 
-  try {
-    token = getToken(chainId, tokenAddress);
+  if (permitParams) {
+    const permitMetricParams = { chainId, tokenAddress, accountType: permitParams.accountType };
 
-    if (!token.isPermitSupported) {
-      permitFallbackReason = "unsupported";
-    } else if (token.isPermitDisabled) {
-      permitFallbackReason = "disabled";
-    }
-  } catch (e) {
-    // ...ignore in case of glv / gm approval
-  }
-
-  if (permitParams?.isPermitsDisabled && token?.isPermitSupported && !permitFallbackReason) {
-    permitFallbackReason = "permitsDisabled";
-  }
-
-  const addTokenPermit = permitParams?.addTokenPermit;
-  const shouldUsePermit = Boolean(
-    addTokenPermit && token?.isPermitSupported && !token.isPermitDisabled && !permitParams?.isPermitsDisabled
-  );
-
-  if (shouldUsePermit && addTokenPermit && permitParams) {
     try {
-      await addTokenPermit(tokenAddress, spender, approveAmount);
+      const permit = await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
+      sendTokenPermitMetric({ ...permitMetricParams, outcome: "signed", permitId: getTokenPermitId(permit) });
+      sendMetric("permit", "accepted");
       onApproveSubmitted?.({ isPermit: true });
       helperToast.success(
         <div>
@@ -115,30 +129,40 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
+      // wallets can reject with a nullish value, hence the optional chaining below
       const error = e as Error;
-      const lowerMessage = error.message?.toLowerCase();
-      const isUserRejection = lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied");
+      const outcome = getPermitErrorOutcome(error);
 
-      if (isUserRejection) {
+      if (outcome === "rejected") {
+        sendTokenPermitMetric({ ...permitMetricParams, outcome: "rejected" });
+        sendMetric("permit", "rejected", error);
         onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
         setIsApproving(false);
         return;
       }
 
-      if (error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
-        permitParams.setIsPermitsDisabled(true);
-        metrics.pushError(error, "approveTokens.permitError");
-        permitFallbackReason = "invalidSignature";
-      } else {
-        permitParams.setIsPermitsDisabled(true);
-        metrics.pushError(error, "approveTokens.permitError");
-        permitFallbackReason = "failed";
+      // the approval was started for the previous account or chain, so neither a fallback nor a transaction fits
+      if (error?.message === PERMIT_WALLET_CHANGED_ERROR) {
+        onApproveFail?.(error, { isPermit: true });
+        setIsApproving(false);
+        return;
       }
+
+      permitFallbackReason = error?.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR) ? "invalidSignature" : "failed";
+
+      // a wallet timeout or rpc hiccup can pass next time, so only a bad signature keeps the token on approvals
+      if (permitFallbackReason === "invalidSignature") {
+        permitParams.disableTokenPermits([tokenAddress]);
+      }
+
+      metrics.pushError(error, "approveTokens.permitError");
+      sendTokenPermitMetric({ ...permitMetricParams, outcome: "fallback", reason: permitFallbackReason });
+      sendMetric("permit", outcome, error);
     }
   }
 
-  if (permitParams && permitFallbackReason) {
+  if (permitFallbackReason) {
     helperToast.info(getPermitFallbackToastContent(permitFallbackReason));
   }
 
@@ -156,7 +180,9 @@ export async function approveTokens({
       value: undefined,
     });
 
-    const res = await contract.approve(spender, finalApproveAmount, { gasLimit });
+    const res = await contract.approve(spender, finalApproveAmount, { chainId, gasLimit });
+
+    sendMetric("transaction", "accepted");
 
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
     helperToast.success(getApproveSubmittedToastContent({ txUrl }));
@@ -168,11 +194,16 @@ export async function approveTokens({
       const token = getTokenInfo(infoTokens, tokenAddress);
       const pendingTxn = {
         hash: res.hash,
+        chainId,
         message: includeMessage ? t`${token.symbol} approved` : false,
       };
       setPendingTxns([...pendingTxns, pendingTxn]);
     }
+
+    return { hash: res.hash as `0x${string}` };
   } catch (e) {
+    const outcome = getTxnErrorOutcome(e);
+    sendMetric("transaction", outcome, e);
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console
     console.error(e);
@@ -180,7 +211,8 @@ export async function approveTokens({
     if (
       ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
         e.data?.message
-      )
+      ) ||
+      parseError(e as ErrorLike)?.txErrorType === TxErrorType.NotEnoughFunds
     ) {
       failMsg = (
         <div>
@@ -195,7 +227,7 @@ export async function approveTokens({
           </Trans>
         </div>
       );
-    } else if (e.message?.includes("User denied transaction signature")) {
+    } else if (outcome === "rejected") {
       failMsg = t`Approval cancelled`;
     } else {
       failMsg = (
@@ -217,15 +249,6 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
   let reasonText: string;
 
   switch (reason) {
-    case "unsupported":
-      reasonText = t`This token does not support permit approvals.`;
-      break;
-    case "disabled":
-      reasonText = t`Permit approvals are disabled for this token.`;
-      break;
-    case "permitsDisabled":
-      reasonText = t`Permit approvals are currently unavailable.`;
-      break;
     case "invalidSignature":
       reasonText = t`The permit signature could not be validated.`;
       break;
@@ -239,7 +262,7 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
       {reasonText}
       <br />
       <br />
-      <Trans>A standard approval transaction is required to continue.</Trans>
+      <Trans>A standard approval transaction is required to continue</Trans>
     </div>
   );
 }

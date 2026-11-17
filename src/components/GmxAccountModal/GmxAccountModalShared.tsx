@@ -1,20 +1,19 @@
 import { Trans } from "@lingui/macro";
 import { type KeyboardEvent, type ReactNode } from "react";
 
-import { getChainName } from "config/chains";
-import { getAccountModalMode } from "config/multichain";
+import { getChainName, isSolanaNetwork } from "config/chains";
 import { GmxAccountModalView } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountModalOpen, useGmxAccountSelectedTransferGuid } from "context/GmxAccountContext/hooks";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
-import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
+import { useAccountModalMode } from "./hooks";
 import { TransferHistoryView } from "./MainView";
 import { TransferDetailsView } from "./TransferDetailsView";
 import { WithdrawalView } from "./WithdrawalView";
@@ -57,19 +56,17 @@ const DOCS_MULTICHAIN_URL = "https://docs.gmx.io/docs/trading/overview/#multicha
 
 function WalletOnlyInfo({ chainName }: { chainName: string }) {
   return (
-    <div className="flex flex-col gap-16">
-      <div className="flex flex-col gap-12">
-        <div>
-          <Trans>You can open isolated positions on GMX using funds directly from your connected wallet.</Trans>
-        </div>
-        <div>
-          <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
-        </div>
-      </div>
-      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
+    <TooltipContent>
+      <TooltipText>
+        <Trans>You can open isolated positions on GMX using funds directly from your connected wallet.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
+      </TooltipText>
+      <TooltipLink href={DOCS_MULTICHAIN_URL}>
         <Trans>Read more</Trans>
-      </ExternalLink>
-    </div>
+      </TooltipLink>
+    </TooltipContent>
   );
 }
 
@@ -81,63 +78,62 @@ function GmxAccountInfo({
   settlementChainName: string;
 }) {
   return (
-    <div className="flex flex-col gap-12">
-      <div>
+    <TooltipContent>
+      <TooltipText>
         <Trans>You can open isolated positions on GMX using your GMX Account.</Trans>
-      </div>
-      <div>
+      </TooltipText>
+      <TooltipText>
         <Trans>Wallet funds on {sourceChainName} are not used directly for GMX trades.</Trans>
-      </div>
-      <div>
+      </TooltipText>
+      <TooltipText>
         <Trans>
           GMX Account uses a separate trading balance linked to your wallet. To trade, deposit funds from your wallet to
           your GMX Account.
         </Trans>
-      </div>
-      <div>
+      </TooltipText>
+      <TooltipText>
         <Trans>
           All positions belong to the same connected wallet and are shown together, whether they were opened from{" "}
           {settlementChainName} wallet funds or GMX Account funds.
         </Trans>
-      </div>
-    </div>
+      </TooltipText>
+    </TooltipContent>
   );
 }
 
 function WalletAndGmxAccountInfo() {
   return (
-    <div className="flex flex-col gap-16">
-      <div className="flex flex-col gap-12">
-        <div>
-          <Trans>You can open isolated positions on GMX using funds from either your wallet or your GMX Account.</Trans>
-        </div>
-        <div>
-          <Trans>Wallet uses funds directly from your connected wallet.</Trans>
-        </div>
-        <div>
-          <Trans>
-            GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then
-            deposit to your GMX Account.
-          </Trans>
-        </div>
-        <div>
-          <Trans>
-            All positions belong to the same connected wallet and are shown together, whether they were opened with
-            wallet funds or GMX Account funds.
-          </Trans>
-        </div>
-      </div>
-      <ExternalLink href={DOCS_MULTICHAIN_URL} variant="icon-arrow" className="font-medium text-blue-300">
+    <TooltipContent>
+      <TooltipText>
+        <Trans>You can open isolated positions on GMX using funds from either your wallet or your GMX Account.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>Wallet uses funds directly from your connected wallet.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          GMX Account uses a separate trading balance linked to that wallet. To use it, fund your wallet first, then
+          deposit to your GMX Account.
+        </Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          All positions belong to the same connected wallet and are shown together, whether they were opened with wallet
+          funds or GMX Account funds.
+        </Trans>
+      </TooltipText>
+      <TooltipLink href={DOCS_MULTICHAIN_URL}>
         <Trans>Read more</Trans>
-      </ExternalLink>
-    </div>
+      </TooltipLink>
+    </TooltipContent>
   );
 }
 
 export function MainViewTitle() {
-  const { chainId, srcChainId } = useChainId();
+  const { chainId, srcChainId, networkId } = useChainId();
   const [modalState] = useGmxAccountModalOpen();
-  const mode = getAccountModalMode(chainId, srcChainId);
+  const isSolanaSelected = isSolanaNetwork(networkId);
+  const mode = useAccountModalMode();
 
   const isMainViewActive = modalState === true || modalState === "main";
 
@@ -145,11 +141,14 @@ export function MainViewTitle() {
   const sourceChainName = srcChainId !== undefined ? getChainName(srcChainId) : settlementChainName;
 
   let title: ReactNode;
-  let info: ReactNode;
+  let info: ReactNode = undefined;
 
   if (mode === "walletOnly") {
     title = <Trans>Wallet</Trans>;
-    info = <WalletOnlyInfo chainName={settlementChainName} />;
+    // Solana has no GMX Account copy yet. The settlement-chain text names Arbitrum.
+    if (!isSolanaSelected) {
+      info = <WalletOnlyInfo chainName={settlementChainName} />;
+    }
   } else if (mode === "gmxAccount") {
     title = <Trans>GMX Account</Trans>;
     info = <GmxAccountInfo sourceChainName={sourceChainName} settlementChainName={settlementChainName} />;
@@ -158,21 +157,19 @@ export function MainViewTitle() {
     info = <WalletAndGmxAccountInfo />;
   }
 
+  if (!info) {
+    return <>{title}</>;
+  }
+
   return (
-    <div className="flex items-center gap-2">
-      {title}
-      <TooltipWithPortal
-        content={<div className="text-typography-secondary">{info}</div>}
-        variant="none"
-        position="bottom"
-        className="flex items-center"
-        tooltipClassName="!max-w-[320px]"
-        disabled={!isMainViewActive}
-        openDelay={300}
-      >
-        <InfoIconStroke className="size-16 text-typography-secondary" />
-      </TooltipWithPortal>
-    </div>
+    <StandardTooltip
+      handle={title}
+      variant="iconStroke"
+      iconClassName="text-typography-secondary"
+      position="bottom"
+      content={info}
+      disabled={!isMainViewActive}
+    />
   );
 }
 
@@ -181,14 +178,14 @@ export function AvailableToTradeAssetsTitle() {
 
   return (
     <TitleWithBack backTo="main">
-      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available Assets</Trans>}
+      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available assets</Trans>}
     </TitleWithBack>
   );
 }
 
 export function TransferDetailsTitle() {
   const [selectedTransferGuid] = useGmxAccountSelectedTransferGuid();
-  const selectedTransfer = useGmxAccountFundingHistoryItem(selectedTransferGuid);
+  const { transfer: selectedTransfer } = useGmxAccountFundingHistoryItem(selectedTransferGuid);
 
   return (
     <TitleWithBack backTo="transferHistory">

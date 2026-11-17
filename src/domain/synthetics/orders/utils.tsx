@@ -1,37 +1,73 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { Token } from "domain/tokens";
 import { formatPercentage } from "lib/numbers";
+import { getWrappedToken } from "sdk/configs/tokens";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isMarketOrderType,
   isOrderForPosition,
+  isPositionOrder,
   isSwapOrder,
   isSwapOrderType,
+  isTriggerDecreaseOrderType,
   isTwapOrder,
   isTwapSwapOrder,
 } from "sdk/utils/orders";
+import { getIncreaseEvaluationIndexPrice } from "sdk/utils/prices";
+import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+import {
+  DecreasePositionMarginState,
+  getTriggerDecreaseRemainingPositionMarginState,
+} from "sdk/utils/trade/decreaseMarginCheck";
+import {
+  getIncreaseResultingPositionMarginState,
+  getIsMaxLeverageMarginReason,
+  PositionMarginState,
+} from "sdk/utils/trade/increaseMarginCheck";
+import {
+  getTwapIncreasePartsGrossCollateralUsd,
+  getTwapIncreaseSequentialMarginState,
+  TwapIncreaseSequentialMarginState,
+} from "sdk/utils/trade/twapIncreaseMarginCheck";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import {
+  DepositMarginNowAction,
+  ReplaceMarginDepositAction,
+} from "components/MarginRemediation/MarginRemediationActions";
 
+import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
+import {
+  ClosingPool,
+  formatMarketClosingDate,
+  getClosingPoolTargetName,
+  getIsSizeIncreasePendingOrder,
+} from "../markets/closingMarkets";
+import { PositionInfo, PositionInfoLoaded, PositionsInfoData } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import {
   FindSwapPath,
+  IncreasePositionAmounts,
   NextPositionValues,
   getAcceptablePriceInfo,
+  getDecreasePositionAmounts,
+  getIncreasePositionAmounts,
   getMaxSwapPathLiquidity,
-  getSwapAmountsByFromValue,
+  getNextPositionValuesForIncreaseTrade,
 } from "../trade";
 import { OrderError, OrderInfo, OrderType, PositionOrderInfo, SwapOrderInfo, TwapOrderInfo } from "./types";
 import { getIsMaxLeverageExceeded } from "../trade/utils/validation";
-import { getIsIncreaseResultingPositionLiquidatable } from "../trade/utils/warnings";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "../trade/utils/warnings";
 
 function getSwapOrderTitle() {
   return t`Swap`;
@@ -85,20 +121,228 @@ export function setOrderInfoTitle(order: OrderInfo, indexToken?: Token) {
   return order;
 }
 
+function getMarginDepositOrderErrors(p: {
+  order: PositionOrderInfo;
+  positionsInfoData: PositionsInfoData | undefined;
+  minCollateralUsd: bigint | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
+}): OrderError[] {
+  const { order, positionsInfoData, minCollateralUsd, userReferralInfo } = p;
+
+  if (!positionsInfoData) {
+    return [];
+  }
+
+  const position = Object.values(positionsInfoData).find((pos) => isOrderForPosition(order, pos.key));
+
+  if (!position) {
+    return [
+      {
+        msg: t`This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds.`,
+        level: "error",
+        key: "marginDepositNoPosition",
+      },
+    ];
+  }
+
+  const projections = getMarginDepositProjections({
+    position,
+    depositAmount: order.initialCollateralDeltaAmount,
+    triggerPrice: order.triggerPrice,
+    minCollateralUsd,
+    userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
+    pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
+  });
+
+  const riskLevel = getMarginDepositRiskLevel({
+    isLong: order.isLong,
+    triggerPrice: order.triggerPrice,
+    currentLiqPrice: position.liquidationPrice,
+    nextLiqPrice: projections?.nextLiqPrice,
+  });
+
+  if (riskLevel === "insufficient") {
+    return [
+      {
+        msg: (
+          <Trans>
+            This margin deposit may not execute: it would not leave the position above the liquidation requirement at
+            the trigger price. Increase the deposit amount or move the trigger farther from liquidation.
+          </Trans>
+        ),
+        action: (
+          <ReplaceMarginDepositAction positionKey={position.key} orderKey={order.key} isTooltipLine>
+            <Trans>Increase the deposit amount</Trans>
+          </ReplaceMarginDepositAction>
+        ),
+        level: "error",
+        key: "marginDepositInsufficient",
+      },
+    ];
+  }
+
+  if (riskLevel === "beyondCurrentLiq") {
+    return [
+      {
+        msg: t`This margin deposit may not execute before liquidation: its trigger is at or beyond the estimated liquidation price`,
+        level: "warning",
+        key: "marginDepositBeyondLiqPrice",
+      },
+    ];
+  }
+
+  return [];
+}
+
+function getIncreasePositionMarginAction(positionKey: string | undefined) {
+  return (
+    <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+      <Trans>Increase the position's margin</Trans>
+    </DepositMarginNowAction>
+  );
+}
+
+function getMaxLeverageOrderError(positionKey: string | undefined): OrderError {
+  return {
+    msg: (
+      <Trans>
+        This order may fail to execute because the resulting position would exceed the maximum allowed leverage.
+        Increase the position's margin or reduce the order size before it triggers.
+      </Trans>
+    ),
+    action: getIncreasePositionMarginAction(positionKey),
+    key: "maxLeverage",
+    level: "error",
+  };
+}
+
+function getTwapMaxLeverageOrderError(positionKey: string | undefined): OrderError {
+  return {
+    msg: (
+      <Trans>
+        Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they
+        trigger. Increase the position's margin or cancel the order.
+      </Trans>
+    ),
+    action: getIncreasePositionMarginAction(positionKey),
+    key: "maxLeverage",
+    level: "error",
+  };
+}
+
+function getResultingLiquidatableOrderError(positionKey: string | undefined): OrderError {
+  return {
+    key: "resultingLiquidatable",
+    level: "error",
+    msg: (
+      <Trans>
+        Order may not execute: the resulting position would be liquidatable at the trigger price. Deposit margin or
+        reduce the order size.
+      </Trans>
+    ),
+    action: (
+      <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+        <Trans context="Margin remediation action">Deposit margin</Trans>
+      </DepositMarginNowAction>
+    ),
+  };
+}
+
+export const FROZEN_ORDER_ERROR_KEY = "frozen";
+
+function getClosingPoolOrderError(
+  order: OrderInfo,
+  closingPool: ClosingPool | undefined,
+  jitLiquidityMap: Record<string, JitLiquidityInfo> | undefined
+): OrderError | undefined {
+  if (!closingPool || !isPositionOrder(order) || !getIsSizeIncreasePendingOrder(order)) {
+    return undefined;
+  }
+
+  const { poolName } = closingPool;
+  const targetPoolName = getClosingPoolTargetName(closingPool);
+
+  if (closingPool.isClosed) {
+    return {
+      msg: t`Can't fill: ${poolName} pool is closed to new size. Cancel and re-place it in the ${targetPoolName} pool.`,
+      level: "error",
+      key: "closingPoolClosed",
+    };
+  }
+
+  const roomLeftUsd = getAvailableUsdLiquidityForPosition(
+    order.marketInfo,
+    order.isLong,
+    getJitMaxReservedUsd(jitLiquidityMap, order.marketInfo.marketTokenAddress, order.isLong)
+  );
+
+  if (roomLeftUsd < order.sizeDeltaUsd) {
+    return {
+      msg: t`Too big for the room left in the ${poolName} pool. Cancel and re-place it in the ${targetPoolName} pool.`,
+      level: "warning",
+      key: "closingPoolNoRoom",
+    };
+  }
+
+  const closingDate = formatMarketClosingDate(closingPool.closingDate);
+
+  return {
+    msg: t`${poolName} pool: won't fill after ${closingDate}. Cancel and re-place it in the ${targetPoolName} pool.`,
+    level: "warning",
+    key: "closingPoolClosing",
+  };
+}
+
 export function getOrderErrors(p: {
   order: OrderInfo;
   marketsInfoData: MarketsInfoData;
   positionsInfoData: PositionsInfoData | undefined;
-  findSwapPath: FindSwapPath;
-  uiFeeFactor: bigint;
-  chainId: number;
   isSetAcceptablePriceImpactEnabled: boolean;
   jitLiquidityMap?: Record<string, JitLiquidityInfo>;
   nextPositionValues?: NextPositionValues;
+  minCollateralUsd?: bigint;
+  userReferralInfo?: UserReferralInfo;
+  feeDiscountFactor?: bigint;
+  resultingPositionMarginState?: PositionMarginState;
+  closingPool?: ClosingPool;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
-  const errors: OrderError[] = [];
+  const closingPoolError = getClosingPoolOrderError(order, p.closingPool, jitLiquidityMap);
+
+  if (closingPoolError && p.closingPool?.isClosed) {
+    return {
+      errors: [order.isFrozen ? { ...closingPoolError, key: FROZEN_ORDER_ERROR_KEY } : closingPoolError],
+      level: "error",
+    };
+  }
+
+  const errors: OrderError[] = closingPoolError ? [closingPoolError] : [];
+
+  if (order.isFrozen) {
+    errors.push({
+      msg: isTwapOrder(order) ? (
+        <Trans>
+          Some TWAP parts failed to execute and are frozen. They stay open and may still execute later if conditions
+          allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ) : (
+        <Trans>
+          Order failed to execute and is frozen. It stays open and may still execute later if conditions allow.
+          <br />
+          <br />
+          See the Trades tab for the reason.
+        </Trans>
+      ),
+      level: "warning",
+      key: FROZEN_ORDER_ERROR_KEY,
+    });
+  }
 
   if (isTwapOrder(order)) {
     if (isIncreaseOrderType(order.orderType) || isSwapOrderType(order.orderType)) {
@@ -119,22 +363,43 @@ export function getOrderErrors(p: {
         (order) => order.validFromTime < BigInt(Math.floor(Date.now() / 1000))
       );
 
-      if (currentLiquidity < order.sizeDeltaUsd) {
+      if (!closingPoolError && currentLiquidity < order.sizeDeltaUsd) {
         if (orderWithValidFromTimeExceeded) {
           errors.push({
-            msg: t`Parts of this order will execute once sufficient liquidity is available`,
+            msg: t`Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available`,
             level: "warning",
             key: "twap-liquidity1",
           });
         } else {
           errors.push({
-            msg: t`May lack liquidity for parts of this order when triggered`,
+            msg: t`Parts of this order may not execute: liquidity may be insufficient when they trigger`,
             level: "warning",
             key: "twap-liquidity2",
           });
         }
       }
+
+      if (isIncreaseOrderType(order.orderType) && p.resultingPositionMarginState?.isLiquidatable) {
+        const position = Object.values(positionsInfoData || {}).find((pos) => isOrderForPosition(order, pos.key));
+
+        errors.push(
+          getIsMaxLeverageMarginReason(p.resultingPositionMarginState.reason)
+            ? getTwapMaxLeverageOrderError(position?.key)
+            : getResultingLiquidatableOrderError(position?.key)
+        );
+      }
     }
+  } else if (isPositionOrder(order) && isMarginDepositOrder(order)) {
+    // the standard increase checks assume a positive size
+    errors.push(
+      ...getMarginDepositOrderErrors({
+        order,
+        positionsInfoData,
+        minCollateralUsd: p.minCollateralUsd,
+        userReferralInfo: p.userReferralInfo,
+        feeDiscountFactor: p.feeDiscountFactor,
+      })
+    );
   } else {
     if (isSwapOrder(order)) {
       const swapPathLiquidity = getMaxSwapPathLiquidity({
@@ -151,7 +416,7 @@ export function getOrderErrors(p: {
 
       if (swapPathLiquidity < minOutputUsd && !isTwapOrder(order)) {
         errors.push({
-          msg: t`Insufficient liquidity for swap at min. receive amount`,
+          msg: t`Order may not execute: insufficient liquidity to fill the swap at the min. receive amount. Edit the min. receive amount or reduce the swap size.`,
           level: "error",
           key: "liquidity0",
         });
@@ -213,7 +478,7 @@ export function getOrderErrors(p: {
       });
 
       if (currentAcceptablePriceDeltaBps < 0 && currentAcceptablePriceDeltaBps < orderAcceptablePriceDeltaBps) {
-        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`Limit price` : t`Trigger price`;
+        const priceText = positionOrder.orderType === OrderType.LimitIncrease ? t`limit` : t`trigger`;
         const formattedCurrentAcceptablePriceImpact = formatPercentage(currentAcceptablePriceDeltaBps, {
           signed: true,
         });
@@ -222,7 +487,7 @@ export function getOrderErrors(p: {
         });
 
         errors.push({
-          msg: t`Order may not execute at ${priceText}: acceptable impact (${formattedOrderAcceptablePriceImpact}) below market (${formattedCurrentAcceptablePriceImpact}). Click "Edit".`,
+          msg: t`Order may not execute at the ${priceText} price: the acceptable price impact (${formattedOrderAcceptablePriceImpact}) is below the current market impact (${formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact.`,
           level: "warning",
           key: "acceptablePrice",
         });
@@ -236,9 +501,9 @@ export function getOrderErrors(p: {
         getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
       );
 
-      if (currentLiquidity < positionOrder.sizeDeltaUsd) {
+      if (!closingPoolError && currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({
-          msg: t`Insufficient liquidity to execute order at trigger price`,
+          msg: t`Order may not execute: insufficient liquidity at the trigger price. Reduce the order size.`,
           level: "error",
           key: "liquidity1",
         });
@@ -259,7 +524,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < collateralSwapUsd) {
           errors.push({
-            msg: t`Insufficient liquidity for pay-to-collateral swap at trigger price`,
+            msg: t`Order may not execute: insufficient liquidity to swap the pay token into the collateral token at the trigger price. Reduce the order size.`,
             level: "error",
             key: "liquidity2",
           });
@@ -278,7 +543,7 @@ export function getOrderErrors(p: {
 
       if (sameMarketPosition) {
         errors.push({
-          msg: t`Order uses ${collateralSymbol}, but existing ${longText} position uses ${symbol} as collateral`,
+          msg: t`Order won't add to the existing ${longText} position: it uses ${collateralSymbol} as collateral while the position uses ${symbol}. Executing it opens a separate position.`,
           level: "warning",
           key: "collateralToken",
         });
@@ -291,16 +556,28 @@ export function getOrderErrors(p: {
       const isInvalidTriggerPrice = position.isLong
         ? position.liquidationPrice === undefined
           ? undefined
-          : position.liquidationPrice > triggerPrice
+          : position.liquidationPrice >= triggerPrice
         : position.liquidationPrice === undefined
           ? undefined
-          : position.liquidationPrice < triggerPrice;
+          : position.liquidationPrice <= triggerPrice;
 
       if (isInvalidTriggerPrice && !isMarketOrderType(order.orderType)) {
         errors.push({
-          msg: t`Order won't execute: trigger price beyond liquidation price`,
+          msg: t`Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price.`,
           level: "error",
           key: "triggerPrice",
+        });
+      } else if (p.resultingPositionMarginState?.isLiquidatable) {
+        errors.push({
+          msg: (
+            <Trans>
+              Order may not execute: at the trigger price, the remaining position would exceed max leverage. Edit the
+              order or increase the position's margin.
+            </Trans>
+          ),
+          action: getIncreasePositionMarginAction(position.key),
+          level: "error",
+          key: "remainingPositionMaxLeverage",
         });
       }
 
@@ -319,7 +596,7 @@ export function getOrderErrors(p: {
 
         if (swapPathLiquidity < minOutputUsd) {
           errors.push({
-            msg: t`Swap liquidity may be insufficient when order triggers`,
+            msg: t`The receive-token swap may be skipped: liquidity may be insufficient when the order triggers. The decrease still executes and you receive the collateral token unswapped.`,
             level: "warning",
             key: "swapPath",
           });
@@ -327,42 +604,49 @@ export function getOrderErrors(p: {
       }
     }
 
-    if (isIncreaseOrderType(order.orderType)) {
-      const isMaxLeverageError = getIsMaxLeverageError({
-        order: positionOrder,
-        position,
-        findSwapPath: p.findSwapPath,
-        uiFeeFactor: p.uiFeeFactor,
-        chainId: p.chainId,
-      });
+    if (isIncreaseOrderType(order.orderType) && positionsInfoData !== undefined) {
+      const isPositionLiquidatedBeforeTrigger =
+        isLimitOrderType(order.orderType) &&
+        getIsPositionLiquidatedBeforeTrigger({
+          liqPrice: position?.liquidationPrice,
+          triggerPrice: positionOrder.triggerPrice,
+          isLong: positionOrder.isLong,
+        });
 
-      if (isMaxLeverageError) {
+      if (isPositionLiquidatedBeforeTrigger) {
         errors.push({
-          msg: (
-            <Trans>
-              Order may not execute: max leverage exceeded. Edit to reduce size.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-            </Trans>
-          ),
-          key: "maxLeverage",
-          level: "error",
+          key: "liquidatedBeforeTrigger",
+          level: "warning",
+          msg: t`This order may execute after the current position is liquidated and open a new position.`,
         });
       }
 
-      if (
-        isLimitOrderType(order.orderType) &&
-        getIsIncreaseResultingPositionLiquidatable({
-          currentLiqPrice: position?.liquidationPrice,
-          nextLiqPrice: p.nextPositionValues?.nextLiqPrice,
-          triggerPrice: (order as PositionOrderInfo).triggerPrice,
-          isLong: (order as PositionOrderInfo).isLong,
-        })
+      const isMaxLeverageError =
+        p.nextPositionValues?.nextLeverage !== undefined &&
+        getIsMaxLeverageExceeded(
+          p.nextPositionValues.nextLeverage,
+          positionOrder.marketInfo,
+          positionOrder.isLong,
+          positionOrder.sizeDeltaUsd
+        );
+
+      const marginState = p.resultingPositionMarginState;
+      const isPreciseFailure = marginState?.isLiquidatable === true;
+      const isPreciseMaxLeverage = isPreciseFailure && getIsMaxLeverageMarginReason(marginState?.reason);
+
+      if (isPreciseMaxLeverage || (!isPreciseFailure && isMaxLeverageError)) {
+        errors.push(getMaxLeverageOrderError(position?.key));
+      } else if (
+        isPreciseFailure ||
+        (isLimitOrderType(order.orderType) &&
+          getIsIncreaseResultingPositionLiquidatable({
+            currentLiqPrice: position?.liquidationPrice,
+            nextLiqPrice: p.nextPositionValues?.nextLiqPrice,
+            triggerPrice: positionOrder.triggerPrice,
+            isLong: positionOrder.isLong,
+          }))
       ) {
-        errors.push({
-          key: "resultingLiquidatable",
-          level: "error",
-          msg: t`Order may not execute: the resulting position would be liquidatable at the trigger price. Add collateral or reduce size.`,
-        });
+        errors.push(getResultingLiquidatableOrderError(position?.key));
       }
     }
   }
@@ -438,59 +722,299 @@ export function sortSwapOrders(
   });
 }
 
-function getIsMaxLeverageError({
+export type OrderIncreaseProjection = {
+  order: PositionOrderInfo;
+  increaseAmounts: IncreasePositionAmounts;
+  position: PositionInfo | undefined;
+  triggerPrice: bigint;
+};
+
+export function getOrderIncreaseProjection({
   order,
   position,
+  triggerPrice,
+  sizeDeltaUsd,
   findSwapPath,
   uiFeeFactor,
   chainId,
+  marketsInfoData,
+  isSetAcceptablePriceImpactEnabled,
+  userReferralInfo,
+  proDiscountFactor,
+  feeDiscountFactor,
 }: {
   order: PositionOrderInfo;
   position: PositionInfo | undefined;
+  triggerPrice: bigint | undefined;
+  sizeDeltaUsd: bigint;
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
   chainId: number;
-}) {
-  const swapAmounts = getSwapAmountsByFromValue({
-    tokenIn: order.initialCollateralToken,
-    tokenOut: order.targetCollateralToken,
-    amountIn: order.initialCollateralDeltaAmount,
-    isLimit: false,
-    findSwapPath,
-    // execution charges the factor snapshotted on the order, not the live one
-    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    marketsInfoData: undefined,
-    externalSwapQuoteParams: undefined,
-    chainId,
-    allowSameTokenSwap: false,
-  });
-  const markPrice = order.marketInfo.indexToken.prices.minPrice;
-  const sizeDeltaUsd = order.sizeDeltaUsd;
-  const sizeDeltaInTokens = convertToTokenAmount(sizeDeltaUsd, order.marketInfo.indexToken.decimals, markPrice);
-
-  if (sizeDeltaInTokens === undefined) return false;
-
-  const isLong = order.isLong;
+  marketsInfoData: MarketsInfoData | undefined;
+  isSetAcceptablePriceImpactEnabled: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
+}): OrderIncreaseProjection | undefined {
   const marketInfo = order.marketInfo;
 
-  const collateralDeltaAmount = swapAmounts.amountOut;
-  const collateralDeltaUsd = convertToUsd(
-    collateralDeltaAmount,
-    order.targetCollateralToken.decimals,
-    order.targetCollateralToken.prices.minPrice
+  if (!marketInfo || !isIncreaseOrderType(order.orderType) || triggerPrice === undefined || triggerPrice <= 0n) {
+    return undefined;
+  }
+
+  const isPositionLiquidatedBeforeTrigger =
+    isLimitOrderType(order.orderType) &&
+    getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: position?.liquidationPrice,
+      triggerPrice,
+      isLong: order.isLong,
+    });
+
+  const positionForProjection = isPositionLiquidatedBeforeTrigger ? undefined : position;
+
+  const increaseAmounts = getAvailableTradeQuote(marketInfo.tradeMath, () =>
+    getIncreasePositionAmounts({
+      marketInfo,
+      indexToken: marketInfo.indexToken,
+      initialCollateralToken: order.initialCollateralToken,
+      collateralToken: order.targetCollateralToken,
+      isLong: order.isLong,
+      initialCollateralAmount: order.initialCollateralDeltaAmount,
+      indexTokenAmount: convertToTokenAmount(sizeDeltaUsd, marketInfo.indexToken.decimals, triggerPrice),
+      externalSwapQuote: undefined,
+      triggerPrice,
+      limitOrderType: order.orderType as OrderType.LimitIncrease | OrderType.StopIncrease,
+      position: positionForProjection,
+      findSwapPath,
+      userReferralInfo,
+      proDiscountFactor,
+      feeDiscountFactor,
+      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+      strategy: "independent",
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled,
+    })
   );
 
-  if (collateralDeltaUsd === undefined) return false;
+  if (!increaseAmounts || (order.initialCollateralDeltaAmount > 0n && increaseAmounts.swapStrategy.amountOut <= 0n)) {
+    return undefined;
+  }
 
-  const leverage = getLeverage({
-    sizeInUsd: order.sizeDeltaUsd + (position?.sizeInUsd ?? 0n),
-    collateralUsd: collateralDeltaUsd + (position?.collateralUsd ?? 0n),
-    pnl: undefined,
-    pendingBorrowingFeesUsd: 0n,
-    pendingFundingFeesUsd: 0n,
+  return { order, increaseAmounts, position: positionForProjection, triggerPrice };
+}
+
+export function getOrderIncreaseNextPositionValues({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  feeDiscountFactor,
+  isPnlInLeverage,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
+  isPnlInLeverage: boolean;
+}): NextPositionValues | undefined {
+  if (!projection || (projection.increaseAmounts.initialCollateralAmount <= 0n && !projection.position)) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position } = projection;
+
+  return getNextPositionValuesForIncreaseTrade({
+    marketInfo: order.marketInfo,
+    collateralToken: order.targetCollateralToken,
+    existingPosition: position,
+    isLong: order.isLong,
+    collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
+    indexPrice: increaseAmounts.indexPrice,
+    collateralPrice: increaseAmounts.collateralPrice,
+    showPnlInLeverage: isPnlInLeverage,
+    minCollateralUsd,
+    userReferralInfo,
+    feeDiscountFactor,
+  });
+}
+
+export function getOrderIncreaseResultingPositionMarginState({
+  projection,
+  minCollateralUsd,
+  userReferralInfo,
+  proDiscountFactor,
+  feeDiscountFactor,
+}: {
+  projection: OrderIncreaseProjection | undefined;
+  minCollateralUsd: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
+}): PositionMarginState | undefined {
+  if (!projection) {
+    return undefined;
+  }
+
+  const { order, increaseAmounts, position, triggerPrice } = projection;
+
+  return getIncreaseResultingPositionMarginState({
+    marketInfo: order.marketInfo,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    existingPosition: position,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    minCollateralUsd,
+    userReferralInfo,
+    proDiscountFactor,
+    feeDiscountFactor,
+    indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
+      orderType: order.orderType,
+      triggerPrice,
+    }),
+  });
+}
+
+export function getOrderDecreaseRemainingPositionMarginState({
+  order,
+  position,
+  triggerPrice,
+  sizeDeltaUsd,
+  minCollateralUsd,
+  minPositionSizeUsd,
+  uiFeeFactor,
+  userReferralInfo,
+  proDiscountFactor,
+  feeDiscountFactor,
+  isSetAcceptablePriceImpactEnabled,
+}: {
+  order: PositionOrderInfo;
+  position: PositionInfoLoaded | undefined;
+  triggerPrice: bigint | undefined;
+  sizeDeltaUsd: bigint;
+  minCollateralUsd: bigint;
+  minPositionSizeUsd: bigint;
+  uiFeeFactor: bigint;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
+  isSetAcceptablePriceImpactEnabled: boolean;
+}): DecreasePositionMarginState | undefined {
+  if (
+    !position ||
+    !isTriggerDecreaseOrderType(order.orderType) ||
+    triggerPrice === undefined ||
+    triggerPrice <= 0n ||
+    sizeDeltaUsd <= 0n ||
+    sizeDeltaUsd >= position.sizeInUsd
+  ) {
+    return undefined;
+  }
+
+  const decreaseAmounts = getAvailableTradeQuote(position.marketInfo.tradeMath, () =>
+    getDecreasePositionAmounts({
+      marketInfo: position.marketInfo,
+      collateralToken: position.collateralToken,
+      isLong: position.isLong,
+      position,
+      closeSizeUsd: sizeDeltaUsd,
+      keepLeverage: false,
+      triggerPrice,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
+      userReferralInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+      isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: order.decreasePositionSwapType,
+      proDiscountFactor,
+      feeDiscountFactor,
+    })
+  );
+
+  if (!decreaseAmounts) return undefined;
+
+  return getTriggerDecreaseRemainingPositionMarginState({
+    marketInfo: position.marketInfo,
+    collateralToken: position.collateralToken,
+    isLong: position.isLong,
+    position,
+    decreaseAmounts,
+    collateralDeltaAmount: order.initialCollateralDeltaAmount,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    userReferralInfo,
+    proDiscountFactor,
+    feeDiscountFactor,
+  });
+}
+
+export function getTwapIncreaseOrderSequentialMarginState({
+  order,
+  position,
+  uiFeeFactor,
+  chainId,
+  marketsInfoData,
+  userReferralInfo,
+  proDiscountFactor,
+  feeDiscountFactor,
+  minCollateralUsd,
+}: {
+  order: TwapOrderInfo<PositionOrderInfo>;
+  position: PositionInfo | undefined;
+  uiFeeFactor: bigint;
+  chainId: number;
+  marketsInfoData: MarketsInfoData | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+  proDiscountFactor: bigint | undefined;
+  feeDiscountFactor?: bigint;
+  minCollateralUsd: bigint;
+}): TwapIncreaseSequentialMarginState | undefined {
+  const { marketInfo } = order;
+  const parts = [...order.orders].sort((a, b) => Number(a.validFromTime) - Number(b.validFromTime));
+  const firstPart = parts[0];
+
+  if (!marketInfo || !marketsInfoData || !isIncreaseOrderType(order.orderType) || !firstPart) {
+    return undefined;
+  }
+
+  const partGrossCollateralUsds = getTwapIncreasePartsGrossCollateralUsd({
+    marketsInfoData,
+    swapPath: order.swapPath,
+    initialCollateralToken: order.initialCollateralToken,
+    collateralToken: order.targetCollateralToken,
+    initialCollateralAmountPerPart: firstPart.initialCollateralDeltaAmount,
+    numberOfParts: parts.length,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    wrappedNativeTokenAddress: getWrappedToken(chainId).address,
   });
 
-  if (leverage === undefined) return false;
+  if (!partGrossCollateralUsds) {
+    return undefined;
+  }
 
-  return getIsMaxLeverageExceeded(leverage, marketInfo, isLong, sizeDeltaUsd);
+  const nowSeconds = Math.floor(Date.now() / 1000);
+
+  return getTwapIncreaseSequentialMarginState({
+    partSizeDeltaUsd: firstPart.sizeDeltaUsd,
+    pendingFeesUsd: (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n),
+    numberOfParts: parts.length,
+    partDelaysSeconds: parts.map((part) => Math.max(0, Number(part.validFromTime) - nowSeconds)),
+    partGrossCollateralUsds,
+    marketInfo,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    existingPosition: position,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    minCollateralUsd,
+    userReferralInfo,
+    proDiscountFactor,
+    feeDiscountFactor,
+  });
 }

@@ -8,6 +8,7 @@ import { getPendingMockPosition } from "domain/synthetics/positions/usePositions
 import type { TokenData } from "domain/synthetics/tokens";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
+import { bigMath } from "sdk/utils/bigmath";
 import {
   buildDecreaseOrderPayload,
   buildUpdateOrderPayload,
@@ -185,6 +186,8 @@ export function getTpSlDecreaseAmounts(p: {
   userReferralInfo: ReturnType<typeof selectUserReferralInfo> | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
   forceDecreaseSwapType?: DecreasePositionSwapType;
+  proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): DecreasePositionAmounts | undefined {
   if (
     !p.position ||
@@ -217,6 +220,8 @@ export function getTpSlDecreaseAmounts(p: {
     triggerOrderType: p.triggerOrderType,
     isSetAcceptablePriceImpactEnabled: p.isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: p.forceDecreaseSwapType,
+    proDiscountFactor: p.proDiscountFactor,
+    feeDiscountFactor: p.feeDiscountFactor,
   });
 }
 
@@ -316,7 +321,7 @@ export function buildTpSlBatchPayloads(p: {
       const order = entry.existingFullCloseOrder;
       const nextSwapType = entry.amounts.decreaseSwapType ?? DecreasePositionSwapType.NoSwap;
 
-      // updateOrder can't change decreasePositionSwapType, so cancel + recreate when it differs.
+      // updateOrder before 2.2.1 can't change decreasePositionSwapType, so cancel + recreate when it differs.
       if (nextSwapType === order.decreasePositionSwapType) {
         updateOrderParams.push(
           buildUpdateOrderPayload({
@@ -330,7 +335,9 @@ export function buildTpSlBatchPayloads(p: {
             minOutputAmount: order.minOutputAmount,
             autoCancel: order.autoCancel,
             validFromTime: 0n,
-            executionFeeTopUp: 0n,
+            decreasePositionSwapType: order.decreasePositionSwapType,
+            executionFeeTopUp: bigMath.max(0n, (entry.executionFeeAmount ?? 0n) - order.executionFee),
+            executionGasLimit: entry.executionGasLimit,
           })
         );
         createEntries.push({ ...entry, amounts: undefined });

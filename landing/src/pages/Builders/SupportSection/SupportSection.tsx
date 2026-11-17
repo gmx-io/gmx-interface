@@ -30,19 +30,19 @@ export function SupportSection() {
       number: 1,
       label: t`Explore`,
       title: t`Evaluate GMX`,
-      description: t`Intro call plus integration feedback.`,
+      description: t`Intro call plus integration feedback`,
     },
     {
       number: 2,
       label: t`Build`,
       title: t`Integrating or shipping`,
-      description: t`Technical guidance plus architecture and UX feedback.`,
+      description: t`Technical guidance plus architecture and UX feedback`,
     },
     {
       number: 3,
       label: t`Launch`,
       title: t`Going live or already live`,
-      description: t`Co-marketing, ecosystem distribution, and selective incentives.`,
+      description: t`Co-marketing, ecosystem distribution, and selective incentives`,
     },
   ];
 
@@ -64,13 +64,13 @@ export function SupportSection() {
     <section className="w-full border-b-1/2 border-slate-600 bg-slate-900 px-16 py-60 text-white sm:px-40 sm:py-[120px]">
       <div className="mx-auto flex w-full max-w-[1200px] flex-col">
         <Eyebrow gradient>
-          <Trans>The Program</Trans>
+          <Trans>The program</Trans>
         </Eyebrow>
         <h2 className="text-heading-2 mt-20">
           <Trans>
             Support at{" "}
             <span className="text-transparent bg-gradient-to-b from-[#98B6F9] to-[#7F9BFA] bg-clip-text">
-              every stage.
+              every stage
             </span>
           </Trans>
         </h2>

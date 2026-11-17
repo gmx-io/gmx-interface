@@ -4,13 +4,17 @@ import { describe, expect, it } from "vitest";
 import { OrderType } from "domain/synthetics/orders";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { MaxUint256, PRECISION, applyFactor, formatUsd } from "lib/numbers";
+import { USER_INITIATED_CANCEL, type PositionTradeAction } from "sdk/utils/tradeHistory/types";
 
 import {
+  cancelMarginDeposit,
   cancelOrderIncreaseLong,
+  createMarginDeposit,
   createOrderDecreaseLong,
   createOrderIncreaseLong,
   createOrderStopMarketLong,
   deposit1Usd,
+  executeMarginDeposit,
   executeOrderIncreaseLong,
   executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
@@ -18,17 +22,31 @@ import {
   executeSwap,
   executeTwapIncreaseWithFee,
   failedSwap,
+  frozenMarginDeposit,
   frozenOrderIncreaseShort,
   increaseLongETH,
   liquidated,
   requestIncreasePosition,
   requestSwap,
   undefinedOrder,
+  updateMarginDeposit,
   withdraw1Usd,
 } from "./mocks";
-import { formatPositionMessage, getSettlementTooltipLines } from "./utils/position";
-import { getErrorTooltipTitle } from "./utils/shared";
-import { formatSwapMessage } from "./utils/swap";
+import {
+  formatPositionMessage as formatPositionMessageParts,
+  getSettlementTooltipLines as getSettlementTooltipLinesParts,
+} from "./utils/position";
+import { anchorCloseRow, anchorOpenRow } from "./utils/settlementMocks";
+import { INEQUALITY_GT, INEQUALITY_LT, getErrorTooltipTitle } from "./utils/shared";
+import { formatSwapMessage as formatSwapMessageParts } from "./utils/swap";
+import { withPlainText } from "./utils/testUtils";
+
+const formatPositionMessage = (...args: Parameters<typeof formatPositionMessageParts>) =>
+  withPlainText(formatPositionMessageParts(...args));
+const formatSwapMessage = (...args: Parameters<typeof formatSwapMessageParts>) =>
+  withPlainText(formatSwapMessageParts(...args));
+const getSettlementTooltipLines = (...args: Parameters<typeof getSettlementTooltipLinesParts>) =>
+  withPlainText(getSettlementTooltipLinesParts(...args));
 
 i18n.load({ en: {} });
 i18n.activate("en");
@@ -41,17 +59,20 @@ describe("TradeHistoryRow helpers", () => {
   });
 
   it("maps user-facing trade history errors and preserves raw names in the fallback", () => {
-    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is currently disabled");
+    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is disabled");
     expect(getErrorTooltipTitle("InsufficientFundsToPayForCosts", false)).toBe(
       "Insufficient collateral to cover order costs"
     );
     expect(getErrorTooltipTitle("LiquidatablePosition", false)).toBe(
       "Position would be liquidatable at current prices"
     );
+    expect(getErrorTooltipTitle("LiquidatablePosition", false, { reason: "min collateral for leverage" })).toBe(
+      "Margin is below the minimum required for the position size"
+    );
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
     );
-    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed.");
     expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
       "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
     );
@@ -83,7 +104,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 1,054.88",
         "timestamp": "08 Feb 2024, 10:50",
-        "timestampUTC": "UTC: 2024-02-08 06:50:50",
+        "timestampUTC": "2024-02-08 06:50:50",
       }
     `);
 
@@ -110,7 +131,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "12.34 USDC",
         "timestamp": "15 Feb 2024, 18:34",
-        "timestampUTC": "UTC: 2024-02-15 14:34:48",
+        "timestampUTC": "2024-02-15 14:34:48",
       }
     `);
 
@@ -137,7 +158,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "0.050 DAI",
         "timestamp": "15 Feb 2024, 21:30",
-        "timestampUTC": "UTC: 2024-02-15 17:30:44",
+        "timestampUTC": "2024-02-15 17:30:44",
       }
     `);
 
@@ -164,7 +185,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 266.23",
         "timestamp": "15 Sep 2023, 13:29",
-        "timestampUTC": "UTC: 2023-09-15 09:29:36",
+        "timestampUTC": "2023-09-15 09:29:36",
         "triggerPrice": ">  $ 30,000.00",
       }
     `);
@@ -192,7 +213,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 4.11",
         "timestamp": "15 Sep 2023, 13:37",
-        "timestampUTC": "UTC: 2023-09-15 09:37:13",
+        "timestampUTC": "2023-09-15 09:37:13",
         "triggerPrice": "<  $ 1,629.40",
       }
     `);
@@ -220,7 +241,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 2.64",
         "timestamp": "15 Sep 2023, 14:54",
-        "timestampUTC": "UTC: 2023-09-15 10:54:04",
+        "timestampUTC": "2023-09-15 10:54:04",
         "triggerPrice": "<  $ 1.00",
       }
     `);
@@ -278,7 +299,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
 
@@ -331,7 +352,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
 
@@ -379,7 +400,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": "-$ 9,488.99",
         "size": "+$ 1,348.83",
         "timestamp": "18 Sep 2023, 15:14",
-        "timestampUTC": "UTC: 2023-09-18 11:14:09",
+        "timestampUTC": "2023-09-18 11:14:09",
       }
     `);
 
@@ -403,7 +424,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 4,954.24",
         "timestamp": "18 Sep 2023, 11:52",
-        "timestampUTC": "UTC: 2023-09-18 07:52:39",
+        "timestampUTC": "2023-09-18 07:52:39",
       }
     `);
 
@@ -511,7 +532,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "-$ 6,441.90",
         "timestamp": "04 Sep 2023, 06:38",
-        "timestampUTC": "UTC: 2023-09-04 02:38:49",
+        "timestampUTC": "2023-09-04 02:38:49",
       }
     `);
 
@@ -564,7 +585,7 @@ describe("TradeHistoryRow helpers", () => {
           },
         ],
         "timestamp": "21 Sep 2023, 19:32",
-        "timestampUTC": "UTC: 2023-09-21 15:32:40",
+        "timestampUTC": "2023-09-21 15:32:40",
       }
     `);
 
@@ -591,7 +612,7 @@ describe("TradeHistoryRow helpers", () => {
         "priceImpact": undefined,
         "size": "+$ 3.62",
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
         "triggerPrice": ">  $ 95,600.00",
       }
     `);
@@ -654,10 +675,30 @@ describe("TradeHistoryRow helpers", () => {
         ],
         "priceImpact": "< +$ 0.01",
         "size": "+$ 3.62",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+3.02 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
-        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+        "timestampUTC": "2023-09-18 12:43:18",
       }
     `);
+  });
+
+  it("formatPositionMessage tolerates actions without a trigger price", () => {
+    const withoutTriggerPrice = (action: PositionTradeAction): PositionTradeAction => ({
+      ...action,
+      triggerPrice: undefined,
+    });
+
+    expect(formatPositionMessage(withoutTriggerPrice(requestIncreasePosition), minCollateralUsd).price).toEqual(
+      formatPositionMessage(requestIncreasePosition, minCollateralUsd).price
+    );
+    expect(formatPositionMessage(withoutTriggerPrice(liquidated), minCollateralUsd).action).toBe(
+      formatPositionMessage(liquidated, minCollateralUsd).action
+    );
   });
 
   it("formatSwapMessage", () => {
@@ -680,7 +721,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "39.88",
         "swapToTokenSymbol": "USDC",
         "timestamp": "02 Oct 2023, 18:35",
-        "timestampUTC": "UTC: 2023-10-02 14:35:16",
+        "timestampUTC": "2023-10-02 14:35:16",
       }
     `);
     expect(formatSwapMessage(executeSwap)).toMatchInlineSnapshot(`
@@ -706,7 +747,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "1.1196",
         "swapToTokenSymbol": "ETH",
         "timestamp": "02 Oct 2023, 06:08",
-        "timestampUTC": "UTC: 2023-10-02 02:08:40",
+        "timestampUTC": "2023-10-02 02:08:40",
       }
     `);
     // LIMIT SWAPS
@@ -733,7 +774,7 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "0.36987",
         "swapToTokenSymbol": "BTC",
         "timestamp": "29 Sep 2023, 10:46",
-        "timestampUTC": "UTC: 2023-09-29 06:46:39",
+        "timestampUTC": "2023-09-29 06:46:39",
       }
     `);
     expect(formatSwapMessage(failedSwap)).toMatchInlineSnapshot(`
@@ -766,9 +807,73 @@ describe("TradeHistoryRow helpers", () => {
         "swapToTokenAmount": "0.0004863",
         "swapToTokenSymbol": "ETH",
         "timestamp": "14 Feb 2024, 13:33",
-        "timestampUTC": "UTC: 2024-02-14 09:33:19",
+        "timestampUTC": "2024-02-14 09:33:19",
       }
     `);
+  });
+
+  describe("formatSwapMessage settled economics", () => {
+    const swapFeeUsd = (PRECISION * 3n) / 2n;
+    const swapImpactUsd = -PRECISION / 2n;
+
+    it("exposes swap fee and swap price impact for executed swaps", () => {
+      for (const executedSwap of [executeSwap, executeOrderSwap]) {
+        expect(formatSwapMessage({ ...executedSwap, swapFeeUsd, swapImpactUsd })).toMatchObject({
+          fees: "-$ 2.00",
+          feesTooltip: [
+            { key: "Swap fee", value: "-$ 1.50" },
+            { key: "Swap price impact", value: "-$ 0.50" },
+          ],
+          priceImpact: "-$ 0.50",
+        });
+      }
+    });
+
+    it("exposes settled economics for each executed TWAP swap part", () => {
+      const twapSwapPart = {
+        ...executeSwap,
+        twapParams: { twapGroupId: "0x01", numberOfParts: 3 },
+        swapFeeUsd,
+        swapImpactUsd,
+      };
+
+      expect(formatSwapMessage(twapSwapPart)).toMatchObject({
+        action: "Execute TWAP Swap part",
+        fees: "-$ 2.00",
+        priceImpact: "-$ 0.50",
+      });
+    });
+
+    it("keeps a genuine zero visible and omits missing economics", () => {
+      expect(formatSwapMessage({ ...executeSwap, swapFeeUsd, swapImpactUsd: 0n })).toMatchObject({
+        fees: "-$ 1.50",
+        feesTooltip: [
+          { key: "Swap fee", value: "-$ 1.50" },
+          { key: "Swap price impact", value: "$ 0.00" },
+        ],
+        priceImpact: "$ 0.00",
+      });
+
+      const withoutIndexedEconomics = formatSwapMessage({
+        ...executeSwap,
+        swapFeeUsd: undefined,
+        swapImpactUsd: undefined,
+      });
+
+      expect(withoutIndexedEconomics.fees).toBeUndefined();
+      expect(withoutIndexedEconomics.feesTooltip).toBeUndefined();
+      expect(withoutIndexedEconomics.priceImpact).toBeUndefined();
+    });
+
+    it("does not report economics for swap actions that did not execute", () => {
+      for (const notExecutedSwap of [requestSwap, failedSwap]) {
+        const details = formatSwapMessage({ ...notExecutedSwap, swapFeeUsd, swapImpactUsd });
+
+        expect(details.fees).toBeUndefined();
+        expect(details.feesTooltip).toBeUndefined();
+        expect(details.priceImpact).toBeUndefined();
+      }
+    });
   });
 
   it("formatPositionMessage renders 'Full position close' for full-close TP/SL actions", () => {
@@ -890,51 +995,161 @@ describe("TradeHistoryRow helpers", () => {
     );
   });
 
+  describe("margin deposits", () => {
+    it("labels every event and shows the deposited collateral as the size", () => {
+      const created = formatPositionMessage(createMarginDeposit, minCollateralUsd);
+      expect(created.action).toBe("Create margin deposit");
+      expect(created.size).toBe("0.25000 WETH");
+      expect(created.price).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+      expect(created.priceComment).toEqual(["Trigger price for the order"]);
+
+      const updated = formatPositionMessage(updateMarginDeposit, minCollateralUsd);
+      expect(updated.action).toBe("Update margin deposit");
+      expect(updated.size).toBe("0.25000 WETH");
+      expect(updated.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const cancelled = formatPositionMessage(cancelMarginDeposit, minCollateralUsd);
+      expect(cancelled.action).toBe("Cancel margin deposit");
+      expect(cancelled.size).toBe("0.25000 WETH");
+      expect(cancelled.triggerPrice).toBe(`${INEQUALITY_LT}$ 1.00`);
+
+      const executed = formatPositionMessage(executeMarginDeposit, minCollateralUsd);
+      expect(executed.action).toBe("Execute margin deposit");
+      expect(executed.size).toBe("500.00 USDC");
+      expect(executed.triggerPrice).toBe(`${INEQUALITY_GT}$ 0.83600`);
+      expect(executed.priceComment).toContainEqual({
+        key: "Order trigger price",
+        value: `${INEQUALITY_GT}$ 0.83600`,
+      });
+
+      const frozen = formatPositionMessage(frozenMarginDeposit, minCollateralUsd);
+      expect(frozen.action).toBe("Failed margin deposit");
+      expect(frozen.size).toBe("250.00 USDC.e");
+      expect(frozen.price).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.triggerPrice).toBe(`${INEQUALITY_GT}$ 27,210.00`);
+      expect(frozen.isActionError).toBe(true);
+    });
+
+    it("never renders a zero USD size", () => {
+      const marginDeposits = [
+        createMarginDeposit,
+        updateMarginDeposit,
+        cancelMarginDeposit,
+        executeMarginDeposit,
+        frozenMarginDeposit,
+      ];
+
+      for (const marginDeposit of marginDeposits) {
+        expect(formatPositionMessage(marginDeposit, minCollateralUsd).size).not.toContain("$");
+      }
+    });
+
+    it("reads as cancelled for user initiated cancels, not expired", () => {
+      const userCancelled = { ...cancelMarginDeposit, reason: USER_INITIATED_CANCEL };
+
+      expect(formatPositionMessage(userCancelled, minCollateralUsd).action).toBe("Cancel margin deposit");
+    });
+
+    it("leaves limit increases with a size untouched", () => {
+      const details = formatPositionMessage(createOrderIncreaseLong, minCollateralUsd);
+
+      expect(details.action).toBe("Create Limit");
+      expect(details.size).toBe("+$ 2.64");
+    });
+
+    it("leaves zero size twap increases untouched", () => {
+      const twapDeposit = {
+        ...createMarginDeposit,
+        twapParams: { twapGroupId: "0xtwap-group-deposit", numberOfParts: 3 },
+      };
+
+      const details = formatPositionMessage(twapDeposit, minCollateralUsd);
+
+      expect(details.action).toBe("Create TWAP");
+      expect(details.price).toBe("N/A");
+    });
+
+    it("uses the position collateral token for executed increases with a swap path", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 204_579_982_339_079_771n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+0.20458\u00a0GMX" },
+      ]);
+      expect(formatPositionMessage({ ...executedIncrease, sizeDeltaUsd: 0n }, minCollateralUsd).size).toBe(
+        "0.20458\u00a0GMX"
+      );
+    });
+
+    it("does not hide a non-zero target collateral amount with fewer decimals", () => {
+      const executedIncrease = {
+        ...executeOrderIncreaseLong,
+        initialCollateralToken: {
+          ...executeOrderIncreaseLong.initialCollateralToken,
+          name: "Wrapped Ether",
+          symbol: "WETH",
+          decimals: 18,
+          address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          isStable: false,
+        },
+        initialCollateralTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      expect(formatPositionMessage(executedIncrease, minCollateralUsd).sizeComment).toEqual([
+        { key: "Margin delta", value: "+1.51\u00a0USDC" },
+      ]);
+    });
+
+    it("keeps request and decrease rows denominated in the initial collateral token", () => {
+      const gmxToken = {
+        ...executeOrderIncreaseLong.targetCollateralToken,
+        name: "GMX",
+        symbol: "GMX",
+        decimals: 18,
+        address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+        isStable: false,
+      };
+      const action = {
+        ...executeOrderIncreaseLong,
+        swapPath: ["0x55391D178Ce46e7AC8eaAEa50A72D1A5a8A622Da"],
+        targetCollateralToken: gmxToken,
+        initialCollateralDeltaAmount: 1_510_000n,
+      };
+
+      const request = formatPositionMessage(
+        { ...action, eventName: TradeActionType.OrderCreated, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+      const decrease = formatPositionMessage({ ...action, orderType: OrderType.MarketDecrease }, minCollateralUsd);
+      const withdrawal = formatPositionMessage(
+        { ...action, orderType: OrderType.MarketDecrease, sizeDeltaUsd: 0n },
+        minCollateralUsd
+      );
+
+      expect(request.size).toBe("1.51\u00a0USDC");
+      expect(decrease.sizeComment).toEqual([{ key: "Margin delta", value: "-1.51\u00a0USDC" }]);
+      expect(withdrawal.size).toBe("1.51\u00a0USDC");
+    });
+  });
+
   describe("getSettlementTooltipLines", () => {
-    // Arbitrum tx 0x936261d3c5394be68ccd53173b116f8f2e6c5d007dd3ab88943ded9b6e69f38e
-    const fullCloseAction = {
-      orderType: OrderType.MarketDecrease,
-      eventName: TradeActionType.OrderExecuted,
-      srcChainId: 0,
-      swapPath: [],
-      initialCollateralToken: { symbol: "USDC", decimals: 6, isStable: true },
-      collateralTokenPriceMin: 999757458143159100000000000000n,
-      basePnlUsd: 294764671686842964882169505960200n,
-      positionFeeAmount: 3984889n,
-      traderDiscountAmount: 199244n,
-      borrowingFeeAmount: 12850n,
-      fundingFeeAmount: 338315n,
-      liquidationFeeAmount: 0n,
-      totalImpactUsd: 39839233440000000000000000000000n,
-      priceImpactUsd: 16647709627538459795542642163244n,
-      swapFeeUsd: 167301952563420478623863092367n,
-      swapImpactUsd: 40202004253824880382311194750n,
-    } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
-
-    const closeChange = {
-      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
-      block: 463477048,
-      type: "decrease" as const,
-      sizeInUsd: 0n,
-      sizeDeltaUsd: 9959808360000000000000000000000000n,
-      collateralAmount: 0n,
-      collateralDeltaAmount: 996214440n,
-      feesAmount: 4136810n,
-    };
-
-    const openChange = {
-      positionKey: "0x5cc6146539659b0e38cf9abf31342fa6f75f6409823735fdfaac09dfebb99f9b",
-      block: 463424563,
-      type: "increase" as const,
-      sizeInUsd: 9959808360000000000000000000000000n,
-      sizeDeltaUsd: 9959808360000000000000000000000000n,
-      collateralAmount: 996214440n,
-      collateralDeltaAmount: 996214440n,
-      feesAmount: 3785560n,
-    };
-
     it("reconciles against the original margin when the opening row is matched", () => {
-      const result = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
+      const result = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: anchorOpenRow }).filter(
         (line) => line !== undefined
       );
 
@@ -946,13 +1161,13 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
       ]);
     });
 
     it("falls back to close-side-only settlement when the opening row is not matched", () => {
-      const result = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
+      const result = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: undefined }).filter(
         (line) => line !== undefined
       );
 
@@ -962,37 +1177,18 @@ describe("TradeHistoryRow helpers", () => {
         "",
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 35.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 35.58", state: "success" } },
         { key: "Wallet received", value: "~1,326.64\u00a0USDC" },
-        "",
-        { text: "Original margin reconciliation requires the opening row.", state: "muted" },
       ]);
-    });
-
-    it("separates the Settlement heading from the first detail row with an empty line", () => {
-      const withOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, openChange).filter(
-        (line) => line !== undefined
-      );
-      const withoutOpenChange = getSettlementTooltipLines(fullCloseAction, closeChange, undefined).filter(
-        (line) => line !== undefined
-      );
-
-      for (const result of [withOpenChange, withoutOpenChange]) {
-        const headingIndex = result.indexOf("Settlement");
-
-        expect(headingIndex).toBeGreaterThanOrEqual(0);
-        expect(result[headingIndex + 1]).toBe("");
-        expect(result[headingIndex + 2]).not.toBe("");
-      }
     });
 
     it("marks the USD received value as an estimate when the collateral was swapped on close", () => {
       const swappedAction = {
-        ...fullCloseAction,
+        ...anchorCloseRow,
         swapPath: ["0x0000000000000000000000000000000000000001"],
-      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+      } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(swappedAction, closeChange, openChange).filter(
+      const result = getSettlementTooltipLines({ tradeAction: swappedAction, openRow: anchorOpenRow }).filter(
         (line) => line !== undefined
       );
 
@@ -1001,12 +1197,12 @@ describe("TradeHistoryRow helpers", () => {
 
     it("includes the liquidation fee in the settlement for liquidation actions", () => {
       const liquidationAction = {
-        ...fullCloseAction,
+        ...anchorCloseRow,
         orderType: OrderType.Liquidation,
         liquidationFeeAmount: 1000000n,
-      } as unknown as Parameters<typeof getSettlementTooltipLines>[0];
+      } as unknown as PositionTradeAction;
 
-      const result = getSettlementTooltipLines(liquidationAction, closeChange, openChange).filter(
+      const result = getSettlementTooltipLines({ tradeAction: liquidationAction, openRow: anchorOpenRow }).filter(
         (line) => line !== undefined
       );
 
@@ -1018,9 +1214,67 @@ describe("TradeHistoryRow helpers", () => {
         { key: "Open fee / discount", value: "-3.79\u00a0USDC" },
         { key: "Margin at close", value: "996.21\u00a0USDC" },
         { key: "RPNL", value: { text: "+$ 294.76", state: "success" } },
-        { key: "Net close fees / impact", value: { text: "+$ 34.58", state: "success" } },
+        { key: "Net close fees / price impact", value: { text: "+$ 34.58", state: "success" } },
         { key: "Wallet received", value: "~1,325.64\u00a0USDC" },
       ]);
+    });
+
+    it("reports a combined USD total when profit could have been paid in the pnl token", () => {
+      const splitPayoutAction = {
+        ...anchorCloseRow,
+        isLong: true,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines({ tradeAction: splitPayoutAction, openRow: anchorOpenRow }).filter(
+        (line) => line !== undefined
+      );
+
+      expect(result.at(-1)).toEqual({ key: "Wallet received", value: "~$\u200a1,326.31" });
+    });
+
+    it("excludes impact diverted to claimable collateral from the received amount", () => {
+      const withDiffAction = {
+        ...anchorCloseRow,
+        priceImpactDiffUsd: 100n * 10n ** 30n,
+      } as unknown as PositionTradeAction;
+
+      const withoutDiff = getSettlementTooltipLines({ tradeAction: anchorCloseRow, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
+      const withDiff = getSettlementTooltipLines({ tradeAction: withDiffAction, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
+
+      expect(withoutDiff.value).toBe("~1,326.64\u00a0USDC");
+      expect(withDiff.value).toBe("~1,226.61\u00a0USDC");
+    });
+
+    it("clamps the received amount to zero when costs wipe out the position", () => {
+      const wipedOutAction = {
+        ...anchorCloseRow,
+        orderType: OrderType.Liquidation,
+        basePnlUsd: -2_000n * 10n ** 30n,
+        liquidationFeeAmount: 1_000_000n,
+      } as unknown as PositionTradeAction;
+
+      const result = getSettlementTooltipLines({ tradeAction: wipedOutAction, openRow: anchorOpenRow }).at(-1) as {
+        value: string;
+      };
+
+      expect(result.value).toBe("~0.00\u00a0USDC");
+    });
+
+    it.each([
+      ["gmxAccount", "Received at close (GMX balance)"],
+      ["mixed", "Received at close"],
+    ] as const)("labels the received row of a %s position as %s PRO-4520", (source, label) => {
+      const result = getSettlementTooltipLines({
+        tradeAction: anchorCloseRow,
+        openRow: anchorOpenRow,
+        source,
+      }).filter((line) => line !== undefined);
+
+      expect(result.at(-1)).toEqual({ key: label, value: "~1,326.64\u00a0USDC" });
     });
   });
 });

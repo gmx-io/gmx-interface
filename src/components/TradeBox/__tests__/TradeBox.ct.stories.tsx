@@ -1,7 +1,12 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
-import { getLeverageKey, getSyntheticsTradeOptionsKey, TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
+import {
+  getGasPaymentTokenAddressKey,
+  getLeverageKey,
+  getSyntheticsTradeOptionsKey,
+  TRADEBOX_SIZE_DENOMINATION_KEY,
+} from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { selectSetShouldFallbackToInternalSwap } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -9,7 +14,7 @@ import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExter
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
-import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
+import type { StoredTradeOptions } from "domain/synthetics/trade/tradeboxStorage";
 import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
@@ -20,11 +25,13 @@ import { ETH_ADDRESS, ETH_TOKEN, NATIVE_ETH_ADDRESS, USDC_ADDRESS } from "domain
 import { expandDecimals } from "lib/numbers";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
+import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
+
+import { useIsCurtainOpen } from "../Curtain";
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
 const EXPRESS_ON_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
-const EXPRESS_ON_SPONSORED_CALL = { isSponsoredCallAllowed: true };
 
 /** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
 function ExternalSwapHandlerHost() {
@@ -67,6 +74,17 @@ function ExternalSwapsSettingOff({ children }: { children: ReactNode }) {
   }
 
   return <>{children}</>;
+}
+
+/** Test backdoor: opens the mobile curtain and shows its state; in prod the Curtain around the TradeBox owns it. */
+function MobileCurtainState() {
+  const [isCurtainOpen, setIsCurtainOpen] = useIsCurtainOpen();
+
+  useEffect(() => {
+    setIsCurtainOpen(true);
+  }, [setIsCurtainOpen]);
+
+  return <div data-qa="test-curtain-open">{String(isCurtainOpen)}</div>;
 }
 
 /** Writes localStorage entries synchronously before children mount, so stateful hooks pick them up on init. */
@@ -119,8 +137,14 @@ function AcceptablePriceImpactSetting({ children }: { children: ReactNode }) {
 export type TradeBoxStoryProps = {
   /** Connect the wagmi mock account before mounting */
   connected?: boolean;
+  /** Render the TradeBox as on mobile, inside an open curtain */
+  isMobile?: boolean;
   /** Seed an existing 2x ETH/USD long (1 ETH, 1000 USDC collateral); implies connected */
   withPosition?: boolean;
+  /** Make the seeded position a short instead of a long */
+  positionIsShort?: boolean;
+  /** Override the seeded position's liquidation price, in USD (default: ~1050 long / ~2950 short) */
+  positionLiqPriceUsd?: number;
   /** Turn the leverage slider setting off: margin and size become independent inputs */
   manualLeverage?: boolean;
   /** Enable the "set acceptable price impact" setting (off by default) */
@@ -142,7 +166,7 @@ export type TradeBoxStoryProps = {
   withExternalSwapLatchControl?: boolean;
   /** Turn the "External swaps" setting off (on by default) */
   externalSwapsSettingOff?: boolean;
-  /** Make express trading available: enables the relay-router features and Gelato sponsored calls */
+  /** Make express trading available: enables the relay-router features */
   expressOn?: boolean;
   /** Activate One-Click Trading via a mock subaccount (implies nothing else — combine with expressOn) */
   withOneClickSubaccount?: boolean;
@@ -178,6 +202,8 @@ export type TradeBoxStoryProps = {
   seedLeverageOption?: number;
   /** Seed the persisted size display denomination */
   seedSizeDisplayMode?: "token" | "usd";
+  /** Seed the saved wallet gas payment token (e.g. a valid token missing from tokensData) */
+  seedGasPaymentTokenAddress?: string;
 };
 
 /**
@@ -186,7 +212,10 @@ export type TradeBoxStoryProps = {
  */
 export function TradeBoxStory({
   connected = false,
+  isMobile = false,
   withPosition = false,
+  positionIsShort = false,
+  positionLiqPriceUsd,
   manualLeverage = false,
   acceptableImpactSetting = false,
   marketScenario,
@@ -209,6 +238,7 @@ export function TradeBoxStory({
   seedSizeDisplayMode,
   seedTradeMode,
   seedUserSelectedSecondEthPool = false,
+  seedGasPaymentTokenAddress,
 }: TradeBoxStoryProps) {
   const isConnected = connected || withPosition || withWethCollateralPosition;
 
@@ -217,14 +247,20 @@ export function TradeBoxStory({
       return undefined;
     }
 
-    return createMockMarketInfo(undefined, {
-      longInterestUsd: expandDecimals(2000, 30),
-      longInterestInTokens: expandDecimals(1, 18),
-    });
-  }, [withPosition, withWethCollateralPosition]);
+    return createMockMarketInfo(
+      undefined,
+      positionIsShort
+        ? { shortInterestUsd: expandDecimals(2000, 30), shortInterestInTokens: expandDecimals(1, 18) }
+        : { longInterestUsd: expandDecimals(2000, 30), longInterestInTokens: expandDecimals(1, 18) }
+    );
+  }, [positionIsShort, withPosition, withWethCollateralPosition]);
 
   const marketsInfoData = useMemo<MarketsInfoData | undefined>(() => {
-    const primaryMarket = positionMarketInfo ?? createMockMarketInfo();
+    // the fixture's default impact (2e-5 at exponent 2) moves the price ~1 % on a $50k order, so the
+    // resulting-position cap would bind on impact; the manual-leverage tests want a market-like impact
+    const primaryMarket =
+      positionMarketInfo ??
+      createMockMarketInfo(undefined, manualLeverage ? { positionImpactFactorNegative: expandDecimals(3, 20) } : {});
 
     if (marketScenario === "cappedLongOI") {
       const data: MarketsInfoData = {
@@ -289,12 +325,12 @@ export function TradeBoxStory({
       return data;
     }
 
-    if (positionMarketInfo) {
-      return { [MOCK_MARKET_ADDRESS]: positionMarketInfo };
+    if (positionMarketInfo || manualLeverage) {
+      return { [MOCK_MARKET_ADDRESS]: primaryMarket };
     }
 
     return undefined;
-  }, [marketScenario, positionMarketInfo, withSecondEthPool]);
+  }, [manualLeverage, marketScenario, positionMarketInfo, withSecondEthPool]);
 
   const tokensData: TokensData | undefined = useMemo(() => {
     if (zeroBalances) {
@@ -334,9 +370,11 @@ export function TradeBoxStory({
       account: MOCK_ACCOUNT,
       marketInfo: positionMarketInfo,
       collateralToken: withWethCollateralPosition ? ETH_TOKEN : undefined,
+      isLong: !positionIsShort,
+      liquidationPrice: positionLiqPriceUsd === undefined ? undefined : expandDecimals(positionLiqPriceUsd, 30),
     });
     return { [position.key]: position };
-  }, [positionMarketInfo, withPosition, withWethCollateralPosition]);
+  }, [positionIsShort, positionLiqPriceUsd, positionMarketInfo, withPosition, withWethCollateralPosition]);
 
   const mockSubaccount = useMemo(
     () => (withOneClickSubaccount ? createMockSubaccount() : undefined),
@@ -404,6 +442,13 @@ export function TradeBoxStory({
       entries.push([JSON.stringify(TRADEBOX_SIZE_DENOMINATION_KEY), JSON.stringify(seedSizeDisplayMode)]);
     }
 
+    if (seedGasPaymentTokenAddress !== undefined) {
+      entries.push([
+        JSON.stringify(getGasPaymentTokenAddressKey(ARBITRUM, MOCK_ACCOUNT)),
+        JSON.stringify(seedGasPaymentTokenAddress),
+      ]);
+    }
+
     return entries;
   }, [
     seedSwapPair,
@@ -414,6 +459,7 @@ export function TradeBoxStory({
     seedSizeDisplayMode,
     seedTradeMode,
     seedUserSelectedSecondEthPool,
+    seedGasPaymentTokenAddress,
   ]);
 
   let content = (
@@ -422,15 +468,17 @@ export function TradeBoxStory({
       marketsInfoData={marketsInfoData}
       tokensData={tokensData}
       features={expressOn ? EXPRESS_ON_FEATURES : undefined}
-      sponsoredCallBalanceData={expressOn ? EXPRESS_ON_SPONSORED_CALL : undefined}
       subaccount={mockSubaccount}
     >
       {withExternalSwapHandler && <ExternalSwapHandlerHost />}
       {withExternalSwapLatchControl && <ExternalSwapLatchControl />}
       {withGasTokenControl && <SetConflictingGasTokenControl />}
+      {isMobile && <MobileCurtainState />}
       <div className="text-body-medium flex flex-col rounded-8">
         <TradeBoxHeaderTabs />
-        <TradeBox isMobile={false} />
+        <ActiveFormScope formId="tradebox">
+          <TradeBox isMobile={isMobile} activeFormId="tradebox" />
+        </ActiveFormScope>
       </div>
     </MockSyntheticsStateProvider>
   );

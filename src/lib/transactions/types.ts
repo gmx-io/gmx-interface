@@ -1,5 +1,5 @@
 import { ErrorLike } from "lib/errors";
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 
 export type TransactionWaiterResult = {
   relayStatus?:
@@ -7,6 +7,7 @@ export type TransactionWaiterResult = {
         taskId: string;
         statusCode: StatusCode;
         message?: string;
+        revertData?: string;
       }
     | undefined;
   transactionHash: string | undefined;

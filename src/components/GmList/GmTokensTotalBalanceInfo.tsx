@@ -7,18 +7,19 @@ import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { UserEarningsData } from "domain/synthetics/markets";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { ProgressiveTokenData } from "domain/tokens";
-import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import { EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
+import { EarningAttributionNote, EarningUnavailableNote, EarningValue } from "components/EarningValue/EarningValue";
 import {
   MultichainBalanceTooltip,
   useHasMultichainBreakdown,
 } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipFootnote, TooltipRow } from "components/Tooltip/TooltipBlocks";
 
 import { TokenValuesInfoCell } from "./TokenValuesInfoCell";
 
@@ -36,6 +37,7 @@ export const GmTokensBalanceInfo = ({
   isUserEarningsUnavailable = false,
   isEstimated365dFeesLoading = false,
   isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
 }: {
   token: ProgressiveTokenData | undefined;
   earnedTotal?: bigint;
@@ -50,6 +52,7 @@ export const GmTokensBalanceInfo = ({
   isUserEarningsUnavailable?: boolean;
   isEstimated365dFeesLoading?: boolean;
   isEstimated365dFeesUnavailable?: boolean;
+  hasBalanceOutsideWallet?: boolean;
 }) => {
   const balance = multichainBalances?.totalBalance ?? 0n;
   const balanceUsd = getPlatformTokenBalanceAfterThreshold(multichainBalances?.totalBalanceUsd);
@@ -58,7 +61,7 @@ export const GmTokensBalanceInfo = ({
     token && balance !== 0n ? (
       <TokenValuesInfoCell
         value={formatBalanceAmount(balance, token.decimals)}
-        usd={balanceUsd !== 0n ? formatUsd(balanceUsd) : "..."}
+        usd={balanceUsd !== 0n ? <UsdValue usd={balanceUsd} /> : "..."}
         symbol={token.symbol}
         singleLine={singleLine}
         isLoading={isMultichainBalancesLoading}
@@ -82,7 +85,9 @@ export const GmTokensBalanceInfo = ({
   const hasEstimated365dFees = earnedExpected365d !== undefined && earnedExpected365d > 0n;
   const shouldShowFeesLoading = !isGlv && isUserEarningsLoading && balance !== 0n;
   const shouldShowFeesUnavailable = !isGlv && isUserEarningsUnavailable && balance !== 0n;
-  const shouldShowEarnedFeeRows = hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable;
+  const shouldShowFeesUnattributed = !isGlv && hasBalanceOutsideWallet && balance !== 0n;
+  const shouldShowEarnedFeeRows =
+    hasEarnedFees || shouldShowFeesLoading || shouldShowFeesUnavailable || shouldShowFeesUnattributed;
   const shouldShowEstimated365dFeesLoading =
     !isGlv && balance !== 0n && (shouldShowFeesLoading || isEstimated365dFeesLoading);
   const shouldShowEstimated365dFeesUnavailable =
@@ -97,46 +102,51 @@ export const GmTokensBalanceInfo = ({
     }
 
     return (
-      <>
+      <TooltipContent>
         {multichainBalanceTooltip}
         {shouldShowEarnedFeeRows && (
-          <StatsTooltipRow
-            showDollar={false}
+          <TooltipRow
             label={t`Total earned fees`}
-            textClassName={earnedTotal !== undefined ? getPositiveOrNegativeClass(earnedTotal) : undefined}
+            valueClassName={
+              earnedTotal !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedTotal)
+                : undefined
+            }
             value={
               <EarningValue
                 value={earnedTotal}
-                isLoading={earnedTotal === undefined && shouldShowFeesLoading}
-                isAvailable={earnedTotal !== undefined || !shouldShowFeesUnavailable}
+                isLoading={!shouldShowFeesUnattributed && earnedTotal === undefined && shouldShowFeesLoading}
+                isAvailable={!shouldShowFeesUnattributed && (earnedTotal !== undefined || !shouldShowFeesUnavailable)}
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
-            valueClassName="numbers"
           />
         )}
         {shouldShowEarnedFeeRows && (
-          <StatsTooltipRow
-            showDollar={false}
-            textClassName={earnedRecently !== undefined ? getPositiveOrNegativeClass(earnedRecently) : undefined}
+          <TooltipRow
+            valueClassName={
+              earnedRecently !== undefined && !shouldShowFeesUnattributed
+                ? getPositiveOrNegativeClass(earnedRecently)
+                : undefined
+            }
             label={t`${daysConsidered}d earned fees`}
             value={
               <EarningValue
                 value={earnedRecently}
-                isLoading={earnedRecently === undefined && shouldShowFeesLoading}
-                isAvailable={earnedRecently !== undefined || !shouldShowFeesUnavailable}
+                isLoading={!shouldShowFeesUnattributed && earnedRecently === undefined && shouldShowFeesLoading}
+                isAvailable={
+                  !shouldShowFeesUnattributed && (earnedRecently !== undefined || !shouldShowFeesUnavailable)
+                }
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
-            valueClassName="numbers"
           />
         )}
         {shouldShowEstimated365dFeeRow && (
-          <StatsTooltipRow
-            showDollar={false}
-            textClassName={
+          <TooltipRow
+            valueClassName={
               earnedExpected365d !== undefined ? getPositiveOrNegativeClass(earnedExpected365d) : undefined
             }
             label={t`365d estimated fees`}
@@ -146,35 +156,32 @@ export const GmTokensBalanceInfo = ({
                 isLoading={shouldShowEstimated365dFeesLoading}
                 isAvailable={!shouldShowEstimated365dFeesUnavailable}
               >
-                {(value) => formatDeltaUsd(value, undefined)}
+                {(value) => <DeltaUsdValue deltaUsd={value} />}
               </EarningValue>
             }
-            valueClassName="numbers"
           />
         )}
         {(shouldShowFeesUnavailable || shouldShowEstimated365dFeesUnavailable) && (
-          <>
-            <br />
+          <TooltipFootnote>
             <EarningUnavailableNote />
-          </>
+          </TooltipFootnote>
         )}
-        {hasEarnedFees && (
-          <>
-            <br />
-            <div className="text-typography-primary">
-              <Trans>Fee values calculated when earned. Excludes incentives.</Trans>
-            </div>
-          </>
+        {shouldShowFeesUnattributed && (
+          <TooltipFootnote>
+            <EarningAttributionNote scope="gm" />
+          </TooltipFootnote>
+        )}
+        {hasEarnedFees && !shouldShowFeesUnattributed && (
+          <TooltipFootnote>
+            <Trans>Fee values calculated when earned. Excludes incentives.</Trans>
+          </TooltipFootnote>
         )}
         {hasEstimated365dFees && (
-          <>
-            <br />
-            <div className="text-typography-primary">
-              <Trans>Projected from last {daysConsidered} days' APY</Trans>
-            </div>
-          </>
+          <TooltipFootnote>
+            <Trans>Projected from last {daysConsidered} days' APY</Trans>
+          </TooltipFootnote>
         )}
-      </>
+      </TooltipContent>
     );
   }, [
     daysConsidered,
@@ -191,6 +198,7 @@ export const GmTokensBalanceInfo = ({
     shouldShowEstimated365dFeesUnavailable,
     shouldShowFeeRows,
     shouldShowFeesLoading,
+    shouldShowFeesUnattributed,
     shouldShowFeesUnavailable,
   ]);
 
@@ -199,12 +207,7 @@ export const GmTokensBalanceInfo = ({
   }
 
   return (
-    <TooltipWithPortal
-      content={tooltipContent}
-      handle={content}
-      handleClassName="!inline-block"
-      position="bottom-end"
-    />
+    <StandardTooltip content={tooltipContent} handle={content} handleClassName="!inline-block" position="bottom-end" />
   );
 };
 
@@ -216,6 +219,7 @@ export const GmTokensTotalBalanceInfo = ({
   isUserEarningsUnavailable = false,
   isEstimated365dFeesLoading = false,
   isEstimated365dFeesUnavailable = false,
+  hasBalanceOutsideWallet = false,
   tooltipPosition,
   label,
 }: {
@@ -226,13 +230,14 @@ export const GmTokensTotalBalanceInfo = ({
   isUserEarningsUnavailable?: boolean;
   isEstimated365dFeesLoading?: boolean;
   isEstimated365dFeesUnavailable?: boolean;
-  tooltipPosition?: TooltipPosition;
+  hasBalanceOutsideWallet?: boolean;
+  tooltipPosition?: StandardTooltipPosition;
   label: string;
 }) => {
   const shouldShowIncentivesNote = useLpIncentivesIsActive();
   const daysConsidered = useDaysConsideredInMarketsApr();
   const shouldShowEarningsFallback = !userEarnings && (isUserEarningsLoading || isUserEarningsUnavailable);
-  const shouldShowEarningsRows = Boolean(userEarnings) || shouldShowEarningsFallback;
+  const shouldShowEarningsRows = Boolean(userEarnings) || shouldShowEarningsFallback || hasBalanceOutsideWallet;
   const isEarningsLoading = !userEarnings && isUserEarningsLoading;
   const areEarningsAvailable = Boolean(userEarnings) || !isUserEarningsUnavailable;
   const hasGmBalance = balance !== undefined && balance > 0n;
@@ -245,53 +250,52 @@ export const GmTokensTotalBalanceInfo = ({
 
   const renderTooltipContent = useCallback(() => {
     return (
-      <>
-        <StatsTooltipRow
+      <TooltipContent>
+        <TooltipRow
           label={t`Wallet`}
           value={<AmountWithUsdBalance amount={balance} decimals={18} symbol="GM" usd={balanceUsd} usdAsPrimary />}
-          showDollar={false}
         />
         {shouldShowEarningsRows && (
           <>
-            <StatsTooltipRow
+            <TooltipRow
               label={t`Total earned fees`}
-              textClassName={
-                userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.total) : undefined
+              valueClassName={
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.total)
+                  : undefined
               }
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.total}
-                  isLoading={isEarningsLoading}
-                  isAvailable={areEarningsAvailable}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
-                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                  {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                 </EarningValue>
               }
-              valueClassName="numbers"
-              showDollar={false}
             />
-            <StatsTooltipRow
+            <TooltipRow
               label={t`${daysConsidered}d earned fees`}
-              textClassName={
-                userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.recent) : undefined
+              valueClassName={
+                userEarnings !== null && !hasBalanceOutsideWallet
+                  ? getPositiveOrNegativeClass(userEarnings.allMarkets.recent)
+                  : undefined
               }
               value={
                 <EarningValue
                   value={userEarnings?.allMarkets.recent}
-                  isLoading={isEarningsLoading}
-                  isAvailable={areEarningsAvailable}
+                  isLoading={!hasBalanceOutsideWallet && isEarningsLoading}
+                  isAvailable={!hasBalanceOutsideWallet && areEarningsAvailable}
                 >
-                  {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                  {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                 </EarningValue>
               }
-              valueClassName="numbers"
-              showDollar={false}
             />
             {shouldShowEstimated365dFees && (
               <>
-                <StatsTooltipRow
+                <TooltipRow
                   label={t`365d estimated fees`}
-                  textClassName={
+                  valueClassName={
                     userEarnings !== null ? getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d) : undefined
                   }
                   value={
@@ -300,41 +304,39 @@ export const GmTokensTotalBalanceInfo = ({
                       isLoading={isEstimated365dFeesValueLoading}
                       isAvailable={areEstimated365dFeesAvailable}
                     >
-                      {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
+                      {(value) => <DeltaUsdValue deltaUsd={value} showPlusForZero />}
                     </EarningValue>
                   }
-                  valueClassName="numbers"
-                  showDollar={false}
                 />
                 {userEarnings !== null &&
                   userEarnings.allMarkets.expected365d > 0n &&
                   areEstimated365dFeesAvailable && (
                     <>
-                      <br />
-                      <div className="text-typography-primary">
+                      <TooltipFootnote>
                         <Trans>Projected from last {daysConsidered} days' APY</Trans>
-                      </div>
+                      </TooltipFootnote>
                       {shouldShowIncentivesNote && (
-                        <>
-                          <br />
-                          <div className="text-typography-primary">
-                            <Trans>Excludes incentives</Trans>
-                          </div>
-                        </>
+                        <TooltipFootnote>
+                          <Trans>Excludes incentives</Trans>
+                        </TooltipFootnote>
                       )}
                     </>
                   )}
               </>
             )}
+            {hasBalanceOutsideWallet && (
+              <TooltipFootnote>
+                <EarningAttributionNote scope="gm" />
+              </TooltipFootnote>
+            )}
             {isUserEarningsUnavailable && (
-              <>
-                <br />
+              <TooltipFootnote>
                 <EarningUnavailableNote />
-              </>
+              </TooltipFootnote>
             )}
           </>
         )}
-      </>
+      </TooltipContent>
     );
   }, [
     balance,
@@ -342,6 +344,7 @@ export const GmTokensTotalBalanceInfo = ({
     areEarningsAvailable,
     areEstimated365dFeesAvailable,
     daysConsidered,
+    hasBalanceOutsideWallet,
     isEarningsLoading,
     isEstimated365dFeesValueLoading,
     isUserEarningsUnavailable,
@@ -352,11 +355,10 @@ export const GmTokensTotalBalanceInfo = ({
   ]);
 
   return balance !== undefined && balanceUsd !== undefined ? (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={label}
       className="normal-case"
       handleClassName="!block"
-      maxAllowedWidth={340}
       position={tooltipPosition ?? "bottom-end"}
       renderContent={renderTooltipContent}
       variant="iconStroke"

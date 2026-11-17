@@ -65,6 +65,7 @@ export function DailyAndCumulativePnLControls({
         startDate={startDate}
         endDate={endDate}
         onChange={onDateRangeChange}
+        timezone="utc"
         buttonTextClassName={
           isMobile ? "text-body-small max-w-[150px] truncate whitespace-nowrap font-medium" : undefined
         }

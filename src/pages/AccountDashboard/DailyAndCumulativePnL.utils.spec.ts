@@ -4,7 +4,6 @@ import {
   formatPnlChartYAxisTick,
   getDefaultPnlChartGrouping,
   getPnlChartDragPanSpeed,
-  getPnlChartWheelZoomSlowdown,
   getPnlChartXAxisDomain,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
@@ -143,12 +142,6 @@ describe("Pnl zoom helpers", () => {
       startIndex: 48,
       endIndex: 951,
     });
-  });
-
-  it("slows wheel zoom as the visible window gets smaller", () => {
-    expect(getPnlChartWheelZoomSlowdown(100, 100)).toBe(1);
-    expect(getPnlChartWheelZoomSlowdown(25, 100)).toBe(2);
-    expect(getPnlChartWheelZoomSlowdown(4, 100)).toBe(5);
   });
 
   it("speeds drag panning as the visible window gets larger", () => {

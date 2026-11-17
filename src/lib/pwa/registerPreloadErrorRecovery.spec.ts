@@ -41,13 +41,13 @@ describe("registerPreloadErrorRecovery", () => {
   });
 
   it("removes the recovery query parameter after the fresh shell loads", () => {
-    window.history.replaceState({}, "", "/trade?foo=bar&__gmx_pwa_recovery=100#/orders");
+    window.history.replaceState({}, "", "/buy_gmx?foo=bar&__gmx_pwa_recovery=100#bridge");
 
     const unregister = registerPreloadErrorRecovery({ reloadPage: vi.fn() });
 
-    expect(window.location.pathname).toBe("/trade");
+    expect(window.location.pathname).toBe("/buy_gmx");
     expect(window.location.search).toBe("?foo=bar");
-    expect(window.location.hash).toBe("#/orders");
+    expect(window.location.hash).toBe("#bridge");
     unregister();
   });
 

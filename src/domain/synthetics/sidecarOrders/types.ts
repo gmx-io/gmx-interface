@@ -58,6 +58,7 @@ export type SidecarOrderEntryGroupBase<T extends SidecarOrderEntryBase> = {
   updateEntry: (id: string, field: "price" | "sizeUsd" | "percentage", value: string) => void;
   deleteEntry: (id: string) => void;
   reset: () => void;
+  carryOver: (options: { keepTypedPrice: boolean }) => void;
 };
 
 export type SidecarOrderEntryGroup = SidecarOrderEntryGroupBase<SidecarOrderEntry> & {

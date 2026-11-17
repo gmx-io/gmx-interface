@@ -1,4 +1,5 @@
 import { AbiId, abis as allAbis } from "abis";
+import { getAbi } from "abis/getAbi";
 import { sleep } from "utils/common";
 
 import type { GmxSdk } from ".";
@@ -70,7 +71,7 @@ export class Multicall {
 
         // Add Errors ABI to each contract ABI to correctly parse errors
         abis[contractCallConfig.contractAddress] = abis[contractCallConfig.contractAddress] || [
-          ...(allAbis[contractCallConfig.abiId] as any),
+          ...getAbi(this.chainId, contractCallConfig.abiId),
           ...(allAbis.CustomErrors as any),
         ];
         const abi = abis[contractCallConfig.contractAddress];

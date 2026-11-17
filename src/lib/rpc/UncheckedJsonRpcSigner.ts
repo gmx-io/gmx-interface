@@ -1,17 +1,13 @@
 import { JsonRpcSigner, TransactionRequest, TransactionResponse } from "ethers";
 
-import { getRealChainId } from "lib/chains/getRealChainId";
-
 export class UncheckedJsonRpcSigner extends JsonRpcSigner {
   async estimateGas(tx: TransactionRequest): Promise<bigint> {
-    await this.assertNetwork();
+    await this.assertNetwork(tx.chainId ?? (await this.provider.getNetwork()).chainId);
 
     return super.estimateGas(tx);
   }
 
   async sendTransaction(transaction: TransactionRequest): Promise<TransactionResponse> {
-    await this.assertNetwork();
-
     return this.sendUncheckedTransaction(transaction).then((hash) => {
       return {
         hash,
@@ -30,13 +26,30 @@ export class UncheckedJsonRpcSigner extends JsonRpcSigner {
     });
   }
 
-  private async assertNetwork() {
-    // Sometimes getNetwork call asserts the network itself, but its metamask, so we need to check it again
-    const assumedChainId = Number((await this.provider.getNetwork()).chainId);
-    const realChainId = getRealChainId();
+  async sendUncheckedTransaction(transaction: TransactionRequest): Promise<string> {
+    const tx = { ...transaction };
+    await this.assertNetwork(tx.chainId);
 
-    if (realChainId !== undefined && assumedChainId !== realChainId) {
-      throw new Error(`Invalid network: wallet is connected to ${realChainId}, but the app is on ${assumedChainId}`);
+    return super.sendUncheckedTransaction(tx);
+  }
+
+  private async assertNetwork(expectedChainId: TransactionRequest["chainId"]) {
+    if (expectedChainId == null) {
+      throw new Error("Transaction chainId is required");
+    }
+
+    const chainId = BigInt(expectedChainId);
+    if (chainId <= 0n) {
+      throw new Error("Invalid transaction chainId");
+    }
+
+    // Read the wallet directly: provider and wagmi snapshots can both be stale.
+    const realChainId = BigInt(await this.provider.send("eth_chainId", []));
+
+    if (realChainId !== chainId) {
+      throw new Error(
+        `Invalid network: wallet is connected to ${realChainId}, but the transaction is on ${expectedChainId}`
+      );
     }
   }
 }

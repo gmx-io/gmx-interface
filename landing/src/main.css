@@ -6,10 +6,28 @@
   :root {
     @apply text-[10px];
     -webkit-font-smoothing: antialiased;
+    --font-size-body-medium: 1.4rem;
+    --line-height-body-medium: 1.8rem;
   }
   html {
     /* Restore native webkit behavior */
     @apply bg-slate-800 leading-base;
+  }
+}
+
+@layer components {
+  html.telegram-browser {
+    @apply h-full overflow-hidden;
+  }
+
+  .telegram-browser body {
+    @apply fixed inset-0 overflow-hidden;
+  }
+
+  .telegram-browser #root {
+    /* Telegram lets document content paint outside its web view. */
+    @apply h-full overflow-y-auto overscroll-y-none;
+    height: 100dvh;
   }
 }
 

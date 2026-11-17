@@ -34,6 +34,9 @@ jobs:
       - name: Run linting
         run: yarn lint:ci
 
+      - name: Run ESLint rule tests
+        run: yarn test:eslint-rules
+
       - name: Run type checking
         run: yarn tscheck:ci
 

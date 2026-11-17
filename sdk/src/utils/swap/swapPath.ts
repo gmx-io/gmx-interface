@@ -1,4 +1,5 @@
-import { MarketConfig, MARKETS } from "configs/markets";
+import { NetworkId } from "configs/chains";
+import { MarketConfig, getMarketsByChainId } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "utils/fees/types";
 import { LRUCache } from "utils/LruCache";
@@ -45,7 +46,9 @@ function buildMarketAdjacencyGraph(chainId: number, disabledMarkets?: string[] |
   const disabledMarketAddresses = disabledMarkets;
 
   const strippedMarkets = Object.fromEntries(
-    Object.entries(MARKETS[chainId]).filter(([marketAddress]) => !disabledMarketAddresses.includes(marketAddress))
+    Object.entries(getMarketsByChainId(chainId as NetworkId)).filter(
+      ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
+    )
   );
 
   const graph = buildMarketsAdjacencyGraph(strippedMarkets as Record<string, MarketConfig>);

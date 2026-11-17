@@ -1,8 +1,9 @@
-import { encodeAbiParameters, keccak256 } from "viem";
+import { encodeAbiParameters, keccak256, parseErc6492Signature, zeroHash } from "viem";
 
 import { abis } from "abis";
+import RelayParamsV2_2_1 from "abis/RelayParamsV2_2_1";
 import type { ContractsChainId, SourceChainId } from "configs/chains";
-import { ContractName, getContract } from "configs/contracts";
+import { ContractName, getContract, isContractsV2_2_1 } from "configs/contracts";
 import { SwapPricingType } from "utils/orders/types";
 import {
   combineExternalCalls,
@@ -240,11 +241,12 @@ export function getRawRelayerParams({
     fee: feeParams,
     desChainId: BigInt(chainId),
     userNonce: BigInt(nowInSeconds()),
+    eip6492SignatureWrapperHash: zeroHash,
   };
 }
 
 export function hashRelayParams(relayParams: RelayParamsPayload) {
-  const encoded = encodeAbiParameters(abis.RelayParams, [
+  const values = [
     {
       tokens: relayParams.oracleParams.tokens,
       providers: relayParams.oracleParams.providers,
@@ -267,7 +269,21 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
     relayParams.userNonce,
     relayParams.deadline,
     relayParams.desChainId,
-  ]);
+  ] as const;
 
-  return keccak256(encoded);
+  if (isContractsV2_2_1(Number(relayParams.desChainId))) {
+    return keccak256(encodeAbiParameters(RelayParamsV2_2_1, [...values, relayParams.eip6492SignatureWrapperHash]));
+  }
+
+  return keccak256(encodeAbiParameters(abis.RelayParams, values));
+}
+
+export function getEip6492SignatureWrapperHash(signature: string): string {
+  const { address, data } = parseErc6492Signature(signature);
+
+  if (!address || !data) {
+    throw new Error("Not an EIP-6492 signature");
+  }
+
+  return keccak256(encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [address, data]));
 }

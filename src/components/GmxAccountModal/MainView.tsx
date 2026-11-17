@@ -6,11 +6,10 @@ import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { isAddressEqual } from "viem";
 
-import { getChainName, getExplorerUrl } from "config/chains";
+import { getChainName, isSolanaNetwork } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY } from "config/localStorage";
-import { getAccountModalMode } from "config/multichain";
 import {
   useGmxAccountAvailableAssetsFilter,
   useGmxAccountDepositViewChain,
@@ -20,6 +19,11 @@ import {
   useGmxAccountSelectedTransferGuid,
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  getMultichainFundingToken,
+  getMultichainFundingTokenLabel,
+  MultichainFundingToken,
+} from "domain/multichain/getMultichainFundingToken";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
@@ -27,24 +31,26 @@ import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFund
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
-import { useENS } from "lib/legacy";
+import { getAccountUrl, useENS } from "lib/legacy";
 import { useLocalStorageByChainId } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { metrics } from "lib/metrics";
 import { useNotifyModalState } from "lib/useNotifyModalState";
+import { userAnalytics } from "lib/userAnalytics";
+import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/utils/tokens/types";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { MODAL_ANIMATION_DURATION_MS } from "components/Modal/Modal";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import BellIcon from "img/ic_bell.svg?react";
@@ -65,6 +71,7 @@ import WalletIcon from "img/ic_wallet.svg?react";
 import WithdrawIcon from "img/ic_withdraw.svg?react";
 
 import {
+  useAccountModalMode,
   useAvailableToTradeAssetSettlementChain,
   useGmxAccountDepositEligibility,
   useOpenWalletReceive,
@@ -75,7 +82,7 @@ function BalanceAmount({ usd, onClick }: { usd: bigint | undefined; onClick: () 
   return (
     <button className="flex min-h-32 items-center gap-4" onClick={onClick}>
       {usd !== undefined ? (
-        <span className="text-h2 normal-nums leading-[30px]">{formatUsd(usd)}</span>
+        <UsdValue usd={usd} className="text-h2 normal-nums leading-[30px]" />
       ) : (
         <Skeleton
           baseColor="#B4BBFF1A"
@@ -97,17 +104,17 @@ const WALLET_ICON_BUTTON_GRAY =
   "flex size-28 -m-4 items-center justify-center rounded-8 text-typography-secondary gmx-hover:bg-fill-surfaceHover gmx-hover:text-typography-primary";
 
 function WalletBlock({ account }: { account: string }) {
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { chainId: settlementChainId, srcChainId, networkId } = useChainId();
   const chainId = srcChainId ?? settlementChainId;
+  const isSolanaSelected = isSolanaNetwork(networkId);
 
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
-  const { ensName } = useENS(account);
+  const { ensName } = useENS(isSolanaSelected ? undefined : account);
   const [, copyToClipboard] = useCopyToClipboard();
   const [isCopied, setIsCopied] = useState(false);
   const copyTimeoutRef = useRef<number | undefined>(undefined);
-  const handleDisconnect = useDisconnectAndClose();
-  const { walletUsd } = useAvailableToTradeAssetSettlementChain();
+  const disconnectEvm = useDisconnectAndClose();
+  const solanaWallet = useSolanaWalletSession();
   const { wallets } = useWallets();
   const { exportWallet } = useExportWallet();
   const openWalletReceive = useOpenWalletReceive();
@@ -117,9 +124,10 @@ function WalletBlock({ account }: { account: string }) {
   };
 
   const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-  const canExport = Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
+  const canExport =
+    !isSolanaSelected && Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
 
-  const accountUrl = !account || !chainId ? "" : `${getExplorerUrl(chainId)}address/${account}`;
+  const accountUrl = getAccountUrl(isSolanaSelected ? networkId : chainId, account);
 
   useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
 
@@ -130,6 +138,28 @@ function WalletBlock({ account }: { account: string }) {
       setIsCopied(true);
       copyTimeoutRef.current = window.setTimeout(() => setIsCopied(false), 1000);
     }
+  };
+
+  const handleDisconnect = () => {
+    if (!isSolanaSelected) {
+      void disconnectEvm();
+      return;
+    }
+
+    userAnalytics.pushEvent<DisconnectWalletEvent>({
+      event: "ConnectWalletAction",
+      data: {
+        action: "Disconnect",
+        network: getChainName(networkId),
+      },
+    });
+    void Promise.resolve(solanaWallet.disconnect?.())
+      .catch((error) => {
+        metrics.pushError(error, "gmxAccountModal.disconnect");
+      })
+      .finally(() => {
+        setIsVisibleOrView(false);
+      });
   };
 
   return (
@@ -144,34 +174,23 @@ function WalletBlock({ account }: { account: string }) {
           {isCopied ? <CheckIcon className="size-16 text-green-500" /> : <CopyIcon className="size-16" />}
         </button>
         <div className="flex items-center gap-8">
-          <TooltipWithPortal
-            content={t`Receive to Wallet`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
-            <button className={WALLET_ICON_BUTTON_BLUE} onClick={handleOpenWalletReceive}>
-              <ReceiveIcon className="size-16" />
-            </button>
-          </TooltipWithPortal>
-          <TooltipWithPortal
-            content={t`Send from Wallet`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
-            <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
-              <SendIcon className="size-16" />
-            </button>
-          </TooltipWithPortal>
-          <div className="h-16 border-l-1/2 border-slate-600" />
+          {!isSolanaSelected && (
+            <>
+              <StandardTooltip content={t`Receive to wallet`} position="bottom" variant="none">
+                <button className={WALLET_ICON_BUTTON_BLUE} onClick={handleOpenWalletReceive}>
+                  <ReceiveIcon className="size-16" />
+                </button>
+              </StandardTooltip>
+              <StandardTooltip content={t`Send from wallet`} position="bottom" variant="none">
+                <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
+                  <SendIcon className="size-16" />
+                </button>
+              </StandardTooltip>
+              <div className="h-16 border-l-1/2 border-slate-600" />
+            </>
+          )}
           {canExport && (
-            <TooltipWithPortal
-              content={t`Export wallet`}
-              position="bottom"
-              tooltipClassName="!min-w-max"
-              variant="none"
-            >
+            <StandardTooltip content={t`Export wallet`} position="bottom" variant="none">
               <button
                 className={WALLET_ICON_BUTTON_GRAY}
                 onClick={() => {
@@ -182,34 +201,39 @@ function WalletBlock({ account }: { account: string }) {
               >
                 <KeyIcon className="size-16" />
               </button>
-            </TooltipWithPortal>
+            </StandardTooltip>
           )}
-          <TooltipWithPortal
-            shouldPreventDefault={false}
-            content={t`View in explorer`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
+          <StandardTooltip shouldPreventDefault={false} content={t`View in explorer`} position="bottom" variant="none">
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className={WALLET_ICON_BUTTON_GRAY}>
               <ExplorerIcon className="size-16" />
             </a>
-          </TooltipWithPortal>
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+          </StandardTooltip>
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         </div>
       </div>
-      <BalanceAmount
-        usd={walletUsd}
-        onClick={() => {
-          setAvailableAssetsFilter("wallet");
-          setIsVisibleOrView("availableToTradeAssets");
-        }}
-      />
+      {!isSolanaSelected && <EvmWalletBalance />}
     </div>
+  );
+}
+
+// The wallet balance reads EVM chains, so WalletBlock mounts it only off Solana.
+function EvmWalletBalance() {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [, setAvailableAssetsFilter] = useGmxAccountAvailableAssetsFilter();
+  const { walletUsd } = useAvailableToTradeAssetSettlementChain();
+
+  return (
+    <BalanceAmount
+      usd={walletUsd}
+      onClick={() => {
+        setAvailableAssetsFilter("wallet");
+        setIsVisibleOrView("availableToTradeAssets");
+      }}
+    />
   );
 }
 
@@ -296,9 +320,9 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
   return (
     <div className="flex flex-col gap-12 rounded-12 border-1/2 border-stroke-primary bg-slate-950/50 p-12">
       <div className="flex items-start justify-between gap-8">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6" data-qa="gmx-account-balance">
           <span className="text-body-small font-medium text-typography-secondary">
-            <Trans>GMX Account Balance</Trans>
+            <Trans>GMX Account balance</Trans>
           </span>
           <BalanceAmount
             usd={gmxAccountUsd}
@@ -309,11 +333,11 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           />
         </div>
         {showDisconnectButton && (
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
-            <button className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
+            <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         )}
       </div>
 
@@ -384,8 +408,9 @@ function MenuRow({ icon, label, onClick }: { icon: ReactNode; label: ReactNode; 
 
 function MenuList({ account }: { account: string }) {
   const [, setIsVisible] = useGmxAccountModalOpen();
-  const { chainId: settlementChainId, srcChainId } = useChainId();
+  const { chainId: settlementChainId, srcChainId, networkId } = useChainId();
   const chainId = srcChainId ?? settlementChainId;
+  const isSolanaSelected = isSolanaNetwork(networkId);
   const history = useHistory();
   const { openNotifyModal } = useNotifyModalState();
   const { setIsSettingsVisible } = useSettings();
@@ -412,16 +437,20 @@ function MenuList({ account }: { account: string }) {
 
   return (
     <div className="flex flex-col">
-      <MenuRow
-        icon={<PnlAnalysisIcon className="size-16" />}
-        label={<Trans>PnL Analysis</Trans>}
-        onClick={handlePnlAnalysisClick}
-      />
-      <MenuRow
-        icon={<BellIcon className="size-16" />}
-        label={<Trans>Notifications</Trans>}
-        onClick={handleNotificationsClick}
-      />
+      {!isSolanaSelected && (
+        <>
+          <MenuRow
+            icon={<PnlAnalysisIcon className="size-16" />}
+            label={<Trans>PnL analysis</Trans>}
+            onClick={handlePnlAnalysisClick}
+          />
+          <MenuRow
+            icon={<BellIcon className="size-16" />}
+            label={<Trans>Notifications</Trans>}
+            onClick={handleNotificationsClick}
+          />
+        </>
+      )}
       <MenuRow
         icon={<SettingsIcon className="size-16" />}
         label={<Trans>Settings</Trans>}
@@ -432,8 +461,7 @@ function MenuList({ account }: { account: string }) {
 }
 
 export const MainView = ({ account }: { account: string }) => {
-  const { chainId, srcChainId } = useChainId();
-  const mode = getAccountModalMode(chainId, srcChainId);
+  const mode = useAccountModalMode();
 
   return (
     <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
@@ -473,7 +501,7 @@ function FundingHistoryItemLabel({
 }
 
 type DisplayFundingHistoryItem = Omit<MultichainFundingHistoryItem, "token"> & {
-  token: Token;
+  token: MultichainFundingToken;
 };
 
 export function TransferHistoryView() {
@@ -485,7 +513,7 @@ export function TransferHistoryView() {
 
   const filteredFundingHistory: DisplayFundingHistoryItem[] | undefined = fundingHistory
     ?.map((transfer): DisplayFundingHistoryItem | undefined => {
-      const token = getToken(transfer.settlementChainId, transfer.token);
+      const token = getMultichainFundingToken(transfer.settlementChainId, transfer.token);
 
       if (!token) {
         return undefined;
@@ -498,7 +526,9 @@ export function TransferHistoryView() {
         return false;
       }
 
-      const matchesSearch = transfer.token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = getMultichainFundingTokenLabel(transfer.token)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
 
@@ -525,12 +555,15 @@ export function TransferHistoryView() {
           >
             <div className="flex items-center gap-16">
               <TokenIcon
-                symbol={transfer.token.symbol}
+                symbol={transfer.token.iconSymbol}
                 displaySize={40}
                 chainIdBadge={transfer.sourceChainId === 0 ? transfer.settlementChainId : transfer.sourceChainId}
               />
               <div>
-                <div className="text-body-large">{transfer.token.symbol}</div>
+                <div className="text-body-large">
+                  {transfer.token.name}
+                  {transfer.token.poolName && <span className="subtext">[{transfer.token.poolName}]</span>}
+                </div>
                 <FundingHistoryItemLabel
                   step={transfer.step}
                   operation={transfer.operation}
@@ -554,13 +587,13 @@ export function TransferHistoryView() {
         ))}
 
         {!isLoading && fundingHistory && fundingHistory.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history</Trans>
           </div>
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching search</Trans>
+          <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-center text-slate-100">
+            <Trans>No transfer history matching search</Trans>
           </div>
         )}
         {isLoading && (

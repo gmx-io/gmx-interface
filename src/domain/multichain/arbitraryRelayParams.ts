@@ -1,14 +1,5 @@
 import { useMemo } from "react";
-import {
-  encodeAbiParameters,
-  encodePacked,
-  EstimateGasParameters,
-  Hex,
-  keccak256,
-  PublicClient,
-  toHex,
-  zeroHash,
-} from "viem";
+import { encodeAbiParameters, EstimateGasParameters, Hex, keccak256, PublicClient, toHex, zeroHash } from "viem";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -43,6 +34,7 @@ import {
   getGasPaymentValidations,
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
+import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/useGasPaymentTokenUnavailableToast";
 import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { convertToTokenAmount } from "domain/tokens";
@@ -168,11 +160,6 @@ async function estimateArbitraryGasLimit({
     subaccount,
   });
 
-  const baseData = encodePacked(
-    ["bytes", "address", "address", "uint256"],
-    [baseTxnData.callData, getContract(chainId, "GelatoRelayAddress"), baseTxnData.feeToken, baseTxnData.feeAmount]
-  );
-
   const tokensToOverride = new Set([gasPaymentParams.gasPaymentTokenAddress]);
   if (overrideWnt) {
     tokensToOverride.add(gasPaymentParams.relayerFeeTokenAddress);
@@ -193,7 +180,7 @@ async function estimateArbitraryGasLimit({
   const params: EstimateGasParameters = {
     account: GMX_SIMULATION_ORIGIN,
     to: baseTxnData.to,
-    data: baseData,
+    data: baseTxnData.callData,
     value: 0n,
     stateOverride: [
       {
@@ -348,10 +335,10 @@ export function getArbitraryRelayParamsAndPayload({
 
   const gasPaymentValidations = getGasPaymentValidations({
     gasPaymentToken: globalExpressParams.gasPaymentToken,
-    gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.totalRelayerFeeTokenAmount,
+    gasPaymentTokenAmount: relayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
     gasPaymentTokenAsCollateralAmount: 0n,
     gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData ?? EMPTY_OBJECT,
-    tokenPermits: globalExpressParams.tokenPermits,
+    tokenPermits: EMPTY_ARRAY,
     isGmxAccount,
   });
 
@@ -409,6 +396,12 @@ export function useArbitraryRelayParamsAndPayload({
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
+
+  useGasPaymentTokenUnavailableToast({
+    isGmxAccount,
+    feeTokenAddress: globalExpressParams?.gasPaymentTokenAddress,
+    enabled: isGmxAccount && enabled && expressTransactionBuilder !== undefined,
+  });
 
   const estimationKey = `${globalExpressParams?.gasPaymentTokenAddress}`;
   const prevEstimationKey = usePrevious(estimationKey);
@@ -470,7 +463,8 @@ export function useArbitraryRelayParamsAndPayload({
         chainId,
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
-        globalExpressParams: p.globalExpressParams,
+        // permits are an order-flow feature: only order batches get the pre-send permit check and cleanup
+        globalExpressParams: { ...p.globalExpressParams, tokenPermits: EMPTY_ARRAY },
         rpc,
         stateOverride,
         requireValidations: p.requireValidations,

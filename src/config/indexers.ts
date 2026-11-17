@@ -1,22 +1,13 @@
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  MEGAETH,
-  SOURCE_ETHEREUM_MAINNET,
-  type ContractsChainId,
-} from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
+import { getIsSolanaNetworkSelected } from "./solanaNetwork";
 
-export type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "marketOrderExecution" | "chainLink";
+export type IndexerKey = "referrals" | "syntheticsStats" | "subsquid" | "marketOrderExecution";
 type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
 
 const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   [ARBITRUM]: {
-    stats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-stats/synts-stats-230627214534-0265e1f/gn",
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
@@ -26,8 +17,6 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [AVALANCHE]: {
-    stats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-stats/master-240711235903-da2d1a1/gn",
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
@@ -56,13 +45,8 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 };
 
-const COMMON_INDEXER_URLS: Partial<Record<number, IndexerUrlMap>> = {
-  [SOURCE_ETHEREUM_MAINNET]: {
-    chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
-  },
-};
-
-export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+// Clients are constructed once from this. The Solana gate lives in getIndexerUrl, not here.
+export function getConfiguredIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
     const url = localStorage.getItem(localStorageKey);
@@ -73,9 +57,14 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
     }
   }
 
-  if (chainId === SOURCE_ETHEREUM_MAINNET) {
-    return COMMON_INDEXER_URLS[chainId]?.[indexer];
+  return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];
+}
+
+export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+  // chainId is still Arbitrum while Solana is selected, so this is the gate for live subsquid fetches.
+  if (indexer === "subsquid" && getIsSolanaNetworkSelected()) {
+    return undefined;
   }
 
-  return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];
+  return getConfiguredIndexerUrl(chainId, indexer);
 }

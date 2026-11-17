@@ -1,4 +1,4 @@
-import { encodeFunctionData, encodePacked } from "viem";
+import { encodeFunctionData } from "viem";
 
 import { ContractsChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -6,7 +6,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { ExpressTxnData, ExpressTxnResult, sendExpressTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
@@ -63,7 +63,7 @@ export async function buildAndSignMultichainClaimAffiliateRewardsTxn({
   }
 
   const claimAffiliateRewardsData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouter,
+    abi: getAbi(chainId, "MultichainClaimsRouter"),
     functionName: "claimAffiliateRewards",
     args: [
       {
@@ -116,16 +116,11 @@ export async function simulateAndCreateMultichainClaimAffiliateRewardsTxn({
   });
 
   const client = getPublicClientWithRpc(chainId);
-  const relayPayload = encodePacked(
-    ["bytes", "address", "address", "uint256"],
-    [txnData.callData, getContract(chainId, "GelatoRelayAddress"), txnData.feeToken, txnData.feeAmount]
-  );
-
   try {
     await client.call({
       account: GMX_SIMULATION_ORIGIN,
       to: txnData.to,
-      data: relayPayload,
+      data: txnData.callData,
     });
   } catch (error) {
     throw new Error(`Multichain claim simulation failed: ${error instanceof Error ? error.message : "Unknown error"}`);

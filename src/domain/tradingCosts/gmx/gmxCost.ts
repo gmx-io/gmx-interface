@@ -51,25 +51,26 @@ function estimateGmxNetworkFeeUsd({
   return increaseFee + decreaseFee;
 }
 
+function getOpenedSizeInTokens(marketInfo: MarketInfo, sizeUsd: bigint) {
+  return convertToTokenAmount(sizeUsd, marketInfo.indexToken.decimals, getMidPrice(marketInfo.indexToken.prices)) ?? 0n;
+}
+
 function getMarketInfoAfterOpen({
   marketInfo,
   sizeUsd,
   isLong,
+  indexTokenAmount,
 }: {
   marketInfo: MarketInfo;
   sizeUsd: bigint;
   isLong: boolean;
+  indexTokenAmount: bigint;
 }): MarketInfo {
-  const indexTokenAmount =
-    convertToTokenAmount(sizeUsd, marketInfo.indexToken.decimals, getMidPrice(marketInfo.indexToken.prices)) ?? 0n;
-
   return {
     ...marketInfo,
     longInterestUsd: isLong ? marketInfo.longInterestUsd + sizeUsd : marketInfo.longInterestUsd,
     shortInterestUsd: isLong ? marketInfo.shortInterestUsd : marketInfo.shortInterestUsd + sizeUsd,
-    longInterestInTokens: isLong
-      ? marketInfo.longInterestInTokens + indexTokenAmount
-      : marketInfo.longInterestInTokens,
+    longInterestInTokens: isLong ? marketInfo.longInterestInTokens + indexTokenAmount : marketInfo.longInterestInTokens,
     shortInterestInTokens: isLong
       ? marketInfo.shortInterestInTokens
       : marketInfo.shortInterestInTokens + indexTokenAmount,
@@ -120,10 +121,17 @@ export function getGmxTradingCostBreakdown({
     fallbackToZero: true,
     shouldCapNegativeImpact: true,
   });
-  const marketInfoAfterOpen = getMarketInfoAfterOpen({ marketInfo, sizeUsd, isLong });
+  const openedSizeInTokens = getOpenedSizeInTokens(marketInfo, sizeUsd);
+  const marketInfoAfterOpen = getMarketInfoAfterOpen({
+    marketInfo,
+    sizeUsd,
+    isLong,
+    indexTokenAmount: openedSizeInTokens,
+  });
   const closeImpact = getCappedPositionImpactUsd(marketInfoAfterOpen, sizeUsd, isLong, false, {
     fallbackToZero: true,
     shouldCapNegativeImpact: true,
+    sizeDeltaInTokens: openedSizeInTokens,
   });
 
   const openPositionFee = getPositionFee(marketInfo, sizeUsd, openImpact.balanceWasImproved, undefined).positionFeeUsd;

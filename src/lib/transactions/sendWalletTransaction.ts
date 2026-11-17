@@ -104,6 +104,7 @@ export async function sendWalletTransaction({
     callback?.(eventBuilder.Sending());
 
     const txnData: ISignerSendTransactionParams = {
+      chainId,
       to,
       data: callData,
       value,

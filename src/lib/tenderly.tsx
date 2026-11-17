@@ -336,13 +336,6 @@ export const tenderlyLsKeys = {
   enabled: "tenderlySimulationEnabled",
 };
 
-export function getTenderlyAccountParams() {
-  return {
-    accountSlug: JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.accountSlug)) ?? '""'),
-    projectSlug: JSON.parse(localStorage.getItem(JSON.stringify(tenderlyLsKeys.projectSlug)) ?? '""'),
-  };
-}
-
 export const getTenderlyConfig = (): TenderlyConfig | null => {
   if (!isDevelopment()) return null;
 

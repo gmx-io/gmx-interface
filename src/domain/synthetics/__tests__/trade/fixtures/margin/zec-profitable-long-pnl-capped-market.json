@@ -1,0 +1,548 @@
+{
+  "name": "zec-profitable-long-pnl-capped-market",
+  "meta": {
+    "chainId": 42161,
+    "forkBlock": 503710836,
+    "forkBlockTimestamp": 1789043821,
+    "capturedAt": "2026-09-10T13:15:24.687Z",
+    "dumpedAt": "2026-09-15T14:39:22.136Z",
+    "headBlock": 503711007,
+    "headTimestamp": 1789043992,
+    "contractsBuild": "gmx-synthetics release_2.2.1 @ 23c9d160",
+    "positionUtils": "0x077887985985eBF1B406263aa175bdB17BF1FEd0",
+    "increasePositionUtils": "0x00F39bbbBAB35bA47Daa17A18D833350EC398Ff6",
+    "bytecodeHashes": {
+      "positionUtils": "0x3d8c6f65072f928f3110d47adf94c72bbf08377fda3f1b5298bf363d70642fb8",
+      "increasePositionUtils": "0x5f9779393cfa31d27a37c400b1710c3e9fa526ce991b3e4daddefb1a47b13460"
+    }
+  },
+  "market": {
+    "name": "ZEC/USD [BTC-USDC]",
+    "marketTokenAddress": "0x587759c237acCa739bCE3911647BacF56C876E60"
+  },
+  "minCollateralUsd": {
+    "$bigint": "1000000000000000000000000000000"
+  },
+  "marketsInfoData": {
+    "0x587759c237acCa739bCE3911647BacF56C876E60": {
+      "longInterestUsd": {
+        "$bigint": "364418993791570609451470742811213152"
+      },
+      "shortInterestUsd": {
+        "$bigint": "138034825979967860170309320476602338"
+      },
+      "longInterestUsdUsingLongToken": {
+        "$bigint": "0"
+      },
+      "longInterestUsdUsingShortToken": {
+        "$bigint": "364418993791570609451470742811213152"
+      },
+      "shortInterestUsdUsingLongToken": {
+        "$bigint": "0"
+      },
+      "shortInterestUsdUsingShortToken": {
+        "$bigint": "138034825979967860170309320476602338"
+      },
+      "longInterestInTokens": {
+        "$bigint": "32612183658"
+      },
+      "shortInterestInTokens": {
+        "$bigint": "12101455132"
+      },
+      "longInterestInTokensUsingLongToken": {
+        "$bigint": "0"
+      },
+      "longInterestInTokensUsingShortToken": {
+        "$bigint": "32612183658"
+      },
+      "shortInterestInTokensUsingLongToken": {
+        "$bigint": "0"
+      },
+      "shortInterestInTokensUsingShortToken": {
+        "$bigint": "12101455132"
+      },
+      "longPoolAmount": {
+        "$bigint": "1288354628"
+      },
+      "shortPoolAmount": {
+        "$bigint": "1004687900672"
+      },
+      "poolValueMin": {
+        "$bigint": "1955456658479713667617805412014847606"
+      },
+      "poolValueMax": {
+        "$bigint": "1955489054029864228157464124514847606"
+      },
+      "totalBorrowingFees": {
+        "$bigint": "1067911862230750234218083319156337"
+      },
+      "positionImpactPoolAmount": {
+        "$bigint": "3664615003"
+      },
+      "swapImpactPoolAmountLong": {
+        "$bigint": "13880104"
+      },
+      "swapImpactPoolAmountShort": {
+        "$bigint": "49783285"
+      },
+      "borrowingFactorPerSecondForLongs": {
+        "$bigint": "3667489197767100800782"
+      },
+      "borrowingFactorPerSecondForShorts": {
+        "$bigint": "0"
+      },
+      "fundingFactorPerSecond": {
+        "$bigint": "317097919837645865043"
+      },
+      "longsPayShorts": true,
+      "virtualPoolAmountForLongToken": {
+        "$bigint": "44391581402"
+      },
+      "virtualPoolAmountForShortToken": {
+        "$bigint": "34247007776362"
+      },
+      "virtualInventoryForPositions": {
+        "$bigint": "0"
+      },
+      "virtualInventoryForPositionsInTokens": {
+        "$bigint": "0"
+      },
+      "isDisabled": false,
+      "maxLongPoolUsdForDeposit": {
+        "$bigint": "1875000000000000000000000000000000000"
+      },
+      "maxShortPoolUsdForDeposit": {
+        "$bigint": "1875000000000000000000000000000000000"
+      },
+      "maxLongPoolAmount": {
+        "$bigint": "2400000000"
+      },
+      "maxShortPoolAmount": {
+        "$bigint": "2250000000000"
+      },
+      "reserveFactorLong": {
+        "$bigint": "1550000000000000000000000000000"
+      },
+      "reserveFactorShort": {
+        "$bigint": "1550000000000000000000000000000"
+      },
+      "openInterestReserveFactorLong": {
+        "$bigint": "1500000000000000000000000000000"
+      },
+      "openInterestReserveFactorShort": {
+        "$bigint": "1500000000000000000000000000000"
+      },
+      "maxOpenInterestLong": {
+        "$bigint": "4043750000000000004595418514113691648"
+      },
+      "maxOpenInterestShort": {
+        "$bigint": "4043750000000000004595418514113691648"
+      },
+      "maxCollateralSumLongTokenLong": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumLongTokenShort": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumShortTokenLong": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "maxCollateralSumShortTokenShort": {
+        "$bigint": "5000000000000000000000000000000"
+      },
+      "minPositionImpactPoolAmount": {
+        "$bigint": "0"
+      },
+      "positionImpactPoolDistributionRate": {
+        "$bigint": "0"
+      },
+      "borrowingFactorLong": {
+        "$bigint": "6250000000000000000000"
+      },
+      "borrowingFactorShort": {
+        "$bigint": "6250000000000000000000"
+      },
+      "borrowingExponentFactorLong": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "borrowingExponentFactorShort": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "fundingFactor": {
+        "$bigint": "20000000000000000000000"
+      },
+      "fundingExponentFactor": {
+        "$bigint": "1000000000000000000000000000000"
+      },
+      "fundingIncreaseFactorPerSecond": {
+        "$bigint": "745598079618236388"
+      },
+      "minFundingIncreaseRatePerSecond": {
+        "$bigint": "0"
+      },
+      "fundingDecreaseFactorPerSecond": {
+        "$bigint": "31066586650759850"
+      },
+      "thresholdForDecreaseFunding": {
+        "$bigint": "0"
+      },
+      "thresholdForStableFunding": {
+        "$bigint": "40000000000000000000000000000"
+      },
+      "minFundingFactorPerSecondLong": {
+        "$bigint": "317097919837645865043"
+      },
+      "minFundingFactorPerSecondShort": {
+        "$bigint": "317097919837645865043"
+      },
+      "maxFundingFactorPerSecondLong": {
+        "$bigint": "5368306173251301944444"
+      },
+      "maxFundingFactorPerSecondShort": {
+        "$bigint": "5368306173251301944444"
+      },
+      "maxPnlFactorForTradersLong": {
+        "$bigint": "103866093791378824422293046"
+      },
+      "maxPnlFactorForTradersShort": {
+        "$bigint": "600000000000000000000000000000"
+      },
+      "maxPnlFactorForDepositsLong": {
+        "$bigint": "600000000000000000000000000000"
+      },
+      "maxPnlFactorForDepositsShort": {
+        "$bigint": "600000000000000000000000000000"
+      },
+      "maxPnlFactorForWithdrawalsLong": {
+        "$bigint": "450000000000000000000000000000"
+      },
+      "maxPnlFactorForWithdrawalsShort": {
+        "$bigint": "450000000000000000000000000000"
+      },
+      "minCollateralFactor": {
+        "$bigint": "10000000000000000000000000000"
+      },
+      "minCollateralFactorForOpenInterestLong": {
+        "$bigint": "0"
+      },
+      "minCollateralFactorForOpenInterestShort": {
+        "$bigint": "44400000000000000000000"
+      },
+      "minCollateralFactorForLiquidation": {
+        "$bigint": "5000000000000000000000000000"
+      },
+      "positionFeeFactorForBalanceWasImproved": {
+        "$bigint": "400000000000000000000000000"
+      },
+      "positionFeeFactorForBalanceWasNotImproved": {
+        "$bigint": "600000000000000000000000000"
+      },
+      "positionImpactFactorPositive": {
+        "$bigint": "145334829385780322893824"
+      },
+      "positionImpactFactorNegative": {
+        "$bigint": "218002244078670475952128"
+      },
+      "maxPositionImpactFactorPositive": {
+        "$bigint": "4000000000000000000000000000"
+      },
+      "maxPositionImpactFactorNegative": {
+        "$bigint": "10000000000000000000000000000"
+      },
+      "maxPositionImpactFactorForLiquidations": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactFactor": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactFactorForWithdrawals": {
+        "$bigint": "0"
+      },
+      "maxLendableImpactUsd": {
+        "$bigint": "0"
+      },
+      "lentPositionImpactPoolAmount": {
+        "$bigint": "0"
+      },
+      "positionImpactExponentFactorPositive": {
+        "$bigint": "1632455085189179207245631586304"
+      },
+      "positionImpactExponentFactorNegative": {
+        "$bigint": "1632455085189179207245631586304"
+      },
+      "swapFeeFactorForBalanceWasImproved": {
+        "$bigint": "500000000000000000000000000"
+      },
+      "swapFeeFactorForBalanceWasNotImproved": {
+        "$bigint": "700000000000000000000000000"
+      },
+      "swapImpactFactorPositive": {
+        "$bigint": "1750000000000000000000"
+      },
+      "swapImpactFactorNegative": {
+        "$bigint": "3500000000000000000000"
+      },
+      "atomicSwapFeeFactor": {
+        "$bigint": "37500000000000000000000000000"
+      },
+      "withdrawalFeeFactorBalanceWasImproved": {
+        "$bigint": "500000000000000000000000000"
+      },
+      "withdrawalFeeFactorBalanceWasNotImproved": {
+        "$bigint": "700000000000000000000000000"
+      },
+      "swapImpactExponentFactor": {
+        "$bigint": "2000000000000000000000000000000"
+      },
+      "virtualMarketId": "0xba1ff14bf93fbb00b6f43d3ad403cc4c6496c1bb88489075c8b1bc709bde9ebb",
+      "virtualIndexTokenId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "virtualLongTokenId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "virtualShortTokenId": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "marketTokenAddress": "0x587759c237acCa739bCE3911647BacF56C876E60",
+      "indexTokenAddress": "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      "longTokenAddress": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "shortTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isSameCollaterals": false,
+      "isSpotOnly": false,
+      "name": "ZEC/USD [BTC-USDC]",
+      "data": "",
+      "useOpenInterestInTokensForBalance": true,
+      "claimableFundingAmountLong": {
+        "$bigint": "0"
+      },
+      "claimableFundingAmountShort": {
+        "$bigint": "0"
+      },
+      "longToken": {
+        "symbol": "BTC",
+        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+        "decimals": 8,
+        "name": "Wrapped Bitcoin",
+        "assetSymbol": "WBTC",
+        "baseSymbol": "BTC",
+        "isShortable": true,
+        "categories": [
+          "layer1"
+        ],
+        "imageUrl": "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+        "explorerUrl": "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+        "isV1Available": true,
+        "isPermitSupported": true,
+        "contractVersion": "1",
+        "prices": {
+          "minPrice": {
+            "$bigint": "76818102786824967500000000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "76818102786824967500000000000000000"
+          }
+        },
+        "balance": {
+          "$bigint": "200000000"
+        }
+      },
+      "shortToken": {
+        "symbol": "USDC",
+        "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "decimals": 6,
+        "name": "USD Coin",
+        "isStable": true,
+        "isV1Available": true,
+        "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+        "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "isPermitSupported": true,
+        "prices": {
+          "minPrice": {
+            "$bigint": "999861349928527700000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "999861349928527700000000000000"
+          }
+        },
+        "balance": {
+          "$bigint": "500000000000"
+        }
+      },
+      "indexToken": {
+        "symbol": "ZEC",
+        "address": "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+        "decimals": 8,
+        "isSynthetic": true,
+        "name": "Zcash",
+        "categories": [
+          "layer1"
+        ],
+        "imageUrl": "https://assets.coingecko.com/coins/images/486/standard/circle-zcash-color.png?1696501740",
+        "prices": {
+          "minPrice": {
+            "$bigint": "1169760722831003775000000000000000"
+          },
+          "maxPrice": {
+            "$bigint": "1169966199210806525000000000000000"
+          }
+        }
+      }
+    }
+  },
+  "tokensData": {
+    "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5": {
+      "symbol": "ZEC",
+      "address": "0x6eAbbaA3278556Dc5b19c034dc26c0eaB60d65B5",
+      "decimals": 8,
+      "isSynthetic": true,
+      "name": "Zcash",
+      "categories": [
+        "layer1"
+      ],
+      "imageUrl": "https://assets.coingecko.com/coins/images/486/standard/circle-zcash-color.png?1696501740",
+      "prices": {
+        "minPrice": {
+          "$bigint": "1169760722831003775000000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "1169966199210806525000000000000000"
+        }
+      }
+    },
+    "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f": {
+      "symbol": "BTC",
+      "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      "decimals": 8,
+      "name": "Wrapped Bitcoin",
+      "assetSymbol": "WBTC",
+      "baseSymbol": "BTC",
+      "isShortable": true,
+      "categories": [
+        "layer1"
+      ],
+      "imageUrl": "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+      "explorerUrl": "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+      "isV1Available": true,
+      "isPermitSupported": true,
+      "contractVersion": "1",
+      "prices": {
+        "minPrice": {
+          "$bigint": "76818102786824967500000000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "76818102786824967500000000000000000"
+        }
+      },
+      "balance": {
+        "$bigint": "200000000"
+      }
+    },
+    "0xaf88d065e77c8cC2239327C5EDb3A432268e5831": {
+      "symbol": "USDC",
+      "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "decimals": 6,
+      "name": "USD Coin",
+      "isStable": true,
+      "isV1Available": true,
+      "imageUrl": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+      "explorerUrl": "https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      "isPermitSupported": true,
+      "prices": {
+        "minPrice": {
+          "$bigint": "999861349928527700000000000000"
+        },
+        "maxPrice": {
+          "$bigint": "999861349928527700000000000000"
+        }
+      },
+      "balance": {
+        "$bigint": "500000000000"
+      }
+    }
+  },
+  "position": {
+    "key": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266:0x587759c237acCa739bCE3911647BacF56C876E60:0xaf88d065e77c8cC2239327C5EDb3A432268e5831:true",
+    "contractKey": "0x24e1742caf29ef1b4506e2d6dbf91b2913a1cf15352c7f5fd72116611d7b789d",
+    "account": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "marketAddress": "0x587759c237acCa739bCE3911647BacF56C876E60",
+    "collateralTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "isLong": true,
+    "sizeInUsd": {
+      "$bigint": "20000000000000000000000000000000000"
+    },
+    "sizeInTokens": {
+      "$bigint": "1851851851"
+    },
+    "collateralAmount": {
+      "$bigint": "1000000000"
+    },
+    "pendingImpactAmount": {
+      "$bigint": "0"
+    },
+    "pendingBorrowingFeesUsd": {
+      "$bigint": "34694447810876773575397720000"
+    },
+    "pendingFundingFeesUsd": {
+      "$bigint": "3000583911135511627700000000"
+    },
+    "fundingFeeAmount": {
+      "$bigint": "3001"
+    },
+    "claimableLongTokenAmount": {
+      "$bigint": "0"
+    },
+    "claimableShortTokenAmount": {
+      "$bigint": "0"
+    },
+    "increasedAtTime": {
+      "$bigint": "1789043969"
+    },
+    "decreasedAtTime": {
+      "$bigint": "0"
+    },
+    "collateralUsd": {
+      "$bigint": "999861349928527700000000000000000"
+    },
+    "entryPrice": {
+      "$bigint": "1080000000496800000228528000105122"
+    },
+    "markPrice": {
+      "$bigint": "1169760722831003775000000000000000"
+    },
+    "liquidationPrice": {
+      "$bigint": "1032057523110318953494147600000000"
+    },
+    "pnl": {
+      "$bigint": "9973413588101483140750014782346"
+    },
+    "leverage": {
+      "$bigint": "200035"
+    }
+  },
+  "order": {
+    "isLong": true,
+    "orderType": 2,
+    "orderTypeName": "MarketIncrease",
+    "triggerPrice": null,
+    "payTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "payAmount": {
+      "$bigint": "500000000"
+    },
+    "collateralTokenAddress": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    "swapPath": [],
+    "autoSwapPath": [],
+    "uiFeeFactor": {
+      "$bigint": "0"
+    },
+    "sizeOnly": false
+  },
+  "flip": {
+    "largestExecutesUsd": {
+      "$bigint": "118327548176760219851115195453166961"
+    },
+    "firstRejectedUsd": {
+      "$bigint": "118327555611408698095886591076850891"
+    },
+    "reason": "LiquidatablePosition(min collateral for leverage, 1383275501111997195130686523513063, 1000000000000000000000000000000, 1383275556114086980958865910768508)",
+    "precisionUsd": {
+      "$bigint": "10000000000000000000000000000"
+    },
+    "probes": 27,
+    "probedAt": "mark"
+  }
+}

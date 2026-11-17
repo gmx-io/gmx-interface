@@ -31,7 +31,7 @@ export const SOCIAL_MAP = {
   },
   Github: {
     link: "https://github.com/gmx-io",
-    name: "Github",
+    name: "GitHub",
     IconComponent: IconGithub,
     onClick: () => {
       window.open("https://github.com/gmx-io", "_blank");

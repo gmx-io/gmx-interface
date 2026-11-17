@@ -36,6 +36,10 @@ vi.mock("pages/AccountDashboard/AccountDashboard", () => ({
   AccountDashboard: () => <div>trader-profile-page</div>,
 }));
 
+vi.mock("pages/Earn/EarnPortfolioPage", () => ({
+  default: () => <div>earn-portfolio-page</div>,
+}));
+
 vi.mock("pages/TradingCosts/TradingCosts", () => ({
   TradingCostsPage: () => <div>Trading Costs Page</div>,
 }));
@@ -51,6 +55,10 @@ function noop() {
 }
 
 afterEach(cleanup);
+
+beforeEach(() => {
+  chainState.chainId = ARBITRUM;
+});
 
 function toInitialEntries(entry: string) {
   return [entry];
@@ -76,10 +84,6 @@ function renderAt(entry: string) {
 }
 
 describe("MainRoutes trader routes", () => {
-  beforeEach(() => {
-    chainState.chainId = ARBITRUM;
-  });
-
   it("renders the trader activity page on /traders", () => {
     const { url, text } = renderAt("/traders?network=arbitrum&v=2");
 
@@ -142,5 +146,17 @@ describe("MainRoutes dashboards", () => {
 
     await vi.dynamicImportSettled();
     expect(await screen.findByText("Market Order Execution Page")).toBeTruthy();
+  });
+});
+
+describe("MainRoutes legacy buy gmx url", () => {
+  it.each([
+    ["/buy_gmx", "/earn/portfolio?buyGmx=1"],
+    ["/buy_gmx?chainId=43114&ref=CODE", "/earn/portfolio?chainId=43114&ref=CODE&buyGmx=1"],
+  ])("%s lands on earn portfolio with the Buy GMX modal requested: %s", (from, to) => {
+    const { url, text } = renderAt(from);
+
+    expect(url).toBe(to);
+    expect(text).toContain("earn-portfolio-page");
   });
 });

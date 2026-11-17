@@ -1,5 +1,8 @@
 import cx from "classnames";
 import { ReactNode } from "react";
+
+import { USD_SYMBOL } from "lib/numbers";
+
 import "./StatsTooltip.css";
 
 type StatsTooltipRowProps = {
@@ -38,7 +41,7 @@ export default function StatsTooltipRow({
 
     return (
       <span className={cx("Tooltip-row-value", textClassName, valueClassName)}>
-        {showDollar && "$\u200a"}
+        {showDollar && <span className="numeric-affix">{USD_SYMBOL}</span>}
         {value}
         {unit || ""}
       </span>

@@ -14,11 +14,11 @@ export function getWithdrawBlockedText(blocker: WithdrawBlocker, chainId: number
 export function getWithdrawBlockedDescription(blocker: WithdrawBlocker, chainId: number): ReactNode {
   return blocker === "cannot-sign" ? (
     <Trans>
-      Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds.
+      Withdrawing needs a signature this wallet cannot provide, so this is disabled to avoid locking your funds
     </Trans>
   ) : (
     <Trans>
-      Withdrawing is signed on {getChainName(chainId)}. Add that network to your wallet and reconnect, otherwise your
+      Withdrawing is signed on {getChainName(chainId)}. Add that network to your wallet and reconnect. Otherwise, your
       funds cannot be withdrawn.
     </Trans>
   );

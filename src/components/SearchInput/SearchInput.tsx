@@ -25,6 +25,7 @@ type Props = {
   ariaLabel?: string;
   ariaInvalid?: boolean;
   ariaDescribedBy?: string;
+  maxLength?: number;
 };
 
 export default function SearchInput({
@@ -39,6 +40,7 @@ export default function SearchInput({
   ariaLabel,
   ariaInvalid,
   ariaDescribedBy,
+  maxLength,
 }: Props) {
   const isSmallerScreen = useMedia("(max-width: 700px)");
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -95,6 +97,7 @@ export default function SearchInput({
         aria-label={ariaLabel}
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedBy}
+        maxLength={maxLength}
         className={cx(
           "block h-full w-full rounded-8 bg-slate-800 p-[6.5px] pl-32 pr-32 text-[13px] leading-1 placeholder-slate-100 hover:bg-fill-surfaceElevatedHover",
           {

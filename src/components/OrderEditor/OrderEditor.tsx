@@ -1,18 +1,29 @@
-import { t, Trans } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
 
-import { BASIS_POINTS_DIVISOR, DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
+import { DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useUserReferralInfo } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useProDiscountFactor,
+  useFeeDiscountFactor,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
+  useEditingOrderState,
   useOrderEditorIsSubmittingState,
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
   useOrderEditorTriggerRatioInputValueState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
+import {
+  usePositionEditorOpenAtPrice,
+  usePositionEditorPosition,
+} from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
@@ -26,12 +37,18 @@ import {
   selectOrderEditorIncreaseAmounts,
   selectOrderEditorInitialAcceptablePriceImpactBps,
   selectOrderEditorIsRatioInverted,
+  selectOrderEditorIsRemainingPositionAboveMaxLeverage,
+  selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
+  selectOrderEditorIncreaseResultingPositionMarginState,
+  selectOrderEditorIsIncreaseExecutableNow,
   selectOrderEditorNextPositionValuesWithoutPnlForIncrease,
+  selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
+  selectOrderEditorIsQuoteUnavailable,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
@@ -43,12 +60,14 @@ import {
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
-import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
+  getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -64,61 +83,69 @@ import {
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
+import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
-  formatAcceptablePrice,
-  formatLeverage,
-  formatLiquidationPrice,
+  formatAcceptablePriceParts,
+  formatLeverageParts,
+  formatLiquidationPriceParts,
   getNameByOrderType,
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import {
-  getIncreasePositionAmounts,
-  getMarkPrice,
-  getNextPositionValuesForIncreaseTrade,
-} from "domain/synthetics/trade";
+import { getMarkPrice } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
-import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
-import { getIsIncreaseResultingPositionLiquidatable } from "domain/synthetics/trade/utils/warnings";
+import {
+  findMaxLeverageIncrease,
+  type MaxLeverageIncreaseParams,
+} from "domain/synthetics/trade/utils/maxLeverageSearch";
+import {
+  getConditionalDepositWarning,
+  getExpressError,
+  getIsMaxLeverageExceeded,
+} from "domain/synthetics/trade/utils/validation";
+import {
+  getIsIncreaseResultingPositionLiquidatable,
+  getIsPositionLiquidatedBeforeTrigger,
+} from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
   getPositionCloseSizeDeltaUsdForDisplay,
   isFullPositionCloseSizeDeltaUsd,
 } from "domain/tpsl/utils";
-import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { helperToast } from "lib/helperToast";
-import {
-  calculateDisplayDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatBalanceAmount,
-  formatDeltaUsd,
-  formatTokenAmountWithUsd,
-  formatUsd,
-  formatUsdPrice,
-  parseValue,
-} from "lib/numbers";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
+import { calculateDisplayDecimals, formatAmount, formatAmountFree, formatBalanceAmount, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { getIsMaxLeverageMarginReason } from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
+import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipAction, TooltipContent, TooltipLink, TooltipRow, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -127,7 +154,9 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
+import { FreshPositionIncreaseWarningCard } from "../TradeBox/FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "../TradeBox/LiquidatableIncreaseWarningCard";
+import { ResultingMarginAlertCard } from "../TradeBox/ResultingMarginWarningCard";
 
 import "./OrderEditor.scss";
 
@@ -139,6 +168,7 @@ type Props = {
 };
 
 export function OrderEditor(p: Props) {
+  const { _ } = useLingui();
   const { chainId, srcChainId } = useChainId();
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
@@ -154,11 +184,14 @@ export function OrderEditor(p: Props) {
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useOrderEditorTriggerRatioInputValueState();
   const [isInited, setIsInited] = useState(false);
 
-  const calcSelector = useCalcSelector();
+  const isMarginDeposit = isMarginDepositOrder(p.order);
 
   const sizeDeltaUsd = useSelector(selectOrderEditorSizeDeltaUsd);
+  const positionOrderError = useSelector(selectOrderEditorPositionOrderError);
+  const isQuoteUnavailable = useSelector(selectOrderEditorIsQuoteUnavailable);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
+  const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
@@ -175,6 +208,7 @@ export function OrderEditor(p: Props) {
       })
     : undefined;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
+  const editingPosition = usePositionEditorPosition();
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
 
@@ -200,8 +234,73 @@ export function OrderEditor(p: Props) {
       positionIndexToken ? convertToTokenAmount(sizeDeltaUsd, positionIndexToken.decimals, triggerPrice) : undefined,
     [positionIndexToken, sizeDeltaUsd, triggerPrice]
   );
+  const isPositionLiquidatedBeforeTrigger = useMemo(() => {
+    if (!positionOrder || !isLimitIncreaseOrderType(positionOrder.orderType)) {
+      return false;
+    }
+
+    // a margin deposit never becomes a fresh position
+    if (isMarginDeposit) {
+      return false;
+    }
+
+    return getIsPositionLiquidatedBeforeTrigger({
+      liqPrice: existingPosition?.liquidationPrice,
+      triggerPrice,
+      isLong: positionOrder.isLong,
+    });
+  }, [existingPosition?.liquidationPrice, isMarginDeposit, positionOrder, triggerPrice]);
+
+  const existingPositionForPreview = isPositionLiquidatedBeforeTrigger ? undefined : existingPosition;
+
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
+  const marginDepositProjections = useSelector(selectOrderEditorMarginDepositProjections);
+
+  const marginDepositRisk = useMemo(() => {
+    if (!isMarginDeposit) {
+      return undefined;
+    }
+
+    const riskParams = {
+      isLong: p.order.isLong,
+      triggerPrice,
+      currentLiqPrice: existingPosition?.liquidationPrice,
+      nextLiqPrice: marginDepositProjections?.nextLiqPrice,
+    };
+
+    return {
+      level: getMarginDepositRiskLevel(riskParams),
+      warning: getConditionalDepositWarning(riskParams),
+    };
+  }, [
+    existingPosition?.liquidationPrice,
+    isMarginDeposit,
+    marginDepositProjections?.nextLiqPrice,
+    p.order.isLong,
+    triggerPrice,
+  ]);
+
+  const marginDepositAmountText = formatBalanceAmount(
+    p.order.initialCollateralDeltaAmount,
+    p.order.initialCollateralToken.decimals,
+    p.order.initialCollateralToken.symbol,
+    { isStable: p.order.initialCollateralToken.isStable }
+  );
+
+  const positionKey = useSelector(selectOrderEditorPositionKey);
+  const openPositionEditorAtPrice = usePositionEditorOpenAtPrice();
+  const [, setEditingOrderState] = useEditingOrderState();
+
+  // the deposited amount cannot be updated in place, only replaced
+  const handleReplaceMarginDeposit = useCallback(() => {
+    if (!positionKey) {
+      return;
+    }
+
+    setEditingOrderState(undefined);
+    openPositionEditorAtPrice({ positionKey, replacingOrderKey: p.order.key });
+  }, [openPositionEditorAtPrice, p.order.key, positionKey, setEditingOrderState]);
 
   const isTriggerDecrease = isTriggerDecreaseOrderType(p.order.orderType);
 
@@ -216,6 +315,8 @@ export function OrderEditor(p: Props) {
   const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
   const userReferralInfo = useUserReferralInfo();
+  const proDiscountFactor = useProDiscountFactor();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
 
   const acceptablePrice = useSelector(selectOrderEditorAcceptablePrice);
@@ -232,7 +333,7 @@ export function OrderEditor(p: Props) {
   const swapImpactBps = useSelector(selectOrderEditorTotalSwapImpactBps);
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(p.order.marketAddress);
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
@@ -242,6 +343,13 @@ export function OrderEditor(p: Props) {
         : undefined;
 
   const priceImpactFeeBps = useSelector(selectOrderEditorPriceImpactFeeBps);
+
+  const resultingPositionMarginState = useSelector(selectOrderEditorIncreaseResultingPositionMarginState);
+  const isIncreaseExecutableNow = useSelector(selectOrderEditorIsIncreaseExecutableNow);
+
+  const isResultingPositionMaxLeverageError = getIsMaxLeverageMarginReason(resultingPositionMarginState?.reason);
+
+  const isResultingPositionBlocking = isIncreaseExecutableNow && resultingPositionMarginState?.isLiquidatable === true;
 
   const isMaxLeverageError = useMemo(() => {
     if (isLimitIncreaseOrderType(p.order.orderType) && sizeDeltaUsd !== undefined) {
@@ -260,88 +368,50 @@ export function OrderEditor(p: Props) {
     return false;
   }, [p.order, sizeDeltaUsd, nextPositionValuesWithoutPnlForIncrease?.nextLeverage]);
 
+  const isMaxLeverageActionOffered =
+    isMaxLeverageError || (isResultingPositionBlocking && isResultingPositionMaxLeverageError);
+
   const { savedAcceptablePriceImpactBuffer, isSetAcceptablePriceImpactEnabled } = useSettings();
 
-  const detectAndSetAvailableMaxLeverage = useCallback(() => {
+  const maxLeverageSearchParams = useMemo((): MaxLeverageIncreaseParams | undefined => {
     const positionOrder = p.order as PositionOrderInfo;
-    const marketInfo = positionOrder.marketInfo;
-    const collateralToken = positionOrder.targetCollateralToken;
 
-    if (!positionIndexToken || !fromToken || minCollateralUsd === undefined) return;
-
-    const { returnValue: newSizeDeltaUsd } = numericBinarySearch<bigint | undefined>(
-      1,
-      // "10 *" means we do 1..50 search but with 0.1x step
-      (10 * maxAllowedLeverage) / BASIS_POINTS_DIVISOR,
-      (lev) => {
-        const leverage = BigInt((lev / 10) * BASIS_POINTS_DIVISOR);
-        const increaseAmounts = getIncreasePositionAmounts({
-          collateralToken,
-          findSwapPath,
-          indexToken: positionIndexToken,
-          indexTokenAmount,
-          initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
-          initialCollateralToken: fromToken,
-          isLong: positionOrder.isLong,
-          marketInfo: positionOrder.marketInfo,
-          position: existingPosition,
-          strategy: "leverageByCollateral",
-          uiFeeFactor,
-          userReferralInfo,
-          acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-          fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
-          externalSwapQuote: undefined,
-          leverage,
-          triggerPrice,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams: undefined,
-          isSetAcceptablePriceImpactEnabled,
-        });
-
-        const nextPositionValues = getNextPositionValuesForIncreaseTrade({
-          collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
-          collateralDeltaUsd: increaseAmounts.collateralDeltaUsd,
-          collateralToken,
-          existingPosition,
-          indexPrice: increaseAmounts.indexPrice,
-          isLong: positionOrder.isLong,
-          marketInfo,
-          minCollateralUsd,
-          showPnlInLeverage: false,
-          sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
-          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
-          positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
-          userReferralInfo,
-        });
-
-        if (nextPositionValues.nextLeverage !== undefined) {
-          const isMaxLeverageExceeded = getIsMaxLeverageExceeded(
-            nextPositionValues.nextLeverage,
-            marketInfo,
-            positionOrder.isLong,
-            increaseAmounts.sizeDeltaUsd
-          );
-
-          return {
-            isValid: !isMaxLeverageExceeded,
-            returnValue: increaseAmounts.sizeDeltaUsd,
-          };
-        }
-
-        return {
-          isValid: false,
-          returnValue: increaseAmounts.sizeDeltaUsd,
-        };
-      }
-    );
-
-    if (newSizeDeltaUsd !== undefined) {
-      setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
-    } else {
-      helperToast.error(t`No valid leverage available`);
+    if (!isMaxLeverageActionOffered || !positionIndexToken || !fromToken || minCollateralUsd === undefined) {
+      return undefined;
     }
+
+    return {
+      collateralToken: positionOrder.targetCollateralToken,
+      findSwapPath,
+      indexToken: positionIndexToken,
+      indexTokenAmount,
+      initialCollateralAmount: positionOrder.initialCollateralDeltaAmount,
+      initialCollateralToken: fromToken,
+      isLong: positionOrder.isLong,
+      marketInfo: positionOrder.marketInfo,
+      position: existingPositionForPreview,
+      uiFeeFactor: positionOrder.uiFeeFactor ?? uiFeeFactor,
+      userReferralInfo,
+      proDiscountFactor,
+      feeDiscountFactor,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+      fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+      externalSwapQuote: undefined,
+      triggerPrice,
+      limitOrderType: isLimitIncreaseOrderType(positionOrder.orderType)
+        ? OrderType.LimitIncrease
+        : isStopIncreaseOrderType(positionOrder.orderType)
+          ? OrderType.StopIncrease
+          : undefined,
+      marketsInfoData,
+      chainId,
+      externalSwapQuoteParams: undefined,
+      isSetAcceptablePriceImpactEnabled,
+      maxAllowedLeverage,
+      minCollateralUsd,
+    };
   }, [
+    isMaxLeverageActionOffered,
     p.order,
     positionIndexToken,
     fromToken,
@@ -349,19 +419,39 @@ export function OrderEditor(p: Props) {
     maxAllowedLeverage,
     indexTokenAmount,
     findSwapPath,
-    existingPosition,
+    existingPositionForPreview,
     uiFeeFactor,
     userReferralInfo,
+    proDiscountFactor,
+    feeDiscountFactor,
     savedAcceptablePriceImpactBuffer,
     acceptablePriceImpactBps,
     triggerPrice,
     marketsInfoData,
     chainId,
     isSetAcceptablePriceImpactEnabled,
-    setSizeInputValue,
   ]);
 
+  const maxLeverageIncrease = useMemo(
+    () => (maxLeverageSearchParams === undefined ? undefined : findMaxLeverageIncrease(maxLeverageSearchParams)),
+    [maxLeverageSearchParams]
+  );
+
+  const hasAvailableMaxLeverage = maxLeverageIncrease !== undefined;
+
+  const detectAndSetAvailableMaxLeverage = useCallback(() => {
+    if (!maxLeverageIncrease) {
+      return;
+    }
+
+    setSizeInputValue(
+      formatAmountFree(substractMaxLeverageSlippage(maxLeverageIncrease.increaseAmounts.sizeDeltaUsd), USD_DECIMALS, 2)
+    );
+  }, [maxLeverageIncrease, setSizeInputValue]);
+
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
+    if (isQuoteUnavailable) return undefined;
+
     if (!signer || !tokensData || !marketsInfoData) {
       return undefined;
     }
@@ -381,7 +471,9 @@ export function OrderEditor(p: Props) {
             minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
             autoCancel: p.order.autoCancel,
             validFromTime: 0n,
+            decreasePositionSwapType: p.order.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+            executionGasLimit: executionFee?.gasLimit,
           }),
         ],
         cancelOrderParams: [],
@@ -395,6 +487,12 @@ export function OrderEditor(p: Props) {
         existingPosition !== undefined &&
         nextSizeDeltaUsd >= existingPosition.sizeInUsd;
 
+      const updateSizeDeltaUsd = isMarginDeposit
+        ? 0n
+        : shouldPreserveFullCloseSize
+          ? FULL_POSITION_CLOSE_SIZE_DELTA_USD
+          : nextSizeDeltaUsd;
+
       return {
         createOrderParams: [],
         updateOrderParams: [
@@ -403,24 +501,29 @@ export function OrderEditor(p: Props) {
             indexTokenAddress: positionOrder.indexToken.address,
             orderKey: p.order.key,
             orderType: p.order.orderType,
-            sizeDeltaUsd: shouldPreserveFullCloseSize ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : nextSizeDeltaUsd,
+            sizeDeltaUsd: updateSizeDeltaUsd,
             triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
             acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
             autoCancel: positionOrder.autoCancel,
             validFromTime: 0n,
+            decreasePositionSwapType: positionOrder.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
+            executionGasLimit: executionFee?.gasLimit,
           }),
         ],
         cancelOrderParams: [],
       };
     }
   }, [
+    isQuoteUnavailable,
     signer,
     tokensData,
+    executionFee?.gasLimit,
     marketsInfoData,
     p.order,
     existingPosition,
+    isMarginDeposit,
     isTriggerDecrease,
     triggerRatio?.ratio,
     triggerPrice,
@@ -431,34 +534,39 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
+  const { formId, isActiveForm } = useActiveForm();
+
   const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
+    canSwitchGasPaymentToken: isActiveForm,
+    gasPaymentTokenFallback: "approvedToken",
   });
 
+  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
+
   const networkFee = useMemo(() => {
-    if (!additionalExecutionFee) {
-      return undefined;
+    const gasPaymentParams = getNetworkFeeGasPaymentParams({
+      expressParams,
+      tokensData,
+      canApproveGasPaymentToken: false,
+    });
+    const gasPaymentToken = getByKey(tokensData, gasPaymentParams?.gasPaymentTokenAddress);
+
+    if (gasPaymentToken && gasPaymentParams?.gasPaymentTokenAmount !== undefined) {
+      return {
+        feeToken: gasPaymentToken,
+        feeTokenAmount: gasPaymentParams.gasPaymentTokenAmount,
+        feeUsd: convertToUsd(
+          gasPaymentParams.gasPaymentTokenAmount,
+          gasPaymentToken.decimals,
+          gasPaymentToken.prices.minPrice
+        ),
+      };
     }
 
-    let feeToken = additionalExecutionFee?.feeToken;
-    let feeTokenAmount = additionalExecutionFee?.feeTokenAmount;
-    let feeUsd = additionalExecutionFee?.feeUsd;
-
-    const gasPaymentToken = getByKey(tokensData, expressParams?.gasPaymentParams.gasPaymentTokenAddress);
-
-    if (gasPaymentToken && expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
-      feeToken = gasPaymentToken;
-      feeTokenAmount = expressParams?.gasPaymentParams.gasPaymentTokenAmount;
-      feeUsd = convertToUsd(feeTokenAmount, feeToken.decimals, gasPaymentToken.prices.minPrice);
-    }
-
-    return {
-      feeToken,
-      feeTokenAmount,
-      feeUsd,
-    };
+    return additionalExecutionFee;
   }, [additionalExecutionFee, expressParams, tokensData]);
 
   const error = useMemo(() => {
@@ -483,34 +591,27 @@ export function OrderEditor(p: Props) {
         return t`Set limit price above mark price`;
       }
 
-      const expressError = getExpressError({
-        expressParams,
-        tokensData,
-      });
-
-      if (expressError.buttonErrorMessage) {
-        return expressError.buttonErrorMessage;
-      }
-
-      return;
+      return expressError.buttonErrorMessage;
     }
 
-    return calcSelector(selectOrderEditorPositionOrderError);
+    return positionOrderError ?? expressError.buttonErrorMessage;
   }, [
     isSubmitting,
     p.order.orderType,
     p.order.minOutputAmount,
-    calcSelector,
+    positionOrderError,
     triggerRatio,
     minOutputAmount,
     isRatioInverted,
     markRatio,
-    expressParams,
-    tokensData,
+    expressError,
   ]);
 
+  const showResultingPositionMaxLeverageWarning =
+    !error && !isIncreaseExecutableNow && !isMaxLeverageError && isResultingPositionMaxLeverageError;
+
   const showLiquidationRiskWarning = useMemo(() => {
-    if (error || !positionOrder) {
+    if (error || !positionOrder || isMarginDeposit) {
       return false;
     }
 
@@ -521,13 +622,27 @@ export function OrderEditor(p: Props) {
       return false;
     }
 
+    if (resultingPositionMarginState?.isLiquidatable) {
+      return !isIncreaseExecutableNow && !isResultingPositionMaxLeverageError;
+    }
+
     return getIsIncreaseResultingPositionLiquidatable({
       currentLiqPrice: existingPosition?.liquidationPrice,
       nextLiqPrice: nextPositionValuesForIncrease?.nextLiqPrice,
       triggerPrice,
       isLong: positionOrder.isLong,
     });
-  }, [error, positionOrder, existingPosition, nextPositionValuesForIncrease, triggerPrice]);
+  }, [
+    error,
+    positionOrder,
+    isMarginDeposit,
+    existingPosition,
+    nextPositionValuesForIncrease,
+    triggerPrice,
+    resultingPositionMarginState,
+    isIncreaseExecutableNow,
+    isResultingPositionMaxLeverageError,
+  ]);
 
   const onSubmit = useCallback(async () => {
     if (!batchParams || !signer || !tokensData || !marketsInfoData || !provider) {
@@ -568,6 +683,7 @@ export function OrderEditor(p: Props) {
     });
 
     if (expressParams?.subaccount) {
+      void txnPromise.catch(reportHandledRejection("orderEditor.submit"));
       p.onClose();
       setIsSubmitting(false);
       if (market) {
@@ -582,7 +698,7 @@ export function OrderEditor(p: Props) {
         if (market) {
           sendEditOrderEvent({ order: p.order, source: p.source, marketInfo: market });
         }
-      })
+      }, reportHandledRejection("orderEditor.submit"))
       .finally(() => {
         setIsSubmitting(false);
       });
@@ -603,6 +719,12 @@ export function OrderEditor(p: Props) {
   ]);
 
   const submitButtonState = useMemo(() => {
+    const setMaxLeverageAction = hasAvailableMaxLeverage ? (
+      <TooltipAction onClick={detectAndSetAvailableMaxLeverage}>
+        <Trans>Set max leverage</Trans>
+      </TooltipAction>
+    ) : null;
+
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
@@ -633,18 +755,38 @@ export function OrderEditor(p: Props) {
       return {
         text: t`Max leverage exceeded`,
         tooltip: (
-          <>
-            <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
+          <TooltipContent>
+            <TooltipText>
+              {hasAvailableMaxLeverage ? (
+                <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>
+              ) : (
+                <Trans>Order exceeds max leverage. Reduce the size.</Trans>
+              )}
+            </TooltipText>
+            {setMaxLeverageAction}
+            <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
               <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-            <br />
-            <br />
-            <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set max leverage</Trans>
-            </span>
-          </>
+            </TooltipLink>
+          </TooltipContent>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isResultingPositionBlocking) {
+      return {
+        text: isResultingPositionMaxLeverageError ? t`Max leverage exceeded` : t`Invalid liquidation price`,
+        tooltip: isResultingPositionMaxLeverageError ? (
+          <TooltipContent>
+            <TooltipText>
+              <Trans>
+                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+              </Trans>
+            </TooltipText>
+            {setMaxLeverageAction}
+          </TooltipContent>
+        ) : (
+          _(msg`Position would be liquidated immediately upon execution. Reduce the size.`)
         ),
         disabled: true,
       };
@@ -669,7 +811,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
+    const orderTypeName = isMarginDeposit ? t`margin deposit` : getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
       text: t`Update ${orderTypeName}`,
@@ -677,13 +819,18 @@ export function OrderEditor(p: Props) {
       onClick: onSubmit,
     };
   }, [
+    _,
     error,
     multipleWalletExtensionsChainError,
     hasOutdatedUi,
+    isMarginDeposit,
     isMaxLeverageError,
+    isResultingPositionBlocking,
+    isResultingPositionMaxLeverageError,
     p.order,
     onSubmit,
     detectAndSetAvailableMaxLeverage,
+    hasAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
     isMultichainSubmitDisabled,
@@ -692,12 +839,13 @@ export function OrderEditor(p: Props) {
   useKey(
     "Enter",
     () => {
-      if (!submitButtonState.disabled) {
+      // modals listen for Enter globally; the position editor can stack on top of this one
+      if (!submitButtonState.disabled && !editingPosition) {
         submitButtonState.onClick?.();
       }
     },
     {},
-    [submitButtonState]
+    [submitButtonState, editingPosition]
   );
 
   useEffect(
@@ -781,10 +929,10 @@ export function OrderEditor(p: Props) {
   );
 
   const button = submitButtonState.tooltip ? (
-    <TooltipWithPortal
-      position="top"
+    <StandardTooltip
+      position="bottom"
+      variant="none"
       handleClassName="w-full"
-      tooltipClassName="PositionEditor-tooltip"
       handle={buttonContent}
       isHandlerDisabled
       content={submitButtonState.tooltip}
@@ -793,13 +941,15 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
-    ? t`Take-Profit price`
-    : isStopLossOrderType(p.order.orderType)
-      ? t`Stop-Loss price`
-      : isStopIncreaseOrderType(p.order.orderType)
-        ? t`Stop price`
-        : t`Limit price`;
+  const priceLabel = isMarginDeposit
+    ? t`Trigger price`
+    : isLimitDecreaseOrderType(p.order.orderType)
+      ? t`Take-Profit price`
+      : isStopLossOrderType(p.order.orderType)
+        ? t`Stop-Loss price`
+        : isStopIncreaseOrderType(p.order.orderType)
+          ? t`Stop price`
+          : t`Limit price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
@@ -834,12 +984,16 @@ export function OrderEditor(p: Props) {
     if (isStopIncreaseOrderType(p.order.orderType)) {
       return t`Edit Stop Market: ${suffix}`;
     }
+    if (isMarginDeposit) {
+      return t`Edit margin deposit: ${suffix}`;
+    }
     if (isLimitIncreaseOrderType(p.order.orderType)) {
       return t`Edit Limit Increase: ${suffix}`;
     }
 
     return t`Edit ${p.order.title}`;
   }, [
+    isMarginDeposit,
     p.order.orderType,
     p.order.isLong,
     p.order.title,
@@ -851,6 +1005,7 @@ export function OrderEditor(p: Props) {
   return (
     <div className="PositionEditor">
       <Modal
+        activeFormId={formId}
         className="PositionSeller-modal"
         isVisible={true}
         setIsVisible={p.onClose}
@@ -861,39 +1016,49 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-4 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
-              <BuyInputSection
-                topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
-                inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
-                onInputValueChange={
-                  isTriggerDecrease ? closeSize.handleInputChange : (e) => setSizeInputValue(e.target.value)
-                }
-                bottomLeftValue={isTriggerDecrease ? formatUsd(sizeUsd) : undefined}
-                bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
-                bottomRightValue={isTriggerDecrease ? formatUsdPrice(positionSize) : undefined}
-                onClickMax={
-                  isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
-                    ? closeSize.setMaxCloseSize
-                    : undefined
-                }
-                maxDecimals={
-                  isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
-                }
-              >
-                {isTriggerDecrease ? (
-                  <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
-                    {closeSize.closeSizeLabel}
-                  </span>
-                ) : (
-                  t`USD`
-                )}
-              </BuyInputSection>
+              {isMarginDeposit ? (
+                <div className="mb-8 flex flex-col">
+                  <SyntheticsInfoRow label={t`Deposit amount`} value={marginDepositAmountText} />
+                  <ColorfulButtonLink onClick={handleReplaceMarginDeposit}>
+                    <Trans>Replace margin deposit</Trans>
+                  </ColorfulButtonLink>
+                </div>
+              ) : (
+                <BuyInputSection
+                  qa="amount-input"
+                  topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
+                  inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
+                  onInputValueChange={
+                    isTriggerDecrease ? closeSize.handleInputChange : (e) => setSizeInputValue(e.target.value)
+                  }
+                  bottomLeftValue={isTriggerDecrease ? <UsdValue usd={sizeUsd} /> : undefined}
+                  bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
+                  bottomRightValue={isTriggerDecrease ? <UsdPriceValue price={positionSize} /> : undefined}
+                  onClickMax={
+                    isTriggerDecrease && positionSize !== undefined && positionSize > 0
+                      ? closeSize.setMaxCloseSize
+                      : undefined
+                  }
+                  isMaxSelected={sizeUsd === positionSize}
+                  maxDecimals={
+                    isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
+                  }
+                >
+                  {isTriggerDecrease ? (
+                    <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
+                      {closeSize.closeSizeLabel}
+                    </span>
+                  ) : (
+                    t`USD`
+                  )}
+                </BuyInputSection>
+              )}
 
               <BuyInputSection
+                qa="trigger-price-input"
                 topLeftLabel={priceLabel}
                 topRightLabel={t`Mark`}
-                topRightValue={formatUsdPrice(markPrice, {
-                  visualMultiplier: indexToken?.visualMultiplier,
-                })}
+                topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={indexToken?.visualMultiplier} />}
                 onClickTopRightLabel={() =>
                   setTriggerPriceInputValue(
                     formatAmount(
@@ -950,8 +1115,14 @@ export function OrderEditor(p: Props) {
               label={t`Leverage`}
               value={
                 <ValueTransition
-                  from={formatLeverage(existingPosition?.leverage)}
-                  to={formatLeverage(nextPositionValuesForIncrease?.nextLeverage) ?? "-"}
+                  from={formatLeverageParts(existingPositionForPreview?.leverage)}
+                  to={
+                    formatLeverageParts(
+                      isMarginDeposit
+                        ? marginDepositProjections?.nextLeverage
+                        : nextPositionValuesForIncrease?.nextLeverage
+                    ) ?? "-"
+                  }
                 />
               }
             />
@@ -960,6 +1131,7 @@ export function OrderEditor(p: Props) {
           {!isSwapOrderType(p.order.orderType) &&
             !isStopLossOrderType(p.order.orderType) &&
             !isStopIncreaseOrderType(p.order.orderType) &&
+            !isMarginDeposit &&
             isSetAcceptablePriceImpactEnabled && (
               <AcceptablePriceImpactInputRow
                 acceptablePriceImpactBps={acceptablePriceImpactBps}
@@ -971,21 +1143,41 @@ export function OrderEditor(p: Props) {
             )}
           {!isSwapOrderType(p.order.orderType) && (
             <>
-              {isSetAcceptablePriceImpactEnabled && (
+              {isSetAcceptablePriceImpactEnabled && !isMarginDeposit && (
                 <SyntheticsInfoRow
                   label={t`Acceptable price`}
-                  value={formatAcceptablePrice(acceptablePrice, {
-                    visualMultiplier: indexToken?.visualMultiplier,
-                  })}
+                  value={
+                    <NumericValue
+                      parts={formatAcceptablePriceParts(acceptablePrice, {
+                        visualMultiplier: indexToken?.visualMultiplier,
+                      })}
+                    />
+                  }
                 />
               )}
 
-              {existingPosition && (
+              {existingPositionForPreview && (
                 <SyntheticsInfoRow
                   label={t`Liquidation price`}
-                  value={formatLiquidationPrice(existingPosition.liquidationPrice, {
-                    visualMultiplier: indexToken?.visualMultiplier,
-                  })}
+                  value={
+                    isMarginDeposit ? (
+                      <ValueTransition
+                        from={formatLiquidationPriceParts(existingPositionForPreview.liquidationPrice, {
+                          visualMultiplier: indexToken?.visualMultiplier,
+                        })}
+                        to={
+                          formatLiquidationPriceParts(marginDepositProjections?.nextLiqPrice, {
+                            visualMultiplier: indexToken?.visualMultiplier,
+                          }) ?? "-"
+                        }
+                      />
+                    ) : (
+                      <LiquidationPriceValue
+                        liquidationPrice={existingPositionForPreview.liquidationPrice}
+                        visualMultiplier={indexToken?.visualMultiplier}
+                      />
+                    )
+                  }
                 />
               )}
             </>
@@ -995,31 +1187,32 @@ export function OrderEditor(p: Props) {
             <SyntheticsInfoRow
               label={t`Fees`}
               value={
-                <TooltipWithPortal
-                  position="top-end"
-                  tooltipClassName="PositionEditor-fees-tooltip"
-                  handle={formatDeltaUsd(networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n)}
+                <StandardTooltip
+                  position="bottom-end"
+                  handle={
+                    <DeltaUsdValue deltaUsd={networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n} />
+                  }
                   renderContent={() => (
-                    <>
-                      <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
-                        value={formatTokenAmountWithUsd(
-                          networkFee.feeTokenAmount * -1n,
-                          networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
-                          networkFee.feeToken.symbol,
-                          networkFee.feeToken.decimals,
-                          {
-                            displayDecimals: 5,
-                            isStable: networkFee.feeToken.isStable,
-                          }
-                        )}
-                        showDollar={false}
+                    <TooltipContent>
+                      {additionalExecutionFee && (
+                        <TooltipText>
+                          <Trans>Network fees increased. Additional fee required.</Trans>
+                        </TooltipText>
+                      )}
+                      <TooltipRow
+                        label={t`Network fee`}
+                        value={
+                          <NetworkFeeValue
+                            amount={networkFee.feeTokenAmount}
+                            usd={networkFee.feeUsd}
+                            decimals={networkFee.feeToken.decimals}
+                            symbol={networkFee.feeToken.symbol}
+                            isStable={networkFee.feeToken.isStable}
+                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                          />
+                        }
                       />
-                      <br />
-                      <div className="text-typography-primary">
-                        <Trans>Network fees increased. Additional fee required.</Trans>
-                      </div>
-                    </>
+                    </TooltipContent>
                   )}
                 />
               }
@@ -1048,7 +1241,33 @@ export function OrderEditor(p: Props) {
             </>
           )}
 
-          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
+          {showResultingPositionMaxLeverageWarning && <ResultingMarginAlertCard level="warning" />}
+          {showLiquidationRiskWarning && <LiquidatableIncreaseWarningCard positionKey={existingPosition?.key} />}
+          {isPositionLiquidatedBeforeTrigger && <FreshPositionIncreaseWarningCard />}
+
+          {marginDepositRisk?.level === "insufficient" && (
+            <AlertInfoCard type="error" hideClose>
+              <MarginDepositInsufficientMessage positionKey={existingPosition?.key} orderKey={p.order.key} />
+            </AlertInfoCard>
+          )}
+
+          {marginDepositRisk?.warning !== undefined && (
+            <AlertInfoCard type="warning" hideClose>
+              {marginDepositRisk.warning}
+            </AlertInfoCard>
+          )}
+
+          {expressError.bannerErrorName && (
+            <AlertInfoCard type="error" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={p.onClose}
+              />
+            </AlertInfoCard>
+          )}
 
           <ExpressTradingWarningCard
             expressParams={expressParams}
@@ -1061,6 +1280,22 @@ export function OrderEditor(p: Props) {
           {liqPriceWarning && (
             <AlertInfoCard type="warning" hideClose>
               {liqPriceWarning}
+            </AlertInfoCard>
+          )}
+
+          {isRemainingPositionAboveMaxLeverage && (
+            <AlertInfoCard type="warning" hideClose>
+              <div className="flex flex-col gap-8">
+                <div>
+                  <Trans>
+                    At this trigger price, the remaining position would exceed max leverage and the order may not
+                    execute.
+                  </Trans>
+                </div>
+                <div>
+                  <Trans>Close the full position, change the trigger price, or add margin.</Trans>
+                </div>
+              </div>
             </AlertInfoCard>
           )}
 

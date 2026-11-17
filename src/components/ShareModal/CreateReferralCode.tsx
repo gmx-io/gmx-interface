@@ -22,28 +22,28 @@ import {
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { registerReferralCode } from "domain/referrals";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import ReferralsIcon from "img/ic_referrals.svg?react";
 
@@ -503,6 +503,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       buttonState={buttonState}
       inputRef={inputRef}
       networkFeeUsd={quoteResult.networkFeeUsd}
+      networkFee={quoteResult.networkFee}
     />
   );
 }
@@ -521,6 +522,7 @@ function CreateReferralCodeLayout({
   buttonState,
   inputRef,
   networkFeeUsd,
+  networkFee,
 }: {
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
@@ -540,6 +542,7 @@ function CreateReferralCodeLayout({
   };
   inputRef: React.RefObject<HTMLInputElement>;
   networkFeeUsd?: bigint;
+  networkFee?: bigint;
 }) {
   return (
     <div className="flex flex-col gap-16 rounded-12 border border-slate-600/60 bg-slate-900/60 p-16">
@@ -583,12 +586,19 @@ function CreateReferralCodeLayout({
             }}
           />
         </label>
-        {networkFeeUsd !== undefined && (
+        {srcChainId !== undefined && networkFee !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
-            <span>
+            <span className="whitespace-nowrap">
               <Trans>Network fee</Trans>
             </span>
-            <span>{formatUsd(networkFeeUsd)}</span>
+            <NetworkFeeValue
+              amount={networkFee}
+              usd={networkFeeUsd}
+              decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+              symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+              source={getSourceChainNetworkFeeSource(srcChainId)}
+              isExpress={false}
+            />
           </div>
         )}
         {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
@@ -623,9 +633,11 @@ function CreateReferralCodeLayout({
             />
           </AlertInfoCard>
         )}
-        <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
-          {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-        </Button>
+        <ButtonTooltipWrapper content={error} isHandlerDisabled={buttonState.disabled}>
+          <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
       </form>
     </div>
   );

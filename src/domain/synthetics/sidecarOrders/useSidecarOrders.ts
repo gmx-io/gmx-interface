@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import {
   usePositionsConstants,
+  useFeeDiscountFactor,
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
+  selectTradeboxMarketInfo,
   selectTradeboxSelectedPosition,
   selectTradeboxTradeFlags,
   selectTradeboxTriggerPrice,
@@ -17,7 +19,6 @@ import {
   selectTradeboxMockPosition,
   selectTradeboxSidecarOrdersExistingSlEntries,
   selectTradeboxSidecarOrdersExistingTpEntries,
-  selectTradeboxSidecarEntriesSetIsUntouched,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
@@ -33,9 +34,10 @@ export * from "./types";
 
 export function useSidecarOrders() {
   const userReferralInfo = useUserReferralInfo();
-  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
+  const feeDiscountFactor = useFeeDiscountFactor();
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
   const uiFeeFactor = useUiFeeFactor();
-  const setIsUntouched = useSelector(selectTradeboxSidecarEntriesSetIsUntouched);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
 
   const { isLong, isLimit } = useSelector(selectTradeboxTradeFlags);
@@ -122,6 +124,7 @@ export function useSidecarOrders() {
         minPositionSizeUsd,
         uiFeeFactor,
         userReferralInfo,
+        feeDiscountFactor,
         isSetAcceptablePriceImpactEnabled,
       });
     },
@@ -133,6 +136,7 @@ export function useSidecarOrders() {
       triggerPrice,
       uiFeeFactor,
       userReferralInfo,
+      feeDiscountFactor,
       isSetAcceptablePriceImpactEnabled,
     ]
   );
@@ -206,20 +210,27 @@ export function useSidecarOrders() {
     takeProfit.reset();
   }, [stopLoss, takeProfit]);
 
+  const carryOver = useCallback(
+    (options: { keepTypedPrice: boolean }) => {
+      stopLoss.carryOver(options);
+      takeProfit.carryOver(options);
+    },
+    [stopLoss, takeProfit]
+  );
+
   const doesEntriesChanged = useSidecarOrdersChanged();
   const prevDoesEntriesChanged = usePrevious(doesEntriesChanged);
 
   useEffect(() => {
     if (prevDoesEntriesChanged === false && doesEntriesChanged) {
-      reset();
-      setIsUntouched("sl", false);
-      setIsUntouched("tp", false);
+      carryOver({ keepTypedPrice: true });
     }
-  }, [doesEntriesChanged, prevDoesEntriesChanged, reset, setIsUntouched]);
+  }, [carryOver, doesEntriesChanged, prevDoesEntriesChanged]);
 
   return {
     stopLoss,
     takeProfit,
     reset,
+    carryOver,
   };
 }

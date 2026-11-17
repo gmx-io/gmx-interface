@@ -26,6 +26,7 @@ import {
   isSameSubaccountApproval,
   isSubaccountApprovalExpired,
   isSubaccountApprovalNonceExpired,
+  isSubaccountApprovalRevoked,
   isSubaccountApprovalSynced,
   isSubaccountStatusUsable,
   parseSubaccountStatus,
@@ -248,6 +249,7 @@ export function reconcileSdkSubaccountApproval(subaccount: SubaccountState | und
   if (
     isSubaccountApprovalSynced(approval, status) ||
     isSubaccountApprovalNonceExpired(approval, status) ||
+    isSubaccountApprovalRevoked(approval, status.revocationCounter) ||
     isSubaccountApprovalExpired(approval)
   ) {
     subaccount.approval = undefined;
@@ -552,7 +554,6 @@ export async function executeExpressOrderWithSubaccount(
     requestId: prepared.requestId,
     signature,
     from: isSubaccountOrder ? request.from : signer.address,
-    idempotencyKey: prepared.idempotencyKey,
     eip712Data: {
       batchParams: prepared.payload.batchParams,
       relayParams: prepared.payload.relayParams,

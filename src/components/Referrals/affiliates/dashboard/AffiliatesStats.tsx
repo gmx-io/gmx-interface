@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { lightFormat } from "date-fns";
 import type { TransactionResponse } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useCallback, useState } from "react";
@@ -9,11 +8,12 @@ import { useCopyToClipboard } from "react-use";
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
 import type { ReferralCodeStats } from "domain/referrals/types";
+import { formatReferralCodeForDisplay } from "domain/referrals/utils/referralCode";
 import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatBigUsd, formatUsd } from "lib/numbers";
+import { formatBigUsdParts } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
@@ -21,13 +21,15 @@ import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/t
 import Button from "components/Button/Button";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { GridCell, GridHeaderCell, GridRow } from "components/Referrals/distributions/table/Grid";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
@@ -63,7 +65,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     isVisible: boolean;
     referralCode: string;
     totalDiscountsUsd?: bigint;
-    hasReferredUsers?: boolean;
   }>({
     isVisible: false,
     referralCode: "",
@@ -131,66 +132,11 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     from: periodStart,
     to: periodEnd,
   });
-  const lastUpdated = referralStats?.to
-    ? `${lightFormat(referralStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC`
-    : undefined;
 
   return (
     <div className="flex gap-8 max-md:flex-col max-md:pb-[100px]">
       <div className="flex grow flex-col gap-8 max-md:order-2">
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
-            <div className="flex items-center justify-between">
-              <div className="text-body-large font-medium text-typography-primary">
-                <Trans>Overview</Trans>
-              </div>
-              <div className="flex items-center gap-8">
-                <TimeRangeFilter
-                  timeRange={timeRangeInfo.slug}
-                  setTimeRange={setTimeRange}
-                  timeRangeInfos={REFERRALS_TIME_RANGE_INFOS}
-                />
-              </div>
-            </div>
-            <AffiliatesPromoCard account={account} />
-            <div className="flex flex-col gap-12">
-              <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
-                <TradingVolumeChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                  referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
-                  traderDiscountPercentage={currentTraderDiscountPercentage}
-                  totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
-                  hasReferredUsers={
-                    (referralsData?.chains?.[chainId]?.affiliateTotalStats?.registeredReferralsCount ?? 0) > 0
-                  }
-                />
-                <NumberOfTradesChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-                <TradersReferredChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-                <RebatesChartCard
-                  stats={referralStats}
-                  isLoading={isReferralStatsLoading}
-                  timeRangeInfo={timeRangeInfo}
-                />
-              </div>
-            </div>
-            <div className="text-body-small font-medium text-typography-secondary">
-              <span className="text-slate-500">
-                <Trans>Last updated:</Trans>
-              </span>{" "}
-              {lastUpdated ?? "—"}
-            </div>
-          </div>
-
           <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900 pb-4">
             <div className="flex flex-wrap items-center justify-between px-adaptive pt-adaptive">
               <div className="flex flex-wrap items-center gap-8">
@@ -249,56 +195,46 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                         <TableTr key={index}>
                           <TableTd>
                             <div className="flex items-center gap-4">
-                              <span className="font-mono">{stat.referralCode}</span>
+                              <ReferralCodeLabel code={stat.referralCode} />
                               <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                             </div>
                           </TableTd>
                           <TableTd>
-                            <Tooltip
-                              handle={formatBigUsd(stat.volume)}
+                            <StandardTooltip
+                              handle={<NumericValue parts={formatBigUsdParts(stat.volume)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 volume`}
-                                    value={formatBigUsd(stat?.v1Data.volume ?? 0n)}
-                                    valueClassName="numbers"
-                                    showDollar={false}
+                                    value={<NumericValue parts={formatBigUsdParts(stat?.v1Data.volume ?? 0n)} />}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 volume`}
-                                    value={formatBigUsd(stat?.v2Data.volume ?? 0n)}
-                                    valueClassName="numbers"
-                                    showDollar={false}
+                                    value={<NumericValue parts={formatBigUsdParts(stat?.v2Data.volume ?? 0n)} />}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
                           <TableTd className="numbers">{stat.registeredReferralsCount}</TableTd>
                           <TableTd>
-                            <Tooltip
-                              handle={formatBigUsd(stat.affiliateRebateUsd)}
+                            <StandardTooltip
+                              handle={<NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 rebates`}
-                                    value={formatUsd(stat.v1Data.affiliateRebateUsd, { fallbackToZero: true })}
-                                    valueClassName="numbers"
-                                    showDollar={false}
+                                    value={<UsdValue usd={stat.v1Data.affiliateRebateUsd} fallbackToZero />}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 rebates`}
-                                    value={formatUsd(stat.v2Data.affiliateRebateUsd, { fallbackToZero: true })}
-                                    valueClassName="numbers"
-                                    showDollar={false}
+                                    value={<UsdValue usd={stat.v2Data.affiliateRebateUsd} fallbackToZero />}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
@@ -327,7 +263,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                                     isVisible: true,
                                     referralCode: stat.referralCode,
                                     totalDiscountsUsd: stat.discountUsd,
-                                    hasReferredUsers: stat.registeredReferralsCount > 0,
                                   });
                                 }}
                               >
@@ -350,6 +285,49 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             />
           </div>
 
+          <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-adaptive">
+            <div className="flex items-center justify-between">
+              <div className="text-body-large font-medium text-typography-primary">
+                <Trans>Overview</Trans>
+              </div>
+              <div className="flex items-center gap-8">
+                <TimeRangeFilter
+                  timeRange={timeRangeInfo.slug}
+                  setTimeRange={setTimeRange}
+                  timeRangeInfos={REFERRALS_TIME_RANGE_INFOS}
+                />
+              </div>
+            </div>
+            <AffiliatesPromoCard account={account} />
+            <div className="flex flex-col gap-12">
+              <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
+                <TradingVolumeChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                  referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
+                  traderDiscountPercentage={currentTraderDiscountPercentage}
+                  totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
+                />
+                <NumberOfTradesChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+                <TradersReferredChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+                <RebatesChartCard
+                  stats={referralStats}
+                  isLoading={isReferralStatsLoading}
+                  timeRangeInfo={timeRangeInfo}
+                />
+              </div>
+            </div>
+          </div>
+
           <ModalWithPortal
             className="Connect-wallet-modal"
             isVisible={isAddReferralCodeModalOpen}
@@ -369,7 +347,6 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             referralCode={shareModalState.referralCode}
             traderDiscountPercentage={currentTraderDiscountPercentage}
             totalDiscountsUsd={shareModalState.totalDiscountsUsd}
-            hasReferredUsers={shareModalState.hasReferredUsers}
           />
         </div>
       </div>
@@ -406,12 +383,7 @@ function ReferralCodesMobileTable({
   trackCopyCode: () => void;
   trackShare: () => void;
   copyToClipboard: (text: string) => void;
-  setShareModalState: (state: {
-    isVisible: boolean;
-    referralCode: string;
-    totalDiscountsUsd?: bigint;
-    hasReferredUsers?: boolean;
-  }) => void;
+  setShareModalState: (state: { isVisible: boolean; referralCode: string; totalDiscountsUsd?: bigint }) => void;
 }) {
   const [selectedCode, setSelectedCode] = useState<string | undefined>(undefined);
 
@@ -420,7 +392,7 @@ function ReferralCodesMobileTable({
   }, []);
 
   return (
-    <div role="table" className="grid grid-cols-[1fr_1fr_auto] gap-y-4 px-4">
+    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-y-4 px-4">
       <GridRow>
         <GridHeaderCell>
           <Trans>CODE</Trans>
@@ -428,7 +400,6 @@ function ReferralCodesMobileTable({
         <GridHeaderCell className="col-span-2 text-right">
           <Trans>TOTAL VOLUME</Trans>
         </GridHeaderCell>
-        <GridHeaderCell />
       </GridRow>
 
       {data.map((stat) => (
@@ -436,11 +407,13 @@ function ReferralCodesMobileTable({
           <GridRow className="text-typography-primary" onClick={() => toggleSelectedCode(stat.referralCode)}>
             <GridCell>
               <div className="flex items-center gap-4">
-                <span className="font-mono">{stat.referralCode}</span>
+                <ReferralCodeLabel code={stat.referralCode} isWrappable />
                 <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
               </div>
             </GridCell>
-            <GridCell className="text-right numbers">{formatBigUsd(stat.volume)}</GridCell>
+            <GridCell className="text-right numbers">
+              <NumericValue parts={formatBigUsdParts(stat.volume)} />
+            </GridCell>
             <GridCell className="flex items-center justify-end">
               <ChevronDownIcon
                 className={cx("size-16 text-typography-secondary", {
@@ -471,7 +444,7 @@ function ReferralCodesMobileTable({
                   <span className="font-medium text-typography-secondary">
                     <Trans>Total rebates</Trans>
                   </span>
-                  <span className="numbers">{formatBigUsd(stat.affiliateRebateUsd)}</span>
+                  <NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} className="numbers" />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 pb-12 pt-8">
@@ -498,7 +471,6 @@ function ReferralCodesMobileTable({
                         isVisible: true,
                         referralCode: stat.referralCode,
                         totalDiscountsUsd: stat.discountUsd,
-                        hasReferredUsers: stat.registeredReferralsCount > 0,
                       });
                     }}
                   >
@@ -512,5 +484,31 @@ function ReferralCodesMobileTable({
         </Fragment>
       ))}
     </div>
+  );
+}
+
+function ReferralCodeLabel({ code, isWrappable = false }: { code: string; isWrappable?: boolean }) {
+  const label = formatReferralCodeForDisplay(code);
+
+  // different hex codes can shorten to the same label
+  return (
+    <span
+      className={cx("font-mono", { "[overflow-wrap:anywhere]": isWrappable })}
+      title={label === code ? undefined : code}
+    >
+      {/* wrap after underscores first; overflow-wrap only splits a part that doesn't fit on its own */}
+      {isWrappable
+        ? label.split("_").map((part, index) => (
+            <Fragment key={index}>
+              {index > 0 && (
+                <>
+                  _<wbr />
+                </>
+              )}
+              {part}
+            </Fragment>
+          ))
+        : label}
+    </span>
   );
 }

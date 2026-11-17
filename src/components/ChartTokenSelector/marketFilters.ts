@@ -1,5 +1,6 @@
 import type { SubCategoryTab, TopLevelTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { SECONDS_IN_DAY } from "lib/dates";
+import { getAddressKey } from "sdk/utils/address";
 import type { Token } from "sdk/utils/tokens/types";
 import type { TokenCategory } from "sdk/utils/tokens/types";
 
@@ -30,7 +31,7 @@ export function applyTopLevelFilter(
     case "recently-listed": {
       const set = args.recentlyListedAddresses;
       if (!set || set.size === 0) return [];
-      return tokens.filter((t) => set.has(t.address.toLowerCase()) || set.has(t.address));
+      return tokens.filter((t) => set.has(getAddressKey(t.address)));
     }
   }
 }
@@ -44,6 +45,21 @@ export function applySubCategoryFilter(
   return tokens.filter((t) => t.categories?.includes(args.subCategoryTab as TokenCategory));
 }
 
+export function getMarketSearchEmptyStateActions({
+  hasActiveFilter,
+  hasCurrentModeMatches,
+  hasOtherModeMatches,
+}: {
+  hasActiveFilter: boolean;
+  hasCurrentModeMatches: boolean;
+  hasOtherModeMatches: boolean;
+}) {
+  return {
+    shouldOfferSearchAll: hasActiveFilter && hasCurrentModeMatches,
+    shouldOfferOtherMode: !hasCurrentModeMatches && hasOtherModeMatches,
+  };
+}
+
 export function isMarketRecentlyListed(listingDate: number | undefined, now: number): boolean {
   if (listingDate === undefined) return false;
   return now - listingDate < RECENTLY_LISTED_WINDOW_MS;
@@ -55,7 +71,7 @@ export function getRecentlyListedTokenAddresses(
 ): string[] {
   const result: string[] = [];
   for (const [address, ts] of Object.entries(listingDateByIndexToken)) {
-    if (now - ts < RECENTLY_LISTED_WINDOW_MS) result.push(address.toLowerCase());
+    if (now - ts < RECENTLY_LISTED_WINDOW_MS) result.push(getAddressKey(address));
   }
   return result;
 }

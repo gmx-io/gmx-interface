@@ -4,15 +4,19 @@ import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { Area, AreaChart } from "recharts";
 
+import { ARBITRUM } from "config/chains";
+import { ARBITRUM_USDG_GLV_ADDRESS } from "config/usdgPools";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
+  selectAccountWhitelistsResult,
   selectChainId,
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import {
   MarketTokensAPRData,
   UserEarningsData,
@@ -26,7 +30,10 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
+import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
+import { getDirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { ProgressiveTokenData } from "domain/tokens";
 import { PRECISION_DECIMALS, bigintToNumber, formatPercentage } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -49,6 +56,7 @@ import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { FeeApyLabel } from "./FeeApyLabel";
 import { GmTokensBalanceInfo } from "./GmTokensTotalBalanceInfo";
 import { PerformanceLabel } from "./PerformanceLabel";
+import { LaunchBoostBadge, WhitelistOnlyBadge } from "./UsdgPoolBadges";
 
 const tokenAddressStyle = { fontSize: 5 };
 
@@ -99,6 +107,8 @@ export function GmListItem({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
   const multichainMarketTokenBalances = multichainMarketTokensBalances[token.address];
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const whitelistsResult = useSelector(selectAccountWhitelistsResult);
+  const hasBalanceOutsideWallet = getHasBalanceOutsideWallet(multichainMarketTokenBalances, chainId);
 
   const marketOrGlv = getByKey(marketsInfoData, token?.address);
 
@@ -109,6 +119,10 @@ export function GmListItem({
   const shortToken = getTokenData(tokensData, marketOrGlv?.shortTokenAddress);
 
   const marketOrGlvTokenAddress = marketOrGlv && getGlvOrMarketAddress(marketOrGlv);
+  const directDepositAccess =
+    marketOrGlv && getDirectDepositAccess({ chainId, glvOrMarket: marketOrGlv, whitelistsResult });
+  const isUsdgGlv = chainId === ARBITRUM && marketOrGlvTokenAddress === ARBITRUM_USDG_GLV_ADDRESS;
+  const isWhitelistOnly = directDepositAccess === "denied";
 
   const apy = isGlv
     ? getByKey(glvTokensApyData, marketOrGlvTokenAddress)
@@ -117,6 +131,7 @@ export function GmListItem({
     ? getByKey(glvTokensIncentiveAprData, token?.address)
     : getByKey(marketsTokensIncentiveAprData, token?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, token?.address);
+  const launchBoost = useUsdgLaunchBoost(marketOrGlv);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, token?.address);
 
   const isMobile = usePoolsIsMobilePage();
@@ -152,8 +167,9 @@ export function GmListItem({
     onFavoriteClick?.(marketOrGlvTokenAddress);
   };
 
-  const marketPerformance = performance?.[token.address];
-  const marketPerformanceSnapshots = performanceSnapshots?.[token.address];
+  const isPriceInvalid = getIsPoolTokenPriceInvalid(marketOrGlv, token);
+  const marketPerformance = isPriceInvalid ? undefined : performance?.[token.address];
+  const marketPerformanceSnapshots = isPriceInvalid ? undefined : performanceSnapshots?.[token.address];
 
   if (isMobile) {
     return (
@@ -177,6 +193,8 @@ export function GmListItem({
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
+                {isUsdgGlv && <LaunchBoostBadge />}
+                {isWhitelistOnly && <WhitelistOnlyBadge isGlv={isGlv} isSpotOnly={marketOrGlv.isSpotOnly} />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -233,12 +251,26 @@ export function GmListItem({
                 isUserEarningsUnavailable={isUserEarningsUnavailable}
                 isEstimated365dFeesLoading={isEstimated365dFeesLoading}
                 isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+                hasBalanceOutsideWallet={hasBalanceOutsideWallet}
               />
             }
           />
           <SyntheticsInfoRow
             label={<FeeApyLabel />}
-            value={<AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />}
+            value={
+              isPriceInvalid ? (
+                "N/A"
+              ) : (
+                <AprInfo
+                  apy={apy}
+                  incentiveApr={incentiveApr}
+                  lidoApr={lidoApr}
+                  launchBoost={launchBoost}
+                  isApyLoading={apyLoading}
+                  marketAddress={token.address}
+                />
+              )
+            }
           />
           <SyntheticsInfoRow
             label={<PerformanceLabel />}
@@ -262,8 +294,16 @@ export function GmListItem({
     ? formatPercentage(marketPerformance, { bps: false, signed: true, showPlus: false })
     : "N/A";
 
-  const apyValue = apy ? (
-    <AprInfo apy={apy} incentiveApr={incentiveApr} lidoApr={lidoApr} marketAddress={token.address} />
+  const shouldShowApy = !isPriceInvalid && ((apy !== undefined && apy !== 0n) || launchBoost !== undefined);
+
+  const apyValue = shouldShowApy ? (
+    <AprInfo
+      apy={apy}
+      incentiveApr={incentiveApr}
+      lidoApr={lidoApr}
+      launchBoost={launchBoost}
+      marketAddress={token.address}
+    />
   ) : (
     "N/A"
   );
@@ -294,6 +334,11 @@ export function GmListItem({
                   ? getGlvDisplayName(marketOrGlv)
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
+
+              {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
+              {isWhitelistOnly && (
+                <WhitelistOnlyBadge className="ml-6" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />
+              )}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -334,6 +379,7 @@ export function GmListItem({
           isUserEarningsUnavailable={isUserEarningsUnavailable}
           isEstimated365dFeesLoading={isEstimated365dFeesLoading}
           isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
+          hasBalanceOutsideWallet={hasBalanceOutsideWallet}
         />
       </TableTdActionable>
 

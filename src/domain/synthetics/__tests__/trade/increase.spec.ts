@@ -21,6 +21,7 @@ describe("getIncreasePositionPrices", () => {
     });
 
     expect(prices.indexPrice).toBe(triggerPrice);
+    // the deposit is what leaves the wallet now, so it keeps the current price even when it is the index token
     expect(prices.initialCollateralPrice).toBe(tokensData.ETH.prices.minPrice);
     expect(prices.collateralPrice).toBe(tokensData.USDC.prices.minPrice);
   });
@@ -40,7 +41,8 @@ describe("getIncreasePositionPrices", () => {
 
     expect(prices.indexPrice).toBe(triggerPrice);
     expect(prices.initialCollateralPrice).toBe(tokensData.USDC.prices.minPrice);
-    expect(prices.collateralPrice).toBe(tokensData.ETH.prices.minPrice);
+    // the position holds the index token: its collateral is valued at the trigger price at execution
+    expect(prices.collateralPrice).toBe(triggerPrice);
   });
 
   it("markPrice for Long market order", () => {

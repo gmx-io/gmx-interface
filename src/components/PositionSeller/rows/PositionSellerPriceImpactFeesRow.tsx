@@ -3,17 +3,24 @@ import cx from "classnames";
 import { useMemo } from "react";
 
 import { DOCS_LINKS } from "config/links";
-import { selectPositionSellerFees } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
+import {
+  selectPositionSellerDecreaseAmounts,
+  selectPositionSellerFees,
+  selectPositionSellerPosition,
+} from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatPercentage } from "lib/numbers";
+import { formatPercentage, PRECISION } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function PositionSellerPriceImpactFeesRow() {
   const { fees } = useSelector(selectPositionSellerFees);
+  const position = useSelector(selectPositionSellerPosition);
+  const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const totalPriceImpactPercentage = getCappedPriceImpactPercentageFromFees({ fees, isSwap: false });
 
@@ -28,7 +35,12 @@ export function PositionSellerPriceImpactFeesRow() {
 
   const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
 
-  const feesPercentage = fees?.positionFee?.precisePercentage ?? 0n;
+  const feesPercentage =
+    position?.marketInfo?.tradeMath === "gmsol"
+      ? decreaseAmounts && decreaseAmounts.sizeDeltaUsd > 0n
+        ? -bigMath.mulDiv(decreaseAmounts.positionFeeUsd, PRECISION, decreaseAmounts.sizeDeltaUsd)
+        : undefined
+      : fees?.positionFee?.precisePercentage ?? 0n;
 
   const { formattedTotalFeePercentage, isTotalFeePositive } = useMemo(() => {
     if (feesPercentage === undefined) {
@@ -54,16 +66,17 @@ export function PositionSellerPriceImpactFeesRow() {
     <SyntheticsInfoRow
       label={
         <>
-          <Tooltip
+          <StandardTooltip
             handle={t`Net price impact`}
             content={
-              <Trans>
-                Price impact from closing. Positive values benefit you.{" "}
-                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                  Read more
-                </ExternalLink>
-                .
-              </Trans>
+              <TooltipContent>
+                <TooltipText>
+                  <Trans>Price impact from closing. Positive values benefit you.</Trans>
+                </TooltipText>
+                <TooltipLink href={DOCS_LINKS.priceImpact}>
+                  <Trans>Read more</Trans>
+                </TooltipLink>
+              </TooltipContent>
             }
           />{" "}
           / {t`fees`}

@@ -21,26 +21,26 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
-import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
+import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
-import { encodeReferralCode } from "sdk/utils/referrals";
+import { encodeReferralCode, REFERRAL_CODE_REGEX } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
@@ -179,7 +179,7 @@ function AffiliateCodeFormMultichain({
             <Trans>Referral code created</Trans>
             <br />
             <br />
-            <Trans>May take a few minutes to reflect. Check back later</Trans>
+            <Trans>May take a few minutes to appear. Check back later</Trans>
           </>
         );
       } else {
@@ -335,7 +335,21 @@ function AffiliateCodeFormMultichain({
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
-          value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
+          labelClassName="whitespace-nowrap"
+          value={
+            quoteResult.networkFee !== undefined ? (
+              <NetworkFeeValue
+                amount={quoteResult.networkFee}
+                usd={quoteResult.networkFeeUsd}
+                decimals={getViemChain(srcChainId).nativeCurrency.decimals}
+                symbol={getViemChain(srcChainId).nativeCurrency.symbol}
+                source={getSourceChainNetworkFeeSource(srcChainId)}
+                isExpress={false}
+              />
+            ) : (
+              "..."
+            )
+          }
         />
       )}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
@@ -496,6 +510,11 @@ function AffiliateCodeForm({
   } else if (!debouncedReferralCode) {
     buttonState = {
       text: t`Enter a code`,
+      disabled: true,
+    };
+  } else if (error) {
+    buttonState = {
+      text: t`Create`,
       disabled: true,
     };
   } else if (referralCodeCheckStatus === "taken") {

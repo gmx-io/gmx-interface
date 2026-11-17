@@ -473,7 +473,7 @@ export class GmxApp extends BasePage {
   }
 
   async navigateTo(page: GmxNavigation) {
-    await this.page.goto(this.baseUrl + "#" + page);
+    await this.page.goto(new URL(page, this.baseUrl).href);
   }
 
   async openSettings() {

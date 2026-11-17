@@ -1,4 +1,5 @@
 import { tz } from "@date-fns/tz";
+import { i18n } from "@lingui/core";
 import { t } from "@lingui/macro";
 import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
@@ -32,6 +33,25 @@ export function formatDateCompact(time: number, options?: DateFormatOptions) {
   return formatDateFn(time * 1000, "dd/MM", getDateFormatOptions(options));
 }
 
+export function formatMonthDay(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "MMM\u00a0d", getDateFormatOptions(options));
+}
+
+export function formatDayMonthYear(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "d MMM yyyy", getDateFormatOptions(options));
+}
+
+export function formatDateRange(start: number, end: number, options?: DateFormatOptions) {
+  const formatOptions = getDateFormatOptions(options);
+  const isSameYear =
+    formatDateFn(start * 1000, "yyyy", formatOptions) === formatDateFn(end * 1000, "yyyy", formatOptions);
+  const startDate = isSameYear
+    ? formatDateFn(start * 1000, "d MMM", formatOptions)
+    : formatDayMonthYear(start, options);
+
+  return `${startDate} – ${formatDayMonthYear(end, options)}`;
+}
+
 function formatDateWithComma(time: number) {
   return formatDateFn(time * 1000, "MMM dd, yyyy");
 }
@@ -46,6 +66,20 @@ export function formatRelativeDateWithComma(time: number) {
   }
 
   return formatDateWithComma(time);
+}
+
+export function formatTimeAgo(timeMs: number, nowMs = Date.now()) {
+  const seconds = Math.max(0, Math.round((nowMs - timeMs) / 1000));
+  const [value, unit]: [number, Intl.RelativeTimeFormatUnit] =
+    seconds < 60
+      ? [seconds, "second"]
+      : seconds < 3600
+        ? [Math.round(seconds / 60), "minute"]
+        : seconds < SECONDS_IN_DAY
+          ? [Math.round(seconds / 3600), "hour"]
+          : [Math.round(seconds / SECONDS_IN_DAY), "day"];
+
+  return new Intl.RelativeTimeFormat(i18n.locale || undefined, { numeric: "always" }).format(-value, unit);
 }
 
 export function formatTVDate(date: Date) {
@@ -75,6 +109,10 @@ export function toUtcDayStartByCalendarDate(date: Date) {
 
 export function toUtcDayEndByCalendarDate(date: Date) {
   return toUtcDayStartByCalendarDate(date) + SECONDS_IN_DAY - 1;
+}
+
+export function toCalendarDateByUtcDay(date: Date) {
+  return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
 
 function toSeconds(date: Date) {

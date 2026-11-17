@@ -1,12 +1,14 @@
-import { t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
+import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
+import { DEBUG_ORDER_TOAST_AUTO_CLOSE_TIME, TOAST_AUTO_CLOSE_TIME } from "config/ui";
+import { getIsUsdgToken } from "config/usdgPools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { PendingOrderData, getGelatoTaskUrl, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
+import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { findOrderStatusForAllocation } from "context/SyntheticsEvents/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import {
@@ -18,6 +20,7 @@ import {
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
+import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
@@ -30,13 +33,16 @@ import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
 
+import { getDebugErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import { UsdgClosePayoutStatus } from "./UsdgClosePayoutStatus";
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
-import { StatusCode } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/express";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -45,20 +51,21 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   hideTxLink?: "creation" | "execution" | "none";
+  onKeepOpenChange?: (key: string, isKeptOpen: boolean) => void;
 };
 
 function OrderStatusNotification({
   pendingOrderData,
   marketsInfoData,
   tokensData,
+  onKeepOpenChange,
   toastTimestamp,
   hideTxLink = "none",
 }: Props) {
   const { chainId } = useChainId();
   const wrappedNativeToken = getWrappedToken(chainId);
-  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, gelatoTaskStatuses, updatePendingExpressTxn } =
+  const { orderStatuses, setOrderStatusViewed, pendingExpressTxns, relayTaskStatuses, updatePendingExpressTxn } =
     useSyntheticsEvents();
-  const { tenderlyAccountSlug, tenderlyProjectSlug } = useSettings();
 
   const [orderStatusKey, setOrderStatusKey] = useState<string>();
   const [pendingExpressTxnKey, setPendingExpressTxnKey] = useState<string>();
@@ -68,18 +75,47 @@ function OrderStatusNotification({
 
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
-  const isGelatoTaskFailed = useMemo(() => {
+  const relayTaskStatus = getByKey(relayTaskStatuses, pendingExpressTxn?.taskId);
+
+  const isSettledOnChain = useMemo(() => {
+    if (pendingOrderData.txnType === "update") {
+      return Boolean(orderStatus?.updatedTxnHash);
+    }
+
+    if (pendingOrderData.txnType === "cancel") {
+      return Boolean(orderStatus?.cancelledTxnHash);
+    }
+
+    // same disjunction the completion branch uses: a missed creation event with a landed execution
+    // or cancellation still means the operation reached the chain
+    return Boolean(orderStatus?.createdTxnHash ?? orderStatus?.executedTxnHash ?? orderStatus?.cancelledTxnHash);
+  }, [
+    pendingOrderData.txnType,
+    orderStatus?.createdTxnHash,
+    orderStatus?.executedTxnHash,
+    orderStatus?.updatedTxnHash,
+    orderStatus?.cancelledTxnHash,
+  ]);
+
+  const isRelayTaskFailed = useMemo(() => {
+    // an operation that settled on-chain did not fail, whatever the relay later reported about it
+    if (isSettledOnChain) {
+      return false;
+    }
+
     if (pendingExpressTxn?.sendFailed) {
       return true;
     }
 
-    const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
+    return relayTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(relayTaskStatus.statusCode);
+  }, [relayTaskStatus, pendingExpressTxn?.sendFailed, isSettledOnChain]);
 
-    return gelatoTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(gelatoTaskStatus.statusCode);
-  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId, pendingExpressTxn?.sendFailed]);
+  const isMarketOrderFailed =
+    isMarketOrderType(pendingOrderData.orderType) &&
+    pendingOrderData.txnType !== "cancel" &&
+    Boolean(orderStatus?.cancelledTxnHash);
 
-  const hasError =
-    isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
+  const hasError = isRelayTaskFailed || isMarketOrderFailed;
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -172,6 +208,17 @@ function OrderStatusNotification({
           isStable: initialCollateralToken?.isStable,
         });
 
+        if (isMarginDepositOrder(orderData)) {
+          const longShortText = isLong ? t`Long` : t`Short`;
+          const txnTypeText = {
+            create: t`Create`,
+            cancel: t`Cancel`,
+            update: t`Update`,
+          }[txnType];
+
+          return t`${txnTypeText} margin deposit: ${amountText} to ${indexTokenText} ${longShortText}`;
+        }
+
         if (isIncreaseOrderType(orderType)) {
           return isLong
             ? t`Depositing ${amountText} to ${indexTokenText} Long...`
@@ -242,18 +289,17 @@ function OrderStatusNotification({
 
     if (orderStatus?.createdTxnHash) {
       status = "success";
-    } else if (isGelatoTaskFailed) {
+    } else if (isRelayTaskFailed) {
       status = "error";
     }
 
     return <TransactionStatus status={status} txnHash={undefined} text={text} />;
-  }, [orderData, orderStatus?.createdTxnHash, isGelatoTaskFailed]);
+  }, [orderData, orderStatus?.createdTxnHash, isRelayTaskFailed]);
 
   const sendingStatus = useMemo(() => {
-    let text = t`Sending order request...`;
+    let text: ReactNode = t`Sending order request...`;
     let status: TransactionStatusType = "loading";
     let txnHash: string | undefined;
-    let txnLink: string | undefined;
     let isCompleted = false;
 
     if (orderData?.txnType === "create") {
@@ -266,33 +312,38 @@ function OrderStatusNotification({
       isCompleted = Boolean(orderStatus?.cancelledTxnHash);
     }
 
-    if (isGelatoTaskFailed) {
+    if (isRelayTaskFailed) {
       status = "error";
-      text = t`Relayer request failed`;
-      txnLink = pendingExpressTxn?.taskId
-        ? getGelatoTaskUrl({
-            taskId: pendingExpressTxn.taskId,
-            isDebug: true,
-            tenderlyAccountSlug,
-            tenderlyProjectSlug,
-          })
-        : undefined;
+      // the relay reports reasons as `Error(...)`; the wrapper is noise to a reader
+      const reason = relayTaskStatus?.message?.replace(/^Error\((.*)\)$/, "$1");
+      const relayDebugMessage = getDebugErrorMessage({
+        errorMessage: reason,
+        data: { taskId: pendingExpressTxn?.taskId },
+      });
+
+      text = (
+        <div>
+          <Trans>Relayer request failed</Trans>
+          {relayDebugMessage && <ToastifyDebug error={relayDebugMessage} />}
+        </div>
+      );
+      txnHash = relayTaskStatus?.transactionHash;
     } else if (isCompleted) {
       status = "success";
       text = t`Order request sent`;
       txnHash = hideTxLink !== "creation" && orderData?.txnType === "create" ? orderStatus?.createdTxnHash : undefined;
     }
 
-    return <TransactionStatus status={status} txnHash={txnHash} txnLink={txnLink} text={text} />;
+    return <TransactionStatus status={status} txnHash={txnHash} text={text} />;
   }, [
     orderData?.txnType,
-    isGelatoTaskFailed,
+    isRelayTaskFailed,
+    relayTaskStatus?.transactionHash,
+    relayTaskStatus?.message,
     orderStatus?.createdTxnHash,
     orderStatus?.executedTxnHash,
     orderStatus?.updatedTxnHash,
     orderStatus?.cancelledTxnHash,
-    tenderlyAccountSlug,
-    tenderlyProjectSlug,
     pendingExpressTxn?.taskId,
     hideTxLink,
   ]);
@@ -380,6 +431,13 @@ function OrderStatusNotification({
     }
   }, [hasError, toastTimestamp]);
 
+  const isUsdgMarketDecrease =
+    pendingOrderData.txnType === "create" &&
+    isMarketOrderType(pendingOrderData.orderType) &&
+    !isIncreaseOrderType(pendingOrderData.orderType) &&
+    !isSwapOrderType(pendingOrderData.orderType) &&
+    getIsUsdgToken(chainId, pendingOrderData.initialCollateralTokenAddress);
+
   return (
     <div className={cx("StatusNotification")}>
       <div className="relative z-[1]">
@@ -389,6 +447,17 @@ function OrderStatusNotification({
           {externalSwapStatus}
           {sendingStatus}
           {executionStatus}
+          {isUsdgMarketDecrease && orderStatus?.executedTxnHash && orderData?.targetCollateralToken && (
+            <UsdgClosePayoutStatus
+              chainId={chainId}
+              pendingOrderData={pendingOrderData}
+              orderKey={orderStatus.key}
+              executedTxnHash={orderStatus.executedTxnHash}
+              outTokenAddress={orderData.targetCollateralToken.address}
+              toastId={toastTimestamp}
+              onKeepOpenChange={onKeepOpenChange}
+            />
+          )}
         </div>
       </div>
     </div>
@@ -555,7 +624,30 @@ export function OrdersStatusNotificiation({
     }
   }, [getMatchedOrderStatus, pendingOrders]);
 
-  useToastAutoClose(isCompleted, toastTimestamp);
+  const [keptOpenKeys, setKeptOpenKeys] = useState<ReadonlySet<string>>(new Set());
+  const setIsKeptOpen = useCallback((key: string, isKeptOpen: boolean) => {
+    setKeptOpenKeys((prev) => {
+      if (prev.has(key) === isKeptOpen) {
+        return prev;
+      }
+
+      const next = new Set(prev);
+
+      if (isKeptOpen) {
+        next.add(key);
+      } else {
+        next.delete(key);
+      }
+
+      return next;
+    });
+  }, []);
+
+  useToastAutoClose(
+    isCompleted && keptOpenKeys.size === 0,
+    toastTimestamp,
+    getIsFlagEnabled("keepOrderToastOpen") ? DEBUG_ORDER_TOAST_AUTO_CLOSE_TIME : TOAST_AUTO_CLOSE_TIME
+  );
 
   return (
     <div className="StatusNotification-wrapper">
@@ -569,6 +661,7 @@ export function OrdersStatusNotificiation({
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
               hideTxLink={pendingOrders.length > 1 ? "creation" : "none"}
+              onKeepOpenChange={setIsKeptOpen}
             />
           );
         })}

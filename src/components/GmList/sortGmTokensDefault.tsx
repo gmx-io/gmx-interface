@@ -6,23 +6,27 @@ import { ProgressiveTokenData, ProgressiveTokensData } from "sdk/utils/tokens/ty
 
 /**
  * Sorts GM tokens by:
- * 1. User owned wallet balance descending
- * 2. Simply descending on TVL in dollars for the pool
+ * 1. Pinned addresses first
+ * 2. User owned wallet balance descending
+ * 3. Simply descending on TVL in dollars for the pool
  */
 export function sortGmTokensDefault({
   marketsInfoData,
   marketTokensData,
   multichainMarketTokensBalances,
+  pinnedAddresses = [],
 }: {
   marketsInfoData: GlvAndGmMarketsInfoData;
   marketTokensData: ProgressiveTokensData;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  pinnedAddresses?: string[];
 }) {
   if (marketsInfoData === undefined || marketTokensData === undefined) {
     return [];
   }
 
-  const tokens: { tokenData: ProgressiveTokenData; totalSupplyUsd: bigint; balanceUsd: bigint }[] = [];
+  const tokens: { tokenData: ProgressiveTokenData; isPinned: boolean; totalSupplyUsd: bigint; balanceUsd: bigint }[] =
+    [];
 
   for (const market of Object.values(marketsInfoData)) {
     if (market.isDisabled) {
@@ -42,6 +46,7 @@ export function sortGmTokensDefault({
 
     tokens.push({
       tokenData: marketTokenData,
+      isPinned: pinnedAddresses.includes(marketTokenData.address),
       totalSupplyUsd: totalSupplyUsd,
       balanceUsd: balanceUsd,
     });
@@ -49,6 +54,10 @@ export function sortGmTokensDefault({
 
   // Sort by user balance first (descending), then by TVL (descending)
   tokens.sort((a, b) => {
+    if (a.isPinned !== b.isPinned) {
+      return a.isPinned ? -1 : 1;
+    }
+
     // Compare balances directly - tokens with higher balance come first
     if (a.balanceUsd !== b.balanceUsd) {
       return a.balanceUsd > b.balanceUsd ? -1 : 1;

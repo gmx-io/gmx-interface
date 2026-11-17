@@ -110,6 +110,7 @@ export const createMockEndpointStats = (
   return {
     endpoint,
     banned: undefined,
+    bannedEmitted: undefined,
     failureTimestamps: [],
     failureThrottleTimeout: undefined,
     checkResults: [checkResult],

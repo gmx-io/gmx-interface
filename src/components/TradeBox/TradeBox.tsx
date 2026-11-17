@@ -17,16 +17,16 @@ import {
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectFeeDiscountError,
   selectGasLimits,
   selectGasPrice,
+  selectL1ExpressOrderGasReference,
   selectMarketsInfoData,
   selectSrcChainId,
   selectSubaccountState,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExpressOrdersEnabled,
-  selectGasPaymentTokenAddress,
-  selectGmxAccountGasPaymentTokenAddress,
   selectSetExpressOrdersEnabled,
   selectShowDebugValues,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -39,14 +39,17 @@ import {
   selectTradeboxFees,
   selectTradeboxFormState,
   selectTradeboxFromToken,
+  selectTradeboxHasPendingInput,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
+  selectTradeboxLeverageStrategy,
   selectTradeboxMarkPrice,
   selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
   selectTradeboxOffHoursLiqRisk,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
@@ -57,53 +60,82 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { selectTradeboxIncreaseLiquidationRiskWarning } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import {
+  selectTradeboxIncreaseFreshPositionWarning,
+  selectTradeboxIncreaseLiquidationRiskWarning,
+  selectTradeboxIncreaseMaxLeverageAlert,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
+import {
+  selectTradeboxIsUsdgConversionTooLarge,
+  selectTradeboxIsUsdgConvertFirstSetup,
+} from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getPrimaryOrderGasPaymentTokenAmount } from "domain/synthetics/express/expressOrderUtils";
+import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
+  getNetworkFeeSource,
+  GMX_ACCOUNT_NETWORK_FEE_SOURCE,
+  WALLET_NETWORK_FEE_SOURCE,
+} from "domain/synthetics/fees/networkFeeSource";
+import { getExpressExecutionFeeAmount, getExpressGasPrice } from "domain/synthetics/fees/utils/executionFee";
 import { getMarketIndexName, MarketInfo, OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
-import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
+import { formatLeverage, formatLiquidationPriceParts } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
+import { getInsufficientFeeButtonMessage } from "domain/synthetics/trade/utils/validation";
+import { getConvertFirstPayAmount, getIsOrderStepGasCovered } from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   calculateDisplayDecimals,
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
   formatDeltaUsd,
+  formatDeltaUsdParts,
   formatPercentage,
   formatTokenAmount,
-  formatTokenAmountWithUsd,
+  formatTokenAmountWithUsdParts,
   formatUsd,
-  formatUsdPrice,
+  numberParts,
   parseValue,
 } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useBlockAutoReload } from "lib/pwa/blockAutoReload";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
-import { getGasPaymentTokens } from "sdk/configs/express";
+import { getRelayerFeeToken } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { estimateOrderOraclePriceCount } from "sdk/utils/fees/estimateOraclePriceCount";
-import { estimateExecuteSwapOrderGasLimit, getExecutionFee } from "sdk/utils/fees/executionFee";
+import {
+  estimateBatchMinGasPaymentTokenAmount,
+  estimateExecuteIncreaseOrderGasLimit,
+  estimateExecuteSwapOrderGasLimit,
+  getExecutionFee,
+} from "sdk/utils/fees/executionFee";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
+import { useIsActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
+import { LeverageValue } from "components/NumericValue/LeverageValue";
+import { NumericValue } from "components/NumericValue/NumericValue";
+import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -111,38 +143,54 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenWithIcon from "components/TokenIcon/TokenWithIcon";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
+import { FreshPositionIncreaseWarningCard } from "./FreshPositionIncreaseWarningCard";
 import { LiquidatableIncreaseWarningCard } from "./LiquidatableIncreaseWarningCard";
+import { MarginDepositSuggestionCard } from "./MarginDepositSuggestionCard";
+import { ResultingMarginAlertCard } from "./ResultingMarginWarningCard";
 import { useMultichainTokens } from "../GmxAccountModal/hooks";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import TradeInfoIcon from "../TradeInfoIcon/TradeInfoIcon";
 import TwapRows from "../TwapRows/TwapRows";
 import { useDecreaseOrdersThatWillBeExecuted } from "./hooks/useDecreaseOrdersThatWillBeExecuted";
+import { useOrderAutoSubmitAfterConversion } from "./hooks/useOrderAutoSubmitAfterConversion";
+import { useRefillMaxOnFeeTokenChange } from "./hooks/useRefillMaxOnFeeTokenChange";
 import { useTradeboxAcceptablePriceImpactValues } from "./hooks/useTradeboxAcceptablePriceImpactValues";
+import { type TradeboxPaxosRoute, useTradeboxPaxosRoute } from "./hooks/useTradeboxPaxosRoute";
 import { useTradeboxTPSLReset } from "./hooks/useTradeboxTPSLReset";
+import { useTradeboxUsdgConversion } from "./hooks/useTradeboxUsdgConversion";
 import { useTradeboxButtonState } from "./hooks/useTradeButtonState";
+import { useUsdgPoolPayTokenDefault } from "./hooks/useUsdgPoolPayTokenDefault";
 import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
+import {
+  PaxosPendingLabel,
+  PaxosRouteAlerts,
+  PaxosRouteDetailsRows,
+  PaxosRouteSelectorRow,
+} from "./TradeBoxRows/PaxosRouteRows";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
+import { UsdgAddMarginReturnBanner } from "./UsdgAddMarginReturnBanner";
 
 import "./TradeBox.scss";
 
 const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
 
-export function TradeBox({ isMobile }: { isMobile: boolean }) {
+export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; activeFormId: string }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
 
@@ -169,6 +217,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const chainId = useSelector(selectChainId);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
+  const feeDiscountError = useSelector(selectFeeDiscountError);
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
@@ -215,7 +264,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
+    marginDepositSuggestionHidden,
+    setMarginDepositSuggestionHidden,
   } = useSelector(selectTradeboxFormState);
+
+  const hasPendingInput = useSelector(selectTradeboxHasPendingInput);
+  useBlockAutoReload(hasPendingInput);
 
   const isTwapModeAvailable = useMemo(
     () =>
@@ -243,7 +297,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPositionForPreview = useSelector(selectTradeboxExistingPositionForPreview);
   const showIncreaseLiquidationRiskWarning = useSelector(selectTradeboxIncreaseLiquidationRiskWarning);
+  const showIncreaseFreshPositionWarning = useSelector(selectTradeboxIncreaseFreshPositionWarning);
+  const increaseMaxLeverageAlert = useSelector(selectTradeboxIncreaseMaxLeverageAlert);
 
   const closeSizeHook = useCloseSizeInput({
     positionSizeInUsd: selectedPosition?.sizeInUsd,
@@ -262,8 +319,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
   const settlementChainGasPaymentTokenData = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentTokenData = useSelector(selectGmxAccountGasPaymentToken);
-  const settlementChainGasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
-  const gmxAccountGasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const { subaccount } = useSelector(selectSubaccountState);
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
   const { setIsSettingsVisible, isLeverageSliderEnabled } = useSettings();
@@ -277,9 +332,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const gasPaymentTokenData = isFromTokenGmxAccount
     ? gmxAccountGasPaymentTokenData
     : settlementChainGasPaymentTokenData;
-  const gasPaymentTokenAddress = isFromTokenGmxAccount
-    ? gmxAccountGasPaymentTokenAddress
-    : settlementChainGasPaymentTokenAddress;
 
   const priceImpactWarningState = usePriceImpactWarningState({
     collateralNetPriceImpact: fees?.collateralNetPriceImpact,
@@ -340,66 +392,201 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     isCreatingNewAutoCancel: isTrigger,
   });
 
-  const submitButtonState = useTradeboxButtonState({
+  const isActiveForm = useIsActiveForm(activeFormId);
+
+  const gmxSubmitButtonState = useTradeboxButtonState({
     account,
     setToTokenInputValue,
+    canSwitchGasPaymentToken: isActiveForm,
   });
 
+  const paxosRoute = useTradeboxPaxosRoute({ setFromTokenInputValue, setFocusedInput });
+  const isPaxosRouteActive = paxosRoute.activePaxosRoute !== undefined;
+  const paxosReceiveAmountOut = getPaxosReceiveAmountOut(paxosRoute);
+
+  const usdgConversion = useTradeboxUsdgConversion({
+    canSwitchGasPaymentToken: isActiveForm,
+    setFromTokenInputValue,
+    setToTokenInputValue,
+    setFocusedInput,
+  });
+  const isUsdgConversionActive = usdgConversion.isBusy || usdgConversion.isOrderAutoSubmitArmed;
+  const isUsdgConversionTooLarge = useSelector(selectTradeboxIsUsdgConversionTooLarge);
+  const isUsdgConvertFirstSetup = useSelector(selectTradeboxIsUsdgConvertFirstSetup);
+  const leverageStrategy = useSelector(selectTradeboxLeverageStrategy);
+
+  // the convert step takes over only a ready order button, but keeps its spinner while the swap is in flight
+  const isConvertStepShown =
+    !paxosRoute.buttonState &&
+    usdgConversion.buttonState !== undefined &&
+    (usdgConversion.isBusy || (!shouldShowDepositButton && !gmxSubmitButtonState.disabled));
+
+  const orderStepGasPaymentParams = gmxSubmitButtonState.expressParams?.gasPaymentParams;
+  const isOrderStepGasMissing =
+    isConvertStepShown &&
+    !usdgConversion.isBusy &&
+    fromTokenAddress !== undefined &&
+    fromTokenAmount !== undefined &&
+    !getIsOrderStepGasCovered({
+      chainId,
+      tokensData,
+      orderGasPaymentParams: orderStepGasPaymentParams,
+      conversionGasPaymentParams: usdgConversion.expressParams?.gasPaymentParams,
+      payTokenAddress: fromTokenAddress,
+      payAmount: fromTokenAmount,
+      isGmxAccount: isFromTokenGmxAccount,
+    });
+
+  const submitButtonState = useMemo(() => {
+    if (paxosRoute.buttonState) {
+      return { ...gmxSubmitButtonState, ...paxosRoute.buttonState, tooltipContent: null, bannerErrorContent: null };
+    }
+
+    if (isConvertStepShown) {
+      const orderStepGasError =
+        isOrderStepGasMissing && orderStepGasPaymentParams
+          ? {
+              text: getInsufficientFeeButtonMessage({
+                tokenSymbol: orderStepGasPaymentParams.gasPaymentToken.symbol,
+                feeSource: isFromTokenGmxAccount ? GMX_ACCOUNT_NETWORK_FEE_SOURCE : WALLET_NETWORK_FEE_SOURCE,
+              }),
+              disabled: true,
+            }
+          : undefined;
+
+      return {
+        ...gmxSubmitButtonState,
+        ...usdgConversion.buttonState,
+        // the order step still follows the conversion, so keep the curtain open for it
+        onSubmit: async () => {
+          await usdgConversion.buttonState?.onSubmit();
+          return false;
+        },
+        ...orderStepGasError,
+        expressParams: usdgConversion.expressParams,
+        isExpressLoading: usdgConversion.isExpressLoading,
+        totalExecutionFee: usdgConversion.executionFee,
+        tooltipContent: null,
+        bannerErrorContent: null,
+      };
+    }
+
+    return gmxSubmitButtonState;
+  }, [
+    gmxSubmitButtonState,
+    isConvertStepShown,
+    isFromTokenGmxAccount,
+    isOrderStepGasMissing,
+    orderStepGasPaymentParams,
+    paxosRoute.buttonState,
+    usdgConversion.buttonState,
+    usdgConversion.executionFee,
+    usdgConversion.expressParams,
+    usdgConversion.isExpressLoading,
+  ]);
+
   const wrappedOnSubmit = useCallback(async () => {
-    await submitButtonState.onSubmit();
-    if (isMobile) {
-      setExternalIsCurtainOpen(false);
+    try {
+      const isTradeSent = await submitButtonState.onSubmit();
+      if (isMobile && isTradeSent) {
+        setExternalIsCurtainOpen(false);
+      }
+    } catch (error) {
+      reportHandledRejection("tradebox.submit")(error);
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
+  const orderAutoSubmitHandlers = useOrderAutoSubmitAfterConversion({
+    isArmed: usdgConversion.isOrderAutoSubmitArmed,
+    isPending: usdgConversion.isOrderAutoSubmitPending,
+    isAwaitingBalance: usdgConversion.isOrderAutoSubmitAwaitingBalance,
+    requestedApprovals: usdgConversion.orderAutoSubmitRequestedApprovals,
+    markApprovalRequested: usdgConversion.markOrderAutoSubmitApprovalRequested,
+    stop: usdgConversion.stopOrderAutoSubmit,
+    buttonState: submitButtonState,
+    isDepositButtonShown: shouldShowDepositButton,
+    // the order still follows the approval, so the mobile curtain stays open for it
+    onApprove: submitButtonState.onSubmit,
+    onSubmit: wrappedOnSubmit,
+  });
+
   const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
-  const expressGasPaymentTokenAmount = useMemo((): bigint | undefined => {
-    if (!expressOrdersEnabledForMax) {
-      return undefined;
-    }
+  const feeGasPaymentTokenData = submitButtonState.expressGasPaymentToken ?? gasPaymentTokenData;
+  const expressGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+  // a convert-first order pays the conversion's fee and then its own, so Max keeps both; until the convert step is
+  // shown only the order's estimate exists, and it stands in for the conversion's too
+  const orderStepGasPaymentTokenAmount = isConvertStepShown
+    ? orderStepGasPaymentParams !== undefined &&
+      orderStepGasPaymentParams.gasPaymentTokenAddress === feeGasPaymentTokenData?.address
+      ? orderStepGasPaymentParams.gasPaymentTokenAmount
+      : 0n
+    : isUsdgConvertFirstSetup
+      ? expressGasPaymentParams?.gasPaymentTokenAmount ?? 0n
+      : 0n;
+  const expressGasPaymentTokenAmount =
+    expressOrdersEnabledForMax &&
+    expressGasPaymentParams !== undefined &&
+    expressGasPaymentParams.gasPaymentTokenAddress === feeGasPaymentTokenData?.address
+      ? expressGasPaymentParams.gasPaymentTokenAmount + orderStepGasPaymentTokenAmount
+      : undefined;
 
-    const storedExpressParams = submitButtonState.expressParams;
-    if (
-      storedExpressParams === undefined ||
-      storedExpressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
-    ) {
-      return undefined;
-    }
-
-    return getPrimaryOrderGasPaymentTokenAmount({
-      expressParams: storedExpressParams,
-      primaryExecutionFeeAmount: submitButtonState.primaryExecutionFee?.feeTokenAmount,
-    });
-  }, [
-    expressOrdersEnabledForMax,
-    submitButtonState.expressParams,
-    submitButtonState.primaryExecutionFee?.feeTokenAmount,
-    gasPaymentTokenAddress,
-  ]);
-
-  const treatMinimalBufferAsEnough =
-    isSwap &&
-    toToken &&
-    (expressOrdersEnabledForMax
-      ? getGasPaymentTokens(chainId).includes(toToken.address)
-      : toToken.address === zeroAddress);
-
-  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
+  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? feeGasPaymentTokenData : nativeToken;
   const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
     ? expressGasPaymentTokenAmount
-    : submitButtonState.primaryExecutionFee?.feeTokenAmount;
+    : submitButtonState.totalExecutionFee?.feeTokenAmount;
 
-  const fallbackSwapExecutionFeeAmount = useMemo(() => {
-    if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
-    const estimatedGasLimit = estimateExecuteSwapOrderGasLimit(gasLimits, {
-      swapsCount: 0,
-      callbackGasLimit: 0n,
-    });
+  const l1ExpressOrderGasReference = useSelector(selectL1ExpressOrderGasReference);
+  const relayerFeeToken = getByKey(tokensData, getRelayerFeeToken(chainId).address);
+
+  const fallbackFeeTokenAmountForMax = useMemo(() => {
+    if ((!isSwap && !isIncrease) || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
+    const estimatedGasLimit = isSwap
+      ? estimateExecuteSwapOrderGasLimit(gasLimits, { swapsCount: 0, callbackGasLimit: 0n })
+      : estimateExecuteIncreaseOrderGasLimit(gasLimits, { swapsCount: 0 });
     const oraclePriceCount = estimateOrderOraclePriceCount(0);
-    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount)
-      ?.feeTokenAmount;
-  }, [isSwap, gasLimits, gasPrice, tokensData, chainId]);
+    const executionFee = getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount);
+
+    if (!expressOrdersEnabledForMax) {
+      return executionFee?.feeTokenAmount;
+    }
+
+    const gasPaymentTokenAmount =
+      executionFee && feeGasPaymentTokenData && relayerFeeToken
+        ? estimateBatchMinGasPaymentTokenAmount({
+            chainId,
+            gasPaymentToken: feeGasPaymentTokenData,
+            relayFeeToken: relayerFeeToken,
+            isGmxAccount: isFromTokenGmxAccount,
+            gasPrice: getExpressGasPrice(chainId, gasPrice),
+            gasLimits,
+            l1Reference: l1ExpressOrderGasReference,
+            tokensData,
+            createOrdersCount: 1,
+            updateOrdersCount: 0,
+            cancelOrdersCount: 0,
+            executionFeeAmount: getExpressExecutionFeeAmount(chainId, executionFee),
+          })
+        : undefined;
+
+    // a convert-first order also pays the conversion's fee
+    return gasPaymentTokenAmount !== undefined && isUsdgConvertFirstSetup
+      ? gasPaymentTokenAmount * 2n
+      : gasPaymentTokenAmount;
+  }, [
+    isSwap,
+    isIncrease,
+    gasLimits,
+    gasPrice,
+    tokensData,
+    chainId,
+    expressOrdersEnabledForMax,
+    feeGasPaymentTokenData,
+    relayerFeeToken,
+    isFromTokenGmxAccount,
+    isUsdgConvertFirstSetup,
+    l1ExpressOrderGasReference,
+  ]);
 
   const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 
@@ -407,35 +594,65 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     fromToken,
     isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
   );
-  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(
-    gasPaymentTokenForMax,
-    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
-  );
+  const reserveTokenForMax = isFromTokenGmxAccount
+    ? gmxAccountGasPaymentTokenData
+    : expressOrdersEnabled
+      ? feeGasPaymentTokenData
+      : undefined;
 
-  const { maxAvailableAmount, formattedMaxAvailableAmount, showClickMax, gasPaymentTokenWarningContent } =
-    useMaxAvailableAmount({
-      fromToken,
-      fromTokenBalance,
-      fromTokenAmount,
-      fromTokenInputValue,
-      isLoading: isMaxAmountLoading,
-      gasPaymentToken: gasPaymentTokenForMax,
-      gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
-      gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-      fallbackGasPaymentTokenAmount: fallbackSwapExecutionFeeAmount,
-      useMinimalBuffer: treatMinimalBufferAsEnough,
-      isGmxAccount: isFromTokenGmxAccount,
-    });
+  const {
+    maxAvailableAmount,
+    formattedMaxAvailableAmount,
+    formattedKeepGasAmount,
+    maxActions,
+    gasPaymentTokenWarningContent,
+  } = useMaxAvailableAmount({
+    fromToken,
+    fromTokenBalance,
+    fromTokenAmount,
+    isLoading: isPaxosRouteActive ? false : isMaxAmountLoading,
+    feeToken: isPaxosRouteActive ? undefined : gasPaymentTokenForMax,
+    feeTokenAmount: isPaxosRouteActive ? undefined : gasPaymentTokenAmountForMax,
+    fallbackFeeTokenAmount: isPaxosRouteActive ? undefined : fallbackFeeTokenAmountForMax,
+    reserveToken: isPaxosRouteActive ? undefined : reserveTokenForMax,
+    isGmxAccount: isFromTokenGmxAccount,
+  });
 
   const onMaxClick = useCallback(() => {
-    if (formattedMaxAvailableAmount) {
+    if (maxAvailableAmount > 0n) {
       setFocusedInput("from");
       setFromTokenInputValue(formattedMaxAvailableAmount, true);
     }
-  }, [formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
+  }, [maxAvailableAmount, formattedMaxAvailableAmount, setFocusedInput, setFromTokenInputValue]);
 
-  useTradeboxAcceptablePriceImpactValues();
-  useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed);
+  const onKeepGasClick = useCallback(() => {
+    if (formattedKeepGasAmount !== undefined) {
+      setFocusedInput("from");
+      setFromTokenInputValue(formattedKeepGasAmount, true);
+    }
+  }, [formattedKeepGasAmount, setFocusedInput, setFromTokenInputValue]);
+
+  useRefillMaxOnFeeTokenChange({
+    feeTokenAddress: gasPaymentTokenForMax?.address,
+    payTokenAddress: fromTokenAddress,
+    inputValue: fromTokenInputValue,
+    selected: maxActions.selected,
+    isReady: !maxActions.isLoading && (!expressOrdersEnabledForMax || expressGasPaymentTokenAmount !== undefined),
+    maxAvailableAmount,
+    onMaxClick,
+  });
+
+  const payMaxActionsProps =
+    fromTokenBalance !== undefined && fromTokenBalance > 0n
+      ? { state: maxActions, onMax: onMaxClick, onKeepGas: onKeepGasClick }
+      : undefined;
+
+  useTradeboxAcceptablePriceImpactValues({
+    isUsdgConversionActive,
+    isUsdgOrderAutoSubmitArmed: usdgConversion.isOrderAutoSubmitArmed,
+  });
+  useTradeboxTPSLReset(priceImpactWarningState.setIsDismissed, isUsdgConversionActive);
+  useUsdgPoolPayTokenDefault();
 
   const prevIsISwap = usePrevious(isSwap);
 
@@ -455,7 +672,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
-          const newToValue = swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "";
+          const amountOut = paxosReceiveAmountOut ?? swapAmounts.amountOut;
+          const newToValue = amountOut > 0 ? formatAmountFree(amountOut, toToken.decimals) : "";
           setToTokenInputValue(newToValue, false);
         } else {
           const newFromValue =
@@ -479,12 +697,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             false
           );
         } else {
-          setFromTokenInputValue(
-            increaseAmounts.initialCollateralAmount > 0
-              ? formatAmountFree(increaseAmounts.initialCollateralAmount, fromToken.decimals)
-              : "",
-            false
-          );
+          const payAmount =
+            isUsdgConvertFirstSetup &&
+            leverageStrategy === "leverageBySize" &&
+            increaseAmounts.swapStrategy.type !== "externalSwap"
+              ? getConvertFirstPayAmount({ payAmount: increaseAmounts.initialCollateralAmount, maxAvailableAmount })
+              : increaseAmounts.initialCollateralAmount;
+
+          setFromTokenInputValue(payAmount > 0 ? formatAmountFree(payAmount, fromToken.decimals) : "", false);
         }
       }
     },
@@ -495,6 +715,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       increaseAmounts,
       isIncrease,
       isSwap,
+      isUsdgConvertFirstSetup,
+      leverageStrategy,
+      maxAvailableAmount,
+      paxosReceiveAmountOut,
       prevIsISwap,
       setFocusedInput,
       setFromTokenInputValue,
@@ -504,11 +728,29 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     ]
   );
 
+  const isUsdgConversionActiveRef = useLatest(isUsdgConversionActive);
+
+  const triggerPriceResetKeyRef = useRef<string>();
+
   useEffect(
     function resetTriggerPrice() {
+      const resetKey = `${toTokenAddress}:${tradeMode}`;
+      const isMount = triggerPriceResetKeyRef.current === undefined;
+
+      if (triggerPriceResetKeyRef.current === resetKey) {
+        return;
+      }
+
+      triggerPriceResetKeyRef.current = resetKey;
+
+      // a remount mid-conversion would otherwise wipe the price the order is about to be sent with
+      if (isMount && isUsdgConversionActiveRef.current) {
+        return;
+      }
+
       setTriggerPriceInputValue("");
     },
-    [setTriggerPriceInputValue, toTokenAddress, tradeMode]
+    [isUsdgConversionActiveRef, setTriggerPriceInputValue, toTokenAddress, tradeMode]
   );
 
   useEffect(
@@ -730,26 +972,42 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const payUsd = isIncrease ? increaseAmounts?.initialCollateralUsd : fromUsd;
+  const receiveUsdOut =
+    paxosReceiveAmountOut !== undefined && toToken
+      ? convertToUsd(paxosReceiveAmountOut, toToken.decimals, toToken.prices.maxPrice)
+      : swapAmounts?.usdOut;
+  const receivePendingAmount =
+    isSwap && !isFromTokenGmxAccount && paxosRoute.pendingConversion?.tokenAddress === toToken?.address
+      ? paxosRoute.pendingConversion?.amount
+      : undefined;
+  const payPendingAmount =
+    isSwap && !isFromTokenGmxAccount && paxosRoute.pendingConversion?.tokenAddress === fromToken?.address
+      ? paxosRoute.pendingConversion?.amount
+      : undefined;
 
   function renderTokenInputs() {
     return (
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd, { roundMode: "floor" }) : ""}
+          bottomLeftValue={payUsd !== undefined ? <UsdValue usd={payUsd} roundMode="floor" /> : ""}
           bottomRightValue={
-            fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
+            fromToken &&
+            fromToken.balance !== undefined &&
+            (fromToken.balance > 0n || payPendingAmount !== undefined) ? (
               <>
                 {formatBalanceAmount(fromToken.balance, fromToken.decimals, undefined, {
                   isStable: fromToken.isStable,
+                  showZero: payPendingAmount !== undefined,
                 })}{" "}
                 <span className="text-typography-secondary">{fromToken.symbol}</span>
+                {payPendingAmount !== undefined && <PaxosPendingLabel amount={payPendingAmount} token={fromToken} />}
               </>
             ) : undefined
           }
           inputValue={fromTokenInputValue}
           onInputValueChange={handleFromInputTokenChange}
-          onClickMax={showClickMax ? onMaxClick : undefined}
+          maxActions={payMaxActionsProps}
           qa="pay"
           maxDecimals={fromToken?.decimals}
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
@@ -814,12 +1072,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               <BuyInputSection
                 topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
-                  !isTwap && swapAmounts?.usdOut !== undefined
-                    ? formatUsd(focusedInput === "from" ? swapAmounts.usdOut : toUsd)
-                    : undefined
+                  !isTwap && receiveUsdOut !== undefined ? (
+                    <UsdValue usd={focusedInput === "from" ? receiveUsdOut : toUsd} />
+                  ) : undefined
                 }
                 bottomRightValue={
-                  !isTwap && toToken && toTokenBalance !== undefined && toTokenBalance > 0n ? (
+                  !isTwap &&
+                  toToken &&
+                  toTokenBalance !== undefined &&
+                  (toTokenBalance > 0n || receivePendingAmount !== undefined) ? (
                     <span className="inline-flex items-center">
                       {isFromTokenGmxAccount && (
                         <TokenIcon
@@ -831,7 +1092,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                       )}
                       {formatBalanceAmount(toTokenBalance, toToken.decimals, toToken.symbol, {
                         isStable: toToken.isStable,
+                        showZero: receivePendingAmount !== undefined,
                       })}
+                      {receivePendingAmount !== undefined && (
+                        <PaxosPendingLabel amount={receivePendingAmount} token={toToken} />
+                      )}
                     </span>
                   ) : undefined
                 }
@@ -867,13 +1132,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           <BuyInputSection
             topLeftLabel={localizedTradeTypeLabels[tradeType!]}
             bottomLeftValue={
-              increaseAmounts?.sizeDeltaUsd !== undefined
-                ? formatUsd(increaseAmounts?.sizeDeltaUsd, { fallbackToZero: true })
-                : ""
+              increaseAmounts?.sizeDeltaUsd !== undefined ? (
+                <UsdValue usd={increaseAmounts?.sizeDeltaUsd} fallbackToZero />
+              ) : (
+                ""
+              )
             }
             bottomRightLabel={t`Leverage`}
             bottomRightValue={
-              formatLeverage(isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage) || "-"
+              <LeverageValue
+                leverage={isLeverageSliderEnabled ? leverage : increaseAmounts?.estimatedLeverage}
+                fallback="-"
+              />
             }
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
@@ -916,7 +1186,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
     const closeAlternateValue = (() => {
       if (closeDisplayMode === "token") {
-        return formatUsd(closeSizeHook.closeSizeUsd);
+        return <UsdValue usd={closeSizeHook.closeSizeUsd} />;
       }
       if (!selectedPosition || !toToken || selectedPosition.sizeInUsd === 0n) {
         return "0";
@@ -968,9 +1238,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       <BuyInputSection
         topLeftLabel={priceLabel}
         topRightLabel={t`Mark`}
-        topRightValue={formatUsdPrice(markPrice, {
-          visualMultiplier: toToken?.visualMultiplier,
-        })}
+        topRightValue={<UsdPriceValue price={markPrice} visualMultiplier={toToken?.visualMultiplier} />}
         onClickTopRightLabel={setMarkPriceAsTriggerPrice}
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
@@ -1020,6 +1288,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const buttonContent = (
     <Button
       qa="confirm-trade-button"
+      data-one-click-ready={Boolean(
+        submitButtonState.expressParams?.gasPaymentValidations.isValid &&
+          submitButtonState.expressParams?.subaccountValidations?.isValid
+      )}
       variant="primary-action"
       className="w-full [text-decoration:inherit]"
       onClick={wrappedOnSubmit}
@@ -1029,11 +1301,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     </Button>
   );
   const button = submitButtonState.tooltipContent ? (
-    <Tooltip
+    <StandardTooltip
       className="w-full"
       content={submitButtonState.tooltipContent}
       handle={buttonContent}
-      isHandlerDisabled
+      isHandlerDisabled={submitButtonState.disabled && !shouldDisableValidation}
       handleClassName="w-full"
       position="bottom"
       variant="none"
@@ -1049,14 +1321,14 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
 
     if (isIncrease && (increaseAmounts === undefined || increaseAmounts.sizeDeltaUsd === 0n)) {
-      if (selectedPosition) {
+      if (existingPositionForPreview) {
         return undefined;
       } else {
         return "-";
       }
     }
 
-    return formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
+    return formatLiquidationPriceParts(nextPositionValues?.nextLiqPrice, {
       visualMultiplier: toToken?.visualMultiplier,
     });
   }, [
@@ -1066,7 +1338,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     increaseAmounts,
     nextPositionValues?.nextLiqPrice,
     toToken?.visualMultiplier,
-    selectedPosition,
+    existingPositionForPreview,
   ]);
 
   const keepLeverage = useSelector(selectTradeboxKeepLeverage);
@@ -1094,7 +1366,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const [twapRecommendationDismissed, setTwapRecommendationDismissed] = useState(false);
 
   return (
-    <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
+    <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef} {...orderAutoSubmitHandlers}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex items-center justify-between">
           <Tabs
@@ -1103,12 +1375,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             onChange={onSelectTradeMode}
             qa="trade-mode"
             className="w-full px-12"
-            rightContent={<TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />}
+            rightContent={<TradeInfoIcon tradeType={tradeType} tradePlace="tradebox" />}
             regularOptionClassname="!px-0"
             tabsWrapperClassName="gap-12"
           />
         </div>
         <div className="flex flex-col gap-12 px-12">
+          <UsdgAddMarginReturnBanner isSwap={isSwap} />
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
@@ -1123,6 +1396,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
                   maxAvailableAmount={maxAvailableAmount}
+                  maxActions={maxActions}
+                  onKeepGasClick={onKeepGasClick}
                   onMarkPriceClick={setMarkPriceAsTriggerPrice}
                 />
               )}
@@ -1130,6 +1405,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isSwap && isLimit && renderTriggerRatioInput()}
               {isTrigger && renderTriggerPriceInput()}
             </div>
+
+            {isSwap && paxosRoute.routes.isPaxosOffered && fromToken && toToken && (
+              <PaxosRouteSelectorRow paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
+            )}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1187,7 +1466,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
           {maxAutoCancelOrdersWarning}
 
-          {priceImpactWarningState.shouldShowWarning && (
+          {isSwap && fromToken && toToken && (
+            <PaxosRouteAlerts paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
+          )}
+
+          {priceImpactWarningState.shouldShowWarning && !isPaxosRouteActive && (
             <HighPriceImpactOrFeesWarningCard
               priceImpactWarningState={priceImpactWarningState}
               swapPriceImpact={fees?.swapPriceImpact}
@@ -1198,14 +1481,29 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             />
           )}
 
-          <ExpressTradingWarningCard
-            expressParams={submitButtonState.expressParams}
-            payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
-            isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
-            disabled={shouldShowDepositButton}
-            isGmxAccount={isFromTokenGmxAccount}
-            showExternalSwapWarnings={tradeFlags.isSwap || tradeFlags.isIncrease}
-          />
+          {feeDiscountError && !isSwap && (
+            <AlertInfoCard hideClose type="warning">
+              <Trans>Could not refresh your fee discount. Fees are estimated without it.</Trans>
+            </AlertInfoCard>
+          )}
+
+          {submitButtonState.bannerErrorContent && (
+            <AlertInfoCard type="error" hideClose>
+              {submitButtonState.bannerErrorContent}
+            </AlertInfoCard>
+          )}
+
+          {!isPaxosRouteActive && (
+            <ExpressTradingWarningCard
+              expressParams={submitButtonState.expressParams}
+              payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
+              isWrapOrUnwrap={!tradeFlags.isTrigger && isWrapOrUnwrap}
+              disabled={shouldShowDepositButton}
+              isGmxAccount={isFromTokenGmxAccount}
+              // the instant-limit banner already offers the way out, so a second red card would only compete
+              showExternalSwapWarnings={(tradeFlags.isSwap || tradeFlags.isIncrease) && !isUsdgConversionTooLarge}
+            />
+          )}
           {twapRecommendation && !twapRecommendationDismissed && (
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
@@ -1231,8 +1529,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
-          {showIncreaseLiquidationRiskWarning && <LiquidatableIncreaseWarningCard />}
-          {gasPaymentTokenWarningContent && (
+          {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} isTwap={isTwap} />}
+          {!marginDepositSuggestionHidden && (
+            <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
+          )}
+          {showIncreaseLiquidationRiskWarning && (
+            <LiquidatableIncreaseWarningCard positionKey={selectedPosition?.key} />
+          )}
+          {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
+          {gasPaymentTokenWarningContent && !isPaxosRouteActive && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
             </AlertInfoCard>
@@ -1247,7 +1552,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   </Trans>
                 </div>
                 <div>
-                  <Trans>Off-hours: daily 20:45–22:15 UTC (weekends Fri 20:45 → Sun 22:15 UTC).</Trans>
+                  <Trans>
+                    Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).
+                  </Trans>
                 </div>
                 <ExternalLink href={OFF_HOURS_DOCS_URL} newTab>
                   <Trans>Read more</Trans>
@@ -1256,22 +1563,63 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             </AlertInfoCard>
           )}
 
+          {usdgConversion.tooLargeAlert && (
+            <AlertInfoCard hideClose type="error">
+              {usdgConversion.tooLargeAlert}
+            </AlertInfoCard>
+          )}
+          {usdgConversion.convertFirstNote && (
+            <AlertInfoCard hideClose type="info">
+              {usdgConversion.convertFirstNote}
+            </AlertInfoCard>
+          )}
+
           <div>{button}</div>
         </div>
       </div>
 
       <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
-        {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+        {isPaxosRouteActive && fromToken && toToken && (
+          <PaxosRouteDetailsRows paxosRoute={paxosRoute} fromToken={fromToken} toToken={toToken} />
+        )}
+        {isSwap && !isTwap && !isPaxosRouteActive && <MinReceiveRow allowedSlippage={allowedSlippage} />}
+        {usdgConversion.isConvertFirst && (
+          <SyntheticsInfoRow
+            label={
+              <StandardTooltip
+                handle={t`Steps`}
+                content={
+                  <Trans>
+                    Your USDC converts to USDG first, then the order asks for a second signature. If you reject it or
+                    leave, the USDG stays in your account.
+                  </Trans>
+                }
+              />
+            }
+            value={<Trans>Convert, then place order</Trans>}
+          />
+        )}
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
             label={t`Receive`}
-            value={formatTokenAmountWithUsd(
-              decreaseAmounts.receiveTokenAmount,
-              decreaseAmounts.receiveUsd,
-              collateralToken?.symbol,
-              collateralToken?.decimals
-            )}
+            value={
+              <NumericValue
+                parts={formatTokenAmountWithUsdParts(
+                  decreaseAmounts.receiveTokenAmount,
+                  decreaseAmounts.receiveUsd,
+                  collateralToken?.symbol,
+                  collateralToken?.decimals
+                )}
+              />
+            }
             valueClassName="numbers"
+          />
+        )}
+
+        {(isIncrease || isTrigger) && (
+          <FundingPayoutRow
+            fundingPayout={isIncrease ? increaseAmounts?.fundingPayout : decreaseAmounts?.fundingPayout}
+            marketInfo={marketInfo}
           />
         )}
 
@@ -1280,19 +1628,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             label={t`PnL`}
             value={
               <ValueTransition
-                from={
-                  <>
-                    {formatDeltaUsd(decreaseAmounts?.estimatedPnl)} (
-                    {formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true })})
-                  </>
-                }
+                from={numberParts(
+                  formatDeltaUsdParts(decreaseAmounts?.estimatedPnl),
+                  " (",
+                  formatPercentage(decreaseAmounts?.estimatedPnlPercentage, { signed: true }),
+                  ")"
+                )}
                 to={
-                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0 ? (
-                    <>
-                      {formatDeltaUsd(nextPositionValues?.nextPnl)} (
-                      {formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true })})
-                    </>
-                  ) : undefined
+                  decreaseAmounts?.sizeDeltaUsd && decreaseAmounts.sizeDeltaUsd > 0
+                    ? numberParts(
+                        formatDeltaUsdParts(nextPositionValues?.nextPnl),
+                        " (",
+                        formatPercentage(nextPositionValues?.nextPnlPercentage, { signed: true }),
+                        ")"
+                      )
+                    : undefined
                 }
               />
             }
@@ -1304,8 +1654,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             value={
               <ValueTransition
                 from={
-                  selectedPosition
-                    ? formatLiquidationPrice(selectedPosition?.liquidationPrice, {
+                  existingPositionForPreview
+                    ? formatLiquidationPriceParts(existingPositionForPreview.liquidationPrice, {
                         visualMultiplier: toToken?.visualMultiplier,
                       })
                     : undefined
@@ -1315,13 +1665,28 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             }
           />
         )}
-        {!isTwap && <PriceImpactFeesRow />}
-        <TradeBoxAdvancedGroups
-          slippageInputId={submitButtonState.slippageInputId}
-          gasPaymentParams={submitButtonState.expressParams?.gasPaymentParams}
-          totalExecutionFee={submitButtonState.totalExecutionFee}
-        />
+        {!isTwap && !isPaxosRouteActive && <PriceImpactFeesRow />}
+        {!isPaxosRouteActive && (
+          <TradeBoxAdvancedGroups
+            slippageInputId={submitButtonState.slippageInputId}
+            gasPaymentParams={getNetworkFeeGasPaymentParams({
+              expressParams: submitButtonState.expressParams,
+              tokensData,
+              canFallBackToClassic: !submitButtonState.isFeeInPayToken,
+            })}
+            totalExecutionFee={submitButtonState.totalExecutionFee}
+            feeSource={getNetworkFeeSource({ isGmxAccount: isFromTokenGmxAccount })}
+          />
+        )}
       </div>
     </form>
   );
+}
+
+function getPaxosReceiveAmountOut(paxosRoute: TradeboxPaxosRoute): bigint | undefined {
+  if (!paxosRoute.activePaxosRoute) {
+    return undefined;
+  }
+
+  return paxosRoute.activeOption?.amountOut ?? 0n;
 }

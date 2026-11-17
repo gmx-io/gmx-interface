@@ -67,6 +67,7 @@ export type DisconnectWalletEvent = {
   event: "ConnectWalletAction";
   data: {
     action: "Disconnect";
+    network?: ChainName;
   };
 };
 
@@ -230,6 +231,13 @@ export type TradeBoxWarningSwitchPoolClickEvent = {
   };
 };
 
+export type MaxActionClickEvent = {
+  event: "MaxAction";
+  data: {
+    action: "MaxClick" | "KeepGasClick";
+  };
+};
+
 export type PoolsPageBuyConfirmEvent = {
   event: "PoolsPageAction";
   data: {
@@ -292,13 +300,6 @@ export type ReferralShareEvent = {
   event: "ReferralCodeAction";
   data: {
     action: "ShareTwitter" | "CopyCode";
-  };
-};
-
-export type LandingPageAgreementConfirmationEvent = {
-  event: "LandingPageAction";
-  data: {
-    action: "AgreementConfirmationDialogShown" | "AgreementConfirmationAgreeClick";
   };
 };
 

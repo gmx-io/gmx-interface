@@ -8,11 +8,7 @@ import { getTestSdk, getTestSigner, TEST_CHAIN_ID } from "./testUtil";
 
 const USDC_ARBITRUM = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 
-/**
- * The funded suite pays collateral in USDC, which the routers pull through SyntheticsRouter.
- * A freshly funded wallet has no allowance, and every submit then reverts with
- * "ERC20: transfer amount exceeds allowance" — so grant it once before the tests run.
- */
+// Collateral is pulled through SyntheticsRouter; without an allowance every submit reverts.
 beforeAll(async () => {
   const signer = getTestSigner();
   // eslint-disable-next-line no-restricted-globals

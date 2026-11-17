@@ -1,15 +1,18 @@
 import { t } from "@lingui/macro";
 import { Signer, ethers } from "ethers";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, type Address } from "viem";
 
 import { getContract } from "config/contracts";
 import { callContract } from "lib/contracts";
 import type { ExpressTxnData } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
-import { abis } from "sdk/abis";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { getAbi } from "sdk/abis/getAbi";
 import { ContractsChainId } from "sdk/configs/chains";
 import type { SourceChainId } from "sdk/configs/chains";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { type RelayParamsPayload, getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import { getMultichainInfoFromSigner } from "../express/expressOrderUtils";
@@ -25,7 +28,11 @@ export async function createClaimCollateralTxn(
   signer: Signer,
   { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
 ) {
-  const exchangeRouter = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const exchangeRouter = new ethers.Contract(
+    getContract(chainId, "ExchangeRouter"),
+    getAbi(chainId, "ExchangeRouter"),
+    signer
+  );
 
   const args: [markets: string[], tokens: string[], timeKeys: number[], account: string] = [[], [], [], account];
 
@@ -42,6 +49,32 @@ export async function createClaimCollateralTxn(
   });
 
   return txn;
+}
+
+export async function estimateClaimCollateralGas(
+  chainId: ContractsChainId,
+  { account, claimablePositionPriceImpactFees }: ClaimPriceImpactRebateParams
+): Promise<bigint> {
+  const client = getPublicClientWithRpc(chainId);
+
+  const callData = encodeFunctionData({
+    abi: getAbi(chainId, "ExchangeRouter"),
+    functionName: "claimCollateral",
+    args: [
+      claimablePositionPriceImpactFees.map((p) => p.marketAddress),
+      claimablePositionPriceImpactFees.map((p) => p.tokenAddress),
+      claimablePositionPriceImpactFees.map((p) => BigInt(p.timeKey)),
+      account,
+    ],
+  });
+
+  return client
+    .estimateGas({
+      account: account as Address,
+      to: getContract(chainId, "ExchangeRouter"),
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
 }
 
 export async function buildAndSignClaimPositionPriceImpactFeesTxn({
@@ -97,7 +130,7 @@ export async function buildAndSignClaimPositionPriceImpactFeesTxn({
   }
 
   const claimCollateralCallData = encodeFunctionData({
-    abi: abis.MultichainClaimsRouter,
+    abi: getAbi(chainId, "MultichainClaimsRouter"),
     functionName: "claimCollateral",
     args: [{ ...relayParams, signature }, account, BigInt(srcChainId), markets, tokens, timeKeys, receiver],
   });
@@ -129,8 +162,10 @@ async function signClaimCollateralPayload({
   chainId: ContractsChainId;
   srcChainId: number;
 }): Promise<string> {
+  const isV2_2_1 = isContractsV2_2_1(chainId);
   const types = {
     ClaimCollateral: [
+      ...(isV2_2_1 ? [{ name: "account", type: "address" }] : []),
       { name: "markets", type: "address[]" },
       { name: "tokens", type: "address[]" },
       { name: "timeKeys", type: "uint256[]" },
@@ -144,6 +179,7 @@ async function signClaimCollateralPayload({
     getContract(chainId, "MultichainClaimsRouter")
   );
   const typedData = {
+    ...(isV2_2_1 ? { account: signer.address } : {}),
     markets,
     tokens,
     timeKeys,
@@ -151,5 +187,5 @@ async function signClaimCollateralPayload({
     relayParams: hashRelayParams(relayParams),
   };
 
-  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId });
+  return signTypedData({ signer, domain, types, typedData, verificationChainId: chainId, relayParams });
 }

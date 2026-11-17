@@ -66,6 +66,19 @@ export function hasStaleMarketValues(
   return false;
 }
 
+// Without the per-collateral split the pnl cap silently falls back to the pre-2.2c net formula,
+// so treat it as missing data and let the rpc path serve it instead.
+const PER_COLLATERAL_OPEN_INTEREST_FIELDS = [
+  "longInterestUsdUsingLongToken",
+  "longInterestUsdUsingShortToken",
+  "shortInterestUsdUsingLongToken",
+  "shortInterestUsdUsingShortToken",
+  "longInterestInTokensUsingLongToken",
+  "longInterestInTokensUsingShortToken",
+  "shortInterestInTokensUsingLongToken",
+  "shortInterestInTokensUsingShortToken",
+] as const satisfies readonly (keyof RawMarketValues)[];
+
 export function hasIncompleteMarketValues(
   configData: RawMarketConfig[] | undefined,
   valuesData: RawMarketValues[] | undefined,
@@ -91,7 +104,8 @@ export function hasIncompleteMarketValues(
       config.maxCollateralSumLongTokenShort === undefined ||
       config.maxCollateralSumShortTokenLong === undefined ||
       config.maxCollateralSumShortTokenShort === undefined ||
-      value.virtualInventoryForPositionsInTokens === undefined
+      value.virtualInventoryForPositionsInTokens === undefined ||
+      PER_COLLATERAL_OPEN_INTEREST_FIELDS.some((field) => value[field] === undefined)
     );
   });
 }

@@ -32,6 +32,7 @@ type Props = {
   // eslint-disable-next-line react/no-unused-prop-types
   isCollateralTokenFromGmxAccount: boolean;
   options: TokenData[] | undefined;
+  conversionOptions?: TokenData[];
   onSelect: (tokenAddress: string, isGmxAccount: boolean) => void;
   variant?: "balance" | "destination";
 };
@@ -66,23 +67,48 @@ export function PositionEditorCollateralSelector(props: Props) {
 function CollateralSelectorDesktop(props: Props) {
   const close = useSelectorClose();
 
+  const marginTokenSymbol = props.options?.[0]?.symbol;
+  const renderOptions = (options: TokenData[] | undefined) =>
+    options?.map((option) => (
+      <CollateralListItemDesktop
+        key={`${option.address}-${option.balanceType}`}
+        onSelect={() => {
+          props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
+          close();
+        }}
+        chainId={props.chainId}
+        tokenData={option}
+        variant={props.variant}
+      />
+    ));
+
   return (
     <table className="CollateralSelector-table" data-qa="collateral-in-selector-table">
       <tbody>
-        {props.options?.map((option) => (
-          <CollateralListItemDesktop
-            key={`${option.address}-${option.balanceType}`}
-            onSelect={() => {
-              props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
-              close();
-            }}
-            chainId={props.chainId}
-            tokenData={option}
-            variant={props.variant}
-          />
-        ))}
+        {props.conversionOptions?.length ? (
+          <ConversionGroupHeaderRow>
+            <Trans>Margin token: {marginTokenSymbol}</Trans>
+          </ConversionGroupHeaderRow>
+        ) : null}
+        {renderOptions(props.options)}
+        {props.conversionOptions?.length ? (
+          <ConversionGroupHeaderRow>
+            <Trans>Converted to {marginTokenSymbol} in the same order</Trans>
+          </ConversionGroupHeaderRow>
+        ) : null}
+        {renderOptions(props.conversionOptions)}
       </tbody>
     </table>
+  );
+}
+
+function ConversionGroupHeaderRow({ children }: { children: React.ReactNode }) {
+  return (
+    <tr>
+      <td colSpan={2} className="px-16 pb-4 pt-12 text-12 text-typography-secondary">
+        {children}
+      </td>
+    </tr>
   );
 }
 
@@ -168,20 +194,35 @@ function CollateralListItemDesktop({
 function CollateralSelectorMobile(props: Props) {
   const close = useSelectorClose();
 
+  const marginTokenSymbol = props.options?.[0]?.symbol;
+  const renderOptions = (options: TokenData[] | undefined) =>
+    options?.map((option) => (
+      <CollateralListItemMobile
+        key={`${option.address}-${option.balanceType}`}
+        onSelect={() => {
+          props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
+          close();
+        }}
+        chainId={props.chainId}
+        tokenData={option}
+        variant={props.variant}
+      />
+    ));
+
   return (
     <SelectorBaseMobileList>
-      {props.options?.map((option) => (
-        <CollateralListItemMobile
-          key={`${option.address}-${option.balanceType}`}
-          onSelect={() => {
-            props.onSelect(option.address, option.balanceType === TokenBalanceType.GmxAccount);
-            close();
-          }}
-          chainId={props.chainId}
-          tokenData={option}
-          variant={props.variant}
-        />
-      ))}
+      {props.conversionOptions?.length ? (
+        <div className="text-12 text-typography-secondary">
+          <Trans>Margin token: {marginTokenSymbol}</Trans>
+        </div>
+      ) : null}
+      {renderOptions(props.options)}
+      {props.conversionOptions?.length ? (
+        <div className="pt-8 text-12 text-typography-secondary">
+          <Trans>Converted to {marginTokenSymbol} in the same order</Trans>
+        </div>
+      ) : null}
+      {renderOptions(props.conversionOptions)}
     </SelectorBaseMobileList>
   );
 }

@@ -54,13 +54,13 @@ export function RevenueSection() {
             icon={icBuilderCode}
             label={t`Builder code`}
             title={t`Charge your own fee`}
-            description={t`Add your own fee and keep 100% of it.`}
+            description={t`Add your own fee and keep 100% of it`}
           />
           <RevenueCard
             icon={icReferral}
             label={t`Referral revenue, built in`}
-            title={t`Earn from every referral.`}
-            description={t`Up to 25% of GMX trading fees, paid directly to you.`}
+            title={t`Earn from every referral`}
+            description={t`Up to 25% of GMX trading fees, paid directly to you`}
           />
         </div>
         <RevenueCalculator />

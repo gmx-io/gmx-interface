@@ -56,3 +56,6 @@ CLAUDE.md
 .claude
 claude.md
 .superpowers/
+
+# Independently built Solana SDK assets
+/public/gmsol-sdk/

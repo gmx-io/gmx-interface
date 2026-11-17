@@ -132,6 +132,7 @@ describe("externalSwapSelectors", () => {
         isLeverageSliderEnabled: true,
       },
       subaccountState: { subaccount: undefined },
+      tokenPermitsState: { tokenPermits: [] },
       features: { relayRouterEnabled: false, subaccountRelayRouterEnabled: false },
     };
 
@@ -309,13 +310,12 @@ describe("externalSwapSelectors", () => {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
         },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
-        },
       });
 
       expect(selectExternalSwapDesirability(state)).toBe("required");
       expect(selectIsExternalSwapDisabledByExpressSchema(state)).toBe(true);
+      // a quote stored before the conflict appeared is not used
+      expect(selectExternalSwapQuote(state)).toBeUndefined();
     });
   });
 
@@ -373,9 +373,17 @@ describe("externalSwapSelectors", () => {
   });
 
   describe("selectShouldRequestExternalSwapQuote — gates", () => {
-    it("returns false when tradeMode is Limit", () => {
+    it("returns true for limit increase", () => {
       const state = createMockState({
         tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
+      });
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      expect(selectShouldRequestExternalSwapQuote(state)).toBe(true);
+    });
+
+    it("returns false for limit swap", () => {
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
       });
       mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
       expect(selectShouldRequestExternalSwapQuote(state)).toBe(false);
@@ -390,7 +398,7 @@ describe("externalSwapSelectors", () => {
     });
 
     // NOTE: subaccount and express-schema gates require deeper state plumbing (subaccountState
-    // structure, features flags, sponsoredCallBalanceData) and createSelector-based selectors
+    // structure, features flags) and createSelector-based selectors
     // can't be cleanly mocked with vi.spyOn — they're exercised in higher-level integration tests.
   });
 
@@ -585,6 +593,16 @@ describe("externalSwapSelectors", () => {
       });
 
       expect(selectRawExternalSwapDesirability(state)).toBe("required");
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+    });
+
+    it("keeps the trade mode gate for limit swaps", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
+      });
+
       expect(selectExternalSwapDesirability(state)).toBe("not_wanted");
     });
   });
@@ -617,12 +635,22 @@ describe("externalSwapSelectors", () => {
       expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");
     });
 
-    it("returns orderTypeNotSupported for Limit even when the failure latch is set", () => {
+    it("does not block limit increase by order type even when the failure latch is set", () => {
       findSwapPathFn = vi.fn().mockReturnValue(undefined);
 
       const state = createMockState({
         tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
         externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
+      });
+
+      expect(selectExternalSwapBlockReason(state)).toBeUndefined();
+    });
+
+    it("returns orderTypeNotSupported for limit swaps", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeType: TradeType.Swap, tradeMode: TradeMode.Limit },
       });
 
       expect(selectExternalSwapBlockReason(state)).toBe("orderTypeNotSupported");
@@ -641,9 +669,6 @@ describe("externalSwapSelectors", () => {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
         },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
-        },
       });
 
       expect(selectExternalSwapBlockReason(state)).toBe("gasTokenConflict");
@@ -661,9 +686,6 @@ describe("externalSwapSelectors", () => {
         features: {
           relayRouterEnabled: true,
           subaccountRelayRouterEnabled: true,
-        },
-        sponsoredCallBalanceData: {
-          isSponsoredCallAllowed: true,
         },
         externalSwap: { ...defaultState.externalSwap, shouldFallbackToInternalSwap: true },
       });

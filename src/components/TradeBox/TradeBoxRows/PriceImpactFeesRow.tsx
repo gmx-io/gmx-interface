@@ -7,6 +7,8 @@ import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateCo
 import {
   selectTradeboxFees,
   selectTradeboxFeesPercentage,
+  selectTradeboxMarketInfo,
+  selectTradeboxSwapAmounts,
   selectTradeboxTradeFeesType,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -18,10 +20,9 @@ import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
@@ -33,26 +34,38 @@ export function PriceImpactFeesRow() {
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isTrigger, isSwap } = tradeFlags;
-  const tradingIncentives = useTradingIncentives(chainId);
+  const swapAmounts = useSelector(selectTradeboxSwapAmounts);
+  const isExternalSwap = isSwap && swapAmounts?.swapStrategy.type === "externalSwap";
+  const isGmsol = useSelector(selectTradeboxMarketInfo)?.tradeMath === "gmsol";
+  const evmTradingIncentives = useTradingIncentives(chainId);
+  const tradingIncentives = isGmsol ? null : evmTradingIncentives;
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
   const isMegaethPointsActive = useMegaethPointsActive();
 
   const megaethPointsSparkle = isMegaethPointsActive ? (
-    <TooltipWithPortal
+    <StandardTooltip
       variant="none"
-      maxAllowedWidth={350}
       handle={
         <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
           <img className="h-10" src={sparkleIcon} alt="" />
           <Trans>Earns MegaETH points</Trans>
         </span>
       }
-      content={<Trans>Points are allocated based on your cumulative trading volume on GMX MegaETH</Trans>}
+      content={t`Points are allocated based on your cumulative trading volume on GMX MegaETH`}
     />
   ) : null;
 
   const { formattedPriceImpactPercentage, isPriceImpactPositive } = useMemo(() => {
-    const priceImpactPercentage = isTrigger || isSwap ? getCappedPriceImpactPercentageFromFees({ fees, isSwap }) : 0n;
+    if (isExternalSwap) {
+      return { formattedPriceImpactPercentage: "-", isPriceImpactPositive: false };
+    }
+
+    const priceImpactPercentage =
+      isGmsol && !isSwap
+        ? fees?.positionNetPriceImpact?.precisePercentage
+        : isTrigger || isSwap
+          ? getCappedPriceImpactPercentageFromFees({ fees, isSwap })
+          : 0n;
     return {
       formattedPriceImpactPercentage:
         priceImpactPercentage === undefined
@@ -64,7 +77,7 @@ export function PriceImpactFeesRow() {
             }),
       isPriceImpactPositive: priceImpactPercentage !== undefined && priceImpactPercentage > 0,
     };
-  }, [fees, isTrigger, isSwap]);
+  }, [fees, isTrigger, isSwap, isExternalSwap, isGmsol]);
 
   const rebateIsApplicable =
     fees?.positionFee?.deltaUsd !== undefined && fees.positionFee.deltaUsd <= 0 && feesType !== "swap";
@@ -81,7 +94,7 @@ export function PriceImpactFeesRow() {
 
     if (feesType !== "swap") {
       let referralDiscountPercentageOfSize = 0n;
-      if (userReferralInfo) {
+      if (userReferralInfo && !isGmsol) {
         referralDiscountPercentageOfSize = bigMath.mulDiv(
           bigMath.mulDiv(feesPercentage, userReferralInfo.totalRebateFactor, PRECISION),
           userReferralInfo.discountFactor,
@@ -110,23 +123,24 @@ export function PriceImpactFeesRow() {
       }),
       isTotalFeePositive: adjustedFeesPercentage > 0,
     };
-  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage]);
+  }, [feesPercentage, feesType, userReferralInfo, rebateIsApplicable, estimatedRebatesPercentage, isGmsol]);
 
   if (isTrigger) {
     return (
       <div className="flex flex-col gap-4">
         <SyntheticsInfoRow
           label={
-            <Tooltip
+            <StandardTooltip
               handle={t`Net price impact / fees`}
               content={
-                <Trans>
-                  Net price impact and fees from your trade.{" "}
-                  <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
+                <TooltipContent>
+                  <TooltipText>
+                    <Trans>Net price impact and fees from your trade.</Trans>
+                  </TooltipText>
+                  <TooltipLink href={DOCS_LINKS.priceImpact}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
+                </TooltipContent>
               }
             />
           }
@@ -190,16 +204,21 @@ export function PriceImpactFeesRow() {
       <SyntheticsInfoRow
         label={
           <span>
-            <Tooltip
+            <StandardTooltip
               handle={t`Price impact`}
               content={
-                <Trans>
-                  No price impact on increases — orders execute at mark price.{" "}
-                  <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                    Read more
-                  </ExternalLink>
-                  .
-                </Trans>
+                <TooltipContent>
+                  <TooltipText>
+                    {isGmsol ? (
+                      <Trans>Price impact is included in the entry price.</Trans>
+                    ) : (
+                      <Trans>No price impact on increases — orders execute at mark price.</Trans>
+                    )}
+                  </TooltipText>
+                  <TooltipLink href={DOCS_LINKS.priceImpact}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
+                </TooltipContent>
               }
             />
             {" / "}
@@ -208,7 +227,7 @@ export function PriceImpactFeesRow() {
         }
         value={
           <>
-            <span>0.000%</span> /{" "}
+            <span className={cx({ "text-green-500": isPriceImpactPositive })}>{formattedPriceImpactPercentage}</span> /{" "}
             <span
               className={cx("numbers", {
                 "text-green-500": isTotalFeePositive,

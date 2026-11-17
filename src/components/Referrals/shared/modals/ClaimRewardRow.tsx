@@ -3,12 +3,14 @@ import { useCallback } from "react";
 
 import { getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import Checkbox from "components/Checkbox/Checkbox";
+import { UsdValue } from "components/NumericValue/UsdValue";
 import { TableTd } from "components/Table/Table";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 export function ClaimRewardRow({
   reward,
@@ -72,16 +74,15 @@ export function ClaimRewardRow({
       </TableTd>
 
       <TableTd className="!pr-0">
-        <TooltipWithPortal
-          className="ClaimModal-row-tooltip"
-          handle={formatUsd(rewardUsd)}
-          position="top-end"
+        <StandardTooltip
+          handle={<UsdValue usd={rewardUsd} />}
+          position="bottom-end"
           content={
-            <>
+            <TooltipRows>
               {claimableAmountsItems.map((item) => (
                 <div key={item}>{item}</div>
               ))}
-            </>
+            </TooltipRows>
           }
         />
       </TableTd>

@@ -1,9 +1,15 @@
-import { metrics } from "lib/metrics";
+import { reportStartupError } from "lib/metrics/startupErrors";
+import { getDocumentBuildId, UNKNOWN_BUILD_ID } from "lib/pwa/buildId";
+import {
+  clearRecoveryQueryParam,
+  getIsReloadingFromNetwork,
+  getRecoveryUrl,
+  reloadFromNetwork,
+} from "lib/pwa/recoveryNavigation";
+import { getSessionStorage } from "lib/pwa/sessionStorage";
 
 const RECOVERED_BUILD_KEY = "gmx-pwa-preload-error-recovered-build";
 const PENDING_ERROR_KEY = "gmx-pwa-preload-error-pending";
-const RECOVERY_QUERY_PARAM = "__gmx_pwa_recovery";
-const UNKNOWN_BUILD_ID = "unknown";
 
 type StoredPreloadError = {
   buildId: string;
@@ -19,10 +25,6 @@ type PreloadErrorRecoveryOptions = {
 
 type StoreRecoveryResult = "stored" | "already-recovered" | "storage-error";
 
-function getDocumentBuildId() {
-  return document.querySelector<HTMLMetaElement>('meta[name="gmx-pwa-build-id"]')?.content ?? UNKNOWN_BUILD_ID;
-}
-
 function getErrorMessage(error: unknown) {
   if (error instanceof Error) {
     return `${error.name}: ${error.message}`;
@@ -36,14 +38,6 @@ function getStoredError(storage: Storage) {
     const rawError = storage.getItem(PENDING_ERROR_KEY);
     storage.removeItem(PENDING_ERROR_KEY);
     return rawError ? (JSON.parse(rawError) as StoredPreloadError) : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-function getSessionStorage() {
-  try {
-    return window.sessionStorage;
   } catch {
     return undefined;
   }
@@ -72,31 +66,11 @@ function getRecoveryFailure(error: StoredPreloadError, reason: string) {
   return new Error(`Preload recovery skipped on build ${error.buildId} (${reason}): ${error.message}`);
 }
 
-function getRecoveryUrl(buildId: string) {
-  const url = new URL(window.location.href);
-  url.searchParams.set(RECOVERY_QUERY_PARAM, buildId);
-  return url.href;
-}
-
-function clearRecoveryQueryParam() {
-  try {
-    const url = new URL(window.location.href);
-    if (!url.searchParams.has(RECOVERY_QUERY_PARAM)) {
-      return;
-    }
-
-    url.searchParams.delete(RECOVERY_QUERY_PARAM);
-    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-  } catch {
-    // URL cleanup is best-effort.
-  }
-}
-
 export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOptions = {}) {
   const {
     isOnline = () => navigator.onLine,
-    reloadPage = (url) => window.location.replace(url),
-    reportError = (error) => metrics.pushError(error, "pwa.preloadError"),
+    reloadPage,
+    reportError = (error) => reportStartupError(error, "pwa.preloadError"),
   } = options;
   const storage = options.storage === undefined ? getSessionStorage() : options.storage;
 
@@ -108,8 +82,12 @@ export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOption
   }
 
   const handlePreloadError = (event: VitePreloadErrorEvent) => {
+    if (getIsReloadingFromNetwork()) {
+      return;
+    }
+
     const error = {
-      buildId: getDocumentBuildId(),
+      buildId: getDocumentBuildId() ?? UNKNOWN_BUILD_ID,
       message: getErrorMessage(event.payload),
     };
 
@@ -132,7 +110,11 @@ export function registerPreloadErrorRecovery(options: PreloadErrorRecoveryOption
     }
 
     event.preventDefault();
-    reloadPage(getRecoveryUrl(error.buildId));
+    if (reloadPage) {
+      reloadPage(getRecoveryUrl(error.buildId));
+    } else {
+      reloadFromNetwork(error.buildId);
+    }
   };
 
   window.addEventListener("vite:preloadError", handlePreloadError);

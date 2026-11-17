@@ -103,7 +103,7 @@ describe("multichain cross-chain deposit (Base → Arbitrum, API-driven)", () =>
   });
 });
 
-describe("multichain cross-chain withdraw (Arbitrum → Base, via Gelato)", () => {
+describe("multichain cross-chain withdraw (Arbitrum → Base, via GMX Relay)", () => {
   it("prepare: returns typed-data + gasPaymentParams", async () => {
     const bridgeOutParams = sdk.buildCrossChainWithdrawBridgeOutParams({
       tokenAddress: USDC_ARBITRUM,
@@ -123,7 +123,7 @@ describe("multichain cross-chain withdraw (Arbitrum → Base, via Gelato)", () =
     expect(prepared.payload.gasPaymentParams.relayerFeeAmount).toBeGreaterThan(0n);
   });
 
-  it.skipIf(!shouldSendOnChain())("execute: resolves to terminal Gelato status", async () => {
+  it.skipIf(!shouldSendOnChain())("execute: resolves to terminal relay status", async () => {
     const bridgeOutParams = sdk.buildCrossChainWithdrawBridgeOutParams({
       tokenAddress: USDC_ARBITRUM,
       amount: WITHDRAW_AMOUNT,

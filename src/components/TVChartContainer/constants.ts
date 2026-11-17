@@ -94,7 +94,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
 export const defaultChartProps = {
   theme: "dark",
   locale: "en",
-  library_path: import.meta.env.DEV ? "public/charting_library/" : "/charting_library/",
+  library_path: "/charting_library/",
   client_id: "tradingview.com",
   user_id: "public_user_id",
   fullscreen: false,
@@ -166,6 +166,7 @@ export function getOrderLineLabel(
     sizeData,
     showSizeInTokens,
     isPartial,
+    isMarginDeposit,
   }: {
     isLong: boolean;
     marketName: string;
@@ -173,11 +174,16 @@ export function getOrderLineLabel(
     sizeData?: ChartLineSizeData;
     showSizeInTokens: boolean;
     isPartial?: boolean;
+    isMarginDeposit?: boolean;
   }
 ) {
   const directionText = translate(isLong ? msg`Long` : msg`Short`);
   const orderTypeTitle = orderTypeToTitle[orderType];
   let orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+
+  if (isMarginDeposit) {
+    orderTitleText = translate(msg`Deposit margin`);
+  }
 
   if (isPartial) {
     if (orderType === OrderType.LimitDecrease) {

@@ -16,13 +16,12 @@ type Props = {
   status: TransactionStatusType;
   text: ReactNode;
   txnHash?: string;
-  txnLink?: string;
 };
 
-export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
+export function TransactionStatus({ status, text, txnHash }: Props) {
   const { chainId } = useChainId();
 
-  const _txnLink = txnLink ?? (txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined);
+  const txnLink = txnHash ? `${getExplorerUrl(chainId)}tx/${txnHash}` : undefined;
 
   return (
     <div className="text-body-small flex w-full items-center justify-between gap-8 py-2 text-14">
@@ -33,9 +32,9 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
         {status === "muted" && <div className="size-15 shrink-0" aria-hidden />}
         <div>{text}</div>
       </div>
-      {_txnLink && (
+      {txnLink && (
         <div className="flex flex-shrink-0 items-center justify-center">
-          <ExternalLink href={_txnLink}>
+          <ExternalLink href={txnLink}>
             <Trans>View</Trans>
           </ExternalLink>
         </div>

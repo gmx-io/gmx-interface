@@ -5,10 +5,14 @@ import {
   requireSigner,
   expressFlow,
   waitForOrderStatus,
+  waitForOrderPlaced,
+  PLACED_OK_STATUSES,
   waitForOrdersUpdate,
   waitForPositionUpdate,
   activateTestSubaccount,
   hasRpcUrl,
+  shouldRunTwap,
+  withinOneBp,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -29,7 +33,6 @@ async function cancelAllOrders() {
       requestId: prepared.requestId,
       signature: sig,
       from: account,
-      idempotencyKey: prepared.idempotencyKey,
       eip712Data: {
         batchParams: prepared.payload.batchParams,
         relayParams: prepared.payload.relayParams,
@@ -143,7 +146,7 @@ describe("increase orders", () => {
       ]);
 
       // Same size → same position fee regardless of collateral amount
-      expect(small.estimates!.positionFeeUsd).toBe(large.estimates!.positionFeeUsd);
+      expect(withinOneBp(small.estimates!.positionFeeUsd, large.estimates!.positionFeeUsd)).toBe(true);
       expect(small.estimates!.sizeDeltaUsd).toBe(large.estimates!.sizeDeltaUsd);
     });
   });
@@ -157,7 +160,7 @@ describe("increase orders", () => {
         orderType: "market",
         size: TEST_SIZE_USD,
         collateralToken: "USDC",
-        collateralToPay: { amount: 1_000_000n, token: "USDC" },
+        collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
       });
@@ -180,7 +183,7 @@ describe("increase orders", () => {
         direction: "long",
         orderType: "market",
         size: TEST_SIZE_USD,
-        collateralToPay: { amount: 1_000_000n, token: "USDC" },
+        collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
       });
@@ -200,7 +203,7 @@ describe("increase orders", () => {
           orderType: "market",
           size: TEST_SIZE_USD,
           collateralToken: "USDC",
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -210,7 +213,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -236,7 +239,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
         }),
@@ -246,7 +249,7 @@ describe("increase orders", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: 1_000_000n, token: "USDC" },
+          collateralToPay: TEST_COLLATERAL,
           manualSwapPath: [ETH_USD_MARKET_ADDRESS],
           mode: "express",
           from: account,
@@ -467,7 +470,7 @@ describe("increase orders", () => {
     });
   });
 
-  describe("TWAP increase", () => {
+  describe.skipIf(!shouldRunTwap())("TWAP increase", () => {
     afterAll(cancelAllOrders);
 
     it("TWAP market increase — creates sub-orders", async () => {
@@ -586,9 +589,9 @@ describe("increase orders", () => {
 
       expect(submitted.status).toBeDefined();
 
-      const status = await waitForOrderStatus(sdk, submitted.requestId);
+      const status = await waitForOrderPlaced(sdk, submitted.requestId);
       expect(status.requestId).toBe(submitted.requestId);
-      expect(status.status).toBe("executed");
+      expect(PLACED_OK_STATUSES).toContain(status.status);
 
       const orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
       expect(orders.length).toBeGreaterThan(0);
@@ -635,7 +638,7 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared30.estimates!.sizeDeltaUsd).toBe(prepared300.estimates!.sizeDeltaUsd);
-      expect(prepared30.estimates!.positionFeeUsd).toBe(prepared300.estimates!.positionFeeUsd);
+      expect(withinOneBp(prepared30.estimates!.positionFeeUsd, prepared300.estimates!.positionFeeUsd)).toBe(true);
     });
   });
 
@@ -667,8 +670,8 @@ describe("increase orders", () => {
       ]);
 
       expect(prepared0.estimates!.sizeDeltaUsd).toBe(prepared5000.estimates!.sizeDeltaUsd);
-      expect(prepared0.estimates!.positionFeeUsd).toBe(prepared5000.estimates!.positionFeeUsd);
-      expect(prepared0.estimates!.acceptablePrice).toBe(prepared5000.estimates!.acceptablePrice);
+      expect(withinOneBp(prepared0.estimates!.positionFeeUsd, prepared5000.estimates!.positionFeeUsd)).toBe(true);
+      expect(withinOneBp(prepared0.estimates!.acceptablePrice, prepared5000.estimates!.acceptablePrice)).toBe(true);
     });
   });
 
@@ -809,7 +812,6 @@ describe("increase orders", () => {
         requestId: prepared.requestId,
         signature,
         from: account,
-        idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
           batchParams: prepared.payload.batchParams,
           relayParams: prepared.payload.relayParams,

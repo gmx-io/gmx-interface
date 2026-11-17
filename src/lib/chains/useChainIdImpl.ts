@@ -15,6 +15,7 @@ import {
   SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
 } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { useLatestValueRef } from "lib/useLatestValueRef";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
@@ -123,6 +124,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    * Guaranteed to be related to the settlement chain in `chainId`
    */
   srcChainId?: SourceChainId;
+  isSolanaNetworkSelected?: boolean;
 } {
   const { chainId: connectedChainId, isConnected } = useAccount();
   const [, rerenderOnNetworkChange] = useReducer((value: number) => value + 1, 0);
@@ -212,6 +214,12 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
       }),
     [settlementChainIdRef]
   );
+
+  const isSolanaNetworkSelected = getIsSolanaNetworkSelected();
+
+  if (isSolanaNetworkSelected) {
+    return { chainId: INITIAL_CHAIN_ID, isSolanaNetworkSelected };
+  }
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {

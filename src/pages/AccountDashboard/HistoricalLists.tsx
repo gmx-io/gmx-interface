@@ -17,6 +17,7 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import { ClaimsHistory } from "components/Claims/ClaimsHistory";
 import { OrderList } from "components/OrderList/OrderList";
+import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
@@ -169,6 +170,8 @@ export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange
         <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} hideDashboardLink />
       )}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
+      {/* order risk tooltips here open Edit margin */}
+      <PositionEditor />
     </div>
   );
 }

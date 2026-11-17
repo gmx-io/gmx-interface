@@ -60,6 +60,15 @@ export const GLV_MARKETS: {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // GLV [USDG-USDG]
+    "0x4Cd5A94a30876320ac65F2e192493EE476f13866": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+      glvTokenAddress: "0x4Cd5A94a30876320ac65F2e192493EE476f13866",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   },
   [AVALANCHE]: {
     // GLV [WAVAX-USDC]

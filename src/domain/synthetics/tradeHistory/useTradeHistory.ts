@@ -11,8 +11,8 @@ import { OrderType } from "domain/synthetics/orders";
 import { definedOrThrow } from "lib/guards";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
-import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
+import { Query as SubsquidQuery, TradeAction as SubsquidTradeAction } from "sdk/codegen/subsquid";
+import { GraphQlFilters, buildFiltersBody, queryPaginated } from "sdk/utils/indexers";
 import { TradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
@@ -33,6 +33,67 @@ export type RawTradeActionsResult = {
   tradeActions: SubsquidTradeAction[];
   totalCount?: number;
 };
+
+export const TRADE_ACTION_FIELDS = `
+    id
+    eventName
+
+    srcChainId
+    account
+    marketAddress
+    swapPath
+    initialCollateralTokenAddress
+    positionKey
+    positionLifecycleId
+    positionSizeInUsd
+    positionSizeInTokens
+
+    initialCollateralDeltaAmount
+    sizeDeltaUsd
+    sizeDeltaInTokens
+    triggerPrice
+    contractTriggerPrice
+    acceptablePrice
+    executionPrice
+    minOutputAmount
+    executionAmountOut
+
+    swapImpactUsd
+    collateralTotalCostAmount
+    priceImpactUsd
+    priceImpactDiffUsd
+    positionFeeAmount
+    traderDiscountAmount
+    borrowingFeeAmount
+    fundingFeeAmount
+    swapFeeUsd
+    uiFeeFactor
+    liquidationFeeAmount
+    minCollateralFactorForLiquidation
+    pnlUsd
+    basePnlUsd
+
+    collateralTokenPriceMax
+    collateralTokenPriceMin
+
+    indexTokenPriceMin
+    indexTokenPriceMax
+
+    orderType
+    orderKey
+    isLong
+    shouldUnwrapNativeToken
+    twapGroupId
+    numberOfParts
+    totalImpactUsd
+    proportionalPendingImpactUsd
+    decreasePositionSwapType
+
+    reason
+    reasonBytes
+    timestamp
+    transactionHash
+`;
 
 export function useTradeHistory(
   chainId: number,
@@ -168,7 +229,10 @@ export async function fetchRawTradeActions({
   toTxTimestamp,
   orderEventCombinations,
   positionLifecycleId,
+  orderKeys,
+  transactionHashes,
   showDebugValues,
+  abortSignal,
 }: {
   chainId: number;
   pageIndex: number;
@@ -188,7 +252,10 @@ export async function fetchRawTradeActions({
       }[]
     | undefined;
   positionLifecycleId?: string;
+  orderKeys?: string[];
+  transactionHashes?: string[];
   showDebugValues?: boolean;
+  abortSignal?: AbortSignal;
 }): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
@@ -231,6 +298,10 @@ export async function fetchRawTradeActions({
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
         positionLifecycleId_eq: positionLifecycleId,
+        orderKey_in: orderKeys,
+        transactionHash_in: transactionHashes,
+        // Settle executions are indexed as zero-size decreases; they belong to the Claims tab, not here.
+        isFundingFeeSettle_eq: false,
       },
       {
         OR: !hasPureDirectionFilters
@@ -353,66 +424,15 @@ export async function fetchRawTradeActions({
             orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
-            id
-            eventName
-
-            srcChainId
-            account
-            marketAddress
-            swapPath
-            initialCollateralTokenAddress
-            positionKey
-            positionLifecycleId
-            positionSizeInUsd
-            positionSizeInTokens
-
-            initialCollateralDeltaAmount
-            sizeDeltaUsd
-            sizeDeltaInTokens
-            triggerPrice
-            acceptablePrice
-            executionPrice
-            minOutputAmount
-            executionAmountOut
-
-            swapImpactUsd
-            collateralTotalCostAmount
-            priceImpactUsd
-            priceImpactDiffUsd
-            positionFeeAmount
-            traderDiscountAmount
-            borrowingFeeAmount
-            fundingFeeAmount
-            swapFeeUsd
-            liquidationFeeAmount
-            minCollateralFactorForLiquidation
-            pnlUsd
-            basePnlUsd
-
-            collateralTokenPriceMax
-            collateralTokenPriceMin
-
-            indexTokenPriceMin
-            indexTokenPriceMax
-
-            orderType
-            orderKey
-            isLong
-            shouldUnwrapNativeToken
-            twapGroupId
-            numberOfParts
-            totalImpactUsd
-            proportionalPendingImpactUsd
-            decreasePositionSwapType
-
-            reason
-            reasonBytes
-            timestamp
-            transactionHash
+            ${TRADE_ACTION_FIELDS}
         }
       }`);
 
-  const result = await client!.query({ query, fetchPolicy: "no-cache" });
+  const result = await client!.query({
+    query,
+    fetchPolicy: "no-cache",
+    context: abortSignal ? { fetchOptions: { signal: abortSignal } } : undefined,
+  });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
   const totalCount = result.data?.tradeActionsConnection?.totalCount;
@@ -423,13 +443,75 @@ export async function fetchRawTradeActions({
   };
 }
 
-// Resolves a position slot's lifecycle id from its latest indexed action.
+const TWAP_GROUP_IDS_PER_REQUEST = 100;
+
+export type TwapPartTradeAction = Pick<SubsquidTradeAction, "id" | "eventName" | "timestamp" | "twapGroupId">;
+
+// Fetches every executed action of the given TWAP groups, so part numbers can be derived from
+// the complete group instead of the actions that happen to fall inside an export window.
+// The account filter is required: twapGroupId alone has no index and scans the whole table.
+export async function fetchTwapGroupExecutedActions({
+  chainId,
+  account,
+  twapGroupIds,
+  abortSignal,
+}: {
+  chainId: number;
+  account: string;
+  twapGroupIds: string[];
+  abortSignal?: AbortSignal;
+}): Promise<TwapPartTradeAction[]> {
+  const client = getSubsquidGraphClient(chainId);
+  definedOrThrow(client);
+
+  const actions: TwapPartTradeAction[] = [];
+
+  for (let chunkStart = 0; chunkStart < twapGroupIds.length; chunkStart += TWAP_GROUP_IDS_PER_REQUEST) {
+    const chunk = twapGroupIds.slice(chunkStart, chunkStart + TWAP_GROUP_IDS_PER_REQUEST);
+    const filtersStr = buildFiltersBody({
+      account_eq: account,
+      twapGroupId_in: chunk,
+      eventName_eq: TradeActionType.OrderExecuted,
+    });
+
+    const chunkActions = await queryPaginated<TwapPartTradeAction>(async (limit, offset) => {
+      const query = gql(`{
+        tradeActions(
+            offset: ${offset},
+            limit: ${limit},
+            orderBy: [timestamp_ASC, id_ASC],
+            where: ${filtersStr}
+        ) {
+            id
+            eventName
+            timestamp
+            twapGroupId
+        }
+      }`);
+
+      const result = await client.query({
+        query,
+        fetchPolicy: "no-cache",
+        context: abortSignal ? { fetchOptions: { signal: abortSignal } } : undefined,
+      });
+      return (result.data?.tradeActions ?? []) as TwapPartTradeAction[];
+    });
+
+    actions.push(...chunkActions);
+  }
+
+  return actions;
+}
+
+// Unexecuted increases can have their own lifecycle id, so use the position slot's open lifecycle.
 export async function fetchPositionLifecycleId({
   chainId,
   positionKey,
+  increasedAtTime,
 }: {
   chainId: number;
   positionKey: string;
+  increasedAtTime: bigint;
 }): Promise<string | undefined> {
   const client = getSubsquidGraphClient(chainId);
 
@@ -437,14 +519,30 @@ export async function fetchPositionLifecycleId({
     return undefined;
   }
 
-  const query = gql(`{
-        tradeActions(limit: 1, orderBy: [timestamp_DESC, id_DESC], where: { positionKey_eq: "${positionKey}" }) {
-            positionLifecycleId
-        }
-      }`);
+  const query = gql`
+    query PositionLifecycle($positionKey: String!, $chainId: String!) {
+      positionLifecycleById(id: $positionKey) {
+        currentLifecycleId
+        isOpen
+      }
+      processorStatusById(id: $chainId) {
+        lastParsedBlockTimestamp
+      }
+    }
+  `;
 
-  const result = await client.query({ query, fetchPolicy: "no-cache" });
-  const latestAction = ((result.data?.tradeActions ?? []) as SubsquidTradeAction[])[0];
+  const result = await client.query<Pick<SubsquidQuery, "positionLifecycleById" | "processorStatusById">>({
+    query,
+    variables: { positionKey, chainId: String(chainId) },
+    fetchPolicy: "no-cache",
+  });
+  const lifecycle = result.data?.positionLifecycleById;
+  const processorStatus = result.data?.processorStatusById;
 
-  return latestAction?.positionLifecycleId ?? undefined;
+  // A stale open lifecycle may belong to the position before a close and reopen.
+  if (!processorStatus || processorStatus.lastParsedBlockTimestamp < increasedAtTime) {
+    return undefined;
+  }
+
+  return lifecycle?.isOpen ? lifecycle.currentLifecycleId ?? undefined : undefined;
 }

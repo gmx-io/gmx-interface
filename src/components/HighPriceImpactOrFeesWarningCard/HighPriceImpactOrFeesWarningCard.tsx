@@ -4,11 +4,12 @@ import { type ReactNode, useMemo } from "react";
 import { DOCS_LINKS } from "config/links";
 import { FeeItem } from "domain/synthetics/fees";
 import { WarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { formatPercentage, formatUsd } from "lib/numbers";
+import { formatPercentage } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
-import ExternalLink from "components/ExternalLink/ExternalLink";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { UsdValue } from "components/NumericValue/UsdValue";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export type Props = {
   priceImpactWarningState: WarningState;
@@ -46,11 +47,17 @@ export function HighPriceImpactOrFeesWarningCard({
         key: t`High net price impact`,
         value: undefined,
         tooltipContent: formattedCap ? (
-          <Trans>
-            High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
-            collateral. Consider reducing leverage. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>
-            .
-          </Trans>
+          <TooltipContent>
+            <TooltipText>
+              <Trans>
+                High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
+                collateral. Consider reducing leverage.
+              </Trans>
+            </TooltipText>
+            <TooltipLink href={DOCS_LINKS.priceImpact}>
+              <Trans>Read more</Trans>
+            </TooltipLink>
+          </TooltipContent>
         ) : undefined,
       });
     }
@@ -59,7 +66,7 @@ export function HighPriceImpactOrFeesWarningCard({
       warnings.push({
         id: "high-network-fees",
         key: t`High network fees`,
-        value: formatUsd(executionFeeUsd),
+        value: <UsdValue usd={executionFeeUsd} />,
       });
     }
 
@@ -67,7 +74,7 @@ export function HighPriceImpactOrFeesWarningCard({
       warnings.push({
         id: "high-twap-network-fee",
         key: t`High TWAP network fee`,
-        value: formatUsd(executionFeeUsd),
+        value: <UsdValue usd={executionFeeUsd} />,
       });
     }
 
@@ -75,7 +82,7 @@ export function HighPriceImpactOrFeesWarningCard({
       warnings.push({
         id: "high-swap-price-impact",
         key: t`High swap price impact`,
-        value: formatUsd(swapPriceImpact?.deltaUsd),
+        value: <UsdValue usd={swapPriceImpact?.deltaUsd} />,
       });
     }
 
@@ -84,7 +91,7 @@ export function HighPriceImpactOrFeesWarningCard({
         id: "high-swap-profit-fee",
         ...(swapProfitFeeWarning
           ? { content: swapProfitFeeWarning }
-          : { key: t`High swap profit fee`, value: formatUsd(swapProfitFee?.deltaUsd) }),
+          : { key: t`High swap profit fee`, value: <UsdValue usd={swapProfitFee?.deltaUsd} /> }),
       });
     }
 
@@ -99,7 +106,7 @@ export function HighPriceImpactOrFeesWarningCard({
       warnings.push({
         id: "high-external-swap-fee",
         key: t`High external swap impact`,
-        value: formatUsd(externalSwapFeeItem.deltaUsd),
+        value: <UsdValue usd={externalSwapFeeItem.deltaUsd} />,
       });
     }
     return warnings;
@@ -131,7 +138,12 @@ export function HighPriceImpactOrFeesWarningCard({
           );
 
           return warning.tooltipContent ? (
-            <TooltipWithPortal handle={warningContent} content={warning.tooltipContent} position="bottom" />
+            <StandardTooltip
+              key={warning.id}
+              handle={warningContent}
+              content={warning.tooltipContent}
+              position="bottom"
+            />
           ) : (
             warningContent
           );

@@ -45,6 +45,7 @@ import {
   RawCreateGlvWithdrawalParams,
   RawCreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
+import type { ERC20Address } from "domain/tokens";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getTokenAddressByMarket } from "sdk/configs/markets";
@@ -93,6 +94,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
 
   const amounts = q(selectDepositWithdrawalAmounts);
+  const depositSwapPathStats = isDeposit ? amounts?.shortTokenSwapPathStats : undefined;
+  const depositSwapTokenInAddress = depositSwapPathStats?.tokenInAddress as ERC20Address | undefined;
+  const depositSwapPath = depositSwapPathStats?.swapPath ?? [];
   const withdrawalReceiveTokenAddress = q(selectPoolsDetailsWithdrawalReceiveTokenAddress);
 
   /**
@@ -158,6 +162,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
+    const initialShortToken =
+      depositSwapTokenInAddress ?? getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "short");
+
     return {
       addresses: {
         receiver: account,
@@ -165,9 +172,9 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         market: marketOrGlvTokenAddress,
         initialLongToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "long"),
-        initialShortToken: getTokenAddressByMarket(chainId, marketOrGlvTokenAddress, "short"),
+        initialShortToken,
         longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        shortTokenSwapPath: depositSwapPath,
       },
       minMarketTokens,
       shouldUnwrapNativeToken,
@@ -180,7 +187,15 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   //#region GLV Deposit
   if (isDeposit && isGlv) {
     // Raw GLV Deposit Params
-    if (!glvTokenAddress || !selectedMarketForGlv || marketOrGlvTokenAmount === undefined) {
+    // selectedMarketForGlv is shared with the Sell tab, so a GM-paid buy must name the GM it actually moves
+    const depositMarketAddress = isMarketTokenDeposit ? firstTokenAddress : selectedMarketForGlv;
+
+    if (
+      !glvTokenAddress ||
+      !depositMarketAddress ||
+      !glvInfo!.markets.some((market) => market.address === depositMarketAddress) ||
+      marketOrGlvTokenAmount === undefined
+    ) {
       return undefined;
     }
 
@@ -219,21 +234,22 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
     }
 
+    const marketShortToken = getTokenAddressByMarket(chainId, depositMarketAddress, "short");
+    const initialShortToken = isMarketTokenDeposit ? zeroAddress : depositSwapTokenInAddress ?? marketShortToken;
+
     return {
       addresses: {
         glv: glvInfo!.glvTokenAddress,
-        market: selectedMarketForGlv,
+        market: depositMarketAddress,
         receiver: glvInfo!.glvToken.totalSupply === 0n ? numberToHex(1, { size: 20 }) : account,
         callbackContract: zeroAddress,
         uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT ?? zeroAddress,
         initialLongToken: isMarketTokenDeposit
           ? zeroAddress
-          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "long"),
-        initialShortToken: isMarketTokenDeposit
-          ? zeroAddress
-          : getTokenAddressByMarket(chainId, selectedMarketForGlv, "short"),
+          : getTokenAddressByMarket(chainId, depositMarketAddress, "long"),
+        initialShortToken,
         longTokenSwapPath: [],
-        shortTokenSwapPath: [],
+        shortTokenSwapPath: depositSwapPath,
       },
       minGlvTokens,
       callbackGasLimit: 0n,

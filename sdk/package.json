@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.6.4",
+  "version": "2.9.3",
   "type": "module",
   "repository": {
     "type": "git",
@@ -38,6 +38,9 @@
       ],
       "types/markets": [
         "./build/types/src/utils/markets/types.d.ts"
+      ],
+      "utils/stream": [
+        "./build/types/src/utils/stream/index.d.ts"
       ],
       "utils/prices": [
         "./build/types/src/utils/prices/index.d.ts"
@@ -147,9 +150,6 @@
       "utils/common": [
         "./build/types/src/utils/common/index.d.ts"
       ],
-      "utils/gelatoRelay": [
-        "./build/types/src/utils/gelatoRelay/index.d.ts"
-      ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
       ],
@@ -158,6 +158,12 @@
       ],
       "utils/gas/*": [
         "./build/types/src/utils/gas/*.d.ts"
+      ],
+      "utils/twap/uiFeeReceiver": [
+        "./build/types/src/utils/twap/uiFeeReceiver.d.ts"
+      ],
+      "utils/gmsol": [
+        "./build/types/src/utils/gmsol/index.d.ts"
       ]
     }
   },
@@ -215,6 +221,12 @@
       "import": "./build/esm/src/utils/markets/index.js",
       "require": "./build/cjs/src/utils/markets/index.js",
       "default": "./build/cjs/src/utils/markets/index.js"
+    },
+    "./utils/stream": {
+      "types": "./build/types/src/utils/stream/index.d.ts",
+      "import": "./build/esm/src/utils/stream/index.js",
+      "require": "./build/cjs/src/utils/stream/index.js",
+      "default": "./build/cjs/src/utils/stream/index.js"
     },
     "./types/markets": {
       "types": "./build/types/src/utils/markets/types.d.ts",
@@ -438,12 +450,6 @@
       "require": "./build/cjs/src/utils/common/index.js",
       "default": "./build/cjs/src/utils/common/index.js"
     },
-    "./utils/gelatoRelay": {
-      "types": "./build/types/src/utils/gelatoRelay/index.d.ts",
-      "import": "./build/esm/src/utils/gelatoRelay/index.js",
-      "require": "./build/cjs/src/utils/gelatoRelay/index.js",
-      "default": "./build/cjs/src/utils/gelatoRelay/index.js"
-    },
     "./utils/types": {
       "types": "./build/types/src/utils/types/index.d.ts",
       "import": "./build/esm/src/utils/types/index.js",
@@ -497,6 +503,18 @@
       "import": "./build/esm/src/utils/gas/*.js",
       "require": "./build/cjs/src/utils/gas/*.js",
       "default": "./build/cjs/src/utils/gas/*.js"
+    },
+    "./utils/twap/uiFeeReceiver": {
+      "types": "./build/types/src/utils/twap/uiFeeReceiver.d.ts",
+      "import": "./build/esm/src/utils/twap/uiFeeReceiver.js",
+      "require": "./build/cjs/src/utils/twap/uiFeeReceiver.js",
+      "default": "./build/cjs/src/utils/twap/uiFeeReceiver.js"
+    },
+    "./utils/gmsol": {
+      "types": "./build/types/src/utils/gmsol/index.d.ts",
+      "import": "./build/esm/src/utils/gmsol/index.js",
+      "require": "./build/cjs/src/utils/gmsol/index.js",
+      "default": "./build/cjs/src/utils/gmsol/index.js"
     }
   },
   "scripts": {
@@ -530,17 +548,18 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@gelatocloud/gasless": "0.0.10",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",
     "isomorphic-performance": "5.1.1",
+    "isomorphic-ws": "^5.0.0",
     "lodash": "4.18.1",
     "query-string": "7.1.1",
     "typescript": "5.4.2",
     "universal-perf-hooks": "1.0.1",
-    "viem": "^2.48.11"
+    "viem": "^2.48.11",
+    "ws": "8.22.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-private-property-in-object": "7.25.9",
@@ -550,13 +569,14 @@
     "@graphql-codegen/typescript-operations": "4.6.1",
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
+    "@types/ws": "^8.5.10",
     "lint-staged": "12.3.4",
     "prettier": "3.2.5",
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
     "viem": "2.48.11",
-    "vitest": "3.2.6"
+    "vitest": "4.1.11"
   },
   "files": [
     "build"
@@ -566,6 +586,6 @@
     "ox@0.14.20": "patch:ox@npm:0.14.29#../.yarn/patches/ox-npm-0.14.29-gmx-types",
     "viem@2.48.11": "patch:viem@npm:2.48.11#../.yarn/patches/viem-npm-2.48.11-gmx-hex-types",
     "lodash": "4.18.1",
-    "@vitest/pretty-format": "3.2.6"
+    "@vitest/pretty-format": "4.1.11"
   }
 }

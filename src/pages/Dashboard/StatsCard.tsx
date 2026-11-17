@@ -3,20 +3,24 @@ import { useMemo } from "react";
 
 import { ARBITRUM, AVALANCHE, MEGAETH, ContractsChainIdProduction } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { useTotalVolume, useV1FeesInfo } from "domain/stats";
+import {
+  getProtocolStatsNetworkFreshness,
+  useProtocolStatsSummary,
+} from "domain/protocolStats/useProtocolStatsSummary";
+import { parseProtocolStatsUsd } from "domain/protocolStats/utils";
+import { V1_TOTAL_FEES_USD, V1_UNIQUE_USERS, useTotalVolume } from "domain/stats";
 import { useTreasuryAllChains } from "domain/stats/treasury/useTreasuryAllChains";
-import useUniqueUsers from "domain/stats/useUniqueUsers";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
-import { formatAmountHuman } from "lib/numbers";
-import { sumBigInts } from "lib/sumBigInts";
+import { sumKnownBigInts } from "lib/sumBigInts";
 import { MARKETS } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
-import ChainsStatsTooltipRow from "components/StatsTooltip/ChainsStatsTooltipRow";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipComponent from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
+import ChainsStatsTooltip from "components/StatsTooltip/ChainsStatsTooltip";
+import { getStaleEntries } from "components/StatsTooltip/summarizeChainsStats";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 const chains: ContractsChainIdProduction[] = [ARBITRUM, AVALANCHE, MEGAETH];
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
@@ -30,24 +34,29 @@ const gmGmxTokenAddresses = chains.map((chain) =>
 );
 const gmxGmAndTokensAddresses = [...gmxTokenAddresses, ...gmGmxTokenAddresses];
 
+const SOLANA_ENTRY = "Solana";
+
 export function StatsCard() {
   const v1TotalVolume = useTotalVolume();
 
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2MegaethOverview = useV2Stats(MEGAETH);
+  const gmtradeSummary = useProtocolStatsSummary({ networks: ["solana"] });
+  const gmtradeStats = gmtradeSummary.data?.byNetwork.solana;
+  const gmtradeFreshness = getProtocolStatsNetworkFreshness(gmtradeSummary, "solana");
+  const gmtradeStaleEntries = getStaleEntries([gmtradeFreshness, SOLANA_ENTRY]);
+  const gmtradeTotalFees = parseProtocolStatsUsd(gmtradeStats?.fees.total);
+  const gmtradeTotalVolume = parseProtocolStatsUsd(gmtradeStats?.volume.total);
+  // users.all counts a wallet on its first action of any kind, the same basis as the V2 totalUsers entries
+  const gmtradeUsers = gmtradeStats?.users.all ?? undefined;
 
-  const uniqueUsers = useUniqueUsers();
-
-  const v1ArbitrumTotalFees = useV1FeesInfo(ARBITRUM);
-  const v1AvalancheTotalFees = useV1FeesInfo(AVALANCHE);
-  const totalFeesUsd = sumBigInts(
-    v1ArbitrumTotalFees?.totalFees,
-    v1AvalancheTotalFees?.totalFees,
-    v2ArbitrumOverview.totalFees,
-    v2AvalancheOverview.totalFees,
-    v2MegaethOverview.totalFees
+  const totalVolumeStaleEntries = getStaleEntries(
+    [v1TotalVolume.freshness, "Arbitrum", "Avalanche"],
+    [gmtradeFreshness, SOLANA_ENTRY]
   );
+  // v1 users and fees are frozen constants (domain/stats/v1Totals), so only Solana can be stale here
+  const uniqueUsersStaleEntries = gmtradeStaleEntries;
 
   // #endregion Fees
 
@@ -70,41 +79,38 @@ export function StatsCard() {
 
   const totalFeesEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalFees,
-      "V2 Avalanche": v2AvalancheOverview?.totalFees,
-      "V2 MegaETH": v2MegaethOverview?.totalFees,
-      "V1 Arbitrum": v1ArbitrumTotalFees?.totalFees,
-      "V1 Avalanche": v1AvalancheTotalFees?.totalFees,
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalFees, V1_TOTAL_FEES_USD[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalFees, V1_TOTAL_FEES_USD[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalFees,
+      [SOLANA_ENTRY]: gmtradeTotalFees,
     }),
-    [
-      v1AvalancheTotalFees?.totalFees,
-      v1ArbitrumTotalFees?.totalFees,
-      v2ArbitrumOverview?.totalFees,
-      v2AvalancheOverview?.totalFees,
-      v2MegaethOverview?.totalFees,
-    ]
+    [v2ArbitrumOverview?.totalFees, v2AvalancheOverview?.totalFees, v2MegaethOverview?.totalFees, gmtradeTotalFees]
   );
 
   const totalVolumeEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
-      "V2 Avalanche": v2AvalancheOverview?.totalVolume,
-      "V2 MegaETH": v2MegaethOverview?.totalVolume,
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalVolume, v1TotalVolume.data?.[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalVolume, v1TotalVolume.data?.[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalVolume,
+      [SOLANA_ENTRY]: gmtradeTotalVolume,
     }),
-    [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2MegaethOverview?.totalVolume]
+    [
+      v1TotalVolume.data,
+      v2ArbitrumOverview?.totalVolume,
+      v2AvalancheOverview?.totalVolume,
+      v2MegaethOverview?.totalVolume,
+      gmtradeTotalVolume,
+    ]
   );
 
   const uniqueUsersEntries = useMemo(
     () => ({
-      "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
-      "V2 Avalanche": v2AvalancheOverview?.totalUsers,
-      "V2 MegaETH": v2MegaethOverview?.totalUsers,
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+      Arbitrum: sumKnownBigInts(v2ArbitrumOverview?.totalUsers, V1_UNIQUE_USERS[ARBITRUM]),
+      Avalanche: sumKnownBigInts(v2AvalancheOverview?.totalUsers, V1_UNIQUE_USERS[AVALANCHE]),
+      MegaETH: v2MegaethOverview?.totalUsers,
+      [SOLANA_ENTRY]: gmtradeUsers,
     }),
-    [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
+    [gmtradeUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2MegaethOverview?.totalUsers]
   );
 
   return (
@@ -118,13 +124,7 @@ export function StatsCard() {
             <Trans>Fees</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(totalFeesUsd, USD_DECIMALS, true, 2)}
-              handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalFeesEntries} />}
-            />
+            <ChainsStatsTooltip entries={totalFeesEntries} staleEntries={gmtradeStaleEntries} />
           </div>
         </div>
         <div className="App-card-row">
@@ -132,25 +132,7 @@ export function StatsCard() {
             <Trans>Volume</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(
-                sumBigInts(
-                  v1TotalVolume?.[ARBITRUM],
-                  v1TotalVolume?.[AVALANCHE],
-                  v1TotalVolume?.[MEGAETH],
-                  v2ArbitrumOverview?.totalVolume,
-                  v2AvalancheOverview?.totalVolume,
-                  v2MegaethOverview?.totalVolume
-                ),
-                USD_DECIMALS,
-                true,
-                2
-              )}
-              handleClassName="numbers"
-              content={<ChainsStatsTooltipRow entries={totalVolumeEntries} />}
-            />
+            <ChainsStatsTooltip entries={totalVolumeEntries} staleEntries={totalVolumeStaleEntries} />
           </div>
         </div>
         <div className="App-card-row">
@@ -158,26 +140,11 @@ export function StatsCard() {
             <Trans>Users</Trans>
           </div>
           <div>
-            <TooltipComponent
-              position="bottom-end"
-              className="whitespace-nowrap"
-              handle={formatAmountHuman(
-                sumBigInts(
-                  uniqueUsers?.[ARBITRUM],
-                  uniqueUsers?.[AVALANCHE],
-                  uniqueUsers?.[MEGAETH],
-                  v2ArbitrumOverview?.totalUsers,
-                  v2AvalancheOverview?.totalUsers,
-                  v2MegaethOverview?.totalUsers
-                ),
-                0,
-                false,
-                2
-              )}
-              handleClassName="numbers"
-              content={
-                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
-              }
+            <ChainsStatsTooltip
+              entries={uniqueUsersEntries}
+              staleEntries={uniqueUsersStaleEntries}
+              showDollar={false}
+              decimalsForConversion={0}
             />
           </div>
         </div>
@@ -186,21 +153,42 @@ export function StatsCard() {
             <Trans>Treasury</Trans>
           </div>
           <div>
-            <TooltipWithPortal
-              handle={formatAmountHuman(treasuryData?.totalUsd, USD_DECIMALS, true, 2)}
+            <StandardTooltip
+              handle={
+                <AmountHumanValue
+                  amount={treasuryData?.totalUsd}
+                  decimals={USD_DECIMALS}
+                  showDollar
+                  displayDecimals={2}
+                />
+              }
               handleClassName="numbers"
               position="bottom-end"
               content={
-                <div>
-                  <StatsTooltipRow
+                <TooltipRows>
+                  <TooltipRow
                     label={<Trans>In other tokens</Trans>}
-                    value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
+                    value={
+                      <AmountHumanValue
+                        amount={treasuryWithoutGmxUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
+                    }
                   />
-                  <StatsTooltipRow
+                  <TooltipRow
                     label={<Trans>In GMX</Trans>}
-                    value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
+                    value={
+                      <AmountHumanValue
+                        amount={gmxInTreasuryUsd}
+                        decimals={USD_DECIMALS}
+                        showDollar
+                        displayDecimals={2}
+                      />
+                    }
                   />
-                </div>
+                </TooltipRows>
               }
             />
           </div>

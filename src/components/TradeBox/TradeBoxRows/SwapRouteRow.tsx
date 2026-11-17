@@ -12,7 +12,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getExternalSwapAggregatorLabel } from "domain/synthetics/externalSwaps/utils";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipAction, TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 export function SwapRouteRow() {
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -50,24 +51,24 @@ export function SwapRouteRow() {
   return (
     <SyntheticsInfoRow label={t`Swap route`}>
       {swapStrategy.type === "internalSwap" && !isMarket ? (
-        <Tooltip
+        <StandardTooltip
           position="bottom-end"
           handle={value}
-          renderContent={() => <Trans>External routes are only used for market swaps.</Trans>}
+          renderContent={() => t`External routes are only used for Market Swaps`}
         />
       ) : isExternalRoutePausedByFailure ? (
-        <Tooltip
+        <StandardTooltip
           position="bottom-end"
           handle={value}
           renderContent={() => (
-            <Trans>
-              External routing is temporarily paused after a failed attempt.
-              <br />
-              <br />
-              <span onClick={handleRetryExternalSwap} className="Tradebox-handle">
-                Retry external route
-              </span>
-            </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>External routing is temporarily paused after a failed attempt.</Trans>
+              </TooltipText>
+              <TooltipAction onClick={handleRetryExternalSwap}>
+                <Trans>Retry external route</Trans>
+              </TooltipAction>
+            </TooltipContent>
           )}
         />
       ) : (

@@ -5,8 +5,10 @@ import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { isDevelopment } from "config/env";
+import { getNetworkFeatures } from "config/features";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -182,6 +184,8 @@ export function MenuSection({
   isCollapsed: boolean | undefined;
   onMenuItemClick?: () => void;
 }) {
+  const { networkId } = useChainId();
+  const showEvmPages = getNetworkFeatures(networkId).evmOnlyPages;
   const isMegaethPointsActive = useMegaethPointsActive();
 
   const withMegaethSparkle = (label: string) =>
@@ -277,10 +281,14 @@ export function MenuSection({
 
   return (
     <div className="flex flex-col">
-      <ul className="flex list-none flex-col px-0">{mainNavItems.map(renderNavItem)}</ul>
-      <ul className="mt-8 flex list-none flex-col border-t border-slate-800 px-0 pt-8">
-        {dashboardNavItems.map(renderNavItem)}
+      <ul className="flex list-none flex-col px-0">
+        {mainNavItems.filter((item) => showEvmPages || item.key === "trade").map(renderNavItem)}
       </ul>
+      {showEvmPages && (
+        <ul className="mt-8 flex list-none flex-col border-t border-slate-800 px-0 pt-8">
+          {dashboardNavItems.map(renderNavItem)}
+        </ul>
+      )}
     </div>
   );
 }
