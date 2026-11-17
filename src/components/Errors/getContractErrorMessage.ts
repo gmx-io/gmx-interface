@@ -37,7 +37,7 @@ export function getUnstakeRequestsPausedMessage() {
 }
 
 export function getAccountTransfersPausedMessage() {
-  return t`Account transfers are paused during the staking upgrade.`;
+  return t`Account transfers are paused. Try again later.`;
 }
 
 export function getContractErrorMessageFromError({

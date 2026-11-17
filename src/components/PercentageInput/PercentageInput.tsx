@@ -6,8 +6,7 @@ import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { roundToTwoDecimals } from "lib/numbers";
 
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
-import type { TooltipPosition } from "components/Tooltip/Tooltip";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
 
 export const NUMBER_WITH_TWO_DECIMALS = /^\d+(\.\d{0,2})?$/; // 0.00 ~ 99.99
 
@@ -31,7 +30,7 @@ type Props = {
   negativeSign?: boolean;
   highValueCheckStrategy?: "gte" | "gt";
   value?: number;
-  tooltipPosition?: TooltipPosition;
+  tooltipPosition?: StandardTooltipPosition;
   inputId?: string;
 };
 
@@ -136,10 +135,10 @@ export default function PercentageInput({
   }, [inputValue, highValue, checkStrategy, lowValueWarningText, lowValue, highValueWarningText]);
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       variant="none"
       disabled={!error || isPanelVisible}
-      renderContent={() => <div>{error}</div>}
+      renderContent={() => error}
       position={tooltipPosition}
     >
       <SuggestionInput
@@ -155,6 +154,6 @@ export default function PercentageInput({
         inputId={inputId}
         isError={!!error}
       />
-    </TooltipWithPortal>
+    </StandardTooltip>
   );
 }

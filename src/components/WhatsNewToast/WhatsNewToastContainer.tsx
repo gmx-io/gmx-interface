@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import { isSolanaNetwork } from "config/chains";
 import { useClosingPoolsLpNotice } from "domain/synthetics/markets/useClosingPoolsLpNotice";
 import { useClosingPoolsNotices } from "domain/synthetics/markets/useClosingPoolsNotices";
-import { type ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
+import { ActiveUiFlagEvent, useUiFlagEvents } from "domain/synthetics/uiFlags/useUiFlagEvents";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
 import { useSettled } from "lib/useSettled";
@@ -21,6 +21,9 @@ import { ClosingPoolsLpNoticeBanner } from "components/ClosingPoolsLpNotice/Clos
 import { ClosingPoolsNotice } from "components/ClosingPoolsNotice/ClosingPoolsNotice";
 import { DelistingBanner } from "components/DelistingExitAnnouncements/DelistingBanner";
 import { useDelistingExitAnnouncements } from "components/DelistingExitAnnouncements/useDelistingExitAnnouncements";
+import { MorphoLoopAnnouncement } from "components/MorphoLoopAnnouncement/MorphoLoopAnnouncement";
+import { MORPHO_LOOP_ANNOUNCEMENT_CAMPAIGN } from "components/MorphoLoopAnnouncement/morphoLoopAnnouncementCampaign";
+import { useLazyTargetedAnnouncement } from "components/TargetedAnnouncement/useLazyTargetedAnnouncement";
 import { useTargetedAnnouncement } from "components/TargetedAnnouncement/useTargetedAnnouncement";
 import { UsdgPoolsAnnouncement } from "components/UsdgPoolsAnnouncement/UsdgPoolsAnnouncement";
 import { USDG_POOLS_ANNOUNCEMENT_CAMPAIGN } from "components/UsdgPoolsAnnouncement/usdgPoolsAnnouncementCampaign";
@@ -68,6 +71,7 @@ function EvmAnnouncementToasts({
   const closingPoolsLp = useClosingPoolsLpNotice();
   const usdgPools = useTargetedAnnouncement(USDG_POOLS_ANNOUNCEMENT_CAMPAIGN);
   const balancerProgram = useTargetedAnnouncement(BALANCER_PROGRAM_ANNOUNCEMENT_CAMPAIGN);
+  const morphoLoop = useLazyTargetedAnnouncement(MORPHO_LOOP_ANNOUNCEMENT_CAMPAIGN);
   const whatsNew = useWhatsNewAnnouncements();
 
   const isAnySourceLoading =
@@ -75,6 +79,7 @@ function EvmAnnouncementToasts({
     delisting.isLoading ||
     closingPools.isLoading ||
     closingPoolsLp.isLoading ||
+    morphoLoop.isLoading ||
     whatsNew.isLoading;
   const isInitialLoadSettled = useSettled(!isAnySourceLoading, INITIAL_LOAD_MAX_WAIT_MS);
 
@@ -92,22 +97,27 @@ function EvmAnnouncementToasts({
     })),
     ...(closingPoolsLp.notice
       ? [
-          {
-            key: "closing-pools-lp",
-            node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
-          },
-        ]
+        {
+          key: "closing-pools-lp",
+          node: <ClosingPoolsLpNoticeBanner notice={closingPoolsLp.notice} onDismiss={closingPoolsLp.dismiss} />,
+        },
+      ]
       : []),
   ];
 
-  const targetedMessages: TopRightMessage[] = [
-    ...(usdgPools.isVisible && !isAnnouncementsPage
-      ? [{ key: "usdg-pools", node: <UsdgPoolsAnnouncement onDismiss={usdgPools.dismiss} /> }]
-      : []),
-    ...(balancerProgram.isVisible
-      ? [{ key: "balancer-program", node: <BalancerProgramAnnouncement onDismiss={balancerProgram.dismiss} /> }]
-      : []),
-  ];
+  const targetedMessages: TopRightMessage[] = morphoLoop.isLoading
+    ? []
+    : [
+        ...(morphoLoop.isVisible
+          ? [{ key: "morpho-loop", node: <MorphoLoopAnnouncement onDismiss={morphoLoop.dismiss} /> }]
+          : []),
+        ...(usdgPools.isVisible && !isAnnouncementsPage
+          ? [{ key: "usdg-pools", node: <UsdgPoolsAnnouncement onDismiss={usdgPools.dismiss} /> }]
+          : []),
+        ...(balancerProgram.isVisible
+          ? [{ key: "balancer-program", node: <BalancerProgramAnnouncement onDismiss={balancerProgram.dismiss} /> }]
+          : []),
+      ];
 
   const appHints: TopRightMessage[] = [
     ...(appUpdate ? [appUpdate] : []),
@@ -131,20 +141,20 @@ export function WhatsNewToastContainer() {
   const { networkId } = useChainId();
   const { pathname } = useLocation();
   const isAnnouncementsPage = pathname === "/announcements";
-  const uiFlagEvents = useUiFlagEvents();
   const [isScrolled, setIsScrolled] = useState(false);
   const { isVisible: isAppUpdateVisible, dismiss: dismissAppUpdate, applyUpdate, reportShown } = useAppUpdateBanner();
   const appUpdate: TopRightMessage | undefined = isAppUpdateVisible
     ? {
-        key: "app-update",
-        node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
-      }
+      key: "app-update",
+      node: <AppUpdateCard onShow={reportShown} onClose={dismissAppUpdate} onReload={applyUpdate} />,
+    }
     : undefined;
-  const solanaMessage = [
+  const uiFlagEvents = useUiFlagEvents();
+  const solanaMessages: TopRightMessage[] = [
     ...uiFlagEvents.filter(isOutageWarning).map(toUiFlagEventMessage),
     ...(appUpdate ? [appUpdate] : []),
     ...uiFlagEvents.filter((event) => !isOutageWarning(event)).map(toUiFlagEventMessage),
-  ][0];
+  ];
 
   useEffect(() => {
     setIsScrolled(false);
@@ -176,7 +186,7 @@ export function WhatsNewToastContainer() {
     >
       <div className="flex w-[400px] max-w-[calc(100vw-28px)] flex-col">
         {isSolanaNetwork(networkId) ? (
-          <TopRightMessageSlot message={solanaMessage} />
+          <TopRightMessageSlot message={solanaMessages[0]} />
         ) : (
           <EvmAnnouncementToasts
             isAnnouncementsPage={isAnnouncementsPage}

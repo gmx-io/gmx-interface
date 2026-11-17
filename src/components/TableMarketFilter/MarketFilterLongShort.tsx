@@ -8,7 +8,6 @@ import {
   selectChainId,
   selectOrdersInfoData,
   selectSrcChainId,
-  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { createSelector, useSelector } from "context/SyntheticsStateContext/utils";
@@ -72,7 +71,6 @@ export function MarketFilterLongShort({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useMarketsInfoData();
-  const tokensData = useSelector(selectTokensData);
   const allPositions = useSelector(selectPositionsInfoDataSortedByMarket);
   const filteredPositions = useSelector(selectPositionsWithOrders);
   const { marketTokensData: depositMarketTokensData } = useMarketTokensData(chainId, srcChainId, {
@@ -226,8 +224,12 @@ export function MarketFilterLongShort({
         ? getNormalizedTokenSymbol(market.longToken.symbol) + getNormalizedTokenSymbol(market.shortToken.symbol)
         : market.indexToken.symbol;
 
-      const collateralToken = props.item.collateralAddress ? tokensData?.[props.item.collateralAddress] : undefined;
-      const collateralSymbol = collateralToken?.symbol;
+      const collateralSymbol =
+        props.item.collateralAddress === market?.longToken.address
+          ? market.longToken.symbol
+          : props.item.collateralAddress === market?.shortToken.address
+            ? market.shortToken.symbol
+            : undefined;
 
       if (props.item.direction === "long" || props.item.direction === "short") {
         return (
@@ -256,7 +258,7 @@ export function MarketFilterLongShort({
         </>
       );
     },
-    [marketsInfoData, tokensData]
+    [marketsInfoData]
   );
 
   return (

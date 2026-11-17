@@ -1,4 +1,5 @@
 import { CHART_PERIODS, type ChartPeriod } from "lib/legacy";
+import type { OhlcvCandle } from "sdk/clients/v2";
 
 import type { Bar } from "./types";
 
@@ -34,6 +35,16 @@ export function multiplyBarValues(bar: Bar, visualMultiplier: number | undefined
     close: bar.close * visualMultiplier,
     high: bar.high * visualMultiplier,
     low: bar.low * visualMultiplier,
+  };
+}
+
+export function ohlcvCandleToBar(candle: OhlcvCandle): Bar {
+  return {
+    time: candle.timestamp / 1000,
+    open: Number(candle.open),
+    high: Number(candle.high),
+    low: Number(candle.low),
+    close: Number(candle.close),
   };
 }
 

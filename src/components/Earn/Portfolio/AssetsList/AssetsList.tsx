@@ -5,6 +5,7 @@ import { useMedia } from "react-use";
 
 import { ContractsChainId } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
+import { GtAirdrop } from "domain/gtAirdrop/useGtAirdrop";
 import { getHasBalanceOutsideWallet } from "domain/multichain/getHasBalanceOutsideWallet";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/markets";
@@ -24,12 +25,14 @@ import EarnIcon from "img/ic_earn.svg?react";
 
 import { AssetCardEarnings, GmGlvAssetCard } from "./GmGlvAssetCard";
 import { GmxAssetCard } from "./GmxAssetCard/GmxAssetCard";
+import { GtAssetCard } from "./GtAssetCard";
 
 const ZERO_EARNINGS: AssetCardEarnings = { total: 0n, recent: 0n, expected365d: 0n };
 
 type AssetItem =
   | { type: "gmx"; usdValue: bigint; hasEsGmx: boolean }
-  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint };
+  | { type: "gmGlv"; info: GlvOrMarketInfo; usdValue: bigint }
+  | { type: "gt"; usdValue: bigint; gtAirdrop: GtAirdrop };
 
 function getSortedAssets({
   hasGmx,
@@ -37,12 +40,14 @@ function getSortedAssets({
   hasEsGmx,
   gmGlvAssets,
   multichainMarketTokensBalances,
+  gtAirdrop,
 }: {
   hasGmx: boolean;
   processedData: StakingProcessedData | undefined;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
+  gtAirdrop: GtAirdrop | undefined;
 }) {
   const assets: AssetItem[] = [];
 
@@ -58,6 +63,10 @@ function getSortedAssets({
     const tokenAddress = getGlvOrMarketAddress(info);
     const usdValue = multichainMarketTokensBalances?.[tokenAddress]?.totalBalanceUsd ?? 0n;
     assets.push({ type: "gmGlv", info, usdValue });
+  }
+
+  if (gtAirdrop) {
+    assets.push({ type: "gt", usdValue: gtAirdrop.gtAmountUsd ?? 0n, gtAirdrop });
   }
 
   return assets.sort((a, b) => {
@@ -76,6 +85,7 @@ function AssetsList({
   hasGmx,
   hasEsGmx,
   gmGlvAssets,
+  gtAirdrop,
 
   performanceTotal,
   performance30d,
@@ -88,13 +98,14 @@ function AssetsList({
   hasGmx: boolean;
   hasEsGmx: boolean;
   gmGlvAssets: GlvOrMarketInfo[];
+  gtAirdrop: GtAirdrop | undefined;
   performanceTotal: PerformanceData | undefined;
   performance30d: PerformanceData | undefined;
   isPerformanceLoading: boolean;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const hasGmxCard = hasGmx || hasEsGmx;
-  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length;
+  const cardsCount = (hasGmxCard ? 1 : 0) + gmGlvAssets.length + (gtAirdrop ? 1 : 0);
   const { isMobile } = useBreakpoints();
 
   const isEnoughSpaceFor3Columns = useMedia(`(min-width: 1340px)`);
@@ -124,8 +135,9 @@ function AssetsList({
       hasEsGmx,
       gmGlvAssets,
       multichainMarketTokensBalances,
+      gtAirdrop,
     });
-  }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances]);
+  }, [hasGmx, hasEsGmx, processedData, gmGlvAssets, multichainMarketTokensBalances, gtAirdrop]);
 
   return (
     <section className={cx("flex flex-col rounded-8 bg-slate-900", { grow: !hasAnyAssets })}>
@@ -176,6 +188,11 @@ function AssetsList({
                   isEarningsLoading={isEarningsLoading}
                   isEarningsAvailable={!isEarningsUnavailable}
                 />
+              );
+            }
+            if (asset.type === "gt") {
+              return (
+                <GtAssetCard key="gt" gtAmount={asset.gtAirdrop.gtAmount} gtAmountUsd={asset.gtAirdrop.gtAmountUsd} />
               );
             }
             return null;
