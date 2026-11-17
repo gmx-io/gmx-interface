@@ -21,6 +21,14 @@ export function readApiString({ record, name, endpoint }: ApiFieldParams): strin
   return value;
 }
 
+export function readApiUnsignedInteger({ record, name, endpoint }: ApiFieldParams): number {
+  const value = record[name];
+  if (typeof value === "number" && Number.isSafeInteger(value) && value >= 0) {
+    return value;
+  }
+  throw new Error(`${endpoint}: expected number field "${name}"`);
+}
+
 export function readApiUnsignedBigInt({ record, name, endpoint }: ApiFieldParams): bigint {
   const value = record[name];
   if (typeof value === "string" && /^\d+$/.test(value)) {
