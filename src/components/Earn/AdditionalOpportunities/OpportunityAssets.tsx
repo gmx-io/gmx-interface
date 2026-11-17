@@ -10,7 +10,8 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import GlvRoundedIcon from "img/ic_glv_rounded.svg?react";
 import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
@@ -40,7 +41,7 @@ export function OpportunityAssets({
   const remainingCount = resolvedAssets.length - visibleAssets.length;
 
   return (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={
         <div className="flex items-center justify-end">
           {visibleAssets.map((token) => (
@@ -68,7 +69,7 @@ export function OpportunityAssets({
         </div>
       }
       content={
-        <div className="text-body-small flex flex-col gap-6">
+        <TooltipRows>
           {resolvedAssets.map((token) => (
             <span key={getOpportunityAssetKey(token)} className="flex items-center gap-6">
               <OpportunityTokenIcon asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
@@ -76,7 +77,7 @@ export function OpportunityAssets({
               <OpportunityTokenLabel asset={token} chainId={chainId} marketsInfoData={marketsInfoData} />
             </span>
           ))}
-        </div>
+        </TooltipRows>
       }
       variant="none"
       position="bottom"
@@ -154,7 +155,7 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(glvInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium">
               <Trans>GLV</Trans>{" "}
             </span>
             <span className="text-typography-secondary">[{poolName}]</span>
@@ -170,7 +171,7 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(marketInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">
+            <span className="font-medium">
               <Trans>GM: {indexName}</Trans>{" "}
             </span>
             <span className="text-typography-secondary">[{poolName}]</span>

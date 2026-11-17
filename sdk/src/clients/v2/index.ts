@@ -40,8 +40,7 @@ import {
 } from "utils/gmxAccountApi";
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
-import type { SolanaReadOptions } from "utils/http/solana";
-import { IHttp } from "utils/http/types";
+import type { IHttp, SolanaReadOptions } from "utils/http/types";
 import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
 import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
 import {
@@ -120,14 +119,16 @@ import type {
 import { fetchApiPerformanceAnnualized, fetchApiPerformanceSnapshots } from "utils/performance/api";
 import { PerformanceAnnualized, PerformanceParams, PerformanceSnapshots } from "utils/performance/types";
 import { fetchApiPositionsInfo } from "utils/positions/api";
-import { fetchApiOhlcv } from "utils/prices/api";
-import type { OhlcvParams } from "utils/prices/types";
+import { fetchApiOhlcv, fetchApiTokenPrices, parseApiTokenPrices } from "utils/prices/api";
+import type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
 import { fetchApiFeeDiscount } from "utils/referrals/api";
 import type { IAbstractSigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
+import type { StreamCandlePeriod, Subscription, WebSocketCtor } from "utils/stream";
+import { WsStreamClient, createChannelSubscription, toStreamUrl } from "utils/stream";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
@@ -150,6 +151,7 @@ import {
 } from "utils/subaccount/sdkClient";
 import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
 import { fetchApiTokens } from "utils/tokens/api";
+import type { TokenPricesData } from "utils/tokens/types";
 import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
 import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
 import { fetchApiUsdgBoostApr } from "utils/usdgBoostApr/api";
@@ -305,9 +307,9 @@ export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
 export { HttpClientWithFallback } from "utils/http/httpFallback";
-export type { IHttp, HttpResponseMetadata } from "utils/http/types";
-export type { SolanaReadOptions } from "utils/http/solana";
+export type { IHttp, HttpResponseMetadata, SolanaReadOptions } from "utils/http/types";
 export type { FeeDiscount } from "utils/referrals/types";
+export type { FrameMeta, StreamCandlePeriod, StreamConnectionStatus, Subscription, WebSocketCtor } from "utils/stream";
 export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
@@ -317,48 +319,47 @@ export type {
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
 
-type GmxApiSdkOptions<TNetworkId extends NetworkId> = (
-  | { chainId: TNetworkId & ContractsChainId; networkId?: never }
-  | { networkId: TNetworkId; chainId?: never }
-) & { apiUrl?: string; api?: IHttp };
-
-type GmxApiContext<TNetworkId extends NetworkId> = {
-  chainId: TNetworkId extends ContractsChainId ? ContractsChainId : undefined;
-  api: IHttp;
+type GmxApiSdkOptions = {
+  chainId: NetworkId;
+  apiUrl?: string;
+  api?: IHttp;
+  streamUrl?: string;
+  webSocketImpl?: WebSocketCtor;
 };
 
-export class GmxApiSdk<out TNetworkId extends NetworkId = ContractsChainId> {
-  ctx: GmxApiContext<TNetworkId>;
+export class GmxApiSdk {
+  public ctx: { chainId: NetworkId; api: IHttp };
   private _subaccount: SubaccountState | undefined;
   private preparedSubaccountApprovals = new Map<string, SdkSubaccountApproval>();
+  private readonly streamUrlOverride?: string;
+  private readonly webSocketImpl?: WebSocketCtor;
+  private _streamClient?: WsStreamClient;
 
-  constructor(options: GmxApiSdkOptions<TNetworkId>) {
-    const { apiUrl, api } = options;
-    const networkId = options.networkId ?? options.chainId;
-    if (networkId === undefined) {
-      throw new Error("chainId or networkId is required");
+  constructor(options: GmxApiSdkOptions) {
+    const { chainId, apiUrl, api, streamUrl, webSocketImpl } = options;
+    this.streamUrlOverride = streamUrl;
+    this.webSocketImpl = webSocketImpl;
+    if (chainId === undefined) {
+      throw new Error("chainId is required");
     }
 
     let resolvedApi = api;
     if (!resolvedApi) {
-      const resolvedApiUrl = apiUrl ?? getApiUrl(networkId);
+      const resolvedApiUrl = apiUrl ?? getApiUrl(chainId);
       if (!resolvedApiUrl) {
-        throw new Error("api is not supported for current networkId");
+        throw new Error("api is not supported for current chainId");
       }
-      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(networkId);
+      const fallbackUrls = apiUrl ? [] : getApiFallbackUrls(chainId);
       const allUrls = [resolvedApiUrl, ...fallbackUrls];
       resolvedApi = allUrls.length > 1 ? new HttpClientWithFallback(allUrls) : new HttpClient(resolvedApiUrl);
     }
 
-    this.ctx = {
-      chainId: isContractsChain(networkId, true) ? networkId : undefined,
-      api: resolvedApi,
-    } as GmxApiContext<TNetworkId>;
+    this.ctx = { chainId, api: resolvedApi };
   }
 
   requireEvmContext(): { chainId: ContractsChainId; api: IHttp } {
     const { chainId, api } = this.ctx;
-    if (chainId === undefined || !isContractsChain(chainId, true)) {
+    if (!isContractsChain(chainId, true)) {
       throw new Error("EVM operations require an EVM chainId");
     }
     return { chainId, api };
@@ -422,6 +423,30 @@ export class GmxApiSdk<out TNetworkId extends NetworkId = ContractsChainId> {
 
   fetchTokens() {
     return fetchApiTokens(this.ctx);
+  }
+
+  private getStreamClient(): WsStreamClient {
+    if (!this._streamClient) {
+      const url = this.streamUrlOverride ?? toStreamUrl(this.ctx.api.url);
+      this._streamClient = new WsStreamClient({ url, webSocketImpl: this.webSocketImpl });
+    }
+    return this._streamClient;
+  }
+
+  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx);
+  }
+
+  watchTokenPrices(): Subscription<TokenPricesData> {
+    return createChannelSubscription(this.getStreamClient(), "prices", parseApiTokenPrices);
+  }
+
+  watchCandles(params: { symbol: string; timeframe: StreamCandlePeriod }): Subscription<OhlcvCandle> {
+    return createChannelSubscription(
+      this.getStreamClient(),
+      `candles:${params.symbol}:${params.timeframe}`,
+      (raw) => raw as OhlcvCandle
+    );
   }
 
   fetchPositionsInfo(params: { address: string; includeRelatedOrders?: boolean } & SolanaReadOptions) {

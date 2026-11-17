@@ -1,20 +1,15 @@
-import useSWR, { mutate } from "swr";
+import { useMemo } from "react";
 
+import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
+import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import type { FeeDiscount } from "sdk/clients/v2";
+import { API_STALE_MS, useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import type { FeeDiscount, GmxApiSdk } from "sdk/clients/v2";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { ApiPositionInfo } from "sdk/utils/positions/types";
 
-import { getGmsolApiCacheKey, getGmsolApiSdk } from "./api/gmsolApiSdk";
-import {
-  commitGmsolSnapshot,
-  fetchGmsolOrders,
-  fetchGmsolPositions,
-  raisePendingMinContextSlot,
-  readAtMinContextSlot,
-  type GmsolSlotted,
-} from "./api/refetchAtSlot";
+import { commitGmsolSnapshot, fetchGmsolOrders, fetchGmsolPositions } from "./api/refetchAtSlot";
 
 // Positions are read from the Solana RPC on every request; 15 s fits the host's RPC budget.
 const POSITIONS_REFRESH_INTERVAL = 15_000;
@@ -22,11 +17,11 @@ const POSITIONS_REFRESH_INTERVAL = 15_000;
 const FEE_DISCOUNT_REFRESH_INTERVAL = 60_000;
 
 type GmsolAccountRequest = "gmsolPositions" | "gmsolOrders" | "gmsolFeeDiscount";
-type GmsolSlotRequest = Exclude<GmsolAccountRequest, "gmsolFeeDiscount">;
 
-const minContextSlotByOwner = new Map<string, number>();
+type GmsolAccountRead = { sdk: GmxApiSdk; owner: string; apiCacheKey: string };
+
 // Highest X-Solana-Slot accepted for this host, wallet and request. Older responses cannot replace it.
-const acceptedGmsolSnapshots = new Map<string, { slot: number; data: unknown }>();
+const acceptedGmsolSlots = new Map<string, number>();
 
 export function getGmsolAccountDataKey(request: GmsolAccountRequest, apiCacheKey: string, owner: string) {
   return [request, SOLANA_NETWORK_ID, apiCacheKey, owner] as const;
@@ -41,85 +36,53 @@ export type GmsolAccountDataResult<T> = {
 function useGmsolAccountRequest<T>(
   request: GmsolAccountRequest,
   owner: string | undefined,
-  fetcher: (owner: string, apiCacheKey: string) => Promise<T>,
+  fetcher: (read: GmsolAccountRead) => Promise<T>,
   refreshInterval = FREQUENT_UPDATE_INTERVAL
 ): GmsolAccountDataResult<T> {
-  const key = owner ? getGmsolAccountDataKey(request, getGmsolApiCacheKey(), owner) : null;
+  const sdk = useGmxSdk(SOLANA_NETWORK_ID);
+  const key = owner && sdk ? getGmsolAccountDataKey(request, getUiApiCacheKey(SOLANA_NETWORK_ID), owner) : null;
 
-  const { data, error, isLoading } = useSWR<T, Error>(
+  const { data, error, isLoading, freshness } = useSWRWithFreshness<T>(
     key,
-    ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) => fetcher(keyOwner, keyApiCacheKey),
-    { refreshInterval }
+    ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) =>
+      fetcher({ sdk: sdk!, owner: keyOwner, apiCacheKey: keyApiCacheKey }),
+    { refreshInterval, maxAgeMs: refreshInterval + API_STALE_MS }
+  );
+  const isOverdue = freshness.isStale && !error;
+  const overdueError = useMemo(
+    () => (isOverdue ? new Error(`${request} has not refreshed within its grace period`) : undefined),
+    [isOverdue, request]
   );
 
-  return { data: key ? data : undefined, isLoading: key ? isLoading : false, error: key ? error : undefined };
+  return {
+    data: key ? data : undefined,
+    isLoading: key ? isLoading : false,
+    error: key ? error ?? overdueError : undefined,
+  };
 }
 
 function takeGmsolSnapshot<T>(key: string, responseSlot: number | undefined, response: T): T {
-  const previous = acceptedGmsolSnapshots.get(key) as { slot: number; data: T } | undefined;
   const next = commitGmsolSnapshot({
-    acceptedSlot: previous?.slot,
+    acceptedSlot: acceptedGmsolSlots.get(key),
     responseSlot,
     response,
-    previous: previous?.data,
   });
 
-  if (next.accepted && next.slot !== undefined) {
-    acceptedGmsolSnapshots.set(key, { slot: next.slot, data: next.data });
-  }
+  acceptedGmsolSlots.set(key, next.slot);
 
   return next.data;
 }
 
-async function fetchAccountAtPendingSlot<T>({
-  apiCacheKey,
-  request,
-  owner,
-  readAtSlot,
-  readCurrent,
-}: {
-  apiCacheKey: string;
-  request: GmsolSlotRequest;
-  owner: string;
-  readAtSlot: (minContextSlot: number) => Promise<GmsolSlotted<T>>;
-  readCurrent: () => Promise<GmsolSlotted<T>>;
-}): Promise<T> {
-  const key = `${apiCacheKey}:${request}:${owner}`;
-  const minContextSlot = minContextSlotByOwner.get(owner);
-  const acceptedSlot = acceptedGmsolSnapshots.get(key)?.slot;
-  const requested =
-    minContextSlot !== undefined && (acceptedSlot === undefined || acceptedSlot < minContextSlot)
-      ? minContextSlot
-      : undefined;
-
-  const body =
-    requested === undefined
-      ? await readCurrent()
-      : await readAtMinContextSlot(() => readAtSlot(requested), readCurrent);
-
-  return takeGmsolSnapshot(key, body.slot, body.data);
+function fetchPositions({ sdk, owner, apiCacheKey }: GmsolAccountRead) {
+  return fetchGmsolPositions(sdk, owner).then((body) =>
+    takeGmsolSnapshot(`${apiCacheKey}:gmsolPositions:${owner}`, body.slot, body.data)
+  );
 }
 
-function fetchPositions(owner: string, apiCacheKey: string) {
-  const sdk = getGmsolApiSdk(apiCacheKey);
-  return fetchAccountAtPendingSlot<ApiPositionInfo[]>({
-    apiCacheKey,
-    request: "gmsolPositions",
-    owner,
-    readAtSlot: (minContextSlot) => fetchGmsolPositions(sdk, owner, minContextSlot),
-    readCurrent: () => fetchGmsolPositions(sdk, owner),
-  });
-}
-
-function fetchOrders(owner: string, apiCacheKey: string) {
-  const sdk = getGmsolApiSdk(apiCacheKey);
-  return fetchAccountAtPendingSlot<ApiOrderInfo[]>({
-    apiCacheKey,
-    request: "gmsolOrders",
-    owner,
-    readAtSlot: (minContextSlot) => fetchGmsolOrders(sdk, owner, minContextSlot),
-    readCurrent: () => fetchGmsolOrders(sdk, owner),
-  });
+function fetchOrders({ sdk, owner, apiCacheKey }: GmsolAccountRead) {
+  return fetchGmsolOrders(sdk, owner).then((body) =>
+    takeGmsolSnapshot(`${apiCacheKey}:gmsolOrders:${owner}`, body.slot, body.data)
+  );
 }
 
 // `owner` is the Solana wallet from GMX's connect flow; without one nothing is requested.
@@ -132,26 +95,12 @@ export function useGmsolOrders(owner: string | undefined) {
 }
 
 export function useGmsolFeeDiscount(owner: string | undefined) {
-  return useGmsolAccountRequest<FeeDiscount>(
+  const result = useGmsolAccountRequest<FeeDiscount>(
     "gmsolFeeDiscount",
     owner,
-    (address, apiCacheKey) => getGmsolApiSdk(apiCacheKey).fetchFeeDiscount({ address }),
+    ({ sdk, owner: address }) => sdk.fetchFeeDiscount({ address }),
     FEE_DISCOUNT_REFRESH_INTERVAL
   );
-}
 
-// Each host and account read must catch up to the owner's latest confirmed transaction slot.
-export async function refetchGmsolAccountDataAtSlot(owner: string, minContextSlot: number) {
-  minContextSlotByOwner.set(owner, raisePendingMinContextSlot(minContextSlotByOwner.get(owner), minContextSlot));
-
-  const apiCacheKey = getGmsolApiCacheKey();
-
-  await Promise.all([
-    mutate(getGmsolAccountDataKey("gmsolPositions", apiCacheKey, owner), fetchPositions(owner, apiCacheKey), {
-      revalidate: false,
-    }),
-    mutate(getGmsolAccountDataKey("gmsolOrders", apiCacheKey, owner), fetchOrders(owner, apiCacheKey), {
-      revalidate: false,
-    }),
-  ]);
+  return result.error ? { ...result, data: undefined } : result;
 }

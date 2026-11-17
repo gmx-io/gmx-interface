@@ -9,6 +9,7 @@ import { PRIVY_DIALOG_SCROLL_SHARDS } from "lib/wallets/privyUiCompat";
 import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import Button from "components/Button/Button";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -96,6 +97,15 @@ export default function Modal({
   useEffect(() => {
     if (typeof onAfterOpen === "function") onAfterOpen();
   }, [onAfterOpen]);
+
+  useEffect(
+    function closeTooltipsOnVisible() {
+      if (isVisible) {
+        closeAllTooltips();
+      }
+    },
+    [isVisible]
+  );
 
   useEffect(
     function blurOutsideOnVisible() {

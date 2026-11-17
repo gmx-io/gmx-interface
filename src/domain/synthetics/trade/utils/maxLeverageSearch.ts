@@ -64,6 +64,7 @@ export function evaluateLeverageStep(
     positionPriceImpactDeltaUsd: increaseAmounts.positionPriceImpactDeltaUsd,
     userReferralInfo,
     collateralPrice: increaseAmounts.collateralPrice,
+    feeDiscountFactor: increaseParams.feeDiscountFactor,
   });
 
   if (nextPositionValues.nextLeverage === undefined) {
@@ -82,6 +83,7 @@ export function evaluateLeverageStep(
       minCollateralUsd,
       userReferralInfo,
       proDiscountFactor: increaseParams.proDiscountFactor,
+      feeDiscountFactor: increaseParams.feeDiscountFactor,
     });
 
     return {
@@ -108,6 +110,7 @@ export function evaluateLeverageStep(
     minCollateralUsd,
     userReferralInfo,
     proDiscountFactor: increaseParams.proDiscountFactor,
+    feeDiscountFactor: increaseParams.feeDiscountFactor,
     indexPriceForEvaluation: getIncreaseEvaluationIndexPrice({
       orderType: increaseAmounts.limitOrderType ?? OrderType.MarketIncrease,
       triggerPrice,

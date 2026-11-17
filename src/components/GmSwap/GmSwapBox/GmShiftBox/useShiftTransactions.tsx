@@ -14,6 +14,7 @@ import {
   initShiftGmMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
 import useWallet from "lib/wallets/useWallet";
@@ -54,10 +55,13 @@ export function useShiftTransactions({
         isExpress1CT: false,
         isCollateralFromMultichain: false,
         fromMarketToken,
+        fromMarketTokenAmount,
         toMarketToken: marketToken,
         minMarketTokenAmount: marketTokenAmount,
         executionFee,
       });
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (
         !signer ||

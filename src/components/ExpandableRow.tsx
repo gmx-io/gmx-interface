@@ -6,7 +6,7 @@ import { useMedia } from "react-use";
 import { usePrevious } from "lib/usePrevious";
 
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import ChevronUpIcon from "img/ic_chevron_up.svg?react";
@@ -120,7 +120,7 @@ export function ExpandableRow({
 
   const label = useMemo(() => {
     return hasError && disableCollapseOnError && errorMessage ? (
-      <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
+      <StandardTooltip handle={title} handleClassName={handleClassName} variant="iconStroke" content={errorMessage} />
     ) : (
       <span className={handleClassName}>{title}</span>
     );

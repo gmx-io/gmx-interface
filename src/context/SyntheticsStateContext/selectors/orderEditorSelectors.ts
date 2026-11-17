@@ -1,3 +1,5 @@
+import { t } from "@lingui/macro";
+
 import { USD_DECIMALS } from "config/factors";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -32,11 +34,14 @@ import {
   TokensRatio,
 } from "domain/synthetics/tokens";
 import {
+  TradeMode,
+  TradeType,
   getAcceptablePriceInfo,
   getDecreasePositionAmounts,
   getSwapPathOutputAddresses,
   getTradeFees,
 } from "domain/synthetics/trade";
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { BN_ZERO, parseValue } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -50,12 +55,13 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
 import {
   selectChainId,
+  selectFeeDiscountFactor,
   selectGasLimits,
   selectGasPrice,
   selectKeepLeverage,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectTokensData,
   selectUiFeeFactor,
@@ -73,7 +79,7 @@ import {
   selectSavedAcceptablePriceImpactBuffer,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "./settingsSelectors";
-import { makeSelectFindSwapPath } from "./tradeSelectors";
+import { makeSelectDecreasePositionAmounts, makeSelectFindSwapPath } from "./tradeSelectors";
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -283,7 +289,7 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const market = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]);
   const sizeDeltaUsd = q(selectOrderEditorSizeDeltaUsd);
   const triggerPrice = q(selectOrderEditorTriggerPrice);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(order.marketAddress));
 
   if (
     !market ||
@@ -304,23 +310,26 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   const uiFeeFactor = q(selectUiFeeFactor);
   const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
 
-  return getDecreasePositionAmounts({
-    marketInfo: market,
-    collateralToken: order.targetCollateralToken,
-    isLong: order.isLong,
-    position: existingPosition,
-    closeSizeUsd: sizeDeltaUsd,
-    keepLeverage,
-    triggerPrice,
-    fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
-    acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-    userReferralInfo,
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-    triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
-    isSetAcceptablePriceImpactEnabled,
-  });
+  return getAvailableTradeQuote(market.tradeMath, () =>
+    getDecreasePositionAmounts({
+      marketInfo: market,
+      collateralToken: order.targetCollateralToken,
+      isLong: order.isLong,
+      position: existingPosition,
+      closeSizeUsd: sizeDeltaUsd,
+      keepLeverage,
+      triggerPrice,
+      fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+      userReferralInfo,
+      feeDiscountFactor: q(selectFeeDiscountFactor),
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+      isSetAcceptablePriceImpactEnabled,
+    })
+  );
 });
 
 export const selectOrderEditorFromToken = createSelector((q) => {
@@ -491,18 +500,22 @@ export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
 
   const priceImpactFeeBps =
     market && canCalculatePriceImpact
-      ? getFeeItem(
-          getAcceptablePriceInfo({
-            indexPrice: markPrice!,
-            isIncrease: isIncreaseOrderType(order.orderType),
-            isLimit: isLimitOrderType(order.orderType),
-            isLong: order.isLong,
-            marketInfo: market,
-            sizeDeltaUsd: sizeDeltaUsd!,
-            sizeDeltaInTokens,
-          }).priceImpactDeltaUsd,
-          sizeDeltaUsd
-        )?.bps
+      ? getAvailableTradeQuote(
+          market.tradeMath,
+          () =>
+            getFeeItem(
+              getAcceptablePriceInfo({
+                indexPrice: markPrice!,
+                isIncrease: isIncreaseOrderType(order.orderType),
+                isLimit: isLimitOrderType(order.orderType),
+                isLong: order.isLong,
+                marketInfo: market,
+                sizeDeltaUsd: sizeDeltaUsd!,
+                sizeDeltaInTokens,
+              }).priceImpactDeltaUsd,
+              sizeDeltaUsd
+            )?.bps
+        )
       : undefined;
 
   return priceImpactFeeBps;
@@ -557,6 +570,7 @@ function calcMarginDepositProjections(p: {
   triggerPrice: bigint | undefined;
   minCollateralUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   isPnlInLeverage: boolean;
 }) {
   const { order, position, triggerPrice, minCollateralUsd, userReferralInfo, isPnlInLeverage } = p;
@@ -571,6 +585,7 @@ function calcMarginDepositProjections(p: {
     triggerPrice,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     pendingFeesUsd: position.pendingBorrowingFeesUsd + position.pendingFundingFeesUsd,
     isPnlInLeverage,
   });
@@ -578,24 +593,28 @@ function calcMarginDepositProjections(p: {
 
 /** Undefined for anything but a margin deposit. */
 export const selectOrderEditorMarginDepositProjections = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
   return calcMarginDepositProjections({
-    order: q(selectOrderEditorOrder),
+    order,
     position: q(selectOrderEditorExistingPosition),
     triggerPrice: q(selectOrderEditorTriggerPrice),
-    minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+    minCollateralUsd: q(makeSelectPositionConstants(order?.marketAddress)).minCollateralUsd,
     userReferralInfo: q(selectUserReferralInfo),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     isPnlInLeverage: q(selectIsPnlInLeverage),
   });
 });
 
 const makeSelectOrderEditorMarginDepositProjections = createSelectorFactory((orderKey: string, triggerPrice: bigint) =>
   createSelector((q) => {
+    const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
     return calcMarginDepositProjections({
-      order: q((state) => getByKey(selectOrdersInfoData(state), orderKey)),
+      order,
       position: q(makeSelectOrderExistingPosition(orderKey)),
       triggerPrice,
-      minCollateralUsd: q(selectPositionConstants).minCollateralUsd,
+      minCollateralUsd: q(makeSelectPositionConstants(order?.marketAddress)).minCollateralUsd,
       userReferralInfo: q(selectUserReferralInfo),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
       isPnlInLeverage: q(selectIsPnlInLeverage),
     });
   })
@@ -663,11 +682,25 @@ export const selectOrderEditorIsIncreaseExecutableNow = createSelector((q) => {
   });
 });
 
+export const selectOrderEditorIsQuoteUnavailable = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+  if (!order || isSwapOrderType(order.orderType) || (order as PositionOrderInfo).marketInfo?.tradeMath !== "gmsol") {
+    return false;
+  }
+  return isIncreaseOrderType(order.orderType)
+    ? q(selectOrderEditorIncreaseAmounts) === undefined
+    : q(selectOrderEditorDecreaseAmounts) === undefined;
+});
+
 export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order || isSwapOrderType(order.orderType)) {
     return;
+  }
+
+  if (q(selectOrderEditorIsQuoteUnavailable)) {
+    return t`Unable to calculate this order`;
   }
 
   const positionOrder = order as PositionOrderInfo;
@@ -773,6 +806,28 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       const marginDepositProjections = q(selectMarginDepositProjections);
 
       const isIncrease = isIncreaseOrderType(order.orderType) && !order.isTwap;
+
+      if (positionOrder.marketInfo?.tradeMath === "gmsol") {
+        const amounts = isIncrease
+          ? q(makeSelectOrderIncreaseProjection(orderKey, triggerPrice, order.sizeDeltaUsd))?.increaseAmounts
+          : q(
+              makeSelectDecreasePositionAmounts({
+                marketAddress: order.marketAddress,
+                positionKey: getOrderPositionKey(positionOrder),
+                collateralTokenAddress: positionOrder.targetCollateralToken.address,
+                tradeMode: TradeMode.Trigger,
+                tradeType: order.isLong ? TradeType.Long : TradeType.Short,
+                triggerPrice,
+                closeSizeUsd: sizeDeltaUsd,
+                keepLeverage: false,
+                fixedAcceptablePriceImpactBps: undefined,
+                receiveTokenAddress: positionOrder.targetCollateralToken.address,
+              })
+            );
+        if (!amounts) {
+          return t`Unable to calculate this order`;
+        }
+      }
 
       const nextPositionValuesForIncrease = isIncrease
         ? q(makeSelectOrderIncreaseNextPositionValues(orderKey, triggerPrice, order.sizeDeltaUsd, false))

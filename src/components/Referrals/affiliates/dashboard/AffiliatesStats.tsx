@@ -26,10 +26,10 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
 import { GridCell, GridHeaderCell, GridRow } from "components/Referrals/distributions/table/Grid";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
@@ -200,51 +200,41 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                             </div>
                           </TableTd>
                           <TableTd>
-                            <Tooltip
+                            <StandardTooltip
                               handle={<NumericValue parts={formatBigUsdParts(stat.volume)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 volume`}
                                     value={<NumericValue parts={formatBigUsdParts(stat?.v1Data.volume ?? 0n)} />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 volume`}
                                     value={<NumericValue parts={formatBigUsdParts(stat?.v2Data.volume ?? 0n)} />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
                           <TableTd className="numbers">{stat.registeredReferralsCount}</TableTd>
                           <TableTd>
-                            <Tooltip
+                            <StandardTooltip
                               handle={<NumericValue parts={formatBigUsdParts(stat.affiliateRebateUsd)} />}
                               handleClassName="numbers"
-                              position="bottom-start"
                               className="whitespace-nowrap"
                               content={
-                                <>
-                                  <StatsTooltipRow
+                                <TooltipRows>
+                                  <TooltipRow
                                     label={t`V1 rebates`}
                                     value={<UsdValue usd={stat.v1Data.affiliateRebateUsd} fallbackToZero />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                  <StatsTooltipRow
+                                  <TooltipRow
                                     label={t`V2 rebates`}
                                     value={<UsdValue usd={stat.v2Data.affiliateRebateUsd} fallbackToZero />}
-                                    valueClassName="numbers"
-                                    showDollar={false}
                                   />
-                                </>
+                                </TooltipRows>
                               }
                             />
                           </TableTd>
@@ -402,7 +392,7 @@ function ReferralCodesMobileTable({
   }, []);
 
   return (
-    <div role="table" className="grid grid-cols-[1fr_1fr_auto] gap-y-4 px-4">
+    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-y-4 px-4">
       <GridRow>
         <GridHeaderCell>
           <Trans>CODE</Trans>
@@ -410,7 +400,6 @@ function ReferralCodesMobileTable({
         <GridHeaderCell className="col-span-2 text-right">
           <Trans>TOTAL VOLUME</Trans>
         </GridHeaderCell>
-        <GridHeaderCell />
       </GridRow>
 
       {data.map((stat) => (
@@ -418,7 +407,7 @@ function ReferralCodesMobileTable({
           <GridRow className="text-typography-primary" onClick={() => toggleSelectedCode(stat.referralCode)}>
             <GridCell>
               <div className="flex items-center gap-4">
-                <ReferralCodeLabel code={stat.referralCode} />
+                <ReferralCodeLabel code={stat.referralCode} isWrappable />
                 <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
               </div>
             </GridCell>
@@ -498,13 +487,28 @@ function ReferralCodesMobileTable({
   );
 }
 
-function ReferralCodeLabel({ code }: { code: string }) {
+function ReferralCodeLabel({ code, isWrappable = false }: { code: string; isWrappable?: boolean }) {
   const label = formatReferralCodeForDisplay(code);
 
   // different hex codes can shorten to the same label
   return (
-    <span className="font-mono" title={label === code ? undefined : code}>
-      {label}
+    <span
+      className={cx("font-mono", { "[overflow-wrap:anywhere]": isWrappable })}
+      title={label === code ? undefined : code}
+    >
+      {/* wrap after underscores first; overflow-wrap only splits a part that doesn't fit on its own */}
+      {isWrappable
+        ? label.split("_").map((part, index) => (
+            <Fragment key={index}>
+              {index > 0 && (
+                <>
+                  _<wbr />
+                </>
+              )}
+              {part}
+            </Fragment>
+          ))
+        : label}
     </span>
   );
 }

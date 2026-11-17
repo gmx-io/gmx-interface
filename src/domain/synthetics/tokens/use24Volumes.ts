@@ -4,6 +4,7 @@ import useSWR from "swr";
 import type { Address } from "viem";
 
 import { isSolanaNetwork } from "config/chains";
+import { selectChartDataProvider } from "context/SyntheticsStateContext/selectors/chartDataSelectors";
 import { selectChainId, selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -25,16 +26,16 @@ const MARKET_VOLUMES_QUERY = gql`
 export function use24hVolumes() {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const chartDataProvider = useSelector(selectChartDataProvider);
   const { networkId } = useChainId();
   // On Solana chainId stays Arbitrum; its indexer has no Solana markets, so volumes come from the Solana host.
   const isSolana = isSolanaNetwork(networkId);
 
   const { data } = useSWR<PositionVolumeInfosResponse | undefined>(
-    [isSolana ? networkId : chainId, "24hVolume"],
+    isSolana && !chartDataProvider ? null : [isSolana ? networkId : chainId, "24hVolume"],
     async () => {
       if (isSolana) {
-        const { fetchGmsol24hVolumes } = await import("domain/gmsol/markets/fetchGmsol24hVolumes");
-        return fetchGmsol24hVolumes() as Promise<PositionVolumeInfosResponse>;
+        return chartDataProvider!.fetch24hVolumes();
       }
 
       const client = getSubsquidGraphClient(chainId);
