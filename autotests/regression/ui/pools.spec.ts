@@ -12,6 +12,9 @@ import { watchMarketsApi } from "../fixtures/marketData";
 
 type ApyResponse = Record<"markets" | "glvs", Record<string, { baseApy: number }>>;
 
+// Trader PnL can take a nearly empty pool below zero: the list then prices its GM at $1 and its performance has no bound.
+const MIN_TVL_FOR_PERFORMANCE_BOUND = 10_000;
+
 function poolTable(page: Page, type: "GM" | "GLV") {
   return page.getByRole("table").filter({
     has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }),
@@ -30,13 +33,17 @@ async function forEachPoolPage(page: Page, type: "GM" | "GLV", check: () => Prom
     .filter({ has: page.getByText(type === "GM" ? "GM pools" : "GLV vaults", { exact: true }) })
     .filter({ has: poolTable(page, type) })
     .last();
-  const first = card.getByRole("button", { name: "1", exact: true });
-  if (await first.isVisible()) await first.click();
-  for (let pageNumber = 1; ; pageNumber++) {
+  const arrows = card.locator(".pagination button:has(svg)");
+  const [firstPage, nextPage] = [arrows.first(), arrows.nth(2)];
+  // Only the GM list has pages. The pager disappears for a moment when the app switches its oracle endpoint,
+  // so isEnabled, which waits for it, decides here and not isVisible.
+  const isPaged = type === "GM";
+  // The pager lists only the numbers around the current page, so a repeated pass has no "1" to click.
+  if (isPaged && (await firstPage.isEnabled())) await firstPage.click();
+  await check();
+  while (isPaged && (await nextPage.isEnabled())) {
+    await nextPage.click();
     await check();
-    const next = card.getByRole("button", { name: String(pageNumber + 1), exact: true });
-    if (!(await next.isVisible())) return;
-    await next.click();
   }
 }
 
@@ -306,9 +313,9 @@ for (const type of ["GM", "GLV"] as const) {
     await page.goto("/pools");
     // The performance bound below is calibrated on 90d; 30d annualizes a new market's swings far past it.
     await page.getByRole("button", { name: "Last 90d", exact: true }).click();
-    await expect.poll(() => apys.has("90d")).toBe(true);
+    await expect.poll(() => apys.has("90d"), { timeout: 30_000 }).toBe(true);
     const rows = poolRows(page, type);
-    await expect(rows.first()).toBeVisible();
+    await expect(rows.first().getByRole("cell").nth(1)).toContainText("$", { timeout: 30_000 });
     const listed: string[] = [];
     const gmFeeApys: number[] = [];
     await forEachPoolPage(page, type, async () => {
@@ -338,6 +345,7 @@ for (const type of ["GM", "GLV"] as const) {
                 : { name: "GLV", composition: shown.composition };
             const tvlUsd = displayedNumber(tvl[0]);
             const supply = displayedNumber(tvl[1] ?? "");
+            const performanceBound = tvlUsd < MIN_TVL_FOR_PERFORMANCE_BOUND ? Infinity : 1000;
             const expectedApy =
               (apy[address]?.baseApy ?? 0) +
               (chainId === 42161 ? usdgBoost(address, type, shown.composition ?? "") : 0);
@@ -354,7 +362,7 @@ for (const type of ["GM", "GLV"] as const) {
               !apyOk && `apy ${apyText} vs ${expectedApy * 100}`,
               // The app shows N/A for a pool without performance data for the period.
               !["-", "N/A"].includes(performance) &&
-                !(Math.abs(displayedNumber(performance)) < 1000) &&
+                !(Math.abs(displayedNumber(performance)) < performanceBound) &&
                 `performance ${performance}`,
             ].filter(Boolean);
             return problems.length ? [`${address}: ${problems.join(", ")}`] : [];

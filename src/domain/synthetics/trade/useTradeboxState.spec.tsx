@@ -87,19 +87,20 @@ describe("useTradeboxState network isolation", () => {
     localStorage.clear();
   });
 
-  it("fills in missing collateral when restoring an Arbitrum market FESOL-15", () => {
-    seedNetwork(ARBITRUM, {
-      tradeType: TradeType.Short,
-      indexTokenAddress: ETH_ADDRESS,
-      market: MOCK_MARKET_ADDRESS,
-    });
+  it("initializes collateral for fresh and restored position forms FESOL-15", () => {
+    for (const tradeType of [undefined, TradeType.Long, TradeType.Short]) {
+      if (tradeType !== undefined) {
+        seedNetwork(ARBITRUM, { tradeType, indexTokenAddress: BTC_ADDRESS, market: BTC_MARKET_ADDRESS });
+      }
 
-    renderTradebox(ARBITRUM);
-
-    expect(tradebox.marketAddress).toBe(MOCK_MARKET_ADDRESS);
-    expect(tradebox.collateralAddress).toBe(USDC_ADDRESS);
-    expect(tradebox.collateralToken).toBe(USDC_TOKEN);
-    expect(readStoredTradeOptions(ARBITRUM)?.collaterals?.[MOCK_MARKET_ADDRESS]?.short).toBe(USDC_ADDRESS);
+      const view = renderTradebox(ARBITRUM);
+      const marketAddress = tradeType === undefined ? MOCK_MARKET_ADDRESS : BTC_MARKET_ADDRESS;
+      const side = tradeType === TradeType.Short ? "short" : "long";
+      expect(tradebox.collateralAddress).toBe(USDC_ADDRESS);
+      expect(readStoredTradeOptions(ARBITRUM)?.collaterals?.[marketAddress]?.[side]).toBe(USDC_ADDRESS);
+      view.unmount();
+      localStorage.clear();
+    }
   });
 
   it.each([ARBITRUM, SOLANA_NETWORK_ID] as const)(

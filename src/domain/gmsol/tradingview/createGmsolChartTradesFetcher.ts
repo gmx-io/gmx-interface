@@ -1,21 +1,11 @@
-import { GMSOL_GRAPHQL_URL } from "config/gmsol/api";
 import { GMSOL_STORE_ADDRESS } from "config/gmsol/program";
+import { GMSOL_GRAPHQL_URL } from "config/indexers";
+import type { ChartTrade, ChartTradesFetcher } from "domain/tradingview/types";
 import { HttpClient } from "sdk/utils/http/http";
 import type { IHttp } from "sdk/utils/http/types";
-import type { MarketsInfoData } from "sdk/utils/markets/types";
-import type { PositionsInfoData } from "sdk/utils/positions/types";
 
 const PAGE_SIZE = 100;
 const CACHE_TTL_MS = 15_000;
-
-export type ChartTrade = {
-  id: string;
-  ts: number;
-  marketAddress: string;
-  isLong: boolean;
-  isIncrease: boolean;
-  executionPrice: bigint;
-};
 
 type TradeEvent = {
   id: string;
@@ -26,15 +16,6 @@ type TradeEvent = {
   executionPrice: string;
   beforeSizeInUsd: string;
   afterSizeInUsd: string;
-};
-
-type Params = {
-  account: string;
-  markets: MarketsInfoData;
-  positions: PositionsInfoData | undefined;
-  mode: "all" | "current";
-  from: number;
-  to: number;
 };
 
 const FIELDS = `
@@ -50,7 +31,9 @@ async function query<T>(api: Pick<IHttp, "postJson">, query: string, variables: 
 }
 
 // Each widget retains its loaded history independently of the visible range and position snapshot.
-export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new HttpClient(GMSOL_GRAPHQL_URL)) {
+export function createGmsolChartTradesFetcher(
+  api: Pick<IHttp, "postJson"> = new HttpClient(GMSOL_GRAPHQL_URL)
+): ChartTradesFetcher {
   let cache: { key: string; fetchedAt: number; pending: boolean; promise: Promise<ChartTrade[]> } | undefined;
   let history:
     | {
@@ -64,7 +47,7 @@ export function createGmsolChartTradesFetcher(api: Pick<IHttp, "postJson"> = new
       }
     | undefined;
 
-  return (params: Params): Promise<ChartTrade[]> => {
+  return (params): Promise<ChartTrade[]> => {
     const { account, markets, positions, mode, from, to } = params;
     const marketAddresses = Object.keys(markets).sort();
     const activePositions = Object.values(positions ?? {}).filter(

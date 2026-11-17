@@ -1,47 +1,26 @@
-import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM } from "config/chains";
 import { GMSOL_STORE_ADDRESS } from "config/gmsol/program";
-import { GmxApiSdk } from "sdk/clients/v2";
-import { mergeMarketsConfigValues } from "sdk/utils/markets";
-import type { MarketsInfoData } from "sdk/utils/markets/types";
 import type { PositionInfo } from "sdk/utils/positions/types";
 
 import { createGmsolChartTradesFetcher } from "./createGmsolChartTradesFetcher";
-import fixturePrices from "../api/__fixtures__/prices.json";
-import { createGmsolFixtureHttp } from "../api/createGmsolFixtureHttp";
-import { composeGmsolMarkets } from "../markets/composeGmsolMarkets";
-import { composeGmsolPositionsInfo } from "../positions/composeGmsolPositionsInfo";
-import { buildGmsolTokensData } from "../tokens/buildGmsolTokensData";
 
 const OWNER = "9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin";
 const BTC_MARKET = "7RNev94wKusSmFEqo3gvv1d1zMweP6sa2LtjJjroAvym";
 const POSITION = "PositionAccount";
 const FROM = Date.parse("2026-11-01T00:00:00Z") / 1000;
 const TO = FROM + 3600;
-let markets: MarketsInfoData;
-let position: PositionInfo;
-
-beforeAll(async () => {
-  const sdk = new GmxApiSdk({ chainId: ARBITRUM, api: createGmsolFixtureHttp() });
-  const [config, values, positions] = await Promise.all([
-    sdk.fetchMarketsConfig(),
-    sdk.fetchMarketsValues(),
-    sdk.fetchPositionsInfo({ address: OWNER }),
-  ]);
-  const tokens = buildGmsolTokensData(
-    Object.fromEntries(
-      Object.entries(fixturePrices).map(([address, p]) => [
-        address,
-        { minPrice: BigInt(p.minPrice), maxPrice: BigInt(p.maxPrice) },
-      ])
-    )
-  );
-  const composed = composeGmsolMarkets(mergeMarketsConfigValues(config, values), tokens);
-  markets = { [BTC_MARKET]: composed.marketsInfoData[BTC_MARKET] };
-  const [sample] = Object.values(composeGmsolPositionsInfo(positions, markets, { showPnlInLeverage: false }));
-  position = { ...sample, contractKey: POSITION, isLong: true, increasedAtTime: BigInt(FROM + 300) };
-});
+const markets = { [BTC_MARKET]: { indexToken: { decimals: 8 } } };
+const position = {
+  key: POSITION,
+  account: OWNER,
+  contractKey: POSITION,
+  marketAddress: BTC_MARKET,
+  sizeInUsd: 1000n,
+  isLong: true,
+  increasedAtTime: BigInt(FROM + 300),
+  decreasedAtTime: 0n,
+} as PositionInfo;
 
 afterEach(() => vi.restoreAllMocks());
 

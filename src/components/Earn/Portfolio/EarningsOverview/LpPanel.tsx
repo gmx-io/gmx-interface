@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -11,7 +11,7 @@ import {
 } from "components/EarningValue/EarningValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
@@ -137,15 +137,9 @@ export function LpPanel({
         <div className="flex flex-col gap-8 p-20">
           <SyntheticsInfoRow
             label={
-              <TooltipWithPortal
-                variant="iconStroke"
+              <StandardTooltip
                 handle={<Trans>Expected 365d fees</Trans>}
-                content={
-                  <Trans>
-                    Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current
-                    balance. Excludes incentives. An estimate, not a measured figure.
-                  </Trans>
-                }
+                content={t`Projected fees for the next 365 days: each pool's or vault's base fee APY applied to your current balance. Excludes incentives. An estimate, not a measured figure.`}
               />
             }
             value={
