@@ -43,6 +43,18 @@ export function composeGmsolOrdersInfo(
       continue;
     }
 
+    if (apiOrder.orderAccount && apiOrder.rentReceiver && apiOrder.actionState && apiOrder.escrowTokens) {
+      orderInfo.solana = {
+        orderAccount: apiOrder.orderAccount,
+        rentReceiver: apiOrder.rentReceiver,
+        actionState: apiOrder.actionState,
+        positionAccount: apiOrder.positionAccount,
+        referrer: apiOrder.referrer,
+        callback: apiOrder.callback,
+        escrowTokens: apiOrder.escrowTokens,
+      };
+    }
+
     setOrderInfoTitle(orderInfo, marketsInfoData[order.marketAddress]?.indexToken);
     ordersInfoData[orderInfo.key] = orderInfo;
   }
