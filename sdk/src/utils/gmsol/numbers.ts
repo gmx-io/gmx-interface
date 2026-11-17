@@ -1,4 +1,4 @@
-import { GMSOL_PRECISION } from "./constants";
+import { GMSOL_MAX_SIGNED, GMSOL_MAX_UNSIGNED, GMSOL_PRECISION } from "./constants";
 import type { Decimal } from "./types";
 
 const MAX_COEFFICIENT = (1n << 96n) - 1n;
@@ -176,3 +176,58 @@ export function getGmsolFractionalPower(base20: bigint, exponent20: bigint): big
   }
   return result * INPUT_SCALE;
 }
+
+// gmsol's checked u128 and i128 arithmetic on 20-decimal fixed point: a result outside the type is an error, never a wrapped value
+export const gmsolMath = {
+  toUnsigned(value: bigint, what: string): bigint {
+    if (value < 0n || value > GMSOL_MAX_UNSIGNED) {
+      throw new Error(`u128 overflow in ${what}`);
+    }
+    return value;
+  },
+  toSigned(value: bigint, what: string): bigint {
+    if (value < -GMSOL_MAX_SIGNED - 1n || value > GMSOL_MAX_SIGNED) {
+      throw new Error(`i128 overflow in ${what}`);
+    }
+    return value;
+  },
+  mulDiv(a: bigint, b: bigint, divisor: bigint, what: string): bigint {
+    if (divisor === 0n) {
+      throw new Error(`division by zero in ${what}`);
+    }
+    return gmsolMath.toUnsigned((a * b) / divisor, what);
+  },
+  mulDivCeil(a: bigint, b: bigint, divisor: bigint, what: string): bigint {
+    if (divisor === 0n) {
+      throw new Error(`division by zero in ${what}`);
+    }
+    return gmsolMath.toUnsigned((a * b + divisor - 1n) / divisor, what);
+  },
+  // gmsol's checked_round_up_div, whose intermediate sum must fit in u128
+  roundUpDiv(value: bigint, divisor: bigint, what: string): bigint {
+    return (gmsolMath.toUnsigned(value + divisor, what) - 1n) / divisor;
+  },
+  applyFactor(value: bigint, factor: bigint, what: string): bigint {
+    return gmsolMath.mulDiv(value, factor, GMSOL_PRECISION, what);
+  },
+  divToFactor(value: bigint, divisor: bigint, what: string): bigint {
+    return divisor === 0n ? 0n : gmsolMath.mulDiv(value, GMSOL_PRECISION, divisor, what);
+  },
+  // a value below one unit counts as none, as in GMX's applyExponentFactor
+  applyExponentFactor(value: bigint, exponent: bigint, what: string): bigint {
+    if (value < GMSOL_PRECISION) {
+      return 0n;
+    }
+    if (value === GMSOL_PRECISION || exponent === 0n) {
+      return GMSOL_PRECISION;
+    }
+    if (exponent % GMSOL_PRECISION !== 0n) {
+      return gmsolMath.toUnsigned(getGmsolFractionalPower(value, exponent), what);
+    }
+    let result = GMSOL_PRECISION;
+    for (let i = 0n; i < exponent / GMSOL_PRECISION; i++) {
+      result = gmsolMath.mulDiv(result, value, GMSOL_PRECISION, what);
+    }
+    return result;
+  },
+};
