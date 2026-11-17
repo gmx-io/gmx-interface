@@ -309,7 +309,8 @@ export function PositionSeller() {
     () => getDecreaseReceiveOutputs({ decreaseAmounts: splitReceiveDecreaseAmounts, tokensData }),
     [splitReceiveDecreaseAmounts, tokensData]
   );
-  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs);
+  const isTwap = orderOption === OrderOption.Twap;
+  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs, { isTwap });
 
   const receiveTokenAmount = useMemo(() => {
     if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
@@ -370,7 +371,6 @@ export function PositionSeller() {
 
   const slippageInputId = useId();
 
-  const isTwap = orderOption === OrderOption.Twap;
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
     receiveToken,
@@ -433,7 +433,7 @@ export function PositionSeller() {
       marketAddress: position.marketAddress,
       indexTokenAddress: position.indexToken.address,
       collateralTokenAddress: position.collateralTokenAddress,
-      collateralDeltaAmount: isTwap && decreaseAmounts.isFullClose ? 0n : decreaseAmounts.collateralDeltaAmount ?? 0n,
+      collateralDeltaAmount: isTwap ? 0n : decreaseAmounts.collateralDeltaAmount ?? 0n,
       receiveTokenAddress: receiveToken.address,
       swapPath,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -467,7 +467,6 @@ export function PositionSeller() {
     decreaseAmounts?.acceptablePrice,
     decreaseAmounts?.collateralDeltaAmount,
     decreaseAmounts?.decreaseSwapType,
-    decreaseAmounts?.isFullClose,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
     duration,
