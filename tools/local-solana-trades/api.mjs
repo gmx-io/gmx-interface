@@ -12,7 +12,6 @@ const exec = promisify(execFile);
 const { values } = parseArgs({
   options: {
     "api-dir": { type: "string" },
-    wallet: { type: "string" },
     "rpc-config": { type: "string" },
     port: { type: "string", default: "3046" },
     "index-port": { type: "string", default: "3047" },
@@ -60,7 +59,6 @@ const report = {
   owner,
   runDir,
   apiDir,
-  walletScope: values.wallet ?? null,
   frontendDir: process.cwd(),
   status: "starting",
   port,
@@ -119,7 +117,6 @@ async function runApi(name, file, extraEnv) {
     APP_ROOT: apiDir,
     NODE_OPTIONS: "--max-old-space-size=8192",
     TZ: "UTC",
-    ...(values.wallet ? { TRD136_INDEX_WALLET: values.wallet } : {}),
     DB_NAME: "trd136",
     DB_POOL_MAX: "4",
     DB_POOL_MIN: "0",
@@ -156,7 +153,7 @@ try {
   report.genesis = genesis.result;
   report.apiRevision = (await exec("git", ["-C", apiDir, "rev-parse", "HEAD"])).stdout.trim();
   const apiStatus = (await exec("git", ["-C", apiDir, "status", "--porcelain", "--untracked-files=normal"])).stdout;
-  assert.equal(apiStatus, "", "Commit the reviewed local API patch before recording runtime evidence");
+  assert.equal(apiStatus, "", "Use a clean reviewed API checkout before recording runtime evidence");
   report.apiClean = true;
   report.frontendRevision = (await exec("git", ["rev-parse", "HEAD"])).stdout.trim();
   await docker("image", "inspect", "postgres:15");
@@ -235,17 +232,6 @@ try {
           Array.isArray(markets) && markets.length > 0 && markets.every((m) => m.tradeMath === "gmsol"),
           "Compatible real markets are required"
         );
-        if (values.wallet) {
-          const outside =
-            values.wallet === "11111111111111111111111111111112"
-              ? "11111111111111111111111111111113"
-              : "11111111111111111111111111111112";
-          const refusal = await fetch(`http://127.0.0.1:${port}/v1/orders?address=${outside}`, {
-            signal: AbortSignal.timeout(3000),
-          });
-          assert.equal(refusal.status, 400, "API must explicitly reject wallets outside its local scope");
-          assert.equal((await refusal.json()).code, "WALLET_OUT_OF_SCOPE");
-        }
         report.status = "ready";
         report.readyAt = new Date().toISOString();
         report.marketCount = markets.length;
