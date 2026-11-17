@@ -1,5 +1,9 @@
 The shared trade and position helpers opt into gmsol math through data. They do not read a chain id or load Solana packages.
 
+Native state calculations
+
+`getGmsolPoolValue`, `getGmsolMarketStatus`, `getGmsolPendingPositionFees` and `getGmsolOrderFeeDiscountFactor` are exported from `utils/gmsol` for data producers. Their data-only inputs use native units: USD and factors have 20 decimals, prices are USD × 10^20 per raw token unit, cumulative funding amounts per size have 30 decimals, and clocks are Unix seconds. These inputs are not the 30-decimal `MarketInfo` used by trade previews. Borrowing fees are returned in native USD; funding and claimable amounts are raw token units. Adapters convert USD and factors to 30 decimals when producing the API fields described below. Account decoding, RPC access and storage stay with the caller.
+
 API contract
 
 `/v1/markets/config` must serve these optional `MarketConfig` / `MarketInfo` fields for Solana markets:
