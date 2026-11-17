@@ -48,29 +48,36 @@ afterEach(() => {
 });
 
 describe("Solana API reads", () => {
-  it("uses the current EVM context when encoding approvals", () => {
-    for (const options of [{ chainId: ARBITRUM }, { networkId: ARBITRUM }] as const) {
-      for (const replaceContext of [false, true]) {
-        const sdk = new GmxApiSdk(options);
-        if (replaceContext) {
+  it("uses the current chain for approvals and rejects Solana EVM operations", () => {
+    for (const chainId of [ARBITRUM, SOLANA_NETWORK_ID] as const) {
+      for (const update of ["field", "context", "spread"] as const) {
+        const sdk = new GmxApiSdk({ chainId });
+        if (update === "context") {
           sdk.ctx = { chainId: AVALANCHE, api: sdk.ctx.api };
+        } else if (update === "spread") {
+          sdk.ctx = { ...sdk.ctx, chainId: AVALANCHE };
         } else {
           sdk.ctx.chainId = AVALANCHE;
         }
-        const transaction = sdk.buildApproveTransaction({
+        const params = {
           tokenAddress: "0x0000000000000000000000000000000000000001",
-          spender: "router",
+          spender: "router" as const,
           amount: 1n,
-        });
+        };
+        const transaction = sdk.buildApproveTransaction(params);
         const decoded = decodeFunctionData({ abi: ERC20ABI, data: transaction.data });
         expect(decoded.functionName).toBe("approve");
         expect(decoded.args).toEqual([getContract(AVALANCHE, "SyntheticsRouter"), 1n]);
+        expect(sdk.ctx.chainId).toBe(AVALANCHE);
+        sdk.ctx.chainId = SOLANA_NETWORK_ID;
+        expect(sdk.ctx.chainId).toBe(SOLANA_NETWORK_ID);
+        expect(() => sdk.buildApproveTransaction(params)).toThrow("EVM operations require an EVM chainId");
       }
     }
   });
 
   it("preserves referral case and fee precision, rejecting malformed required fields", async () => {
-    const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
+    const sdk = new GmxApiSdk({ chainId: SOLANA_NETWORK_ID });
     const fields = [
       "totalRebate",
       "totalRebateFactor",
@@ -125,7 +132,7 @@ describe("Solana API reads", () => {
   });
 
   it("passes slot floors and returns each response slot without changing account data", async () => {
-    const sdk = new GmxApiSdk({ networkId: SOLANA_NETWORK_ID });
+    const sdk = new GmxApiSdk({ chainId: SOLANA_NETWORK_ID });
     const headers = [undefined, "", "-1", "1.5", "9007199254740992", "invalid", "0", "123"];
     for (const method of ["fetchOrders", "fetchPositionsInfo"] as const) {
       for (const minContextSlot of [undefined, 0, 123]) {
@@ -157,7 +164,7 @@ describe("Solana API reads", () => {
 
   it("keeps response metadata local when account reads finish out of order", async () => {
     const sdk = new GmxApiSdk({
-      networkId: SOLANA_NETWORK_ID,
+      chainId: SOLANA_NETWORK_ID,
       api: new HttpClientWithFallback(["https://first.example", "https://second.example"]),
     });
     let resolveFirst!: (value: Response) => void;

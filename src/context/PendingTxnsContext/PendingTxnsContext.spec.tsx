@@ -126,7 +126,7 @@ describe("pending wallet transaction replacements", () => {
     expect(context.pendingTxns).toEqual([]);
     expect(transaction.onError).toHaveBeenCalledTimes(status === 0 ? 1 : 0);
     expect(mocks.success).toHaveBeenCalledTimes(status);
-    expect(mocks.getPublicClient).toHaveBeenCalledWith(42161);
+    expect(mocks.getPublicClient).toHaveBeenCalledWith(42161, { skipSolanaGate: true });
     expect(mocks.getProvider).toHaveBeenCalledWith(undefined, 42161);
   });
 

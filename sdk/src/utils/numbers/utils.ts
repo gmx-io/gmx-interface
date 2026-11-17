@@ -45,6 +45,7 @@ export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
+const MIN_EXCEEDING_THRESHOLD_DECIMALS = 2;
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
@@ -249,7 +250,11 @@ export function formatUsdParts(usd?: bigint, opts: FormatUsdOptions = {}): Numbe
   const maybePlus = opts.displayPlus ? "+" : "";
   const sign = usd < 0n ? "-" : maybePlus;
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol}\u00a0` : "";
-  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, displayDecimals, true);
+  const valueDecimals =
+    exceedingInfo.symbol === TRIGGER_PREFIX_BELOW
+      ? Math.max(displayDecimals, MIN_EXCEEDING_THRESHOLD_DECIMALS)
+      : displayDecimals;
+  const displayUsd = formatAmount(exceedingInfo.value, USD_DECIMALS, valueDecimals, true);
   return numberParts(symbol, sign, USD_PART, displayUsd);
 }
 
@@ -260,9 +265,12 @@ export function formatUsd(usd?: bigint, opts: FormatUsdOptions = {}) {
 }
 
 export function formatBigUsdParts(amount: bigint, opts: { displayDecimals?: number } = {}) {
+  // whole dollars would show a few cents as $0
+  const defaultDisplayDecimals = amount !== 0n && roundsToZero(amount, USD_DECIMALS, 0) ? 2 : 0;
+
   return formatUsdParts(amount, {
     maxThreshold: "9999999999999999999999999",
-    displayDecimals: opts.displayDecimals ?? 0,
+    displayDecimals: opts.displayDecimals ?? defaultDisplayDecimals,
   })!;
 }
 

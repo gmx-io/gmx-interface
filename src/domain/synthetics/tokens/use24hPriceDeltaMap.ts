@@ -3,6 +3,8 @@ import useSWR from "swr";
 import { Address } from "viem";
 
 import { isSolanaNetwork } from "config/chains";
+import { selectChartDataProvider } from "context/SyntheticsStateContext/selectors/chartDataSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
@@ -27,21 +29,19 @@ export function use24hPriceDeltaMap(
 ): PriceDeltaMap | undefined {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
   const { networkId } = useChainId();
+  const chartDataProvider = useSelector(selectChartDataProvider);
   // On Solana chainId stays Arbitrum and the SDK has no Solana mints, so deltas come keyed by mint
   // through each token's arbitrumTokenAddress.
   const isSolana = isSolanaNetwork(networkId);
 
   const { data } = useSWR<PriceDeltaResponse>(
-    [isSolana ? networkId : chainId, oracleKeeperFetcher.url, "use24PriceDelta"],
+    isSolana && !chartDataProvider
+      ? null
+      : [isSolana ? networkId : chainId, oracleKeeperFetcher.url, "use24PriceDelta"],
     {
       fetcher: async (): Promise<PriceDeltaResponse> => {
         const response: PriceDeltaResponse = isSolana
-          ? {
-              network: "solana",
-              deltas: await import("domain/gmsol/tokens/fetchGmsol24hPriceDeltas").then(
-                ({ fetchGmsol24hPriceDeltas }) => fetchGmsol24hPriceDeltas(oracleKeeperFetcher)
-              ),
-            }
+          ? { network: "solana", deltas: await chartDataProvider!.fetch24hPriceDeltas() }
           : { network: "evm", candles: await oracleKeeperFetcher.fetch24hPrices() };
 
         freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Prices24h);

@@ -1,5 +1,5 @@
-import { getSolanaResponseHandler, SolanaReadOptions } from "utils/http/solana";
-import { IHttp } from "utils/http/types";
+import { getSolanaResponseHandler } from "utils/http/solana";
+import type { IHttp, SolanaReadOptions } from "utils/http/types";
 import { assertApiFields, assertApiRecords } from "utils/http/validation";
 import { deserializeBigIntsInObject } from "utils/numbers";
 

@@ -109,6 +109,7 @@ export function getTpSlRemainingPositionWarning(p: {
   minPositionSizeUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): TpSlRemainingPositionWarning | undefined {
   const { position, minCollateralUsd, minPositionSizeUsd } = p;
 
@@ -139,6 +140,7 @@ export function getTpSlRemainingPositionWarning(p: {
       minPositionSizeUsd,
       userReferralInfo: p.userReferralInfo,
       proDiscountFactor: p.proDiscountFactor,
+      feeDiscountFactor: p.feeDiscountFactor,
     });
 
     return marginState?.isLiquidatable === true;
