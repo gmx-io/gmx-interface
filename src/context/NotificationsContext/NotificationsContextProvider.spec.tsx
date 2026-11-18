@@ -10,7 +10,6 @@ import type { NotificationsContextValue } from "./NotificationsContextProvider";
 
 const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
   mocks: {
-    isEnabled: true,
     account: undefined as string | undefined,
     permission: "default" as NotificationPermission,
     registerThisDevice: vi.fn(),
@@ -18,15 +17,15 @@ const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
     unregisterNotificationsDevice: vi.fn(),
     unsubscribe: vi.fn(),
     signMessage: vi.fn(),
+    toastError: vi.fn(),
   },
   ACCOUNT: "0x52908400098527886E0F7030069857D2E4169EE7",
   OTHER_ACCOUNT: "0x8617E340B3D01FA5F11F306F4090FD50E238070D",
   ENDPOINT: "https://fcm.googleapis.com/fcm/send/device",
 }));
 
-vi.mock("config/notifications", async (importOriginal) => ({
-  ...(await importOriginal<object>()),
-  getIsNotificationsEnabled: () => mocks.isEnabled,
+vi.mock("lib/helperToast", () => ({
+  helperToast: { error: mocks.toastError },
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({
@@ -102,7 +101,7 @@ const requestPermission = vi.fn(async (): Promise<NotificationPermission> => {
 describe("NotificationsContextProvider", () => {
   beforeEach(() => {
     localStorage.clear();
-    mocks.isEnabled = true;
+    mocks.toastError.mockReset();
     mocks.account = ACCOUNT;
     mocks.permission = "default";
     mocks.registerThisDevice.mockReset().mockResolvedValue({ endpoint: ENDPOINT });
@@ -135,18 +134,6 @@ describe("NotificationsContextProvider", () => {
     mocks.account = undefined;
 
     expect(renderNotifications().result.current.status).toBe("noWallet");
-  });
-
-  it("does nothing where notifications are not offered yet", async () => {
-    mocks.isEnabled = false;
-    mocks.permission = "granted";
-    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
-    const { result } = renderNotifications();
-
-    await act(async () => result.current.turnOn());
-
-    expect(mocks.registerThisDevice).not.toHaveBeenCalled();
-    expect(requestPermission).not.toHaveBeenCalled();
   });
 
   it("asks for permission on turn-on, registers the wallet and sends one confirmation", async () => {
@@ -238,11 +225,13 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(result.current.status).toBe("walletSwitchFailed"));
     expect(result.current.receivingAccount).toBe(ACCOUNT);
     expect(result.current.pendingAccount).toBe(OTHER_ACCOUNT);
+    expect(mocks.toastError).toHaveBeenCalledExactlyOnceWith("Notifications didn't move to your new wallet");
 
     act(() => result.current.retry());
 
     await waitFor(() => expect(result.current.status).toBe("on"));
     expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT);
+    expect(mocks.toastError).toHaveBeenCalledOnce();
   });
 
   it("drops a failed wallet switch once the receiving wallet is connected again", async () => {

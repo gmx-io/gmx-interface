@@ -1,7 +1,8 @@
+import { t } from "@lingui/macro";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import type { PropsWithChildren } from "react";
 
-import { getIsNotificationsEnabled, NOTIFICATIONS_CHAIN_ID } from "config/notifications";
+import { NOTIFICATIONS_CHAIN_ID } from "config/notifications";
 import {
   getIsInvalidSignatureError,
   getIsRegistrationLimitError,
@@ -21,6 +22,7 @@ import {
   getNotificationsSupport,
   type NotificationsSupport,
 } from "domain/notifications/pushSubscription";
+import { helperToast } from "lib/helperToast";
 import { signMessage } from "lib/wallets/signing";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
@@ -44,7 +46,8 @@ export type NotificationsTestState = "sending" | "sent" | "cooldown" | "notRegis
 
 type Operation = "turningOn" | "turningOff";
 
-type RegistrationKind = "turnOn" | "open" | "walletSwitch";
+// `retry` is a wallet switch the user tries again from the tab, so it shows no toast.
+type RegistrationKind = "turnOn" | "open" | "walletSwitch" | "retry";
 
 type Issue =
   | { type: "turnOnFailed"; error: string }
@@ -55,6 +58,8 @@ type Issue =
 
 export type NotificationsContextValue = {
   status: NotificationsStatus;
+  /** The user turned notifications on for this device and has not turned them off. */
+  isTurnedOn: boolean;
   /** The wallet that gets notifications on this device, also with no wallet connected. */
   receivingAccount: string | undefined;
   /** The wallet notifications did not move to, or that needs a signature to add this device. */
@@ -72,6 +77,7 @@ const noop = () => undefined;
 
 const NotificationsContext = createContext<NotificationsContextValue>({
   status: "unsupported",
+  isTurnedOn: false,
   receivingAccount: undefined,
   pendingAccount: undefined,
   error: undefined,
@@ -170,9 +176,8 @@ function getStatus({
 }
 
 export function NotificationsContextProvider({ children }: PropsWithChildren) {
-  const isEnabled = useMemo(getIsNotificationsEnabled, []);
   const support = useMemo(getNotificationsSupport, []);
-  const [permission, setPermission] = useNotificationPermission(isEnabled && support === "supported");
+  const [permission, setPermission] = useNotificationPermission(support === "supported");
   const { account, signer } = useWallet();
   const isWalletInitializing = useIsWalletInitializing();
 
@@ -203,7 +208,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       let isSigning = false;
 
       // A newer wallet switch already replaced this one.
-      if (kind === "walletSwitch" && accountRef.current && accountRef.current !== targetAccount) {
+      if ((kind === "walletSwitch" || kind === "retry") && accountRef.current && accountRef.current !== targetAccount) {
         return;
       }
 
@@ -231,6 +236,10 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       } catch (error) {
         const message = getErrorMessage(error);
 
+        if (kind === "walletSwitch") {
+          helperToast.error(t`Notifications didn't move to your new wallet`);
+        }
+
         if (getIsInvalidSignatureError(error)) {
           updateStored({ signature: undefined });
         }
@@ -244,7 +253,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         } else if (isSigning) {
           // The wallet did not sign.
           setIssue({ type: "limitReached", account: targetAccount, error: message });
-        } else if (kind === "walletSwitch") {
+        } else if (kind === "walletSwitch" || kind === "retry") {
           setIssue({ type: "walletSwitchFailed", account: targetAccount, error: message });
         } else if (kind === "open") {
           setIssue({ type: "syncFailed", error: message });
@@ -301,7 +310,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
   const turnOn = useCallback(() => {
     const targetAccount = account ?? storedRef.current.account;
 
-    if (!isEnabled || support !== "supported" || operation || !targetAccount) {
+    if (support !== "supported" || operation || !targetAccount) {
       return;
     }
 
@@ -318,7 +327,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         await register(targetAccount, "turnOn", getSign(targetAccount));
       }
     });
-  }, [account, getSign, isEnabled, operation, register, runOperation, setPermission, support]);
+  }, [account, getSign, operation, register, runOperation, setPermission, support]);
 
   const retry = useCallback(() => {
     if (operation) {
@@ -326,7 +335,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
     }
 
     if (issue?.type === "walletSwitchFailed" && account) {
-      runOperation("turningOn", () => register(account, "walletSwitch", getSign(account)));
+      runOperation("turningOn", () => register(account, "retry", getSign(account)));
       return;
     }
 
@@ -392,7 +401,8 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
   useEffect(
     function syncDevice() {
-      if (!isEnabled || support !== "supported" || isWalletInitializing) {
+      // A device that never turned on sends nothing to the API.
+      if (support !== "supported" || isWalletInitializing) {
         return;
       }
 
@@ -427,7 +437,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         );
       }
     },
-    [account, enqueue, isEnabled, isWalletInitializing, register, support, unregisterLeftEndpoint]
+    [account, enqueue, isWalletInitializing, register, support, unregisterLeftEndpoint]
   );
 
   const value = useMemo((): NotificationsContextValue => {
@@ -435,6 +445,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
     return {
       status,
+      isTurnedOn: stored.enabled,
       receivingAccount: stored.account,
       pendingAccount:
         issue?.type === "walletSwitchFailed" || issue?.type === "limitReached" ? issue.account : undefined,

@@ -1043,6 +1043,10 @@ msgstr "決済可能な未収ファンディング手数料"
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "esGMXをGMXトークンに変換します。ボールトを使用する前にベスティングの詳細をお読みください。"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "On a computer, the browser must be running, but no GMX tab needs to be open"
+msgstr "パソコンではブラウザが起動している必要がありますが、GMX のタブを開いておく必要はありません"
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the Affiliate vesting vault"
 msgstr "送信者がアフィリエイトのベスティングボールトからすべてのトークンを出金済み"
@@ -1153,6 +1157,10 @@ msgstr "オフにする"
 msgid "Minimum required margin"
 msgstr "最低必要証拠金"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Open Settings → Notifications → GMX → Allow Notifications"
+msgstr "設定 → 通知 → GMX → 通知を許可 を開いてください"
+
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Trading fees, borrow fees, liquidations, swaps."
 msgstr "取引手数料、借入手数料、清算、スワップ。"
@@ -1219,10 +1227,6 @@ msgstr "プロトコル手数料の27%をTreasuryの買い戻しに充当 — GM
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap fees"
 msgstr "スワップ手数料"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "GMX alerts"
-msgstr "GMXアラート"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Expired Market Decrease"
@@ -1641,6 +1645,10 @@ msgstr "報酬"
 msgid "<0>Yes — the two programs stack. You can trade on your discounted tier while also earning affiliate rebates from anyone you refer.</0>"
 msgstr "<0>はい — 2つのプログラムは併用可能です。割引ティアで取引しながら、ご自身が紹介した相手からアフィリエイトリベートを得ることもできます。</0>"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "This browser can't show notifications. Open GMX in your phone's or computer's browser."
+msgstr "このブラウザでは通知を表示できません。スマートフォンまたはパソコンのブラウザで GMX を開いてください。"
+
 #: src/components/TradeBox/TradeBoxHeaderTabs.tsx
 msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}."
 msgstr "現在の注文のレバレッジです。注文後のポジションのレバレッジ：{formattedLeverage}。"
@@ -1958,6 +1966,10 @@ msgstr "株式"
 msgid "Staking power share"
 msgstr "ステーキングパワー比率"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Disconnecting the wallet doesn't stop notifications"
+msgstr "ウォレットの接続を解除しても通知は停止しません"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "アフィリエイトです"
@@ -2270,10 +2282,6 @@ msgstr "SL 注文はありません"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Manual leverage"
 msgstr "手動レバレッジ"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Discover GMX alerts"
-msgstr "GMX アラートを確認する"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Limit Swap"
@@ -2793,6 +2801,10 @@ msgstr "シフト注文がキャンセルされました"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "安全かつパーミッションレス"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Order executed"
+msgstr "注文執行"
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Register an affiliate code to access distributions"
@@ -3588,6 +3600,10 @@ msgstr "365日間の予想手数料"
 msgid "Listings"
 msgstr "上場"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications didn't move to your new wallet {newWallet}. They still go to {receivingWallet}."
+msgstr "通知は新しいウォレット {newWallet} に移行されませんでした。引き続き {receivingWallet} に届きます。"
+
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "One-Click settings"
 msgstr "One-Click設定"
@@ -4322,6 +4338,10 @@ msgstr "<1/>のうち<0/>を受け取る"
 msgid "TypeScript SDK"
 msgstr "TypeScript SDK"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turning on..."
+msgstr "オンにしています..."
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
 msgstr "{0}プールに既存の指値注文があります<0>{1}プールに切り替える</0>"
@@ -4495,6 +4515,10 @@ msgstr "指数（正）"
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
 msgstr "この注文の一部は流動性を待っています：十分な流動性が利用可能になると約定します"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Position liquidated"
+msgstr "ポジション清算"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
@@ -4594,9 +4618,9 @@ msgstr "{indexTokenText}のロングに{amountText}を入金中..."
 msgid "Position not found. It may have been closed."
 msgstr "ポジションが見つかりません。すでに決済された可能性があります。"
 
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Trade confirmations"
-msgstr "取引確認"
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Trading"
+msgstr "取引"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 msgid "Month"
@@ -4832,6 +4856,10 @@ msgstr "再認証が必要となるまでの最大日数"
 msgid "Minimum {0} capital required for rankings"
 msgstr "ランキングには最低 {0} の資本が必要です"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications stop after 30 days without opening GMX on this device"
+msgstr "このデバイスで 30 日間 GMX を開かないと、通知は停止します"
+
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Request to be contacted"
 msgstr "連絡をリクエストする"
@@ -5045,6 +5073,10 @@ msgstr "このウォレットはネットワーク固有の署名を生成しま
 msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
 msgstr "<0>ウォレットが別のアカウントに切り替わりました</0><1/><2>{0}での署名には、開始時と同じアカウントが必要です。別のアカウントを選択せず、ウォレットで現在のアカウントに{1}を追加してからもう一度お試しください。</2>"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turning off..."
+msgstr "オフにしています..."
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "One-Click"
 msgstr "One-Click"
@@ -5123,6 +5155,10 @@ msgstr "承認された数量が必要な数量を下回っています。再度
 msgid "Close the full position, change the trigger price, or add margin."
 msgstr "ポジションを全決済するか、トリガー価格を変更するか、証拠金を追加してください。"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Try again"
+msgstr "再試行"
+
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "エラー名:"
@@ -5130,6 +5166,10 @@ msgstr "エラー名:"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "マーケット構成"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your Limit, Take-Profit, Stop-Loss or Stop Market order executes"
+msgstr "リミット、テイクプロフィット、ストップロス、ストップマーケット注文が執行されたとき"
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5276,6 +5316,10 @@ msgstr "手数料なし · 約2–10分、別ステップ"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
 msgstr "パーミットに署名"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Tap Share → Add to Home Screen, then open GMX from the Home Screen"
+msgstr "共有 → ホーム画面に追加 をタップし、ホーム画面から GMX を開いてください"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
@@ -6081,6 +6125,10 @@ msgstr "あなたの取引高"
 msgid "Fail external swaps"
 msgstr "外部スワップを失敗させる"
 
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Debug"
+msgstr "デバッグ"
+
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -6319,6 +6367,10 @@ msgstr "TVL (供給)"
 msgid "Shorts"
 msgstr "ショート"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "This wallet already gets notifications on 10 devices. Adding this one needs its signature."
+msgstr "このウォレットはすでに 10 台のデバイスで通知を受け取っています。このデバイスを追加するには、ウォレットの署名が必要です。"
+
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 180d"
 msgstr "過去180日"
@@ -6479,6 +6531,10 @@ msgstr "パーミット署名を検証できませんでした。"
 #: src/components/TradeHistory/keys.ts
 msgid "Expired withdraw"
 msgstr "期限切れの出金"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "GMX sent a notification to this device. If it doesn't arrive, check your system's notification settings."
+msgstr "GMX がこのデバイスに通知を送信しました。届かない場合は、システムの通知設定を確認してください。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6985,10 +7041,6 @@ msgstr "{0, plural, other {{markets} の取引を新しい USDG プールへ移�
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
 msgstr "<0>パーミット承認に失敗しました。標準の承認トランザクションが必要です。トークンを承認して再度お試しください</0>"
 
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
-msgstr "<0>通知はNotifiが提供しており、NotifiはGMXと提携していません。購読することで、Notifiに提供した情報がその</0><1>プライバシーポリシー</1><2>および</2><3>利用規約</3>に従うことに同意します。"
-
 #: src/domain/synthetics/fees/networkFeeSource.ts
 msgid "Deposit {tokenSymbol}."
 msgstr "{tokenSymbol}を入金してください。"
@@ -7004,6 +7056,10 @@ msgstr "Avalanche Fuji では受け取りをご利用いただけません"
 #: src/components/TradeHistory/PositionLifecycleFilterHeader.tsx
 msgid "Clear position history filter"
 msgstr "ポジション履歴フィルターをクリア"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Click the icon to the left of the address bar → Notifications → Allow"
+msgstr "アドレスバーの左にあるアイコン → 通知 → 許可 をクリックしてください"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -7169,6 +7225,10 @@ msgstr "Paxos手数料無料"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "日次"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Allow notifications for this site in your browser's settings"
+msgstr "ブラウザの設定で、このサイトの通知を許可してください"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -7481,6 +7541,7 @@ msgstr "GMX on Solana（GMTrade）は別のドメインで提供されていま�
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
@@ -7578,6 +7639,10 @@ msgstr "これはKyberSwap経由でルーティングされる外部スワップ
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "GMX APR"
 msgstr "GMX APR"
+
+#: src/context/NotificationsContext/NotificationsContextProvider.tsx
+msgid "Notifications didn't move to your new wallet"
+msgstr "通知は新しいウォレットに移行されませんでした"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Enter hex error data above to decode it"
@@ -7712,6 +7777,10 @@ msgstr "<0>One-Click Trading の承認が古くなっていたため更新しま
 msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH"
 msgstr "ポイントは、GMX MegaETHでの累計取引高に基づいて付与されます"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Delivery isn't guaranteed. Don't rely on notifications as your only risk control."
+msgstr "配信は保証されません。通知だけをリスク管理の手段にしないでください。"
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "{0, plural, one {# ポジション} other {# ポジション}} の決済リクエストを送信しました"
@@ -7834,6 +7903,10 @@ msgstr "全期間"
 msgid "Stay safe from <0/> liquidations"
 msgstr "清算から<0/>身を守りましょう"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications on this device"
+msgstr "このデバイスの通知"
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High net price impact"
 msgstr "ネット価格への影響が大きい"
@@ -7916,6 +7989,10 @@ msgstr "すべての手数料控除後の純価値とPnLを表示"
 #: landing/src/pages/TraderAffiliateProgram/HeroSection.tsx
 msgid "GMX cumulative volume"
 msgstr "GMX累計取引高"
+
+#: src/components/SettingsModal/SettingsModal.tsx
+msgid "Display"
+msgstr "表示"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8403,10 +8480,6 @@ msgstr "クローズ前の受取額"
 msgid "Requires more active management than GLV"
 msgstr "GLVより積極的な管理が必要です"
 
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Governance alerts"
-msgstr "ガバナンスアラート"
-
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "{symbol}の残高が少なくなっています。この金額では、GMX Accountで今後発生する手数料に充てる余裕がほとんどありません。"
@@ -8474,6 +8547,10 @@ msgstr "シンボル（AからZ）"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "チャートに表示する購入/売却マークを選択します：過去のすべての取引、現在保有中のポジションのみ、または表示しない"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Tap the icon to the left of the address bar → Permissions → Notifications"
+msgstr "アドレスバーの左にあるアイコン → 権限 → 通知 をタップしてください"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
@@ -8550,6 +8627,10 @@ msgstr "GMXロゴ"
 #: src/components/Errors/errorToasts.tsx
 msgid "Using Safe? Learn how to add a network"
 msgstr "Safeをご利用ですか？ネットワークの追加方法はこちら"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device."
+msgstr "オンにすると、このデバイスで清算と注文の通知を受け取れます。"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Minutes"
@@ -9037,10 +9118,6 @@ msgstr "手数料控除前の確定損益（PnL）"
 msgid "24H%"
 msgstr "24時間%"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Trading settings"
-msgstr "取引設定"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpie"
 msgstr "Perpie"
@@ -9273,6 +9350,10 @@ msgstr "エントリー価格"
 msgid "Set stop price above mark price"
 msgstr "ストップ価格をマーク価格より上に設定してください"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "In Brave, turn on \"Use Google services for push messaging\" in Settings → Privacy and security. Then try again."
+msgstr "Brave の 設定 → プライバシーとセキュリティ で「プッシュメッセージングにGoogleサービスを使用」をオンにしてから、もう一度お試しください。"
+
 #. to network
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "<0>To </0><1>{0}</1>"
@@ -9430,6 +9511,10 @@ msgstr "有効なBalancerプログラムコード"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 msgid "Max amount exceeded"
 msgstr "最大値超過"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Turn them on to get liquidation and order notifications on this device. Your browser will ask you to allow them."
+msgstr "オンにすると、このデバイスで清算と注文の通知を受け取れます。ブラウザから通知の許可を求められます。"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {nativeTokenSymbol} in your Wallet for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
@@ -9838,10 +9923,6 @@ msgstr "利用可能なスワップ経路がありません"
 msgid "Execute Stop-Loss"
 msgstr "ストップロスを実行"
 
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Powered by"
-msgstr "提供:"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Buy order executed"
@@ -9866,10 +9947,6 @@ msgstr "インパーマネントロスを最小化するため、アクティブ
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below liquidation price"
 msgstr "トリガー価格を清算価格より下に設定してください"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Trade errors"
-msgstr "取引エラー"
 
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
@@ -10333,6 +10410,7 @@ msgid "Leaves no {symbol} in your {source} for future Express fees"
 msgstr "今後のExpress手数料のための{symbol}は{source}に残りません"
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsModal/SettingsModal.tsx
 msgid "Notifications"
 msgstr "通知"
 
@@ -10513,7 +10591,6 @@ msgstr "終了"
 msgid "Recently listed"
 msgstr "新規上場"
 
-#: src/components/NotifyModal/NotifyModal.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements"
 msgstr "GMXのお知らせ"
@@ -11005,10 +11082,6 @@ msgstr "受取"
 msgid "ENDPOINT"
 msgstr "エンドポイント"
 
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Display settings"
-msgstr "表示設定"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 msgstr "GLV内のGM：{0} [{1}] の流動性が不足しています。別のプールを選択するか、売却数量を減らすか、複数のプールに分けて出金してください。"
@@ -11486,6 +11559,10 @@ msgstr "少額資産を表示（{0}）"
 msgid "Fulfilling order request..."
 msgstr "注文リクエストを実行中…"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Couldn't turn them on: the notification service didn't answer."
+msgstr "オンにできませんでした：通知サービスから応答がありません。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative impact factor"
 msgstr "ネガティブインパクトファクター"
@@ -11670,6 +11747,10 @@ msgstr "取引履歴"
 msgid "Exposure to backing tokens"
 msgstr "裏付けトークンへのエクスポージャー"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications cover positions and orders on Arbitrum only"
+msgstr "通知の対象は Arbitrum 上のポジションと注文のみです"
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
 msgstr "タイプを検索"
@@ -11691,6 +11772,10 @@ msgstr "成行注文"
 msgid "Buying"
 msgstr "購入中"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Connect a wallet to get liquidation and order notifications on this device."
+msgstr "ウォレットを接続すると、このデバイスで清算と注文の通知を受け取れます。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"
 msgstr "アンステーク申請を送信しました"
@@ -11702,10 +11787,6 @@ msgstr "シフト"
 #: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "EVM networks only"
 msgstr "EVMネットワーク専用"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Liquidation risk alerts"
-msgstr "清算リスクアラート"
 
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -11970,6 +12051,7 @@ msgstr "新しい金額または価格を入力してください"
 msgid "Stake {tokenSymbol}"
 msgstr "{tokenSymbol}をステーク"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/ShareModal/useShareCardActions.ts
 msgid "Link copied to clipboard"
 msgstr "リンクがクリップボードにコピーされました"
@@ -12274,6 +12356,10 @@ msgstr "トラッカー"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
 msgstr "<0>初めて<1>@GMX_IO</1>を使ってみた。 </0><2> かなりすごい体験だった - スリッページなし、約定も速い</2><3> サイズ上限は低いけど、デジェンなギャンブルをするには楽しい</3>"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Good to know"
+msgstr "知っておくべきこと"
+
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -12366,10 +12452,6 @@ msgstr "プールのショート数量"
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Fee APY"
 msgstr "手数料APY"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Trading pair price alerts"
-msgstr "取引ペアの価格アラート"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 msgid "Direct deposits into this pool are open to whitelisted addresses. GLV [USDG] gives you the same markets in one deposit. To get whitelisted, message <0>@GMXPartners</0> on Telegram and mention \"USDG whitelist\"."
@@ -12511,10 +12593,6 @@ msgstr "エクスポートを完了できませんでした。ファイルはダ
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade in a new tab"
 msgstr "新しいタブでGMTradeを開く"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
-msgstr "GMXからのアラートとお知らせを受け取り、取引や清算リスクなどを常に把握しましょう"
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Backing token price changes, PnL, funding fees."
@@ -12680,6 +12758,10 @@ msgstr "ウォレット"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "トリガー価格を入力"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Do Not Disturb can silence or delay notifications"
+msgstr "おやすみモードでは通知が消音または遅延することがあります"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
@@ -12964,6 +13046,10 @@ msgstr "{pools}は{verb}上場廃止されます。入金ができなくなる�
 msgid "Status"
 msgstr "ステータス"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Share link"
+msgstr "リンクを共有"
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"
 msgstr "30秒"
@@ -13083,10 +13169,6 @@ msgstr "主にArbitrumの個人用ウォレットから取引する場合"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Going live or already live"
 msgstr "リリース間近、またはすでに稼働中"
-
-#: src/components/NotifyModal/NotifyModal.tsx
-msgid "Liquidation confirmations"
-msgstr "清算確認"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Negative funding fees"
@@ -13313,6 +13395,10 @@ msgstr "現在のリザーブ量"
 msgid "Swap route unavailable for: {0}"
 msgstr "次の資産ではスワップルートを利用できません: {0}"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "On iPhone and iPad, notifications only work when GMX is on the Home Screen."
+msgstr "iPhone と iPad では、GMX がホーム画面にある場合にのみ通知が届きます。"
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} failed to settle: {cancellationReason}"
 msgstr "{positionName}の手数料精算に失敗しました: {cancellationReason}"
@@ -13335,6 +13421,10 @@ msgstr "出金リクエスト"
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 30d"
 msgstr "過去30日"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "You blocked notifications for GMX in this browser, so GMX can't ask again."
+msgstr "このブラウザで GMX の通知をブロックしているため、GMX から再度許可を求めることはできません。"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
@@ -13386,6 +13476,10 @@ msgstr "ウォレットのリクエストの有効期限が切れました。も
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Proportional stored impact"
 msgstr "比例配分された蓄積インパクト"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Receiving as {receivingWallet}. Turning off won't affect your other devices."
+msgstr "{receivingWallet} として受信中。オフにしても他のデバイスには影響しません。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "1h"
@@ -13563,6 +13657,10 @@ msgstr "借入手数料"
 msgid "Continue"
 msgstr "続行"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "When your position is liquidated"
+msgstr "ポジションが清算されたとき"
+
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "~2–10 min or longer, may arrive in parts"
 msgstr "約2–10分以上、分割して届く場合あり"
@@ -13736,6 +13834,7 @@ msgid "No distributions to claim"
 msgstr "受け取り可能な分配はありません"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/SettingsModal/NotificationsSettings.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Copy link"
 msgstr "リンクをコピー"
@@ -13827,10 +13926,6 @@ msgstr "ウォレット内のGMX"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period profit"
 msgstr "期間利益"
-
-#: src/components/SettingsModal/SettingsModal.tsx
-msgid "Debug settings"
-msgstr "デバッグ設定"
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX"
@@ -13937,6 +14032,10 @@ msgstr "シェアする"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "デリバティブポートフォリオトラッカー"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Notifications aren't saved, so there's no history"
+msgstr "通知は保存されないため、履歴はありません"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."

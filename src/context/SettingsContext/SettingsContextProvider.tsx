@@ -1,5 +1,5 @@
 import noop from "lodash/noop";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, getExecutionFeeConfig, isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -44,6 +44,8 @@ import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type BuySellIconsMode = "off" | "current" | "all";
+
+export type SettingsTab = "trading" | "display" | "notifications" | "debug";
 
 const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
 
@@ -104,6 +106,10 @@ export type SettingsContextType = {
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
+  /** The tab the Settings modal switches to when it opens. */
+  settingsTab: SettingsTab | undefined;
+  setSettingsTab: (tab: SettingsTab | undefined) => void;
+  openSettingsTab: (tab: SettingsTab) => void;
 
   expressOrdersEnabled: boolean;
   setExpressOrdersEnabled: (val: boolean) => void;
@@ -150,6 +156,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [settingsTab, setSettingsTab] = useState<SettingsTab>();
+  const openSettingsTab = useCallback((tab: SettingsTab) => {
+    setSettingsTab(tab);
+    setIsSettingsVisible(true);
+  }, []);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [isErrorBoundaryDebugEnabled, setIsErrorBoundaryDebugEnabled] = useLocalStorageSerializeKey(
     DEBUG_ERROR_BOUNDARY_KEY,
@@ -411,6 +422,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       isSettingsVisible,
       setIsSettingsVisible,
+      settingsTab,
+      setSettingsTab,
+      openSettingsTab,
 
       expressOrdersEnabled:
         expressOrdersEnabled! && canSignTypedData && (!isSolanaNetwork(networkId) || expressSupported),
@@ -485,6 +499,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    settingsTab,
+    openSettingsTab,
     networkId,
     expressSupported,
     expressOrdersEnabled,

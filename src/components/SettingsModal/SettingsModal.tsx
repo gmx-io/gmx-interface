@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { getNetworkFeatures } from "config/features";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { type SettingsTab, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
@@ -24,22 +24,19 @@ import Tabs from "components/Tabs/Tabs";
 
 import { DebugSettings } from "./DebugSettings";
 import { DisplaySettings } from "./DisplaySettings";
+import { NotificationsSettings } from "./NotificationsSettings";
 import { TradingMode } from "./shared";
 import { TradingSettings } from "./TradingSettings";
 
-let SETTINGS_TABS: ("trading" | "display" | "debug")[] = [];
-if (isDevelopment()) {
-  SETTINGS_TABS = ["trading", "display", "debug"];
-} else {
-  SETTINGS_TABS = ["trading", "display"];
-}
-
-type SettingsTab = (typeof SETTINGS_TABS)[number];
+const SETTINGS_TABS: SettingsTab[] = isDevelopment()
+  ? ["trading", "display", "notifications", "debug"]
+  : ["trading", "display", "notifications"];
 
 const TAB_LABELS = {
-  trading: msg`Trading settings`,
-  display: msg`Display settings`,
-  debug: msg`Debug settings`,
+  trading: msg`Trading`,
+  display: msg`Display`,
+  notifications: msg`Notifications`,
+  debug: msg`Debug`,
 };
 
 export function SettingsModal({
@@ -270,6 +267,14 @@ export function SettingsModal({
     }
   }, [activeTab, tabOptions]);
 
+  const { settingsTab, setSettingsTab } = settings;
+  useEffect(() => {
+    if (isSettingsVisible && settingsTab) {
+      setActiveTab(settingsTab);
+      setSettingsTab(undefined);
+    }
+  }, [isSettingsVisible, settingsTab, setSettingsTab]);
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -281,7 +286,7 @@ export function SettingsModal({
       desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
+        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="underline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           {showTradingSettings && (
             <TabWrapper tab="trading" activeTab={activeTab}>
@@ -299,6 +304,9 @@ export function SettingsModal({
           )}
           <TabWrapper tab="display" activeTab={activeTab}>
             <DisplaySettings />
+          </TabWrapper>
+          <TabWrapper tab="notifications" activeTab={activeTab}>
+            <NotificationsSettings isSettingsVisible={isSettingsVisible} />
           </TabWrapper>
           <TabWrapper tab="debug" activeTab={activeTab}>
             <DebugSettings isSettingsVisible={isSettingsVisible} />
