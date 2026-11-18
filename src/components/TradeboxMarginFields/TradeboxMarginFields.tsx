@@ -87,8 +87,7 @@ export function TradeboxMarginFields({
   const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
   // For limit orders, use trigger price for USD↔token conversion so the displayed
-  // position size reflects the limit fill price. Each trigger price keystroke
-  // recomputes this, but the size-sync effect guards against overwriting focused fields.
+  // position size reflects the limit fill price.
   const sizeTriggerPrice = isLimit ? triggerPrice : undefined;
   const sizeConversionPrice = sizeTriggerPrice ?? markPrice;
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
@@ -147,6 +146,8 @@ export function TradeboxMarginFields({
     prevSizeTriggerPriceRef.current = sizeTriggerPrice;
   }, [sizeTriggerPrice, sizeDisplayMode]);
 
+  // Runs on sizeTriggerPrice too, so a force is consumed in the same commit even when the conversion price
+  // didn't move (limit equal to mark) instead of firing on a later unrelated run.
   useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
@@ -170,6 +171,7 @@ export function TradeboxMarginFields({
       setSizeInputValue(usdValue);
     }
   }, [
+    sizeTriggerPrice,
     focusedInput,
     sizeDisplayMode,
     sizeInputValue,
