@@ -571,7 +571,7 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
     return EMPTY_ARRAY;
   }
 
-  if (position.marketInfo.tradeMath === "gmsol") {
+  if (position.marketInfo?.tradeMath === "gmsol") {
     const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
     if (!collateralToken) return EMPTY_ARRAY;
     const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);

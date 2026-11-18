@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { GMSOL_TOKENS } from "config/gmsol/tokens";
 import type { PositionInfo } from "domain/synthetics/positions";
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
@@ -10,8 +9,8 @@ import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
-import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import type { TokensData } from "sdk/utils/tokens/types";
 import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck";
@@ -123,7 +122,8 @@ function createState(p: {
 }
 
 describe("position seller — remaining position after a market partial close", () => {
-  it.each(["USDC", "WSOL"])("offers supported Solana %s receive tokens without EVM swap routes", (symbol) => {
+  it.each(["USDC", "WSOL"])("offers supported Solana %s receive tokens without EVM swap routes", async (symbol) => {
+    const { GMSOL_TOKENS } = await import("config/gmsol/tokens");
     const mint = GMSOL_TOKENS.find((token) => token.symbol === symbol)!;
     const collateral = { ...USDC_TOKEN, ...mint, isWrapped: symbol === "WSOL" };
     const native = { ...ETH_TOKEN, address: NATIVE_TOKEN_ADDRESS, wrappedAddress: collateral.address };
