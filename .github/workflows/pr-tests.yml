@@ -6,8 +6,12 @@ on:
       - master
       - release
       - "release-*"
-    types: [opened, edited, synchronize, reopened]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   ci:
@@ -25,11 +29,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build SDK
-        run: |
-          cd sdk
-          yarn build
 
       - name: Run linting
         run: yarn lint:ci
