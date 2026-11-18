@@ -1236,10 +1236,6 @@ msgstr "만료된 Market Decrease"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오</0>"
 
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -4504,6 +4500,10 @@ msgstr "수수료 (스왑 포함)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "지수 (양수)"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "거래소나 지갑에서 보낼 때는 <0>{chainName} 네트워크</0>를 선택하십시오. 다른 네트워크로 보낸 자금은 묶일 수 있습니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
