@@ -153,6 +153,29 @@ it("validates pinned WASM create, update and cancel transactions for both sides 
       }
     }
 });
+it("builds collateral-only market orders and keeps every other order sized TRD-83", async () => {
+  for (const kind of ["MarketIncrease", "MarketDecrease"] as const)
+    for (const isLong of [true, false]) {
+      const plan = await build([{ ...order(kind, isLong), sizeDeltaUsd: 0n, collateralDeltaAmount: 1000000n }]);
+      await validateGmsolTransactionPlan(plan);
+      const create = plan.groups
+        .flat()
+        .flatMap((bytes) => decodeGmsolTransaction(bytes, plan).message.instructions)
+        .filter((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)
+        .map((ix) => decodeGmsolInstruction(copySolanaBytes(ix.data!), [...ix.accounts!].map((a) => a.address)))
+        .find((ix) => ix.name === "create_order_v2")!;
+      create.reader.read(32);
+      expect(readCreateOrderParams(create.reader)).toMatchObject({ size: 0n, amount: 1000000n });
+    }
+  for (const [kind, sizeDeltaUsd, collateralDeltaAmount] of [
+    ["MarketIncrease", 0n, 0n],
+    ["MarketDecrease", 0n, 0n],
+    ["LimitIncrease", 0n, 1000000n],
+    ["LimitDecrease", 0n, 1000000n],
+    ["StopLossDecrease", 0n, 1000000n],
+  ] as const)
+    expect(() => toGmsolOrderParams({ ...order(kind), sizeDeltaUsd, collateralDeltaAmount })).toThrow();
+});
 it("validates native SOL wrapping without allowing arbitrary token operations FESOL-56", async () => {
   const solMarket = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg")!;
   const native = {

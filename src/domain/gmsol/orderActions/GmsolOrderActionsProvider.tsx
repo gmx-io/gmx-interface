@@ -12,8 +12,10 @@ import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   buildGmsolCancelAction,
   buildGmsolCloseAction,
+  buildGmsolDepositAction,
   buildGmsolTriggerAction,
   buildGmsolUpdateAction,
+  buildGmsolWithdrawAction,
 } from "./buildOrderActions";
 import { GmsolTradeboxError } from "../tradebox/buildTradeboxOrderAction";
 import { getGmsolTradeboxErrorMessage } from "../tradebox/tradeboxErrorMessages";
@@ -22,6 +24,8 @@ import type { GmsolOrderAction } from "../transactions/types";
 import { useGmsolOrderTransactions } from "../transactions/useGmsolOrderTransactions";
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 
+// gmsol lets the owner close a pending order at any time, market orders included: there is no EVM request
+// expiration to wait for. A store-level Cancel pause or an unsettled builder fee is caught by the simulation.
 function getOrderError(order: OrderInfo) {
   const metadata = order.solana;
   if (order.isTwap || !metadata) return t`This order cannot be changed on Solana`;
@@ -157,6 +161,22 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
             title: t`Close position`,
             trackExecution: true,
             build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
+          },
+        ]),
+      depositCollateral: ({ position, payToken, amount, allowedSlippage }) =>
+        runFlow([
+          {
+            title: t`Deposit collateral`,
+            trackExecution: true,
+            build: () => buildGmsolDepositAction({ position, payToken, amount, allowedSlippage }),
+          },
+        ]),
+      withdrawCollateral: ({ position, amount, receiveToken, allowedSlippage }) =>
+        runFlow([
+          {
+            title: t`Withdraw collateral`,
+            trackExecution: true,
+            build: () => buildGmsolWithdrawAction({ position, amount, receiveToken, allowedSlippage }),
           },
         ]),
       setTriggerOrders: ({ position, entries }) => {

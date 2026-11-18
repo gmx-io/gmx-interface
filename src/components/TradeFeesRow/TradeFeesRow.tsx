@@ -334,7 +334,7 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div>{t`Net price impact`}</div>
+                <div>{isGmsol ? t`Price impact` : t`Net price impact`}</div>
                 <div>
                   <Trans>
                     (

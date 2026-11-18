@@ -8,8 +8,13 @@ import type { GmsolCreateOrder, GmsolOrderUpdate } from "./types";
 export function toGmsolOrderParams(order: GmsolCreateOrder): CreateOrderParams {
   const isIncrease = order.kind === "MarketIncrease" || order.kind === "LimitIncrease";
   const isMarket = order.kind === "MarketIncrease" || order.kind === "MarketDecrease";
-  if (order.sizeDeltaUsd <= 0n || (isIncrease && order.collateralDeltaAmount <= 0n)) {
-    throw new Error("Order size and increase collateral must be positive");
+  // A market order with no size only deposits or withdraws collateral; gmsol accepts it when the amount is positive.
+  const isCollateralOnly = isMarket && order.sizeDeltaUsd === 0n;
+  if (isCollateralOnly ? order.collateralDeltaAmount <= 0n : order.sizeDeltaUsd <= 0n) {
+    throw new Error("Order size or collateral must be positive");
+  }
+  if (isIncrease && order.collateralDeltaAmount <= 0n) {
+    throw new Error("Increase collateral must be positive");
   }
   if (
     isMarket &&
@@ -26,7 +31,7 @@ export function toGmsolOrderParams(order: GmsolCreateOrder): CreateOrderParams {
     throw new Error("Invalid unlimited acceptable price direction");
   }
   const size = appUsdToGmsolUsd(order.sizeDeltaUsd, "floor");
-  if (size === 0n) throw new Error("Order size rounds to zero");
+  if (size === 0n && !isCollateralOnly) throw new Error("Order size rounds to zero");
   return {
     market_token: order.market.marketTokenAddress,
     is_long: order.isLong,

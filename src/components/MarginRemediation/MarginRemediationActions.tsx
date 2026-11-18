@@ -60,7 +60,7 @@ export function ReplaceMarginDepositAction({
   const remediablePositionKey = useRemediablePositionKey(positionKey);
 
   if (
-    !getNetworkFeatures(networkId).collateralDeposit ||
+    !getNetworkFeatures(networkId).collateralDepositAtPrice ||
     remediablePositionKey === undefined ||
     orderKey === undefined
   ) {

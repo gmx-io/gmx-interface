@@ -1366,7 +1366,13 @@ export function AddTPSLModal({
                   }
                 />
                 <SyntheticsInfoRow
-                  label={<Trans>Net price impact / fees</Trans>}
+                  label={
+                    position.marketInfo?.tradeMath === "gmsol" ? (
+                      <Trans>Price impact / fees</Trans>
+                    ) : (
+                      <Trans>Net price impact / fees</Trans>
+                    )
+                  }
                   value={
                     activeFees ? (
                       <>

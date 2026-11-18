@@ -7,6 +7,7 @@ import { zeroAddress } from "viem";
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, isSolanaNetwork } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -1587,7 +1588,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             </AlertInfoCard>
           )}
           {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} isTwap={isTwap} />}
-          {!marginDepositSuggestionHidden && (
+          {!marginDepositSuggestionHidden && getNetworkFeatures(networkId).collateralDepositAtPrice && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
           {showIncreaseLiquidationRiskWarning && (

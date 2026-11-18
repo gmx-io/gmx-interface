@@ -39,6 +39,7 @@ import {
   selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -86,6 +87,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -131,6 +133,9 @@ export function usePositionEditorButtonState(
   const { shouldDisableValidationForTesting } = useSettings();
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
+  const solanaWallet = useSolanaWalletSession();
+  const isSolana = Boolean(solanaOrderActions);
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
@@ -179,6 +184,8 @@ export function usePositionEditorButtonState(
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     if (
+      // EVM payload builders look tokens up by EVM chain id; Solana sends through solanaOrderActions instead
+      isSolana ||
       !account ||
       !tokensData ||
       !marketsInfoData ||
@@ -301,6 +308,7 @@ export function usePositionEditorButtonState(
       cancelOrderParams: [],
     };
   }, [
+    isSolana,
     account,
     allowedSlippage,
     chainId,
@@ -364,7 +372,7 @@ export function usePositionEditorButtonState(
     spenderAddress: routerAddress,
     tokens: approvalTokens,
     allowPermit: permitBlockReason === undefined,
-    skip: isCollateralTokenFromGmxAccount,
+    skip: isCollateralTokenFromGmxAccount || isSolana,
     metric: {
       flow: "editCollateral",
       isExpress: Boolean(expressParams),
@@ -435,9 +443,13 @@ export function usePositionEditorButtonState(
   const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
       chainId,
-      isConnected: Boolean(account),
+      isConnected: isSolana ? Boolean(solanaWallet.address) : Boolean(account),
       hasOutdatedUi,
     });
+
+    if (solanaOrderActions?.error && !commonError.buttonErrorMessage) {
+      return { buttonErrorMessage: solanaOrderActions.error };
+    }
 
     const expressError = getExpressError({
       expressParams,
@@ -487,6 +499,9 @@ export function usePositionEditorButtonState(
   }, [
     chainId,
     account,
+    isSolana,
+    solanaOrderActions?.error,
+    solanaWallet.address,
     hasOutdatedUi,
     multipleWalletExtensionsChainError,
     expressParams,
@@ -565,7 +580,58 @@ export function usePositionEditorButtonState(
     );
   }, [setMinDepositValue, validationResult.buttonTooltipName]);
 
+  async function onSubmitSolana(actions: NonNullable<typeof solanaOrderActions>) {
+    if (!solanaWallet.address) {
+      openConnectModal?.();
+      return;
+    }
+
+    if (actions.hasPendingSubmission) {
+      setIsSubmitting(true);
+      try {
+        await actions.checkPendingSubmission();
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    if (
+      !position ||
+      !selectedCollateralToken ||
+      collateralDeltaAmount === undefined ||
+      isAtPriceDeposit ||
+      (validationResult.buttonErrorMessage && !shouldDisableValidationForTesting)
+    ) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const isSent = isDeposit
+        ? await actions.depositCollateral({
+            position,
+            payToken: selectedCollateralToken,
+            amount: collateralDeltaAmount,
+            allowedSlippage,
+          })
+        : await actions.withdrawCollateral({
+            position,
+            amount: collateralDeltaAmount,
+            receiveToken: selectedCollateralToken,
+            allowedSlippage,
+          });
+      if (isSent) onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   async function onSubmit() {
+    if (solanaOrderActions) {
+      return onSubmitSolana(solanaOrderActions);
+    }
+
     if (!account || !signer) {
       openConnectModal?.();
       return;
@@ -692,6 +758,14 @@ export function usePositionEditorButtonState(
     errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (isSolana && solanaOrderActions?.hasPendingSubmission) {
+    return {
+      text: isSubmitting ? t`Checking transaction status...` : t`Check transaction status`,
+      disabled: isSubmitting,
+      ...commonParams,
+    };
+  }
 
   if (multipleWalletExtensionsChainError.buttonErrorMessage) {
     return {

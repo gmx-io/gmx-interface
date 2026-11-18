@@ -8,7 +8,13 @@ import type { PositionInfo } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
 import type { DecreasePositionAmounts } from "sdk/utils/trade/types";
 
-import { buildGmsolCancelAction, buildGmsolCloseAction, buildGmsolUpdateAction } from "./buildOrderActions";
+import {
+  buildGmsolCancelAction,
+  buildGmsolCloseAction,
+  buildGmsolDepositAction,
+  buildGmsolUpdateAction,
+  buildGmsolWithdrawAction,
+} from "./buildOrderActions";
 import { GmsolTradeboxError } from "../tradebox/buildTradeboxOrderAction";
 import { WRAPPED_SOL_MINT } from "../transactions/addresses";
 
@@ -32,6 +38,8 @@ const position = (isLong: boolean) =>
     collateralToken: wsol,
     isLong,
     sizeInUsd: 100n * usd,
+    collateralAmount: 5_000_000n,
+    markPrice: 200n * usd,
   }) as unknown as PositionInfo;
 
 const decrease = {
@@ -165,5 +173,80 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
         finalOutputToken: WRAPPED_SOL_MINT,
       },
     });
+  });
+});
+
+describe("Solana collateral deposit and withdraw intents TRD-83", () => {
+  it.each([
+    { isLong: true, token: wsol, native: false, depositPrice: 201n, withdrawPrice: 199n },
+    { isLong: false, token: wsol, native: false, depositPrice: 199n, withdrawPrice: 201n },
+    { isLong: true, token: nativeSol, native: true, depositPrice: 201n, withdrawPrice: 199n },
+    { isLong: false, token: nativeSol, native: true, depositPrice: 199n, withdrawPrice: 201n },
+  ])(
+    "moves only collateral at market with worst-price slippage (long=$isLong, native=$native)",
+    ({ isLong, token, native, depositPrice, withdrawPrice }) => {
+      const deposit = buildGmsolDepositAction({
+        position: position(isLong),
+        payToken: token,
+        amount: 1_000_000n,
+        allowedSlippage: 50,
+      });
+      const withdraw = buildGmsolWithdrawAction({
+        position: position(isLong),
+        amount: 1_000_000n,
+        receiveToken: token,
+        allowedSlippage: 50,
+      });
+      if (deposit.type !== "create" || withdraw.type !== "create") throw new Error("Expected create");
+      const common = { isLong, collateralToken: WRAPPED_SOL_MINT, sizeDeltaUsd: 0n, collateralDeltaAmount: 1_000_000n };
+      expect(deposit.orders).toEqual([
+        expect.objectContaining({
+          ...common,
+          kind: "MarketIncrease",
+          acceptablePrice: depositPrice * usd,
+          payToken: WRAPPED_SOL_MINT,
+          payWithNativeSol: native,
+        }),
+      ]);
+      expect(withdraw.orders).toEqual([
+        expect.objectContaining({
+          ...common,
+          kind: "MarketDecrease",
+          acceptablePrice: withdrawPrice * usd,
+          unwrapNative: native,
+        }),
+      ]);
+    }
+  );
+
+  it.each([
+    [
+      "a deposit in another token",
+      () => buildGmsolDepositAction({ position: position(true), payToken: usdc, amount: 1n, allowedSlippage: 50 }),
+      "swap",
+    ],
+    [
+      "an empty deposit",
+      () => buildGmsolDepositAction({ position: position(true), payToken: wsol, amount: 0n, allowedSlippage: 50 }),
+      "amounts",
+    ],
+    [
+      "a withdrawal above the collateral",
+      () =>
+        buildGmsolWithdrawAction({
+          position: position(true),
+          amount: 5_000_001n,
+          receiveToken: wsol,
+          allowedSlippage: 50,
+        }),
+      "amounts",
+    ],
+    [
+      "a withdrawal in another token",
+      () => buildGmsolWithdrawAction({ position: position(true), amount: 1n, receiveToken: usdc, allowedSlippage: 50 }),
+      "receive",
+    ],
+  ] as const)("rejects %s", (_, build, code) => {
+    expect(build).toThrow(new GmsolTradeboxError(code));
   });
 });

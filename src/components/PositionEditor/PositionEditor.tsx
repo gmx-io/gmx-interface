@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useKey, useLatest } from "react-use";
 import { Address } from "viem";
 
-import { getChainName } from "config/chains";
+import { getChainName, isSolanaNetwork } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getNetworkFeatures } from "config/features";
 import { isSettlementChain } from "config/multichain";
@@ -147,6 +147,7 @@ export function PositionEditor() {
   const [operation, setOperation] = usePositionEditorOperation();
   const canDeposit = features.collateralDeposit;
   const canWithdraw = features.collateralWithdrawal;
+  const canDepositAtPrice = features.collateralDepositAtPrice;
 
   useEffect(() => {
     if (position && !canDeposit && !canWithdraw) {
@@ -170,6 +171,12 @@ export function PositionEditor() {
   const [atPriceOpenRequest, clearAtPriceOpenRequest] = usePositionEditorAtPriceOpenRequest();
   const replacingOrder = usePositionEditorReplacingOrder();
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
+
+  useEffect(() => {
+    if (depositMode === "atPrice" && !canDepositAtPrice) {
+      setDepositMode("now");
+    }
+  }, [canDepositAtPrice, depositMode, setDepositMode]);
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
@@ -209,6 +216,17 @@ export function PositionEditor() {
     depositConversionTokenAddress !== undefined ? position?.collateralTokenAddress : selectedCollateralAddress;
 
   const filteredTokensData = useMemo(() => {
+    if (isSolanaNetwork(networkId)) {
+      // the SDK token getters know no Solana mints, and synthetic index placeholders also carry a collateral
+      // wrappedAddress: only the collateral mint itself and native SOL for WSOL can be paid or received
+      return pickBy(
+        tokensData,
+        (token) =>
+          token.address === collateralOptionsAddress ||
+          (token.isNative === true && token.wrappedAddress === collateralOptionsAddress)
+      );
+    }
+
     return pickBy(
       tokensData,
       (token) =>
@@ -216,7 +234,7 @@ export function PositionEditor() {
         token.wrappedAddress === collateralOptionsAddress ||
         convertTokenAddress(chainId, token.address, "native") === collateralOptionsAddress
     );
-  }, [chainId, collateralOptionsAddress, tokensData]);
+  }, [chainId, collateralOptionsAddress, networkId, tokensData]);
 
   const options = useMemo(
     () => getCollateralOptions(Object.values(filteredTokensData), srcChainId, features.gmxAccount),
@@ -237,6 +255,10 @@ export function PositionEditor() {
       return true;
     }
 
+    if (isSolanaNetwork(networkId)) {
+      return Object.keys(filteredTokensData).length > 1;
+    }
+
     if (srcChainId === undefined) {
       if (selectedCollateralAddress === getWrappedToken(chainId)?.address) {
         return true;
@@ -246,7 +268,7 @@ export function PositionEditor() {
     }
 
     return false;
-  }, [chainId, depositConversionTokenAddress, selectedCollateralAddress, srcChainId]);
+  }, [chainId, depositConversionTokenAddress, filteredTokensData, networkId, selectedCollateralAddress, srcChainId]);
 
   const onClose = useCallback(() => {
     setEditingPositionKey(undefined);
@@ -669,7 +691,7 @@ export function PositionEditor() {
               className="PositionEditor-tabs"
               qa="operation-tabs"
             />
-            {isDeposit && (
+            {isDeposit && canDepositAtPrice && (
               <Tabs
                 onChange={setDepositMode}
                 selectedValue={depositMode}
@@ -782,7 +804,7 @@ export function PositionEditor() {
                 <div data-token-selector>
                   {hasMultipleTokens ? (
                     <PositionEditorCollateralSelector
-                      chainId={chainId}
+                      chainId={isSolanaNetwork(networkId) ? networkId : chainId}
                       selectedTokenSymbol={collateralToken?.symbol}
                       isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
                       options={options}

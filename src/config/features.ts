@@ -17,6 +17,8 @@ export type NetworkFeature =
   | "swap"
   | "collateralDeposit"
   | "collateralWithdrawal"
+  // Deposit margin "At price": a size-zero limit increase that needs auto-cancel slots, which Solana does not offer.
+  | "collateralDepositAtPrice"
   | "evmOnlyPages"
   // Positive funding waits for a claim in Claims; gmsol pays it out with the position's next order.
   | "fundingClaims"
@@ -32,15 +34,16 @@ const SOLANA_FEATURES: Record<NetworkFeature, boolean> = {
   twap: false,
   stopMarket: false,
   swap: false,
-  collateralDeposit: false,
-  collateralWithdrawal: false,
+  collateralDeposit: true,
+  collateralWithdrawal: true,
+  collateralDepositAtPrice: false,
   evmOnlyPages: false,
   fundingClaims: false,
   pendingPriceImpact: false,
   positionFeeHistory: false,
 };
 
-/** Solana is off for every listed feature. On EVM, Express and One-Click follow `getIsExpressSupported`; the rest stay available. */
+/** Solana is off for every listed feature except collateral deposits and withdrawals. On EVM, Express and One-Click follow `getIsExpressSupported`; the rest stay available. */
 export function getNetworkFeatures(networkId: number): Record<NetworkFeature, boolean> {
   if (isSolanaNetwork(networkId)) {
     return SOLANA_FEATURES;
@@ -57,6 +60,7 @@ export function getNetworkFeatures(networkId: number): Record<NetworkFeature, bo
     swap: true,
     collateralDeposit: true,
     collateralWithdrawal: true,
+    collateralDepositAtPrice: true,
     evmOnlyPages: true,
     fundingClaims: true,
     pendingPriceImpact: true,
