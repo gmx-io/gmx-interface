@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import { formatAmount } from "lib/numbers";
 
@@ -15,9 +15,7 @@ export function GlobalStats({ global, isLoading }: { global: GtPointsGlobalData 
       <div className="flex min-w-0 flex-col gap-8 max-lg:col-span-2 max-md:col-span-1">
         <GtMetric
           label={global ? <Trans>Cycle {global.cycle}</Trans> : <Trans>Current cycle</Trans>}
-          tooltip={
-            <Trans>GT is minted in cycles of 210,000 GT. Each new cycle raises the minting price by 2.1%.</Trans>
-          }
+          tooltip={t`GT is minted in cycles of 210,000 GT. Each new cycle raises the minting price by 2.1%.`}
           isLoading={isLoading}
           value={
             global ? (
@@ -45,14 +43,14 @@ export function GlobalStats({ global, isLoading }: { global: GtPointsGlobalData 
 
       <GtMetric
         label={<Trans>Current minting price</Trans>}
-        tooltip={<Trans>Price of newly minted GT in this cycle. It is also the highest possible buyback price.</Trans>}
+        tooltip={t`Price of newly minted GT in this cycle. It is also the highest possible buyback price.`}
         isLoading={isLoading}
         value={global ? formatGtPrice(global.mintingPriceUsd) : isUnavailable ? "N/A" : null}
       />
 
       <GtMetric
         label={<Trans>Total GT minted</Trans>}
-        tooltip={<Trans>All GT minted since launch.</Trans>}
+        tooltip={t`All GT minted since launch`}
         isLoading={isLoading}
         value={global ? `${formatAmount(global.totalMinted, GT_DECIMALS, 0, true)} GT` : isUnavailable ? "N/A" : null}
       />

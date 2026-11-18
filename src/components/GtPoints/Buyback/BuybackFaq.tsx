@@ -8,7 +8,7 @@ const BUYBACK_FAQ_ITEMS: FaqItem[] = [
     content: (
       <Trans>
         GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every
-        day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards.
+        day, 99% of Solana protocol fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards.
       </Trans>
     ),
   },
@@ -32,7 +32,7 @@ const BUYBACK_FAQ_ITEMS: FaqItem[] = [
   },
   {
     title: <Trans>How and when do I receive USDC?</Trans>,
-    content: <Trans>Proceeds are sent to your wallet in USDC within 24 hours after the buyback.</Trans>,
+    content: <Trans>Proceeds are sent to your wallet in USDC within 24 hours after the buyback</Trans>,
   },
   {
     title: <Trans>What is the sellable quota?</Trans>,

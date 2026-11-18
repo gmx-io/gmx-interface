@@ -16,7 +16,7 @@ import {
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipRow, TooltipRows, TooltipTotal } from "components/Tooltip/TooltipBlocks";
 
 import { CHART_PERIOD_DAYS, type ChartPeriod, useChartPeriodTabs } from "../chartPeriods";
 import {
@@ -36,6 +36,7 @@ import {
   formatChartAmount,
   formatChartPrice,
   formatUtcDay,
+  getChartDayPattern,
   getAxisWidth,
   getPairedChartAxes,
 } from "../gtPointsFormat";
@@ -51,20 +52,20 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   const point = payload[0]!.payload as GtBuybackHistoryPoint;
 
   return (
-    <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
-      <StatsTooltipRow label={t`Date`} value={formatUtcDay(point.timestamp, "dd MMM yyyy")} showDollar={false} />
-      <StatsTooltipRow
-        label={t`Bought`}
-        value={`${formatAmountGt(point.amountGt)} (${formatValueUsdc(point.valueUsdc)})`}
-        showDollar={false}
-      />
-      <StatsTooltipRow label={t`Buyback price`} value={formatPrice(point.buybackPrice)} showDollar={false} />
-      <StatsTooltipRow label={t`Minting price`} value={formatPrice(point.mintingPrice)} showDollar={false} />
-      <StatsTooltipRow
-        label={t`Total bought`}
-        value={`${formatAmountGt(point.totalAmountGt)} (${formatValueUsdc(point.totalValueUsdc)})`}
-        showDollar={false}
-      />
+    <div className="text-body-small z-50 rounded-8 bg-slate-800 px-12 py-8 shadow-lg backdrop-blur-sm">
+      <TooltipRows>
+        <TooltipRow label={t`Date`} value={formatUtcDay(point.timestamp, "dd MMM yyyy")} />
+        <TooltipRow
+          label={t`Bought`}
+          value={`${formatAmountGt(point.amountGt)} (${formatValueUsdc(point.valueUsdc)})`}
+        />
+        <TooltipRow label={t`Buyback price`} value={formatPrice(point.buybackPrice)} />
+        <TooltipRow label={t`Minting price`} value={formatPrice(point.mintingPrice)} />
+        <TooltipTotal
+          label={t`Total bought`}
+          value={`${formatAmountGt(point.totalAmountGt)} (${formatValueUsdc(point.totalValueUsdc)})`}
+        />
+      </TooltipRows>
     </div>
   );
 }
@@ -83,6 +84,7 @@ export function BuybackHistoryCard({
   const periodTabs = useChartPeriodTabs();
 
   const data = useMemo(() => filterChartPeriod(history ?? [], CHART_PERIOD_DAYS[period]), [history, period]);
+  const dayPattern = useMemo(() => getChartDayPattern(data, period === "all"), [data, period]);
 
   // Bars start at 0; the price axis fits the period. Both use the same number of round steps,
   // so their labels share rows and the grid lines.
@@ -120,22 +122,28 @@ export function BuybackHistoryCard({
         </h3>
         <div className="flex flex-wrap gap-x-28 gap-y-16 max-md:flex-col max-md:gap-12">
           <GtMetric
-            label={last ? <Trans>Last buyback · {formatUtcDay(last.timestamp)}</Trans> : <Trans>Last buyback</Trans>}
-            tooltip={<Trans>GT bought back in the most recent completed buyback. Buybacks run once a day.</Trans>}
+            label={
+              last ? (
+                <Trans>Last buyback · {formatUtcDay(last.timestamp, "dd MMM yyyy")}</Trans>
+              ) : (
+                <Trans>Last buyback</Trans>
+              )
+            }
+            tooltip={t`GT bought back in the most recent completed buyback. Buybacks run once a day.`}
             value={last ? formatAmountGt(last.amountGt) : "–"}
             subtitle={last ? formatValueUsdc(last.valueUsdc) : undefined}
             isLoading={isLoading}
           />
           <GtMetric
             label={<Trans>Last buyback price</Trans>}
-            tooltip={<Trans>USDC paid per GT in the most recent buyback. It never goes above the minting price.</Trans>}
+            tooltip={t`USDC paid per GT in the most recent buyback. It never goes above the minting price.`}
             value={last ? formatPrice(last.buybackPrice) : "–"}
             subtitle={last ? <Trans>Minting price {formatPrice(last.mintingPrice)}</Trans> : undefined}
             isLoading={isLoading}
           />
           <GtMetric
             label={<Trans>Total bought</Trans>}
-            tooltip={<Trans>All GT bought back since buybacks started.</Trans>}
+            tooltip={t`All GT bought back since buybacks started`}
             value={last ? formatAmountGt(last.totalAmountGt) : "–"}
             subtitle={last ? formatValueUsdc(last.totalValueUsdc) : undefined}
             isLoading={isLoading}
@@ -204,7 +212,7 @@ export function BuybackHistoryCard({
                   minTickGap={isMobile ? 16 : 40}
                   tick={CHART_TICK_PROPS}
                   tickMargin={10}
-                  tickFormatter={(value: number) => formatUtcDay(value)}
+                  tickFormatter={(value: number) => formatUtcDay(value, dayPattern)}
                 />
                 <YAxis
                   yAxisId="value"

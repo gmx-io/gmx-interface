@@ -229,6 +229,10 @@ msgstr "Orders ({0})"
 msgid "Telegram bot for GMX swap monitoring"
 msgstr "Telegram bot for GMX swap monitoring"
 
+#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
+msgid "All GT bought back since buybacks started"
+msgstr "All GT bought back since buybacks started"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during the selected period"
 msgstr "No trades during the selected period"
@@ -412,11 +416,6 @@ msgstr "Est. APR"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Market Swap"
 msgstr "Execute Market Swap"
-
-#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-#: src/components/GtPoints/Buyback/SellGtModal.tsx
-msgid "Minimum sell amount is {0} GT."
-msgstr "Minimum sell amount is {0} GT."
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "One-Click Trading is unavailable for smart wallets"
@@ -1009,10 +1008,6 @@ msgstr "for lower net price impact"
 msgid "NET RATE"
 msgstr "NET RATE"
 
-#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-msgid "Selling opens when {0} starts on {1}"
-msgstr "Selling opens when {0} starts on {1}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr "No rewards"
@@ -1342,6 +1337,10 @@ msgstr "Can I unstake or withdraw anytime?"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
 msgstr "Worker"
+
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "The referral discount applies only when you trade with a referral code"
+msgstr "The referral discount applies only when you trade with a referral code"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Max network fee buffer precision is 0.01%"
@@ -2006,10 +2005,6 @@ msgstr "Select at least one market"
 msgid "Virtual long token ID"
 msgstr "Virtual long token ID"
 
-#: src/components/GtPoints/Buyback/BuybackFaq.tsx
-msgid "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
-msgstr "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of GMX's Solana fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "Deactivating..."
@@ -2325,10 +2320,6 @@ msgstr "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
 msgstr "Set TP price below limit price"
-
-#: src/components/GtPoints/Stake/StakeFaq.tsx
-msgid "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim."
-msgstr "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
@@ -2913,10 +2904,6 @@ msgstr "Earn on every trade they make"
 msgid "Total value of tokens in GM pools"
 msgstr "Total value of tokens in GM pools"
 
-#: src/components/GtPoints/My/VipTiers.tsx
-msgid "The referral discount applies only when you trade with a referral code."
-msgstr "The referral discount applies only when you trade with a referral code."
-
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Frozen"
 msgstr "Frozen"
@@ -3042,6 +3029,11 @@ msgstr "Failed deposit"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2nd place"
+
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
+msgid "Proceeds are sent to your wallet in USDC within 24 hours after the buyback"
+msgstr "Proceeds are sent to your wallet in USDC within 24 hours after the buyback"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Excludes claimed funding, price impact rebates and execution fees"
@@ -3791,10 +3783,6 @@ msgstr "Total staked value"
 msgid "Expected 365d fees"
 msgstr "Expected 365d fees"
 
-#: src/components/GtPoints/My/VipTiers.tsx
-msgid "Referral rewards"
-msgstr "Referral rewards"
-
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "Listings"
@@ -4153,6 +4141,10 @@ msgstr "The GMX token serves as the governance token of the GMX protocol. 27% of
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "Max lendable impact USD"
+
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+msgid "Selling opens when Season {0} starts on {1}"
+msgstr "Selling opens when Season {0} starts on {1}"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -4530,6 +4522,10 @@ msgstr "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgid "Stake your GLV / GM tokens to earn GT rewards"
 msgstr "Stake your GLV / GM tokens to earn GT rewards"
 
+#: src/components/GtPoints/Global/GlobalStats.tsx
+msgid "All GT minted since launch"
+msgstr "All GT minted since launch"
+
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -4570,6 +4566,10 @@ msgstr "Deposit USD capacity"
 msgid "Until {endDate}: {apr}"
 msgstr "Until {endDate}: {apr}"
 
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+msgid "Refer traders to earn more quota"
+msgstr "Refer traders to earn more quota"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -4579,13 +4579,13 @@ msgstr "Arbitrum wallet"
 msgid "Claim <0/> of <1/>"
 msgstr "Claim <0/> of <1/>"
 
-#: src/components/GtPoints/Stake/StakeModal.tsx
-msgid "Minimum stake is {minStakeText} (≈{minStakeUsdText})."
-msgstr "Minimum stake is {minStakeText} (≈{minStakeUsdText})."
-
 #: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
 msgid "Next buyback in"
 msgstr "Next buyback in"
+
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+msgid "Minimum sell amount is {0} GT"
+msgstr "Minimum sell amount is {0} GT"
 
 #: landing/src/pages/Builders/ApiSurfacesSection/ApiSurfacesSection.tsx
 msgid "TypeScript SDK"
@@ -5266,6 +5266,7 @@ msgstr "SL"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeSummaryCard.tsx
 #: src/pages/GtPoints/GtPointsStakePage.tsx
 msgid "Stake"
@@ -5367,6 +5368,10 @@ msgstr "Pool max short USD for deposit"
 msgid "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more"
 msgstr "This wallet creates network-specific signatures. Approve the switch to {0} and sign once more"
 
+#: src/components/GtPoints/Buyback/AccountRentCard.tsx
+msgid "Sale request · {0}"
+msgstr "Sale request · {0}"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
 msgstr "<0>Your wallet switched to a different account</0><1/><2>Signing on {0} requires the same account you started with. Instead of selecting another account, add {1} to your current one in your wallet, then try again.</2>"
@@ -5443,10 +5448,6 @@ msgstr "Step 2: Receive"
 #: src/domain/tokens/insufficientApproval.tsx
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "The approved amount is lower than the required amount. Approve again or reduce the amount"
-
-#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
-msgid "USDC the next buyback can spend. It comes from GMX Solana's fees."
-msgstr "USDC the next buyback can spend. It comes from GMX Solana's fees."
 
 #: src/components/GtPoints/Stake/StakeReviewModal.tsx
 msgid "Total GT"
@@ -5527,10 +5528,6 @@ msgstr "The difference between expected and actual execution price due to volati
 msgid "Current margin"
 msgstr "Current margin"
 
-#: src/components/GtPoints/My/GtPointsFaq.tsx
-msgid "Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a larger share of referral rewards. Eligible GT can also be sold for USDC in the daily buyback."
-msgstr "Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a larger share of referral rewards. Eligible GT can also be sold for USDC in the daily buyback."
-
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -5594,10 +5591,6 @@ msgstr "Leverage"
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "Accrued price impact rebates"
-
-#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
-msgid "All GT that sellers have submitted to the next buyback so far."
-msgstr "All GT that sellers have submitted to the next buyback so far."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
@@ -6242,6 +6235,10 @@ msgstr "Failed to load announcements. Please try again later."
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "Min stake: {0} ({1})"
+msgstr "Min stake: {0} ({1})"
+
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
 msgstr "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
@@ -6295,10 +6292,6 @@ msgstr "Request Market Swap"
 msgid "Want to add margin without increasing your position size?"
 msgstr "Want to add margin without increasing your position size?"
 
-#: src/components/GtPoints/Buyback/BuybackSeasonCard.tsx
-msgid "GT buyback {0}"
-msgstr "GT buyback {0}"
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Pure {indexSymbol} short. Exposure is only from the position."
@@ -6325,6 +6318,7 @@ msgstr "v:"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakePositionsCard.tsx
@@ -6700,6 +6694,10 @@ msgstr "Convert the rest with Paxos"
 msgid "Cancel new orders"
 msgstr "Cancel new orders"
 
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "Connect your wallet to see your GT and VIP tier"
+msgstr "Connect your wallet to see your GT and VIP tier"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Zero-fee conversion is paused."
 msgstr "Zero-fee conversion is paused."
@@ -7065,6 +7063,10 @@ msgstr "Provide isolated liquidity per market"
 msgid "Use open interest in tokens for balance"
 msgstr "Use open interest in tokens for balance"
 
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+msgid "GT you can sell in the next buyback: your remaining quota, up to the GT you hold"
+msgstr "GT you can sell in the next buyback: your remaining quota, up to the GT you hold"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Seamless trading"
@@ -7076,6 +7078,10 @@ msgstr "close"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "from your wallet"
+
+#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
+msgid "Connect your wallet to see your sellable GT and sell it in the buyback"
+msgstr "Connect your wallet to see your sellable GT and sell it in the buyback"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
@@ -7431,6 +7437,10 @@ msgstr "Claims unavailable on Avalanche Fuji"
 msgid "Clear position history filter"
 msgstr "Clear position history filter"
 
+#: src/components/GtPoints/Buyback/BuybackSeasonCard.tsx
+msgid "GT buyback Season {0}"
+msgstr "GT buyback Season {0}"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "Users"
@@ -7613,10 +7623,6 @@ msgstr "Paxos zero-fee"
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "Daily"
-
-#: src/components/GtPoints/My/VipTiers.tsx
-msgid "Connect your wallet to see your GT and VIP tier."
-msgstr "Connect your wallet to see your GT and VIP tier."
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -7923,9 +7929,7 @@ msgstr "GMX on Solana (GMTrade) is served from a separate domain"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-#: src/components/GtPoints/My/GtHistory.tsx
 #: src/components/GtPoints/My/VipTiers.tsx
-#: src/components/GtPoints/Stake/StakePositionsCard.tsx
 #: src/components/GtPoints/Stake/StakeSummaryCard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -8853,6 +8857,10 @@ msgstr "wstETH APR"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 
+#: src/components/GtPoints/Buyback/BuybackFaq.tsx
+msgid "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of Solana protocol fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
+msgstr "GT buyback is GMX's incentive program for trading, providing liquidity, and making referrals on Solana. Every day, 99% of Solana protocol fees fund GT buybacks, allowing users to sell eligible GT for USDC rewards."
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "Estimated time to liquidation"
@@ -9687,10 +9695,6 @@ msgstr "Withdrawing {0} to {1} is not supported"
 msgid "Wallet esGMX"
 msgstr "Wallet esGMX"
 
-#: src/components/GtPoints/My/GtPointsFaq.tsx
-msgid "GT Points are the incentive points of GMX Solana. You earn them by trading, providing liquidity and referring others. 99% of GMX Solana's fees fund daily GT buybacks, where eligible GT can be sold for USDC."
-msgstr "GT Points are the incentive points of GMX Solana. You earn them by trading, providing liquidity and referring others. 99% of GMX Solana's fees fund daily GT buybacks, where eligible GT can be sold for USDC."
-
 #: src/domain/synthetics/paxosTransit/tradeboxRoutes.ts
 msgid "Paxos conversion in progress"
 msgstr "Paxos conversion in progress"
@@ -9975,7 +9979,6 @@ msgstr "Active Balancer Program code"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/GtPoints/Buyback/SellGtModal.tsx
-#: src/components/GtPoints/Stake/StakeModal.tsx
 msgid "Max amount exceeded"
 msgstr "Max amount exceeded"
 
@@ -10336,6 +10339,10 @@ msgstr "N/A"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
 msgstr "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
+
+#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
+msgid "All GT that sellers have submitted to the next buyback so far"
+msgstr "All GT that sellers have submitted to the next buyback so far"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
@@ -10980,6 +10987,10 @@ msgstr "Track volume and payouts live"
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "for {comment}"
+
+#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
+msgid "USDC the next buyback can spend. It comes from Solana protocol fees."
+msgstr "USDC the next buyback can spend. It comes from Solana protocol fees."
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
@@ -11877,10 +11888,6 @@ msgstr "Rebates"
 msgid "Events for account:"
 msgstr "Events for account:"
 
-#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-msgid "GT you can sell in the next buyback: your remaining quota, up to the GT you hold."
-msgstr "GT you can sell in the next buyback: your remaining quota, up to the GT you hold."
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short funding rate"
 msgstr "Short funding rate"
@@ -12022,6 +12029,10 @@ msgstr "Continue to convert"
 msgid "Additional reserve required"
 msgstr "Additional reserve required"
 
+#: src/components/GtPoints/My/VipTiers.tsx
+msgid "Referral reward rate"
+msgstr "Referral reward rate"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
 msgstr "Large account"
@@ -12099,6 +12110,7 @@ msgstr "Buy request sent"
 msgid "Max network fee"
 msgstr "Max network fee"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -12130,6 +12142,10 @@ msgstr "Onchain data error"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show assets with small value ({0})"
 msgstr "Show assets with small value ({0})"
+
+#: src/components/GtPoints/My/GtPointsFaq.tsx
+msgid "GT Points are the incentive points of GMX on Solana. You earn them by trading, providing liquidity and referring others. 99% of Solana protocol fees fund daily GT buybacks, where eligible GT can be sold for USDC."
+msgstr "GT Points are the incentive points of GMX on Solana. You earn them by trading, providing liquidity and referring others. 99% of Solana protocol fees fund daily GT buybacks, where eligible GT can be sold for USDC."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -12432,10 +12448,6 @@ msgstr "Adjust leverage"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Amount is below the deposit limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "Amount is below the deposit limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
-
-#: src/components/GtPoints/Stake/StakeSummaryCard.tsx
-msgid "Current value of all your staked GLV and GM."
-msgstr "Current value of all your staked GLV and GM."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX community discussion"
@@ -12896,6 +12908,10 @@ msgstr "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "Pure {indexSymbol} long. Exposure is only from the position."
 
+#: src/components/GtPoints/Stake/StakeFaq.tsx
+msgid "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim"
+msgstr "GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when you claim"
+
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
 msgid "Total portfolio value"
 msgstr "Total portfolio value"
@@ -13188,6 +13204,10 @@ msgstr "{0} (external)"
 msgid "TRIGGER PRICE"
 msgstr "TRIGGER PRICE"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "No price for this token right now, so it can't be staked"
+msgstr "No price for this token right now, so it can't be staked"
+
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Set max withdrawal"
 msgstr "Set max withdrawal"
@@ -13240,6 +13260,10 @@ msgstr "At the Take-Profit and Stop-Loss prices, the remaining position would ex
 msgid "Repeat transaction"
 msgstr "Repeat transaction"
 
+#: src/components/GtPoints/My/GtPointsFaq.tsx
+msgid "Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a higher referral reward rate. Eligible GT can also be sold for USDC in the daily buyback."
+msgstr "Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a higher referral reward rate. Eligible GT can also be sold for USDC in the daily buyback."
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn {balanceFormatted} to main account"
 msgstr "Withdrawn {balanceFormatted} to main account"
@@ -13264,6 +13288,10 @@ msgstr "Paxos zero-fee is no longer available. Review the route options and conf
 msgid "Receive to this wallet"
 msgstr "Receive to this wallet"
 
+#: src/components/GtPoints/Buyback/SellGtModal.tsx
+msgid "Min sell amount: {0} GT"
+msgstr "Min sell amount: {0} GT"
+
 #: src/components/GtPoints/Stake/StakeFaq.tsx
 msgid "No. GLV and GM add their fees to their own price, so your staked tokens keep earning LP fees while they earn GT."
 msgstr "No. GLV and GM add their fees to their own price, so your staked tokens keep earning LP fees while they earn GT."
@@ -13275,10 +13303,6 @@ msgstr "Stack them."
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Ecosystem projects"
 msgstr "Ecosystem projects"
-
-#: src/components/GtPoints/Buyback/BuybackHistoryCard.tsx
-msgid "All GT bought back since buybacks started."
-msgstr "All GT bought back since buybacks started."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "In progress..."
@@ -13659,11 +13683,6 @@ msgstr "Referral code updated"
 msgid "Increase the position's margin"
 msgstr "Increase the position's margin"
 
-#: src/components/GtPoints/Buyback/BuybackFaq.tsx
-#: src/components/GtPoints/Buyback/BuybackPoolCards.tsx
-msgid "Proceeds are sent to your wallet in USDC within 24 hours after the buyback."
-msgstr "Proceeds are sent to your wallet in USDC within 24 hours after the buyback."
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Account events"
@@ -13945,6 +13964,10 @@ msgstr "Error signing permit for {0}: {1}"
 msgid "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
 msgstr "{0} on its way from Paxos. It arrives in your wallet in a separate step, sometimes in parts."
 
+#: src/components/GtPoints/Stake/StakeSummaryCard.tsx
+msgid "Current value of all your staked GLV and GM"
+msgstr "Current value of all your staked GLV and GM"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -14151,6 +14174,10 @@ msgstr "Proportional stored impact"
 msgid "1h"
 msgstr "1h"
 
+#: src/components/GtPoints/Stake/StakeModal.tsx
+msgid "No price for {0} right now"
+msgstr "No price for {0} right now"
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Price you'll receive when closing, adjusted for capped price impact."
 msgstr "Price you'll receive when closing, adjusted for capped price impact."
@@ -14314,10 +14341,6 @@ msgstr "How to start saving?"
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-msgid "Connect your wallet to see your sellable GT and sell it in the buyback."
-msgstr "Connect your wallet to see your sellable GT and sell it in the buyback."
-
 #: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
 msgid "Rate paid in the last round, on average balances."
 msgstr "Rate paid in the last round, on average balances."
@@ -14435,10 +14458,6 @@ msgstr "Transaction canceled"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "Request Market Decrease"
-
-#: src/components/GtPoints/Stake/StakeModal.tsx
-msgid "Minimum stake is {minStakeUsdText}."
-msgstr "Minimum stake is {minStakeUsdText}."
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
@@ -14777,10 +14796,6 @@ msgstr "Link"
 msgid "Expired Market Swap"
 msgstr "Expired Market Swap"
 
-#: src/components/GtPoints/Global/GlobalStats.tsx
-msgid "All GT minted since launch."
-msgstr "All GT minted since launch."
-
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Trade from your own wallet — no deposits"
 msgstr "Trade from your own wallet — no deposits"
@@ -14926,10 +14941,6 @@ msgstr "Nothing is claimable on {0} right now"
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
-
-#: src/components/GtPoints/Buyback/SellableQuotaCard.tsx
-msgid "Refer traders to earn more quota."
-msgstr "Refer traders to earn more quota."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"

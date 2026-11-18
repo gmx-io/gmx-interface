@@ -21,7 +21,13 @@ export default function GtPointsMyPage() {
               isConnected={isConnected}
               isLoading={isLoading}
             />
-            <GtHistory history={data.my?.history} isConnected={isConnected} isLoading={isLoading} />
+            {/* Keyed by wallet: a switch closes the summary and resets the page and the filter */}
+            <GtHistory
+              key={data.account ?? "none"}
+              history={data.my?.history}
+              isConnected={isConnected}
+              isLoading={isLoading}
+            />
           </>
         }
         side={<GtPointsFaq />}

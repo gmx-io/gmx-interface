@@ -8,7 +8,7 @@ const STAKE_FAQ_ITEMS: FaqItem[] = [
     content: (
       <Trans>
         GT rewards are based on your staked value, the time covered by each claim, and your position's average APR when
-        you claim.
+        you claim
       </Trans>
     ),
   },

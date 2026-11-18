@@ -25,7 +25,7 @@ export function UnclaimedGtCard({ unclaimedFromStaking, isConnected, isLoading }
       <div className="flex flex-wrap items-center justify-between gap-16 p-20">
         <div className="flex flex-col gap-4">
           <div className="text-body-large flex items-baseline gap-6">
-            {isConnected ? (
+            {isConnected || isLoading ? (
               <EarningValue value={unclaimedFromStaking} isLoading={isLoading} skeletonWidth={90}>
                 {(amount) => (
                   <span

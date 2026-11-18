@@ -14,7 +14,7 @@ import {
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { CHART_PERIOD_DAYS, type ChartPeriod, useChartPeriodTabs } from "../chartPeriods";
 import {
@@ -33,6 +33,7 @@ import {
   formatChartAmount,
   formatChartPrice,
   formatUtcDay,
+  getChartDayPattern,
   getAxisWidth,
   getPairedChartAxes,
 } from "../gtPointsFormat";
@@ -43,23 +44,22 @@ function ChartTooltip({ active, payload }: TooltipProps<number, string>) {
   const point = payload[0]!.payload as GtMintingPoint;
 
   return (
-    <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
-      <StatsTooltipRow label={t`Date`} value={formatUtcDay(point.timestamp, "dd MMM yyyy")} showDollar={false} />
-      <StatsTooltipRow
-        label={t`Total minted`}
-        value={`${Math.round(point.totalMinted).toLocaleString("en-US")} GT`}
-        showDollar={false}
-      />
-      <StatsTooltipRow label={t`Minting price`} value={`$${point.mintingPrice.toFixed(4)}/GT`} showDollar={false} />
+    <div className="text-body-small z-50 rounded-8 bg-slate-800 px-12 py-8 shadow-lg backdrop-blur-sm">
+      <TooltipRows>
+        <TooltipRow label={t`Date`} value={formatUtcDay(point.timestamp, "dd MMM yyyy")} />
+        <TooltipRow label={t`Total minted`} value={`${Math.round(point.totalMinted).toLocaleString("en-US")} GT`} />
+        <TooltipRow label={t`Minting price`} value={`$${point.mintingPrice.toFixed(4)}/GT`} />
+      </TooltipRows>
     </div>
   );
 }
 
-export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefined }) {
+export function GtMintingChart({ points, isLoading }: { points: GtMintingPoint[] | undefined; isLoading: boolean }) {
   const { isMobile } = useBreakpoints();
   const [period, setPeriod] = useState<ChartPeriod>("all");
 
   const data = useMemo(() => filterChartPeriod(points ?? [], CHART_PERIOD_DAYS[period]), [points, period]);
+  const dayPattern = useMemo(() => getChartDayPattern(data, period === "all"), [data, period]);
 
   // Each axis fits the selected period on round steps; both use the same number of steps,
   // so their labels share rows and the grid lines.
@@ -105,8 +105,9 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
       </div>
 
       {data.length === 0 ? (
+        // Blank while loading, like the buyback chart: the same height, no "No data" flash
         <div className="flex min-h-[280px] items-center justify-center text-typography-secondary">
-          <Trans>No data available</Trans>
+          {isLoading ? null : <Trans>No data available</Trans>}
         </div>
       ) : (
         <div className="relative min-h-[280px] grow">
@@ -146,7 +147,7 @@ export function GtMintingChart({ points }: { points: GtMintingPoint[] | undefine
                   minTickGap={isMobile ? 16 : 40}
                   tick={CHART_TICK_PROPS}
                   tickMargin={10}
-                  tickFormatter={(value: number) => formatUtcDay(value)}
+                  tickFormatter={(value: number) => formatUtcDay(value, dayPattern)}
                 />
                 <YAxis
                   yAxisId="minted"

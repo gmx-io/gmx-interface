@@ -1,11 +1,10 @@
 import { t, Trans } from "@lingui/macro";
-import { ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
-import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { EMPTY_ARRAY } from "lib/objects";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
-import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import Modal from "components/Modal/Modal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
@@ -17,6 +16,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 import { formatGt, formatTableDateTime } from "../gtPointsFormat";
 import { GT_HISTORY_ACTIONS, type GtHistoryAction, type GtHistoryItem } from "../gtPointsTypes";
+import { GtHistorySkeleton } from "../GtSkeletons";
 
 const PAGE_SIZE = 10;
 
@@ -36,6 +36,7 @@ type Props = {
 };
 
 export function GtHistory({ history, isConnected, isLoading }: Props) {
+  const { isMobile } = useBreakpoints();
   const [actionFilter, setActionFilter] = useState<GtHistoryAction[]>([]);
   const [isSummaryOpen, setIsSummaryOpen] = useState(false);
   const labels = getActionLabels();
@@ -51,8 +52,8 @@ export function GtHistory({ history, isConnected, isLoading }: Props) {
     PAGE_SIZE
   );
 
-  const filterOptions = GT_HISTORY_ACTIONS.map((action) => ({ data: action, text: labels[action] }));
   const hasData = isConnected && !isLoading && history !== undefined;
+  const hasRows = hasData && filtered.length > 0;
 
   return (
     <div className="flex flex-col overflow-hidden rounded-8 bg-slate-900">
@@ -61,64 +62,79 @@ export function GtHistory({ history, isConnected, isLoading }: Props) {
           <Trans>GT history</Trans>
         </h3>
         {hasData && history.length > 0 && (
-          <Button variant="ghost" size="small" onClick={() => setIsSummaryOpen(true)}>
-            <Trans>Summary</Trans>
-          </Button>
+          <div className="flex items-center gap-8">
+            {isMobile && <GtActionFilter asButton value={actionFilter} onChange={setActionFilter} />}
+            <Button variant="ghost" size="small" onClick={() => setIsSummaryOpen(true)}>
+              <Trans>Summary</Trans>
+            </Button>
+          </div>
         )}
       </div>
 
-      <TableScrollFadeContainer className="px-0">
-        <table className="w-full min-w-[520px]">
-          <thead>
-            <TableTheadTr>
-              <TableTh className="w-[40%]">
-                <TableOptionsFilter<GtHistoryAction>
-                  multiple
-                  label={t`Action`}
-                  placeholder={t`Search action`}
-                  value={actionFilter}
-                  options={filterOptions}
-                  onChange={setActionFilter}
-                  popupPlacement="bottom-start"
-                />
-              </TableTh>
-              <TableTh>
-                <Trans>Amount</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Time</Trans>
-              </TableTh>
-            </TableTheadTr>
-          </thead>
-          {hasData && filtered.length > 0 && (
-            <tbody>
-              {currentData.map((item) => (
-                <TableTr key={item.id}>
-                  <TableTd className="text-body-medium font-medium">{labels[item.action]}</TableTd>
-                  <TableTd className="text-body-medium numbers">{formatGt(item.amount, { signed: true })}</TableTd>
-                  <TableTd className="text-body-medium text-typography-secondary numbers">
+      {isMobile ? (
+        // Phones: action and time on the left, amount on the right (like Recent activity on Referrals),
+        // so nothing scrolls sideways. The action filter moves to the header as a button.
+        isLoading ? (
+          <GtHistorySkeleton isMobile />
+        ) : hasRows ? (
+          <div className="flex flex-col">
+            {currentData.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-20 py-10 last:border-b-0"
+              >
+                <div className="flex min-w-0 flex-col gap-2">
+                  <span className="text-body-medium font-medium text-typography-primary">{labels[item.action]}</span>
+                  <span className="text-body-small text-typography-secondary numbers">
                     {formatTableDateTime(item.timestamp)}
-                  </TableTd>
-                </TableTr>
-              ))}
-            </tbody>
-          )}
-        </table>
-      </TableScrollFadeContainer>
+                  </span>
+                </div>
+                <span className="text-body-medium shrink-0 numbers">{formatGt(item.amount, { signed: true })}</span>
+              </div>
+            ))}
+          </div>
+        ) : null
+      ) : (
+        <TableScrollFadeContainer className="px-0">
+          <table className="w-full min-w-[520px]">
+            <thead>
+              <TableTheadTr>
+                <TableTh className="w-[40%]">
+                  <GtActionFilter value={actionFilter} onChange={setActionFilter} />
+                </TableTh>
+                <TableTh>
+                  <Trans>Amount</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Time</Trans>
+                </TableTh>
+              </TableTheadTr>
+            </thead>
+            {isLoading ? (
+              <GtHistorySkeleton isMobile={false} />
+            ) : (
+              hasRows && (
+                <tbody>
+                  {currentData.map((item) => (
+                    <TableTr key={item.id}>
+                      <TableTd className="text-body-medium font-medium">{labels[item.action]}</TableTd>
+                      <TableTd className="text-body-medium numbers">{formatGt(item.amount, { signed: true })}</TableTd>
+                      <TableTd className="text-body-medium text-typography-secondary numbers">
+                        {formatTableDateTime(item.timestamp)}
+                      </TableTd>
+                    </TableTr>
+                  ))}
+                </tbody>
+              )
+            )}
+          </table>
+        </TableScrollFadeContainer>
+      )}
 
-      <HistoryEmptyState
-        isConnected={isConnected}
-        isLoading={isLoading}
-        isEmpty={!hasData || filtered.length === 0}
-        emptyText={
-          history !== undefined && history.length > 0 ? (
-            <Trans>No GT history for this action</Trans>
-          ) : history === undefined ? (
-            <Trans>GT history is not available yet</Trans>
-          ) : (
-            <Trans>No GT history yet</Trans>
-          )
-        }
+      <EmptyTableContent
+        isLoading={false}
+        isEmpty={!isLoading && !hasRows}
+        emptyText={getEmptyText(isConnected, history)}
       />
 
       {hasData && (
@@ -135,39 +151,39 @@ export function GtHistory({ history, isConnected, isLoading }: Props) {
   );
 }
 
-function HistoryEmptyState({
-  isConnected,
-  isLoading,
-  isEmpty,
-  emptyText,
+// The table header filter on desktop; a button next to Summary on phones, like GMX's order filters.
+function GtActionFilter({
+  value,
+  onChange,
+  asButton,
 }: {
-  isConnected: boolean;
-  isLoading: boolean;
-  isEmpty: boolean;
-  emptyText: ReactNode;
+  value: GtHistoryAction[];
+  onChange: (value: GtHistoryAction[]) => void;
+  asButton?: boolean;
 }) {
-  const { openConnectModal } = useConnectModal();
+  const labels = getActionLabels();
+  const options = GT_HISTORY_ACTIONS.map((action) => ({ data: action, text: labels[action] }));
 
-  if (!isConnected && !isLoading) {
-    return (
-      <EmptyTableContent
-        isLoading={false}
-        isEmpty
-        emptyText={
-          <div className="flex flex-col items-center gap-12">
-            <Trans>Connect your wallet to see your GT history</Trans>
-            {openConnectModal && (
-              <ConnectWalletButton onClick={openConnectModal}>
-                <Trans>Connect wallet</Trans>
-              </ConnectWalletButton>
-            )}
-          </div>
-        }
-      />
-    );
-  }
+  return (
+    <TableOptionsFilter<GtHistoryAction>
+      multiple
+      asButton={asButton}
+      label={t`Action`}
+      placeholder={t`Search action`}
+      value={value}
+      options={options}
+      onChange={onChange}
+      popupPlacement={asButton ? "bottom-end" : "bottom-start"}
+    />
+  );
+}
 
-  return <EmptyTableContent isLoading={isLoading} isEmpty={isEmpty} emptyText={emptyText} />;
+// Text only when no wallet is connected: the VIP card above has the page's one Connect wallet button.
+function getEmptyText(isConnected: boolean, history: GtHistoryItem[] | undefined) {
+  if (!isConnected) return <Trans>Connect your wallet to see your GT history</Trans>;
+  if (history === undefined) return <Trans>GT history is not available yet</Trans>;
+  if (history.length > 0) return <Trans>No GT history for this action</Trans>;
+  return <Trans>No GT history yet</Trans>;
 }
 
 function GtSummaryModal({

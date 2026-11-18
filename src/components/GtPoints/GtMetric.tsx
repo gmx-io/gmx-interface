@@ -2,9 +2,7 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
-
-import InfoIcon from "img/ic_info_circle_stroke.svg?react";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 // Label (with an optional info tooltip) over a big value, the same look as the Earn buyback dashboard metrics.
 export function GtMetric({
@@ -24,16 +22,20 @@ export function GtMetric({
   className?: string;
   valueClassName?: string;
 }) {
-  const labelContent = (
-    <span className="text-body-small inline-flex items-center gap-4 font-medium text-typography-secondary">
-      {label}
-      {tooltip ? <InfoIcon className="size-16 text-typography-secondary" /> : null}
-    </span>
+  const labelContent = tooltip ? (
+    <StandardTooltip
+      variant="iconStroke"
+      handleClassName="text-body-small font-medium text-typography-secondary"
+      handle={label}
+      content={tooltip}
+    />
+  ) : (
+    <span className="text-body-small font-medium text-typography-secondary">{label}</span>
   );
 
   return (
     <div className={cx("flex min-w-0 flex-col gap-4", className)}>
-      {tooltip ? <TooltipWithPortal variant="none" handle={labelContent} content={tooltip} /> : labelContent}
+      {labelContent}
       <div className={cx("text-h2 text-typography-primary numbers", valueClassName)}>
         {isLoading ? (
           <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={120} className="leading-base" />

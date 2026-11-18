@@ -1,13 +1,14 @@
 import { Plural, t, Trans } from "@lingui/macro";
 import { useState } from "react";
 
+import { formatDate } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_ARRAY } from "lib/objects";
 
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { formatSol } from "../gtPointsFormat";
 import type { GtRentAccount } from "../gtPointsTypes";
@@ -30,19 +31,14 @@ export function AccountRentCard({
   return (
     <div className="flex flex-wrap items-center justify-between gap-12 rounded-8 bg-slate-900 p-20">
       <div className="flex flex-col gap-4">
-        <TooltipWithPortal
+        <StandardTooltip
           variant="iconStroke"
           handle={
             <span className="text-body-medium font-medium text-typography-primary">
               <Trans>Account rent</Trans>
             </span>
           }
-          content={
-            <Trans>
-              Each GT sale opens a small Solana account that holds SOL as rent. After the buyback, you can close these
-              accounts and get the SOL back.
-            </Trans>
-          }
+          content={t`Each GT sale opens a small Solana account that holds SOL as rent. After the buyback, you can close these accounts and get the SOL back.`}
         />
         <span className="text-body-small text-typography-secondary numbers">
           {accounts === undefined ? (
@@ -93,7 +89,7 @@ function ClaimRentModal({
           {accounts.map((account) => (
             <SyntheticsInfoRow
               key={account.id}
-              label={account.label}
+              label={t`Sale request · ${formatDate(account.createdAt)}`}
               value={<span className="numbers">{formatSol(account.sol)}</span>}
             />
           ))}
@@ -106,7 +102,7 @@ function ClaimRentModal({
           value={<span className="font-medium text-typography-primary numbers">{formatSol(total)}</span>}
         />
 
-        <Button variant="primary-action" className="w-full" onClick={claim}>
+        <Button variant="primary-action" className="w-full" disabled={accounts.length === 0} onClick={claim}>
           <Trans>Claim {formatSol(total)}</Trans>
         </Button>
       </div>

@@ -9,7 +9,9 @@ import {
   formatGt,
   formatMinStakeAmount,
   formatTableDateTime,
+  formatUtcDay,
   getChartAxis,
+  getChartDayPattern,
   getPairedChartAxes,
   getCombinedFeeDiscount,
   getGtReferralLink,
@@ -273,5 +275,23 @@ describe("chart axes for flat and empty periods", () => {
     const axis = getChartAxis([0, 0, 0], { fromZero: true })!;
     expect(axis.domain[0]).toBe(0);
     expect(axis.ticks.every((tick) => Number.isInteger(tick))).toBe(true);
+  });
+});
+
+describe("getChartDayPattern", () => {
+  const point = (iso: string) => ({ timestamp: Date.parse(iso) / 1000 });
+  const sameYear = [point("2026-05-02T12:00:00Z"), point("2026-11-07T12:00:00Z")];
+  const newYear = [point("2025-12-20T12:00:00Z"), point("2026-01-09T12:00:00Z")];
+
+  it("adds a short year on All and when the period crosses New Year", () => {
+    expect(getChartDayPattern(sameYear, false)).toBe("d MMM");
+    expect(getChartDayPattern(sameYear, true)).toBe("d MMM ''yy");
+    expect(getChartDayPattern(newYear, false)).toBe("d MMM ''yy");
+    expect(getChartDayPattern([], false)).toBe("d MMM");
+  });
+
+  it("formats the axis day with the short year", () => {
+    expect(formatUtcDay(newYear[0]!.timestamp, getChartDayPattern(newYear, false))).toBe("20 Dec '25");
+    expect(formatUtcDay(sameYear[1]!.timestamp, getChartDayPattern(sameYear, false))).toBe("7 Nov");
   });
 });

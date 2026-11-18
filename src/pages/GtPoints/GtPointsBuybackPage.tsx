@@ -21,6 +21,8 @@ export default function GtPointsBuybackPage() {
 
   const isConnected = Boolean(data.account) && !data.isWalletInitializing;
   const isLoading = data.isWalletInitializing || data.isLoading;
+  // Wallet cards load only with a wallet, so a disconnected page shows Connect wallet instead of skeletons
+  const isWalletLoading = data.isWalletInitializing || (isConnected && data.isLoading);
   const buyback = data.buyback;
   const season = buyback?.season;
 
@@ -33,7 +35,7 @@ export default function GtPointsBuybackPage() {
             <SellableQuotaCard
               quota={buyback?.quota}
               isConnected={isConnected}
-              isLoading={isLoading}
+              isLoading={isWalletLoading}
               season={season}
               onSell={() => setIsSellOpen(true)}
             />
@@ -42,11 +44,11 @@ export default function GtPointsBuybackPage() {
               <MyParticipationCard
                 participation={buyback?.participation}
                 isConnected={isConnected}
-                isLoading={isLoading}
+                isLoading={isWalletLoading}
               />
             </div>
             <BuybackHistoryCard history={buyback?.history} isLoading={isLoading} />
-            <AccountRentCard accounts={buyback?.rentAccounts} isConnected={isConnected} />
+            <AccountRentCard key={data.account ?? "none"} accounts={buyback?.rentAccounts} isConnected={isConnected} />
           </>
         }
         side={<BuybackFaq />}

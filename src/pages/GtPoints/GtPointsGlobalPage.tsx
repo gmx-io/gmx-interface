@@ -12,7 +12,7 @@ export default function GtPointsGlobalPage() {
   return (
     <GtPointsPageLayout>
       <GlobalStats global={data.global} isLoading={isLoading} />
-      <GtMintingChart points={data.global?.chart} />
+      <GtMintingChart points={data.global?.chart} isLoading={isLoading} />
       <TopHolders holders={data.global?.holders} account={data.account} isLoading={isLoading} />
     </GtPointsPageLayout>
   );

@@ -18,7 +18,7 @@ type Props = {
   Structure: ComponentType;
 };
 
-function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
+export function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
   if (invisible) {
     return (
       <SkeletonTheme baseColor="transparent" highlightColor="transparent" enableAnimation={false}>

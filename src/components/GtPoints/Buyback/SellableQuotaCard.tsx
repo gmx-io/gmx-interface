@@ -8,7 +8,7 @@ import { formatAmount } from "lib/numbers";
 import Button from "components/Button/Button";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import ConnectWalletPlaceholder from "components/ConnectWalletButton/ConnectWalletPlaceholder";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
@@ -33,7 +33,7 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
   const now = useNowSeconds(season !== undefined && isConnected);
   const closedReason =
     season && now < season.startsAt
-      ? t`Selling opens when ${season.name} starts on ${formatDate(season.startsAt)}`
+      ? t`Selling opens when Season ${season.number} starts on ${formatDate(season.startsAt)}`
       : undefined;
   const isUnavailable = isConnected && !isLoading && !quota;
   const cantSellReason =
@@ -41,7 +41,7 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
     (quota && quota.availableToSell === 0n
       ? t`You have no GT to sell right now`
       : quota && quota.availableToSell < MIN_SELL_GT
-        ? t`Minimum sell amount is ${formatAmount(MIN_SELL_GT, GT_DECIMALS, 2)} GT.`
+        ? t`Minimum sell amount is ${formatAmount(MIN_SELL_GT, GT_DECIMALS, 2)} GT`
         : undefined);
 
   const sellButton = (
@@ -60,7 +60,7 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
           <Trans>My sellable GT</Trans>
         </h3>
         {!isConnected ? null : cantSellReason && quota ? (
-          <TooltipWithPortal variant="none" isHandlerDisabled handle={sellButton} content={cantSellReason} />
+          <StandardTooltip variant="none" isHandlerDisabled handle={sellButton} content={cantSellReason} />
         ) : (
           sellButton
         )}
@@ -75,7 +75,7 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
       ) : !isConnected ? (
         <div className="flex flex-wrap items-center justify-between gap-12 p-20">
           <span className="text-body-medium text-typography-secondary">
-            <Trans>Connect your wallet to see your sellable GT and sell it in the buyback.</Trans>
+            <Trans>Connect your wallet to see your sellable GT and sell it in the buyback</Trans>
           </span>
           {openConnectModal && (
             <ConnectWalletButton onClick={openConnectModal}>
@@ -88,25 +88,21 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
           <div className="grid grid-cols-3 gap-x-32 gap-y-20 p-20 max-md:grid-cols-1">
             <GtMetric
               label={<Trans>Earned quota</Trans>}
-              tooltip={
-                <Trans>
-                  How much GT you can sell this season. You earn quota when the traders you refer use GMX on Solana.
-                </Trans>
-              }
+              tooltip={t`How much GT you can sell this season. You earn quota when the traders you refer use GMX on Solana.`}
               isLoading={isLoading}
               value={value(quota?.earned)}
               valueClassName="!text-body-large font-medium"
             />
             <GtMetric
               label={<Trans>Remaining quota</Trans>}
-              tooltip={<Trans>Earned quota you haven't used yet. Each sale uses part of it.</Trans>}
+              tooltip={t`Earned quota you haven't used yet. Each sale uses part of it.`}
               isLoading={isLoading}
               value={value(quota?.remaining)}
               valueClassName="!text-body-large font-medium"
             />
             <GtMetric
               label={<Trans>Available to sell now</Trans>}
-              tooltip={<Trans>GT you can sell in the next buyback: your remaining quota, up to the GT you hold.</Trans>}
+              tooltip={t`GT you can sell in the next buyback: your remaining quota, up to the GT you hold`}
               isLoading={isLoading}
               value={value(quota?.availableToSell)}
               valueClassName="!text-body-large font-medium"
@@ -117,7 +113,7 @@ export function SellableQuotaCard({ quota, isConnected, isLoading, season, onSel
 
           <div className="flex flex-wrap items-center justify-between gap-8 px-20 py-14">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Refer traders to earn more quota.</Trans>
+              <Trans>Refer traders to earn more quota</Trans>
             </span>
             <Link
               to={REFERRALS_AFFILIATES_PATH}

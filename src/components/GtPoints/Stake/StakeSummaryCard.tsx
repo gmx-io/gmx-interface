@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 
@@ -27,13 +27,13 @@ export function StakeSummaryCard({ stake, isConnected, isLoading, onStake }: Pro
       <div className="flex flex-wrap gap-x-48 gap-y-16">
         <GtMetric
           label={<Trans>Total staked value</Trans>}
-          tooltip={<Trans>Current value of all your staked GLV and GM.</Trans>}
-          isLoading={isLoading && isConnected}
+          tooltip={t`Current value of all your staked GLV and GM`}
+          isLoading={isLoading}
           value={stake ? formatUsdValue(stake.totalStakedUsd) : empty}
         />
         <GtMetric
           label={<Trans>Unclaimed GT from staking</Trans>}
-          isLoading={isLoading && isConnected}
+          isLoading={isLoading}
           value={stake ? formatGt(stake.unclaimedGt) : empty}
         />
       </div>

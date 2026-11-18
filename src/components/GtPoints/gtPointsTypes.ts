@@ -12,7 +12,7 @@ export type VipTier = {
   minGt: bigint;
   /** VIP trading fee discount, in percent, without the referral discount */
   feeDiscount: number;
-  /** Share of referral rewards, in percent */
+  /** Referral reward rate, in percent */
   referralRewards: number;
 };
 
@@ -56,6 +56,7 @@ export type GtPointsMyData = {
   balance: bigint;
   /** GT earned from staking GLV/GM that is not claimed yet */
   unclaimedFromStaking: bigint;
+  /** Newest first; the full list (the page filters and pages it) */
   history: GtHistoryItem[];
 };
 
@@ -88,14 +89,15 @@ export type GtPointsGlobalData = {
   /** Current minting price, USD with 30 decimals */
   mintingPriceUsd: bigint;
   totalMinted: bigint;
+  /** One point per UTC day, oldest first (the period filter and the axis year rule read it that way) */
   chart: GtMintingPoint[];
   /** Top 1,000 holders */
   holders: GtHolder[];
 };
 
 export type GtBuybackSeason = {
-  /** e.g. "Season 2" */
-  name: string;
+  /** Season number, e.g. 2; the page shows "Season 2" in the user's language */
+  number: number;
   /** Unix seconds */
   startsAt: number;
 };
@@ -123,8 +125,10 @@ export type GtSellableQuota = {
 
 export type GtRentAccount = {
   id: string;
-  /** e.g. "Sale request · 28 Oct 2026" */
-  label: string;
+  /** What opened the account: each GT sale opens one. The page builds the label ("Sale request · 28 Oct 2026") */
+  kind: "saleRequest";
+  /** Unix seconds when the account was opened */
+  createdAt: number;
   /** Reclaimable SOL, 9 decimals */
   sol: bigint;
 };
@@ -192,7 +196,9 @@ export type GtStakePosition = {
   stakedAt: number;
   /** In percent */
   currentApr: number;
+  /** In percent */
   avgApr: number;
+  /** GT, 7 decimals */
   unclaimedGt: bigint;
 };
 
@@ -208,22 +214,31 @@ export type GtStakeHistoryItem = {
   id: string;
   action: "stake" | "unstake";
   token: GtStakeToken;
+  /** GM/GLV amount, 18 decimals */
   amount: bigint;
+  /** Unix seconds */
   timestamp: number;
 };
 
 export type GtPointsStakeData = {
   totalStakedUsd: bigint;
   unclaimedGt: bigint;
+  /** Any order: the table shows them as given until a column is sorted */
   positions: GtStakePosition[];
   /** GLV/GM in the wallet that can be staked: tokens with a balance only */
   wallet: GtWalletLpToken[];
+  /** Newest first; the full list (the page pages it) */
   history: GtStakeHistoryItem[];
 };
 
 export type GtPointsData = {
   account: string | undefined;
+  /** True while a wallet connection is restored after a reload */
   isWalletInitializing: boolean;
+  /**
+   * True only during the first load, never on background refreshes (so tables don't flash skeleton rows).
+   * Wallet cards read it only with a connected wallet, so a page without a wallet shows Connect wallet.
+   */
   isLoading: boolean;
   my: GtPointsMyData | undefined;
   global: GtPointsGlobalData | undefined;

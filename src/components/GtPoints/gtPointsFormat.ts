@@ -169,6 +169,20 @@ export function formatUtcDay(timestamp: number, pattern = "d MMM") {
   return formatDateFn(timestamp * 1000, pattern, UTC);
 }
 
+/**
+ * Chart axis days: "9 May", with a short year ("9 May '25") on All or when the period crosses New Year.
+ * The short year follows GMX's buyback chart on Earn.
+ */
+export function getChartDayPattern(points: { timestamp: number }[], isAllPeriod: boolean) {
+  const first = points[0];
+  const last = points[points.length - 1];
+  const crossesNewYear =
+    first !== undefined &&
+    last !== undefined &&
+    formatUtcDay(first.timestamp, "yyyy") !== formatUtcDay(last.timestamp, "yyyy");
+  return isAllPeriod || crossesNewYear ? "d MMM ''yy" : "d MMM";
+}
+
 /** Table date + time with two-digit hours so rows line up: "07 Nov 2026, 04:40 PM" */
 export function formatTableDateTime(timestamp: number) {
   return formatDateFn(timestamp * 1000, "dd MMM yyyy, hh:mm a");

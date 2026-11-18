@@ -11,7 +11,7 @@ import { BottomTablePagination } from "components/Pagination/BottomTablePaginati
 import usePagination from "components/Pagination/usePagination";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import CopyIcon from "img/ic_copy.svg?react";
 import rank1Icon from "img/rank1.svg";
@@ -21,6 +21,7 @@ import gmxIcon from "img/tokens/ic_gmx.svg";
 
 import { formatGt, getGtReferralLink, shortenSolanaAddress } from "../gtPointsFormat";
 import type { GtHolder } from "../gtPointsTypes";
+import { TopHoldersSkeleton } from "../GtSkeletons";
 
 const PAGE_SIZE = 20;
 const MEDALS: Record<number, string> = { 1: rank1Icon, 2: rank2Icon, 3: rank3Icon };
@@ -62,14 +63,16 @@ export function TopHolders({
 
       {isMobile ? (
         // Phones: one row per holder, nothing scrolls sideways.
-        hasRows ? (
+        isLoading ? (
+          <TopHoldersSkeleton isMobile />
+        ) : hasRows ? (
           <div className="flex flex-col">
             {currentData.map((holder) => {
               const isYou = account !== undefined && holder.address === account;
               return (
                 <div
                   key={holder.address}
-                  className={cx("flex items-center gap-12 px-16 py-12 odd:bg-fill-surfaceElevated50", {
+                  className={cx("flex items-center gap-12 px-20 py-12 odd:bg-fill-surfaceElevated50", {
                     "!bg-blue-300/10": isYou,
                   })}
                 >
@@ -104,7 +107,9 @@ export function TopHolders({
                 </TableTh>
               </TableTheadTr>
             </thead>
-            {hasRows ? (
+            {isLoading ? (
+              <TopHoldersSkeleton isMobile={false} />
+            ) : hasRows ? (
               <tbody>
                 {currentData.map((holder) => {
                   const isYou = account !== undefined && holder.address === account;
@@ -135,8 +140,8 @@ export function TopHolders({
       )}
 
       <EmptyTableContent
-        isLoading={isLoading}
-        isEmpty={!holders?.length}
+        isLoading={false}
+        isEmpty={!isLoading && !holders?.length}
         emptyText={<Trans>Top holders are not available yet</Trans>}
       />
 
@@ -211,24 +216,28 @@ function ReferralCode({
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-6",
+        "inline-flex min-w-0 max-w-full items-center gap-6",
         small ? "text-body-small text-typography-secondary" : "text-body-medium text-typography-primary"
       )}
     >
-      {code}
-      <TooltipWithPortal
+      {/* Long codes truncate, so they never run into the GT column on phones */}
+      <span className="min-w-0 truncate" title={code}>
+        {code}
+      </span>
+      <StandardTooltip
         variant="none"
+        type="label"
         handle={
           <button
             type="button"
-            className="-m-4 flex p-4 text-typography-secondary hover:text-typography-primary"
+            className="-m-4 flex shrink-0 p-4 text-typography-secondary hover:text-typography-primary"
             onClick={() => onCopy(code)}
             aria-label={t`Copy referral link`}
           >
             <CopyIcon className={small ? "size-14" : "size-16"} />
           </button>
         }
-        content={<Trans>Copy referral link</Trans>}
+        content={t`Copy referral link`}
       />
     </span>
   );

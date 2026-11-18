@@ -15,7 +15,7 @@ export function BuybackSeasonCard({ season, isLoading }: { season: GtBuybackSeas
     <div className="flex flex-wrap items-center justify-between gap-12 rounded-8 bg-slate-900 p-20">
       <div className="flex flex-col gap-4">
         <h3 className="text-body-large font-medium text-typography-primary">
-          {season ? <Trans>GT buyback {season.name}</Trans> : <Trans>GT buyback</Trans>}
+          {season ? <Trans>GT buyback Season {season.number}</Trans> : <Trans>GT buyback</Trans>}
         </h3>
         <span className="text-body-small text-typography-secondary numbers">
           {isLoading ? (

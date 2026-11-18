@@ -8,8 +8,15 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import Badge from "components/Badge/Badge";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { EarningValue } from "components/EarningValue/EarningValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+  TooltipTotal,
+} from "components/Tooltip/TooltipBlocks";
 
 import { formatGt, formatPercent, getCombinedFeeDiscount, getVipProgress } from "../gtPointsFormat";
 import { REFERRAL_FEE_DISCOUNT, VIP_TIERS, type VipTier } from "../gtPointsTypes";
@@ -120,7 +127,7 @@ export function VipTiers({ balance, isConnected, isLoading }: Props) {
           <BenefitTile
             value={selectedTier ? formatPercent(selectedTier.referralRewards) : undefined}
             isLoading={isLoading}
-            label={<Trans>Referral rewards</Trans>}
+            label={<Trans>Referral reward rate</Trans>}
           />
         </div>
       </div>
@@ -204,7 +211,7 @@ function MyGt({
           <Trans>My GT</Trans>
         </span>
         <span className="text-body-medium text-typography-secondary">
-          <Trans>Connect your wallet to see your GT and VIP tier.</Trans>
+          <Trans>Connect your wallet to see your GT and VIP tier</Trans>
         </span>
         {openConnectModal && (
           <ConnectWalletButton onClick={openConnectModal}>
@@ -259,19 +266,21 @@ function FeeDiscountTooltip({ tier }: { tier: VipTier }) {
   const total = formatPercent(getCombinedFeeDiscount(tier.feeDiscount));
 
   return (
-    <div className="flex flex-col gap-8">
-      <div>
-        <StatsTooltipRow label={t`VIP ${tier.level} discount`} value={vip} showDollar={false} />
-        <StatsTooltipRow label={t`Referral discount`} value={referral} showDollar={false} />
-        <StatsTooltipRow label={t`Total with referral`} value={total} showDollar={false} />
-      </div>
-      <span>
-        <Trans>The referral discount applies only when you trade with a referral code.</Trans>
-      </span>
-      <span className="numbers">
-        1 − (1 − {vip}) × (1 − {referral}) = {total}
-      </span>
-    </div>
+    <TooltipContent>
+      <TooltipRows>
+        <TooltipRow label={t`VIP ${tier.level} discount`} value={vip} />
+        <TooltipRow label={t`Referral discount`} value={referral} />
+        <TooltipTotal label={t`Total with referral`} value={total} />
+      </TooltipRows>
+      <TooltipText>
+        <Trans>The referral discount applies only when you trade with a referral code</Trans>
+      </TooltipText>
+      <TooltipFootnote>
+        <span className="numbers">
+          1 − (1 − {vip}) × (1 − {referral}) = {total}
+        </span>
+      </TooltipFootnote>
+    </TooltipContent>
   );
 }
 
@@ -292,7 +301,7 @@ function BenefitTile({
         {value ?? (isLoading ? <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={56} /> : "–")}
       </span>
       <span className="text-body-small text-typography-secondary">
-        {tooltip ? <TooltipWithPortal variant="iconStroke" handle={label} content={tooltip} /> : label}
+        {tooltip ? <StandardTooltip variant="iconStroke" handle={label} content={tooltip} /> : label}
       </span>
     </div>
   );

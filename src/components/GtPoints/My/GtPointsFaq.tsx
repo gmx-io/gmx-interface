@@ -7,8 +7,8 @@ const GT_FAQ_ITEMS: FaqItem[] = [
     title: <Trans>What is GT?</Trans>,
     content: (
       <Trans>
-        GT Points are the incentive points of GMX Solana. You earn them by trading, providing liquidity and referring
-        others. 99% of GMX Solana's fees fund daily GT buybacks, where eligible GT can be sold for USDC.
+        GT Points are the incentive points of GMX on Solana. You earn them by trading, providing liquidity and referring
+        others. 99% of Solana protocol fees fund daily GT buybacks, where eligible GT can be sold for USDC.
       </Trans>
     ),
   },
@@ -26,8 +26,8 @@ const GT_FAQ_ITEMS: FaqItem[] = [
     title: <Trans>What are the benefits of GT?</Trans>,
     content: (
       <Trans>
-        Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a larger share of
-        referral rewards. Eligible GT can also be sold for USDC in the daily buyback.
+        Your GT balance sets your VIP tier. Higher tiers give a bigger trading fee discount and a higher referral reward
+        rate. Eligible GT can also be sold for USDC in the daily buyback.
       </Trans>
     ),
   },

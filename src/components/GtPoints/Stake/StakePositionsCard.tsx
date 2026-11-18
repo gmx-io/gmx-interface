@@ -2,14 +2,12 @@ import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 
-import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import type { SortDirection } from "context/SorterContext/types";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import usePagination from "components/Pagination/usePagination";
@@ -21,10 +19,11 @@ import Tabs from "components/Tabs/Tabs";
 
 import { formatGt, formatTableDateTime } from "../gtPointsFormat";
 import type { GtPointsStakeData, GtStakePosition } from "../gtPointsTypes";
+import { StakeHistorySkeleton, StakePositionsSkeleton } from "../GtSkeletons";
 import { formatLpAmount, formatUsdValue, getStakeTokenName, StakeTokenLabel } from "./StakeTokenLabel";
 
 type Tab = "positions" | "history";
-type SortField = "value" | "duration";
+type SortField = "value" | "duration" | "unclaimedGt" | "avgApr";
 
 export type StakeAction = { kind: "claim" | "unstake"; positions: GtStakePosition[] };
 
@@ -55,9 +54,19 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
   const sorted = useMemo(() => {
     if (!sort || sort.direction === "unspecified") return positions;
     const sign = sort.direction === "asc" ? 1 : -1;
+    const compare = (left: bigint | number, right: bigint | number) => (left > right ? 1 : left < right ? -1 : 0);
     return [...positions].sort((a, b) => {
-      if (sort.field === "value") return a.initialValueUsd > b.initialValueUsd ? sign : -sign;
-      return a.stakedAt < b.stakedAt ? sign : -sign;
+      switch (sort.field) {
+        case "value":
+          return sign * compare(a.initialValueUsd, b.initialValueUsd);
+        case "duration":
+          // Staked earlier = longer duration
+          return sign * compare(b.stakedAt, a.stakedAt);
+        case "unclaimedGt":
+          return sign * compare(a.unclaimedGt, b.unclaimedGt);
+        case "avgApr":
+          return sign * compare(a.avgApr, b.avgApr);
+      }
     });
   }, [positions, sort]);
 
@@ -140,14 +149,14 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
         </div>
       ) : null}
 
-      {!isConnected && isLoading ? (
-        <EmptyTableContent isLoading isEmpty />
-      ) : !isConnected ? (
+      {!isConnected && !isLoading ? (
         <ConnectState />
       ) : tab === "positions" ? (
         <>
           {isMobile ? (
-            !isLoading && sorted.length > 0 ? (
+            isLoading ? (
+              <StakePositionsSkeleton isMobile />
+            ) : sorted.length > 0 ? (
               <div className="flex flex-col gap-8 p-16">
                 {sorted.map((position) => (
                   <PositionCard
@@ -195,15 +204,21 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
                       <Trans>Current APR</Trans>
                     </TableTh>
                     <TableTh>
-                      <Trans>Avg APR</Trans>
+                      <Sorter {...sorterProps("avgApr")}>
+                        <Trans>Avg APR</Trans>
+                      </Sorter>
                     </TableTh>
                     <TableTh>
-                      <Trans>Unclaimed GT</Trans>
+                      <Sorter {...sorterProps("unclaimedGt")}>
+                        <Trans>Unclaimed GT</Trans>
+                      </Sorter>
                     </TableTh>
                     <TableTh />
                   </TableTheadTr>
                 </thead>
-                {!isLoading && sorted.length > 0 ? (
+                {isLoading ? (
+                  <StakePositionsSkeleton isMobile={false} />
+                ) : sorted.length > 0 ? (
                   <tbody>
                     {sorted.map((position) => {
                       const duration = formatStakeDuration(position.stakedAt, now);
@@ -262,8 +277,8 @@ export function StakePositionsCard({ stake, isConnected, isLoading, onAction }: 
             </TableScrollFadeContainer>
           )}
           <EmptyTableContent
-            isLoading={isLoading}
-            isEmpty={sorted.length === 0}
+            isLoading={false}
+            isEmpty={!isLoading && sorted.length === 0}
             emptyText={
               stake ? (
                 <Trans>No staked GLV or GM yet. Stake them to start earning GT.</Trans>
@@ -364,76 +379,101 @@ function TwoLines({ top, bottom }: { top: ReactNode; bottom: ReactNode }) {
   );
 }
 
+// Text only: the summary card above has the page's one Connect wallet button.
 function ConnectState() {
-  const { openConnectModal } = useConnectModal();
-
   return (
     <EmptyTableContent
       isLoading={false}
       isEmpty
-      emptyText={
-        <div className="flex flex-col items-center gap-12">
-          <Trans>Connect your wallet to see your staked GLV and GM</Trans>
-          {openConnectModal && (
-            <ConnectWalletButton onClick={openConnectModal}>
-              <Trans>Connect wallet</Trans>
-            </ConnectWalletButton>
-          )}
-        </div>
-      }
+      emptyText={<Trans>Connect your wallet to see your staked GLV and GM</Trans>}
     />
   );
 }
 
 function StakeHistory({ stake, isLoading }: { stake: GtPointsStakeData | undefined; isLoading: boolean }) {
+  const { isMobile } = useBreakpoints();
   const history = useMemo(() => stake?.history ?? [], [stake]);
   const { currentPage, setCurrentPage, pageCount, currentData } = usePagination("gt-stake-history", history, 10);
 
   return (
     <>
-      <TableScrollFadeContainer>
-        <table className="w-full min-w-[620px]">
-          <thead>
-            <TableTheadTr>
-              <TableTh>
-                <Trans>Action</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Token</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Amount</Trans>
-              </TableTh>
-              <TableTh>
-                <Trans>Time</Trans>
-              </TableTh>
-            </TableTheadTr>
-          </thead>
-          {!isLoading && currentData.length > 0 ? (
-            <tbody>
-              {currentData.map((item) => (
-                <TableTr key={item.id}>
-                  <TableTd className="text-body-medium font-medium">
+      {isMobile ? (
+        // Phones: action and time on the left, amount and token on the right (like GT history), so nothing
+        // scrolls sideways
+        isLoading ? (
+          <StakeHistorySkeleton isMobile />
+        ) : currentData.length > 0 ? (
+          <div className="flex flex-col">
+            {currentData.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-20 py-10 last:border-b-0"
+              >
+                <div className="flex shrink-0 flex-col gap-2">
+                  <span className="text-body-medium font-medium text-typography-primary">
                     {item.action === "stake" ? t`Stake` : t`Unstake`}
-                  </TableTd>
-                  <TableTd>
-                    <StakeTokenLabel token={item.token} size={24} />
-                  </TableTd>
-                  <TableTd>
-                    <span className="text-body-medium numbers">{formatLpAmount(item.amount, item.token)}</span>
-                  </TableTd>
-                  <TableTd className="text-body-medium text-typography-secondary numbers">
+                  </span>
+                  <span className="text-body-small text-typography-secondary numbers">
                     {formatTableDateTime(item.timestamp)}
-                  </TableTd>
-                </TableTr>
-              ))}
-            </tbody>
-          ) : null}
-        </table>
-      </TableScrollFadeContainer>
+                  </span>
+                </div>
+                <div className="flex min-w-0 flex-col items-end gap-2">
+                  <span className="text-body-medium numbers">{formatLpAmount(item.amount, item.token)}</span>
+                  <span className="text-body-small max-w-full truncate text-typography-secondary">
+                    {getStakeTokenName(item.token)} [{item.token.poolTokens[0]}-{item.token.poolTokens[1]}]
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null
+      ) : (
+        <TableScrollFadeContainer>
+          <table className="w-full min-w-[620px]">
+            <thead>
+              <TableTheadTr>
+                <TableTh>
+                  <Trans>Action</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Token</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Amount</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>Time</Trans>
+                </TableTh>
+              </TableTheadTr>
+            </thead>
+            {isLoading ? (
+              <StakeHistorySkeleton isMobile={false} />
+            ) : currentData.length > 0 ? (
+              <tbody>
+                {currentData.map((item) => (
+                  <TableTr key={item.id}>
+                    <TableTd className="text-body-medium font-medium">
+                      {item.action === "stake" ? t`Stake` : t`Unstake`}
+                    </TableTd>
+                    <TableTd>
+                      <StakeTokenLabel token={item.token} size={24} />
+                    </TableTd>
+                    <TableTd>
+                      <span className="text-body-medium numbers">{formatLpAmount(item.amount, item.token)}</span>
+                    </TableTd>
+                    <TableTd className="text-body-medium text-typography-secondary numbers">
+                      {formatTableDateTime(item.timestamp)}
+                    </TableTd>
+                  </TableTr>
+                ))}
+              </tbody>
+            ) : null}
+          </table>
+        </TableScrollFadeContainer>
+      )}
       <EmptyTableContent
-        isLoading={isLoading}
-        isEmpty={history.length === 0}
+        isLoading={false}
+        isEmpty={!isLoading && history.length === 0}
         emptyText={stake ? <Trans>No staking history yet</Trans> : <Trans>Staking history is not available yet</Trans>}
       />
       {!isLoading && (

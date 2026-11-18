@@ -23,7 +23,8 @@ export default function GtPointsStakePage() {
   }, [data.account]);
 
   const isConnected = Boolean(data.account) && !data.isWalletInitializing;
-  const isLoading = data.isWalletInitializing || data.isLoading;
+  // Wallet cards load only with a wallet, so a disconnected page shows Connect wallet instead of skeletons
+  const isLoading = data.isWalletInitializing || (isConnected && data.isLoading);
 
   return (
     <GtPointsSubpageLayout title={t`Stake`} subtitle={t`Stake your GLV / GM tokens to earn GT rewards`}>
