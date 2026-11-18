@@ -2174,6 +2174,7 @@ msgstr "Mercados"
 msgid "Whitelist only"
 msgstr "Solo lista blanca"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Reintentar"

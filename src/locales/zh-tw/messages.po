@@ -2174,6 +2174,7 @@ msgstr "市場"
 msgid "Whitelist only"
 msgstr "僅限白名單"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"

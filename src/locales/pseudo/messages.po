@@ -2174,6 +2174,7 @@ msgstr ""
 msgid "Whitelist only"
 msgstr ""
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr ""
