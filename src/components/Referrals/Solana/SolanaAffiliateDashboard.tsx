@@ -108,7 +108,7 @@ function InviteCard({ code, onShare }: { code: string; onShare: () => void }) {
             <Trans>Invite and earn rewards</Trans>
           </div>
           <div className="text-body-small text-typography-secondary">
-            <Trans>Earn GT rewards and increase your GT sellable quota as your referrals trade.</Trans>
+            <Trans>Earn GT rewards and increase your GT sellable quota as your referrals trade</Trans>
           </div>
         </div>
         <div className="flex min-w-0 shrink-0 flex-col items-end gap-2 max-md:items-start">
@@ -321,7 +321,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
       <EmptyRow>
         <Trans>No referral rewards in this period</Trans>
         <span className="text-body-small">
-          <Trans>Rewards show here when your referees trade.</Trans>
+          <Trans>Rewards show here when your referees trade</Trans>
         </span>
       </EmptyRow>
     );
@@ -448,7 +448,7 @@ function RefereesTable({
       <EmptyRow>
         <Trans>No referees yet</Trans>
         <span className="text-body-small">
-          <Trans>Share your referral link to start earning.</Trans>
+          <Trans>Share your referral link to start earning</Trans>
         </span>
       </EmptyRow>
     );
@@ -459,7 +459,7 @@ function RefereesTable({
       <EmptyRow>
         <Trans>No referee rewards in this period</Trans>
         <span className="text-body-small">
-          <Trans>Rewards show here when your referees trade.</Trans>
+          <Trans>Rewards show here when your referees trade</Trans>
         </span>
       </EmptyRow>
     );

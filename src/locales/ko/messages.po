@@ -881,6 +881,11 @@ msgstr "확장"
 msgid "Edit Stop Market: {suffix}"
 msgstr "스톱 시장가 주문 수정: {suffix}"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Rewards show here when your referees trade"
+msgstr ""
+
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "{networkName}에서 모든 트레이더가 실행한 GMX {VERSION_NAME} 액션"
@@ -2282,10 +2287,6 @@ msgstr "TP 가격을 지정가보다 높게 설정하십시오"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
 msgstr "풀 최대 숏 수량"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Share your referral link to start earning."
-msgstr ""
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Only whitelisted addresses can deposit into this vault"
@@ -8432,11 +8433,6 @@ msgstr "로딩 중..."
 msgid "Trade now"
 msgstr "지금 거래하기"
 
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Rewards show here when your referees trade."
-msgstr ""
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr "발신자가 GMX 베스팅 볼트에서 모든 토큰을 출금했습니다"
@@ -9763,6 +9759,10 @@ msgstr "{sourceChainName}의 지갑 자금은 GMX 거래에 직접 사용되지 
 msgid "Enter a valid amount"
 msgstr "유효한 금액을 입력하십시오"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Share your referral link to start earning"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Keep leverage at {currentLeverage}"
 msgstr "레버리지를 {currentLeverage}로 유지"
@@ -9901,10 +9901,6 @@ msgstr "Express 거래 데이터를 아직 불러오는 중입니다. 몇 초 �
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX"
 msgstr "GMX 보유분"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade."
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
@@ -13677,6 +13673,10 @@ msgstr "최근 30일"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "대시보드"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"

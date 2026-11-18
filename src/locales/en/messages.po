@@ -881,6 +881,11 @@ msgstr "Expand"
 msgid "Edit Stop Market: {suffix}"
 msgstr "Edit Stop Market: {suffix}"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Rewards show here when your referees trade"
+msgstr "Rewards show here when your referees trade"
+
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX {VERSION_NAME} actions across all traders on {networkName}"
 msgstr "GMX {VERSION_NAME} actions across all traders on {networkName}"
@@ -2282,10 +2287,6 @@ msgstr "Set TP price above limit price"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
 msgstr "Pool max short amount"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Share your referral link to start earning."
-msgstr "Share your referral link to start earning."
 
 #: src/components/GmList/UsdgPoolBadges.tsx
 msgid "Only whitelisted addresses can deposit into this vault"
@@ -8432,11 +8433,6 @@ msgstr "Loading..."
 msgid "Trade now"
 msgstr "Trade now"
 
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Rewards show here when your referees trade."
-msgstr "Rewards show here when your referees trade."
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
 msgstr "Sender has withdrawn all tokens from the GMX vesting vault"
@@ -9763,6 +9759,10 @@ msgstr "Wallet funds on {sourceChainName} are not used directly for GMX trades."
 msgid "Enter a valid amount"
 msgstr "Enter a valid amount"
 
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Share your referral link to start earning"
+msgstr "Share your referral link to start earning"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Keep leverage at {currentLeverage}"
 msgstr "Keep leverage at {currentLeverage}"
@@ -9901,10 +9901,6 @@ msgstr "Express transaction data is still loading. Retry in a few seconds"
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In GMX"
 msgstr "In GMX"
-
-#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
-msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade."
-msgstr "Earn GT rewards and increase your GT sellable quota as your referrals trade."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dolomite"
@@ -13677,6 +13673,10 @@ msgstr "Last 30d"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
 msgstr "Dashboards"
+
+#: src/components/Referrals/Solana/SolanaAffiliateDashboard.tsx
+msgid "Earn GT rewards and increase your GT sellable quota as your referrals trade"
+msgstr "Earn GT rewards and increase your GT sellable quota as your referrals trade"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{label}"
