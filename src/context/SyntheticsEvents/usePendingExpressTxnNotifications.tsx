@@ -1,4 +1,4 @@
-import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
+import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -52,6 +52,7 @@ export function usePendingExpressTxnNotifications({
   const { invalidateSubaccountApproval } = useSubaccountContext();
   const { setOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
     useTokensBalancesUpdates();
+  const handledFailedTaskIdsRef = useRef(new Set<string>());
 
   useEffect(
     function notifyPendingExpressTxn() {
@@ -77,83 +78,81 @@ export function usePendingExpressTxnNotifications({
             setPendingExpressTxns((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           }
 
-          if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
-            let isRelayerMetricSent = false;
+          // once per relay task and not gated on isViewed: a new order's status toast marks its txn viewed
+          // before the relay answers, and the effect re-runs on every state write
+          if (
+            (status === StatusCode.Reverted || status === StatusCode.Rejected) &&
+            !handledFailedTaskIdsRef.current.has(pendingExpressTxn.taskId)
+          ) {
+            handledFailedTaskIdsRef.current.add(pendingExpressTxn.taskId);
+
             let isViewed = false;
             const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
 
-            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
+            if (pendingExpressTxn.metricId) {
               sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
-
-              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
-
-              if (executionFeeErrorParams.isErrorMatched) {
-                const totastContent = getInsufficientExecutionFeeToastContent({
-                  minExecutionFee: executionFeeErrorParams.args.minExecutionFee,
-                  executionFee: executionFeeErrorParams.args.executionFee,
-                  chainId,
-                  executionFeeBufferBps,
-                  isExpress: true,
-                  estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
-                  estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
-                  estimatedOrders: pendingExpressTxn.estimatedOrders,
-                  txUrl: undefined,
-                  errorMessage: executionFeeErrorParams.errorData.errorMessage,
-                  shouldOfferExpress: false,
-                  setIsSettingsVisible,
-                });
-
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(totastContent, {
-                    tradingErrorInfo: {
-                      actionName: "Express Order",
-                      errorData: executionFeeErrorParams.errorData,
-                      metricId: pendingExpressTxn.metricId,
-                    },
-                  });
-                });
-                isViewed = true;
-              }
-
-              const invalidSignatureErrorParams = getIsInvalidSignatureError(relayError);
-
-              if (invalidSignatureErrorParams.isErrorMatched) {
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(<InvalidSignatureToastContent />, {
-                    tradingErrorInfo: {
-                      actionName: "Express Order",
-                      errorData: invalidSignatureErrorParams.errorData,
-                      metricId: pendingExpressTxn.metricId,
-                    },
-                  });
-                });
-                isViewed = true;
-              }
-
-              isRelayerMetricSent = true;
             }
 
-            // not gated on isViewed: the order status toast marks a new order's txn viewed before the relay answers
-            if (pendingExpressTxn.subaccountApproval && !pendingExpressTxn.isSubaccountApprovalErrorChecked) {
-              setPendingExpressTxns((old) =>
-                updateByKey(old, pendingExpressTxn.key!, { isSubaccountApprovalErrorChecked: true })
-              );
+            const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
 
-              if (
-                getIsOutdatedSubaccountApprovalError(relayError) &&
-                invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
-              ) {
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(getOutdatedSubaccountApprovalToastContent());
+            if (executionFeeErrorParams.isErrorMatched) {
+              const totastContent = getInsufficientExecutionFeeToastContent({
+                minExecutionFee: executionFeeErrorParams.args.minExecutionFee,
+                executionFee: executionFeeErrorParams.args.executionFee,
+                chainId,
+                executionFeeBufferBps,
+                isExpress: true,
+                estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
+                estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
+                estimatedOrders: pendingExpressTxn.estimatedOrders,
+                txUrl: undefined,
+                errorMessage: executionFeeErrorParams.errorData.errorMessage,
+                shouldOfferExpress: false,
+                setIsSettingsVisible,
+              });
+
+              // Wait to ensure there is no race condition with the pending order toast
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(totastContent, {
+                  tradingErrorInfo: {
+                    actionName: "Express Order",
+                    errorData: executionFeeErrorParams.errorData,
+                    metricId: pendingExpressTxn.metricId,
+                  },
                 });
-                isViewed = true;
-              }
+              });
+              isViewed = true;
+            }
+
+            const invalidSignatureErrorParams = getIsInvalidSignatureError(relayError);
+
+            if (invalidSignatureErrorParams.isErrorMatched) {
+              // Wait to ensure there is no race condition with the pending order toast
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(<InvalidSignatureToastContent />, {
+                  tradingErrorInfo: {
+                    actionName: "Express Order",
+                    errorData: invalidSignatureErrorParams.errorData,
+                    metricId: pendingExpressTxn.metricId,
+                  },
+                });
+              });
+              isViewed = true;
+            }
+
+            if (
+              pendingExpressTxn.subaccountApproval &&
+              getIsOutdatedSubaccountApprovalError(relayError) &&
+              invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
+            ) {
+              // Wait to ensure there is no race condition with the pending order toast
+              sleep(500).then(() => {
+                toast.dismiss(pendingOrderToastIdRef.current);
+                helperToast.error(getOutdatedSubaccountApprovalToastContent());
+              });
+              isViewed = true;
             }
 
             const relayErrorData = parseError(relayError);
@@ -179,8 +178,7 @@ export function usePendingExpressTxnNotifications({
                 : undefined,
             });
 
-            // a new order's status toast already marked the txn viewed, so the failure-reporting run still shows this
-            if (balanceBanner && !isViewed && (isRelayerMetricSent || !pendingExpressTxn.isViewed)) {
+            if (balanceBanner && !isViewed) {
               const balanceToastContent = getInsufficientBalanceToastContent({
                 chainId,
                 banner: balanceBanner,
@@ -210,23 +208,18 @@ export function usePendingExpressTxnNotifications({
               isViewed = true;
             }
 
-            if (isViewed || isRelayerMetricSent) {
-              // write only the flags this run set: a false one would undo an earlier run and repeat its metric or toast
-              setPendingExpressTxns((old) =>
-                updateByKey(old, pendingExpressTxn.key!, {
-                  ...(isViewed && { isViewed }),
-                  ...(isRelayerMetricSent && { isRelayerMetricSent }),
-                })
-              );
-              setOptimisticTokensBalancesUpdates((old) => {
-                const newState = { ...old };
-                Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
-                  delete newState[tokenAddress];
-                });
-                return newState;
-              });
-              setPendingPositionsUpdates({});
+            if (isViewed) {
+              setPendingExpressTxns((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
             }
+
+            setOptimisticTokensBalancesUpdates((old) => {
+              const newState = { ...old };
+              Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
+                delete newState[tokenAddress];
+              });
+              return newState;
+            });
+            setPendingPositionsUpdates({});
           }
         }
       });

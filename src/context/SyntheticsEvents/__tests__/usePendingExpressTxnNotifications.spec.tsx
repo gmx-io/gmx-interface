@@ -2,6 +2,7 @@ import { cleanup, render } from "@testing-library/react";
 import { SetStateAction, useRef } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import type { OrderMetricId } from "lib/metrics/types";
 import { StatusCode } from "sdk/utils/express";
@@ -66,8 +67,6 @@ function renderUntilSettled(initialTxns: PendingExpressTxns, relayTaskStatuses: 
     isChanged = false;
     view.rerender(<TestComponent {...{ pendingExpressTxns, setPendingExpressTxns, relayTaskStatuses }} />);
   }
-
-  return pendingExpressTxns;
 }
 
 function getFailedEvents() {
@@ -88,29 +87,41 @@ describe("usePendingExpressTxnNotifications", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
-  it("sends the failed metric of a relay balance rejection once TRD-139", () => {
-    const pendingExpressTxns = renderUntilSettled(
-      {
-        txn: {
-          key: "txn",
-          taskId: "task",
-          metricId: METRIC_ID,
-          gasPaymentTokenAddress: USDC,
-          isGmxAccount: false,
-          payAmounts: { [USDC]: 10n ** 6n },
-          // the order status toast marks a new order's txn viewed before the relay answers
-          isViewed: true,
-          isRelayerMetricSent: false,
+  it.each([
+    {
+      name: "with",
+      metricId: METRIC_ID,
+      failedEvents: [{ event: "increasePosition.failed", errorContext: "relayer" }],
+    },
+    { name: "without", metricId: undefined, failedEvents: [] },
+  ])(
+    "reports a relay balance rejection of a new order once, $name a metric id TRD-139",
+    async ({ metricId, failedEvents }) => {
+      const errorToastSpy = vi.spyOn(helperToast, "error");
+
+      renderUntilSettled(
+        {
+          txn: {
+            key: "txn",
+            taskId: "task",
+            metricId,
+            gasPaymentTokenAddress: USDC,
+            isGmxAccount: false,
+            payAmounts: { [USDC]: 10n ** 6n },
+            isViewed: true,
+          },
         },
-      },
-      {
-        task: { taskId: "task", statusCode: StatusCode.Rejected, message: "ERC20: transfer amount exceeds balance" },
-      }
-    );
+        {
+          task: { taskId: "task", statusCode: StatusCode.Rejected, message: "ERC20: transfer amount exceeds balance" },
+        }
+      );
+      await vi.advanceTimersByTimeAsync(500);
 
-    expect(getFailedEvents()).toEqual([{ event: "increasePosition.failed", errorContext: "relayer" }]);
-    expect(pendingExpressTxns.txn).toMatchObject({ isViewed: true, isRelayerMetricSent: true });
-  });
+      expect(getFailedEvents()).toEqual(failedEvents);
+      expect(errorToastSpy).toHaveBeenCalledTimes(1);
+    }
+  );
 });
