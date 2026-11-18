@@ -3,6 +3,8 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { build, createServer } from "vite";
 
+import { withoutLookupTables } from "./lookupTableConfiguration.mjs";
+
 const { values } = parseArgs({
   options: {
     "api-url": { type: "string", default: "http://127.0.0.1:3046" },
@@ -21,12 +23,12 @@ const root = process.cwd();
 // Match the normal app startup: verify and bundle the pinned SDK before serving it.
 await build({ root, configFile: path.join(root, "vite.gmsol.config.ts") });
 const apiConfig = path.join(root, "sdk/src/configs/api.ts");
-const lutConfig = path.join(root, "src/config/gmsol/lookupTables.ts");
 const server = await createServer({
   root,
   configFile: path.join(root, "vite.config.ts"),
   server: { host: "127.0.0.1", port, strictPort: true, open: false },
   plugins: [
+    withoutLookupTables(root),
     {
       name: "trd136-isolated-configuration",
       enforce: "pre",
@@ -39,9 +41,6 @@ const server = await createServer({
             "Review the changed Solana API configuration before continuing"
           );
           return source.replace(configuredHost, JSON.stringify(api.origin));
-        }
-        if (id.split("?")[0] === lutConfig) {
-          return "export const GMSOL_LOOKUP_TABLE_ADDRESSES = []; export const GMSOL_LOOKUP_TABLE_AUTHORITIES = {};";
         }
       },
     },
