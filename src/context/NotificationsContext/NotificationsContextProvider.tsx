@@ -44,7 +44,7 @@ export type NotificationsTestState = "sending" | "sent" | "cooldown" | "notRegis
 
 type Operation = "turningOn" | "turningOff";
 
-type RegistrationKind = "turnOn" | "sign" | "open" | "walletSwitch";
+type RegistrationKind = "turnOn" | "open" | "walletSwitch";
 
 type Issue =
   | { type: "turnOnFailed"; error: string }
@@ -63,8 +63,8 @@ export type NotificationsContextValue = {
   testState: NotificationsTestState | undefined;
   turnOn: () => void;
   turnOff: () => void;
+  /** Also asks the connected wallet for a signature at the device limit. */
   retry: () => void;
-  signAndTurnOn: () => void;
   sendTest: () => void;
 };
 
@@ -79,7 +79,6 @@ const NotificationsContext = createContext<NotificationsContextValue>({
   turnOn: noop,
   turnOff: noop,
   retry: noop,
-  signAndTurnOn: noop,
   sendTest: noop,
 });
 
@@ -201,6 +200,8 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
   const register = useCallback(
     async (targetAccount: string, kind: RegistrationKind, sign?: (message: string) => Promise<string>) => {
+      let isSigning = false;
+
       // A newer wallet switch already replaced this one.
       if (kind === "walletSwitch" && accountRef.current && accountRef.current !== targetAccount) {
         return;
@@ -210,13 +211,20 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         const { endpoint } = await registerThisDevice({
           account: targetAccount,
           stored: storedRef.current,
-          sign,
+          sign:
+            sign &&
+            (async (message) => {
+              isSigning = true;
+              const signature = await sign(message);
+              isSigning = false;
+              return signature;
+            }),
           onSigned: (signature) => updateStored({ signature }),
         });
         updateStored({ enabled: true, account: targetAccount, endpoint });
         setIssue(undefined);
 
-        if (kind === "turnOn" || kind === "sign") {
+        if (kind === "turnOn") {
           // The confirmation. A refused test, e.g. within the API's one-minute limit, does not undo turning on.
           sendTestNotification(endpoint).catch(noop);
         }
@@ -233,7 +241,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
             account: targetAccount,
             error: getIsInvalidSignatureError(error) ? message : undefined,
           });
-        } else if (kind === "sign" && !(error instanceof NotificationsApiError)) {
+        } else if (isSigning) {
           // The wallet did not sign.
           setIssue({ type: "limitReached", account: targetAccount, error: message });
         } else if (kind === "walletSwitch") {
@@ -281,6 +289,15 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
     [enqueue]
   );
 
+  // Only a click of the user may open a signature request, and only the wallet that gets notifications can sign.
+  const getSign = useCallback(
+    (targetAccount: string) =>
+      signer && account === targetAccount
+        ? (message: string) => signMessage({ signer, message, verificationChainId: NOTIFICATIONS_CHAIN_ID })
+        : undefined,
+    [account, signer]
+  );
+
   const turnOn = useCallback(() => {
     const targetAccount = account ?? storedRef.current.account;
 
@@ -298,24 +315,10 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       setPermission(nextPermission);
 
       if (nextPermission === "granted") {
-        await register(targetAccount, "turnOn");
+        await register(targetAccount, "turnOn", getSign(targetAccount));
       }
     });
-  }, [account, isEnabled, operation, register, runOperation, setPermission, support]);
-
-  const signAndTurnOn = useCallback(() => {
-    if (operation || issue?.type !== "limitReached" || !signer || account !== issue.account) {
-      return;
-    }
-
-    const targetAccount = issue.account;
-
-    runOperation("turningOn", () =>
-      register(targetAccount, "sign", (message) =>
-        signMessage({ signer, message, verificationChainId: NOTIFICATIONS_CHAIN_ID })
-      )
-    );
-  }, [account, issue, operation, register, runOperation, signer]);
+  }, [account, getSign, isEnabled, operation, register, runOperation, setPermission, support]);
 
   const retry = useCallback(() => {
     if (operation) {
@@ -323,18 +326,19 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
     }
 
     if (issue?.type === "walletSwitchFailed" && account) {
-      runOperation("turningOn", () => register(account, "walletSwitch"));
+      runOperation("turningOn", () => register(account, "walletSwitch", getSign(account)));
       return;
     }
 
     const storedAccount = storedRef.current.account;
     if (issue?.type === "syncFailed" && storedAccount) {
-      runOperation("turningOn", () => register(account ?? storedAccount, "open"));
+      const targetAccount = account ?? storedAccount;
+      runOperation("turningOn", () => register(targetAccount, "open", getSign(targetAccount)));
       return;
     }
 
     turnOn();
-  }, [account, issue, operation, register, runOperation, turnOn]);
+  }, [account, getSign, issue, operation, register, runOperation, turnOn]);
 
   const turnOff = useCallback(() => {
     if (operation) {
@@ -439,23 +443,9 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       turnOn,
       turnOff,
       retry,
-      signAndTurnOn,
       sendTest,
     };
-  }, [
-    account,
-    issue,
-    operation,
-    permission,
-    retry,
-    sendTest,
-    signAndTurnOn,
-    stored,
-    support,
-    testState,
-    turnOff,
-    turnOn,
-  ]);
+  }, [account, issue, operation, permission, retry, sendTest, stored, support, testState, turnOff, turnOn]);
 
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
 }

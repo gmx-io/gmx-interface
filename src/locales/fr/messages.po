@@ -12074,10 +12074,6 @@ msgstr "L’expéditeur a retiré tous les tokens du vault d’acquisition progr
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens GM et se rééquilibre automatiquement entre les marchés liés. Les deux réinvestissent automatiquement les rendements. Choisissez GM pour une exposition à un seul marché ou GLV pour diversifier entre plusieurs pools."
 
-#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
-msgid "Sign to add this device"
-msgstr "Signez pour ajouter cet appareil"
-
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
 msgstr ""

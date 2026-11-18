@@ -12074,10 +12074,6 @@ msgstr "送信者はGLPベスティングボールトからすべてのトーク
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GMは1つのマーケットから手数料を獲得します。GLVは複数のGMトークンを保有し、関連マーケット間で自動的にリバランスします。どちらも収益を自動的に複利運用します。単一マーケットへのエクスポージャーにはGMを、複数プールへの分散にはGLVをお選びください。"
 
-#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
-msgid "Sign to add this device"
-msgstr "署名してこのデバイスを追加"
-
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
 msgstr ""

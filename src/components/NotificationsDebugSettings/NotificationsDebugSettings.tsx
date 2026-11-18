@@ -3,7 +3,6 @@ import { useState } from "react";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useNotificationsContext } from "context/NotificationsContext/NotificationsContextProvider";
-import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
 import { ExpandableRow } from "components/ExpandableRow";
@@ -11,25 +10,18 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
 export function NotificationsDebugSettings() {
   const [open, setOpen] = useState(false);
-  const { account } = useWallet();
   const { openConnectModal } = useConnectModal();
-  const {
-    status,
-    receivingAccount,
-    pendingAccount,
-    error,
-    testState,
-    turnOn,
-    turnOff,
-    retry,
-    signAndTurnOn,
-    sendTest,
-  } = useNotificationsContext();
+  const { status, receivingAccount, pendingAccount, error, testState, turnOn, turnOff, retry, sendTest } =
+    useNotificationsContext();
 
   const isBusy = status === "turningOn" || status === "turningOff";
   const isOn = status === "on" || status === "walletSwitchFailed";
   const canTurnOn = status === "off" || status === "notAsked" || status === "on";
-  const canRetry = status === "turnOnFailed" || status === "walletSwitchFailed" || (status === "on" && Boolean(error));
+  const canRetry =
+    status === "turnOnFailed" ||
+    status === "walletSwitchFailed" ||
+    status === "limitReached" ||
+    (status === "on" && Boolean(error));
 
   return (
     <ExpandableRow title={<Trans>Push notifications</Trans>} open={open} onToggle={setOpen}>
@@ -70,11 +62,6 @@ export function NotificationsDebugSettings() {
           {canRetry && (
             <Button variant="secondary" disabled={isBusy} onClick={retry}>
               <Trans>Retry</Trans>
-            </Button>
-          )}
-          {status === "limitReached" && (
-            <Button variant="secondary" disabled={!account || account !== pendingAccount} onClick={signAndTurnOn}>
-              <Trans>Sign to add this device</Trans>
             </Button>
           )}
         </div>

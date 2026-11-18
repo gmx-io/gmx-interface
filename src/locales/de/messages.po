@@ -12074,10 +12074,6 @@ msgstr "Der Absender hat alle Token aus dem GLP Vesting Vault abgehoben"
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM erzielt Gebühren aus einem Markt. GLV hält mehrere GM Token und gewichtet diese automatisch über verwandte Märkte neu. Beide reinvestieren Erträge automatisch. Wählen Sie GM für ein Engagement in einem einzelnen Markt oder GLV zur Diversifizierung über mehrere Pools."
 
-#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
-msgid "Sign to add this device"
-msgstr "Signieren, um dieses Gerät hinzuzufügen"
-
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
 msgstr ""

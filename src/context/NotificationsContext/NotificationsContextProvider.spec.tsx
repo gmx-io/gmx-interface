@@ -85,6 +85,15 @@ function renderNotifications() {
   return { result, rerender: () => rerender(tree()) };
 }
 
+// The API answers 409 without a signature and registers the device with one.
+async function registerAtLimit({ sign }: { sign?: (message: string) => Promise<string> }) {
+  if (!sign) {
+    throw new NotificationsApiError("limit", 409, REGISTRATION_LIMIT_REACHED);
+  }
+  await sign("message");
+  return { endpoint: ENDPOINT };
+}
+
 const requestPermission = vi.fn(async (): Promise<NotificationPermission> => {
   mocks.permission = "granted";
   return mocks.permission;
@@ -313,26 +322,63 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(readDevice().unregisterEndpoint).toBeUndefined());
   });
 
-  it("offers a signature at the device limit and never asks for one by itself", async () => {
-    mocks.registerThisDevice.mockRejectedValue(new NotificationsApiError("limit", 409, REGISTRATION_LIMIT_REACHED));
+  it("asks the connected wallet for a signature when turning on at the device limit", async () => {
+    mocks.registerThisDevice.mockImplementation(registerAtLimit);
+    const { result } = renderNotifications();
+
+    act(() => result.current.turnOn());
+
+    await waitFor(() => expect(result.current.status).toBe("on"));
+    expect(mocks.signMessage).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ message: "message", verificationChainId: 42161 })
+    );
+    expect(mocks.sendTestNotification).toHaveBeenCalledOnce();
+  });
+
+  it("never asks for a signature by itself, and signs when the user tries again", async () => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    mocks.registerThisDevice.mockImplementation(registerAtLimit);
+    const { result, rerender } = renderNotifications();
+
+    await waitFor(() => expect(result.current.status).toBe("limitReached"));
+    mocks.account = OTHER_ACCOUNT;
+    rerender();
+    await waitFor(() => expect(result.current.pendingAccount).toBe(OTHER_ACCOUNT));
+    expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2);
+    expect(mocks.signMessage).not.toHaveBeenCalled();
+
+    act(() => result.current.retry());
+
+    await waitFor(() => expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT));
+    expect(result.current.status).toBe("on");
+    expect(mocks.signMessage).toHaveBeenCalledOnce();
+  });
+
+  it("can't sign at the device limit with no wallet connected", async () => {
+    mocks.account = undefined;
+    mocks.permission = "granted";
+    storeDevice({ enabled: false, account: ACCOUNT });
+    mocks.registerThisDevice.mockImplementation(registerAtLimit);
     const { result } = renderNotifications();
 
     act(() => result.current.turnOn());
 
     await waitFor(() => expect(result.current.status).toBe("limitReached"));
     expect(result.current.pendingAccount).toBe(ACCOUNT);
-    expect(mocks.registerThisDevice).toHaveBeenCalledWith(expect.objectContaining({ sign: undefined }));
+    expect(mocks.signMessage).not.toHaveBeenCalled();
+  });
 
-    mocks.registerThisDevice.mockReset().mockImplementation(async ({ sign }) => {
-      await sign("message");
-      return { endpoint: ENDPOINT };
-    });
-    act(() => result.current.signAndTurnOn());
+  it("stays at the device limit when the wallet refuses to sign", async () => {
+    mocks.registerThisDevice.mockImplementation(registerAtLimit);
+    mocks.signMessage.mockRejectedValueOnce(new Error("User rejected the request"));
+    const { result } = renderNotifications();
 
-    await waitFor(() => expect(result.current.status).toBe("on"));
-    expect(mocks.signMessage).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({ message: "message", verificationChainId: 42161 })
-    );
+    act(() => result.current.turnOn());
+
+    await waitFor(() => expect(result.current.status).toBe("limitReached"));
+    expect(result.current.error).toBe("User rejected the request");
+    expect(mocks.sendTestNotification).not.toHaveBeenCalled();
   });
 
   it("shows the test cooldown", async () => {

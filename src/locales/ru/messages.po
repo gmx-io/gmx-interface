@@ -12074,10 +12074,6 @@ msgstr "Отправитель вывел все токены из хранил�
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
 
-#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
-msgid "Sign to add this device"
-msgstr "Подписать, чтобы добавить это устройство"
-
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
 msgstr ""

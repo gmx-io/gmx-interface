@@ -12074,10 +12074,6 @@ msgstr "发送方已从 GLP 归属期金库中提取所有代币"
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 从单个市场赚取费用。GLV 持有多个 GM 代币，并在相关市场间自动再平衡。两者均自动复利回报。选择 GM 获得单一市场敞口，或选择 GLV 在多个池之间分散投资。"
 
-#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
-msgid "Sign to add this device"
-msgstr "签名以添加此设备"
-
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
 msgstr ""
