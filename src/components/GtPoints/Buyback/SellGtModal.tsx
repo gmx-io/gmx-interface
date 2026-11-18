@@ -91,14 +91,14 @@ export function SellGtModal({ isVisible, setIsVisible, availableToSell, pool }: 
           </Trans>
         </span>
 
-        <div className="grid grid-cols-2 gap-8">
-          <Button variant="secondary" onClick={() => setIsVisible(false)}>
-            <Trans>Cancel</Trans>
-          </Button>
-          <Button variant="primary" disabled={amountError !== undefined || isBelowMin} onClick={sell}>
-            {amountError ?? <Trans>Sell {formatGt(amount)}</Trans>}
-          </Button>
-        </div>
+        <Button
+          variant="primary-action"
+          className="w-full"
+          disabled={amountError !== undefined || isBelowMin}
+          onClick={sell}
+        >
+          {amountError ?? <Trans>Sell {formatGt(amount)}</Trans>}
+        </Button>
       </div>
     </Modal>
   );
