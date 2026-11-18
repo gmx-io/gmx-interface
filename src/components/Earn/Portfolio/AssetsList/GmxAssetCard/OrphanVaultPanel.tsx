@@ -4,7 +4,10 @@ import { useState } from "react";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRewardRouterContract } from "domain/stake/rewardRouter";
+import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
+import { getUnstakeDelayDays } from "domain/stake/unstakeRequests";
 import {
+  getOrphanClaimableGmx,
   getOrphanDepositState,
   RATIO_VESTER_PAIR_RATIO_DECIMALS,
   type OrphanDepositError,
@@ -32,22 +35,39 @@ import EsGmxIcon from "img/tokens/ic_esgmx.svg?react";
 
 import { formatVaultAmount, formatVaultAmountRoundedUp, VaultAmountRatio } from "./VaultAmountRatio";
 
-type OrphanVaultAction = "deposit" | "claim" | "withdraw";
+type OrphanVaultAction = "deposit" | "claim" | "withdraw" | "claimEsGmx";
+
+type OrphanVaultActionTx = {
+  method: string;
+  params: unknown[];
+  sentMsg: string;
+  failMsg: string;
+  successMsg: string;
+  metric: Pick<Parameters<typeof sendStakingActionMetric>[0], "action" | "tokenSymbol" | "vault">;
+};
 
 export function OrphanVaultPanel({
   data,
   walletEsGmxBalance,
   stakedAmount,
+  stakedEsGmxAmount,
+  unclaimedEsGmxAmount,
+  unstakeDelay,
   onTxSent,
   onTxMined,
   onStakeGmx,
+  onUnstakeEsGmx,
 }: {
   data: OrphanVaultData;
   walletEsGmxBalance: bigint | undefined;
   stakedAmount: bigint | undefined;
+  stakedEsGmxAmount: bigint | undefined;
+  unclaimedEsGmxAmount: bigint | undefined;
+  unstakeDelay: number | undefined;
   onTxSent: () => void;
   onTxMined: () => void;
   onStakeGmx: () => void;
+  onUnstakeEsGmx: () => void;
 }) {
   const { chainId } = useChainId();
   const { signer } = useWallet();
@@ -59,12 +79,13 @@ export function OrphanVaultPanel({
 
   const depositAmount = parseValue(depositValue, 18);
   const now = BigInt(Math.floor(Date.now() / 1000));
-  const { maxDepositAmount, additionalPairAmount, stakeShortfallAmount, error } = getOrphanDepositState({
-    data,
-    walletEsGmxBalance: walletEsGmxBalance ?? 0n,
-    depositAmount,
-    now,
-  });
+  const { maxDepositAmount, additionalPairAmount, stakeShortfallAmount, walletShortfallAmount, error } =
+    getOrphanDepositState({
+      data,
+      walletEsGmxBalance: walletEsGmxBalance ?? 0n,
+      depositAmount,
+      now,
+    });
 
   const pairRatio = formatAmountFree(data.pairRatioFactor, RATIO_VESTER_PAIR_RATIO_DECIMALS);
   const vestingDays = Math.round(Number(data.vestingDuration) / SECONDS_IN_DAY);
@@ -74,43 +95,47 @@ export function OrphanVaultPanel({
 
   const isActionDisabled = hasOutdatedUi || !signer || pendingAction !== undefined;
   const canDeposit = error === undefined;
-  const canClaim = data.isOpen && !data.isClaimPaused && data.claimableAmount > 0n;
+  const canClaim = getOrphanClaimableGmx(data) > 0n;
   const canWithdraw = data.depositedAmount > 0n || data.reservedAmount > 0n;
+  const hasWalletShortfallHint = walletShortfallAmount > 0n && error !== "closed" && error !== "frozen";
+  const unstakeDelayDays = unstakeDelay !== undefined ? getUnstakeDelayDays(unstakeDelay) : undefined;
+  const walletShortfall = formatVaultAmount(walletShortfallAmount);
+  const stakedEsGmx = formatVaultAmount(stakedEsGmxAmount);
+  const unclaimedEsGmx = formatVaultAmount(unclaimedEsGmxAmount);
 
   const handleAction = (action: OrphanVaultAction) => {
     if (!signer) {
       return;
     }
 
-    const orphanVesterAddress = getContract(chainId, "OrphanRatioVester");
-    const failMsg =
-      action === "deposit" ? t`Deposit failed` : action === "claim" ? t`Claim failed` : t`Stop vesting failed`;
-    const [method, params] =
-      action === "deposit"
-        ? ["vesterDeposit", [orphanVesterAddress, depositAmount]]
-        : action === "claim"
-          ? ["vesterClaim", [orphanVesterAddress]]
-          : ["vesterWithdraw", [orphanVesterAddress]];
+    const actionTx = getActionTx({
+      action,
+      orphanVesterAddress: getContract(chainId, "OrphanRatioVester"),
+      depositAmount,
+    });
+    const metric = { ...actionTx.metric, chainId };
 
     setPendingAction(action);
-    callContract(chainId, getRewardRouterContract(chainId, signer), method, params, {
-      sentMsg:
-        action === "deposit"
-          ? t`Deposit submitted`
-          : action === "claim"
-            ? t`Claim submitted`
-            : t`Stop vesting submitted`,
-      failMsg,
-      successMsg: action === "deposit" ? t`Deposited` : action === "claim" ? t`Claimed` : t`Vesting stopped`,
+    callContract(chainId, getRewardRouterContract(chainId, signer), actionTx.method, actionTx.params, {
+      sentMsg: actionTx.sentMsg,
+      failMsg: actionTx.failMsg,
+      successMsg: actionTx.successMsg,
       setPendingTxns,
       hideErrorMsg: true,
     })
       .then((tx) => {
+        sendStakingActionMetric(metric);
         onTxSent();
         tx?.wait().then(onTxMined, onTxMined);
       })
       .catch((txError) => {
-        showStakingErrorToast({ chainId, error: txError, failMsg, action: "legacyVault" });
+        sendStakingActionMetric({ ...metric, error: txError });
+        showStakingErrorToast({
+          chainId,
+          error: txError,
+          failMsg: actionTx.failMsg,
+          action: action === "claimEsGmx" ? "default" : "legacyVault",
+        });
       })
       .finally(() => {
         setPendingAction(undefined);
@@ -155,6 +180,34 @@ export function OrphanVaultPanel({
             {t`esGMX`}
           </div>
         </BuyInputSection>
+
+        {hasWalletShortfallHint && (
+          <AlertInfoCard type="info" hideClose>
+            <div className="flex flex-col gap-8">
+              <Trans>{walletShortfall} esGMX of your eligible amount left isn't in your wallet.</Trans>
+              {stakedEsGmxAmount !== undefined && stakedEsGmxAmount > 0n && (
+                <div>
+                  <Trans>{stakedEsGmx} esGMX is staked.</Trans>{" "}
+                  {unstakeDelayDays !== undefined && <Trans>Unstaking takes {unstakeDelayDays} days.</Trans>}
+                  <ColorfulButtonLink onClick={onUnstakeEsGmx}>
+                    <Trans>Request unstake</Trans>
+                  </ColorfulButtonLink>
+                </div>
+              )}
+              {unclaimedEsGmxAmount !== undefined && unclaimedEsGmxAmount > 0n && (
+                <div>
+                  <Trans>{unclaimedEsGmx} esGMX is unclaimed. Claim it without staking to vest it.</Trans>
+                  <ColorfulButtonLink
+                    onClick={isActionDisabled ? undefined : () => handleAction("claimEsGmx")}
+                    disabled={isActionDisabled}
+                  >
+                    {pendingAction === "claimEsGmx" ? <Trans>Claiming...</Trans> : <Trans>Claim esGMX</Trans>}
+                  </ColorfulButtonLink>
+                </div>
+              )}
+            </div>
+          </AlertInfoCard>
+        )}
 
         {error === "insufficientStaked" && (
           <AlertInfoCard type="warning" hideClose>
@@ -266,6 +319,56 @@ export function OrphanVaultPanel({
   );
 }
 
+function getActionTx({
+  action,
+  orphanVesterAddress,
+  depositAmount,
+}: {
+  action: OrphanVaultAction;
+  orphanVesterAddress: string;
+  depositAmount: bigint | undefined;
+}): OrphanVaultActionTx {
+  switch (action) {
+    case "deposit":
+      return {
+        method: "vesterDeposit",
+        params: [orphanVesterAddress, depositAmount],
+        sentMsg: t`Deposit submitted`,
+        failMsg: t`Deposit failed`,
+        successMsg: t`Deposited`,
+        metric: { action: "vestDeposit", tokenSymbol: "esGMX", vault: "orphan" },
+      };
+    case "claim":
+      return {
+        method: "vesterClaim",
+        params: [orphanVesterAddress],
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claimed`,
+        metric: { action: "vestClaim", tokenSymbol: "GMX", vault: "orphan" },
+      };
+    case "withdraw":
+      return {
+        method: "vesterWithdraw",
+        params: [orphanVesterAddress],
+        sentMsg: t`Stop vesting submitted`,
+        failMsg: t`Stop vesting failed`,
+        successMsg: t`Vesting stopped`,
+        metric: { action: "vestWithdraw", tokenSymbol: "esGMX", vault: "orphan" },
+      };
+    case "claimEsGmx":
+      // shouldStakeEsGmx defaults to true in the Claim modal, which would leave nothing to vest
+      return {
+        method: "handleRewards",
+        params: [false, false, true, false, true, false, false],
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claimed`,
+        metric: { action: "claim", tokenSymbol: "esGMX", vault: undefined },
+      };
+  }
+}
+
 function getDepositErrorText(error: OrphanDepositError) {
   switch (error) {
     case "notOpen":
@@ -274,6 +377,8 @@ function getDepositErrorText(error: OrphanDepositError) {
       return t`Vault closed`;
     case "paused":
       return t`Deposits paused`;
+    case "frozen":
+      return t`Account restricted`;
     case "enterAmount":
       return t`Enter an amount`;
     case "maxExceeded":

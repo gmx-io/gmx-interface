@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getOrphanClaimableGmx,
   getOrphanDepositState,
   getVisibleVestVaults,
   getWalletPairAmounts,
@@ -122,6 +123,7 @@ describe("getOrphanDepositState", () => {
     isOpen: true,
     isDepositPaused: false,
     isClaimPaused: false,
+    isFrozen: false,
     // 6.573 sbfGMX backs at most 0.6573 esGMX at 10:1
     freePairAmount: 6_573n * 10n ** 15n,
     unbackedPairAmount: 0n,
@@ -137,6 +139,7 @@ describe("getOrphanDepositState", () => {
       error: "notOpen",
     },
     { name: "deposits paused", data: { ...openVault, isDepositPaused: true }, amount: UNIT / 2n, error: "paused" },
+    { name: "account frozen", data: { ...openVault, isFrozen: true }, amount: UNIT / 2n, error: "frozen" },
     {
       name: "past the deactivation time",
       data: { ...openVault, deactivatedAt: NOW },
@@ -178,5 +181,21 @@ describe("getOrphanDepositState", () => {
     if (shortfall !== undefined) {
       expect(state.stakeShortfallAmount).toBe(shortfall * 10n ** 15n);
     }
+  });
+
+  it("reports the eligible amount left that isn't in the wallet", () => {
+    const data = { ...openVault, usedAmount: UNIT / 5n };
+    const state = getOrphanDepositState({ data, walletEsGmxBalance: UNIT / 2n, depositAmount: undefined, now: NOW });
+
+    expect(state.walletShortfallAmount).toBe((3n * UNIT) / 10n);
+  });
+
+  it.each([
+    { name: "open", data: {}, claimable: UNIT },
+    { name: "not designated", data: { isOpen: false }, claimable: 0n },
+    { name: "claims paused", data: { isClaimPaused: true }, claimable: 0n },
+    { name: "account frozen", data: { isFrozen: true }, claimable: 0n },
+  ])("router-claimable GMX: $name", ({ data, claimable }) => {
+    expect(getOrphanClaimableGmx({ ...openVault, claimableAmount: UNIT, ...data })).toBe(claimable);
   });
 });

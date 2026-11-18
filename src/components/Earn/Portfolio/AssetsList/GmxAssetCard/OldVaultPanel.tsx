@@ -5,6 +5,7 @@ import { useState } from "react";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import useVestingData from "domain/vesting/useVestingData";
 import type { OldVestVault } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
@@ -68,6 +69,12 @@ export function OldVaultPanel({ vault, onTxSent }: { vault: OldVestVault; onTxSe
     }
 
     const contract = new ethers.Contract(getContract(chainId, VESTER_BY_VAULT[vault]), abis.Vester, signer);
+    const metric = {
+      action: action === "claim" ? "vestClaim" : "vestWithdraw",
+      tokenSymbol: action === "claim" ? "GMX" : "esGMX",
+      vault,
+      chainId,
+    } as const;
 
     setPendingAction(action);
     callContract(chainId, contract, action, [], {
@@ -77,9 +84,12 @@ export function OldVaultPanel({ vault, onTxSent }: { vault: OldVestVault; onTxSe
       setPendingTxns,
     })
       .then(() => {
+        sendStakingActionMetric(metric);
         onTxSent();
       })
-      .catch(() => undefined)
+      .catch((error) => {
+        sendStakingActionMetric({ ...metric, error });
+      })
       .finally(() => {
         setPendingAction(undefined);
       });

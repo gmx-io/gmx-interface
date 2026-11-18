@@ -9,6 +9,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRewardRouterContract } from "domain/stake/rewardRouter";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useOrphanTransferState } from "domain/vesting/useOrphanTransferState";
 import { useChainId } from "lib/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import useWallet from "lib/wallets/useWallet";
@@ -163,13 +164,14 @@ export default function BeginAccountTransfer() {
     }
   );
 
-  const { data: designatedVestersLength } = useSWR<bigint>(
-    [active, chainId, rewardRouterAddress, "designatedVestersLength"],
-    {
-      fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
-    }
-  );
-  const isTransferPaused = designatedVestersLength === 0n;
+  const orphanTransferState = useOrphanTransferState({
+    chainId,
+    sender: account,
+    receiver: hasValidReceiver ? parsedReceiver : undefined,
+  });
+  const isTransferPaused = orphanTransferState?.isTransferPaused === true;
+  const hasOrphanVaultSession = orphanTransferState?.hasSenderOpenSession === true;
+  const hasReceiverUsedOrphanVault = orphanTransferState !== undefined && !orphanTransferState.isReceiverFresh;
 
   const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
@@ -182,13 +184,11 @@ export default function BeginAccountTransfer() {
     tokenAddresses: [feeGmxTrackerAddress],
   });
 
-  const { data: feeGmxTrackerBalance } = useSWR(
-    active && [active, chainId, feeGmxTrackerAddress, "balanceOf", account],
-    {
-      fetcher: contractFetcher(signer, "Token"),
-      refreshInterval: 1000,
-    }
-  );
+  // the Legacy vault also holds sbfGMX, so the GMX vault reserve is read directly instead of from the sbfGMX balance
+  const { data: gmxVesterPairAmount } = useSWR(active && [active, chainId, gmxVesterAddress, "pairAmounts", account], {
+    fetcher: contractFetcher(signer, "Vester"),
+    refreshInterval: 1000,
+  });
 
   const { data: feeGmxTrackerStakedAmount } = useSWR(
     active && [active, chainId, feeGmxTrackerAddress, "stakedAmounts", account],
@@ -241,7 +241,7 @@ export default function BeginAccountTransfer() {
     gmxStaked !== undefined && claimableGmxRewards !== undefined ? gmxStaked + 2n * claimableGmxRewards : undefined;
   const needApproval = gmxAllowance !== undefined && gmxSpentOnAccept !== undefined && gmxSpentOnAccept > gmxAllowance;
 
-  const hasVestedGmx = gmxVesterBalance > 0 || feeGmxTrackerBalance < feeGmxTrackerStakedAmount;
+  const hasVestedGmx = gmxVesterBalance > 0 || gmxVesterPairAmount > 0;
   const hasVestedGlp = glpVesterBalance > 0 || stakedGlpTrackerBalance < stakedGlpTrackerStakedAmount;
   const hasVestedAffiliate = affiliateVesterBalance > 0;
   const receiverGmxStakingValues = [
@@ -266,7 +266,7 @@ export default function BeginAccountTransfer() {
     gmxVesterBalance,
     glpVesterBalance,
     affiliateVesterBalance,
-    feeGmxTrackerBalance,
+    gmxVesterPairAmount,
     feeGmxTrackerStakedAmount,
     stakedGlpTrackerBalance,
     stakedGlpTrackerStakedAmount,
@@ -275,7 +275,7 @@ export default function BeginAccountTransfer() {
     gmxAllowance,
     pendingReceiver,
   ].some((value) => value === undefined);
-  const isTransferPauseLoading = designatedVestersLength === undefined;
+  const isTransferPauseLoading = orphanTransferState === undefined;
   const isReceiverCheckLoading =
     hasValidReceiver &&
     (!feeGmxAllowanceData ||
@@ -293,6 +293,9 @@ export default function BeginAccountTransfer() {
     if (hasVestedGlp) {
       return t`Vested GLP not withdrawn`;
     }
+    if (hasOrphanVaultSession) {
+      return t`Legacy vault not withdrawn`;
+    }
     if (!receiver || receiver.length === 0) {
       return t`Enter receiver address`;
     }
@@ -308,6 +311,10 @@ export default function BeginAccountTransfer() {
       return t`Receiver has staked GMX/GLP`;
     }
 
+    if (hasReceiverUsedOrphanVault) {
+      return t`Receiver has used the Legacy vault`;
+    }
+
     if (parsedReceiver === account) {
       return t`Self-transfer not supported`;
     }
@@ -320,9 +327,11 @@ export default function BeginAccountTransfer() {
   const isReadyForSbfGmxTokenApproval = !(
     hasVestedGlp ||
     hasVestedGmx ||
+    hasOrphanVaultSession ||
     (hasVestedAffiliate && !isAffiliateVesterSkipValidation) ||
     hasStakedGmx ||
-    hasStakedGlp
+    hasStakedGlp ||
+    hasReceiverUsedOrphanVault
   );
 
   const isPrimaryEnabled = () => {
@@ -492,6 +501,11 @@ export default function BeginAccountTransfer() {
           <ValidationRow isValid={!hasVestedAffiliate}>
             <Trans>Sender has withdrawn all tokens from the Affiliate vesting vault</Trans>
           </ValidationRow>
+          {orphanTransferState?.isOrphanDesignated && (
+            <ValidationRow isValid={!hasOrphanVaultSession}>
+              <Trans>Sender has withdrawn all tokens from the Legacy vesting vault</Trans>
+            </ValidationRow>
+          )}
           {hasVestedAffiliate && (
             <>
               <p className="soft-error">
@@ -517,6 +531,11 @@ export default function BeginAccountTransfer() {
           <ValidationRow isValid={!hasStakedGlp}>
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
+          {orphanTransferState?.isOrphanDesignated && (
+            <ValidationRow isValid={!hasReceiverUsedOrphanVault}>
+              <Trans>Receiver has not used the Legacy vesting vault</Trans>
+            </ValidationRow>
+          )}
 
           <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
             <span className="text-body-small text-yellow-300">

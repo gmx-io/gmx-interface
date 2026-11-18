@@ -42,6 +42,7 @@ export function ClaimModal(props: {
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
   stakingGmxRewards: bigint | undefined;
+  orphanVesterRewards: bigint | undefined;
   gmxVesterRewards: bigint | undefined;
   glpVesterRewards: bigint | undefined;
   totalEsGmxRewards: bigint | undefined;
@@ -60,6 +61,7 @@ export function ClaimModal(props: {
     setPendingTxns,
     totalGmxRewards,
     stakingGmxRewards,
+    orphanVesterRewards,
     gmxVesterRewards,
     glpVesterRewards,
     totalEsGmxRewards,
@@ -207,7 +209,8 @@ export function ClaimModal(props: {
         vesterClaims.length === 0 ||
         getIsRewardRouterClaimNeeded({
           shouldClaimGmx: shouldClaimGmxRewards,
-          stakingGmxRewards: stakingGmxRewards ?? 0n,
+          // handleRewards pays the Legacy vault GMX, the old vaults are claimed separately below
+          routerGmxRewards: (stakingGmxRewards ?? 0n) + (orphanVesterRewards ?? 0n),
           shouldClaimEsGmx: shouldClaimEsGmxRewards,
           esGmxRewards: totalEsGmxRewards ?? 0n,
           shouldClaimNativeToken,
@@ -302,6 +305,7 @@ export function ClaimModal(props: {
     onClaimSuccess,
     totalGmxRewards,
     stakingGmxRewards,
+    orphanVesterRewards,
     gmxVesterRewards,
     glpVesterRewards,
     totalEsGmxRewards,

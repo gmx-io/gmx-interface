@@ -15,21 +15,21 @@ export function getVesterClaims(vesterClaims: VesterClaim[]) {
 
 export function getIsRewardRouterClaimNeeded({
   shouldClaimGmx,
-  stakingGmxRewards,
+  routerGmxRewards,
   shouldClaimEsGmx,
   esGmxRewards,
   shouldClaimNativeToken,
   nativeTokenRewards,
 }: {
   shouldClaimGmx: boolean;
-  stakingGmxRewards: bigint;
+  routerGmxRewards: bigint;
   shouldClaimEsGmx: boolean;
   esGmxRewards: bigint;
   shouldClaimNativeToken: boolean;
   nativeTokenRewards: bigint;
 }) {
   return (
-    (shouldClaimGmx && stakingGmxRewards > 0n) ||
+    (shouldClaimGmx && routerGmxRewards > 0n) ||
     (shouldClaimEsGmx && esGmxRewards > 0n) ||
     (shouldClaimNativeToken && nativeTokenRewards > 0n)
   );

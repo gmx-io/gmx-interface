@@ -38,7 +38,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import {
   getUnstakeRequestsLimitMessage,
   getUnstakeRequestsPausedMessage,
@@ -94,6 +94,8 @@ export function StakeModal(props: {
   stakeTokenAddress: string;
   stakeFarmAddress: string;
   reservedAmount: bigint;
+  initialTab?: StakeModalTab;
+  onWithdrawVesting?: () => void;
   stakingPowerData?: StakingPowerResponse;
   stakingPowerProjectedRewardsUsd?: bigint;
 }) {
@@ -111,6 +113,8 @@ export function StakeModal(props: {
     stakeTokenAddress,
     stakeFarmAddress,
     reservedAmount,
+    initialTab,
+    onWithdrawVesting,
     stakingPowerData,
     stakingPowerProjectedRewardsUsd,
   } = props;
@@ -163,6 +167,12 @@ export function StakeModal(props: {
   useEffect(() => {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
+
+  useEffect(() => {
+    if (isVisible && initialTab !== undefined) {
+      setActiveTab(initialTab);
+    }
+  }, [isVisible, initialTab]);
 
   const needApproval =
     stakeFarmAddress !== zeroAddress &&
@@ -570,7 +580,14 @@ export function StakeModal(props: {
 
           {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
             <AlertInfoCard type="info">
-              <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
+              <div>
+                <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
+                {onWithdrawVesting && (
+                  <ColorfulButtonLink onClick={onWithdrawVesting}>
+                    <Trans>Withdraw from vesting</Trans>
+                  </ColorfulButtonLink>
+                )}
+              </div>
             </AlertInfoCard>
           )}
 

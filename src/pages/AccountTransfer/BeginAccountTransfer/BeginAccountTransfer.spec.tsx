@@ -6,6 +6,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
+import type { OrphanTransferState } from "domain/vesting/useOrphanTransferState";
 import type { ContractName } from "sdk/configs/contracts";
 
 import BeginAccountTransfer from "./BeginAccountTransfer";
@@ -15,6 +16,7 @@ const RECEIVER = "0x3F2489706588da1bbd8E8294562F67E1cfC444B5";
 const STAKED_AMOUNT = 4730123000000000000000n;
 
 let chainValues: Record<string, bigint> = {};
+let orphanTransferState: OrphanTransferState;
 
 function setChainValue(account: string | undefined, contractName: ContractName, method: string, value: bigint) {
   chainValues[`${account}.${getContract(ARBITRUM, contractName)}.${method}`] = value;
@@ -57,6 +59,10 @@ vi.mock("domain/synthetics/tokens", async (importOriginal) => ({
   }),
 }));
 
+vi.mock("domain/vesting/useOrphanTransferState", () => ({
+  useOrphanTransferState: () => orphanTransferState,
+}));
+
 vi.mock("context/PendingTxnsContext/PendingTxnsContext", () => ({
   usePendingTxns: () => ({ setPendingTxns: vi.fn() }),
 }));
@@ -72,8 +78,12 @@ beforeAll(() => {
 
 beforeEach(() => {
   chainValues = {};
-  setChainValue(undefined, "RewardRouterV3", "designatedVestersLength", 1n);
-  setChainValue(SENDER, "FeeGmxTracker", "balanceOf", STAKED_AMOUNT);
+  orphanTransferState = {
+    isTransferPaused: false,
+    isOrphanDesignated: true,
+    hasSenderOpenSession: false,
+    isReceiverFresh: true,
+  };
   setChainValue(SENDER, "FeeGmxTracker", "stakedAmounts", STAKED_AMOUNT);
 });
 
@@ -101,7 +111,7 @@ describe("BeginAccountTransfer", () => {
     ["receiver", "GlpVester", "transferredAverageStakedAmounts", "Receiver has staked GMX/GLP"],
     ["receiver", "GmxVester", "balanceOf", "Receiver has staked GMX/GLP"],
     ["receiver", "GlpVester", "balanceOf", "Receiver has staked GMX/GLP"],
-    ["sender", "FeeGmxTracker", "balanceOf", "Vested GMX not withdrawn"],
+    ["sender", "GmxVester", "pairAmounts", "Vested GMX not withdrawn"],
     ["sender", "StakedGlpTracker", "stakedAmounts", "Vested GLP not withdrawn"],
   ] as const)(
     "blocks a transfer the RewardRouter rejects: %s %s.%s PRO-3328",
@@ -113,6 +123,17 @@ describe("BeginAccountTransfer", () => {
       expect(getByRole("button", { name: buttonText }).hasAttribute("disabled")).toBe(true);
     }
   );
+
+  it.each([
+    [{ hasSenderOpenSession: true }, "Legacy vault not withdrawn"],
+    [{ isReceiverFresh: false }, "Receiver has used the Legacy vault"],
+  ] as const)("blocks a transfer the Legacy vault rejects: %o ECO-1", (state, buttonText) => {
+    orphanTransferState = { ...orphanTransferState, ...state };
+
+    const { getByRole } = renderWithReceiver();
+
+    expect(getByRole("button", { name: buttonText }).hasAttribute("disabled")).toBe(true);
+  });
 
   it.each([
     ["sbfGMX", 0n, "Allow all tokens to transfer to the new account"],

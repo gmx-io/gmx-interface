@@ -26,11 +26,19 @@ export type OrphanVaultData = OrphanVestingData & {
   isOpen: boolean;
   isDepositPaused: boolean;
   isClaimPaused: boolean;
+  isFrozen: boolean;
   freePairAmount: bigint;
   unbackedPairAmount: bigint;
 };
 
-export type OrphanDepositError = "notOpen" | "closed" | "paused" | "enterAmount" | "maxExceeded" | "insufficientStaked";
+export type OrphanDepositError =
+  | "notOpen"
+  | "closed"
+  | "paused"
+  | "frozen"
+  | "enterAmount"
+  | "maxExceeded"
+  | "insufficientStaked";
 
 // vestingInfo is the 12-value layout of RatioVesterReader.getVestingInfo for a single vester
 export function parseOrphanVestingInfo({
@@ -110,6 +118,7 @@ export function getOrphanDepositState({
   maxDepositAmount: bigint;
   additionalPairAmount: bigint;
   stakeShortfallAmount: bigint;
+  walletShortfallAmount: bigint;
   error: OrphanDepositError | undefined;
 } {
   const leftAmount = data.eligibleAmount > data.usedAmount ? data.eligibleAmount - data.usedAmount : 0n;
@@ -145,6 +154,8 @@ export function getOrphanDepositState({
     error = "closed";
   } else if (data.isDepositPaused) {
     error = "paused";
+  } else if (data.isFrozen) {
+    error = "frozen";
   } else if (depositAmount === undefined || depositAmount === 0n) {
     error = "enterAmount";
   } else if (depositAmount > walletEsGmxBalance || depositAmount > leftAmount) {
@@ -153,7 +164,18 @@ export function getOrphanDepositState({
     error = "insufficientStaked";
   }
 
-  return { maxDepositAmount, additionalPairAmount, stakeShortfallAmount, error };
+  const walletShortfallAmount = leftAmount > walletEsGmxBalance ? leftAmount - walletEsGmxBalance : 0n;
+
+  return { maxDepositAmount, additionalPairAmount, stakeShortfallAmount, walletShortfallAmount, error };
+}
+
+// what handleRewards pays from the Legacy vault; it silently skips a paused claim or a frozen account
+export function getOrphanClaimableGmx(data: OrphanVaultData | undefined) {
+  if (data === undefined || !data.isOpen || data.isClaimPaused || data.isFrozen) {
+    return 0n;
+  }
+
+  return data.claimableAmount;
 }
 
 // an eligible amount alone is enough, so the Vest entry shows up before the first deposit

@@ -804,8 +804,18 @@ export type StakingActionEvent = {
   event: "staking.action";
   isError: false;
   data: {
-    action: "stake" | "unstakeRequest" | "unstakeCancel" | "unstakeWithdraw" | "claim" | "compound";
+    action:
+      | "stake"
+      | "unstakeRequest"
+      | "unstakeCancel"
+      | "unstakeWithdraw"
+      | "claim"
+      | "compound"
+      | "vestDeposit"
+      | "vestWithdraw"
+      | "vestClaim";
     tokenSymbol: string | undefined;
+    vault?: "orphan" | "gmx" | "glp" | "affiliate";
     outcome: "sent" | "rejected" | "failed";
     chainId: number;
   };
