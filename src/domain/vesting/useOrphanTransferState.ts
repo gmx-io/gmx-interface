@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
@@ -7,13 +8,11 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { incentiveVesterTransferFeatureDisabledKey } from "sdk/configs/dataStore";
 
-export type OrphanTransferState = {
-  isTransferPaused: boolean;
-  // the router checks the Legacy vault on transfers only while it is designated
-  isOrphanDesignated: boolean;
-  hasSenderOpenSession: boolean;
-  isReceiverFresh: boolean;
-};
+import { getOrphanTransferState } from "./vestingVaults";
+
+type OrphanTransferReads = Parameters<typeof getOrphanTransferState>[0];
+type OrphanTransferSenderData = Omit<OrphanTransferReads, "isReceiverFresh" | "isReceiverFrozen">;
+type OrphanTransferReceiverData = Pick<OrphanTransferReads, "isReceiverFresh" | "isReceiverFrozen">;
 
 export function useOrphanTransferState({
   chainId,
@@ -26,62 +25,94 @@ export function useOrphanTransferState({
 }) {
   const rewardRouterAddress = getContract(chainId, "RewardRouterV3");
   const orphanVesterAddress = getContract(chainId, "OrphanRatioVester");
+  const hasContracts = rewardRouterAddress !== zeroAddress && orphanVesterAddress !== zeroAddress;
   const senderAddress = sender ?? zeroAddress;
-  const receiverAddress = receiver ?? zeroAddress;
 
-  const { data } = useMulticall<MulticallRequestConfig<any>, OrphanTransferState>(chainId, "useOrphanTransferState", {
-    key:
-      rewardRouterAddress !== zeroAddress && orphanVesterAddress !== zeroAddress
-        ? [senderAddress, receiverAddress]
-        : null,
-    refreshInterval: CONFIG_UPDATE_INTERVAL,
-    request: {
-      rewardRouter: {
-        contractAddress: rewardRouterAddress,
-        abiId: "RewardRouterV3",
-        calls: {
-          designatedVestersLength: { methodName: "designatedVestersLength", params: [] },
-          isOrphanDesignated: { methodName: "isDesignatedVester", params: [orphanVesterAddress] },
+  // the router-wide reads ride with the sender, so typing a receiver doesn't reload the paused notice
+  const { data: senderData } = useMulticall<MulticallRequestConfig<any>, OrphanTransferSenderData>(
+    chainId,
+    "useOrphanTransferState:sender",
+    {
+      key: hasContracts ? [senderAddress] : null,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+      request: (requestChainId) => ({
+        rewardRouter: {
+          contractAddress: getContract(requestChainId, "RewardRouterV3"),
+          abiId: "RewardRouterV3",
+          calls: {
+            designatedVestersLength: { methodName: "designatedVestersLength", params: [] },
+            isOrphanDesignated: { methodName: "isDesignatedVester", params: [orphanVesterAddress] },
+          },
         },
-      },
-      dataStore: {
-        contractAddress: getContract(chainId, "DataStore"),
-        abiId: "DataStore",
-        calls: {
-          isTransferDisabled: {
-            methodName: "getBool",
-            params: [incentiveVesterTransferFeatureDisabledKey(orphanVesterAddress)],
+        dataStore: {
+          contractAddress: getContract(requestChainId, "DataStore"),
+          abiId: "DataStore",
+          calls: {
+            isTransferDisabled: {
+              methodName: "getBool",
+              params: [incentiveVesterTransferFeatureDisabledKey(orphanVesterAddress)],
+            },
+          },
+        },
+        orphanVester: {
+          contractAddress: orphanVesterAddress,
+          abiId: "RatioVester",
+          calls: {
+            isProvisioningComplete: { methodName: "provisioningComplete", params: [] },
+            hasSenderOpenSession: { methodName: "hasOpenSession", params: [senderAddress] },
+            isSenderFrozen: { methodName: "isFrozen", params: [senderAddress] },
+          },
+        },
+      }),
+      parseResponse: parseSenderResponse,
+    }
+  );
+
+  const { data: receiverData } = useMulticall<MulticallRequestConfig<any>, OrphanTransferReceiverData>(
+    chainId,
+    "useOrphanTransferState:receiver",
+    {
+      key: hasContracts && receiver !== undefined ? [receiver] : null,
+      refreshInterval: CONFIG_UPDATE_INTERVAL,
+      request: {
+        orphanVester: {
+          contractAddress: orphanVesterAddress,
+          abiId: "RatioVester",
+          calls: {
+            isReceiverFresh: { methodName: "isFreshForTransfer", params: [receiver] },
+            isReceiverFrozen: { methodName: "isFrozen", params: [receiver] },
           },
         },
       },
-      orphanVester: {
-        contractAddress: orphanVesterAddress,
-        abiId: "RatioVester",
-        calls: {
-          provisioningComplete: { methodName: "provisioningComplete", params: [] },
-          hasSenderOpenSession: { methodName: "hasOpenSession", params: [senderAddress] },
-          isReceiverFresh: { methodName: "isFreshForTransfer", params: [receiverAddress] },
-        },
-      },
-    },
-    parseResponse: parseOrphanTransferResponse,
-  });
+      parseResponse: (result) => ({
+        isReceiverFresh: result.data.orphanVester.isReceiverFresh.returnValues[0],
+        isReceiverFrozen: result.data.orphanVester.isReceiverFrozen.returnValues[0],
+      }),
+    }
+  );
 
-  return data;
+  return useMemo(
+    () =>
+      senderData === undefined
+        ? undefined
+        : getOrphanTransferState({
+            ...senderData,
+            isReceiverFresh: receiverData?.isReceiverFresh,
+            isReceiverFrozen: receiverData?.isReceiverFrozen,
+          }),
+    [senderData, receiverData]
+  );
 }
 
-function parseOrphanTransferResponse(result: MulticallResult<MulticallRequestConfig<any>>): OrphanTransferState {
+function parseSenderResponse(result: MulticallResult<MulticallRequestConfig<any>>): OrphanTransferSenderData {
   const { rewardRouter, dataStore, orphanVester } = result.data;
-  const isOrphanDesignated: boolean = rewardRouter.isOrphanDesignated.returnValues[0];
-  // RatioVester.validateTransfersOpen reverts on either
-  const isOrphanTransferClosed =
-    dataStore.isTransferDisabled.returnValues[0] || !orphanVester.provisioningComplete.returnValues[0];
 
   return {
-    isTransferPaused:
-      rewardRouter.designatedVestersLength.returnValues[0] === 0n || (isOrphanDesignated && isOrphanTransferClosed),
-    isOrphanDesignated,
-    hasSenderOpenSession: isOrphanDesignated && orphanVester.hasSenderOpenSession.returnValues[0],
-    isReceiverFresh: !isOrphanDesignated || orphanVester.isReceiverFresh.returnValues[0],
+    designatedVestersLength: rewardRouter.designatedVestersLength.returnValues[0],
+    isOrphanDesignated: rewardRouter.isOrphanDesignated.returnValues[0],
+    isTransferDisabled: dataStore.isTransferDisabled.returnValues[0],
+    isProvisioningComplete: orphanVester.isProvisioningComplete.returnValues[0],
+    hasSenderOpenSession: orphanVester.hasSenderOpenSession.returnValues[0],
+    isSenderFrozen: orphanVester.isSenderFrozen.returnValues[0],
   };
 }

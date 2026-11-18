@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   getOrphanClaimableGmx,
   getOrphanDepositState,
+  getOrphanTransferState,
+  getOrphanWalletShortfallActions,
   getVisibleVestVaults,
   getWalletPairAmounts,
   type OrphanVaultData,
@@ -183,11 +185,73 @@ describe("getOrphanDepositState", () => {
     }
   });
 
-  it("reports the eligible amount left that isn't in the wallet", () => {
-    const data = { ...openVault, usedAmount: UNIT / 5n };
-    const state = getOrphanDepositState({ data, walletEsGmxBalance: UNIT / 2n, depositAmount: undefined, now: NOW });
+  it.each([
+    {
+      name: "wallet esGMX is the limit",
+      vault: {},
+      wallet: 0n,
+      staked: 500n,
+      pending: 0n,
+      limited: true,
+      unstake: 50n,
+    },
+    {
+      name: "a pending request covers part",
+      vault: {},
+      wallet: 0n,
+      staked: 500n,
+      pending: 20n,
+      limited: true,
+      unstake: 30n,
+    },
+    { name: "up to the staked esGMX", vault: {}, wallet: 0n, staked: 10n, pending: 0n, limited: true, unstake: 10n },
+    {
+      // 0x099D…8216 on 2026-11-18, unstaking would drop its max deposit from 2,499 to 1,319
+      name: "the reserve is the limit",
+      vault: { eligibleAmount: 19_304n * UNIT, freePairAmount: 24_996n * UNIT },
+      wallet: 7_501n,
+      staked: 11_802n,
+      pending: 0n,
+      limited: false,
+      unstake: 0n,
+    },
+    {
+      // 0x8358…cEDF on 2026-11-18
+      name: "a pending request past the balanced amount",
+      vault: {
+        eligibleAmount: 6_966n * UNIT,
+        usedAmount: 420n * UNIT,
+        depositedAmount: 420n * UNIT,
+        convertedAmount: 2n * UNIT,
+        reservedAmount: 4_200n * UNIT,
+        freePairAmount: 2_291n * UNIT,
+      },
+      wallet: 0n,
+      staked: 6_546n,
+      pending: 2_000n,
+      limited: true,
+      unstake: 0n,
+    },
+  ])("wallet shortfall actions: $name ECO-1", ({ vault, wallet, staked, pending, limited, unstake }) => {
+    const data = { ...openVault, eligibleAmount: 100n * UNIT, freePairAmount: 550n * UNIT, ...vault };
+    const walletEsGmxBalance = wallet * UNIT;
+    const { maxByPairAmount, walletShortfallAmount } = getOrphanDepositState({
+      data,
+      walletEsGmxBalance,
+      depositAmount: undefined,
+      now: NOW,
+    });
 
-    expect(state.walletShortfallAmount).toBe((3n * UNIT) / 10n);
+    expect(
+      getOrphanWalletShortfallActions({
+        data,
+        walletEsGmxBalance,
+        maxByPairAmount,
+        walletShortfallAmount,
+        stakedEsGmxAmount: staked * UNIT,
+        pendingUnstakeAmount: pending * UNIT,
+      })
+    ).toEqual({ isWalletLimited: limited, unstakeAmount: unstake * UNIT });
   });
 
   it.each([
@@ -197,5 +261,69 @@ describe("getOrphanDepositState", () => {
     { name: "account frozen", data: { isFrozen: true }, claimable: 0n },
   ])("router-claimable GMX: $name", ({ data, claimable }) => {
     expect(getOrphanClaimableGmx({ ...openVault, claimableAmount: UNIT, ...data })).toBe(claimable);
+  });
+});
+
+describe("getOrphanTransferState", () => {
+  const OPEN = {
+    designatedVestersLength: 1n,
+    isOrphanDesignated: true,
+    isTransferDisabled: false,
+    isProvisioningComplete: true,
+    hasSenderOpenSession: false,
+    isSenderFrozen: false,
+    isReceiverFresh: true,
+    isReceiverFrozen: false,
+  };
+  const CLEAR = {
+    isTransferPaused: false,
+    hasSenderOpenSession: false,
+    isSenderFrozen: false,
+    isReceiverFresh: true,
+    isReceiverFrozen: false,
+  };
+
+  it.each([
+    { name: "open", reads: {}, expected: CLEAR },
+    {
+      name: "no designated vesters",
+      reads: { designatedVestersLength: 0n, isOrphanDesignated: false },
+      expected: { ...CLEAR, isTransferPaused: true },
+    },
+    {
+      name: "Legacy vault transfers disabled",
+      reads: { isTransferDisabled: true },
+      expected: { ...CLEAR, isTransferPaused: true },
+    },
+    {
+      name: "Legacy vault not provisioned",
+      reads: { isProvisioningComplete: false },
+      expected: { ...CLEAR, isTransferPaused: true },
+    },
+    {
+      name: "Legacy vault blocks the sender and the receiver",
+      reads: { hasSenderOpenSession: true, isSenderFrozen: true, isReceiverFresh: false, isReceiverFrozen: true },
+      expected: {
+        isTransferPaused: false,
+        hasSenderOpenSession: true,
+        isSenderFrozen: true,
+        isReceiverFresh: false,
+        isReceiverFrozen: true,
+      },
+    },
+    {
+      name: "the router doesn't check an undesignated Legacy vault",
+      reads: {
+        isOrphanDesignated: false,
+        isTransferDisabled: true,
+        hasSenderOpenSession: true,
+        isSenderFrozen: true,
+        isReceiverFresh: false,
+        isReceiverFrozen: true,
+      },
+      expected: CLEAR,
+    },
+  ])("$name", ({ reads, expected }) => {
+    expect(getOrphanTransferState({ ...OPEN, ...reads })).toMatchObject(expected);
   });
 });

@@ -40,7 +40,7 @@ export default function CompleteAccountTransfer() {
     receiver: isSenderAndReceiverValid ? receiver : undefined,
   });
   const isTransferPaused = orphanTransferState?.isTransferPaused === true;
-  const isTransferPauseLoading = orphanTransferState === undefined;
+  const isTransferStateLoading = orphanTransferState?.isReceiverFresh === undefined;
 
   const getError = () => {
     if (!account) {
@@ -49,6 +49,19 @@ export default function CompleteAccountTransfer() {
     if (!isCorrectAccount) {
       return t`Incorrect account`;
     }
+    // acceptTransfer runs the sender and receiver checks again, so a later Legacy vault deposit blocks it
+    if (orphanTransferState?.isSenderFrozen) {
+      return t`Sender account is restricted`;
+    }
+    if (orphanTransferState?.hasSenderOpenSession) {
+      return t`Sender hasn't withdrawn from the Legacy vault`;
+    }
+    if (orphanTransferState?.isReceiverFrozen) {
+      return t`Receiver account is restricted`;
+    }
+    if (orphanTransferState?.isReceiverFresh === false) {
+      return t`Receiver has used the Legacy vault`;
+    }
   };
 
   const isPrimaryEnabled = () => {
@@ -56,7 +69,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return false;
     }
-    if (isConfirming || isTransferPauseLoading || isTransferPaused) {
+    if (isConfirming || isTransferStateLoading || isTransferPaused) {
       return false;
     }
     return true;

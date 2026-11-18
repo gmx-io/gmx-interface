@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { type ReactNode, useMemo, useState } from "react";
 
+import type { UnstakeRequestsData } from "domain/stake/useUnstakeRequests";
 import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
 import useVestingData from "domain/vesting/useVestingData";
 import { getVisibleVestVaults, type VestVault } from "domain/vesting/vestingVaults";
@@ -19,7 +20,7 @@ type VestModalProps = {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
   processedData: StakingProcessedData | undefined;
-  unstakeDelay: number | undefined;
+  unstakeRequestsData: UnstakeRequestsData | undefined;
   initialVault: VestVault | undefined;
   onStakeGmx: () => void;
   onUnstakeEsGmx: () => void;
@@ -32,7 +33,7 @@ export function VestModal({
   isVisible,
   setIsVisible,
   processedData,
-  unstakeDelay,
+  unstakeRequestsData,
   initialVault,
   onStakeGmx,
   onUnstakeEsGmx,
@@ -120,7 +121,7 @@ export function VestModal({
               stakedAmount={processedData?.bonusGmxInFeeGmx}
               stakedEsGmxAmount={processedData?.esGmxInStakedGmx}
               unclaimedEsGmxAmount={processedData?.totalEsGmxRewards}
-              unstakeDelay={unstakeDelay}
+              unstakeRequestsData={unstakeRequestsData}
               onTxSent={() => handleSetIsVisible(false)}
               onTxMined={() => mutateOrphanVaultData()}
               onStakeGmx={() => {

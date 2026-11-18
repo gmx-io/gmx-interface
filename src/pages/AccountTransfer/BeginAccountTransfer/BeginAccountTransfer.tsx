@@ -171,7 +171,9 @@ export default function BeginAccountTransfer() {
   });
   const isTransferPaused = orphanTransferState?.isTransferPaused === true;
   const hasOrphanVaultSession = orphanTransferState?.hasSenderOpenSession === true;
-  const hasReceiverUsedOrphanVault = orphanTransferState !== undefined && !orphanTransferState.isReceiverFresh;
+  const isSenderFrozen = orphanTransferState?.isSenderFrozen === true;
+  const isReceiverFrozen = orphanTransferState?.isReceiverFrozen === true;
+  const hasReceiverUsedOrphanVault = orphanTransferState?.isReceiverFresh === false && !isReceiverFrozen;
 
   const { tokensAllowanceData: gmxAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: stakedGmxTrackerAddress,
@@ -187,7 +189,6 @@ export default function BeginAccountTransfer() {
   // the Legacy vault also holds sbfGMX, so the GMX vault reserve is read directly instead of from the sbfGMX balance
   const { data: gmxVesterPairAmount } = useSWR(active && [active, chainId, gmxVesterAddress, "pairAmounts", account], {
     fetcher: contractFetcher(signer, "Vester"),
-    refreshInterval: 1000,
   });
 
   const { data: feeGmxTrackerStakedAmount } = useSWR(
@@ -279,6 +280,7 @@ export default function BeginAccountTransfer() {
   const isReceiverCheckLoading =
     hasValidReceiver &&
     (!feeGmxAllowanceData ||
+      orphanTransferState?.isReceiverFresh === undefined ||
       [...receiverGmxStakingValues, ...receiverGlpStakingValues].some((value) => value === undefined));
   const isCheckLoading = isSenderCheckLoading || isReceiverCheckLoading || isTransferPauseLoading;
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== zeroAddress;
@@ -292,6 +294,10 @@ export default function BeginAccountTransfer() {
     }
     if (hasVestedGlp) {
       return t`Vested GLP not withdrawn`;
+    }
+    // validateSender reverts on a frozen sender before an open session
+    if (isSenderFrozen) {
+      return t`Account restricted`;
     }
     if (hasOrphanVaultSession) {
       return t`Legacy vault not withdrawn`;
@@ -311,6 +317,10 @@ export default function BeginAccountTransfer() {
       return t`Receiver has staked GMX/GLP`;
     }
 
+    if (isReceiverFrozen) {
+      return t`Receiver account is restricted`;
+    }
+
     if (hasReceiverUsedOrphanVault) {
       return t`Receiver has used the Legacy vault`;
     }
@@ -328,9 +338,11 @@ export default function BeginAccountTransfer() {
     hasVestedGlp ||
     hasVestedGmx ||
     hasOrphanVaultSession ||
+    isSenderFrozen ||
     (hasVestedAffiliate && !isAffiliateVesterSkipValidation) ||
     hasStakedGmx ||
     hasStakedGlp ||
+    isReceiverFrozen ||
     hasReceiverUsedOrphanVault
   );
 
@@ -502,9 +514,14 @@ export default function BeginAccountTransfer() {
             <Trans>Sender has withdrawn all tokens from the Affiliate vesting vault</Trans>
           </ValidationRow>
           {orphanTransferState?.isOrphanDesignated && (
-            <ValidationRow isValid={!hasOrphanVaultSession}>
-              <Trans>Sender has withdrawn all tokens from the Legacy vesting vault</Trans>
-            </ValidationRow>
+            <>
+              <ValidationRow isValid={!hasOrphanVaultSession}>
+                <Trans>Sender has withdrawn all tokens from the Legacy vesting vault</Trans>
+              </ValidationRow>
+              <ValidationRow isValid={!isSenderFrozen}>
+                <Trans>Sender account is not restricted in the Legacy vesting vault</Trans>
+              </ValidationRow>
+            </>
           )}
           {hasVestedAffiliate && (
             <>
@@ -532,9 +549,14 @@ export default function BeginAccountTransfer() {
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
           {orphanTransferState?.isOrphanDesignated && (
-            <ValidationRow isValid={!hasReceiverUsedOrphanVault}>
-              <Trans>Receiver has not used the Legacy vesting vault</Trans>
-            </ValidationRow>
+            <>
+              <ValidationRow isValid={!hasReceiverUsedOrphanVault}>
+                <Trans>Receiver has not used the Legacy vesting vault</Trans>
+              </ValidationRow>
+              <ValidationRow isValid={!isReceiverFrozen}>
+                <Trans>Receiver account is not restricted in the Legacy vesting vault</Trans>
+              </ValidationRow>
+            </>
           )}
 
           <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>

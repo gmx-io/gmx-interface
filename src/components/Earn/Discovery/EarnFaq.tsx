@@ -50,7 +50,7 @@ const EARN_FAQ_ITEMS: FaqItem[] = [
     content: (
       <Trans>
         They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at
-        any time. esGMX withdrawn from them can't be vested anywhere.
+        any time. esGMX withdrawn from them doesn't add to your eligible amount.
       </Trans>
     ),
   },

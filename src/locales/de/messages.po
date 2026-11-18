@@ -631,6 +631,7 @@ msgid "GM"
 msgstr "GM"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Receiver has used the Legacy vault"
 msgstr "Der Empfänger hat den Legacy Vault bereits genutzt"
 
@@ -688,6 +689,10 @@ msgstr "Margin einzahlen"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Quellnetzwerk"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Withdrawing is temporarily unavailable. Try again later."
+msgstr "Abhebungen sind vorübergehend nicht verfügbar. Versuchen Sie es später erneut."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
@@ -2110,6 +2115,10 @@ msgstr "Ungültiger Wert für die TWAP-Teilanzahl"
 msgid "Invalid network fee buffer value"
 msgstr "Ungültiger Wert für den Netzwerkgebührenpuffer"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Sender account is not restricted in the Legacy vesting vault"
+msgstr "Das Absenderkonto ist im Legacy Vesting Vault nicht eingeschränkt"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "0x"
 msgstr "0x"
@@ -2187,6 +2196,10 @@ msgstr "Dieser Pool hält USDG, daher wird USDC beim Kauf in USDG und beim Verka
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size."
 msgstr "Maximaler Hebel überschritten. Die verbleibende Margin {remainingCollateralUsdText} liegt unter dem Minimum für die Positionsgröße. Erhöhen Sie die Margin oder reduzieren Sie die Größe."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender hasn't withdrawn from the Legacy vault"
+msgstr "Der Absender hat nicht aus dem Legacy Vault abgehoben"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
@@ -2619,6 +2632,10 @@ msgstr "Slippage muss unter 5 % liegen"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "Der virtuelle Bestand erfasst das Ungleichgewicht von Token in ähnlichen Märkten, z. B. ETH/USDC, ETH/USDT."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at any time. esGMX withdrawn from them doesn't add to your eligible amount."
+msgstr "Sie nehmen keine Einzahlungen mehr an. Bereits laufendes Vesting von esGMX geht weiter, und Sie können gevestete GMX jederzeit beanspruchen. Daraus abgehobene esGMX erhöhen Ihren berechtigten Betrag nicht."
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "Gewinn"
@@ -2876,6 +2893,11 @@ msgstr "<0/> beanspruchen"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "Es kann einige Minuten dauern, bis der Code angezeigt wird. Schauen Sie später wieder vorbei"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Receiver account is restricted"
+msgstr "Das Empfängerkonto ist eingeschränkt"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Monthly volume"
 msgstr "Monatsvolumen"
@@ -3120,6 +3142,10 @@ msgstr "Keine Vermögenswerte zum Einzahlen verfügbar"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
 msgstr "Die Order wird möglicherweise nicht zum {priceText}-Preis ausgeführt: Der akzeptable Preiseinfluss ({formattedOrderAcceptablePriceImpact}) liegt unter dem aktuellen Markteinfluss ({formattedCurrentAcceptablePriceImpact}). Ändern Sie den akzeptablen Preiseinfluss."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender account is restricted"
+msgstr "Das Absenderkonto ist eingeschränkt"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
@@ -7779,6 +7805,7 @@ msgstr "Der Preiseinfluss wird beim Vergrößern einer Position gespeichert und 
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Stake GMX"
 msgstr "GMX staken"
 
@@ -9141,6 +9168,10 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Beanspruchung eingereicht"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstake up to {suggestedUnstake} esGMX to vest it. Unstaking more would lower the staked tokens that back vesting."
+msgstr "Entstaken Sie bis zu {suggestedUnstake} esGMX, um sie zu vesten. Mehr zu entstaken würde die gestakten Token verringern, die das Vesting absichern."
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "Erstellt"
@@ -9173,6 +9204,10 @@ msgstr "Abhebung vom GMX Account"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose"
 msgstr "Zweck"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstaking esGMX would also lower the staked tokens that back vesting, so it won't raise how much you can vest. Stake more GMX instead."
+msgstr "Das Entstaken von esGMX würde auch die gestakten Token verringern, die das Vesting absichern, und erhöht daher nicht, wie viel Sie vesten können. Staken Sie stattdessen mehr GMX."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
@@ -9827,6 +9862,8 @@ msgid "Trading on Solana is coming soon."
 msgstr "Trading auf Solana ist in Kürze verfügbar."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Account restricted"
 msgstr "Konto eingeschränkt"
 
@@ -10034,10 +10071,6 @@ msgstr "Unzureichende Pool-Liquidität"
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0>Das OI von <1>#GMX V2</1> sieht großartig aus</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Mehr dazu: <4>https://tradao.xyz/#/open-interest</4></3>"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at any time. esGMX withdrawn from them can't be vested anywhere."
-msgstr "Sie nehmen keine Einzahlungen mehr an. Bereits laufendes Vesting von esGMX geht weiter, und Sie können gevestete GMX jederzeit beanspruchen. Daraus abgehobene esGMX können nirgendwo mehr gevestet werden."
-
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr "Sie erhalten einen Link zum Teilen, z. B.: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Teilen Sie ihn in sozialen Medien, in Ihren Inhalten oder direkt mit Freunden."
@@ -10153,6 +10186,10 @@ msgstr "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams haben
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "Min. Sicherheitsfaktor OI Long"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Claims paused"
+msgstr "Beanspruchungen pausiert"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -11659,10 +11696,6 @@ msgstr "Einfrieren"
 msgid "CONFIG"
 msgstr "KONFIGURATION"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
-msgid "{stakedEsGmx} esGMX is staked."
-msgstr "{stakedEsGmx} esGMX sind gestakt."
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -12931,6 +12964,10 @@ msgstr "Eingang beim Schließen"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "Token-Permit-Tests"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Receiver account is not restricted in the Legacy vesting vault"
+msgstr "Das Empfängerkonto ist im Legacy Vesting Vault nicht eingeschränkt"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Earlier transactions"

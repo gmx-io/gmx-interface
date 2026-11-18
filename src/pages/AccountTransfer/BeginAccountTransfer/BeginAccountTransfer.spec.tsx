@@ -6,7 +6,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 
 import { ARBITRUM } from "config/chains";
 import { getContract } from "config/contracts";
-import type { OrphanTransferState } from "domain/vesting/useOrphanTransferState";
+import type { OrphanTransferState } from "domain/vesting/vestingVaults";
 import type { ContractName } from "sdk/configs/contracts";
 
 import BeginAccountTransfer from "./BeginAccountTransfer";
@@ -82,7 +82,9 @@ beforeEach(() => {
     isTransferPaused: false,
     isOrphanDesignated: true,
     hasSenderOpenSession: false,
+    isSenderFrozen: false,
     isReceiverFresh: true,
+    isReceiverFrozen: false,
   };
   setChainValue(SENDER, "FeeGmxTracker", "stakedAmounts", STAKED_AMOUNT);
 });
@@ -126,7 +128,9 @@ describe("BeginAccountTransfer", () => {
 
   it.each([
     [{ hasSenderOpenSession: true }, "Legacy vault not withdrawn"],
+    [{ isSenderFrozen: true }, "Account restricted"],
     [{ isReceiverFresh: false }, "Receiver has used the Legacy vault"],
+    [{ isReceiverFresh: false, isReceiverFrozen: true }, "Receiver account is restricted"],
   ] as const)("blocks a transfer the Legacy vault rejects: %o ECO-1", (state, buttonText) => {
     orphanTransferState = { ...orphanTransferState, ...state };
 

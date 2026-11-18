@@ -631,6 +631,7 @@ msgid "GM"
 msgstr "GM"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Receiver has used the Legacy vault"
 msgstr "수신자가 Legacy 볼트를 사용한 적이 있습니다"
 
@@ -688,6 +689,10 @@ msgstr "증거금 입금"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "출발 네트워크"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Withdrawing is temporarily unavailable. Try again later."
+msgstr "출금을 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
@@ -2110,6 +2115,10 @@ msgstr "유효하지 않은 TWAP 부분 수 값"
 msgid "Invalid network fee buffer value"
 msgstr "유효하지 않은 네트워크 수수료 버퍼 값"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Sender account is not restricted in the Legacy vesting vault"
+msgstr "보내는 사람의 계정이 Legacy 베스팅 볼트에서 제한되지 않았습니다"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "0x"
 msgstr "0x"
@@ -2187,6 +2196,10 @@ msgstr "이 풀은 USDG를 보유하므로 구매 시 USDC가 USDG로 변환되�
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size."
 msgstr "최대 레버리지를 초과했습니다. 잔여 증거금 {remainingCollateralUsdText}이(가) 포지션 크기에 필요한 최소 금액보다 적습니다. 증거금을 늘리거나 포지션 크기를 줄이십시오."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender hasn't withdrawn from the Legacy vault"
+msgstr "보내는 사람이 Legacy 볼트에서 출금하지 않았습니다"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
@@ -2619,6 +2632,10 @@ msgstr "슬리피지는 5% 미만이어야 합니다"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "가상 인벤토리는 유사한 시장 간의 토큰 불균형을 추적합니다(예: ETH/USDC, ETH/USDT)."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at any time. esGMX withdrawn from them doesn't add to your eligible amount."
+msgstr "더 이상 예치를 받지 않습니다. 이미 베스팅 중인 esGMX는 계속 베스팅되며, 베스팅된 GMX는 언제든지 수령할 수 있습니다. 이 볼트에서 출금한 esGMX는 적격 수량에 추가되지 않습니다."
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "이익"
@@ -2876,6 +2893,11 @@ msgstr "<0/> 수령"
 msgid "May take a few minutes to appear. Check back later"
 msgstr "표시되기까지 몇 분이 소요될 수 있습니다. 잠시 후 다시 확인하십시오"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Receiver account is restricted"
+msgstr "수신자의 계정이 제한되었습니다"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Monthly volume"
 msgstr "월간 거래량"
@@ -3120,6 +3142,10 @@ msgstr "입금 가능한 자산이 없습니다"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
 msgstr "주문이 {priceText} 가격에서 체결되지 않을 수 있습니다: 허용 가능한 가격 영향({formattedOrderAcceptablePriceImpact})이 현재 시장 영향({formattedCurrentAcceptablePriceImpact})보다 낮습니다. 허용 가능한 가격 영향을 수정하십시오."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender account is restricted"
+msgstr "보내는 사람의 계정이 제한되었습니다"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
@@ -7779,6 +7805,7 @@ msgstr "포지션을 증가시킬 때 가격 영향이 저장되며, 감소시�
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Stake GMX"
 msgstr "GMX 스테이킹"
 
@@ -9141,6 +9168,10 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "수령 제출됨"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstake up to {suggestedUnstake} esGMX to vest it. Unstaking more would lower the staked tokens that back vesting."
+msgstr "베스팅하려면 최대 {suggestedUnstake} esGMX를 언스테이킹하세요. 더 많이 언스테이킹하면 베스팅을 뒷받침하는 스테이킹 토큰이 줄어듭니다."
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "생성됨"
@@ -9173,6 +9204,10 @@ msgstr "GMX Account에서 출금"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose"
 msgstr "목적"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstaking esGMX would also lower the staked tokens that back vesting, so it won't raise how much you can vest. Stake more GMX instead."
+msgstr "esGMX를 언스테이킹하면 베스팅을 뒷받침하는 스테이킹 토큰도 줄어들어 베스팅할 수 있는 수량이 늘어나지 않습니다. 대신 GMX를 더 스테이킹하세요."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
@@ -9827,6 +9862,8 @@ msgid "Trading on Solana is coming soon."
 msgstr "Solana에서의 거래는 곧 지원될 예정입니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Account restricted"
 msgstr "계정 제한됨"
 
@@ -10034,10 +10071,6 @@ msgstr "풀 유동성 부족"
 msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
 msgstr "<0><1>#GMX V2</1>의 OI가 훌륭합니다</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>더 보기: <4>https://tradao.xyz/#/open-interest</4></3>"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at any time. esGMX withdrawn from them can't be vested anywhere."
-msgstr "더 이상 예치를 받지 않습니다. 이미 베스팅 중인 esGMX는 계속 베스팅되며, 베스팅된 GMX는 언제든지 수령할 수 있습니다. 이 볼트에서 출금한 esGMX는 어디에서도 베스팅할 수 없습니다."
-
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr "다음과 같은 공유 링크가 제공됩니다: {PRODUCTION_HOST}/trade/?ref=YOURCODE. 소셜 미디어나 콘텐츠에서 또는 친구에게 직접 공유하세요."
@@ -10153,6 +10186,10 @@ msgstr "<0>⬡ Chainlink 데이터 스토리 ⬡ <1/><2>#Chainlink</2> Data Stre
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "롱 OI 최소 담보 비율"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Claims paused"
+msgstr "수령 일시 중지됨"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
@@ -11659,10 +11696,6 @@ msgstr "동결"
 msgid "CONFIG"
 msgstr "설정"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
-msgid "{stakedEsGmx} esGMX is staked."
-msgstr "{stakedEsGmx} esGMX가 스테이킹되어 있습니다."
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/MarketSelector/MarketSelector.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -12931,6 +12964,10 @@ msgstr "청산 시 수령액"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "토큰 허용 테스트"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Receiver account is not restricted in the Legacy vesting vault"
+msgstr "수신자의 계정이 Legacy 베스팅 볼트에서 제한되지 않았습니다"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Earlier transactions"
