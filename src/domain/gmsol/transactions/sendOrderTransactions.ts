@@ -22,8 +22,8 @@ import { decodeGmsolInstruction } from "./decodeInstruction";
 import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
 import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
-import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 import { validateGmsolWalletTransaction } from "./validateWalletTransaction";
+import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
