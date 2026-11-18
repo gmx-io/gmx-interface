@@ -6,13 +6,22 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { createServer } from "vite";
 import * as wasm from "@gmsol-labs/gmsol-sdk/index_bg.js";
+import { withoutLookupTables } from "./lookupTableConfiguration.mjs";
 
 const { values } = parseArgs({
-  options: { wallet: { type: "string" }, "api-url": { type: "string", default: "http://127.0.0.1:3046" } },
+  options: {
+    wallet: { type: "string" },
+    "api-url": { type: "string", default: "http://127.0.0.1:3046" },
+    market: { type: "string", default: "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8" },
+  },
 });
 assert.ok(values.wallet, "Provide --wallet with the selected public Solana account");
 const api = new URL(values["api-url"]);
-assert.ok(api.protocol === "http:" && ["localhost", "127.0.0.1"].includes(api.hostname));
+assert.ok(
+  (api.protocol === "http:" && ["localhost", "127.0.0.1"].includes(api.hostname)) ||
+    api.origin === "https://solana.gmxapi.io"
+);
+assert.equal(api.username + api.password + api.search + api.hash, "");
 // Browser environment plumbing for Node only; no persisted session or wallet access.
 globalThis.self = globalThis;
 globalThis.location = new URL("http://localhost:3016");
@@ -42,13 +51,12 @@ const server = await createServer({
   optimizeDeps: { noDiscovery: true, include: [], entries: [] },
   server: { middlewareMode: true },
   plugins: [
+    withoutLookupTables(root),
     {
       name: "trd136-node-diagnostic-adapters",
       enforce: "pre",
       transform(source, id) {
         if (id === path.join(root, "src/config/ab.ts")) return "export const getIsSolanaNetworkEnabled = () => true;";
-        if (id === path.join(root, "src/config/gmsol/lookupTables.ts"))
-          return "export const GMSOL_LOOKUP_TABLE_ADDRESSES=[]; export const GMSOL_LOOKUP_TABLE_AUTHORITIES={};";
         if (id === path.join(root, "src/domain/gmsol/loadGmsolSdk.ts"))
           return "export async function loadGmsolSdk(){return globalThis.__trd136Wasm;}";
         if (id === path.join(root, "src/lib/solana/rpc.ts"))
@@ -75,7 +83,7 @@ try {
   const { prepareGmsolOrderTransactions, checkGmsolTransactionBeforeSignature } = await server.ssrLoadModule(
     "/src/domain/gmsol/transactions/sendOrderTransactions.ts"
   );
-  const market = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8");
+  const market = GMSOL_MARKETS.find((m) => m.marketTokenAddress === values.market);
   assert.ok(market);
   report.market = market.marketTokenAddress;
   for (const kind of ["MarketIncrease", "LimitIncrease"])
@@ -84,7 +92,7 @@ try {
       report.results.push(result);
       try {
         const response = await fetch(`${api.origin}/v1/markets/config`, { signal: AbortSignal.timeout(10000) });
-        assert.ok(response.ok, "Fresh local market data is unavailable");
+        assert.ok(response.ok, "Fresh market data is unavailable");
         const current = (await response.json()).find((m) => m.marketTokenAddress === market.marketTokenAddress);
         assert.ok(
           current?.tradeMath === "gmsol" && !current.isDisabled,
@@ -109,7 +117,7 @@ try {
         const order = {
           kind,
           market,
-          collateralToken: market.longTokenAddress,
+          collateralToken: market.shortTokenAddress,
           indexTokenDecimals: GMSOL_TOKENS.find((t) => t.address === market.indexTokenAddress).decimals,
           isLong,
           sizeDeltaUsd: 6n * 10n ** 30n,

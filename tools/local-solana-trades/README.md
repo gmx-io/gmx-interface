@@ -37,6 +37,14 @@ The web launcher first verifies and bundles the pinned browser SDK through the n
 
 Stop each launcher with Ctrl-C. API failure or normal shutdown cleans only its owned process groups, container and anonymous volume. Reports/logs stay under `.local/trd-136/api-*`; confirm ownership from the report before recovering an interrupted run. Do not prune unrelated containers, kill processes by port alone or expose the local API publicly.
 
+## Build the experimental playground
+
+```sh
+NODE_OPTIONS=--max-old-space-size=8192 yarn build-playground
+```
+
+Deploy this command's `build/` output to the existing Solana playground. It shares the local web launcher's empty LUT configuration through `lookupTableConfiguration.mjs`, so preparation, validation and sending all use the same selection. It keeps the public API/RPC, feature flags, fresh trading checks, transaction-size limits and pre-signature simulation. Orders that cannot fit without LUTs remain unsupported; this does not establish atomic TP/SL acceptance. The normal `build-app` command retains the formal LUT configuration.
+
 ## Diagnostics
 
 ```sh
@@ -46,7 +54,7 @@ NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/simulate.m
   --wallet YOUR_PUBLIC_SOLANA_ADDRESS --api-url http://127.0.0.1:3066
 ```
 
-`probe.mjs` reads RPC capacity. `measure.mjs` uses generated identities and fixed offline inputs only to measure encoding/size; those inputs must never enter live trading configuration. `simulate.mjs` requires the running real API and uses the actual prepare/builder/validator/pre-signature path with fresh prices, fees, blockhash and trading flag. Its public wallet argument is for read-only simulation, not API scoping.
+`probe.mjs` reads RPC capacity. `measure.mjs` uses generated identities and fixed offline inputs only to measure encoding/size; those inputs must never enter live trading configuration. `simulate.mjs` accepts a loopback API or the official `https://solana.gmxapi.io` host, and selects a configured market with `--market MARKET_TOKEN_ADDRESS`. It requires real API data and uses the actual prepare/builder/validator/pre-signature path with fresh prices, fees, blockhash and trading flag. Its public wallet argument is for read-only simulation, not API scoping.
 
 The Node simulation adapter directly initializes the hash-verified WASM and omits browser loader/tracker/sender behavior. It neither signs nor broadcasts. Its diagnostic trade parameters are not spending authorization. Four unsigned simulations against the final API passed at slots 470550183/191/200/208: market long/short 892 bytes, limit long/short 925 bytes, without LUTs.
 
@@ -56,4 +64,4 @@ One approximately 40 USD BTC market long was submitted by the user on November 1
 
 The first-phase scope remains one wallet, one USDC-collateral market and direct USDC payment. Market short, limit long/short creation/cancellation, at least one triggered fill and a usable exit path remain unverified. Minimum local close/cancel wiring remains deferred by the user; prefer verified TRD-84 implementation when available. Wallet signing/broadcasting and spending require their own authorization.
 
-Official API rollout is not established. The public preview uses public configuration and is distinct from this local API setup. Keep the local API host and measured no-LUT configuration until verified replacements are available. Simple no-LUT results do not cover the four-wallet/atomic TP-SL/LUT acceptance of the original issues. No diagnostic success, green CI or local trade marks those requirements production-ready.
+The experimental public preview uses the same no-LUT configuration as the local launcher, but the public API/RPC remains distinct from the local API setup. Use `build-playground` for that preview; `build-app` does not include this experimental selection. Simple no-LUT results do not cover the four-wallet/atomic TP-SL/LUT acceptance of the original issues. No diagnostic success, green CI or local trade marks those requirements production-ready.
