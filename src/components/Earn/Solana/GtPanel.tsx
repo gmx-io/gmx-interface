@@ -42,7 +42,7 @@ export function GtPanel({ gt, isLoading }: { gt: SolanaEarnGtData | undefined; i
               <StandardTooltip
                 variant="iconStroke"
                 handle={<Trans>Last buyback</Trans>}
-                content={t`USDC you received for your GT in the last buyback.`}
+                content={t`USDC you received for your GT in the last buyback`}
               />
             }
           >

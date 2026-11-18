@@ -1464,6 +1464,10 @@ msgstr "スワップ手数料係数（プラスPI）"
 msgid "Insufficient pool balance"
 msgstr "プール残高が不足しています"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback"
+msgstr ""
+
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search pool"
@@ -11787,10 +11791,6 @@ msgstr "成行注文"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "購入中"
-
-#: src/components/Earn/Solana/GtPanel.tsx
-msgid "USDC you received for your GT in the last buyback."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"

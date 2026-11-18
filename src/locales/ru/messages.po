@@ -1464,6 +1464,10 @@ msgstr "Фактор комиссии за обмен (положительны�
 msgid "Insufficient pool balance"
 msgstr "Недостаточный баланс пула"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback"
+msgstr ""
+
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search pool"
@@ -11787,10 +11791,6 @@ msgstr "Рыночные ордера"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Покупка"
-
-#: src/components/Earn/Solana/GtPanel.tsx
-msgid "USDC you received for your GT in the last buyback."
-msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"

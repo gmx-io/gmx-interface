@@ -1464,6 +1464,10 @@ msgstr "Swap fee factor (positive PI)"
 msgid "Insufficient pool balance"
 msgstr "Insufficient pool balance"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback"
+msgstr "USDC you received for your GT in the last buyback"
+
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
 msgid "Search pool"
@@ -11787,10 +11791,6 @@ msgstr "Market orders"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buying"
 msgstr "Buying"
-
-#: src/components/Earn/Solana/GtPanel.tsx
-msgid "USDC you received for your GT in the last buyback."
-msgstr "USDC you received for your GT in the last buyback."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake request submitted"
