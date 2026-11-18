@@ -2937,10 +2937,6 @@ msgstr "검색"
 msgid "Fees for the past"
 msgstr "수수료, 최근"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "GT Points are the incentive points of GMX Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of GMX Solana's fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max open interest {directionLabel}"
 msgstr "최대 미결제약정 {directionLabel}"
@@ -10642,6 +10638,10 @@ msgstr "온체인 트레이더 탐색, 분석 및 카피 트레이딩"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{networkLabel}의 {addressLabel}"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "GT Points are the incentive points of GMX on Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of Solana protocol fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards."
+msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx

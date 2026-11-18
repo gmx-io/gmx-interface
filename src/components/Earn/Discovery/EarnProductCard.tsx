@@ -85,7 +85,7 @@ const getCardContent = (type: EarnProductType) => {
       tokenSymbol: "GT",
       badge: t`Points`,
       title: t`What is GT?`,
-      description: t`GT Points are the incentive points of GMX Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of GMX Solana's fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards.`,
+      description: t`GT Points are the incentive points of GMX on Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of Solana protocol fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards.`,
       readMoreUrl: GT_DOCS_URL,
       bullets: [
         t`Earn GT from trading, LP, and referrals`,
