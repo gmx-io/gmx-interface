@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/experimental-ct-react";
 
 import { getDataQALocator } from "lib/__tests__/testUtils";
-import { TradeMode } from "sdk/utils/trade/types";
+import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
 import {
   IntegrationStory,
@@ -655,6 +655,40 @@ test.describe("TradeboxMarginFields Integration", () => {
       await expect(page.getByTestId("to-value")).not.toHaveText(tokensBefore!);
       expect(Number(await page.getByTestId("to-value").textContent())).toBeGreaterThan(0);
       await expect(page.locator(getDataQALocator("margin-input"))).toHaveValue("1000");
+    });
+  });
+
+  test.describe("Limit to Market switch", () => {
+    test("re-prices the typed USD size at the mark price TRD-17", async ({ mount, page }) => {
+      // mark is $2000: a $20000 size is 12.5 ETH at a $1600 long limit, 8 ETH at a $2500 short limit, 10 ETH at mark
+      const sides = [
+        { tradeType: TradeType.Long, limitPrice: "1600", limitTokens: "12.5" },
+        { tradeType: TradeType.Short, limitPrice: "2500", limitTokens: "8" },
+      ];
+      const sizeInput = page.locator(getDataQALocator("position-size-input"));
+      const triggerPriceInput = page.locator(getDataQALocator("trigger-price-input"));
+
+      for (const { tradeType, limitPrice, limitTokens } of sides) {
+        for (const isLeverageSliderEnabled of [true, false]) {
+          for (const isLimitBeforeSize of [true, false]) {
+            const props = { tradeType, isLeverageSliderEnabled, initialToValue: "" };
+            const component = await mount(<IntegrationStory {...props} tradeMode={TradeMode.Limit} />);
+
+            if (isLimitBeforeSize) await triggerPriceInput.fill(limitPrice);
+            await sizeInput.fill("20000");
+            if (!isLimitBeforeSize) await triggerPriceInput.fill(limitPrice);
+            await expect(page.getByTestId("to-value")).toHaveText(limitTokens);
+
+            await component.update(<IntegrationStory {...props} tradeMode={TradeMode.Market} />);
+
+            await expect(page.getByTestId("focused-input")).toHaveText("to");
+            await expect(page.getByTestId("to-value")).toHaveText("10");
+            await expect(sizeInput).toHaveValue("20000");
+
+            await component.unmount();
+          }
+        }
+      }
     });
   });
 

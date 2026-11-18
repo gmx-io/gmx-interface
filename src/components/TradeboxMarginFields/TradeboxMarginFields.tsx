@@ -68,7 +68,7 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
-  const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
+  const prevSizeTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
   const tokensInputValueFromUsdRef = useRef<string | undefined>(toTokenInputValue === "" ? "" : undefined);
   const previousToTokenInputValue = usePrevious(toTokenInputValue);
@@ -89,7 +89,8 @@ export function TradeboxMarginFields({
   // For limit orders, use trigger price for USD↔token conversion so the displayed
   // position size reflects the limit fill price. Each trigger price keystroke
   // recomputes this, but the size-sync effect guards against overwriting focused fields.
-  const sizeConversionPrice = isLimit && triggerPrice !== undefined ? triggerPrice : markPrice;
+  const sizeTriggerPrice = isLimit ? triggerPrice : undefined;
+  const sizeConversionPrice = sizeTriggerPrice ?? markPrice;
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
     markPrice: sizeConversionPrice,
@@ -132,24 +133,19 @@ export function TradeboxMarginFields({
     }
   }, [marketAddress, toTokenAddress]);
 
-  // Keep USD size anchored when the limit trigger price changes.
+  // Keep USD size anchored when the trigger price changes or stops pricing the size (Limit to Market):
+  // the order is sized by the token amount, which would otherwise stay priced at the old limit.
   useLayoutEffect(() => {
-    if (!isLimit) {
-      prevTriggerPriceRef.current = triggerPrice;
-      return;
-    }
-
-    if (prevTriggerPriceRef.current === null) {
-      prevTriggerPriceRef.current = triggerPrice;
-      return;
-    }
-
-    if (prevTriggerPriceRef.current !== triggerPrice && sizeDisplayMode === "usd") {
+    if (
+      prevSizeTriggerPriceRef.current !== null &&
+      prevSizeTriggerPriceRef.current !== sizeTriggerPrice &&
+      sizeDisplayMode === "usd"
+    ) {
       shouldForceSizeUsdSyncRef.current = true;
     }
 
-    prevTriggerPriceRef.current = triggerPrice;
-  }, [isLimit, triggerPrice, sizeDisplayMode]);
+    prevSizeTriggerPriceRef.current = sizeTriggerPrice;
+  }, [sizeTriggerPrice, sizeDisplayMode]);
 
   useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
