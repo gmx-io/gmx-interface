@@ -81,6 +81,7 @@ import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { isCustomError, parseError } from "lib/errors";
+import { isTransactionCancelledError, TransactionCancelledError } from "lib/errors/transactionCancelledError";
 import { helperToast } from "lib/helperToast";
 import {
   initMultichainWithdrawalMetricData,
@@ -320,7 +321,7 @@ function useWithdrawViewTransactions({
       current.withdrawalViewChain !== withdrawalViewChain ||
       current.selectedTokenAddress !== selectedTokenAddress
     ) {
-      throw new Error(t`Missing required parameters`);
+      throw new TransactionCancelledError();
     }
   }, [latestWithdrawal, inputAmount, bridgeOutParams, account, chainId, withdrawalViewChain, selectedTokenAddress]);
   const unwrappedSelectedTokenAddress =
@@ -411,6 +412,7 @@ function useWithdrawViewTransactions({
       };
       await wrapChainAction(chainId, setSettlementChainId, sendWithdrawal, validateWithdrawal);
     } catch (error) {
+      if (isTransactionCancelledError(error)) return;
       toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
     } finally {
       setIsSubmitting(false);
@@ -539,6 +541,7 @@ function useWithdrawViewTransactions({
       };
       await wrapChainAction(withdrawalViewChain, setSettlementChainId, sendWithdrawal, validateWithdrawal);
     } catch (error) {
+      if (isTransactionCancelledError(error)) return;
       const prettyError = toastCustomOrStargateError(chainId, error, {
         actionName: "Multichain Withdrawal",
         metricId: metricData.metricId,
@@ -670,11 +673,7 @@ export const WithdrawalView = () => {
     });
   }, [isSameChain, account, quoteInputAmount, withdrawalViewChain]);
 
-  const {
-    data: requestedQuoteOft,
-    isLoading: isQuoteRequestLoading,
-    error: quoteError,
-  } = useQuoteOft({
+  const { data: requestedQuoteOft, isLoading: isQuoteRequestLoading } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
@@ -682,7 +681,8 @@ export const WithdrawalView = () => {
   });
 
   const isQuoteOftLoading = !isSameChain && (inputAmount !== quoteInputAmount || isQuoteRequestLoading);
-  const quoteOft = !isQuoteOftLoading && !quoteError ? requestedQuoteOft : undefined;
+  const quoteOft = !isQuoteOftLoading ? requestedQuoteOft : undefined;
+  const quoteAmountReceived = quoteOft?.receipt.amountReceivedLD;
 
   const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
     quoteOft,
@@ -837,14 +837,14 @@ export const WithdrawalView = () => {
     const dstEid = getLayerZeroEndpointId(withdrawalViewChain);
     const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
-    if (dstEid === undefined || stargateAddress === undefined || quoteOft === undefined) {
+    if (dstEid === undefined || stargateAddress === undefined || quoteAmountReceived === undefined) {
       return;
     }
 
     return {
       token: selectedTokenAddress as Address,
       amount: inputAmount,
-      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteOft.receipt.amountReceivedLD),
+      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteAmountReceived),
       data: encodeAbiParameters(
         [
           {
@@ -864,7 +864,7 @@ export const WithdrawalView = () => {
     inputAmount,
     isSameChain,
     chainId,
-    quoteOft,
+    quoteAmountReceived,
   ]);
 
   const gasPrice = useGasPrice(chainId);

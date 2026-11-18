@@ -2,6 +2,7 @@ import { isAddress, isHex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
+import { isTransactionCancelledError } from "lib/errors/transactionCancelledError";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
@@ -118,7 +119,9 @@ export async function sendWalletTransaction({
     };
 
     const res = await signer.sendTransaction(txnData).catch((error) => {
-      additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
+      if (!isTransactionCancelledError(error)) {
+        additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
+      }
 
       throw extendError(error, {
         errorContext: "sending",

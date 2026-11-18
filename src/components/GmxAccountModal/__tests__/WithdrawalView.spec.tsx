@@ -33,6 +33,9 @@ const state = vi.hoisted(() => ({
   send: vi.fn(),
   relay: vi.fn(),
   quote: vi.fn(),
+  errorToast: vi.fn(),
+  errorMetric: vi.fn(),
+  providerCall: vi.fn(),
 }));
 
 vi.mock("wagmi", () => ({ useAccount: () => ({ address: state.account }) }));
@@ -149,7 +152,7 @@ vi.mock("lib/chains/getMultipleWalletExtensionsChainError", () => ({
 }));
 vi.mock("lib/useHasOutdatedUi", () => ({ useHasOutdatedUi: () => false }));
 vi.mock("lib/helperToast", () => ({
-  helperToast: { error: () => undefined, success: () => undefined, info: () => undefined },
+  helperToast: { error: state.errorToast, success: () => undefined, info: () => undefined },
 }));
 vi.mock("lib/metrics", () => ({
   initMultichainWithdrawalMetricData: () => ({ metricId: "withdrawal" }),
@@ -157,12 +160,16 @@ vi.mock("lib/metrics", () => ({
   sendOrderSimulatedMetric: () => undefined,
   sendOrderTxnSubmittedMetric: () => undefined,
   sendTxnValidationErrorMetric: () => undefined,
-  sendTxnErrorMetric: () => undefined,
+  sendTxnErrorMetric: state.errorMetric,
   sendTxnSentMetric: () => undefined,
   metrics: { pushError: () => undefined, pushEvent: () => undefined },
 }));
+vi.mock("lib/metrics/emitMetricEvent", () => ({ emitMetricEvent: state.errorMetric }));
 vi.mock("lib/userAnalytics/utils", () => ({ sendMultichainWithdrawalSuccessEvent: () => undefined }));
-vi.mock("lib/rpc", () => ({ useJsonRpcProvider: () => ({ provider: {} }), getProvider: () => ({}) }));
+vi.mock("lib/rpc", () => ({
+  useJsonRpcProvider: () => ({ provider: {} }),
+  getProvider: () => ({ call: state.providerCall }),
+}));
 vi.mock("lib/gas/gasPrice", () => ({ getGasPrice: async () => ({ gasPrice: 1n }) }));
 vi.mock("lib/tenderly", () => ({ getTenderlyConfig: () => undefined }));
 vi.mock("lib/wallets/walletConfig", () => ({
@@ -222,6 +229,9 @@ function mountWithdrawal(destination: number) {
   state.gasEstimate = undefined;
   state.signing = undefined;
   state.chainCheck = undefined;
+  state.errorToast.mockClear();
+  state.errorMetric.mockClear();
+  state.providerCall.mockReset().mockResolvedValue("0x");
   state.tokens = Object.fromEntries(
     [getToken(ARBITRUM, state.token), getToken(ARBITRUM, zeroAddress), getWrappedToken(ARBITRUM)].map((token) => [
       token.address,
@@ -423,10 +433,75 @@ describe("WithdrawalView", () => {
     });
     expect((reopened.getByPlaceholderText("0.00") as HTMLInputElement).value).toBe("9000");
     expect(state.sent).toEqual([]);
+    expect(state.errorToast).not.toHaveBeenCalled();
+    expect(state.errorMetric).not.toHaveBeenCalled();
+    expect(state.providerCall).not.toHaveBeenCalled();
     await act(async () => {
       fireEvent.click(reopened.getByRole("button", { name: "Withdraw", exact: true }));
       await vi.advanceTimersByTimeAsync(20);
     });
     expect(state.sent).toEqual([{ amount: 9000n * 10n ** 6n, kind: "wallet" }]);
+  });
+
+  it("keeps compatible quote refreshes and quietly cancels invalidated signatures PRO-4596", async () => {
+    vi.useFakeTimers();
+    for (const update of ["credit", "refresh-error", "receipt", "input-error", "close"]) {
+      const view = mountWithdrawal(SOURCE_BSC_MAINNET);
+      await act(async () => vi.advanceTimersByTimeAsync(150));
+      let release!: () => void;
+      state.signing = new Promise((resolve) => {
+        release = () => resolve("0x" + "11".repeat(65));
+      });
+      await act(async () => {
+        fireEvent.click(view.getByRole("button", { name: "Withdraw", exact: true }));
+        await vi.advanceTimersByTimeAsync(20);
+      });
+      expect(state.signatureRequests).toBe(1);
+      if (update.endsWith("error")) {
+        state.quote.mockRejectedValue(new Error("Quote RPC unavailable"));
+      } else {
+        state.quote.mockImplementation(async ({ args }: { args: [SendParam] }) => [
+          { minAmountLD: 1n, maxAmountLD: 10n ** 17n },
+          [],
+          { amountSentLD: args[0].amountLD, amountReceivedLD: args[0].amountLD - (update === "receipt" ? 100n : 1n) },
+        ]);
+      }
+      await act(async () => {
+        if (update === "input-error") state.input = "9000";
+        if (update === "close") state.view = "main";
+        state.notify();
+        await vi.advanceTimersByTimeAsync(60150);
+        release();
+        await vi.advanceTimersByTimeAsync(20);
+      });
+      expect
+        .soft(state.sent, update)
+        .toEqual(
+          update === "credit" || update === "refresh-error" ? [{ amount: 200000n * 10n ** 6n, kind: "relay" }] : []
+        );
+      expect.soft(state.errorToast, update).not.toHaveBeenCalled();
+      expect.soft(state.errorMetric, update).not.toHaveBeenCalled();
+      cleanup();
+      state.notify = () => undefined;
+    }
+  });
+
+  it("still reports actual wallet and relay failures PRO-4596", async () => {
+    vi.useFakeTimers();
+    for (const destination of [ARBITRUM, SOURCE_BSC_MAINNET]) {
+      const view = mountWithdrawal(destination);
+      await act(async () => vi.advanceTimersByTimeAsync(150));
+      const sender = destination === ARBITRUM ? state.send : state.relay;
+      sender.mockRejectedValueOnce(new Error("RPC unavailable"));
+      await act(async () => {
+        fireEvent.click(view.getByRole("button", { name: "Withdraw", exact: true }));
+        await vi.advanceTimersByTimeAsync(20);
+      });
+      expect(state.sent).toEqual([]);
+      expect(state.errorToast).toHaveBeenCalled();
+      if (destination === SOURCE_BSC_MAINNET) expect(state.errorMetric).toHaveBeenCalled();
+      cleanup();
+      state.notify = () => undefined;
+    }
   });
 });
