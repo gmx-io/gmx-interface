@@ -37,6 +37,7 @@ import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsol24hPriceDeltas } from "./tokens/fetchGmsol24hPriceDeltas";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
+import { createGmsolChartTradesFetcher } from "./tradingview/createGmsolChartTradesFetcher";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
 
@@ -113,6 +114,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     (): ChartDataProvider | undefined =>
       sdk && {
         candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+        tradesFetcher: createGmsolChartTradesFetcher(),
         getChartSymbol: getGmsolOracleSymbol,
         fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
         fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
@@ -203,6 +205,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: composedPositions.data,
         isLoading: false,
+        refetch: positionsRequest.refetch,
         dataSource: "api",
         error:
           positionsRequest.error ??
@@ -216,6 +219,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: cachedPositions,
         isLoading: false,
+        refetch: positionsRequest.refetch,
         dataSource: "api",
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
@@ -224,12 +228,20 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     if (positionsRequest.error || isMarketsUnavailable) {
       return {
         isLoading: false,
+        refetch: positionsRequest.refetch,
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
     }
 
-    return { isLoading: true };
-  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+    return { isLoading: true, refetch: positionsRequest.refetch };
+  }, [
+    owner,
+    composedPositions,
+    positionsRequest.error,
+    positionsRequest.refetch,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
