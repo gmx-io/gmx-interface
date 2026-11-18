@@ -1,6 +1,7 @@
 import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useKey, useLatest } from "react-use";
 
 import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
@@ -76,13 +77,19 @@ import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatDeltaUsdParts, formatPercentage, formatTokenAmount, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmountFree,
+  formatDeltaUsdParts,
+  formatPercentage,
+  formatTokenAmount,
+  parseValue,
+} from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -205,13 +212,13 @@ export function PositionSeller() {
 
   const {
     allowedSlippage,
-    closeUsdInputValue: closeUsdInputValueRaw,
+    closeUsdInputValue,
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
     orderOption,
     handleSetOrderOption,
     receiveTokenAddress,
-    setCloseUsdInputValue: setCloseUsdInputValueRaw,
+    setCloseUsdInputValue,
     setDefaultTriggerAcceptablePriceImpactBps,
     setIsSubmitting,
     setReceiveTokenAddress,
@@ -234,15 +241,19 @@ export function PositionSeller() {
     indexTokenDecimals: position?.indexToken?.decimals ?? 18,
     indexTokenSymbol: position?.indexToken?.symbol ?? "",
     initialPercentage: 100,
-    onCloseSizeUsdChange: setCloseUsdInputValueRaw,
   });
+
+  const fieldCloseUsdInputValue = formatAmountFree(closeSize.closeSizeUsd, USD_DECIMALS);
+
+  useEffect(() => {
+    if (closeUsdInputValue !== fieldCloseUsdInputValue) {
+      setCloseUsdInputValue(fieldCloseUsdInputValue);
+    }
+  }, [closeUsdInputValue, fieldCloseUsdInputValue, setCloseUsdInputValue]);
 
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
-  const [closeUsdInputValue] = useDebouncedInputValue(closeUsdInputValueRaw, setCloseUsdInputValueRaw);
-
-  const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
   const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
@@ -738,37 +749,6 @@ export function PositionSeller() {
     });
   }
 
-  const latestOnSubmit = useLatest(onSubmit);
-
-  useKey(
-    "Enter",
-    () => {
-      if (isVisible && !error) {
-        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        if (closeUsdInputValue === closeUsdInputValueRaw) {
-          latestOnSubmit.current();
-        } else {
-          setIsWaitingForDebounceBeforeSubmit(true);
-        }
-      }
-    },
-    {},
-    [isVisible, error, closeUsdInputValue, closeUsdInputValueRaw, latestOnSubmit]
-  );
-
-  useEffect(() => {
-    if (isWaitingForDebounceBeforeSubmit && closeUsdInputValue === closeUsdInputValueRaw) {
-      setIsWaitingForDebounceBeforeSubmit(false);
-      latestOnSubmit.current();
-    }
-  }, [isWaitingForDebounceBeforeSubmit, latestOnSubmit, closeUsdInputValue, closeUsdInputValueRaw]);
-
-  useEffect(() => {
-    if (!isVisible) {
-      setIsWaitingForDebounceBeforeSubmit(false);
-    }
-  }, [isVisible]);
-
   useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
@@ -1081,6 +1061,48 @@ export function PositionSeller() {
     tokensToApprove,
   ]);
 
+  const latestSubmit = useLatest({
+    onSubmit,
+    error,
+    isButtonDisabled: buttonState.disabled,
+    closeUsdInputValue,
+    fieldCloseUsdInputValue,
+  });
+
+  const syncCloseSizeWithField = useCallback(() => {
+    const { closeUsdInputValue: stateValue, fieldCloseUsdInputValue: fieldValue } = latestSubmit.current;
+
+    if (stateValue !== fieldValue) {
+      flushSync(() => setCloseUsdInputValue(fieldValue));
+    }
+  }, [latestSubmit, setCloseUsdInputValue]);
+
+  const handleSubmitClick = useCallback(() => {
+    syncCloseSizeWithField();
+
+    if (!latestSubmit.current.isButtonDisabled) {
+      latestSubmit.current.onSubmit();
+    }
+  }, [latestSubmit, syncCloseSizeWithField]);
+
+  useKey(
+    "Enter",
+    () => {
+      if (!isVisible) {
+        return;
+      }
+
+      syncCloseSizeWithField();
+
+      if (!latestSubmit.current.error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        latestSubmit.current.onSubmit();
+      }
+    },
+    {},
+    [isVisible, latestSubmit, syncCloseSizeWithField]
+  );
+
   return (
     <div className="text-body-medium">
       <Modal
@@ -1277,7 +1299,7 @@ export function PositionSeller() {
                     className="w-full"
                     variant="primary-action"
                     disabled={buttonState.disabled}
-                    onClick={onSubmit}
+                    onClick={handleSubmitClick}
                     buttonRef={submitButtonRef}
                     qa="confirm-button"
                   >
