@@ -6,9 +6,9 @@ import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd } from "utils/tokens";
+import { convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
-import { getCollateralDeltaAmountAfterPriceImpactDiff, getIsProfitKeptInPnlToken } from "utils/trade/decrease";
+import { getCollateralDeltaAmountAfterPriceImpactDiff } from "utils/trade/decrease";
 
 import {
   getMarketInfoAtIndexPrice,
@@ -259,17 +259,6 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     return undefined;
   }
 
-  const isProfitKeptInPnlToken = getIsProfitKeptInPnlToken({
-    pnlToken: isLong ? marketInfo.longToken : marketInfo.shortToken,
-    collateralToken,
-    decreaseSwapType: decreaseAmounts.decreaseSwapType,
-  });
-
-  const costsPaidFromProfitAmount = isProfitKeptInPnlToken
-    ? convertToTokenAmount(decreaseAmounts.payedOutputUsd, collateralToken.decimals, decreaseAmounts.collateralPrice) ??
-      0n
-    : 0n;
-
   return getDecreaseResultingPositionMarginState({
     marketInfo,
     collateralToken,
@@ -278,10 +267,7 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: p.collateralDeltaAmount,
-    payedRemainingCollateralAmount: bigMath.min(
-      decreaseAmounts.payedRemainingCollateralAmount + costsPaidFromProfitAmount,
-      position.collateralAmount
-    ),
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
     priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
     minCollateralUsd: p.minCollateralUsd,
     minPositionSizeUsd: p.minPositionSizeUsd,

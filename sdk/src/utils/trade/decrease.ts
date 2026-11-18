@@ -201,6 +201,8 @@ export function getDecreasePositionAmounts(p: {
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
   const isTrigger = orderType !== undefined;
   const useExecutionSettlement = marketInfo.tradeMath === "gmsol" || (!isTrigger && !isTwap);
+  // unlike TWAP parts, a trigger order settles in one execution, so it pays its costs in the contract's order too
+  const isSingleSettlement = useExecutionSettlement || isTrigger;
 
   if (orderType) {
     values.triggerPrice = triggerPrice;
@@ -431,7 +433,7 @@ export function getDecreasePositionAmounts(p: {
   });
 
   const isProfitKeptInPnlToken =
-    useExecutionSettlement &&
+    isSingleSettlement &&
     getIsProfitKeptInPnlToken({
       pnlToken,
       collateralToken,
@@ -527,7 +529,7 @@ export function getDecreasePositionAmounts(p: {
         ? remainingCollateralUsd - bigMath.mulDiv(nextSizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, leverageWithoutPnl)
         : 0n;
 
-    if (useExecutionSettlement && values.collateralDeltaUsd < 0n) {
+    if (isSingleSettlement && values.collateralDeltaUsd < 0n) {
       values.collateralDeltaUsd = 0n;
     }
 
