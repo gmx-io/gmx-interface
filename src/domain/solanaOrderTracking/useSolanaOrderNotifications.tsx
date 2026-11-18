@@ -157,6 +157,7 @@ export function useSolanaOrderNotifications() {
         const detail =
           error && typeof error === "object"
             ? (error as {
+                message?: unknown;
                 submittedSignatures?: unknown;
                 confirmedSignatures?: readonly string[];
                 pendingSignature?: unknown;
@@ -180,6 +181,8 @@ export function useSolanaOrderNotifications() {
           {
             submission: ambiguous ? "unknown" : "failed",
             signatures: failed ? [failed] : pending ? [...signatures, pending] : signatures,
+            reason:
+              typeof error === "string" ? error : typeof detail?.message === "string" ? detail.message : undefined,
           },
           ambiguous ? false : TOAST_AUTO_CLOSE_TIME
         );
