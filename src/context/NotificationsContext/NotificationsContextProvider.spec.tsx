@@ -150,6 +150,23 @@ describe("NotificationsContextProvider", () => {
     expect(readDevice()).toMatchObject({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
   });
 
+  it("starts nothing else while turning on, also for clicks before the next render", async () => {
+    const { result } = renderNotifications();
+    const { turnOn, turnOff } = result.current;
+
+    act(() => {
+      turnOn();
+      turnOn();
+      turnOff();
+    });
+    act(() => result.current.turnOff());
+
+    await waitFor(() => expect(result.current.status).toBe("on"));
+    expect(requestPermission).toHaveBeenCalledOnce();
+    expect(mocks.registerThisDevice).toHaveBeenCalledOnce();
+    expect(mocks.unregisterNotificationsDevice).not.toHaveBeenCalled();
+  });
+
   it("stays off when the user refuses the permission", async () => {
     requestPermission.mockImplementationOnce(async () => {
       mocks.permission = "denied";

@@ -183,6 +183,8 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
   const [stored, setStored] = useState(readStoredNotificationsDevice);
   const [operation, setOperation] = useState<Operation>();
+  // Set in the same tick as the click, so a second click before the next render starts nothing.
+  const operationRef = useRef<Operation>();
   const [issue, setIssue] = useState<Issue>();
   const [testState, setTestState] = useState<NotificationsTestState>();
 
@@ -285,12 +287,14 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
   const runOperation = useCallback(
     (nextOperation: Operation, run: () => Promise<void>) => {
+      operationRef.current = nextOperation;
       setOperation(nextOperation);
       setIssue(undefined);
       enqueue(async () => {
         try {
           await run();
         } finally {
+          operationRef.current = undefined;
           setOperation(undefined);
         }
       });
@@ -310,7 +314,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
   const turnOn = useCallback(() => {
     const targetAccount = account ?? storedRef.current.account;
 
-    if (support !== "supported" || operation || !targetAccount) {
+    if (support !== "supported" || operationRef.current || !targetAccount) {
       return;
     }
 
@@ -327,10 +331,10 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         await register(targetAccount, "turnOn", getSign(targetAccount));
       }
     });
-  }, [account, getSign, operation, register, runOperation, setPermission, support]);
+  }, [account, getSign, register, runOperation, setPermission, support]);
 
   const retry = useCallback(() => {
-    if (operation) {
+    if (operationRef.current) {
       return;
     }
 
@@ -347,10 +351,10 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
     }
 
     turnOn();
-  }, [account, getSign, issue, operation, register, runOperation, turnOn]);
+  }, [account, getSign, issue, register, runOperation, turnOn]);
 
   const turnOff = useCallback(() => {
-    if (operation) {
+    if (operationRef.current) {
       return;
     }
 
@@ -372,7 +376,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         await unregisterLeftEndpoint(endpointToUnregister);
       }
     });
-  }, [operation, runOperation, unregisterLeftEndpoint, updateStored]);
+  }, [runOperation, unregisterLeftEndpoint, updateStored]);
 
   const sendTest = useCallback(() => {
     const { endpoint } = storedRef.current;

@@ -188,7 +188,12 @@ function DeviceSwitchCard({
           </div>
         </div>
         {hasToggle && (
-          <ToggleSwitch className="!w-auto shrink-0" isChecked={isToggleOn} setIsChecked={onToggle} disabled={isBusy} />
+          <ToggleSwitch
+            className={cx("!w-auto shrink-0", { "cursor-not-allowed opacity-50": isBusy })}
+            isChecked={isToggleOn}
+            setIsChecked={onToggle}
+            disabled={isBusy}
+          />
         )}
       </div>
 

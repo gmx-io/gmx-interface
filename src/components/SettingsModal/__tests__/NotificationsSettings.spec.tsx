@@ -155,6 +155,7 @@ describe("NotificationsSettings", () => {
     const { container } = renderTab();
 
     expect(screen.getByText(text)).toBeDefined();
+    expect(getSwitch(container)?.parentElement?.parentElement?.className).toContain("cursor-not-allowed");
     fireEvent.click(getSwitch(container)!);
 
     expect(mocks.value.turnOn).not.toHaveBeenCalled();
