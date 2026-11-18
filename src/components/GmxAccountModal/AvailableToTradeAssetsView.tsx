@@ -37,6 +37,7 @@ const FILTER_TITLE_MAP: Record<FilterType, MessageDescriptor> = {
 };
 
 type DisplayToken = {
+  address: string;
   chainId: number;
   symbol: string;
   iconSymbol?: string;
@@ -122,7 +123,7 @@ const AssetsList = ({
       <VerticalScrollFadeContainer className="flex grow flex-col overflow-y-auto pt-12">
         {sortedFilteredTokens.map((displayToken) => (
           <div
-            key={displayToken.symbol + "_" + displayToken.chainId}
+            key={displayToken.address + "_" + displayToken.chainId}
             className="flex items-center justify-between px-adaptive py-8 gmx-hover:bg-fill-surfaceElevated50"
           >
             <div className="flex items-center gap-16">
@@ -191,6 +192,7 @@ const AssetListMultichain = () => {
       .filter((token) => !token.isNative && token.gmxAccountBalance !== 0n && token.gmxAccountBalance !== undefined)
       .map(
         (token): DisplayToken => ({
+          address: token.address,
           chainId: GMX_ACCOUNT_PSEUDO_CHAIN_ID,
           symbol: token.symbol,
           name: token.name,
@@ -251,6 +253,7 @@ const AssetListSolana = () => {
     () =>
       (assets ?? []).map(
         (asset): DisplayToken => ({
+          address: asset.address,
           chainId: networkId,
           symbol: asset.symbol,
           iconSymbol: asset.iconSymbol,
