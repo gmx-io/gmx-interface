@@ -137,8 +137,15 @@ describe("Solana order notification lifecycle", () => {
     );
     const toastView = render(content());
     expect(toastView.queryByText("Fulfilling order request...")).toBeNull();
-    notification.failed({ pendingSignature: "broadcast" });
+    const reason = "Trading requires frozen or reviewed GMX-owned lookup tables";
+    notification.failed(new Error(reason));
     toastView.rerender(content());
+    expect(toastView.getByText("Order request failed")).toBeTruthy();
+    expect(toastView.getByText(reason)).toBeTruthy();
+    notification.failed({ pendingSignature: "broadcast", message: "Confirmation timed out" });
+    toastView.rerender(content());
+    expect(toastView.getByText("Confirmation timed out")).toBeTruthy();
+    expect(toastView.queryByText(reason)).toBeNull();
     expect(toastView.getByText("Order submission status unknown. Check the transaction before retrying.")).toBeTruthy();
     expect(toastView.queryByText("Fulfilling order request...")).toBeNull();
     expect(toastView.container.querySelector(".spin")).toBeNull();
