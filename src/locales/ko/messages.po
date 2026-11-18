@@ -7069,6 +7069,10 @@ msgstr "자금 수령 실패"
 msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
 msgstr "선택한 기간의 통계를 사용할 수 없습니다. 대신 가장 가까운 사용 가능한 기간을 표시합니다."
 
+#: src/pages/Referrals/SolanaReferrals.tsx
+msgid "Get fee discounts and earn GT rewards through the GMX referral program on Solana"
+msgstr ""
+
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
@@ -9118,10 +9122,6 @@ msgstr "스왑에서 결과 보기"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "보장된 유동성"
-
-#: src/pages/Referrals/SolanaReferrals.tsx
-msgid "Get fee discounts and earn GT rewards through the GMX Solana referral program"
-msgstr ""
 
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 msgid "You start earning as soon as a referred trader makes their first trade with your code. GT rewards go straight to your GT balance, with nothing to claim, and show in Recent activity on the Affiliate dashboard."
@@ -11323,10 +11323,6 @@ msgstr "Paxos로 변환 · 수수료 {fee}"
 msgid "Max reserved {directionLabel}"
 msgstr "최대 예약 {directionLabel}"
 
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "<0>Save {traderDiscountPercentageLabel}</0> on every leverage<1/> trade on GMX Solana"
-msgstr ""
-
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr "모든 유효한 코드는 최소 5% 할인을 제공합니다. 프리미엄 제휴사(Tier 2/3)는 10% 할인을 제공합니다. 코드가 적용되면 정확한 할인율을 확인할 수 있습니다."
@@ -13045,6 +13041,10 @@ msgstr "실행 수수료 검증에 실패했습니다.<0/><1/>{suggestText}"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr "TP/SL 자동 취소"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save {traderDiscountPercentageLabel}</0> on every GMX<1/> leverage trade on Solana"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY LONG"

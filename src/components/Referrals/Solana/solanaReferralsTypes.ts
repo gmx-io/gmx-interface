@@ -80,7 +80,7 @@ export type SolanaReferee = {
 export type SolanaGtHolder = {
   rank: number;
   address: string;
-  /** Known accounts, e.g. the GT vault */
+  /** Known accounts, e.g. the GMX GT Vault */
   name?: string;
   /** GT with SOLANA_GT_DECIMALS */
   gtBalance: bigint;

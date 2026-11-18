@@ -7069,6 +7069,10 @@ msgstr "Failed to claim funds"
 msgid "Stats for the selected period aren't available. Showing the nearest available period instead."
 msgstr "Stats for the selected period aren't available. Showing the nearest available period instead."
 
+#: src/pages/Referrals/SolanaReferrals.tsx
+msgid "Get fee discounts and earn GT rewards through the GMX referral program on Solana"
+msgstr "Get fee discounts and earn GT rewards through the GMX referral program on Solana"
+
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
@@ -9118,10 +9122,6 @@ msgstr "View results in Swap"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Guaranteed liquidity"
 msgstr "Guaranteed liquidity"
-
-#: src/pages/Referrals/SolanaReferrals.tsx
-msgid "Get fee discounts and earn GT rewards through the GMX Solana referral program"
-msgstr "Get fee discounts and earn GT rewards through the GMX Solana referral program"
 
 #: src/components/Referrals/Solana/solanaReferralsFaq.tsx
 msgid "You start earning as soon as a referred trader makes their first trade with your code. GT rewards go straight to your GT balance, with nothing to claim, and show in Recent activity on the Affiliate dashboard."
@@ -11323,10 +11323,6 @@ msgstr "Convert with Paxos · fee {fee}"
 msgid "Max reserved {directionLabel}"
 msgstr "Max reserved {directionLabel}"
 
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "<0>Save {traderDiscountPercentageLabel}</0> on every leverage<1/> trade on GMX Solana"
-msgstr "<0>Save {traderDiscountPercentageLabel}</0> on every leverage<1/> trade on GMX Solana"
-
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
 msgstr "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer a 10% discount. You'll see the exact discount percentage after the code has been applied."
@@ -13045,6 +13041,10 @@ msgstr "Execution fee validation failed.<0/><1/>{suggestText}"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr "Auto-cancel TP/SL"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save {traderDiscountPercentageLabel}</0> on every GMX<1/> leverage trade on Solana"
+msgstr "<0>Save {traderDiscountPercentageLabel}</0> on every GMX<1/> leverage trade on Solana"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY LONG"

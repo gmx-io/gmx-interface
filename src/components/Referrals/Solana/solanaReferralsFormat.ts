@@ -14,9 +14,9 @@ export function formatGt(amount: bigint, { signed = false }: { signed?: boolean 
   return `${sign}${formatAmount(abs, SOLANA_GT_DECIMALS, decimals, true)} GT`;
 }
 
-// Same as the GT Points page: the first and last 6 characters of a Solana address.
-export function shortenSolanaAddress(address: string) {
-  return address.length > 14 ? `${address.slice(0, 6)}…${address.slice(-6)}` : address;
+// Same as the GT Points page: the first and last 6 characters of a Solana address (4 on phones).
+export function shortenSolanaAddress(address: string, chars = 6) {
+  return address.length > chars * 2 + 2 ? `${address.slice(0, chars)}…${address.slice(-chars)}` : address;
 }
 
 // Date and time with leading zeros, as asked in the PM review: "08 Nov 2026, 07:23 PM" (dates alone use formatDate)

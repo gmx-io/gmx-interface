@@ -337,7 +337,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
               className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-adaptive py-10 last:border-b-0"
             >
               <div className="flex min-w-0 flex-col gap-2">
-                <span className="font-mono text-typography-primary">{shortenSolanaAddress(record.referee)}</span>
+                <span className="text-typography-primary">{shortenSolanaAddress(record.referee)}</span>
                 <span className="text-body-small text-typography-secondary">
                   {formatReferralDateTime(record.timestamp)}
                 </span>
@@ -374,7 +374,7 @@ function RecentActivityTable({ activity, rangeDays }: { activity: SolanaReferral
               {currentData.map((record) => (
                 <TableTr key={record.id}>
                   <TableTd className="whitespace-nowrap">{formatReferralDateTime(record.timestamp)}</TableTd>
-                  <TableTd className="font-mono">{shortenSolanaAddress(record.referee)}</TableTd>
+                  <TableTd>{shortenSolanaAddress(record.referee)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
                     {formatGt(record.gtReward, { signed: true })}
                   </TableTd>
@@ -475,7 +475,7 @@ function RefereesTable({
               className="flex items-center justify-between gap-12 border-b-1/2 border-slate-600 px-adaptive py-10 last:border-b-0"
             >
               <div className="flex min-w-0 flex-col gap-2">
-                <span className="font-mono text-typography-primary">{shortenSolanaAddress(referee.address)}</span>
+                <span className="text-typography-primary">{shortenSolanaAddress(referee.address)}</span>
                 <span className="text-body-small text-typography-secondary">
                   <Trans>Joined {formatDate(referee.joinedAt)}</Trans>
                 </span>
@@ -535,7 +535,7 @@ function RefereesTable({
             <tbody>
               {currentData.map((referee) => (
                 <TableTr key={referee.address}>
-                  <TableTd className="font-mono">{shortenSolanaAddress(referee.address)}</TableTd>
+                  <TableTd>{shortenSolanaAddress(referee.address)}</TableTd>
                   <TableTd className="whitespace-nowrap">{formatDate(referee.joinedAt)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">{formatGt(referee.gtEarned)}</TableTd>
                   <TableTd className="whitespace-nowrap text-right numbers">
