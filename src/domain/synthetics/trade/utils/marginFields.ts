@@ -7,9 +7,9 @@ import { getPositionFee } from "sdk/utils/fees";
 import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { applyFactor } from "sdk/utils/numbers";
-import { getLiquidationPrice } from "sdk/utils/positions";
+import { getCollateralPriceAtIndexPrice, getLiquidationPrice } from "sdk/utils/positions";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "sdk/utils/tokens";
+import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 import {
@@ -58,9 +58,13 @@ export type CalcMaxSizeDeltaParams = {
 const RESULTING_POSITION_BISECTION_STEPS = 24;
 
 function getEvaluationCollateralPrice(params: CalcMaxSizeDeltaParams, collateralToken: TokenData): bigint {
-  return params.indexPriceForEvaluation !== undefined &&
-    getIsEquivalentTokens(collateralToken, params.marketInfo.indexToken)
-    ? params.indexPriceForEvaluation
+  return params.indexPriceForEvaluation !== undefined
+    ? getCollateralPriceAtIndexPrice({
+        collateralToken,
+        indexToken: params.marketInfo.indexToken,
+        indexPrice: params.indexPriceForEvaluation,
+        isLong: params.isLong,
+      })
     : collateralToken.prices.minPrice;
 }
 
