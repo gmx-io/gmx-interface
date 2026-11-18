@@ -20,17 +20,15 @@ import BellIcon from "img/ic_bell.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import WarnIcon from "img/ic_warn.svg?react";
 
-type CardState = Exclude<NotificationsStatus, "unsupported"> | "notSupported";
-
 type CardIcon = "on" | "neutral" | "warning";
 
-const CARD_ICON: Record<CardState, CardIcon> = {
+const CARD_ICON: Record<NotificationsStatus, CardIcon> = {
   on: "on",
   off: "neutral",
   notAsked: "neutral",
   noWallet: "neutral",
   blocked: "warning",
-  notSupported: "neutral",
+  unsupported: "neutral",
   iosNotInstalled: "neutral",
   turningOn: "neutral",
   turningOff: "on",
@@ -41,31 +39,8 @@ const CARD_ICON: Record<CardState, CardIcon> = {
 
 const WALLET_LENGTH = 13;
 
-function getCardState({
-  status,
-  isTurnedOn,
-  receivingAccount,
-  pendingAccount,
-}: {
-  status: NotificationsStatus;
-  isTurnedOn: boolean;
-  receivingAccount: string | undefined;
-  pendingAccount: string | undefined;
-}): CardState {
-  if (status === "unsupported") {
-    return "notSupported";
-  }
-
-  if (status === "limitReached" && isTurnedOn && pendingAccount !== receivingAccount) {
-    return "walletSwitchFailed";
-  }
-
-  return status;
-}
-
 export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
   const { status, isTurnedOn, receivingAccount, pendingAccount, turnOn, turnOff, retry } = useNotificationsContext();
-  const state = getCardState({ status, isTurnedOn, receivingAccount, pendingAccount });
 
   // The confirmation line shows from a turn-on in this tab until the Settings modal closes.
   const [isTurningOnHere, setIsTurningOnHere] = useState(false);
@@ -78,9 +53,14 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
   }, [isSettingsVisible]);
 
   useEffect(() => {
-    if (isTurningOnHere && status !== "turningOn") {
-      setIsTurningOnHere(false);
-      setIsConfirmationSent(status === "on");
+    if (isTurningOnHere) {
+      if (status !== "turningOn") {
+        setIsTurningOnHere(false);
+        setIsConfirmationSent(status === "on");
+      }
+    } else if (status !== "on") {
+      // A wallet switch afterwards sends no confirmation, so the line must not come back with it.
+      setIsConfirmationSent(false);
     }
   }, [isTurningOnHere, status]);
 
@@ -96,17 +76,18 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
 
   const handleRetry = () => {
     // Only a turn-on sends the confirmation; a retried wallet switch does not.
-    setIsTurningOnHere(state === "turnOnFailed" || state === "limitReached");
+    setIsTurningOnHere(status === "turnOnFailed" || status === "limitReached");
     retry();
   };
 
   return (
     <div className="flex flex-col gap-20 pb-20">
       <DeviceSwitchCard
-        state={state}
+        status={status}
+        isTurnedOn={isTurnedOn}
         receivingAccount={receivingAccount}
         pendingAccount={pendingAccount}
-        isConfirmationSent={isConfirmationSent && state === "on"}
+        isConfirmationSent={isConfirmationSent && status === "on"}
         onToggle={handleToggle}
         onRetry={handleRetry}
       />
@@ -116,14 +97,16 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
 }
 
 function DeviceSwitchCard({
-  state,
+  status,
+  isTurnedOn,
   receivingAccount,
   pendingAccount,
   isConfirmationSent,
   onToggle,
   onRetry,
 }: {
-  state: CardState;
+  status: NotificationsStatus;
+  isTurnedOn: boolean;
   receivingAccount: string | undefined;
   pendingAccount: string | undefined;
   isConfirmationSent: boolean;
@@ -134,10 +117,17 @@ function DeviceSwitchCard({
   const { account } = useWallet();
   const [, copyToClipboard] = useCopyToClipboard();
 
-  const hasToggle = ["on", "off", "notAsked", "walletSwitchFailed", "turningOn", "turningOff"].includes(state);
-  // The switch keeps its position until the request settles.
-  const isToggleOn = state === "on" || state === "walletSwitchFailed" || state === "turningOff";
-  const isBusy = state === "turningOn" || state === "turningOff";
+  const hasToggle = ["on", "off", "notAsked", "walletSwitchFailed", "turningOn", "turningOff"].includes(status);
+  // The switch keeps its position until the request settles, also while a failed wallet switch is retried.
+  const isToggleOn =
+    status === "on" ||
+    status === "walletSwitchFailed" ||
+    status === "turningOff" ||
+    (status === "turningOn" && isTurnedOn);
+  const isBusy = status === "turningOn" || status === "turningOff";
+  const icon = status === "turningOn" && isTurnedOn ? "on" : CARD_ICON[status];
+  // Only a wallet that is connected can sign at the device limit or take over notifications.
+  const needsWallet = status === "limitReached" || status === "walletSwitchFailed";
   // The types are dimmed whenever notifications don't reach this device.
   const typeClassName = cx({ "opacity-[0.35]": !isToggleOn });
 
@@ -165,14 +155,14 @@ function DeviceSwitchCard({
   return (
     <div className="flex flex-col gap-12 rounded-8 bg-slate-800 p-16">
       <div className="flex items-start gap-12">
-        <CardIconBox icon={CARD_ICON[state]} />
+        <CardIconBox icon={icon} />
         <div className="flex min-w-0 grow flex-col gap-4">
           <div className="text-body-medium font-medium text-typography-primary">
             <Trans>Notifications on this device</Trans>
           </div>
           <div className="flex flex-col gap-4 text-13 leading-[1.3] text-typography-secondary">
             <p>
-              <CardDescription state={state} receivingAccount={receivingAccount} pendingAccount={pendingAccount} />
+              <CardDescription status={status} receivingAccount={receivingAccount} pendingAccount={pendingAccount} />
             </p>
             {isConfirmationSent && (
               <p>
@@ -197,31 +187,31 @@ function DeviceSwitchCard({
         )}
       </div>
 
-      {state === "blocked" && (
+      {status === "blocked" && (
         <StepsBox>
           <BlockedSteps />
         </StepsBox>
       )}
 
-      {state === "iosNotInstalled" && (
+      {status === "iosNotInstalled" && (
         <StepsBox>
           <Trans>Tap Share → Add to Home Screen, then open GMX from the Home Screen</Trans>
         </StepsBox>
       )}
 
-      {(state === "noWallet" || (state === "limitReached" && !account)) && openConnectModal && (
+      {(status === "noWallet" || (needsWallet && !account)) && openConnectModal && (
         <Button variant="primary" size="medium" className="w-full" onClick={openConnectModal}>
           <Trans>Connect wallet</Trans>
         </Button>
       )}
 
-      {state === "notSupported" && (
+      {status === "unsupported" && (
         <Button variant="primary" size="medium" className="w-full" onClick={handleShareLink}>
           {canShareLink ? <Trans>Share link</Trans> : <Trans>Copy link</Trans>}
         </Button>
       )}
 
-      {state === "turnOnFailed" && getIsBrave() && (
+      {status === "turnOnFailed" && getIsBrave() && (
         <StepsBox>
           <Trans>
             In Brave, turn on "Use Google services for push messaging" in Settings → Privacy and security. Then try
@@ -230,9 +220,7 @@ function DeviceSwitchCard({
         </StepsBox>
       )}
 
-      {(state === "turnOnFailed" ||
-        state === "walletSwitchFailed" ||
-        (state === "limitReached" && Boolean(account))) && (
+      {(status === "turnOnFailed" || (needsWallet && Boolean(account))) && (
         <Button variant="primary" size="medium" className="w-full" onClick={onRetry}>
           <Trans>Try again</Trans>
         </Button>
@@ -254,18 +242,18 @@ function DeviceSwitchCard({
 }
 
 function CardDescription({
-  state,
+  status,
   receivingAccount,
   pendingAccount,
 }: {
-  state: CardState;
+  status: NotificationsStatus;
   receivingAccount: string | undefined;
   pendingAccount: string | undefined;
 }) {
   const receivingWallet = receivingAccount ? shortenAddressOrEns(receivingAccount, WALLET_LENGTH) : "";
   const newWallet = pendingAccount ? shortenAddressOrEns(pendingAccount, WALLET_LENGTH) : "";
 
-  switch (state) {
+  switch (status) {
     case "on":
       return <Trans>Receiving as {receivingWallet}. Turning off won't affect your other devices.</Trans>;
     case "off":
@@ -281,7 +269,7 @@ function CardDescription({
       return <Trans>Connect a wallet to get liquidation and order notifications on this device.</Trans>;
     case "blocked":
       return <Trans>You blocked notifications for GMX in this browser, so GMX can't ask again.</Trans>;
-    case "notSupported":
+    case "unsupported":
       return <Trans>This browser can't show notifications. Open GMX in your phone's or computer's browser.</Trans>;
     case "iosNotInstalled":
       return <Trans>On iPhone and iPad, notifications only work when GMX is on the Home Screen.</Trans>;
@@ -355,7 +343,7 @@ function GoodToKnow() {
 
   return (
     <div className="flex flex-col gap-12 text-12 leading-[1.25]">
-      <p className="text-typography-disabled">
+      <p className="text-slate-500">
         <Trans>Delivery isn't guaranteed. Don't rely on notifications as your only risk control.</Trans>
       </p>
       <div className="border-t-1/2 border-slate-600" />

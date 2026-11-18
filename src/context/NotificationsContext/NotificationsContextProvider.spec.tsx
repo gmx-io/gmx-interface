@@ -1,4 +1,4 @@
-import { act, cleanup, render, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NOTIFICATIONS_DEVICE_KEY } from "config/localStorage";
@@ -251,6 +251,23 @@ describe("NotificationsContextProvider", () => {
     expect(mocks.toastError).toHaveBeenCalledOnce();
   });
 
+  it("subscribes again when notifications are allowed again after being blocked", async () => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    const { result } = renderNotifications();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+
+    mocks.permission = "denied";
+    fireEvent(document, new Event("visibilitychange"));
+    expect(result.current.status).toBe("blocked");
+    mocks.permission = "granted";
+    fireEvent(document, new Event("visibilitychange"));
+
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2));
+    expect(result.current.status).toBe("on");
+    expect(mocks.sendTestNotification).not.toHaveBeenCalled();
+  });
+
   it("drops a failed wallet switch once the receiving wallet is connected again", async () => {
     mocks.permission = "granted";
     storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
@@ -351,6 +368,7 @@ describe("NotificationsContextProvider", () => {
     mocks.account = OTHER_ACCOUNT;
     rerender();
     await waitFor(() => expect(result.current.pendingAccount).toBe(OTHER_ACCOUNT));
+    expect(result.current.status).toBe("walletSwitchFailed");
     expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2);
     expect(mocks.signMessage).not.toHaveBeenCalled();
 
@@ -359,6 +377,7 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT));
     expect(result.current.status).toBe("on");
     expect(mocks.signMessage).toHaveBeenCalledOnce();
+    expect(mocks.sendTestNotification).not.toHaveBeenCalled();
   });
 
   it("can't sign at the device limit with no wallet connected", async () => {

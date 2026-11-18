@@ -17,7 +17,7 @@ export async function configureClassicTrading(page: Page) {
   await slippage.fill("0.3");
   await slippage.press("Tab");
   await setSettingsToggle(settings, "Enable external swaps", false);
-  await settings.getByRole("button", { name: "Display settings", exact: true }).click();
+  await settings.getByRole("button", { name: "Display", exact: true }).click();
   await setSettingsToggle(settings, "Manual leverage", false);
   await page.keyboard.press("Escape");
   // The current form keeps its own slippage state; reload to apply the edited default.

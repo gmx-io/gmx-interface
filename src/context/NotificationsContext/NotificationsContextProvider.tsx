@@ -96,6 +96,14 @@ function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
 
+// A new wallet that needs a signature at the device limit is a failed switch too: the previous wallet keeps receiving.
+function getIsFailedWalletSwitch(issue: Issue | undefined, stored: StoredNotificationsDevice) {
+  return (
+    issue?.type === "walletSwitchFailed" ||
+    (issue?.type === "limitReached" && stored.enabled && issue.account !== stored.account)
+  );
+}
+
 function useNotificationPermission(isSupported: boolean) {
   const [permission, setPermission] = useState(getNotificationPermission);
 
@@ -159,13 +167,19 @@ function getStatus({
     return "blocked";
   }
 
+  // An enabled device whose permission was reset gets nothing until it is turned on again.
+  const isOn = stored.enabled && permission === "granted";
+
+  if (isOn && getIsFailedWalletSwitch(issue, stored)) {
+    return "walletSwitchFailed";
+  }
+
   if (issue?.type === "limitReached" || issue?.type === "turnOnFailed") {
     return issue.type;
   }
 
-  // An enabled device whose permission was reset gets nothing until it is turned on again.
-  if (stored.enabled && permission === "granted") {
-    return issue?.type === "walletSwitchFailed" ? "walletSwitchFailed" : "on";
+  if (isOn) {
+    return "on";
   }
 
   if (!account && !stored.account) {
@@ -338,8 +352,11 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    if (issue?.type === "walletSwitchFailed" && account) {
-      runOperation("turningOn", () => register(account, "retry", getSign(account)));
+    // Without a wallet the tab asks to connect one; turning on again would only re-add the previous wallet.
+    if (getIsFailedWalletSwitch(issue, storedRef.current)) {
+      if (account) {
+        runOperation("turningOn", () => register(account, "retry", getSign(account)));
+      }
       return;
     }
 
@@ -405,12 +422,12 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
   useEffect(
     function syncDevice() {
-      // A device that never turned on sends nothing to the API.
       if (support !== "supported" || isWalletInitializing) {
         return;
       }
 
       const current = storedRef.current;
+      // A device that never turned on sends nothing to the API.
       const canRegister = current.enabled && getNotificationPermission() === "granted";
 
       if (!hasSyncedOnOpenRef.current) {
@@ -442,6 +459,33 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       }
     },
     [account, enqueue, isWalletInitializing, register, support, unregisterLeftEndpoint]
+  );
+
+  const previousPermissionRef = useRef(permission);
+
+  useEffect(
+    function resubscribeWhenAllowedAgain() {
+      const previousPermission = previousPermissionRef.current;
+      previousPermissionRef.current = permission;
+
+      // Browsers drop the push subscription when notifications get blocked, and allowing them again doesn't bring it
+      // back. A turn-on and the first sync after app open register by themselves.
+      if (
+        permission !== "granted" ||
+        previousPermission === "granted" ||
+        operationRef.current ||
+        !hasSyncedOnOpenRef.current
+      ) {
+        return;
+      }
+
+      const current = storedRef.current;
+      const targetAccount = accountRef.current ?? current.account;
+      if (current.enabled && targetAccount) {
+        enqueue(() => register(targetAccount, targetAccount === current.account ? "open" : "walletSwitch"));
+      }
+    },
+    [enqueue, permission, register]
   );
 
   const value = useMemo((): NotificationsContextValue => {

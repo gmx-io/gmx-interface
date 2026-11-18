@@ -1,6 +1,6 @@
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { getNetworkFeatures } from "config/features";
@@ -268,12 +268,19 @@ export function SettingsModal({
   }, [activeTab, tabOptions]);
 
   const { settingsTab, setSettingsTab } = settings;
+  const wasSettingsVisibleRef = useRef(isSettingsVisible);
   useEffect(() => {
+    const isOpening = isSettingsVisible && !wasSettingsVisibleRef.current;
+    wasSettingsVisibleRef.current = isSettingsVisible;
+
     if (isSettingsVisible && settingsTab) {
       setActiveTab(settingsTab);
       setSettingsTab(undefined);
+    } else if (isOpening) {
+      // Settings links in toasts mean trading settings, so Settings doesn't reopen on the tab used last.
+      setActiveTab(tabOptions[0].value);
     }
-  }, [isSettingsVisible, settingsTab, setSettingsTab]);
+  }, [isSettingsVisible, settingsTab, setSettingsTab, tabOptions]);
 
   return (
     <SlideModal
