@@ -915,6 +915,14 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
+    // like Close: the contract reverts a partial close whose costs exceed both the collateral and the profit
+    if (
+      [tpDecreaseAmounts, slDecreaseAmounts].some(
+        (amounts) => amounts !== undefined && !amounts.isFullClose && amounts.unpaidCostUsd > 0n
+      )
+    ) {
+      return t`Insufficient collateral to cover order costs`;
+    }
     if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
@@ -924,6 +932,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
+    tpDecreaseAmounts,
+    slDecreaseAmounts,
     orderPayloads.createOrderParams.length,
     orderPayloads.updateOrderParams.length,
     editTPSLSize,

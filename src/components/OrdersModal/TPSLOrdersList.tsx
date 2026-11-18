@@ -10,7 +10,10 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
+import {
+  makeSelectIsSizeOrderInClosedPool,
+  makeSelectOrderDecreaseRemainingPositionMarginState,
+} from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
@@ -291,13 +294,13 @@ function useTPSLOrderViewModel({
     return { pnlUsd, pnlPercentage };
   }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position, isIncrease]);
 
-  const shouldKeepLeverage = useMemo(() => {
-    if (!position || isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position.sizeInUsd)) {
-      return true;
-    }
-
-    return order.initialCollateralDeltaAmount > 0n;
-  }, [order.initialCollateralDeltaAmount, order.sizeDeltaUsd, position]);
+  const remainingPositionMarginState = useSelector(
+    makeSelectOrderDecreaseRemainingPositionMarginState(order.key, order.triggerPrice, order.sizeDeltaUsd)
+  );
+  // the contract drops the stored withdrawal when the rest of the position couldn't hold it
+  const storedCollateralDeltaAmount = remainingPositionMarginState?.isCollateralWithdrawalCancelled
+    ? 0n
+    : order.initialCollateralDeltaAmount;
 
   const decreaseAmounts = useMemo(() => {
     if (
@@ -317,7 +320,8 @@ function useTPSLOrderViewModel({
       isLong: order.isLong,
       position,
       closeSizeUsd: order.sizeDeltaUsd,
-      keepLeverage: shouldKeepLeverage,
+      keepLeverage: false,
+      storedCollateralDeltaAmount,
       triggerPrice: order.triggerPrice,
       userReferralInfo,
       feeDiscountFactor,
@@ -339,7 +343,7 @@ function useTPSLOrderViewModel({
     order.sizeDeltaUsd,
     order.triggerPrice,
     position,
-    shouldKeepLeverage,
+    storedCollateralDeltaAmount,
     userReferralInfo,
     feeDiscountFactor,
     uiFeeFactor,

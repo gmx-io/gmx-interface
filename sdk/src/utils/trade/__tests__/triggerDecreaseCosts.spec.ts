@@ -1,43 +1,40 @@
 import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
-import { mockMarginCheckMarketInfo, mockTokensData } from "test/mock";
-import { expandDecimals } from "utils/numbers";
+import { mockMarginCheckMarketInfo, mockTokensData, usdToToken } from "test/mock";
+import { bigintToNumber, expandDecimals, numberToBigint } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { PositionInfoLoaded } from "utils/positions/types";
-import { convertToTokenAmount } from "utils/tokens";
 import { getDecreasePositionAmounts, getNextPositionValuesForDecreaseTrade } from "utils/trade/decrease";
 
 const tokensData = mockTokensData();
 const usdc = tokensData.USDC;
 const btc = tokensData.BTC;
 
-// 0.04% position fee and no price impact: closing 50 000 pays 20 of position fees
+// 0.04% position fee and 0.05% swap fee, no price impact, deep pools: closing 50 000 pays 20 of position fees
 const marketInfo = mockMarginCheckMarketInfo(tokensData, {
   positionFeeFactorForBalanceWasImproved: expandDecimals(4, 26),
   positionFeeFactorForBalanceWasNotImproved: expandDecimals(4, 26),
+  swapFeeFactorForBalanceWasImproved: expandDecimals(5, 26),
+  swapFeeFactorForBalanceWasNotImproved: expandDecimals(5, 26),
+  swapImpactFactorPositive: 0n,
+  swapImpactFactorNegative: 0n,
+  longPoolAmount: usdToToken(1_000_000_000, btc),
+  shortPoolAmount: usdToToken(1_000_000_000, usdc),
+  maxLongPoolAmount: usdToToken(10_000_000_000, btc),
+  maxShortPoolAmount: usdToToken(10_000_000_000, usdc),
 });
 
-function usd(value: number) {
-  return (BigInt(Math.round(value * 100)) * expandDecimals(1, USD_DECIMALS)) / 100n;
-}
-
-function toNumber(value: bigint | undefined, decimals: number) {
-  return Number(value) / 10 ** decimals;
-}
-
 // a 100 000 BTC long opened at 20 000 with 6 667 USDC of collateral (15x)
-function longPosition(pendingFeesUsd: number) {
-  const collateralAmount = convertToTokenAmount(usd(6_667), usdc.decimals, usdc.prices.minPrice)!;
-
+function longPosition(pendingFees: number) {
   return {
     marketInfo,
     isLong: true,
-    sizeInUsd: usd(100_000),
-    sizeInTokens: convertToTokenAmount(usd(100_000), btc.decimals, btc.prices.maxPrice)!,
-    collateralAmount,
-    collateralUsd: usd(6_667),
-    pendingBorrowingFeesUsd: usd(pendingFeesUsd),
+    sizeInUsd: expandDecimals(100_000, USD_DECIMALS),
+    sizeInTokens: usdToToken(100_000, btc),
+    collateralAmount: usdToToken(6_667, usdc),
+    collateralUsd: expandDecimals(6_667, USD_DECIMALS),
+    pendingBorrowingFeesUsd: numberToBigint(pendingFees, USD_DECIMALS),
     pendingFundingFeesUsd: 0n,
     pendingImpactAmount: 0n,
     pendingImpactUsd: 0n,
@@ -50,7 +47,8 @@ function closeHalf(p: {
   pendingFees: number;
   pnl: number;
   keepLeverage: boolean;
-  forceDecreaseSwapType?: DecreasePositionSwapType;
+  receive: "split" | "pnl" | "collateral";
+  storedCollateralDeltaAmount?: bigint;
 }) {
   const position = longPosition(p.pendingFees);
   const amounts = getDecreasePositionAmounts({
@@ -58,16 +56,18 @@ function closeHalf(p: {
     collateralToken: usdc,
     isLong: true,
     position,
-    closeSizeUsd: usd(50_000),
+    closeSizeUsd: expandDecimals(50_000, USD_DECIMALS),
     keepLeverage: p.keepLeverage,
-    triggerPrice: (usd(100_000) + 2n * usd(p.pnl)) / 5n,
+    storedCollateralDeltaAmount: p.storedCollateralDeltaAmount,
+    triggerPrice: expandDecimals(100_000 + 2 * p.pnl, USD_DECIMALS) / 5n,
     triggerOrderType: p.type === "TP" ? OrderType.LimitDecrease : OrderType.StopLossDecrease,
     userReferralInfo: undefined,
-    minCollateralUsd: usd(1),
-    minPositionSizeUsd: usd(1),
+    minCollateralUsd: expandDecimals(1, USD_DECIMALS),
+    minPositionSizeUsd: expandDecimals(1, USD_DECIMALS),
     uiFeeFactor: 0n,
     isSetAcceptablePriceImpactEnabled: false,
-    forceDecreaseSwapType: p.forceDecreaseSwapType,
+    receiveToken: p.receive === "pnl" ? btc : undefined,
+    forceDecreaseSwapType: p.receive === "split" ? DecreasePositionSwapType.NoSwap : undefined,
   });
   const next = getNextPositionValuesForDecreaseTrade({
     existingPosition: position,
@@ -84,53 +84,72 @@ function closeHalf(p: {
     proportionalPendingImpactDeltaUsd: amounts.proportionalPendingImpactDeltaUsd,
     showPnlInLeverage: false,
     isLong: true,
-    minCollateralUsd: usd(1),
+    minCollateralUsd: expandDecimals(1, USD_DECIMALS),
     userReferralInfo: undefined,
   });
 
   return { amounts, next };
 }
 
+const tp = { type: "TP", pendingFees: 1_319.94, pnl: 2_500, keepLeverage: true } as const;
+
 describe("trigger decrease with the profit kept in the pnl token", () => {
   it("pays a partial TP's costs from the collateral before the signed withdrawal TRD-18", () => {
     // 1 319.94 of pending fees plus the 20 position fee: the contract takes all 1 339.94 out of the USDC collateral
     // and leaves the BTC profit whole, so withdrawing 3 993.46 would leave 1 333.60 at 37.49x
-    const tp = { type: "TP", pendingFees: 1_319.94, pnl: 2_500, keepLeverage: true } as const;
-    const { amounts, next } = closeHalf({ ...tp, forceDecreaseSwapType: DecreasePositionSwapType.NoSwap });
+    const { amounts, next } = closeHalf({ ...tp, receive: "split" });
 
-    expect(toNumber(amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(2_653.52, 2);
-    expect(toNumber(amounts.payedRemainingCollateralAmount, usdc.decimals)).toBeCloseTo(1_339.94, 2);
-    expect(toNumber(next.nextCollateralUsd, USD_DECIMALS)).toBeCloseTo(2_673.54, 2);
-    expect(toNumber(next.nextLeverage, 4)).toBeCloseTo(18.7, 2);
-    expect(amounts.primaryOutput).toMatchObject({ tokenAddress: btc.address, usd: usd(2_500) });
+    expect(bigintToNumber(amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(2_653.52, 2);
+    expect(bigintToNumber(amounts.payedRemainingCollateralAmount, usdc.decimals)).toBeCloseTo(1_339.94, 2);
+    expect(bigintToNumber(next.nextCollateralUsd ?? 0n, USD_DECIMALS)).toBeCloseTo(2_673.54, 2);
+    expect(bigintToNumber(next.nextLeverage ?? 0n, 4)).toBeCloseTo(18.7, 2);
+    expect(amounts.primaryOutput).toMatchObject({
+      tokenAddress: btc.address,
+      usd: expandDecimals(2_500, USD_DECIMALS),
+    });
     expect(amounts.secondaryOutput.amount).toBe(amounts.collateralDeltaAmount);
 
     // the default receive swaps the profit to USDC first and the contract pays the costs from it
-    expect(toNumber(closeHalf(tp).amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(3_993.46, 2);
+    const defaultReceive = closeHalf({ ...tp, receive: "collateral" }).amounts;
+    expect(bigintToNumber(defaultReceive.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(3_993.46, 2);
   });
 
   // the expected values settle each close the contract's way: costs come out of the USDC collateral before the BTC
   // profit, then Keep leverage withdraws down to the leverage without pnl (18.7x, or 15x without pending fees)
+  // columns: type, pending fees, pnl, keep leverage, receive, USDC withdrawal, collateral left, received in BTC
   it.each([
-    { type: "TP", pendingFees: 1_319.94, pnl: 1_000, keepLeverage: true, withdrawal: 2_653.52, left: 2_673.54 },
-    { type: "TP", pendingFees: 1_319.94, pnl: 1_339.94, keepLeverage: true, withdrawal: 2_653.52, left: 2_673.54 },
-    { type: "SL", pendingFees: 1_319.94, pnl: 2_500, keepLeverage: true, withdrawal: 2_653.52, left: 2_673.54 },
-    { type: "TP", pendingFees: 0, pnl: 10, keepLeverage: true, withdrawal: 3_313.49, left: 3_333.51 },
-    { type: "TP", pendingFees: 0, pnl: 20, keepLeverage: true, withdrawal: 3_313.49, left: 3_333.51 },
-    { type: "TP", pendingFees: 0, pnl: 2_500, keepLeverage: true, withdrawal: 3_313.49, left: 3_333.51 },
-    { type: "TP", pendingFees: 1_319.94, pnl: 2_500, keepLeverage: false, withdrawal: 0, left: 5_327.06 },
-    // the costs eat the whole collateral, so there is nothing to withdraw and no remainder at the old leverage
-    { type: "TP", pendingFees: 7_000, pnl: 2_500, keepLeverage: true, withdrawal: 0, left: 0 },
+    ["TP", 1_319.94, 1_000, true, "split", 2_653.52, 2_673.54, 1_000],
+    ["SL", 0, 20, true, "split", 3_313.49, 3_333.51, 20],
+    ["TP", 1_319.94, 2_500, false, "split", 0, 5_327.06, 2_500],
+    // the costs eat the whole collateral and 353 of the profit: nothing is left to withdraw
+    ["TP", 7_000, 2_500, true, "split", 0, 0, 2_147],
     // a losing stop-loss pays its loss from the collateral too, and its withdrawal never goes below zero
-    { type: "SL", pendingFees: 1_319.94, pnl: -1_000, keepLeverage: true, withdrawal: 1_653.52, left: 2_673.54 },
-    { type: "SL", pendingFees: 1_319.94, pnl: -3_000, keepLeverage: true, withdrawal: 0, left: 2_327.06 },
+    ["SL", 1_319.94, -3_000, true, "split", 0, 2_327.06, 0],
+    // receiving in BTC swaps the withdrawn USDC after the costs: 2 500 profit + 2 653.52 less the 0.05% swap fee
+    ["TP", 1_319.94, 2_500, true, "pnl", 2_653.52, 2_673.54, 5_152.19],
   ] as const)(
-    "settles a split-receive $type the contract's way TRD-18: pending fees $pendingFees, pnl $pnl, keep leverage $keepLeverage",
-    ({ withdrawal, left, ...close }) => {
-      const { amounts, next } = closeHalf({ ...close, forceDecreaseSwapType: DecreasePositionSwapType.NoSwap });
+    "settles a %s the contract's way TRD-18: pending fees %s, pnl %s, keep leverage %s, receive %s",
+    (type, pendingFees, pnl, keepLeverage, receive, withdrawal, left, receivedInBtc) => {
+      const { amounts, next } = closeHalf({ type, pendingFees, pnl, keepLeverage, receive });
 
-      expect(toNumber(amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(withdrawal, 2);
-      expect(toNumber(next.nextCollateralUsd, USD_DECIMALS)).toBeCloseTo(left, 2);
+      expect(bigintToNumber(amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(withdrawal, 2);
+      expect(bigintToNumber(next.nextCollateralUsd ?? 0n, USD_DECIMALS)).toBeCloseTo(left, 2);
+      expect(bigintToNumber(amounts.primaryOutput.usd, USD_DECIMALS)).toBeCloseTo(receivedInBtc, 2);
     }
   );
+
+  it("receives what a stored withdrawal executes, capped at the collateral left after costs TRD-18", () => {
+    // the 3 993.46 a split-receive TP signed before the fix, and one larger than the 5 327.06 left after costs
+    const getReceived = (stored: number) =>
+      closeHalf({
+        ...tp,
+        keepLeverage: false,
+        receive: "split",
+        storedCollateralDeltaAmount: numberToBigint(stored, usdc.decimals),
+      }).amounts;
+
+    expect(bigintToNumber(getReceived(3_993.46).secondaryOutput.amount, usdc.decimals)).toBeCloseTo(3_993.46, 2);
+    expect(bigintToNumber(getReceived(6_000).secondaryOutput.amount, usdc.decimals)).toBeCloseTo(5_327.06, 2);
+    expect(getReceived(6_000).primaryOutput.usd).toBe(expandDecimals(2_500, USD_DECIMALS));
+  });
 });

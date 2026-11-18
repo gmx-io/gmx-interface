@@ -82,6 +82,8 @@ export function getDecreasePositionAmounts(p: {
   receiveToken?: TokenData;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   isTwap?: boolean;
+  /** the withdrawal an existing order stores, used instead of the Keep leverage one */
+  storedCollateralDeltaAmount?: bigint;
 }): DecreasePositionAmounts {
   const {
     marketInfo: suppliedMarketInfo,
@@ -104,6 +106,7 @@ export function getDecreasePositionAmounts(p: {
     isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType,
     isTwap,
+    storedCollateralDeltaAmount,
   } = p;
   const evaluationPrice =
     suppliedMarketInfo.tradeMath === "gmsol" && orderType !== undefined ? triggerPrice : undefined;
@@ -201,8 +204,8 @@ export function getDecreasePositionAmounts(p: {
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
   const isTrigger = orderType !== undefined;
   const useExecutionSettlement = marketInfo.tradeMath === "gmsol" || (!isTrigger && !isTwap);
-  // unlike TWAP parts, a trigger order settles in one execution, so it pays its costs in the contract's order too
-  const isSingleSettlement = useExecutionSettlement || isTrigger;
+  // TWAP amounts add up several executions, the rest follow the contract's settlement of one order
+  const isSingleSettlement = marketInfo.tradeMath === "gmsol" || !isTwap;
 
   if (orderType) {
     values.triggerPrice = triggerPrice;
@@ -380,14 +383,14 @@ export function getDecreasePositionAmounts(p: {
       ? convertToUsd(position.fundingFeeAmount, collateralToken.decimals, values.collateralPrice)!
       : estimateCollateralCost(position.pendingFundingFeesUsd, collateralToken, values.collateralPrice).usd;
 
-  const isMarketCollateralToPnlSwap =
-    useExecutionSettlement && values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken;
+  const isCollateralSwappedToPnlToken =
+    isSingleSettlement && values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken;
 
   let isProfitSwapReverted = false;
 
   if (
     profitUsd > 0 &&
-    !isMarketCollateralToPnlSwap &&
+    !isCollateralSwappedToPnlToken &&
     (values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken ||
       values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken)
   ) {
@@ -500,6 +503,25 @@ export function getDecreasePositionAmounts(p: {
     netCollateralOutputAmount = payedInfo.remainingCollateralAmount;
     netCollateralOutputUsd = convertToUsd(netCollateralOutputAmount, collateralToken.decimals, values.collateralPrice)!;
     values.receiveTokenAmount = payedInfo.outputAmount + payedInfo.remainingCollateralAmount;
+  } else if (storedCollateralDeltaAmount !== undefined) {
+    values.collateralDeltaAmount = storedCollateralDeltaAmount;
+    values.collateralDeltaUsd = convertToUsd(
+      storedCollateralDeltaAmount,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
+    // the contract trims the withdrawal by the price impact diff, then caps it at the collateral left after costs
+    netCollateralOutputAmount = bigMath.min(
+      getCollateralDeltaAmountAfterPriceImpactDiff({
+        collateralDeltaAmount: storedCollateralDeltaAmount,
+        priceImpactDiffUsd: values.priceImpactDiffUsd,
+        collateralToken,
+        collateralPrice: values.collateralPrice,
+      }),
+      payedInfo.remainingCollateralAmount
+    );
+    netCollateralOutputUsd = convertToUsd(netCollateralOutputAmount, collateralToken.decimals, values.collateralPrice)!;
+    values.receiveTokenAmount = payedInfo.outputAmount + netCollateralOutputAmount;
   } else if (
     keepLeverage &&
     position.sizeInUsd > 0 &&
@@ -538,11 +560,12 @@ export function getDecreasePositionAmounts(p: {
       collateralToken.decimals,
       values.collateralPrice
     )!;
-    netCollateralOutputAmount = useExecutionSettlement
+    netCollateralOutputAmount = isSingleSettlement
       ? getCollateralDeltaAmountAfterPriceImpactDiff({
           collateralDeltaAmount: values.collateralDeltaAmount,
           priceImpactDiffUsd: values.priceImpactDiffUsd,
           collateralToken,
+          collateralPrice: values.collateralPrice,
         })
       : values.collateralDeltaAmount;
     netCollateralOutputUsd =
@@ -610,7 +633,7 @@ export function getDecreasePositionAmounts(p: {
       usd: netCollateralOutputUsd,
     };
     if (gmsolPayment) values.receiveUsd = remainingPnlOutputUsd + netCollateralOutputUsd;
-  } else if (isMarketCollateralToPnlSwap) {
+  } else if (isCollateralSwappedToPnlToken) {
     const swapStats =
       netCollateralOutputUsd > 0n
         ? getSwapStats({
@@ -942,6 +965,8 @@ export function getCollateralDeltaAmountAfterPriceImpactDiff(p: {
   collateralDeltaAmount: bigint;
   priceImpactDiffUsd: bigint;
   collateralToken: TokenData;
+  /** the collateral price at execution, the current min price by default */
+  collateralPrice?: bigint;
 }) {
   const { collateralDeltaAmount, priceImpactDiffUsd, collateralToken } = p;
 
@@ -950,7 +975,11 @@ export function getCollateralDeltaAmountAfterPriceImpactDiff(p: {
   }
 
   const priceImpactDiffAmount =
-    convertToTokenAmount(priceImpactDiffUsd, collateralToken.decimals, collateralToken.prices.minPrice) ?? 0n;
+    convertToTokenAmount(
+      priceImpactDiffUsd,
+      collateralToken.decimals,
+      p.collateralPrice ?? collateralToken.prices.minPrice
+    ) ?? 0n;
 
   return collateralDeltaAmount > priceImpactDiffAmount ? collateralDeltaAmount - priceImpactDiffAmount : 0n;
 }
