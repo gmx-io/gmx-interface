@@ -15,6 +15,7 @@ import {
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useEditingOrderState,
+  useOrderEditorIsReceiveSeparatedState,
   useOrderEditorIsSubmittingState,
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
@@ -28,7 +29,9 @@ import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsState
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
+  selectOrderEditorCanChangeReceiveMode,
   selectOrderEditorDecreaseAmounts,
+  selectOrderEditorDecreasePositionSwapType,
   selectOrderEditorDefaultAllowedSwapSlippageBps,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
@@ -51,6 +54,7 @@ import {
   selectOrderEditorIsQuoteUnavailable,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
+  selectOrderEditorReceiveOutputs,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSetDefaultAllowedSwapSlippageBps,
@@ -135,6 +139,10 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
@@ -144,6 +152,7 @@ import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceV
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipAction,
@@ -341,6 +350,11 @@ export function OrderEditor(p: Props) {
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants(p.order.marketAddress);
 
+  const canChangeReceiveMode = useSelector(selectOrderEditorCanChangeReceiveMode);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useOrderEditorIsReceiveSeparatedState();
+  const decreasePositionSwapType = useSelector(selectOrderEditorDecreasePositionSwapType);
+  const receiveOutputs = useSelector(selectOrderEditorReceiveOutputs);
+
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
       ? increaseAmounts.recommendedAcceptablePriceDeltaBps
@@ -513,7 +527,7 @@ export function OrderEditor(p: Props) {
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
             autoCancel: positionOrder.autoCancel,
             validFromTime: 0n,
-            decreasePositionSwapType: positionOrder.decreasePositionSwapType,
+            decreasePositionSwapType: decreasePositionSwapType ?? positionOrder.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
           }),
@@ -537,6 +551,7 @@ export function OrderEditor(p: Props) {
     sizeDeltaUsd,
     acceptablePrice,
     minOutputAmount,
+    decreasePositionSwapType,
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
@@ -1114,6 +1129,25 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14 px-20 pb-16">
+          {canChangeReceiveMode && (
+            <>
+              <ToggleSwitch
+                textClassName="text-typography-secondary"
+                isChecked={isReceiveSeparated}
+                setIsChecked={setIsReceiveSeparated}
+              >
+                <SplitReceiveTokensLabel
+                  profitToken={existingPosition?.pnlToken}
+                  collateralToken={existingPosition?.collateralToken}
+                />
+              </ToggleSwitch>
+              <SyntheticsInfoRow
+                label={t`Receive`}
+                value={<DecreaseReceiveOutputDisplay outputs={receiveOutputs} layout="stacked" />}
+              />
+            </>
+          )}
+
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}

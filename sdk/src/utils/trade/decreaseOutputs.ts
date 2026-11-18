@@ -1,5 +1,6 @@
+import { DecreasePositionSwapType } from "utils/orders/types";
 import type { PositionInfo } from "utils/positions/types";
-import { getIsEquivalentTokens } from "utils/tokens";
+import { getIsEquivalentTokens, getTokenData } from "utils/tokens";
 import type { TokenData, TokensData } from "utils/tokens/types";
 
 import type { DecreasePositionAmounts } from "./types";
@@ -14,9 +15,11 @@ export type DecreaseReceiveOutput = {
 export function getDecreaseReceiveOutputs({
   decreaseAmounts,
   tokensData,
+  shouldUnwrapNativeToken,
 }: {
   decreaseAmounts: DecreasePositionAmounts | undefined;
   tokensData: TokensData | undefined;
+  shouldUnwrapNativeToken?: boolean;
 }): DecreaseReceiveOutput[] {
   if (!decreaseAmounts || !tokensData) {
     return [];
@@ -30,7 +33,7 @@ export function getDecreaseReceiveOutputs({
       return acc;
     }
 
-    const token = tokensData[output.tokenAddress];
+    const token = getTokenData(tokensData, output.tokenAddress, shouldUnwrapNativeToken ? "native" : undefined);
     if (!token) {
       return acc;
     }
@@ -52,6 +55,19 @@ export function getCanSplitReceive(position: PositionInfo | undefined): boolean 
   }
 
   return !getIsEquivalentTokens(position.pnlToken, position.collateralToken);
+}
+
+export function getSplitReceiveDecreaseSwapType(
+  currentSwapType: DecreasePositionSwapType,
+  isReceiveSeparated: boolean
+): DecreasePositionSwapType {
+  if (isReceiveSeparated) {
+    return DecreasePositionSwapType.NoSwap;
+  }
+
+  return currentSwapType === DecreasePositionSwapType.NoSwap
+    ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+    : currentSwapType;
 }
 
 export function getHasSplitReceiveOutputs(outputs: DecreaseReceiveOutput[]): boolean {
