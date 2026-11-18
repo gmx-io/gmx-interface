@@ -35,12 +35,8 @@ const glvs: GlvList = [ETH_GLV, USDG_GLV].map((address) => {
 function mockGlvResponse(address: string) {
   return {
     [address + "-prices"]: {
-      glvTokenPriceMax: { returnValues: [10n ** 30n, 0n, 10n ** 18n] },
-      glvTokenPriceMin: { returnValues: [10n ** 30n, 0n, 10n ** 18n] },
-    },
-    [address + "-glvValue"]: {
-      glvValueMax: { returnValues: [10n ** 30n] },
-      glvValueMin: { returnValues: [10n ** 30n] },
+      glvTokenPriceMax: { returnValues: [10n ** 30n, 10n ** 30n, 10n ** 18n] },
+      glvTokenPriceMin: { returnValues: [10n ** 30n, 10n ** 30n, 10n ** 18n] },
     },
     [address + "-tokenData"]: { symbol: { returnValues: ["GLV"] } },
     [address + "-info"]: {
