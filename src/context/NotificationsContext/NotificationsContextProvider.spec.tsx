@@ -1,4 +1,4 @@
-import { act, cleanup, render, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { NOTIFICATIONS_DEVICE_KEY } from "config/localStorage";
@@ -10,7 +10,6 @@ import type { NotificationsContextValue } from "./NotificationsContextProvider";
 
 const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
   mocks: {
-    isEnabled: true,
     account: undefined as string | undefined,
     permission: "default" as NotificationPermission,
     registerThisDevice: vi.fn(),
@@ -18,15 +17,15 @@ const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
     unregisterNotificationsDevice: vi.fn(),
     unsubscribe: vi.fn(),
     signMessage: vi.fn(),
+    toastError: vi.fn(),
   },
   ACCOUNT: "0x52908400098527886E0F7030069857D2E4169EE7",
   OTHER_ACCOUNT: "0x8617E340B3D01FA5F11F306F4090FD50E238070D",
   ENDPOINT: "https://fcm.googleapis.com/fcm/send/device",
 }));
 
-vi.mock("config/notifications", async (importOriginal) => ({
-  ...(await importOriginal<object>()),
-  getIsNotificationsEnabled: () => mocks.isEnabled,
+vi.mock("lib/helperToast", () => ({
+  helperToast: { error: mocks.toastError },
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({
@@ -102,7 +101,7 @@ const requestPermission = vi.fn(async (): Promise<NotificationPermission> => {
 describe("NotificationsContextProvider", () => {
   beforeEach(() => {
     localStorage.clear();
-    mocks.isEnabled = true;
+    mocks.toastError.mockReset();
     mocks.account = ACCOUNT;
     mocks.permission = "default";
     mocks.registerThisDevice.mockReset().mockResolvedValue({ endpoint: ENDPOINT });
@@ -137,18 +136,6 @@ describe("NotificationsContextProvider", () => {
     expect(renderNotifications().result.current.status).toBe("noWallet");
   });
 
-  it("does nothing where notifications are not offered yet", async () => {
-    mocks.isEnabled = false;
-    mocks.permission = "granted";
-    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
-    const { result } = renderNotifications();
-
-    await act(async () => result.current.turnOn());
-
-    expect(mocks.registerThisDevice).not.toHaveBeenCalled();
-    expect(requestPermission).not.toHaveBeenCalled();
-  });
-
   it("asks for permission on turn-on, registers the wallet and sends one confirmation", async () => {
     const { result } = renderNotifications();
 
@@ -161,6 +148,23 @@ describe("NotificationsContextProvider", () => {
     expect(mocks.sendTestNotification).toHaveBeenCalledExactlyOnceWith(ENDPOINT);
     expect(result.current.receivingAccount).toBe(ACCOUNT);
     expect(readDevice()).toMatchObject({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+  });
+
+  it("starts nothing else while turning on, also for clicks before the next render", async () => {
+    const { result } = renderNotifications();
+    const { turnOn, turnOff } = result.current;
+
+    act(() => {
+      turnOn();
+      turnOn();
+      turnOff();
+    });
+    act(() => result.current.turnOff());
+
+    await waitFor(() => expect(result.current.status).toBe("on"));
+    expect(requestPermission).toHaveBeenCalledOnce();
+    expect(mocks.registerThisDevice).toHaveBeenCalledOnce();
+    expect(mocks.unregisterNotificationsDevice).not.toHaveBeenCalled();
   });
 
   it("stays off when the user refuses the permission", async () => {
@@ -238,11 +242,30 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(result.current.status).toBe("walletSwitchFailed"));
     expect(result.current.receivingAccount).toBe(ACCOUNT);
     expect(result.current.pendingAccount).toBe(OTHER_ACCOUNT);
+    expect(mocks.toastError).toHaveBeenCalledExactlyOnceWith("Notifications didn't move to your new wallet");
 
     act(() => result.current.retry());
 
     await waitFor(() => expect(result.current.status).toBe("on"));
     expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT);
+    expect(mocks.toastError).toHaveBeenCalledOnce();
+  });
+
+  it("subscribes again when notifications are allowed again after being blocked", async () => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    const { result } = renderNotifications();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+
+    mocks.permission = "denied";
+    fireEvent(document, new Event("visibilitychange"));
+    expect(result.current.status).toBe("blocked");
+    mocks.permission = "granted";
+    fireEvent(document, new Event("visibilitychange"));
+
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2));
+    expect(result.current.status).toBe("on");
+    expect(mocks.sendTestNotification).not.toHaveBeenCalled();
   });
 
   it("drops a failed wallet switch once the receiving wallet is connected again", async () => {
@@ -345,6 +368,7 @@ describe("NotificationsContextProvider", () => {
     mocks.account = OTHER_ACCOUNT;
     rerender();
     await waitFor(() => expect(result.current.pendingAccount).toBe(OTHER_ACCOUNT));
+    expect(result.current.status).toBe("walletSwitchFailed");
     expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2);
     expect(mocks.signMessage).not.toHaveBeenCalled();
 
@@ -353,6 +377,7 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT));
     expect(result.current.status).toBe("on");
     expect(mocks.signMessage).toHaveBeenCalledOnce();
+    expect(mocks.sendTestNotification).not.toHaveBeenCalled();
   });
 
   it("can't sign at the device limit with no wallet connected", async () => {
