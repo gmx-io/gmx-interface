@@ -232,7 +232,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const srcChainId = useSelector(selectSrcChainId);
   const evmWallet = useWallet();
   const solanaWallet = useSolanaWalletSession();
-  const { networkId } = useChainId();
   const isSolana = getIsSolanaNetworkEnabled() && isSolanaNetwork(networkId);
   const account = isSolana ? solanaWallet.address : evmWallet.account;
   const active = isSolana ? Boolean(solanaWallet.address) : evmWallet.active;

@@ -1,17 +1,10 @@
 import { act, cleanup, render, waitFor } from "@testing-library/react";
-import { mutate } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { GmxSdkProvider, useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 
-import {
-  getGmsolAccountDataKey,
-  refreshGmsolAccountDataAfterTransaction,
-  useGmsolOrders,
-  useGmsolPositions,
-} from "./useGmsolAccountData";
+import { refreshGmsolAccountDataAfterTransaction, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 
 const source = vi.hoisted(() => ({
   slot: 1,
@@ -95,7 +88,7 @@ async function mountAccount() {
 }
 
 describe("confirmed transaction account refresh", () => {
-  it("keeps the highest confirmation floor through failed refreshes until polling catches up FESOL-56", async () => {
+  it("keeps the highest confirmation floor through failed refreshes until manual retry catches up TRD-136", async () => {
     const { owner, result } = await mountAccount();
     source.error = new Error("Snapshot service unavailable");
     await act(async () => {
@@ -109,19 +102,14 @@ describe("confirmed transaction account refresh", () => {
     expect(result.current.orders.error).toBeDefined();
     expect(result.current.positions.error).toBeDefined();
 
-    const poll = () =>
-      Promise.all(
-        (["gmsolOrders", "gmsolPositions"] as const).map((request) =>
-          mutate(getGmsolAccountDataKey(request, getUiApiCacheKey(SOLANA_NETWORK_ID), owner))
-        )
-      );
+    const retry = () => Promise.all([result.current.orders.refetch(), result.current.positions.refetch()]);
     source.error = undefined;
     source.slot = 2;
     source.orders = [{ key: "pre-confirmation-order" }];
     source.positions = [{ key: "pre-confirmation-position" }];
     source.requests = [];
     await act(async () => {
-      await poll();
+      await retry();
     });
     expect(result.current.orders.data).toEqual([{ key: "order-before" }]);
     expect(result.current.positions.data).toEqual([{ key: "position-before" }]);
@@ -131,7 +119,7 @@ describe("confirmed transaction account refresh", () => {
     source.orders = [{ key: "confirmed-order" }];
     source.positions = [{ key: "confirmed-position" }];
     await act(async () => {
-      await poll();
+      await retry();
     });
     expect(result.current.orders.data).toEqual(source.orders);
     expect(result.current.positions.data).toEqual(source.positions);
