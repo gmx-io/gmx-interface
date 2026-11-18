@@ -1238,10 +1238,6 @@ msgstr "期限切れのMarket Decrease"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "価格が不安定です。<0>許容スリッページを増やしてください</0>"
 
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "このアドレスには<0>{chainName}対応の資産</0>のみを送信してください！"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -4533,6 +4529,10 @@ msgstr "手数料（スワップを含む）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "指数（正）"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "取引所やウォレットから送金する際は、<0>{chainName}ネットワーク</0>を選択してください。他のネットワークで送金された資金は動かせなくなる可能性があります。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
