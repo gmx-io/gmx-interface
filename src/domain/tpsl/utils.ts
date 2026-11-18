@@ -94,6 +94,11 @@ export type TpSlRemainingPositionEntry = {
   getDecreaseAmountsWithoutKeepLeverage: () => DecreasePositionAmounts | undefined;
 };
 
+// like Close: the contract reverts a partial close whose costs exceed both the collateral and the profit
+export function getIsTpSlCostUnpayable(decreaseAmounts: DecreasePositionAmounts | undefined) {
+  return decreaseAmounts !== undefined && !decreaseAmounts.isFullClose && decreaseAmounts.unpaidCostUsd > 0n;
+}
+
 export type TpSlRemainingPositionWarning = {
   isTakeProfitAboveMaxLeverage: boolean;
   isStopLossAboveMaxLeverage: boolean;

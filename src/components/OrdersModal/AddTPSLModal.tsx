@@ -75,6 +75,7 @@ import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getIsTpSlCostUnpayable,
   getTpSlRemainingPositionWarning,
   isFullClosePositionOrder,
   isTriggerBeyondLiquidation,
@@ -915,12 +916,7 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    // like Close: the contract reverts a partial close whose costs exceed both the collateral and the profit
-    if (
-      [tpDecreaseAmounts, slDecreaseAmounts].some(
-        (amounts) => amounts !== undefined && !amounts.isFullClose && amounts.unpaidCostUsd > 0n
-      )
-    ) {
+    if ([tpDecreaseAmounts, slDecreaseAmounts].some(getIsTpSlCostUnpayable)) {
       return t`Insufficient collateral to cover order costs`;
     }
     if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
