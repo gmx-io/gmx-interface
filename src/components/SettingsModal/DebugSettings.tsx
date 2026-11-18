@@ -65,7 +65,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
 
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
 
-        {settings.showDebugValues && <NotificationsDebugSettings />}
+        <NotificationsDebugSettings />
       </SettingsSection>
       <SettingsSection className="mt-16 gap-16">
         <div className="text-14 font-medium text-typography-primary">
