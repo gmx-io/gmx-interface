@@ -1,7 +1,7 @@
 import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { applyFactor } from "lib/numbers";
+import { applyFactor, roundUpDivision } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { DepositAmounts, FindSwapPath } from "sdk/utils/trade/types";
@@ -229,37 +229,18 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd
     );
 
-    if (!p.forShift) {
-      const swapFeeUsd = getSwapFee(
-        marketInfo,
-        values.marketTokenUsd,
-        priceImpactValues.balanceWasImproved,
-        SwapPricingType.Swap
-      );
-      values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
-    }
-
+    const swapFeeUsd = p.forShift
+      ? 0n
+      : getSwapFee(marketInfo, values.marketTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
     const uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
-    values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
+    const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
 
-    const totalFee = values.swapFeeUsd + values.uiFeeUsd;
-    let totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
-
-    // Adjust long and short token amounts to account for swap fee, ui fee and price impact
+    // Starting estimate only, getDepositAmountsForReceive refines it against the forward quote
     if (totalDepositUsd > 0) {
-      values.longTokenUsd = values.longTokenUsd + bigMath.mulDiv(totalFee, values.longTokenUsd, totalDepositUsd);
-      values.shortTokenUsd = values.shortTokenUsd + bigMath.mulDiv(totalFee, values.shortTokenUsd, totalDepositUsd);
+      const costUsd = swapFeeUsd + uiFeeUsd - priceImpactValues.priceImpactDeltaUsd;
 
-      totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
-
-      // Ignore positive price impact
-      if (values.swapPriceImpactDeltaUsd < 0 && totalDepositUsd > 0) {
-        values.longTokenUsd =
-          values.longTokenUsd + bigMath.mulDiv(-values.swapPriceImpactDeltaUsd, values.longTokenUsd, totalDepositUsd);
-
-        values.shortTokenUsd =
-          values.shortTokenUsd + bigMath.mulDiv(-values.swapPriceImpactDeltaUsd, values.shortTokenUsd, totalDepositUsd);
-      }
+      values.longTokenUsd = values.longTokenUsd + bigMath.mulDiv(costUsd, values.longTokenUsd, totalDepositUsd);
+      values.shortTokenUsd = values.shortTokenUsd + bigMath.mulDiv(costUsd, values.shortTokenUsd, totalDepositUsd);
     }
 
     values.longTokenAmount = convertToTokenAmount(values.longTokenUsd, longToken.decimals, longTokenPrice)!;
@@ -273,7 +254,6 @@ export function getDepositAmounts(p: {
       if (approximateSwapPathStats && approximateSwapPathStats.usdOut > 0n) {
         const adjustedUsdIn = bigMath.mulDiv(approximateUsdIn, preferredUsdOut, approximateSwapPathStats.usdOut);
 
-        values.shortTokenSwapPathStats = findSwapPath(adjustedUsdIn);
         values.initialShortTokenAmount = convertToTokenAmount(
           adjustedUsdIn,
           initialShortToken.decimals,
@@ -281,9 +261,96 @@ export function getDepositAmounts(p: {
         );
       }
     }
+
+    return getDepositAmountsForReceive(p, values);
   }
 
   return values;
+}
+
+type DepositPayAmounts = Pick<DepositAmounts, "longTokenAmount" | "shortTokenAmount" | "initialShortTokenAmount">;
+
+const RECEIVE_QUOTE_PROPORTIONAL_STEPS = 2;
+const RECEIVE_QUOTE_MAX_STEPS = 10;
+
+// Pay amounts, fees and impact come from the forward quote, so they match a Pay-driven quote of the same collateral
+function getDepositAmountsForReceive(
+  p: Parameters<typeof getDepositAmounts>[0],
+  estimate: DepositAmounts
+): DepositAmounts {
+  const isGlv = Boolean(p.glvInfo && p.glvToken);
+  const getReceiveAmount = (amounts: DepositAmounts) => (isGlv ? amounts.glvTokenAmount : amounts.marketTokenAmount);
+  const getForwardQuote = (pay: DepositPayAmounts) =>
+    getDepositAmounts({ ...p, ...pay, strategy: "byCollaterals", marketTokenAmount: 0n, glvTokenAmount: 0n });
+  const targetAmount = getReceiveAmount(estimate);
+
+  let pay: DepositPayAmounts = {
+    longTokenAmount: estimate.longTokenAmount,
+    shortTokenAmount: estimate.shortTokenAmount,
+    initialShortTokenAmount: estimate.initialShortTokenAmount,
+  };
+  let quote = getForwardQuote(pay);
+  let quotedAmount = getReceiveAmount(quote);
+
+  for (let step = 0; step < RECEIVE_QUOTE_MAX_STEPS && quotedAmount > 0n; step++) {
+    const isShort = quotedAmount < targetAmount;
+    // Mint is concave in the pay amount, so proportional steps approach the target without crossing it;
+    // from below, overshoot by the remaining gap once it is small
+    const stepTargetAmount =
+      isShort && step >= RECEIVE_QUOTE_PROPORTIONAL_STEPS ? 2n * targetAmount - quotedAmount : targetAmount;
+    const scale = (amount: bigint) => roundUpDivision(amount * stepTargetAmount, quotedAmount);
+
+    const nextPay = {
+      longTokenAmount: scale(pay.longTokenAmount),
+      shortTokenAmount: scale(pay.shortTokenAmount),
+      initialShortTokenAmount:
+        pay.initialShortTokenAmount === undefined ? undefined : scale(pay.initialShortTokenAmount),
+    };
+    const nextQuote = getForwardQuote(nextPay);
+    const nextQuotedAmount = getReceiveAmount(nextQuote);
+
+    // Stops past the most the market can mint for this split, or when rounding no longer tightens the quote
+    const isImproved = isShort
+      ? nextQuotedAmount > quotedAmount
+      : nextQuotedAmount >= targetAmount && nextQuotedAmount < quotedAmount;
+
+    if (!isImproved) {
+      break;
+    }
+
+    pay = nextPay;
+    quote = nextQuote;
+    quotedAmount = nextQuotedAmount;
+  }
+
+  // Paired inputs are filled from this quote and set the next one's split, so keep them once they mint
+  // the target as tightly, otherwise rounding makes them drift on every recalculation
+  if (p.includeLongToken && p.includeShortToken) {
+    const currentQuote = getForwardQuote({
+      longTokenAmount: p.longTokenAmount,
+      shortTokenAmount: p.shortTokenAmount,
+      initialShortTokenAmount: p.initialShortTokenAmount,
+    });
+    const currentQuotedAmount = getReceiveAmount(currentQuote);
+
+    if (currentQuotedAmount >= targetAmount && currentQuotedAmount <= quotedAmount) {
+      quote = currentQuote;
+      quotedAmount = currentQuotedAmount;
+    }
+  }
+
+  // Never display more than the submitted collateral mints
+  if (quotedAmount < targetAmount) {
+    return quote;
+  }
+
+  return {
+    ...quote,
+    marketTokenAmount: estimate.marketTokenAmount,
+    marketTokenUsd: estimate.marketTokenUsd,
+    glvTokenAmount: estimate.glvTokenAmount,
+    glvTokenUsd: estimate.glvTokenUsd,
+  };
 }
 
 function getMarketTokenAmountByCollateral(p: {
