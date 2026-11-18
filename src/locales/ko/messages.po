@@ -213,10 +213,6 @@ msgstr "GMX Account 스왑에서는 네이티브 {0}을(를) 사용할 수 없�
 msgid "Include rPnL in leverage display"
 msgstr "레버리지 표시에 rPnL 포함"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "주문 ({0})"
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr "심볼(Z~A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 디버그"

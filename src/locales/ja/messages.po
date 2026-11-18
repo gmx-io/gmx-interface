@@ -213,10 +213,6 @@ msgstr "GMX Accountのスワップではネイティブの{0}を使用できま�
 msgid "Include rPnL in leverage display"
 msgstr "レバレッジ表示にrPnLを含める"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "注文 ({0})"
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr "シンボル（ZからA）"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPCデバッグ"

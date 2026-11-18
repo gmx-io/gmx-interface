@@ -213,10 +213,6 @@ msgstr "Для свопов с GMX Account нельзя использовать
 msgid "Include rPnL in leverage display"
 msgstr "Включить rPnL в отображение кредитного плеча"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Ордера ({0})"
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr "Символ (от Z до A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "Отладка RPC"

@@ -213,10 +213,6 @@ msgstr ""
 msgid "Include rPnL in leverage display"
 msgstr ""
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr ""
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr ""
