@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import { getAddress } from "viem";
 
 import type { GmxSdk } from "clients/v1";
 import { buildUrl } from "utils/buildUrl";
@@ -41,6 +42,16 @@ export class Oracle {
 
         return res.markets;
       });
+  }
+
+  async getClosedMarketAddresses(): Promise<string[]> {
+    const response = await fetch(buildUrl(this.url, "/markets/state"));
+    if (!response.ok) {
+      throw new Error(`Failed to fetch market state: ${response.status}`);
+    }
+
+    const { markets }: { markets: { marketToken: string; isMarketClosed: boolean }[] } = await response.json();
+    return markets.filter((market) => market.isMarketClosed).map((market) => getAddress(market.marketToken));
   }
 
   getTokens(): Promise<TokensResponse> {
