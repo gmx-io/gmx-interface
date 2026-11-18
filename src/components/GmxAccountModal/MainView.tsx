@@ -544,7 +544,7 @@ export function TransferHistoryView() {
           <SearchInput value={searchQuery} setValue={setSearchQuery} />
         </div>
       )}
-      <VerticalScrollFadeContainer className="flex grow flex-col scrollbar-gutter-stable">
+      <VerticalScrollFadeContainer className="flex grow flex-col">
         {filteredFundingHistory?.map((transfer) => (
           <div
             role="button"

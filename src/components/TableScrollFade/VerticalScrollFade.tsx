@@ -116,7 +116,8 @@ export function VerticalScrollFadeContainer({ children, className }: PropsWithCh
   return (
     <div className="relative flex grow flex-col overflow-y-auto">
       <VerticalScrollFadeControls {...scrollFade} />
-      <div className={cx("overflow-y-auto", className)} ref={scrollFade.setScrollableRef}>
+      {/* keep the scrollbar's space when a filtered list stops overflowing, so rows don't shift */}
+      <div className={cx("overflow-y-auto scrollbar-gutter-stable", className)} ref={scrollFade.setScrollableRef}>
         {children}
       </div>
     </div>
