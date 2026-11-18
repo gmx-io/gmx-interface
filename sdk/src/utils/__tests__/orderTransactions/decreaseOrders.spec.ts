@@ -414,7 +414,7 @@ describe("Decrease Order Payloads", () => {
             },
             numbers: {
               sizeDeltaUsd: parseValue("250", USD_DECIMALS)!, // 1000/4
-              initialCollateralDeltaAmount: params.collateralDeltaAmount / 4n, // 1/4
+              initialCollateralDeltaAmount: 0n,
               triggerPrice: 0n,
               acceptablePrice: 0n,
               executionFee: EXECUTION_FEE_AMOUNT / 4n,
@@ -434,7 +434,7 @@ describe("Decrease Order Payloads", () => {
             ...params,
             acceptablePrice: 0n,
             triggerPrice: 0n,
-            collateralDeltaAmount: params.collateralDeltaAmount / 4n,
+            collateralDeltaAmount: 0n,
             executionFeeAmount: params.executionFeeAmount / 4n,
             sizeDeltaUsd: params.sizeDeltaUsd / 4n,
             sizeDeltaInTokens: params.sizeDeltaInTokens / 4n,
@@ -448,7 +448,7 @@ describe("Decrease Order Payloads", () => {
             isNativePayment: false,
             isNativeReceive: true,
             initialCollateralTokenAddress: WETH.address as ERC20Address,
-            initialCollateralDeltaAmount: params.collateralDeltaAmount / 4n,
+            initialCollateralDeltaAmount: 0n,
             tokenTransfers: [
               {
                 amount: EXECUTION_FEE_AMOUNT / 4n,
@@ -510,7 +510,7 @@ describe("Decrease Order Payloads", () => {
             },
             numbers: {
               sizeDeltaUsd: parseValue("250", USD_DECIMALS)!, // 1000/4
-              initialCollateralDeltaAmount: params.collateralDeltaAmount / 4n, // 1/4
+              initialCollateralDeltaAmount: 0n,
               triggerPrice: MaxUint256 as ContractPrice,
               acceptablePrice: MaxUint256 as ContractPrice,
               executionFee: EXECUTION_FEE_AMOUNT / 4n,
@@ -530,7 +530,7 @@ describe("Decrease Order Payloads", () => {
             ...params,
             acceptablePrice: MaxUint256,
             triggerPrice: MaxUint256,
-            collateralDeltaAmount: params.collateralDeltaAmount / 4n,
+            collateralDeltaAmount: 0n,
             executionFeeAmount: params.executionFeeAmount / 4n,
             sizeDeltaUsd: params.sizeDeltaUsd / 4n,
             sizeDeltaInTokens: params.sizeDeltaInTokens / 4n,
@@ -543,7 +543,7 @@ describe("Decrease Order Payloads", () => {
             isNativePayment: false,
             isNativeReceive: true,
             initialCollateralTokenAddress: WETH.address as ERC20Address,
-            initialCollateralDeltaAmount: params.collateralDeltaAmount / 4n,
+            initialCollateralDeltaAmount: 0n,
             tokenTransfers: [
               {
                 amount: EXECUTION_FEE_AMOUNT / 4n,
