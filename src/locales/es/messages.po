@@ -4332,7 +4332,7 @@ msgstr "Continuar con la compra"
 
 #: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 msgid "Wait one minute between tests"
-msgstr "Espera un minuto entre pruebas"
+msgstr "Espere un minuto entre pruebas"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
@@ -12076,7 +12076,7 @@ msgstr "GM genera comisiones de un solo mercado. GLV contiene múltiples tokens 
 
 #: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 msgid "Sign to add this device"
-msgstr "Firma para añadir este dispositivo"
+msgstr "Firme para añadir este dispositivo"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"

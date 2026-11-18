@@ -4332,7 +4332,7 @@ msgstr "Weiter zum Kauf"
 
 #: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 msgid "Wait one minute between tests"
-msgstr "Warte eine Minute zwischen den Tests"
+msgstr "Warten Sie eine Minute zwischen den Tests"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
