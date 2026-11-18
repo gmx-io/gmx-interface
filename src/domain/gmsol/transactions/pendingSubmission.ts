@@ -7,7 +7,7 @@ import { isSolanaTransactionExpired } from "lib/solana/transactionExpiry";
 import { Storage } from "lib/storage/Storage";
 
 // The order flow that sent a submission: a status check closes a modal only for a submission of its own origin.
-export type GmsolSubmissionOrigin = "tradebox" | "close" | "triggers" | "update" | "cancel";
+export type GmsolSubmissionOrigin = "tradebox" | "close" | "collateral" | "triggers" | "update" | "cancel";
 
 export type PendingGmsolSubmission = {
   signature: string;

@@ -1571,7 +1571,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             </AlertInfoCard>
           )}
           {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} isTwap={isTwap} />}
-          {!marginDepositSuggestionHidden && (
+          {!marginDepositSuggestionHidden && networkFeatures.collateralDepositAtPrice && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
           {showIncreaseLiquidationRiskWarning && (

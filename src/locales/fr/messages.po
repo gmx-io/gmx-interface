@@ -1562,6 +1562,10 @@ msgstr "VOLUME"
 msgid "{0} amount"
 msgstr "Montant de {0}"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact and fees from your trade."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
@@ -4074,6 +4078,7 @@ msgstr "Suppression de l'ancienne session..."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Check transaction status"
@@ -4336,6 +4341,7 @@ msgid "Share your referral code with friends or your community —<0/> every tra
 msgstr "Partagez votre code de parrainage avec vos amis ou votre communauté —<0/> chaque transaction effectuée avec votre code vous rapporte des récompenses en $"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Checking transaction status..."
@@ -7721,6 +7727,8 @@ msgid "Send fee"
 msgstr "Frais d'envoi"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
 msgstr "Impact sur le prix / frais"
@@ -11233,7 +11241,9 @@ msgstr "Estimé sur 365 j"
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

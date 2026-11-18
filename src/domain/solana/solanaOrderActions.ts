@@ -21,7 +21,7 @@ export type SolanaOrderChanges = {
 };
 
 /**
- * Close, TP/SL, edit and cancel on Solana for the shared position and order UI.
+ * Close, collateral edits, TP/SL, edit and cancel on Solana for the shared position and order UI.
  * The Solana state provider supplies it, so it is undefined on EVM networks.
  * Actions resolve to true once confirmed, setTriggerOrders to the confirmed entries; failures show in a notification.
  */
@@ -37,6 +37,18 @@ export type SolanaOrderActions = {
   closePosition: (p: {
     position: PositionInfo;
     decreaseAmounts: DecreasePositionAmounts;
+    receiveToken: TokenData;
+    allowedSlippage: number;
+  }) => Promise<boolean>;
+  depositCollateral: (p: {
+    position: PositionInfo;
+    payToken: TokenData;
+    amount: bigint;
+    allowedSlippage: number;
+  }) => Promise<boolean>;
+  withdrawCollateral: (p: {
+    position: PositionInfo;
+    amount: bigint;
     receiveToken: TokenData;
     allowedSlippage: number;
   }) => Promise<boolean>;

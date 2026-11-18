@@ -1562,6 +1562,10 @@ msgstr "取引高"
 msgid "{0} amount"
 msgstr "{0}数量"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact and fees from your trade."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
@@ -4074,6 +4078,7 @@ msgstr "古いセッションを削除中..."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Check transaction status"
@@ -4336,6 +4341,7 @@ msgid "Share your referral code with friends or your community —<0/> every tra
 msgstr "友人やコミュニティに紹介コードを共有しましょう—<0/>あなたのコードを使った取引ごとに$建ての報酬を獲得できます"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Checking transaction status..."
@@ -7721,6 +7727,8 @@ msgid "Send fee"
 msgstr "送金手数料"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
 msgstr "価格への影響 / 手数料"
@@ -11233,7 +11241,9 @@ msgstr "365日間の予想"
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

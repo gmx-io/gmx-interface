@@ -19,8 +19,10 @@ import { getOrderStatusTitle, type OrderStatusTitleData } from "components/Statu
 import {
   buildGmsolCancelAction,
   buildGmsolCloseAction,
+  buildGmsolDepositAction,
   buildGmsolTriggerAction,
   buildGmsolUpdateAction,
+  buildGmsolWithdrawAction,
 } from "./buildOrderActions";
 import { getGmsolCreateOrderTitles, getGmsolOrderTitle } from "../orderTracking/orderStatusTitles";
 import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
@@ -40,6 +42,8 @@ import {
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 
 // A cancel closes the order account, so it needs no order kind, unlike an edit.
+// gmsol lets the owner close a pending order at any time, market orders included: there is no EVM request
+// expiration to wait for. A store-level Cancel pause or an unsettled builder fee is caught by the simulation.
 function getCancelError(order: OrderInfo) {
   const metadata = order.solana;
   if (order.isTwap || !metadata) return t`This order cannot be changed on Solana`;
@@ -293,6 +297,33 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
             {
               trackExecution: true,
               build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
+              titles: (action) => getGmsolCreateOrderTitles(action, position),
+            },
+          ],
+        })) === 1,
+      depositCollateral: async ({ position, payToken, amount, allowedSlippage }) =>
+        (await runFlow({
+          origin: "collateral",
+          steps: [
+            {
+              trackExecution: true,
+              build: () => buildGmsolDepositAction({ position, payToken, amount, allowedSlippage }),
+              titles: (action) =>
+                getGmsolCreateOrderTitles(action, {
+                  marketInfo: position.marketInfo,
+                  collateralToken: position.collateralToken,
+                  payToken,
+                }),
+            },
+          ],
+        })) === 1,
+      withdrawCollateral: async ({ position, amount, receiveToken, allowedSlippage }) =>
+        (await runFlow({
+          origin: "collateral",
+          steps: [
+            {
+              trackExecution: true,
+              build: () => buildGmsolWithdrawAction({ position, amount, receiveToken, allowedSlippage }),
               titles: (action) => getGmsolCreateOrderTitles(action, position),
             },
           ],
