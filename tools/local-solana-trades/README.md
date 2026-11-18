@@ -8,7 +8,7 @@ Use the unmodified merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/
 
 The upstream global index supersedes the historical wallet-scoped API patch. The patch and launcher option have been removed; do not apply a wallet filter or set `TRD136_INDEX_WALLET`. The API launcher runs only the upstream global indexer and reader with an owned local database. No API branch or PR is published by these tools.
 
-On November 17, the fixed API bootstrapped 105,536 accounts and served 67 gmsol markets. Route generation, types and five index/account/order suites passed (72 tests). Account endpoints, minimum-slot waiting, stale market/position rejection and recovery passed. These results do not establish full financial-reference parity or official deployment readiness.
+On November 17, the fixed API bootstrapped 105,536 accounts and served 67 gmsol markets. Route generation, types and five index/account/order suites passed (72 tests). Account endpoints, minimum-slot waiting, stale market/position rejection and recovery passed. These local results do not establish full financial-reference parity. The official API now serves the gmsol market contract; the local instance remains useful for isolated diagnostics and controlled freshness failures.
 
 ## Start and stop
 
@@ -60,8 +60,10 @@ The Node simulation adapter directly initializes the hash-verified WASM and omit
 
 ## Acceptance boundaries
 
-One approximately 40 USD BTC market long was submitted by the user on November 16. Creation, keeper execution and API/page position and balance refresh were independently verified. That evidence belongs to the then-current combination; it is not a real-trade test of the final SDK 2.9.3 API revision or evidence of the wallet's current holdings.
+On November 18, playground `41092fae55` completed a real Phantom BTC/USDC market long of approximately 20 USD at 2x. The request and keeper transactions finalized successfully, and the position survived a page refresh. The request included eight successful Lighthouse assertions, exercising the wallet compatibility fix. This is one market-long / Phantom sample, not the complete action or wallet matrix.
 
-The first-phase scope remains one wallet, one USDC-collateral market and direct USDC payment. Market short, limit long/short creation/cancellation, at least one triggered fill and a usable exit path remain unverified. Minimum local close/cancel wiring remains deferred by the user; prefer verified TRD-84 implementation when available. Wallet signing/broadcasting and spending require their own authorization.
+On the official API, positions, orders and fee-discount returned HTTP 200 for the same wallet. Positions and orders supplied `X-Solana-Slot`; repeat reads with that slot as `minContextSlot` returned data at or above the floor. These read-only observations do not prove refresh after a new edit or close, independent financial-reference parity, or continuous service health.
+
+The formal TRD-84 close/edit/cancel implementation from PR #3293 is integrated; no separate temporary exit implementation is needed. The close form and unsigned builder have been checked, but real close execution, received balances, limit editing/cancellation/triggering and TP/SL acceptance remain separate work. Wallet signing/broadcasting and spending require their own authorization. Product fixes return to their original issue lines before integration here.
 
 The experimental public preview uses the same no-LUT configuration as the local launcher, but the public API/RPC remains distinct from the local API setup. Use `build-playground` for that preview; `build-app` does not include this experimental selection. Simple no-LUT results do not cover the four-wallet/atomic TP-SL/LUT acceptance of the original issues. No diagnostic success, green CI or local trade marks those requirements production-ready.
