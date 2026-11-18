@@ -8,6 +8,7 @@ import { sendEarnPageTabViewEvent, EarnAnalyticsTab } from "lib/userAnalytics/ea
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
+import "components/Earn/Solana/tester/solanaEarnTesterBootstrap"; // rewards-tester
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import PageTitle from "components/PageTitle/PageTitle";
 
