@@ -7,10 +7,19 @@ import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateC
 import { getTradeboxLeverageSliderMarks } from "domain/synthetics/markets";
 import { Subaccount } from "domain/synthetics/subaccount";
 import { TradeMode, TradeType } from "domain/synthetics/trade";
+import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
+import { ETH_TOKEN } from "domain/testUtils/mockTokens";
 import { getContract } from "sdk/configs/contracts";
 import { SUBACCOUNT_ORDER_ACTION } from "sdk/configs/dataStore";
 
-import { selectIsOneClickActiveByUser, selectTradeboxHasPendingInput } from ".";
+import {
+  selectIsOneClickActiveByUser,
+  selectTradeboxHasPendingInput,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxFees,
+} from ".";
+import { selectTradeboxTradeTypeError } from "./selectTradeboxTradeErrors";
 
 const subaccountRouterAddress = getContract(AVALANCHE, "SubaccountGelatoRelayRouter");
 const multichainSubaccountRouterAddress = getContract(AVALANCHE, "MultichainSubaccountRouter");
@@ -303,4 +312,27 @@ describe("tradeboxSelectors", () => {
       });
     });
   });
+});
+
+it("keeps Solana overflow quotes unavailable and recovers without changing EVM", () => {
+  for (const tradeMath of ["gmsol", undefined] as const) {
+    const makeState = (amount: string) =>
+      createMockSyntheticsState({
+        marketInfo: createMockMarketInfo(ETH_TOKEN, { tradeMath }),
+        isLeverageSliderEnabled: false,
+        fromTokenInputValue: "100",
+        toTokenInputValue: amount,
+        focusedInput: "to",
+      });
+    const overflowState = makeState("1000000000000000000");
+    const overflowQuote = selectTradeboxIncreasePositionAmounts(overflowState);
+    if (tradeMath === "gmsol") {
+      expect(overflowQuote).toBeUndefined();
+      expect(selectTradeboxFees(overflowState)).toBeUndefined();
+      expect(selectTradeboxTradeTypeError(overflowState).buttonErrorMessage).toBe("Unable to calculate this order");
+    } else {
+      expect(overflowQuote).toBeDefined();
+    }
+    expect(selectTradeboxIncreasePositionAmounts(makeState("0.5"))?.sizeDeltaUsd).toBeGreaterThan(0n);
+  }
 });

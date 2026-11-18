@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { QueryFunction } from "@taskworld.com/rereselect";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -18,6 +19,7 @@ import {
 } from "domain/synthetics/trade";
 import { getOptimalDecreaseAndSwapAmounts } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
+import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getDecreaseError } from "domain/synthetics/trade/utils/validation";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -37,9 +39,10 @@ import {
   selectGasLimits,
   selectGasPrice,
   selectMarketsInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -80,7 +83,7 @@ const selectPositionSellerDefaultReceiveToken = (state: SyntheticsState) => stat
 export const selectPositionSellerNextPositionValuesForDecrease = createSelector((q) => {
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
   const position = q(selectPositionSellerPosition);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(position?.marketAddress));
   const isPnlInLeverage = q(selectIsPnlInLeverage);
   const userReferralInfo = q(selectUserReferralInfo);
   const closeSizeUsd = parseValue(q(selectPositionSellerCloseUsdInputValue) || "0", USD_DECIMALS) ?? 0n;
@@ -108,6 +111,7 @@ export const selectPositionSellerNextPositionValuesForDecrease = createSelector(
     isLong: position.isLong,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     priceImpactDiffUsd:
       q(selectPositionSellerOrderOption) === OrderOption.Market ? decreaseAmounts.priceImpactDiffUsd : undefined,
   });
@@ -120,7 +124,7 @@ function getRemainingPositionMarginState(
   if (q(selectPositionSellerOrderOption) !== OrderOption.Market) return undefined;
 
   const position = q(selectPositionSellerPosition);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
 
   if (
     !getIsPositionInfoLoaded(position) ||
@@ -146,6 +150,7 @@ function getRemainingPositionMarginState(
     minPositionSizeUsd,
     userReferralInfo: q(selectUserReferralInfo),
     proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
   });
 }
 
@@ -290,16 +295,22 @@ export const selectPositionSellerFees = createSelector((q) => {
   const orderOption = q(selectPositionSellerOrderOption);
   const numberOfParts = q(selectPositionSellerNumberOfParts);
 
-  if (!position || !decreaseAmounts || !gasLimits || !tokensData || gasPrice === undefined) {
+  if (!position || !decreaseAmounts || !tokensData) {
+    return {};
+  }
+
+  if (position.marketInfo?.tradeMath !== "gmsol" && (!gasLimits || gasPrice === undefined)) {
     return {};
   }
 
   const swapPathLength = swapAmounts?.swapStrategy.swapPathStats?.swapPath?.length || 0;
 
-  const estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-    swapsCount: swapPathLength,
-    decreaseSwapType: decreaseAmounts.decreaseSwapType,
-  });
+  const estimatedGas = gasLimits
+    ? estimateExecuteDecreaseOrderGasLimit(gasLimits, {
+        swapsCount: swapPathLength,
+        decreaseSwapType: decreaseAmounts.decreaseSwapType,
+      })
+    : undefined;
 
   const sizeReductionBps = bigMath.mulDiv(
     decreaseAmounts.sizeDeltaUsd,
@@ -312,6 +323,7 @@ export const selectPositionSellerFees = createSelector((q) => {
 
   return {
     fees: getTradeFees({
+      tradeMath: position.marketInfo?.tradeMath,
       initialCollateralUsd: position.collateralUsd,
       sizeInUsd: position.sizeInUsd,
       collateralDeltaUsd,
@@ -333,15 +345,18 @@ export const selectPositionSellerFees = createSelector((q) => {
       uiFeeFactor,
       type: "decrease",
     }),
-    executionFee: getExecutionFee(
-      chainId,
-      gasLimits,
-      tokensData,
-      estimatedGas,
-      gasPrice,
-      oraclePriceCount,
-      orderOption === OrderOption.Twap ? numberOfParts : undefined
-    ),
+    executionFee:
+      gasLimits && gasPrice !== undefined && estimatedGas !== undefined
+        ? getExecutionFee(
+            chainId,
+            gasLimits,
+            tokensData,
+            estimatedGas,
+            gasPrice,
+            oraclePriceCount,
+            orderOption === OrderOption.Twap ? numberOfParts : undefined
+          )
+        : undefined,
   };
 });
 
@@ -451,7 +466,7 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
 
   const tokensData = q(selectTokensData);
   const marketsInfoData = q(selectMarketsInfoData);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
   const acceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
@@ -507,31 +522,34 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
   const findSwapPath = q(selectPositionSellerFindSwapPath);
   const findSwapPathFromPnl = q(selectPositionSellerFindSwapPathFromPnl);
 
-  const result = getOptimalDecreaseAndSwapAmounts({
-    marketInfo,
-    collateralToken,
-    isLong: tradeFlags.isLong,
-    position: position && getIsPositionInfoLoaded(position) ? position : undefined,
-    closeSizeUsd,
-    keepLeverage,
-    triggerPrice,
-    fixedAcceptablePriceImpactBps,
-    acceptablePriceImpactBuffer,
-    userReferralInfo,
-    proDiscountFactor: q(selectProDiscountFactor),
-    minCollateralUsd,
-    minPositionSizeUsd,
-    uiFeeFactor,
-    triggerOrderType,
-    isSetAcceptablePriceImpactEnabled,
-    receiveToken,
-    forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
-    isTwap: tradeFlags.isTwap,
-    findSwapPath,
-    findSwapPathFromPnl,
-    marketsInfoData,
-    chainId,
-  });
+  const result = getAvailableTradeQuote(marketInfo.tradeMath, () =>
+    getOptimalDecreaseAndSwapAmounts({
+      marketInfo,
+      collateralToken,
+      isLong: tradeFlags.isLong,
+      position: position && getIsPositionInfoLoaded(position) ? position : undefined,
+      closeSizeUsd,
+      keepLeverage,
+      triggerPrice,
+      fixedAcceptablePriceImpactBps,
+      acceptablePriceImpactBuffer,
+      userReferralInfo,
+      proDiscountFactor: q(selectProDiscountFactor),
+      feeDiscountFactor: q(selectFeeDiscountFactor),
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      triggerOrderType,
+      isSetAcceptablePriceImpactEnabled,
+      receiveToken,
+      forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
+      isTwap: tradeFlags.isTwap,
+      findSwapPath,
+      findSwapPathFromPnl,
+      marketsInfoData,
+      chainId,
+    })
+  );
 
   return result;
 }
@@ -623,9 +641,16 @@ export const selectPositionSellerDecreaseError = createSelector((q) => {
 
   const isTwap = q(selectPositionSellerOrderOption) === OrderOption.Twap;
   const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  if (
+    position.marketInfo?.tradeMath === "gmsol" &&
+    (parseValue(q(selectPositionSellerCloseUsdInputValue) || "0", USD_DECIMALS) ?? 0n) > 0n &&
+    !decreaseAmounts
+  ) {
+    return { buttonErrorMessage: t`Unable to calculate this order` };
+  }
   const nextPositionValues = q(selectPositionSellerNextPositionValuesForDecrease);
   const remainingPositionMarginState = q(selectPositionSellerRemainingPositionMarginState);
-  const { minCollateralUsd, minPositionSizeUsd } = q(selectPositionConstants);
+  const { minCollateralUsd, minPositionSizeUsd } = q(makeSelectPositionConstants(position?.marketAddress));
 
   return getDecreaseError({
     marketInfo: position.marketInfo,

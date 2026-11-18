@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -17,15 +18,19 @@ import { MARKETS } from "sdk/configs/markets";
 import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipFootnote,
+  TooltipLink,
+  TooltipRow,
+  TooltipRows,
+} from "components/Tooltip/TooltipBlocks";
 
 import sparkleIcon from "img/sparkle.svg";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import "./TradeFeesRow.scss";
 
 type Props = TradeFees & {
   shouldShowRebate?: boolean;
@@ -40,8 +45,10 @@ type FeeRow = {
 };
 
 export function TradeFeesRow(p: Props) {
-  const { chainId } = useChainId();
-  const tradingIncentives = useTradingIncentives(chainId);
+  const { chainId, networkId } = useChainId();
+  const isGmsol = isSolanaNetwork(networkId);
+  const evmTradingIncentives = useTradingIncentives(chainId);
+  const tradingIncentives = isGmsol ? null : evmTradingIncentives;
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
   const showDebugValues = useShowDebugValues();
@@ -51,7 +58,11 @@ export function TradeFeesRow(p: Props) {
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const rebateIsApplicable =
-    shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
+    !isGmsol &&
+    shouldShowRebate &&
+    p.positionFee?.deltaUsd !== undefined &&
+    p.positionFee.deltaUsd <= 0 &&
+    p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
@@ -61,7 +72,7 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-typography-primary">{t`Swap price impact`}:</div>
+              <div>{t`Swap price impact`}</div>
               <div>
                 <Trans>
                   (
@@ -85,11 +96,10 @@ export function TradeFeesRow(p: Props) {
             id: `external-swap-${p.externalSwapFee.tokenInAddress}-${p.externalSwapFee.tokenOutAddress}`,
             label: (
               <>
-                <div className="text-typography-primary">
+                <div>
                   {t`External swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
-                  :
                 </div>
                 <div>
                   <Trans>
@@ -113,16 +123,13 @@ export function TradeFeesRow(p: Props) {
         id: `swap-${swap.tokenInAddress}-${swap.tokenOutAddress}`,
         label: (
           <>
-            <div className="text-typography-primary">
+            <div>
               <Trans>
                 Swap {getToken(chainId, swap.tokenInAddress).symbol} to {getToken(chainId, swap.tokenOutAddress).symbol}
               </Trans>
               {showDebugValues && (
-                <span className="text-typography-secondary">
-                  <Trans>in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}</Trans>
-                </span>
+                <Trans>in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}</Trans>
               )}
-              :
             </div>
             <div>
               <Trans>
@@ -146,7 +153,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-typography-primary">{t`Swap profit fee`}:</div>
+                <div>{t`Swap profit fee`}</div>
                 <div>
                   <Trans>
                     (
@@ -175,7 +182,7 @@ export function TradeFeesRow(p: Props) {
           id: "positionFee",
           label: (
             <>
-              <div className="text-typography-primary">{feesTypeName}:</div>
+              <div>{feesTypeName}</div>
               <div>
                 <Trans>
                   (
@@ -198,7 +205,7 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-typography-primary">{t`UI fee`}:</div>
+              <div>{t`UI fee`}</div>
               <div>
                 <Trans>
                   (
@@ -222,7 +229,7 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}:</div>
+                <div>{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}</div>
                 <div>
                   <Trans>
                     (
@@ -243,11 +250,7 @@ export function TradeFeesRow(p: Props) {
     const feeDiscountRow = (p.feeDiscountUsd === undefined ? undefined : p.feeDiscountUsd !== 0n)
       ? {
           id: "feeDiscount",
-          label: (
-            <div className="text-typography-primary">
-              <Trans>Referral discount</Trans>:
-            </div>
-          ),
+          label: isGmsol ? <Trans>Fee discount</Trans> : <Trans>Referral discount</Trans>,
           value: <DeltaUsdValue deltaUsd={p.feeDiscountUsd} />,
           className: "text-green-500",
         }
@@ -257,7 +260,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-typography-primary">{t`Borrow fee`}:</div>,
+            label: t`Borrow fee`,
             value: <DeltaUsdValue deltaUsd={p.borrowFee.deltaUsd} />,
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -267,7 +270,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-typography-primary">{t`Funding fee`}:</div>,
+            label: t`Funding fee`,
             value: <DeltaUsdValue deltaUsd={p.fundingFee.deltaUsd} />,
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
@@ -280,8 +283,8 @@ export function TradeFeesRow(p: Props) {
             id: "proportionalPendingImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">
-                  <Trans>Proportional stored impact</Trans>:
+                <div>
+                  <Trans>Proportional stored impact</Trans>
                 </div>
                 <div>
                   <Trans>
@@ -307,7 +310,7 @@ export function TradeFeesRow(p: Props) {
             id: "closePriceImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Close price impact`}:</div>
+                <div>{t`Close price impact`}</div>
                 <div>
                   <Trans>
                     (
@@ -331,7 +334,7 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div className="text-typography-primary">{t`Net price impact`}:</div>
+                <div>{t`Net price impact`}</div>
                 <div>
                   <Trans>
                     (
@@ -350,12 +353,12 @@ export function TradeFeesRow(p: Props) {
         : undefined;
 
     const priceImpactRebatesRow =
-      p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
+      !isGmsol && p.priceImpactDiff?.deltaUsd !== undefined && p.priceImpactDiff.deltaUsd !== 0n
         ? {
             id: "priceImpactDiff",
             label: (
               <>
-                <div className="text-typography-primary">{t`Price impact rebates`}:</div>
+                <div>{t`Price impact rebates`}</div>
                 <div>
                   <Trans>
                     (
@@ -378,12 +381,11 @@ export function TradeFeesRow(p: Props) {
         ? {
             label: (
               <>
-                <div className="text-typography-primary">
+                <div>
                   <span className="relative">
                     <Trans>Bonus rebate</Trans>
                     <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
                   </span>
-                  :
                 </div>
                 <div>
                   ({formatAmount(estimatedRebatesPercentage, 2, 0)}%{" "}
@@ -457,6 +459,7 @@ export function TradeFeesRow(p: Props) {
     estimatedRebatesPercentage,
     showDebugValues,
     breakdownNetPriceImpactEnabled,
+    isGmsol,
   ]);
 
   const totalFeeUsd = useMemo(() => {
@@ -504,32 +507,28 @@ export function TradeFeesRow(p: Props) {
     return (
       <Trans>
         Estimated rebate up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of open fee. Airdropped as{" "}
-        {incentivesTokenTitle} tokens pro-rata.{" "}
-        <span className="whitespace-nowrap">
-          <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
-            Read more
-          </ExternalLink>
-          .
-        </span>
+        {incentivesTokenTitle} tokens pro-rata.
       </Trans>
     );
-  }, [chainId, incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
+  }, [incentivesTokenTitle, rebateIsApplicable, tradingIncentives?.maxRebatePercent]);
 
   const priceImpactRebatesInfo = useMemo(() => {
     if (p.priceImpactDiff?.deltaUsd === undefined || p.priceImpactDiff.deltaUsd === 0n) {
       return null;
     }
 
-    return (
-      <Trans>
-        Price impact rebates from closing are claimable in the Claims tab.{" "}
-        <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-          Read more
-        </ExternalLink>
-        .
-      </Trans>
-    );
-  }, [p.priceImpactDiff?.deltaUsd]);
+    if (isGmsol) {
+      return (
+        <Trans>
+          Additional collateral withheld: <DeltaUsdValue deltaUsd={-p.priceImpactDiff.deltaUsd} />. This amount becomes
+          claimable after execution and is excluded from the fee total. Immediate cost:{" "}
+          <DeltaUsdValue deltaUsd={p.payTotalFees?.deltaUsd} />.
+        </Trans>
+      );
+    }
+
+    return <Trans>Price impact rebates from closing are claimable in the Claims tab.</Trans>;
+  }, [p.priceImpactDiff?.deltaUsd, p.payTotalFees?.deltaUsd, isGmsol]);
 
   const swapRouteMsg = useMemo(() => {
     if (!p.swapFees || p.swapFees.length <= 2 || p.externalSwapFee) {
@@ -540,9 +539,9 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {
-    if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
+    if (totalFeeUsd === undefined || (totalFeeUsd === 0n && !(isGmsol && priceImpactRebatesInfo))) {
       return "-";
-    } else if (!feeRows.length && !incentivesBottomText) {
+    } else if (!feeRows.length && !incentivesBottomText && !priceImpactRebatesInfo) {
       return (
         <DeltaUsdValue
           deltaUsd={totalFeeUsd}
@@ -554,49 +553,59 @@ export function TradeFeesRow(p: Props) {
       );
     } else {
       return (
-        <TooltipWithPortal
-          tooltipClassName="TradeFeesRow-tooltip"
+        <StandardTooltip
           handleClassName={cx({
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
-            "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
+            "text-yellow-300": shouldShowWarning,
           })}
           handle={<DeltaUsdValue deltaUsd={totalFeeUsd} />}
-          position="left-start"
+          position="bottom-end"
           content={
-            <div>
-              {feeRows.map((feeRow) => (
-                <StatsTooltipRow
-                  key={feeRow.id}
-                  textClassName={feeRow.className}
-                  label={feeRow.label}
-                  value={feeRow.value}
-                  showDollar={false}
-                />
-              ))}
+            <TooltipContent>
+              {feeRows.length > 0 && (
+                <TooltipRows>
+                  {feeRows.map((feeRow) => (
+                    <TooltipRow
+                      key={feeRow.id}
+                      label={feeRow.label}
+                      value={feeRow.value}
+                      valueClassName={feeRow.className}
+                    />
+                  ))}
+                </TooltipRows>
+              )}
+              {swapRouteMsg && <TooltipFootnote>{swapRouteMsg}</TooltipFootnote>}
               {incentivesBottomText && (
-                <div>
-                  <br />
-                  {incentivesBottomText}
+                <div className="flex flex-col gap-2">
+                  <TooltipFootnote>{incentivesBottomText}</TooltipFootnote>
+                  <TooltipLink href={getIncentivesV2Url(chainId)}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
                 </div>
               )}
               {priceImpactRebatesInfo && (
-                <div>
-                  <br />
-                  {priceImpactRebatesInfo}
+                <div className="flex flex-col gap-2">
+                  <TooltipFootnote>{priceImpactRebatesInfo}</TooltipFootnote>
+                  <TooltipLink href={DOCS_LINKS.priceImpact}>
+                    <Trans>Read more</Trans>
+                  </TooltipLink>
                 </div>
               )}
-              {swapRouteMsg && (
-                <div>
-                  <br />
-                  {swapRouteMsg}
-                </div>
-              )}
-            </div>
+            </TooltipContent>
           }
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
+  }, [
+    totalFeeUsd,
+    feeRows,
+    incentivesBottomText,
+    shouldShowWarning,
+    priceImpactRebatesInfo,
+    swapRouteMsg,
+    chainId,
+    isGmsol,
+  ]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

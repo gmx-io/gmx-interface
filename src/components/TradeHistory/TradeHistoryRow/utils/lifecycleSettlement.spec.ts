@@ -165,7 +165,7 @@ describe("getLifecycleSettlementView", () => {
 
     expect(result).toEqual([
       "",
-      "Lifecycle settlement",
+      "Whole position (4 transactions)",
       "",
       { key: "Total margin funded", value: `~1,500.00${NBSP}USDC` },
       { key: "Wallet received before close", value: `~298.00${NBSP}USDC` },
@@ -173,8 +173,11 @@ describe("getLifecycleSettlementView", () => {
       { key: "Total wallet received", value: `~1,298.00${NBSP}USDC` },
       { key: "Net wallet result", value: `~-202.00${NBSP}USDC` },
       "",
-      { key: "Lifecycle RPNL", value: { text: `+$${HAIR}20.00`, state: "success" } },
-      { key: "Net lifecycle fees / impact", value: { text: `-$${HAIR}27.00`, state: "error" } },
+      { key: "RPNL, all closes", value: { text: `+$${HAIR}20.00`, state: "success" } },
+      "",
+      { title: "Net fees / price impact, all transactions", value: { text: `-$${HAIR}27.00`, state: "error" } },
+      { key: "This close", value: { text: `-$${HAIR}20.00`, state: "error" } },
+      { key: "Earlier transactions", value: { text: `-$${HAIR}7.00`, state: "error" } },
       "",
       { text: "Excludes claimed funding, price impact rebates and execution fees", state: "muted" },
     ]);
@@ -306,8 +309,9 @@ describe("getLifecycleSettlementView", () => {
       { key: "Received at close (GMX balance)", value: `~1,000.00${NBSP}USDC` },
       { key: "Total received (GMX balance)", value: `~1,298.00${NBSP}USDC` },
       { key: "Net result (GMX balance)", value: `~-202.00${NBSP}USDC` },
-      { key: "Lifecycle RPNL", value: { text: `+$${HAIR}20.00`, state: "success" } },
-      { key: "Net lifecycle fees / impact", value: { text: `-$${HAIR}27.00`, state: "error" } },
+      { key: "RPNL, all closes", value: { text: `+$${HAIR}20.00`, state: "success" } },
+      { key: "This close", value: { text: `-$${HAIR}20.00`, state: "error" } },
+      { key: "Earlier transactions", value: { text: `-$${HAIR}7.00`, state: "error" } },
     ]);
     expect(result.at(-1)).toEqual({
       text: "This position was funded from your GMX multichain balance; amounts are balance movements, not wallet transfers.",

@@ -1,5 +1,5 @@
 import { IHttp } from "utils/http/types";
-import { assertApiFields, assertApiRecords } from "utils/http/validation";
+import { assertApiFields, assertApiRecords, readApiUnsignedBigInt } from "utils/http/validation";
 import type { ApiFieldSpec } from "utils/http/validation";
 import { deserializeBigIntsInObject, isUint256, parseUint256DecimalString } from "utils/numbers";
 import { getString, isRecord } from "utils/objects";
@@ -46,6 +46,11 @@ function parseApiRecords<T>(raw: unknown, endpoint: string, fields: readonly Api
   return raw.map((record, index) => {
     const parsed = deserializeBigIntsInObject(record, { handleInts: true });
     assertApiFields(parsed, fields, endpoint, index);
+    for (const name of ["minCollateralUsd", "minPositionSizeUsd"] as const) {
+      if (name in record) {
+        parsed[name] = readApiUnsignedBigInt({ record, name, endpoint });
+      }
+    }
     return parsed as T;
   });
 }
