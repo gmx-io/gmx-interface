@@ -119,7 +119,7 @@ export const useBestGmPoolAddressForGlv = ({
         payLongToken: marketInfo.longToken,
         payShortToken: marketInfo.shortToken,
         marketTokenAmount,
-        glvTokenAmount: glvTokenAmount ?? 0n,
+        glvTokenAmount: isDeposit ? amounts.glvTokenAmount : glvTokenAmount ?? 0n,
         glvToken: glvInfo.glvToken,
         glvTokenUsd: amounts?.glvTokenUsd,
         marketTokenUsd: amounts?.marketTokenUsd,
@@ -138,6 +138,7 @@ export const useBestGmPoolAddressForGlv = ({
         chainId,
         srcChainId,
         isMarketTokenDeposit,
+        typedReceiveAmount: isDeposit && focusedInput === "market" ? glvTokenAmount : undefined,
       });
       const error = errorResult.buttonErrorMessage;
 
@@ -149,6 +150,7 @@ export const useBestGmPoolAddressForGlv = ({
         isDepositable,
         market: marketConfig.market,
         amount: amounts.glvTokenUsd,
+        payUsd: amounts.longTokenUsd + amounts.shortTokenUsd,
         composition: marketConfig.composition,
       };
     });
@@ -186,10 +188,15 @@ export const useBestGmPoolAddressForGlv = ({
             return 1;
           }
 
+          // Quoted from Receive every pool mints the same amount, so the best one asks for the least pay
+          if (focusedInput === "market") {
+            return a.payUsd < b.payUsd ? -1 : 1;
+          }
+
           return b.amount > a.amount ? 1 : -1;
         })
         .map(({ market }) => market),
-    [markets]
+    [markets, focusedInput]
   );
 
   const byComposition = useMemo(

@@ -6623,6 +6623,10 @@ msgstr "Шаг 1: Продажа"
 msgid "Auto"
 msgstr "Авто"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "Макс. к получению ≈ {maxReceiveText}"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Предоставление изолированной ликвидности для каждого рынка"

@@ -6623,6 +6623,10 @@ msgstr "ステップ1: 売却"
 msgid "Auto"
 msgstr "自動"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "受取上限 ≈ {maxReceiveText}"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "マーケットごとに独立した流動性を提供"

@@ -6623,6 +6623,10 @@ msgstr "Step 1: Sell"
 msgid "Auto"
 msgstr "Auto"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "Max receivable ≈ {maxReceiveText}"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "Provide isolated liquidity per market"

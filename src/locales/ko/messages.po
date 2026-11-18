@@ -6623,6 +6623,10 @@ msgstr "1단계: 판매"
 msgid "Auto"
 msgstr "자동"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "최대 수령 가능 ≈ {maxReceiveText}"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Provide isolated liquidity per market"
 msgstr "마켓별 격리 유동성 제공"

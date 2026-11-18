@@ -270,87 +270,204 @@ export function getDepositAmounts(p: {
 
 type DepositPayAmounts = Pick<DepositAmounts, "longTokenAmount" | "shortTokenAmount" | "initialShortTokenAmount">;
 
+type ReceiveQuote = { pay: DepositPayAmounts; amounts: DepositAmounts; receiveAmount: bigint };
+
 const RECEIVE_QUOTE_PROPORTIONAL_STEPS = 2;
-const RECEIVE_QUOTE_MAX_STEPS = 10;
+const RECEIVE_QUOTE_MAX_STEPS = 12;
+const RECEIVE_QUOTE_STALL_STEP = RECEIVE_QUOTE_MAX_STEPS / 2;
+// Tightening stops once a quote mints at most 1 ppm over the typed Receive amount
+const RECEIVE_QUOTE_TOLERANCE_DIVISOR = 1_000_000n;
+const MINT_PEAK_BRACKET_STEPS = 40;
+const MINT_PEAK_SEARCH_STEPS = 10;
+const MINT_PEAK_SEARCH_PRECISION = 1_000_000n;
 
 // Pay amounts, fees and impact come from the forward quote, so they match a Pay-driven quote of the same collateral
 function getDepositAmountsForReceive(
   p: Parameters<typeof getDepositAmounts>[0],
   estimate: DepositAmounts
 ): DepositAmounts {
+  // GLV pool ranking quotes every pool before Pay has a token to split the receive amount into
+  if (!p.includeLongToken && !p.includeShortToken) {
+    return estimate;
+  }
+
   const isGlv = Boolean(p.glvInfo && p.glvToken);
-  const getReceiveAmount = (amounts: DepositAmounts) => (isGlv ? amounts.glvTokenAmount : amounts.marketTokenAmount);
-  const getForwardQuote = (pay: DepositPayAmounts) =>
-    getDepositAmounts({ ...p, ...pay, strategy: "byCollaterals", marketTokenAmount: 0n, glvTokenAmount: 0n });
-  const targetAmount = getReceiveAmount(estimate);
+  const targetAmount = isGlv ? estimate.glvTokenAmount : estimate.marketTokenAmount;
+  const toleranceAmount = targetAmount / RECEIVE_QUOTE_TOLERANCE_DIVISOR;
+  const quotes: ReceiveQuote[] = [];
 
-  let pay: DepositPayAmounts = {
-    longTokenAmount: estimate.longTokenAmount,
-    shortTokenAmount: estimate.shortTokenAmount,
-    initialShortTokenAmount: estimate.initialShortTokenAmount,
-  };
-  let quote = getForwardQuote(pay);
-  let quotedAmount = getReceiveAmount(quote);
-
-  for (let step = 0; step < RECEIVE_QUOTE_MAX_STEPS && quotedAmount > 0n; step++) {
-    const isShort = quotedAmount < targetAmount;
-    // Mint is concave in the pay amount, so proportional steps approach the target without crossing it;
-    // from below, overshoot by the remaining gap once it is small
-    const stepTargetAmount =
-      isShort && step >= RECEIVE_QUOTE_PROPORTIONAL_STEPS ? 2n * targetAmount - quotedAmount : targetAmount;
-    const scale = (amount: bigint) => roundUpDivision(amount * stepTargetAmount, quotedAmount);
-
-    const nextPay = {
-      longTokenAmount: scale(pay.longTokenAmount),
-      shortTokenAmount: scale(pay.shortTokenAmount),
-      initialShortTokenAmount:
-        pay.initialShortTokenAmount === undefined ? undefined : scale(pay.initialShortTokenAmount),
-    };
-    const nextQuote = getForwardQuote(nextPay);
-    const nextQuotedAmount = getReceiveAmount(nextQuote);
-
-    // Stops past the most the market can mint for this split, or when rounding no longer tightens the quote
-    const isImproved = isShort
-      ? nextQuotedAmount > quotedAmount
-      : nextQuotedAmount >= targetAmount && nextQuotedAmount < quotedAmount;
-
-    if (!isImproved) {
-      break;
-    }
-
-    pay = nextPay;
-    quote = nextQuote;
-    quotedAmount = nextQuotedAmount;
-  }
-
-  // Paired inputs are filled from this quote and set the next one's split, so keep them once they mint
-  // the target as tightly, otherwise rounding makes them drift on every recalculation
-  if (p.includeLongToken && p.includeShortToken) {
-    const currentQuote = getForwardQuote({
-      longTokenAmount: p.longTokenAmount,
-      shortTokenAmount: p.shortTokenAmount,
-      initialShortTokenAmount: p.initialShortTokenAmount,
+  const getQuote = (pay: DepositPayAmounts): ReceiveQuote => {
+    const amounts = getDepositAmounts({
+      ...p,
+      ...pay,
+      strategy: "byCollaterals",
+      marketTokenAmount: 0n,
+      glvTokenAmount: 0n,
     });
-    const currentQuotedAmount = getReceiveAmount(currentQuote);
+    const quote = { pay, amounts, receiveAmount: isGlv ? amounts.glvTokenAmount : amounts.marketTokenAmount };
+    quotes.push(quote);
 
-    if (currentQuotedAmount >= targetAmount && currentQuotedAmount <= quotedAmount) {
-      quote = currentQuote;
-      quotedAmount = currentQuotedAmount;
-    }
-  }
-
-  // Never display more than the submitted collateral mints
-  if (quotedAmount < targetAmount) {
     return quote;
-  }
-
-  return {
-    ...quote,
+  };
+  const getIsWithinTolerance = (quote: ReceiveQuote) =>
+    quote.receiveAmount >= targetAmount && quote.receiveAmount <= targetAmount + toleranceAmount;
+  const getAmountsWithTarget = (quote: ReceiveQuote): DepositAmounts => ({
+    ...quote.amounts,
     marketTokenAmount: estimate.marketTokenAmount,
     marketTokenUsd: estimate.marketTokenUsd,
     glvTokenAmount: estimate.glvTokenAmount,
     glvTokenUsd: estimate.glvTokenUsd,
+  });
+
+  // Paired inputs are filled from this quote and set the next one's split, so rounding would move them on every
+  // recalculation; keep them unless a fresh quote is tighter by more than the tolerance
+  const currentQuote =
+    p.includeLongToken && p.includeShortToken
+      ? getQuote({
+          longTokenAmount: p.longTokenAmount,
+          shortTokenAmount: p.shortTokenAmount,
+          initialShortTokenAmount: p.initialShortTokenAmount,
+        })
+      : undefined;
+
+  if (currentQuote && getIsWithinTolerance(currentQuote)) {
+    return getAmountsWithTarget(currentQuote);
+  }
+
+  let quote = getQuote({
+    longTokenAmount: estimate.longTokenAmount,
+    shortTokenAmount: estimate.shortTokenAmount,
+    initialShortTokenAmount: estimate.initialShortTokenAmount,
+  });
+  let lostMintSteps = 0;
+  let hasSearchedMintPeak = false;
+
+  for (let step = 0; step < RECEIVE_QUOTE_MAX_STEPS && !getIsWithinTolerance(quote); step++) {
+    const isBelowTarget = quote.receiveAmount < targetAmount;
+
+    // Search where the mint peaks when the pay is past it (a mint at or below zero, or losing mint right from
+    // the estimate or twice in a row) or when steps stall below the target on the flat top of the curve
+    const isPastMintPeak = quote.receiveAmount <= 0n || lostMintSteps > 1 || (lostMintSteps > 0 && step === 1);
+
+    if (isBelowTarget && (isPastMintPeak || step === RECEIVE_QUOTE_STALL_STEP)) {
+      if (hasSearchedMintPeak) {
+        break;
+      }
+
+      hasSearchedMintPeak = true;
+      searchMintPeak(getQuote, scalePayAmounts(quote.pay, 2n, 1n));
+
+      const cheapestQuote = getCheapestReceiveQuote(quotes, targetAmount);
+
+      if (!cheapestQuote) {
+        break;
+      }
+
+      quote = cheapestQuote;
+      lostMintSteps = 0;
+      continue;
+    }
+
+    // Mint per unit of pay never rises with the deposit size, so a proportional step stays on its side of the target;
+    // from below, the later steps overshoot by the remaining gap to cross it
+    const stepTargetAmount =
+      isBelowTarget && step >= RECEIVE_QUOTE_PROPORTIONAL_STEPS
+        ? 2n * targetAmount - quote.receiveAmount
+        : targetAmount;
+    const nextQuote = getQuote(scalePayAmounts(quote.pay, stepTargetAmount, quote.receiveAmount));
+
+    if (getIsSamePayAmounts(nextQuote.pay, quote.pay)) {
+      break;
+    }
+
+    // A single loss on the way up can be a fee tier or impact switch in the curve, so keep stepping from it
+    lostMintSteps = isBelowTarget && nextQuote.receiveAmount <= quote.receiveAmount ? lostMintSteps + 1 : 0;
+    quote = nextQuote;
+  }
+
+  const cheapestQuote = getCheapestReceiveQuote(quotes, targetAmount);
+
+  if (cheapestQuote) {
+    const isCurrentKept =
+      currentQuote !== undefined &&
+      currentQuote.receiveAmount >= targetAmount &&
+      currentQuote.receiveAmount - cheapestQuote.receiveAmount <= toleranceAmount;
+
+    return getAmountsWithTarget(isCurrentKept ? currentQuote : cheapestQuote);
+  }
+
+  // Unreachable target: report what the closest pay mints, so Receive validation shows the shortfall
+  return quotes.reduce((highest, next) => (next.receiveAmount > highest.receiveAmount ? next : highest)).amounts;
+}
+
+// Ternary search below maxPay for the pay that mints the most, getQuote keeps every quote it takes
+function searchMintPeak(getQuote: (pay: DepositPayAmounts) => ReceiveQuote, maxPay: DepositPayAmounts) {
+  // From far past the peak a ternary search over the whole range never samples near it, so halve down to it first
+  let upperQuote = getQuote(maxPay);
+
+  for (let step = 0; step < MINT_PEAK_BRACKET_STEPS; step++) {
+    const halfQuote = getQuote(scalePayAmounts(upperQuote.pay, 1n, 2n));
+
+    if (halfQuote.receiveAmount <= upperQuote.receiveAmount) {
+      break;
+    }
+
+    upperQuote = halfQuote;
+  }
+
+  const searchPay = scalePayAmounts(upperQuote.pay, 2n, 1n);
+  let low = 0n;
+  let high = MINT_PEAK_SEARCH_PRECISION;
+
+  for (let step = 0; step < MINT_PEAK_SEARCH_STEPS; step++) {
+    const third = (high - low) / 3n;
+    const left = getQuote(scalePayAmounts(searchPay, low + third, MINT_PEAK_SEARCH_PRECISION));
+    const right = getQuote(scalePayAmounts(searchPay, high - third, MINT_PEAK_SEARCH_PRECISION));
+
+    if (left.receiveAmount < right.receiveAmount) {
+      low += third;
+    } else {
+      high -= third;
+    }
+  }
+}
+
+// Past the peak a larger pay can mint the same, so pick by pay rather than by the closest mint
+function getCheapestReceiveQuote(quotes: ReceiveQuote[], targetAmount: bigint): ReceiveQuote | undefined {
+  let cheapestQuote: ReceiveQuote | undefined;
+
+  for (const quote of quotes) {
+    if (
+      quote.receiveAmount >= targetAmount &&
+      (cheapestQuote === undefined || getPayUsd(quote) < getPayUsd(cheapestQuote))
+    ) {
+      cheapestQuote = quote;
+    }
+  }
+
+  return cheapestQuote;
+}
+
+function getPayUsd(quote: ReceiveQuote) {
+  return quote.amounts.longTokenUsd + quote.amounts.shortTokenUsd;
+}
+
+function scalePayAmounts(pay: DepositPayAmounts, numerator: bigint, denominator: bigint): DepositPayAmounts {
+  const scale = (amount: bigint) => roundUpDivision(amount * numerator, denominator);
+
+  return {
+    longTokenAmount: scale(pay.longTokenAmount),
+    shortTokenAmount: scale(pay.shortTokenAmount),
+    initialShortTokenAmount: pay.initialShortTokenAmount === undefined ? undefined : scale(pay.initialShortTokenAmount),
   };
+}
+
+function getIsSamePayAmounts(a: DepositPayAmounts, b: DepositPayAmounts) {
+  return (
+    a.longTokenAmount === b.longTokenAmount &&
+    a.shortTokenAmount === b.shortTokenAmount &&
+    a.initialShortTokenAmount === b.initialShortTokenAmount
+  );
 }
 
 function getMarketTokenAmountByCollateral(p: {
