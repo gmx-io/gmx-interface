@@ -1,0 +1,3171 @@
+{
+  "provenance": [
+    {
+      "file": "gmtrade-market-views-2026-10-26.json",
+      "capturedAt": "2026-10-26T10:49:56.140Z",
+      "source": "mainnet Market accounts with the store program's get_market_status and get_market_token_price simulated at their slot (8af1e70c), Arbitrum keeper prices through the mint table, and @gmsol-labs/gmsol-sdk 0.9.0-test.2 MarketStatus funding at the same clock; the two 'at index price' entries run the views at a shifted index price so the trader pnl cap binds",
+      "sha256": "87191ee64ae68ebf435e7c40db679bc95e82a80a2c1f89d93dc2307e42519aef"
+    },
+    {
+      "file": "gmtrade-markets-2026-10-06.json",
+      "capturedAt": "2026-10-06T20:14:45.491Z",
+      "source": "mainnet Market accounts, GMTrade keeper prices and @gmsol-labs/gmsol-sdk 0.9.0 MarketStatus at one second",
+      "sha256": "6832c2ce69376a56b566567dbe5d70eef8bae3e2d06eca9b34d266bcd94e656e"
+    },
+    {
+      "file": "gmsol-positions-2026-10-30.json",
+      "capturedAt": "2026-10-30T14:16:17Z",
+      "source": "mainnet Position accounts of store CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN with their Market accounts at slot 463315483 and the Clock of that slot (program at 8af1e70c), picked to cover the cases named in picked; each owner is replaced by a dummy key and the bump and address re-derived from it; the synthetic entries are copies with a 1e36 size, which makes each unit of an amount per size worth 1e6 token units; prices are Arbitrum keeper tickers through the mint table; expected values come from gmsol at 8af1e70c: the Position read with its declare_program type, the address from Pubkey::find_program_address, and pending_borrowing_fee_value and pending_funding_fees of a PositionModel on the market advanced to the Clock time as update_fees_state does (borrowing, then funding)",
+      "sha256": "40be0ca443f387a21badfbaafac715294a09862f3cc7aa13fcd8974e414bf9fd"
+    },
+    {
+      "file": "gmsol-accounts-2026-10-27.json",
+      "capturedAt": "2026-10-27T14:55:12Z",
+      "source": "mainnet Order, UserHeader and Store accounts of store CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN at slot 462111896 (program at 8af1e70c), one order per kind and action state plus the edge cases named in picked; wallet-derived keys are replaced by dummy keys, and the last order is a synthetic copy with a u128::MAX size; expected values come from gmsol-programs at 8af1e70c (its declare_program types and Store::order_fee_discount_factor)",
+      "sha256": "7ad2ade76b7cced4e4fd726600ce5b0700731270586cc0c15027926244fe4f79"
+    }
+  ],
+  "marketViews": [
+    {
+      "name": "SOL/USD[USDC-USDC]",
+      "now": 1793011789,
+      "supply": "648352230814777",
+      "market": {
+        "name": "SOL/USD[USDC-USDC]",
+        "marketTokenMint": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+        "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2499999999999999895779934208", "2499999999999999895779934208"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220206888",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["423056432740", "423056432739"],
+        "openInterest": ["83203529794206595988851319", "79265418698718423065042235"],
+        "openInterestInTokens": ["8364881010478", "7787837157685"],
+        "openInterestByCollateral": [
+          ["41601764897103297994425660", "41601764897103297994425659"],
+          ["39632709349359211532521118", "39632709349359211532521117"]
+        ],
+        "positionImpactPoolAmount": "2996382850",
+        "borrowingFactor": ["8821419818221774959", "11013038768087430844"],
+        "fundingFeeAmountPerSize": [
+          ["8587725196030875", "8587725196030875"],
+          ["160003213057450141", "160003213057450141"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["168123756556196818", "168123756556196818"],
+          ["87867495328905099", "87867495328905099"]
+        ],
+        "totalBorrowing": ["7259940065886044027334570", "8686916679346278156262396"],
+        "priceImpactDistributionClock": 1793011528,
+        "borrowingClock": 1793011528,
+        "fundingClock": 1793011528,
+        "fundingFactorPerSecond": "248461082755",
+        "config": {
+          "openInterestReserveFactor": "450000000000000000000",
+          "reserveFactor": "455000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "353982000000000000000000000",
+          "minPositionImpactPoolAmount": "3000000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "69999999999999991808",
+          "maxPnlFactorForShortWithdrawal": "69999999999999991808",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "10138376487914",
+          "max": "10139203734193"
+        },
+        "long": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "248461082755",
+          "borrowing": ["635885961002", "0"],
+          "pnl": ["1609702983312056771022935", "309393567541824550323145"],
+          "reserved": ["84813232777518652759874254", "79265418698718423065042235"],
+          "poolWithoutPnl": ["42293903840932840674727720", "42293903840832868423822542"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "248461082755",
+          "borrowing": ["635885961002", "0"],
+          "pnl": ["1602783166621861085511573", "302951108231671697819030"],
+          "reserved": ["84813232777518652759874254", "79265418698718423065042235"],
+          "poolWithoutPnl": ["42293903840932840674727720", "42293903840832868423822542"]
+        }
+      ],
+      "pricesExpected": [
+        "127481508467442638180",
+        "127460895050673613845",
+        "127481508467442638180",
+        "127460895050673613845"
+      ],
+      "sdkNextFunding": {
+        "long": "248461082755",
+        "short": "-260805272224"
+      }
+    },
+    {
+      "name": "SOL/USD[WSOL-USDC]",
+      "now": 1793011779,
+      "supply": "53179868942778",
+      "market": {
+        "name": "SOL/USD[WSOL-USDC]",
+        "marketTokenMint": "BwN2FWixP5JyKjJNyD1YcRKN1XhgvFtnzrPrkfyb4DkW",
+        "longTokenMint": "So11111111111111111111111111111111111111112",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220205981",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["554466581056", "53575871386"],
+        "openInterest": ["2173518527215166950597194", "2709882552697636733065024"],
+        "openInterestInTokens": ["218639871045", "262828424739"],
+        "openInterestByCollateral": [
+          ["41277637337703460000000", "2132240889877463490597194"],
+          ["173018618068970174586876", "2536863934628666558478148"]
+        ],
+        "positionImpactPoolAmount": "1999643582",
+        "borrowingFactor": ["12156545655261597798", "12822915384001734453"],
+        "fundingFeeAmountPerSize": [
+          ["32292833036212241", "4336147670045300"],
+          ["51488235460966273", "5210651742585245"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["43594002183893008", "3630711591549523"],
+          ["23395038490237259", "3082214395501735"]
+        ],
+        "totalBorrowing": ["261374848473708297020821", "328786828637042592006695"],
+        "priceImpactDistributionClock": 1792986394,
+        "borrowingClock": 1792986394,
+        "fundingClock": 1792986394,
+        "fundingFactorPerSecond": "449873279661",
+        "config": {
+          "openInterestReserveFactor": "375000000000000000000",
+          "reserveFactor": "380000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "300000000000000000000000000",
+          "minPositionImpactPoolAmount": "2000000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "10138376487914",
+          "max": "10139203734193"
+        },
+        "long": {
+          "min": "10138376487914",
+          "max": "10139203734193"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "449873279661",
+          "borrowing": ["0", "192520239846"],
+          "pnl": ["43315669727773026544491", "45229030968284840960578"],
+          "reserved": ["2216834196942939977141685", "2709882552697636733065024"],
+          "poolWithoutPnl": ["5621849629128220913247808", "5356100456664738609436708"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "449873279661",
+          "borrowing": ["0", "192520239846"],
+          "pnl": ["43134800708010010452936", "45011607131904071664397"],
+          "reserved": ["2216834196942939977141685", "2709882552697636733065024"],
+          "poolWithoutPnl": ["5621390948712212485357184", "5356100456664738609436708"]
+        }
+      ],
+      "pricesExpected": [
+        "204395903362304198952",
+        "204379757638613367002",
+        "204395903362304198952",
+        "204379757638613367002"
+      ],
+      "sdkNextFunding": {
+        "long": "-204584825519",
+        "short": "164091579619"
+      }
+    },
+    {
+      "name": "BTC/USD[WBTC-USDC]",
+      "now": 1793011786,
+      "supply": "7249851752815",
+      "market": {
+        "name": "BTC/USD[WBTC-USDC]",
+        "marketTokenMint": "7RNev94wKusSmFEqo3gvv1d1zMweP6sa2LtjJjroAvym",
+        "longTokenMint": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220206888",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["798917", "15179217708"],
+        "openInterest": ["158483860715021173694717", "150689008887873877809710"],
+        "openInterestInTokens": ["2443680", "1864623"],
+        "openInterestByCollateral": [
+          ["0", "158483860715021173694717"],
+          ["605078092498103117960", "150083930795375774691750"]
+        ],
+        "positionImpactPoolAmount": "399604",
+        "borrowingFactor": ["10942058065405269926", "6421796328955645343"],
+        "fundingFeeAmountPerSize": [
+          ["5596205806064", "4190102952231174"],
+          ["2266603759910", "4291917859653254"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["693078442618", "143691113415207338"],
+          ["84556026267534", "31482592740517732"]
+        ],
+        "totalBorrowing": ["13602146619296023854498", "9653406681787749890808"],
+        "priceImpactDistributionClock": 1792939908,
+        "borrowingClock": 1792939908,
+        "fundingClock": 1792939908,
+        "fundingFactorPerSecond": "327108310494",
+        "config": {
+          "openInterestReserveFactor": "520000000000000000000",
+          "reserveFactor": "525000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "2400000000000000000000",
+          "minPositionImpactPoolAmount": "400000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "80288029697782460",
+          "max": "80288029697782460"
+        },
+        "long": {
+          "min": "80288029697782460",
+          "max": "80288029697782460"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "327108310494",
+          "borrowing": ["839354136568", "0"],
+          "pnl": ["37714391696855868158083", "982102088705653897130"],
+          "reserved": ["196198252411877041852800", "150689008887873877809710"],
+          "poolWithoutPnl": ["64143471822063269595820", "1517500561248496926492024"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "327108310494",
+          "borrowing": ["839354136568", "0"],
+          "pnl": ["37714391696855868158083", "982102088705653897130"],
+          "reserved": ["196198252411877041852800", "150689008887873877809710"],
+          "poolWithoutPnl": ["64143471822063269595820", "1517500561248496926492024"]
+        }
+      ],
+      "pricesExpected": [
+        "208404634600912212681",
+        "208404634600912212681",
+        "208404634600912212681",
+        "208404634600912212681"
+      ],
+      "sdkNextFunding": {
+        "long": "327108310494",
+        "short": "-344028992569"
+      }
+    },
+    {
+      "name": "HYPE/USD[USDC-USDC]",
+      "now": 1793011779,
+      "supply": "2878654820969",
+      "market": {
+        "name": "HYPE/USD[USDC-USDC]",
+        "marketTokenMint": "4GmYJA45W11rQYsWcq3CHvASY199wTQz2LFj8tQBqqWC",
+        "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2853881278539",
+          "minFactorPerSecond": "31709791984",
+          "increaseFactorPerSecond": "264248267",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["1510409805", "1510409805"],
+        "openInterest": ["250064912515796016162120", "288151274950076521706800"],
+        "openInterestInTokens": ["31916547508", "35453000873"],
+        "openInterestByCollateral": [
+          ["125032456257898008081060", "125032456257898008081060"],
+          ["144075637475038260853400", "144075637475038260853400"]
+        ],
+        "positionImpactPoolAmount": "4999821825",
+        "borrowingFactor": ["7892101019839988826", "23151176816226780500"],
+        "fundingFeeAmountPerSize": [
+          ["1890368610992617", "1890368610992617"],
+          ["4559366331779382", "4559366331779382"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["124412010852317594", "124412010852317594"],
+          ["62421074783581272", "62421074783581272"]
+        ],
+        "totalBorrowing": ["18380369090156244943588", "63984497247285975765329"],
+        "priceImpactDistributionClock": 1792939792,
+        "borrowingClock": 1792939792,
+        "fundingClock": 1792939792,
+        "fundingFactorPerSecond": "-2853881278539",
+        "config": {
+          "openInterestReserveFactor": "200000000000000000000",
+          "reserveFactor": "205000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "200000000000000000000000000",
+          "minPositionImpactPoolAmount": "5000000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "7707221943259",
+          "max": "7707663235519"
+        },
+        "long": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "-2853881278539",
+          "borrowing": ["0", "2807499237008"],
+          "pnl": ["-4062912683688859625468", "14907128667310438241693"],
+          "reserved": ["246001999832107156536652", "288151274950076521706800"],
+          "poolWithoutPnl": ["150999067995100976470290", "150999067995100976470290"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "-2853881278539",
+          "borrowing": ["0", "2807499237008"],
+          "pnl": ["-4076997209070062313548", "14891483532431410098713"],
+          "reserved": ["246001999832107156536652", "288151274950076521706800"],
+          "poolWithoutPnl": ["150999067995100976470290", "150999067995100976470290"]
+        }
+      ],
+      "pricesExpected": [
+        "87782510144692152291",
+        "87771416059114280806",
+        "87782510144692152291",
+        "87771416059114280806"
+      ],
+      "sdkNextFunding": {
+        "long": "-3288544245147",
+        "short": "2853881278539"
+      }
+    },
+    {
+      "name": "GMX/USD[WGMX-USDC]",
+      "now": 1793011791,
+      "supply": "27822611589274",
+      "market": {
+        "name": "GMX/USD[WGMX-USDC]",
+        "marketTokenMint": "CH7pboF6PnCTAuWZbhC1eLKsX6rjd2UAPG87oqsizxR2",
+        "longTokenMint": "9wX6Qz1Y5YQe71dfnFYFfZYXZhKqjYKQwdqfrRkmYUSX",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeAboveOptimalUsageFactor": ["4122272957889", "4122272957889"],
+        "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2853881278539",
+          "minFactorPerSecond": "31709791984",
+          "increaseFactorPerSecond": "264248267",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["3902400832393", "43610923837"],
+        "openInterest": ["4909874612001719343684060", "6514922336325361094485056"],
+        "openInterestInTokens": ["6109559725723", "8411645463984"],
+        "openInterestByCollateral": [
+          ["0", "4909874612001719343684060"],
+          ["71799999999999998951424", "6443122336325361095533632"]
+        ],
+        "positionImpactPoolAmount": "40178898609",
+        "borrowingFactor": ["5852147535814802496", "6298694637654133297"],
+        "fundingFeeAmountPerSize": [
+          ["73852625406565857", "4282180291084371"],
+          ["65150876197748072", "2193539199601421"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["386200599167154198", "72813659076723576"],
+          ["2350305129586456357", "182714197861872464"]
+        ],
+        "totalBorrowing": ["287090492177608581965503", "386090081407437353890905"],
+        "priceImpactDistributionClock": 1793008348,
+        "borrowingClock": 1793008348,
+        "fundingClock": 1793008348,
+        "fundingFactorPerSecond": "-2853881278539",
+        "config": {
+          "openInterestReserveFactor": "200000000000000000000",
+          "reserveFactor": "205000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "1101863400000000000000000000",
+          "minPositionImpactPoolAmount": "40000000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "810611552533",
+          "max": "811258545936"
+        },
+        "long": {
+          "min": "810611552533",
+          "max": "811258545936"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "-2853881278539",
+          "borrowing": ["0", "1184589523575"],
+          "pnl": ["46557927397468612627668", "-303654652591876280986416"],
+          "reserved": ["4956432539399187956311728", "6514922336325361094485056"],
+          "poolWithoutPnl": ["3165856024946581227304848", "4359882220039172066927986"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "-2853881278539",
+          "borrowing": ["0", "1184589523575"],
+          "pnl": ["42605082559691342222299", "-309096931715448803083968"],
+          "reserved": ["4956432539399187956311728", "6514922336325361094485056"],
+          "poolWithoutPnl": ["3163331197352161247601469", "4359882220039172066927986"]
+        }
+      ],
+      "pricesExpected": [
+        "278911752774992635935",
+        "278482395837971847610",
+        "278911752774992635935",
+        "278482395837971847610"
+      ],
+      "sdkNextFunding": {
+        "long": "-3786820714591",
+        "short": "2853881278539"
+      }
+    },
+    {
+      "name": "ETH/USD[WETH-WETH]",
+      "now": 1793011794,
+      "supply": "495136369997",
+      "market": {
+        "name": "ETH/USD[WETH-WETH]",
+        "marketTokenMint": "AC7iz89CBopxsuzoPU5drW59PB9rZJYpvqaedGxAjFeK",
+        "longTokenMint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+        "shortTokenMint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220206888",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["34859390", "34859390"],
+        "openInterest": ["102594483759564160000", "101594921107409838000"],
+        "openInterestInTokens": ["64999", "26972"],
+        "openInterestByCollateral": [
+          ["51297241879782080000", "51297241879782080000"],
+          ["50797460553704919000", "50797460553704919000"]
+        ],
+        "positionImpactPoolAmount": "4832786",
+        "borrowingFactor": ["7024344719697722332", "9677115876211145315"],
+        "fundingFeeAmountPerSize": [
+          ["226852777096664", "226852777096664"],
+          ["70267561041878", "70267561041878"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["44498873132654", "44498873132654"],
+          ["532017695473560", "532017695473560"]
+        ],
+        "totalBorrowing": ["7204600680914988158", "9831458239909345361"],
+        "priceImpactDistributionClock": 1784242411,
+        "borrowingClock": 1784242411,
+        "fundingClock": 1784242411,
+        "fundingFactorPerSecond": "0",
+        "config": {
+          "openInterestReserveFactor": "420000000000000000000",
+          "reserveFactor": "425000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "0",
+          "minPositionImpactPoolAmount": "50000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "2326385598882943",
+          "max": "2326385598882943"
+        },
+        "long": {
+          "min": "2326385598882943",
+          "max": "2326385598882943"
+        },
+        "short": {
+          "min": "2326385598882943",
+          "max": "2326385598882943"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "0",
+          "borrowing": ["703883847", "0"],
+          "pnl": ["48618253782228252057", "38847648734339099404"],
+          "reserved": ["151212737541792412057", "101594921107409838000"],
+          "poolWithoutPnl": ["81096382881844074384770", "81096382881844074384770"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "0",
+          "borrowing": ["703883847", "0"],
+          "pnl": ["48618253782228252057", "38847648734339099404"],
+          "reserved": ["151212737541792412057", "101594921107409838000"],
+          "poolWithoutPnl": ["81096382881844074384770", "81096382881844074384770"]
+        }
+      ],
+      "pricesExpected": [
+        "304688537003301757959",
+        "304688537003301757959",
+        "304688537003301757959",
+        "304688537003301757959"
+      ],
+      "sdkNextFunding": {
+        "long": "31709791983",
+        "short": "-32021775332"
+      }
+    },
+    {
+      "name": "ASTER/USD[USDT-USDT]",
+      "now": 1793011789,
+      "supply": "110048876710",
+      "market": {
+        "name": "ASTER/USD[USDT-USDT]",
+        "marketTokenMint": "EgmB7CeymWucnEmVjpqKoXqTuZfMuxzPf89ZziU2gmPE",
+        "longTokenMint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "shortTokenMint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2853881278539",
+          "minFactorPerSecond": "31709791984",
+          "increaseFactorPerSecond": "264248267",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["57703718", "57703718"],
+        "openInterest": ["0", "0"],
+        "openInterestInTokens": ["0", "0"],
+        "openInterestByCollateral": [
+          ["0", "0"],
+          ["0", "0"]
+        ],
+        "positionImpactPoolAmount": "263529",
+        "borrowingFactor": ["1879545568548720", "41310570410724"],
+        "fundingFeeAmountPerSize": [
+          ["0", "0"],
+          ["0", "0"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["0", "0"],
+          ["0", "0"]
+        ],
+        "totalBorrowing": ["0", "0"],
+        "priceImpactDistributionClock": 1783663725,
+        "borrowingClock": 1783663725,
+        "fundingClock": 1783663725,
+        "fundingFactorPerSecond": "0",
+        "config": {
+          "openInterestReserveFactor": "400000000000000000000",
+          "reserveFactor": "405000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "12970000000000000000000000000",
+          "minPositionImpactPoolAmount": "100000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "709943177856",
+          "max": "710022732279"
+        },
+        "long": {
+          "min": "99851316160167",
+          "max": "99856438720055"
+        },
+        "short": {
+          "min": "99851316160167",
+          "max": "99856438720055"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "0",
+          "borrowing": ["0", "0"],
+          "pnl": ["0", "0"],
+          "reserved": ["0", "0"],
+          "poolWithoutPnl": ["5762087780386334664490", "5762087780386334664490"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "0",
+          "borrowing": ["0", "0"],
+          "pnl": ["0", "0"],
+          "reserved": ["0", "0"],
+          "poolWithoutPnl": ["5761792189635119400906", "5761792189635119400906"]
+        }
+      ],
+      "pricesExpected": [
+        "104717002250962386176",
+        "104711630070118723424",
+        "104717002250962386176",
+        "104711630070118723424"
+      ],
+      "sdkNextFunding": {
+        "long": "0",
+        "short": "0"
+      }
+    },
+    {
+      "name": "WIF/USD[WIF-USDC]",
+      "now": 1793011795,
+      "supply": "1855489075",
+      "market": {
+        "name": "WIF/USD[WIF-USDC]",
+        "marketTokenMint": "4H7wYvhiN3D3uZgt8SXjboKj9bMLdbNX23w3F1GisuvS",
+        "longTokenMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["158548959918800", "158548959918800"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["158548959918800", "158548959918800"],
+        "borrowingFeeAboveOptimalUsageFactor": ["317097919837600", "317097919837600"],
+        "maxOpenInterest": ["0", "0"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2853881278748",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "264248266",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["88390666", "29192737"],
+        "openInterest": ["0", "0"],
+        "openInterestInTokens": ["0", "0"],
+        "openInterestByCollateral": [
+          ["0", "0"],
+          ["0", "0"]
+        ],
+        "positionImpactPoolAmount": "129047663",
+        "borrowingFactor": ["2185743044199647", "2275393505240857"],
+        "fundingFeeAmountPerSize": [
+          ["0", "18091007101"],
+          ["0", "209279463"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["0", "261128945"],
+          ["0", "18100520066"]
+        ],
+        "totalBorrowing": ["0", "0"],
+        "priceImpactDistributionClock": 1772425051,
+        "borrowingClock": 1772425051,
+        "fundingClock": 1772425051,
+        "fundingFactorPerSecond": "0",
+        "config": {
+          "openInterestReserveFactor": "120000000000000000000",
+          "reserveFactor": "125000000000000000000",
+          "borrowingFeeReceiverFactor": "25000000000000000000",
+          "positionImpactDistributeFactor": "55000000000000000000000",
+          "minPositionImpactPoolAmount": "0",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "17905744115326",
+          "max": "17911683540721"
+        },
+        "long": {
+          "min": "17905744115326",
+          "max": "17911683540721"
+        },
+        "short": {
+          "min": "99972250905178",
+          "max": "99972250905178"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "0",
+          "borrowing": ["0", "0"],
+          "pnl": ["0", "0"],
+          "reserved": ["0", "0"],
+          "poolWithoutPnl": ["1583225637345567310186", "2918463627972873292186"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "0",
+          "borrowing": ["0", "0"],
+          "pnl": ["0", "0"],
+          "reserved": ["0", "0"],
+          "poolWithoutPnl": ["1582700647579245947116", "2918463627972873292186"]
+        }
+      ],
+      "pricesExpected": [
+        "2426147006722979817260",
+        "2425864067969313825952",
+        "2426147006722979817260",
+        "2425864067969313825952"
+      ],
+      "sdkNextFunding": {
+        "long": "0",
+        "short": "0"
+      }
+    },
+    {
+      "name": "BTC/USD[WBTC-USDC] at index price x3/2",
+      "now": 1793012370,
+      "supply": "7249851752815",
+      "market": {
+        "name": "BTC/USD[WBTC-USDC]",
+        "marketTokenMint": "7RNev94wKusSmFEqo3gvv1d1zMweP6sa2LtjJjroAvym",
+        "longTokenMint": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220206888",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["798917", "15179217708"],
+        "openInterest": ["158483860715021173694717", "150689008887873877809710"],
+        "openInterestInTokens": ["2443680", "1864623"],
+        "openInterestByCollateral": [
+          ["0", "158483860715021173694717"],
+          ["605078092498103117960", "150083930795375774691750"]
+        ],
+        "positionImpactPoolAmount": "399604",
+        "borrowingFactor": ["10942058065405269926", "6421796328955645343"],
+        "fundingFeeAmountPerSize": [
+          ["5596205806064", "4190102952231174"],
+          ["2266603759910", "4291917859653254"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["693078442618", "143691113415207338"],
+          ["84556026267534", "31482592740517732"]
+        ],
+        "totalBorrowing": ["13602146619296023854498", "9653406681787749890808"],
+        "priceImpactDistributionClock": 1792939908,
+        "borrowingClock": 1792939908,
+        "fundingClock": 1792939908,
+        "fundingFactorPerSecond": "327108310494",
+        "config": {
+          "openInterestReserveFactor": "520000000000000000000",
+          "reserveFactor": "525000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "2400000000000000000000",
+          "minPositionImpactPoolAmount": "400000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+          "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "120384580576080708",
+          "max": "120384580576080708"
+        },
+        "long": {
+          "min": "80256387050720472",
+          "max": "80256387050720472"
+        },
+        "short": {
+          "min": "99972235338979",
+          "max": "99972235338979"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "327108310494",
+          "borrowing": ["2182179195700", "0"],
+          "pnl": ["135697531147135730830723", "-73782848899639460183374"],
+          "reserved": ["294181391862156904525440", "150689008887873877809710"],
+          "poolWithoutPnl": ["64118191973400447328824", "1517500324965773419440132"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "327108310494",
+          "borrowing": ["2182179195700", "0"],
+          "pnl": ["135697531147135730830723", "-73782848899639460183374"],
+          "reserved": ["294181391862156904525440", "150689008887873877809710"],
+          "poolWithoutPnl": ["64118191973400447328824", "1517500324965773419440132"]
+        }
+      ],
+      "pricesExpected": [
+        "213746297142104681908",
+        "213746297142104681908",
+        "213746297142104681908",
+        "215515111020223069418"
+      ],
+      "sdkNextFunding": {
+        "long": "327108310494",
+        "short": "-344028992569"
+      }
+    },
+    {
+      "name": "SOL/USD[USDC-USDC] at index price x2/1",
+      "now": 1793012372,
+      "supply": "648273831908133",
+      "market": {
+        "name": "SOL/USD[USDC-USDC]",
+        "marketTokenMint": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+        "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+        "skipBorrowingFeeForSmallerSide": true,
+        "ignoreOpenInterestForUsageFactor": false,
+        "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+        "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+        "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+        "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+        "maxOpenInterest": ["2499999999999999895779934208", "2499999999999999895779934208"],
+        "funding": {
+          "exponent": "100000000000000000000",
+          "factor": "2000000000000",
+          "maxFactorPerSecond": "2378234398782",
+          "minFactorPerSecond": "31709791983",
+          "increaseFactorPerSecond": "220206888",
+          "decreaseFactorPerSecond": "0",
+          "thresholdForStableFunding": "4000000000000000000",
+          "thresholdForDecreaseFunding": "0"
+        },
+        "primary": ["423006451977", "423006451976"],
+        "openInterest": ["83203529794206595988851319", "79265418698718423065042235"],
+        "openInterestInTokens": ["8364881010478", "7787837157685"],
+        "openInterestByCollateral": [
+          ["41601764897103297994425660", "41601764897103297994425659"],
+          ["39632709349359211532521118", "39632709349359211532521117"]
+        ],
+        "positionImpactPoolAmount": "2996382850",
+        "borrowingFactor": ["8821860728969789087", "11013038768087430844"],
+        "fundingFeeAmountPerSize": [
+          ["8587742443214118", "8587742443214118"],
+          ["160003213057450141", "160003213057450141"]
+        ],
+        "claimableFundingAmountPerSize": [
+          ["168123756556196818", "168123756556196818"],
+          ["87867504380939065", "87867504380939065"]
+        ],
+        "totalBorrowing": ["7259940065886044027334570", "8686916679346278156262396"],
+        "priceImpactDistributionClock": 1793012222,
+        "borrowingClock": 1793012222,
+        "fundingClock": 1793012222,
+        "fundingFactorPerSecond": "248461082755",
+        "config": {
+          "openInterestReserveFactor": "450000000000000000000",
+          "reserveFactor": "455000000000000000000",
+          "borrowingFeeReceiverFactor": "99000000000000000000",
+          "positionImpactDistributeFactor": "353982000000000000000000000",
+          "minPositionImpactPoolAmount": "3000000000",
+          "maxPnlFactorForLongDeposit": "90000000000000000000",
+          "maxPnlFactorForShortDeposit": "90000000000000000000",
+          "maxPnlFactorForLongWithdrawal": "69999999999999991808",
+          "maxPnlFactorForShortWithdrawal": "69999999999999991808",
+          "maxPnlFactorForLongTrader": "90000000000000000000",
+          "maxPnlFactorForShortTrader": "90000000000000000000"
+        }
+      },
+      "prices": {
+        "index": {
+          "min": "20242914911422",
+          "max": "20244272376178"
+        },
+        "long": {
+          "min": "99973720029319",
+          "max": "99973720029319"
+        },
+        "short": {
+          "min": "99973720029319",
+          "max": "99973720029319"
+        }
+      },
+      "status": [
+        {
+          "maximize": true,
+          "storedFundingFactor": "248461082755",
+          "borrowing": ["2245374454312", "0"],
+          "pnl": ["86137399776229094786741765", "-78383106228309588956535835"],
+          "reserved": ["169340929570435690775593084", "79265418698718423065042235"],
+          "poolWithoutPnl": ["42289528600544170605513663", "42289528600444196885484344"]
+        },
+        {
+          "maximize": false,
+          "storedFundingFactor": "248461082755",
+          "borrowing": ["2245374454312", "0"],
+          "pnl": ["86126044745069237235028397", "-78393677942776613558585695"],
+          "reserved": ["169340929570435690775593084", "79265418698718423065042235"],
+          "poolWithoutPnl": ["42289528600544170605513663", "42289528600444196885484344"]
+        }
+      ],
+      "pricesExpected": [
+        "192592587079617772831",
+        "192576273322327878619",
+        "192592587079617772831",
+        "205623083641994474245"
+      ],
+      "sdkNextFunding": {
+        "long": "248461082755",
+        "short": "-260805272224"
+      }
+    }
+  ],
+  "marketStatus": {
+    "now": 1791317685,
+    "markets": [
+      {
+        "name": "SOL/USD[USDC-USDC]",
+        "market": {
+          "name": "SOL/USD[USDC-USDC]",
+          "marketTokenMint": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["2499999999999999895779934208", "2499999999999999895779934208"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2378234398782",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "220206888",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["507225559179", "507225559178"],
+          "openInterest": ["97530499839595587550894395", "95888385403343007682927931"],
+          "openInterestInTokens": ["8253997333564", "7940989485383"],
+          "openInterestByCollateral": [
+            ["48765249919797793775447198", "48765249919797793775447197"],
+            ["47944192701671503841463966", "47944192701671503841463965"]
+          ],
+          "positionImpactPoolAmount": "2446637980",
+          "borrowingFactor": ["8130687077373712930", "10604678654572289611"],
+          "fundingFeeAmountPerSize": [
+            ["8557086926575072", "8557086926575072"],
+            ["159971778690106994", "159971778690106994"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["168107657343477219", "168107657343477219"],
+            ["87851735314647470", "87851735314647470"]
+          ],
+          "totalBorrowing": ["7866277335177864908289234", "10125207317567746565508483"],
+          "priceImpactDistributionClock": 1791316840,
+          "borrowingClock": 1791316840,
+          "fundingClock": 1791316840,
+          "fundingFactorPerSecond": "462362500534",
+          "config": {
+            "openInterestReserveFactor": "450000000000000000000",
+            "reserveFactor": "455000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "353982000000000000000000000",
+            "minPositionImpactPoolAmount": "3000000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "69999999999999991808",
+            "maxPnlFactorForShortWithdrawal": "69999999999999991808",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "12081886000000",
+            "max": "12083217000000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "462362500534",
+          "fundingRatePerSecondForShort": "-470280582934",
+          "liquidityForLong": "128481966503426961012000000",
+          "liquidityForShort": "132328421998509217117072069",
+          "openInterestForLong": "97530499839595587550894395",
+          "openInterestForShort": "95888385403343007682927931"
+        }
+      },
+      {
+        "name": "WTI/USD[USDC-USDC]",
+        "market": {
+          "name": "WTI/USD[USDC-USDC]",
+          "marketTokenMint": "ZTn3eszWBDc96ryfYdmDZYd6cuaZ8WxfSCSG8GJnQ8d",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1109842719432", "1109842719432"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["55000000000000000000", "55000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["2536783358701", "2536783358701"],
+          "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "317097919838",
+            "minFactorPerSecond": "0",
+            "increaseFactorPerSecond": "29360919",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["475819241005", "475819241004"],
+          "openInterest": ["194633605761188402649726976", "237871434260354146652056576"],
+          "openInterestInTokens": ["2185527935989", "2589733385665"],
+          "openInterestByCollateral": [
+            ["97316802880594201324863488", "97316802880594201324863488"],
+            ["118935717130177073326028288", "118935717130177073326028288"]
+          ],
+          "positionImpactPoolAmount": "299999798",
+          "borrowingFactor": ["3622436844993208547", "9260383485382731506"],
+          "fundingFeeAmountPerSize": [
+            ["83690319952586", "83690319952586"],
+            ["333169190828410", "333169190828410"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["303669210523172217", "303669210523172217"],
+            ["3449059931104969", "3449059931104969"]
+          ],
+          "totalBorrowing": ["7050476672811928347801685", "21913442040060080424094766"],
+          "priceImpactDistributionClock": 1791317654,
+          "borrowingClock": 1791317654,
+          "fundingClock": 1791317654,
+          "fundingFactorPerSecond": "-317097919838",
+          "config": {
+            "openInterestReserveFactor": "500000000000000000000",
+            "reserveFactor": "505000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "32362400000000000000000000",
+            "minPositionImpactPoolAmount": "300000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "89780000000000",
+            "max": "89790000000000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "-387541178707",
+          "fundingRatePerSecondForShort": "317097919838",
+          "liquidityForLong": "41634904867731310000000000",
+          "liquidityForShort": "2023979329549347943424",
+          "openInterestForLong": "194633605761188402649726976",
+          "openInterestForShort": "237871434260354146652056576"
+        }
+      },
+      {
+        "name": "LINK/USD[WSOL-USDC]",
+        "market": {
+          "name": "LINK/USD[WSOL-USDC]",
+          "marketTokenMint": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278538",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "246248266",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["4161679841736", "479391357985"],
+          "openInterest": ["19567674402602549713787508", "20488155810895935308302656"],
+          "openInterestInTokens": ["1455983839808", "1448214779752"],
+          "openInterestByCollateral": [
+            ["1216983309309822388017140", "18350691093292727325770368"],
+            ["0", "20488155810895935308302656"]
+          ],
+          "positionImpactPoolAmount": "1971613295",
+          "borrowingFactor": ["13374732184482976711", "14856083992590802310"],
+          "fundingFeeAmountPerSize": [
+            ["17914083289953540", "6168910158297769"],
+            ["21928095741741195", "17877389646553694"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["354905326138581041", "257389331995017835"],
+            ["478967829299882613", "370126534155271485"]
+          ],
+          "totalBorrowing": ["2584964270219742916806493", "3032513717497683912484252"],
+          "priceImpactDistributionClock": 1791309994,
+          "borrowingClock": 1791309994,
+          "fundingClock": 1791309994,
+          "fundingFactorPerSecond": "-2853881278538",
+          "config": {
+            "openInterestReserveFactor": "200000000000000000000",
+            "reserveFactor": "205000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "134036900000000000000000000",
+            "minPositionImpactPoolAmount": "2000000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "13973235000000",
+            "max": "13975860000000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "12081886000000",
+            "max": "12083217000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "-2988130479762",
+          "fundingRatePerSecondForShort": "2853881278538",
+          "liquidityForLong": "79651373692580965120000000",
+          "liquidityForShort": "75375542288821320691697344",
+          "openInterestForLong": "19567674402602549713787508",
+          "openInterestForShort": "20488155810895935308302656"
+        }
+      },
+      {
+        "name": "ETH/USD[WETH-WETH]",
+        "market": {
+          "name": "ETH/USD[WETH-WETH]",
+          "marketTokenMint": "AC7iz89CBopxsuzoPU5drW59PB9rZJYpvqaedGxAjFeK",
+          "longTokenMint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+          "shortTokenMint": "7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["2000000000000000000000000000", "2000000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2378234398782",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "220206888",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["34859390", "34859390"],
+          "openInterest": ["102594483759564160000", "101594921107409838000"],
+          "openInterestInTokens": ["64999", "26972"],
+          "openInterestByCollateral": [
+            ["51297241879782080000", "51297241879782080000"],
+            ["50797460553704919000", "50797460553704919000"]
+          ],
+          "positionImpactPoolAmount": "4832786",
+          "borrowingFactor": ["7024344719697722332", "9677115876211145315"],
+          "fundingFeeAmountPerSize": [
+            ["226852777096664", "226852777096664"],
+            ["70267561041878", "70267561041878"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["44498873132654", "44498873132654"],
+            ["532017695473560", "532017695473560"]
+          ],
+          "totalBorrowing": ["7204600680914988158", "9831458239909345361"],
+          "priceImpactDistributionClock": 1784242411,
+          "borrowingClock": 1784242411,
+          "fundingClock": 1784242411,
+          "fundingFactorPerSecond": "0",
+          "config": {
+            "openInterestReserveFactor": "420000000000000000000",
+            "reserveFactor": "425000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "0",
+            "minPositionImpactPoolAmount": "50000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "2692171200000000",
+            "max": "2692330300000000",
+            "isOpen": true,
+            "ts": 1791317684
+          },
+          "long": {
+            "min": "2692150900000000",
+            "max": "2692321200000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "2692150900000000",
+            "max": "2692321200000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "31709791983",
+          "fundingRatePerSecondForShort": "-32021775332",
+          "liquidityForLong": "393981301503024500000000",
+          "liquidityForShort": "394054705359086790162000",
+          "openInterestForLong": "102594483759564160000",
+          "openInterestForShort": "101594921107409838000"
+        }
+      },
+      {
+        "name": "ASTER/USD[USDT-USDT]",
+        "market": {
+          "name": "ASTER/USD[USDT-USDT]",
+          "marketTokenMint": "EgmB7CeymWucnEmVjpqKoXqTuZfMuxzPf89ZziU2gmPE",
+          "longTokenMint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+          "shortTokenMint": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278539",
+            "minFactorPerSecond": "31709791984",
+            "increaseFactorPerSecond": "264248267",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["57703718", "57703718"],
+          "openInterest": ["0", "0"],
+          "openInterestInTokens": ["0", "0"],
+          "openInterestByCollateral": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "positionImpactPoolAmount": "263529",
+          "borrowingFactor": ["1879545568548720", "41310570410724"],
+          "fundingFeeAmountPerSize": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "totalBorrowing": ["0", "0"],
+          "priceImpactDistributionClock": 1783663725,
+          "borrowingClock": 1783663725,
+          "fundingClock": 1783663725,
+          "fundingFactorPerSecond": "0",
+          "config": {
+            "openInterestReserveFactor": "400000000000000000000",
+            "reserveFactor": "405000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "12970000000000000000000000000",
+            "minPositionImpactPoolAmount": "100000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "735909900000",
+            "max": "736185700000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99987400000000",
+            "max": "99994000000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99987400000000",
+            "max": "99994000000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "0",
+          "fundingRatePerSecondForShort": "0",
+          "liquidityForLong": "23078578932612800000000",
+          "liquidityForShort": "23078578932612800000000",
+          "openInterestForLong": "0",
+          "openInterestForShort": "0"
+        }
+      },
+      {
+        "name": "NATGAS/USD[USDC-USDC]",
+        "market": {
+          "name": "NATGAS/USD[USDC-USDC]",
+          "marketTokenMint": "HEdK5EakbdE2WppEKwoDT3y7jsEQnudGj8XUKLuDFgL1",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1109842719432", "1109842719432"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["55000000000000000000", "55000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["2536783358701", "2536783358701"],
+          "maxOpenInterest": ["1000000000000000000000000000", "1000000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "317097919838",
+            "minFactorPerSecond": "0",
+            "increaseFactorPerSecond": "29360919",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["37245603442", "37245603442"],
+          "openInterest": ["14724779707550275348987904", "11955398753494206569512960"],
+          "openInterestInTokens": ["47750493629115", "38345152946061"],
+          "openInterestByCollateral": [
+            ["7362389853775137674493952", "7362389853775137674493952"],
+            ["5977699376747103284756480", "5977699376747103284756480"]
+          ],
+          "positionImpactPoolAmount": "7725776971",
+          "borrowingFactor": ["137333370468958779", "175709055273388"],
+          "fundingFeeAmountPerSize": [
+            ["1806477739609", "1806477739609"],
+            ["0", "0"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["0", "0"],
+            ["2144219152709", "2144219152709"]
+          ],
+          "totalBorrowing": ["5624360656714563659269", "21006631231947779753"],
+          "priceImpactDistributionClock": 1791316728,
+          "borrowingClock": 1791316728,
+          "fundingClock": 1791316728,
+          "fundingFactorPerSecond": "135122012769",
+          "config": {
+            "openInterestReserveFactor": "400000000000000000000",
+            "reserveFactor": "405000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "828879100000000000000000000",
+            "minPositionImpactPoolAmount": "45000000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "312600000000",
+            "max": "312700000000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "138038603292",
+          "fundingRatePerSecondForShort": "-170014239300",
+          "liquidityForLong": "0",
+          "liquidityForShort": "2940578090616519830487040",
+          "openInterestForLong": "14724779707550275348987904",
+          "openInterestForShort": "11955398753494206569512960"
+        }
+      },
+      {
+        "name": "AAPL/USD[USDC-USDC]",
+        "market": {
+          "name": "AAPL/USD[USDC-USDC]",
+          "marketTokenMint": "GRT3cFnBkNNTs89wC9Q9qjU9JmZ6XTgu7fF4KRHgW5iR",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": false,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1744038559107", "1744038559107"],
+          "borrowingFeeAboveOptimalUsageFactor": ["4122272957889", "4122272957889"],
+          "maxOpenInterest": ["200000000000000000000000000", "200000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "317097919838",
+            "minFactorPerSecond": "31709791984",
+            "increaseFactorPerSecond": "220206889",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["111788850420", "111788850419"],
+          "openInterest": ["6056751659999999975424", "6061823234999999975424"],
+          "openInterestInTokens": ["18701110", "18717333"],
+          "openInterestByCollateral": [
+            ["3028375829999999987712", "3028375829999999987712"],
+            ["3030911617499999987712", "3030911617499999987712"]
+          ],
+          "positionImpactPoolAmount": "111487979",
+          "borrowingFactor": ["1607675184682495578", "1909196030424829328"],
+          "fundingFeeAmountPerSize": [
+            ["595890841683666", "595890841683666"],
+            ["278710001916504", "278710001916504"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["30954308525403567", "30954308525403567"],
+            ["43136815861096206", "43136815861096206"]
+          ],
+          "totalBorrowing": ["32330312498763253171", "37226293622041264235"],
+          "priceImpactDistributionClock": 1791316786,
+          "borrowingClock": 1791316786,
+          "fundingClock": 1791316786,
+          "fundingFactorPerSecond": "-244210492289",
+          "config": {
+            "openInterestReserveFactor": "300000000000000000000",
+            "reserveFactor": "305000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "1840900000000000000000000",
+            "minPositionImpactPoolAmount": "100000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "333650000000000",
+            "max": "333650000000000",
+            "isOpen": false,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "-244414980089",
+          "fundingRatePerSecondForShort": "244210492289",
+          "liquidityForLong": "33525317929069348000000000",
+          "liquidityForShort": "33525495730885893600024576",
+          "openInterestForLong": "6056751659999999975424",
+          "openInterestForShort": "6061823234999999975424"
+        }
+      },
+      {
+        "name": "BOME/USD[BOME-USDC]",
+        "market": {
+          "name": "BOME/USD[BOME-USDC]",
+          "marketTokenMint": "9WTdN24Fm2AjKdMeWZLJwVs8B9dE3NhoajXu9EtWdWC4",
+          "longTokenMint": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["158548959918800", "158548959918800"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["158548959918800", "158548959918800"],
+          "borrowingFeeAboveOptimalUsageFactor": ["317097919837600", "317097919837600"],
+          "maxOpenInterest": ["0", "0"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278748",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "264248266",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["7297735167", "2013044"],
+          "openInterest": ["0", "0"],
+          "openInterestInTokens": ["0", "0"],
+          "openInterestByCollateral": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "positionImpactPoolAmount": "0",
+          "borrowingFactor": ["0", "1107151704796321"],
+          "fundingFeeAmountPerSize": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["0", "0"],
+            ["0", "0"]
+          ],
+          "totalBorrowing": ["0", "0"],
+          "priceImpactDistributionClock": 1772425072,
+          "borrowingClock": 1772425072,
+          "fundingClock": 1772425072,
+          "fundingFactorPerSecond": "0",
+          "config": {
+            "openInterestReserveFactor": "120000000000000000000",
+            "reserveFactor": "125000000000000000000",
+            "borrowingFeeReceiverFactor": "25000000000000000000",
+            "positionImpactDistributeFactor": "1799600000000000000000000",
+            "minPositionImpactPoolAmount": "0",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "99540100000",
+            "max": "99645260000",
+            "isOpen": true,
+            "ts": 1791317683
+          },
+          "long": {
+            "min": "99540100000",
+            "max": "99645260000",
+            "isOpen": true,
+            "ts": 0
+          },
+          "short": {
+            "min": "99984800000000",
+            "max": "99993900000000",
+            "isOpen": true,
+            "ts": 0
+          }
+        },
+        "expected": {
+          "fundingRatePerSecondForLong": "0",
+          "fundingRatePerSecondForShort": "0",
+          "liquidityForLong": "0",
+          "liquidityForShort": "0",
+          "openInterestForLong": "0",
+          "openInterestForShort": "0"
+        }
+      }
+    ]
+  },
+  "positions": {
+    "now": 1793369776,
+    "markets": [
+      {
+        "name": "LINK/USD[WSOL-USDC]",
+        "market": {
+          "name": "LINK/USD[WSOL-USDC]",
+          "marketTokenMint": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278538",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "246248266",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["4630269752161", "426476170187"],
+          "openInterest": ["4514755010660846442298576", "5408161409924646537997568"],
+          "openInterestInTokens": ["415906284843", "486472577298"],
+          "openInterestByCollateral": [
+            ["81215376334489355323600", "4433539634326357086974976"],
+            ["330000000000000000000000", "5078161409924646537997568"]
+          ],
+          "positionImpactPoolAmount": "1999203656",
+          "borrowingFactor": ["13633352433663977370", "15028678876989010458"],
+          "fundingFeeAmountPerSize": [
+            ["18764342393232472", "6256040940116396"],
+            ["21938060684105861", "17955598532733369"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["354906050145873548", "257466825518868373"],
+            ["479060750268858359", "370206532243595770"]
+          ],
+          "totalBorrowing": ["615036733044053854448261", "812732401612694506124073"],
+          "priceImpactDistributionClock": 1793369250,
+          "borrowingClock": 1793369250,
+          "fundingClock": 1793369250,
+          "fundingFactorPerSecond": "-116419280952",
+          "config": {
+            "openInterestReserveFactor": "200000000000000000000",
+            "reserveFactor": "205000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "134036900000000000000000000",
+            "minPositionImpactPoolAmount": "2000000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "10914830105101",
+            "max": "10917730035034"
+          },
+          "long": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "99566",
+          "fundingFeeAmountPerSize": [
+            ["18764342393232472", "6256040940116396"],
+            ["21938060684105861", "17955598532733369"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["354906050145873548", "257466825518868373"],
+            ["479060750268858359", "370206532243595770"]
+          ]
+        }
+      },
+      {
+        "name": "BNB/USD[WSOL-USDC]",
+        "market": {
+          "name": "BNB/USD[WSOL-USDC]",
+          "marketTokenMint": "J42dzcHkgmzU7MARv7k29TrkKaGQ1j2mTaYjkBkN7pn5",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["200000000000000000000000000", "200000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2378234398782",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "220206888",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["4716594306083", "444242523458"],
+          "openInterest": ["5546604091160441893584520", "5500696916858611154457672"],
+          "openInterestInTokens": ["8041171909", "7675728337"],
+          "openInterestByCollateral": [
+            ["0", "5546604091160441893584520"],
+            ["0", "5500696916858611154457672"]
+          ],
+          "positionImpactPoolAmount": "49984818",
+          "borrowingFactor": ["9426532663363405545", "12435674599202770603"],
+          "fundingFeeAmountPerSize": [
+            ["9997580973151142", "4511566406912841"],
+            ["15500192750804407", "3153304156699717"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["79025507316882613", "97672345735073322"],
+            ["165294618750708910", "88399340750634285"]
+          ],
+          "totalBorrowing": ["508191053114455792496720", "684024270717351713400413"],
+          "priceImpactDistributionClock": 1793368959,
+          "borrowingClock": 1793368959,
+          "fundingClock": 1793368959,
+          "fundingFactorPerSecond": "493003481108",
+          "config": {
+            "openInterestReserveFactor": "250000000000000000000",
+            "reserveFactor": "255000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "278000000000000000000000",
+            "minPositionImpactPoolAmount": "50000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "692919698648592",
+            "max": "693096653677439"
+          },
+          "long": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "93839",
+          "fundingFeeAmountPerSize": [
+            ["9997580973151142", "4511566406912841"],
+            ["15500192750804407", "3153304156699717"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["79025507316882613", "97672345735073322"],
+            ["165294618750708910", "88399340750634285"]
+          ]
+        }
+      },
+      {
+        "name": "SOL/USD[USDC-USDC]",
+        "market": {
+          "name": "SOL/USD[USDC-USDC]",
+          "marketTokenMint": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["2499999999999999895779934208", "2499999999999999895779934208"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2378234398782",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "220206888",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["392202984671", "392202984671"],
+          "openInterest": ["60700334840015382678263599", "62075390181418426378493243"],
+          "openInterestInTokens": ["6437309852949", "6500860101349"],
+          "openInterestByCollateral": [
+            ["30350167420007691339131800", "30350167420007691339131799"],
+            ["31037695090709213189246622", "31037695090709213189246621"]
+          ],
+          "positionImpactPoolAmount": "2991731296",
+          "borrowingFactor": ["9031058160118034877", "11023661256725092346"],
+          "fundingFeeAmountPerSize": [
+            ["8600939100138481", "8600939100138481"],
+            ["160003213057450141", "160003213057450141"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["168123756556196818", "168123756556196818"],
+            ["87874492356857599", "87874492356857599"]
+          ],
+          "totalBorrowing": ["5430494520021808520947851", "6801039960029087965143995"],
+          "priceImpactDistributionClock": 1793369759,
+          "borrowingClock": 1793369759,
+          "fundingClock": 1793369759,
+          "fundingFactorPerSecond": "664572960821",
+          "config": {
+            "openInterestReserveFactor": "450000000000000000000",
+            "reserveFactor": "455000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "353982000000000000000000000",
+            "minPositionImpactPoolAmount": "3000000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "69999999999999991808",
+            "maxPnlFactorForShortWithdrawal": "69999999999999991808",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "long": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "719449",
+          "fundingFeeAmountPerSize": [
+            ["8600939100138481", "8600939100138481"],
+            ["160003213057450141", "160003213057450141"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["168123756556196818", "168123756556196818"],
+            ["87874492356857599", "87874492356857599"]
+          ]
+        }
+      },
+      {
+        "name": "BTC/USD[USDC-USDC]",
+        "market": {
+          "name": "BTC/USD[USDC-USDC]",
+          "marketTokenMint": "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8",
+          "longTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["2499999999999999895779934208", "2499999999999999895779934208"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "475646879000",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "44041378",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["481994657817", "481994657816"],
+          "openInterest": ["105278067745996092219432910", "111629357110609753748121412"],
+          "openInterestInTokens": ["1369416610", "1425362820"],
+          "openInterestByCollateral": [
+            ["52639033872998046109716455", "52639033872998046109716455"],
+            ["55814678555304876874060706", "55814678555304876874060706"]
+          ],
+          "positionImpactPoolAmount": "398423",
+          "borrowingFactor": ["9846937465422561029", "12983655873682279449"],
+          "fundingFeeAmountPerSize": [
+            ["2716642847744483", "2716642847744483"],
+            ["7114694830969815", "7114694830969815"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["4225200065419551", "4225200065419551"],
+            ["130803151918260868", "130803151918260868"]
+          ],
+          "totalBorrowing": ["10302594796307988822179866", "14476389956304380722253582"],
+          "priceImpactDistributionClock": 1793369766,
+          "borrowingClock": 1793369766,
+          "fundingClock": 1793369766,
+          "fundingFactorPerSecond": "-473461948570",
+          "config": {
+            "openInterestReserveFactor": "550000000000000000000",
+            "reserveFactor": "555000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "10600000000000000000000",
+            "minPositionImpactPoolAmount": "400000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "69999999999999991808",
+            "maxPnlFactorForShortWithdrawal": "69999999999999991808",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "76630836968676315",
+            "max": "76630836968676315"
+          },
+          "long": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "350284",
+          "fundingFeeAmountPerSize": [
+            ["2716642847744483", "2716642847744483"],
+            ["7114694830969815", "7114694830969815"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["4225200065419551", "4225200065419551"],
+            ["130803151918260868", "130803151918260868"]
+          ]
+        }
+      },
+      {
+        "name": "BONK/USD[WSOL-USDC]",
+        "market": {
+          "name": "BONK/USD[WSOL-USDC]",
+          "marketTokenMint": "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["100000000000000000000000000", "100000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278538",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "246248266",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["403478878511", "37439956759"],
+          "openInterest": ["105878000096508770967527", "678434478201953090437120"],
+          "openInterestInTokens": ["34391259533995", "231157875108909"],
+          "openInterestByCollateral": [
+            ["0", "105878000096508770967527"],
+            ["0", "678434478201953090437120"]
+          ],
+          "positionImpactPoolAmount": "10367261657708",
+          "borrowingFactor": ["8008397271293830730", "7152360739064969415"],
+          "fundingFeeAmountPerSize": [
+            ["165374084389288007", "5127089961221305"],
+            ["10008592268794008", "14122582162246012"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["77020156680915578", "453540919591110485"],
+            ["1230828007486289956", "371740885178802636"]
+          ],
+          "totalBorrowing": ["8470041096961529608324", "48519172885504179934536"],
+          "priceImpactDistributionClock": 1793368385,
+          "borrowingClock": 1793368385,
+          "fundingClock": 1793368385,
+          "fundingFactorPerSecond": "1324453150629",
+          "config": {
+            "openInterestReserveFactor": "200000000000000000000",
+            "reserveFactor": "205000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "0",
+            "minPositionImpactPoolAmount": "50000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "2900546344",
+            "max": "2903232653"
+          },
+          "long": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "34163",
+          "fundingFeeAmountPerSize": [
+            ["165374084389288007", "5127089961221305"],
+            ["10008592268794008", "14122582162246012"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["77020156680915578", "453540919591110485"],
+            ["1230828007486289956", "371740885178802636"]
+          ]
+        }
+      },
+      {
+        "name": "DOGE/USD[WSOL-USDC]",
+        "market": {
+          "name": "DOGE/USD[WSOL-USDC]",
+          "marketTokenMint": "BjEpsvvjca1cQ6KGaeULn6sp8hPsP7XhRvUhepPX181c",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1426940639269", "1426940639269"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["200000000000000000000000000", "200000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2378234398782",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "220206888",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["4304413341810", "430890359443"],
+          "openInterest": ["3994005710827292346522624", "4223036320604161865591088"],
+          "openInterestInTokens": ["53080689413223", "55339392506335"],
+          "openInterestByCollateral": [
+            ["0", "3994005710827292346522624"],
+            ["0", "4223036320604161865591088"]
+          ],
+          "positionImpactPoolAmount": "272234136455",
+          "borrowingFactor": ["10397814044693897607", "13559682379906678074"],
+          "fundingFeeAmountPerSize": [
+            ["7137162991574266", "5569722506332744"],
+            ["9958401482421925", "3974603910047210"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["615704847445934970", "181360499458691509"],
+            ["119908415127267532", "100978176019431959"]
+          ],
+          "totalBorrowing": ["415277398800089032740234", "572523410906379997110771"],
+          "priceImpactDistributionClock": 1793368690,
+          "borrowingClock": 1793369683,
+          "fundingClock": 1793368690,
+          "fundingFactorPerSecond": "1411470567286",
+          "config": {
+            "openInterestReserveFactor": "200000000000000000000",
+            "reserveFactor": "205000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "8956713000000000000000000000",
+            "minPositionImpactPoolAmount": "272700000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "74831280915",
+            "max": "74852363205"
+          },
+          "long": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "136660",
+          "fundingFeeAmountPerSize": [
+            ["7137162991574266", "5569722506332744"],
+            ["9958401482421925", "3974603910047210"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["615704847445934970", "181360499458691509"],
+            ["119908415127267532", "100978176019431959"]
+          ]
+        }
+      },
+      {
+        "name": "LTC/USD[WSOL-USDC]",
+        "market": {
+          "name": "LTC/USD[WSOL-USDC]",
+          "marketTokenMint": "527jUvh7guN8Fip96TeJhKWreeWdcwD9CFFwXG9mTiHQ",
+          "longTokenMint": "So11111111111111111111111111111111111111112",
+          "shortTokenMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "skipBorrowingFeeForSmallerSide": true,
+          "ignoreOpenInterestForUsageFactor": false,
+          "borrowingFeeFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeExponent": ["100000000000000000000", "100000000000000000000"],
+          "borrowingFeeOptimalUsageFactor": ["75000000000000000000", "75000000000000000000"],
+          "borrowingFeeBaseFactor": ["1585489599188", "1585489599188"],
+          "borrowingFeeAboveOptimalUsageFactor": ["3170979198376", "3170979198376"],
+          "maxOpenInterest": ["150000000000000000000000000", "150000000000000000000000000"],
+          "funding": {
+            "exponent": "100000000000000000000",
+            "factor": "2000000000000",
+            "maxFactorPerSecond": "2853881278538",
+            "minFactorPerSecond": "31709791983",
+            "increaseFactorPerSecond": "246248266",
+            "decreaseFactorPerSecond": "0",
+            "thresholdForStableFunding": "4000000000000000000",
+            "thresholdForDecreaseFunding": "0"
+          },
+          "primary": ["297209259270", "29696307495"],
+          "openInterest": ["1117362094724552973832275", "587973045663866488625674"],
+          "openInterestInTokens": ["20223381001", "10554347524"],
+          "openInterestByCollateral": [
+            ["0", "1117362094724552973832275"],
+            ["164407646943414118952240", "423565398720452369673434"]
+          ],
+          "positionImpactPoolAmount": "657256373",
+          "borrowingFactor": ["9649466018643167131", "10928846667458943412"],
+          "fundingFeeAmountPerSize": [
+            ["23306364036950770", "9749374940687671"],
+            ["27931604925450753", "9221145729587939"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["94355559200498980", "137757215124012739"],
+            ["331337369785838462", "258959983796007718"]
+          ],
+          "totalBorrowing": ["107691933081533187299446", "64248004960614169169771"],
+          "priceImpactDistributionClock": 1793360502,
+          "borrowingClock": 1793360502,
+          "fundingClock": 1793360502,
+          "fundingFactorPerSecond": "2853881278538",
+          "config": {
+            "openInterestReserveFactor": "200000000000000000000",
+            "reserveFactor": "205000000000000000000",
+            "borrowingFeeReceiverFactor": "99000000000000000000",
+            "positionImpactDistributeFactor": "7931700000000000000000000",
+            "minPositionImpactPoolAmount": "700000000",
+            "maxPnlFactorForLongDeposit": "90000000000000000000",
+            "maxPnlFactorForShortDeposit": "90000000000000000000",
+            "maxPnlFactorForLongWithdrawal": "70000000000000000000",
+            "maxPnlFactorForShortWithdrawal": "70000000000000000000",
+            "maxPnlFactorForLongTrader": "90000000000000000000",
+            "maxPnlFactorForShortTrader": "90000000000000000000"
+          }
+        },
+        "prices": {
+          "index": {
+            "min": "54832714592767",
+            "max": "54849759310269"
+          },
+          "long": {
+            "min": "9426857683730",
+            "max": "9428531069629"
+          },
+          "short": {
+            "min": "99966953550792",
+            "max": "99966953550792"
+          }
+        },
+        "expected": {
+          "tradeCount": "26583",
+          "fundingFeeAmountPerSize": [
+            ["23306364036950770", "9749374940687671"],
+            ["27931604925450753", "9221145729587939"]
+          ],
+          "claimableFundingAmountPerSize": [
+            ["94355559200498980", "137757215124012739"],
+            ["331337369785838462", "258959983796007718"]
+          ]
+        }
+      }
+    ],
+    "positions": [
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] long, long-token collateral",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "9XUH3oy5kjA4UjFeB7RM6bGJCWeWN6GPYAKVmrKRVaYz",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "So11111111111111111111111111111111111111112",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793369244,
+          "tradeId": "99566",
+          "increasedAt": 1793369250,
+          "updatedAtSlot": "463313024",
+          "decreasedAt": 0,
+          "sizeInTokens": "6914715252",
+          "collateralAmount": "398970753",
+          "sizeInUsd": "75976386901010499323600",
+          "borrowingFactor": "13633352433663977370",
+          "fundingFeeAmountPerSize": "18764342393232472",
+          "longTokenClaimableFundingAmountPerSize": "354906050145873548",
+          "shortTokenClaimableFundingAmountPerSize": "257466825518868373",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "0",
+          "claimableLongTokenAmount": "396",
+          "claimableShortTokenAmount": "575",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] long, short-token collateral",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "C8GZZ77oe38E5ffDj3vh3wmBZuE9av1CFxdvUjzABd6P",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793332964,
+          "tradeId": "99556",
+          "increasedAt": 1793338401,
+          "updatedAtSlot": "463168501",
+          "decreasedAt": 1793336538,
+          "sizeInTokens": "70501814817",
+          "collateralAmount": "262888371",
+          "sizeInUsd": "775453869210755234004992",
+          "borrowingFactor": "13630603234580459791",
+          "fundingFeeAmountPerSize": "6256040940116396",
+          "longTokenClaimableFundingAmountPerSize": "354905837930393872",
+          "shortTokenClaimableFundingAmountPerSize": "257466537861914944",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "21318770665443688612",
+          "claimableLongTokenAmount": "168613",
+          "claimableShortTokenAmount": "228942",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] short, long-token collateral",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "B2NpZ7W5LX1gYs7exjrMUqmrP7XxiSaVVZYAfthHTNet",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "So11111111111111111111111111111111111111112",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793265355,
+          "tradeId": "98917",
+          "increasedAt": 1793265360,
+          "updatedAtSlot": "462827067",
+          "decreasedAt": 0,
+          "sizeInTokens": "28709737021",
+          "collateralAmount": "4106937711",
+          "sizeInUsd": "330000000000000000000000",
+          "borrowingFactor": "15022177149777735427",
+          "fundingFeeAmountPerSize": "21928161080164642",
+          "longTokenClaimableFundingAmountPerSize": "479056600466479565",
+          "shortTokenClaimableFundingAmountPerSize": "370204229772802388",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "21630254479853444700",
+          "claimableLongTokenAmount": "1369434",
+          "claimableShortTokenAmount": "759815",
+          "fundingFeeAmount": "3290450"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] short, short-token collateral",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "BDaPGURpmaHbSK6MPV11fLAEQSVLNxsjuKxr8wvPjc6Q",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793337169,
+          "tradeId": "99550",
+          "increasedAt": 1793337184,
+          "updatedAtSlot": "463162812",
+          "decreasedAt": 0,
+          "sizeInTokens": "146291018242",
+          "collateralAmount": "406004312",
+          "sizeInUsd": "1625929977606773902671872",
+          "borrowingFactor": "15028472833897584121",
+          "fundingFeeAmountPerSize": "17955262475959875",
+          "longTokenClaimableFundingAmountPerSize": "479060750268858359",
+          "shortTokenClaimableFundingAmountPerSize": "370206532243595770",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "4210157878911309677",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "557363"
+        }
+      },
+      {
+        "picked": "two-token, longs pay: BNB/USD[WSOL-USDC] long",
+        "market": "BNB/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "BhdCJL6GxQkpM6nsinhYkoTvQrPg6WSiDANQvCs7LYDc",
+          "marketToken": "J42dzcHkgmzU7MARv7k29TrkKaGQ1j2mTaYjkBkN7pn5",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793360724,
+          "tradeId": "93825",
+          "increasedAt": 1793361380,
+          "updatedAtSlot": "463276176",
+          "decreasedAt": 0,
+          "sizeInTokens": "2095918446",
+          "collateralAmount": "366280507",
+          "sizeInUsd": "1466000000000000046137344",
+          "borrowingFactor": "9426046877263230986",
+          "fundingFeeAmountPerSize": "4511191138770868",
+          "longTokenClaimableFundingAmountPerSize": "79025507316882613",
+          "shortTokenClaimableFundingAmountPerSize": "97672345735073322",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "7978542890262669471",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "609211"
+        }
+      },
+      {
+        "picked": "two-token, longs pay: BNB/USD[WSOL-USDC] short",
+        "market": "BNB/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "DytdxpFiMiGNGZp7fvHpNGB4GQXeDQTbBfkFhqFMwRdY",
+          "marketToken": "J42dzcHkgmzU7MARv7k29TrkKaGQ1j2mTaYjkBkN7pn5",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793331461,
+          "tradeId": "93762",
+          "increasedAt": 1793331464,
+          "updatedAtSlot": "463136015",
+          "decreasedAt": 0,
+          "sizeInTokens": "1217326120",
+          "collateralAmount": "229501001",
+          "sizeInUsd": "870400000000000000000000",
+          "borrowingFactor": "12435417440084748886",
+          "fundingFeeAmountPerSize": "3153304156699717",
+          "longTokenClaimableFundingAmountPerSize": "165294618750708910",
+          "shortTokenClaimableFundingAmountPerSize": "88397670130228338",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "2238312963261024768",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "1489470",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, longs pay: SOL/USD[USDC-USDC] long",
+        "market": "SOL/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "HQBwi3hFREmFG9oV8cicW4kZfhsbcMFJmWgQqiUg56HZ",
+          "marketToken": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793368440,
+          "tradeId": "719366",
+          "increasedAt": 1793368455,
+          "updatedAtSlot": "463309312",
+          "decreasedAt": 0,
+          "sizeInTokens": "330004803795",
+          "collateralAmount": "589251831",
+          "sizeInUsd": "3130999999999999750438912",
+          "borrowingFactor": "9030467679263227763",
+          "fundingFeeAmountPerSize": "8600853062065299",
+          "longTokenClaimableFundingAmountPerSize": "168123756556196818",
+          "shortTokenClaimableFundingAmountPerSize": "168123756556196818",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "18487955564010737866",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "272924"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, longs pay: SOL/USD[USDC-USDC] short",
+        "market": "SOL/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "DHGMnYuDnQrEjMHzm1m3MXjv24q95Df8v6fQYRVdVcWy",
+          "marketToken": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793367779,
+          "tradeId": "719268",
+          "increasedAt": 1793367788,
+          "updatedAtSlot": "463306196",
+          "decreasedAt": 0,
+          "sizeInTokens": "327204682818",
+          "collateralAmount": "535939421",
+          "sizeInUsd": "3109999999999999802867712",
+          "borrowingFactor": "11023436718643013521",
+          "fundingFeeAmountPerSize": "160003213057450141",
+          "longTokenClaimableFundingAmountPerSize": "87874423266717962",
+          "shortTokenClaimableFundingAmountPerSize": "87874423266717962",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "7248567287979056740",
+          "claimableLongTokenAmount": "216588",
+          "claimableShortTokenAmount": "216588",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, shorts pay: BTC/USD[USDC-USDC] long",
+        "market": "BTC/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "4Js4PZZTkAdG1DBYAfEd1VNvYiSdQootCqt9GvbvsB9v",
+          "marketToken": "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793320417,
+          "tradeId": "350259",
+          "increasedAt": 1793368640,
+          "updatedAtSlot": "463310180",
+          "decreasedAt": 1793331907,
+          "sizeInTokens": "42396422",
+          "collateralAmount": "1005485495",
+          "sizeInUsd": "3263973357149733930401792",
+          "borrowingFactor": "9846937465422561029",
+          "fundingFeeAmountPerSize": "2716642847744483",
+          "longTokenClaimableFundingAmountPerSize": "4225171995854837",
+          "shortTokenClaimableFundingAmountPerSize": "4225171995854837",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "0",
+          "claimableLongTokenAmount": "92437",
+          "claimableShortTokenAmount": "92437",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, shorts pay: BTC/USD[USDC-USDC] short",
+        "market": "BTC/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "S5dFzyaap4xQVArLBawHKtq8sqvpS1o5czsqDg6s6pd",
+          "marketToken": "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793315413,
+          "tradeId": "348979",
+          "increasedAt": 1793315417,
+          "updatedAtSlot": "463060930",
+          "decreasedAt": 0,
+          "sizeInTokens": "78359782",
+          "collateralAmount": "309585526",
+          "sizeInUsd": "6165019362568678993240700",
+          "borrowingFactor": "12954411445301541427",
+          "fundingFeeAmountPerSize": "7112128879417349",
+          "longTokenClaimableFundingAmountPerSize": "130803151918260868",
+          "shortTokenClaimableFundingAmountPerSize": "130803151918260868",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "1803295231177454300703",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "15822061"
+        }
+      },
+      {
+        "picked": "dust: the smallest open position",
+        "market": "BONK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "EezHuD81P2tT8EAPACAXU82dVSMG1bxQVPwT2QQeuH7E",
+          "marketToken": "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1776211536,
+          "tradeId": "4043",
+          "increasedAt": 1776211538,
+          "updatedAtSlot": "415535070",
+          "decreasedAt": 1777108277,
+          "sizeInTokens": "17012857165",
+          "collateralAmount": "3030553",
+          "sizeInUsd": "100249000000000000000",
+          "borrowingFactor": "2256178540139345487",
+          "fundingFeeAmountPerSize": "12050862939595971",
+          "longTokenClaimableFundingAmountPerSize": "1132511425357136635",
+          "shortTokenClaimableFundingAmountPerSize": "335738292034505943",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "4908574073673003205",
+          "claimableLongTokenAmount": "9856139",
+          "claimableShortTokenAmount": "3609226",
+          "fundingFeeAmount": "207688"
+        }
+      },
+      {
+        "picked": "borrowing and funding clocks differ",
+        "market": "DOGE/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "F9D6HZJiE8uap3gQDwr3qQnmoZgw6TDppgvEbNhCdeWK",
+          "marketToken": "BjEpsvvjca1cQ6KGaeULn6sp8hPsP7XhRvUhepPX181c",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793367998,
+          "tradeId": "136658",
+          "increasedAt": 1793368004,
+          "updatedAtSlot": "463307205",
+          "decreasedAt": 0,
+          "sizeInTokens": "19845190558302",
+          "collateralAmount": "485355632",
+          "sizeInUsd": "1491500000000000047185920",
+          "borrowingFactor": "10397814044693897607",
+          "fundingFeeAmountPerSize": "5569625474467500",
+          "longTokenClaimableFundingAmountPerSize": "615704847445934970",
+          "shortTokenClaimableFundingAmountPerSize": "181360499458691509",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "0",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "372345"
+        }
+      },
+      {
+        "picked": "size 0: an account opened for an order that never filled",
+        "market": "LTC/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "BWu5Xmj7Dih1nsrcNXDuRMoUVTGGmbugS5Dp4xyVobPE",
+          "marketToken": "527jUvh7guN8Fip96TeJhKWreeWdcwD9CFFwXG9mTiHQ",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1778501827,
+          "tradeId": "0",
+          "increasedAt": 0,
+          "updatedAtSlot": "0",
+          "decreasedAt": 0,
+          "sizeInTokens": "0",
+          "collateralAmount": "0",
+          "sizeInUsd": "0",
+          "borrowingFactor": "0",
+          "fundingFeeAmountPerSize": "0",
+          "longTokenClaimableFundingAmountPerSize": "0",
+          "shortTokenClaimableFundingAmountPerSize": "0",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "0",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] long, long-token collateral, synthetic 1e16 USD size",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "9XUH3oy5kjA4UjFeB7RM6bGJCWeWN6GPYAKVmrKRVaYz",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "So11111111111111111111111111111111111111112",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793369244,
+          "tradeId": "99566",
+          "increasedAt": 1793369250,
+          "updatedAtSlot": "463313024",
+          "decreasedAt": 0,
+          "sizeInTokens": "6914715252",
+          "collateralAmount": "398970753",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "13633352433663977370",
+          "fundingFeeAmountPerSize": "18764342393232472",
+          "longTokenClaimableFundingAmountPerSize": "354906050145873548",
+          "shortTokenClaimableFundingAmountPerSize": "257466825518868373",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "0",
+          "claimableLongTokenAmount": "5222839986000000",
+          "claimableShortTokenAmount": "7580308149000000",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] long, short-token collateral, synthetic 1e16 USD size",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "C8GZZ77oe38E5ffDj3vh3wmBZuE9av1CFxdvUjzABd6P",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793332964,
+          "tradeId": "99556",
+          "increasedAt": 1793338401,
+          "updatedAtSlot": "463168501",
+          "decreasedAt": 1793336538,
+          "sizeInTokens": "70501814817",
+          "collateralAmount": "262888371",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "13630603234580459791",
+          "fundingFeeAmountPerSize": "6256040940116396",
+          "longTokenClaimableFundingAmountPerSize": "354905837930393872",
+          "shortTokenClaimableFundingAmountPerSize": "257466537861914944",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "27491990835175790000000000000000",
+          "claimableLongTokenAmount": "217438319662000000",
+          "claimableShortTokenAmount": "295237261578000000",
+          "fundingFeeAmount": "0"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] short, long-token collateral, synthetic 1e16 USD size",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "B2NpZ7W5LX1gYs7exjrMUqmrP7XxiSaVVZYAfthHTNet",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "So11111111111111111111111111111111111111112",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793265355,
+          "tradeId": "98917",
+          "increasedAt": 1793265360,
+          "updatedAtSlot": "462827067",
+          "decreasedAt": 0,
+          "sizeInTokens": "28709737021",
+          "collateralAmount": "4106937711",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "15022177149777735427",
+          "fundingFeeAmountPerSize": "21928161080164642",
+          "longTokenClaimableFundingAmountPerSize": "479056600466479565",
+          "shortTokenClaimableFundingAmountPerSize": "370204229772802388",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "65546225696525590000000000000000",
+          "claimableLongTokenAmount": "4149802378794000000",
+          "claimableShortTokenAmount": "2302470793382000000",
+          "fundingFeeAmount": "9971058010920000000"
+        }
+      },
+      {
+        "picked": "two-token, shorts pay: LINK/USD[WSOL-USDC] short, short-token collateral, synthetic 1e16 USD size",
+        "market": "LINK/USD[WSOL-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "BDaPGURpmaHbSK6MPV11fLAEQSVLNxsjuKxr8wvPjc6Q",
+          "marketToken": "3pHXv5NsrxwkDdus2e1rTHoaNK9zUUnGwcwg1oeeCGzd",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793337169,
+          "tradeId": "99550",
+          "increasedAt": 1793337184,
+          "updatedAtSlot": "463162812",
+          "decreasedAt": 0,
+          "sizeInTokens": "146291018242",
+          "collateralAmount": "406004312",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "15028472833897584121",
+          "fundingFeeAmountPerSize": "17955262475959875",
+          "longTokenClaimableFundingAmountPerSize": "479060750268858359",
+          "shortTokenClaimableFundingAmountPerSize": "370206532243595770",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "2589384498038650000000000000000",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "342796069755000000"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, longs pay: SOL/USD[USDC-USDC] long, synthetic 1e16 USD size",
+        "market": "SOL/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "HQBwi3hFREmFG9oV8cicW4kZfhsbcMFJmWgQqiUg56HZ",
+          "marketToken": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 1,
+          "isLong": true,
+          "createdAt": 1793368440,
+          "tradeId": "719366",
+          "increasedAt": 1793368455,
+          "updatedAtSlot": "463309312",
+          "decreasedAt": 0,
+          "sizeInTokens": "330004803795",
+          "collateralAmount": "589251831",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "9030467679263227763",
+          "fundingFeeAmountPerSize": "8600853062065299",
+          "longTokenClaimableFundingAmountPerSize": "168123756556196818",
+          "shortTokenClaimableFundingAmountPerSize": "168123756556196818",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "5904808548071140000000000000000",
+          "claimableLongTokenAmount": "0",
+          "claimableShortTokenAmount": "0",
+          "fundingFeeAmount": "87168149391000000"
+        }
+      },
+      {
+        "picked": "USDC-USDC market, longs pay: SOL/USD[USDC-USDC] short, synthetic 1e16 USD size",
+        "market": "SOL/USD[USDC-USDC]",
+        "position": {
+          "store": "CTDLvGGXnoxvqLyTpGzdGLg9pD6JexKxKXSV8tqqo8bN",
+          "owner": "DHGMnYuDnQrEjMHzm1m3MXjv24q95Df8v6fQYRVdVcWy",
+          "marketToken": "6UU9sF5fryafHDYPcmVcV7ucfnYs6iMVcvb8p7SBQgTc",
+          "collateralToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "kind": 2,
+          "isLong": false,
+          "createdAt": 1793367779,
+          "tradeId": "719268",
+          "increasedAt": 1793367788,
+          "updatedAtSlot": "463306196",
+          "decreasedAt": 0,
+          "sizeInTokens": "327204682818",
+          "collateralAmount": "535939421",
+          "sizeInUsd": "1000000000000000000000000000000000000",
+          "borrowingFactor": "11023436718643013521",
+          "fundingFeeAmountPerSize": "160003213057450141",
+          "longTokenClaimableFundingAmountPerSize": "87874423266717962",
+          "shortTokenClaimableFundingAmountPerSize": "87874423266717962",
+          "reservedInUse": false
+        },
+        "expected": {
+          "borrowingFeeValue": "2330729031504520000000000000000",
+          "claimableLongTokenAmount": "69642661369000000",
+          "claimableShortTokenAmount": "69642661369000000",
+          "fundingFeeAmount": "0"
+        }
+      }
+    ]
+  },
+  "feeDiscount": {
+    "config": {
+      "maxRank": 9,
+      "byRank": [
+        "0",
+        "2000000000000000000",
+        "3000000000000000000",
+        "4000000000000000000",
+        "5000000000000000000",
+        "6000000000000000000",
+        "7000000000000000000",
+        "8000000000000000000",
+        "9000000000000000000",
+        "10000000000000000000",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "referredUser": "10000000000000000000"
+    },
+    "expected": [
+      {
+        "factor": "0",
+        "rank": 0,
+        "referred": false
+      },
+      {
+        "factor": "10000000000000000000",
+        "rank": 0,
+        "referred": true
+      },
+      {
+        "factor": "2000000000000000000",
+        "rank": 1,
+        "referred": false
+      },
+      {
+        "factor": "11800000000000000000",
+        "rank": 1,
+        "referred": true
+      },
+      {
+        "factor": "3000000000000000000",
+        "rank": 2,
+        "referred": false
+      },
+      {
+        "factor": "12700000000000000000",
+        "rank": 2,
+        "referred": true
+      },
+      {
+        "factor": "4000000000000000000",
+        "rank": 3,
+        "referred": false
+      },
+      {
+        "factor": "13600000000000000000",
+        "rank": 3,
+        "referred": true
+      },
+      {
+        "factor": "5000000000000000000",
+        "rank": 4,
+        "referred": false
+      },
+      {
+        "factor": "14500000000000000000",
+        "rank": 4,
+        "referred": true
+      },
+      {
+        "factor": "6000000000000000000",
+        "rank": 5,
+        "referred": false
+      },
+      {
+        "factor": "15400000000000000000",
+        "rank": 5,
+        "referred": true
+      },
+      {
+        "factor": "7000000000000000000",
+        "rank": 6,
+        "referred": false
+      },
+      {
+        "factor": "16300000000000000000",
+        "rank": 6,
+        "referred": true
+      },
+      {
+        "factor": "8000000000000000000",
+        "rank": 7,
+        "referred": false
+      },
+      {
+        "factor": "17200000000000000000",
+        "rank": 7,
+        "referred": true
+      },
+      {
+        "factor": "9000000000000000000",
+        "rank": 8,
+        "referred": false
+      },
+      {
+        "factor": "18100000000000000000",
+        "rank": 8,
+        "referred": true
+      },
+      {
+        "factor": "10000000000000000000",
+        "rank": 9,
+        "referred": false
+      },
+      {
+        "factor": "19000000000000000000",
+        "rank": 9,
+        "referred": true
+      }
+    ]
+  }
+}

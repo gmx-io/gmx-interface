@@ -4,9 +4,33 @@ import type { TokenData } from "utils/tokens/types";
 
 import { GMSOL_PRECISION_SCALE } from "./constants";
 
-export { GMSOL_PRECISION_SCALE } from "./constants";
-export { getGmsolFractionalPower } from "./numbers";
-export type { GmsolMarketConfig } from "./types";
+export { GMSOL_PRECISION, GMSOL_PRECISION_SCALE } from "./constants";
+export { getGmsolOrderFeeDiscountFactor } from "./fees";
+export {
+  getGmsolBorrowingFactorPerSecond,
+  getGmsolMarketStatus,
+  getGmsolNextFunding,
+  getGmsolNextPositionImpactPoolAmount,
+  getGmsolPendingBorrowingFees,
+  getGmsolPoolValue,
+} from "./markets";
+export { getGmsolFractionalPower, gmsolMath } from "./numbers";
+export { getGmsolPendingPositionFees } from "./positions";
+export type {
+  GmsolFeeDiscountConfig,
+  GmsolFundingParams,
+  GmsolMarketConfig,
+  GmsolMarketPrices,
+  GmsolMarketState,
+  GmsolMarketStatus,
+  GmsolNextFunding,
+  GmsolPendingPositionFees,
+  GmsolPerSide,
+  GmsolPnlFactorKind,
+  GmsolPositionState,
+  GmsolPriceRange,
+  GmsolSide,
+} from "./types";
 
 export function getGmsolUsdAmount(value: bigint): bigint {
   return bigMath.mulDiv(value, 1n, GMSOL_PRECISION_SCALE) * GMSOL_PRECISION_SCALE;
