@@ -527,6 +527,7 @@ function getOptimalDecrease(q: QueryFunction<SyntheticsState>, keepLeverage: boo
     receiveToken,
     forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     isTwap: tradeFlags.isTwap,
+    numberOfParts: tradeFlags.isTwap ? q(selectPositionSellerNumberOfParts) : undefined,
     findSwapPath,
     findSwapPathFromPnl,
     marketsInfoData,

@@ -184,7 +184,12 @@ export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
   const adjustedMinOutputAmount = (minOutputAmount * PRECISION) / expandDecimals(1, toToken.decimals);
 
   const areBothStablecoins = fromToken.isStable && toToken.isStable;
-  const isFromAmountLarger = adjustedFromAmount > adjustedToAmount;
+  const outputIfFromIsSmallest = triggerPrice === 0n ? 0n : (adjustedFromAmount * PRECISION) / triggerPrice;
+  const outputIfFromIsLargest = (adjustedFromAmount * triggerPrice) / PRECISION;
+  const isFromSmallestToken =
+    triggerPrice === 0n
+      ? adjustedFromAmount > adjustedToAmount
+      : (adjustedMinOutputAmount - outputIfFromIsSmallest) * BASIS_POINTS_DIVISOR_BIGINT < outputIfFromIsSmallest;
 
   if (areBothStablecoins) {
     smallestToken = fromToken;
@@ -192,7 +197,7 @@ export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
     largestAmount = adjustedFromAmount;
     smallestAmount = adjustedToAmount;
   } else {
-    [smallestToken, largestToken, largestAmount, smallestAmount] = isFromAmountLarger
+    [smallestToken, largestToken, largestAmount, smallestAmount] = isFromSmallestToken
       ? [fromToken, toToken, adjustedFromAmount, adjustedToAmount]
       : [toToken, fromToken, adjustedToAmount, adjustedFromAmount];
   }
@@ -202,10 +207,8 @@ export function getTokensRatioByMinOutputAmountAndTriggerPrice(p: {
     allowedSwapSlippageBps = DEFAULT_ALLOWED_SWAP_SLIPPAGE_BPS;
     acceptablePrice = ratio;
   } else {
-    const shouldDivide = areBothStablecoins ? true : isFromAmountLarger;
-    const outputAtTriggerPrice = shouldDivide
-      ? (adjustedFromAmount * PRECISION) / triggerPrice
-      : (adjustedFromAmount * triggerPrice) / PRECISION;
+    const shouldDivide = areBothStablecoins ? true : isFromSmallestToken;
+    const outputAtTriggerPrice = shouldDivide ? outputIfFromIsSmallest : outputIfFromIsLargest;
 
     allowedSwapSlippageBps =
       ((outputAtTriggerPrice - adjustedMinOutputAmount) * BASIS_POINTS_DIVISOR_BIGINT) / outputAtTriggerPrice;
@@ -272,6 +275,23 @@ export function getTokensRatioByPrice(p: {
   const ratio = (largestPrice * PRECISION) / smallestPrice;
 
   return { ratio, largestToken, smallestToken };
+}
+
+export function getTokensRatioByPriceInDirection(p: {
+  fromToken: TokenData;
+  toToken: TokenData;
+  largestTokenAddress: string;
+}): TokensRatio {
+  const { fromToken, toToken, largestTokenAddress } = p;
+
+  const [largestToken, smallestToken] =
+    largestTokenAddress === fromToken.address ? [fromToken, toToken] : [toToken, fromToken];
+
+  return {
+    ratio: (largestToken.prices.minPrice * PRECISION) / smallestToken.prices.minPrice,
+    largestToken,
+    smallestToken,
+  };
 }
 
 export function getGmToken(chainId: ContractsChainId, marketTokenAddress: string): Token {
