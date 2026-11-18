@@ -18,6 +18,7 @@ import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalCo
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
+import { NotificationsContextProvider } from "context/NotificationsContext/NotificationsContextProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -96,6 +97,7 @@ function App() {
   // Solana and resume on EVM without dropping receipt or replacement tracking.
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
+  app = <NotificationsContextProvider>{app}</NotificationsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
   app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
