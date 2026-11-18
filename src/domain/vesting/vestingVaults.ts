@@ -26,11 +26,19 @@ export type OrphanVaultData = OrphanVestingData & {
   isOpen: boolean;
   isDepositPaused: boolean;
   isClaimPaused: boolean;
+  isFrozen: boolean;
   freePairAmount: bigint;
   unbackedPairAmount: bigint;
 };
 
-export type OrphanDepositError = "notOpen" | "closed" | "paused" | "enterAmount" | "maxExceeded" | "insufficientStaked";
+export type OrphanDepositError =
+  | "notOpen"
+  | "closed"
+  | "paused"
+  | "frozen"
+  | "enterAmount"
+  | "maxExceeded"
+  | "insufficientStaked";
 
 // vestingInfo is the 12-value layout of RatioVesterReader.getVestingInfo for a single vester
 export function parseOrphanVestingInfo({
@@ -108,8 +116,10 @@ export function getOrphanDepositState({
   now: bigint;
 }): {
   maxDepositAmount: bigint;
+  maxByPairAmount: bigint;
   additionalPairAmount: bigint;
   stakeShortfallAmount: bigint;
+  walletShortfallAmount: bigint;
   error: OrphanDepositError | undefined;
 } {
   const leftAmount = data.eligibleAmount > data.usedAmount ? data.eligibleAmount - data.usedAmount : 0n;
@@ -145,6 +155,8 @@ export function getOrphanDepositState({
     error = "closed";
   } else if (data.isDepositPaused) {
     error = "paused";
+  } else if (data.isFrozen) {
+    error = "frozen";
   } else if (depositAmount === undefined || depositAmount === 0n) {
     error = "enterAmount";
   } else if (depositAmount > walletEsGmxBalance || depositAmount > leftAmount) {
@@ -153,7 +165,102 @@ export function getOrphanDepositState({
     error = "insufficientStaked";
   }
 
-  return { maxDepositAmount, additionalPairAmount, stakeShortfallAmount, error };
+  const walletShortfallAmount = leftAmount > walletEsGmxBalance ? leftAmount - walletEsGmxBalance : 0n;
+
+  return {
+    maxDepositAmount,
+    maxByPairAmount,
+    additionalPairAmount,
+    stakeShortfallAmount,
+    walletShortfallAmount,
+    error,
+  };
+}
+
+// unstaking esGMX burns as much free sbfGMX, so it lets more be vested only while wallet esGMX is the limit, and only
+// until the smaller reserve and the bigger wallet balance meet: (maxByPair - wallet) * ratio / (ratio + 1)
+export function getOrphanWalletShortfallActions({
+  data,
+  walletEsGmxBalance,
+  maxByPairAmount,
+  walletShortfallAmount,
+  stakedEsGmxAmount,
+  pendingUnstakeAmount,
+}: {
+  data: OrphanVaultData;
+  walletEsGmxBalance: bigint;
+  maxByPairAmount: bigint;
+  walletShortfallAmount: bigint;
+  stakedEsGmxAmount: bigint;
+  pendingUnstakeAmount: bigint;
+}): { isWalletLimited: boolean; unstakeAmount: bigint } {
+  const isWalletLimited = walletShortfallAmount > 0n && walletEsGmxBalance < maxByPairAmount;
+
+  if (!isWalletLimited) {
+    return { isWalletLimited, unstakeAmount: 0n };
+  }
+
+  const balancedAmount =
+    ((maxByPairAmount - walletEsGmxBalance) * data.pairRatioFactor) /
+    (data.pairRatioFactor + RATIO_VESTER_PAIR_RATIO_PRECISION);
+  const neededAmount = bigMath.min(balancedAmount, walletShortfallAmount, data.freePairAmount);
+  // pending requests already take that much out of the stake
+  const unstakeAmount =
+    neededAmount > pendingUnstakeAmount ? bigMath.min(neededAmount - pendingUnstakeAmount, stakedEsGmxAmount) : 0n;
+
+  return { isWalletLimited, unstakeAmount };
+}
+
+// what handleRewards pays from the Legacy vault; it silently skips a paused claim or a frozen account
+export function getOrphanClaimableGmx(data: OrphanVaultData | undefined) {
+  if (data === undefined || !data.isOpen || data.isClaimPaused || data.isFrozen) {
+    return 0n;
+  }
+
+  return data.claimableAmount;
+}
+
+export type OrphanTransferState = {
+  isTransferPaused: boolean;
+  // the router checks the Legacy vault on transfers only while it is designated
+  isOrphanDesignated: boolean;
+  hasSenderOpenSession: boolean;
+  isSenderFrozen: boolean;
+  // isFreshForTransfer is also false for a frozen receiver, so the frozen flag is read on its own for the label
+  isReceiverFresh: boolean | undefined;
+  isReceiverFrozen: boolean | undefined;
+};
+
+export function getOrphanTransferState({
+  designatedVestersLength,
+  isOrphanDesignated,
+  isTransferDisabled,
+  isProvisioningComplete,
+  hasSenderOpenSession,
+  isSenderFrozen,
+  isReceiverFresh,
+  isReceiverFrozen,
+}: {
+  designatedVestersLength: bigint;
+  isOrphanDesignated: boolean;
+  isTransferDisabled: boolean;
+  isProvisioningComplete: boolean;
+  hasSenderOpenSession: boolean;
+  isSenderFrozen: boolean;
+  isReceiverFresh: boolean | undefined;
+  isReceiverFrozen: boolean | undefined;
+}): OrphanTransferState {
+  // RatioVester.validateTransfersOpen reverts on either
+  const isOrphanTransferClosed = isTransferDisabled || !isProvisioningComplete;
+
+  return {
+    isTransferPaused: designatedVestersLength === 0n || (isOrphanDesignated && isOrphanTransferClosed),
+    isOrphanDesignated,
+    hasSenderOpenSession: isOrphanDesignated && hasSenderOpenSession,
+    isSenderFrozen: isOrphanDesignated && isSenderFrozen,
+    isReceiverFresh: isReceiverFresh === undefined ? undefined : !isOrphanDesignated || isReceiverFresh,
+    isReceiverFrozen: isReceiverFrozen === undefined ? undefined : isOrphanDesignated && isReceiverFrozen,
+  };
 }
 
 // an eligible amount alone is enough, so the Vest entry shows up before the first deposit

@@ -634,6 +634,11 @@ msgstr "Les exportations sont destinées à la tenue de registres et à la compa
 msgid "GM"
 msgstr "GM"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Receiver has used the Legacy vault"
+msgstr "Le destinataire a utilisé le vault Legacy"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
 msgstr "Exposant de financement"
@@ -688,6 +693,10 @@ msgstr "Dépôt de marge"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Réseau source"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "Withdrawing is temporarily unavailable. Try again later."
+msgstr "Les retraits sont temporairement indisponibles. Réessayez plus tard."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
@@ -1229,6 +1238,10 @@ msgstr "L'approbation n'est pas encore exécutée. Convertissez à nouveau une f
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>Every</0> {hours} hours{0}"
 msgstr "<0>Toutes les</0> {hours} heures{0}"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "How does esGMX vesting work?"
+msgstr "Comment fonctionne l'acquisition progressive des esGMX ?"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order won't execute: the trigger price is beyond the liquidation price. Edit the trigger price."
@@ -2109,6 +2122,10 @@ msgstr "Valeur du nombre de parties TWAP invalide"
 msgid "Invalid network fee buffer value"
 msgstr "Valeur de buffer de frais de réseau invalide"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Sender account is not restricted in the Legacy vesting vault"
+msgstr "Le compte de l’expéditeur n’est pas restreint dans le vault d’acquisition progressive Legacy"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "0x"
 msgstr "0x"
@@ -2186,6 +2203,10 @@ msgstr "Ce pool détient de l'USDG, donc l'USDC est converti en USDG lorsque vou
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max leverage exceeded. Remaining margin {remainingCollateralUsdText} is below the minimum for the position size. Increase margin or reduce size."
 msgstr "Effet de levier maximum dépassé. La marge restante {remainingCollateralUsdText} est inférieure au minimum requis pour la taille de la position. Augmentez la marge ou réduisez la taille."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender hasn't withdrawn from the Legacy vault"
+msgstr "L’expéditeur n’a pas retiré du vault Legacy"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
@@ -2271,6 +2292,10 @@ msgstr "Limit Swap échoué"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Failed"
 msgstr "Échec"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Sender has withdrawn all tokens from the Legacy vesting vault"
+msgstr "L’expéditeur a retiré tous les jetons du vault d’acquisition progressive Legacy"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
@@ -2614,6 +2639,10 @@ msgstr "Le glissement doit être inférieur à 5 %"
 msgid "Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC, ETH/USDT."
 msgstr "L’inventaire virtuel suit le déséquilibre des jetons entre des marchés similaires, p. ex. ETH/USDC, ETH/USDT."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at any time. esGMX withdrawn from them doesn't add to your eligible amount."
+msgstr "Ils n'acceptent plus de dépôts. Les esGMX déjà en acquisition progressive continuent de s'acquérir, et vous pouvez récupérer les GMX acquis à tout moment. Les esGMX qui en sont retirés n'augmentent pas votre montant éligible."
+
 #: src/components/OrdersModal/TPSLInputRow.tsx
 msgid "Gain"
 msgstr "Gain"
@@ -2745,6 +2774,7 @@ msgstr "Erreur de shift"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
 msgid "Claim failed"
 msgstr "Échec de la récupération"
@@ -2869,6 +2899,11 @@ msgstr "Récupérer <0/>"
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "May take a few minutes to appear. Check back later"
 msgstr "L'affichage peut prendre quelques minutes. Veuillez vérifier ultérieurement"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Receiver account is restricted"
+msgstr "Le compte du destinataire est restreint"
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Monthly volume"
@@ -3114,6 +3149,10 @@ msgstr "Aucun actif disponible pour le dépôt"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
 msgstr "L'ordre peut ne pas s'exécuter au prix de {priceText} : l'impact acceptable sur le prix ({formattedOrderAcceptablePriceImpact}) est inférieur à l'impact actuel du marché ({formattedCurrentAcceptablePriceImpact}). Modifiez l'impact acceptable sur le prix."
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Sender account is restricted"
+msgstr "Le compte de l’expéditeur est restreint"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
@@ -3391,6 +3430,10 @@ msgstr "jetons échangeables"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Global network"
 msgstr "Réseau global"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstaking takes {unstakeDelayDays} days."
+msgstr "L’unstaking prend {unstakeDelayDays} jours."
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "net rate"
@@ -4134,10 +4177,6 @@ msgstr "<0>Définir l'impact recommandé : {0}</0>."
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "La position serait liquidée immédiatement lors de l'exécution. Réduisez la taille."
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-msgid "I understand that esGMX withdrawn now can't be vested anywhere"
-msgstr "Je comprends que les esGMX retirés maintenant ne pourront plus faire l'objet d'une acquisition progressive nulle part"
-
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
 msgstr "Échec de la réclamation des récompenses d'affiliation"
@@ -4644,6 +4683,10 @@ msgstr "Listing"
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Conversion failed: {0}"
 msgstr "Échec de la conversion : {0}"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "What happens to the GMX, GLP and Affiliate vaults?"
+msgstr "Que deviennent les vaults GMX, GLP et d'affiliation ?"
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Adding margin to {positionLabel} with {offerAmount}"
@@ -5256,6 +5299,10 @@ msgstr "Effet de levier"
 msgid "Accrued price impact rebates"
 msgstr "Remises accumulées sur l'impact sur le prix"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Receiver has not used the Legacy vesting vault"
+msgstr "Le destinataire n’a pas utilisé le vault d’acquisition progressive Legacy"
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Volume total"
@@ -5451,6 +5498,10 @@ msgstr "Inventaire virtuel pour les swaps (long / short)"
 #: src/components/GmxAccountModal/keys.ts
 msgid "Withdrawal"
 msgstr "Retrait"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "esGMX vests into GMX in the Legacy vault, up to your eligible amount: the esGMX in your wallet, staked and unclaimed at the snapshot. esGMX already in the GMX, GLP and Affiliate vaults doesn't count. Each vesting esGMX reserves 10 staked GMX or esGMX and vests over 1 year. Stopping vesting returns the unvested esGMX and the reserved tokens, and depositing again restarts the 1-year vesting."
+msgstr "Les esGMX s'acquièrent progressivement en GMX dans le vault Legacy, jusqu'à votre montant éligible : les esGMX dans votre portefeuille, stakés et non récupérés lors de l'instantané. Les esGMX déjà présents dans les vaults GMX, GLP et d'affiliation ne comptent pas. Chaque esGMX en acquisition progressive réserve 10 GMX ou esGMX stakés et s'acquiert sur 1 an. L'arrêt de l'acquisition progressive renvoie les esGMX non acquis et les tokens réservés, et un nouveau dépôt relance l'acquisition progressive d'1 an."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 msgid "No funds to withdraw"
@@ -5721,6 +5772,7 @@ msgstr "Convertir avec Paxos"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
@@ -6169,6 +6221,10 @@ msgstr "Facteur d'impact positif"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "All trades"
 msgstr "Toutes les transactions"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Legacy vault not withdrawn"
+msgstr "Vault Legacy non retiré"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued rewards."
@@ -7764,6 +7820,7 @@ msgstr "L'impact sur le prix est enregistré lorsque vous augmentez une position
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Stake GMX"
 msgstr "Staker des GMX"
 
@@ -8993,6 +9050,10 @@ msgstr "Aucun historique de distribution"
 msgid "Mark price"
 msgstr "Prix de référence"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "{walletShortfall} esGMX of your eligible amount left isn't in your wallet."
+msgstr "{walletShortfall} esGMX de votre montant éligible restant ne sont pas dans votre portefeuille."
+
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "You chose to send the remaining margin to your <0>{chosenLabel}</0>. Make this the default destination when closing positions?"
 msgstr "Vous avez choisi d’envoyer la marge restante vers votre <0>{chosenLabel}</0>. Souhaitez-vous en faire la destination par défaut lors de la clôture des positions ?"
@@ -9119,8 +9180,13 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "Récupération soumise"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstake up to {suggestedUnstake} esGMX to vest it. Unstaking more would lower the staked tokens that back vesting."
+msgstr "Unstakez jusqu'à {suggestedUnstake} esGMX pour les acquérir progressivement. En unstaker davantage réduirait les tokens stakés qui garantissent l'acquisition progressive."
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -9154,6 +9220,10 @@ msgstr "Retrait depuis le GMX Account"
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose"
 msgstr "Objectif"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Unstaking esGMX would also lower the staked tokens that back vesting, so it won't raise how much you can vest. Stake more GMX instead."
+msgstr "Unstaker des esGMX réduirait aussi les tokens stakés qui garantissent l'acquisition progressive, et n'augmenterait donc pas le montant que vous pouvez acquérir. Stakez plutôt davantage de GMX."
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 msgid "For me"
@@ -9356,6 +9426,10 @@ msgstr "Ajouter TP/SL"
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "How would you like to add funds?"
 msgstr "Comment souhaitez-vous ajouter des fonds ?"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "{unclaimedEsGmx} esGMX is unclaimed. Claim it without staking to vest it."
+msgstr "{unclaimedEsGmx} esGMX ne sont pas récupérés. Récupérez-les sans les staker pour les acquérir progressivement."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
@@ -9647,6 +9721,7 @@ msgstr "Définir le prix du SL en dessous du prix limite"
 msgid "({0} of {1})"
 msgstr "({0} de {1})"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Request unstake"
 msgstr "Demander l’unstaking"
@@ -9718,6 +9793,10 @@ msgstr "Un capital utilisé minimum de {0} est requis pour être éligible au cl
 #: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "Le trading de {markets} est passé aux pools USDG"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault"
+msgstr "Je comprends que les esGMX retirés maintenant n'augmentent pas mon montant éligible dans le vault Legacy"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -9797,6 +9876,12 @@ msgstr "Marge faible après déduction des frais. Déposez davantage pour rédui
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "Recevoir {profitTokenSymbol} et {collateralTokenSymbol} séparément"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Account restricted"
+msgstr "Compte restreint"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
@@ -10014,6 +10099,10 @@ msgstr "Les ordres TP/SL sont automatiquement annulés à la fermeture de la pos
 msgid "On USDG pools, Limit orders hold USDG. Your USDC converts first, then you sign the order."
 msgstr "Sur les pools USDG, les ordres limites détiennent de l'USDG. Votre USDC est d'abord converti, puis vous signez l'ordre."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Claim esGMX"
+msgstr "Récupérer les esGMX"
+
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
@@ -10114,6 +10203,10 @@ msgstr "<0>⬡ Histoire de données Chainlink ⬡ <1/><2>#Chainlink</2> Data Str
 msgid "Min collateral factor OI long"
 msgstr "Facteur de garantie minimum OI long"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
+msgid "Claims paused"
+msgstr "Récupérations en pause"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer."
 msgstr "Cette position se situe au-dessus du seuil de risque de liquidation, mais elle pourrait s'approcher de la liquidation lorsque le marché passera aux paramètres de risque hors heures de marché. Ajoutez de la marge ou réduisez l'effet de levier pour augmenter votre coussin de sécurité."
@@ -10123,6 +10216,7 @@ msgid "Connect your wallet to view your rebates distribution history"
 msgstr "Connectez votre portefeuille pour consulter l’historique de distribution de vos rétrocommissions"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claimed"
 msgstr "Récupéré"
@@ -12897,6 +12991,10 @@ msgstr "Reçu à la clôture"
 msgid "Token permit testing"
 msgstr "Test des permits de jetons"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Receiver account is not restricted in the Legacy vesting vault"
+msgstr "Le compte du destinataire n’est pas restreint dans le vault d’acquisition progressive Legacy"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Earlier transactions"
 msgstr "Transactions précédentes"
@@ -12944,6 +13042,10 @@ msgstr "Code de parrainage mis à jour"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase the position's margin"
 msgstr "Augmentez la marge de la position"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Withdraw from vesting"
+msgstr "Retirer de l'acquisition progressive"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx

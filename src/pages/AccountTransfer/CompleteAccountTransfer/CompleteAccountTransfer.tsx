@@ -2,14 +2,13 @@ import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import useSWR from "swr";
 import { isAddress } from "viem";
 
-import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { getRewardRouterContract } from "domain/stake/rewardRouter";
+import { useOrphanTransferState } from "domain/vesting/useOrphanTransferState";
 import { useChainId } from "lib/chains";
-import { callContract, contractFetcher } from "lib/contracts";
+import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import useWallet from "lib/wallets/useWallet";
 
@@ -27,7 +26,7 @@ export default function CompleteAccountTransfer() {
   const isSenderAndReceiverValid =
     sender && receiver && isAddress(sender, { strict: false }) && isAddress(receiver, { strict: false });
   const { setPendingTxns } = usePendingTxns();
-  const { active, signer, account } = useWallet();
+  const { signer, account } = useWallet();
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
 
   const { chainId } = useChainId();
@@ -35,14 +34,13 @@ export default function CompleteAccountTransfer() {
   const [isConfirming, setIsConfirming] = useState(false);
   const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
 
-  const { data: designatedVestersLength } = useSWR<bigint>(
-    [active, chainId, getContract(chainId, "RewardRouterV3"), "designatedVestersLength"],
-    {
-      fetcher: contractFetcher<bigint>(signer, "RewardRouterV3"),
-    }
-  );
-  const isTransferPaused = designatedVestersLength === 0n;
-  const isTransferPauseLoading = designatedVestersLength === undefined;
+  const orphanTransferState = useOrphanTransferState({
+    chainId,
+    sender: isSenderAndReceiverValid ? sender : undefined,
+    receiver: isSenderAndReceiverValid ? receiver : undefined,
+  });
+  const isTransferPaused = orphanTransferState?.isTransferPaused === true;
+  const isTransferStateLoading = orphanTransferState?.isReceiverFresh === undefined;
 
   const getError = () => {
     if (!account) {
@@ -51,6 +49,19 @@ export default function CompleteAccountTransfer() {
     if (!isCorrectAccount) {
       return t`Incorrect account`;
     }
+    // acceptTransfer runs the sender and receiver checks again, so a later Legacy vault deposit blocks it
+    if (orphanTransferState?.isSenderFrozen) {
+      return t`Sender account is restricted`;
+    }
+    if (orphanTransferState?.hasSenderOpenSession) {
+      return t`Sender hasn't withdrawn from the Legacy vault`;
+    }
+    if (orphanTransferState?.isReceiverFrozen) {
+      return t`Receiver account is restricted`;
+    }
+    if (orphanTransferState?.isReceiverFresh === false) {
+      return t`Receiver has used the Legacy vault`;
+    }
   };
 
   const isPrimaryEnabled = () => {
@@ -58,7 +69,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return false;
     }
-    if (isConfirming || isTransferPauseLoading || isTransferPaused) {
+    if (isConfirming || isTransferStateLoading || isTransferPaused) {
       return false;
     }
     return true;

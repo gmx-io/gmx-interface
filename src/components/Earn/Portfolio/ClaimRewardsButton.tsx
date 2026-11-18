@@ -100,6 +100,7 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
         setPendingTxns={setPendingTxns}
         totalGmxRewards={processedData?.totalGmxRewards}
         stakingGmxRewards={processedData?.extendedGmxTrackerRewards}
+        orphanVesterRewards={processedData?.orphanVesterRewards}
         gmxVesterRewards={processedData?.gmxVesterRewards}
         glpVesterRewards={processedData?.glpVesterRewards}
         totalEsGmxRewards={processedData?.totalEsGmxRewards}

@@ -428,6 +428,7 @@ export type StakingProcessedData = Partial<{
   totalGmxRewardsUsd: bigint;
   gmxVesterRewards: bigint;
   glpVesterRewards: bigint;
+  orphanVesterRewards: bigint;
   totalVesterRewards: bigint;
   totalVesterRewardsUsd: bigint;
   totalNativeTokenRewards: bigint;
@@ -479,6 +480,7 @@ export function getStakingProcessedData(
       >
     | undefined,
   vestingData: RawVestingData | undefined,
+  orphanVesterRewards: bigint,
   aum: bigint | undefined,
   nativeTokenPrice: bigint | undefined,
   stakedGmxSupply: bigint | undefined,
@@ -606,7 +608,8 @@ export function getStakingProcessedData(
 
   data.gmxVesterRewards = vestingData.gmxVester.claimable;
   data.glpVesterRewards = vestingData.glpVester.claimable;
-  data.totalVesterRewards = data.gmxVesterRewards + data.glpVesterRewards;
+  data.orphanVesterRewards = orphanVesterRewards;
+  data.totalVesterRewards = data.gmxVesterRewards + data.glpVesterRewards + data.orphanVesterRewards;
   data.totalVesterRewardsUsd = mulDiv(data.totalVesterRewards, gmxPrice, expandDecimals(1, 18));
 
   data.totalGmxRewards = data.totalVesterRewards + data.extendedGmxTrackerRewards;

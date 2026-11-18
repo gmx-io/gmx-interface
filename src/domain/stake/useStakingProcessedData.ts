@@ -6,7 +6,9 @@ import { getServerUrl } from "config/backend";
 import { ContractsChainId, MEGAETH } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
+import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
 import useVestingData from "domain/vesting/useVestingData";
+import { getOrphanClaimableGmx } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import {
   PLACEHOLDER_ACCOUNT,
@@ -28,6 +30,8 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
 
   const vestingData = useVestingData(account, chainId);
+  const { orphanVaultData, mutateOrphanVaultData } = useOrphanVestingData(chainId, account);
+  const orphanVesterRewards = getOrphanClaimableGmx(orphanVaultData);
 
   const { gmxPrice } = useGmxPrice();
 
@@ -66,6 +70,7 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
         depositBalanceData,
         stakingData,
         vestingData,
+        orphanVesterRewards,
         aum,
         nativeTokenPrice,
         stakedGmxSupply,
@@ -78,6 +83,7 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
       depositBalanceData,
       stakingData,
       vestingData,
+      orphanVesterRewards,
       aum,
       nativeTokenPrice,
       stakedGmxSupply,
@@ -103,12 +109,14 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
       }
     }
 
+    promises.push(mutateOrphanVaultData());
+
     if (promises.length === 0) {
       return Promise.resolve();
     }
 
     return Promise.all(promises);
-  }, [mutateContractsData, mutateGmxSupply]);
+  }, [mutateContractsData, mutateGmxSupply, mutateOrphanVaultData]);
 
   if (chainId === MEGAETH) {
     return {
