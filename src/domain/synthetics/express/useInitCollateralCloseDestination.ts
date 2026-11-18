@@ -1,9 +1,8 @@
 import { useEffect } from "react";
-import { usePrevious } from "react-use";
 
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { getHadGmxAccountBalanceKey } from "config/localStorage";
+import { getCollateralCloseDestinationKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   selectIsGmxAccountBalancesLoaded,
@@ -13,7 +12,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { hasStoredLocalStorageValue } from "lib/localStorage";
 import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
@@ -55,17 +54,10 @@ export function useInitCollateralCloseDestination() {
   const { accountType, isLoading: isAccountTypeLoading } = useAccountType();
   const { canSignTypedData, isLoading: isCanSignLoading } = useWalletCanSignTypedData();
 
-  const [hadGmxAccountBalance, setHadGmxAccountBalance] = useLocalStorageSerializeKey<boolean>(
-    getHadGmxAccountBalanceKey(chainId, account),
-    false
-  );
-
-  const gmxAccountUsd = tokensData && isGmxAccountBalancesLoaded ? getTotalGmxAccountUsd(tokensData) : undefined;
-  const prevGmxAccountUsd = usePrevious(gmxAccountUsd);
-
   useEffect(() => {
     if (
-      settings.receiveToGmxAccount !== null ||
+      // settings lag one render behind a chain or account switch, so a saved choice is checked in storage
+      hasStoredLocalStorageValue(getCollateralCloseDestinationKey(chainId, account)) ||
       chainId !== ARBITRUM ||
       !isGmxAccountBalancesLoaded ||
       !tokensData ||
@@ -84,6 +76,7 @@ export function useInitCollateralCloseDestination() {
   }, [
     settings,
     chainId,
+    account,
     isGmxAccountBalancesLoaded,
     tokensData,
     accountType,
@@ -91,13 +84,4 @@ export function useInitCollateralCloseDestination() {
     canSignTypedData,
     isCanSignLoading,
   ]);
-
-  useEffect(() => {
-    if (chainId !== ARBITRUM || gmxAccountUsd === undefined) return;
-
-    if (gmxAccountUsd > 0n && !hadGmxAccountBalance && prevGmxAccountUsd === 0n) {
-      setHadGmxAccountBalance(true);
-      settings.setReceiveToGmxAccount(true);
-    }
-  }, [chainId, gmxAccountUsd, hadGmxAccountBalance, setHadGmxAccountBalance, settings, prevGmxAccountUsd]);
 }
