@@ -13,15 +13,19 @@ import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
 import { hasStoredLocalStorageValue } from "lib/localStorage";
+import { getByKey } from "lib/objects";
 import { AccountType, useAccountType } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { expandDecimals } from "sdk/utils/numbers";
 
-function getTotalGmxAccountUsd(tokensData: TokensData): bigint {
+// the GMX Account destination pays Express gas from it too, so tokens that can't pay gas don't count
+function getGmxAccountGasPaymentTokensUsd(chainId: number, tokensData: TokensData): bigint {
   let totalUsd = 0n;
-  for (const token of Object.values(tokensData)) {
-    if (token.gmxAccountBalance === undefined || token.gmxAccountBalance === 0n) {
+  for (const tokenAddress of getGasPaymentTokens(chainId)) {
+    const token = getByKey(tokensData, tokenAddress);
+    if (token?.gmxAccountBalance === undefined || token.gmxAccountBalance === 0n) {
       continue;
     }
     totalUsd += convertToUsd(token.gmxAccountBalance, token.decimals, getMidPrice(token.prices))!;
@@ -46,7 +50,7 @@ export function getDefaultReceiveToGmxAccount({
 }
 
 export function useInitCollateralCloseDestination() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const settings = useSettings();
   const tokensData = useSelector(selectTokensData);
@@ -56,26 +60,35 @@ export function useInitCollateralCloseDestination() {
 
   useEffect(() => {
     if (
-      // settings lag one render behind a chain or account switch, so a saved choice is checked in storage
-      hasStoredLocalStorageValue(getCollateralCloseDestinationKey(chainId, account)) ||
+      settings.receiveToGmxAccount !== null ||
       chainId !== ARBITRUM ||
+      // source-chain closes always go to the GMX Account, so the first direct Arbitrum visit picks the default
+      srcChainId !== undefined ||
       !isGmxAccountBalancesLoaded ||
       !tokensData ||
       isAccountTypeLoading ||
       isCanSignLoading
-    )
+    ) {
       return;
+    }
+
+    // settings lag one render behind a switch: after an account switch the null check above skips that render,
+    // whose balances are also stale; after a chain switch a stale null passes it, so check storage
+    if (hasStoredLocalStorageValue(getCollateralCloseDestinationKey(chainId, account))) {
+      return;
+    }
 
     settings.setReceiveToGmxAccount(
       getDefaultReceiveToGmxAccount({
         accountType,
         canSignTypedData,
-        gmxAccountUsd: getTotalGmxAccountUsd(tokensData),
+        gmxAccountUsd: getGmxAccountGasPaymentTokensUsd(chainId, tokensData),
       })
     );
   }, [
     settings,
     chainId,
+    srcChainId,
     account,
     isGmxAccountBalancesLoaded,
     tokensData,
