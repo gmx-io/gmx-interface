@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { ChangeEvent, useCallback, useRef } from "react";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, isSolanaNetwork } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -15,6 +15,7 @@ import { useShowGmxAccountPayTokens } from "domain/multichain/useShowGmxAccountP
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
+import { useChainId } from "lib/chains";
 import { formatBalanceAmount, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import useWallet from "lib/wallets/useWallet";
@@ -54,6 +55,7 @@ export function MarginField({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const chainId = useSelector(selectChainId);
+  const { networkId } = useChainId();
   const srcChainId = useSelector(selectSrcChainId);
   const showGmxAccountPayTokens = useShowGmxAccountPayTokens(chainId);
   const tokensData = useTokensData();
@@ -142,6 +144,7 @@ export function MarginField({
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
+                tokenInfo={isSolanaNetwork(networkId) ? fromToken : undefined}
                 onSelectToken={(token) => {
                   onSelectFromTokenAddress(token.address, false);
                 }}
