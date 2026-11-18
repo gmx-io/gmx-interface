@@ -22,6 +22,7 @@ import { decodeGmsolInstruction } from "./decodeInstruction";
 import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
 import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
+import { validateGmsolWalletTransaction } from "./validateWalletTransaction";
 
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
@@ -157,15 +158,11 @@ export async function sendGmsolOrderTransactions({
         "Solana session changed before signing"
       );
       const signedBytes = await signTransaction(bytes.slice());
-      const original = getTransactionDecoder().decode(bytes);
-      const signed = getTransactionDecoder().decode(signedBytes);
-      const signedMessage = copySolanaBytes(signed.messageBytes);
-      const originalMessage = copySolanaBytes(original.messageBytes);
-      requireGmsol(
-        signedMessage.length === originalMessage.length &&
-          signedMessage.every((byte, index) => byte === originalMessage[index]),
-        "Wallet returned a different transaction message"
-      );
+      const { transaction: signed, hasAssertions } = validateGmsolWalletTransaction({
+        originalBytes: bytes,
+        signedBytes,
+        plan,
+      });
       const signature = signed.signatures[address(plan.owner)];
       requireGmsol(
         signature &&
@@ -177,6 +174,20 @@ export async function sendGmsolOrderTransactions({
         (await rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions())) <= plan.lastValidBlockHeight,
         "Signed transaction expired; rebuild and sign again"
       );
+      if (hasAssertions) {
+        const simulation = await rpc
+          .simulateTransaction(getBase64EncodedWireTransaction(signed), {
+            encoding: "base64",
+            commitment: "confirmed",
+            sigVerify: true,
+            replaceRecentBlockhash: false,
+          })
+          .send(rpcOptions());
+        requireGmsol(
+          simulation.value.err === null,
+          `Solana simulation failed: ${JSON.stringify(simulation.value.err)}`
+        );
+      }
       // Read immediately before EVERY send, including after a slow wallet prompt.
       requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
       requireGmsol(
