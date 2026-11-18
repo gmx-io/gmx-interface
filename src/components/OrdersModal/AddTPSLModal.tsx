@@ -857,7 +857,12 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
@@ -1002,7 +1007,7 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isMultichainSubmitDisabled) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -1043,6 +1048,7 @@ export function AddTPSLModal({
     actionLabel,
     directionLabel,
     expressError.buttonErrorMessage,
+    isExpressLoading,
     isMultichainSubmitDisabled,
     isSubmitting,
     isCreationPending,

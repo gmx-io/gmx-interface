@@ -531,7 +531,12 @@ export function OrderEditor(p: Props) {
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -787,7 +792,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    if (isMultichainSubmitDisabled) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -828,6 +833,7 @@ export function OrderEditor(p: Props) {
     hasAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
+    isExpressLoading,
     isMultichainSubmitDisabled,
   ]);
 
