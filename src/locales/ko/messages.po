@@ -2174,6 +2174,7 @@ msgstr "마켓"
 msgid "Whitelist only"
 msgstr "화이트리스트 전용"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "재시도"
