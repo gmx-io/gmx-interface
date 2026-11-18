@@ -34,6 +34,8 @@ export function PositionSellerPriceImpactFeesRow() {
         });
 
   const isPriceImpactPositive = totalPriceImpactPercentage !== undefined && totalPriceImpactPercentage > 0;
+  // gmsol applies the closing impact directly, with no stored impact from the increase to net against
+  const isGmsol = position?.marketInfo?.tradeMath === "gmsol";
 
   const feesPercentage =
     position?.marketInfo?.tradeMath === "gmsol"
@@ -67,7 +69,7 @@ export function PositionSellerPriceImpactFeesRow() {
       label={
         <>
           <StandardTooltip
-            handle={t`Net price impact`}
+            handle={isGmsol ? t`Price impact` : t`Net price impact`}
             content={
               <TooltipContent>
                 <TooltipText>

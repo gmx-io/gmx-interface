@@ -1562,6 +1562,10 @@ msgstr "거래량"
 msgid "{0} amount"
 msgstr "{0} 수량"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact and fees from your trade."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
@@ -4074,6 +4078,7 @@ msgstr "이전 세션 제거 중..."
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Check transaction status"
@@ -4336,6 +4341,7 @@ msgid "Share your referral code with friends or your community —<0/> every tra
 msgstr "친구 또는 커뮤니티와 추천 코드를 공유하십시오 —<0/> 해당 코드로 체결되는 모든 거래에서 $ 보상을 받습니다"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Checking transaction status..."
@@ -7721,6 +7727,8 @@ msgid "Send fee"
 msgstr "전송 수수료"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
 msgstr "가격 영향 / 수수료"
@@ -11233,7 +11241,9 @@ msgstr "365일 예상"
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

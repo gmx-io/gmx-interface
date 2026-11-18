@@ -131,11 +131,15 @@ export function PriceImpactFeesRow() {
         <SyntheticsInfoRow
           label={
             <StandardTooltip
-              handle={t`Net price impact / fees`}
+              handle={isGmsol ? t`Price impact / fees` : t`Net price impact / fees`}
               content={
                 <TooltipContent>
                   <TooltipText>
-                    <Trans>Net price impact and fees from your trade.</Trans>
+                    {isGmsol ? (
+                      <Trans>Price impact and fees from your trade.</Trans>
+                    ) : (
+                      <Trans>Net price impact and fees from your trade.</Trans>
+                    )}
                   </TooltipText>
                   <TooltipReadMore href={DOCS_LINKS.priceImpact} />
                 </TooltipContent>
