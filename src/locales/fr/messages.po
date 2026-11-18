@@ -6367,10 +6367,6 @@ msgstr "TVL (OFFRE)"
 msgid "Shorts"
 msgstr "Shorts"
 
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "This wallet already gets notifications on 10 devices. Adding this one needs its signature."
-msgstr "Ce portefeuille reçoit déjà des notifications sur 10 appareils. Pour ajouter celui-ci, sa signature est nécessaire."
-
 #: src/pages/Pools/PoolsTimeRangeFilter.tsx
 msgid "Last 180d"
 msgstr "180 derniers jours"
@@ -6903,6 +6899,10 @@ msgstr "Unique"
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr "Investissez en maîtrisant le risque et le rendement"
+
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "This wallet already gets notifications on 10 devices. Adding this one needs a wallet signature."
+msgstr "Ce portefeuille reçoit déjà des notifications sur 10 appareils. Pour ajouter celui-ci, une signature du portefeuille est nécessaire."
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Swap {collateralSymbol}"

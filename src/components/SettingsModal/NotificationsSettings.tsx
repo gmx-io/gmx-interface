@@ -280,7 +280,9 @@ function CardDescription({
     case "turnOnFailed":
       return <Trans>Couldn't turn them on: the notification service didn't answer.</Trans>;
     case "limitReached":
-      return <Trans>This wallet already gets notifications on 10 devices. Adding this one needs its signature.</Trans>;
+      return (
+        <Trans>This wallet already gets notifications on 10 devices. Adding this one needs a wallet signature.</Trans>
+      );
     case "walletSwitchFailed":
       return (
         <Trans>
