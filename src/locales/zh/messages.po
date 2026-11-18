@@ -4162,10 +4162,6 @@ msgstr "<0>设置推荐影响值：{0}</0>。"
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "执行后仓位将立即被清算。请减小规模。"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-msgid "I understand that esGMX withdrawn now can't be vested anywhere"
-msgstr "我了解现在提取的 esGMX 将无法在任何地方进行归属"
-
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
 msgstr "申领联盟奖励失败"
@@ -9777,6 +9773,10 @@ msgstr "需要使用至少 {0} 的资金才能参与排名"
 #: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "{markets} 交易已迁移至 USDG 池"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault"
+msgstr "我了解现在提取的 esGMX 不会增加我在 Legacy 金库中符合条件的数量"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx

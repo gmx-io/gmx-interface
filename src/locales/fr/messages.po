@@ -4162,10 +4162,6 @@ msgstr "<0>Définir l'impact recommandé : {0}</0>."
 msgid "Position would be liquidated immediately upon execution. Reduce the size."
 msgstr "La position serait liquidée immédiatement lors de l'exécution. Réduisez la taille."
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
-msgid "I understand that esGMX withdrawn now can't be vested anywhere"
-msgstr "Je comprends que les esGMX retirés maintenant ne pourront plus faire l'objet d'une acquisition progressive nulle part"
-
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claiming affiliate rewards failed"
 msgstr "Échec de la réclamation des récompenses d'affiliation"
@@ -9777,6 +9773,10 @@ msgstr "Un capital utilisé minimum de {0} est requis pour être éligible au cl
 #: src/domain/synthetics/markets/closingPoolsNotices.ts
 msgid "{markets} trading has moved to USDG pools"
 msgstr "Le trading de {markets} est passé aux pools USDG"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
+msgid "I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault"
+msgstr "Je comprends que les esGMX retirés maintenant n'augmentent pas mon montant éligible dans le vault Legacy"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx

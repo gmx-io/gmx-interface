@@ -118,7 +118,7 @@ export function OldVaultPanel({ vault, onTxSent }: { vault: OldVestVault; onTxSe
           className="!items-start"
         >
           <span className="text-body-small text-typography-secondary">
-            <Trans>I understand that esGMX withdrawn now can't be vested anywhere</Trans>
+            <Trans>I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault</Trans>
           </span>
         </Checkbox>
       )}

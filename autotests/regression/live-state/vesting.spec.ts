@@ -36,7 +36,11 @@ test("13.20 live vesting: the closed GMX vault shows the real vested amount and 
   await expect(modal.getByRole("textbox")).toHaveCount(0);
   const withdraw = modal.getByRole("button", { name: "Stop vesting & withdraw", exact: true });
   await expect(withdraw).toBeDisabled();
-  await modal.getByText("I understand that esGMX withdrawn now can't be vested anywhere", { exact: true }).click();
+  await modal
+    .getByText("I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault", {
+      exact: true,
+    })
+    .click();
   await expect(withdraw).toBeEnabled();
   await page.keyboard.press("Escape");
   await expect(modal).not.toBeVisible();

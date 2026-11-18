@@ -156,13 +156,15 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
     setIsVestModalVisible(true);
   };
 
-  // only the GMX vault and the Legacy vault reserve staked tokens, so open the one holding more of them
+  // only the GMX vault and the Legacy vault reserve staked tokens; the GMX vault goes first because
+  // stopping the Legacy vault restarts its 1-year vesting
   const handleWithdrawVesting = () => {
+    const hasGmxVaultReserve = (vestingData?.gmxVesterPairAmount ?? 0n) > 0n;
+    const hasOrphanReserve = (orphanVaultData?.reservedAmount ?? 0n) > 0n;
+
     setIsGmxStakeModalVisible(false);
     setIsEsGmxStakeModalVisible(false);
-    setVestModalVault(
-      (orphanVaultData?.reservedAmount ?? 0n) > (vestingData?.gmxVesterPairAmount ?? 0n) ? "orphan" : "gmx"
-    );
+    setVestModalVault(hasOrphanReserve && !hasGmxVaultReserve ? "orphan" : "gmx");
     setIsVestModalVisible(true);
   };
 
