@@ -213,10 +213,6 @@ msgstr "GMX Account swaps cannot use native {0}. Select {1} or withdraw to walle
 msgid "Include rPnL in leverage display"
 msgstr "Include rPnL in leverage display"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr "Unable to load the Solana RPC tracker"
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr "Symbol (Z to A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC debug"

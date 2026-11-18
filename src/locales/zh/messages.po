@@ -213,10 +213,6 @@ msgstr "GMX Account 兑换无法使用原生 {0}。请选择 {1}，或先提取�
 msgid "Include rPnL in leverage display"
 msgstr "在杠杆显示中包含 rPnL"
 
-#: src/pages/RpcDebug/RpcDebug.tsx
-msgid "Unable to load the Solana RPC tracker"
-msgstr ""
-
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "订单 ({0})"
@@ -8832,7 +8828,6 @@ msgid "Symbol (Z to A)"
 msgstr "符号（Z 到 A）"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
-#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC 调试"
