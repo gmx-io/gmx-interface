@@ -1071,6 +1071,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
+                tokenInfo={isSolana ? fromToken : undefined}
                 onSelectToken={(token) => {
                   handleSelectFromTokenAddress(token.address, false);
                 }}
