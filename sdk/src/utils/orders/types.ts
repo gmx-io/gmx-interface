@@ -68,6 +68,7 @@ export type Order = {
   isLong: boolean;
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
+  srcChainId?: bigint;
   autoCancel: boolean;
   data: string[];
   uiFeeReceiver: string;

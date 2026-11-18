@@ -18,6 +18,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState<boolean>();
 
   /* eslint-disable react/hook-use-state */
   const [triggerRatioInputValue, _setTriggerRatioInputValue] = useState<string>("");
@@ -54,6 +55,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setSizeInputValue("");
       setTriggerPriceInputValue("");
       _setTriggerRatioInputValue("");
+      setIsReceiveSeparated(undefined);
       setShouldCalculateMinOutputAmount(false);
     }
 
@@ -100,6 +102,8 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setTriggerPriceInputValue,
       triggerRatioInputValue,
       setTriggerRatioInputValue,
+      isReceiveSeparated,
+      setIsReceiveSeparated,
 
       defaultAllowedSwapSlippageBps,
       setDefaultAllowedSwapSlippageBps,
@@ -126,6 +130,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     sizeInputValue,
     triggerPriceInputValue,
     triggerRatioInputValue,
+    isReceiveSeparated,
 
     defaultAllowedSwapSlippageBps,
     setDefaultAllowedSwapSlippageBps,

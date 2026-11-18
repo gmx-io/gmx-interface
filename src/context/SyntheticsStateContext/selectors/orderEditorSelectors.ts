@@ -10,6 +10,7 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import {
+  DecreasePositionSwapType,
   getOrderPositionKey,
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -44,12 +45,21 @@ import {
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { BN_ZERO, parseValue } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+import { getStoredTriggerDecreaseQuote } from "sdk/utils/trade/decreaseMarginCheck";
+import {
+  type DecreaseReceiveOutput,
+  getCanSplitReceive,
+  getDecreaseReceiveOutputs,
+  getSplitReceiveDecreaseSwapType,
+} from "sdk/utils/trade/decreaseOutputs";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
@@ -63,6 +73,7 @@ import {
   selectOrdersInfoData,
   makeSelectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -96,6 +107,8 @@ export const selectOrderEditorSetTriggerPriceInputValue = (s: SyntheticsState) =
 export const selectOrderEditorTriggerRatioInputValue = (s: SyntheticsState) => s.orderEditor.triggerRatioInputValue;
 export const selectOrderEditorSetTriggerRatioInputValue = (s: SyntheticsState) =>
   s.orderEditor.setTriggerRatioInputValue;
+const selectOrderEditorIsReceiveSeparatedInput = (s: SyntheticsState) => s.orderEditor.isReceiveSeparated;
+export const selectOrderEditorSetIsReceiveSeparated = (s: SyntheticsState) => s.orderEditor.setIsReceiveSeparated;
 
 export const selectOrderEditorAcceptablePrice = (s: SyntheticsState) => s.orderEditor.acceptablePrice;
 export const selectOrderEditorAcceptablePriceImpactBps = (s: SyntheticsState) => s.orderEditor.acceptablePriceImpactBps;
@@ -223,6 +236,40 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
   return positionInfo;
 });
 
+export const selectOrderEditorCanChangeReceiveMode = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order || !isTriggerDecreaseOrderType(order.orderType) || order.swapPath.length > 0) {
+    return false;
+  }
+
+  if (!isContractsV2_2_1(q(selectChainId))) {
+    return false;
+  }
+
+  return getCanSplitReceive(q(selectOrderEditorExistingPosition));
+});
+
+export const selectOrderEditorIsReceiveSeparated = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  return (
+    q(selectOrderEditorIsReceiveSeparatedInput) ?? order?.decreasePositionSwapType === DecreasePositionSwapType.NoSwap
+  );
+});
+
+export const selectOrderEditorDecreasePositionSwapType = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order) return undefined;
+
+  if (!q(selectOrderEditorCanChangeReceiveMode)) {
+    return order.decreasePositionSwapType;
+  }
+
+  return getSplitReceiveDecreaseSwapType(order.decreasePositionSwapType, q(selectOrderEditorIsReceiveSeparated));
+});
+
 export const selectOrderEditorIncreaseProjection = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
@@ -281,7 +328,7 @@ export const selectOrderEditorIncreaseResultingPositionMarginState = createSelec
   );
 });
 
-export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
+const selectOrderEditorDecreaseProjection = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return undefined;
@@ -303,34 +350,51 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   }
 
   const existingPosition = q(selectOrderEditorExistingPosition);
-  const keepLeverage = q(selectKeepLeverage);
+  const keepLeverage = isTriggerDecreaseOrderType(order.orderType) ? false : q(selectKeepLeverage);
   const acceptablePriceImpactBps = q(selectOrderEditorAcceptablePriceImpactBps);
   const savedAcceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
   const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
 
-  return getAvailableTradeQuote(market.tradeMath, () =>
-    getDecreasePositionAmounts({
-      marketInfo: market,
-      collateralToken: order.targetCollateralToken,
-      isLong: order.isLong,
+  const params = {
+    marketInfo: market,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    position: existingPosition,
+    closeSizeUsd: sizeDeltaUsd,
+    keepLeverage,
+    triggerPrice,
+    fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+    acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+    userReferralInfo,
+    proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+    isSetAcceptablePriceImpactEnabled,
+    forceDecreaseSwapType: q(selectOrderEditorDecreasePositionSwapType),
+  };
+  if (existingPosition && market.tradeMath !== "gmsol" && q(selectOrderEditorCanChangeReceiveMode)) {
+    return getStoredTriggerDecreaseQuote({
+      ...params,
+      collateralToken: existingPosition.collateralToken,
       position: existingPosition,
-      closeSizeUsd: sizeDeltaUsd,
-      keepLeverage,
-      triggerPrice,
-      fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
-      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-      userReferralInfo,
-      feeDiscountFactor: q(selectFeeDiscountFactor),
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
-      isSetAcceptablePriceImpactEnabled,
-    })
-  );
+      storedCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    });
+  }
+
+  return getAvailableTradeQuote(market.tradeMath, () => ({
+    decreaseAmounts: getDecreasePositionAmounts(params),
+    marginState: undefined,
+  }));
 });
+
+export const selectOrderEditorDecreaseAmounts = createSelector(
+  (q) => q(selectOrderEditorDecreaseProjection)?.decreaseAmounts
+);
 
 export const selectOrderEditorFromToken = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
@@ -552,7 +616,7 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
 
   if (isDecreaseOrderType(order.orderType)) {
     estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      decreaseSwapType: order.decreasePositionSwapType,
+      decreaseSwapType: q(selectOrderEditorDecreasePositionSwapType),
       swapsCount: order.swapPath.length,
     });
   }
@@ -728,6 +792,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
     isResultingPositionCheckBlocking: q(selectOrderEditorIsIncreaseExecutableNow),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+    decreasePositionSwapType: q(selectOrderEditorDecreasePositionSwapType),
   });
 });
 
@@ -760,15 +825,28 @@ export const selectOrderEditorIsRemainingPositionAboveMaxLeverage = createSelect
     return false;
   }
 
-  const marginState = q(
-    makeSelectOrderDecreaseRemainingPositionMarginState(
-      order.key,
-      q(selectOrderEditorTriggerPrice),
-      q(selectOrderEditorSizeDeltaUsd)
-    )
-  );
+  const marginState = q(selectOrderEditorCanChangeReceiveMode)
+    ? q(selectOrderEditorDecreaseProjection)?.marginState
+    : q(
+        makeSelectOrderDecreaseRemainingPositionMarginState(
+          order.key,
+          q(selectOrderEditorTriggerPrice),
+          q(selectOrderEditorSizeDeltaUsd)
+        )
+      );
 
   return marginState?.isLiquidatable === true;
+});
+
+export const selectOrderEditorReceiveOutputs = createSelector((q): DecreaseReceiveOutput[] => {
+  const order = q(selectOrderEditorOrder);
+  if (!order || !q(selectOrderEditorCanChangeReceiveMode)) return EMPTY_ARRAY;
+
+  return getDecreaseReceiveOutputs({
+    decreaseAmounts: q(selectOrderEditorDecreaseAmounts),
+    tokensData: q(selectTokensData),
+    shouldUnwrapNativeToken: order.srcChainId === 0n && order.shouldUnwrapNativeToken,
+  });
 });
 
 export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
