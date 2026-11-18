@@ -18,6 +18,7 @@ import { useApiPositionsInfoRequest } from "./useApiPositionsInfoRequest";
 import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOptimisticPositions";
 import { usePositions } from "./usePositions";
 import { usePositionsConstantsRequest } from "./usePositionsConstants";
+import { usePositionsLastSrcChainIds, withPositionsLastSrcChainIds } from "./usePositionsLastSrcChainIds";
 
 // Wait this long for API positions before warming the RPC backup. The API is usually fast and a
 // cold RPC detour is slower than waiting, so we give API a grace window before paying RPC load.
@@ -226,12 +227,19 @@ export function usePositionsInfoRequest(
     Boolean(recomputedApiPositionsInfoData) &&
     (!shouldFallbackToRpc || !fallbackPositionsInfoData);
 
-  const positionsInfoData = useMemo(() => {
+  const sourcePositionsInfoData = useMemo(() => {
     if (shouldUseApiPositionsInfoData) {
       return recomputedApiPositionsInfoData;
     }
     return fallbackPositionsInfoData;
   }, [recomputedApiPositionsInfoData, fallbackPositionsInfoData, shouldUseApiPositionsInfoData]);
+
+  const positionsLastSrcChainIds = usePositionsLastSrcChainIds(chainId, sourcePositionsInfoData);
+
+  const positionsInfoData = useMemo(
+    () => withPositionsLastSrcChainIds(sourcePositionsInfoData, positionsLastSrcChainIds),
+    [sourcePositionsInfoData, positionsLastSrcChainIds]
+  );
 
   const isLoading =
     Boolean(account) &&

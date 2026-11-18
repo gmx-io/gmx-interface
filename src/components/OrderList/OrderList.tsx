@@ -8,23 +8,12 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useCancellingOrdersKeysState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import {
-  selectExpressGlobalParams,
-  selectUnavailableExpressFeeToken,
-} from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
   selectChainId,
   selectOrdersInfoData,
   selectOrdersInfoError,
-  selectSrcChainId,
-  selectSubaccountForChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
-import {
-  getExpressParamsForSubmit,
-  reportMultichainExpressSubmitError,
-} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -40,16 +29,13 @@ import {
   sortSwapOrders,
 } from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
-import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { filterOrdersByUiFilters } from "domain/synthetics/orders/useOrders";
-import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import { helperToast } from "lib/helperToast";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { EMPTY_ARRAY } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
@@ -99,16 +85,7 @@ export function OrderList({
   const { isTablet: isContainerSmall } = useBreakpoints();
 
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
-  const { signer } = useWallet();
-  const { provider } = useJsonRpcProvider(chainId);
-
-  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
-  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
-  const subaccount = useSelector(selectSubaccountForChainAction);
+  const sendCancelOrdersTxn = useSendCancelOrdersTxn();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -168,8 +145,6 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
-    if (!signer || !provider) return;
-
     if (hasOutdatedUi) {
       helperToast.error(getPageOutdatedError());
       return;
@@ -178,51 +153,10 @@ export function OrderList({
     const orderKeys = isTwapOrder(order) ? order.orders.map((o) => o.key) : [order.key];
     setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
 
-    const batchParams = {
-      createOrderParams: [],
-      updateOrderParams: [],
-      cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
-    };
-
     try {
-      const expressParams = await estimateExpressParams({
-        signer,
-        chainId,
-        batchParams,
-        requireValidations: false,
-        globalExpressParams,
-        estimationMethod: "approximate",
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-        subaccount,
-      });
-
-      if (
-        reportMultichainExpressSubmitError({
-          isGmxAccount: srcChainId !== undefined,
-          expressParams,
-          tokensData: undefined,
-          unavailableGasPaymentToken,
-          actionName: "Cancel Order",
-          collateral: order.initialCollateralToken.symbol,
-        })
-      ) {
-        return;
-      }
-
-      await sendBatchOrderTxn({
-        chainId,
-        signer,
-        batchParams,
-        expressParams: getExpressParamsForSubmit(expressParams),
-        simulationParams: undefined,
-        callback: makeOrderTxnCallback({
-          actionName: "Cancel Order",
-          collateralSymbol: order.initialCollateralToken.symbol,
-        }),
-        provider,
-        isGmxAccount: srcChainId !== undefined,
-      }).catch(reportHandledRejection("orderList.cancel"));
+      await sendCancelOrdersTxn({ orders: [order], collateralSymbol: order.initialCollateralToken.symbol }).catch(
+        reportHandledRejection("orderList.cancel")
+      );
     } finally {
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
       setSelectedOrderKeys?.(EMPTY_ARRAY);
