@@ -3,6 +3,7 @@
 import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "path";
 import type { ModuleInfo, OutputBundle, OutputChunk } from "rollup";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -376,6 +377,27 @@ function optionalSolanaSystemStub(): PluginOption {
   };
 }
 
+const SHARED_WORKER_TEST_FILE_REGEX = /\.(spec|test)\.ts$/;
+// A non-isolated worker keeps the module cache, vi.mock registrations and globals between files,
+// so only plain specs that touch none of them can share one.
+const NEEDS_ISOLATED_WORKER_REGEX =
+  /\bvi\.|localStorage|sessionStorage|prototype|globalThis|\bglobal\.|\bwindow\.|\bdocument\.|monkeyPatching/;
+
+function getSharedWorkerTestFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const file = `${dir}/${entry.name}`;
+
+    if (entry.isDirectory()) {
+      return getSharedWorkerTestFiles(file);
+    }
+
+    const canShareWorker =
+      SHARED_WORKER_TEST_FILE_REGEX.test(file) && !NEEDS_ISOLATED_WORKER_REGEX.test(readFileSync(file, "utf8"));
+
+    return canShareWorker ? [file] : [];
+  });
+}
+
 export function createViteConfig(
   { mode }: ConfigEnv,
   {
@@ -384,6 +406,8 @@ export function createViteConfig(
   }: { emitAppRedirects?: boolean; requireAppBootstrap?: boolean } = {}
 ): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
+  const sharedWorkerTestFiles =
+    mode === "test" ? ["src", "landing"].flatMap((dir) => getSharedWorkerTestFiles(dir)) : [];
   const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
 
   const pwaGeneration = Number(pwaBuildId);
@@ -467,6 +491,10 @@ export function createViteConfig(
       globalSetup: "./vitest.global-setup.js",
       exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
+      projects: [
+        { extends: true, test: { name: "isolated", exclude: sharedWorkerTestFiles } },
+        { extends: true, test: { name: "shared", include: sharedWorkerTestFiles, isolate: false } },
+      ],
     },
   };
 }
