@@ -16,10 +16,12 @@ type TradeEvent = {
   executionPrice: string;
   beforeSizeInUsd: string;
   afterSizeInUsd: string;
+  afterTradeId: string;
+  afterUpdatedAtSlot: string;
 };
 
 const FIELDS = `
-  id timestamp position marketToken flags executionPrice beforeSizeInUsd afterSizeInUsd
+  id timestamp position marketToken flags executionPrice beforeSizeInUsd afterSizeInUsd afterTradeId afterUpdatedAtSlot
 `;
 
 async function query<T>(api: Pick<IHttp, "postJson">, query: string, variables: Record<string, unknown>): Promise<T> {
@@ -54,7 +56,10 @@ export function createGmsolChartTradesFetcher(
       (position) => position.account === account && position.sizeInUsd > 0n && markets[position.marketAddress]
     );
     const positionKey = activePositions
-      .map((p) => `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}`)
+      .map(
+        (p) =>
+          `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}:${p.tradeId}:${p.updatedAtSlot}`
+      )
       .sort();
     const key = JSON.stringify([account, marketAddresses, mode, from, to, positionKey]);
     if (cache?.key === key && (cache.pending || Date.now() - cache.fetchedAt < CACHE_TTL_MS)) {
@@ -83,40 +88,48 @@ export function createGmsolChartTradesFetcher(
     async function fetchTrades(): Promise<ChartTrade[]> {
       if (marketAddresses.length === 0 || (mode === "current" && activePositions.length === 0)) return [];
 
-      const genesisByPosition = new Map<string, TradeEvent>();
+      const lifecycleByPosition = new Map<string, { opening: TradeEvent; latest: TradeEvent }>();
       if (mode === "current") {
         await Promise.all(
           activePositions.map(async (position) => {
+            if (position.tradeId === undefined || position.updatedAtSlot === undefined) return;
+
             // Position accounts can be reused after closing. increasedAtTime is the LAST increase,
             // so using it as the opening time would hide earlier fills in the same position.
-            const { opening, latest } = await query<{ opening: TradeEvent[]; latest: TradeEvent[] }>(
+            const { latest } = await query<{ latest: TradeEvent[] }>(
               api,
-              `query ChartPositionOpening($owner: String!, $store: String!, $position: String!) {
-                opening: tradeEvents(limit: 1, orderBy: id_DESC, where: {
-                  user_eq: $owner, store_eq: $store, position_eq: $position,
-                  beforeSizeInUsd_eq: "0", afterSizeInUsd_not_eq: "0"
-                }) { ${FIELDS} }
+              `query ChartPositionLatest($owner: String!, $store: String!, $position: String!) {
                 latest: tradeEvents(limit: 1, orderBy: id_DESC, where: {
                   user_eq: $owner, store_eq: $store, position_eq: $position
                 }) { ${FIELDS} }
               }`,
               { owner: account, store: GMSOL_STORE_ADDRESS, position: position.contractKey }
             );
-            // Wait until the indexer reaches the current RPC snapshot, including a recent reopen.
-            const updatedAt = Number(
-              position.increasedAtTime > position.decreasedAtTime ? position.increasedAtTime : position.decreasedAtTime
-            );
             if (
-              opening[0] &&
-              latest[0] &&
-              BigInt(latest[0].afterSizeInUsd) > 0n &&
-              Date.parse(latest[0].timestamp) / 1000 >= updatedAt
+              !latest[0] ||
+              BigInt(latest[0].afterSizeInUsd) <= 0n ||
+              latest[0].afterTradeId !== position.tradeId.toString() ||
+              latest[0].afterUpdatedAtSlot !== position.updatedAtSlot.toString()
             ) {
-              genesisByPosition.set(position.contractKey, opening[0]);
+              return;
+            }
+
+            const { opening } = await query<{ opening: TradeEvent[] }>(
+              api,
+              `query ChartPositionOpening($owner: String!, $store: String!, $position: String!, $latestId: String!) {
+                opening: tradeEvents(limit: 1, orderBy: id_DESC, where: {
+                  user_eq: $owner, store_eq: $store, position_eq: $position, id_lte: $latestId,
+                  beforeSizeInUsd_eq: "0", afterSizeInUsd_not_eq: "0"
+                }) { ${FIELDS} }
+              }`,
+              { owner: account, store: GMSOL_STORE_ADDRESS, position: position.contractKey, latestId: latest[0].id }
+            );
+            if (opening[0] && opening[0].id <= latest[0].id) {
+              lifecycleByPosition.set(position.contractKey, { opening: opening[0], latest: latest[0] });
             }
           })
         );
-        if (genesisByPosition.size === 0) return [];
+        if (lifecycleByPosition.size === 0) return [];
       }
 
       // Serialize range extensions so overlapping marks requests cannot discard each other's pages.
@@ -163,9 +176,17 @@ export function createGmsolChartTradesFetcher(
         const flags = BigInt(event.flags);
         const isLong = (flags & 1n) !== 0n;
         if (mode === "current") {
-          const opening = genesisByPosition.get(event.position);
+          const lifecycle = lifecycleByPosition.get(event.position);
           const position = activePositions.find((p) => p.contractKey === event.position);
-          if (!opening || !position || position.isLong !== isLong || event.id < opening.id) continue;
+          if (
+            !lifecycle ||
+            !position ||
+            position.isLong !== isLong ||
+            event.id < lifecycle.opening.id ||
+            event.id > lifecycle.latest.id
+          ) {
+            continue;
+          }
         }
         trades.push({
           id: event.id,

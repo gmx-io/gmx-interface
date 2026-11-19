@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useMemo, useRef, useState } from "react";
 
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
@@ -156,6 +156,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const ordersRequest = useGmsolOrders(owner);
   const feeDiscountRequest = useGmsolFeeDiscount(owner);
 
+  const refetchPositionsRequest = positionsRequest.refetch;
+  const refetchRawMarkets = rawMarkets.refetch;
+  const refetchPrices = tokensDataResult.refetch;
+  const refetchPositions = useCallback(
+    () => Promise.all([refetchPositionsRequest(), refetchRawMarkets(), refetchPrices()]),
+    [refetchPositionsRequest, refetchRawMarkets, refetchPrices]
+  );
+
   const marketsInfoData = marketsInfo.marketsInfoData;
   const isMarketsLoading = marketsInfo.isLoading;
   const lastPositionsRef = useRef<{ owner: string; data: PositionsInfoData }>();
@@ -201,7 +209,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: composedPositions.data,
         isLoading: false,
-        refetch: positionsRequest.refetch,
+        refetch: refetchPositions,
         dataSource: "api",
         error:
           positionsRequest.error ??
@@ -215,7 +223,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: cachedPositions,
         isLoading: false,
-        refetch: positionsRequest.refetch,
+        refetch: refetchPositions,
         dataSource: "api",
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
@@ -224,17 +232,17 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     if (positionsRequest.error || isMarketsUnavailable) {
       return {
         isLoading: false,
-        refetch: positionsRequest.refetch,
+        refetch: refetchPositions,
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
     }
 
-    return { isLoading: true, refetch: positionsRequest.refetch };
+    return { isLoading: true, refetch: refetchPositions };
   }, [
     owner,
     composedPositions,
     positionsRequest.error,
-    positionsRequest.refetch,
+    refetchPositions,
     isMarketsUnavailable,
     marketsUnavailableError,
   ]);
