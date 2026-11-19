@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import {
   selectFeeDiscountError,
+  selectIsAccountDataSyncing,
   selectIsOrdersLoading,
   selectIsPositionsLoading,
   selectMarketsInfoError,
@@ -69,6 +70,7 @@ export default function GmsolTradeboxAdapter({
   const feeDiscountError = useSelector(selectFeeDiscountError);
   const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const marketsError = useSelector(selectMarketsInfoError);
+  const isAccountDataSyncing = useSelector(selectIsAccountDataSyncing);
   const positionsError = useSelector(selectPositionsInfoError);
   const ordersError = useSelector(selectOrdersInfoError);
   const positionsLoading = useSelector(selectIsPositionsLoading);
@@ -136,7 +138,12 @@ export default function GmsolTradeboxAdapter({
     error = t`Unable to load trading data`;
   else if (
     wallet.address &&
-    (balances.isLoading || !balances.data || positionsLoading || ordersLoading || feeDiscountFactor === undefined)
+    (isAccountDataSyncing ||
+      balances.isLoading ||
+      !balances.data ||
+      positionsLoading ||
+      ordersLoading ||
+      feeDiscountFactor === undefined)
   )
     error = t`Loading...`;
   else error = tradeError.buttonErrorMessage ?? intent.error;
