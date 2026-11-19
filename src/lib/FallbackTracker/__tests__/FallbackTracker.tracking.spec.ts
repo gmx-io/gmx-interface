@@ -448,7 +448,7 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       await checkPromise;
 
       expect(tracker.getLastCheckResults()).toBeUndefined();
-      expect(tracker.networkStatusObserver.getTrackingFailed(tracker.trackerKey)).toBe(false);
+      expect(config.networkStatusObserver?.getTrackingFailed(tracker.trackerKey)).toBe(false);
     });
   });
 
@@ -704,8 +704,8 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
         await vi.advanceTimersByTimeAsync(10);
 
         expect(tracker.getLastCheckResults()).toBe(healthyResults);
-        expect(tracker.networkStatusObserver.getTrackingFailed(tracker.trackerKey)).toBe(false);
-        expect(tracker.networkStatusObserver.getIsActive(tracker.trackerKey)).toBe(false);
+        expect(config.networkStatusObserver?.getTrackingFailed(tracker.trackerKey)).toBe(false);
+        expect(config.networkStatusObserver?.getIsActive(tracker.trackerKey)).toBe(false);
         expect(finished).not.toHaveBeenCalled();
         expect(tracker.state.trackerTimeoutId).toBeUndefined();
 

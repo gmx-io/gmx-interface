@@ -1,16 +1,5 @@
 import { GMSOL_TOKENS, GMSOL_NATIVE_TOKEN } from "config/gmsol/tokens";
-
-export { fetchGmsolPrices } from "./tokens/fetchGmsolPrices";
-export { resolveGmsolTokensData } from "./tokens/resolveGmsolTokensData";
-
-export type SolanaWalletToken = {
-  address: string;
-  symbol: string;
-  iconSymbol: string;
-  name: string;
-  decimals: number;
-  isStable: boolean | undefined;
-};
+import type { SolanaWalletToken } from "domain/solana/solanaWalletAssets";
 
 export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
   {

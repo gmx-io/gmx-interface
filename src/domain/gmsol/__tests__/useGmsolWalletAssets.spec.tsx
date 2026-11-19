@@ -10,7 +10,7 @@ import { expandDecimals } from "lib/numbers";
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { useSolanaWalletAssets } from "../useSolanaWalletAssets";
+import { useGmsolWalletAssets } from "../useGmsolWalletAssets";
 
 const source = vi.hoisted(() => ({ balances: vi.fn(), prices: vi.fn(), networkId: -501 }));
 
@@ -32,10 +32,10 @@ function solTicker(updatedAt: number) {
   return { tokenAddress: arbitrumSol.address, minPrice: contractPrice, maxPrice: contractPrice, updatedAt };
 }
 
-let latest: ReturnType<typeof useSolanaWalletAssets>;
+let latest: ReturnType<typeof useGmsolWalletAssets>;
 
 function Consumer({ owner }: { owner: string | undefined }) {
-  latest = useSolanaWalletAssets(owner);
+  latest = useGmsolWalletAssets(owner);
   return null;
 }
 
@@ -90,7 +90,7 @@ it("loads, then values the wallet in USD", async () => {
   await waitFor(() => expect(latest.totalUsd).toBe(usd(300)));
   expect(latest.isLoading).toBe(false);
   expect(latest.assets?.map((asset) => asset.symbol)).toEqual(["SOL"]);
-  expect(source.balances).toHaveBeenCalledWith("wallet-a");
+  expect(source.balances).toHaveBeenCalledWith(expect.objectContaining({ owner: "wallet-a" }));
 });
 
 it("reports a balance error instead of an empty wallet", async () => {
