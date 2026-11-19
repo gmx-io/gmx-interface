@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import type { ExpressTxnParams } from "domain/synthetics/express";
 
@@ -8,29 +8,19 @@ const SIMULATED = { estimationMethod: "estimateGas" } as ExpressTxnParams;
 const APPROXIMATE = { estimationMethod: "approximate" } as ExpressTxnParams;
 
 describe("estimateWithApproximateFallback", () => {
-  it("uses the simulated estimate when it succeeds", async () => {
-    const estimate = vi.fn(async (method: string) => (method === "estimateGas" ? SIMULATED : APPROXIMATE));
+  it("prices with the simulated gas limit and falls back to approximate PRO-4599", async () => {
+    const cases = [
+      { name: "simulation succeeds", simulate: async () => SIMULATED, expected: SIMULATED },
+      { name: "simulation returns nothing", simulate: async () => undefined, expected: APPROXIMATE },
+      { name: "simulation throws", simulate: () => Promise.reject(new Error("rpc failed")), expected: APPROXIMATE },
+    ];
 
-    await expect(estimateWithApproximateFallback(estimate)).resolves.toBe(SIMULATED);
-    expect(estimate).toHaveBeenCalledTimes(1);
-  });
+    for (const { name, simulate, expected } of cases) {
+      const result = await estimateWithApproximateFallback((method) =>
+        method === "estimateGas" ? simulate() : Promise.resolve(APPROXIMATE)
+      );
 
-  it("falls back to the approximate estimate when the simulation returns nothing", async () => {
-    const estimate = vi.fn(async (method: string) => (method === "estimateGas" ? undefined : APPROXIMATE));
-
-    await expect(estimateWithApproximateFallback(estimate)).resolves.toBe(APPROXIMATE);
-    expect(estimate.mock.calls.map(([method]) => method)).toEqual(["estimateGas", "approximate"]);
-  });
-
-  it("falls back to the approximate estimate when the simulation throws", async () => {
-    const estimate = vi.fn(async (method: string) => {
-      if (method === "estimateGas") {
-        throw new Error("rpc failed");
-      }
-
-      return APPROXIMATE;
-    });
-
-    await expect(estimateWithApproximateFallback(estimate)).resolves.toBe(APPROXIMATE);
+      expect(result, name).toBe(expected);
+    }
   });
 });

@@ -125,8 +125,8 @@ export async function estimateBatchExpressParams({
 }
 
 /**
- * The static gas limits can be below the real relay cost (a cancel can take more than `cancelOrderGasLimit`),
- * and the relay rejects an underpaid fee with InsufficientRelayFee, so the approximate fee is only a fallback
+ * The approximate relay gas limit can be below the real relay cost, and the relay rejects an underpaid fee
+ * with InsufficientRelayFee, so the approximate fee is only a fallback
  */
 export async function estimateWithApproximateFallback(
   estimate: (estimationMethod: ExpressParamsEstimationMethod) => Promise<ExpressTxnParams | undefined>
