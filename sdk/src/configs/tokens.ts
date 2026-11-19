@@ -367,6 +367,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "WSTETH",
       address: "0x5979D7b546E38E414F7E9822514be443A4800529",
       decimals: 18,
+      tracksPriceOf: "ETH",
       imageUrl: "https://assets.coingecko.com/coins/images/18834/standard/wstETH.png?1696518295",
     },
     {
@@ -386,6 +387,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "TBTC",
       address: "0x6c84a8f1c29108F47a79964b5Fe888D4f4D0dE40",
       decimals: 18,
+      tracksPriceOf: "BTC",
       imageUrl:
         "https://assets.coingecko.com/coins/images/11224/standard/0x18084fba666a33d37592fa2633fd49a74dd93a88.png?1696511155",
       isPermitSupported: false,
