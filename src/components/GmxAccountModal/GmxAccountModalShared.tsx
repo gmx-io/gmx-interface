@@ -9,7 +9,7 @@ import { useGmxAccountFundingHistoryItem } from "domain/multichain/useGmxAccount
 import { useChainId } from "lib/chains";
 
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ArrowLeftIcon from "img/ic_arrow_left.svg?react";
 
@@ -63,9 +63,7 @@ function WalletOnlyInfo({ chainName }: { chainName: string }) {
       <TooltipText>
         <Trans>GMX Account is not available on {chainName}. To use GMX Account, switch to Arbitrum.</Trans>
       </TooltipText>
-      <TooltipLink href={DOCS_MULTICHAIN_URL}>
-        <Trans>Read more</Trans>
-      </TooltipLink>
+      <TooltipReadMore href={DOCS_MULTICHAIN_URL} />
     </TooltipContent>
   );
 }
@@ -122,9 +120,7 @@ function WalletAndGmxAccountInfo() {
           funds or GMX Account funds.
         </Trans>
       </TooltipText>
-      <TooltipLink href={DOCS_MULTICHAIN_URL}>
-        <Trans>Read more</Trans>
-      </TooltipLink>
+      <TooltipReadMore href={DOCS_MULTICHAIN_URL} />
     </TooltipContent>
   );
 }

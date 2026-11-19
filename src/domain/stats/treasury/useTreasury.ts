@@ -30,6 +30,7 @@ const TREASURY_ADDRESSES: {
   { address: "0x2c247a44928d66041d9f7b11a69d7a84d25207ba" },
   { address: "0x0a2962120b11A4a36700C5De00D4980E58a2D1C0" },
   { address: "0xe57fE47902A35Bc0d82C83e39610Af546E1D18B9" },
+  { address: "0x6e65fDdFe4cECB227f22BE98F05C031a21255F93" },
 ];
 
 const addresses = TREASURY_ADDRESSES.map((item) => item.address);
