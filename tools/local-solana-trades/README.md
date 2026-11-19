@@ -1,69 +1,68 @@
-# TRD-136 local Solana integration
+# TRD-136 Solana integration playground
 
-Run the existing shared TradeBox, transaction builders/checks, order lifecycle and pinned GMX WASM together against real local API data. Temporary configuration changes only the Solana API host and lookup-table selection. Product fixes belong in their original issue branches and PRs.
+This integration uses the formal public Solana API, configured GMX RPC, shared TradeBox, order actions, lifecycle notifications and pinned GMX WASM. It combines existing product PRs before their upstream merge. Product acceptance and review remain with those PRs.
 
-## Supported API
+## Integrated formal PRs
 
-Use the unmodified merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340) at `c82a14e990ece30103defda0ed764fea3cf65aa0`, with its published SDK 2.9.3 dependency. Install that checkout's own immutable dependencies and generate its tsoa routes. Keep the checkout clean and preserve existing fixed environments when preparing another revision.
+The November 19 integration merges these exact PR heads, including open and draft work. Existing source commits are preserved. Conflicts retain the composed behavior: lifecycle tracking and failure reasons, confirmed-slot floors, account retries, order metadata, close actions and Solana page gates.
 
-The upstream global index supersedes the historical wallet-scoped API patch. The patch and launcher option have been removed; do not apply a wallet filter or set `TRD136_INDEX_WALLET`. The API launcher runs only the upstream global indexer and reader with an owned local database. No API branch or PR is published by these tools.
+| Capability                                      | PR                                                         | Source head  |
+| ----------------------------------------------- | ---------------------------------------------------------- | ------------ |
+| GMX-owned WASM and latest release               | [#3314](https://github.com/gmx-io/gmx-interface/pull/3314) | `161e89e4a4` |
+| Transaction preparation, validation and sending | [#3315](https://github.com/gmx-io/gmx-interface/pull/3315) | `c1473bbee4` |
+| Order lifecycle and notifications               | [#3316](https://github.com/gmx-io/gmx-interface/pull/3316) | `5da468c4a3` |
+| Shared order entry                              | [#3317](https://github.com/gmx-io/gmx-interface/pull/3317) | `c4347d2577` |
+| Wallet balances and address keys                | [#3195](https://github.com/gmx-io/gmx-interface/pull/3195) | `372e7ff471` |
+| Fee-discount fields                             | [#3205](https://github.com/gmx-io/gmx-interface/pull/3205) | `baed302cb0` |
+| Order fields                                    | [#3207](https://github.com/gmx-io/gmx-interface/pull/3207) | `6bb15c691f` |
+| SDK input units                                 | [#3287](https://github.com/gmx-io/gmx-interface/pull/3287) | `24e983c4c4` |
+| Close, edit and cancel actions                  | [#3293](https://github.com/gmx-io/gmx-interface/pull/3293) | `0722cc8701` |
+| Solana pages and TradeBox entries               | [#3294](https://github.com/gmx-io/gmx-interface/pull/3294) | `2ad1f8971a` |
+| Charts and account retry                        | [#3223](https://github.com/gmx-io/gmx-interface/pull/3223) | `beaa4d28dd` |
+| Ticker response contract                        | [#3273](https://github.com/gmx-io/gmx-interface/pull/3273) | `6995d3a0d5` |
+| Preview UI version                              | [#3271](https://github.com/gmx-io/gmx-interface/pull/3271) | `cb6f535c9b` |
 
-On November 17, the fixed API bootstrapped 105,536 accounts and served 67 gmsol markets. Route generation, types and five index/account/order suites passed (72 tests). Account endpoints, minimum-slot waiting, stale market/position rejection and recovery passed. These local results do not establish full financial-reference parity. The official API now serves the gmsol market contract; the local instance remains useful for isolated diagnostics and controlled freshness failures.
+The official API includes merged [gmx-api #340](https://github.com/gmx-io/gmx-api/pull/340) at `c82a14e990` and SDK 2.9.3. The public market config serves 67 gmsol markets. Financial-reference and complete post-trade acceptance remain in TRD-108.
 
-## Start and stop
+The historical wallet-scoped API patch, local database/indexer/reader launcher, loopback frontend launcher, capacity probe and automatic diagnostic RPC proxy are retired. No local API services or Docker are required for normal playground use. Existing running services are not stopped by removing these source tools; recover or stop a service only after verifying its ownership.
 
-Run from this frontend checkout with Node 22 and its locked dependencies installed. Verify Docker's actual image/virtual-disk storage location first; on the current machine it must be on the external volume. The local Docker daemon and an existing `postgres:15` image are required.
+The component workflow uses the normal upstream report steps. It no longer carries fork-specific report conditions; report publication failures remain distinct from test failures.
 
-Use an existing compatible RPC explicitly, without putting credentials in command arguments:
+## Remaining integration-specific support
 
-```sh
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/api.mjs \
-  --api-dir /path/to/gmx-api-at-c82a14 \
-  --port 3066 --index-port 3067
-```
+| Support still retained                                           | Missing formal replacement                                                                                                           | Retirement condition                                                                                                                                                |
+| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Empty lookup-table selection for the experimental build          | TRD-109 has not delivered frozen or independently reviewed GMX-owned tables; the formal configuration still lists provisional tables | Integrate verified table addresses/authority and coverage through TRD-72, measure and simulate the actual transaction combinations, then remove this build override |
+| Solana close receive-token metadata and available receive tokens | PR #3293 does not yet supply the complete shared selector contract                                                                   | Have TRD-84 absorb the receive selector/tokenInfo fix, then remove its separate integration ownership without removing the behavior                                 |
+| Solana Pay tokenInfo in TradeBox and MarginField                 | PR #3294 does not yet pass Solana token metadata to these selectors                                                                  | Have the formal page/order-entry PR absorb the fix, then remove its separate integration ownership without removing the behavior                                    |
 
-The launcher reads `TRD136_RPC_URL` from the process environment. Alternatively, an existing local read-only RPC proxy can be selected with `--rpc-config /path/to/solana-rpc-proxy/config.json`. This optional path uses that directory's existing `proxy.mjs`; the proxy cannot broadcast transactions. Do not introduce a public RPC fallback or new provider key.
+The latter two are product fixes required by the composed UI, not fake data or alternate transaction paths. Retain them until the owning formal PR implements the same behavior.
 
-The launcher verifies mainnet genesis, ports, a clean API revision and real gmsol readiness. It creates an isolated PostgreSQL container with a unique owner label and random credentials, runs the upstream migrations and starts separate reader/writer processes. It does not load the API checkout's `.env` or inherit wallet/keeper write credentials.
+The RPC proxy Worker in the separate private repository has a proposed Solana route, but its PR is still open and a deployed, configured replacement endpoint is not established here. This app continues using the existing central GMX RPC configuration; it does not need a local proxy. Deploying or configuring the Worker is separate infrastructure work.
 
-Start the frontend against that instance:
-
-```sh
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/web.mjs \
-  --api-url http://127.0.0.1:3066 --port 3016
-```
-
-The web launcher first verifies and bundles the pinned browser SDK through the normal `vite.gmsol.config.ts` entry. Its local Vite transform selects the loopback API and the same empty LUT configuration for builders, validation and sending. EVM API configuration, feature flags and fresh `solanaTrading` checks remain unchanged. Missing API data remains an error.
-
-Stop each launcher with Ctrl-C. API failure or normal shutdown cleans only its owned process groups, container and anonymous volume. Reports/logs stay under `.local/trd-136/api-*`; confirm ownership from the report before recovering an interrupted run. Do not prune unrelated containers, kill processes by port alone or expose the local API publicly.
-
-## Build the experimental playground
+## Build and inspect
 
 ```sh
 NODE_OPTIONS=--max-old-space-size=8192 yarn build-playground
+NODE_OPTIONS=--max-old-space-size=8192 yarn vite preview --host 127.0.0.1 --port 3016
 ```
 
-Deploy this command's `build/` output to the existing Solana playground. It shares the local web launcher's empty LUT configuration through `lookupTableConfiguration.mjs`, so preparation, validation and sending all use the same selection. It keeps the public API/RPC, feature flags, fresh trading checks, transaction-size limits and pre-signature simulation. Orders that cannot fit without LUTs remain unsupported; this does not establish atomic TP/SL acceptance. The normal `build-app` command retains the formal LUT configuration.
+`build-playground` uses the normal production app environment and SDK build, with only the empty LUT selection from `lookupTableConfiguration.mjs`. Preparation, validation and sending share that selection. Public API/RPC, feature flags, fresh trading checks, transaction-size limits and pre-signature simulation remain in place. Standard `build-app` retains the formal LUT configuration and is not a substitute while those tables remain untrusted. Deployment is a separate action.
 
-## Diagnostics
+Orders that exceed the packet limit without LUTs remain unsupported. No automatic fallback or altered acceptable price is provided. Simple no-LUT results do not cover the original four-wallet or atomic TP/SL acceptance.
+
+## Optional diagnostics
 
 ```sh
-NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/probe.mjs
 NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/measure.mjs
 NODE_OPTIONS=--max-old-space-size=8192 node tools/local-solana-trades/simulate.mjs \
-  --wallet YOUR_PUBLIC_SOLANA_ADDRESS --api-url http://127.0.0.1:3066
+  --wallet YOUR_PUBLIC_SOLANA_ADDRESS
 ```
 
-`probe.mjs` reads RPC capacity. `measure.mjs` uses generated identities and fixed offline inputs only to measure encoding/size; those inputs must never enter live trading configuration. `simulate.mjs` accepts a loopback API or the official `https://solana.gmxapi.io` host, and selects a configured market with `--market MARKET_TOKEN_ADDRESS`. It requires real API data and uses the actual prepare/builder/validator/pre-signature path with fresh prices, fees, blockhash and trading flag. Its public wallet argument is for read-only simulation, not API scoping.
+`measure.mjs` uses generated identities and fixed offline inputs only to measure transaction encoding/size. Those inputs never enter live trading configuration.
 
-The Node simulation adapter directly initializes the hash-verified WASM and omits browser loader/tracker/sender behavior. It neither signs nor broadcasts. Its diagnostic trade parameters are not spending authorization. Four unsigned simulations against the final API passed at slots 470550183/191/200/208: market long/short 892 bytes, limit long/short 925 bytes, without LUTs.
+`simulate.mjs` defaults to the official public API. It requires an explicitly configured, authorized read/simulation endpoint in `TRD136_RPC_URL`; it never starts a proxy or selects a fallback. An explicit loopback API remains accepted for diagnostics against an independently managed API environment. It uses real data, hash-verified WASM and the product prepare/builder/validator checks. The Node adapter omits browser loader/tracker/sender behavior, neither signs nor broadcasts, and does not establish spending authorization or browser acceptance.
 
-## Acceptance boundaries
+## Recorded live evidence
 
-On November 18, playground `41092fae55` completed a real Phantom BTC/USDC market long of approximately 20 USD at 2x. The request and keeper transactions finalized successfully, and the position survived a page refresh. The request included eight successful Lighthouse assertions, exercising the wallet compatibility fix. This is one market-long / Phantom sample, not the complete action or wallet matrix.
-
-On the official API, positions, orders and fee-discount returned HTTP 200 for the same wallet. Positions and orders supplied `X-Solana-Slot`; repeat reads with that slot as `minContextSlot` returned data at or above the floor. These read-only observations do not prove refresh after a new edit or close, independent financial-reference parity, or continuous service health.
-
-The formal TRD-84 close/edit/cancel implementation from PR #3293 is integrated; no separate temporary exit implementation is needed. The close form and unsigned builder have been checked, but real close execution, received balances, limit editing/cancellation/triggering and TP/SL acceptance remain separate work. Wallet signing/broadcasting and spending require their own authorization. Product fixes return to their original issue lines before integration here.
-
-The experimental public preview uses the same no-LUT configuration as the local launcher, but the public API/RPC remains distinct from the local API setup. Use `build-playground` for that preview; `build-app` does not include this experimental selection. Simple no-LUT results do not cover the four-wallet/atomic TP-SL/LUT acceptance of the original issues. No diagnostic success, green CI or local trade marks those requirements production-ready.
+Historical fixed-source evidence includes a Phantom market long with eight successful Lighthouse assertions on November 18 and a full market close through formal TRD-84 actions on November 19, with keeper execution, received USDC and account refresh. Those transactions do not validate this newly merged head. Limit creation/edit/cancel/trigger, atomic TP/SL, all wallets, trusted production LUTs and full financial-reference parity remain separate acceptance work. New wallet signing, broadcasting and deployment require their own authorization.
