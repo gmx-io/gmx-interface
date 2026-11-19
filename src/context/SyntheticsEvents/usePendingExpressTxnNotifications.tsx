@@ -29,7 +29,7 @@ import {
 } from "components/Errors/errorToasts";
 
 import type { PendingExpressTxns, PendingPositionsUpdates, RelayTaskStatus } from "./types";
-import { extractRelayTaskError } from "./utils";
+import { extractRelayTaskError, removePendingExpressTxnDebits, removePendingExpressTxnPositionsUpdates } from "./utils";
 
 export function usePendingExpressTxnNotifications({
   chainId,
@@ -59,14 +59,8 @@ export function usePendingExpressTxnNotifications({
       Object.values(pendingExpressTxns).forEach((pendingExpressTxn) => {
         if (pendingExpressTxn.sendFailed && pendingExpressTxn.key && !pendingExpressTxn.isViewed) {
           setPendingExpressTxns((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
-          setOptimisticTokensBalancesUpdates((old) => {
-            const newState = { ...old };
-            Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
-              delete newState[tokenAddress];
-            });
-            return newState;
-          });
-          setPendingPositionsUpdates({});
+          setOptimisticTokensBalancesUpdates((old) => removePendingExpressTxnDebits(old, pendingExpressTxn));
+          setPendingPositionsUpdates((old) => removePendingExpressTxnPositionsUpdates(old, pendingExpressTxn));
           return;
         }
 
@@ -212,14 +206,8 @@ export function usePendingExpressTxnNotifications({
               setPendingExpressTxns((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
             }
 
-            setOptimisticTokensBalancesUpdates((old) => {
-              const newState = { ...old };
-              Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
-                delete newState[tokenAddress];
-              });
-              return newState;
-            });
-            setPendingPositionsUpdates({});
+            setOptimisticTokensBalancesUpdates((old) => removePendingExpressTxnDebits(old, pendingExpressTxn));
+            setPendingPositionsUpdates((old) => removePendingExpressTxnPositionsUpdates(old, pendingExpressTxn));
           }
         }
       });

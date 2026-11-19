@@ -6,9 +6,11 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import type { OrderMetricId } from "lib/metrics/types";
 import { StatusCode } from "sdk/utils/express";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 
-import type { PendingExpressTxns, RelayTaskStatus } from "../types";
+import type { PendingExpressTxnParams, PendingExpressTxns, RelayTaskStatus } from "../types";
 import { usePendingExpressTxnNotifications } from "../usePendingExpressTxnNotifications";
+import { removePendingExpressTxnDebits, removePendingExpressTxnPositionsUpdates } from "../utils";
 
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
   useSettings: () => ({ executionFeeBufferBps: undefined, setIsSettingsVisible: () => undefined }),
@@ -27,6 +29,7 @@ vi.mock("context/TokensBalancesContext/TokensBalancesContextProvider", () => ({
 const ARBITRUM = 42161;
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const METRIC_ID: OrderMetricId = "position:trd-139";
+const POSITION_KEY = "0x5d2c7cd7bd6c3b4ed1a2c4a2b6a1e1a4bd7f5c3f0b3e9c3f6e1d2a7b8c9d0e1f";
 
 type Props = {
   pendingExpressTxns: PendingExpressTxns;
@@ -122,6 +125,60 @@ describe("usePendingExpressTxnNotifications", () => {
 
       expect(getFailedEvents()).toEqual(failedEvents);
       expect(errorToastSpy).toHaveBeenCalledTimes(1);
+    }
+  );
+
+  it.each([
+    {
+      name: "Add TP/SL rejected while a market order is pending",
+      txn: { payAmounts: { [USDC]: 100_000n }, pendingPositionsKeys: [], createdAt: 2000 },
+      pendingDebit: -100_100_000n,
+      positionUpdatedAt: 1000,
+      expectedDebit: -100_000_000n,
+      isPositionKept: true,
+    },
+    {
+      name: "the only pending market order rejected",
+      txn: { payAmounts: { [USDC]: 100_000_000n }, pendingPositionsKeys: [POSITION_KEY], createdAt: 1000 },
+      pendingDebit: -100_000_000n,
+      positionUpdatedAt: 1000,
+      expectedDebit: undefined,
+      isPositionKept: false,
+    },
+    {
+      name: "the older of two market orders on one position rejected",
+      txn: { payAmounts: { [USDC]: 100_000_000n }, pendingPositionsKeys: [POSITION_KEY], createdAt: 1000 },
+      pendingDebit: -150_000_000n,
+      positionUpdatedAt: 3000,
+      expectedDebit: -50_000_000n,
+      isPositionKept: true,
+    },
+  ])(
+    "rolls back only the failed txn's own debit and pending position, $name TRD-139",
+    ({ txn, pendingDebit, positionUpdatedAt, expectedDebit, isPositionKept }) => {
+      const pendingExpressTxn: Partial<PendingExpressTxnParams> = { ...txn, isGmxAccount: false };
+
+      const debits = removePendingExpressTxnDebits(
+        { [USDC]: { balanceType: TokenBalanceType.Wallet, diff: pendingDebit, isPending: true } },
+        pendingExpressTxn
+      );
+      const positionsUpdates = removePendingExpressTxnPositionsUpdates(
+        {
+          [POSITION_KEY]: {
+            isIncrease: true,
+            positionKey: POSITION_KEY,
+            sizeDeltaUsd: 1000n * 10n ** 30n,
+            sizeDeltaInTokens: 10n ** 17n,
+            collateralDeltaAmount: 100_000_000n,
+            updatedAt: positionUpdatedAt,
+            updatedAtBlock: 1n,
+          },
+        },
+        pendingExpressTxn
+      );
+
+      expect(debits[USDC]?.diff).toBe(expectedDebit);
+      expect(POSITION_KEY in positionsUpdates).toBe(isPositionKept);
     }
   );
 });
