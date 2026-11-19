@@ -13,6 +13,8 @@ export const selectSigner = (s: SyntheticsState) => s.globals.signer;
 export const selectOrdersInfoData = (s: SyntheticsState) => s.globals.ordersInfo.ordersInfoData;
 export const selectIsOrdersLoading = (s: SyntheticsState) => s.globals.ordersInfo.isLoading;
 export const selectOrdersInfoError = (s: SyntheticsState) => s.globals.ordersInfo.error;
+export const selectIsAccountDataSyncing = (s: SyntheticsState) =>
+  Boolean(s.globals.positionsInfo.isSyncing || s.globals.ordersInfo.isSyncing);
 export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positionsInfo.positionsInfoData;
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 export const selectPositionsInfoError = (s: SyntheticsState) => s.globals.positionsInfo.error;
