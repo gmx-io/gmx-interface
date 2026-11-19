@@ -9,7 +9,7 @@ import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { metrics } from "lib/metrics";
 import { registerRpcTracker } from "lib/rpc/registry";
 
-import { SolanaRpcTracker } from "./rpc";
+import { SolanaRpcTracker } from "../rpc";
 
 const nativeAbort = vi.hoisted(() => {
   // Kit captures the controller at import time; its Node transport needs the native implementation.

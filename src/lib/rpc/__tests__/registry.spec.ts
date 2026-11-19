@@ -8,9 +8,9 @@ import { emitEndpointBanned, emitEndpointsUpdated, emitTrackingFinished } from "
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
 import { metrics } from "lib/metrics";
 
-import { getRegisteredRpcTracker, registerRpcTracker } from "./registry";
-import { RpcTracker } from "./RpcTracker";
-import { getRpcTrackerByChainId, syncEvmRpcTracking } from "./useRpcUrls";
+import { getRegisteredRpcTracker, registerRpcTracker } from "../registry";
+import { RpcTracker } from "../RpcTracker";
+import { getRpcTrackerByChainId, syncEvmRpcTracking } from "../useRpcUrls";
 
 let cleanup: (() => void) | undefined;
 afterEach(() => {

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { SolanaWalletToken } from "domain/gmsol/walletTokens";
 import { expandDecimals } from "lib/numbers";
 
-import { getSolanaWalletAssets } from "./solanaWalletAssets";
+import { getSolanaWalletAssets } from "../solanaWalletAssets";
 
 const usd = (value: number) => expandDecimals(value, 30);
 

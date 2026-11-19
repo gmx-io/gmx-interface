@@ -10,7 +10,7 @@ import { expandDecimals } from "lib/numbers";
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
-import { useSolanaWalletAssets } from "./useSolanaWalletAssets";
+import { useSolanaWalletAssets } from "../useSolanaWalletAssets";
 
 const source = vi.hoisted(() => ({ balances: vi.fn(), prices: vi.fn(), networkId: -501 }));
 

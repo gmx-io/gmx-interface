@@ -6,8 +6,8 @@ import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import { getRpcProviders } from "config/rpc";
 
-import { decodeSolanaTokenBalance, fetchSolanaBalances } from "./balances";
-import { fetchSolanaAccounts, getSolanaRpcTracker } from "./rpc";
+import { decodeSolanaTokenBalance, fetchSolanaBalances } from "../balances";
+import { fetchSolanaAccounts, getSolanaRpcTracker } from "../rpc";
 
 const nativeAbort = vi.hoisted(() => {
   // Kit captures the controller at import time; its Node transport needs the native implementation.

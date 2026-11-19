@@ -8,7 +8,7 @@ import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { SolanaBalances } from "lib/solana/balances";
 
-import { getSolanaBalancesKey, useSolanaBalances } from "./useSolanaBalances";
+import { getSolanaBalancesKey, useSolanaBalances } from "../useSolanaBalances";
 
 const source = vi.hoisted(() => ({ read: vi.fn(), networkId: -501 }));
 vi.mock("lib/chains", () => ({ useChainId: () => ({ networkId: source.networkId }) }));
