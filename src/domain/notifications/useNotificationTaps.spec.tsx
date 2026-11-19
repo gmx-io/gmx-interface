@@ -11,6 +11,7 @@ const { mocks } = vi.hoisted(() => ({
     isConnected: true,
     switchNetwork: vi.fn(),
     setSettlementChainId: vi.fn(),
+    pushEvent: vi.fn(),
   },
 }));
 
@@ -32,6 +33,10 @@ vi.mock("lib/wallets/useIsWalletInitializing", () => ({
 
 vi.mock("lib/wallets", () => ({
   switchNetwork: mocks.switchNetwork,
+}));
+
+vi.mock("lib/userAnalytics", () => ({
+  userAnalytics: { pushEvent: mocks.pushEvent },
 }));
 
 vi.mock("components/Errors/errorToasts", () => ({
@@ -77,6 +82,7 @@ describe("useNotificationTaps", () => {
     mocks.isConnected = true;
     mocks.switchNetwork.mockReset().mockResolvedValue(undefined);
     mocks.setSettlementChainId.mockReset();
+    mocks.pushEvent.mockReset();
     Object.defineProperty(navigator, "serviceWorker", { value: new EventTarget(), configurable: true });
   });
 
@@ -140,6 +146,22 @@ describe("useNotificationTaps", () => {
     const { location } = setup(`/trade?notification=${encodeURIComponent(ROUTE)}`);
 
     await waitFor(() => expect(location.current).toBe(TRADE_PATH));
+  });
+
+  it("counts a tap from a new window once, also after the reload a switch without a wallet needs", async () => {
+    mocks.networkId = 43114;
+    mocks.isConnected = false;
+    setup(`/trade?notification=${encodeURIComponent(ROUTE)}&notificationType=position.liquidated`);
+    await waitFor(() => expect(mocks.switchNetwork).toHaveBeenCalledExactlyOnceWith(42161, false));
+
+    // The reload opens the URL the hook left for it.
+    cleanup();
+    setup(`${window.location.pathname}${window.location.search}`);
+    await waitFor(() => expect(mocks.switchNetwork).toHaveBeenCalledTimes(2));
+
+    expect(mocks.pushEvent.mock.calls.map(([{ data }]) => data)).toEqual([
+      { action: "Tap", notificationType: "positionLiquidated", isColdStart: true },
+    ]);
   });
 
   it.each(["/earn", "https://evil.example/trade"])("drops a route outside the trade page: %s", async (route) => {

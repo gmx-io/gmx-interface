@@ -414,7 +414,7 @@ function MenuList({ account }: { account: string }) {
   const { setIsSettingsVisible, openSettingsTab } = useSettings();
 
   const handleNotificationsClick = () => {
-    openSettingsTab("notifications");
+    openSettingsTab("notifications", "gmxAccountModal");
     setTimeout(() => {
       setIsVisible(false);
     }, MODAL_ANIMATION_DURATION_MS);

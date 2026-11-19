@@ -1,13 +1,15 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useEffect, useState } from "react";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useLatest } from "react-use";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   type NotificationsStatus,
   useNotificationsContext,
 } from "context/NotificationsContext/NotificationsContextProvider";
+import type { SettingsTabSource } from "context/SettingsContext/SettingsContextProvider";
+import { sendNotificationsTabOpenEvent } from "domain/notifications/notificationsAnalytics";
 import { getBlockedNotificationsPlatform, getIsBrave } from "domain/notifications/notificationsBrowser";
 import { helperToast } from "lib/helperToast";
 import { shortenAddressOrEns } from "lib/wallets";
@@ -39,8 +41,26 @@ const CARD_ICON: Record<NotificationsStatus, CardIcon> = {
 
 const WALLET_LENGTH = 13;
 
-export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
+export function NotificationsSettings({
+  isSettingsVisible,
+  isActive,
+  source,
+}: {
+  isSettingsVisible: boolean;
+  isActive: boolean;
+  source: SettingsTabSource | undefined;
+}) {
   const { status, isTurnedOn, receivingAccount, pendingAccount, turnOn, turnOff, retry } = useNotificationsContext();
+
+  const isShown = isSettingsVisible && isActive;
+  // The entry and the state as the tab opens; later changes are not another open.
+  const latestOpen = useLatest({ entry: source ?? ("settings" as const), status });
+
+  useEffect(() => {
+    if (isShown) {
+      sendNotificationsTabOpenEvent(latestOpen.current.entry, latestOpen.current.status);
+    }
+  }, [isShown, latestOpen]);
 
   // The confirmation line shows from a turn-on in this tab until the Settings modal closes.
   const [isTurningOnHere, setIsTurningOnHere] = useState(false);

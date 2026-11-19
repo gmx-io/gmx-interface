@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
-import { NOTIFICATION_CLICK_MESSAGE_TYPE, NOTIFICATION_ROUTE_SEARCH_PARAM } from "config/notifications";
+import {
+  NOTIFICATION_CLICK_MESSAGE_TYPE,
+  NOTIFICATION_ROUTE_SEARCH_PARAM,
+  NOTIFICATION_TYPE_SEARCH_PARAM,
+} from "config/notifications";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
 import { SMART_WALLET_CHAIN_UNAVAILABLE_ERROR } from "lib/errors/customErrors";
@@ -15,6 +19,7 @@ import { isSettlementChain } from "sdk/configs/multichain";
 import { getSmartWalletChainUnavailableToastContent } from "components/Errors/errorToasts";
 
 import { type NotificationTap, parseNotificationRoute } from "./notificationRoute";
+import { sendNotificationTapEvent } from "./notificationsAnalytics";
 
 /**
  * Opens the trade page a tapped notification names. The service worker sends the route to an open app, or opens a new
@@ -39,6 +44,8 @@ export function useNotificationTaps() {
         return;
       }
 
+      sendNotificationTapEvent(event.data.notificationType, false);
+
       const nextTap = parseNotificationRoute(event.data.route);
       if (nextTap) {
         setTap(nextTap);
@@ -55,7 +62,11 @@ export function useNotificationTaps() {
     }
 
     const searchParams = new URLSearchParams(history.location.search);
+    if (searchParams.has(NOTIFICATION_TYPE_SEARCH_PARAM)) {
+      sendNotificationTapEvent(searchParams.get(NOTIFICATION_TYPE_SEARCH_PARAM), true);
+    }
     searchParams.delete(NOTIFICATION_ROUTE_SEARCH_PARAM);
+    searchParams.delete(NOTIFICATION_TYPE_SEARCH_PARAM);
     history.replace({ pathname: history.location.pathname, search: searchParams.toString() });
 
     const nextTap = parseNotificationRoute(routeParam);
@@ -90,7 +101,7 @@ export function useNotificationTaps() {
 
     if (!isConnected) {
       // Without a wallet the switch reloads the app, so the tap waits in the URL. The router must not see it before
-      // the reload, or this hook would take the tap a second time.
+      // the reload, or this hook would take the tap a second time. With no type in the URL, the reload is no new tap.
       const searchParams = new URLSearchParams({ [NOTIFICATION_ROUTE_SEARCH_PARAM]: tap.route });
       window.history.replaceState(window.history.state, "", `/trade?${searchParams}`);
     }

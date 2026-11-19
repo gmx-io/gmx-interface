@@ -1,4 +1,6 @@
-export type LaunchSource = "appIcon" | "appShortcut" | "web";
+import { NOTIFICATION_TYPE_SEARCH_PARAM } from "config/notifications";
+
+export type LaunchSource = "appIcon" | "appShortcut" | "notification" | "web";
 
 let launchSource: LaunchSource | undefined;
 
@@ -15,7 +17,8 @@ export function initializeLaunchSource() {
   } else if (source === "pwa-shortcut") {
     launchSource = "appShortcut";
   } else {
-    launchSource = "web";
+    // The tap's parameters stay: the app reads and removes them once the router runs.
+    launchSource = url.searchParams.has(NOTIFICATION_TYPE_SEARCH_PARAM) ? "notification" : "web";
     return;
   }
 

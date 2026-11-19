@@ -18,6 +18,7 @@ const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
     unsubscribe: vi.fn(),
     signMessage: vi.fn(),
     toastError: vi.fn(),
+    pushEvent: vi.fn(),
   },
   ACCOUNT: "0x52908400098527886E0F7030069857D2E4169EE7",
   OTHER_ACCOUNT: "0x8617E340B3D01FA5F11F306F4090FD50E238070D",
@@ -26,6 +27,10 @@ const { mocks, ACCOUNT, OTHER_ACCOUNT, ENDPOINT } = vi.hoisted(() => ({
 
 vi.mock("lib/helperToast", () => ({
   helperToast: { error: mocks.toastError },
+}));
+
+vi.mock("lib/userAnalytics", () => ({
+  userAnalytics: { pushEvent: mocks.pushEvent },
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({
@@ -93,6 +98,13 @@ async function registerAtLimit({ sign }: { sign?: (message: string) => Promise<s
   return { endpoint: ENDPOINT };
 }
 
+function turnOnResults() {
+  return mocks.pushEvent.mock.calls
+    .map(([{ data }]) => data)
+    .filter(({ action }) => action === "TurnOnResult")
+    .map(({ result, isRetry }) => [result, isRetry]);
+}
+
 const requestPermission = vi.fn(async (): Promise<NotificationPermission> => {
   mocks.permission = "granted";
   return mocks.permission;
@@ -102,6 +114,7 @@ describe("NotificationsContextProvider", () => {
   beforeEach(() => {
     localStorage.clear();
     mocks.toastError.mockReset();
+    mocks.pushEvent.mockReset();
     mocks.account = ACCOUNT;
     mocks.permission = "default";
     mocks.registerThisDevice.mockReset().mockResolvedValue({ endpoint: ENDPOINT });
@@ -191,6 +204,10 @@ describe("NotificationsContextProvider", () => {
     act(() => result.current.retry());
     await waitFor(() => expect(result.current.status).toBe("on"));
     expect(requestPermission).toHaveBeenCalledOnce();
+    expect(turnOnResults()).toEqual([
+      ["failed", false],
+      ["on", true],
+    ]);
   });
 
   it("re-registers an enabled device at app open without a confirmation", async () => {
@@ -202,6 +219,7 @@ describe("NotificationsContextProvider", () => {
     expect(mocks.registerThisDevice).toHaveBeenCalledWith(expect.objectContaining({ account: ACCOUNT }));
     expect(mocks.sendTestNotification).not.toHaveBeenCalled();
     expect(result.current.status).toBe("on");
+    expect(turnOnResults()).toEqual([]);
   });
 
   it("keeps the last wallet with no wallet connected", async () => {
@@ -378,6 +396,7 @@ describe("NotificationsContextProvider", () => {
     expect(result.current.status).toBe("on");
     expect(mocks.signMessage).toHaveBeenCalledOnce();
     expect(mocks.sendTestNotification).not.toHaveBeenCalled();
+    expect(turnOnResults()).toEqual([]);
   });
 
   it("can't sign at the device limit with no wallet connected", async () => {
@@ -404,6 +423,35 @@ describe("NotificationsContextProvider", () => {
     await waitFor(() => expect(result.current.status).toBe("limitReached"));
     expect(result.current.error).toBe("User rejected the request");
     expect(mocks.sendTestNotification).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["on", () => undefined],
+    ["permissionRefused", () => requestPermission.mockImplementationOnce(async () => (mocks.permission = "denied"))],
+    ["promptClosed", () => requestPermission.mockImplementationOnce(async () => mocks.permission)],
+    [
+      "signatureRefused",
+      () => {
+        mocks.registerThisDevice.mockImplementation(registerAtLimit);
+        mocks.signMessage.mockRejectedValueOnce(new Error("User rejected the request"));
+      },
+    ],
+    [
+      "limitNoWallet",
+      () => {
+        mocks.account = undefined;
+        storeDevice({ enabled: false, account: ACCOUNT });
+        mocks.registerThisDevice.mockImplementation(registerAtLimit);
+      },
+    ],
+    ["failed", () => mocks.registerThisDevice.mockRejectedValueOnce(new NotificationsApiError("unavailable", 503))],
+  ])("reports a turn-on that ends as %s", async (expected, arrange) => {
+    arrange();
+    const { result } = renderNotifications();
+
+    act(() => result.current.turnOn());
+
+    await waitFor(() => expect(turnOnResults()).toEqual([[expected, false]]));
   });
 
   it("shows the test cooldown", async () => {

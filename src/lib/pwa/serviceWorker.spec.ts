@@ -490,8 +490,8 @@ describe("PWA service worker notifications", () => {
     };
   }
 
-  function clickEvent(url: unknown) {
-    return { notification: { close: vi.fn(), data: { url } } };
+  function clickEvent(url: unknown, type?: string) {
+    return { notification: { close: vi.fn(), data: { url, type } } };
   }
 
   it("shows the pushed notification with its tag and click data", async () => {
@@ -533,7 +533,7 @@ describe("PWA service worker notifications", () => {
     const hidden = createWindowClient();
     const visible = createWindowClient({ visibilityState: "visible" });
     const worker = loadServiceWorker(vi.fn(), undefined, undefined, [hidden, visible]);
-    const event = clickEvent(EXECUTION_URL);
+    const event = clickEvent(EXECUTION_URL, "order.executed");
 
     await worker.dispatchExtendable("notificationclick", event);
 
@@ -543,6 +543,7 @@ describe("PWA service worker notifications", () => {
     expect(visible.postMessage).toHaveBeenCalledExactlyOnceWith({
       type: "gmx-notification-click",
       route: "/trade/long?chainId=42161&market=ETH&pool=ETH-USDC",
+      notificationType: "order.executed",
     });
     expect(hidden.postMessage).not.toHaveBeenCalled();
     expect(worker.openWindow).not.toHaveBeenCalled();
@@ -551,10 +552,11 @@ describe("PWA service worker notifications", () => {
   it("opens the app with the route in its URL when no window is open", async () => {
     const worker = loadServiceWorker(vi.fn());
 
-    await worker.dispatchExtendable("notificationclick", clickEvent(EXECUTION_URL));
+    await worker.dispatchExtendable("notificationclick", clickEvent(EXECUTION_URL, "position.liquidated"));
 
     expect(worker.openWindow).toHaveBeenCalledExactlyOnceWith(
-      `/trade?notification=${encodeURIComponent("/trade/long?chainId=42161&market=ETH&pool=ETH-USDC")}`
+      `/trade?notification=${encodeURIComponent("/trade/long?chainId=42161&market=ETH&pool=ETH-USDC")}` +
+        "&notificationType=position.liquidated"
     );
   });
 
@@ -576,6 +578,10 @@ describe("PWA service worker notifications", () => {
 
     await worker.dispatchExtendable("notificationclick", clickEvent(url));
 
-    expect(appWindow.postMessage).toHaveBeenCalledExactlyOnceWith({ type: "gmx-notification-click", route });
+    expect(appWindow.postMessage).toHaveBeenCalledExactlyOnceWith({
+      type: "gmx-notification-click",
+      route,
+      notificationType: "",
+    });
   });
 });
