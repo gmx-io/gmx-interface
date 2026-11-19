@@ -493,6 +493,8 @@ export function AddTPSLModal({
         minCollateralUsd,
         userReferralInfo,
         feeDiscountFactor,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+        collateralPrice: decreaseAmounts.collateralPrice,
       });
     },
     [

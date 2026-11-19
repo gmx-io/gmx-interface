@@ -409,8 +409,10 @@ export function getDecreasePositionAmounts(p: {
       ? marketInfo.longPoolAmount > marketInfo.maxLongPoolAmount
       : marketInfo.shortPoolAmount > marketInfo.maxShortPoolAmount;
 
+    // a trigger is judged on the pools now: if its swap still goes through at execution, the profit pays the costs
+    // and the position keeps more collateral, never less
     isProfitSwapReverted =
-      useExecutionSettlement &&
+      isSingleSettlement &&
       isSwapToCollateral &&
       Boolean(swapProfitStats.isOutLiquidity || swapProfitStats.isOutMaxFactor || isPnlTokenPoolOverCap);
 
@@ -1299,6 +1301,8 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   userReferralInfo: UserReferralInfo | undefined;
   feeDiscountFactor?: bigint;
   priceImpactDiffUsd?: bigint;
+  /** the collateral price at execution, the current min price by default */
+  collateralPrice?: bigint;
 }): NextPositionValues {
   const {
     existingPosition,
@@ -1318,6 +1322,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     minCollateralUsd: suppliedMinCollateralUsd,
     userReferralInfo,
     priceImpactDiffUsd,
+    collateralPrice = collateralToken.prices.minPrice,
   } = p;
   const marketInfo =
     suppliedMarketInfo.tradeMath === "gmsol"
@@ -1339,11 +1344,12 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     collateralDeltaAmount,
     priceImpactDiffUsd: priceImpactDiffUsd ?? 0n,
     collateralToken,
+    collateralPrice,
   });
   const executedCollateralDeltaUsd =
     executedCollateralDeltaAmount === collateralDeltaAmount
       ? collateralDeltaUsd
-      : convertToUsd(executedCollateralDeltaAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
+      : convertToUsd(executedCollateralDeltaAmount, collateralToken.decimals, collateralPrice)!;
 
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd - sizeDeltaUsd : 0n;
   const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens - sizeDeltaInTokens : 0n;

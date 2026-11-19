@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { USD_DECIMALS } from "configs/factors";
 import { mockMarginCheckMarketInfo, mockTokensData, usdToToken } from "test/mock";
+import { MarketInfo } from "utils/markets/types";
 import { bigintToNumber, expandDecimals, numberToBigint } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import { PositionInfoLoaded } from "utils/positions/types";
@@ -24,9 +25,11 @@ const marketInfo = mockMarginCheckMarketInfo(tokensData, {
   maxLongPoolAmount: usdToToken(10_000_000_000, btc),
   maxShortPoolAmount: usdToToken(10_000_000_000, usdc),
 });
+// the contract can't swap the BTC profit into a pool over its cap
+const overCapMarketInfo = { ...marketInfo, maxLongPoolAmount: marketInfo.longPoolAmount - 1n };
 
 // a 100 000 BTC long opened at 20 000 with 6 667 USDC of collateral (15x)
-function longPosition(pendingFees: number) {
+function longPosition(pendingFees: number, pendingImpactUsd = 0) {
   return {
     marketInfo,
     isLong: true,
@@ -36,8 +39,8 @@ function longPosition(pendingFees: number) {
     collateralUsd: expandDecimals(6_667, USD_DECIMALS),
     pendingBorrowingFeesUsd: numberToBigint(pendingFees, USD_DECIMALS),
     pendingFundingFeesUsd: 0n,
-    pendingImpactAmount: 0n,
-    pendingImpactUsd: 0n,
+    pendingImpactAmount: -usdToToken(pendingImpactUsd, btc),
+    pendingImpactUsd: -numberToBigint(pendingImpactUsd, USD_DECIMALS),
   } as PositionInfoLoaded;
 }
 
@@ -49,10 +52,12 @@ function closeHalf(p: {
   keepLeverage: boolean;
   receive: "split" | "pnl" | "collateral";
   storedCollateralDeltaAmount?: bigint;
+  marketInfo?: MarketInfo;
+  pendingImpactUsd?: number;
 }) {
-  const position = longPosition(p.pendingFees);
+  const position = longPosition(p.pendingFees, p.pendingImpactUsd);
   const amounts = getDecreasePositionAmounts({
-    marketInfo,
+    marketInfo: p.marketInfo ?? marketInfo,
     collateralToken: usdc,
     isLong: true,
     position,
@@ -86,6 +91,8 @@ function closeHalf(p: {
     isLong: true,
     minCollateralUsd: expandDecimals(1, USD_DECIMALS),
     userReferralInfo: undefined,
+    priceImpactDiffUsd: amounts.priceImpactDiffUsd,
+    collateralPrice: amounts.collateralPrice,
   });
 
   return { amounts, next };
@@ -112,6 +119,12 @@ describe("trigger decrease with the profit kept in the pnl token", () => {
     // the default receive swaps the profit to USDC first and the contract pays the costs from it
     const defaultReceive = closeHalf({ ...tp, receive: "collateral" }).amounts;
     expect(bigintToNumber(defaultReceive.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(3_993.46, 2);
+
+    // unless the BTC pool is over its cap: the swap reverts and the order settles like the split receive
+    const overCap = closeHalf({ ...tp, receive: "collateral", marketInfo: overCapMarketInfo });
+    expect(bigintToNumber(overCap.amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(2_653.52, 2);
+    expect(bigintToNumber(overCap.next.nextCollateralUsd ?? 0n, USD_DECIMALS)).toBeCloseTo(2_673.54, 2);
+    expect(overCap.amounts.primaryOutput.usd).toBe(expandDecimals(2_500, USD_DECIMALS));
   });
 
   // the expected values settle each close the contract's way: costs come out of the USDC collateral before the BTC
@@ -138,7 +151,14 @@ describe("trigger decrease with the profit kept in the pnl token", () => {
     }
   );
 
-  it("receives what a stored withdrawal executes, capped at the collateral left after costs TRD-18", () => {
+  it("receives and previews what a withdrawal executes: less the impact past the cap, capped by the costs TRD-18", () => {
+    // half of 420 of pending impact is realized, all past the 0 cap: Keep leverage signs 2 443.52, the contract pays
+    // out 2 233.52 and makes the 210 claimable, so 2 883.54 stays in the position
+    const withImpact = closeHalf({ ...tp, receive: "split", pendingImpactUsd: 420 });
+    expect(bigintToNumber(withImpact.amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(2_443.52, 2);
+    expect(bigintToNumber(withImpact.amounts.secondaryOutput.amount, usdc.decimals)).toBeCloseTo(2_233.52, 2);
+    expect(bigintToNumber(withImpact.next.nextCollateralUsd ?? 0n, USD_DECIMALS)).toBeCloseTo(2_883.54, 2);
+
     // the 3 993.46 a split-receive TP signed before the fix, and one larger than the 5 327.06 left after costs
     const getReceived = (stored: number) =>
       closeHalf({
