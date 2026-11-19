@@ -410,6 +410,7 @@ msgid "One-Click Trading is unavailable for smart wallets"
 msgstr "One-Click Trading은 스마트 지갑에서 사용할 수 없습니다"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Discover"
 msgstr "탐색"
 
@@ -448,6 +449,7 @@ msgstr "받는 사람"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -632,6 +634,7 @@ msgid "Exports are for record-keeping and tax-software compatibility; they do no
 msgstr "내보내기는 기록 보관 및 세금 소프트웨어 호환성을 위한 것이며 세무 조언에 해당하지 않습니다."
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -935,6 +938,10 @@ msgstr "수수료 무료 한도 부족"
 msgid "..."
 msgstr "..."
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Lifetime GT rewards"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Since position opened"
 msgstr "포지션 개설 이후"
@@ -946,6 +953,10 @@ msgstr "외부 애그리게이터에서 스왑"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
 msgstr "클래식"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Turn GT into USDC through buybacks"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/pages/AccountDashboard/HistoricalLists.tsx
@@ -1328,6 +1339,10 @@ msgstr "1위"
 msgid "Transaction blocked"
 msgstr "트랜잭션 차단됨"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Buying GLV/GM tokens means providing liquidity to GMX markets and becoming a liquidity provider (LP). On Solana, 1% of fees generated from trading, liquidations, borrowing, and swaps goes to LPs. They can also stake GLV/GM to earn GT rewards, which can be converted into USDC through GT buybacks."
+msgstr ""
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in tokens"
 msgstr "라인 값을 토큰으로 표시"
@@ -1444,6 +1459,10 @@ msgstr "스왑 수수료 계수 (양의 PI)"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient pool balance"
 msgstr "풀 잔액 부족"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "USDC you received for your GT in the last buyback"
+msgstr ""
 
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 #: src/components/MarketSelector/PoolSelector.tsx
@@ -1950,6 +1969,10 @@ msgstr "주식"
 msgid "Staking power share"
 msgstr "스테이킹 파워 지분율"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr ""
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "저는 제휴사입니다"
@@ -2236,6 +2259,7 @@ msgid "Affiliate address:"
 msgstr "추천인 주소:"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/shared/TimeRangeFilter.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
@@ -3053,6 +3077,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "전송이 시작되었습니다"
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "금액이 출금 한도 미만입니다. <0>{lowerLimitFormatted}</0>보다 큰 금액을 입력하십시오."
@@ -3150,6 +3178,10 @@ msgstr "네트워크 수수료를 불러오는 중..."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} 롱 스톱 마켓"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr ""
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3380,6 +3412,10 @@ msgstr "GMX 개선에 도움을 주십시오. 보안을 위해 당사는 먼저 
 msgid "Cancel margin deposit"
 msgstr "증거금 입금 취소"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Points"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "Onchain revenue in stablecoins — your own builder<0/>fee plus a cut of GMX's fees, every time someone trades<1/>through you"
 msgstr "스테이블코인으로 받는 온체인 수익 — 자체 빌더 수수료에<0/>더해, 누군가 여러분을 통해 거래할 때마다 GMX 수수료의<1/>일부도 받습니다"
@@ -3407,6 +3443,10 @@ msgstr "변경 사항이 반영되기까지 몇 분이 소요될 수 있습니�
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "인센티브 제외"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Current sellable GT"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -3509,6 +3549,10 @@ msgstr "코드를 공유하여 보상을 받으십시오!"
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 마켓"
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Unclaimed GT from staking"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Tickers simulation"
@@ -3682,6 +3726,13 @@ msgstr "주소 검색"
 msgid "Data freshness"
 msgstr "데이터 최신성"
 
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr ""
+
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
 msgstr "완료!"
@@ -3734,6 +3785,7 @@ msgid "Paid in {nativeTokenSymbol} from your Wallet because your Wallet does not
 msgstr "지갑에 Express에 필요한 {walletGasTokenSymbol}이(가) 부족하여 지갑의 {nativeTokenSymbol}(으)로 지불됩니다"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Lifetime LP rewards"
 msgstr "누적 LP 보상"
 
@@ -3744,6 +3796,10 @@ msgstr "유효하지 않은 감소 규모"
 #: src/components/Errors/errorToasts.tsx
 msgid "Express relayer is temporarily unavailable.<0/><1/>Try again shortly or switch to Classic Trading in <2>settings</2>"
 msgstr "Express 릴레이어를 일시적으로 사용할 수 없습니다.<0/><1/>잠시 후 다시 시도하거나 <2>설정</2>에서 Classic Trading으로 전환하십시오"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Potential GT value"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
@@ -4057,6 +4113,10 @@ msgstr "AB 플래그"
 msgid "Wallet & GMX Account"
 msgstr "지갑 & GMX Account"
 
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
+msgid "No GM or GLV yet"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Tenderly 설정"
@@ -4083,6 +4143,7 @@ msgstr "청산 시 지갑 수령액"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -4201,6 +4262,10 @@ msgstr "외부 경로는 Market Swap에만 사용됩니다"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express needs {gasPaymentTokensText} in your GMX Account. Deposit one of them."
 msgstr "Express를 사용하려면 GMX Account에 {gasPaymentTokensText}이(가) 필요합니다. 그중 하나를 입금하십시오."
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Mint earlier at a lower cost"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
@@ -4378,6 +4443,7 @@ msgstr "네트워크 상태"
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "가격 영향이 너무 높습니다. 영향: {negativeImpactAmountText}, 입력: {amountAfterFeesText}"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What networks are supported?"
 msgstr "지원되는 네트워크는 무엇인가요?"
@@ -4641,6 +4707,7 @@ msgid "Signing approval..."
 msgstr "승인 서명 중..."
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "What's the difference between GLV and GM?"
 msgstr "GLV와 GM의 차이점은 무엇입니까?"
 
@@ -4690,6 +4757,10 @@ msgstr "실현 가격 영향"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "기타 실현 수수료"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr ""
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -5105,6 +5176,10 @@ msgstr "2단계: 수령"
 msgid "The approved amount is lower than the required amount. Approve again or reduce the amount"
 msgstr "승인된 수량이 필요한 수량보다 적습니다. 다시 승인하거나 수량을 줄이십시오"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "Total GT"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 msgid "Close the full position, change the trigger price, or add margin."
@@ -5117,6 +5192,10 @@ msgstr "오류명:"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Market composition"
 msgstr "마켓 구성"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Manage GT"
+msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM icon"
@@ -5428,6 +5507,10 @@ msgstr "최대 수익 한도에 도달했습니다"
 msgid "Parts of this order may not execute: the resulting position would exceed the maximum allowed leverage when they trigger. Increase the position's margin or cancel the order."
 msgstr "이 주문의 일부가 실행되지 않을 수 있습니다: 트리거 시 결과 포지션이 최대 허용 레버리지를 초과하게 됩니다. 포지션의 증거금을 늘리거나 주문을 취소하세요."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "The full GT Points system and features are currently available only on Solana. GLV vaults and GM tokens vary by chain. Visit the Pools page to see the liquidity options available on your connected network."
+msgstr ""
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Maximum collateral capacity reached"
 msgstr "최대 담보 한도에 도달했습니다"
@@ -5653,6 +5736,7 @@ msgid "{positionName} fees settled"
 msgstr "{positionName} 수수료 정산 완료"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 msgid "Portfolio"
 msgstr "포트폴리오"
 
@@ -5749,6 +5833,10 @@ msgstr "{wrappedNativeTokenSymbol} <0>구매</0>."
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana (known as GMTrade) is served from a separate domain"
 msgstr "Solana의 GMX(GMTrade로 알려짐)는 별도의 도메인에서 제공됩니다"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Can LPs unstake or sell GLV/GM anytime?"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -5972,6 +6060,7 @@ msgstr "높은 스왑 이익 수수료"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6714,6 +6803,10 @@ msgstr "가격 입력"
 msgid "Updating..."
 msgstr "업데이트 중…"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "More GT, higher VIP tier and benefits"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
 msgstr "Market Increase 실패"
@@ -6804,6 +6897,7 @@ msgstr "동결된 주문은 승인된 Keeper만 실행할 수 있습니다"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -7447,6 +7541,7 @@ msgstr "Solana의 GMX(GMTrade)는 별도의 도메인에서 제공됩니다"
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
@@ -7714,6 +7809,10 @@ msgstr "리베이트"
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "수수료(펀딩 + 차입)만으로도 시간이 지남에 따라 증거금이 감소하여 포지션이 여전히 청산될 수 있습니다."
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Estimated value of your total GT, including unclaimed GT, based on the current minting price. Actual realizable value depends on future sellable quota and buyback prices."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
 msgstr "GM에서 GLV로 이전하는 것은 GM 토큰으로 GLV를 구매하는 것과 유사합니다. 이 옵션을 선택하면 GLV 구매 탭으로 이동합니다."
@@ -7900,6 +7999,10 @@ msgstr "청산 수수료"
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "이 지갑은 아직 {0}에 배포되지 않았습니다. 이 작업과 함께 배포하려면 재서명하십시오"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "스왑 영향 지수"
@@ -7994,6 +8097,7 @@ msgid "TVL/CAP"
 msgstr "TVL/수용량"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "Connect wallet to see your assets"
 msgstr "자산을 확인하려면 지갑을 연결하십시오"
 
@@ -8274,6 +8378,10 @@ msgstr "{poolName} 풀의 남은 여유에 비해 너무 큽니다. 취소한 �
 msgid "Updating {updateOrdersCount} TP/SL orders..."
 msgstr "{updateOrdersCount}개 TP/SL 주문 업데이트 중..."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "How do LPs earn rewards?"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price"
 msgstr "체결가가 허용 가격을 충족하지 못했습니다"
@@ -8332,6 +8440,10 @@ msgstr "wstETH APR"
 msgid "GMX Account withdrawals are limited by Stargate bridge liquidity. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "GMX Account 출금은 Stargate 브릿지 유동성에 의해 제한됩니다. <0>{upperLimitFormatted}</0>보다 작은 금액으로 시도하십시오."
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Earn GT from trading, LP, and referrals"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Estimated time to liquidation"
 msgstr "청산까지 예상 시간"
@@ -8384,6 +8496,10 @@ msgstr "거버넌스 알림"
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
 msgstr "{symbol} 잔액이 부족합니다. 이 금액으로는 향후 GMX Account 수수료를 지불하기에 여유가 거의 없습니다."
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Maximum value of your currently sellable GT based on the current minting price, the maximum possible buyback price. Actual buyback value may be lower."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8745,6 +8861,7 @@ msgid "Win rate"
 msgstr "승률"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LifetimeEarningsTooltip.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "GM and GLV include markets you no longer hold"
 msgstr "GM과 GLV에는 더 이상 보유하지 않는 마켓도 포함됩니다"
 
@@ -9233,6 +9350,7 @@ msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Summary"
 msgstr "요약"
@@ -9310,6 +9428,10 @@ msgstr "청산"
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Add TP/SL"
 msgstr "TP/SL 추가"
+
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Max sellable value"
+msgstr ""
 
 #: src/components/GmxAccountModal/WalletReceiveOptionsView.tsx
 msgid "How would you like to add funds?"
@@ -9473,6 +9595,7 @@ msgid "Zero-fee conversion is paused until {reopenTime}."
 msgstr "수수료 무료 변환은 {reopenTime}까지 일시 중지됩니다."
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
+#: src/components/Earn/Solana/SolanaAssetsList.tsx
 msgid "My assets"
 msgstr "내 자산"
 
@@ -10191,6 +10314,10 @@ msgstr "기존 포지션은 {0} 풀에 있습니다. 선택한 풀을 사용하�
 msgid "At the Take-Profit price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "익절매 가격에서는 남은 포지션이 최대 레버리지를 초과하여 주문이 체결되지 않을 수 있습니다."
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "Yes, GLV/GM can generally be unstaked and sold at any time. However, for markets with trading hours, selling is only available while the market is open. In rare cases where your liquidity is being used for active trades, you can sell once those positions are closed."
+msgstr ""
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Show line values in USD"
 msgstr "라인 값을 USD로 표시"
@@ -10515,6 +10642,10 @@ msgstr "온체인 트레이더 탐색, 분석 및 카피 트레이딩"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{networkLabel}의 {addressLabel}"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "GT Points are the incentive points of GMX on Solana, rewarding users for trading, providing liquidity, and making referrals. 99% of Solana protocol fees fund daily GT buybacks, allowing eligible GT to be converted into USDC rewards."
+msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -11391,6 +11522,10 @@ msgstr "지갑 트랜잭션의 Gas는 지갑의 {nativeTokenSymbol}(으)로 지�
 msgid "Position would be liquidatable at current prices"
 msgstr "현재 가격에서 포지션이 청산될 수 있습니다"
 
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Earn rewards with GLV/GM and GT"
+msgstr ""
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5%의 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합으로 GMX는 다음을 얻게 됩니다:</0><1><2>125+ 체인으로 확장할 수 있는 능력</2><3>모든 컨트랙트 및 보안에 대한 완전한 소유권</3><4>빠르고 슬리피지 없는 전송</4><5>수십억 달러 규모의 자산과 수백 개의 애플리케이션이 이미 신뢰하는 검증된 인프라... <6>더 보기</6></5></1>"
@@ -11900,6 +12035,10 @@ msgstr "토큰을 별도로 받기"
 msgid "USD estimate"
 msgstr "USD 추정치"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "풀 잔액"
@@ -12037,6 +12176,7 @@ msgid "Sender has withdrawn all tokens from the GLP vesting vault"
 msgstr "발신자가 GLP 베스팅 볼트에서 모든 토큰을 출금했습니다"
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM 토큰을 보유하며 관련 시장 간 자동 리밸런싱을 수행합니다. 두 토큰 모두 수익을 자동으로 재투자합니다. 단일 시장 익스포저를 원하면 GM을, 여러 풀에 분산 투자하려면 GLV를 선택하십시오."
 
@@ -12089,6 +12229,10 @@ msgstr "두 가지 수익원."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "시프트 요청을 실행하는 중..."
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "What is GT?"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -12162,6 +12306,10 @@ msgstr "네트워크 변경"
 msgid "Requesting unstake..."
 msgstr "언스테이킹 요청 중..."
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "Last buyback"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM is the liquidity provider token for GMX V2 markets. It accrues 63% of the fees generated by V2 markets."
 msgstr "GM은 GMX V2 마켓의 유동성 공급자 토큰입니다. V2 마켓에서 발생하는 수수료의 63%가 적립됩니다."
@@ -12171,6 +12319,7 @@ msgid "Pure {indexSymbol} long. Exposure is only from the position."
 msgstr "순수 {indexSymbol} 롱. 익스포저는 포지션에서만 발생합니다."
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total portfolio value"
 msgstr "총 포트폴리오 가치"
 
@@ -12646,6 +12795,14 @@ msgstr "지갑"
 msgid "Enter a trigger price"
 msgstr "조건가 입력"
 
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr ""
+
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT buybacks"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "종합 통계"
@@ -13115,6 +13272,10 @@ msgstr "트랜잭션 시뮬레이션"
 msgid "Where can I read more?"
 msgstr "자세한 내용은 어디에서 확인할 수 있습니까?"
 
+#: src/components/Earn/Solana/GtPanel.tsx
+msgid "GT"
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}."
@@ -13265,6 +13426,10 @@ msgstr "취소된"
 msgid "GMX dashboards and analytics"
 msgstr "GMX 대시보드 및 분석"
 
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
+msgid "GT balance"
+msgstr ""
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "{column}"
 msgstr "{column}"
@@ -13373,6 +13538,7 @@ msgstr "EIP-4844, 3월 20-27일"
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/StakingPanel.tsx
+#: src/components/Earn/Solana/GtPanel.tsx
 msgid "Lifetime rewards"
 msgstr "누적 보상"
 
@@ -14030,6 +14196,7 @@ msgid "POOL CAP LONG"
 msgstr "롱 풀 한도"
 
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
+#: src/components/Earn/Solana/SolanaEarningsBand.tsx
 msgid "Total lifetime earned"
 msgstr "누적 총 수익"
 
