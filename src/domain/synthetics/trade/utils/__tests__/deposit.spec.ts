@@ -2,7 +2,7 @@ import { parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 
 import type { GlvInfo, MarketInfo } from "domain/synthetics/markets";
-import type { TokenData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, type TokenData } from "domain/synthetics/tokens";
 import { ARBITRUM } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import type { FindSwapPath, SwapPathStats } from "sdk/utils/trade/types";
@@ -47,7 +47,7 @@ const GLV_TOKEN = {
   symbol: "GLV",
   decimals: 18,
   address: "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9",
-  prices: { minPrice: parseUnits("1.4", 30), maxPrice: parseUnits("1.4", 30) },
+  prices: { minPrice: parseUnits("1.4", 30), maxPrice: parseUnits("1.40014", 30) },
 } as TokenData;
 
 // USDT -> USDC with a 10 bps fee
@@ -146,12 +146,19 @@ describe("getDepositAmounts byMarketToken", () => {
     });
 
     const displayedReceive = c.isGlv ? quote.glvTokenAmount : quote.marketTokenAmount;
-    const forwardReceive = c.isGlv ? forwardQuote.glvTokenAmount : forwardQuote.marketTokenAmount;
+    // the GLV deposit mints the GM value over the maximized GLV value
+    const forwardReceive = c.isGlv
+      ? convertToTokenAmount(forwardQuote.marketTokenUsd, GLV_TOKEN.decimals, GLV_TOKEN.prices.maxPrice)!
+      : forwardQuote.marketTokenAmount;
+    const impactPoolUsd =
+      convertToUsd(marketInfo.swapImpactPoolAmountLong, longToken.decimals, longToken.prices.maxPrice)! +
+      convertToUsd(marketInfo.swapImpactPoolAmountShort, USDC_TOKEN.decimals, USDC_TOKEN.prices.maxPrice)!;
 
     expect(displayedReceive).toBe(receiveAmount);
     expect(forwardReceive).toBeGreaterThanOrEqual(displayedReceive);
     expect(forwardReceive).toBeLessThanOrEqual(displayedReceive + displayedReceive / 1_000_000n);
     expect(Math.sign(Number(quote.swapPriceImpactDeltaUsd))).toBe(c.impactSign);
+    expect(quote.swapPriceImpactDeltaUsd).toBeLessThanOrEqual(impactPoolUsd);
     expect(quote.initialShortTokenAmount !== undefined).toBe(Boolean(c.isSwap));
     expect({
       swapPriceImpactDeltaUsd: quote.swapPriceImpactDeltaUsd,
