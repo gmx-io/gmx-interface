@@ -1,11 +1,14 @@
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
 import { getNetworkFeatures } from "config/features";
+import { useNotificationsContext } from "context/NotificationsContext/NotificationsContextProvider";
 import { type SettingsTab, type SettingsTabSource, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { sendNotificationsTabOpenEvent } from "domain/notifications/notificationsAnalytics";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
@@ -295,6 +298,18 @@ export function SettingsModal({
     setTabSource(undefined);
   }, []);
 
+  // Counted here, not in the tab: the modal remounts its content when the window crosses the mobile breakpoint.
+  const isNotificationsTabShown = isSettingsVisible && activeTab === "notifications";
+  const { status: notificationsStatus } = useNotificationsContext();
+  // The entry and the state as the tab opens; later changes are not another open.
+  const latestNotificationsOpen = useLatest({ entry: tabSource ?? ("settings" as const), state: notificationsStatus });
+
+  useEffect(() => {
+    if (isNotificationsTabShown) {
+      sendNotificationsTabOpenEvent(latestNotificationsOpen.current.entry, latestNotificationsOpen.current.state);
+    }
+  }, [isNotificationsTabShown, latestNotificationsOpen]);
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -326,11 +341,7 @@ export function SettingsModal({
             <DisplaySettings />
           </TabWrapper>
           <TabWrapper tab="notifications" activeTab={activeTab}>
-            <NotificationsSettings
-              isSettingsVisible={isSettingsVisible}
-              isActive={activeTab === "notifications"}
-              source={tabSource}
-            />
+            <NotificationsSettings isSettingsVisible={isSettingsVisible} />
           </TabWrapper>
           <TabWrapper tab="debug" activeTab={activeTab}>
             <DebugSettings isSettingsVisible={isSettingsVisible} />

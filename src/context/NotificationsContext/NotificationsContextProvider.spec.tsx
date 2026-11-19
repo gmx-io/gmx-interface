@@ -30,7 +30,7 @@ vi.mock("lib/helperToast", () => ({
 }));
 
 vi.mock("lib/userAnalytics", () => ({
-  userAnalytics: { pushEvent: mocks.pushEvent },
+  userAnalytics: { pushEvent: mocks.pushEvent, getIsCommonParamsInited: () => true },
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({

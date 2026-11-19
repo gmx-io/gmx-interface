@@ -67,10 +67,10 @@ function setup(initialEntry = "/earn") {
   return { location, rerender: () => rerender(tree()) };
 }
 
-function sendTap(route: string) {
+function sendTap(route: string, notificationType?: string) {
   act(() => {
     navigator.serviceWorker.dispatchEvent(
-      new MessageEvent("message", { data: { type: "gmx-notification-click", route } })
+      new MessageEvent("message", { data: { type: "gmx-notification-click", route, notificationType } })
     );
   });
 }
@@ -83,6 +83,7 @@ describe("useNotificationTaps", () => {
     mocks.switchNetwork.mockReset().mockResolvedValue(undefined);
     mocks.setSettlementChainId.mockReset();
     mocks.pushEvent.mockReset();
+    window.history.replaceState(null, "", "/");
     Object.defineProperty(navigator, "serviceWorker", { value: new EventTarget(), configurable: true });
   });
 
@@ -148,19 +149,30 @@ describe("useNotificationTaps", () => {
     await waitFor(() => expect(location.current).toBe(TRADE_PATH));
   });
 
-  it("counts a tap from a new window once, also after the reload a switch without a wallet needs", async () => {
+  it.each([
+    ["a new window", true],
+    ["an open app", false],
+  ])("counts a tap on %s once, from the app a switch without a wallet reloads", async (_name, isColdStart) => {
     mocks.networkId = 43114;
     mocks.isConnected = false;
-    setup(`/trade?notification=${encodeURIComponent(ROUTE)}&notificationType=position.liquidated`);
+    if (isColdStart) {
+      setup(`/trade?notification=${encodeURIComponent(ROUTE)}&notificationType=position.liquidated`);
+    } else {
+      setup();
+      sendTap(ROUTE, "position.liquidated");
+    }
     await waitFor(() => expect(mocks.switchNetwork).toHaveBeenCalledExactlyOnceWith(42161, false));
+    // The reload drops whatever this app has not sent yet.
+    expect(mocks.pushEvent).not.toHaveBeenCalled();
 
-    // The reload opens the URL the hook left for it.
+    // The reload opens the URL the hook left for it, on the new chain.
+    mocks.networkId = 42161;
     cleanup();
-    setup(`${window.location.pathname}${window.location.search}`);
-    await waitFor(() => expect(mocks.switchNetwork).toHaveBeenCalledTimes(2));
+    const { location } = setup(`${window.location.pathname}${window.location.search}`);
+    await waitFor(() => expect(location.current).toBe(TRADE_PATH));
 
     expect(mocks.pushEvent.mock.calls.map(([{ data }]) => data)).toEqual([
-      { action: "Tap", notificationType: "positionLiquidated", isColdStart: true },
+      { action: "Tap", notificationType: "positionLiquidated", isColdStart },
     ]);
   });
 

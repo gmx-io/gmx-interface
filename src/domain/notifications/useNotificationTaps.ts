@@ -6,6 +6,7 @@ import {
   NOTIFICATION_CLICK_MESSAGE_TYPE,
   NOTIFICATION_ROUTE_SEARCH_PARAM,
   NOTIFICATION_TYPE_SEARCH_PARAM,
+  NOTIFICATION_WARM_TAP_SEARCH_PARAM,
 } from "config/notifications";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useChainId } from "lib/chains";
@@ -21,6 +22,15 @@ import { getSmartWalletChainUnavailableToastContent } from "components/Errors/er
 import { type NotificationTap, parseNotificationRoute } from "./notificationRoute";
 import { sendNotificationTapEvent } from "./notificationsAnalytics";
 
+/** What the tap event reports; absent once it is sent, or for a URL that only the app wrote. */
+type TapTracking = { notificationType: string | null; isColdStart: boolean };
+
+function sendTapEvent(tracking: TapTracking | undefined) {
+  if (tracking) {
+    sendNotificationTapEvent(tracking.notificationType, tracking.isColdStart);
+  }
+}
+
 /**
  * Opens the trade page a tapped notification names. The service worker sends the route to an open app, or opens a new
  * one with the route in its URL. The app gets onto the notification's chain first; a refused switch changes nothing.
@@ -32,7 +42,7 @@ export function useNotificationTaps() {
   const { isConnected } = useAccount();
   const isWalletInitializing = useIsWalletInitializing();
   const { [NOTIFICATION_ROUTE_SEARCH_PARAM]: routeParam } = useSearchParams<{ notification?: string }>();
-  const [tap, setTap] = useState<NotificationTap & { isSwitching?: boolean }>();
+  const [tap, setTap] = useState<NotificationTap & { isSwitching?: boolean; tracking?: TapTracking }>();
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) {
@@ -44,11 +54,15 @@ export function useNotificationTaps() {
         return;
       }
 
-      sendNotificationTapEvent(event.data.notificationType, false);
-
+      const tracking: TapTracking = {
+        notificationType: typeof event.data.notificationType === "string" ? event.data.notificationType : null,
+        isColdStart: false,
+      };
       const nextTap = parseNotificationRoute(event.data.route);
       if (nextTap) {
-        setTap(nextTap);
+        setTap({ ...nextTap, tracking });
+      } else {
+        sendTapEvent(tracking);
       }
     };
 
@@ -62,16 +76,22 @@ export function useNotificationTaps() {
     }
 
     const searchParams = new URLSearchParams(history.location.search);
-    if (searchParams.has(NOTIFICATION_TYPE_SEARCH_PARAM)) {
-      sendNotificationTapEvent(searchParams.get(NOTIFICATION_TYPE_SEARCH_PARAM), true);
-    }
+    const tracking: TapTracking | undefined = searchParams.has(NOTIFICATION_TYPE_SEARCH_PARAM)
+      ? {
+          notificationType: searchParams.get(NOTIFICATION_TYPE_SEARCH_PARAM),
+          isColdStart: !searchParams.has(NOTIFICATION_WARM_TAP_SEARCH_PARAM),
+        }
+      : undefined;
     searchParams.delete(NOTIFICATION_ROUTE_SEARCH_PARAM);
     searchParams.delete(NOTIFICATION_TYPE_SEARCH_PARAM);
+    searchParams.delete(NOTIFICATION_WARM_TAP_SEARCH_PARAM);
     history.replace({ pathname: history.location.pathname, search: searchParams.toString() });
 
     const nextTap = parseNotificationRoute(routeParam);
     if (nextTap) {
-      setTap(nextTap);
+      setTap({ ...nextTap, tracking });
+    } else {
+      sendTapEvent(tracking);
     }
   }, [routeParam, history]);
 
@@ -81,6 +101,7 @@ export function useNotificationTaps() {
     }
 
     if (tap.chainId === undefined || tap.chainId === networkId) {
+      sendTapEvent(tap.tracking);
       setTap(undefined);
       history.push(tap.path);
       return;
@@ -90,19 +111,29 @@ export function useNotificationTaps() {
       return;
     }
 
-    const { chainId } = tap;
-    setTap({ ...tap, isSwitching: true });
+    const { chainId, tracking } = tap;
+    setTap({ ...tap, isSwitching: true, tracking: undefined });
 
     // A GMX Account trades on its settlement chain whatever chain the wallet is on, so it needs no wallet prompt.
     if (srcChainId !== undefined && isSettlementChain(chainId)) {
+      sendTapEvent(tracking);
       setSettlementChainId(chainId);
       return;
     }
 
-    if (!isConnected) {
+    if (isConnected) {
+      sendTapEvent(tracking);
+    } else {
       // Without a wallet the switch reloads the app, so the tap waits in the URL. The router must not see it before
-      // the reload, or this hook would take the tap a second time. With no type in the URL, the reload is no new tap.
+      // the reload, or this hook would take the tap a second time. The reload would drop an event sent now, so the
+      // reloaded app sends it.
       const searchParams = new URLSearchParams({ [NOTIFICATION_ROUTE_SEARCH_PARAM]: tap.route });
+      if (tracking) {
+        searchParams.set(NOTIFICATION_TYPE_SEARCH_PARAM, tracking.notificationType ?? "");
+        if (!tracking.isColdStart) {
+          searchParams.set(NOTIFICATION_WARM_TAP_SEARCH_PARAM, "1");
+        }
+      }
       window.history.replaceState(window.history.state, "", `/trade?${searchParams}`);
     }
 

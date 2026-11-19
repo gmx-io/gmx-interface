@@ -1,7 +1,12 @@
+import { NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY } from "config/localStorage";
 import type { NotificationsStatus } from "context/NotificationsContext/NotificationsContextProvider";
+import type { SettingsTabSource } from "context/SettingsContext/SettingsContextProvider";
+import { DAY_MS } from "lib/dates";
+import { readLocalStorageItem, writeLocalStorageItem } from "lib/localStorage";
+import { sleep } from "lib/sleep";
 import { userAnalytics } from "lib/userAnalytics";
 
-export type NotificationsTabEntry = "settings" | "walletMenu" | "gmxAccountModal";
+export type NotificationsTabEntry = "settings" | SettingsTabSource;
 
 export type NotificationsTurnOnResult =
   | "on"
@@ -31,8 +36,11 @@ const TAP_TYPES = new Map<string, NotificationTapType>([
   ["test", "confirmation"],
 ]);
 
-function sendNotificationsEvent(data: NotificationsActionEvent["data"], options?: { dedupKey: string }) {
-  userAnalytics.pushEvent<NotificationsActionEvent>({ event: "NotificationsAction", data }, options);
+const ANALYTICS_SETUP_WAIT_MS = 10_000;
+const ANALYTICS_SETUP_POLL_MS = 500;
+
+function sendNotificationsEvent(data: NotificationsActionEvent["data"]) {
+  userAnalytics.pushEvent<NotificationsActionEvent>({ event: "NotificationsAction", data });
 }
 
 export function sendNotificationsTabOpenEvent(entry: NotificationsTabEntry, state: NotificationsStatus) {
@@ -52,7 +60,28 @@ export function sendNotificationTapEvent(type: string | null | undefined, isCold
   sendNotificationsEvent({ action: "Tap", notificationType: (type && TAP_TYPES.get(type)) || "other", isColdStart });
 }
 
-export function sendNotificationsDailyStateEvent(state: NotificationsStatus) {
-  // The dedup window is a day, so this goes out at the first app open in 24 hours.
-  sendNotificationsEvent({ action: "DailyState", state }, { dedupKey: "notificationsDailyState" });
+/** Sends at the first app open in 24 hours. */
+export async function sendNotificationsDailyStateEvent(state: NotificationsStatus) {
+  const sentAt = readLocalStorageItem(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, { deserializer: Number });
+  if (sentAt !== undefined && Date.now() - sentAt < DAY_MS) {
+    return;
+  }
+
+  // Counted as sent only after the request: an event queued until the analytics setup is lost on a reload in those
+  // seconds, while the analytics dedup would already skip it for a day.
+  for (let waited = 0; !userAnalytics.getIsCommonParamsInited() && waited < ANALYTICS_SETUP_WAIT_MS; ) {
+    await sleep(ANALYTICS_SETUP_POLL_MS);
+    waited += ANALYTICS_SETUP_POLL_MS;
+  }
+
+  try {
+    await userAnalytics.pushEvent<NotificationsActionEvent>(
+      { event: "NotificationsAction", data: { action: "DailyState", state } },
+      { instantSend: true }
+    );
+  } catch {
+    return;
+  }
+
+  writeLocalStorageItem(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, Date.now(), { serializer: String });
 }
