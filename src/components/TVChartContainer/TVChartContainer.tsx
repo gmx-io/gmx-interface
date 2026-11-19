@@ -173,7 +173,8 @@ export default function TVChartContainer({
       isSolana
         ? Object.values(positionsInfoData ?? {})
             .map(
-              (p) => `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}`
+              (p) =>
+                `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}:${p.tradeId}:${p.updatedAtSlot}`
             )
             .sort()
             .join(",")
