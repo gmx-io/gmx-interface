@@ -71,6 +71,7 @@ export type IntegrationStoryProps = {
   initialToValue?: string;
   initialTriggerPrice?: string;
   maxAvailableAmount?: bigint;
+  ethPrice?: number;
 };
 
 /**
@@ -85,6 +86,7 @@ export function IntegrationStory({
   initialToValue = "0.5",
   initialTriggerPrice,
   maxAvailableAmount = expandDecimals(10000, 6),
+  ethPrice = 2000,
 }: IntegrationStoryProps) {
   const [fromValue, setFromValue] = useState(initialFromValue);
   const [toValue, setToValue] = useState(initialToValue);
@@ -94,6 +96,8 @@ export function IntegrationStory({
   const setToValueWithReset = useCallback((value: string, _resetPriceImpact: boolean) => {
     setToValue(value);
   }, []);
+
+  const { tokensData } = useDynamicTokensData(ethPrice);
 
   const state = useMemo(
     () =>
@@ -105,8 +109,9 @@ export function IntegrationStory({
         focusedInput: focused,
         triggerPriceInputValue: triggerPrice,
         isLeverageSliderEnabled,
+        tokensData,
       }),
-    [tradeMode, tradeType, fromValue, toValue, focused, triggerPrice, isLeverageSliderEnabled]
+    [tradeMode, tradeType, fromValue, toValue, focused, triggerPrice, isLeverageSliderEnabled, tokensData]
   );
 
   const isLimit = tradeMode === TradeMode.Limit || tradeMode === TradeMode.StopMarket;

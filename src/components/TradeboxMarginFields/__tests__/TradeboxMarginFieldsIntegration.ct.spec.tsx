@@ -659,31 +659,40 @@ test.describe("TradeboxMarginFields Integration", () => {
   });
 
   test.describe("Limit to Market switch", () => {
-    test("re-prices the typed USD size at the mark price TRD-17", async ({ mount, page }) => {
-      // mark is $2000: a $20000 size is 12.5 ETH at a $1600 long limit, 8 ETH at a $2500 short limit, 10 ETH at mark
+    test("keeps the typed USD size priced at the mark TRD-17", async ({ mount, page }) => {
+      // a $20000 size is 12.5 ETH at a $1600 long limit, 6.25 ETH at a $3200 short limit, 10 ETH at a $2000 mark
+      // and 8 ETH at a $2500 mark; a blank limit price leaves the size priced at the mark
       const rows = [
-        { tradeType: TradeType.Long, limitPrice: "1600", limitTokens: "12.5", isLimitBeforeSize: true },
-        { tradeType: TradeType.Short, limitPrice: "2500", limitTokens: "8", isLimitBeforeSize: false },
+        { tradeType: TradeType.Long, limitPrice: "1600", isLimitFirst: true, toValues: ["12.5", "12.5", "8", "10"] },
+        { tradeType: TradeType.Short, limitPrice: "3200", isLimitFirst: false, toValues: ["6.25", "6.25", "8", "10"] },
+        { tradeType: TradeType.Long, limitPrice: "", isLimitFirst: false, toValues: ["10", "8", "8", "10"] },
+      ];
+      const steps = [
+        { tradeMode: TradeMode.Limit, ethPrice: 2000 },
+        { tradeMode: TradeMode.Limit, ethPrice: 2500 },
+        { tradeMode: TradeMode.Market, ethPrice: 2500 },
+        { tradeMode: TradeMode.Market, ethPrice: 2000 },
       ];
       const sizeInput = page.locator(getDataQALocator("position-size-input"));
       const triggerPriceInput = page.locator(getDataQALocator("trigger-price-input"));
 
-      for (const { tradeType, limitPrice, limitTokens, isLimitBeforeSize } of rows) {
-        await test.step(`${tradeType}, limit ${isLimitBeforeSize ? "before" : "after"} size`, async () => {
+      for (const { tradeType, limitPrice, isLimitFirst, toValues } of rows) {
+        await test.step(`${tradeType}, limit ${limitPrice || "blank"} ${isLimitFirst ? "before" : "after"} size`, async () => {
           const props = { tradeType, initialToValue: "" };
-          const component = await mount(<IntegrationStory {...props} tradeMode={TradeMode.Limit} />);
+          const component = await mount(<IntegrationStory {...props} {...steps[0]} />);
 
-          if (isLimitBeforeSize) await triggerPriceInput.fill(limitPrice);
+          if (limitPrice && isLimitFirst) await triggerPriceInput.fill(limitPrice);
           await sizeInput.fill("20000");
-          if (!isLimitBeforeSize) await triggerPriceInput.fill(limitPrice);
-          await expect(page.getByTestId("to-value")).toHaveText(limitTokens);
+          if (limitPrice && !isLimitFirst) await triggerPriceInput.fill(limitPrice);
 
-          await component.update(<IntegrationStory {...props} tradeMode={TradeMode.Market} />);
+          for (const [index, step] of steps.entries()) {
+            await component.update(<IntegrationStory {...props} {...step} />);
+
+            await expect(page.getByTestId("to-value")).toHaveText(toValues[index]);
+            await expect(sizeInput).toHaveValue("20000");
+          }
 
           await expect(page.getByTestId("focused-input")).toHaveText("to");
-          await expect(page.getByTestId("to-value")).toHaveText("10");
-          await expect(sizeInput).toHaveValue("20000");
-
           await component.unmount();
         });
       }

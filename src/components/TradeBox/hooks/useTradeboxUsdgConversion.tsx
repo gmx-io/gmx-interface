@@ -60,6 +60,7 @@ import {
   type ConfirmedUsdgOrder,
   getConvertedOrderStatus,
   getConvertedSizeFit,
+  getIsTypedSizeUnchanged,
   getTpSlSetupKey,
 } from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
@@ -303,6 +304,7 @@ export function useTradeboxUsdgConversion({
   const latestMarketAddress = useLatest(marketAddress);
   const latestOrderSetupKey = useLatest(orderSetupKey);
   const latestToTokenInputValue = useLatest(toTokenInputValue);
+  const latestSizeDeltaUsd = useLatest(increaseAmounts?.sizeDeltaUsd);
 
   const resetConversion = useCallback(() => {
     updateUsdgConversionSession((current) => ({
@@ -504,7 +506,11 @@ export function useTradeboxUsdgConversion({
           const isOrderSetupUnchanged =
             latestOrderSetupKey.current === confirmedOrder.setupKey &&
             (confirmedOrder.sizeInputValue === undefined ||
-              latestToTokenInputValue.current === confirmedOrder.sizeInputValue);
+              getIsTypedSizeUnchanged({
+                confirmedOrder,
+                sizeInputValue: latestToTokenInputValue.current,
+                sizeDeltaUsd: latestSizeDeltaUsd.current,
+              }));
 
           updateUsdgConversionSession((current) => ({
             ...current,
@@ -529,6 +535,7 @@ export function useTradeboxUsdgConversion({
       chainId,
       latestMarketAddress,
       latestOrderSetupKey,
+      latestSizeDeltaUsd,
       latestToTokenInputValue,
       marketAddress,
       orderStatuses,
@@ -803,7 +810,11 @@ export function useTradeboxUsdgConversion({
     fromToken?.address === collateralTokenAddress &&
     lastConversion.marketAddress === marketAddress &&
     (isTypedSizeKept
-      ? toTokenInputValue === confirmedOrder?.sizeInputValue
+      ? getIsTypedSizeUnchanged({
+          confirmedOrder,
+          sizeInputValue: toTokenInputValue,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        })
       : fromTokenAmount === lastConversion.amountOut);
 
   const orderAutoSubmitArmedAt = orderAutoSubmitArm?.armedAt;

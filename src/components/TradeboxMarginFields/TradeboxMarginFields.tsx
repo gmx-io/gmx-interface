@@ -151,7 +151,10 @@ export function TradeboxMarginFields({
   useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
-    if (shouldForceSizeUsdSyncRef.current) {
+    const isTokensInputValueFromUsd = toTokenInputValue === tokensInputValueFromUsdRef.current;
+
+    // A typed USD size stays the order size: its token amount follows every move of the conversion price.
+    if (shouldForceSizeUsdSyncRef.current || (focusedInput === "to" && isTokensInputValueFromUsd)) {
       shouldForceSizeUsdSyncRef.current = false;
       const tokensValue = usdToTokens(sizeInputValue);
       tokensInputValueFromUsdRef.current = tokensValue;
@@ -162,7 +165,12 @@ export function TradeboxMarginFields({
     }
 
     const isTokensInputValueSetElsewhere =
-      toTokenInputValue !== previousToTokenInputValue && toTokenInputValue !== tokensInputValueFromUsdRef.current;
+      !isTokensInputValueFromUsd && toTokenInputValue !== previousToTokenInputValue;
+
+    // A token amount set elsewhere ends the USD size's lead, so a later chance match (an empty input) can't restore it.
+    if (isTokensInputValueSetElsewhere) {
+      tokensInputValueFromUsdRef.current = undefined;
+    }
 
     if (focusedInput === "to" && !isTokensInputValueSetElsewhere) return;
 
