@@ -12,7 +12,7 @@ export type SolanaWalletAsset = SolanaWalletToken & {
 export type SolanaWalletAssets = {
   // the tokens with a balance above zero
   assets: SolanaWalletAsset[];
-  // undefined without prices or when a held token has no price
+  // undefined when a held token has no price
   totalUsd: bigint | undefined;
 };
 
@@ -26,7 +26,7 @@ export function getSolanaWalletAssets(
   }
 
   const assets: SolanaWalletAsset[] = [];
-  let totalUsd: bigint | undefined = prices ? 0n : undefined;
+  let totalUsd: bigint | undefined = 0n;
 
   for (const token of tokens) {
     const balance = balances[token.address];

@@ -4,6 +4,7 @@ import { getIsSolanaNetworkEnabled } from "config/ab";
 import { isSolanaNetwork, type NetworkId } from "config/chains";
 import { useChainId } from "lib/chains";
 import type { SolanaBalances } from "lib/solana/balances";
+import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 
 export function getSolanaBalancesKey(networkId: NetworkId, owner: string) {
   return ["solanaBalances", networkId, owner] as const;
@@ -19,6 +20,6 @@ export function useSolanaBalances(owner: string | undefined) {
       const { fetchSolanaBalances } = await import("lib/solana/balances");
       return fetchSolanaBalances(owner);
     },
-    { keepPreviousData: false }
+    { keepPreviousData: false, onErrorRetry: retryAtRefreshCadence }
   );
 }

@@ -54,8 +54,11 @@ describe("getSolanaWalletAssets", () => {
     expect(result.totalUsd).toBe(usd(252));
   });
 
-  it("returns a known zero for an empty wallet", () => {
-    expect(getSolanaWalletAssets(TOKENS, { native: 0n, usdc: 0n, ape: 0n }, PRICES)).toEqual({
+  it.each([
+    ["with prices", PRICES],
+    ["without prices", undefined],
+  ])("returns a known zero for an empty wallet %s", (_, prices) => {
+    expect(getSolanaWalletAssets(TOKENS, { native: 0n, usdc: 0n, ape: 0n }, prices)).toEqual({
       assets: [],
       totalUsd: 0n,
     });

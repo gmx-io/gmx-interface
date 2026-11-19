@@ -1,16 +1,19 @@
-import { useMemo } from "react";
-import useSWR from "swr";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 import useSWRImmutable from "swr/immutable";
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { ARBITRUM, isSolanaNetwork, SOLANA_NETWORK_ID } from "config/chains";
-import type { SolanaWalletToken } from "domain/gmsol/walletTokens";
+import type { GmsolTokenPricesData } from "domain/gmsol/gmsolOracleUtils";
+import type { GmsolTokensSnapshot } from "domain/gmsol/tokens/resolveGmsolTokensData";
 import { useChainId } from "lib/chains";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import type { TokenPricesData } from "sdk/utils/tokens/types";
+import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
+import { API_STALE_MS, retryAtRefreshCadence, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 
 import { getSolanaWalletAssets } from "./solanaWalletAssets";
 import { useSolanaBalances } from "./useSolanaBalances";
+
+type SolanaWalletTokensModule = typeof import("domain/gmsol/walletTokens");
 
 export function getSolanaWalletPricesKey(url: string) {
   return ["solanaWalletPrices", SOLANA_NETWORK_ID, url] as const;
@@ -27,32 +30,59 @@ export function useSolanaWalletAssets(owner: string | undefined) {
   const arbitrumFetcher = useOracleKeeperFetcher(ARBITRUM);
 
   const balances = useSolanaBalances(owner);
-  const tokens = useSWRImmutable<readonly SolanaWalletToken[], Error>(
+  const walletTokens = useSWRImmutable<SolanaWalletTokensModule, Error>(
     enabled ? ["solanaWalletTokens", SOLANA_NETWORK_ID] : null,
-    async () => (await import("domain/gmsol/walletTokens")).SOLANA_WALLET_TOKENS
+    () => import("domain/gmsol/walletTokens"),
+    { onErrorRetry: retryAtRefreshCadence }
   );
-  const prices = useSWR<TokenPricesData, Error>(
-    enabled ? getSolanaWalletPricesKey(arbitrumFetcher.url) : null,
-    async () => (await import("domain/gmsol/walletTokens")).fetchSolanaWalletPrices(arbitrumFetcher)
+  const pricesKey = enabled ? getSolanaWalletPricesKey(arbitrumFetcher.url) : null;
+  const prices = useSWRWithFreshness<GmsolTokenPricesData | undefined>(
+    pricesKey,
+    async () => (await import("domain/gmsol/walletTokens")).fetchGmsolPrices(arbitrumFetcher),
+    { refreshInterval: FREQUENT_UPDATE_INTERVAL, maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS }
   );
 
-  const balancesError = balances.error ?? tokens.error;
+  const resolveGmsolTokensData = walletTokens.data?.resolveGmsolTokensData;
+  const snapshotRef = useRef<GmsolTokensSnapshot>();
+  const snapshot =
+    pricesKey && resolveGmsolTokensData
+      ? resolveGmsolTokensData({
+          previous: snapshotRef.current,
+          scope: pricesKey.join(" "),
+          response: prices.data,
+          now: Date.now(),
+        })
+      : undefined;
+  snapshotRef.current = snapshot;
+
+  const pricesUpdatedAt = snapshot?.pricesUpdatedAt;
+  const [pricesExpiryCheck, checkPricesExpiry] = useReducer((tick: number) => tick + 1, 0);
+
+  useEffect(() => {
+    if (pricesUpdatedAt === undefined) return;
+
+    const timeout = setTimeout(checkPricesExpiry, Math.max(0, pricesUpdatedAt + PRICES_CACHE_TTL - Date.now()));
+    return () => clearTimeout(timeout);
+  }, [pricesUpdatedAt, pricesExpiryCheck]);
+
+  const freshPrices = prices.freshness.isStale ? undefined : snapshot?.prices;
+  const balancesError = balances.error ?? walletTokens.error;
 
   const walletAssets = useMemo(
     () =>
       balancesError
         ? undefined
-        : getSolanaWalletAssets(tokens.data, balances.data, prices.error ? undefined : prices.data),
-    [balancesError, tokens.data, balances.data, prices.data, prices.error]
+        : getSolanaWalletAssets(walletTokens.data?.SOLANA_WALLET_TOKENS, balances.data, freshPrices),
+    [balancesError, walletTokens.data, balances.data, freshPrices]
   );
 
-  const isBalancesLoading = !balancesError && (balances.data === undefined || tokens.data === undefined);
+  const isBalancesLoading = !balancesError && (balances.data === undefined || walletTokens.data === undefined);
 
   return {
     assets: walletAssets?.assets,
     totalUsd: walletAssets?.totalUsd,
     // a balance error ends loading even while prices are pending
-    isLoading: isBalancesLoading || (!balancesError && !prices.error && prices.data === undefined),
+    isLoading: isBalancesLoading || (!balancesError && !prices.error && prices.freshness.asOf === undefined),
     balancesError,
     pricesError: prices.error,
   };
