@@ -5,6 +5,7 @@ import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, 
 import { bigMath } from "sdk/utils/bigmath";
 import { getPositionFee } from "sdk/utils/fees";
 import { getCappedPositionImpactUsd, getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
+import { GMSOL_PRECISION_SCALE, getGmsolUsdAmount } from "sdk/utils/gmsol";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { applyFactor } from "sdk/utils/numbers";
 import { getCollateralPriceAtIndexPrice, getLiquidationPrice } from "sdk/utils/positions";
@@ -49,6 +50,7 @@ export type CalcMaxSizeDeltaParams = {
   minCollateralUsd?: bigint;
   userReferralInfo?: UserReferralInfo;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
   uiFeeFactor?: bigint;
   baseCollateralUsd?: bigint;
@@ -145,6 +147,7 @@ function capSizeDeltaByResultingPositionMargin({
           minCollateralUsd,
           userReferralInfo: params.userReferralInfo,
           proDiscountFactor: params.proDiscountFactor,
+          feeDiscountFactor: params.feeDiscountFactor,
         })
       );
     }
@@ -169,7 +172,8 @@ function capSizeDeltaByResultingPositionMargin({
       balanceWasImproved,
       params.userReferralInfo,
       undefined,
-      params.proDiscountFactor
+      params.proDiscountFactor,
+      params.feeDiscountFactor
     );
     const uiFeeUsd = applyFactor(sizeDeltaUsd, params.uiFeeFactor ?? 0n);
 
@@ -192,6 +196,7 @@ function capSizeDeltaByResultingPositionMargin({
       minCollateralUsd,
       userReferralInfo: params.userReferralInfo,
       proDiscountFactor: params.proDiscountFactor,
+      feeDiscountFactor: params.feeDiscountFactor,
       indexPriceForEvaluation: params.indexPriceForEvaluation,
     });
 
@@ -215,6 +220,7 @@ function capSizeDeltaByResultingPositionMargin({
         pendingImpactAmount: resultingExistingPosition.pendingImpactAmount,
         isLong,
         userReferralInfo: params.userReferralInfo,
+        feeDiscountFactor: params.feeDiscountFactor,
       });
 
       if (getIsPositionLiquidatableAtPrice({ liqPrice: nextLiqPrice, price: markPrice, isLong })) {
@@ -231,16 +237,17 @@ function capSizeDeltaByResultingPositionMargin({
 
   let low = 0n;
   let high = sizeDeltaUsdBound;
+  const usdPrecision = marketInfo.tradeMath === "gmsol" ? GMSOL_PRECISION_SCALE : 1n;
 
   for (let i = 0; i < RESULTING_POSITION_BISECTION_STEPS && low < high; i++) {
-    const mid = (low + high) / 2n;
+    const mid = ((low + high) / (2n * usdPrecision)) * usdPrecision;
 
     if (mid === low) break;
 
     if (isSizeDeltaValid(mid)) {
       low = mid;
     } else {
-      high = mid - 1n;
+      high = mid - usdPrecision;
     }
   }
 
@@ -294,12 +301,16 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
 
   if (baseNumerator <= 0n) return undefined;
 
-  const conservativeBound = bigMath.mulDiv(
+  let conservativeBound = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION +
       leverageBigInt * (marketInfo.positionFeeFactorForBalanceWasNotImproved + uiFeeFactor)
   );
+
+  if (marketInfo.tradeMath === "gmsol") {
+    conservativeBound = getGmsolUsdAmount(conservativeBound);
+  }
 
   const conservativeBoundInTokens = convertToTokenAmountForIncrease(
     conservativeBound,
@@ -314,11 +325,15 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
-  const structuralBoundUsd = bigMath.mulDiv(
+  let structuralBoundUsd = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * (positionFeeFactor + uiFeeFactor)
   );
+
+  if (marketInfo.tradeMath === "gmsol") {
+    structuralBoundUsd = getGmsolUsdAmount(structuralBoundUsd);
+  }
 
   const leverageBoundUsd = capSizeDeltaByResultingPositionMargin({
     sizeDeltaUsdBound: structuralBoundUsd,

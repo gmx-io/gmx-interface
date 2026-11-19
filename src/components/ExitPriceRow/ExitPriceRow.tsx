@@ -8,7 +8,7 @@ import { TradeFees } from "sdk/utils/trade/types";
 
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 
@@ -43,9 +43,7 @@ export function ExitPriceRow({
               <TooltipText>
                 <Trans>Price you'll receive when closing, adjusted for capped price impact.</Trans>
               </TooltipText>
-              <TooltipLink href={DOCS_LINKS.priceImpact}>
-                <Trans>Read more</Trans>
-              </TooltipLink>
+              <TooltipReadMore href={DOCS_LINKS.priceImpact} />
             </TooltipContent>
           }
         />

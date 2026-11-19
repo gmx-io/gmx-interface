@@ -14,7 +14,7 @@ import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExter
 import type { MarketsInfoData } from "domain/synthetics/markets";
 import type { PositionsInfoData } from "domain/synthetics/positions";
 import type { TokensData } from "domain/synthetics/tokens";
-import type { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
+import type { StoredTradeOptions } from "domain/synthetics/trade/tradeboxStorage";
 import { CtAppProviders } from "domain/testUtils/CtAppProviders";
 import { createMockMarketInfo, MOCK_MARKET_ADDRESS, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
