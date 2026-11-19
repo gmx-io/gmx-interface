@@ -3,7 +3,11 @@ import { expect, type Page } from "@playwright/test";
 import { decodeFunctionData, getAddress, hashTypedData, parseAbi, stringToHex, keccak256, type Hex } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { getContract } from "../../../sdk/src/configs/contracts";
-import { subaccountActionCountKey, SUBACCOUNT_ORDER_ACTION } from "../../../sdk/src/configs/dataStore";
+import {
+  subaccountActionCountKey,
+  SUBACCOUNT_ORDER_ACTION,
+  subaccountRevocationCounterKey,
+} from "../../../sdk/src/configs/dataStore";
 import { SUBACCOUNT_MESSAGE } from "../../../sdk/src/configs/express";
 import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccount/getSubaccountApprovalTypedData";
 import { closeSettings, labelledInput, openSettings, SELECTED_TRADING_MODE, tradingMode } from "../fixtures/trade";
@@ -59,12 +63,15 @@ export async function activateUiOneClick(session: FundedSession, wallet: UiWalle
         functionName: "subaccountApprovalNonces",
         args: [session.address],
       });
-      const used = await session.rpc.readContract({
-        address: getContract(42161, "DataStore"),
-        abi: parseAbi(["function getUint(bytes32) view returns(uint256)"]),
-        functionName: "getUint",
-        args: [subaccountActionCountKey(session.address, subaccount, SUBACCOUNT_ORDER_ACTION) as Hex],
-      });
+      const dataStoreUint = (key: string) =>
+        session.rpc.readContract({
+          address: getContract(42161, "DataStore"),
+          abi: parseAbi(["function getUint(bytes32) view returns(uint256)"]),
+          functionName: "getUint",
+          args: [key as Hex],
+        });
+      const used = await dataStoreUint(subaccountActionCountKey(session.address, subaccount, SUBACCOUNT_ORDER_ACTION));
+      const revocationCounter = await dataStoreUint(subaccountRevocationCounterKey(session.address, subaccount));
       let expected: ReturnType<typeof getSubaccountApprovalTypedData> | undefined;
       for (let lag = 0n; lag <= 120n; lag++) {
         const candidate = getSubaccountApprovalTypedData({
@@ -74,6 +81,8 @@ export async function activateUiOneClick(session: FundedSession, wallet: UiWalle
           expiresAt: now + 86400n - lag,
           maxAllowedCount: used + 2n,
           nonce,
+          account: session.address,
+          revocationCounter,
         });
         if (hashTypedData(typed as never) === hashTypedData(minifiedUiTypedData(candidate) as never)) {
           expected = candidate;

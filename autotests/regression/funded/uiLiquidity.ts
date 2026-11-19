@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { expect, type Page } from "@playwright/test";
 import { formatUnits, getAddress, zeroAddress, type Abi } from "viem";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { checkFeeBudget, economy, USD } from "./economy";
@@ -99,7 +99,7 @@ export async function changeUiLiquidity(
     if (withdraw) {
       const gmAmount = kind === "gm" ? amount : (amount * ctx.tokenPrice) / ctx.gmPrice;
       const outputs = (await session.rpc.readContract({
-        abi: SyntheticsReader as Abi,
+        abi: getAbi(42161, "SyntheticsReader") as Abi,
         address: getContract(42161, "SyntheticsReader"),
         functionName: "getWithdrawalAmountOut",
         args: [getContract(42161, "DataStore"), ctx.market, ctx.prices, gmAmount, zeroAddress, 4],

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { decodeFunctionData, getAddress, maxUint256, zeroAddress, type Hex } from "viem";
 
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
 import { convertToUsd } from "../../../sdk/src/utils/tokens/utils";
@@ -31,11 +31,12 @@ export function inspectUiOrder(tx: UiTransaction, intent: UiOrderIntent, context
   const unlimited = (price: bigint, buying: boolean) =>
     buying ? price === maxUint256 || price === maxUint256 / 10n ** BigInt(weth.decimals) : price === 0n;
   assert.ok(same(tx.to, getContract(42161, "ExchangeRouter")), "Unexpected UI transaction destination");
-  const root = decodeFunctionData({ abi: ExchangeRouter, data: tx.data });
+  const exchangeRouter = getAbi(42161, "ExchangeRouter");
+  const root = decodeFunctionData({ abi: exchangeRouter, data: tx.data });
   assert.equal(root.functionName, "multicall", "Expected an ExchangeRouter batch");
   if (root.functionName !== "multicall") throw new Error("Expected multicall");
   assert.ok(root.args[0].length > 0 && root.args[0].length <= 8, "Unexpected batch size");
-  const calls = root.args[0].map((data) => decodeFunctionData({ abi: ExchangeRouter, data }));
+  const calls = root.args[0].map((data) => decodeFunctionData({ abi: exchangeRouter, data }));
   let nativeSent = 0n;
   const tokenTransfers = new Map<string, bigint>();
   const operations = calls.filter((call) => {
@@ -96,6 +97,7 @@ export function inspectUiOrder(tx: UiTransaction, intent: UiOrderIntent, context
       intent.triggerPrice,
       intent.minOutputAmount,
       intent.validFromTime,
+      intent.decreasePositionSwapType,
       intent.autoCancel,
     ]);
     assert.ok((intent.fullPositionSizeUsd ?? intent.sizeUsd) <= economy.positionLimitUsd);

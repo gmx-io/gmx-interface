@@ -70,6 +70,7 @@ export function preparedOrder(): PrepareOrderResponse {
     deadline: BigInt(Math.floor(Date.now() / 1000) + 60),
     userNonce: 1n,
     desChainId: 42161n,
+    eip6492SignatureWrapperHash: zeroHash,
   };
   const typedData = getBatchTypedData({
     chainId: 42161,

@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import { decodeFunctionData, getAddress, zeroAddress, type Abi } from "viem";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import GlvRouter from "../../../sdk/src/abis/GlvRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { USD } from "./economy";
 import type { UiTransaction } from "./uiOrderGuard";
@@ -23,7 +22,7 @@ export type UiLiquidityIntent = {
 
 export function inspectUiLiquidity(tx: UiTransaction, intent: UiLiquidityIntent) {
   const { kind, withdraw } = intent;
-  const abi = (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi;
+  const abi = getAbi(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter") as Abi;
   assert.equal(getAddress(tx.to), getAddress(getContract(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter")));
   const root = decodeFunctionData({ abi, data: tx.data });
   assert.equal(root.functionName, "multicall");
