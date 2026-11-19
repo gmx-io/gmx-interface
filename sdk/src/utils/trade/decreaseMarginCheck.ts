@@ -79,6 +79,7 @@ export function getDecreaseResultingPositionMarginState(
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: p.indexPriceForEvaluation,
+    isLong,
   });
 
   const { indexToken } = marketInfo;

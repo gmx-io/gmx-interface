@@ -15,6 +15,7 @@ import {
 } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "utils/orders/types";
 import {
+  getCollateralPriceAtIndexPrice,
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
@@ -82,6 +83,7 @@ export function getDecreasePositionAmounts(p: {
   receiveToken?: TokenData;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   isTwap?: boolean;
+  numberOfParts?: number;
   /** the withdrawal an existing order stores, used instead of the Keep leverage one */
   storedCollateralDeltaAmount?: bigint;
 }): DecreasePositionAmounts {
@@ -106,6 +108,7 @@ export function getDecreasePositionAmounts(p: {
     isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType,
     isTwap,
+    numberOfParts,
     storedCollateralDeltaAmount,
   } = p;
   const evaluationPrice =
@@ -139,6 +142,7 @@ export function getDecreasePositionAmounts(p: {
 
   const { indexToken } = marketInfo;
   const receiveToken = receiveTokenArg ? atEvaluationPrice(receiveTokenArg) : collateralToken;
+  const shouldKeepLeverage = keepLeverage && !isTwap;
 
   const values: DecreasePositionAmounts = {
     ...(marketInfo.tradeMath === "gmsol"
@@ -211,9 +215,12 @@ export function getDecreasePositionAmounts(p: {
     values.triggerPrice = triggerPrice;
     values.indexPrice = triggerPrice ?? markPrice;
 
-    values.collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice ?? markPrice
-      : collateralToken.prices.minPrice;
+    values.collateralPrice = getCollateralPriceAtIndexPrice({
+      collateralToken,
+      indexToken,
+      indexPrice: triggerPrice ?? markPrice,
+      isLong,
+    });
 
     values.triggerThresholdType = getOrderThresholdType(orderType, isLong);
   } else {
@@ -279,7 +286,7 @@ export function getDecreasePositionAmounts(p: {
 
   let estimatedCollateralDeltaUsd = 0n;
 
-  if (keepLeverage) {
+  if (shouldKeepLeverage) {
     estimatedCollateralDeltaUsd = bigMath.mulDiv(values.sizeDeltaUsd, estimatedCollateralUsd, position.sizeInUsd);
   }
 
@@ -437,14 +444,17 @@ export function getDecreasePositionAmounts(p: {
     totalPendingImpactDeltaUsd: values.totalPendingImpactDeltaUsd,
   });
 
-  const isProfitKeptInPnlToken =
-    isSingleSettlement &&
-    getIsProfitKeptInPnlToken({
-      pnlToken,
-      collateralToken,
-      decreaseSwapType: values.decreaseSwapType,
-      isProfitSwapReverted,
-    });
+  const isProfitKeptInPnlToken = getIsProfitKeptInPnlToken({
+    pnlToken,
+    collateralToken,
+    decreaseSwapType: values.decreaseSwapType,
+    isProfitSwapReverted,
+  });
+
+  const twapPartsCount =
+    isTwap && !values.isFullClose && numberOfParts !== undefined && numberOfParts > 1
+      ? BigInt(numberOfParts)
+      : undefined;
 
   const gmsolCosts =
     marketInfo.tradeMath === "gmsol"
@@ -476,11 +486,21 @@ export function getDecreasePositionAmounts(p: {
           collateralPrice: values.collateralPrice,
           remainingCollateralAmount: position.collateralAmount,
         })
-      : payForCollateralCostAmount({
-          costAmount,
-          outputAmount: profitAmount,
-          remainingCollateralAmount: position.collateralAmount,
-        }));
+      : twapPartsCount !== undefined
+        ? payForTwapPartsCollateralCost({
+            numberOfParts: twapPartsCount,
+            initialCostUsd: totalFeesUsd,
+            pendingFeesUsd: values.borrowingFeeUsd + values.fundingFeeUsd,
+            collateralToken,
+            collateralPrice: values.collateralPrice,
+            outputAmount: profitAmount,
+            remainingCollateralAmount: position.collateralAmount,
+          })
+        : payForCollateralCostAmount({
+            costAmount,
+            outputAmount: profitAmount,
+            remainingCollateralAmount: position.collateralAmount,
+          }));
 
   values.payedOutputUsd = gmsolPayment
     ? convertToUsd(gmsolPayment.paidPnlOutputAmount, pnlToken.decimals, pnlToken.prices.minPrice)!
@@ -525,7 +545,7 @@ export function getDecreasePositionAmounts(p: {
     netCollateralOutputUsd = convertToUsd(netCollateralOutputAmount, collateralToken.decimals, values.collateralPrice)!;
     values.receiveTokenAmount = payedInfo.outputAmount + netCollateralOutputAmount;
   } else if (
-    keepLeverage &&
+    shouldKeepLeverage &&
     position.sizeInUsd > 0 &&
     estimatedCollateralUsd > 0 &&
     payedInfo.remainingCollateralAmount > 0
@@ -1081,6 +1101,53 @@ function payForCollateralCostBeforePnlTokenProfit(p: {
   };
 }
 
+function payForTwapPartsCollateralCost(p: {
+  numberOfParts: bigint;
+  initialCostUsd: bigint;
+  pendingFeesUsd: bigint;
+  collateralToken: TokenData;
+  collateralPrice: bigint;
+  outputAmount: bigint;
+  remainingCollateralAmount: bigint;
+}) {
+  const {
+    numberOfParts,
+    initialCostUsd,
+    pendingFeesUsd,
+    collateralToken,
+    collateralPrice,
+    outputAmount,
+    remainingCollateralAmount,
+  } = p;
+
+  const partCostUsd = (initialCostUsd - pendingFeesUsd) / numberOfParts;
+  const partOutputAmount = outputAmount / numberOfParts;
+
+  const firstPart = payForCollateralCost({
+    initialCostUsd: pendingFeesUsd + partCostUsd,
+    collateralToken,
+    collateralPrice,
+    outputAmount: partOutputAmount,
+    remainingCollateralAmount,
+  });
+
+  const otherParts = payForCollateralCost({
+    initialCostUsd: initialCostUsd - pendingFeesUsd - partCostUsd,
+    collateralToken,
+    collateralPrice,
+    outputAmount: outputAmount - partOutputAmount,
+    remainingCollateralAmount: firstPart.remainingCollateralAmount,
+  });
+
+  return {
+    outputAmount: firstPart.outputAmount + otherParts.outputAmount,
+    remainingCollateralAmount: otherParts.remainingCollateralAmount,
+    paidOutputAmount: firstPart.paidOutputAmount + otherParts.paidOutputAmount,
+    paidRemainingCollateralAmount: firstPart.paidRemainingCollateralAmount + otherParts.paidRemainingCollateralAmount,
+    unpaidCostAmount: firstPart.unpaidCostAmount + otherParts.unpaidCostAmount,
+  };
+}
+
 export function payForCollateralCost(p: {
   initialCostUsd: bigint;
   collateralToken: TokenData;
@@ -1475,6 +1542,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   receiveToken: TokenData;
   forceDecreaseSwapType?: DecreasePositionSwapType;
   isTwap?: boolean;
+  numberOfParts?: number;
   findSwapPath: FindSwapPath;
   findSwapPathFromPnl: FindSwapPath;
   marketsInfoData: MarketsInfoData | undefined;
@@ -1504,6 +1572,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     receiveToken,
     forceDecreaseSwapType,
     isTwap,
+    numberOfParts,
     findSwapPath,
     findSwapPathFromPnl,
     marketsInfoData,
@@ -1540,6 +1609,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     isSetAcceptablePriceImpactEnabled,
     receiveToken,
     isTwap,
+    numberOfParts,
   };
 
   if (forceDecreaseSwapType !== undefined) {
