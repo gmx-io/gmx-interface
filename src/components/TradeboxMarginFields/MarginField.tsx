@@ -142,6 +142,7 @@ export function MarginField({
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
+                tokenInfo={infoTokens[fromTokenAddress]}
                 onSelectToken={(token) => {
                   onSelectFromTokenAddress(token.address, false);
                 }}
