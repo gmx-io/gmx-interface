@@ -213,6 +213,10 @@ msgstr "Tauschvorgänge im GMX Account können kein natives {0} verwenden. Wähl
 msgid "Include rPnL in leverage display"
 msgstr "rPnL in Hebelanzeige einbeziehen"
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr ""
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -8829,6 +8833,7 @@ msgid "Symbol (Z to A)"
 msgstr "Symbol (Z bis A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC-Debug"
