@@ -1,0 +1,140 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e5]:
+    - generic [ref=e7]:
+      - generic [ref=e9]: "TP: Close WETH/USD Long"
+      - img [ref=e11] [cursor=pointer]
+    - generic [ref=e16]:
+      - generic [ref=e18]:
+        - generic [ref=e19]:
+          - generic [ref=e23]:
+            - generic [ref=e24]:
+              - generic [ref=e25]: TP price
+              - generic [ref=e26] [cursor=pointer]:
+                - text: "Mark:"
+                - generic [ref=e27]: $ 2,000.00
+            - generic [ref=e28]:
+              - textbox "0.00" [ref=e29]: "2200"
+              - generic [ref=e30]: USD
+          - generic [ref=e31]:
+            - generic [ref=e32]: Gain
+            - generic [ref=e33]:
+              - textbox "0" [ref=e34]: "20"
+              - button "%" [ref=e36] [cursor=pointer]:
+                - text: "%"
+                - img [ref=e37]
+        - generic [ref=e39]:
+          - generic [ref=e40]: Est. PnL
+          - generic [ref=e41]: +$ 200.00 (+20.00%)
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e50]: SL price
+              - generic [ref=e51] [cursor=pointer]:
+                - text: "Mark:"
+                - generic [ref=e52]: $ 2,000.00
+            - generic [ref=e53]:
+              - textbox "0.00" [ref=e54]
+              - generic [ref=e55]: USD
+          - generic [ref=e56]:
+            - generic [ref=e57]: Loss
+            - generic [ref=e58]:
+              - textbox "0" [ref=e59]
+              - button "%" [ref=e61] [cursor=pointer]:
+                - text: "%"
+                - img [ref=e62]
+        - generic [ref=e64]:
+          - generic [ref=e65]: Est. PnL
+          - generic [ref=e66]: "-"
+      - generic [ref=e67]:
+        - generic [ref=e69]: Keep leverage at 2.00x
+        - generic [ref=e74]: Edit TP/SL size
+        - generic [ref=e79]: Receive ETH and USDC separately
+      - 'button "TP: Close WETH/USD Long" [ref=e83] [cursor=pointer]'
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - generic [ref=e87]: Receive
+          - generic [ref=e91]:
+            - generic [ref=e92]: 1,199.45 USDC
+            - generic [ref=e93]:
+              - text: (
+              - generic [ref=e94]: $ 1,199.45
+              - text: )
+        - generic [ref=e95]:
+          - generic [ref=e96]: Liquidation price
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - generic [ref=e100]: $ 1,050.00
+              - img [ref=e101]
+            - text: "-"
+        - generic [ref=e103]:
+          - generic [ref=e104]: PnL
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - generic [ref=e108]: +$ 200.00 (+20.00%)
+              - img [ref=e109]
+            - generic [ref=e111]: $ 0.00 (0.00%)
+        - generic [ref=e112]:
+          - generic [ref=e113]: Net price impact / fees
+          - generic [ref=e114]: 0.000% / - 0.007%
+      - generic [ref=e115]:
+        - button "Execution details" [active] [ref=e117] [cursor=pointer]:
+          - generic [ref=e120]: Execution details
+          - img [ref=e122]
+        - generic [ref=e125]:
+          - generic [ref=e126]:
+            - generic [ref=e130]:
+              - text: Exit price
+              - img [ref=e131]
+            - generic [ref=e133]: $ 2,200.00
+          - generic [ref=e134]:
+            - generic [ref=e135]: Fees
+            - generic [ref=e139]:
+              - generic [ref=e140]: "-$ 0.55"
+              - img [ref=e141]
+          - generic [ref=e142]:
+            - generic [ref=e146]:
+              - text: Network fee
+              - img [ref=e147]
+            - generic [ref=e152]:
+              - generic [ref=e153]:
+                - text: "-0.0003077 ETH"
+                - img [ref=e154]
+              - generic [ref=e155]:
+                - generic [ref=e156]:
+                  - text: (
+                  - generic [ref=e157]: "-$ 0.62"
+                  - text: )
+                  - img [ref=e158]
+                - img "Wallet" [ref=e159]
+          - generic [ref=e160]:
+            - generic [ref=e161]: Leverage
+            - generic [ref=e162]: N/A
+          - generic [ref=e163]:
+            - generic [ref=e164]: Size
+            - generic [ref=e166]:
+              - generic [ref=e167]:
+                - generic [ref=e168]: $ 2,000.00
+                - img [ref=e169]
+              - generic [ref=e171]: $ 0.00
+          - generic [ref=e172]:
+            - generic [ref=e176]:
+              - text: Margin (USDC)
+              - img [ref=e177]
+            - generic [ref=e179]:
+              - generic [ref=e180]:
+                - generic [ref=e181]: $ 1,000.00
+                - img [ref=e182]
+              - generic [ref=e184]: $ 0.00
+  - tooltip "Price you'll receive when closing, adjusted for capped price impact. Read more" [ref=e185]:
+    - generic [ref=e186]:
+      - img
+      - generic [ref=e188]:
+        - generic [ref=e189]: Price you'll receive when closing, adjusted for capped price impact.
+        - link "Read more" [ref=e191] [cursor=pointer]:
+          - /url: https://docs.gmx.io/docs/trading/fees/#price-impact-and-price-impact-rebates
+          - text: Read more ↗︎
+```
