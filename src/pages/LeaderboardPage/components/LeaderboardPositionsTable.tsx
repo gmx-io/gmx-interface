@@ -148,12 +148,12 @@ export function LeaderboardPositionsTable({
   return (
     <div className="rounded-b-8 bg-slate-900">
       <TableScrollFadeContainer>
-        <table className="w-full min-w-[1024px] table-fixed">
+        <table className="w-full min-w-[1050px] table-fixed">
           <thead>
             <TableTheadTr className="text-body-medium">
               <TableHeaderCell
                 title={t`RANK`}
-                width={6}
+                width={9.5}
                 tooltip={
                   <Trans>
                     Only positions with over{" "}
@@ -169,7 +169,7 @@ export function LeaderboardPositionsTable({
                 }
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`ADDRESS`} width={14} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`ADDRESS`} width={17.5} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PNL ($)`}
@@ -177,7 +177,7 @@ export function LeaderboardPositionsTable({
                 tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableTh className="w-[12%]">
+              <TableTh className="w-[14.5%]">
                 <MarketFilterLongShort
                   label={t`POSITION`}
                   allowedDirections={LEADERBOARD_POSITION_FILTER_DIRECTIONS}
@@ -186,10 +186,10 @@ export function LeaderboardPositionsTable({
                   onChange={handlePositionFiltersChange}
                 />
               </TableTh>
-              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
-              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
-              <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />
-              <TableHeaderCell title={t`LIQUIDATION PRICE`} width={10} />
+              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={13} />
+              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={11} />
+              <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={7} />
+              <TableHeaderCell title={t`LIQUIDATION PRICE`} width={15.5} />
             </TableTheadTr>
           </thead>
           <tbody>{content}</tbody>
@@ -234,13 +234,13 @@ const TableHeaderCell = memo(
           <Sorter direction={direction!} onChange={onChange}>
             {tooltip ? (
               <StandardTooltip
-                handle={<span className="whitespace-nowrap">{title}</span>}
+                handle={<span>{title}</span>}
                 position={tooltipPosition || "bottom"}
                 content={tooltip}
                 variant="iconStroke"
               />
             ) : (
-              <span className="whitespace-nowrap">{title}</span>
+              <span>{title}</span>
             )}
           </Sorter>
         </TableTh>
@@ -251,13 +251,13 @@ const TableHeaderCell = memo(
       <TableTh style={style}>
         {tooltip ? (
           <StandardTooltip
-            handle={<span className="whitespace-nowrap">{title}</span>}
+            handle={<span>{title}</span>}
             position={tooltipPosition || "bottom"}
             content={tooltip}
             variant="iconStroke"
           />
         ) : (
-          <span className="whitespace-nowrap">{title}</span>
+          <span>{title}</span>
         )}
       </TableTh>
     );

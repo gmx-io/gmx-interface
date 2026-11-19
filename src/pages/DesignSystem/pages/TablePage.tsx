@@ -372,7 +372,10 @@ const ROW_RULES: DocsRule[] = [
 const TEXT_RULES: DocsRule[] = [
   ["Cells", "14px on a 20px line."],
   ["Second lines", "Dates, pool names and amounts below a value: 12px on a 16px line, so two-line rows stay 52px."],
-  ["Headers", "12px on a 16px line, always on one line."],
+  [
+    "Headers",
+    "12px on a 16px line, on one line. In tables whose columns can't grow (positions, orders, trades, claims, leaderboard positions), a label that doesn't fit takes a second line, with its sort icon right after the last word.",
+  ],
   ["Names", "Market and pool names stay on one line."],
   ["Numbers", "The $ sign takes the colour of its number."],
   [
@@ -392,6 +395,10 @@ const COLUMN_RULES: DocsRule[] = [
     "Tables with pages get fixed column widths (a share of the table), so columns stay in place on every page.",
   ],
   ["First column", "Give it a minimum width that fits its widest content, like a long pool name with a badge."],
+  [
+    "Header room",
+    "In tables whose columns can't grow, size the columns so every header fits in all languages at the table's minimum width, counting the 20px at the table edges, so no word has to break. A label with an info or filter icon stays on one line.",
+  ],
   ["Phones", "Tables keep their minimum width and scroll sideways inside their card."],
 ];
 
@@ -492,7 +499,7 @@ const CHANGELOG: DocsChangelogEntry[] = [
       "Rows without stripes: a hairline between rows and under the header.",
       "A highlighted row hides the lines next to it and stays highlighted while its tooltip is open.",
       "Rows are at least 52px with 8px above and below; second lines take 16px, so two-line rows stay 52px. Position rows are 72px.",
-      "Table text is 14px on a 20px line; header labels are 12px and stay on one line.",
+      "Table text is 14px on a 20px line; header labels are 12px. In tables whose columns can't grow, a long label takes a second line instead of running into the next column.",
       "Token icons in pool and market rows are 36px.",
       "Tables with pages keep the same columns on every page.",
       "The tooltip dotted line is 60% of its text colour and starts at the text. The $ sign takes the colour of its number.",

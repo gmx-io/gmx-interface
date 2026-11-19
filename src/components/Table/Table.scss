@@ -111,3 +111,24 @@ table:has(
   font-size: 1.2rem;
   line-height: 1.6rem;
 }
+
+// Tables with fixed column widths (table-fixed) can't widen a column for its header: a label that doesn't fit wraps onto
+// a second line instead of running into the next column, and a single word too long for its column breaks as a last
+// resort. Other tables keep one-line headers: their columns grow to fit.
+.table-fixed .TableTh {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+// A sortable label that wraps keeps its sort icon right after its last word, not at the far edge of the column. Every
+// line keeps room for the icon at its end, so the icon never drops onto a line of its own.
+.table-fixed .TableTh .Sorter {
+  display: inline-block;
+  padding-right: 1.2rem;
+
+  > svg {
+    display: inline-block;
+    margin-right: -1.2rem;
+    vertical-align: top;
+  }
+}
