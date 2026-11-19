@@ -229,7 +229,6 @@ export function OrdersModal({
             batchParams,
             globalExpressParams,
             requireValidations: false,
-            estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
             subaccount,

@@ -103,7 +103,6 @@ export function DynamicLines({
           batchParams,
           globalExpressParams,
           requireValidations: false,
-          estimationMethod: "approximate",
           provider,
           isGmxAccount: srcChainId !== undefined,
           subaccount,

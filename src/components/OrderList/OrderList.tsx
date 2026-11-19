@@ -190,7 +190,6 @@ export function OrderList({
         batchParams,
         requireValidations: false,
         globalExpressParams,
-        estimationMethod: "approximate",
         provider,
         isGmxAccount: srcChainId !== undefined,
         subaccount,
