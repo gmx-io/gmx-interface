@@ -22,8 +22,14 @@ export type FeeBalanceDecision = {
   payer: "own" | "other" | undefined;
 };
 
+export type FeeBalancePayability = "can" | "cannot" | "unknown";
+
 export function getIsGmxAccountOrder(order: Pick<Order, "srcChainId">): boolean {
   return order.srcChainId !== 0n;
+}
+
+export function getIsGmxAccountPosition(positionLastSrcChainId: bigint | undefined): boolean {
+  return positionLastSrcChainId !== undefined && positionLastSrcChainId !== 0n;
 }
 
 export function getIsPositionActionGmxAccount({
@@ -39,7 +45,7 @@ export function getIsPositionActionGmxAccount({
     return true;
   }
 
-  return isExpressEnabled && positionLastSrcChainId !== undefined && positionLastSrcChainId !== 0n;
+  return isExpressEnabled && getIsGmxAccountPosition(positionLastSrcChainId);
 }
 
 export function getOrdersActionFeeBalance({
@@ -61,7 +67,7 @@ export function getOrdersActionFeeBalance({
   };
 }
 
-export function getCanBalancePayExpressFee({
+export function getFeeBalancePayability({
   isGmxAccount,
   expressParams,
   tokensData,
@@ -69,24 +75,30 @@ export function getCanBalancePayExpressFee({
   isGmxAccount: boolean;
   expressParams: ExpressTxnParams | undefined;
   tokensData: TokensData | undefined;
-}): boolean {
+}): FeeBalancePayability {
   if (expressParams && getIsValidExpressParams(expressParams)) {
-    return true;
+    return "can";
+  }
+
+  if (expressParams && !expressParams.gasPaymentValidations.isGasPaymentTokenBalanceLoaded) {
+    return "unknown";
   }
 
   if (isGmxAccount) {
-    return false;
+    return "cannot";
   }
 
   const nativeTokenBalance = getByKey(tokensData, zeroAddress)?.walletBalance;
 
   if (nativeTokenBalance === undefined) {
-    return true;
+    return "unknown";
   }
 
-  return expressParams
+  const canPayClassic = expressParams
     ? nativeTokenBalance >= expressParams.gasPaymentParams.totalRelayerFeeTokenAmount
     : nativeTokenBalance > 0n;
+
+  return canPayClassic ? "can" : "cannot";
 }
 
 export function getFeeBalanceDecision({
@@ -106,24 +118,31 @@ export function getFeeBalanceDecision({
     return { shouldEstimateOtherBalance: false, payer: undefined };
   }
 
-  if (
-    !canUseOtherBalance ||
-    getCanBalancePayExpressFee({ isGmxAccount, expressParams: own.expressParams, tokensData })
-  ) {
+  if (!canUseOtherBalance) {
     return { shouldEstimateOtherBalance: false, payer: "own" };
+  }
+
+  const ownPayability = getFeeBalancePayability({ isGmxAccount, expressParams: own.expressParams, tokensData });
+
+  if (ownPayability !== "cannot") {
+    return { shouldEstimateOtherBalance: false, payer: ownPayability === "can" ? "own" : undefined };
   }
 
   if (!other?.isSettled) {
     return { shouldEstimateOtherBalance: true, payer: undefined };
   }
 
-  const canOtherPay = getCanBalancePayExpressFee({
+  const otherPayability = getFeeBalancePayability({
     isGmxAccount: !isGmxAccount,
     expressParams: other.expressParams,
     tokensData,
   });
 
-  return { shouldEstimateOtherBalance: true, payer: canOtherPay ? "other" : "own" };
+  if (otherPayability === "unknown") {
+    return { shouldEstimateOtherBalance: true, payer: undefined };
+  }
+
+  return { shouldEstimateOtherBalance: true, payer: otherPayability === "can" ? "other" : "own" };
 }
 
 export async function estimateWithOtherFeeBalanceFallback({

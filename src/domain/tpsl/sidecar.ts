@@ -1,5 +1,6 @@
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { getIsGmxAccountOrder } from "domain/synthetics/express/feeBalance";
 import type { MarketInfo } from "domain/synthetics/markets";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
@@ -303,6 +304,8 @@ export function buildTpSlBatchPayloads(p: {
   indexTokenAddress: string | undefined;
   collateralTokenAddress: string | undefined;
   isLong: boolean | undefined;
+  isGmxAccount: boolean;
+  isGmxAccountPosition: boolean;
   entries: TpSlPayloadEntry[];
   userReferralCode: string | undefined;
 }): {
@@ -320,9 +323,11 @@ export function buildTpSlBatchPayloads(p: {
     if (replacesExisting && entry.amounts && entry.existingFullCloseOrder) {
       const order = entry.existingFullCloseOrder;
       const nextSwapType = entry.amounts.decreaseSwapType ?? DecreasePositionSwapType.NoSwap;
+      const movesPayoutToPositionBalance =
+        getIsGmxAccountOrder(order) !== p.isGmxAccountPosition && p.isGmxAccount === p.isGmxAccountPosition;
 
       // updateOrder before 2.2.1 can't change decreasePositionSwapType, so cancel + recreate when it differs.
-      if (nextSwapType === order.decreasePositionSwapType) {
+      if (nextSwapType === order.decreasePositionSwapType && !movesPayoutToPositionBalance) {
         updateOrderParams.push(
           buildUpdateOrderPayload({
             chainId: p.chainId as any,

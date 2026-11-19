@@ -17,7 +17,15 @@ type Balance = "gmxAccount" | "wallet";
 const ONE_ETH = 10n ** 18n;
 const RELAYER_FEE = ONE_ETH / 10_000n;
 
-function makeExpressParams({ isGmxAccount, canPay }: { isGmxAccount: boolean; canPay: boolean }) {
+function makeExpressParams({
+  isGmxAccount,
+  canPay,
+  isBalanceLoaded = true,
+}: {
+  isGmxAccount: boolean;
+  canPay: boolean;
+  isBalanceLoaded?: boolean;
+}) {
   return {
     isGmxAccount,
     gasPaymentParams: { totalRelayerFeeTokenAmount: RELAYER_FEE },
@@ -25,7 +33,7 @@ function makeExpressParams({ isGmxAccount, canPay }: { isGmxAccount: boolean; ca
       isValid: canPay,
       isOutGasTokenBalance: !canPay,
       needGasPaymentTokenApproval: false,
-      isGasPaymentTokenBalanceLoaded: true,
+      isGasPaymentTokenBalanceLoaded: isBalanceLoaded,
     },
   } as unknown as ExpressTxnParams;
 }
@@ -62,7 +70,13 @@ describe("fee balance of position and order actions TRD-44", () => {
       isGmxAccount: true,
       canUseOtherBalance: true,
     },
-    { srcChainId: undefined, isExpressEnabled: true, orderSrcChainIds: [0n], isGmxAccount: false, canUseOtherBalance: true },
+    {
+      srcChainId: undefined,
+      isExpressEnabled: true,
+      orderSrcChainIds: [0n],
+      isGmxAccount: false,
+      canUseOtherBalance: true,
+    },
     {
       srcChainId: undefined,
       isExpressEnabled: true,
@@ -100,6 +114,7 @@ describe("fee balance of position and order actions TRD-44", () => {
   const SETTLED_CANNOT = { canPay: false, isSettled: true };
   const PENDING = { canPay: false, isSettled: false };
   const MISSING = { canPay: undefined, isSettled: true };
+  const NOT_LOADED = { canPay: false, isSettled: true, isBalanceLoaded: false };
 
   it.each([
     { own: "gmxAccount", gmx: SETTLED_CAN, wallet: SETTLED_CAN, walletEth: 0n, canUseOther: true, payer: "own" },
@@ -118,10 +133,40 @@ describe("fee balance of position and order actions TRD-44", () => {
     { own: "gmxAccount", gmx: SETTLED_CANNOT, wallet: SETTLED_CAN, walletEth: 0n, canUseOther: false, payer: "own" },
     { own: "gmxAccount", gmx: SETTLED_CANNOT, wallet: PENDING, walletEth: 0n, canUseOther: true, payer: undefined },
     { own: "gmxAccount", gmx: PENDING, wallet: SETTLED_CAN, walletEth: 0n, canUseOther: true, payer: undefined },
+    {
+      own: "gmxAccount",
+      gmx: NOT_LOADED,
+      wallet: SETTLED_CAN,
+      walletEth: ONE_ETH,
+      canUseOther: true,
+      payer: undefined,
+    },
+    {
+      own: "gmxAccount",
+      gmx: SETTLED_CANNOT,
+      wallet: NOT_LOADED,
+      walletEth: ONE_ETH,
+      canUseOther: true,
+      payer: undefined,
+    },
     { own: "wallet", gmx: SETTLED_CAN, wallet: SETTLED_CANNOT, walletEth: ONE_ETH, canUseOther: true, payer: "own" },
-    { own: "wallet", gmx: SETTLED_CAN, wallet: SETTLED_CANNOT, walletEth: RELAYER_FEE, canUseOther: true, payer: "own" },
+    {
+      own: "wallet",
+      gmx: SETTLED_CAN,
+      wallet: SETTLED_CANNOT,
+      walletEth: RELAYER_FEE,
+      canUseOther: true,
+      payer: "own",
+    },
     { own: "wallet", gmx: SETTLED_CAN, wallet: SETTLED_CANNOT, walletEth: 1n, canUseOther: true, payer: "other" },
-    { own: "wallet", gmx: SETTLED_CAN, wallet: SETTLED_CANNOT, walletEth: undefined, canUseOther: true, payer: "own" },
+    {
+      own: "wallet",
+      gmx: SETTLED_CAN,
+      wallet: SETTLED_CANNOT,
+      walletEth: undefined,
+      canUseOther: true,
+      payer: undefined,
+    },
     { own: "wallet", gmx: SETTLED_CAN, wallet: SETTLED_CANNOT, walletEth: 0n, canUseOther: true, payer: "other" },
     { own: "wallet", gmx: SETTLED_CAN, wallet: MISSING, walletEth: 0n, canUseOther: true, payer: "other" },
     { own: "wallet", gmx: SETTLED_CANNOT, wallet: SETTLED_CANNOT, walletEth: 0n, canUseOther: true, payer: "own" },
@@ -129,12 +174,19 @@ describe("fee balance of position and order actions TRD-44", () => {
     "the $own balance pays its own action and the other balance only when it cannot: payer $payer (GMX Account $gmx.canPay, wallet Express $wallet.canPay, wallet ETH $walletEth)",
     ({ own, gmx, wallet, walletEth, canUseOther, payer }) => {
       const isGmxAccount = own === "gmxAccount";
-      const toEstimate = (estimate: typeof SETTLED_CAN | typeof MISSING, isGmxAccountEstimate: boolean) => ({
+      const toEstimate = (
+        estimate: { canPay: boolean | undefined; isSettled: boolean; isBalanceLoaded?: boolean },
+        isGmxAccountEstimate: boolean
+      ) => ({
         isSettled: estimate.isSettled,
         expressParams:
           estimate.canPay === undefined
             ? undefined
-            : makeExpressParams({ isGmxAccount: isGmxAccountEstimate, canPay: estimate.canPay }),
+            : makeExpressParams({
+                isGmxAccount: isGmxAccountEstimate,
+                canPay: estimate.canPay,
+                isBalanceLoaded: estimate.isBalanceLoaded,
+              }),
       });
 
       const decision = getFeeBalanceDecision({
@@ -152,6 +204,7 @@ describe("fee balance of position and order actions TRD-44", () => {
   it.each<{
     own: Balance;
     gmxCanPay: boolean;
+    gmxBalanceLoaded?: boolean;
     walletCanPay: boolean;
     canUseOther: boolean;
     payer: Balance;
@@ -197,11 +250,20 @@ describe("fee balance of position and order actions TRD-44", () => {
       payer: "gmxAccount",
       estimated: ["wallet", "gmxAccount"],
     },
+    {
+      own: "gmxAccount",
+      gmxCanPay: false,
+      gmxBalanceLoaded: false,
+      walletCanPay: true,
+      canUseOther: true,
+      payer: "gmxAccount",
+      estimated: ["gmxAccount"],
+    },
   ])(
     "a cancel of $own orders is paid by $payer (GMX Account can pay $gmxCanPay, wallet can pay $walletCanPay, other balance allowed $canUseOther)",
-    async ({ own, gmxCanPay, walletCanPay, canUseOther, payer, estimated }) => {
+    async ({ own, gmxCanPay, gmxBalanceLoaded, walletCanPay, canUseOther, payer, estimated }) => {
       const paramsByBalance: Record<Balance, ExpressTxnParams> = {
-        gmxAccount: makeExpressParams({ isGmxAccount: true, canPay: gmxCanPay }),
+        gmxAccount: makeExpressParams({ isGmxAccount: true, canPay: gmxCanPay, isBalanceLoaded: gmxBalanceLoaded }),
         wallet: makeExpressParams({ isGmxAccount: false, canPay: walletCanPay }),
       };
       const estimatedBalances: Balance[] = [];

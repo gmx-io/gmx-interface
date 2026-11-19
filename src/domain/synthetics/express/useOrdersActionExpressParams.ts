@@ -2,10 +2,12 @@ import type { Provider } from "ethers";
 import { useCallback } from "react";
 
 import {
+  makeSelectExpressGlobalParamsForGasPaymentToken,
   selectGmxAccountExpressGlobalParams,
   selectGmxAccountGasPaymentToken,
   selectSettlementChainExpressGlobalParams,
   selectSettlementChainGasPaymentToken,
+  selectUnavailableGasPaymentTokenAddresses,
   selectUnavailableGasPaymentTokens,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
@@ -20,7 +22,7 @@ import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/uti
 import type { TokenData } from "domain/tokens";
 import type { WalletSigner } from "lib/wallets";
 import type { Order } from "sdk/utils/orders/types";
-import { BatchOrderTxnParams, getIsEmptyBatch } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount, getIsEmptyBatch } from "sdk/utils/orderTransactions";
 
 import {
   estimateWithOtherFeeBalanceFallback,
@@ -29,6 +31,8 @@ import {
   getFeeBalanceDecision,
   getOrdersActionFeeBalance,
 } from "./feeBalance";
+import { estimateWithGmxAccountGasPaymentTokenFallback } from "./gasPaymentTokenFallback";
+import type { GlobalExpressParams } from "./types";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "./useGasPaymentTokenFallback";
 import { ExpressOrdersParamsResult, useExpressOrdersParams } from "./useRelayerFeeHandler";
 
@@ -67,18 +71,33 @@ export function useEstimateOrdersActionExpressParams() {
             return undefined;
           }
 
-          return estimateExpressParams({
-            signer,
+          const estimateWith = (nextGlobalExpressParams: GlobalExpressParams | undefined) =>
+            estimateExpressParams({
+              signer,
+              chainId,
+              batchParams,
+              globalExpressParams: nextGlobalExpressParams,
+              requireValidations: false,
+              estimationMethod: "approximate",
+              provider,
+              isGmxAccount,
+              subaccount: calcSelector(
+                isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+              ),
+            });
+
+          if (!isGmxAccount) {
+            return estimateWith(globalExpressParams);
+          }
+
+          return estimateWithGmxAccountGasPaymentTokenFallback({
             chainId,
-            batchParams,
             globalExpressParams,
-            requireValidations: false,
-            estimationMethod: "approximate",
-            provider,
-            isGmxAccount,
-            subaccount: calcSelector(
-              isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
-            ),
+            payAmounts: getBatchTotalPayCollateralAmount(batchParams),
+            estimate: estimateWith,
+            getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress) =>
+              calcSelector(makeSelectExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)),
+            unavailableTokenAddresses: calcSelector(selectUnavailableGasPaymentTokenAddresses),
           });
         },
       });
@@ -135,7 +154,7 @@ export function useOrdersActionExpressParams({
     orderParams: shouldEstimateOtherBalance ? orderParams : undefined,
     label,
     isGmxAccount: !isGmxAccount,
-    canSwitchGasPaymentToken: false,
+    canSwitchGasPaymentToken: canSwitchGasPaymentToken && !isGmxAccount,
     gasPaymentTokenFallback: "approvedToken",
   });
 
@@ -151,8 +170,14 @@ export function useOrdersActionExpressParams({
     return { ...otherBalanceResult, isGmxAccount: !isGmxAccount };
   }
 
-  if (payer === undefined && shouldEstimateOtherBalance) {
-    return { ...ownBalanceResult, isGmxAccount, isLoading: true, isMultichainSubmitDisabled: true };
+  if (payer === undefined && own.isSettled) {
+    return {
+      ...ownBalanceResult,
+      expressParams: undefined,
+      isGmxAccount,
+      isLoading: true,
+      isMultichainSubmitDisabled: true,
+    };
   }
 
   return { ...ownBalanceResult, isGmxAccount };

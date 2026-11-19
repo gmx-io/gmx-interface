@@ -32,12 +32,13 @@ function makeExpressParams(overrides: {
   isGmxAccount: boolean;
   isOutGasTokenBalance: boolean;
   needGasPaymentTokenApproval?: boolean;
+  isBalanceLoaded?: boolean;
 }): ExpressTxnParams {
   return {
     chainId: ARBITRUM,
     isGmxAccount: overrides.isGmxAccount,
     gasPaymentValidations: {
-      isGasPaymentTokenBalanceLoaded: true,
+      isGasPaymentTokenBalanceLoaded: overrides.isBalanceLoaded ?? true,
       isOutGasTokenBalance: overrides.isOutGasTokenBalance,
       needGasPaymentTokenApproval: overrides.needGasPaymentTokenApproval ?? false,
       isValid: !overrides.isOutGasTokenBalance && !overrides.needGasPaymentTokenApproval,
@@ -211,6 +212,23 @@ describe("reportMultichainExpressSubmitError", () => {
     expect(options.tradingErrorInfo.errorData.gasPaymentValidations).toBe(expressParams.gasPaymentValidations);
 
     expect(mocks.metric).toHaveBeenCalledWith("position:test");
+  });
+
+  it("says the network fee is unavailable, in a closing toast, while the GMX Account gas token balance is not loaded TRD-44", () => {
+    expect(
+      reportMultichainExpressSubmitError({
+        isGmxAccount: true,
+        expressParams: makeExpressParams({ isGmxAccount: true, isOutGasTokenBalance: true, isBalanceLoaded: false }),
+        tokensData: undefined,
+        actionName: "Cancel Order",
+      })
+    ).toBe(true);
+
+    expect(mocks.toastError).toHaveBeenCalledTimes(1);
+    const [content, options] = mocks.toastError.mock.calls[0];
+
+    expect(content).toBe("Network fee unavailable");
+    expect(options.autoClose).not.toBe(false);
   });
 
   it("falls back to the Express-unavailable text when there are no express params at all", () => {

@@ -549,6 +549,10 @@ export function OrderEditor(p: Props) {
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
 
   const networkFee = useMemo(() => {
+    if (isMultichainSubmitDisabled) {
+      return undefined;
+    }
+
     const gasPaymentParams = getNetworkFeeGasPaymentParams({
       expressParams,
       tokensData,
@@ -569,7 +573,7 @@ export function OrderEditor(p: Props) {
     }
 
     return additionalExecutionFee;
-  }, [additionalExecutionFee, expressParams, tokensData]);
+  }, [additionalExecutionFee, expressParams, isMultichainSubmitDisabled, tokensData]);
 
   const error = useMemo(() => {
     if (isSubmitting) {
