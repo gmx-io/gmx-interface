@@ -1,7 +1,6 @@
 import IconDiscord from "img/social/ic_discord_new.svg?react";
 import IconGithub from "img/social/ic_github_new.svg?react";
 import IconSubstack from "img/social/ic_substack_new.svg?react";
-import IconTelegram from "img/social/ic_telegram_new.svg?react";
 import IconX from "img/social/ic_x_new.svg?react";
 
 export const SOCIAL_MAP = {
@@ -11,14 +10,6 @@ export const SOCIAL_MAP = {
     IconComponent: IconDiscord,
     onClick: () => {
       window.open("https://discord.gg/H5PeQru3Aa", "_blank");
-    },
-  },
-  Telegram: {
-    link: "https://t.me/GMX_IO",
-    name: "Telegram",
-    IconComponent: IconTelegram,
-    onClick: () => {
-      window.open("https://t.me/GMX_IO", "_blank");
     },
   },
   Substack: {

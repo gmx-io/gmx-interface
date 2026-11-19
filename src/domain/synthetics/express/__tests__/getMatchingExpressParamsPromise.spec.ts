@@ -1,11 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import type { ExpressTxnParams } from "domain/synthetics/express";
+import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { getMatchingExpressParamsPromise } from "../useRelayerFeeHandler";
 
+const NO_EXTERNAL_CALLS = getEmptyExternalCallsPayload();
+
 function makeExpressParams(isGmxAccount: boolean): ExpressTxnParams {
-  return { isGmxAccount } as ExpressTxnParams;
+  return { isGmxAccount, relayParamsPayload: { externalCalls: NO_EXTERNAL_CALLS } } as ExpressTxnParams;
 }
 
 describe("getMatchingExpressParamsPromise", () => {
@@ -19,6 +22,7 @@ describe("getMatchingExpressParamsPromise", () => {
         asyncExpressPromise: Promise.resolve(staleAsyncParams),
         isAsyncEnabled: false,
         isGmxAccount: false,
+        batchExternalCalls: NO_EXTERNAL_CALLS,
       })
     ).resolves.toBeUndefined();
   });
@@ -33,6 +37,7 @@ describe("getMatchingExpressParamsPromise", () => {
         asyncExpressPromise: new Promise((resolve) => setTimeout(() => resolve(sameSourceParams), 10)),
         isAsyncEnabled: true,
         isGmxAccount: false,
+        batchExternalCalls: NO_EXTERNAL_CALLS,
       })
     ).resolves.toBe(sameSourceParams);
   });
@@ -47,6 +52,7 @@ describe("getMatchingExpressParamsPromise", () => {
         asyncExpressPromise: new Promise((resolve) => setTimeout(() => resolve(asyncParams), 10)),
         isAsyncEnabled: true,
         isGmxAccount: true,
+        batchExternalCalls: NO_EXTERNAL_CALLS,
       })
     ).resolves.toBe(fastParams);
   });
@@ -58,6 +64,7 @@ describe("getMatchingExpressParamsPromise", () => {
         asyncExpressPromise: Promise.resolve(makeExpressParams(true)),
         isAsyncEnabled: true,
         isGmxAccount: false,
+        batchExternalCalls: NO_EXTERNAL_CALLS,
       })
     ).resolves.toBeUndefined();
   });
