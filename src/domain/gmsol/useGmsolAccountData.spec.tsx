@@ -14,6 +14,7 @@ import {
 } from "./useGmsolAccountData";
 
 const source = vi.hoisted(() => ({
+  wait: undefined as Promise<void> | undefined,
   slot: 1,
   orders: [{ key: "order-before" }],
   positions: [{ key: "position-before" }],
@@ -32,6 +33,7 @@ vi.mock("sdk/clients/v2", () => ({
           minContextSlot?: number;
           onResponse: (metadata: { slot: number }) => void;
         }) => {
+          await source.wait;
           source.requests.push({ kind: "orders", minContextSlot });
           if (source.error) throw source.error;
           onResponse({ slot: source.slot });
@@ -44,6 +46,7 @@ vi.mock("sdk/clients/v2", () => ({
           minContextSlot?: number;
           onResponse: (metadata: { slot: number }) => void;
         }) => {
+          await source.wait;
           source.requests.push({ kind: "positions", minContextSlot });
           if (source.error) throw source.error;
           onResponse({ slot: source.slot });
@@ -57,6 +60,7 @@ vi.mock("sdk/clients/v2", () => ({
 let ownerIndex = 0;
 
 beforeEach(() => {
+  source.wait = undefined;
   source.slot = 1;
   source.orders = [{ key: "order-before" }];
   source.positions = [{ key: "position-before" }];
@@ -95,6 +99,39 @@ async function mountAccount() {
 }
 
 describe("confirmed transaction account refresh", () => {
+  it("keeps cached data without a failure warning while syncing, but reports actual failures TRD-72", async () => {
+    for (const failure of [undefined, new Error("Snapshot service unavailable")]) {
+      source.slot = 1;
+      const { owner, result } = await mountAccount();
+      let release!: () => void;
+      source.wait = new Promise<void>((resolve) => {
+        release = resolve;
+      });
+      source.error = failure;
+      source.slot = 2;
+      let refresh!: Promise<unknown>;
+      act(() => {
+        refresh = refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2).catch((error) => error);
+      });
+      for (const account of [result.current.orders, result.current.positions]) {
+        expect(account.isSyncing).toBe(true);
+        expect(account.error).toBeUndefined();
+        expect(account.data).toBeDefined();
+      }
+      await act(async () => {
+        release();
+        await refresh;
+      });
+      for (const account of [result.current.orders, result.current.positions]) {
+        expect(account.isSyncing).toBe(Boolean(failure));
+        expect(account.error).toBe(failure);
+      }
+      source.wait = undefined;
+      source.error = undefined;
+      cleanup();
+    }
+  });
+
   it("keeps the highest confirmation floor through failed refreshes until polling catches up FESOL-56", async () => {
     const { owner, result } = await mountAccount();
     source.error = new Error("Snapshot service unavailable");
