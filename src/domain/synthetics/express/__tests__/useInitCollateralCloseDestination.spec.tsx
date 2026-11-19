@@ -6,16 +6,20 @@ import { getCollateralCloseDestinationKey } from "config/localStorage";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
+import { AccountType } from "lib/wallets/useAccountType";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { useInitCollateralCloseDestination } from "../useInitCollateralCloseDestination";
 
-const ACCOUNT_A = "0x1234567890AbcdEF1234567890aBcdef12345678";
-const ACCOUNT_B = "0xAbCdEf1234567890aBcDeF1234567890AbCdEf12";
+const ACCOUNT = "0x1234567890AbcdEF1234567890aBcdef12345678";
+const PREVIOUS_ACCOUNT = "0xAbCdEf1234567890aBcDeF1234567890AbCdEf12";
 
 const mocks = vi.hoisted(() => ({
   chainId: 42161,
-  account: "",
+  account: undefined as string | undefined,
+  accountType: undefined as AccountType | undefined,
+  staleAccountTypeRenders: 0,
+  canSignTypedData: true,
   tokensData: undefined as TokensData | undefined,
   isGmxAccountBalancesLoaded: false,
 }));
@@ -30,11 +34,21 @@ vi.mock("lib/wallets/useWallet", () => ({
 
 vi.mock("lib/wallets/useAccountType", async (importOriginal) => {
   const original = await importOriginal<typeof import("lib/wallets/useAccountType")>();
-  return { ...original, useAccountType: () => ({ accountType: original.AccountType.EOA, isLoading: false }) };
+  return {
+    ...original,
+    // like SWR right after its key changes on a mounted hook: no data and not loading
+    useAccountType: () => {
+      if (mocks.staleAccountTypeRenders > 0) {
+        mocks.staleAccountTypeRenders--;
+        return { accountType: undefined, isLoading: false };
+      }
+      return { accountType: mocks.accountType, isLoading: false };
+    },
+  };
 });
 
 vi.mock("lib/wallets/useWalletSessionChains", () => ({
-  useWalletCanSignTypedData: () => ({ canSignTypedData: true, isLoading: false }),
+  useWalletCanSignTypedData: () => ({ canSignTypedData: mocks.canSignTypedData, isLoading: false }),
 }));
 
 // same storage hook and key as SettingsContextProvider, so a switch reproduces its one-render stale value
@@ -52,26 +66,20 @@ vi.mock("context/SettingsContext/SettingsContextProvider", async () => {
 });
 
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
-const LINK = getTokenBySymbol(ARBITRUM, "LINK");
 
-function setGmxAccountBalances(balances: { usdc?: bigint; link?: bigint } | undefined) {
-  mocks.isGmxAccountBalancesLoaded = balances !== undefined;
+function setGmxAccountUsdc(usdc: bigint | undefined) {
+  mocks.isGmxAccountBalancesLoaded = usdc !== undefined;
   mocks.tokensData = {
-    [USDC.address]: {
-      ...USDC,
-      prices: { minPrice: 10n ** 30n, maxPrice: 10n ** 30n },
-      gmxAccountBalance: balances?.usdc,
-    },
-    [LINK.address]: {
-      ...LINK,
-      prices: { minPrice: 50n * 10n ** 30n, maxPrice: 50n * 10n ** 30n },
-      gmxAccountBalance: balances?.link,
-    },
+    [USDC.address]: { ...USDC, prices: { minPrice: 10n ** 30n, maxPrice: 10n ** 30n }, gmxAccountBalance: usdc },
   } as Record<string, TokenData>;
 }
 
-function getSaved(account: string) {
-  return localStorage.getItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, account)));
+function save(value: string, account = ACCOUNT) {
+  localStorage.setItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, account)), value);
+}
+
+function getSaved() {
+  return localStorage.getItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, ACCOUNT)));
 }
 
 function Harness() {
@@ -79,7 +87,6 @@ function Harness() {
   return null;
 }
 
-// real use-context-selector provider: a consumer re-rendering with it reads the previous value for one render
 function App() {
   const state = {
     globals: {
@@ -101,7 +108,10 @@ describe("useInitCollateralCloseDestination", () => {
   beforeEach(() => {
     localStorage.clear();
     mocks.chainId = ARBITRUM;
-    mocks.account = ACCOUNT_A;
+    mocks.account = ACCOUNT;
+    mocks.accountType = AccountType.EOA;
+    mocks.staleAccountTypeRenders = 0;
+    mocks.canSignTypedData = true;
   });
 
   afterEach(() => {
@@ -109,41 +119,62 @@ describe("useInitCollateralCloseDestination", () => {
   });
 
   it("keeps the saved wallet destination when someone credits the GMX Account TRD-19", () => {
-    localStorage.setItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, ACCOUNT_A)), "false");
-    setGmxAccountBalances({ usdc: 0n });
+    save("false");
+    setGmxAccountUsdc(0n);
     const { rerender } = render(<App />);
 
     for (const usdc of [1n, undefined, 1_000n * 10n ** 6n]) {
-      setGmxAccountBalances(usdc === undefined ? undefined : { usdc });
+      setGmxAccountUsdc(usdc);
       rerender(<App />);
-      expect(getSaved(ACCOUNT_A)).toBe("false");
+      expect(getSaved()).toBe("false");
     }
   });
 
-  it("keeps the saved destination when switching to Arbitrum from a chain without one TRD-19", () => {
-    localStorage.setItem(JSON.stringify(getCollateralCloseDestinationKey(ARBITRUM, ACCOUNT_A)), "false");
-    setGmxAccountBalances({ usdc: 1_000n * 10n ** 6n });
-    mocks.chainId = AVALANCHE;
-    const { rerender } = render(<App />);
+  it.each(["false", "true"])(
+    "keeps the saved destination %s when switching to Arbitrum from a chain without one TRD-19",
+    (saved) => {
+      save(saved);
+      setGmxAccountUsdc(1_000n * 10n ** 6n);
+      mocks.chainId = AVALANCHE;
+      const { rerender } = render(<App />);
 
-    mocks.chainId = ARBITRUM;
-    rerender(<App />);
+      mocks.chainId = ARBITRUM;
+      rerender(<App />);
 
-    expect(getSaved(ACCOUNT_A)).toBe("false");
-  });
+      expect(getSaved()).toBe(saved);
+    }
+  );
 
-  it("picks a newly connected account's default from its own gas-token balance TRD-19", () => {
-    setGmxAccountBalances({ usdc: 1_000n * 10n ** 6n });
-    const { rerender } = render(<App />);
-    expect(getSaved(ACCOUNT_A)).toBe("true");
+  it.each([
+    { accountType: AccountType.EOA, canSignTypedData: true, saved: null, expected: "false" },
+    { accountType: AccountType.PostEip7702EOA, canSignTypedData: true, saved: null, expected: "false" },
+    { accountType: undefined, canSignTypedData: true, saved: null, expected: null },
+    { accountType: AccountType.SmartAccount, canSignTypedData: true, saved: null, expected: "true" },
+    { accountType: AccountType.SmartAccount, canSignTypedData: false, saved: null, expected: "false" },
+    { accountType: AccountType.SmartAccount, canSignTypedData: true, saved: "false", expected: "false" },
+  ])(
+    "defaults only a smart wallet to the GMX Account whatever it holds, also after a reconnect: %o TRD-19",
+    ({ accountType, canSignTypedData, saved, expected }) => {
+      save("false", PREVIOUS_ACCOUNT);
+      if (saved !== null) {
+        save(saved);
+      }
+      mocks.account = PREVIOUS_ACCOUNT;
+      setGmxAccountUsdc(undefined);
+      const { rerender } = render(<App />);
 
-    mocks.account = ACCOUNT_B;
-    setGmxAccountBalances(undefined);
-    rerender(<App />);
-    expect(getSaved(ACCOUNT_B)).toBe(null);
+      mocks.account = undefined;
+      rerender(<App />);
 
-    setGmxAccountBalances({ usdc: 0n, link: 10n * 10n ** 18n });
-    rerender(<App />);
-    expect(getSaved(ACCOUNT_B)).toBe("false");
-  });
+      mocks.account = ACCOUNT;
+      mocks.accountType = accountType;
+      mocks.canSignTypedData = canSignTypedData;
+      mocks.staleAccountTypeRenders = 1;
+      setGmxAccountUsdc(1_000n * 10n ** 6n);
+      rerender(<App />);
+      rerender(<App />);
+
+      expect(getSaved()).toBe(expected);
+    }
+  );
 });
