@@ -1,7 +1,7 @@
 import { decodeAbiParameters, decodeFunctionData, getAddress, zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { abis } from "abis";
+import { getAbi } from "abis/getAbi";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { CHAIN_ID_TO_ENDPOINT_ID } from "configs/multichain";
@@ -20,7 +20,10 @@ const VAULT_ARBITRUM = getContract(ARBITRUM, "MultichainVault");
 const WETH_ARBITRUM = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
 
 function decodeMulticall(data: string): string[] {
-  const { args } = decodeFunctionData({ abi: abis.MultichainTransferRouter, data: data as `0x${string}` });
+  const { args } = decodeFunctionData({
+    abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
+    data: data as `0x${string}`,
+  });
   return args![0] as string[];
 }
 
@@ -40,14 +43,14 @@ describe("multichain api: buildSameChainDepositTxn", () => {
     expect(inner).toHaveLength(2);
 
     const sendTokensDecoded = decodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
       data: inner[0] as `0x${string}`,
     });
     expect(sendTokensDecoded.functionName).toBe("sendTokens");
     expect(sendTokensDecoded.args).toEqual([getAddress(USDC_ARBITRUM), getAddress(VAULT_ARBITRUM), 1_000_000n]);
 
     const bridgeInDecoded = decodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
       data: inner[1] as `0x${string}`,
     });
     expect(bridgeInDecoded.functionName).toBe("bridgeIn");
@@ -68,14 +71,14 @@ describe("multichain api: buildSameChainDepositTxn", () => {
     expect(inner).toHaveLength(2);
 
     const sendWntDecoded = decodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
       data: inner[0] as `0x${string}`,
     });
     expect(sendWntDecoded.functionName).toBe("sendWnt");
     expect(sendWntDecoded.args).toEqual([getAddress(VAULT_ARBITRUM), 10n ** 18n]);
 
     const bridgeInDecoded = decodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
       data: inner[1] as `0x${string}`,
     });
     expect(bridgeInDecoded.functionName).toBe("bridgeIn");
@@ -111,7 +114,7 @@ describe("multichain api: same-chain withdraw helpers", () => {
     expect(result.value).toBe(0n);
 
     const decoded = decodeFunctionData({
-      abi: abis.MultichainTransferRouter,
+      abi: getAbi(ARBITRUM, "MultichainTransferRouter"),
       data: result.data as `0x${string}`,
     });
     expect(decoded.functionName).toBe("transferOut");
@@ -122,6 +125,7 @@ describe("multichain api: same-chain withdraw helpers", () => {
         minAmountOut: 500_000n,
         data: "0x",
         provider: zeroAddress,
+        bridgeFee: { feeToken: zeroAddress, feeAmount: 0n, feeSwapPath: [], minOutputAmount: 0n },
       },
     ]);
   });

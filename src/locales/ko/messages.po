@@ -551,6 +551,10 @@ msgstr "이 요율 신청하기"
 msgid "position size"
 msgstr "포지션 규모"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "출금 확인"
@@ -1232,10 +1236,6 @@ msgstr "만료된 Market Decrease"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오</0>"
 
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "이 주소로는 <0>{chainName} 호환 자산</0>만 보내십시오!"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -1272,6 +1272,10 @@ msgstr "볼트 및 풀의 TVL"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "Solana의 GMX"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1395,6 +1399,10 @@ msgstr "입금 완료"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "익절매 수정: {suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1673,7 +1681,6 @@ msgstr "날짜"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -2645,6 +2652,10 @@ msgstr "GMX 잔액"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>수수료는 작업이 사용하는 잔액에서 Gas 결제 토큰으로 지불됩니다."
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "예상 {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "GMX에서."
@@ -3293,6 +3304,10 @@ msgstr "커뮤니티가 이끌어 갑니다"
 msgid "Choose:"
 msgstr "다음 중 선택하십시오:"
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "GMX 및 esGMX 언스테이킹"
@@ -3346,6 +3361,10 @@ msgstr "순위"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -4297,6 +4316,10 @@ msgstr "지갑에서 거래"
 msgid "Deposit USD capacity"
 msgstr "입금 USD 한도"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "{endDate}까지: {apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -4361,6 +4384,7 @@ msgstr "수수료 계수"
 msgid "Funding factor"
 msgstr "펀딩 계수"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4477,6 +4501,10 @@ msgstr "수수료 (스왑 포함)"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "지수 (양수)"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "거래소나 지갑에서 보낼 때는 <0>{chainName} 네트워크</0>를 선택하십시오. 다른 네트워크로 보낸 자금은 묶일 수 있습니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -4726,6 +4754,10 @@ msgstr "워커 스레드"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Cheaper option for your amount"
 msgstr "이 금액에 더 저렴한 옵션"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "바이백 곧 제공 예정"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5799,6 +5831,10 @@ msgstr "출금 금액 입력"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "활성 주문"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "출시 부스트 일정"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -7380,7 +7416,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "Limit Increase 수정: {suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "열려 있는 주문이 없습니다"
 
@@ -7425,6 +7460,10 @@ msgstr "결과 포지션이 최대 허용 레버리지를 초과하여 이 주�
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "더 보기"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GT는 Solana 기반 GMX의 포인트입니다. GMX는 Solana 프로토콜 수수료의 99%로 GT를 바이백합니다."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -7918,6 +7957,10 @@ msgstr "GMX 누적 거래량"
 msgid "Liquidation fee"
 msgstr "청산 수수료"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr "이 지갑은 아직 {0}에 배포되지 않았습니다. 이 작업과 함께 배포하려면 재서명하십시오"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "스왑 영향 지수"
@@ -8173,6 +8216,7 @@ msgstr "ParaSwap"
 msgid "Ensures available liquidity."
 msgstr "유동성 확보를 보장합니다."
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8478,6 +8522,7 @@ msgstr "{orderText} 업데이트 완료"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "현재 {fromSymbol}(으)로 네트워크 수수료를 지불할 수 없어, 지불이 가능해질 때까지 GMX Account 작업을 전송할 수 없습니다."
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8850,7 +8895,6 @@ msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on
 msgstr "추천 코드를 입력하여 거래 수수료 할인을 받으십시오.<0/> 추천 등급에 따라 모든<1/> 포지션 개설 및 종료 수수료를 최대 10%까지 절감할 수 있습니다."
 
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "열려 있는 포지션 없음"
@@ -9137,6 +9181,10 @@ msgstr "맞춤"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "수수료 및 가격 영향"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}: {apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -9778,10 +9826,6 @@ msgstr "수수료 차감 후 증거금이 적습니다. 추가로 입금하여 �
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받기"
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solana에서의 거래는 곧 지원될 예정입니다."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "최소 입금 금액: {0}"
@@ -10204,6 +10248,7 @@ msgstr "복사"
 msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
 msgstr "대신 거래하는 봇과 앱의 세션도 제거됩니다. 다시 승인할 때까지 작동하지 않습니다."
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10476,6 +10521,7 @@ msgstr "총 수령 펀딩"
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "최대 예약량 + JIT {directionLabel}"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -11391,6 +11437,10 @@ msgstr "대형 계정"
 msgid "Shift fee"
 msgstr "시프트 수수료"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "정상"
@@ -12079,6 +12129,10 @@ msgstr "발신자가 GLP 베스팅 볼트에서 모든 토큰을 출금했습니
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM 토큰을 보유하며 관련 시장 간 자동 리밸런싱을 수행합니다. 두 토큰 모두 수익을 자동으로 재투자합니다. 단일 시장 익스포저를 원하면 GM을, 여러 풀에 분산 투자하려면 GLV를 선택하십시오."
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12834,6 +12888,7 @@ msgid "Arrives"
 msgstr "도착"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "적립됨"
 
@@ -13046,10 +13101,6 @@ msgstr "자금은 안전합니다. 지원팀에 문의하십시오."
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "순가치"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "첫 8주: GLV 8% 이상, GM 풀 5%. 프로그램 TVL이 $100M을 초과하면 수익률이 희석됩니다. GMX와 함께하는 Arbitrum의 USDG 프로그램에서 자금을 지원합니다. 기간 1: {periodStart} – {periodEnd}."
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

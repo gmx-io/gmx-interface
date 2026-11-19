@@ -551,6 +551,10 @@ msgstr ""
 msgid "position size"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr ""
@@ -1232,10 +1236,6 @@ msgstr ""
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr ""
 
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -1271,6 +1271,10 @@ msgstr ""
 
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
+msgstr ""
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -1394,6 +1398,10 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
+msgstr ""
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -1673,7 +1681,6 @@ msgstr ""
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr ""
 
@@ -2645,6 +2652,10 @@ msgstr ""
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr ""
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr ""
@@ -3293,6 +3304,10 @@ msgstr ""
 msgid "Choose:"
 msgstr ""
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr ""
@@ -3345,6 +3360,10 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -4297,6 +4316,10 @@ msgstr ""
 msgid "Deposit USD capacity"
 msgstr ""
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr ""
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -4361,6 +4384,7 @@ msgstr ""
 msgid "Funding factor"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4476,6 +4500,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
+msgstr ""
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -4725,6 +4753,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Cheaper option for your amount"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
 msgstr ""
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
@@ -5798,6 +5830,10 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
+msgstr ""
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
 msgstr ""
 
 #: src/components/Errors/gasErrors.tsx
@@ -7380,7 +7416,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr ""
 
@@ -7424,6 +7459,10 @@ msgstr ""
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -7918,6 +7957,10 @@ msgstr ""
 msgid "Liquidation fee"
 msgstr ""
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr ""
@@ -8173,6 +8216,7 @@ msgstr ""
 msgid "Ensures available liquidity."
 msgstr ""
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8478,6 +8522,7 @@ msgstr ""
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr ""
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8850,7 +8895,6 @@ msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on
 msgstr ""
 
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr ""
@@ -9137,6 +9181,10 @@ msgstr ""
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "[!! Fees and impacts !!]"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -9778,10 +9826,6 @@ msgstr ""
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr ""
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr ""
@@ -10204,6 +10248,7 @@ msgstr ""
 msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10476,6 +10521,7 @@ msgstr ""
 msgid "Max reserved + JIT {directionLabel}"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -11391,6 +11437,10 @@ msgstr ""
 msgid "Shift fee"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr ""
@@ -12078,6 +12128,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
+msgstr ""
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12834,6 +12888,7 @@ msgid "Arrives"
 msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr ""
 
@@ -13045,10 +13100,6 @@ msgstr ""
 
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
-msgstr ""
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
 msgstr ""
 
 #: src/components/OrderList/OrderList.tsx

@@ -2,6 +2,7 @@ import useSWRSubscription, { SWRSubscription } from "swr/subscription";
 import { useAccount } from "wagmi";
 
 import { AVALANCHE, type SettlementChainId } from "config/chains";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { useChainId } from "lib/chains";
 import { executeMulticall } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -10,6 +11,8 @@ import {
   buildGmxAccountTokenBalancesRequest,
   parseGmxAccountTokenBalancesData,
 } from "./gmxAccountTokenBalancesMulticallRequest";
+
+const EXECUTE_MULTICALL_TIMEOUT = 60_000;
 
 const subscribeEmptyGmxAccounts: SWRSubscription<
   [name: string, chainIds: SettlementChainId[], account: string],
@@ -21,48 +24,74 @@ const subscribeEmptyGmxAccounts: SWRSubscription<
   const [, chainIds, account] = key as [string, SettlementChainId[], string];
 
   const emptyGmxAccounts: Partial<Record<SettlementChainId, boolean>> = {};
-  let isLoaded = false;
   const didLoadMap: Partial<Record<SettlementChainId, boolean>> = {};
-
-  function fetchEmptyGmxAccounts() {
-    const requests = chainIds.map(async (chainId) => {
-      const req = buildGmxAccountTokenBalancesRequest(chainId, account);
-      const res = await executeMulticall(chainId, req, didLoadMap[chainId] ? "background" : "urgent");
-      const parsedRes = parseGmxAccountTokenBalancesData(res);
-      let isEmpty = true;
-      for (const balance of Object.values(parsedRes)) {
-        if (balance > 0n) {
-          isEmpty = false;
-          break;
-        }
-      }
-
-      emptyGmxAccounts[chainId] = isEmpty;
-      didLoadMap[chainId] = true;
-
-      options.next(null, { emptyGmxAccounts, isLoading: !isLoaded });
-    });
-
-    Promise.all(requests).then(() => {
-      if (!isLoaded) {
-        isLoaded = true;
-        options.next(null, { emptyGmxAccounts, isLoading: !isLoaded });
-      }
-    });
-  }
-
+  let disposed = false;
   let timeoutId: number | undefined;
+  let requestTimeoutId: number | undefined;
 
-  const fetchAndScheduleNext = () => {
-    fetchEmptyGmxAccounts();
+  async function fetchAndScheduleNext() {
+    if (disposed) return;
+
+    if (getIsSolanaNetworkSelected()) {
+      timeoutId = window.setTimeout(fetchAndScheduleNext, CONFIG_UPDATE_INTERVAL);
+      return;
+    }
+
+    const deadline = new Promise<never>((_, reject) => {
+      requestTimeoutId = window.setTimeout(
+        () => reject(new Error("executeMulticall timeout")),
+        EXECUTE_MULTICALL_TIMEOUT
+      );
+    });
+    const results = await Promise.allSettled(
+      chainIds.map(async (chainId) => {
+        const req = buildGmxAccountTokenBalancesRequest(chainId, account);
+        const res = await Promise.race([
+          deadline,
+          executeMulticall(chainId, req, didLoadMap[chainId] ? "background" : "urgent"),
+        ]);
+        if (disposed || getIsSolanaNetworkSelected()) return;
+
+        const parsedRes = parseGmxAccountTokenBalancesData(res);
+        let isEmpty = true;
+        for (const balance of Object.values(parsedRes)) {
+          if (balance > 0n) {
+            isEmpty = false;
+            break;
+          }
+        }
+
+        emptyGmxAccounts[chainId] = isEmpty;
+        didLoadMap[chainId] = true;
+
+        options.next(null, {
+          emptyGmxAccounts: { ...emptyGmxAccounts },
+          isLoading: chainIds.some((id) => !didLoadMap[id]),
+        });
+      })
+    );
+    window.clearTimeout(requestTimeoutId);
+
+    if (disposed) return;
+
+    if (!getIsSolanaNetworkSelected()) {
+      const failure = results.find((result) => result.status === "rejected");
+      if (failure?.status === "rejected") {
+        options.next(failure.reason);
+      }
+    }
     timeoutId = window.setTimeout(fetchAndScheduleNext, CONFIG_UPDATE_INTERVAL);
-  };
+  }
 
   fetchAndScheduleNext();
 
   return () => {
+    disposed = true;
     if (timeoutId !== undefined) {
       window.clearTimeout(timeoutId);
+    }
+    if (requestTimeoutId !== undefined) {
+      window.clearTimeout(requestTimeoutId);
     }
   };
 };
@@ -72,9 +101,10 @@ export function useEmptyGmxAccounts(chainIds: SettlementChainId[] | undefined): 
   isLoading: boolean;
 } {
   const { address: account } = useAccount();
+  const isEnabled = !getIsSolanaNetworkSelected() && !!account && !!chainIds?.length;
 
   const { data } = useSWRSubscription(
-    account && chainIds && chainIds.length > 0 ? ["emptyGmxAccounts", chainIds, account] : null,
+    isEnabled ? ["emptyGmxAccounts", chainIds, account] : null,
     subscribeEmptyGmxAccounts
   );
   const emptyGmxAccounts = data?.emptyGmxAccounts;
@@ -82,7 +112,7 @@ export function useEmptyGmxAccounts(chainIds: SettlementChainId[] | undefined): 
 
   return {
     emptyGmxAccounts,
-    isLoading: isLoading ?? true,
+    isLoading: isEnabled && (isLoading ?? true),
   };
 }
 

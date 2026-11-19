@@ -551,6 +551,10 @@ msgstr "鎖定此費率"
 msgid "position size"
 msgstr "倉位規模"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Use the \"Close\" button to reduce your position via market orders."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
 msgstr "確認提取"
@@ -1232,10 +1236,6 @@ msgstr "已過期的 Market Decrease"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "價格波動劇烈。<0>增加允許的滑點</0>"
 
-#: src/components/GmxAccountModal/WalletReceiveView.tsx
-msgid "Only send <0>{chainName}-compatible assets</0> to this address!"
-msgstr "請僅將<0>與 {chainName} 相容的資產</0>傳送至此地址！"
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -1272,6 +1272,10 @@ msgstr "金庫與池中的 TVL"
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "GMX on Solana"
 msgstr "Solana 上的 GMX"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not refresh open positions. This list may be out of date."
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1395,6 +1399,10 @@ msgstr "存入完成"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Take-Profit: {suffix}"
 msgstr "編輯止盈：{suffix}"
+
+#: src/components/PositionList/PositionList.tsx
+msgid "Could not load open positions"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1673,7 +1681,6 @@ msgstr "日期"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
 msgid "Solana"
 msgstr "Solana"
 
@@ -2645,6 +2652,10 @@ msgstr "GMX 餘額"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Fees are paid in your gas payment token from the balance the action uses."
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>費用以您的 Gas 支付代幣從操作所使用的餘額中支付。"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Est. {apr}"
+msgstr "預估 {apr}"
+
 #: landing/src/pages/Builders/CtaSection/CtaSection.tsx
 msgid "on GMX."
 msgstr "在 GMX。"
@@ -3293,6 +3304,10 @@ msgstr "由社群驅動"
 msgid "Choose:"
 msgstr "請選擇："
 
+#: src/components/TradeBox/TradeBox.tsx
+msgid "Could not refresh your fee discount. Fees are estimated without it."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
 msgstr "解除質押 GMX 和 esGMX"
@@ -3346,6 +3361,10 @@ msgstr "排名"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not refresh open orders. This list may be out of date."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -4297,6 +4316,10 @@ msgstr "從您的錢包交易"
 msgid "Deposit USD capacity"
 msgstr "存入 USD 容量"
 
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Until {endDate}: {apr}"
+msgstr "截至 {endDate}：{apr}"
+
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 msgid "Arbitrum wallet"
@@ -4361,6 +4384,7 @@ msgstr "費用因子"
 msgid "Funding factor"
 msgstr "資金因子"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
@@ -4477,6 +4501,10 @@ msgstr "費用（含兌換）"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Exponent (positive)"
 msgstr "指數（正向）"
+
+#: src/components/GmxAccountModal/WalletReceiveView.tsx
+msgid "Choose the <0>{chainName} network</0> when you send from an exchange or wallet. Funds sent on another network may get stuck."
+msgstr "從交易所或錢包傳送時，請選擇<0>{chainName} 網路</0>。透過其他網路傳送的資金可能會被卡住。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order are waiting for liquidity: they will execute once sufficient liquidity is available"
@@ -4726,6 +4754,10 @@ msgstr "工作執行緒"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Cheaper option for your amount"
 msgstr "此金額下更便宜的選項"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "Buyback available soon"
+msgstr "回購即將開放"
 
 #: src/domain/synthetics/orders/setAutoCancelOrdersTxn.ts
 msgid "Failed to update orders"
@@ -5799,6 +5831,10 @@ msgstr "請輸入提取金額"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "進行中的訂單"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "Launch boost schedule"
+msgstr "上線加成時間表"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {symbol} in your Wallet for this transaction. <0>Swap</0> or <1>bridge</1> {symbol}."
@@ -7380,7 +7416,6 @@ msgid "Edit Limit Increase: {suffix}"
 msgstr "編輯 Limit Increase：{suffix}"
 
 #: src/components/OrderList/OrderList.tsx
-#: src/components/OrderList/OrderList.tsx
 msgid "No open orders"
 msgstr "沒有未結訂單"
 
@@ -7425,6 +7460,10 @@ msgstr "由於最終倉位將超過允許的最大槓桿，此訂單可能無法
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "See more"
 msgstr "查看更多"
+
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
+msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
+msgstr "GT 是 Solana 上 GMX 的積分。GMX 使用 Solana 協議費用的 99% 回購 GT。"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
@@ -7918,6 +7957,10 @@ msgstr "GMX 累計交易量"
 msgid "Liquidation fee"
 msgstr "清算費用"
 
+#: src/lib/wallets/signing.ts
+msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
+msgstr "此錢包尚未在 {0} 上部署。請再次簽名，以便隨此操作一併部署"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "兌換影響指數"
@@ -8173,6 +8216,7 @@ msgstr "ParaSwap"
 msgid "Ensures available liquidity."
 msgstr "確保可用流動性。"
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -8478,6 +8522,7 @@ msgstr "{orderText} 已更新"
 msgid "{fromSymbol} can't pay network fees right now, so GMX Account actions can't be sent until it can."
 msgstr "{fromSymbol} 目前無法支付網路費用，因此在恢復之前無法送出 GMX Account 操作。"
 
+#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/domain/synthetics/markets/createSourceChainGlvWithdrawalTxn.ts
 #: src/domain/synthetics/markets/createSourceChainWithdrawalTxn.ts
 msgid "Withdrawal sent"
@@ -8850,7 +8895,6 @@ msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on
 msgstr "輸入推薦碼即可享有交易手續費折扣。<0/> 視推薦等級而定，所有<1/>開倉和平倉手續費最高可節省 10%。"
 
 #: src/components/PositionList/PositionList.tsx
-#: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
 msgid "No open positions"
 msgstr "沒有未平倉倉位"
@@ -9137,6 +9181,10 @@ msgstr "為我推薦"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Fees and impacts"
 msgstr "費用和價格影響"
+
+#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
+msgid "{dateRange}: {apr}"
+msgstr "{dateRange}：{apr}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -9778,10 +9826,6 @@ msgstr "扣除費用後保證金偏低。請存入更多資金以降低清算風
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
 
-#: src/pages/SolanaNetwork/SolanaNetwork.tsx
-msgid "Trading on Solana is coming soon."
-msgstr "Solana 上的交易功能即將推出。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min deposit: {0}"
 msgstr "最低存入金額：{0}"
@@ -10204,6 +10248,7 @@ msgstr "複製"
 msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
 msgstr "這也會移除代您交易的機器人和應用程式的工作階段。在您再次核准之前，它們將停止運作。"
 
+#: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10476,6 +10521,7 @@ msgstr "已收資金費用總計"
 msgid "Max reserved + JIT {directionLabel}"
 msgstr "{directionLabel} 最大預留量 + JIT"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -11391,6 +11437,10 @@ msgstr "大型帳戶"
 msgid "Shift fee"
 msgstr "轉換費用"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Positive funding fees are claimed automatically with the next order on this position."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "正常"
@@ -12079,6 +12129,10 @@ msgstr "傳送方已從 GLP 歸屬期金庫提領所有代幣"
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在相關市場間自動再平衡。兩者的收益均自動複利。選擇 GM 獲取單一市場曝險，或選擇 GLV 分散投資於多個池。"
+
+#: src/components/OrderList/OrderList.tsx
+msgid "Could not load open orders"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12834,6 +12888,7 @@ msgid "Arrives"
 msgstr "到帳時間"
 
 #: src/components/Claims/SettleAccruedCard.tsx
+#: src/components/PositionItem/PositionItem.tsx
 msgid "Accrued"
 msgstr "已累計"
 
@@ -13046,10 +13101,6 @@ msgstr "您的資金是安全的。如需協助請聯繫客服。"
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "淨值"
-
-#: src/components/AprInfo/UsdgLaunchBoostAprInfo.tsx
-msgid "First 8 weeks: GLV 8% or higher, GM pools 5%. Rates dilute above $100M program TVL. Funded by Arbitrum's USDG program with GMX. Period 1: {periodStart} – {periodEnd}."
-msgstr "前 8 週：GLV 8% 或更高，GM 池 5%。計畫 TVL 超過 $100M 後收益率將被稀釋。由 Arbitrum 的 USDG 計畫與 GMX 共同資助。第 1 期：{periodStart} – {periodEnd}。"
 
 #: src/components/OrderList/OrderList.tsx
 #: src/components/PositionList/PositionList.tsx

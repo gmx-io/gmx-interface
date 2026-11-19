@@ -89,6 +89,7 @@ export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
 export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
+export const MORPHO_LOOP_ANNOUNCEMENT_DISMISSED_KEY = "morpho-loop-announcement-dismissed";
 export const CLOSING_POOLS_NOTICE_SEEN_KEY_PREFIX = "closing-pools-notice-seen";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
@@ -165,8 +166,8 @@ export function getSyntheticsAcceptablePriceImpactBufferKey(chainId: number) {
   return [chainId, SYNTHETICS_ACCEPTABLE_PRICE_IMPACT_BUFFER_KEY];
 }
 
-export function getSyntheticsTradeOptionsKey(chainId: number) {
-  return [chainId, SYNTHETICS_TRADE_OPTIONS];
+export function getSyntheticsTradeOptionsKey(networkId: number) {
+  return [networkId, SYNTHETICS_TRADE_OPTIONS];
 }
 
 export function getSyntheticsCollateralEditAddressMapKey(chainId: number) {
@@ -181,16 +182,16 @@ export function getSyntheticsCollateralEditTokenIsFromGmxAccountMapKey(chainId: 
   return [chainId, SYNTHETICS_COLLATERAL_EDIT_TOKEN_IS_FROM_GMX_ACCOUNT_KEY];
 }
 
-export function getLeverageKey(chainId: number) {
-  return [chainId, LEVERAGE_OPTION_KEY];
+export function getLeverageKey(networkId: number) {
+  return [networkId, LEVERAGE_OPTION_KEY];
 }
 
-export function getKeepLeverageKey(chainId: number) {
-  return [chainId, KEEP_LEVERAGE_FOR_DECREASE_KEY];
+export function getKeepLeverageKey(networkId: number) {
+  return [networkId, KEEP_LEVERAGE_FOR_DECREASE_KEY];
 }
 
-export function getLeverageEnabledKey(chainId: number) {
-  return [chainId, LEVERAGE_ENABLED_KEY];
+export function getLeverageEnabledKey(networkId: number) {
+  return [networkId, LEVERAGE_ENABLED_KEY];
 }
 
 export function getAllowedSlippageKey(chainId: number) {
@@ -237,8 +238,8 @@ export function getMulticallBatchingLoggingEnabledKey() {
   return [DEBUG_MULTICALL_BATCHING_KEY, "logging"];
 }
 
-export function getSortedMarketsAddressesKey(chainId: number) {
-  return [SORTED_MARKETS_KEY, chainId].join(":");
+export function getSortedMarketsAddressesKey(networkId: number) {
+  return [SORTED_MARKETS_KEY, networkId].join(":");
 }
 
 export function getCollateralCloseDestinationKey(chainId: number, account: string | undefined) {
