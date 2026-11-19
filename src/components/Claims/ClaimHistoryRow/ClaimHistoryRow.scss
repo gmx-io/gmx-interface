@@ -8,11 +8,6 @@
   }
 }
 
-.ClaimHistoryRow-tooltip-row {
-  white-space: nowrap;
-  margin-bottom: 0.5rem;
-}
-
 .ClaimHistoryRow-time {
   font-size: 1.25rem;
 }
@@ -23,14 +18,4 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.ClaimHistoryRow-size-tooltip-portal .Tooltip-popup {
-  min-width: unset !important;
-  width: max-content;
-  max-width: unset !important;
-}
-
-.ClaimHistoryRow-tooltip-portal .Tooltip-popup {
-  min-width: max-content;
 }

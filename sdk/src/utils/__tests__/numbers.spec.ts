@@ -385,6 +385,23 @@ describe("formatUsdPrice", () => {
   });
 });
 
+describe("formatBigUsd", () => {
+  it("shows cents for sub-dollar amounts and whole dollars otherwise PRO-4565", () => {
+    const cases: [bigint, string][] = [
+      [0n, "$ 0"],
+      [ONE_USD / 200n, "< $ 0.01"],
+      [(ONE_USD * 229n) / 10_000n, "$ 0.02"],
+      [(ONE_USD * 99n) / 100n, "$ 0.99"],
+      [ONE_USD, "$ 1"],
+      [(ONE_USD * 7_058_342n) / 10n, "$ 705,834"],
+    ];
+
+    for (const [amount, expected] of cases) {
+      expect(formatBigUsd(amount)).toBe(expected);
+    }
+  });
+});
+
 describe("formatNumberHuman", () => {
   it.each([
     [999.94, 1, "999.9"],

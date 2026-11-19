@@ -74,6 +74,8 @@ test("20.02 20.11 changing market updates the chart symbol and its current price
   const chart = page.frameLocator('iframe[title="Financial Chart"]');
   const legend = chart.getByRole("region", { name: "Chart #1", exact: true }).getByRole("toolbar");
   await expect(legend).toContainText("ETH/USD");
+  // The market row's click leaves the pointer over the chart, and the legend then shows the hovered candle.
+  await page.mouse.move(0, 0);
   await expect
     .poll(async () => {
       const close = (await legend.innerText()).match(/C\s*([\d,]+(?:\.\d+)?)/)?.[1];

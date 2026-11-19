@@ -3,7 +3,9 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
+import { getIsFlagEnabled } from "config/ab";
 import { getExplorerUrl } from "config/chains";
+import { DEBUG_ORDER_TOAST_AUTO_CLOSE_TIME, TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { getIsUsdgToken } from "config/usdgPools";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { PendingOrderData, getPendingOrderKey, useSyntheticsEvents } from "context/SyntheticsEvents";
@@ -108,8 +110,12 @@ function OrderStatusNotification({
     return relayTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(relayTaskStatus.statusCode);
   }, [relayTaskStatus, pendingExpressTxn?.sendFailed, isSettledOnChain]);
 
-  const hasError =
-    isRelayTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
+  const isMarketOrderFailed =
+    isMarketOrderType(pendingOrderData.orderType) &&
+    pendingOrderData.txnType !== "cancel" &&
+    Boolean(orderStatus?.cancelledTxnHash);
+
+  const hasError = isRelayTaskFailed || isMarketOrderFailed;
 
   const orderData = useMemo(() => {
     if (!marketsInfoData || !orderStatuses || !tokensData || !wrappedNativeToken) {
@@ -637,7 +643,11 @@ export function OrdersStatusNotificiation({
     });
   }, []);
 
-  useToastAutoClose(isCompleted && keptOpenKeys.size === 0, toastTimestamp);
+  useToastAutoClose(
+    isCompleted && keptOpenKeys.size === 0,
+    toastTimestamp,
+    getIsFlagEnabled("keepOrderToastOpen") ? DEBUG_ORDER_TOAST_AUTO_CLOSE_TIME : TOAST_AUTO_CLOSE_TIME
+  );
 
   return (
     <div className="StatusNotification-wrapper">

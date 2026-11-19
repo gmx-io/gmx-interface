@@ -19,9 +19,9 @@ import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { MarketOption, MarketState } from "./types";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 export function PoolListItem(props: {
   glvOrMarketInfo: GlvOrMarketInfo;
@@ -32,7 +32,6 @@ export function PoolListItem(props: {
   indexName: string;
   state?: MarketState;
   isFavorite: boolean;
-  isInFirstHalf: boolean;
   showAllPools?: boolean;
   showBalances?: boolean;
   onFavoriteClick: (address: string) => void;
@@ -47,7 +46,6 @@ export function PoolListItem(props: {
     state = {},
     marketToken,
     isFavorite,
-    isInFirstHalf,
     showAllPools,
     showBalances,
     onFavoriteClick,
@@ -95,13 +93,12 @@ export function PoolListItem(props: {
         onClick={handleClick}
       >
         {state.disabled && state.message && (
-          <TooltipWithPortal
+          <StandardTooltip
             className="TokenSelector-tooltip"
             handle={<div className="TokenSelector-tooltip-backing" />}
-            position={isInFirstHalf ? "bottom" : "top"}
+            position="bottom"
             variant="none"
             closeOnDoubleClick
-            fitHandleWidth
             content={state.message}
           />
         )}
