@@ -12,6 +12,12 @@ import {
   writeStoredNotificationsDevice,
 } from "domain/notifications/deviceRegistration";
 import {
+  type NotificationsTurnOnResult,
+  sendNotificationsDailyStateEvent,
+  sendNotificationsTurnOffEvent,
+  sendNotificationsTurnOnResultEvent,
+} from "domain/notifications/notificationsAnalytics";
+import {
   NotificationsApiError,
   sendTestNotification,
   unregisterNotificationsDevice,
@@ -208,8 +214,8 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
   accountRef.current = account;
   const queueRef = useRef(Promise.resolve());
 
-  const enqueue = useCallback((operation: () => Promise<void>) => {
-    queueRef.current = queueRef.current.then(operation).catch(noop);
+  const enqueue = useCallback((operation: () => Promise<unknown>) => {
+    queueRef.current = queueRef.current.then(operation).then(noop, noop);
   }, []);
 
   const updateStored = useCallback((update: Partial<StoredNotificationsDevice>) => {
@@ -220,12 +226,16 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
   }, []);
 
   const register = useCallback(
-    async (targetAccount: string, kind: RegistrationKind, sign?: (message: string) => Promise<string>) => {
+    async (
+      targetAccount: string,
+      kind: RegistrationKind,
+      sign?: (message: string) => Promise<string>
+    ): Promise<NotificationsTurnOnResult | undefined> => {
       let isSigning = false;
 
       // A newer wallet switch already replaced this one.
       if ((kind === "walletSwitch" || kind === "retry") && accountRef.current && accountRef.current !== targetAccount) {
-        return;
+        return undefined;
       }
 
       try {
@@ -249,6 +259,8 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
           // The confirmation. A refused test, e.g. within the API's one-minute limit, does not undo turning on.
           sendTestNotification(endpoint).catch(noop);
         }
+
+        return "on";
       } catch (error) {
         const message = getErrorMessage(error);
 
@@ -276,6 +288,12 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         } else {
           setIssue({ type: "turnOnFailed", error: message });
         }
+
+        if (isSigning) {
+          return "signatureRefused";
+        }
+
+        return getIsRegistrationLimitError(error) && !sign ? "limitNoWallet" : "failed";
       }
     },
     [updateStored]
@@ -300,7 +318,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
   );
 
   const runOperation = useCallback(
-    (nextOperation: Operation, run: () => Promise<void>) => {
+    (nextOperation: Operation, run: () => Promise<unknown>) => {
       operationRef.current = nextOperation;
       setOperation(nextOperation);
       setIssue(undefined);
@@ -325,27 +343,40 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
     [account, signer]
   );
 
-  const turnOn = useCallback(() => {
-    const targetAccount = account ?? storedRef.current.account;
+  const startTurnOn = useCallback(
+    (isRetry: boolean) => {
+      const targetAccount = account ?? storedRef.current.account;
 
-    if (support !== "supported" || operationRef.current || !targetAccount) {
-      return;
-    }
-
-    // Asked straight from the click: Safari ignores a permission request made after an await.
-    const permissionRequest =
-      getNotificationPermission() === "default" ? Promise.resolve(Notification.requestPermission()) : undefined;
-
-    runOperation("turningOn", async () => {
-      await permissionRequest?.catch(noop);
-      const nextPermission = getNotificationPermission();
-      setPermission(nextPermission);
-
-      if (nextPermission === "granted") {
-        await register(targetAccount, "turnOn", getSign(targetAccount));
+      if (support !== "supported" || operationRef.current || !targetAccount) {
+        return;
       }
-    });
-  }, [account, getSign, register, runOperation, setPermission, support]);
+
+      // Asked straight from the click: Safari ignores a permission request made after an await.
+      const permissionRequest =
+        getNotificationPermission() === "default" ? Promise.resolve(Notification.requestPermission()) : undefined;
+
+      runOperation("turningOn", async () => {
+        await permissionRequest?.catch(noop);
+        const nextPermission = getNotificationPermission();
+        setPermission(nextPermission);
+
+        let result: NotificationsTurnOnResult | undefined;
+        if (nextPermission === "granted") {
+          result = await register(targetAccount, "turnOn", getSign(targetAccount));
+        } else {
+          // A closed prompt leaves the permission at "default".
+          result = nextPermission === "denied" ? "permissionRefused" : "promptClosed";
+        }
+
+        if (result) {
+          sendNotificationsTurnOnResultEvent(result, isRetry);
+        }
+      });
+    },
+    [account, getSign, register, runOperation, setPermission, support]
+  );
+
+  const turnOn = useCallback(() => startTurnOn(false), [startTurnOn]);
 
   const retry = useCallback(() => {
     if (operationRef.current) {
@@ -367,14 +398,15 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       return;
     }
 
-    turnOn();
-  }, [account, getSign, issue, register, runOperation, turnOn]);
+    startTurnOn(true);
+  }, [account, getSign, issue, register, runOperation, startTurnOn]);
 
   const turnOff = useCallback(() => {
     if (operationRef.current) {
       return;
     }
 
+    sendNotificationsTurnOffEvent();
     runOperation("turningOff", async () => {
       const { endpoint, unregisterEndpoint } = storedRef.current;
       const endpointToUnregister = endpoint ?? unregisterEndpoint;
@@ -505,6 +537,21 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       sendTest,
     };
   }, [account, issue, operation, permission, retry, sendTest, stored, support, testState, turnOff, turnOn]);
+
+  const hasSentDailyStateRef = useRef(false);
+
+  useEffect(
+    function sendDailyState() {
+      // Before the wallet is known, a device with a wallet would show as having none.
+      if (isWalletInitializing || hasSentDailyStateRef.current) {
+        return;
+      }
+
+      hasSentDailyStateRef.current = true;
+      sendNotificationsDailyStateEvent(value.status);
+    },
+    [isWalletInitializing, value.status]
+  );
 
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;
 }

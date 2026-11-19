@@ -86,7 +86,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               </ExternalLink>
             </Menu.Item>
             <Menu.Item>
-              <div className="menu-item" onClick={() => openSettingsTab("notifications")}>
+              <div className="menu-item" onClick={() => openSettingsTab("notifications", "walletMenu")}>
                 <BellIcon className="ml-2 size-20 pt-2" />
                 <p>
                   <Trans>Alerts</Trans>
