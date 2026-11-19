@@ -54,9 +54,9 @@ export function useFilterSortPools({
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
   pinnedAddresses: string[];
 }) {
-  const sortedTokens = useMemo(() => {
+  const searchResults = useMemo(() => {
     if (!marketsInfo || !marketTokensData) {
-      return [];
+      return undefined;
     }
 
     const trimmedSearchText = searchText.trim();
@@ -116,7 +116,19 @@ export function useFilterSortPools({
       return Array.from(new Set([...matchingTokens, ...collateralMatches]));
     }
 
+    return undefined;
+  }, [marketsInfo, marketTokensData, searchText]);
+
+  const sortedTokens = useMemo(() => {
+    if (!marketsInfo || !marketTokensData) {
+      return [];
+    }
+
     if (orderBy === "unspecified" || direction === "unspecified") {
+      if (searchResults) {
+        return searchResults;
+      }
+
       return sortGmTokensDefault({
         marketsInfoData: marketsInfo,
         marketTokensData,
@@ -125,7 +137,7 @@ export function useFilterSortPools({
       });
     }
 
-    return sortGmTokensByField({
+    const tokensSortedByField = sortGmTokensByField({
       marketsInfo,
       marketTokensData,
       orderBy,
@@ -137,10 +149,18 @@ export function useFilterSortPools({
       multichainMarketTokensBalances,
       performance,
     });
+
+    if (!searchResults) {
+      return tokensSortedByField;
+    }
+
+    const searchResultAddresses = new Set(searchResults.map((token) => token.address));
+
+    return tokensSortedByField.filter((token) => searchResultAddresses.has(token.address));
   }, [
     marketsInfo,
     marketTokensData,
-    searchText,
+    searchResults,
     orderBy,
     direction,
     marketsTokensApyData,

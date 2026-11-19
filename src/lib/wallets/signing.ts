@@ -51,6 +51,7 @@ export type SignTypedDataParams = {
   minified?: boolean;
   verificationChainId: number;
   relayParams?: RelayParamsPayload;
+  validateBeforeSign?: () => void;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -89,9 +90,22 @@ function isChainSwapFailure(error: ErrorLike): boolean {
   return error?.message === SMART_WALLET_WRONG_CHAIN_ERROR || error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR;
 }
 
-function providerSendSign(signer: AnySigner, from: string, eip712: object) {
+function providerSendSign({
+  signer,
+  from,
+  eip712,
+  validateBeforeSign,
+}: {
+  signer: AnySigner;
+  from: string;
+  eip712: object;
+  validateBeforeSign?: () => void;
+}) {
   return withRetry<string>(
-    () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
+    () => {
+      validateBeforeSign?.();
+      return (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+    },
     {
       retryCount: 1,
       delay: 100,
@@ -130,11 +144,13 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     address,
     targetChainId,
     forceVerificationChain = false,
+    validateBeforeSign,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
     forceVerificationChain?: boolean;
+    validateBeforeSign?: () => void;
   },
   action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
 ): Promise<T> {
@@ -176,7 +192,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     }
 
     const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId });
-    const swappedSigner = clientToSigner(swappedWalletClient, account);
+    const swappedSigner = clientToSigner(swappedWalletClient, account, validateBeforeSign);
     try {
       return await action(swappedSigner, targetChainId);
     } catch (error) {
@@ -277,6 +293,7 @@ async function signTypedDataOnce({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  validateBeforeSign,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -306,6 +323,7 @@ async function signTypedDataOnce({
 
   if (!("provider" in signer) || !("getAddress" in signer)) {
     if (signer.signTypedData) {
+      validateBeforeSign?.();
       return signer.signTypedData(domain, typesToSign, messageToSign);
     }
     throw new Error("Signer does not support provider-based signing or signTypedData");
@@ -330,19 +348,20 @@ async function signTypedDataOnce({
 
   const requestSignature = (signWith: AnySigner) => {
     if (shouldUseSignerMethod && signWith.signTypedData) {
+      validateBeforeSign?.();
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;
-        return providerSendSign(signWith, from, eip712);
+        return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
       });
     }
-    return providerSendSign(signWith, from, eip712);
+    return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
   };
 
   const signaturePurpose = Object.keys(types).find((type) => type !== "EIP712Domain") ?? "unknown";
   const startingChainId = getChainId(getWagmiConfig());
 
   const firstResult = await withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId },
+    { signer, address: from, targetChainId: verificationChainId, validateBeforeSign },
     async (signWith, signingChainId) => {
       const signature = await requestSignature(signWith);
 
@@ -402,6 +421,7 @@ async function signTypedDataOnce({
         address: from,
         targetChainId: verificationChainId,
         forceVerificationChain: true,
+        validateBeforeSign,
       },
       async (signWith, signingChainId) => {
         const signature = await requestSignature(signWith);
