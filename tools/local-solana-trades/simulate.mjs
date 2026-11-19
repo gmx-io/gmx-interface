@@ -11,7 +11,7 @@ import { withoutLookupTables } from "./lookupTableConfiguration.mjs";
 const { values } = parseArgs({
   options: {
     wallet: { type: "string" },
-    "api-url": { type: "string", default: "http://127.0.0.1:3046" },
+    "api-url": { type: "string", default: "https://solana.gmxapi.io" },
     market: { type: "string", default: "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8" },
   },
 });
