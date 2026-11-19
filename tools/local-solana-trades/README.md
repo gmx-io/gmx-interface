@@ -47,7 +47,9 @@ NODE_OPTIONS=--max-old-space-size=8192 yarn build-playground
 NODE_OPTIONS=--max-old-space-size=8192 yarn vite preview --host 127.0.0.1 --port 3016
 ```
 
-`build-playground` uses the normal production app environment and SDK build, with only the empty LUT selection from `lookupTableConfiguration.mjs`. Preparation, validation and sending share that selection. Public API/RPC, feature flags, fresh trading checks, transaction-size limits and pre-signature simulation remain in place. Standard `build-app` retains the formal LUT configuration and is not a substitute while those tables remain untrusted. Deployment is a separate action.
+`build-playground` uses the normal production app environment and SDK build, with the empty LUT selection from `lookupTableConfiguration.mjs` and the `solanaNetwork` AB flag at share 1 from `abFlagConfiguration.mjs`. New visitors have Solana enabled immediately; existing disabled settings are enabled on reload through the normal AB initialization. Turning the flag off in Debug settings also reloads the app and re-enables it. Network selection still follows the existing user preference.
+
+Preparation, validation and sending share the empty LUT selection. Other feature flags, including the independent `solanaTrading` gate, fresh trading checks, transaction-size limits and pre-signature simulation remain in place. Standard `build-app` retains share 0 and the formal LUT configuration and is not a substitute while those tables remain untrusted. Deployment is a separate action.
 
 Orders that exceed the packet limit without LUTs remain unsupported. No automatic fallback or altered acceptable price is provided. Simple no-LUT results do not cover the original four-wallet or atomic TP/SL acceptance.
 
