@@ -40,19 +40,32 @@ function useVerticalScrollFade() {
   );
 
   useEffectOnce(() => {
-    if (!scrollableRef.current) {
+    const scrollable = scrollableRef.current;
+    if (!scrollable) {
       return;
     }
 
+    // the stable gutter keeps the scroller's own size fixed when rows change, so its content is observed too
     const resizeObserver = new ResizeObserver(setScrolls);
+    const observeContent = () => {
+      resizeObserver.disconnect();
+      resizeObserver.observe(scrollable);
+      Array.from(scrollable.children).forEach((child) => resizeObserver.observe(child));
+    };
+    const mutationObserver = new MutationObserver(() => {
+      observeContent();
+      setScrolls();
+    });
 
-    resizeObserver.observe(scrollableRef.current);
+    observeContent();
+    mutationObserver.observe(scrollable, { childList: true });
     window.addEventListener("resize", setScrolls);
-    scrollableRef.current?.addEventListener("scroll", setScrolls);
+    scrollable.addEventListener("scroll", setScrolls);
 
     return () => {
       window.removeEventListener("resize", setScrolls);
-      scrollableRef.current?.removeEventListener("scroll", setScrolls);
+      scrollable.removeEventListener("scroll", setScrolls);
+      mutationObserver.disconnect();
       resizeObserver.disconnect();
     };
   });
