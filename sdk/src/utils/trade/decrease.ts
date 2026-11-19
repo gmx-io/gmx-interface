@@ -416,8 +416,8 @@ export function getDecreasePositionAmounts(p: {
       ? marketInfo.longPoolAmount > marketInfo.maxLongPoolAmount
       : marketInfo.shortPoolAmount > marketInfo.maxShortPoolAmount;
 
-    // a trigger is judged on the pools now: if its swap still goes through at execution, the profit pays the costs
-    // and the position keeps more collateral, never less
+    // a trigger is judged on the pools at signing: if its swap still goes through at execution, the profit pays the
+    // costs and the position keeps more collateral, while a pool that only goes over its cap later still over-withdraws
     isProfitSwapReverted =
       isSingleSettlement &&
       isSwapToCollateral &&
@@ -1409,7 +1409,8 @@ export function getNextPositionValuesForDecreaseTrade(p: {
 
   const executedCollateralDeltaAmount = getCollateralDeltaAmountAfterPriceImpactDiff({
     collateralDeltaAmount,
-    priceImpactDiffUsd: priceImpactDiffUsd ?? 0n,
+    // a full close returns the whole collateral, the diff only trims a withdrawal from a position that stays open
+    priceImpactDiffUsd: existingPosition && sizeDeltaUsd < existingPosition.sizeInUsd ? priceImpactDiffUsd ?? 0n : 0n,
     collateralToken,
     collateralPrice,
   });

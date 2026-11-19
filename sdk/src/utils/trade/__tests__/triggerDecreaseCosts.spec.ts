@@ -152,8 +152,8 @@ describe("trigger decrease with the profit kept in the pnl token", () => {
   );
 
   it("receives and previews what a withdrawal executes: less the impact past the cap, capped by the costs TRD-18", () => {
-    // half of 420 of pending impact is realized, all past the 0 cap: Keep leverage signs 2 443.52, the contract pays
-    // out 2 233.52 and makes the 210 claimable, so 2 883.54 stays in the position
+    // half of 420 of pending impact is realized, all past the 0 cap: Keep leverage signs 2 443.52, Receive shows
+    // 2 233.52 and the 210 becomes claimable, so 2 883.54 stays in the position
     const withImpact = closeHalf({ ...tp, receive: "split", pendingImpactUsd: 420 });
     expect(bigintToNumber(withImpact.amounts.collateralDeltaAmount, usdc.decimals)).toBeCloseTo(2_443.52, 2);
     expect(bigintToNumber(withImpact.amounts.secondaryOutput.amount, usdc.decimals)).toBeCloseTo(2_233.52, 2);
