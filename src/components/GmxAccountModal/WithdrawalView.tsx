@@ -2,7 +2,7 @@ import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -80,8 +80,9 @@ import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } fro
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { isCustomError, parseError } from "lib/errors";
+import { isTransactionCancelledError, TransactionCancelledError } from "lib/errors/transactionCancelledError";
 import { helperToast } from "lib/helperToast";
 import {
   initMultichainWithdrawalMetricData,
@@ -98,6 +99,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useLatestValueRef } from "lib/useLatestValueRef";
 import { sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
@@ -132,6 +134,8 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { wrapChainAction } from "./wrapChainAction";
+
+const QUOTE_DEBOUNCE_MS = 100;
 
 const valueSkeleton = (
   <Skeleton
@@ -259,11 +263,13 @@ function getWithdrawalTokenOptions({
 }
 
 function useWithdrawViewTransactions({
+  inputAmount,
   selectedToken,
   inputAmountUsd,
   bridgeOutParams,
   expressTxnParamsAsyncResult,
 }: {
+  inputAmount: bigint | undefined;
   selectedToken: TokenData | undefined;
   inputAmountUsd: bigint | undefined;
   bridgeOutParams: BridgeOutParams | undefined;
@@ -277,7 +283,7 @@ function useWithdrawViewTransactions({
   const { provider } = useJsonRpcProvider(chainId);
   const isFirstWithdrawal = useIsFirstWithdrawal();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const {
     setMultichainSubmittedWithdrawal,
     setMultichainWithdrawalSentTxnHash,
@@ -285,7 +291,40 @@ function useWithdrawViewTransactions({
     setMultichainFundingPendingId,
   } = useSyntheticsEvents();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  const latestWithdrawal = useLatestValueRef({
+    inputAmount,
+    bridgeOutParams,
+    account,
+    chainId,
+    withdrawalViewChain,
+    selectedTokenAddress,
+    isVisibleOrView,
+  });
+  const validateWithdrawal = useCallback(() => {
+    const current = latestWithdrawal.current;
+    if (
+      !mountedRef.current ||
+      current.isVisibleOrView !== "withdraw" ||
+      inputAmount === undefined ||
+      inputAmount <= 0n ||
+      bridgeOutParams?.amount !== inputAmount ||
+      current.inputAmount !== inputAmount ||
+      current.bridgeOutParams !== bridgeOutParams ||
+      current.account !== account ||
+      current.chainId !== chainId ||
+      current.withdrawalViewChain !== withdrawalViewChain ||
+      current.selectedTokenAddress !== selectedTokenAddress
+    ) {
+      throw new TransactionCancelledError();
+    }
+  }, [latestWithdrawal, inputAmount, bridgeOutParams, account, chainId, withdrawalViewChain, selectedTokenAddress]);
   const unwrappedSelectedTokenAddress =
     selectedTokenAddress !== undefined ? convertTokenAddress(chainId, selectedTokenAddress, "native") : undefined;
   const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
@@ -304,12 +343,15 @@ function useWithdrawViewTransactions({
 
     setIsSubmitting(true);
 
-    await wrapChainAction(chainId, setSettlementChainId, async (signer) => {
-      try {
+    try {
+      validateWithdrawal();
+      const sendWithdrawal = async (signer: WalletSigner) => {
+        validateWithdrawal();
         await sendSameChainWithdrawalTxn({
           chainId: chainId as SettlementChainId,
           signer,
           bridgeOutParams,
+          validateBeforeSend: validateWithdrawal,
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
               helperToast.success(t`Withdrawal sent`, { toastId: "same-chain-gmx-account-withdrawal" });
@@ -368,12 +410,14 @@ function useWithdrawViewTransactions({
             }
           },
         });
-      } catch (error) {
-        toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
-      } finally {
-        setIsSubmitting(false);
-      }
-    });
+      };
+      await wrapChainAction(chainId, setSettlementChainId, sendWithdrawal, validateWithdrawal);
+    } catch (error) {
+      if (isTransactionCancelledError(error)) return;
+      toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [
     account,
     bridgeOutParams,
@@ -384,6 +428,7 @@ function useWithdrawViewTransactions({
     setMultichainSubmittedWithdrawal,
     setSettlementChainId,
     withdrawalViewChain,
+    validateWithdrawal,
   ]);
 
   const handleMultichainWithdraw = useCallback(async () => {
@@ -401,20 +446,7 @@ function useWithdrawViewTransactions({
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (
-      gasPaymentParams === undefined ||
-      bridgeOutParams === undefined ||
-      expressTxnParamsAsyncResult.promise === undefined ||
-      provider === undefined
-    ) {
-      helperToast.error(t`Missing required parameters`);
-      sendTxnValidationErrorMetric(metricData.metricId);
-      return;
-    }
-
-    const expressTxnParams = await expressTxnParamsAsyncResult.promise;
-
-    if (expressTxnParams === undefined || !expressTxnParams.gasPaymentValidations.isValid) {
+    if (bridgeOutParams === undefined || expressTxnParamsAsyncResult.promise === undefined || provider === undefined) {
       helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -422,9 +454,18 @@ function useWithdrawViewTransactions({
 
     setIsSubmitting(true);
     try {
-      const relayParamsPayload = expressTxnParams.relayParamsPayload;
+      validateWithdrawal();
+      const expressTxnParams = await expressTxnParamsAsyncResult.promise;
+      validateWithdrawal();
+      if (expressTxnParams === undefined || !expressTxnParams.gasPaymentValidations.isValid) {
+        helperToast.error(t`Missing required parameters`);
+        sendTxnValidationErrorMetric(metricData.metricId);
+        return;
+      }
+      const { relayParamsPayload, gasPaymentParams } = expressTxnParams;
 
-      await wrapChainAction(withdrawalViewChain, setSettlementChainId, async (signer) => {
+      const sendWithdrawal = async (signer: WalletSigner) => {
+        validateWithdrawal();
         await simulateWithdraw({
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -437,6 +478,7 @@ function useWithdrawViewTransactions({
         });
 
         sendOrderSimulatedMetric(metricData.metricId);
+        validateWithdrawal();
 
         const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
           chainId: chainId as SettlementChainId,
@@ -447,7 +489,9 @@ function useWithdrawViewTransactions({
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           srcChainId: withdrawalViewChain,
+          validateBeforeSign: validateWithdrawal,
         });
+        validateWithdrawal();
 
         const mockWithdrawalId = setMultichainSubmittedWithdrawal({
           amount: bridgeOutParams.amount,
@@ -495,8 +539,10 @@ function useWithdrawViewTransactions({
             sendTxnErrorMetric(metricData.metricId, relayError, "relayer");
           }
         }
-      });
+      };
+      await wrapChainAction(withdrawalViewChain, setSettlementChainId, sendWithdrawal, validateWithdrawal);
     } catch (error) {
+      if (isTransactionCancelledError(error)) return;
       const prettyError = toastCustomOrStargateError(chainId, error, {
         actionName: "Multichain Withdrawal",
         metricId: metricData.metricId,
@@ -510,7 +556,6 @@ function useWithdrawViewTransactions({
     bridgeOutParams,
     chainId,
     expressTxnParamsAsyncResult.promise,
-    gasPaymentParams,
     inputAmountUsd,
     isFirstWithdrawal,
     provider,
@@ -523,6 +568,7 @@ function useWithdrawViewTransactions({
     unwrappedSelectedTokenAddress,
     unwrappedSelectedTokenSymbol,
     withdrawalViewChain,
+    validateWithdrawal,
   ]);
 
   const handleWithdraw = useCallback(async () => {
@@ -568,9 +614,9 @@ export const WithdrawalView = () => {
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
     : undefined;
 
-  const realInputAmount =
+  const inputAmount =
     selectedToken && inputValue !== undefined ? parseValue(inputValue, selectedToken.decimals) : undefined;
-  const inputAmount = useLeadingDebounce(realInputAmount);
+  const quoteInputAmount: bigint | undefined = useDebounce(inputAmount, QUOTE_DEBOUNCE_MS);
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
@@ -613,8 +659,8 @@ export const WithdrawalView = () => {
     if (
       isSameChain ||
       !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
+      quoteInputAmount === undefined ||
+      quoteInputAmount <= 0n ||
       withdrawalViewChain === undefined
     ) {
       return;
@@ -623,14 +669,14 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      amountLD: inputAmount,
+      amountLD: quoteInputAmount,
       isToGmx: false,
     });
-  }, [isSameChain, account, inputAmount, withdrawalViewChain]);
+  }, [isSameChain, account, quoteInputAmount, withdrawalViewChain]);
 
   const {
-    data: quoteOft,
-    isLoading: isQuoteOftLoading,
+    data: requestedQuoteOft,
+    isLoading: isQuoteRequestLoading,
     error: quoteOftError,
   } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
@@ -638,6 +684,10 @@ export const WithdrawalView = () => {
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
+
+  const isQuoteOftLoading = !isSameChain && (inputAmount !== quoteInputAmount || isQuoteRequestLoading);
+  const quoteOft = !isQuoteOftLoading ? requestedQuoteOft : undefined;
+  const quoteAmountReceived = quoteOft?.receipt.amountReceivedLD;
 
   const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
     quoteOft,
@@ -798,14 +848,14 @@ export const WithdrawalView = () => {
     const dstEid = getLayerZeroEndpointId(withdrawalViewChain);
     const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
-    if (dstEid === undefined || stargateAddress === undefined || quoteOft === undefined) {
+    if (dstEid === undefined || stargateAddress === undefined || quoteAmountReceived === undefined) {
       return;
     }
 
     return {
       token: selectedTokenAddress as Address,
       amount: inputAmount,
-      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteOft.receipt.amountReceivedLD),
+      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteAmountReceived),
       data: encodeAbiParameters(
         [
           {
@@ -825,7 +875,7 @@ export const WithdrawalView = () => {
     inputAmount,
     isSameChain,
     chainId,
-    quoteOft,
+    quoteAmountReceived,
   ]);
 
   const gasPrice = useGasPrice(chainId);
@@ -1208,6 +1258,7 @@ export const WithdrawalView = () => {
   );
 
   const { handleWithdraw, isSubmitting } = useWithdrawViewTransactions({
+    inputAmount,
     selectedToken,
     inputAmountUsd,
     bridgeOutParams,
@@ -1215,16 +1266,21 @@ export const WithdrawalView = () => {
   });
 
   const handleMaxButtonClick = useCallback(() => {
-    if (withdrawalMaxDetails.maxAvailableAmount > 0n) {
+    if (!isSubmitting && withdrawalMaxDetails.maxAvailableAmount > 0n) {
       setInputValue(withdrawalMaxDetails.formattedMaxAvailableAmount);
     }
-  }, [withdrawalMaxDetails.maxAvailableAmount, withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+  }, [
+    isSubmitting,
+    withdrawalMaxDetails.maxAvailableAmount,
+    withdrawalMaxDetails.formattedMaxAvailableAmount,
+    setInputValue,
+  ]);
 
   const handleKeepGasClick = useCallback(() => {
-    if (withdrawalMaxDetails.formattedKeepGasAmount !== undefined) {
+    if (!isSubmitting && withdrawalMaxDetails.formattedKeepGasAmount !== undefined) {
       setInputValue(withdrawalMaxDetails.formattedKeepGasAmount);
     }
-  }, [withdrawalMaxDetails.formattedKeepGasAmount, setInputValue]);
+  }, [isSubmitting, withdrawalMaxDetails.formattedKeepGasAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 
@@ -1308,7 +1364,7 @@ export const WithdrawalView = () => {
       text: t`Withdraw`,
       disabled: true,
     };
-  } else if (isNetworkFeeLoading) {
+  } else if (isNetworkFeeLoading || bridgeOutParams === undefined) {
     buttonState = {
       text: (
         <>
@@ -1598,6 +1654,7 @@ export const WithdrawalView = () => {
             <Trans>Asset</Trans>
           </div>
           <DropdownSelector
+            disabled={isSubmitting}
             value={selectedTokenAddress}
             onChange={handlePickToken}
             placeholder={t`Select token`}
@@ -1620,6 +1677,7 @@ export const WithdrawalView = () => {
             <Trans>To network</Trans>
           </div>
           <DropdownSelector
+            disabled={isSubmitting}
             value={withdrawalViewChain}
             onChange={(value) => {
               setWithdrawalViewChain(Number(value) as SourceChainId);
@@ -1671,7 +1729,7 @@ export const WithdrawalView = () => {
                     onKeepGas={handleKeepGasClick}
                   />
                 )}
-                <button type="button" onClick={handleMaxButtonClick}>
+                <button type="button" onClick={handleMaxButtonClick} disabled={isSubmitting}>
                   <Trans>Available:</Trans>{" "}
                   <Amount
                     className="text-typography-primary"
@@ -1686,6 +1744,7 @@ export const WithdrawalView = () => {
           </div>
           <div className="relative text-16 leading-base">
             <NumberInput
+              isDisabled={isSubmitting}
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
               className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-14 pr-96 text-16 leading-base
