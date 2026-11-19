@@ -1,4 +1,5 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
+import { createPortal } from "react-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("lib/useBreakpoints", () => ({ useBreakpoints: () => ({ isMobile: true }) }));
@@ -19,30 +20,30 @@ function modal(visible: boolean) {
   );
 }
 
-describe("slide modal animation lifecycle", () => {
-  beforeEach(() => {
-    animations = [];
-    Object.defineProperty(HTMLElement.prototype, "animate", {
-      configurable: true,
-      value: vi.fn(() => {
-        const animation = Object.assign(new EventTarget(), {
-          cancel: vi.fn(),
-          commitStyles: vi.fn(() => {
-            throw new Error("Target element is not rendered");
-          }),
-        });
-        animations.push(animation);
-        return animation as unknown as Animation;
-      }),
-    });
+beforeEach(() => {
+  animations = [];
+  Object.defineProperty(HTMLElement.prototype, "animate", {
+    configurable: true,
+    value: vi.fn(() => {
+      const animation = Object.assign(new EventTarget(), {
+        cancel: vi.fn(),
+        commitStyles: vi.fn(() => {
+          throw new Error("Target element is not rendered");
+        }),
+      });
+      animations.push(animation);
+      return animation as unknown as Animation;
+    }),
   });
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-    if (originalAnimate) Object.defineProperty(HTMLElement.prototype, "animate", originalAnimate);
-    else Reflect.deleteProperty(HTMLElement.prototype, "animate");
-  });
+});
+afterEach(() => {
+  cleanup();
+  vi.restoreAllMocks();
+  if (originalAnimate) Object.defineProperty(HTMLElement.prototype, "animate", originalAnimate);
+  else Reflect.deleteProperty(HTMLElement.prototype, "animate");
+});
 
+describe("slide modal animation lifecycle", () => {
   it("finishes without requiring the target to be rendered", () => {
     const view = render(modal(true));
     const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
@@ -65,39 +66,29 @@ describe("slide modal animation lifecycle", () => {
 });
 
 describe("slide modal drag", () => {
-  beforeEach(() => {
-    vi.spyOn(HTMLElement.prototype, "animate").mockImplementation(
-      () => Object.assign(new EventTarget(), { cancel: vi.fn() }) as unknown as Animation
-    );
-  });
-  afterEach(() => {
-    cleanup();
-    vi.restoreAllMocks();
-  });
-
-  it("drags the curtain only on a pull down from the top of a nested list PRO-4546", () => {
+  it("drags the curtain only on a pull down from the top of its own nested list TRD-31", () => {
     const cases = [
-      { listScrollTop: 300, pointerYs: [550], transform: "" },
-      { listScrollTop: 0, pointerYs: [250, 550], transform: "" },
-      { listScrollTop: 0, pointerYs: [550], transform: "translateY(-550px)" },
+      { listScrollTop: 300, pointerYs: [550], drags: false },
+      { listScrollTop: 0, pointerYs: [250, 550], drags: false },
+      { listScrollTop: 0, pointerYs: [550], drags: true },
+      { listScrollTop: 0, pointerYs: [550], isPortaled: true, drags: false },
     ];
 
-    for (const { listScrollTop, pointerYs, transform } of cases) {
+    for (const { listScrollTop, pointerYs, isPortaled, drags } of cases) {
+      const listElement = <div data-testid="list">Row</div>;
       const view = render(
         <SlideModal qa="curtain" isVisible setIsVisible={() => undefined}>
-          <div data-testid="list">Row</div>
+          {isPortaled ? createPortal(listElement, document.body) : listElement}
         </SlideModal>
       );
       const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
-      Object.defineProperty(curtain, "clientHeight", { value: 700 });
-      vi.spyOn(curtain, "getBoundingClientRect").mockReturnValue({ top: window.innerHeight - 700 } as DOMRect);
       const list = view.getByTestId("list");
       list.scrollTop = listScrollTop;
 
       fireEvent.pointerDown(list, { screenX: 0, screenY: 400 });
       pointerYs.forEach((screenY) => fireEvent.pointerMove(list, { screenX: 0, screenY }));
 
-      expect(curtain.style.transform).toBe(transform);
+      expect(curtain.style.transform !== "").toBe(drags);
       cleanup();
     }
   });

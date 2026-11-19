@@ -122,7 +122,9 @@ function MobileSlideModal({
     e.stopPropagation();
 
     const isContentGesture = e.currentTarget === scrollableContainerRef.current;
-    if (isContentGesture && getIsContentScrolled(e.target, e.currentTarget)) {
+    // React bubbles pointer events from portaled content (tooltips, nested sheets) through this handler
+    const isPortaledTarget = !e.currentTarget.contains(e.target as Node);
+    if (isContentGesture && (isPortaledTarget || getIsContentScrolled(e.target, e.currentTarget))) {
       return;
     }
 
