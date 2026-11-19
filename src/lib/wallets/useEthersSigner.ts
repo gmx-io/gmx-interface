@@ -7,7 +7,11 @@ import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
 import { WalletSigner } from ".";
 
-export function clientToSigner(client: Client<Transport, Chain, Account>, account: string): WalletSigner {
+export function clientToSigner(
+  client: Client<Transport, Chain, Account>,
+  account: string,
+  validateBeforeRequest?: () => void
+): WalletSigner {
   const { chain, transport } = client;
   const network = {
     chainId: chain.id,
@@ -15,7 +19,17 @@ export function clientToSigner(client: Client<Transport, Chain, Account>, accoun
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
 
-  const provider = new ethers.BrowserProvider(transport, network);
+  const provider = new ethers.BrowserProvider(
+    {
+      request: (args) => {
+        if (args.method === "eth_sendTransaction" || args.method === "eth_signTypedData_v4") {
+          validateBeforeRequest?.();
+        }
+        return transport.request(args);
+      },
+    },
+    network
+  );
   const signer = new UncheckedJsonRpcSigner(provider, account);
 
   if (!signer.address) {
