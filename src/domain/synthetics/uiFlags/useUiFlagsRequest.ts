@@ -30,5 +30,8 @@ export function useUiFlagsRequest(overrideChainId?: ContractsChainId) {
     }
   );
 
-  return { uiFlags, isLoading };
+  // the fallback is the previous session's subset, so only a keeper response tells which flags it publishes
+  const isLoaded = uiFlags !== fallbackData;
+
+  return { uiFlags, isLoading, isLoaded };
 }
