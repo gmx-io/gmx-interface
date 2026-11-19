@@ -1,14 +1,15 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, MEGAETH } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, NetworkId, MEGAETH, SOLANA_NETWORK_ID } from "./chains";
 
 export type ApiEnvironment = "production" | "test";
 
-const API_URLS: Record<ApiEnvironment, Record<ContractsChainId, string | undefined>> = {
+const API_URLS: Record<ApiEnvironment, Record<NetworkId, string | undefined>> = {
   production: {
     [ARBITRUM]: "https://arbitrum.gmxapi.io",
     [AVALANCHE]: "https://avalanche.gmxapi.io",
     [AVALANCHE_FUJI]: undefined,
     [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
     [MEGAETH]: "https://megaeth.gmxapi.io",
+    [SOLANA_NETWORK_ID]: "https://solana.gmxapi.io",
   },
   test: {
     [ARBITRUM]: "https://arbitrum-test.gmxapi.ai",
@@ -16,16 +17,18 @@ const API_URLS: Record<ApiEnvironment, Record<ContractsChainId, string | undefin
     [AVALANCHE_FUJI]: undefined,
     [ARBITRUM_SEPOLIA]: "https://arbitrum-sepolia-test.gmxapi.ai",
     [MEGAETH]: undefined,
+    [SOLANA_NETWORK_ID]: undefined,
   },
 };
 
-const API_FALLBACK_URLS: Record<ApiEnvironment, Record<ContractsChainId, string[]>> = {
+const API_FALLBACK_URLS: Record<ApiEnvironment, Record<NetworkId, string[]>> = {
   production: {
     [ARBITRUM]: [],
     [AVALANCHE]: [],
     [AVALANCHE_FUJI]: [],
     [ARBITRUM_SEPOLIA]: [],
     [MEGAETH]: [],
+    [SOLANA_NETWORK_ID]: [],
   },
   test: {
     [ARBITRUM]: [],
@@ -33,6 +36,7 @@ const API_FALLBACK_URLS: Record<ApiEnvironment, Record<ContractsChainId, string[
     [AVALANCHE_FUJI]: [],
     [ARBITRUM_SEPOLIA]: [],
     [MEGAETH]: [],
+    [SOLANA_NETWORK_ID]: [],
   },
 };
 

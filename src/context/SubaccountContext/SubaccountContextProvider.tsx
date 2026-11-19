@@ -62,6 +62,7 @@ import {
   getSubaccountApprovalContextSrcChainId,
   getSubaccountSigner,
   signUpdatedSubaccountSettings,
+  type SubaccountLimits,
 } from "domain/synthetics/subaccount/utils";
 import type { TokenData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -207,7 +208,17 @@ async function getSettlementChainRemovalExpressParams({
   }
 }
 
+export type SubaccountActivationParams = {
+  remainingActions?: bigint;
+  remainingSeconds?: bigint;
+  // false for flows that don't trade from the wallet, like GMX Account deposits
+  withTokenPermits?: boolean;
+};
+
 export type SubaccountState = {
+  // limits saved in One-Click settings before activation, passed to tryEnableSubaccount by its callers
+  initialSettings: SubaccountLimits | undefined;
+  setInitialSettings: (settings: SubaccountLimits | undefined) => void;
   subaccountConfig: SubaccountSerializedConfig | undefined;
   subaccount: Subaccount | undefined;
   subaccountActivationState: SubaccountActivationState | undefined;
@@ -222,8 +233,7 @@ export type SubaccountState = {
   }) => Promise<boolean>;
   resetSubaccountApproval: () => void;
   invalidateSubaccountApproval: (approval: SignedSubaccountApproval) => boolean;
-  // withTokenPermits: false for flows that don't trade from the wallet, like GMX Account deposits
-  tryEnableSubaccount: (params?: { withTokenPermits?: boolean }) => Promise<boolean>;
+  tryEnableSubaccount: (params?: SubaccountActivationParams) => Promise<boolean>;
   tryDisableSubaccount: () => Promise<boolean>;
   refreshSubaccountData: () => void;
 };
@@ -239,10 +249,13 @@ export function useSubaccountContext() {
 }
 
 export function SubaccountContextProvider({ children }: { children: React.ReactNode }) {
+  const [initialSettings, setInitialSettings] = useState<SubaccountLimits>();
   const { chainId, srcChainId } = useChainId();
   const signer = useEthersSigner();
   const { account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
+  useEffect(() => setInitialSettings(undefined), [account, chainId, srcChainId]);
+
   const {
     tokenPermits,
     accountType: tokenPermitAccountType,
@@ -325,6 +338,16 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountConfig,
     subaccountData,
   ]);
+
+  const hasActiveSubaccount = subaccount !== undefined;
+  useEffect(
+    function clearAppliedInitialSettings() {
+      // limits typed before activation are signed into one session; cleared once it is live, not on signing,
+      // so the panel keeps showing them until the session's own limits load
+      if (hasActiveSubaccount) setInitialSettings(undefined);
+    },
+    [hasActiveSubaccount]
+  );
 
   const calcSelector = useCalcSelector();
 
@@ -411,8 +434,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   );
 
   const tryEnableSubaccount = useCallback(
-    async ({ withTokenPermits = true }: { withTokenPermits?: boolean } = {}) => {
-      if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
+    async ({ remainingActions, remainingSeconds, withTokenPermits = true }: SubaccountActivationParams = {}) => {
+      if (
+        !provider ||
+        !signer ||
+        (await getIsContractAccount({ address: signer.address, referenceChainId: chainId }))
+      ) {
         return false;
       }
 
@@ -471,6 +498,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
           provider,
           subaccountAddress: config!.address,
           isGmxAccount,
+          remainingSeconds,
+          remainingActions,
         });
 
         setSignedApproval(defaultSubaccountApproval);
@@ -707,6 +736,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const state: SubaccountState = useMemo(() => {
     return {
+      initialSettings,
+      setInitialSettings,
       subaccountConfig,
       subaccount,
       subaccountActivationState,
@@ -722,6 +753,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       refreshSubaccountData,
     };
   }, [
+    initialSettings,
     subaccountConfig,
     subaccount,
     subaccountActivationState,
@@ -741,6 +773,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 }
 
 const DISABLED_SUBACCOUNT_STATE: SubaccountState = {
+  initialSettings: undefined,
+  setInitialSettings: () => undefined,
   subaccountConfig: undefined,
   subaccount: undefined,
   subaccountActivationState: undefined,

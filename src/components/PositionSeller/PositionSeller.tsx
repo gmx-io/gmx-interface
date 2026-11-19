@@ -125,9 +125,10 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
@@ -927,9 +928,7 @@ export function PositionSeller() {
           <TooltipText>
             <Trans>Position exceeds max allowed leverage.</Trans>
           </TooltipText>
-          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
         </TooltipContent>
       }
     />
@@ -1297,6 +1296,8 @@ export function PositionSeller() {
                 )}
 
                 <PositionSellerPriceImpactFeesRow />
+
+                <FundingPayoutRow fundingPayout={decreaseAmounts?.fundingPayout} marketInfo={position?.marketInfo} />
 
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}

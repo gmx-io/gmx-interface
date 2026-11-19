@@ -12,6 +12,12 @@ export type UserReferralInfo = {
   error?: Error;
 };
 
+export type FeeDiscount = {
+  userReferralInfo: UserReferralInfo;
+  orderFeeDiscountFactor: bigint;
+  updatedAt: number | undefined;
+};
+
 export enum RebateDistributionType {
   // V1 Airdrop for Affiliates
   Rebate = "1",

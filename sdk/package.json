@@ -150,6 +150,9 @@
       "utils/common": [
         "./build/types/src/utils/common/index.d.ts"
       ],
+      "utils/errors": [
+        "./build/types/src/utils/errors/index.d.ts"
+      ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
       ],
@@ -161,6 +164,9 @@
       ],
       "utils/twap/uiFeeReceiver": [
         "./build/types/src/utils/twap/uiFeeReceiver.d.ts"
+      ],
+      "utils/gmsol": [
+        "./build/types/src/utils/gmsol/index.d.ts"
       ]
     }
   },
@@ -447,6 +453,12 @@
       "require": "./build/cjs/src/utils/common/index.js",
       "default": "./build/cjs/src/utils/common/index.js"
     },
+    "./utils/errors": {
+      "types": "./build/types/src/utils/errors/index.d.ts",
+      "import": "./build/esm/src/utils/errors/index.js",
+      "require": "./build/cjs/src/utils/errors/index.js",
+      "default": "./build/cjs/src/utils/errors/index.js"
+    },
     "./utils/types": {
       "types": "./build/types/src/utils/types/index.d.ts",
       "import": "./build/esm/src/utils/types/index.js",
@@ -506,6 +518,12 @@
       "import": "./build/esm/src/utils/twap/uiFeeReceiver.js",
       "require": "./build/cjs/src/utils/twap/uiFeeReceiver.js",
       "default": "./build/cjs/src/utils/twap/uiFeeReceiver.js"
+    },
+    "./utils/gmsol": {
+      "types": "./build/types/src/utils/gmsol/index.d.ts",
+      "import": "./build/esm/src/utils/gmsol/index.js",
+      "require": "./build/cjs/src/utils/gmsol/index.js",
+      "default": "./build/cjs/src/utils/gmsol/index.js"
     }
   },
   "scripts": {

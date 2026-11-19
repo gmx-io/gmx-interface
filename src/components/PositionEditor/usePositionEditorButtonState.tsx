@@ -10,6 +10,7 @@ import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
+  useFeeDiscountFactor,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorPosition,
@@ -98,7 +99,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -132,11 +133,12 @@ export function usePositionEditorButtonState(
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
@@ -400,12 +402,13 @@ export function usePositionEditorButtonState(
       position,
       minCollateralUsd,
       userReferralInfo,
+      feeDiscountFactor,
     });
 
     const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
 
     return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
-  }, [isDeposit, minCollateralUsd, position, userReferralInfo]);
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo, feeDiscountFactor]);
 
   const setMinDepositValue = useCallback(() => {
     if (minDepositUsd === undefined || !selectedCollateralToken) return;
@@ -523,9 +526,7 @@ export function usePositionEditorButtonState(
           <TooltipAction onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
           </TooltipAction>
-          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
         </TooltipContent>
       );
     }
