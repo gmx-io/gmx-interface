@@ -40,6 +40,10 @@ import {
 } from "../tradeboxSelectors";
 
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
+  if (q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+    return undefined;
+  }
+
   const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
 
   if (isSwap) {
