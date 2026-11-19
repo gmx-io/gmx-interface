@@ -435,6 +435,44 @@ describe("gmsol trade math", () => {
     }
   });
 
+  it("withholds the impact beyond the cap on gmsol partial TWAP closes", () => {
+    const marketInfo = market({
+      decimals: 8,
+      minPrice: 100n * P,
+      maxPrice: 100n * P,
+      tradeMath: "gmsol",
+      overrides: {
+        longInterestUsd: 1000n * P,
+        shortInterestUsd: 1000n * P,
+        positionImpactFactorNegative: P / 25n,
+        positionImpactExponentFactorNegative: P,
+        maxPositionImpactFactorNegative: P / 50n,
+      },
+    });
+    const position = positionInfo(marketInfo, 1000n * P, 10n * 10n ** 8n, false);
+    for (const numberOfParts of [undefined, 2]) {
+      const result = getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        position,
+        closeSizeUsd: 500n * P,
+        keepLeverage: false,
+        userReferralInfo: undefined,
+        minCollateralUsd: 0n,
+        minPositionSizeUsd: 0n,
+        uiFeeFactor: 0n,
+        isSetAcceptablePriceImpactEnabled: false,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+        isTwap: numberOfParts !== undefined,
+        numberOfParts,
+      });
+      expect(result.closePriceImpactDeltaUsd).toBe(-20n * P);
+      expect(result.priceImpactDiffUsd).toBe(10n * P);
+      expect(result.payedRemainingCollateralUsd).toBe(20n * P);
+    }
+  });
+
   it("rejects gmsol increases that fill no index token atoms FESOL-57", () => {
     const imbalanced = {
       longInterestUsd: 1000n * P,

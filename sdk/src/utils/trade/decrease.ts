@@ -481,7 +481,7 @@ export function getDecreasePositionAmounts(p: {
           collateralPrice: values.collateralPrice,
           remainingCollateralAmount: position.collateralAmount,
         })
-      : twapPartsCount !== undefined
+      : twapPartsCount !== undefined && !gmsolCosts
         ? payForTwapPartsCollateralCost({
             numberOfParts: twapPartsCount,
             initialCostUsd: totalFeesUsd,
