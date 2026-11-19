@@ -133,7 +133,7 @@ export function OrdersModal({
   const marketDecimals = useSelector(
     makeSelectMarketPriceDecimals(position?.market.indexTokenAddress ?? indexTokenProp?.address)
   );
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const estimatedLiquidationHours = useMemo(
     () => (position ? getEstimatedLiquidationTimeInHours(position, minCollateralUsd) : undefined),
     [position, minCollateralUsd]

@@ -47,8 +47,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
@@ -132,9 +133,10 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
@@ -515,14 +517,11 @@ export function PositionSeller() {
   });
 
   const approvalTokens = useMemo(() => {
-    if (!expressParams?.gasPaymentParams) return [];
-    return [
-      {
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      },
-    ];
-  }, [expressParams?.gasPaymentParams]);
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    return gasPaymentTokenToApprove ? [gasPaymentTokenToApprove] : [];
+  }, [expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -533,13 +532,14 @@ export function PositionSeller() {
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
     metric: {
       flow: "closePosition",
       isExpress: Boolean(expressParams),
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      permitBlockReason,
     },
   });
 
@@ -906,9 +906,7 @@ export function PositionSeller() {
           <TooltipText>
             <Trans>Position exceeds max allowed leverage.</Trans>
           </TooltipText>
-          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
         </TooltipContent>
       }
     />
@@ -1318,6 +1316,8 @@ export function PositionSeller() {
                 )}
 
                 <PositionSellerPriceImpactFeesRow />
+
+                <FundingPayoutRow fundingPayout={decreaseAmounts?.fundingPayout} marketInfo={position?.marketInfo} />
 
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}

@@ -11,6 +11,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
+import type { TokenPermitSkipReason } from "lib/metrics";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
@@ -52,10 +53,12 @@ function approve({
   sendTransaction,
   tokenAddress = USDC,
   approveAmount,
+  permitSkipReason,
 }: {
   sendTransaction: () => Promise<string>;
   tokenAddress?: string;
   approveAmount?: bigint;
+  permitSkipReason?: TokenPermitSkipReason;
 }) {
   return approveTokens({
     chainId: ARBITRUM,
@@ -65,7 +68,7 @@ function approve({
     approveAmount,
     permitParams: undefined,
     setIsApproving: vi.fn(),
-    metric: { flow: "trade", isExpress: true, isGasPaymentToken: true },
+    metric: { flow: "trade", isExpress: true, isGasPaymentToken: true, permitSkipReason },
   });
 }
 
@@ -128,6 +131,16 @@ describe("approveTokens metric", () => {
 
     expect(getApprovalEvents()).toEqual([
       expect.objectContaining({ data: expect.objectContaining({ method: "transaction", outcome: "failed" }) }),
+    ]);
+  });
+
+  it("reports why a permit-eligible token got a transaction", async () => {
+    await approve({ sendTransaction: async () => HASH, permitSkipReason: "accountTypeNotLoaded" });
+
+    expect(getApprovalEvents()).toEqual([
+      expect.objectContaining({
+        data: expect.objectContaining({ method: "transaction", permitSkipReason: "accountTypeNotLoaded" }),
+      }),
     ]);
   });
 
@@ -199,6 +212,17 @@ describe("approveTokens permit metric", () => {
       expect(disableTokenPermits.mock.calls).toEqual(disableCalls);
     }
   );
+
+  it("marks the approval transaction that replaces a failed permit", async () => {
+    await approveWithPermit(async () => {
+      throw new Error("Unknown connector error");
+    });
+
+    expect(getApprovalEvents().map(({ data }) => [data.method, data.permitSkipReason])).toEqual([
+      ["permit", undefined],
+      ["transaction", "permitFailed"],
+    ]);
+  });
 });
 
 describe("approveTokens rejection toast", () => {

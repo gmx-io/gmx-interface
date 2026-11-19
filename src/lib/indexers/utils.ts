@@ -1,9 +1,9 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client";
 
-import { getIndexerUrl, type IndexerKey } from "config/indexers";
+import { getConfiguredIndexerUrl, type IndexerKey } from "config/indexers";
 
 export function createClient(chainId: number, indexer: IndexerKey) {
-  const url = getIndexerUrl(chainId, indexer);
+  const url = getConfiguredIndexerUrl(chainId, indexer);
   return new ApolloClient({
     uri: url,
     cache: new InMemoryCache(),
