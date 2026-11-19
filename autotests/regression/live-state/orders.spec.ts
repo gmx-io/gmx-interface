@@ -11,6 +11,7 @@ import { decodeTwapUiFeeReceiver } from "../../../sdk/src/utils/twap/uiFeeReceiv
 import { test } from "../fixtures/liveWallet";
 import type { LiveAccount, LiveAccounts } from "../fixtures/liveAccounts";
 import { openTooltip } from "../fixtures/marketData";
+import { infoRow } from "../fixtures/trade";
 
 test.use({ liveProfile: "order" });
 
@@ -79,11 +80,12 @@ async function openOrders(page: Page) {
 
 async function expectRowMatchesChain(
   page: Page,
-  row: Locator,
+  key: string,
   liveAccounts: LiveAccounts,
   liveAccount: LiveAccount,
   testInfo: TestInfo
 ) {
+  const row = page.getByTestId(`order-${key}`);
   await expect(row).toBeVisible({ timeout: 45_000 });
   const chainId = liveAccounts.chainId;
   const reader = { address: getAddress(getContract(chainId, "SyntheticsReader")), abi: SyntheticsReader } as const;
@@ -91,7 +93,7 @@ async function expectRowMatchesChain(
   const order = await liveAccounts.rpc.readContract({
     ...reader,
     functionName: "getOrder",
-    args: [dataStore, liveAccount.key as Hex],
+    args: [dataStore, key as Hex],
   });
   expect(getAddress(order.addresses.account), "The order still exists on chain").toBe(liveAccount.account);
   const market = await liveAccounts.rpc.readContract({
@@ -134,15 +136,15 @@ async function expectRowMatchesChain(
 
   const shown = await expectTrigger(row, orderType, isLong, order.numbers.triggerPrice, indexToken);
 
-  await openTooltip(page, row.getByText(indexName, { exact: true }));
-  await expect(page.getByText("Market:", { exact: true }).locator("..")).toContainText(`${indexName}[${poolName}]`);
+  const marketTooltip = await openTooltip(page, row.getByText(indexName, { exact: true }), /^Market/);
+  await expect(infoRow(marketTooltip, "Market")).toContainText(`${indexName}[${poolName}]`);
   await testInfo.attach("live-order-onchain", {
-    body: JSON.stringify(
-      { key: liveAccount.key, order, market, indexName, poolName, fullClose, shownTrigger: shown },
-      (_, v) => (typeof v === "bigint" ? v.toString() : v)
+    body: JSON.stringify({ key, order, market, indexName, poolName, fullClose, shownTrigger: shown }, (_, v) =>
+      typeof v === "bigint" ? v.toString() : v
     ),
     contentType: "application/json",
   });
+  return row;
 }
 
 test(
@@ -174,8 +176,7 @@ test("17.11 live profile: Orders tab lists the trader's open order as stored on 
   await page.goto(`/traders/${liveAccount.account}`, { waitUntil: "domcontentloaded" });
   const tab = page.getByRole("button", { name: /^Orders\s*\d+$/ });
   await tab.click({ timeout: 45_000 });
-  const row = page.getByTestId(`order-${liveAccount.key}`);
-  await expectRowMatchesChain(page, row, liveAccounts, liveAccount, testInfo);
+  const row = await expectRowMatchesChain(page, liveAccount.key!, liveAccounts, liveAccount, testInfo);
   await expect(row.getByRole("button", { name: "Edit order", exact: true })).toHaveCount(0);
   await expect(tab).toHaveText(new RegExp(`^Orders\\s*${await page.locator("[data-qa^='order-']").count()}$`));
   await expect(page.getByTestId("user-address")).toHaveCount(0);
@@ -196,13 +197,13 @@ for (const { id, profile, kind } of [
     }, testInfo) => {
       await liveWallet.connect(page);
       await openOrders(page);
-      await expectRowMatchesChain(
-        page,
-        page.getByTestId(`order-${liveAccount.key}`),
-        liveAccounts,
-        liveAccount,
-        testInfo
-      );
+      // A TP/SL replaced since discovery is checked through its replacement.
+      const key =
+        profile === "tpsl"
+          ? (await liveAccounts.currentTpsl(liveAccount.account, liveAccount.key))?.key
+          : liveAccount.key;
+      expect(key, "The account still has a TP/SL order beside its open position").toBeDefined();
+      await expectRowMatchesChain(page, key!, liveAccounts, liveAccount, testInfo);
     });
   });
 }

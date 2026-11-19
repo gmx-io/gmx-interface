@@ -62,15 +62,60 @@ export function marketLabel(token: Token) {
   return `${getTokenVisualMultiplier(token)}${token.baseSymbol || token.symbol}/USD`;
 }
 
-export function configuredMarkets(chainId: number) {
-  return Object.values(MARKETS[chainId as 42161]).map((market) => {
-    const indexToken =
-      market.indexTokenAddress === zeroAddress
-        ? undefined
-        : getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
-    const pool = `${getToken(chainId, market.longTokenAddress).symbol}-${getToken(chainId, market.shortTokenAddress).symbol}`;
-    return { ...market, indexToken, pool };
+// Entries keyed by market address under the chain's key, e.g. MARKETS[ARBITRUM].
+function readMarketEntries(path: string, name: string, chainId: number, root?: string) {
+  const { file, object } = readObject(path, name, root);
+  const chain = object.properties.find(
+    (property): property is ts.PropertyAssignment =>
+      ts.isPropertyAssignment(property) && property.name.getText(file) === CHAIN_KEYS[chainId]
+  );
+  if (!chain) return { file, entries: [] };
+  if (!ts.isObjectLiteralExpression(chain.initializer)) throw new Error(`${name} is not keyed by market`);
+  const entries = chain.initializer.properties.filter(
+    (entry): entry is ts.PropertyAssignment & { name: ts.StringLiteral } =>
+      ts.isPropertyAssignment(entry) && ts.isStringLiteral(entry.name)
+  );
+  return { file, entries };
+}
+
+const deployedMarkets = new Map<number, Set<string>>();
+
+// The suite runs from the PR merge commit, which can list markets the deployed PR head lacks,
+// e.g. a master hotfix listing on a release PR; the app redirects or hides markets it has no config for.
+function deployedMarketAddresses(chainId: number) {
+  if (!deployedMarkets.has(chainId)) {
+    const { entries } = readMarketEntries("sdk/src/configs/markets.ts", "MARKETS", chainId);
+    if (!entries.length) throw new Error(`Missing MARKETS for ${chainId}`);
+    deployedMarkets.set(chainId, new Set(entries.map((entry) => entry.name.text)));
+  }
+  return deployedMarkets.get(chainId)!;
+}
+
+// Mirrors getMarketClosingState: a market in MARKET_CLOSING_DATES is closed from that date on.
+export function closedMarketAddresses(chainId: number, now = Date.now()) {
+  const { file, entries } = readMarketEntries("src/config/static/markets.ts", "MARKET_CLOSING_DATES", chainId, ".");
+  return entries.flatMap((entry) => {
+    const date = entry.initializer;
+    const parts = ts.isCallExpression(date) && date.expression.getText(file) === "Date.UTC" ? date.arguments : [];
+    if (parts.length !== 3 || !parts.every(ts.isNumericLiteral))
+      throw new Error(`Unexpected closing date ${date.getText(file)}`);
+    const [year, month, day] = parts.map((part) => Number(part.text));
+    return now >= Date.UTC(year, month, day) ? [entry.name.text] : [];
   });
+}
+
+export function configuredMarkets(chainId: number) {
+  const deployed = deployedMarketAddresses(chainId);
+  return Object.values(MARKETS[chainId as 42161])
+    .filter((market) => deployed.has(market.marketTokenAddress))
+    .map((market) => {
+      const indexToken =
+        market.indexTokenAddress === zeroAddress
+          ? undefined
+          : getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
+      const pool = `${getToken(chainId, market.longTokenAddress).symbol}-${getToken(chainId, market.shortTokenAddress).symbol}`;
+      return { ...market, indexToken, pool };
+    });
 }
 
 export type ConfiguredMarket = ReturnType<typeof configuredMarkets>[number];

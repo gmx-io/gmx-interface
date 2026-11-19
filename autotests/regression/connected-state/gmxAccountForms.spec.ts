@@ -29,9 +29,17 @@ function overlay(page: Page, title: string) {
   return page.locator(".Modal-content").filter({ has: page.locator(".Modal-title").getByText(title, { exact: true }) });
 }
 
-async function feeAmounts(row: Locator, label: string) {
-  const value = (await row.innerText()).split(label)[1];
-  return [...value.matchAll(/-?\$?\s*[\d,]+\.?\d*/g)].map((match) => Number(match[0].replace(/[$,\s]/g, "")));
+// Quotes refresh in the background and the row shows a placeholder meanwhile, so parse one complete reading.
+async function feeAmounts(row: Locator, label: string, count = 2) {
+  let amounts: number[] = [];
+  await expect
+    .poll(async () => {
+      const value = (await row.innerText()).split(label)[1] ?? "";
+      amounts = [...value.matchAll(/-?\$?\s*[\d,]+\.?\d*/g)].map((match) => Number(match[0].replace(/[$,\s]/g, "")));
+      return amounts.length;
+    })
+    .toBeGreaterThanOrEqual(count);
+  return amounts;
 }
 
 async function expectSaneFee(row: Locator, label: string, { native = false } = {}) {
@@ -48,8 +56,10 @@ async function openAccount(page: Page) {
   await expect(page.getByTestId("gmx-account-balance")).toBeVisible();
 }
 
-async function closeAccount(page: Page) {
-  await page.keyboard.press("Escape");
+// Escape reaches the window listeners of both the form and the GMX Account panel behind it, and the panel closes
+// too when React commits between them, so the form is closed with its own button.
+async function closeAccount(page: Page, form: Locator) {
+  await form.locator(".Modal-close-button").click();
   await expect(page.getByTestId("gmx-account-balance")).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("gmx-account-balance")).toBeHidden();
@@ -197,7 +207,7 @@ test.describe("deposit", () => {
     await expectSaneFee(networkFee, "Network fee", { native: true });
     const depositFee = infoRow(form, "Deposit fee");
     await expect(depositFee).toContainText(/-[\d.]+\s*USDC/);
-    const [usdcFee] = await feeAmounts(depositFee, "Deposit fee");
+    const [usdcFee] = await feeAmounts(depositFee, "Deposit fee", 1);
     expect(-usdcFee).toBeLessThan(0.1);
     await expect(infoRow(form, "GMX balance")).toContainText(/\$\s?0\.00.*\$\s?10\.00/);
     await expect(form.getByRole("button", { name: /^(Approve USDC|Deposit)$/ })).toBeEnabled();
@@ -297,13 +307,13 @@ test.describe("withdrawal", () => {
     expect(before - after).toBeGreaterThan(5);
     expect(before - after).toBeLessThan(100);
     await expect(modal.getByRole("button", { name: "Withdraw", exact: true })).toBeEnabled();
-    await closeAccount(page);
+    await closeAccount(page, modal);
 
     await selectGmxAccountGasToken(page, "USDT");
     modal = await openWithdrawal(page, "WETH", "Base", "0.01");
     await expect(modal.getByRole("button", { name: /Insufficient USDT/ })).toBeDisabled();
     await expect(modal).toContainText(/Insufficient USDT.*GMX Account/);
-    await closeAccount(page);
+    await closeAccount(page, modal);
 
     await selectGmxAccountGasToken(page, "WETH");
     modal = await openWithdrawal(page, "WETH", "Base", "0.01");
@@ -358,7 +368,7 @@ test.describe("GM", () => {
     await balance.hover();
     const tooltip = page.locator(".Tooltip-popup");
     await expect(tooltip).toContainText(
-      /^GMX Account balance:.*3\.0000\s*GM\).*Base balance:.*2\.0000\s*GM\).*Arbitrum balance:.*1\.0000\s*GM\).*Ethereum balance:.*0\.50000\s*GM\)$/
+      /^GMX Account balance.*3\.0000\s*GM\).*Base balance.*2\.0000\s*GM\).*Arbitrum balance.*1\.0000\s*GM\).*Ethereum balance.*0\.50000\s*GM\)$/
     );
     const usd = [...(await tooltip.innerText()).matchAll(/\$\s*([\d.]+)/g)].map((match) => Number(match[1]));
     expect(usd).toHaveLength(4);
@@ -378,7 +388,7 @@ test.describe("GM", () => {
     await page.getByText("Balance", { exact: true }).first().locator("xpath=..").locator("[aria-haspopup]").click();
     // The balance breakdown tooltip opens on hover and covers the menu items.
     await page.mouse.move(0, 0);
-    await expect(page.getByText("GMX Account balance:", { exact: true })).toBeHidden();
+    await expect(page.locator(".Tooltip-popup").filter({ hasText: "GMX Account balance" })).toBeHidden();
     await page.getByRole("menuitem", { name: "Deposit GM", exact: true }).click();
     const modal = overlay(page, "Deposit GM: ETH/USD");
     await modal.getByPlaceholder("0.0", { exact: true }).fill("1");

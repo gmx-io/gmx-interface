@@ -52,7 +52,7 @@ async function chainsStats(page: Page, label: string, required: string[] = []) {
         const reading = await readTooltip(page, handle);
         const value = displayedNumber(reading.value);
         // Network rows and the total; stale or missing-data notices are not amounts.
-        const rows = reading.text.matchAll(/([A-Za-z][\w ]*):\s+(\$?\s*[\d.,]+[kmbt]?)\s*$/gm);
+        const rows = reading.text.matchAll(/^([A-Za-z][\w ]*)\n(\$?\s*[\d.,]+[kmbt]?)$/gm);
         stats = { value, entries: Object.fromEntries([...rows].map(([, title, v]) => [title, displayedNumber(v)])) };
         const { Total } = stats.entries;
         return Total !== undefined && displayedSumMatches(value, [Total]) && required.every((n) => n in stats.entries);
@@ -68,7 +68,7 @@ function usdValues(text: string) {
 }
 
 function rowAmounts(text: string) {
-  return [...text.matchAll(/:\s+\$?\s*([\d.,]+[kmbt]?)/g)].map(([, value]) => displayedNumber(value));
+  return [...text.matchAll(/^[A-Za-z][^\n]*\n\$?\s*([\d.,]+[kmbt]?)$/gm)].map(([, value]) => displayedNumber(value));
 }
 
 test(

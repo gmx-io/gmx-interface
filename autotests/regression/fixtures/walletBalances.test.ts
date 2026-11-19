@@ -10,7 +10,7 @@ import {
   type Hex,
 } from "viem";
 
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { mockWalletBalances } from "./walletBalances";
@@ -80,7 +80,7 @@ const balanceOf = (owner = account) => ({
 
 function inventoryCall(functionName: "getAccountPositions" | "getAccountOrders", address = account) {
   return encodeFunctionData({
-    abi: SyntheticsReader,
+    abi: getAbi(chainId, "SyntheticsReader"),
     functionName,
     args: [getContract(chainId, "DataStore"), address, 0n, 100n],
   });

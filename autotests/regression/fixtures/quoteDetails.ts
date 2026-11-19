@@ -33,17 +33,13 @@ export async function impactAndFee(row: Locator) {
   return { impact, fee };
 }
 
-// Tooltip rows rendered as "Label:", "(x% of ... amount)", "-$ y".
+// Tooltip rows rendered as "Label", "(x% of ... amount)", "-$ y".
 export function feeBreakdown(text: string) {
   const lines = text.split("\n").map((line) => line.trim());
   const items: { label: string; percent: number; usd: number }[] = [];
   lines.forEach((line, i) => {
-    if (line.endsWith(":") && /^\(.*% of/.test(lines[i + 1] ?? "")) {
-      items.push({
-        label: line.slice(0, -1),
-        percent: displayedNumber(lines[i + 1]),
-        usd: displayedNumber(lines[i + 2]),
-      });
+    if (i > 0 && /^\(.*% of/.test(line)) {
+      items.push({ label: lines[i - 1], percent: displayedNumber(line), usd: displayedNumber(lines[i + 1] ?? "") });
     }
   });
   return items;

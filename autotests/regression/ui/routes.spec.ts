@@ -13,6 +13,8 @@ const PUBLIC_RPC_HOSTS = new Set(
   [...readFileSync("src/config/rpc.ts", "utf8").matchAll(/(?:https|wss):\/\/([\w.-]+)/g)].map(([, host]) => host)
 );
 const AD_PIXEL_HOSTS = /(^|\.)(adrsbl\.io|adnxs\.com|adradv\.io|adform\.net)$/;
+const HCAPTCHA_LANGUAGE_WARNING =
+  /^\[hCaptcha\] Invalid optional render properties were ignored or replaced with defaults:\s+\[hCaptcha\] hl \| Language was not provided\.$/;
 
 const TITLE_SUFFIX = " | Decentralized perpetual exchange | GMX".replaceAll("|", "\\|");
 const pageTitle = (name: string) => new RegExp(`^${name}${TITLE_SUFFIX}$`);
@@ -119,6 +121,8 @@ function ignoredConsoleReason(message: ConsoleMessage) {
   if (/^\[executeMulticallWorker\] Worker did not respond in time\. Falling back/.test(text))
     return "multicall logs a slow worker before its main-thread fallback";
   if (/^TypeError: Failed to fetch\s+at _FetchRequest\.getUrl/.test(text)) return "ethers RPC transport failure";
+  if (HCAPTCHA_LANGUAGE_WARNING.test(text) && message.location().url.startsWith("https://js.hcaptcha.com/"))
+    return "Privy renders its hCaptcha without a language, so hCaptcha uses the browser's; no page data";
 }
 
 function watchConsole(page: Page) {

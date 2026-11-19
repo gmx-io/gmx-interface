@@ -1,6 +1,6 @@
 import { expect, type BrowserContext, type Page } from "@playwright/test";
 
-import { datedChainAnnouncements, dismissOutageWarning } from "../fixtures/announcements";
+import { datedChainAnnouncements, dismissOutageWarning, hideTopRightMessages } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -85,6 +85,9 @@ test("2.24 a KLI flag-gated listing appears in What's new only while its flag is
 test("2.24 the Update available banner offers a reload for a newer build and its dismissal snoozes it", async ({
   page,
 }) => {
+  // Fast-forwarding leaves the page's animation timeline behind the clock, so a What's new card shown after the
+  // dismissal would not finish its exit and the banner could not take the slot back. Keep the slot to this banner.
+  await hideTopRightMessages(page);
   await page.clock.install();
   // A newer build id on the app shell; the debug flag makes the running build "1".
   await page.route(
