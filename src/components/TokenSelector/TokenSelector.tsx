@@ -244,11 +244,11 @@ export default function TokenSelector(props: Props) {
                 )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && <TokenIcon symbol={token.symbol} displaySize={40} badge={tokenBadge} />}
-                  <div className="items ml-16 flex gap-4">
+                  <div className="ml-16 flex items-baseline">
                     <div>
                       {token.isMarketToken && marketToken ? `GM: ${getMarketIndexName(marketToken)}` : token.symbol}
                     </div>
-                    {marketToken && <span className="text-accent">[{getMarketPoolName(marketToken)}]</span>}
+                    {marketToken && <span className="subtext">[{getMarketPoolName(marketToken)}]</span>}
                   </div>
                 </div>
                 <div className="text-body-large flex flex-col items-end gap-2">

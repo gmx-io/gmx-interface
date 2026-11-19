@@ -49,9 +49,7 @@ function renderMarketName(market?: GlvOrMarketInfo) {
     <>
       {isGlv ? getGlvDisplayName(market) : "GM"}
       {marketName ? <>: {marketName}</> : null}
-      <span className="inline-flex items-start">
-        <span className="subtext">[{poolName}]</span>
-      </span>
+      <span className="subtext">[{poolName}]</span>
     </>
   );
 }

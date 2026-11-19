@@ -354,9 +354,9 @@ export function TradeHistoryRow({
         <TooltipRow
           label={t`Market`}
           value={
-            <div className="flex items-center">
+            <div className="flex items-baseline">
               <span>{msg.indexName!}</span>
-              <span className="subtext leading-1">[{msg.poolName!}]</span>
+              <span className="subtext">[{msg.poolName!}]</span>
             </div>
           }
         />
@@ -369,7 +369,7 @@ export function TradeHistoryRow({
           <span key={market.indexName}>
             {index > 0 && " → "}
             <span>{market.indexName}</span>
-            <span className="subtext leading-1">[{market.poolName}]</span>
+            <span className="subtext">[{market.poolName}]</span>
           </span>
         ))}
       </TooltipText>

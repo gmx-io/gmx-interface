@@ -88,7 +88,7 @@ export const SettleAccruedFundingFeeRow = ({
       className="ClaimSettleModal-checkbox flex self-center"
     >
       <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-        <div className="flex items-start">
+        <div className="flex items-baseline">
           <span className="ClaimSettleModal-row-text">
             {position.isLong ? t`Long` : t`Short`} {indexName}
           </span>{" "}

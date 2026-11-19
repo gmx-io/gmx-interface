@@ -66,7 +66,7 @@ export function ClaimRewardRow({
       </TableTd>
       <TableTd>
         <div className="flex items-center justify-between gap-8">
-          <div className="flex items-center">
+          <div className="flex items-baseline">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

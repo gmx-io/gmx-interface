@@ -174,9 +174,8 @@ export function GmStatusNotification({
         if (gmMarket) {
           tokensText = (
             <>
-              <Trans>GM:</Trans>
-              <span className="inline-flex whitespace-nowrap">
-                {" "}
+              <Trans>GM:</Trans>{" "}
+              <span className="inline-flex items-baseline whitespace-nowrap">
                 {getMarketIndexName(gmMarket)}
                 <PoolName>{getMarketPoolName(gmMarket)}</PoolName>
               </span>
@@ -188,7 +187,7 @@ export function GmStatusNotification({
       if (pendingDepositData.initialLongTokenAddress)
         return (
           <Trans>
-            <div className="inline-flex">
+            <div className="inline-flex items-baseline">
               Buying {glvInfo ? getGlvDisplayName(glvInfo) : "GM:"}
               {indexName ? <span>&nbsp;{indexName}</span> : null}
               <PoolName>{poolName}</PoolName>
@@ -207,7 +206,7 @@ export function GmStatusNotification({
 
       return (
         <Trans>
-          <div className="inline-flex">
+          <div className="inline-flex items-baseline">
             Selling {isGlv ? getGlvDisplayName(marketInfo) : "GM"}
             {indexName && <span>:&nbsp;{indexName}</span>}
             <PoolName>{poolName}</PoolName>
@@ -230,12 +229,12 @@ export function GmStatusNotification({
       return (
         <Trans>
           Shifting from{" "}
-          <span className="inline-flex items-center">
+          <span className="inline-flex items-baseline">
             <span>GM: {fromIndexName}</span>
             <PoolName>{fromPoolName}</PoolName>
           </span>{" "}
           to{" "}
-          <span className="inline-flex items-center">
+          <span className="inline-flex items-baseline">
             <span>GM: {toIndexName}</span>
             <PoolName>{toPoolName}</PoolName>
           </span>
@@ -431,5 +430,5 @@ export function GmStatusNotification({
 }
 
 export function PoolName({ children }: { children: ReactNode }) {
-  return children ? <span className="ml-2 text-12 font-normal text-typography-primary">[{children}]</span> : null;
+  return children ? <span className="subtext font-normal !text-typography-primary">[{children}]</span> : null;
 }

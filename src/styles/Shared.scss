@@ -399,9 +399,9 @@ button.btn-link:hover .logout-icon {
 }
 
 .subtext {
-  font-size: 1.2rem;
   color: var(--color-slate-100);
-  margin-left: 0.25rem;
+  margin-left: 0.4rem;
+  white-space: nowrap;
 }
 
 a:hover .text-red {

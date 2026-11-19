@@ -255,7 +255,7 @@ function TransitRouteProgressContent({
 
   const title = isBuy ? (
     <Trans>
-      <div className="inline-flex">
+      <div className="inline-flex items-baseline">
         Buying {glvDisplayName ?? "GM:"}
         {indexName ? <span>&nbsp;{indexName}</span> : null}
         <PoolName>{poolName}</PoolName>
@@ -264,7 +264,7 @@ function TransitRouteProgressContent({
     </Trans>
   ) : (
     <Trans>
-      <div className="inline-flex">
+      <div className="inline-flex items-baseline">
         Selling {glvDisplayName ?? "GM"}
         {indexName && <span>:&nbsp;{indexName}</span>}
         <PoolName>{poolName}</PoolName>

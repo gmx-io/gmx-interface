@@ -67,7 +67,7 @@ const Row = memo(({ rebateItems }: { rebateItems: RebateInfoItem[] }) => {
     const indexName = getMarketIndexName(market);
     const poolName = getMarketPoolName(market);
     return (
-      <div className="flex items-center">
+      <div className="flex items-baseline">
         <span className="text-typography-primary">{indexName}</span>
         <span className="subtext">[{poolName}]</span>
       </div>
