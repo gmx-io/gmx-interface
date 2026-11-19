@@ -136,6 +136,7 @@ jobs:
             src/config/events.tsx
             sdk/src/configs/oracleKeeper.ts
             sdk/src/configs/api.ts
+            sdk/src/configs/markets.ts
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Read indexer configuration from the commit the QA pass started on
@@ -170,21 +171,26 @@ jobs:
         run: yarn install --immutable --mode=skip-build
       - name: Install SDK dependencies for funded harness validation
         run: yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Install Chromium
+        id: setup
+        run: yarn exec playwright install --with-deps chromium
+      # Each check below reports on its own, so a failing one does not hide the results of the others.
       - name: Typecheck regression tests
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: yarn test:regression:types
       - name: Validate fixtures and funded policies without a wallet or transactions
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: |
           yarn test:regression:funded:types
           yarn test:regression:funded:unit
           yarn test:regression:fixtures:unit
           yarn test:regression:ci:unit
           REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
-      - name: Install Chromium
-        run: yarn exec playwright install --with-deps chromium
       - name: Run regression
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: yarn test:regression
       - name: Run funded harness checks (no funded wallet)
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: yarn test:regression:funded-harness
       - name: Upload reports and failure evidence
         if: ${{ !cancelled() }}

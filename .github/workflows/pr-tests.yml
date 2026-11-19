@@ -99,3 +99,31 @@ jobs:
           yarn test:ci
           yarn tscheck:ci
           npm pack --dry-run
+
+  regression-checks:
+    # The browser suites only run on release PRs, so SDK and fixture changes that break them are caught here instead.
+    name: Regression suite types and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+
+      - name: Typecheck and unit test without a browser
+        run: |
+          yarn test:regression:types
+          yarn test:regression:funded:types
+          yarn test:regression:funded:unit
+          yarn test:regression:fixtures:unit
+          yarn test:regression:ci:unit
+          REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
