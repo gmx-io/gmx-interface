@@ -1,14 +1,17 @@
 import { t } from "@lingui/macro";
 
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, isSolanaNetwork } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";
 
+import solanaIcon from "img/tokens/ic_sol.svg";
+
 export function ChainDataImage({ chainId }: { chainId?: number }) {
-  const { chainId: currentChainId } = useChainId();
+  const { chainId: currentChainId, networkId } = useChainId();
+  const isSolana = !chainId && isSolanaNetwork(networkId);
   chainId = chainId || currentChainId;
-  const chainName = getChainName(chainId as ContractsChainId);
-  const chainIcon = getIcon(chainId, "network");
+  const chainName = isSolana ? t`Solana` : getChainName(chainId as ContractsChainId);
+  const chainIcon = isSolana ? solanaIcon : getIcon(chainId, "network");
 
   return (
     <div

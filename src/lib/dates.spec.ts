@@ -64,4 +64,19 @@ describe("formatTimeAgo", () => {
     expect(formatTimeAgo(now - 3 * 3_600_000, now)).toBe("3 hours ago");
     expect(formatTimeAgo(now - 2 * 86_400_000, now)).toBe("2 days ago");
   });
+
+  it("has a short form for tight table columns", () => {
+    const now = 1_789_126_326_000;
+
+    expect(formatTimeAgo(now - 59 * 60_000, now, "narrow")).toBe("59m ago");
+    expect(formatTimeAgo(now - 3 * 3_600_000, now, "narrow")).toBe("3h ago");
+    expect(formatTimeAgo(now - 2 * 86_400_000, now, "narrow")).toBe("2d ago");
+  });
+
+  it("picks the unit after rounding", () => {
+    const now = 1_789_126_326_000;
+
+    expect(formatTimeAgo(now - (59 * 60 + 30) * 1000, now)).toBe("1 hour ago");
+    expect(formatTimeAgo(now - (23 * 60 + 40) * 60_000, now)).toBe("1 day ago");
+  });
 });

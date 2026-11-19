@@ -4,7 +4,7 @@ import ReferralsFilledIcon from "img/ic_referrals_filled.svg?react";
 import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
-export function HowToStartEarning() {
+export function HowToStartEarning({ shareStepLabel }: { shareStepLabel?: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-8">
       <h3 className="mb-12 mt-20 text-20 font-medium leading-1 text-typography-primary max-lg:mb-8 max-lg:mt-12">
@@ -26,7 +26,7 @@ export function HowToStartEarning() {
         <div className="flex flex-1 items-center gap-12 rounded-8 border-1/2 border-stroke-primary p-adaptive">
           <ShareArrowFilledIcon className="size-28 shrink-0 text-blue-300 max-lg:size-24" />
           <span className="text-16 font-medium max-lg:text-14">
-            <Trans>Share and receive rebates</Trans>
+            {shareStepLabel ?? <Trans>Share and receive rebates</Trans>}
           </span>
         </div>
       </div>
