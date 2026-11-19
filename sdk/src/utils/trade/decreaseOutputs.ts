@@ -64,7 +64,14 @@ export function getHasSplitReceiveOutputs(outputs: DecreaseReceiveOutput[]): boo
 
 export function getIsSplitReceiveAvailable(
   position: PositionInfo | undefined,
-  outputs: DecreaseReceiveOutput[]
+  outputs: DecreaseReceiveOutput[],
+  { isTwap = false }: { isTwap?: boolean } = {}
 ): boolean {
-  return getCanSplitReceive(position) && getHasSplitReceiveOutputs(outputs);
+  if (!position || !getCanSplitReceive(position)) {
+    return false;
+  }
+
+  return isTwap
+    ? outputs.some((output) => getIsEquivalentTokens(output.token, position.pnlToken))
+    : getHasSplitReceiveOutputs(outputs);
 }

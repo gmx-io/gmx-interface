@@ -28,7 +28,7 @@ import {
   isMarketTokenAddress,
   MARKETS,
 } from "sdk/configs/markets";
-import { getToken, GM_STUB_ADDRESS } from "sdk/configs/tokens";
+import { getToken, GM_STUB_ADDRESS, isValidTokenSafe } from "sdk/configs/tokens";
 import { getMarketIndexName, getMarketPoolName } from "sdk/utils/markets";
 
 import Button from "components/Button/Button";
@@ -98,9 +98,12 @@ export function MultichainTokenSelector({
   const [searchKeyword, setSearchKeyword] = useState("");
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const openWalletReceive = useOpenWalletReceive();
+  // The SDK token config has no Solana mints; the network's TokensData carries them.
+  // getToken throws on those mints, which takes down the trade box while tokens are still loading.
+  const sdkToken = isValidTokenSafe(chainId, tokenAddress) ? getToken(chainId, tokenAddress) : undefined;
   let token: Token | undefined = isMarketTokenAddress(chainId, tokenAddress)
     ? getToken(chainId, GM_STUB_ADDRESS)
-    : getToken(chainId, tokenAddress);
+    : tokensData?.[tokenAddress] ?? sdkToken;
 
   const onSelectTokenAddress = (tokenAddress: string, tokenChainId: AnyChainId | GmxAccountPseudoChainId) => {
     setIsModalVisible(false);

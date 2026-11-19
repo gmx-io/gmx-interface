@@ -435,7 +435,11 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
   const tryEnableSubaccount = useCallback(
     async ({ remainingActions, remainingSeconds, withTokenPermits = true }: SubaccountActivationParams = {}) => {
-      if (!provider || !signer || (await getIsContractAccount(signer.address, chainId))) {
+      if (
+        !provider ||
+        !signer ||
+        (await getIsContractAccount({ address: signer.address, referenceChainId: chainId }))
+      ) {
         return false;
       }
 

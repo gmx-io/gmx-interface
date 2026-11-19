@@ -371,31 +371,3 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM],
   },
 ];
-
-type EcosystemTelegramGroup = {
-  title: MessageDescriptor;
-  link: string;
-  linkLabel: string;
-  about: MessageDescriptor;
-};
-
-export const telegramGroups: EcosystemTelegramGroup[] = [
-  {
-    title: msg`GMX`,
-    link: "https://t.me/GMX_IO",
-    linkLabel: "t.me",
-    about: msg`Telegram group`,
-  },
-  {
-    title: msg`GMX (Chinese)`,
-    link: "https://t.me/gmxch",
-    linkLabel: "t.me",
-    about: msg`Telegram group (Chinese)`,
-  },
-  {
-    title: msg`GMX trading chat`,
-    link: "https://t.me/gambittradingchat",
-    linkLabel: "t.me",
-    about: msg`GMX community discussion`,
-  },
-];

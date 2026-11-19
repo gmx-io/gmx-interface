@@ -314,6 +314,43 @@ $shadow-shape-bottom: shadow-shape(100%, calc(100% + #{$pointer-box-height}));
     overscroll-behavior: contain;
   }
 
+  // Scroll bar of a tall tooltip: a 4px thumb with no track, 4px from the right edge. It sits in the right
+  // padding (reserved even when nothing scrolls), so the text never moves.
+  // Safari before 18.2 has no scrollbar-gutter: it keeps the default scroll bar
+  @supports selector(::-webkit-scrollbar) and (scrollbar-gutter: stable) {
+    @media (hover: hover) and (pointer: fine) {
+      .Tooltip-content {
+        margin-right: calc(-1 * var(--tooltip-padding-x));
+        scrollbar-gutter: stable;
+
+        &::-webkit-scrollbar {
+          width: calc(var(--tooltip-padding-x) - var(--tooltip-content-bleed));
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border: solid transparent;
+          border-width: 0 3px 0 1px;
+          border-radius: 9999px;
+          background-clip: padding-box;
+          background-color: color-mix(in srgb, var(--color-typography-secondary) 50%, transparent);
+        }
+      }
+    }
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    @media (hover: hover) and (pointer: fine) {
+      .Tooltip-content {
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in srgb, var(--color-typography-secondary) 50%, transparent) transparent;
+      }
+    }
+  }
+
   &::after {
     content: "";
     position: absolute;

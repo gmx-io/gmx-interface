@@ -15,7 +15,6 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { use24hPriceDeltaMap } from "domain/synthetics/tokens";
 import { use24hVolumes } from "domain/synthetics/tokens/use24Volumes";
 import { formatPercentageDisplay, formatRatePercentage, numberWithCommasParts } from "lib/numbers";
-import { getToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
@@ -34,7 +33,7 @@ export function useChartHeaderFormattedValues() {
   const oraclePriceDecimals = useSelector(selectSelectedMarketPriceDecimals);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
 
-  const selectedTokenOption = chartTokenAddress ? getToken(chainId, chartTokenAddress) : undefined;
+  const selectedTokenOption = chartToken;
   const visualMultiplier = isSwap ? 1 : selectedTokenOption?.visualMultiplier ?? 1;
 
   const priceTokenAddress = useMemo(() => {
