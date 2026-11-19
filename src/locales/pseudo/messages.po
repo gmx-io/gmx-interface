@@ -1196,6 +1196,10 @@ msgstr ""
 msgid "Insufficient staked tokens"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or asset."
+msgstr ""
+
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr ""
@@ -3573,6 +3577,11 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
+msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
 msgstr ""
 
 #: src/pages/Announcements/Announcements.tsx
@@ -7712,6 +7721,10 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
+msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} withdrawals to {withdrawalNetworkName}. Try another network or asset."
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx

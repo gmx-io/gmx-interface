@@ -1196,6 +1196,10 @@ msgstr "ポジションの価格への影響"
 msgid "Insufficient staked tokens"
 msgstr "ステークされたトークン不足"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or asset."
+msgstr "Stargateは{networkName}からの{tokenSymbol}の入金を一時停止しています。別のネットワークまたは資産をお試しください。"
+
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "コードを作成中..."
@@ -3574,6 +3578,11 @@ msgstr "USDCを承認中..."
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
 msgstr "365日間の予想手数料"
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr "ルートは一時的に利用できません"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
@@ -7713,6 +7722,10 @@ msgstr "リベート"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "それでも、手数料（資金調達手数料 + 借入手数料）だけで時間の経過とともに証拠金が減少し、ポジションが清算される可能性があります。"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} withdrawals to {withdrawalNetworkName}. Try another network or asset."
+msgstr "Stargateは{withdrawalNetworkName}への{tokenSymbol}の出金を一時停止しています。別のネットワークまたは資産をお試しください。"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."

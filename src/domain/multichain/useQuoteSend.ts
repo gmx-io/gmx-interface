@@ -1,6 +1,7 @@
 import useSWR from "swr";
 
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
+import { retryStargateQuoteOnError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
 import {
   fetchLayerZeroNativeFee,
@@ -47,6 +48,7 @@ export function useQuoteSendNativeFee({
         });
       },
       refreshInterval: FREQUENT_UPDATE_INTERVAL,
+      onErrorRetry: retryStargateQuoteOnError,
     }
   );
 
@@ -109,6 +111,7 @@ export function useQuoteSendNativeFeeWithGasLimit({
         return { nativeFee, gasLimit: transferGasLimit };
       },
       refreshInterval: FREQUENT_UPDATE_INTERVAL,
+      onErrorRetry: retryStargateQuoteOnError,
     }
   );
 

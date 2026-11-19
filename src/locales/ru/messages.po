@@ -1196,6 +1196,10 @@ msgstr "Влияние позиции на цену"
 msgid "Insufficient staked tokens"
 msgstr "Недостаточно застейканных токенов"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or asset."
+msgstr "Stargate временно приостановил депозиты {tokenSymbol} из сети {networkName}. Попробуйте другую сеть или актив."
+
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "Создание кода..."
@@ -3574,6 +3578,11 @@ msgstr "Одобрение USDC..."
 #: src/components/Earn/Portfolio/EarningsOverview/LpPanel.tsx
 msgid "Expected 365d fees"
 msgstr "Ожидаемые комиссии за 365 дн."
+
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr "Маршрут временно недоступен"
 
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
@@ -7713,6 +7722,10 @@ msgstr "ВОЗВРАТ"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "Позиция всё ещё может быть ликвидирована только из-за комиссий за финансирование и заимствование, которые со временем уменьшают маржу."
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate has temporarily paused {tokenSymbol} withdrawals to {withdrawalNetworkName}. Try another network or asset."
+msgstr "Stargate временно приостановил вывод {tokenSymbol} в сеть {withdrawalNetworkName}. Попробуйте другую сеть или актив."
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."

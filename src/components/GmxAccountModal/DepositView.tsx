@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { Hex, decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
+import { encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import {
@@ -24,7 +24,6 @@ import {
   MULTICHAIN_FUNDING_SLIPPAGE_BPS,
   MULTI_CHAIN_DEPOSIT_TRADE_TOKENS,
   RANDOM_ACCOUNT,
-  StargateErrorsAbi,
   getDepositTokenSymbolsForNetwork,
   getMappedTokenId,
 } from "config/multichain";
@@ -51,6 +50,7 @@ import {
   estimateSameChainDepositGas,
   sendSameChainDepositTxn,
 } from "domain/multichain/sendSameChainDepositTxn";
+import { getIsStargateRouteUnavailableError, tryDecodeStargateError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
@@ -402,7 +402,11 @@ export const DepositView = () => {
     settlementChainId,
   ]);
 
-  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
+  const {
+    data: quoteOft,
+    isLoading: isQuoteOftLoading,
+    error: quoteOftError,
+  } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -435,7 +439,11 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const { data: quoteSendData, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
+  const {
+    data: quoteSendData,
+    isLoading: isQuoteSendNativeFeeLoading,
+    error: quoteSendError,
+  } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -444,7 +452,11 @@ export const DepositView = () => {
     composeGas,
   });
 
-  const { data: baseQuoteSendData, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
+  const {
+    data: baseQuoteSendData,
+    isLoading: isBaseQuoteSendNativeFeeLoading,
+    error: baseQuoteSendError,
+  } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -455,6 +467,10 @@ export const DepositView = () => {
 
   const quoteSendNativeFee = quoteSendData?.nativeFee;
   const baseQuoteSendNativeFee = baseQuoteSendData?.nativeFee;
+
+  const isRouteUnavailable = [quoteOftError, quoteSendError, baseQuoteSendError].some(
+    getIsStargateRouteUnavailableError
+  );
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendNativeFee,
@@ -498,7 +514,7 @@ export const DepositView = () => {
     },
     {
       params:
-        account && depositViewTokenAddress && settlementChainId
+        account && depositViewTokenAddress && depositViewChain === settlementChainId
           ? {
               account,
               depositViewTokenAddress,
@@ -1054,6 +1070,7 @@ export const DepositView = () => {
   const showEmptyState = (isGlobalEmpty || isSelectedNetworkEmpty) && !isAvalancheSettlement;
 
   const networkName = depositViewChain !== undefined ? getChainName(depositViewChain) : undefined;
+  const tokenSymbol = selectedToken?.symbol;
 
   const depositTokenSymbols = useMemo(
     () =>
@@ -1119,7 +1136,7 @@ export const DepositView = () => {
     shouldShowInfoRowPlaceholder &&
     (depositViewChain === settlementChainId
       ? isSameChainNetworkFeeLoading
-      : areMultichainFeesLoading || networkFee === undefined);
+      : !isRouteUnavailable && (areMultichainFeesLoading || networkFee === undefined));
 
   const isInsufficientSourceChainNativeBalance =
     nativeTokenSourceChainBalance !== undefined &&
@@ -1175,6 +1192,11 @@ export const DepositView = () => {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
+      disabled: true,
+    };
+  } else if (isRouteUnavailable) {
+    buttonState = {
+      text: t`Route temporarily unavailable`,
       disabled: true,
     };
   } else if (isInputEmpty) {
@@ -1263,7 +1285,7 @@ export const DepositView = () => {
     }
 
     if (protocolFeeAmount === undefined || selectedTokenSourceChainDecimals === undefined) {
-      return "...";
+      return isRouteUnavailable ? "-" : "...";
     }
 
     return (
@@ -1280,6 +1302,7 @@ export const DepositView = () => {
     settlementChainId,
     protocolFeeAmount,
     selectedTokenSourceChainDecimals,
+    isRouteUnavailable,
     protocolFeeUsd,
     selectedToken?.symbol,
   ]);
@@ -1307,7 +1330,7 @@ export const DepositView = () => {
     }
 
     if (networkFee === undefined || depositViewChain === undefined) {
-      return "...";
+      return isRouteUnavailable ? "-" : "...";
     }
 
     return (
@@ -1328,9 +1351,10 @@ export const DepositView = () => {
     networkFeeUsd,
     sameChainNetworkFeeDetails,
     sameChainNetworkFeeAsyncResult.error,
+    isRouteUnavailable,
   ]);
 
-  const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
+  const isDepositFeeLoading = shouldShowInfoRowPlaceholder && !isRouteUnavailable && areMultichainFeesLoading;
 
   const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
@@ -1535,6 +1559,14 @@ export const DepositView = () => {
           </>
         ) : (
           <>
+            {isRouteUnavailable && (
+              <AlertInfoCard type="error" hideClose>
+                <Trans>
+                  Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or
+                  asset.
+                </Trans>
+              </AlertInfoCard>
+            )}
             {buttonState.bannerErrorName && (
               <AlertInfoCard type="error" hideClose>
                 <ValidationBannerErrorContent
@@ -1567,14 +1599,6 @@ export const DepositView = () => {
 function throwUnlessUserRejected(error: unknown) {
   if (!parseError(error as ErrorLike)?.isUserRejectedError) {
     throw error;
-  }
-}
-
-function tryDecodeStargateError(data: Hex) {
-  try {
-    return decodeErrorResult({ abi: StargateErrorsAbi, data });
-  } catch {
-    return undefined;
   }
 }
 
