@@ -10,7 +10,12 @@ import {
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_MARKETS } from "config/gmsol/markets";
-import { GMSOL_STORE_ADDRESS, GMSOL_STORE_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
+import {
+  GMSOL_STORE_ADDRESS,
+  GMSOL_STORE_PROGRAM_ID,
+  SOLANA_SYSTEM_PROGRAM_ID,
+  SOLANA_TOKEN_PROGRAM_ID,
+} from "config/gmsol/program";
 import { GMSOL_TOKENS } from "config/gmsol/tokens";
 import { copySolanaBytes } from "lib/solana/bytes";
 
@@ -29,14 +34,20 @@ function assertOwner(action: Exclude<GmsolOrderAction, { type: "create" }>, owne
   requireGmsol(action.order.callback === undefined, "Callback orders are not supported by the pinned validator");
 }
 
+// The validator restricts these to the wallet's SOL transfer into, and SyncNative of, its own WSOL account.
+const isWrapInstruction = (ix: Instruction) =>
+  ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID || ix.programAddress === SOLANA_TOKEN_PROGRAM_ID;
+
 export async function buildGmsolOrderTransactions({
   owner,
   action,
   recentBlockhash,
   lastValidBlockHeight,
   lookupTables,
+  wrappedSolBalance = undefined,
   sdk = undefined,
 }: Pick<GmsolTransactionPlan, "owner" | "action" | "recentBlockhash" | "lastValidBlockHeight" | "lookupTables"> & {
+  wrappedSolBalance?: bigint;
   sdk?: Awaited<ReturnType<typeof loadGmsolSdk>>;
 }): Promise<GmsolTransactionPlan> {
   requireGmsol(getIsSolanaNetworkEnabled(), "Solana network is disabled");
@@ -48,6 +59,7 @@ export async function buildGmsolOrderTransactions({
     recentBlockhash,
     lastValidBlockHeight,
     lookupTables,
+    wrappedSolBalance,
     groups: [],
   });
   action = plan.action;
@@ -216,9 +228,18 @@ export async function buildGmsolOrderTransactions({
     group.free();
   }
 
-  if (action.type === "create" && action.atomic && plan.groups.flat().length > 1) {
+  if (
+    action.type === "create" &&
+    action.atomic &&
+    (plan.groups.flat().length > 1 || plan.wrappedSolBalance !== undefined)
+  ) {
     // A WASM TransactionGroup is not atomic; all orders must share one v0 message.
     const decoded = plan.groups.flat().map((bytes) => decodeGmsolTransaction(bytes, plan));
+    const [increase] = action.orders;
+    const required = increase.payWithNativeSol ? increase.collateralDeltaAmount : 0n;
+    const available = plan.wrappedSolBalance ?? 0n;
+    // Existing wallet WSOL funds the collateral first, so a rebuild after confirmed wrapping wraps nothing again.
+    const shortfall = required > available ? required - available : 0n;
     const instructions: Instruction[] = [];
     let units = 0;
     const prepared = new Set<string>();
@@ -226,28 +247,25 @@ export async function buildGmsolOrderTransactions({
       for (const ix of message.instructions) {
         if (ix.programAddress !== COMPUTE_BUDGET_PROGRAM) {
           const data = ix.data ? copySolanaBytes(ix.data) : new Uint8Array();
+          if (isWrapInstruction(ix)) {
+            if (shortfall === 0n) continue;
+            if (ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID)
+              new DataView(data.buffer).setBigUint64(4, shortfall, true);
+          }
+          // Per-transaction WASM lookups are dropped so every account is compressed against the same tables.
+          const accounts = (ix.accounts ?? []).map((account) => ({ address: account.address, role: account.role }));
+          const addresses = accounts.map((account) => account.address);
           const name =
-            ix.programAddress === GMSOL_STORE_PROGRAM_ID
-              ? decodeGmsolInstruction(
-                  data,
-                  (ix.accounts ?? []).map((account) => account.address)
-                ).name
-              : undefined;
+            ix.programAddress === GMSOL_STORE_PROGRAM_ID ? decodeGmsolInstruction(data, addresses).name : undefined;
           const idempotent =
             ix.programAddress === ASSOCIATED_TOKEN_PROGRAM || name === "prepare_user" || name === "prepare_position";
-          const key = JSON.stringify([ix.programAddress, ix.accounts, [...data]]);
+          const key = JSON.stringify([ix.programAddress, accounts, [...data]]);
           if (!idempotent || !prepared.has(key)) {
-            instructions.push(
-              name === "create_order_v2"
-                ? {
-                    ...ix,
-                    data: compactCreateOrderData(
-                      data,
-                      (ix.accounts ?? []).map((account) => account.address)
-                    ),
-                  }
-                : ix
-            );
+            instructions.push({
+              programAddress: ix.programAddress,
+              accounts,
+              data: name === "create_order_v2" ? compactCreateOrderData(data, addresses) : data,
+            });
           }
           if (idempotent) prepared.add(key);
         } else {
@@ -277,8 +295,18 @@ export async function buildGmsolOrderTransactions({
         (preparesWalletAccount ? preparation : execution).push(ix);
       }
       // Keep order escrow setup and collateral transfers atomic with all orders.
-      const setup = compileGmsolInstructions(plan, preparation, units);
-      const orders = compileGmsolInstructions(plan, execution, units);
+      let setup = compileGmsolInstructions(plan, preparation, units);
+      let orders = compileGmsolInstructions(plan, execution, units);
+      if (orders.length > 1232 && execution.some(isWrapInstruction)) {
+        // Only the wallet's own WSOL shortfall may precede the orders; a later rebuild reuses it.
+        preparation.push(...execution.filter(isWrapInstruction));
+        setup = compileGmsolInstructions(plan, preparation, units);
+        orders = compileGmsolInstructions(
+          plan,
+          execution.filter((ix) => !isWrapInstruction(ix)),
+          units
+        );
+      }
       requireGmsol(
         preparation.length > 0 && setup.length <= 1232 && orders.length <= 1232,
         `Atomic increase with TP/SL requires ${orders.length} bytes (maximum 1232); no orders were submitted`
