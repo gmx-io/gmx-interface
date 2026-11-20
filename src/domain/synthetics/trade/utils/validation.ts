@@ -10,7 +10,12 @@ import {
   getChainName,
   isChainDisabled,
 } from "config/chains";
-import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import {
+  BASIS_POINTS_DIVISOR,
+  BASIS_POINTS_DIVISOR_BIGINT,
+  DEFAULT_SLIPPAGE_AMOUNT,
+  USD_DECIMALS,
+} from "config/factors";
 import { getMappedTokenId } from "config/multichain";
 import { isDepositDisabledMarket, isShiftIntoDisabledMarket } from "config/static/markets";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -31,6 +36,11 @@ import {
   getOpenInterestUsd,
   getSellableMarketToken,
 } from "domain/synthetics/markets";
+import {
+  getIsLpDepositMinOutputPositive,
+  type DepositMinOutputParams,
+  getPoolTokenMinOutput,
+} from "domain/synthetics/markets/lpMinOutput";
 import type { GmPaySource } from "domain/synthetics/markets/types";
 import { getMarginDepositRiskLevel } from "domain/synthetics/orders/marginDeposit";
 import { PositionInfo } from "domain/synthetics/positions";
@@ -1382,8 +1392,32 @@ export function getGmShiftError({
     return { buttonErrorMessage: t`Enter an amount` };
   }
 
+  if (getPoolTokenMinOutput(DEFAULT_SLIPPAGE_AMOUNT, toTokenAmount) <= 0n) {
+    return { buttonErrorMessage: t`Receive amount below minimum` };
+  }
+
   if ((fromTokenAmount ?? 0n) > (fromToken?.balance ?? 0n)) {
     return { buttonErrorMessage: t`Insufficient ${fromToken?.symbol} balance` };
+  }
+
+  return {};
+}
+
+export function getGmDepositMinOutputError({
+  params,
+  gmLegAmount,
+  slippage,
+}: {
+  params: DepositMinOutputParams | { minLongTokenAmount: bigint } | undefined;
+  gmLegAmount: bigint | undefined;
+  slippage: number;
+}): ValidationResult {
+  if (!params || "minLongTokenAmount" in params) {
+    return {};
+  }
+
+  if (!getIsLpDepositMinOutputPositive({ params, gmLegAmount, slippage })) {
+    return { buttonErrorMessage: t`Receive amount below minimum` };
   }
 
   return {};
