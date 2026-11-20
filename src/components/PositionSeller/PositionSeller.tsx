@@ -395,7 +395,6 @@ export function PositionSeller() {
 
   const slippageInputId = useId();
 
-  const isTwap = orderOption === OrderOption.Twap;
   const isTwapUnavailable = isTwap && !orderOptions.some((option) => option.value === OrderOption.Twap);
   useEffect(() => {
     if (isTwapUnavailable) {
