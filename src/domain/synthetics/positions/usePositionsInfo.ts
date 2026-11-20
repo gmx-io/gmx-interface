@@ -51,6 +51,7 @@ export function composeApiPositionInfo(
 }
 
 export type PositionsInfoResult = {
+  isSyncing?: boolean;
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
   error?: Error;
