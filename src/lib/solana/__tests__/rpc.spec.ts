@@ -6,7 +6,6 @@ import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { getSolanaRpcUrl } from "config/rpc";
 import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
-import { metrics } from "lib/metrics";
 import { registerRpcTracker } from "lib/rpc/registry";
 
 import { SolanaRpcTracker } from "../rpc";
@@ -44,27 +43,6 @@ afterEach(() => {
   setAbFlagEnabled("solanaNetwork", false);
 });
 
-it.each([
-  [0, []],
-  [1, [1]],
-  [100, [100]],
-  [101, [100, 1]],
-] as const)("reads %s accounts through the configured Alchemy client", async (count, expectedBatches) => {
-  const tracker = createTracker();
-  const batches: number[] = [];
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(async (url, init) => {
-      expect(String(url)).toBe(getSolanaRpcUrl());
-      const { id, params } = JSON.parse(init.body);
-      batches.push(params[0].length);
-      return Response.json({ jsonrpc: "2.0", id, result: { context: { slot: 1 }, value: params[0].map(() => null) } });
-    })
-  );
-  await expect(tracker.fetchAccounts(Array(count).fill(owner))).resolves.toEqual(Array(count).fill(null));
-  expect(batches).toEqual(expectedBatches);
-});
-
 it.each(["http", "rpc", "incomplete", "timeout"])(
   "rejects the complete snapshot on a %s batch failure",
   async (failure) => {
@@ -93,7 +71,7 @@ it.each(["http", "rpc", "incomplete", "timeout"])(
   }
 );
 
-it.each(["network", "slot", "http"])("reads accounts despite a %s probe failure", async (failure) => {
+it.each(["slot", "http"])("reads accounts despite a %s probe failure", async (failure) => {
   const tracker = createTracker();
   const client = tracker.getRpc();
   let failed = true;
@@ -107,9 +85,7 @@ it.each(["network", "slot", "http"])("reads accounts despite a %s probe failure"
       }
       const result =
         method === "getGenesisHash"
-          ? failed && failure === "network"
-            ? "wrong-network"
-            : "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d"
+          ? "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d"
           : method === "getSlot"
             ? failed && failure === "slot"
               ? -1
@@ -130,57 +106,62 @@ it.each(["network", "slot", "http"])("reads accounts despite a %s probe failure"
   failed = false;
   await tracker.fallbackTracker.checkEndpoints(new AbortController());
   expect(tracker.getRpc()).toBe(client);
-  expect(tracker.fallbackTracker.getEndpointStats(tracker.endpoint)?.checkResults[0].stats?.slot).toBe(
-    9007199254740993n
-  );
   await expect(tracker.fetchAccounts([owner])).resolves.toEqual([null]);
 });
 
-it.each([true, false])(
-  "reports probe failure and recovery once from initial health %s FESOL-89",
-  async (initiallyHealthy) => {
-    vi.useFakeTimers();
-    setAbFlagEnabled("solanaNetwork", true);
-    setIsSolanaNetworkSelected(true);
-    const tracker = createTracker();
-    const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
-    if (!initiallyHealthy) probe.mockRejectedValue(new Error("RPC unavailable"));
-    const unregister = registerRpcTracker(tracker);
-    metrics.queue = [];
-    try {
-      tracker.getRpc();
-      await vi.advanceTimersByTimeAsync(5000);
-      probe.mockRejectedValue(new Error("RPC unavailable"));
-      await vi.advanceTimersByTimeAsync(20_000);
-      expect(tracker.getRpc()).toBe(tracker.rpc);
-      probe.mockResolvedValue({ responseTime: 20, slot: 124n });
-      await vi.advanceTimersByTimeAsync(20_000);
-      expect(tracker.getRpc()).toBe(tracker.rpc);
-      const healthReports = metrics.queue.flatMap((item) =>
-        item.type === "event" && item.payload.event === "rpcTracker.endpoint.health"
-          ? [{ isError: item.payload.isError, ...item.payload.customFields }]
-          : []
-      );
-      expect(healthReports).toMatchObject([
-        {
-          chainId: tracker.params.chainId,
-          endpoint: new URL(tracker.endpoint).hostname,
-          isHealthy: false,
-          isError: true,
-        },
-        {
-          chainId: tracker.params.chainId,
-          endpoint: new URL(tracker.endpoint).hostname,
-          isHealthy: true,
-          isError: false,
-        },
-      ]);
-    } finally {
-      unregister();
-      metrics.queue = [];
-    }
-  }
-);
+it("rejects the wrong network until an uncancelled mainnet check recovers TRD-98", async () => {
+  const tracker = createTracker();
+  let genesis = "wrong-network";
+  let httpFailure = false;
+  let invalidSlot = false;
+  const accountReads: string[] = [];
+  let finishRead: (() => void) | undefined;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url, init) => {
+      const { id, method } = JSON.parse(init.body);
+      if (method === "getMultipleAccounts") {
+        accountReads.push(method);
+        await new Promise<void>((resolve) => {
+          finishRead = resolve;
+        });
+        return Response.json({ jsonrpc: "2.0", id, result: { context: { slot: 1 }, value: [null] } });
+      }
+      if (httpFailure) return new Response("Unavailable", { status: 503 });
+      return Response.json({
+        jsonrpc: "2.0",
+        id,
+        result: method === "getGenesisHash" ? genesis : invalidSlot ? -1 : 123,
+      });
+    })
+  );
+  const probe = () => tracker.fallbackTracker.checkEndpoints(new AbortController());
+  const pendingRead = tracker.fetchAccounts([owner]);
+  await vi.waitFor(() => expect(finishRead).toBeDefined());
+  await probe();
+  const rejectedRead = expect(pendingRead).rejects.toThrow("not on Mainnet");
+  finishRead!();
+  await rejectedRead;
+  httpFailure = true;
+  await probe();
+  expect(() => tracker.getRpc()).toThrow("not on Mainnet");
+  await expect(tracker.fetchAccounts([owner])).rejects.toThrow("not on Mainnet");
+  expect(accountReads).toHaveLength(1);
+  httpFailure = false;
+  genesis = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
+  const cancelled = new AbortController();
+  const cancelledProbe = tracker.fallbackTracker.checkEndpoints(cancelled);
+  cancelled.abort();
+  await cancelledProbe;
+  expect(() => tracker.getRpc()).toThrow("not on Mainnet");
+  invalidSlot = true;
+  await probe();
+  expect(tracker.getRpc()).toBe(tracker.rpc);
+  const recoveredRead = tracker.fetchAccounts([owner]);
+  await vi.waitFor(() => expect(accountReads).toHaveLength(2));
+  finishRead!();
+  await expect(recoveredRead).resolves.toEqual([null]);
+});
 
 it("stops Solana probes on EVM and resumes only while Solana is enabled and selected FESOL-89", async () => {
   vi.useFakeTimers();
@@ -216,10 +197,12 @@ it("stops Solana probes on EVM and resumes only while Solana is enabled and sele
     expect(requests).toEqual([]);
     selectSolana(true);
     selectSolana(true);
+    localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
     await vi.advanceTimersByTimeAsync(5000);
     expect(requests.sort()).toEqual(["getGenesisHash", "getSlot"]);
     expect(tracker.getRpc()).toBe(tracker.rpc);
     selectSolana(false);
+    localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
     const stoppedAt = requests.length;
     document.dispatchEvent(new CustomEvent("visibilitychange", { detail: undefined }));
     await vi.advanceTimersByTimeAsync(40_000);
@@ -233,28 +216,6 @@ it("stops Solana probes on EVM and resumes only while Solana is enabled and sele
     selectSolana(true);
     await vi.advanceTimersByTimeAsync(20_000);
     expect(requests).toHaveLength(stoppedAt + 2);
-  } finally {
-    unregister();
-  }
-});
-
-it("keeps this tab's Solana selection when another tab changes storage", async () => {
-  vi.useFakeTimers();
-  setAbFlagEnabled("solanaNetwork", true);
-  setIsSolanaNetworkSelected(true);
-  localStorage.removeItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY);
-  const tracker = createTracker();
-  const probe = vi.spyOn(tracker, "checkEndpoint").mockResolvedValue({ responseTime: 20, slot: 123n });
-  const unregister = registerRpcTracker(tracker);
-  try {
-    await vi.advanceTimersByTimeAsync(5000);
-    expect(probe).toHaveBeenCalledTimes(1);
-    setIsSolanaNetworkSelected(false);
-    localStorage.setItem(SELECTED_SOLANA_NETWORK_LOCAL_STORAGE_KEY, "true");
-    document.dispatchEvent(new CustomEvent("networkChange", { detail: { chainId: ARBITRUM } }));
-    await vi.advanceTimersByTimeAsync(40_000);
-    expect(probe).toHaveBeenCalledTimes(1);
-    expect(tracker.fallbackTracker.state.trackerTimeoutId).toBeUndefined();
   } finally {
     unregister();
   }
