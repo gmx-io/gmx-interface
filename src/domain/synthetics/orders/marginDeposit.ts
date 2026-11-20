@@ -1,11 +1,12 @@
 import { maxUint256 } from "viem";
 
 import type { CancelOrderTxnParams } from "sdk/utils/orderTransactions";
+import { getCollateralPriceAtIndexPrice } from "sdk/utils/positions";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 
 import { OrderType } from "./types";
 import { PositionInfo, getLeverage, getLiquidationPrice, getPositionPnlUsd } from "../positions";
-import { TokenData, convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "../tokens";
+import { TokenData, convertToTokenAmount, convertToUsd } from "../tokens";
 
 /** `isTwap` is optional: trade actions lack it and must pass it explicitly. */
 export type MarginDepositOrderLike = {
@@ -33,19 +34,20 @@ export function getMarginDepositCancelOrderParams(
   return positionOrders.filter((order) => isMarginDepositOrder(order)).map((order) => ({ orderKey: order.key }));
 }
 
-/** Index-token collateral follows the trigger price at execution, so the deposit is valued there. */
+/** Collateral that follows the index is repriced with it at execution, so the deposit is valued there. */
 export function getMarginDepositValuationPrice(p: {
   collateralToken: TokenData;
   indexToken: TokenData;
   triggerPrice: bigint | undefined;
+  isLong: boolean;
 }): bigint {
-  const { collateralToken, indexToken, triggerPrice } = p;
+  const { collateralToken, indexToken, triggerPrice, isLong } = p;
 
-  if (triggerPrice !== undefined && triggerPrice > 0n && getIsEquivalentTokens(collateralToken, indexToken)) {
-    return triggerPrice;
+  if (triggerPrice === undefined || triggerPrice <= 0n) {
+    return collateralToken.prices.minPrice;
   }
 
-  return collateralToken.prices.minPrice;
+  return getCollateralPriceAtIndexPrice({ collateralToken, indexToken, indexPrice: triggerPrice, isLong });
 }
 
 export type MarginDepositProjections = {
@@ -63,6 +65,7 @@ export function getMarginDepositProjections(p: {
   triggerPrice: bigint | undefined;
   minCollateralUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   pendingFeesUsd: bigint;
   isPnlInLeverage?: boolean;
 }): MarginDepositProjections | undefined {
@@ -78,6 +81,7 @@ export function getMarginDepositProjections(p: {
     collateralToken,
     indexToken: marketInfo.indexToken,
     triggerPrice,
+    isLong: position.isLong,
   });
 
   const depositUsdAtTrigger = convertToUsd(depositAmount, collateralToken.decimals, valuationPrice)!;
@@ -116,6 +120,7 @@ export function getMarginDepositProjections(p: {
     marketInfo,
     pendingImpactAmount: position.pendingImpactAmount,
     userReferralInfo,
+    feeDiscountFactor: p.feeDiscountFactor,
     pendingFundingFeesUsd: 0n,
     pendingBorrowingFeesUsd: 0n,
     isLong: position.isLong,

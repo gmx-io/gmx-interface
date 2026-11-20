@@ -4,6 +4,7 @@ import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } 
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { type Address } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
@@ -27,7 +28,9 @@ import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHis
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
+import { useChartCandlesFetcher } from "domain/tradingview/useChartCandlesFetcher";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { useChainId } from "lib/chains";
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
@@ -145,8 +148,11 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
+  const candlesFetcher = useChartCandlesFetcher(oracleKeeperFetcher);
   const sdk = useOptionalGmxSdk(chainId as ContractsChainId);
-  const wsCandlesEnabled = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
+  const { networkId } = useChainId();
+  const wsCandlesFlag = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
+  const wsCandlesEnabled = !isSolanaNetwork(networkId) && wsCandlesFlag;
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -269,7 +275,11 @@ export default function TVChartContainer({
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
   useEffect(() => {
-    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    if (!candlesFetcher) {
+      return;
+    }
+
+    const newDatafeed = new DataFeed(chainId, candlesFetcher);
     newDatafeed.setTokenPriceGetter((symbol) => {
       const data = marksStateRef.current.tokensData;
       if (!data) return undefined;
@@ -578,7 +588,7 @@ export default function TVChartContainer({
     return () => {
       newDatafeed.destroy();
     };
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
+  }, [chainId, candlesFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);

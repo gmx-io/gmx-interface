@@ -11,6 +11,7 @@ import {
   selectMarketsInfoData,
   selectOracleSettings,
   selectPositionsInfoData,
+  selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectIsSizeOrderInClosedPool } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -26,6 +27,7 @@ import {
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
+  isLimitSwapOrderType,
   isMarketOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
@@ -51,6 +53,8 @@ import {
 import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
+import type { TokensRatio } from "sdk/utils/tokens/types";
+import { getTokensRatioByPriceInDirection } from "sdk/utils/tokens/utils";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
@@ -140,6 +144,7 @@ function OrderSize({
 }) {
   const chainId = useSelector(selectChainId);
   const positionsInfoData = useSelector(selectPositionsInfoData);
+  const tokensData = useSelector(selectTokensData);
 
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
@@ -169,10 +174,10 @@ function OrderSize({
 
   const positionOrder = order as PositionOrderInfo;
   const isCollateralSwap =
-    positionOrder.shouldUnwrapNativeToken ||
+    (positionOrder.shouldUnwrapNativeToken && Boolean(positionOrder.initialCollateralToken.isWrapped)) ||
     positionOrder.initialCollateralToken.address !== positionOrder.targetCollateralToken.address;
 
-  const wrappedToken = getWrappedToken(chainId);
+  const wrappedToken = Object.values(tokensData ?? {}).find((token) => token.isWrapped) ?? getWrappedToken(chainId);
 
   const position = getByKey(
     positionsInfoData,
@@ -967,16 +972,24 @@ function getSwapRatioText(order: OrderInfo) {
   const toToken = order.targetCollateralToken;
 
   const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
+  const isLimitSwap = isLimitSwapOrderType(order.orderType) && !order.isTwap && triggerRatio !== undefined;
 
-  const markRatio =
-    fromToken && toToken
-      ? getTokensRatioByPrice({
+  let markRatio: TokensRatio | undefined;
+
+  if (fromToken && toToken) {
+    markRatio = isLimitSwap
+      ? getTokensRatioByPriceInDirection({
+          fromToken,
+          toToken,
+          largestTokenAddress: triggerRatio.largestToken.address,
+        })
+      : getTokensRatioByPrice({
           fromToken,
           toToken,
           fromPrice: fromToken.prices.minPrice,
           toPrice: toToken.prices.minPrice,
-        })
-      : undefined;
+        });
+  }
 
   const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
 

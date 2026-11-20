@@ -31,6 +31,7 @@ import { formatBalanceAmount, formatPriceImpactBps } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
+import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -47,7 +48,7 @@ import {
   TooltipContent,
   TooltipDivider,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipText,
@@ -94,7 +95,7 @@ export function PositionItem(p: Props) {
   const displayedPnlPercentage = savedShowPnlAfterFees
     ? p.position.pnlAfterAllFeesPercentage
     : p.position.pnlPercentage;
-  const { minCollateralUsd } = usePositionsConstants();
+  const { minCollateralUsd } = usePositionsConstants(p.position.marketAddress);
   const tradeboxSelectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const chainId = useSelector(selectChainId);
@@ -189,13 +190,19 @@ export function PositionItem(p: Props) {
               />
               {savedShowPnlAfterFees && (
                 <>
-                  {breakdownNetPriceImpactEnabled && (
+                  {features.pendingPriceImpact ? (
                     <>
-                      {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
-                      {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
+                      {breakdownNetPriceImpactEnabled && (
+                        <>
+                          {renderPriceImpactRow(t`Stored price impact`, p.position.pendingImpactUsd)}
+                          {renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)}
+                        </>
+                      )}
+                      {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
                     </>
+                  ) : (
+                    renderPriceImpactRow(t`Close price impact`, p.position.closePriceImpactDeltaUsd)
                   )}
-                  {renderPriceImpactRow(t`Net price impact (open + close)`, p.position.netPriceImapctDeltaUsd)}
                   <TooltipRow
                     label={t`Close fee`}
                     value={<UsdValue usd={-p.position.closingFeeUsd} fallback="..." />}
@@ -335,7 +342,7 @@ export function PositionItem(p: Props) {
                 <TooltipDivider />
                 <TooltipRows>
                   <TooltipTitle>
-                    <Trans>Claimable</Trans>
+                    {features.fundingClaims ? <Trans>Claimable</Trans> : <Trans>Accrued</Trans>}
                   </TooltipTitle>
                   <TooltipRow
                     label={t`Positive funding fee`}
@@ -346,8 +353,12 @@ export function PositionItem(p: Props) {
                   />
                 </TooltipRows>
                 <TooltipDivider />
-                {renderLifetimeFees()}
-                <TooltipDivider />
+                {features.positionFeeHistory && (
+                  <>
+                    {renderLifetimeFees()}
+                    <TooltipDivider />
+                  </>
+                )}
                 <TooltipRows>
                   <TooltipTitle>
                     <Trans>Estimated daily fees</Trans>
@@ -370,7 +381,11 @@ export function PositionItem(p: Props) {
                   <Trans>Negative funding fees reduce margin and affect liquidation price.</Trans>
                 </TooltipText>
                 <TooltipText>
-                  <Trans>Positive funding fees are claimable in Claims.</Trans>
+                  {features.fundingClaims ? (
+                    <Trans>Positive funding fees are claimable in Claims.</Trans>
+                  ) : (
+                    <Trans>Positive funding fees are claimed automatically with the next order on this position.</Trans>
+                  )}
                 </TooltipText>
               </TooltipContent>
             }
@@ -415,7 +430,18 @@ export function PositionItem(p: Props) {
     const offHoursLiqPrice = offHoursLiqRisk.offHoursLiqPrice;
 
     if (p.position.liquidationPrice === undefined) {
-      if (!p.position.isLong && p.position.collateralAmount >= p.position.sizeInTokens) {
+      const collateralAmountInIndexTokens = getCollateralAmountInIndexTokens({
+        collateralToken: p.position.collateralToken,
+        indexToken: p.position.indexToken,
+        collateralAmount: p.position.collateralAmount,
+        isLong: p.position.isLong,
+      });
+
+      if (
+        !p.position.isLong &&
+        collateralAmountInIndexTokens !== undefined &&
+        collateralAmountInIndexTokens >= p.position.sizeInTokens
+      ) {
         const symbol = p.position.collateralToken.symbol;
         const indexName = p.position.indexName;
         liqPriceWarning = t`Your ${symbol} margin exceeds the ${indexName} short position size. Margin value rises with the index, covering any losses—no liquidation price.`;
@@ -478,9 +504,7 @@ export function PositionItem(p: Props) {
                 />
               }
             />
-            <TooltipLink href={OFF_HOURS_DOCS_URL}>
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href={OFF_HOURS_DOCS_URL} />
           </>
         )}
       </TooltipContent>
@@ -556,7 +580,11 @@ export function PositionItem(p: Props) {
                         <Trans>Use the TP/SL button to set TP/SL orders.</Trans>
                       </TooltipText>
                       <TooltipText>
-                        <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
+                        {features.twap ? (
+                          <Trans>Use the "Close" button to reduce your position via market or TWAP orders.</Trans>
+                        ) : (
+                          <Trans>Use the "Close" button to reduce your position via market orders.</Trans>
+                        )}
                       </TooltipText>
                       <TooltipRows>
                         <TooltipRow

@@ -10,15 +10,19 @@ import {
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
+import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmsol";
+import { getMarketInfoWithOpenInterestDelta } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType, SwapPricingType } from "utils/orders/types";
 import {
+  getCollateralPriceAtIndexPrice,
   getEntryPrice,
   getLeverage,
   getLiquidationPrice,
   getPositionPnlUsd,
   getPriceImpactDiffUsd,
+  getTokenAtIndexPrice,
 } from "utils/positions";
 import { PositionInfo } from "utils/positions/types";
 import {
@@ -72,6 +76,7 @@ type IncreasePositionParams = {
   acceptablePriceImpactBuffer?: number;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   strategy: "leverageBySize" | "leverageByCollateral" | "independent";
   findSwapPath: FindSwapPath;
   uiFeeFactor: bigint;
@@ -119,6 +124,8 @@ function getSwapRouteAtEvaluationPrice({
   marketsInfoData,
   indexToken,
   initialCollateralToken,
+  collateralToken,
+  isLong,
   evaluationPrice,
   chainId,
 }: {
@@ -126,6 +133,8 @@ function getSwapRouteAtEvaluationPrice({
   marketsInfoData: MarketsInfoData | undefined;
   indexToken: TokenData;
   initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  isLong: boolean;
   evaluationPrice: bigint | undefined;
   chainId: number;
 }): SwapRouteAtEvaluationPrice | undefined {
@@ -137,13 +146,19 @@ function getSwapRouteAtEvaluationPrice({
   let hasRepricedToken = false;
 
   const withEvaluationPrice = <T extends TokenData>(token: T): T => {
-    if (!getIsEquivalentTokens(token, indexToken)) {
-      return token;
+    const repricedToken = getTokenAtIndexPrice({
+      token,
+      collateralToken,
+      indexToken,
+      indexPrice: evaluationPrice,
+      isLong,
+    });
+
+    if (repricedToken !== token) {
+      hasRepricedToken = true;
     }
 
-    hasRepricedToken = true;
-
-    return { ...token, prices: { minPrice: evaluationPrice, maxPrice: evaluationPrice } };
+    return repricedToken;
   };
 
   const repricedMarketsInfoData: MarketsInfoData = { ...marketsInfoData };
@@ -198,6 +213,8 @@ function getSwapPathStatsAtEvaluationPrice(p: {
   marketsInfoData: MarketsInfoData | undefined;
   indexToken: TokenData;
   initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  isLong: boolean;
   evaluationPrice: bigint | undefined;
   chainId: number;
 }): SwapPathStats | undefined {
@@ -221,6 +238,7 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
   indexToken,
   initialCollateralToken,
   collateralToken,
+  isLong,
   collateralPrice,
   evaluationPrice,
   chainId,
@@ -232,6 +250,7 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
+  isLong: boolean;
   collateralPrice: bigint;
   evaluationPrice: bigint | undefined;
   chainId: number;
@@ -247,6 +266,8 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
     marketsInfoData,
     indexToken,
     initialCollateralToken,
+    collateralToken,
+    isLong,
     evaluationPrice,
     chainId,
   });
@@ -345,7 +366,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     findSwapPath,
     userReferralInfo,
     proDiscountFactor,
-    uiFeeFactor,
+    feeDiscountFactor,
+    uiFeeFactor: suppliedUiFeeFactor,
     strategy,
     marketsInfoData,
     chainId,
@@ -354,6 +376,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     disabledMarkets,
     manualPath,
   } = p;
+  const uiFeeFactor = p.marketInfo.tradeMath === "gmsol" ? 0n : suppliedUiFeeFactor;
 
   const swapStrategy: NoSwapStrategy = {
     type: "noSwap",
@@ -369,6 +392,14 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   };
 
   const values: IncreasePositionAmounts = {
+    ...(marketInfo.tradeMath === "gmsol"
+      ? {
+          fundingPayout: {
+            longTokenAmount: position?.claimableLongTokenAmount ?? 0n,
+            shortTokenAmount: position?.claimableShortTokenAmount ?? 0n,
+          },
+        }
+      : {}),
     initialCollateralAmount: 0n,
     initialCollateralUsd: 0n,
 
@@ -435,6 +466,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     return values;
   }
 
+  const getCollateralFeeUsd = (feeUsd: bigint) =>
+    marketInfo.tradeMath === "gmsol"
+      ? convertToUsd(
+          convertToTokenAmount(feeUsd, collateralToken.decimals, values.collateralPrice)!,
+          collateralToken.decimals,
+          values.collateralPrice
+        )!
+      : feeUsd;
+
   // Size and collateral
   if (
     strategy === "leverageByCollateral" &&
@@ -485,6 +525,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       marketsInfoData,
       indexToken,
       initialCollateralToken,
+      collateralToken,
+      isLong,
       evaluationPrice,
       chainId,
     });
@@ -495,7 +537,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       collateralPrice: values.collateralPrice,
       swapPathStatsAtEvaluationPrice,
     });
-    const baseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
+    const requestedBaseSizeDeltaUsd = bigMath.mulDiv(baseCollateralUsd, leverage, BASIS_POINTS_DIVISOR_BIGINT);
+    const baseSizeDeltaUsd =
+      marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(requestedBaseSizeDeltaUsd) : requestedBaseSizeDeltaUsd;
     const baseSizeDeltaInTokens = convertToTokenAmountForIncrease(
       baseSizeDeltaUsd,
       indexToken.decimals,
@@ -514,7 +558,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       baseBalanceWasImproved,
       userReferralInfo,
       undefined,
-      proDiscountFactor
+      proDiscountFactor,
+      feeDiscountFactor
     );
     const baseUiFeeUsd = applyFactor(baseSizeDeltaUsd, uiFeeFactor);
     const totalSwapVolumeUsd = getTotalSwapVolumeFromSwapStats(
@@ -523,10 +568,13 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.swapUiFeeUsd = applyFactor(totalSwapVolumeUsd, uiFeeFactor);
 
     values.sizeDeltaUsd = bigMath.mulDiv(
-      baseCollateralUsd - basePositionFeeInfo.positionFeeUsd - baseUiFeeUsd - values.swapUiFeeUsd,
+      baseCollateralUsd - getCollateralFeeUsd(basePositionFeeInfo.positionFeeUsd) - baseUiFeeUsd - values.swapUiFeeUsd,
       leverage,
       BASIS_POINTS_DIVISOR_BIGINT
     );
+    if (marketInfo.tradeMath === "gmsol") {
+      values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+    }
 
     if (values.sizeDeltaUsd <= 0n) {
       return values;
@@ -548,7 +596,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       balanceWasImproved,
       userReferralInfo,
       undefined,
-      proDiscountFactor
+      proDiscountFactor,
+      feeDiscountFactor
     );
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
     values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -556,8 +605,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
     values.collateralDeltaUsd =
       baseCollateralUsd -
-      values.positionFeeUsd -
-      values.borrowingFeeUsd -
+      getCollateralFeeUsd(values.positionFeeUsd) -
+      getCollateralFeeUsd(values.borrowingFeeUsd) -
       values.fundingFeeUsd -
       values.uiFeeUsd -
       values.swapUiFeeUsd;
@@ -576,6 +625,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     values.estimatedLeverage = leverage;
     values.indexTokenAmount = indexTokenAmount;
     values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
+    if (marketInfo.tradeMath === "gmsol") {
+      values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+    }
 
     const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
       values.sizeDeltaUsd,
@@ -593,7 +645,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       balanceWasImproved,
       userReferralInfo,
       undefined,
-      proDiscountFactor
+      proDiscountFactor,
+      feeDiscountFactor
     );
 
     values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
@@ -607,8 +660,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         sizeDeltaUsd: values.sizeDeltaUsd,
         collateralPrice: values.collateralPrice,
         uiFeeFactor,
-        positionFeeUsd: values.positionFeeUsd,
-        borrowingFeeUsd: values.borrowingFeeUsd,
+        positionFeeUsd: getCollateralFeeUsd(values.positionFeeUsd),
+        borrowingFeeUsd: getCollateralFeeUsd(values.borrowingFeeUsd),
         fundingFeeUsd: values.fundingFeeUsd,
         uiFeeUsd: values.uiFeeUsd,
         swapUiFeeUsd: values.swapUiFeeUsd,
@@ -651,6 +704,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           indexToken,
           initialCollateralToken,
           collateralToken,
+          isLong,
           collateralPrice: values.collateralPrice,
           evaluationPrice,
           chainId,
@@ -690,6 +744,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       marketsInfoData,
       indexToken,
       initialCollateralToken,
+      collateralToken,
+      isLong,
       evaluationPrice,
       chainId,
     });
@@ -707,8 +763,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.collateralDeltaUsd =
         baseCollateralUsdAtEvaluationPrice -
-        values.positionFeeUsd -
-        values.borrowingFeeUsd -
+        getCollateralFeeUsd(values.positionFeeUsd) -
+        getCollateralFeeUsd(values.borrowingFeeUsd) -
         values.fundingFeeUsd -
         values.uiFeeUsd -
         swapUiFeeUsdAtEvaluationPrice;
@@ -722,6 +778,9 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     if (indexTokenAmount !== undefined && indexTokenAmount > 0) {
       values.indexTokenAmount = indexTokenAmount;
       values.sizeDeltaUsd = convertToUsd(indexTokenAmount, indexToken.decimals, values.indexPrice)!;
+      if (marketInfo.tradeMath === "gmsol") {
+        values.sizeDeltaUsd = getGmsolUsdAmount(values.sizeDeltaUsd);
+      }
 
       const sizeDeltaInTokensForPriceImpact = convertToTokenAmountForIncrease(
         values.sizeDeltaUsd,
@@ -739,7 +798,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         balanceWasImproved,
         userReferralInfo,
         undefined,
-        proDiscountFactor
+        proDiscountFactor,
+        feeDiscountFactor
       );
       values.positionFeeUsd = positionFeeInfo.positionFeeUsd;
       values.feeDiscountUsd = positionFeeInfo.discountUsd;
@@ -787,6 +847,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         marketsInfoData,
         indexToken,
         initialCollateralToken,
+        collateralToken,
+        isLong,
         evaluationPrice,
         chainId,
       });
@@ -804,8 +866,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.collateralDeltaUsd =
         baseCollateralUsd -
-        values.positionFeeUsd -
-        values.borrowingFeeUsd -
+        getCollateralFeeUsd(values.positionFeeUsd) -
+        getCollateralFeeUsd(values.borrowingFeeUsd) -
         values.fundingFeeUsd -
         values.uiFeeUsd -
         values.swapUiFeeUsd;
@@ -817,8 +879,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       )!;
     } else if (values.sizeDeltaUsd > 0n) {
       values.collateralDeltaUsd = -(
-        values.positionFeeUsd +
-        values.borrowingFeeUsd +
+        getCollateralFeeUsd(values.positionFeeUsd) +
+        getCollateralFeeUsd(values.borrowingFeeUsd) +
         values.fundingFeeUsd +
         values.uiFeeUsd
       );
@@ -845,8 +907,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     isLong
   )!;
 
+  const impactMarketInfo =
+    marketInfo.tradeMath === "gmsol" && evaluationPrice !== undefined
+      ? {
+          ...marketInfo,
+          indexToken: { ...marketInfo.indexToken, prices: { minPrice: evaluationPrice, maxPrice: evaluationPrice } },
+        }
+      : marketInfo;
   const acceptablePriceInfo = getAcceptablePriceInfo({
-    marketInfo,
+    marketInfo: impactMarketInfo,
     isIncrease: true,
     isLimit,
     isLong,
@@ -856,11 +925,14 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
-  values.potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
-    totalImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-    marketInfo,
-    sizeDeltaUsd: values.sizeDeltaUsd,
-  });
+  values.potentialPriceImpactDiffUsd =
+    marketInfo.tradeMath === "gmsol"
+      ? 0n
+      : getPriceImpactDiffUsd({
+          totalImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+          marketInfo,
+          sizeDeltaUsd: values.sizeDeltaUsd,
+        });
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
@@ -877,6 +949,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
         acceptablePriceImpactBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+        executionPrice: marketInfo.tradeMath === "gmsol" ? acceptablePriceInfo.acceptablePrice : undefined,
       });
 
       if (maxNegativePriceImpactBps === undefined) {
@@ -896,6 +969,24 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
 
       values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
       values.acceptablePriceDeltaBps = limitAcceptablePriceInfo.acceptablePriceDeltaBps;
+    }
+  }
+
+  if (marketInfo.tradeMath === "gmsol") {
+    values.collateralDeltaUsd = convertToUsd(
+      values.collateralDeltaAmount,
+      collateralToken.decimals,
+      values.collateralPrice
+    )!;
+    values.sizeDeltaInTokens = getGmsolIncreaseSizeDeltaInTokens({
+      baseSizeDeltaInTokens: values.sizeDeltaInTokens,
+      priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
+      indexToken: impactMarketInfo.indexToken,
+      isLong,
+    });
+
+    if (values.sizeDeltaInTokens === 0n) {
+      values.sizeDeltaUsd = 0n;
     }
   }
 
@@ -1003,9 +1094,7 @@ export function getIncreasePositionPrices({
     indexPrice = triggerPrice;
     evaluationPrice = triggerPrice;
     initialCollateralPrice = initialCollateralToken.prices.minPrice;
-    collateralPrice = getIsEquivalentTokens(collateralToken, indexToken)
-      ? triggerPrice
-      : collateralToken.prices.minPrice;
+    collateralPrice = getCollateralPriceAtIndexPrice({ collateralToken, indexToken, indexPrice: triggerPrice, isLong });
 
     triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
   } else {
@@ -1038,11 +1127,12 @@ export function getNextPositionValuesForIncreaseTrade(p: {
   showPnlInLeverage: boolean;
   minCollateralUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
+  feeDiscountFactor?: bigint;
   collateralPrice?: bigint;
 }): NextPositionValues {
   const {
     existingPosition,
-    marketInfo,
+    marketInfo: suppliedMarketInfo,
     collateralToken,
     sizeDeltaUsd,
     sizeDeltaInTokens,
@@ -1053,9 +1143,20 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     showPnlInLeverage,
     minCollateralUsd,
     userReferralInfo,
+    feeDiscountFactor,
     positionPriceImpactDeltaUsd,
     collateralPrice,
   } = p;
+  const marketInfo =
+    suppliedMarketInfo.tradeMath === "gmsol"
+      ? getMarketInfoWithOpenInterestDelta({
+          marketInfo: suppliedMarketInfo,
+          collateralToken,
+          isLong,
+          sizeDeltaUsd,
+          sizeDeltaInTokens,
+        })
+      : suppliedMarketInfo;
 
   const existingCollateralUsd = !existingPosition
     ? 0n
@@ -1079,15 +1180,16 @@ export function getNextPositionValuesForIncreaseTrade(p: {
       indexToken: marketInfo.indexToken,
     }) ?? indexPrice;
 
-  const nextPnl = existingPosition
-    ? getPositionPnlUsd({
-        marketInfo,
-        sizeInUsd: nextSizeUsd,
-        sizeInTokens: nextSizeInTokens,
-        markPrice: indexPrice,
-        isLong,
-      })
-    : undefined;
+  const nextPnl =
+    existingPosition || marketInfo.tradeMath === "gmsol"
+      ? getPositionPnlUsd({
+          marketInfo,
+          sizeInUsd: nextSizeUsd,
+          sizeInTokens: nextSizeInTokens,
+          markPrice: indexPrice,
+          isLong,
+        })
+      : undefined;
 
   const nextLeverage = getLeverage({
     sizeInUsd: nextSizeUsd,
@@ -1110,12 +1212,15 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
     isLong: isLong,
     userReferralInfo,
+    feeDiscountFactor,
   });
 
   let nextPendingImpactDeltaUsd =
-    existingPosition?.pendingImpactUsd !== undefined
-      ? existingPosition.pendingImpactUsd + positionPriceImpactDeltaUsd
-      : positionPriceImpactDeltaUsd;
+    marketInfo.tradeMath === "gmsol"
+      ? 0n
+      : existingPosition?.pendingImpactUsd !== undefined
+        ? existingPosition.pendingImpactUsd + positionPriceImpactDeltaUsd
+        : positionPriceImpactDeltaUsd;
 
   const potentialPriceImpactDiffUsd = getPriceImpactDiffUsd({
     totalImpactDeltaUsd: nextPendingImpactDeltaUsd,

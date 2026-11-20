@@ -150,7 +150,7 @@ export function useSettings() {
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId, networkId } = useChainId();
-  const expressSupported = getNetworkFeatures(networkId).express;
+  const { express: expressSupported, pendingPriceImpact: pendingPriceImpactSupported } = getNetworkFeatures(networkId);
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -202,7 +202,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   );
 
   const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey(
-    getLeverageSliderEnabledKey(chainId),
+    getLeverageSliderEnabledKey(networkId),
     true
   );
 
@@ -403,7 +403,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
       setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
-      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
+      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled! && pendingPriceImpactSupported,
       setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
       isSetAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
@@ -483,6 +483,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
     setIsLeverageSliderEnabled,
+    pendingPriceImpactSupported,
     savedBreakdownNetPriceImpactEnabled,
     setSavedBreakdownNetPriceImpactEnabled,
     savedSetAcceptablePriceImpactEnabled,
