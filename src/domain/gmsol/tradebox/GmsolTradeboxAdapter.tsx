@@ -26,8 +26,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useGmsolWalletBalances } from "domain/gmsol/useGmsolWalletBalances";
 import type { SolanaTradeboxState } from "domain/solana/solanaTradebox";
-import { useSolanaBalances } from "domain/solana/useSolanaBalances";
 import { useSolanaOrderNotifications } from "domain/solanaOrderTracking/useSolanaOrderNotifications";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
@@ -74,7 +74,7 @@ export default function GmsolTradeboxAdapter({
   const { submit, isSubmitting, hasPendingSubmission, pendingTrackExecution } = useGmsolOrderTransactions();
   const { begin } = useSolanaOrderNotifications();
   const { isSolanaTradingEnabled, isLoading: isTradingLoading } = useSolanaTradingEnabled({ enabled: true });
-  const balances = useSolanaBalances(wallet.address);
+  const balances = useGmsolWalletBalances(wallet.address);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const fromToken = useSelector(selectTradeboxFromToken);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
