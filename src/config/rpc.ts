@@ -29,17 +29,6 @@ const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVAL
 
 const ENV_MEGAETH_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_MEGAETH_RPC_URLS);
 
-const PROXY_WS_SUPPORT_CHAINS = [
-  ARBITRUM,
-  MEGAETH,
-  ARBITRUM_SEPOLIA,
-  SOURCE_BASE_MAINNET,
-  SOURCE_OPTIMISM_SEPOLIA,
-  SOURCE_SEPOLIA,
-  SOURCE_BSC_MAINNET,
-  SOURCE_ETHEREUM_MAINNET,
-];
-
 export const RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS: RpcTrackerConfig = {
   trackInterval: 10 * 1000, // 10 sec
   delay: 5000, // 5 sec
@@ -353,11 +342,8 @@ function getProxyProvider(
   purpose: Exclude<RpcPurpose, "default">,
   type: "http" | "ws" = "http"
 ): RpcConfig {
-  if (type === "ws" && !PROXY_WS_SUPPORT_CHAINS.includes(chainId)) {
-    throw new Error(`WebSocket url is not supported for chainId: ${chainId}`);
-  }
-
-  const routePurpose = isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy) ? "dev" : purpose;
+  const routePurpose =
+    isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.UseProductionRpcRoutes) ? "dev" : purpose;
   const protocol = type === "ws" ? "wss" : "https";
 
   return {
