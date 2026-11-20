@@ -362,17 +362,17 @@ function getAlchemyProvider(
   let alchemyKey: string;
 
   if (isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy)) {
-    alchemyKey = "alch_SQM9S1aMtt02tOJTEmapQ";
+    alchemyKey = "alch_xNo9zxunxDu9wBV7Scv_P";
   } else {
     switch (purpose) {
       case "fallback":
-        alchemyKey = "alch_RCUyAwn71kwGwf3IeEyMp";
+        alchemyKey = "alch_Sa_mu7buHFanCJGjBAaxz";
         break;
       case "largeAccount":
-        alchemyKey = "alch_1xqx9RJJd8BJ9vJaDyrmp";
+        alchemyKey = "alch_CV2fx2y8hCUg1uMyyLds1";
         break;
       case "express":
-        alchemyKey = "alch_dcRX8lDnISPgq7QlyWRMP";
+        alchemyKey = "alch_tbk2RGdCIonKEsI6HjGFq";
         break;
       case "default":
         throw new Error(`Unsupported purpose: ${purpose}`);
