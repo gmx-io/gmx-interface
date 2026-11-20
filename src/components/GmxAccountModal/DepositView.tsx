@@ -42,12 +42,14 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/useMultichainEvents";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { resolveSettlementChainDepositToken } from "domain/multichain/depositTokenSelection";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import {
   SAME_CHAIN_DEPOSIT_GAS_LIMIT,
+  SameChainDepositTxnCtx,
   estimateSameChainDepositGas,
   sendSameChainDepositTxn,
 } from "domain/multichain/sendSameChainDepositTxn";
@@ -69,8 +71,10 @@ import {
   getInsufficientFeeButtonMessage,
 } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress } from "domain/tokens";
+import { getRelayTokenPermits } from "domain/tokens/permitUtils";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { getTokenPermitIssueType, useWalletTxnTokenPermits } from "domain/tokens/useTokenPermitTxnHandlers";
 import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
@@ -295,6 +299,9 @@ export const DepositView = () => {
 
   useMultichainApprovalsActiveListener(depositViewChain, "multichain-deposit-view");
 
+  const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
+  const walletTxnTokenPermits = useWalletTxnTokenPermits();
+
   const sourceChainTokenToApproveAddress: string | undefined = useMemo(() => {
     if (depositViewChain === settlementChainId) {
       return depositViewTokenAddress;
@@ -325,6 +332,8 @@ export const DepositView = () => {
       depositViewChain === undefined ||
       !sourceChainTokenToApproveAddress ||
       sourceChainTokenToApproveAddress === zeroAddress,
+    // only a same-chain deposit carries the permit in its transaction
+    allowPermit: depositViewChain === settlementChainId && isClassicTokenPermitsEnabled,
     metric: { flow: "gmxAccountDeposit" },
   });
 
@@ -471,6 +480,20 @@ export const DepositView = () => {
 
   const gasPrice = useGasPrice(settlementChainId);
 
+  // without the permit the estimate reverts on the missing allowance
+  const sameChainDepositTokenPermits = useMemo(
+    () =>
+      depositViewTokenAddress
+        ? getRelayTokenPermits({
+            chainId: settlementChainId,
+            isGmxAccount: false,
+            tokenPermits: walletTxnTokenPermits.tokenPermits,
+            spentTokenAddresses: [depositViewTokenAddress],
+          })
+        : EMPTY_ARRAY,
+    [depositViewTokenAddress, settlementChainId, walletTxnTokenPermits.tokenPermits]
+  );
+
   const sameChainNetworkFeeAsyncResult = useThrottledAsync(
     async ({ params }) => {
       const client = getPublicClientWithRpc(params.settlementChainId);
@@ -497,6 +520,7 @@ export const DepositView = () => {
         tokenAddress: params.depositViewTokenAddress,
         amount: inputAmount,
         account: params.account,
+        tokenPermits: params.tokenPermits,
       });
     },
     {
@@ -507,6 +531,7 @@ export const DepositView = () => {
               depositViewTokenAddress,
               inputAmount,
               settlementChainId,
+              tokenPermits: sameChainDepositTokenPermits,
             }
           : undefined,
       withLoading: false,
@@ -618,7 +643,7 @@ export const DepositView = () => {
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
-  const sameChainCallback: TxnCallback<WalletTxnCtx> = useCallback(
+  const sameChainCallback: TxnCallback<SameChainDepositTxnCtx> = useCallback(
     (txnEvent) => {
       if (!account) {
         return;
@@ -687,6 +712,9 @@ export const DepositView = () => {
 
         const toastParams = getTxnErrorToast(settlementChainId, parseError(txnEvent.data.error), {
           defaultMessage: t`Deposit failed`,
+          permitIssueType: getTokenPermitIssueType(txnEvent.data.error, txnEvent.data.tokenPermits, {
+            isAnyContext: true,
+          }),
         });
 
         helperToast.error(toastParams.errorContent, { autoClose: toastParams.autoCloseToast });
@@ -721,6 +749,7 @@ export const DepositView = () => {
           amount: inputAmount,
           account,
           callback: sameChainCallback,
+          walletTxnTokenPermits,
           walletCallsBatch: approvalBatch,
         });
       });
@@ -736,6 +765,7 @@ export const DepositView = () => {
     sameChainCallback,
     settlementChainId,
     setSettlementChainId,
+    walletTxnTokenPermits,
   ]);
 
   const makeCrossChainCallback = useCallback(
