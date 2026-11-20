@@ -340,9 +340,7 @@ describe("target-price collateral when changing gain/loss units", () => {
       ...positionData,
       isLong,
       collateralUsd: expandDecimals(collateral, 30),
-      collateralAmount: expandDecimals(collateral, 16),
-      collateralTokenDecimals: 18,
-      isCollateralTokenEquivalentToIndex: true,
+      collateralAmountInIndexTokens: expandDecimals(collateral, 16),
     },
   }));
 
