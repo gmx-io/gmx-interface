@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { expect, type Page } from "@playwright/test";
 import { decodeFunctionData, formatUnits, getAddress, zeroAddress } from "viem";
 
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
+import { getEmptyBridgeFeeParams } from "../../../sdk/src/utils/multichain/api";
 import { accountBalance } from "./account";
 import { economy, USD } from "./economy";
 import type { FundedSession } from "./session";
@@ -27,7 +28,8 @@ export function inspectUiAccount(
   const native = nativePrice !== undefined && !withdraw;
   assert.equal(getAddress(tx.to), getAddress(getContract(42161, "MultichainTransferRouter")));
   assert.equal(tx.value, native ? amount : 0n);
-  const call = decodeFunctionData({ abi: MultichainTransferRouter, data: tx.data });
+  const router = getAbi(42161, "MultichainTransferRouter");
+  const call = decodeFunctionData({ abi: router, data: tx.data });
   if (withdraw) {
     assert.equal(call.functionName, "transferOut");
     if (call.functionName !== "transferOut") throw new Error("Expected account withdrawal");
@@ -37,11 +39,12 @@ export function inspectUiAccount(
       minAmountOut: amount,
       provider: zeroAddress,
       data: "0x",
+      bridgeFee: getEmptyBridgeFeeParams(),
     });
   } else {
     assert.equal(call.functionName, "multicall");
     if (call.functionName !== "multicall") throw new Error("Expected account deposit batch");
-    const calls = call.args[0].map((data) => decodeFunctionData({ abi: MultichainTransferRouter, data }));
+    const calls = call.args[0].map((data) => decodeFunctionData({ abi: router, data }));
     assert.deepEqual(
       calls.map((c) => c.functionName),
       [native ? "sendWnt" : "sendTokens", "bridgeIn"]
@@ -67,7 +70,11 @@ export async function fillUiAccount(
 ) {
   await page.goto("/trade", { waitUntil: "domcontentloaded" });
   await page.getByTestId("user-address").click();
-  await page.getByRole("button", { name: withdraw ? "Withdraw" : "Deposit to GMX Account", exact: true }).click();
+  // The account view shortens the deposit button to "Deposit" once the GMX Account holds funds.
+  await page
+    .locator(".Modal-content")
+    .getByRole("button", { name: withdraw ? /^Withdraw$/ : /^Deposit( to GMX Account)?$/ })
+    .click();
   const modal = page.locator(".Modal-content").filter({
     has: page.getByText(withdraw ? "Withdraw from GMX Account" : "Deposit to GMX Account", { exact: true }),
   });

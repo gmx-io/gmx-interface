@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { decodeFunctionData, encodeFunctionResult, getAddress, type Hex } from "viem";
 import IStargate from "../../../sdk/src/abis/IStargate";
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { AccountState } from "../fixtures/accountState";
 import { basePool, baseUsdc, arbitrumPool, bridgeAmount } from "./uiBridgeGuard";
@@ -44,7 +44,7 @@ export function uiBridgeRehearsal(state: AccountState, usdc: string) {
     },
     relay(payload: UiRelayPayload) {
       assert.equal(getAddress(payload.to), getAddress(getContract(42161, "MultichainTransferRouter")));
-      const call = decodeFunctionData({ abi: MultichainTransferRouter, data: payload.data });
+      const call = decodeFunctionData({ abi: getAbi(42161, "MultichainTransferRouter"), data: payload.data });
       if (call.functionName !== "bridgeOut") throw new Error("Expected simulated bridge-out");
       const [relay, account, source, params] = call.args;
       assert.equal(getAddress(account), state.address);

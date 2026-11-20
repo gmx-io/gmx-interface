@@ -13,8 +13,7 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import DataStore from "../../../sdk/src/abis/DataStore";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import SubaccountGelatoRelayRouter from "../../../sdk/src/abis/SubaccountGelatoRelayRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import {
   maxAllowedSubaccountActionCountKey,
@@ -23,6 +22,7 @@ import {
   subaccountExpiresAtKey,
   subaccountIntegrationIdKey,
   subaccountListKey,
+  subaccountRevocationCounterKey,
 } from "../../../sdk/src/configs/dataStore";
 import type { AccountState } from "../fixtures/accountState";
 import type { UiRelayPayload } from "./uiRelay";
@@ -33,7 +33,8 @@ export function uiOneClickRehearsal(state: AccountState) {
     expiresAt = 0n,
     maxAllowed = 0n,
     count = 0n,
-    nonce = 0n;
+    nonce = 0n,
+    revocations = 0n;
   const nonceAbi = parseAbi(["function subaccountApprovalNonces(address) view returns(uint256)"]);
   const removeAbi = parseAbi(["function removeSubaccount(address)"]);
   function read(functionName: string, args: readonly unknown[]) {
@@ -50,6 +51,7 @@ export function uiOneClickRehearsal(state: AccountState) {
         return maxAllowed;
       if (args[0] === subaccountActionCountKey(state.address, subaccount, SUBACCOUNT_ORDER_ACTION)) return count;
       if (args[0] === subaccountExpiresAtKey(state.address, subaccount, SUBACCOUNT_ORDER_ACTION)) return expiresAt;
+      if (args[0] === subaccountRevocationCounterKey(state.address, subaccount)) return revocations;
     }
     if (functionName === "getBytes32" && args[0] === subaccountIntegrationIdKey(state.address, subaccount))
       return zeroHash;
@@ -79,9 +81,10 @@ export function uiOneClickRehearsal(state: AccountState) {
       assert.deepEqual(call.args, [subaccount]);
       assert.ok(active);
       active = false;
+      revocations++;
     },
     relay(payload: UiRelayPayload) {
-      const call = decodeFunctionData({ abi: SubaccountGelatoRelayRouter, data: payload.data });
+      const call = decodeFunctionData({ abi: getAbi(42161, "SubaccountGelatoRelayRouter"), data: payload.data });
       assert.equal(call.functionName, "batch");
       if (call.functionName !== "batch") throw new Error("Expected simulated 1CT batch");
       const [relay, approval, account, sender, batch] = call.args;
@@ -89,6 +92,7 @@ export function uiOneClickRehearsal(state: AccountState) {
       assert.equal(getAddress(sender), subaccount);
       if (approval.signature !== "0x") {
         assert.equal(approval.nonce, nonce);
+        assert.ok("revocationCounter" in approval && approval.revocationCounter === revocations);
         active = true;
         expiresAt = approval.expiresAt;
         maxAllowed = approval.maxAllowedCount;
@@ -103,13 +107,14 @@ export function uiOneClickRehearsal(state: AccountState) {
       assert.ok((state.allowances.get(feeToken)?.get(spender) ?? 0n) >= relay.fee.feeAmount);
       state.balances.set(feeToken, state.balances.get(feeToken)! - relay.fee.feeAmount);
       state.allowances.get(feeToken)!.set(spender, state.allowances.get(feeToken)!.get(spender)! - relay.fee.feeAmount);
+      const exchangeRouter = getAbi(42161, "ExchangeRouter");
       const calls: Hex[] = [];
       let value = 0n;
       for (const order of batch.createOrderParamsList) {
         value += order.numbers.executionFee;
         calls.push(
           encodeFunctionData({
-            abi: ExchangeRouter,
+            abi: exchangeRouter,
             functionName: "createOrder",
             args: [
               {
@@ -124,10 +129,10 @@ export function uiOneClickRehearsal(state: AccountState) {
         );
       }
       for (const key of batch.cancelOrderKeys)
-        calls.push(encodeFunctionData({ abi: ExchangeRouter, functionName: "cancelOrder", args: [key] }));
+        calls.push(encodeFunctionData({ abi: exchangeRouter, functionName: "cancelOrder", args: [key] }));
       return {
         to: getAddress(getContract(42161, "ExchangeRouter")),
-        data: encodeFunctionData({ abi: ExchangeRouter, functionName: "multicall", args: [calls] }),
+        data: encodeFunctionData({ abi: exchangeRouter, functionName: "multicall", args: [calls] }),
         value,
       };
     },

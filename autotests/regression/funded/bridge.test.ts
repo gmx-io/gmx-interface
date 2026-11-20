@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { zeroHash } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
@@ -23,6 +24,7 @@ const state = {
   },
   market: { marketTokenAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336" },
 } as Awaited<ReturnType<FundedSession["snapshot"]>>;
+const account = "0x1111111111111111111111111111111111111111";
 const params = buildCrossChainWithdrawBridgeOutParams({
   tokenAddress: state.usdc.address,
   amount: 2_000_000n,
@@ -47,6 +49,7 @@ function fixture() {
     deadline: BigInt(Math.floor(Date.now() / 1000) + 120),
     userNonce: 1n,
     desChainId: 42161n,
+    eip6492SignatureWrapperHash: zeroHash,
   };
   const prepared: CrossChainWithdrawPrepareResponse = {
     payloadType: "typed-data",
@@ -55,7 +58,7 @@ function fixture() {
     payload: {
       relayParams: relay,
       relayRouterAddress: getContract(42161, "MultichainTransferRouter"),
-      typedData: getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay }),
+      typedData: getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay, account }),
       gasPaymentParams: {
         gasPaymentTokenAddress: state.usdc.address,
         gasPaymentTokenAmount: 500_000n,
@@ -73,11 +76,13 @@ function rebuild(prepared: CrossChainWithdrawPrepareResponse) {
     srcChainId: 8453,
     params,
     relayParams: prepared.payload.relayParams as RelayParamsPayload,
+    account,
   });
 }
 
 test("bridge withdrawal binds destination, minimum, token, relay data and total gas payment", () => {
-  assert.equal(inspectBridgeWithdrawal(fixture(), params, state), (52n * USD) / 100n);
+  assert.equal(inspectBridgeWithdrawal(fixture(), params, state, account), (52n * USD) / 100n);
+  assert.throws(() => inspectBridgeWithdrawal(fixture(), params, state, state.usdc.address), /Bridge payload differs/);
   const relay = (prepared: CrossChainWithdrawPrepareResponse) => prepared.payload.relayParams as RelayParamsPayload;
   const payload = /Bridge payload differs/;
   for (const [tamper, error] of [
@@ -114,6 +119,13 @@ test("bridge withdrawal binds destination, minimum, token, relay data and total 
     ],
     [
       (p) => {
+        relay(p).eip6492SignatureWrapperHash = `0x${"ab".repeat(32)}`;
+        rebuild(p);
+      },
+      /EIP-6492 signature wrapper/,
+    ],
+    [
+      (p) => {
         relay(p).fee.feeSwapPath = [state.weth.address];
         rebuild(p);
       },
@@ -128,6 +140,6 @@ test("bridge withdrawal binds destination, minimum, token, relay data and total 
   ] as [(prepared: CrossChainWithdrawPrepareResponse) => typeof params | void, RegExp][]) {
     const prepared = fixture();
     const tampered = tamper(prepared) ?? params;
-    assert.throws(() => inspectBridgeWithdrawal(prepared, tampered, state), error);
+    assert.throws(() => inspectBridgeWithdrawal(prepared, tampered, state, account), error);
   }
 });

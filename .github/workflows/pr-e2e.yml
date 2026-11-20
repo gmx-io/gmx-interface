@@ -114,6 +114,7 @@ jobs:
             src/config/events.tsx
             sdk/src/configs/oracleKeeper.ts
             sdk/src/configs/api.ts
+            sdk/src/configs/markets.ts
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - run: echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
