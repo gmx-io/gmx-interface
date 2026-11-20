@@ -1,6 +1,6 @@
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { ReactNode } from "react";
-import { SWRConfig, type SWRConfiguration } from "swr";
+import { SWRConfig, useSWRConfig, type SWRConfiguration } from "swr";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import { SWRConfigProp } from "App/swrConfig";
@@ -11,6 +11,7 @@ import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { useGmsolWalletAssets } from "../useGmsolWalletAssets";
+import { getSolanaBalancesKey } from "../useGmsolWalletBalances";
 
 const source = vi.hoisted(() => ({ balances: vi.fn(), prices: vi.fn(), networkId: -501 }));
 
@@ -33,9 +34,11 @@ function solTicker(updatedAt: number) {
 }
 
 let latest: ReturnType<typeof useGmsolWalletAssets>;
+let invalidate: ReturnType<typeof useSWRConfig>["mutate"];
 
 function Consumer({ owner }: { owner: string | undefined }) {
   latest = useGmsolWalletAssets(owner);
+  invalidate = useSWRConfig().mutate;
   return null;
 }
 
@@ -64,63 +67,62 @@ afterEach(() => {
   setAbFlagEnabled("solanaNetwork", false);
 });
 
-it("reads nothing on EVM or without an owner", async () => {
-  source.networkId = ARBITRUM;
-  mount("wallet-a");
-  cleanup();
-  source.networkId = SOLANA_NETWORK_ID;
-  mount(undefined);
+it.each([
+  [ARBITRUM, true, "wallet-a"],
+  [SOLANA_NETWORK_ID, false, "wallet-a"],
+  [SOLANA_NETWORK_ID, true, undefined],
+] as const)("does not read for inactive network/flag/owner: %s %s %s", async (networkId, enabled, owner) => {
+  source.networkId = networkId;
+  setAbFlagEnabled("solanaNetwork", enabled);
+  mount(owner);
   await act(async () => {
     await Promise.resolve();
   });
-
   expect(source.balances).not.toHaveBeenCalled();
   expect(source.prices).not.toHaveBeenCalled();
   expect(latest.assets).toBeUndefined();
-  expect(latest.totalUsd).toBeUndefined();
 });
 
-it("loads, then values the wallet in USD", async () => {
-  source.balances.mockResolvedValue({ [SOL]: 3_000_000_000n });
-  mount("wallet-a");
-
+it("isolates pending wallet reads and invalidates the selected owner after transactions", async () => {
+  let resolveOld!: (balances: Record<string, bigint>) => void;
+  source.balances.mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        resolveOld = resolve;
+      })
+  );
+  const view = mount("wallet-a");
+  await waitFor(() => expect(source.balances).toHaveBeenCalledTimes(1));
   expect(latest.isLoading).toBe(true);
-  expect(latest.totalUsd).toBeUndefined();
-
-  await waitFor(() => expect(latest.totalUsd).toBe(usd(300)));
-  expect(latest.isLoading).toBe(false);
-  expect(latest.assets?.map((asset) => asset.symbol)).toEqual(["SOL"]);
-  expect(source.balances).toHaveBeenCalledWith(expect.objectContaining({ owner: "wallet-a" }));
-});
-
-it("reports a balance error instead of an empty wallet", async () => {
-  source.balances.mockRejectedValue(new Error("RPC down"));
-  mount("wallet-a");
-
-  await waitFor(() => expect(latest.balancesError?.message).toBe("RPC down"));
-  expect(latest.isLoading).toBe(false);
+  source.balances.mockResolvedValue({ [SOL]: 1_000_000_000n });
+  view.rerender(<Consumer owner="wallet-b" />);
+  await waitFor(() => expect(latest.totalUsd).toBe(usd(100)));
+  await act(async () => {
+    resolveOld({ [SOL]: 99_000_000_000n });
+  });
+  expect(latest.totalUsd).toBe(usd(100));
+  source.balances.mockResolvedValue({ [SOL]: 2_000_000_000n });
+  await act(async () => {
+    await invalidate(getSolanaBalancesKey(SOLANA_NETWORK_ID, "wallet-b"));
+  });
+  expect(latest.totalUsd).toBe(usd(200));
+  source.networkId = ARBITRUM;
+  view.rerender(<Consumer owner="wallet-b" />);
   expect(latest.assets).toBeUndefined();
   expect(latest.totalUsd).toBeUndefined();
 });
 
-it("returns a known zero for an empty wallet", async () => {
-  source.balances.mockResolvedValue({ [SOL]: 0n });
+it.each(["balance error", "price error", "empty wallet"])("keeps unknown and zero distinct: %s", async (mode) => {
+  source.balances.mockResolvedValue({ [SOL]: mode === "empty wallet" ? 0n : 1_000_000_000n });
+  if (mode === "balance error") source.balances.mockRejectedValue(new Error("RPC down"));
+  if (mode === "price error") source.prices.mockRejectedValue(new Error("keeper down"));
   mount("wallet-a");
-
-  await waitFor(() => expect(latest.totalUsd).toBe(0n));
-  expect(latest.assets).toEqual([]);
-});
-
-it("keeps the balances but no total when prices fail", async () => {
-  source.balances.mockResolvedValue({ [SOL]: 1_000_000_000n });
-  source.prices.mockRejectedValue(new Error("keeper down"));
-  mount("wallet-a");
-
-  await waitFor(() => expect(latest.pricesError?.message).toBe("keeper down"));
-  await waitFor(() => expect(latest.assets?.[0].balance).toBe(1_000_000_000n));
-  expect(latest.assets?.[0].balanceUsd).toBeUndefined();
-  expect(latest.totalUsd).toBeUndefined();
-  expect(latest.isLoading).toBe(false);
+  await waitFor(() => expect(latest.isLoading).toBe(false));
+  expect(latest.balancesError?.message).toBe(mode === "balance error" ? "RPC down" : undefined);
+  expect(latest.pricesError?.message).toBe(mode === "price error" ? "keeper down" : undefined);
+  expect(latest.totalUsd).toBe(mode === "empty wallet" ? 0n : undefined);
+  expect(latest.assets?.length).toBe(mode === "balance error" ? undefined : mode === "empty wallet" ? 0 : 1);
+  if (mode === "price error") expect(latest.assets?.[0].balanceUsd).toBeUndefined();
 });
 
 it("recovers failed balance and price reads at the five-second refresh cadence TRD-98", async () => {
@@ -128,7 +130,7 @@ it("recovers failed balance and price reads at the five-second refresh cadence T
   vi.spyOn(Math, "random").mockReturnValue(0.5);
   source.balances.mockRejectedValue(new Error("RPC down"));
   source.prices.mockRejectedValue(new Error("keeper down"));
-  mount("wallet-a", SWRConfigProp);
+  const view = mount("wallet-a", SWRConfigProp);
 
   await act(async () => {
     await vi.dynamicImportSettled();
@@ -144,6 +146,17 @@ it("recovers failed balance and price reads at the five-second refresh cadence T
   });
   expect(latest.balancesError).toBeUndefined();
   expect(latest.totalUsd).toBe(usd(100));
+  const reads = source.balances.mock.calls.length;
+  vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(5_000);
+  });
+  expect(source.balances).toHaveBeenCalledTimes(reads);
+  view.unmount();
+  await act(async () => {
+    await vi.advanceTimersByTimeAsync(5_000);
+  });
+  expect(source.balances).toHaveBeenCalledTimes(reads);
 });
 
 it.each([

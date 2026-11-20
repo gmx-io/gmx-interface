@@ -12,6 +12,8 @@ import {
   getTransactionDecoder,
   getBase64Encoder,
   getSignatureFromTransaction,
+  getSolanaErrorFromJsonRpcError,
+  getBase58Decoder,
 } from "@solana/kit";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
@@ -30,7 +32,7 @@ import { ASSOCIATED_TOKEN_PROGRAM, getGmsolAta, getGmsolPositionAddress, gmsolPd
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { compactCreateOrderData, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
-import { getPendingGmsolSubmission, reconcileGmsolSubmission } from "./pendingSubmission";
+import { getPendingGmsolSubmission, reconcileGmsolSubmission, setPendingGmsolSubmission } from "./pendingSubmission";
 import {
   GmsolTransactionError,
   prepareGmsolOrderTransactions,
@@ -442,6 +444,46 @@ it("blocks signing on preflight failure and blocks sending after the trading fla
     ).rejects.toThrow();
     expect(transport.rpc.sendTransaction, failure).not.toHaveBeenCalled();
     expect(sign.mock.calls.length, failure).toBe(failure === "flag-after" || failure === "wallet-message" ? 1 : 0);
+  }
+});
+
+it("recovers from a definitive send rejection without clearing another submission TRD-72", async () => {
+  for (const replaced of [false, true]) {
+    localStorage.removeItem("gmsol-pending-submissions");
+    const { plan, sign } = await sendFixture();
+    const replacement = getBase58Decoder().decode(new Uint8Array(64).fill(1));
+    const rejection = getSolanaErrorFromJsonRpcError({
+      code: -32002,
+      message: "Transaction simulation failed",
+      data: { err: { InsufficientFundsForRent: { account_index: 1 } }, logs: [] },
+    });
+    transport.rpc.sendTransaction.mockImplementationOnce(() => ({
+      send: async () => {
+        if (replaced) {
+          setPendingGmsolSubmission(owner, { ...getPendingGmsolSubmission(owner)!, signature: replacement });
+        }
+        throw rejection;
+      },
+    }));
+    const send = () =>
+      sendGmsolOrderTransactions({
+        plan,
+        getWalletAddress: () => owner,
+        signTransaction: sign,
+        onConfirmed: async () => undefined,
+      });
+    await expect(send()).rejects.toMatchObject({
+      originalError: rejection,
+      pendingSignature: undefined,
+      submittedSignatures: [],
+    });
+    if (replaced) {
+      expect(getPendingGmsolSubmission(owner)?.signature).toBe(replacement);
+    } else {
+      expect(getPendingGmsolSubmission(owner)).toBeUndefined();
+      expect(await reconcileGmsolSubmission(owner)).toBeUndefined();
+      expect((await send()).signatures).toHaveLength(1);
+    }
   }
 });
 
