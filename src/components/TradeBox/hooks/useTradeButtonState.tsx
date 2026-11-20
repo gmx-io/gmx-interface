@@ -95,6 +95,7 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { getIsTpSlCostUnpayable } from "domain/tpsl/utils";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -776,6 +777,19 @@ export function useTradeboxButtonState({
       return {
         ...commonState,
         text: t`TP/SL orders exceed the position`,
+        disabled: true,
+      };
+    }
+
+    if (
+      sidecarEntries.some(
+        (entry) =>
+          (entry.txnType === "create" || entry.txnType === "update") && getIsTpSlCostUnpayable(entry.decreaseAmounts)
+      )
+    ) {
+      return {
+        ...commonState,
+        text: t`Insufficient collateral to cover order costs`,
         disabled: true,
       };
     }

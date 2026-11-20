@@ -311,7 +311,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
     numberOfParts,
     remainingPositionMarginState: undefined,
     shouldValidateLeftoverCollateral: true,
-    isInsufficientCollateralForCosts: false,
+    isInsufficientCollateralForCosts: !isTwap && (decreaseAmounts?.unpaidCostUsd ?? 0n) > 0n,
   });
 });
 
