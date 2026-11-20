@@ -1,32 +1,41 @@
-import type { SolanaWalletToken } from "domain/gmsol/walletTokens";
 import type { SolanaBalances } from "lib/solana/balances";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 import type { TokenPricesData } from "sdk/utils/tokens/types";
 
+export type SolanaWalletToken = {
+  address: string;
+  symbol: string;
+  iconSymbol: string;
+  name: string;
+  decimals: number;
+  isStable: boolean | undefined;
+};
+
 export type SolanaWalletAsset = SolanaWalletToken & {
   balance: bigint;
-  // undefined when the keeper has no price for the token: shown without a USD value, never as $0
   balanceUsd: bigint | undefined;
 };
 
 export type SolanaWalletAssets = {
-  // the tokens with a balance above zero
   assets: SolanaWalletAsset[];
-  // undefined without prices or when a held token has no price
   totalUsd: bigint | undefined;
 };
 
-export function getSolanaWalletAssets(
-  tokens: readonly SolanaWalletToken[] | undefined,
-  balances: SolanaBalances | undefined,
-  prices: TokenPricesData | undefined
-): SolanaWalletAssets | undefined {
+export function getSolanaWalletAssets({
+  tokens,
+  balances,
+  prices,
+}: {
+  tokens: readonly SolanaWalletToken[] | undefined;
+  balances: SolanaBalances | undefined;
+  prices: TokenPricesData | undefined;
+}): SolanaWalletAssets | undefined {
   if (!tokens || !balances) {
     return undefined;
   }
 
   const assets: SolanaWalletAsset[] = [];
-  let totalUsd: bigint | undefined = prices ? 0n : undefined;
+  let totalUsd: bigint | undefined = 0n;
 
   for (const token of tokens) {
     const balance = balances[token.address];
@@ -45,7 +54,6 @@ export function getSolanaWalletAssets(
   return { assets: assets.sort(compareByUsd), totalUsd };
 }
 
-// Priced assets first by USD value, then unpriced ones in list order
 function compareByUsd(a: SolanaWalletAsset, b: SolanaWalletAsset): number {
   if (a.balanceUsd === undefined || b.balanceUsd === undefined) {
     return Number(a.balanceUsd === undefined) - Number(b.balanceUsd === undefined);

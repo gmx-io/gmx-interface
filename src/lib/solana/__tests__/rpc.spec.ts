@@ -9,7 +9,7 @@ import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { metrics } from "lib/metrics";
 import { registerRpcTracker } from "lib/rpc/registry";
 
-import { SolanaRpcTracker } from "./rpc";
+import { SolanaRpcTracker } from "../rpc";
 
 const nativeAbort = vi.hoisted(() => {
   // Kit captures the controller at import time; its Node transport needs the native implementation.
@@ -93,7 +93,7 @@ it.each(["http", "rpc", "incomplete", "timeout"])(
   }
 );
 
-it.each(["network", "slot", "http"])("recovers the same client after a %s probe failure and ban", async (failure) => {
+it.each(["network", "slot", "http"])("reads accounts despite a %s probe failure", async (failure) => {
   const tracker = createTracker();
   const client = tracker.getRpc();
   let failed = true;
@@ -102,7 +102,9 @@ it.each(["network", "slot", "http"])("recovers the same client after a %s probe 
     vi.fn(async (url, init) => {
       expect(String(url)).toBe(getSolanaRpcUrl());
       const { id, method, params } = JSON.parse(init.body);
-      if (failed && failure === "http") return new Response("Unavailable", { status: 503 });
+      if (failed && failure === "http" && method !== "getMultipleAccounts") {
+        return new Response("Unavailable", { status: 503 });
+      }
       const result =
         method === "getGenesisHash"
           ? failed && failure === "network"
@@ -120,9 +122,11 @@ it.each(["network", "slot", "http"])("recovers the same client after a %s probe 
     })
   );
   await tracker.fallbackTracker.checkEndpoints(new AbortController());
-  expect(() => tracker.getRpc()).toThrow("No healthy Solana RPC endpoint available");
-  await expect(tracker.fetchAccounts([owner])).rejects.toThrow();
+  expect(tracker.fallbackTracker.getEndpointStats(tracker.endpoint)?.checkResults[0].success).toBe(false);
+  expect(tracker.getRpc()).toBe(client);
+  await expect(tracker.fetchAccounts([owner])).resolves.toEqual([null]);
   tracker.fallbackTracker.banEndpoint(tracker.endpoint, "test failure");
+  await expect(tracker.fetchAccounts([owner])).resolves.toEqual([null]);
   failed = false;
   await tracker.fallbackTracker.checkEndpoints(new AbortController());
   expect(tracker.getRpc()).toBe(client);
@@ -148,7 +152,7 @@ it.each([true, false])(
       await vi.advanceTimersByTimeAsync(5000);
       probe.mockRejectedValue(new Error("RPC unavailable"));
       await vi.advanceTimersByTimeAsync(20_000);
-      expect(() => tracker.getRpc()).toThrow("No healthy Solana RPC endpoint available");
+      expect(tracker.getRpc()).toBe(tracker.rpc);
       probe.mockResolvedValue({ responseTime: 20, slot: 124n });
       await vi.advanceTimersByTimeAsync(20_000);
       expect(tracker.getRpc()).toBe(tracker.rpc);

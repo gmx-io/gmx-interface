@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { SolanaWalletToken } from "domain/gmsol/walletTokens";
 import { expandDecimals } from "lib/numbers";
 
-import { getSolanaWalletAssets } from "./solanaWalletAssets";
+import { getSolanaWalletAssets, type SolanaWalletToken } from "../solanaWalletAssets";
 
 const usd = (value: number) => expandDecimals(value, 30);
 
@@ -40,12 +39,16 @@ const PRICES = {
 
 describe("getSolanaWalletAssets", () => {
   it("stays unknown until the token list and the balances load", () => {
-    expect(getSolanaWalletAssets(undefined, { native: 1n }, PRICES)).toBeUndefined();
-    expect(getSolanaWalletAssets(TOKENS, undefined, PRICES)).toBeUndefined();
+    expect(getSolanaWalletAssets({ tokens: undefined, balances: { native: 1n }, prices: PRICES })).toBeUndefined();
+    expect(getSolanaWalletAssets({ tokens: TOKENS, balances: undefined, prices: PRICES })).toBeUndefined();
   });
 
   it("values each held token at the mid price and totals them", () => {
-    const result = getSolanaWalletAssets(TOKENS, { native: 2_000_000_000n, usdc: 50_000_000n, ape: 0n }, PRICES)!;
+    const result = getSolanaWalletAssets({
+      tokens: TOKENS,
+      balances: { native: 2_000_000_000n, usdc: 50_000_000n, ape: 0n },
+      prices: PRICES,
+    })!;
 
     expect(result.assets.map((asset) => [asset.symbol, asset.balanceUsd])).toEqual([
       ["SOL", usd(202)],
@@ -54,15 +57,22 @@ describe("getSolanaWalletAssets", () => {
     expect(result.totalUsd).toBe(usd(252));
   });
 
-  it("returns a known zero for an empty wallet", () => {
-    expect(getSolanaWalletAssets(TOKENS, { native: 0n, usdc: 0n, ape: 0n }, PRICES)).toEqual({
+  it.each([
+    ["with prices", PRICES],
+    ["without prices", undefined],
+  ])("returns a known zero for an empty wallet %s", (_, prices) => {
+    expect(getSolanaWalletAssets({ tokens: TOKENS, balances: { native: 0n, usdc: 0n, ape: 0n }, prices })).toEqual({
       assets: [],
       totalUsd: 0n,
     });
   });
 
   it("keeps an unpriced holding without USD and leaves the total unknown", () => {
-    const result = getSolanaWalletAssets(TOKENS, { native: 1_000_000_000n, ape: 5n }, PRICES)!;
+    const result = getSolanaWalletAssets({
+      tokens: TOKENS,
+      balances: { native: 1_000_000_000n, ape: 5n },
+      prices: PRICES,
+    })!;
 
     expect(result.assets.map((asset) => [asset.symbol, asset.balanceUsd])).toEqual([
       ["SOL", usd(101)],
@@ -72,7 +82,7 @@ describe("getSolanaWalletAssets", () => {
   });
 
   it("lists balances without prices and no total while prices are missing", () => {
-    const result = getSolanaWalletAssets(TOKENS, { native: 1n }, undefined)!;
+    const result = getSolanaWalletAssets({ tokens: TOKENS, balances: { native: 1n }, prices: undefined })!;
 
     expect(result.assets).toHaveLength(1);
     expect(result.assets[0].balanceUsd).toBeUndefined();
@@ -81,7 +91,7 @@ describe("getSolanaWalletAssets", () => {
 
   it("keeps amounts above Number.MAX_SAFE_INTEGER exact", () => {
     const balance = 2n ** 63n + 1n;
-    const result = getSolanaWalletAssets(TOKENS, { usdc: balance }, PRICES)!;
+    const result = getSolanaWalletAssets({ tokens: TOKENS, balances: { usdc: balance }, prices: PRICES })!;
 
     expect(result.assets[0].balance).toBe(balance);
     expect(result.totalUsd).toBe(balance * expandDecimals(1, 24));

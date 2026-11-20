@@ -6,8 +6,8 @@ import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/
 import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS } from "config/gmsol/tokens";
 import { getRpcProviders } from "config/rpc";
 
-import { decodeSolanaTokenBalance, fetchSolanaBalances } from "./balances";
-import { fetchSolanaAccounts, getSolanaRpcTracker } from "./rpc";
+import { decodeSolanaTokenBalance, fetchSolanaBalances } from "../balances";
+import { fetchSolanaAccounts, getSolanaRpcTracker } from "../rpc";
 
 const nativeAbort = vi.hoisted(() => {
   // Kit captures the controller at import time; its Node transport needs the native implementation.
@@ -90,7 +90,7 @@ describe("configured Solana balances", () => {
     { ...tokenAccount(), bytes: tokenAccount().bytes.map((byte, i) => (i >= 64 && i < 72 ? 0 : byte)) },
   ])("keeps raw precision, native SOL and all configured ATAs", async (account) => {
     const calls = mockRpc(account);
-    const balances = await fetchSolanaBalances(owner);
+    const balances = await fetchSolanaBalances({ owner, tokens: walletTokens });
     expect(balances[GMSOL_NATIVE_TOKEN.address]).toBe(1234n);
     expect(balances[token.address]).toBe(new DataView(account.bytes.buffer).getBigUint64(64, true));
     expect(Object.values(balances).filter((balance) => balance === 0n)).toHaveLength(
@@ -113,7 +113,7 @@ describe("configured Solana balances", () => {
       if (failure === "state") account.bytes[108] = 0;
       if (failure === "size") account.bytes = account.bytes.slice(0, 164);
       mockRpc(account, failure);
-      await expect(fetchSolanaBalances(owner)).rejects.toThrow();
+      await expect(fetchSolanaBalances({ owner, tokens: walletTokens })).rejects.toThrow();
     }
   );
 
@@ -139,14 +139,14 @@ describe("configured Solana balances", () => {
 
   it("reads other balances when an ATA is prefunded but not initialized", async () => {
     mockRpc({ bytes: new Uint8Array(0), program: SOLANA_SYSTEM_PROGRAM_ID });
-    const balances = await fetchSolanaBalances(owner);
+    const balances = await fetchSolanaBalances({ owner, tokens: walletTokens });
     expect(balances[GMSOL_NATIVE_TOKEN.address]).toBe(1234n);
     expect(balances[token.address]).toBe(0n);
   });
 
   it("reports zero for an unfunded owner and absent ATAs", async () => {
     mockRpc(tokenAccount(), "missing");
-    const balances = await fetchSolanaBalances(owner);
+    const balances = await fetchSolanaBalances({ owner, tokens: walletTokens });
     expect(Object.keys(balances)).toHaveLength(walletTokens.length + 1);
     expect(Object.values(balances).every((balance) => balance === 0n)).toBe(true);
   });
@@ -164,6 +164,6 @@ describe("configured Solana balances", () => {
     ).toHaveLength(201);
     expect(calls.map((batch) => batch.length)).toEqual([100, 100, 1]);
     mockRpc(tokenAccount(), "incomplete");
-    await expect(fetchSolanaBalances(owner)).rejects.toThrow("incomplete");
+    await expect(fetchSolanaBalances({ owner, tokens: walletTokens })).rejects.toThrow("incomplete");
   });
 });

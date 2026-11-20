@@ -40,6 +40,10 @@ export function getAccountTransfersPausedMessage() {
   return t`Account transfers are paused. Try again later.`;
 }
 
+export function getLegacyVaultPausedMessage() {
+  return t`The Legacy vault is paused. Try again later.`;
+}
+
 export function getContractErrorMessageFromError({
   chainId,
   error,
@@ -421,6 +425,24 @@ export function getContractErrorMessage({
 
     case CustomErrorName.VesterAccountFrozen:
       return t`This account is frozen in the esGMX vesting vault`;
+
+    case CustomErrorName.VestingCapExceeded:
+      return t`The amount is more than your eligible amount left in the Legacy vault`;
+
+    case CustomErrorName.InsufficientVesterBacking:
+      return t`The Legacy vault has no GMX left for new deposits. Try again later.`;
+
+    case CustomErrorName.VesterDeactivated:
+      return t`The Legacy vault is closed`;
+
+    case CustomErrorName.InvalidDesignatedVester:
+      return t`The Legacy vault is not open yet`;
+
+    case CustomErrorName.EmptyVesterWithdrawal:
+      return t`Nothing to withdraw from the Legacy vault`;
+
+    case CustomErrorName.UnbackedPairAmountLocked:
+      return t`Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first.`;
 
     case CustomErrorName.StakingReceiverNotFresh:
     case CustomErrorName.VestingReceiverNotFresh:
