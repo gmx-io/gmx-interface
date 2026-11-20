@@ -119,7 +119,6 @@ const EVM_ONLY_PAGE_PATHS = [
   "/referrals-tier",
   "/begin_account_transfer",
   "/complete_account_transfer",
-  "/rpc-debug",
   "/oracle-keeper-debug",
   "/jobs",
   "/ecosystem",
@@ -153,6 +152,9 @@ function SolanaRoutes({ openSettings }: { openSettings: () => void }) {
       <RedirectWithQuery from="/v2" to="/trade" />
       <Route exact path="/v1">
         <RedirectWithQuery to="/trade" />
+      </Route>
+      <Route exact path="/rpc-debug">
+        <RpcDebugPage />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />

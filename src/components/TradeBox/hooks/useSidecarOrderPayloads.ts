@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { isSolanaNetwork } from "config/chains";
 import { selectAccount, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
@@ -24,7 +25,7 @@ export function useSidecarOrderPayloads() {
   const { getExecutionFeeAmountForEntry, getOrderExecutionFee } = useTPSLSummaryExecutionFee();
   const { cancelSltpEntries, createSltpEntries, updateSltpEntries } = useRequiredActions();
 
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const account = useSelector(selectAccount);
   const collateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
@@ -32,7 +33,8 @@ export function useSidecarOrderPayloads() {
   const userReferralInfo = useSelector(selectUserReferralInfo);
 
   const secondaryOrdersParams = useMemo(() => {
-    if (!marketInfo || !account || !collateralAddress) {
+    // Solana consumes the shared entries through its own order adapter, without EVM payloads.
+    if (isSolanaNetwork(networkId) || !marketInfo || !account || !collateralAddress) {
       return undefined;
     }
 
@@ -107,6 +109,7 @@ export function useSidecarOrderPayloads() {
     getExecutionFeeAmountForEntry,
     isLong,
     marketInfo,
+    networkId,
     updateSltpEntries,
     userReferralInfo?.referralCodeForTxn,
   ]);

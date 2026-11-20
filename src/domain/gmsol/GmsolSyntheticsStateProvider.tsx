@@ -9,6 +9,7 @@ import type { ChartDataProvider, SyntheticsState } from "context/SyntheticsState
 import { useLeaderboardState } from "context/SyntheticsStateContext/useLeaderboardState";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import { useGmsolWalletBalances } from "domain/gmsol/useGmsolWalletBalances";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import type { MarketsInfoResult, MarketsResult } from "domain/synthetics/markets";
 import { useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
@@ -96,10 +97,12 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const leaderboard = useLeaderboardState(undefined, false);
   const externalSwapState = useInitExternalSwapState();
 
+  const balances = useGmsolWalletBalances(owner);
   const rawMarkets = useGmsolRawMarketsInfo({ enabled: true });
   const tokensDataResult = useGmsolTokensData({
     enabled: true,
     rawMarketsInfoData: rawMarkets.rawMarketsInfoData,
+    balancesData: balances.error ? undefined : balances.data,
   });
   const tokensData = tokensDataResult.tokensData;
 
@@ -197,6 +200,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (composedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: composedPositions.data,
         isLoading: false,
         dataSource: "api",
@@ -210,6 +214,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     const cachedPositions = lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined;
     if (isMarketsUnavailable && cachedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: cachedPositions,
         isLoading: false,
         dataSource: "api",
@@ -225,7 +230,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedPositions,
+    positionsRequest.error,
+    positionsRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
@@ -237,6 +249,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (ordersInfoData) {
       return {
+        isSyncing: ordersRequest.isSyncing,
         ordersInfoData,
         count: Object.keys(ordersInfoData).length,
         isLoading: false,
@@ -256,7 +269,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedOrders, ordersRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedOrders,
+    ordersRequest.error,
+    ordersRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const positionsInfoData = positionsInfo.positionsInfoData;
 

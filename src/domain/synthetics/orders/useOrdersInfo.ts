@@ -18,6 +18,7 @@ import { Order, OrdersInfoData, TwapOrderInfo } from "./types";
 import { setOrderInfoTitle } from "./utils";
 
 export type AggregatedOrdersDataResult = {
+  isSyncing?: boolean;
   ordersInfoData?: OrdersInfoData;
   count?: number;
   isLoading: boolean;

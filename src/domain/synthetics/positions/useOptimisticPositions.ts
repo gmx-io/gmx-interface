@@ -156,12 +156,12 @@ function getIsPendingUpdateCoveredByEvent(
   return pendingUpdate.updatedAtBlock > 0n && BigInt(lastEventBlockNumber) >= pendingUpdate.updatedAtBlock;
 }
 
-export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
+export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate, contractKey?: string): Position {
   const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
 
   return {
     key: pendingUpdate.positionKey,
-    contractKey: hashedPositionKey(account, marketAddress, collateralAddress, isLong),
+    contractKey: contractKey ?? hashedPositionKey(account, marketAddress, collateralAddress, isLong),
     account,
     marketAddress,
     collateralTokenAddress: collateralAddress,
