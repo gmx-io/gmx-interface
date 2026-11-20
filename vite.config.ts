@@ -377,11 +377,10 @@ function optionalSolanaSystemStub(): PluginOption {
   };
 }
 
-const SHARED_WORKER_TEST_FILE_REGEX = /\.(spec|test)\.ts$/;
-// A non-isolated worker keeps the module cache, vi.mock registrations and globals between files,
-// so only plain specs that touch none of them can share one.
-const NEEDS_ISOLATED_WORKER_REGEX =
-  /\bvi\.|localStorage|sessionStorage|prototype|globalThis|\bglobal\.|\bwindow\.|\bdocument\.|monkeyPatching/;
+const TEST_FILE_REGEX = /\.(spec|test)\.tsx?$/;
+// A shared worker keeps the module cache, vi.mock registrations and library state (like lingui's active
+// locale) between files, so a spec adds a `// @vitest-shared-worker` line only when it changes none of them.
+const SHARED_WORKER_MARKER_REGEX = /^\/\/ @vitest-shared-worker$/m;
 
 function getSharedWorkerTestFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -391,8 +390,7 @@ function getSharedWorkerTestFiles(dir: string): string[] {
       return getSharedWorkerTestFiles(file);
     }
 
-    const canShareWorker =
-      SHARED_WORKER_TEST_FILE_REGEX.test(file) && !NEEDS_ISOLATED_WORKER_REGEX.test(readFileSync(file, "utf8"));
+    const canShareWorker = TEST_FILE_REGEX.test(file) && SHARED_WORKER_MARKER_REGEX.test(readFileSync(file, "utf8"));
 
     return canShareWorker ? [file] : [];
   });
