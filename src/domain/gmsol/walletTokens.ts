@@ -1,17 +1,5 @@
 import { GMSOL_TOKENS, GMSOL_NATIVE_TOKEN } from "config/gmsol/tokens";
-import type { OracleFetcher } from "lib/oracleKeeperFetcher";
-import type { TokenPricesData } from "sdk/utils/tokens/types";
-
-import { buildGmsolTokenPrices } from "./gmsolOracleUtils";
-
-export type SolanaWalletToken = {
-  address: string;
-  symbol: string;
-  iconSymbol: string;
-  name: string;
-  decimals: number;
-  isStable: boolean | undefined;
-};
+import type { SolanaWalletToken } from "domain/solana/solanaWalletAssets";
 
 export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
   {
@@ -31,10 +19,3 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
     isStable: token.isStable,
   })),
 ];
-
-export async function fetchSolanaWalletPrices(arbitrumFetcher: OracleFetcher): Promise<TokenPricesData> {
-  return buildGmsolTokenPrices(
-    await arbitrumFetcher.fetchTickers(),
-    SOLANA_WALLET_TOKENS.map((token) => token.address)
-  );
-}

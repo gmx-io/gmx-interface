@@ -482,7 +482,7 @@ export function buildTwapOrdersPayloads<
       indexTokenAddress: params.indexTokenAddress,
       isLong: params.isLong,
       collateralTokenAddress: params.collateralTokenAddress,
-      collateralDeltaAmount: params.collateralDeltaAmount / BigInt(twapParams.numberOfParts),
+      collateralDeltaAmount: 0n,
       sizeDeltaUsd: params.sizeDeltaUsd / BigInt(twapParams.numberOfParts),
       sizeDeltaInTokens: params.sizeDeltaInTokens / BigInt(twapParams.numberOfParts),
       executionFeeAmount: params.executionFeeAmount / BigInt(twapParams.numberOfParts),

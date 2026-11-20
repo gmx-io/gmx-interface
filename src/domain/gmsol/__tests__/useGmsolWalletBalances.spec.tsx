@@ -8,15 +8,15 @@ import { setAbFlagEnabled } from "config/ab";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { SolanaBalances } from "lib/solana/balances";
 
-import { getSolanaBalancesKey, useSolanaBalances } from "./useSolanaBalances";
+import { getSolanaBalancesKey, useGmsolWalletBalances } from "../useGmsolWalletBalances";
 
 const source = vi.hoisted(() => ({ read: vi.fn(), networkId: -501 }));
 vi.mock("lib/chains", () => ({ useChainId: () => ({ networkId: source.networkId }) }));
 vi.mock("lib/solana/balances", () => ({ fetchSolanaBalances: source.read }));
-let latest: ReturnType<typeof useSolanaBalances>;
+let latest: ReturnType<typeof useGmsolWalletBalances>;
 let invalidate: ReturnType<typeof useSWRConfig>["mutate"];
 function Consumer({ owner }: { owner: string | undefined }) {
-  latest = { ...useSolanaBalances(owner) };
+  latest = { ...useGmsolWalletBalances(owner) };
   invalidate = useSWRConfig().mutate;
   return null;
 }
