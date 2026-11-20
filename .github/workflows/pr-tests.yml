@@ -120,6 +120,10 @@ jobs:
           yarn --cwd sdk install --immutable --mode=skip-build
 
       - name: Typecheck and unit test without a browser
+        env:
+          # Listing loads the regression config, which requires target URLs in CI; nothing is opened.
+          REGRESSION_BASE_URL: https://test.gmx-interface.pages.dev
+          REGRESSION_LANDING_URL: https://gmx.io
         run: |
           yarn test:regression:types
           yarn test:regression:funded:types
