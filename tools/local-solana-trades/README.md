@@ -10,8 +10,8 @@ The November 20 integration merges these exact PR heads, including open and draf
 | ----------------------------------------------- | ---------------------------------------------------------- | ------------ |
 | GMX-owned WASM and latest release               | [#3314](https://github.com/gmx-io/gmx-interface/pull/3314) | `161e89e4a4` |
 | Transaction preparation, validation and sending | [#3315](https://github.com/gmx-io/gmx-interface/pull/3315) | `c59c5fc672` |
-| Order lifecycle and notifications               | [#3316](https://github.com/gmx-io/gmx-interface/pull/3316) | `5da468c4a3` |
-| Shared order entry                              | [#3317](https://github.com/gmx-io/gmx-interface/pull/3317) | `c4347d2577` |
+| Order lifecycle and notifications               | [#3316](https://github.com/gmx-io/gmx-interface/pull/3316) | `390eba5a6c` |
+| Shared order entry                              | [#3317](https://github.com/gmx-io/gmx-interface/pull/3317) | `a54508119b` |
 | Wallet balances and address keys                | [#3195](https://github.com/gmx-io/gmx-interface/pull/3195) | `58e343bb14` |
 | Fee-discount fields                             | [#3205](https://github.com/gmx-io/gmx-interface/pull/3205) | `31bb690ebe` |
 | Order fields                                    | [#3207](https://github.com/gmx-io/gmx-interface/pull/3207) | `6bb15c691f` |
