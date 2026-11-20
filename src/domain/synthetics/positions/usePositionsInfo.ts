@@ -51,10 +51,12 @@ export function composeApiPositionInfo(
 }
 
 export type PositionsInfoResult = {
+  isSyncing?: boolean;
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
   error?: Error;
   dataSource?: ApiDataSource;
+  refetch?: () => Promise<unknown>;
 };
 
 export function usePositionsInfoRequest(

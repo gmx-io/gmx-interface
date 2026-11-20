@@ -21,6 +21,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -102,6 +103,7 @@ export function OrdersModal({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
@@ -208,6 +210,19 @@ export function OrdersModal({
   );
 
   const handleCancelAll = useCallback(async () => {
+    if (solanaOrderActions && displayedOrders.length > 0) {
+      const orderKeys = displayedOrders.map((order) => order.key);
+      setIsCancellingAll(true);
+      setCancellingOrdersKeys((prev) => [...new Set([...prev, ...orderKeys])]);
+      try {
+        await solanaOrderActions.cancelOrders(displayedOrders);
+      } finally {
+        setIsCancellingAll(false);
+        setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
+      }
+      return;
+    }
+
     if (!signer || !provider || displayedOrders.length === 0) return;
 
     setIsCancellingAll(true);
@@ -267,6 +282,7 @@ export function OrdersModal({
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
     }
   }, [
+    solanaOrderActions,
     signer,
     provider,
     displayedOrders,
