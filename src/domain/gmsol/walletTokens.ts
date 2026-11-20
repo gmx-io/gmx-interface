@@ -10,6 +10,7 @@ export const SOLANA_WALLET_TOKENS: readonly SolanaWalletToken[] = [
     decimals: GMSOL_NATIVE_TOKEN.decimals,
     isStable: undefined,
   },
+  // isSynthetic excludes trading collateral, but also marks real wallet assets such as WIF and PUMP.
   ...GMSOL_TOKENS.map((token) => ({
     address: token.address,
     symbol: token.symbol,
