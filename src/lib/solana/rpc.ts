@@ -57,10 +57,7 @@ export class SolanaRpcTracker {
   }
 
   getRpc() {
-    const { endpointsStats } = this.fallbackTracker.getCurrentEndpoints();
-    if (endpointsStats[0]?.checkResults[0]?.success === false) {
-      throw new Error("No healthy Solana RPC endpoint available");
-    }
+    this.fallbackTracker.getCurrentEndpoints();
     return this.rpc;
   }
 
