@@ -5,6 +5,8 @@ import {
   getPublicKeyFromAddress,
   getSignatureFromTransaction,
   getTransactionDecoder,
+  isSolanaError,
+  SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
   verifySignature,
   type TransactionMessageBytesBase64,
 } from "@solana/kit";
@@ -255,7 +257,16 @@ export async function sendGmsolOrderTransactions({
           preflightCommitment: "confirmed",
           maxRetries: 0n,
         })
-        .send(rpcOptions());
+        .send(rpcOptions())
+        .catch((error: unknown) => {
+          if (isSolanaError(error, SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE)) {
+            if (getPendingGmsolSubmission(plan.owner)?.signature === expectedSignature) {
+              setPendingGmsolSubmission(plan.owner, undefined);
+            }
+            pendingSignature = undefined;
+          }
+          throw error;
+        });
       requireGmsol(sent === expectedSignature, "RPC returned an unexpected transaction signature");
       signatures.push(sent);
       const deadline = Date.now() + CONFIRM_TIMEOUT_MS;
