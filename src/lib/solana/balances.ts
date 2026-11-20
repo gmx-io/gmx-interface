@@ -9,8 +9,8 @@ import {
   getU64Decoder,
 } from "@solana/kit";
 
-import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
-import { GMSOL_NATIVE_TOKEN, GMSOL_TOKENS, type GmsolTokenConfig } from "config/gmsol/tokens";
+import { SOLANA_SYSTEM_PROGRAM_ID, SOLANA_TOKEN_PROGRAM_ID, SOLANA_TOKEN_2022_PROGRAM_ID } from "config/gmsol/program";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { fetchSolanaAccounts } from "./rpc";
 
@@ -34,12 +34,22 @@ const tokenAccountDecoder = getStructDecoder([
 
 export type SolanaBalances = Record<string, bigint>;
 
-/** Reads configured ATAs only. Raw amounts do not guarantee that funds are spendable. */
-export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances> {
+export type SolanaBalanceToken = {
+  address: string;
+  tokenProgram: typeof SOLANA_TOKEN_PROGRAM_ID | typeof SOLANA_TOKEN_2022_PROGRAM_ID;
+};
+
+export async function fetchSolanaBalances({
+  owner,
+  tokens,
+}: {
+  owner: string;
+  tokens: readonly SolanaBalanceToken[];
+}): Promise<SolanaBalances> {
   const ownerAddress = address(owner);
   const encoder = getAddressEncoder();
   const tokenAccounts = await Promise.all(
-    GMSOL_TOKENS.map(async (token) => {
+    tokens.map(async (token) => {
       const [ata] = await getProgramDerivedAddress({
         programAddress: ASSOCIATED_TOKEN_PROGRAM_ID,
         seeds: [
@@ -58,7 +68,7 @@ export async function fetchSolanaBalances(owner: string): Promise<SolanaBalances
   if (nativeAccount && (nativeAccount.owner !== SOLANA_SYSTEM_PROGRAM_ID || nativeAccount.executable)) {
     throw new Error(`Invalid Solana wallet account: ${owner}`);
   }
-  const balances: SolanaBalances = { [GMSOL_NATIVE_TOKEN.address]: nativeAccount?.lamports ?? 0n };
+  const balances: SolanaBalances = { [NATIVE_TOKEN_ADDRESS]: nativeAccount?.lamports ?? 0n };
 
   tokenAccounts.forEach(({ token, ata }, index) => {
     const account = accounts[index];
@@ -78,7 +88,7 @@ export function decodeSolanaTokenBalance({
   ata,
 }: {
   account: { owner: string; executable: boolean; data: readonly [string, "base64"] };
-  token: GmsolTokenConfig;
+  token: SolanaBalanceToken;
   owner: string;
   ata: string;
 }) {

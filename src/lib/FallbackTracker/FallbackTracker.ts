@@ -415,6 +415,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.checkEndpoints(abortController)
       .then(() => {
+        if (abortController.signal.aborted || this.state.abortController !== abortController) return;
         emitTrackingFinished({ trackerKey: this.trackerKey, endpointsStats: this.getEndpointsStats() });
         this.selectBestEndpoints();
       })
@@ -579,6 +580,8 @@ export class FallbackTracker<TCheckStats> {
         ]);
       })
     );
+
+    if (abortController.signal.aborted || this.state.abortController !== abortController) return;
 
     const fulfilledResults = checkResults.filter((result) => result.status === "fulfilled");
 

@@ -10,7 +10,8 @@ import { getWagmiConfig } from "lib/wallets/walletConfig";
 export async function wrapChainAction(
   chainId: AnyChainId,
   setSettlementChainId: (chainId: SettlementChainId) => void,
-  action: (signer: WalletSigner) => Promise<void>
+  action: (signer: WalletSigner) => Promise<void>,
+  validateBeforeRequest?: () => void
 ): Promise<void> {
   const config = getWagmiConfig();
 
@@ -35,7 +36,7 @@ export async function wrapChainAction(
   if (currentChainId === chainId) {
     const currentWalletClient = await getWalletClient(config);
     await currentWalletClient.switchChain({ id: chainId });
-    const currentSigner = clientToSigner(currentWalletClient, account);
+    const currentSigner = clientToSigner(currentWalletClient, account, validateBeforeRequest);
     await action(currentSigner);
     return;
   }
@@ -43,7 +44,7 @@ export async function wrapChainAction(
   await switchNetwork(chainId, true);
 
   const walletClient = await getWalletClient(config);
-  const signer = clientToSigner(walletClient, account);
+  const signer = clientToSigner(walletClient, account, validateBeforeRequest);
 
   try {
     await action(signer);

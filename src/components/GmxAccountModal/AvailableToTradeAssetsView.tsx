@@ -7,11 +7,10 @@ import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, isSolanaNetwork } from "config/chains";
 import { isSettlementChain } from "config/multichain";
 import type { GmxAccountAvailableAssetsFilter } from "context/GmxAccountContext/GmxAccountContext";
 import { useGmxAccountAvailableAssetsFilter, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
-import { useSolanaWalletAssets } from "domain/solana/useSolanaWalletAssets";
+import { useSolanaWalletAssets } from "domain/solana/SolanaWalletAssetsContext";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
 
 import { Amount } from "components/Amount/Amount";
@@ -75,7 +74,6 @@ const AssetsList = ({
   tokens: DisplayToken[];
   noChainFilter?: boolean;
   initialFilter?: FilterType;
-  // Solana: wallet tokens only, no tabs, no EVM receive flow
   walletOnly?: boolean;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -243,11 +241,9 @@ const AssetListSettlementChain = () => {
   return <AssetsList tokens={displayTokens} initialFilter={availableAssetsFilter} />;
 };
 
-// Solana is wallet-only: one list from the Solana RPC, without the GMX Account tab or the EVM token data.
 const AssetListSolana = () => {
   const { networkId } = useChainId();
-  const { address } = useSolanaWalletSession();
-  const { assets, isLoading, balancesError } = useSolanaWalletAssets(address);
+  const { assets, isLoading, balancesError } = useSolanaWalletAssets();
 
   const displayTokens = useMemo(
     () =>

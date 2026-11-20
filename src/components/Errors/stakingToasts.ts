@@ -6,10 +6,11 @@ import { getErrorMessage } from "./errorToasts";
 import {
   getAccountTransfersPausedMessage,
   getContractErrorMessageFromError,
+  getLegacyVaultPausedMessage,
   getUnstakeRequestsPausedMessage,
 } from "./getContractErrorMessage";
 
-export type StakingErrorAction = "default" | "unstakeRequest" | "transfer";
+export type StakingErrorAction = "default" | "unstakeRequest" | "transfer" | "legacyVault";
 
 export function getStakingErrorMessage({
   chainId,
@@ -27,6 +28,10 @@ export function getStakingErrorMessage({
 
     if (action === "transfer") {
       return getAccountTransfersPausedMessage();
+    }
+
+    if (action === "legacyVault") {
+      return getLegacyVaultPausedMessage();
     }
 
     return undefined;
