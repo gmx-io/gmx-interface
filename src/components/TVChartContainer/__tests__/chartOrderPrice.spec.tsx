@@ -67,7 +67,7 @@ describe("chart order prices", () => {
         [BTC_ADDRESS]: BTC_TOKEN,
         [USDC_ADDRESS]: USDC_TOKEN,
       };
-      const eth = createMockMarketInfo();
+      const eth = createMockMarketInfo(NATIVE_ETH_TOKEN, { longToken: ETH_TOKEN });
       const btc = createMockMarketInfo(BTC_TOKEN, {
         marketTokenAddress: "0x47c031236e19d024b42f8AE6780E44A573170703",
         indexTokenAddress: BTC_ADDRESS,
@@ -141,7 +141,7 @@ describe("chart order prices", () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
         view.rerender(renderApp(true));
         const field = view.getByLabelText("Limit price") as HTMLInputElement;
-        expect(field.dataset.token).toBe(ETH_ADDRESS);
+        expect(field.dataset.token).toBe(NATIVE_ETH_ADDRESS);
         expect(field.dataset.side).toBe(TradeType.Short);
         expect(field.dataset.mode).toBe(TradeMode.Limit);
         expect(field.value).toBe("2079.85");

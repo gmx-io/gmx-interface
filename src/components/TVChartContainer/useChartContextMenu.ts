@@ -155,13 +155,13 @@ export function useChartContextMenu(
   const onOpenTPSLModal = options?.onOpenTPSLModal;
   const tradeType = useSelector(selectTradeboxTradeType);
   const chartToken = useSelector(selectTradeboxToToken);
-  const orderTokenAddress =
-    tradeType === TradeType.Swap && chartToken?.isNative ? chartToken.wrappedAddress : chartToken?.address;
+  const marketIndexAddress = chartToken?.isNative ? chartToken.wrappedAddress : chartToken?.address;
   const availableTokens = useSelector(selectTradeboxAvailableTokensOptions);
   const swapTargetMarket =
     tradeType === TradeType.Swap
-      ? availableTokens.sortedAllMarkets.find((market) => market.indexTokenAddress === orderTokenAddress)
+      ? availableTokens.sortedAllMarkets.find((market) => market.indexTokenAddress === marketIndexAddress)
       : undefined;
+  const orderTokenAddress = swapTargetMarket?.indexToken.address ?? chartToken?.address;
   const canPlaceOrderFromSwap = Boolean(swapTargetMarket);
   const orderInputMultiplier = swapTargetMarket?.indexToken?.visualMultiplier ?? chartToken?.visualMultiplier;
   const markPriceBn = useSelector(selectTradeboxMarkPrice);
