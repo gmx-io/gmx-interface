@@ -18,6 +18,7 @@ export class SolanaRpcTracker {
   readonly fallbackTracker: FallbackTracker<SolanaRpcCheckResult>;
   readonly endpoint = getSolanaRpcUrl();
   readonly rpc = createSolanaRpc(this.endpoint);
+  genesisHash: string | undefined;
 
   constructor() {
     this.fallbackTracker = new FallbackTracker({
@@ -43,13 +44,17 @@ export class SolanaRpcTracker {
 
   async checkEndpoint(signal: AbortSignal): Promise<SolanaRpcCheckResult> {
     const start = Date.now();
-    const [genesis, slot] = await Promise.all([
-      this.rpc.getGenesisHash().send({ abortSignal: signal }),
+    const [, slot] = await Promise.all([
+      this.rpc
+        .getGenesisHash()
+        .send({ abortSignal: signal })
+        .then((genesis) => {
+          if (signal.aborted) return;
+          this.genesisHash = genesis;
+          this.assertMainnet();
+        }),
       this.rpc.getSlot({ commitment: "confirmed" }).send({ abortSignal: signal }),
     ]);
-    if (genesis !== MAINNET_GENESIS_HASH) {
-      throw new Error("Solana RPC is not on Mainnet");
-    }
     if (typeof slot !== "bigint" || slot < 0n) {
       throw new Error("Invalid Solana RPC slot");
     }
@@ -58,7 +63,14 @@ export class SolanaRpcTracker {
 
   getRpc() {
     this.fallbackTracker.getCurrentEndpoints();
+    this.assertMainnet();
     return this.rpc;
+  }
+
+  assertMainnet() {
+    if (this.genesisHash !== undefined && this.genesisHash !== MAINNET_GENESIS_HASH) {
+      throw new Error("Solana RPC is not on Mainnet");
+    }
   }
 
   async fetchAccounts(addresses: readonly Address[]) {
@@ -79,6 +91,8 @@ export class SolanaRpcTracker {
           return value;
         })
       );
+      // A probe may identify the wrong network while account requests are in flight.
+      this.assertMainnet();
       return responses.flat();
     } catch (error) {
       this.fallbackTracker.reportFailure(this.endpoint);
