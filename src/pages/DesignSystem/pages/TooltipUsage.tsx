@@ -2,9 +2,10 @@
 import Button from "components/Button/Button";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
+  TooltipAction,
   TooltipContent,
   TooltipFootnote,
-  TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipTable,
@@ -24,7 +25,7 @@ const NET_RATE_COLUMNS: TooltipTableColumn[] = [
 ];
 const NET_RATE_ROWS = [["BTC/USD", "+0.0001%", "-0.0006%"]];
 
-export function TooltipUsage() {
+export function TooltipUsage({ onSetMaxLeverage }: { onSetMaxLeverage: () => void }) {
   return (
     // Tooltips next to each other: after the first one opens, the next ones open instantly
     <TooltipGroup>
@@ -44,13 +45,24 @@ export function TooltipUsage() {
         }
       />
 
-      {/* Text and a link: the link goes last, on its own line */}
+      {/* Text and Read more: Read more goes right under the text it explains, on its own line */}
       <StandardTooltip
         handle="Price impact / fees"
         content={
           <TooltipContent>
             <TooltipText>No price impact on increases — orders execute at mark price.</TooltipText>
-            <TooltipLink href="https://docs.gmx.io/docs/trading/fees/">Read more</TooltipLink>
+            <TooltipReadMore href="https://docs.gmx.io/docs/trading/fees/" />
+          </TooltipContent>
+        }
+      />
+
+      {/* An action does something in place: muted and underlined. TooltipLink is for other links that open a page */}
+      <StandardTooltip
+        handle="Max leverage"
+        content={
+          <TooltipContent>
+            <TooltipText>Decrease leverage to match the max allowed leverage.</TooltipText>
+            <TooltipAction onClick={onSetMaxLeverage}>Set max leverage</TooltipAction>
           </TooltipContent>
         }
       />
