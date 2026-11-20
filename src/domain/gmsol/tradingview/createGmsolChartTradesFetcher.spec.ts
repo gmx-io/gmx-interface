@@ -16,10 +16,12 @@ const position = {
   account: OWNER,
   contractKey: POSITION,
   marketAddress: BTC_MARKET,
-  sizeInUsd: 1000n,
+  sizeInUsd: 1000n * 10n ** 30n,
   isLong: true,
   increasedAtTime: BigInt(FROM + 300),
   decreasedAtTime: 0n,
+  tradeId: 91737n,
+  updatedAtSlot: 470518820n,
 } as PositionInfo;
 
 afterEach(() => vi.restoreAllMocks());
@@ -34,6 +36,8 @@ function event(id = "002", overrides = {}) {
     executionPrice: "70000000000000000", // $70,000 ×10^20 / 10^8 satoshis
     beforeSizeInUsd: "0",
     afterSizeInUsd: "100000000000000000000000",
+    afterTradeId: String(91_732 + Number(id)),
+    afterUpdatedAtSlot: String(470_518_815 + Number(id)),
     ...overrides,
   };
 }
@@ -93,10 +97,10 @@ describe("Solana chart trades", () => {
       .fn()
       .mockResolvedValueOnce({
         data: {
-          opening: [opening],
           latest: [event("005", { timestamp: new Date((FROM + 300) * 1000).toISOString() })],
         },
       })
+      .mockResolvedValueOnce({ data: { opening: [opening] } })
       .mockResolvedValueOnce({
         data: {
           tradeEvents: [
@@ -107,6 +111,7 @@ describe("Solana chart trades", () => {
             event("001"),
             event("006", { position: "OtherPosition" }),
             event("007", { flags: "4" }),
+            event("008"),
           ],
         },
       });
@@ -140,6 +145,46 @@ describe("Solana chart trades", () => {
     expect(await createGmsolChartTradesFetcher({ postJson })(params("current"))).toEqual([]);
     expect(postJson).toHaveBeenCalledTimes(1);
   });
+
+  it.each([
+    ["before the close is indexed", "002", {}, []],
+    ["without the API position revision", "004", { tradeId: undefined, updatedAtSlot: undefined }, []],
+    ["after the indexer catches up", "004", {}, ["004"]],
+  ])(
+    "shows a same-size reopen in the closing second only at its exact revision %s TRD-85",
+    async (_, latestId, revision, expected) => {
+      const at = new Date((FROM + 300) * 1000).toISOString();
+      const lifecycles = [
+        event("004", { timestamp: at }),
+        event("003", { timestamp: at, flags: "1", beforeSizeInUsd: "100000000000000000000000", afterSizeInUsd: "0" }),
+        event("002", { timestamp: at }),
+      ];
+      const indexed = lifecycles.filter((e) => e.id <= latestId);
+      const postJson = vi
+        .fn()
+        .mockResolvedValueOnce({ data: { latest: [indexed[0]] } })
+        .mockImplementationOnce(async (_, { query, variables }) => {
+          expect(query).toContain("id_lte: $latestId");
+          expect(variables.latestId).toBe(latestId);
+          const advanced = [event("006", { timestamp: at }), ...indexed];
+          return { data: { opening: [advanced.find((e) => e.beforeSizeInUsd === "0" && e.id <= variables.latestId)] } };
+        })
+        .mockResolvedValueOnce({ data: { tradeEvents: [event("006", { timestamp: at }), ...indexed] } });
+      const reopened = {
+        ...position,
+        increasedAtTime: BigInt(FROM + 300),
+        decreasedAtTime: BigInt(FROM + 300),
+        tradeId: BigInt(lifecycles[0].afterTradeId),
+        updatedAtSlot: BigInt(lifecycles[0].afterUpdatedAtSlot),
+        ...revision,
+      };
+      const trades = await createGmsolChartTradesFetcher({ postJson })({
+        ...params("current"),
+        positions: { [position.key]: reopened },
+      });
+      expect(trades.map((trade) => trade.id)).toEqual(expected);
+    }
+  );
 
   it("paginates beyond 100 fills with a stable cursor and returns chronological trades", async () => {
     const page = Array.from({ length: 100 }, (_, i) => event(String(200 - i).padStart(3, "0")));
