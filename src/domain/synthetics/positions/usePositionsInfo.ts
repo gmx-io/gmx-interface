@@ -55,6 +55,7 @@ export type PositionsInfoResult = {
   isLoading: boolean;
   error?: Error;
   dataSource?: ApiDataSource;
+  refetch?: () => Promise<unknown>;
 };
 
 export function usePositionsInfoRequest(
