@@ -7,6 +7,7 @@ import {
   capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
   getPositionFee,
+  getPriceImpactDeltaAmount,
   getPriceImpactForPosition,
   getTotalSwapVolumeFromSwapStats,
 } from "utils/fees";
@@ -1199,8 +1200,17 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     pendingFundingFeesUsd: 0n, // deducted on order
   });
 
+  const increasePendingImpactAmount =
+    !marketInfo.useV221LiquidationImpact || marketInfo.tradeMath === "gmsol"
+      ? 0n
+      : getPriceImpactDeltaAmount(marketInfo.indexToken, positionPriceImpactDeltaUsd);
+
+  const liquidationMarketInfo =
+    marketInfo.useV221LiquidationImpact && marketInfo.tradeMath !== "gmsol"
+      ? getMarketInfoWithOpenInterestDelta({ marketInfo, collateralToken, isLong, sizeDeltaUsd, sizeDeltaInTokens })
+      : marketInfo;
   const nextLiqPrice = getLiquidationPrice({
-    marketInfo,
+    marketInfo: liquidationMarketInfo,
     collateralToken,
     sizeInUsd: nextSizeUsd,
     sizeInTokens: nextSizeInTokens,
@@ -1209,7 +1219,7 @@ export function getNextPositionValuesForIncreaseTrade(p: {
     minCollateralUsd,
     pendingBorrowingFeesUsd: 0n, // deducted on order
     pendingFundingFeesUsd: 0n, // deducted on order
-    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
+    pendingImpactAmount: (existingPosition?.pendingImpactAmount ?? 0n) + increasePendingImpactAmount,
     isLong: isLong,
     userReferralInfo,
     feeDiscountFactor,
