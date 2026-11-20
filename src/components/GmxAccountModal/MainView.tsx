@@ -28,7 +28,7 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
-import { useSolanaWalletAssets } from "domain/solana/useSolanaWalletAssets";
+import { useSolanaWalletAssets } from "domain/solana/SolanaWalletAssetsContext";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
@@ -216,15 +216,14 @@ function WalletBlock({ account }: { account: string }) {
           </StandardTooltip>
         </div>
       </div>
-      {isSolanaSelected ? <SolanaWalletBalance account={account} /> : <EvmWalletBalance />}
+      {isSolanaSelected ? <SolanaWalletBalance /> : <EvmWalletBalance />}
     </div>
   );
 }
 
-// Loading shows the skeleton; a failed read or a held token without a price shows a dash, never $0.
-function SolanaWalletBalance({ account }: { account: string }) {
+function SolanaWalletBalance() {
   const [, setIsVisibleOrView] = useGmxAccountModalOpen();
-  const { totalUsd, isLoading } = useSolanaWalletAssets(account);
+  const { totalUsd, isLoading } = useSolanaWalletAssets();
   const openAssets = () => setIsVisibleOrView("availableToTradeAssets");
 
   if (totalUsd === undefined && !isLoading) {
