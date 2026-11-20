@@ -27,6 +27,20 @@ export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
 export const IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG = "isTokenPermitsEoaEnabled";
 export const IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG = "isTokenPermitsEip7702Enabled";
 
+export const IS_WALLET_BATCHING_ENABLED_UI_FLAG = "isWalletBatchingEnabled";
+
+/** Fail-closed: approvals stay separate transactions until the keeper turns batching on */
+export function getIsWalletBatchingEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_WALLET_BATCHING_ENABLED_UI_FLAG]?.enabled === true;
+}
+
+export const IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG = "isClassicTokenPermitsEnabled";
+
+/** Fail-closed, on top of the account-type flags: permits inside wallet transactions roll out separately */
+export function getIsClassicTokenPermitsEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG]?.enabled === true;
+}
+
 const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",
   "apiPositions",

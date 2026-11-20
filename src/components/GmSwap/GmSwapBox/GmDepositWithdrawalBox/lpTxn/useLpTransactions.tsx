@@ -4,6 +4,7 @@ import { selectPoolsDetailsOperation } from "context/PoolsDetailsContext/selecto
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 
 import { useDepositTransactions } from "./useDepositTransactions";
 import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
@@ -16,7 +17,7 @@ export interface UseLpTransactionProps {
 export const useLpTransactions = (
   props: UseLpTransactionProps
 ): {
-  onSubmit: () => Promise<void>;
+  onSubmit: (walletCallsBatch?: WalletCallsBatch) => Promise<void>;
   isSubmitting: boolean;
   error: Error | undefined;
   isLoading: boolean;
@@ -43,23 +44,26 @@ export const useLpTransactions = (
     technicalFees: props.technicalFees,
   });
 
-  const onSubmit = useCallback(() => {
-    setIsSubmitting(true);
+  const onSubmit = useCallback(
+    (walletCallsBatch?: WalletCallsBatch) => {
+      setIsSubmitting(true);
 
-    let txnPromise: Promise<any>;
+      let txnPromise: Promise<any>;
 
-    if (operation === Operation.Deposit) {
-      txnPromise = onCreateDeposit();
-    } else if (operation === Operation.Withdrawal) {
-      txnPromise = onCreateWithdrawal();
-    } else {
-      throw new Error("Invalid operation");
-    }
+      if (operation === Operation.Deposit) {
+        txnPromise = onCreateDeposit(walletCallsBatch);
+      } else if (operation === Operation.Withdrawal) {
+        txnPromise = onCreateWithdrawal(walletCallsBatch);
+      } else {
+        throw new Error("Invalid operation");
+      }
 
-    return txnPromise.finally(() => {
-      setIsSubmitting(false);
-    });
-  }, [operation, onCreateDeposit, onCreateWithdrawal]);
+      return txnPromise.finally(() => {
+        setIsSubmitting(false);
+      });
+    },
+    [operation, onCreateDeposit, onCreateWithdrawal]
+  );
 
   return {
     onSubmit,

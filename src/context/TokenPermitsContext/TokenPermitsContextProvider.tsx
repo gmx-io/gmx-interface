@@ -7,6 +7,7 @@ import { isAddressEqual, type Address } from "viem";
 import { isSolanaNetwork } from "config/chains";
 import { getTokenPermitsFallbackKey, getTokenPermitsKey, LEGACY_PERMITS_DISABLED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getIsClassicTokenPermitsEnabled } from "domain/synthetics/uiFlags/uiFlags";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import {
   createAndSignTokenPermit,
@@ -35,6 +36,10 @@ export type TokenPermitsState = {
   /** Usable permits only: empty while permits are switched off for the account */
   tokenPermits: SignedTokenPermit[];
   accountType: TokenPermitAccountType | undefined;
+  /** Permits can also go inside wallet-sent (Classic) transactions, not only relayed ones */
+  isClassicEnabled: boolean;
+  /** `tokenPermits` while `isClassicEnabled`, otherwise empty */
+  classicTokenPermits: SignedTokenPermit[];
   getIsPermitAvailable: (tokenAddress: string) => boolean;
   getPermitUnavailableReason: (tokenAddress: string) => TokenPermitUnavailableReason | undefined;
   addTokenPermit: AddTokenPermitFn;
@@ -112,6 +117,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     isQaOverrideEnabled: isTokenPermitsQaOverrideEnabled,
   });
   const isEnabled = disabledReason === undefined;
+  const isClassicEnabled = isEnabled && (isTokenPermitsQaOverrideEnabled || getIsClassicTokenPermitsEnabled(uiFlags));
 
   useEffect(function retireLegacyPermitsDisabledKey() {
     localStorage.removeItem(JSON.stringify(LEGACY_PERMITS_DISABLED_KEY));
@@ -351,6 +357,8 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     () => ({
       tokenPermits,
       accountType,
+      isClassicEnabled,
+      classicTokenPermits: isClassicEnabled ? tokenPermits : EMPTY_ARRAY,
       getIsPermitAvailable,
       getPermitUnavailableReason,
       addTokenPermit,
@@ -360,6 +368,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     [
       tokenPermits,
       accountType,
+      isClassicEnabled,
       getIsPermitAvailable,
       getPermitUnavailableReason,
       addTokenPermit,

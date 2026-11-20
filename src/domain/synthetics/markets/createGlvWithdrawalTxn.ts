@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { SetPendingWithdrawal } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
@@ -34,6 +35,7 @@ export async function createGlvWithdrawalTxn({
   glvTokenAmount,
   setPendingTxns,
   setPendingWithdrawal,
+  walletCallsBatch,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -47,6 +49,7 @@ export async function createGlvWithdrawalTxn({
   glvTokenAmount: bigint;
   setPendingTxns: (txns: any) => void;
   setPendingWithdrawal?: SetPendingWithdrawal;
+  walletCallsBatch?: WalletCallsBatch;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const withdrawalVaultAddress = getContract(chainId, "GlvVault");
@@ -105,6 +108,7 @@ export async function createGlvWithdrawalTxn({
         swapPricingType: SwapPricingType.Swap,
         metricId: metricId,
         blockTimestampData: blockTimestampData,
+        preCalls: walletCallsBatch?.calls,
       })
     : undefined;
 
@@ -115,7 +119,9 @@ export async function createGlvWithdrawalTxn({
     [encodedPayload],
     wntAmount,
     simulationPromise,
-    metricId
+    metricId,
+    undefined,
+    walletCallsBatch !== undefined
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
@@ -126,6 +132,7 @@ export async function createGlvWithdrawalTxn({
     gasLimit,
     gasPriceData,
     setPendingTxns: setPendingTxns,
+    walletCallsBatch: walletCallsBatch,
     pendingTransactionData: {
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,

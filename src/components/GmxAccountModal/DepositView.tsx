@@ -314,10 +314,13 @@ export const DepositView = () => {
     needsApproval: needTokenApprove,
     isApproving,
     handleApprove,
+    approvalBatch,
   } = useTokenApproval({
     chainId: depositViewChain,
     spenderAddress,
     tokens: approvalTokens,
+    // a cross-chain deposit spends through Stargate on the source chain, only the same-chain one is a single multicall
+    allowBatch: depositViewChain === settlementChainId,
     skip:
       depositViewChain === undefined ||
       !sourceChainTokenToApproveAddress ||
@@ -718,13 +721,22 @@ export const DepositView = () => {
           amount: inputAmount,
           account,
           callback: sameChainCallback,
+          walletCallsBatch: approvalBatch,
         });
       });
     } catch (error) {
       setIsSubmitting(false);
       throwUnlessUserRejected(error);
     }
-  }, [account, depositViewTokenAddress, inputAmount, sameChainCallback, settlementChainId, setSettlementChainId]);
+  }, [
+    account,
+    approvalBatch,
+    depositViewTokenAddress,
+    inputAmount,
+    sameChainCallback,
+    settlementChainId,
+    setSettlementChainId,
+  ]);
 
   const makeCrossChainCallback = useCallback(
     (params: {
@@ -1217,7 +1229,7 @@ export const DepositView = () => {
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
       disabled: true,
     };
-  } else if (needTokenApprove) {
+  } else if (needTokenApprove && approvalBatch === undefined) {
     buttonState = {
       text: t`Approve ${selectedToken?.symbol}`,
       onClick: handleApproveClick,

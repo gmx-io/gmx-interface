@@ -9,15 +9,14 @@ import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expr
 import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
-import { checkTokenPermits, TokenPermitsCheckError, TokenPermitsCheckResult } from "domain/tokens/checkTokenPermits";
+import { checkTokenPermitsBeforeSend, getWalletTxnTokenPermits } from "domain/tokens/checkTokenPermitsBeforeSend";
 import { extendError } from "lib/errors";
-import { metrics } from "lib/metrics";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
+import type { WalletCall, WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getContract } from "sdk/configs/contracts";
 import { isPermanentRelayError } from "sdk/utils/express";
 import {
@@ -48,6 +47,8 @@ export type BatchOrderTxnCtx = {
   batchParams: BatchOrderTxnParams;
   signer: WalletSigner;
   stalePermits?: SignedTokenPermit[];
+  /** Permits sent inside a wallet transaction; relayed permits stay in `expressParams` */
+  walletTokenPermits?: SignedTokenPermit[];
 };
 
 const DEFAULT_RUN_SIMULATION = () => Promise.resolve(undefined);
@@ -61,6 +62,8 @@ export async function sendBatchOrderTxn({
   expressParams,
   simulationParams,
   callback,
+  tokenPermits,
+  walletCallsBatch,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -70,6 +73,9 @@ export async function sendBatchOrderTxn({
   expressParams: ExpressTxnParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
+  /** Stored permits a wallet-sent batch may carry; only the ones for tokens it spends go in */
+  tokenPermits?: SignedTokenPermit[];
+  walletCallsBatch?: WalletCallsBatch;
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
@@ -88,10 +94,26 @@ export async function sendBatchOrderTxn({
       throw new Error("provider is required for multichain txns");
     }
 
+    if (expressParams && walletCallsBatch) {
+      throw new Error("A relayed order can't share a wallet batch with approvals");
+    }
+
     if (expressParams && expressParams.relayParamsPayload.tokenPermits.length > 0) {
       const checked = await checkExpressTokenPermits({ chainId, expressParams, batchParams: encodedBatchParams });
       expressParams = checked.expressParams;
       eventBuilder.ctx = { ...eventBuilder.ctx, expressParams, stalePermits: checked.stalePermits };
+    }
+
+    let walletTokenPermits: SignedTokenPermit[] = [];
+
+    if (!expressParams && !isGmxAccount && tokenPermits?.length) {
+      const checked = await getWalletTxnTokenPermits({
+        chainId,
+        tokenPermits,
+        requiredAmounts: getBatchTotalPayCollateralAmount(encodedBatchParams),
+      });
+      walletTokenPermits = checked.validPermits;
+      eventBuilder.ctx = { ...eventBuilder.ctx, walletTokenPermits, stalePermits: checked.stalePermits };
     }
 
     callback?.(eventBuilder.Submitted());
@@ -107,6 +129,8 @@ export async function sendBatchOrderTxn({
           blockTimestampData: simulationParams.blockTimestampData,
           tokensData: simulationParams.tokensData,
           expressParams,
+          walletTokenPermits,
+          preCalls: walletCallsBatch?.calls,
           provider,
           isGmxAccount,
           jitShiftParamsList: simulationParams.jitShiftParamsList,
@@ -172,7 +196,11 @@ export async function sendBatchOrderTxn({
       return await res;
     }
 
-    const { callData, value } = getBatchOrderMulticallPayload({ chainId, params: encodedBatchParams });
+    const { callData, value } = getBatchOrderMulticallPayload({
+      chainId,
+      params: encodedBatchParams,
+      tokenPermits: walletTokenPermits,
+    });
 
     return sendWalletTransaction({
       chainId,
@@ -181,6 +209,7 @@ export async function sendBatchOrderTxn({
       callData,
       value,
       runSimulation,
+      walletCallsBatch,
       callback: (event) => {
         callback?.(eventBuilder.extend(event));
       },
@@ -201,43 +230,28 @@ async function checkExpressTokenPermits({
   expressParams: ExpressTxnParams;
   batchParams: BatchOrderTxnParams;
 }): Promise<{ expressParams: ExpressTxnParams; stalePermits: SignedTokenPermit[] }> {
-  const { tokenPermits } = expressParams.relayParamsPayload;
   const { gasPaymentTokenAddress, gasPaymentTokenAmount } = expressParams.gasPaymentParams;
 
   const requiredAmounts = getBatchTotalPayCollateralAmount(batchParams);
   requiredAmounts[gasPaymentTokenAddress] = (requiredAmounts[gasPaymentTokenAddress] ?? 0n) + gasPaymentTokenAmount;
 
-  let result: TokenPermitsCheckResult;
+  const { validPermits, stalePermits } = await checkTokenPermitsBeforeSend({
+    chainId,
+    permits: expressParams.relayParamsPayload.tokenPermits,
+    requiredAmounts,
+    errorSource: "expressOrders.tokenPermitsCheck",
+  });
 
-  try {
-    result = await checkTokenPermits({
-      client: getPublicClientWithRpc(chainId),
-      permits: tokenPermits,
-      requiredAmounts,
-    });
-  } catch (error) {
-    // the relay simulates before broadcasting, so an unreachable rpc must not block the order
-    metrics.pushError(error, "expressOrders.tokenPermitsCheck");
-    return { expressParams, stalePermits: [] };
-  }
-
-  if (result.failedPermits.length > 0) {
-    throw extendError(new TokenPermitsCheckError(result.failedPermits), {
-      errorContext: "simulation",
-      data: { tokens: result.failedPermits.map((permit) => permit.token) },
-    });
-  }
-
-  if (result.stalePermits.length === 0) {
-    return { expressParams, stalePermits: [] };
+  if (stalePermits.length === 0) {
+    return { expressParams, stalePermits };
   }
 
   return {
     expressParams: {
       ...expressParams,
-      relayParamsPayload: { ...expressParams.relayParamsPayload, tokenPermits: result.validPermits },
+      relayParamsPayload: { ...expressParams.relayParamsPayload, tokenPermits: validPermits },
     },
-    stalePermits: result.stalePermits,
+    stalePermits,
   };
 }
 
@@ -250,6 +264,8 @@ const makeBatchOrderSimulation = async ({
   blockTimestampData,
   tokensData,
   expressParams,
+  walletTokenPermits,
+  preCalls,
   jitShiftParamsList,
   nativeReserveLiquidity,
 }: {
@@ -261,6 +277,8 @@ const makeBatchOrderSimulation = async ({
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
+  walletTokenPermits: SignedTokenPermit[];
+  preCalls: WalletCall[] | undefined;
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
 }): Promise<void> => {
@@ -384,13 +402,14 @@ const makeBatchOrderSimulation = async ({
             tokensData,
             getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
           ),
-          tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
+          tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? walletTokenPermits,
           createMulticallPayload: encodedMulticall,
           value,
           blockTimestampData,
           isExpress: Boolean(expressParams),
           method: simulationMethod,
           jitShiftParamsList: needsJit ? jitShiftParamsList : undefined,
+          preCalls,
         });
       } catch (error) {
         if (needsJit && isJitShiftError(error)) {
