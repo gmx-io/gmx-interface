@@ -144,7 +144,7 @@ export function MarginField({
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
-                tokenInfo={isSolanaNetwork(networkId) ? fromToken : undefined}
+                tokenInfo={infoTokens[fromTokenAddress]}
                 onSelectToken={(token) => {
                   onSelectFromTokenAddress(token.address, false);
                 }}
