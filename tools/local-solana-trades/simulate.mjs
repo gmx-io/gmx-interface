@@ -6,12 +6,12 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import { createServer } from "vite";
 import * as wasm from "@gmsol-labs/gmsol-sdk/index_bg.js";
-import { withoutLookupTables } from "./lookupTableConfiguration.mjs";
 
 const { values } = parseArgs({
   options: {
     wallet: { type: "string" },
     "api-url": { type: "string", default: "https://solana.gmxapi.io" },
+    atomic: { type: "boolean", default: false },
     market: { type: "string", default: "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8" },
   },
 });
@@ -38,7 +38,7 @@ const report = {
   broadcast: false,
   diagnosticOnly: true,
   browserAcceptance: false,
-  lookupTables: [],
+  lookupTables: undefined,
   adapters:
     "Node loads the hash-verified WASM directly and uses createSolanaRpc without the browser health tracker; production prepare, builder, validator and pre-signature checks execute unchanged",
   hypotheticalInputs: { collateralUsdc: "3", sizeUsd: "6", slippageBps: 100, limitDistanceBps: 500 },
@@ -51,7 +51,6 @@ const server = await createServer({
   optimizeDeps: { noDiscovery: true, include: [], entries: [] },
   server: { middlewareMode: true },
   plugins: [
-    withoutLookupTables(root),
     {
       name: "trd136-node-diagnostic-adapters",
       enforce: "pre",
@@ -76,6 +75,8 @@ try {
   globalThis.__trd136Wasm = wasm;
   const { getSolanaRpc } = await server.ssrLoadModule("/src/lib/solana/rpc.ts");
   assert.equal(await getSolanaRpc().getGenesisHash().send(), "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d");
+  const { GMSOL_LOOKUP_TABLE_ADDRESSES } = await server.ssrLoadModule("/src/config/gmsol/lookupTables.ts");
+  report.lookupTables = GMSOL_LOOKUP_TABLE_ADDRESSES;
   const { GMSOL_MARKETS } = await server.ssrLoadModule("/src/config/gmsol/markets.ts");
   const { GMSOL_TOKENS } = await server.ssrLoadModule("/src/config/gmsol/tokens.ts");
   const { buildGmsolTokenPrices } = await server.ssrLoadModule("/src/domain/gmsol/gmsolOracleUtils.ts");
@@ -88,7 +89,7 @@ try {
   report.market = market.marketTokenAddress;
   for (const kind of ["MarketIncrease", "LimitIncrease"])
     for (const isLong of [true, false]) {
-      const result = { kind, isLong };
+      const result = { kind, isLong, atomic: values.atomic };
       report.results.push(result);
       try {
         const response = await fetch(`${api.origin}/v1/markets/config`, { signal: AbortSignal.timeout(10000) });
@@ -133,9 +134,26 @@ try {
           validFromTs: undefined,
           decreaseSwapType: undefined,
         };
+        const orders = values.atomic
+          ? [
+              order,
+              {
+                ...order,
+                kind: "LimitDecrease",
+                collateralDeltaAmount: 0n,
+                triggerPrice: (reference * (isLong ? 11000n : 9000n)) / 10000n,
+              },
+              {
+                ...order,
+                kind: "StopLossDecrease",
+                collateralDeltaAmount: 0n,
+                triggerPrice: (reference * (isLong ? 9000n : 11000n)) / 10000n,
+              },
+            ]
+          : [order];
         const plan = await prepareGmsolOrderTransactions({
           owner: values.wallet,
-          action: { type: "create", orders: [order], atomic: false },
+          action: { type: "create", orders, atomic: values.atomic },
         });
         result.sizes = plan.groups.flat().map((tx) => tx.length);
         result.checks = [];
