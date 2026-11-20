@@ -1828,8 +1828,7 @@ export const WithdrawalView = () => {
       {isRouteUnavailable && (
         <AlertInfoCard type="error" className="mb-16" hideClose>
           <Trans>
-            Stargate has temporarily paused {tokenSymbol} withdrawals to {withdrawalNetworkName}. Try another network or
-            asset.
+            Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset.
           </Trans>
         </AlertInfoCard>
       )}

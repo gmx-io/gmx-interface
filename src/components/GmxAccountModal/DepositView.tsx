@@ -1562,8 +1562,7 @@ export const DepositView = () => {
             {isRouteUnavailable && (
               <AlertInfoCard type="error" hideClose>
                 <Trans>
-                  Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or
-                  asset.
+                  Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset.
                 </Trans>
               </AlertInfoCard>
             )}

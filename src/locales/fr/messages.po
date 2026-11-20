@@ -1189,10 +1189,6 @@ msgstr "Impact sur le prix de la position"
 msgid "Insufficient staked tokens"
 msgstr "Tokens stakés insuffisants"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "Stargate has temporarily paused {tokenSymbol} deposits from {networkName}. Try another network or asset."
-msgstr "Stargate a temporairement suspendu les dépôts de {tokenSymbol} depuis {networkName}. Essayez un autre réseau ou un autre actif."
-
 #: src/components/ShareModal/CreateReferralCode.tsx
 msgid "Creating code..."
 msgstr "Création du code..."
@@ -5203,6 +5199,10 @@ msgstr "Réponses instantanées, directement sur la page"
 msgid "Withdrawing from subaccount..."
 msgstr "Retrait du sous-compte…"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
+msgstr "Stargate n'accepte pas les transferts de {tokenSymbol} depuis {networkName} pour le moment. Essayez un autre actif."
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -7737,10 +7737,6 @@ msgstr "REMISE"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position may still liquidate from fees alone (funding + borrowing), reducing margin over time."
 msgstr "La position peut tout de même être liquidée en raison des seuls frais (financement + emprunt), qui réduisent la marge au fil du temps."
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Stargate has temporarily paused {tokenSymbol} withdrawals to {withdrawalNetworkName}. Try another network or asset."
-msgstr "Stargate a temporairement suspendu les retraits de {tokenSymbol} vers {withdrawalNetworkName}. Essayez un autre réseau ou un autre actif."
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 msgid "Shifting from GM to GLV is similar to buying GLV with a GM token. Selecting this option redirects you to the buy GLV tab."
@@ -13880,6 +13876,10 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "Taille de position minimale"
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
+msgstr "Stargate n'accepte pas les transferts de {tokenSymbol} vers {withdrawalNetworkName} pour le moment. Essayez un autre actif."
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"
