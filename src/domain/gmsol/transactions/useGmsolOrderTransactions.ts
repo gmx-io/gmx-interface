@@ -3,7 +3,7 @@ import { mutate } from "swr";
 
 import { SOLANA_NETWORK_ID, isSolanaNetwork } from "config/chains";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
-import { getSolanaBalancesKey } from "domain/solana/useSolanaBalances";
+import { getSolanaBalancesKey } from "domain/gmsol/useGmsolWalletBalances";
 import { useChainId } from "lib/chains";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 
