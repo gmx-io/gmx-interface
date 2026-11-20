@@ -17,6 +17,7 @@ import {
   DecreasePositionOrderParams,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
+import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
 
 import { FULL_POSITION_CLOSE_SIZE_DELTA_USD } from "./utils";
 
@@ -48,9 +49,7 @@ export type TpSlInputPositionData = {
   sizeInUsd: bigint;
   sizeInTokens: bigint;
   collateralUsd: bigint;
-  collateralAmount?: bigint;
-  collateralTokenDecimals?: number;
-  isCollateralTokenEquivalentToIndex?: boolean;
+  collateralAmountInIndexTokens?: bigint;
   entryPrice: bigint;
   referencePrice?: bigint;
   liquidationPrice?: bigint;
@@ -65,9 +64,9 @@ export function buildTpSlInputPositionData(p: {
     "sizeInUsd" | "sizeInTokens" | "collateralUsd" | "collateralAmount" | "entryPrice" | "liquidationPrice" | "isLong"
   >;
   collateralUsd?: bigint;
+  collateralToken?: TokenData;
+  indexToken?: TokenData;
   indexTokenDecimals: number;
-  collateralTokenDecimals?: number;
-  isCollateralTokenEquivalentToIndex?: boolean;
   visualMultiplier?: number;
   referencePrice?: bigint;
 }): TpSlInputPositionData | undefined {
@@ -79,9 +78,15 @@ export function buildTpSlInputPositionData(p: {
     sizeInUsd: p.position.sizeInUsd ?? 0n,
     sizeInTokens: p.position.sizeInTokens ?? 0n,
     collateralUsd: p.collateralUsd ?? p.position.collateralUsd ?? 0n,
-    collateralAmount: p.position.collateralAmount,
-    collateralTokenDecimals: p.collateralTokenDecimals,
-    isCollateralTokenEquivalentToIndex: p.isCollateralTokenEquivalentToIndex,
+    collateralAmountInIndexTokens:
+      p.collateralToken && p.indexToken
+        ? getCollateralAmountInIndexTokens({
+            collateralToken: p.collateralToken,
+            indexToken: p.indexToken,
+            collateralAmount: p.position.collateralAmount,
+            isLong: p.position.isLong,
+          })
+        : undefined,
     entryPrice: p.position.entryPrice ?? 0n,
     referencePrice: p.referencePrice,
     liquidationPrice: p.position.liquidationPrice,

@@ -217,7 +217,7 @@ export async function buildGmsolOrderTransactions({
   }
 
   if (action.type === "create" && action.atomic && plan.groups.flat().length > 1) {
-    // A WASM TransactionGroup is not atomic. Recompile the actual instruction sequence as one v0 message.
+    // A WASM TransactionGroup is not atomic; all orders must share one v0 message.
     const decoded = plan.groups.flat().map((bytes) => decodeGmsolTransaction(bytes, plan));
     const instructions: Instruction[] = [];
     let units = 0;
@@ -256,30 +256,60 @@ export async function buildGmsolOrderTransactions({
         }
       }
     requireGmsol(units <= 1_400_000, "Atomic order exceeds the compute budget");
-    const limit = new Uint8Array(5);
-    limit[0] = 2;
-    new DataView(limit.buffer).setUint32(1, units, true);
-    const price = Uint8Array.of(3, 80, 195, 0, 0, 0, 0, 0, 0); // Pinned WASM default: 50,000 micro-lamports/CU.
-    const message = compressTransactionMessageUsingAddressLookupTables(
-      {
-        version: 0,
-        feePayer: { address: address(owner) },
-        lifetimeConstraint: { blockhash: blockhash(recentBlockhash), lastValidBlockHeight },
-        instructions: [
-          { programAddress: address(COMPUTE_BUDGET_PROGRAM), data: limit },
-          { programAddress: address(COMPUTE_BUDGET_PROGRAM), data: price },
-          ...instructions,
-        ],
-      },
-      Object.fromEntries(Object.entries(plan.lookupTables).map(([key, values]) => [key, values.map(address)]))
-    );
-    const bytes = copySolanaBytes(getTransactionEncoder().encode(compileTransaction(message)));
-    requireGmsol(
-      bytes.length <= 1232,
-      `Atomic increase with TP/SL requires ${bytes.length} bytes (maximum 1232); no orders were submitted`
-    );
-    plan.groups = [[bytes]];
+    const combined = compileGmsolInstructions(plan, instructions, units);
+    if (combined.length <= 1232) {
+      plan.groups = [[combined]];
+    } else {
+      const preparation: Instruction[] = [];
+      const execution: Instruction[] = [];
+      for (const ix of instructions) {
+        const name =
+          ix.programAddress === GMSOL_STORE_PROGRAM_ID
+            ? decodeGmsolInstruction(
+                copySolanaBytes(ix.data!),
+                (ix.accounts ?? []).map((account) => account.address)
+              ).name
+            : undefined;
+        const preparesWalletAccount =
+          name === "prepare_user" ||
+          name === "prepare_position" ||
+          (ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && ix.accounts?.[2].address === owner);
+        (preparesWalletAccount ? preparation : execution).push(ix);
+      }
+      // Keep order escrow setup and collateral transfers atomic with all orders.
+      const setup = compileGmsolInstructions(plan, preparation, units);
+      const orders = compileGmsolInstructions(plan, execution, units);
+      requireGmsol(
+        preparation.length > 0 && setup.length <= 1232 && orders.length <= 1232,
+        `Atomic increase with TP/SL requires ${orders.length} bytes (maximum 1232); no orders were submitted`
+      );
+      plan.groups = [[setup], [orders]];
+    }
   }
   await validateGmsolTransactionPlan(plan);
   return plan;
+}
+
+function compileGmsolInstructions(plan: GmsolTransactionPlan, instructions: Instruction[], units: number) {
+  const limit = new Uint8Array(5);
+  limit[0] = 2;
+  new DataView(limit.buffer).setUint32(1, units, true);
+  const price = Uint8Array.of(3, 80, 195, 0, 0, 0, 0, 0, 0); // Pinned WASM default: 50,000 micro-lamports/CU.
+  const message = compressTransactionMessageUsingAddressLookupTables(
+    {
+      version: 0,
+      feePayer: { address: address(plan.owner) },
+      lifetimeConstraint: {
+        blockhash: blockhash(plan.recentBlockhash),
+        lastValidBlockHeight: plan.lastValidBlockHeight,
+      },
+      instructions: [
+        { programAddress: address(COMPUTE_BUDGET_PROGRAM), data: limit },
+        { programAddress: address(COMPUTE_BUDGET_PROGRAM), data: price },
+        ...instructions,
+      ],
+    },
+    Object.fromEntries(Object.entries(plan.lookupTables).map(([key, values]) => [key, values.map(address)]))
+  );
+  return copySolanaBytes(getTransactionEncoder().encode(compileTransaction(message)));
 }
