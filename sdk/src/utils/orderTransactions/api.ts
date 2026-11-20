@@ -428,20 +428,20 @@ function chainKeys(prepared: PrepareOrderResponse) {
 }
 
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
-  return postJsonPinning(ctx.api, "/v1/orders/txns/prepare", request, chainKeys, {
+  return postJsonPinning(ctx.api, "/v2/orders/txns/prepare", request, chainKeys, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function submitOrder(ctx: { api: IHttp }, request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
-  return postJsonPinned<SubmitOrderResponse>(ctx.api, [request.requestId], "/v1/orders/txns/submit", request);
+  return postJsonPinned<SubmitOrderResponse>(ctx.api, [request.requestId], "/v2/orders/txns/submit", request);
 }
 
 export async function prepareEditOrder(
   ctx: { api: IHttp },
   request: PrepareEditOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return postJsonPinning(ctx.api, "/v1/orders/txns/edit/prepare", request, chainKeys, {
+  return postJsonPinning(ctx.api, "/v2/orders/txns/edit/prepare", request, chainKeys, {
     transform: parsePrepareResponse,
   });
 }
@@ -450,7 +450,7 @@ export async function prepareCancelOrder(
   ctx: { api: IHttp },
   request: PrepareCancelOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return postJsonPinning(ctx.api, "/v1/orders/txns/cancel/prepare", request, chainKeys, {
+  return postJsonPinning(ctx.api, "/v2/orders/txns/cancel/prepare", request, chainKeys, {
     transform: parsePrepareResponse,
   });
 }
@@ -459,13 +459,13 @@ export async function prepareCollateral(
   ctx: { api: IHttp },
   request: PrepareCollateralRequest
 ): Promise<PrepareOrderResponse> {
-  return postJsonPinning(ctx.api, "/v1/orders/txns/collateral/prepare", request, chainKeys, {
+  return postJsonPinning(ctx.api, "/v2/orders/txns/collateral/prepare", request, chainKeys, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function fetchOrderStatus(ctx: { api: IHttp }, request: OrderStatusRequest): Promise<OrderStatusResponse> {
-  return postJsonPinned<OrderStatusResponse>(ctx.api, [request.requestId], "/v1/orders/txns/status", request);
+  return postJsonPinned<OrderStatusResponse>(ctx.api, [request.requestId], "/v2/orders/txns/status", request);
 }
 
 export async function signPreparedOrder(

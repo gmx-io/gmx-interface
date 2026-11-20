@@ -5,9 +5,10 @@ import { isAddressEqual, maxUint256, type Address, type Hex } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
-import type { TokenApprovalMetricParams } from "lib/metrics";
+import type { TokenApprovalMetricParams, TokenPermitSkipReason } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletSigner } from "lib/wallets";
@@ -23,6 +24,7 @@ import { approveTokens } from "./approveTokens";
 import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
 import { sendTokenApprovalMetric } from "./tokenApprovalMetric";
+import type { TokenPermitUnavailableReason } from "./tokenPermitsEligibility";
 import { useWalletBatching } from "./useWalletBatching";
 
 interface TokenToApprove {
@@ -42,9 +44,11 @@ interface UseTokenApprovalParams {
   metric: TokenApprovalMetricContext;
 }
 
-type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken"> & {
+type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken" | "permitSkipReason"> & {
   gasPaymentTokenAddress?: string;
   payTokenAddress?: string;
+  // why the flow passes allowPermit: false right now
+  permitBlockReason?: ExpressTokenPermitBlockReason;
 };
 
 export interface HandleApproveOptions {
@@ -69,6 +73,23 @@ interface UseTokenApprovalReturn {
   approvalBatch: WalletCallsBatch | undefined;
 }
 
+function getTokenPermitSkipReason({
+  allowPermit,
+  permitBlockReason,
+  permitUnavailableReason,
+}: {
+  allowPermit: boolean;
+  permitBlockReason: ExpressTokenPermitBlockReason | undefined;
+  permitUnavailableReason: TokenPermitUnavailableReason | undefined;
+}): TokenPermitSkipReason | undefined {
+  // only a token a permit could have covered needs a reason for its approval transaction
+  if (permitUnavailableReason === "tokenNotAllowed") {
+    return undefined;
+  }
+
+  return allowPermit ? permitUnavailableReason : permitBlockReason ?? "notInFlow";
+}
+
 export function useTokenApproval({
   chainId,
   spenderAddress,
@@ -81,8 +102,14 @@ export function useTokenApproval({
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
-  const { tokenPermits, addTokenPermit, disableTokenPermits, getIsPermitAvailable, accountType } =
-    useTokenPermitsContext();
+  const {
+    tokenPermits,
+    addTokenPermit,
+    disableTokenPermits,
+    getIsPermitAvailable,
+    getPermitUnavailableReason,
+    accountType,
+  } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const latestMetric = useLatest(metric);
 
@@ -146,7 +173,8 @@ export function useTokenApproval({
     }
 
     const amount = approveAmount ?? maxUint256;
-    const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
+    // a batch replaces the approval transaction, so the permit skip reason doesn't apply
+    const { gasPaymentTokenAddress, payTokenAddress, permitBlockReason: _, ...metricParams } = latestMetric.current;
 
     return {
       calls: tokensToApprove.map((tokenAddress) => {
@@ -266,7 +294,14 @@ export function useTokenApproval({
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
       const isPermit = getIsPermitApproval(tokenAddress);
-      const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
+      const { gasPaymentTokenAddress, payTokenAddress, permitBlockReason, ...metricParams } = latestMetric.current;
+      const permitSkipReason = isPermit
+        ? undefined
+        : getTokenPermitSkipReason({
+            allowPermit,
+            permitBlockReason,
+            permitUnavailableReason: getPermitUnavailableReason(tokenAddress),
+          });
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -289,6 +324,7 @@ export function useTokenApproval({
           approveAmount,
           metric: {
             ...metricParams,
+            permitSkipReason,
             isGasPaymentToken:
               gasPaymentTokenAddress !== undefined
                 ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
@@ -315,10 +351,12 @@ export function useTokenApproval({
     [
       accountType,
       addTokenPermit,
+      allowPermit,
       approveAmount,
       chainId,
       disableTokenPermits,
       getIsPermitApproval,
+      getPermitUnavailableReason,
       isApproving,
       latestMetric,
       setSettlementChainId,

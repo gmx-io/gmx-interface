@@ -165,7 +165,7 @@ test.describe("External swaps", () => {
     const submitButton = page.locator(getDataQALocator("confirm-trade-button"));
     await expect(submitButton).toHaveText("Insufficient GMX pool liquidity");
     await submitButton.hover({ force: true });
-    await expect(page.getByText("Switch to a market order")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Switch to a market order" })).toBeVisible();
 
     await page.getByText("Switch to market order", { exact: true }).click();
 

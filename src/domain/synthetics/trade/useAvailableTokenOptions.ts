@@ -14,7 +14,7 @@ import {
 } from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
-import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import type { ContractsChainId, NetworkId, SourceChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, getTokensMap } from "sdk/configs/tokens";
 
 import { isGlvInfo } from "../markets/glv";
@@ -32,20 +32,20 @@ export type AvailableTokenOptions = {
   sortedMarketConfigs: Market[];
 };
 
-function getCachedSortedMarketAddresses(chainId: number): string[] {
-  const cached = localStorage.getItem(getSortedMarketsAddressesKey(chainId));
+function getCachedSortedMarketAddresses(networkId: NetworkId): string[] {
+  const cached = localStorage.getItem(getSortedMarketsAddressesKey(networkId));
 
   if (cached) {
     return JSON.parse(cached);
   }
 
-  return SORTED_MARKETS[chainId as ContractsChainId] ?? [];
+  return SORTED_MARKETS[networkId] ?? [];
 }
 
-function saveCachedSortedMarketAddresses(chainId: number, sortedMarketsInfo: MarketInfo[]) {
+function saveCachedSortedMarketAddresses(networkId: NetworkId, sortedMarketsInfo: MarketInfo[]) {
   const addresses = sortedMarketsInfo.map((marketInfo) => marketInfo.marketTokenAddress);
 
-  localStorage.setItem(getSortedMarketsAddressesKey(chainId), JSON.stringify(addresses));
+  localStorage.setItem(getSortedMarketsAddressesKey(networkId), JSON.stringify(addresses));
 
   return addresses;
 }
@@ -89,17 +89,18 @@ export function useAvailableTokenOptions(
     tokensData?: TokensData;
     marketTokens?: TokensData;
     srcChainId: SourceChainId | undefined;
+    networkId: NetworkId;
   }
 ): AvailableTokenOptions {
-  const { marketsInfoData, marketsData, tokensData, marketTokens, srcChainId } = p;
+  const { marketsInfoData, marketsData, tokensData, marketTokens, srcChainId, networkId } = p;
 
   const sortedMarketAddressesRef = useRef<string[]>();
 
   useEffect(
     function updateSortedMarketAddresses() {
-      sortedMarketAddressesRef.current = getCachedSortedMarketAddresses(chainId);
+      sortedMarketAddressesRef.current = getCachedSortedMarketAddresses(networkId);
     },
-    [chainId]
+    [networkId]
   );
 
   return useMemo(() => {
@@ -200,7 +201,7 @@ export function useAvailableTokenOptions(
     });
 
     if (sortedAllMarkets.length) {
-      sortedMarketAddressesRef.current = saveCachedSortedMarketAddresses(chainId, sortedAllMarkets);
+      sortedMarketAddressesRef.current = saveCachedSortedMarketAddresses(networkId, sortedAllMarkets);
     }
 
     const sortedMarketConfigs = getSortedMarketsConfigs(marketsData, sortedMarketAddressesRef.current);
@@ -243,5 +244,5 @@ export function useAvailableTokenOptions(
       sortedAllMarkets,
       sortedMarketConfigs,
     };
-  }, [marketsInfoData, chainId, tokensData, marketsData, marketTokens, srcChainId]);
+  }, [marketsInfoData, chainId, networkId, tokensData, marketsData, marketTokens, srcChainId]);
 }

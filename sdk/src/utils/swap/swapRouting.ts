@@ -3,6 +3,7 @@ import { maxUint256 } from "viem";
 import { bigMath } from "utils/bigmath";
 import { estimateOrderOraclePriceCount, getExecutionFee } from "utils/fees";
 import { getNaiveEstimatedGasBySwapCount } from "utils/fees/getNaiveEstimatedGasBySwapCount";
+import { GmsolPriceImpactError } from "utils/fees/priceImpact";
 import { GasLimitsConfig } from "utils/fees/types";
 import { getAvailableUsdLiquidityForCollateral, getTokenPoolType } from "utils/markets";
 import { MarketsInfoData } from "utils/markets/types";
@@ -181,6 +182,10 @@ export function getBestSwapPath({
         bestUsdOut = pathUsdOut;
       }
     } catch (e) {
+      if (e instanceof GmsolPriceImpactError) {
+        throw e;
+      }
+
       continue;
     }
   }

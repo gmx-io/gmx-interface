@@ -13,7 +13,7 @@ import { bigMath } from "sdk/utils/bigmath";
 import NumberInput from "components/NumberInput/NumberInput";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
@@ -22,9 +22,7 @@ export type TPSLDisplayMode = "percentage" | "usd";
 type PositionData = {
   sizeInTokens: bigint;
   collateralUsd: bigint;
-  collateralAmount?: bigint;
-  collateralTokenDecimals?: number;
-  isCollateralTokenEquivalentToIndex?: boolean;
+  collateralAmountInIndexTokens?: bigint;
   entryPrice: bigint;
   referencePrice?: bigint;
   liquidationPrice?: bigint;
@@ -73,9 +71,7 @@ export function TPSLInputRow({
   const {
     sizeInTokens,
     collateralUsd,
-    collateralAmount,
-    collateralTokenDecimals,
-    isCollateralTokenEquivalentToIndex,
+    collateralAmountInIndexTokens,
     entryPrice,
     referencePrice,
     liquidationPrice,
@@ -86,18 +82,15 @@ export function TPSLInputRow({
   const priceReference = referencePrice ?? entryPrice;
   const pnlReferencePrice = entryPrice > 0n ? entryPrice : priceReference;
   const tokenPrecision = expandDecimals(1, indexTokenDecimals);
-  const collateralPrecision =
-    collateralTokenDecimals !== undefined ? expandDecimals(1, collateralTokenDecimals) : undefined;
 
   const getCollateralUsdForPnl = useCallback(
     (price: bigint | undefined) => {
-      if (!isCollateralTokenEquivalentToIndex) return collateralUsd;
+      if (collateralAmountInIndexTokens === undefined) return collateralUsd;
       if (price === undefined || price === 0n) return collateralUsd;
-      if (collateralAmount === undefined || collateralPrecision === undefined) return collateralUsd;
 
-      return bigMath.mulDiv(collateralAmount, price, collateralPrecision);
+      return bigMath.mulDiv(collateralAmountInIndexTokens, price, tokenPrecision);
     },
-    [collateralAmount, collateralPrecision, collateralUsd, isCollateralTokenEquivalentToIndex]
+    [collateralAmountInIndexTokens, collateralUsd, tokenPrecision]
   );
 
   const isStopLoss = type === "stopLoss";
@@ -169,13 +162,12 @@ export function TPSLInputRow({
     (targetPnlPercentage: bigint): bigint | undefined => {
       if (targetPnlPercentage <= 0n) return undefined;
 
-      if (isCollateralTokenEquivalentToIndex && collateralAmount !== undefined && collateralPrecision !== undefined) {
+      if (collateralAmountInIndexTokens !== undefined) {
         if (sizeInTokens === 0n || pnlReferencePrice === 0n) return undefined;
 
-        const scaledCollateral = bigMath.mulDiv(collateralAmount, tokenPrecision, collateralPrecision);
-        if (scaledCollateral !== 0n) {
+        if (collateralAmountInIndexTokens !== 0n) {
           const signedTargetPnlPercentage = isStopLoss ? -targetPnlPercentage : targetPnlPercentage;
-          const percentageTerm = bigMath.mulDiv(scaledCollateral, signedTargetPnlPercentage, 10000n);
+          const percentageTerm = bigMath.mulDiv(collateralAmountInIndexTokens, signedTargetPnlPercentage, 10000n);
           const denominator = isLong ? sizeInTokens - percentageTerm : sizeInTokens + percentageTerm;
 
           if (denominator <= 0n) return undefined;
@@ -197,15 +189,12 @@ export function TPSLInputRow({
     [
       calculatePriceFromPnlUsd,
       clampPriceForStopLoss,
-      collateralAmount,
-      collateralPrecision,
+      collateralAmountInIndexTokens,
       getCollateralUsdForPnl,
-      isCollateralTokenEquivalentToIndex,
       isLong,
       isStopLoss,
       pnlReferencePrice,
       sizeInTokens,
-      tokenPrecision,
     ]
   );
 
@@ -453,7 +442,7 @@ export function TPSLInputRow({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
-          <TooltipWithPortal
+          <StandardTooltip
             className="flex grow"
             handleClassName="grow"
             variant="none"
@@ -487,7 +476,7 @@ export function TPSLInputRow({
                 <span className="text-13 text-typography-secondary">USD</span>
               </div>
             </div>
-          </TooltipWithPortal>
+          </StandardTooltip>
 
           <div
             className={cx(
@@ -525,7 +514,7 @@ export function TPSLInputRow({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-8 max-smallMobile:flex-col">
-        <TooltipWithPortal
+        <StandardTooltip
           className="flex-1"
           handleClassName="w-full"
           variant="none"
@@ -573,7 +562,7 @@ export function TPSLInputRow({
               <span className="text-14 text-typography-secondary">USD</span>
             </div>
           </div>
-        </TooltipWithPortal>
+        </StandardTooltip>
         <div
           className={cx(
             "flex flex-1 cursor-text flex-col gap-2 rounded-8 border border-slate-800 bg-slate-800 px-8 py-6",

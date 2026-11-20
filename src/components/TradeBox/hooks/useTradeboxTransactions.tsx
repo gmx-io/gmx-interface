@@ -185,6 +185,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
 
   const initOrderMetricData = useCallback(() => {
     const primaryOrder = primaryCreateOrderParams?.[0];
+    const orderPayloads = primaryCreateOrderParams?.map((params) => params.orderPayload);
 
     if (isSwap) {
       return initSwapMetricData({
@@ -209,6 +210,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
         fastExpressParams,
         chainId: srcChainId ?? chainId,
         isCollateralFromMultichain: isFromTokenGmxAccount,
+        orderPayloads,
       });
     }
 
@@ -216,7 +218,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       return initIncreaseOrderMetricData({
         fromToken,
         increaseAmounts,
-        orderPayload: primaryOrder?.orderPayload,
+        orderPayloads,
         hasExistingPosition: Boolean(selectedPosition),
         leverage: formatLeverage(increaseAmounts?.estimatedLeverage) ?? "",
         executionFee,
@@ -262,7 +264,6 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       decreaseAmounts,
       hasExistingPosition: Boolean(selectedPosition),
       executionFee,
-      swapPath: [],
       executionFeeBufferBps,
       orderType: primaryOrder?.orderPayload.orderType,
       hasReferralCode: Boolean(referralCodeForTxn),
@@ -286,6 +287,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
       fastExpressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: isFromTokenGmxAccount,
+      orderPayloads,
     });
   }, [
     allowedSlippage,

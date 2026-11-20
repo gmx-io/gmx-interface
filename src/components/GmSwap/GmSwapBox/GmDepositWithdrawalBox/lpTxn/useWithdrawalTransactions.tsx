@@ -54,6 +54,7 @@ import {
   initGMSwapMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
@@ -185,6 +186,7 @@ export const useWithdrawalTransactions = ({
             marketName: selectedMarketInfoForGlv?.name,
             glvTokenUsd,
             isFirstBuy,
+            rawParams,
           })
         : initGMSwapMetricData({
             chainId,
@@ -205,6 +207,7 @@ export const useWithdrawalTransactions = ({
             marketTokenAmount,
             marketTokenUsd,
             isFirstBuy,
+            rawParams,
           });
 
     return metricData;
@@ -228,6 +231,7 @@ export const useWithdrawalTransactions = ({
     marketToken,
     marketInfo,
     marketTokenUsd,
+    rawParams,
   ]);
 
   const { setMultichainTransferProgress } = useSyntheticsEvents();
@@ -239,6 +243,8 @@ export const useWithdrawalTransactions = ({
       }
 
       const metricData = getWithdrawalMetricData();
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {
@@ -420,6 +426,8 @@ export const useWithdrawalTransactions = ({
       }
 
       const metricData = getWithdrawalMetricData();
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {

@@ -17,6 +17,8 @@ export type SameChainDepositTxnCtx = {
   tokenPermits: SignedTokenPermit[];
 };
 
+export const SAME_CHAIN_DEPOSIT_GAS_LIMIT = 300_000n;
+
 export async function sendSameChainDepositTxn({
   chainId,
   signer,

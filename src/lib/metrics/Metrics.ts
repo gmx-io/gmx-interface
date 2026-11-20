@@ -20,6 +20,7 @@ import {
   METRIC_EVENT_DISPATCH_NAME,
   METRIC_TIMING_DISPATCH_NAME,
 } from "./emitMetricEvent";
+import { OrderCreationTracker } from "./orderCreationTracking";
 import { createRepeatedEventsReporter } from "./repeatedEventsReporter";
 import { getStorageItem, setStorageItem } from "./storage";
 import { ErrorEvent, GlobalMetricData, LongTaskTiming } from "./types";
@@ -69,6 +70,7 @@ class Metrics {
   repeatedEventsReporter = createRepeatedEventsReporter<EventPayload>((payload, repeats) => {
     this.queueEventPayload(repeats ? { ...payload, customFields: { ...payload.customFields, ...repeats } } : payload);
   });
+  orderCreationTracker = new OrderCreationTracker();
 
   static _instance: Metrics;
 
@@ -420,6 +422,12 @@ class Metrics {
     }
 
     return event as CachedMetricData & TData;
+  };
+
+  getCachedMetricIds = (): string[] => {
+    const cachedMetricsData = getStorageItem(CACHED_METRICS_DATA_KEY);
+
+    return cachedMetricsData ? Object.keys(this.deserializeCachedMetricsData(cachedMetricsData)) : [];
   };
 
   getIsGlobalPropsInited = () => {

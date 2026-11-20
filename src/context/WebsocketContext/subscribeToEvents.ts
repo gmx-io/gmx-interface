@@ -13,6 +13,7 @@ import type { ContractEventArgsFromTopics, ContractEventName } from "viem/_types
 import { getContract, tryGetContract } from "config/contracts";
 import type { EventLogData, EventTxnParams } from "context/SyntheticsEvents/types";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { watchContractEventWithReconnect } from "lib/wallets/watchContractEventWithReconnect";
 import { abis } from "sdk/abis";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
 import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -96,7 +97,7 @@ export function subscribeToV2Events({
   const filters = createV2EventFilters(account);
   const eventEmitterAddress = getContract(chainId, "EventEmitter");
 
-  const unsubscribeEventLog1 = client.watchContractEvent({
+  const unsubscribeEventLog1 = watchContractEventWithReconnect(client, {
     abi: abis.EventEmitter,
     address: eventEmitterAddress,
     eventName: filters.EventLog1.eventName,
@@ -119,7 +120,7 @@ export function subscribeToV2Events({
     strict: true,
   });
 
-  const unsubscribeEventLog2 = client.watchContractEvent({
+  const unsubscribeEventLog2 = watchContractEventWithReconnect(client, {
     abi: abis.EventEmitter,
     address: eventEmitterAddress,
     eventName: filters.EventLog2.eventName,
@@ -176,7 +177,7 @@ export function subscribeToTransferEvents({
     .map((token) => token.address);
   const allTokenAddresses = [...marketTokensAddresses, ...tokenAddresses];
 
-  const unsubscribeSend = client.watchContractEvent({
+  const unsubscribeSend = watchContractEventWithReconnect(client, {
     abi: abis.Token,
     eventName: "Transfer",
     address: allTokenAddresses,
@@ -194,7 +195,7 @@ export function subscribeToTransferEvents({
     strict: true,
   });
 
-  const unsubscribeReceive = client.watchContractEvent({
+  const unsubscribeReceive = watchContractEventWithReconnect(client, {
     abi: abis.Token,
     eventName: "Transfer",
     address: allTokenAddresses,
@@ -241,7 +242,7 @@ export function subscribeToApprovalEvents({
     .filter((token) => isAddress(token.address) && token.address !== NATIVE_TOKEN_ADDRESS)
     .map((token) => token.address);
 
-  const unsubscribe = client.watchContractEvent({
+  const unsubscribe = watchContractEventWithReconnect(client, {
     abi: abis.Token,
     eventName: "Approval",
     address: tokenAddresses,
@@ -284,7 +285,7 @@ export function subscribeToOftSentEvents({
 }): () => void {
   const client = getPublicClientWithRpc(chainId, { withWs: true });
 
-  const unsubscribe = client.watchContractEvent({
+  const unsubscribe = watchContractEventWithReconnect(client, {
     abi: OFT_SENT_ABI,
     eventName: "OFTSent",
     address: stargates,
@@ -331,7 +332,7 @@ export function subscribeToOftReceivedEvents({
 
   const client = getPublicClientWithRpc(chainId, { withWs: true });
 
-  const unsubscribe = client.watchContractEvent({
+  const unsubscribe = watchContractEventWithReconnect(client, {
     abi: OFT_RECEIVED_ABI,
     eventName: "OFTReceived",
     address: stargates,
@@ -380,7 +381,7 @@ export function subscribeToComposeDeliveredEvents({
 
   const client = getPublicClientWithRpc(chainId, { withWs: true });
 
-  const unsubscribe = client.watchContractEvent({
+  const unsubscribe = watchContractEventWithReconnect(client, {
     abi: COMPOSE_DELIVERED_ABI,
     eventName: "ComposeDelivered",
     address: layerZeroEndpoint,
@@ -424,7 +425,7 @@ export function subscribeToMultichainApprovalEvents({
 }) {
   const client = getPublicClientWithRpc(srcChainId, { withWs: true });
 
-  const unsubscribe = client.watchContractEvent({
+  const unsubscribe = watchContractEventWithReconnect(client, {
     abi: abis.ERC20,
     eventName: "Approval",
     address: tokenAddresses,

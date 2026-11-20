@@ -27,15 +27,6 @@ export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
 export const IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG = "isTokenPermitsEoaEnabled";
 export const IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG = "isTokenPermitsEip7702Enabled";
 
-/** Fail-closed: permits stay off until the keeper explicitly enables them for the account type. */
-export function getIsTokenPermitsEoaEnabled(uiFlags: UiFlags | undefined): boolean {
-  return uiFlags?.[IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG]?.enabled === true;
-}
-
-export function getIsTokenPermitsEip7702Enabled(uiFlags: UiFlags | undefined): boolean {
-  return uiFlags?.[IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG]?.enabled === true;
-}
-
 export const IS_WALLET_BATCHING_ENABLED_UI_FLAG = "isWalletBatchingEnabled";
 
 /** Fail-closed: approvals stay separate transactions until the keeper turns batching on */
@@ -54,9 +45,15 @@ const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",
   "apiPositions",
   "apiOrders",
+  "wsPrices",
+  "wsCandles",
   "api30",
   "api50",
   "api100",
+  "ws1",
+  "ws10",
+  "ws50",
+  "ws100",
   IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
   // a reload mid-incident must restore the last known value rather than blank-default on first paint
   IS_EXPRESS_AVAILABLE_UI_FLAG,

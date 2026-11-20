@@ -2,6 +2,7 @@ import { isAddress, isHex, type Address, type Hex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
+import { isTransactionCancelledError } from "lib/errors/transactionCancelledError";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
@@ -33,6 +34,7 @@ export async function sendWalletTransaction({
   msg,
   callback,
   walletCallsBatch,
+  validateBeforeSend,
 }: {
   chainId: number;
   signer: WalletSigner | ISigner;
@@ -50,6 +52,7 @@ export async function sendWalletTransaction({
   callback?: TxnCallback<WalletTxnCtx>;
   /** Sent in the same wallet confirmation, before this call; `runSimulation` has to account for them */
   walletCallsBatch?: WalletCallsBatch;
+  validateBeforeSend?: () => void;
 }): Promise<WalletTxnResult> {
   const from = signer.address;
   const eventBuilder = new TxnEventBuilder<WalletTxnCtx>({});
@@ -83,6 +86,7 @@ export async function sendWalletTransaction({
     if (walletCallsBatch) {
       await runSimulation?.().then(() => callback?.(eventBuilder.Simulated()));
 
+      validateBeforeSend?.();
       callback?.(eventBuilder.Sending());
 
       const { transactionHash } = await sendWalletCalls({
@@ -122,6 +126,7 @@ export async function sendWalletTransaction({
       runSimulation?.().then(() => callback?.(eventBuilder.Simulated())),
     ]);
 
+    validateBeforeSend?.();
     callback?.(eventBuilder.Sending());
 
     const txnData: ISignerSendTransactionParams = {
@@ -136,7 +141,9 @@ export async function sendWalletTransaction({
     };
 
     const res = await signer.sendTransaction(txnData).catch((error) => {
-      additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
+      if (!isTransactionCancelledError(error)) {
+        additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
+      }
 
       throw extendError(error, {
         errorContext: "sending",

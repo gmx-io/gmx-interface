@@ -2,6 +2,7 @@ import { decodeErrorResult } from "viem";
 
 import { SignedTokenPermit } from "domain/tokens";
 import { abis } from "sdk/abis";
+import { GmxRelayError } from "sdk/utils/express";
 
 import {
   CustomError,
@@ -20,6 +21,7 @@ export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 export const PERMIT_WALLET_CHANGED_ERROR = "Account or network changed while signing a permit";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
+export const EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR = "Express relay external calls differ from the batch";
 export const SMART_WALLET_CHAIN_UNAVAILABLE_ERROR = "Smart wallet unavailable on verification chain";
 export const SMART_WALLET_WRONG_CHAIN_ERROR = "Smart wallet connected to another chain";
 export const SMART_WALLET_ACCOUNT_CHANGED_ERROR = "Account changed during chain swap";
@@ -243,4 +245,8 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
 
 export function getIsSwapPriceImpactTooLargeError(error: ErrorLike) {
   return parseError(error)?.contractError === "SwapPriceImpactExceedsAmountIn";
+}
+
+export function getIsRelayUnavailableError(error: unknown) {
+  return error instanceof GmxRelayError && !error.isPermanent;
 }

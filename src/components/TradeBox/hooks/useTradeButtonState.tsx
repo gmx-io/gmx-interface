@@ -1,4 +1,5 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
@@ -29,6 +30,7 @@ import {
   selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectProDiscountFactor,
+  selectFeeDiscountFactor,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -67,7 +69,10 @@ import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermits
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
-import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -112,10 +117,16 @@ import { TokenData } from "sdk/utils/tokens/types";
 import { getLimitOrderTypeByTradeMode, TradeMode, TradeType } from "sdk/utils/trade";
 import { mustNeverExist } from "sdk/utils/types";
 
-import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
+import {
+  TooltipAction,
+  TooltipContent,
+  TooltipLink,
+  TooltipReadMore,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -217,15 +228,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
+  }, [fromToken, payAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -239,7 +250,7 @@ export function useTradeboxButtonState({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams) || isClassicTokenPermitsEnabled,
+    allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
     // a relayed order can't share the wallet's confirmation, so only Classic orders batch the approvals
     allowBatch: !isExpressTransactionAvailable,
     skip: isFromTokenGmxAccount,
@@ -249,6 +260,7 @@ export function useTradeboxButtonState({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: fromToken?.address,
+      permitBlockReason,
     },
   });
 
@@ -402,6 +414,7 @@ export function useTradeboxButtonState({
     expressParams.gasPaymentParams.gasPaymentTokenAddress !== gasPaymentToken.address &&
     expressParams.gasPaymentParams.gasPaymentTokenAddress === fromToken?.address;
 
+  const { _ } = useLingui();
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -431,13 +444,9 @@ export function useTradeboxButtonState({
     );
 
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
-      <>
-        <br />
-        <br />
-        <EmbeddedActionButton onClick={detectAndSetAvailableMaxLeverage}>
-          <Trans>Set max leverage</Trans>
-        </EmbeddedActionButton>
-      </>
+      <TooltipAction onClick={detectAndSetAvailableMaxLeverage}>
+        <Trans>Set max leverage</Trans>
+      </TooltipAction>
     ) : null;
 
     let tooltipContent: ReactNode = null;
@@ -447,34 +456,36 @@ export function useTradeboxButtonState({
       switch (validationResult.buttonTooltipName) {
         case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
-            <>
-              {isLeverageSliderEnabled ? (
-                <Trans>Decrease leverage to match the max allowed leverage.</Trans>
-              ) : (
-                <Trans>Decrease size to match the max allowed leverage.</Trans>
-              )}{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-                <Trans>Read more</Trans>
-              </ExternalLink>
-              .{setMaxLeverageAction}
-            </>
+            <TooltipContent>
+              <TooltipText>
+                {isLeverageSliderEnabled ? (
+                  <Trans>Decrease leverage to match the max allowed leverage.</Trans>
+                ) : (
+                  <Trans>Decrease size to match the max allowed leverage.</Trans>
+                )}
+              </TooltipText>
+              {setMaxLeverageAction}
+              <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
+            </TooltipContent>
           );
 
           break;
         }
         case ValidationButtonTooltipName.resultingPositionMaxLeverage: {
           tooltipContent = (
-            <>
-              <Trans>
-                The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
-              </Trans>
+            <TooltipContent>
+              <TooltipText>
+                <Trans>
+                  The resulting position would exceed the maximum allowed leverage. Increase margin or reduce size.
+                </Trans>
+              </TooltipText>
               {setMaxLeverageAction}
-            </>
+            </TooltipContent>
           );
           break;
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
-          tooltipContent = <Trans>Position would be liquidated immediately upon execution. Reduce the size.</Trans>;
+          tooltipContent = _(msg`Position would be liquidated immediately upon execution. Reduce the size.`);
           break;
         }
         case ValidationButtonTooltipName.noSwapPath: {
@@ -537,6 +548,7 @@ export function useTradeboxButtonState({
       bannerErrorContent,
     };
   }, [
+    _,
     chainId,
     srcChainId,
     account,
@@ -939,10 +951,9 @@ export function useDetectAndSetAvailableMaxLeverage({
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const tradeMode = useSelector(selectTradeboxTradeMode);
 
-  const { minCollateralUsd } = usePositionsConstants();
-
   const { collateralToken, marketInfo, selectedTriggerAcceptablePriceImpactBps, setLeverageOption, setFocusedInput } =
     useSelector(selectTradeboxState);
+  const { minCollateralUsd } = usePositionsConstants(marketInfo?.marketTokenAddress);
 
   const { isLeverageSliderEnabled, isSetAcceptablePriceImpactEnabled } = useSettings();
 
@@ -959,6 +970,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const uiFeeFactor = useUiFeeFactor();
   const userReferralInfo = useUserReferralInfo();
   const proDiscountFactor = useSelector(selectProDiscountFactor);
+  const feeDiscountFactor = useSelector(selectFeeDiscountFactor);
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
@@ -986,6 +998,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       uiFeeFactor,
       userReferralInfo,
       proDiscountFactor,
+      feeDiscountFactor,
       acceptablePriceImpactBuffer,
       fixedAcceptablePriceImpactBps: selectedTriggerAcceptablePriceImpactBps,
       triggerPrice,
@@ -1020,6 +1033,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     uiFeeFactor,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     isSetAcceptablePriceImpactEnabled,
     tradeMode,
     twap,
@@ -1097,13 +1111,17 @@ function InsufficientGmxPoolLiquidityTooltipContent() {
       );
     case "orderTypeNotSupported":
       return (
-        <Trans>
-          TWAP swaps use GMX pool liquidity only, which can't fill this order size.
-          <br />
-          <br />
-          <EmbeddedActionButton onClick={handleSwitchToMarketOrder}>Switch to a market order</EmbeddedActionButton> to
-          enable external routes.
-        </Trans>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>TWAP swaps use GMX pool liquidity only, which can't fill this order size.</Trans>
+          </TooltipText>
+          <TooltipText>
+            <Trans>Switch to a market order to enable external routes.</Trans>
+          </TooltipText>
+          <TooltipAction onClick={handleSwitchToMarketOrder}>
+            <Trans>Switch to a market order</Trans>
+          </TooltipAction>
+        </TooltipContent>
       );
     case "noRouteFound": {
       const aggregatorSwapUrl = getExternalAggregatorSwapUrl({
@@ -1191,17 +1209,21 @@ function NoSwapPathTooltipContent({
   const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;
 
   return (
-    <Trans>
-      {collateralSymbol} is required for collateral.
-      <br />
-      <br />
-      No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
-      <br />
-      <br />
-      <EmbeddedActionButton onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
-        Swap {collateralSymbol}
-      </EmbeddedActionButton>{" "}
-      or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
-    </Trans>
+    <TooltipContent>
+      <TooltipText>
+        <Trans>{collateralSymbol} is required for collateral.</Trans>
+      </TooltipText>
+      <TooltipText>
+        <Trans>
+          No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
+        </Trans>
+      </TooltipText>
+      <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
+        <Trans>Swap {collateralSymbol}</Trans>
+      </TooltipAction>
+      <TooltipLink href={JUMPER_BRIDGE_URL}>
+        <Trans>Bridge {collateralSymbol}</Trans>
+      </TooltipLink>
+    </TooltipContent>
   );
 }

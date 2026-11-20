@@ -227,6 +227,7 @@ export const useDepositTransactions = ({
         marketName: selectedMarketInfoForGlv?.name,
         glvTokenUsd: glvTokenUsd,
         isFirstBuy,
+        rawParams,
       });
     }
 
@@ -248,6 +249,7 @@ export const useDepositTransactions = ({
       marketTokenAmount,
       marketTokenUsd,
       isFirstBuy,
+      rawParams,
     });
   }, [
     srcChainId,
@@ -265,6 +267,7 @@ export const useDepositTransactions = ({
     marketToken,
     marketTokenAmount,
     marketTokenUsd,
+    rawParams,
     selectedMarketForGlv,
     selectedMarketInfoForGlv?.name,
     shortTokenAddress,

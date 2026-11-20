@@ -2,8 +2,10 @@ import { act, cleanup, render } from "@testing-library/react";
 import { encodeFunctionData, erc20Abi, maxUint256 } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
+import type { TokenPermitUnavailableReason } from "./tokenPermitsEligibility";
 import { useTokenApproval } from "./useTokenApproval";
 
 const mocks = vi.hoisted(() => ({
@@ -25,6 +27,7 @@ const mocks = vi.hoisted(() => ({
   SIGNER: { address: "0x0000000000000000000000000000000000000003" },
   isBatchAvailable: false,
   sendTokenApprovalMetric: vi.fn(),
+  permitUnavailableReason: "tokenNotAllowed" as TokenPermitUnavailableReason | undefined,
 }));
 
 vi.mock("domain/synthetics/tokens", () => ({
@@ -82,6 +85,7 @@ vi.mock("context/TokenPermitsContext/TokenPermitsContextProvider", () => ({
     tokenPermits: mocks.tokenPermits,
     accountType: "eoa",
     getIsPermitAvailable: () => mocks.isPermitAvailable,
+    getPermitUnavailableReason: () => mocks.permitUnavailableReason,
     addTokenPermit: mocks.addTokenPermit,
     disableTokenPermits: vi.fn(),
   }),
@@ -104,11 +108,13 @@ function TestComponent({
   amount,
   allowPermit,
   allowBatch,
+  permitBlockReason,
   tokenAddress = mocks.TOKEN,
 }: {
   amount: bigint;
   allowPermit?: boolean;
   allowBatch?: boolean;
+  permitBlockReason?: ExpressTokenPermitBlockReason;
   tokenAddress?: string;
 }) {
   latestResult = useTokenApproval({
@@ -117,20 +123,30 @@ function TestComponent({
     tokens: [{ tokenAddress, amount }],
     allowPermit,
     allowBatch,
-    metric: { flow: "trade", isExpress: true, gasPaymentTokenAddress: mocks.TOKEN, payTokenAddress: mocks.PAY_TOKEN },
+    metric: {
+      flow: "trade",
+      isExpress: true,
+      gasPaymentTokenAddress: mocks.TOKEN,
+      payTokenAddress: mocks.PAY_TOKEN,
+      permitBlockReason,
+    },
   });
   return null;
 }
 
-function setup(amount: bigint, allowPermit?: boolean, allowBatch?: boolean) {
-  const view = render(<TestComponent amount={amount} allowPermit={allowPermit} allowBatch={allowBatch} />);
+function setup(
+  amount: bigint,
+  allowPermit?: boolean,
+  { allowBatch, permitBlockReason }: { allowBatch?: boolean; permitBlockReason?: ExpressTokenPermitBlockReason } = {}
+) {
+  const props = { allowPermit, allowBatch, permitBlockReason };
+  const view = render(<TestComponent amount={amount} {...props} />);
 
   return {
     get result() {
       return latestResult!;
     },
-    rerender: (nextAmount: bigint = amount) =>
-      view.rerender(<TestComponent amount={nextAmount} allowPermit={allowPermit} allowBatch={allowBatch} />),
+    rerender: (nextAmount: bigint = amount) => view.rerender(<TestComponent amount={nextAmount} {...props} />),
   };
 }
 
@@ -151,6 +167,7 @@ describe("useTokenApproval", () => {
   beforeEach(() => {
     mocks.isPermitAvailable = false;
     mocks.isBatchAvailable = false;
+    mocks.permitUnavailableReason = "tokenNotAllowed";
     mocks.allowanceData = { [mocks.TOKEN]: 0n };
     mocks.approveTokens.mockResolvedValue({ hash: mocks.HASH });
     mocks.waitForTransactionReceipt.mockResolvedValue({ status: "success", blockNumber: 105n, from: mocks.OWNER });
@@ -313,6 +330,65 @@ describe("useTokenApproval", () => {
     expect(mocks.addTokenPermit).toHaveBeenCalledWith(mocks.TOKEN, mocks.SPENDER, 1000n, { signer: mocks.SIGNER });
   });
 
+  it.each([
+    {
+      name: "the flow blocks permits",
+      allowPermit: false,
+      permitBlockReason: "notEnoughGasToken" as const,
+      permitUnavailableReason: "flagOff" as const,
+      expected: "notEnoughGasToken",
+    },
+    {
+      name: "the flow never uses permits",
+      allowPermit: undefined,
+      permitBlockReason: undefined,
+      permitUnavailableReason: undefined,
+      expected: "notInFlow",
+    },
+    {
+      name: "the account type is still loading",
+      allowPermit: true,
+      permitBlockReason: undefined,
+      permitUnavailableReason: "accountTypeNotLoaded" as const,
+      expected: "accountTypeNotLoaded",
+    },
+    {
+      name: "the token can't be permitted at all",
+      allowPermit: false,
+      permitBlockReason: "noExpressParams" as const,
+      permitUnavailableReason: "tokenNotAllowed" as const,
+      expected: undefined,
+    },
+  ])(
+    "logs why an approval is a transaction: $name -> $expected",
+    async ({ allowPermit, permitBlockReason, permitUnavailableReason, expected }) => {
+      mocks.permitUnavailableReason = permitUnavailableReason;
+
+      await approve(setup(1000n, allowPermit, { permitBlockReason }));
+
+      expect(mocks.approveTokens).toHaveBeenCalledWith(
+        expect.objectContaining({
+          permitParams: undefined,
+          metric: expect.objectContaining({ permitSkipReason: expected }),
+        })
+      );
+    }
+  );
+
+  it("signs a permit without a skip reason when the flow and the account allow it", async () => {
+    mocks.isPermitAvailable = true;
+    mocks.permitUnavailableReason = undefined;
+
+    await approve(setup(1000n, true));
+
+    expect(mocks.approveTokens).toHaveBeenCalledWith(
+      expect.objectContaining({
+        permitParams: expect.objectContaining({ accountType: "eoa" }),
+        metric: expect.objectContaining({ permitSkipReason: undefined }),
+      })
+    );
+  });
+
   it("releases the button when the mined allowance cannot be read", async () => {
     mocks.readContract.mockRejectedValue(new Error("rpc"));
 
@@ -333,7 +409,7 @@ describe("useTokenApproval", () => {
     ({ allowBatch, isBatchAvailable, isBatched }) => {
       mocks.isBatchAvailable = isBatchAvailable;
 
-      const { approvalBatch } = setup(1000n, false, allowBatch).result;
+      const { approvalBatch } = setup(1000n, false, { allowBatch }).result;
 
       expect(approvalBatch?.calls).toEqual(
         isBatched
@@ -356,7 +432,7 @@ describe("useTokenApproval", () => {
     mocks.isBatchAvailable = true;
     mocks.allowanceData = allowanceData;
 
-    expect(setup(1000n, false, true).result.approvalBatch).toBeUndefined();
+    expect(setup(1000n, false, { allowBatch: true }).result.approvalBatch).toBeUndefined();
   });
 
   it.each([
@@ -368,7 +444,7 @@ describe("useTokenApproval", () => {
     ({ outcome, metricOutcome }) => {
       mocks.isBatchAvailable = true;
 
-      setup(1000n, false, true).result.approvalBatch!.onOutcome!(outcome);
+      setup(1000n, false, { allowBatch: true }).result.approvalBatch!.onOutcome!(outcome);
 
       expect(mocks.sendTokenApprovalMetric).toHaveBeenCalledWith(
         expect.objectContaining({
