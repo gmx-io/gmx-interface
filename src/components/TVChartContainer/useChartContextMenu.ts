@@ -4,16 +4,13 @@ import { RefObject, useCallback, useMemo, useState } from "react";
 import { USD_DECIMALS } from "config/factors";
 import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxChooseSuitableMarket,
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxSetTradeConfig,
-  selectTradeboxSetTriggerPriceInputValue,
   selectTradeboxToToken,
-  selectTradeboxToTokenAddress,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
@@ -161,13 +158,16 @@ export function useChartContextMenu(
   const orderTokenAddress =
     tradeType === TradeType.Swap && chartToken?.isNative ? chartToken.wrappedAddress : chartToken?.address;
   const availableTokens = useSelector(selectTradeboxAvailableTokensOptions);
-  const canPlaceOrderFromSwap =
-    tradeType === TradeType.Swap &&
-    availableTokens.sortedAllMarkets.some((market) => market.indexTokenAddress === orderTokenAddress);
+  const swapTargetMarket =
+    tradeType === TradeType.Swap
+      ? availableTokens.sortedAllMarkets.find((market) => market.indexTokenAddress === orderTokenAddress)
+      : undefined;
+  const canPlaceOrderFromSwap = Boolean(swapTargetMarket);
+  const orderInputMultiplier = swapTargetMarket?.indexToken?.visualMultiplier ?? chartToken?.visualMultiplier;
   const markPriceBn = useSelector(selectTradeboxMarkPrice);
   const position = useSelector(selectTradeboxSelectedPosition);
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
-  const setTriggerPriceInputValue = useSelector(selectTradeboxSetTriggerPriceInputValue);
+  const setChartTriggerPrice = useSelector((s) => s.tradebox.setChartTriggerPrice);
   const { chartLinesSizeInTokens, setChartLinesSizeInTokens } = useSettings();
   const { networkId } = useChainId();
   const showStopMarket = getNetworkFeatures(networkId).stopMarket;
@@ -208,27 +208,23 @@ export function useChartContextMenu(
         const chooseMarket = calcSelector(selectTradeboxChooseSuitableMarket);
         if (!chooseMarket(orderTokenAddress, newTradeType, newTradeType)) return;
       }
-      setTradeConfig({
+      const tradeMode = action === "limit" ? TradeMode.Limit : TradeMode.StopMarket;
+      setTradeConfig({ tradeType: newTradeType, tradeMode });
+      setChartTriggerPrice({
+        networkId,
+        toTokenAddress: orderTokenAddress,
         tradeType: newTradeType,
-        tradeMode: action === "limit" ? TradeMode.Limit : TradeMode.StopMarket,
+        tradeMode,
+        value: getChartOrderPriceInputValue(clickPrice, visualMultiplier, orderInputMultiplier),
       });
-
-      setTimeout(() => {
-        if (
-          calcSelector(selectTradeboxToTokenAddress) !== orderTokenAddress ||
-          calcSelector(selectTradeboxTradeType) !== newTradeType
-        )
-          return;
-        setTriggerPriceInputValue(
-          getChartOrderPriceInputValue(clickPrice, visualMultiplier, calcSelector(selectSelectedMarketVisualMultiplier))
-        );
-      }, 0);
     },
     [
       visualMultiplier,
       position,
       setTradeConfig,
-      setTriggerPriceInputValue,
+      setChartTriggerPrice,
+      networkId,
+      orderInputMultiplier,
       onOpenTPSLModal,
       calcSelector,
       orderTokenAddress,
