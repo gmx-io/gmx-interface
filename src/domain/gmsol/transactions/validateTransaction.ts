@@ -148,8 +148,6 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
   requireGmsol(plan.groups.length > 0 && plan.groups.every((group) => group.length > 0), "Empty transaction plan");
   requireGmsol(plan.groups.flat().length <= 4, "Too many transactions in one action");
   const action = plan.action;
-  if (action.type === "create" && action.atomic)
-    requireGmsol(plan.groups.length === 1 && plan.groups[0].length === 1, "Atomic orders must fit in one transaction");
   const owner = address(plan.owner);
   const program = GMSOL_STORE_PROGRAM_ID;
   const user = await gmsolPda("user", [GMSOL_STORE_ADDRESS, owner]);
@@ -208,7 +206,9 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
   }
 
   const transactionCosts: { keeperLamports: bigint; wrapLamports: bigint }[] = [];
-  for (const { message } of transactions) {
+  for (const [transactionIndex, { message }] of transactions.entries()) {
+    const preparingAtomicOrder =
+      action.type === "create" && action.atomic && transactionIndex < transactions.length - 1;
     const startingKeeper = keeperLamports;
     const startingWrap = wrapLamports;
     let computeLimitSeen = false;
@@ -217,6 +217,16 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
       const data = ix.data ? copySolanaBytes(ix.data) : new Uint8Array();
       const accounts = (ix.accounts ?? []).map((item) => item.address);
       const reader = new GmsolInstructionReader(data);
+      if (preparingAtomicOrder) {
+        const name = ix.programAddress === program ? decodeGmsolInstruction(data, accounts).name : undefined;
+        requireGmsol(
+          ix.programAddress === COMPUTE_BUDGET_PROGRAM ||
+            (ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && accounts[2] === owner) ||
+            name === "prepare_user" ||
+            name === "prepare_position",
+          "Atomic orders and escrow funding must stay in the final transaction"
+        );
+      }
       if (ix.programAddress === COMPUTE_BUDGET_PROGRAM) {
         requireGmsol(accounts.length === 0, "Unexpected compute budget accounts");
         const kind = reader.uint(1);
