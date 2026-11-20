@@ -9,7 +9,7 @@ import type { ChartDataProvider, SyntheticsState } from "context/SyntheticsState
 import { useLeaderboardState } from "context/SyntheticsStateContext/useLeaderboardState";
 import { latestStateRef, StateCtx } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
-import { useSolanaBalances } from "domain/solana/useSolanaBalances";
+import { useGmsolWalletBalances } from "domain/gmsol/useGmsolWalletBalances";
 import { useInitExternalSwapState } from "domain/synthetics/externalSwaps/useInitExternalSwapState";
 import type { MarketsInfoResult, MarketsResult } from "domain/synthetics/markets";
 import { useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
@@ -99,7 +99,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const leaderboard = useLeaderboardState(undefined, false);
   const externalSwapState = useInitExternalSwapState();
 
-  const balances = useSolanaBalances(owner);
+  const balances = useGmsolWalletBalances(owner);
   const rawMarkets = useGmsolRawMarketsInfo({ enabled: true });
   const tokensDataResult = useGmsolTokensData({
     enabled: true,
