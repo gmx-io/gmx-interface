@@ -3578,6 +3578,11 @@ msgstr ""
 msgid "Expected 365d fees"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr ""
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr ""
@@ -5192,6 +5197,10 @@ msgstr ""
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
+msgstr ""
+
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
 msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
@@ -13866,6 +13875,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
+msgstr ""
+
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx

@@ -5,6 +5,7 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
+import { retryStargateQuoteOnError } from "./stargateErrors";
 import type { QuoteOft, SendParam } from "./types";
 
 export function useQuoteOft({
@@ -56,6 +57,7 @@ export function useQuoteOft({
         };
       },
       refreshInterval: CONFIG_UPDATE_INTERVAL,
+      onErrorRetry: retryStargateQuoteOnError,
     }
   );
 
