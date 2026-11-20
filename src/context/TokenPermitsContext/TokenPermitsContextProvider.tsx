@@ -18,9 +18,10 @@ import {
 } from "domain/tokens/permitUtils";
 import {
   getIsTokenPermitAllowed,
-  getIsTokenPermitsEnabled,
   getTokenPermitAccountType,
+  getTokenPermitsDisabledReason,
   TokenPermitAccountType,
+  type TokenPermitUnavailableReason,
 } from "domain/tokens/tokenPermitsEligibility";
 import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
@@ -40,6 +41,7 @@ export type TokenPermitsState = {
   /** `tokenPermits` while `isClassicEnabled`, otherwise empty */
   classicTokenPermits: SignedTokenPermit[];
   getIsPermitAvailable: (tokenAddress: string) => boolean;
+  getPermitUnavailableReason: (tokenAddress: string) => TokenPermitUnavailableReason | undefined;
   addTokenPermit: AddTokenPermitFn;
   /** permitsChainId: the chain the permits were signed for, when it may no longer be the current one */
   removeTokenPermits: (permits: SignedTokenPermit[], permitsChainId?: number) => void;
@@ -104,15 +106,17 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const { chainId, networkId } = useChainId();
   const { signer } = useWallet();
   const account = signer?.address;
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags, isLoaded: isUiFlagsLoaded } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
   const accountType = useTokenPermitAccountType(chainId, isSolanaNetwork(networkId) ? undefined : account);
 
-  const isEnabled = getIsTokenPermitsEnabled({
+  const disabledReason = getTokenPermitsDisabledReason({
     uiFlags,
+    isUiFlagsLoaded,
     accountType,
     isQaOverrideEnabled: isTokenPermitsQaOverrideEnabled,
   });
+  const isEnabled = disabledReason === undefined;
   const isClassicEnabled = isEnabled && (isTokenPermitsQaOverrideEnabled || getIsClassicTokenPermitsEnabled(uiFlags));
 
   useEffect(function retireLegacyPermitsDisabledKey() {
@@ -167,10 +171,24 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   });
   latestStoredTokenPermits.current = { walletKey, chainId, account, permits: storedTokenPermits, setTokenPermits };
 
+  const getPermitUnavailableReason = useCallback(
+    (tokenAddress: string): TokenPermitUnavailableReason | undefined => {
+      if (!getIsTokenPermitAllowed(chainId, tokenAddress)) {
+        return "tokenNotAllowed";
+      }
+
+      if (disabledReason !== undefined) {
+        return disabledReason;
+      }
+
+      return fallbackTokens?.includes(tokenAddress) ? "tokenDisabled" : undefined;
+    },
+    [chainId, disabledReason, fallbackTokens]
+  );
+
   const getIsPermitAvailable = useCallback(
-    (tokenAddress: string) =>
-      isEnabled && getIsTokenPermitAllowed(chainId, tokenAddress) && !fallbackTokens?.includes(tokenAddress),
-    [chainId, fallbackTokens, isEnabled]
+    (tokenAddress: string) => getPermitUnavailableReason(tokenAddress) === undefined,
+    [getPermitUnavailableReason]
   );
 
   const tokenPermits = useMemo(() => {
@@ -342,6 +360,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       isClassicEnabled,
       classicTokenPermits: isClassicEnabled ? tokenPermits : EMPTY_ARRAY,
       getIsPermitAvailable,
+      getPermitUnavailableReason,
       addTokenPermit,
       removeTokenPermits,
       disableTokenPermits,
@@ -351,6 +370,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       accountType,
       isClassicEnabled,
       getIsPermitAvailable,
+      getPermitUnavailableReason,
       addTokenPermit,
       removeTokenPermits,
       disableTokenPermits,

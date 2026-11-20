@@ -1,6 +1,8 @@
 import type { NetworkId, SourceChainId } from "config/chains";
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { TokenPermitUnavailableReason } from "domain/tokens/tokenPermitsEligibility";
 import type { ErrorData } from "lib/errors";
 import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import type { LaunchSource } from "lib/pwa/getLaunchSource";
@@ -176,7 +178,7 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders";
+    domain: "markets" | "positions" | "orders" | "wsPrices";
     reason: "stale" | "error" | "initial";
     chainId: number;
   };
@@ -203,6 +205,26 @@ export type FreshnessTiming = {
     chainId: number;
     metricId: FreshnessMetricId;
   };
+};
+
+export type WsPriceAgeAtSendTiming = {
+  event: "wsPrices.ageAtSend";
+  data: { chainId: number };
+};
+
+export type WsPriceFirstFrameTiming = {
+  event: "wsPrices.firstFrame";
+  data: { chainId: number };
+};
+
+export type WsPriceInterArrivalTiming = {
+  event: "wsPrices.interArrival";
+  data: { chainId: number };
+};
+
+export type WsStreamStatusCounter = {
+  event: "wsPrices.status";
+  data: { chainId: number; status: string };
 };
 
 // Transactions tracking
@@ -755,6 +777,13 @@ export type TokenApprovalFlow =
   | "accountTransfer"
   | "paxosTransit";
 
+// why a token a permit could cover was approved with a transaction
+export type TokenPermitSkipReason =
+  | "notInFlow"
+  | ExpressTokenPermitBlockReason
+  | Exclude<TokenPermitUnavailableReason, "tokenNotAllowed">
+  | "permitFailed";
+
 export type TokenApprovalMetricParams = {
   flow: TokenApprovalFlow;
   isGasPaymentToken?: boolean;
@@ -762,6 +791,7 @@ export type TokenApprovalMetricParams = {
   isExpress1CT?: boolean;
   // the spender is a user account rather than a contract, so it stays out of analytics
   hideSpender?: boolean;
+  permitSkipReason?: TokenPermitSkipReason;
 };
 
 export type TokenApprovalEvent = {

@@ -1,5 +1,5 @@
 import { HttpClient, HttpError } from "./http";
-import { IHttp, ServedResult } from "./types";
+import { FetchJsonOptions, HttpResponseMetadata, IHttp, ServedResult } from "./types";
 
 const FAILURE_WINDOW_MS = 60_000;
 const FAILURES_BEFORE_ROTATION = 3;
@@ -29,11 +29,20 @@ export class HttpClientWithFallback implements IHttp {
     return this.clients[this.primaryIndex].url;
   }
 
-  async fetchJson<TResult>(
-    path: string,
-    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
-  ): Promise<TResult> {
-    return this.withFallback((client) => client.fetchJson<TResult>(path, opts));
+  async fetchJson<TResult>(path: string, opts?: FetchJsonOptions<TResult>): Promise<TResult> {
+    let metadata: HttpResponseMetadata | undefined;
+    const result = await this.withFallback((client) =>
+      client.fetchJson<TResult>(path, {
+        ...opts,
+        onResponse: (response) => {
+          metadata = response;
+        },
+      })
+    );
+    if (metadata) {
+      opts?.onResponse?.(metadata);
+    }
+    return result;
   }
 
   async postJson<TResult>(

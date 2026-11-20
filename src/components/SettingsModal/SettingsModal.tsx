@@ -190,7 +190,7 @@ export function SettingsModal({
             break;
           }
           case TradingMode.Express1CT: {
-            const isSubaccountActivated = await subaccountState.tryEnableSubaccount();
+            const isSubaccountActivated = await subaccountState.tryEnableSubaccount(subaccountState.initialSettings);
 
             if (!isSubaccountActivated) {
               setTradingMode(prevMode);

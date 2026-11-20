@@ -1,4 +1,4 @@
-import { encodeAbiParameters, keccak256, zeroHash } from "viem";
+import { encodeAbiParameters, keccak256, parseErc6492Signature, zeroHash } from "viem";
 
 import { abis } from "abis";
 import RelayParamsV2_2_1 from "abis/RelayParamsV2_2_1";
@@ -276,4 +276,14 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
   }
 
   return keccak256(encodeAbiParameters(abis.RelayParams, values));
+}
+
+export function getEip6492SignatureWrapperHash(signature: string): string {
+  const { address, data } = parseErc6492Signature(signature);
+
+  if (!address || !data) {
+    throw new Error("Not an EIP-6492 signature");
+  }
+
+  return keccak256(encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [address, data]));
 }
