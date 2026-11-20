@@ -66,19 +66,22 @@ describe("slide modal animation lifecycle", () => {
 });
 
 describe("slide modal drag", () => {
-  it("drags the curtain only on a pull down from the top of its own nested list TRD-31", () => {
+  it("drags the curtain only from its own header or on a pull down from the top of its own nested list TRD-31", () => {
     const cases = [
       { listScrollTop: 300, pointerYs: [550], drags: false },
       { listScrollTop: 0, pointerYs: [250, 550], drags: false },
       { listScrollTop: 0, pointerYs: [550], drags: true },
       { listScrollTop: 0, pointerYs: [550], isPortaled: true, drags: false },
+      { listScrollTop: 0, pointerYs: [550], isInHeader: true, drags: true },
+      { listScrollTop: 0, pointerYs: [550], isInHeader: true, isPortaled: true, drags: false },
     ];
 
-    for (const { listScrollTop, pointerYs, isPortaled, drags } of cases) {
+    for (const { listScrollTop, pointerYs, isPortaled, isInHeader, drags } of cases) {
       const listElement = <div data-testid="list">Row</div>;
+      const target = isPortaled ? createPortal(listElement, document.body) : listElement;
       const view = render(
-        <SlideModal qa="curtain" isVisible setIsVisible={() => undefined}>
-          {isPortaled ? createPortal(listElement, document.body) : listElement}
+        <SlideModal qa="curtain" isVisible setIsVisible={() => undefined} headerContent={isInHeader && target}>
+          {!isInHeader && target}
         </SlideModal>
       );
       const curtain = view.baseElement.querySelector<HTMLElement>('[data-qa="curtain"]')!;
