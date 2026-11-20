@@ -16,7 +16,7 @@ vi.mock("./sendOrderTransactions", () => ({
   sendGmsolOrderTransactions: (...args: unknown[]) => mocks.send(...args),
 }));
 vi.mock("../useGmsolAccountData", () => ({ refreshGmsolAccountDataAfterTransaction: vi.fn() }));
-vi.mock("domain/solana/useSolanaBalances", () => ({ getSolanaBalancesKey: vi.fn() }));
+vi.mock("domain/gmsol/useGmsolWalletBalances", () => ({ getSolanaBalancesKey: vi.fn() }));
 afterEach(cleanup);
 it("does not sign or send a prepared order after its owning flow unmounts FESOL-56", async () => {
   let finishPreparation!: (value: unknown) => void;
