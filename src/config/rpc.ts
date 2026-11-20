@@ -3,7 +3,6 @@ import sample from "lodash/sample";
 import { _debugRpcTracker, RpcDebugFlags } from "lib/rpc/_debug";
 import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
 import { RpcConfig } from "lib/rpc/types";
-import { mustNeverExist } from "lib/types";
 import {
   AnyChainId,
   ARBITRUM,
@@ -30,8 +29,7 @@ const ENV_AVALANCHE_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_AVAL
 
 const ENV_MEGAETH_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_MEGAETH_RPC_URLS);
 
-// Chains that support Alchemy WebSocket endpoints
-const ALCHEMY_WS_SUPPORT_CHAINS = [
+const PROXY_WS_SUPPORT_CHAINS = [
   ARBITRUM,
   MEGAETH,
   ARBITRUM_SEPOLIA,
@@ -96,13 +94,13 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
           isPublic: false,
           purpose: "fallback",
         }))
-      : [getAlchemyProvider(ARBITRUM, "fallback")]),
+      : [getProxyProvider(ARBITRUM, "fallback")]),
 
     // Large account
-    getAlchemyProvider(ARBITRUM, "largeAccount"),
+    getProxyProvider(ARBITRUM, "largeAccount"),
 
     // Express
-    getAlchemyProvider(ARBITRUM, "express"),
+    getProxyProvider(ARBITRUM, "express"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(ARBITRUM) ?? []),
@@ -121,13 +119,13 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
           isPublic: false,
           purpose: "fallback",
         }))
-      : [getAlchemyProvider(AVALANCHE, "fallback")]),
+      : [getProxyProvider(AVALANCHE, "fallback")]),
 
     // Large account
-    getAlchemyProvider(AVALANCHE, "largeAccount"),
+    getProxyProvider(AVALANCHE, "largeAccount"),
 
     // Express
-    getAlchemyProvider(AVALANCHE, "express"),
+    getProxyProvider(AVALANCHE, "express"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(AVALANCHE) ?? []),
@@ -161,10 +159,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(ARBITRUM_SEPOLIA, "fallback"),
+    getProxyProvider(ARBITRUM_SEPOLIA, "fallback"),
 
     // Express
-    getAlchemyProvider(ARBITRUM_SEPOLIA, "express"),
+    getProxyProvider(ARBITRUM_SEPOLIA, "express"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(ARBITRUM_SEPOLIA) ?? []),
@@ -183,13 +181,13 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
           isPublic: false,
           purpose: "fallback",
         }))
-      : [getAlchemyProvider(MEGAETH, "fallback")]),
+      : [getProxyProvider(MEGAETH, "fallback")]),
 
     // Large account
-    getAlchemyProvider(MEGAETH, "largeAccount"),
+    getProxyProvider(MEGAETH, "largeAccount"),
 
     // Express
-    getAlchemyProvider(MEGAETH, "express"),
+    getProxyProvider(MEGAETH, "express"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(MEGAETH) ?? []),
@@ -204,10 +202,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback"),
+    getProxyProvider(SOURCE_BASE_MAINNET, "fallback"),
 
     // Large account
-    getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount"),
+    getProxyProvider(SOURCE_BASE_MAINNET, "largeAccount"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_BASE_MAINNET) ?? []),
@@ -224,10 +222,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback"),
+    getProxyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback"),
 
     // Large account
-    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount"),
+    getProxyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_OPTIMISM_SEPOLIA) ?? []),
@@ -240,10 +238,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(SOURCE_SEPOLIA, "fallback"),
+    getProxyProvider(SOURCE_SEPOLIA, "fallback"),
 
     // Large account
-    getAlchemyProvider(SOURCE_SEPOLIA, "largeAccount"),
+    getProxyProvider(SOURCE_SEPOLIA, "largeAccount"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_SEPOLIA) ?? []),
@@ -261,10 +259,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(SOURCE_BSC_MAINNET, "fallback"),
+    getProxyProvider(SOURCE_BSC_MAINNET, "fallback"),
 
     // Large account
-    getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount"),
+    getProxyProvider(SOURCE_BSC_MAINNET, "largeAccount"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_BSC_MAINNET) ?? []),
@@ -279,10 +277,10 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
     })),
 
     // Fallback
-    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "fallback"),
+    getProxyProvider(SOURCE_ETHEREUM_MAINNET, "fallback"),
 
     // Large account
-    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount"),
+    getProxyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount"),
 
     // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(SOURCE_ETHEREUM_MAINNET) ?? []),
@@ -290,32 +288,32 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
 };
 
 const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
-  [ARBITRUM]: [getAlchemyProvider(ARBITRUM, "fallback", "ws"), getAlchemyProvider(ARBITRUM, "largeAccount", "ws")],
+  [ARBITRUM]: [getProxyProvider(ARBITRUM, "fallback", "ws"), getProxyProvider(ARBITRUM, "largeAccount", "ws")],
   [AVALANCHE]: [{ url: "wss://api.avax.network/ext/bc/C/ws", isPublic: true, purpose: "fallback" }],
   [ARBITRUM_SEPOLIA]: [
-    getAlchemyProvider(ARBITRUM_SEPOLIA, "fallback", "ws"),
-    getAlchemyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
+    getProxyProvider(ARBITRUM_SEPOLIA, "fallback", "ws"),
+    getProxyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
   ],
-  [MEGAETH]: [getAlchemyProvider(MEGAETH, "fallback", "ws"), getAlchemyProvider(MEGAETH, "largeAccount", "ws")],
+  [MEGAETH]: [getProxyProvider(MEGAETH, "fallback", "ws"), getProxyProvider(MEGAETH, "largeAccount", "ws")],
   [SOURCE_BASE_MAINNET]: [
-    getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
-    getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount", "ws"),
+    getProxyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
+    getProxyProvider(SOURCE_BASE_MAINNET, "largeAccount", "ws"),
   ],
   [SOURCE_OPTIMISM_SEPOLIA]: [
-    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback", "ws"),
-    getAlchemyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount", "ws"),
+    getProxyProvider(SOURCE_OPTIMISM_SEPOLIA, "fallback", "ws"),
+    getProxyProvider(SOURCE_OPTIMISM_SEPOLIA, "largeAccount", "ws"),
   ],
   [SOURCE_SEPOLIA]: [
-    getAlchemyProvider(SOURCE_SEPOLIA, "fallback", "ws"),
-    getAlchemyProvider(SOURCE_SEPOLIA, "largeAccount", "ws"),
+    getProxyProvider(SOURCE_SEPOLIA, "fallback", "ws"),
+    getProxyProvider(SOURCE_SEPOLIA, "largeAccount", "ws"),
   ],
   [SOURCE_BSC_MAINNET]: [
-    getAlchemyProvider(SOURCE_BSC_MAINNET, "fallback", "ws"),
-    getAlchemyProvider(SOURCE_BSC_MAINNET, "largeAccount", "ws"),
+    getProxyProvider(SOURCE_BSC_MAINNET, "fallback", "ws"),
+    getProxyProvider(SOURCE_BSC_MAINNET, "largeAccount", "ws"),
   ],
   [SOURCE_ETHEREUM_MAINNET]: [
-    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "fallback", "ws"),
-    getAlchemyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount", "ws"),
+    getProxyProvider(SOURCE_ETHEREUM_MAINNET, "fallback", "ws"),
+    getProxyProvider(SOURCE_ETHEREUM_MAINNET, "largeAccount", "ws"),
   ],
 };
 
@@ -350,79 +348,20 @@ export function getExpressRpcUrl(chainId: number): string | undefined {
 
 export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
 
-function getAlchemyProvider(
+function getProxyProvider(
   chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
-  purpose: RpcPurpose,
+  purpose: Exclude<RpcPurpose, "default">,
   type: "http" | "ws" = "http"
 ): RpcConfig {
-  if (type === "ws" && !ALCHEMY_WS_SUPPORT_CHAINS.includes(chainId)) {
+  if (type === "ws" && !PROXY_WS_SUPPORT_CHAINS.includes(chainId)) {
     throw new Error(`WebSocket url is not supported for chainId: ${chainId}`);
   }
 
-  let alchemyKey: string;
-
-  if (isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy)) {
-    alchemyKey = "alch_xNo9zxunxDu9wBV7Scv_P";
-  } else {
-    switch (purpose) {
-      case "fallback":
-        alchemyKey = "alch_Sa_mu7buHFanCJGjBAaxz";
-        break;
-      case "largeAccount":
-        alchemyKey = "alch_CV2fx2y8hCUg1uMyyLds1";
-        break;
-      case "express":
-        alchemyKey = "alch_tbk2RGdCIonKEsI6HjGFq";
-        break;
-      case "default":
-        throw new Error(`Unsupported purpose: ${purpose}`);
-      default:
-        mustNeverExist(purpose);
-        throw new Error(`Unsupported purpose: ${purpose}`);
-    }
-  }
-
-  let baseUrl: string;
-  switch (chainId) {
-    case ARBITRUM:
-      baseUrl = `arb-mainnet.g.alchemy.com/v2`;
-      break;
-    case AVALANCHE:
-      baseUrl = `avax-mainnet.g.alchemy.com/v2`;
-      break;
-    case MEGAETH:
-      baseUrl = `megaeth-mainnet.g.alchemy.com/v2`;
-      break;
-    case ARBITRUM_SEPOLIA:
-      baseUrl = `arb-sepolia.g.alchemy.com/v2`;
-      break;
-    case SOURCE_BASE_MAINNET:
-      baseUrl = `base-mainnet.g.alchemy.com/v2`;
-      break;
-    case SOURCE_OPTIMISM_SEPOLIA:
-      baseUrl = `opt-sepolia.g.alchemy.com/v2`;
-      break;
-    case SOURCE_SEPOLIA:
-      baseUrl = `eth-sepolia.g.alchemy.com/v2`;
-      break;
-    case SOURCE_BSC_MAINNET:
-      baseUrl = `bnb-mainnet.g.alchemy.com/v2`;
-      break;
-    case SOURCE_ETHEREUM_MAINNET:
-      baseUrl = `eth-mainnet.g.alchemy.com/v2`;
-      break;
-    default: {
-      mustNeverExist(chainId);
-      throw new Error(`Unsupported chainId: ${chainId}`);
-    }
-  }
-
+  const routePurpose = isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.DebugAlchemy) ? "dev" : purpose;
   const protocol = type === "ws" ? "wss" : "https";
 
-  const url = `${protocol}://${baseUrl}/${alchemyKey}`;
-
   return {
-    url,
+    url: `${protocol}://rpc.gmx.io/${chainId}/${routePurpose}`,
     purpose,
     isPublic: false,
   };
