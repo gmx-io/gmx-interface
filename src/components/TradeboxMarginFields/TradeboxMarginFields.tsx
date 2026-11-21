@@ -68,7 +68,7 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
-  const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
+  const prevSizeTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
   const tokensInputValueFromUsdRef = useRef<string | undefined>(toTokenInputValue === "" ? "" : undefined);
   const previousToTokenInputValue = usePrevious(toTokenInputValue);
@@ -87,9 +87,9 @@ export function TradeboxMarginFields({
   const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
   // For limit orders, use trigger price for USD↔token conversion so the displayed
-  // position size reflects the limit fill price. Each trigger price keystroke
-  // recomputes this, but the size-sync effect guards against overwriting focused fields.
-  const sizeConversionPrice = isLimit && triggerPrice !== undefined ? triggerPrice : markPrice;
+  // position size reflects the limit fill price.
+  const sizeTriggerPrice = isLimit ? triggerPrice : undefined;
+  const sizeConversionPrice = sizeTriggerPrice ?? markPrice;
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
     markPrice: sizeConversionPrice,
@@ -132,29 +132,29 @@ export function TradeboxMarginFields({
     }
   }, [marketAddress, toTokenAddress]);
 
-  // Keep USD size anchored when the limit trigger price changes.
+  // Keep USD size anchored when the trigger price changes or stops pricing the size (Limit to Market):
+  // the order is sized by the token amount, which would otherwise stay priced at the old limit.
   useLayoutEffect(() => {
-    if (!isLimit) {
-      prevTriggerPriceRef.current = triggerPrice;
-      return;
-    }
-
-    if (prevTriggerPriceRef.current === null) {
-      prevTriggerPriceRef.current = triggerPrice;
-      return;
-    }
-
-    if (prevTriggerPriceRef.current !== triggerPrice && sizeDisplayMode === "usd") {
+    if (
+      prevSizeTriggerPriceRef.current !== null &&
+      prevSizeTriggerPriceRef.current !== sizeTriggerPrice &&
+      sizeDisplayMode === "usd"
+    ) {
       shouldForceSizeUsdSyncRef.current = true;
     }
 
-    prevTriggerPriceRef.current = triggerPrice;
-  }, [isLimit, triggerPrice, sizeDisplayMode]);
+    prevSizeTriggerPriceRef.current = sizeTriggerPrice;
+  }, [sizeTriggerPrice, sizeDisplayMode]);
 
+  // Runs on sizeTriggerPrice too, so a force is consumed in the same commit even when the conversion price
+  // didn't move (limit equal to mark) instead of firing on a later unrelated run.
   useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
-    if (shouldForceSizeUsdSyncRef.current) {
+    const isTokensInputValueFromUsd = toTokenInputValue === tokensInputValueFromUsdRef.current;
+
+    // A typed USD size stays the order size: its token amount follows every move of the conversion price.
+    if (shouldForceSizeUsdSyncRef.current || (focusedInput === "to" && isTokensInputValueFromUsd)) {
       shouldForceSizeUsdSyncRef.current = false;
       const tokensValue = usdToTokens(sizeInputValue);
       tokensInputValueFromUsdRef.current = tokensValue;
@@ -165,7 +165,12 @@ export function TradeboxMarginFields({
     }
 
     const isTokensInputValueSetElsewhere =
-      toTokenInputValue !== previousToTokenInputValue && toTokenInputValue !== tokensInputValueFromUsdRef.current;
+      !isTokensInputValueFromUsd && toTokenInputValue !== previousToTokenInputValue;
+
+    // A token amount set elsewhere ends the USD size's lead, so a later chance match (an empty input) can't restore it.
+    if (isTokensInputValueSetElsewhere) {
+      tokensInputValueFromUsdRef.current = undefined;
+    }
 
     if (focusedInput === "to" && !isTokensInputValueSetElsewhere) return;
 
@@ -174,6 +179,7 @@ export function TradeboxMarginFields({
       setSizeInputValue(usdValue);
     }
   }, [
+    sizeTriggerPrice,
     focusedInput,
     sizeDisplayMode,
     sizeInputValue,
