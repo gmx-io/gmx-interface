@@ -1073,6 +1073,10 @@ msgstr "¿Puedo crear varios códigos de referido?"
 msgid "Unknown error"
 msgstr "Error desconocido"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "Establecer Take-Profit largo @ {formattedPrice}"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1548,6 +1552,8 @@ msgid "GMX staked rewards"
 msgstr "Recompensas de GMX en staking"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "Importe a recibir por debajo del mínimo"
 
@@ -2342,6 +2348,10 @@ msgstr "más de 100 tokens cripto"
 msgid "Optimal usage factor short"
 msgstr "Factor de uso óptimo corto"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "Configurar Stop Market largo @ {formattedPrice}"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} por {1}"
@@ -2953,10 +2963,6 @@ msgstr "Tasa anualizada"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "No se encontró ruta de intercambio"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "Configurar Stop Market largo @ {0}"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
@@ -4445,10 +4451,6 @@ msgstr "Paso 2: Añadir margen"
 msgid "UI fee"
 msgstr "Comisión de la interfaz"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "Establecer Take-Profit largo @ {0}"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
 msgstr "Subiendo..."
@@ -4896,6 +4898,10 @@ msgstr "Convirtiendo USDC a USDG..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "Configurar orden stop a mercado en corto @ {formattedPrice}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6260,10 +6266,6 @@ msgstr "Abriendo..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "Protocolo de margen DeFi"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "Establecer Stop-Loss corto @ {0}"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -8359,10 +8361,6 @@ msgstr "Conforme con la atribución mediante código de Builder / código de ref
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "Las comisiones obtenidas solo se registran para los GM y GLV que tiene en su monedero en {chainName}. Los GM y GLV en una GMX Account o en otra cadena siguen generando comisiones, pero todavía no se pueden atribuir por cuenta."
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "Establecer orden límite en largo @ {0}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr "La cuenta receptora ya ha hecho staking o consolidación antes. Elija una cuenta nueva."
@@ -9038,10 +9036,6 @@ msgstr "<0>Grupos de mercado</0><1>Interés abierto neto</1>"
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "Use tarjeta de débito/crédito, Apple Pay o Google Pay donde esté disponible"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "Establecer Stop-Loss de posición larga en {0}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "En los mercados más recientes, es posible que el historial aún no esté indexado. Consulte la tasa neta/1 h encima del gráfico."
@@ -9154,6 +9148,10 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "Reclamación enviada"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "Establecer Take-Profit para la posición corta @ {formattedPrice}"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -10356,6 +10354,10 @@ msgstr "APY de rendimiento total"
 msgid "No tokens on {0} for deposit"
 msgstr "No hay tokens en {0} para depositar"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "Establecer orden límite en largo @ {formattedPrice}"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "Total a reclamar"
@@ -10605,10 +10607,6 @@ msgstr "Cargando comisiones..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "Configurar orden stop a mercado en corto @ {0}"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10627,6 +10625,10 @@ msgstr "Restablecer zoom"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "Parte de sus tokens en staking sigue reservada en el vault de GMX. Retire primero del vault de GMX o haga staking de más GMX."
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "Establecer orden límite en corto @ {formattedPrice}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -11562,6 +11564,10 @@ msgstr "Datos rápidos"
 msgid "Closed to new stop market orders"
 msgstr "Cerrado a nuevas órdenes stop de mercado"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "Establecer Stop-Loss de posición larga en {formattedPrice}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -12393,10 +12399,6 @@ msgstr "¿Omitir la creación de un código de referido?"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "La red de compensación se cambió a {0}, pero {1} permanece en su GMX Account de {2}"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "Establecer orden límite en corto @ {0}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
@@ -13562,10 +13564,6 @@ msgstr "Las comisiones de red son elevadas debido al aumento de la actividad en 
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "La posición existente está en el pool WETH-USDC. Usar el pool seleccionado creará una posición aparte. <0>Cambiar al pool WETH-USDC</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "Establecer Take-Profit para la posición corta @ {0}"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "Compartir PnL"
@@ -13740,6 +13738,10 @@ msgstr "En la pestaña Swap · llega por separado"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Directo con Paxos"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "Establecer Stop-Loss corto @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx

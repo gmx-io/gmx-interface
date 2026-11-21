@@ -1073,6 +1073,10 @@ msgstr "Можно ли создать несколько реферальных
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "Установить тейк-профит для лонга @ {formattedPrice}"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1548,6 +1552,8 @@ msgid "GMX staked rewards"
 msgstr "Вознаграждения за стейкинг GMX"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "Сумма к получению ниже минимума"
 
@@ -2342,6 +2348,10 @@ msgstr "более чем 100 криптотокенами"
 msgid "Optimal usage factor short"
 msgstr "Оптимальный коэффициент использования шорт"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "Установить стоп-маркет для лонга по цене {formattedPrice}"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} за {1}"
@@ -2953,10 +2963,6 @@ msgstr "Темп в годовом выражении"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "Путь обмена не найден"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "Установить стоп-маркет для лонга по цене {0}"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
@@ -4445,10 +4451,6 @@ msgstr "Шаг 2: Добавление маржи"
 msgid "UI fee"
 msgstr "Комиссия интерфейса"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "Установить тейк-профит для лонга @ {0}"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
 msgstr "Загрузка..."
@@ -4896,6 +4898,10 @@ msgstr "Конвертация USDC в USDG..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "Установить рыночный стоп-ордер для шорта @ {formattedPrice}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6260,10 +6266,6 @@ msgstr "Открытие..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "Маржинальный DeFi-протокол"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "Установить стоп-лосс для шорта @ {0}"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -8359,10 +8361,6 @@ msgstr "Готовы работать с атрибуцией Builder / Referral
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "Заработанные комиссии учитываются только для GM и GLV в вашем кошельке в сети {chainName}. GM и GLV в GMX Account или в другой сети по-прежнему приносят комиссии, но пока не могут быть отнесены к конкретному аккаунту."
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "Установить лимитный ордер в лонг @ {0}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr "Аккаунт получателя уже участвовал в стейкинге или вестинге. Выберите новый аккаунт."
@@ -9038,10 +9036,6 @@ msgstr "<0>Группы рынков</0><1>Чистый открытый инт�
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "Используйте дебетовую/кредитную карту, Apple Pay или Google Pay, где это поддерживается"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "Установить стоп-лосс для лонга по цене {0}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "Для новых рынков история может быть ещё не проиндексирована. См. показатель «Чистая ставка / 1 ч» над графиком."
@@ -9154,6 +9148,10 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "Запрос на получение отправлен"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "Установить тейк-профит для шорта @ {formattedPrice}"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -10356,6 +10354,10 @@ msgstr "Общая доходность APY"
 msgid "No tokens on {0} for deposit"
 msgstr "Нет токенов на {0} для депозита"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "Установить лимитный ордер в лонг @ {formattedPrice}"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "Итого к получению"
@@ -10605,10 +10607,6 @@ msgstr "Загрузка комиссий..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "Установить рыночный стоп-ордер для шорта @ {0}"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10627,6 +10625,10 @@ msgstr "Сбросить масштаб"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "Часть ваших застейканных токенов всё ещё зарезервирована в хранилище GMX. Сначала выведите средства из хранилища GMX или застейкайте больше GMX."
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "Установить лимитный ордер на шорт @ {formattedPrice}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -11562,6 +11564,10 @@ msgstr "Коротко о главном"
 msgid "Closed to new stop market orders"
 msgstr "Закрыт для новых стоп-маркет ордеров"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "Установить стоп-лосс для лонга по цене {formattedPrice}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -12393,10 +12399,6 @@ msgstr "Пропустить создание реферального кода?
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "Сеть расчёта изменена на {0}, но {1} остаётся в вашем GMX Account на {2}"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "Установить лимитный ордер на шорт @ {0}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
@@ -13562,10 +13564,6 @@ msgstr "Комиссии сети высоки из-за повышенной а
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "Существующая позиция находится в пуле WETH-USDC. При использовании выбранного пула будет создана отдельная позиция. <0>Переключиться на пул WETH-USDC</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "Установить тейк-профит для шорта @ {0}"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "Поделиться PnL"
@@ -13740,6 +13738,10 @@ msgstr "Во вкладке обмена · поступит отдельно"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Напрямую с Paxos"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "Установить стоп-лосс для шорта @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
