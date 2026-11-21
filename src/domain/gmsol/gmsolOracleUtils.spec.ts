@@ -39,8 +39,8 @@ function ticker(p: { tokenAddress: string; price: string }): TickersResponse[num
     tokenSymbol: "",
     minPrice: p.price,
     maxPrice: p.price,
-    oracleDecimals: 0,
     updatedAt: UPDATED_AT,
+    timestamp: Math.floor(UPDATED_AT / 1000),
   };
 }
 
