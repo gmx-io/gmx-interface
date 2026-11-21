@@ -213,6 +213,10 @@ msgstr "GMX Account swaps cannot use native {0}. Select {1} or withdraw to walle
 msgid "Include rPnL in leverage display"
 msgstr "Include rPnL in leverage display"
 
+#: src/pages/RpcDebug/RpcDebug.tsx
+msgid "Unable to load the Solana RPC tracker"
+msgstr "Unable to load the Solana RPC tracker"
+
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
@@ -1129,6 +1133,10 @@ msgstr "Only GMX adds liquidity to this pool. It serves USDC and USDG swaps."
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "Funding decrease factor"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr "Order submission status unknown. Check the transaction before retrying."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
@@ -4773,6 +4781,7 @@ msgid "Net price impact / fees"
 msgstr "Net price impact / fees"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "Order canceled"
 
@@ -5016,6 +5025,7 @@ msgid "Returned margin"
 msgstr "Returned margin"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Sending order request..."
 msgstr "Sending order request..."
 
@@ -8744,6 +8754,7 @@ msgstr "Symbol (Z to A)"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
+#: src/pages/RpcDebug/RpcDebug.tsx
 msgid "RPC debug"
 msgstr "RPC debug"
 
@@ -9550,6 +9561,10 @@ msgstr "SIZE"
 msgid "Book a 30-min call"
 msgstr "Book a 30-min call"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr "Order outcome not confirmed. Check the transaction for updates."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9652,6 +9667,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "Order request sent"
 
@@ -10999,6 +11015,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "Order filled"
 
@@ -11468,6 +11485,7 @@ msgid "Show assets with small value ({0})"
 msgstr "Show assets with small value ({0})"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "Fulfilling order request..."
 
@@ -13598,6 +13616,10 @@ msgstr "Sell"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
 msgstr "Lent position impact pool amount"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr "Order request failed"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
