@@ -16,7 +16,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import { applySlippageToMinOut } from "../trade";
+import { assertPositiveMinOutputAmount, getPoolTokenMinOutput } from "./lpMinOutput";
 
 type Params = {
   account: string;
@@ -39,7 +39,9 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
-  const minToMarketTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minToMarketTokenAmount);
+  const minToMarketTokenAmount = getPoolTokenMinOutput(p.allowedSlippage, p.minToMarketTokenAmount);
+
+  assertPositiveMinOutputAmount(minToMarketTokenAmount);
 
   await validateSignerAddress(signer, p.account);
 
