@@ -779,31 +779,6 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     ]
   );
 
-  const isUsdgConversionActiveRef = useLatest(isUsdgConversionActive);
-
-  const triggerPriceResetKeyRef = useRef<string>();
-
-  useEffect(
-    function resetTriggerPrice() {
-      const resetKey = `${toTokenAddress}:${tradeMode}`;
-      const isMount = triggerPriceResetKeyRef.current === undefined;
-
-      if (triggerPriceResetKeyRef.current === resetKey) {
-        return;
-      }
-
-      triggerPriceResetKeyRef.current = resetKey;
-
-      // a remount mid-conversion would otherwise wipe the price the order is about to be sent with
-      if (isMount && isUsdgConversionActiveRef.current) {
-        return;
-      }
-
-      setTriggerPriceInputValue("");
-    },
-    [isUsdgConversionActiveRef, setTriggerPriceInputValue, toTokenAddress, tradeMode]
-  );
-
   useEffect(
     function validateLeverageOption() {
       if (leverageOption && leverageOption > maxAllowedLeverage / BASIS_POINTS_DIVISOR) {

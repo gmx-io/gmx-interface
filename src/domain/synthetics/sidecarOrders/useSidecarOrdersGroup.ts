@@ -81,6 +81,10 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
       if (field === "sizeUsd") {
         if (nextField) {
           sizeUsd = getDefaultEntryField(USD_DECIMALS, nextField);
+        } else if (prefix !== "limit" && entry.order && !entry.txnType && totalPositionSizeUsd !== undefined) {
+          sizeUsd = getDefaultEntryField(USD_DECIMALS, {
+            value: bigMath.min(entry.order.sizeDeltaUsd, totalPositionSizeUsd),
+          });
         }
         percentage = getDefaultEntryField(PERCENTAGE_DECIMALS, {
           value: getPercentageBySizeUsd(sizeUsd.value),
@@ -100,7 +104,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 
       return { ...entry, sizeUsd, percentage, price } as T;
     },
-    [getPercentageBySizeUsd, getSizeUsdByPercentage, visualMultiplier]
+    [getPercentageBySizeUsd, getSizeUsdByPercentage, visualMultiplier, prefix, totalPositionSizeUsd]
   );
 
   const initialState = useMemo(() => {

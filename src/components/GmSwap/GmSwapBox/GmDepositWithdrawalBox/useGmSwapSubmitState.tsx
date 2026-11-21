@@ -26,6 +26,7 @@ import {
   selectPoolsDetailsShortTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectPoolsDetailsParams } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsParams";
 import {
   selectGmxAccountExpressFeeTokenAddress,
   selectGmxAccountGasPaymentToken,
@@ -45,11 +46,13 @@ import { useGasPaymentTokenUnavailableToast } from "domain/synthetics/express/us
 import { useSwitchGasPaymentTokenIfRequired } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
 import { GMX_ACCOUNT_NETWORK_FEE_SOURCE } from "domain/synthetics/fees/networkFeeSource";
 import type { GlvAndGmMarketsInfoData, GmPaySource, MarketsInfoData } from "domain/synthetics/markets";
+import { getLpDepositSlippageAmount } from "domain/synthetics/markets/lpMinOutput";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { Operation } from "domain/synthetics/markets/types";
 import { convertToTokenAmount, type TokenData } from "domain/synthetics/tokens";
 import {
   getCommonError,
+  getGmDepositMinOutputError,
   getGmNativeGasError,
   getGmSwapError,
   getInsufficientFeeButtonMessage,
@@ -132,6 +135,7 @@ export const useGmSwapSubmitState = ({
   const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
   const isDirectDepositBlocked = useSelector(selectPoolsDetailsIsDirectDepositBlocked);
   const amounts = useSelector(selectDepositWithdrawalAmounts);
+  const poolsDetailsParams = useSelector(selectPoolsDetailsParams);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const tokensData = useSelector(selectTokensData);
@@ -210,6 +214,12 @@ export const useGmSwapSubmitState = ({
     srcChainId,
     marketToken,
     directDepositAccess,
+  });
+
+  const depositMinOutputError = getGmDepositMinOutputError({
+    params: poolsDetailsParams,
+    gmLegAmount: marketTokenAmount,
+    slippage: getLpDepositSlippageAmount(paySource),
   });
 
   const hasInput = firstTokenAmount > 0n || marketOrGlvTokenAmount > 0n;
@@ -368,6 +378,7 @@ export const useGmSwapSubmitState = ({
     multipleWalletExtensionsChainError,
     collateralSwapError,
     swapError,
+    depositMinOutputError,
     expressError,
     nativeGasError,
     sourceChainNativeFeeError,
