@@ -1068,6 +1068,10 @@ msgstr "複数の紹介コードを作成できますか？"
 msgid "Unknown error"
 msgstr "不明なエラー"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "ロングのテイクプロフィットを{formattedPrice}に設定"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1543,6 +1547,8 @@ msgid "GMX staked rewards"
 msgstr "GMXステーキング報酬"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "受取額が最小額を下回っています"
 
@@ -2333,6 +2339,10 @@ msgstr "100種類以上の暗号資産"
 msgid "Optimal usage factor short"
 msgstr "最適利用率ファクター（ショート）"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "ロングのストップ成行注文を{formattedPrice}に設定"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} / {1}"
@@ -2944,10 +2954,6 @@ msgstr "年率"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "スワップパスが見つかりません"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "ロングのストップ成行注文を{0}に設定"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
@@ -4428,10 +4434,6 @@ msgstr "ステップ2: 証拠金を追加"
 msgid "UI fee"
 msgstr "UI手数料"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "ロングのテイクプロフィットを{0}に設定"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
 msgstr "アップロード中..."
@@ -4879,6 +4881,10 @@ msgstr "USDCをUSDGに変換中..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "ショートのストップ成行注文を設定 @ {formattedPrice}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6236,10 +6242,6 @@ msgstr "オープン中..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi証拠金プロトコル"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "ショートのストップロスを{0}に設定"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -8325,10 +8327,6 @@ msgstr "Builder／Referral Codeのアトリビューションに抵抗がない"
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "獲得手数料は、{chainName}のウォレットに保有するGMとGLVについてのみ集計されます。GMX Accountや他のチェーンにあるGMとGLVも引き続き手数料を獲得しますが、まだアカウントごとに帰属させることはできません。"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "{0}でロング指値を設定"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr "受取アカウントは過去にステーキングまたはベスティングを行っています。新しいアカウントを選択してください。"
@@ -9000,10 +8998,6 @@ msgstr "<0>マーケットグループ</0><1>ネット建玉</1>"
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "対応している場合は、デビット/クレジットカード、Apple Pay、Google Payをご利用いただけます"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "ロングのストップロスを{0}に設定"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "新しい市場では、履歴がまだインデックス化されていない場合があります。チャート上部の「ネットレート / 1時間」を参照してください。"
@@ -9116,6 +9110,10 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "受け取りが送信されました"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "ショートのテイクプロフィットを設定 @ {formattedPrice}"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -10318,6 +10316,10 @@ msgstr "トータルパフォーマンス APY"
 msgid "No tokens on {0} for deposit"
 msgstr "{0}に入金可能なトークンがありません"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "{formattedPrice}でロング指値を設定"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "受け取り合計"
@@ -10566,10 +10568,6 @@ msgstr "手数料を読み込み中..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "ショートのストップ成行注文を設定 @ {0}"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10588,6 +10586,10 @@ msgstr "ズームをリセット"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "ステーク済みトークンの一部がまだGMX ボールトで予約されています。先にGMX ボールトから出金するか、GMXを追加でステークしてください。"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "ショートの指値を設定 @ {formattedPrice}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -11517,6 +11519,10 @@ msgstr "要点"
 msgid "Closed to new stop market orders"
 msgstr "新規ストップマーケット注文の受付終了"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "ロングのストップロスを{formattedPrice}に設定"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -12330,10 +12336,6 @@ msgstr "紹介コードの作成をスキップしますか？"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "決済ネットワークが{0}に変更されましたが、{1}が{2}のGMX Accountに残っています"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "ショートの指値を設定 @ {0}"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
@@ -13495,10 +13497,6 @@ msgstr "{chainName} ネットワークの活動増加により、ネットワー
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "既存のポジションはWETH-USDCプールにあります。選択したプールを使用すると、別のポジションが作成されます。<0>WETH-USDCプールに切り替える</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "ショートのテイクプロフィットを設定 @ {0}"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "PnLをシェア"
@@ -13673,6 +13671,10 @@ msgstr "スワップタブで · 別途着金"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Paxosで直接変換"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "ショートのストップロスを{formattedPrice}に設定"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx

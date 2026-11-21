@@ -167,7 +167,6 @@ export async function getBlockTimestampAndNumber(
 export async function simulateExecution(chainId: ContractsChainId, p: SimulateExecuteParams) {
   let client: PublicClient;
   if (p.isExpress) {
-    // Use alchemy rpc for express transactions simulation to increase reliability
     client = getPublicClientWithRpc(chainId, { withExpress: true });
   } else {
     client = getPublicClientWithRpc(chainId);
