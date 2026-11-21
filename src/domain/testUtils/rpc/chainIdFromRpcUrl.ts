@@ -20,47 +20,40 @@ import {
  * `chainIdFromRpcUrl.spec.ts` diffs this table against the real config and fails on drift.
  *
  * Entries are bare hosts, except providers that multiplex chains by url path (`1rpc.io/bnb`,
- * `rpc.ankr.com/eth`, …) — those carry the path prefix that selects the chain. Api keys live in the
- * url path too, so bare-host matching keeps dev and production Alchemy keys pointing at the same
- * chain, while a path entry wins over a bare-host one for the same host.
+ * `rpc.ankr.com/eth`, …) — those carry the path prefix that selects the chain. A path entry wins over a bare-host one for the same host.
  */
 export const RPC_HOSTS_BY_CHAIN_ID: Record<number, string[]> = {
   [ARBITRUM]: [
     "arb1.arbitrum.io",
     "arbitrum-one-rpc.publicnode.com",
     "arbitrum-one.public.blastapi.io",
-    "arb-mainnet.g.alchemy.com",
+    "rpc.gmx.io/42161",
   ],
-  [AVALANCHE]: ["api.avax.network", "avax-mainnet.g.alchemy.com"],
+  [AVALANCHE]: ["api.avax.network", "rpc.gmx.io/43114"],
   [AVALANCHE_FUJI]: ["avalanche-fuji-c-chain.publicnode.com", "api.avax-test.network", "avalanche-fuji.drpc.org"],
   [ARBITRUM_SEPOLIA]: [
     "sepolia-rollup.arbitrum.io",
     "arbitrum-sepolia.drpc.org",
     "arbitrum-sepolia-rpc.publicnode.com",
-    "arb-sepolia.g.alchemy.com",
+    "rpc.gmx.io/421614",
   ],
-  [MEGAETH]: ["mainnet.megaeth.com", "megaeth-mainnet.g.alchemy.com"],
-  [SOURCE_BASE_MAINNET]: ["mainnet.base.org", "base-rpc.publicnode.com", "base.drpc.org", "base-mainnet.g.alchemy.com"],
+  [MEGAETH]: ["mainnet.megaeth.com", "rpc.gmx.io/4326"],
+  [SOURCE_BASE_MAINNET]: ["mainnet.base.org", "base-rpc.publicnode.com", "base.drpc.org", "rpc.gmx.io/8453"],
   [SOURCE_OPTIMISM_SEPOLIA]: [
     "sepolia.optimism.io",
     "optimism-sepolia.drpc.org",
     "optimism-sepolia-rpc.publicnode.com",
-    "opt-sepolia.g.alchemy.com",
+    "rpc.gmx.io/11155420",
   ],
-  [SOURCE_SEPOLIA]: ["sepolia.gateway.tenderly.co", "eth-sepolia.g.alchemy.com"],
+  [SOURCE_SEPOLIA]: ["sepolia.gateway.tenderly.co", "rpc.gmx.io/11155111"],
   [SOURCE_BSC_MAINNET]: [
     "bsc-dataseed.bnbchain.org",
     "1rpc.io/bnb",
     "bsc.drpc.org",
     "bsc-rpc.publicnode.com",
-    "bnb-mainnet.g.alchemy.com",
+    "rpc.gmx.io/56",
   ],
-  [SOURCE_ETHEREUM_MAINNET]: [
-    "rpc.ankr.com/eth",
-    "eth.drpc.org",
-    "ethereum.publicnode.com",
-    "eth-mainnet.g.alchemy.com",
-  ],
+  [SOURCE_ETHEREUM_MAINNET]: ["rpc.ankr.com/eth", "eth.drpc.org", "ethereum.publicnode.com", "rpc.gmx.io/1"],
 };
 
 type ChainIdIndex = {
