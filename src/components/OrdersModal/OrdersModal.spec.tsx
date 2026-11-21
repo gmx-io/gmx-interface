@@ -66,7 +66,18 @@ vi.mock("components/Modal/Modal", () => ({
     isVisible ? <div role="dialog">{children}</div> : null,
 }));
 vi.mock("./AddTPSLModal", () => ({
-  AddTPSLModal: ({ isVisible }: { isVisible: boolean }) => (isVisible ? <div>TP/SL form</div> : null),
+  AddTPSLModal: ({
+    isVisible,
+    initialSlPriceInput,
+    onBack,
+  }: ComponentProps<typeof import("./AddTPSLModal").AddTPSLModal>) =>
+    isVisible ? (
+      <div>
+        TP/SL form
+        <input aria-label="SL price" readOnly value={initialSlPriceInput ?? ""} />
+        <button onClick={onBack}>Back to orders</button>
+      </div>
+    ) : null,
 }));
 
 const position = createMockPositionInfo({ account: "0x1111111111111111111111111111111111111111" });
@@ -142,6 +153,16 @@ afterEach(cleanup);
 describe.each([false, true])("orders modal (mobile: %s)", (isMobile) => {
   beforeEach(() => {
     state.isMobile = isMobile;
+  });
+
+  it("uses the chart price only for the first add form SEC-52", () => {
+    state.batches = [];
+    const view = render(modal({ initialView: "add", initialSlPriceInput: "123" }));
+    const stopInput = () => view.getByLabelText("SL price") as HTMLInputElement;
+    expect(stopInput().value).toBe("123");
+    fireEvent.click(view.getByRole("button", { name: "Back to orders" }));
+    fireEvent.click(view.getAllByRole("button", { name: "Add TP/SL" })[0]);
+    expect(stopInput().value).toBe("");
   });
 
   it("renders and filters pending entries while blocking Add TP/SL", () => {

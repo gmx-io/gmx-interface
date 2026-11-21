@@ -942,6 +942,48 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
       shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
     },
+    // LINK/USD [USDG-USDG]
+    "0x71Dd0524F8e0aab8FE59E6B3888145A8ac117Aa3": {
+      marketTokenAddress: "0x71Dd0524F8e0aab8FE59E6B3888145A8ac117Aa3",
+      indexTokenAddress: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // PEPE/USD [USDG-USDG]
+    "0x1e5bf5390a75a6ab085bd4e7E63A00074C43B858": {
+      marketTokenAddress: "0x1e5bf5390a75a6ab085bd4e7E63A00074C43B858",
+      indexTokenAddress: "0x25d887Ce7a35172C62FeBFD67a1856F20FaEbB00",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // DOGE/USD [USDG-USDG]
+    "0x2bDCC67868abA103406dCeb4F853B6BF2227AB14": {
+      marketTokenAddress: "0x2bDCC67868abA103406dCeb4F853B6BF2227AB14",
+      indexTokenAddress: "0xC4da4c24fd591125c3F47b340b6f4f76111883d8",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // BNB/USD [USDG-USDG]
+    "0x55556D4734DFA693F554985818dBcA07a0225986": {
+      marketTokenAddress: "0x55556D4734DFA693F554985818dBcA07a0225986",
+      indexTokenAddress: "0xa9004A5421372E1D83fB1f85b0fc986c912f91f3",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // SUI/USD [USDG-USDG]
+    "0x460E90d682920E0Fe500aa180a45326d2089f18f": {
+      marketTokenAddress: "0x460E90d682920E0Fe500aa180a45326d2089f18f",
+      indexTokenAddress: "0x197aa2DE1313c7AD50184234490E12409B2a1f95",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
+    // XMR/USD [USDG-USDG]
+    "0x51C4C72263D705Ab2F78531Bd3c8a43D362CCB53": {
+      marketTokenAddress: "0x51C4C72263D705Ab2F78531Bd3c8a43D362CCB53",
+      indexTokenAddress: "0x13674172E6E44D31d4bE489d5184f3457c40153A",
+      longTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+      shortTokenAddress: "0x004B506865409877C9fA29bfb1ebA929984B9bbC",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

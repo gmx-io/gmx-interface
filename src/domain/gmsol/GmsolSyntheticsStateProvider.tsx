@@ -197,6 +197,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (composedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: composedPositions.data,
         isLoading: false,
         dataSource: "api",
@@ -210,6 +211,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     const cachedPositions = lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined;
     if (isMarketsUnavailable && cachedPositions) {
       return {
+        isSyncing: positionsRequest.isSyncing,
         positionsInfoData: cachedPositions,
         isLoading: false,
         dataSource: "api",
@@ -225,7 +227,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedPositions,
+    positionsRequest.error,
+    positionsRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
@@ -237,6 +246,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
     if (ordersInfoData) {
       return {
+        isSyncing: ordersRequest.isSyncing,
         ordersInfoData,
         count: Object.keys(ordersInfoData).length,
         isLoading: false,
@@ -256,7 +266,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     return { isLoading: true };
-  }, [owner, composedOrders, ordersRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+  }, [
+    owner,
+    composedOrders,
+    ordersRequest.error,
+    ordersRequest.isSyncing,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const positionsInfoData = positionsInfo.positionsInfoData;
 

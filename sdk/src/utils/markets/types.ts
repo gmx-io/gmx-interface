@@ -31,6 +31,7 @@ export type MarketPoolTokens = {
 export type MarketInfo = GmsolMarketConfig &
   Market &
   MarketPoolTokens & {
+    useV221LiquidationImpact?: boolean;
     isDisabled: boolean;
 
     longPoolAmount: bigint;
@@ -281,7 +282,12 @@ export type MarketsData = {
 
 export type RawMarketInfo = Omit<
   MarketInfo,
-  "longToken" | "shortToken" | "indexToken" | "claimableFundingAmountLong" | "claimableFundingAmountShort"
+  | "longToken"
+  | "shortToken"
+  | "indexToken"
+  | "claimableFundingAmountLong"
+  | "claimableFundingAmountShort"
+  | "useV221LiquidationImpact"
 >;
 
 export type RawMarketsInfoData = {
