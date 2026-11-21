@@ -4,6 +4,8 @@ This integration uses the formal public Solana API, configured GMX RPC, shared T
 
 ## Integrated formal PRs
 
+The November 22 refresh integrates transaction head `fac83d15bd`, including native SOL/WSOL funding for atomic TP/SL and official release `d1e9e1fc4c`. Order lifecycle and entry retain their composed behavior. The rewritten balance PR #3195 has exactly the same final source tree as the previously integrated version, so it requires no duplicate code transfer. The app uses the merged gmx-api #362/#364/#365 contract; deployment success does not establish capacity or complete financial-reference acceptance. The source table below records the earlier integration, rather than current PR heads.
+
 The November 20 integration merges these exact PR heads, including open and draft work. Existing source commits are preserved. Conflicts retain the composed behavior: lifecycle tracking and failure reasons, confirmed-slot floors, account retries, order metadata, close actions and Solana page gates.
 
 | Capability                                      | PR                                                         | Source head  |
