@@ -36,11 +36,11 @@ The component workflow uses the normal upstream report steps. It no longer carri
 
 The close receive selector remains a product integration fix. The Pay selectors now use the formal #3294 implementation. Frozen tables from merged #3325 replace the experimental empty-table override; their 73/155 entries were verified against the originals in order, with null authorities on mainnet.
 
-The RPC proxy Worker in the separate private repository has a proposed Solana route, but its PR is still open and a deployed, configured replacement endpoint is not established here. This app continues using the existing central GMX RPC configuration; it does not need a local proxy. Deploying or configuring the Worker is separate infrastructure work.
+The official app now uses GMX RPC proxy routes. Playground maps that shared provider entry to its configured Alchemy endpoints for the app and Web Worker, retaining development and production-purpose selection. Ordinary app builds keep the official proxy routes. No local proxy is required.
 
 ## Build and inspect
 
-Edit the tracked `.env.playground.local` in this checkout to update the four `PLAYGROUND_ALCHEMY_*_KEY` values. This playground-specific file intentionally contains public browser keys and is committed with the branch so local and CI builds use the same configuration. `.env.playground.example` lists the variable names. `DEVELOPMENT` is used on localhost and Pages previews unless DebugAlchemy / production preview is enabled. `FALLBACK`, `LARGE_ACCOUNT` and `EXPRESS` retain the existing purpose selection. These overrides cover every Alchemy chain used by playground; enable Solana Mainnet and the EVM networks you use on the corresponding Alchemy apps. One authorized key can fill multiple purposes. Other providers and ordinary app builds are unchanged.
+Edit the tracked `.env.playground.local` in this checkout to update the four `PLAYGROUND_ALCHEMY_*_KEY` values. This playground-specific file intentionally contains public browser keys and is committed with the branch so local and CI builds use the same configuration. `.env.playground.example` lists the variable names. `DEVELOPMENT` is used on localhost and Pages previews unless UseProductionRpcRoutes / production preview is enabled. `FALLBACK`, `LARGE_ACCOUNT` and `EXPRESS` retain the existing purpose selection. These overrides cover every Alchemy chain used by playground; enable Solana Mainnet and the EVM networks you use on the corresponding Alchemy apps. One authorized key can fill multiple purposes. Other providers and ordinary app builds are unchanged.
 
 For local development:
 
@@ -56,7 +56,7 @@ NODE_OPTIONS=--max-old-space-size=8192 yarn build-playground
 NODE_OPTIONS=--max-old-space-size=8192 yarn vite preview --host 127.0.0.1 --port 3016
 ```
 
-Restart preview after rebuilding. Editing the env file does not change an existing build or the deployed website. To update the deployed playground, supply the same variables to its build process, rebuild and deploy with the normal authorization. Process environment variables take precedence over the local file. Missing/blank or malformed keys stop playground startup/build with the variable name, without printing its value or falling back to a hardcoded key. Vite playground mode also reads standard `.env` files; do not put these values in tracked files.
+Restart preview after rebuilding. Editing the env file does not change an existing build or the deployed website. To update the deployed playground, supply the same variables to its build process, rebuild and deploy with the normal authorization. Process environment variables take precedence over the local file. Missing/blank or malformed keys stop playground startup/build with the variable name, without printing its value or falling back to a hardcoded key. Vite playground mode also reads standard `.env` files; keep unrelated credentials out of this browser configuration.
 
 Both playground entry points apply their RPC override only to `src/config/rpc.ts`, including its separate Web Worker build; a changed source contract fails explicitly. The non-`VITE_` names are consumed by the playground tooling, not exposed wholesale. The selected key values still become browser-visible RPC URLs in the bundle/network panel. This tracked configuration is for browser RPC keys only; do not put server credentials in it.
 
