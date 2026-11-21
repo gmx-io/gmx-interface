@@ -26,24 +26,36 @@ export function playgroundConfiguration(root) {
     transform(source, id) {
       if (id.split("?")[0] !== rpcConfig) return;
 
-      const prefixes = [
-        /if \(isDevelopment\(\) && !_debugRpcTracker\?\.getFlag\(RpcDebugFlags.DebugAlchemy\)\) \{\s*alchemyKey = "[^"]+";/g,
-        /case "fallback":\s*alchemyKey = "[^"]+";/g,
-        /case "largeAccount":\s*alchemyKey = "[^"]+";/g,
-        /case "express":\s*alchemyKey = "[^"]+";/g,
-      ];
+      const network = 'const network = chainId === SOLANA_NETWORK_ID ? "solana" : chainId;';
+      const proxyUrl = "url: `${protocol}://rpc.gmx.io/${network}/${routePurpose}`,";
       if (
-        [...source.matchAll(/alchemyKey = "[^"]+";/g)].length !== keys.length ||
-        prefixes.some((pattern) => [...source.matchAll(pattern)].length !== 1)
+        source.split(network).length !== 2 ||
+        source.split(proxyUrl).length !== 2 ||
+        !source.includes("RpcDebugFlags.UseProductionRpcRoutes")
       ) {
         this.error("The playground Alchemy override no longer matches src/config/rpc.ts");
       }
-      let code = source;
-      prefixes.forEach((pattern, index) => {
-        code = code.replace(pattern, (match) =>
-          match.replace(/alchemyKey = "[^"]+";/, () => `alchemyKey = ${JSON.stringify(keys[index])};`)
-        );
-      });
+      const code = source
+        .replace(
+          network,
+          `const hosts: Partial<Record<AnyChainId | typeof SOLANA_NETWORK_ID, string>> = {
+            [SOLANA_NETWORK_ID]: "solana-mainnet",
+            [ARBITRUM]: "arb-mainnet",
+            [AVALANCHE]: "avax-mainnet",
+            [MEGAETH]: "megaeth-mainnet",
+            [ARBITRUM_SEPOLIA]: "arb-sepolia",
+            [SOURCE_BASE_MAINNET]: "base-mainnet",
+            [SOURCE_OPTIMISM_SEPOLIA]: "opt-sepolia",
+            [SOURCE_SEPOLIA]: "eth-sepolia",
+            [SOURCE_BSC_MAINNET]: "bnb-mainnet",
+            [SOURCE_ETHEREUM_MAINNET]: "eth-mainnet",
+          };
+          const host = hosts[chainId];
+          if (!host) throw new Error(\`Unsupported playground Alchemy chain: \${chainId}\`);
+          const alchemyKeys = ${JSON.stringify({ dev: keys[0], fallback: keys[1], largeAccount: keys[2], express: keys[3] })};
+          const alchemyKey = alchemyKeys[routePurpose];`
+        )
+        .replace(proxyUrl, "url: `${protocol}://${host}.g.alchemy.com/v2/${alchemyKey}`,");
       return {
         code,
         map: { version: 3, names: [], sources: [id], sourcesContent: [code], mappings: "" },
