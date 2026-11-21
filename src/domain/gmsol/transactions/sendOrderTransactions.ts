@@ -14,11 +14,14 @@ import {
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { GMSOL_LOOKUP_TABLE_ADDRESSES } from "config/gmsol/lookupTables";
 import { GMSOL_STORE_PROGRAM_ID } from "config/gmsol/program";
+import { GMSOL_TOKENS } from "config/gmsol/tokens";
+import { fetchSolanaBalances } from "lib/solana/balances";
 import { copySolanaBytes } from "lib/solana/bytes";
 import { fetchGmsolLookupTables } from "lib/solana/lookupTables";
 import { getSolanaRpc } from "lib/solana/rpc";
 
 import { fetchSolanaTradingEnabled } from "../fetchSolanaTradingEnabled";
+import { WRAPPED_SOL_MINT } from "./addresses";
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { decodeGmsolInstruction } from "./decodeInstruction";
 import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
@@ -30,13 +33,37 @@ import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
 const rpcOptions = () => ({ abortSignal: AbortSignal.timeout(RPC_TIMEOUT_MS) });
+const WRAPPED_SOL_TOKENS = GMSOL_TOKENS.filter((token) => token.address === WRAPPED_SOL_MINT);
+
+async function fetchWrappedSolBalance(owner: string) {
+  const balance = (await fetchSolanaBalances({ owner, tokens: WRAPPED_SOL_TOKENS }))[WRAPPED_SOL_MINT];
+  requireGmsol(balance !== undefined, "Missing wallet WSOL balance");
+  return balance;
+}
+
+async function assertWrappedSolUnchanged(plan: GmsolTransactionPlan) {
+  requireGmsol(
+    (await fetchWrappedSolBalance(plan.owner)) === plan.wrappedSolBalance,
+    "Wallet WSOL balance changed; rebuild the order before wrapping SOL"
+  );
+}
 
 export async function prepareGmsolOrderTransactions({ owner, action }: { owner: string; action: GmsolOrderAction }) {
   requireGmsol(getIsSolanaNetworkEnabled(), "Solana network is disabled");
   const intent = structuredClone(action);
-  const [lookupTables, { value: lifetime }] = await Promise.all([
+  const reusesWrappedSol =
+    intent.type === "create" &&
+    intent.atomic &&
+    intent.orders.some(
+      (order) =>
+        order.payWithNativeSol &&
+        (order.kind === "MarketIncrease" || order.kind === "LimitIncrease") &&
+        order.collateralDeltaAmount > 0n
+    );
+  const [lookupTables, { value: lifetime }, wrappedSolBalance] = await Promise.all([
     fetchGmsolLookupTables(),
     getSolanaRpc().getLatestBlockhash({ commitment: "confirmed" }).send(rpcOptions()),
+    reusesWrappedSol ? fetchWrappedSolBalance(owner) : undefined,
   ]);
   return buildGmsolOrderTransactions({
     owner,
@@ -44,6 +71,7 @@ export async function prepareGmsolOrderTransactions({ owner, action }: { owner: 
     recentBlockhash: lifetime.blockhash,
     lastValidBlockHeight: lifetime.lastValidBlockHeight,
     lookupTables,
+    wrappedSolBalance,
   });
 }
 
@@ -70,7 +98,10 @@ export async function checkGmsolTransactionBeforeSignature({
     .findIndex(
       (candidate) => candidate.length === bytes.length && candidate.every((value, offset) => value === bytes[offset])
     );
-  const { keeperLamports, wrapLamports } = transactionCosts[index];
+  const { wrapLamports } = transactionCosts[index];
+  // Earlier transactions may already have spent their costs; this and every later one still must be funded.
+  let reserved = 0n;
+  for (const cost of transactionCosts.slice(index)) reserved += cost.keeperLamports + cost.wrapLamports;
   const rpc = getSolanaRpc();
   const transaction = getTransactionDecoder().decode(bytes);
   const message = getBase64Decoder().decode(transaction.messageBytes) as TransactionMessageBytesBase64;
@@ -87,6 +118,7 @@ export async function checkGmsolTransactionBeforeSignature({
       })
       .send(rpcOptions()),
     rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions()),
+    wrapLamports > 0n && plan.wrappedSolBalance !== undefined ? assertWrappedSolUnchanged(plan) : undefined,
   ]);
   requireGmsol(blockHeight <= plan.lastValidBlockHeight, "Transaction blockhash has expired; rebuild before signing");
   requireGmsol(fee.value !== null, "Cannot estimate network fees for this blockhash");
@@ -94,12 +126,13 @@ export async function checkGmsolTransactionBeforeSignature({
   requireGmsol(simulation.value.err === null, `Solana simulation failed: ${JSON.stringify(simulation.value.err)}`);
   const postWallet = simulation.value.accounts?.[0];
   requireGmsol(postWallet && postWallet.lamports >= 0n, "Simulation did not return the wallet balance");
-  // Reserve only this transaction: preceding groups may already have spent their keeper fees.
-  requireGmsol(
-    balance.value >= fee.value + keeperLamports + wrapLamports,
-    "Insufficient SOL for network and keeper fees and wrapping"
-  );
-  return { slot: simulation.context.slot, networkFee: fee.value, simulatedWalletBalance: postWallet.lamports };
+  requireGmsol(balance.value >= fee.value + reserved, "Insufficient SOL for network and keeper fees and wrapping");
+  return {
+    slot: simulation.context.slot,
+    networkFee: fee.value,
+    simulatedWalletBalance: postWallet.lamports,
+    wrapLamports,
+  };
 }
 
 /** A broadcast timeout is ambiguous. Reconcile these signatures before constructing a new order. */
@@ -179,7 +212,7 @@ export async function sendGmsolOrderTransactions({
     }
     for (const bytes of plan.groups.flat()) {
       requireGmsol(getWalletAddress() === plan.owner, "Connected Solana wallet changed");
-      await checkGmsolTransactionBeforeSignature({ plan, bytes });
+      const { wrapLamports } = await checkGmsolTransactionBeforeSignature({ plan, bytes });
       requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
       requireGmsol(
         getIsSolanaNetworkEnabled() && getWalletAddress() === plan.owner,
@@ -202,6 +235,7 @@ export async function sendGmsolOrderTransactions({
         (await rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions())) <= plan.lastValidBlockHeight,
         "Signed transaction expired; rebuild and sign again"
       );
+      if (wrapLamports > 0n && plan.wrappedSolBalance !== undefined) await assertWrappedSolUnchanged(plan);
       if (hasAssertions) {
         const simulation = await rpc
           .simulateTransaction(getBase64EncodedWireTransaction(signed), {
