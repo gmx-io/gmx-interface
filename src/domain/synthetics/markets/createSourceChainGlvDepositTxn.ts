@@ -19,6 +19,7 @@ import {
   estimateSourceChainGlvDepositFees,
   SourceChainGlvDepositFees,
 } from "./feeEstimation/estimateSourceChainGlvDepositFees";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
 export async function createSourceChainGlvDepositTxn({
@@ -52,6 +53,8 @@ export async function createSourceChainGlvDepositTxn({
       globalExpressParams: GlobalExpressParams;
     }
 )): Promise<WalletTxnResult> {
+  assertPositiveMinOutputAmount(params.minGlvTokens);
+
   const ensuredFees = fees
     ? fees
     : await estimateSourceChainGlvDepositFees({

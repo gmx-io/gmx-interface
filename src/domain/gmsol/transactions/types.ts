@@ -67,6 +67,8 @@ export type GmsolTransactionPlan = {
   recentBlockhash: string;
   lastValidBlockHeight: bigint;
   lookupTables: GmsolLookupTables;
+  // Raw lamports in the wallet's WSOL account before building an atomic native-SOL increase.
+  wrappedSolBalance: bigint | undefined;
   // Outer groups execute serially; transactions within a group may be independent.
   groups: Uint8Array[][];
 };
