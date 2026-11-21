@@ -12,14 +12,10 @@ import type { RpcTrackerObserver } from "./types";
 export enum RpcDebugFlags {
   LogRpcTracker = "logRpcTracker",
   DebugLargeAccount = "debugLargeAccount",
-  DebugAlchemy = "debugAlchemy",
+  UseProductionRpcRoutes = "debugAlchemy",
 }
 
-type RpcDebugState = {
-  [RpcDebugFlags.LogRpcTracker]: boolean;
-  [RpcDebugFlags.DebugLargeAccount]: boolean;
-  [RpcDebugFlags.DebugAlchemy]: boolean;
-};
+type RpcDebugState = Record<RpcDebugFlags, boolean>;
 
 type DebugRpcEndpoint = {
   url: string;
