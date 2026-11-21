@@ -15,6 +15,11 @@ export type ApiMarket = {
   listingDate?: string;
 };
 
+export type ApiMarketState = {
+  marketToken: string;
+  isMarketClosed: boolean;
+};
+
 export type EventPayload = {
   isError: boolean;
   version: string;
@@ -140,6 +145,7 @@ export interface OracleFetcher {
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, UiFlag>>;
   fetchMarkets(): Promise<ApiMarket[]>;
+  fetchMarketsState(): Promise<ApiMarketState[]>;
   handleFailure(method: string, endpoint?: string): void;
 }
 

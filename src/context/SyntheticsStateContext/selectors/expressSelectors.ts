@@ -41,7 +41,7 @@ import {
   selectGmxAccountGasPaymentTokenAddress,
 } from "./settingsSelectors";
 import { selectTokenPermits } from "./tokenPermitsSelectors";
-import { selectGasEstimationParams } from "./tradeSelectors";
+import { selectDisabledSwapMarkets, selectGasEstimationParams } from "./tradeSelectors";
 
 type GasPaymentTokenAddressSelector = (s: SyntheticsState) => string;
 
@@ -195,7 +195,7 @@ function createSelectExpressFindSwapPath(selectGasPaymentTokenAddressSelector: G
       fromTokenAddress: gasPaymentTokenAddress,
       toTokenAddress: relayerFeeTokenAddress,
       marketsInfoData,
-      disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets: q(selectDisabledSwapMarkets),
       manualPath: _debugSwapMarketsConfig?.manualPath,
       gasEstimationParams,
       swapPricingType: SwapPricingType.AtomicSwap,
