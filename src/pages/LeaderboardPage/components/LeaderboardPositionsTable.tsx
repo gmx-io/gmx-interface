@@ -312,7 +312,7 @@ const TableRow = memo(({ position, rank }: { position: LeaderboardPosition; rank
   const renderPositionTooltip = useCallback(() => {
     return (
       <>
-        <div className="mr-5 inline-flex items-start leading-1">
+        <div className="mr-5 inline-flex items-baseline">
           <span>{indexName}</span>
           <span className="subtext">[{poolName}]</span>
         </div>

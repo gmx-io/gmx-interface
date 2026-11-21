@@ -18,9 +18,9 @@ export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
   const rows = useMemo(
     () =>
       marketStats.map(({ marketInfo: market, netFeeLong, netFeeShort }) => [
-        <div key="market" className="inline-flex flex-wrap items-start">
+        <div key="market" className="inline-flex flex-wrap items-baseline gap-x-4">
           <span>{getMarketIndexName(market)}</span>
-          <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+          <span className="subtext !ml-0">[{getMarketPoolName(market)}]</span>
         </div>,
         <span key="long" className={getPositiveOrNegativeClass(netFeeLong)}>
           {formatRatePercentage(netFeeLong)}

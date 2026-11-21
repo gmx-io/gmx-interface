@@ -590,9 +590,9 @@ export function PositionItem(p: Props) {
                         <TooltipRow
                           label={t`Pool`}
                           value={
-                            <div className="flex items-center">
+                            <div className="flex items-baseline">
                               <span>{indexName && indexName}</span>
-                              <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                              <span className="subtext">{poolName && `[${poolName}]`}</span>
                             </div>
                           }
                         />
@@ -789,7 +789,7 @@ export function PositionItem(p: Props) {
               <Trans>Pool</Trans>
             </div>
             <div>
-              <div className="flex items-start">
+              <div className="flex items-baseline">
                 <span>{indexName && indexName}</span>
                 <span className="subtext">{poolName && `[${poolName}]`}</span>
               </div>
