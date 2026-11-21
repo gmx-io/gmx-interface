@@ -1,6 +1,6 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee } from "utils/fees";
+import { getPositionFee, getProportionalPendingImpactValues } from "utils/fees";
 import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
@@ -1358,7 +1358,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     priceImpactDiffUsd,
   } = p;
   const marketInfo =
-    suppliedMarketInfo.tradeMath === "gmsol"
+    suppliedMarketInfo.tradeMath === "gmsol" || suppliedMarketInfo.useV221LiquidationImpact
       ? getMarketInfoWithOpenInterestDelta({
           marketInfo: suppliedMarketInfo,
           collateralToken,
@@ -1414,6 +1414,17 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     pendingFundingFeesUsd: 0n, // deducted on order
   });
 
+  let nextPendingImpactAmount = existingPosition?.pendingImpactAmount ?? 0n;
+  if (existingPosition && marketInfo.useV221LiquidationImpact && marketInfo.tradeMath !== "gmsol") {
+    const { proportionalPendingImpactDeltaAmount } = getProportionalPendingImpactValues({
+      sizeInUsd: existingPosition.sizeInUsd,
+      sizeDeltaUsd,
+      pendingImpactAmount: nextPendingImpactAmount,
+      indexToken: marketInfo.indexToken,
+    });
+    nextPendingImpactAmount -= proportionalPendingImpactDeltaAmount;
+  }
+
   const nextLiqPrice = getLiquidationPrice({
     marketInfo,
     collateralToken,
@@ -1424,7 +1435,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     minCollateralUsd,
     userReferralInfo,
     feeDiscountFactor: p.feeDiscountFactor,
-    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
+    pendingImpactAmount: nextPendingImpactAmount,
     pendingBorrowingFeesUsd: 0n, // deducted on order
     pendingFundingFeesUsd: 0n, // deducted on order
     isLong: isLong,
