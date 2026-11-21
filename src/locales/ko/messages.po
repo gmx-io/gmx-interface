@@ -1138,6 +1138,10 @@ msgstr "STIP.b 소급 보너스"
 msgid "in liquidity"
 msgstr "규모의 유동성"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn off"
+msgstr "끄기"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "최소 필요 증거금"
@@ -2151,6 +2155,7 @@ msgstr "마켓"
 msgid "Whitelist only"
 msgstr "화이트리스트 전용"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "재시도"
@@ -4287,6 +4292,10 @@ msgstr "트랜잭션"
 msgid "Copy image"
 msgstr "이미지 복사"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "The browser blocks notifications for this site"
+msgstr "브라우저가 이 사이트의 알림을 차단하고 있습니다"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "에러 바운더리 디버그 트리거 표시"
@@ -4335,6 +4344,10 @@ msgstr "{0} 풀에 기존 지정가 주문이 있습니다<0>{1} 풀로 전환</
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Continue to buy"
 msgstr "구매 계속하기"
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Wait one minute between tests"
+msgstr "테스트 사이에 1분 기다리세요"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
@@ -5867,6 +5880,10 @@ msgstr "거래가 아직 없습니다"
 msgid "Price change to liquidation"
 msgstr "청산까지 가격 변동"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Test"
+msgstr "테스트"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Code not found"
 msgstr "코드를 찾을 수 없습니다"
@@ -6923,6 +6940,10 @@ msgstr "추천 코드 이전"
 msgid "2–10 min"
 msgstr "2–10분"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Push notifications"
+msgstr "푸시 알림"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -7428,6 +7449,10 @@ msgstr "더 보기"
 msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
 msgstr "GT는 Solana 기반 GMX의 포인트입니다. GMX는 Solana 프로토콜 수수료의 99%로 GT를 바이백합니다."
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Pending wallet"
+msgstr "대기 중인 지갑"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "거래 시 할인이 아닌 {currentTierRebate}% 리베이트를 받습니다"
@@ -7465,6 +7490,7 @@ msgstr "Solana의 GMX(GMTrade)는 별도의 도메인에서 제공됩니다"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -9598,6 +9624,10 @@ msgstr "전송 중..."
 msgid "Send from wallet"
 msgstr "지갑에서 보내기"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Send test"
+msgstr "테스트 보내기"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
 msgstr "{transactionsCount, plural, other {전체 포지션 (트랜잭션 #건)}}"
@@ -10341,6 +10371,10 @@ msgstr "스왑 경로 가져오는 중({0}/{1})..."
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "{indexTokenText} 숏 포지션에 {amountText} 입금 중..."
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn on"
+msgstr "켜기"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -12670,6 +12704,7 @@ msgstr "최적 사용률 롱"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationTooltipContent.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -12962,6 +12997,7 @@ msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no
 msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 입금할 수 없으므로 유동성을 출금하거나 GLV로 옮겨 계속 수익을 얻으십시오."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"

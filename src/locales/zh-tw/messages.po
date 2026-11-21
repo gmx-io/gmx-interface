@@ -1138,6 +1138,10 @@ msgstr "STIP.b 追溯獎勵"
 msgid "in liquidity"
 msgstr "流動性"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn off"
+msgstr "關閉"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "最低必要保證金"
@@ -2151,6 +2155,7 @@ msgstr "市場"
 msgid "Whitelist only"
 msgstr "僅限白名單"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"
@@ -4287,6 +4292,10 @@ msgstr "交易"
 msgid "Copy image"
 msgstr "複製圖片"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "The browser blocks notifications for this site"
+msgstr "瀏覽器已封鎖此網站的通知"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "顯示錯誤邊界除錯觸發器"
@@ -4335,6 +4344,10 @@ msgstr "{0} 池中已有一筆限價單<0>切換至 {1} 池</0>"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Continue to buy"
 msgstr "繼續買入"
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Wait one minute between tests"
+msgstr "兩次測試之間請等待一分鐘"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
@@ -5867,6 +5880,10 @@ msgstr "尚無交易記錄"
 msgid "Price change to liquidation"
 msgstr "距清算價格變動"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Test"
+msgstr "測試"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Code not found"
 msgstr "找不到代碼"
@@ -6923,6 +6940,10 @@ msgstr "轉移推薦代碼"
 msgid "2–10 min"
 msgstr "2–10 分鐘"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Push notifications"
+msgstr "推播通知"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -7428,6 +7449,10 @@ msgstr "查看更多"
 msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
 msgstr "GT 是 Solana 上 GMX 的積分。GMX 使用 Solana 協議費用的 99% 回購 GT。"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Pending wallet"
+msgstr "待處理錢包"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "您的交易獲得 {currentTierRebate}% 返佣，而非折扣"
@@ -7465,6 +7490,7 @@ msgstr "Solana 上的 GMX（GMTrade）由獨立網域提供服務"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -9598,6 +9624,10 @@ msgstr "轉帳中..."
 msgid "Send from wallet"
 msgstr "從錢包發送"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Send test"
+msgstr "傳送測試"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
 msgstr "{transactionsCount, plural, other {整個倉位（# 筆交易）}}"
@@ -10341,6 +10371,10 @@ msgstr "正在取得兌換路徑（{0}/{1}）..."
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "正在將 {amountText} 存入 {indexTokenText} 做空倉位..."
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn on"
+msgstr "開啟"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -12670,6 +12704,7 @@ msgstr "最佳做多使用率因子"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationTooltipContent.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -12962,6 +12997,7 @@ msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no
 msgstr "{pools} {verb} 正在下架。由於已無法存入，請提取您的流動性，或將其轉入 GLV 以繼續賺取收益。"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"

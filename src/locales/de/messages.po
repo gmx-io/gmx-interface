@@ -1138,6 +1138,10 @@ msgstr "Rückwirkender STIP.b-Bonus"
 msgid "in liquidity"
 msgstr "an Liquidität"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn off"
+msgstr "Ausschalten"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "Erforderliche Mindestmargin"
@@ -2151,6 +2155,7 @@ msgstr "Märkte"
 msgid "Whitelist only"
 msgstr "Nur Whitelist"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Erneut versuchen"
@@ -4287,6 +4292,10 @@ msgstr "TRANSAKTION"
 msgid "Copy image"
 msgstr "Bild kopieren"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "The browser blocks notifications for this site"
+msgstr "Der Browser blockiert Benachrichtigungen für diese Website"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "Debug-Auslöser für Error Boundary anzeigen"
@@ -4335,6 +4344,10 @@ msgstr "Bestehende Limitorder im Pool {0}<0>Zum Pool {1} wechseln</0>"
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Continue to buy"
 msgstr "Weiter zum Kauf"
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Wait one minute between tests"
+msgstr "Warten Sie eine Minute zwischen den Tests"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Withdrawal unavailable: selling this amount would raise long traders' PnL-to-pool ratio to {pnlToPoolRatioText}, above the {maxPnlRatioText} limit. Try a smaller amount or try again later"
@@ -5867,6 +5880,10 @@ msgstr "Noch keine Trades"
 msgid "Price change to liquidation"
 msgstr "Preisänderung bis zur Liquidation"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Test"
+msgstr "Test"
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Code not found"
 msgstr "Code nicht gefunden"
@@ -6923,6 +6940,10 @@ msgstr "Übertragen eines Empfehlungscodes"
 msgid "2–10 min"
 msgstr "2–10 Min."
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Push notifications"
+msgstr "Push-Benachrichtigungen"
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -7428,6 +7449,10 @@ msgstr "Mehr anzeigen"
 msgid "GT are the points from GMX on Solana. GMX buys back GT with 99% of Solana protocol fees."
 msgstr "GT sind die Punkte von GMX auf Solana. GMX kauft GT mit 99 % der Protokollgebühren auf Solana zurück."
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Pending wallet"
+msgstr "Ausstehende Wallet"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your trades earn a {currentTierRebate}% rebate, not a discount"
 msgstr "Ihre Trades erzielen {currentTierRebate}% Rückvergütung, keinen Rabatt"
@@ -7465,6 +7490,7 @@ msgstr "GMX auf Solana (GMTrade) wird über eine separate Domain bereitgestellt"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -9598,6 +9624,10 @@ msgstr "Übertragung läuft..."
 msgid "Send from wallet"
 msgstr "Von der Wallet senden"
 
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Send test"
+msgstr "Test senden"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "{transactionsCount, plural, one {Whole position (# transaction)} other {Whole position (# transactions)}}"
 msgstr "{transactionsCount, plural, one {Gesamte Position (# Transaktion)} other {Gesamte Position (# Transaktionen)}}"
@@ -10341,6 +10371,10 @@ msgstr "Tauschroute wird abgerufen ({0}/{1})..."
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "Einzahlung von {amountText} in {indexTokenText} Short..."
+
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+msgid "Turn on"
+msgstr "Einschalten"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -12670,6 +12704,7 @@ msgstr "Optimaler Nutzungsfaktor Long"
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationTooltipContent.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -12962,6 +12997,7 @@ msgid "{pools} {verb} being delisted. Withdraw your liquidity as deposits are no
 msgstr "{pools} {verb} ausgelistet. Führen Sie das Abheben Ihrer Liquidität durch, da Einzahlungen nicht mehr verfügbar sind, oder verschieben Sie sie in GLV, um weiterhin Erträge zu erzielen."
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
+#: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
