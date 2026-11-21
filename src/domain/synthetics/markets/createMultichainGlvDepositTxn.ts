@@ -11,6 +11,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import { CreateGlvDepositParams } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
 export type CreateMultichainGlvDepositParams = {
@@ -101,6 +102,8 @@ export async function createMultichainGlvDepositTxn({
   expressTxnParams: ExpressTxnParams;
   params: CreateGlvDepositParams;
 }) {
+  assertPositiveMinOutputAmount(params.minGlvTokens);
+
   const txnData = await buildAndSignMultichainGlvDepositTxn({
     chainId,
     srcChainId,

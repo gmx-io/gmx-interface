@@ -18,7 +18,7 @@ import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
 
-import { estimateBatchExpressParams } from "./expressOrderUtils";
+import { estimateBatchExpressParams, estimateWithApproximateFallback } from "./expressOrderUtils";
 import {
   estimateWithApprovedGasPaymentToken,
   type GasPaymentTokenFallback,
@@ -161,14 +161,15 @@ function useGasPaymentTokenNotApprovedToast({
 }
 
 /**
- * Same as `estimateBatchExpressParams`, but when the saved gas payment token is not approved or short,
- * estimates with another approved gas payment token instead of falling back to a Classic transaction
+ * Same as `estimateBatchExpressParams` with a simulated gas limit, but when the saved gas payment token is
+ * not approved or short, estimates with another approved gas payment token instead of falling back to
+ * a Classic transaction
  */
 export function useEstimateBatchExpressParamsWithApprovedGasToken() {
   const calcSelector = useCalcSelector();
 
   return useCallback(
-    (params: Parameters<typeof estimateBatchExpressParams>[0]) => {
+    (params: Omit<Parameters<typeof estimateBatchExpressParams>[0], "estimationMethod">) => {
       const unavailableTokenAddresses = calcSelector(selectUnavailableGasPaymentTokenAddresses);
       const gasPaymentToken = params.globalExpressParams?.gasPaymentToken;
 
@@ -186,7 +187,10 @@ export function useEstimateBatchExpressParamsWithApprovedGasToken() {
         isGmxAccount: params.isGmxAccount,
         globalExpressParams: params.globalExpressParams,
         payAmounts: getBatchTotalPayCollateralAmount(params.batchParams),
-        estimate: (globalExpressParams) => estimateBatchExpressParams({ ...params, globalExpressParams }),
+        estimate: (globalExpressParams) =>
+          estimateWithApproximateFallback((estimationMethod) =>
+            estimateBatchExpressParams({ ...params, globalExpressParams, estimationMethod })
+          ),
         getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress) =>
           calcSelector(makeSelectExpressGlobalParamsForGasPaymentToken(gasPaymentTokenAddress)),
         unavailableTokenAddresses,
