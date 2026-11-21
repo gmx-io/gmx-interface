@@ -22,13 +22,24 @@ import { beforeAll, beforeEach, expect, it, vi } from "vitest";
 
 import { GMSOL_LOOKUP_TABLE_ADDRESSES } from "config/gmsol/lookupTables";
 import { GMSOL_MARKETS } from "config/gmsol/markets";
-import { GMSOL_STORE_PROGRAM_ID, GMSOL_STORE_ADDRESS } from "config/gmsol/program";
+import {
+  GMSOL_STORE_PROGRAM_ID,
+  GMSOL_STORE_ADDRESS,
+  SOLANA_SYSTEM_PROGRAM_ID,
+  SOLANA_TOKEN_PROGRAM_ID,
+} from "config/gmsol/program";
 import { GMSOL_SDK_WASM_SHA256 } from "config/gmsol/sdk";
 import { copySolanaBytes } from "lib/solana/bytes";
 import { mockMarginCheckMarketInfo, mockTokensData } from "sdk/test/mock";
 import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
-import { ASSOCIATED_TOKEN_PROGRAM, getGmsolAta, getGmsolPositionAddress, gmsolPda } from "./addresses";
+import {
+  ASSOCIATED_TOKEN_PROGRAM,
+  WRAPPED_SOL_MINT,
+  getGmsolAta,
+  getGmsolPositionAddress,
+  gmsolPda,
+} from "./addresses";
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { compactCreateOrderData, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
@@ -48,8 +59,10 @@ const transport = vi.hoisted(() => ({
   tables: {} as Record<string, string[]>,
   flags: vi.fn(),
   loadSdk: vi.fn(),
+  balances: vi.fn(),
 }));
 vi.mock("../loadGmsolSdk", () => ({ loadGmsolSdk: () => transport.loadSdk() }));
+vi.mock("lib/solana/balances", () => ({ fetchSolanaBalances: () => transport.balances() }));
 vi.mock("lib/solana/rpc", () => ({ getSolanaRpc: () => transport.rpc }));
 vi.mock("lib/solana/lookupTables", () => ({ fetchGmsolLookupTables: async () => transport.tables }));
 vi.mock("../fetchSolanaTradingEnabled", () => ({ fetchSolanaTradingEnabled: () => transport.flags() }));
@@ -283,6 +296,136 @@ it("prepares wallet accounts before an indivisible increase with TP/SL", async (
     })
   ).rejects.toThrow();
   expect(signedOrderCounts).toEqual([0]);
+});
+async function nativeAtomicFixture() {
+  const market = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg")!;
+  const onMarket = (kind: GmsolCreateOrder["kind"]) => ({
+    ...order(kind),
+    market,
+    collateralToken: market.longTokenAddress,
+    indexTokenDecimals: 5,
+  });
+  const marketPda = await gmsolPda("market", [GMSOL_STORE_ADDRESS, market.marketTokenAddress]);
+  const excluded = new Set([
+    owner,
+    marketPda,
+    await gmsolPda("user", [GMSOL_STORE_ADDRESS, owner]),
+    await getGmsolPositionAddress({
+      owner,
+      marketToken: market.marketTokenAddress,
+      collateralToken: market.longTokenAddress,
+      isLong: true,
+    }),
+    await getGmsolAta(owner, market.longTokenAddress),
+    await getGmsolAta(owner, market.shortTokenAddress),
+  ]);
+  const single = await build([onMarket("LimitIncrease")]);
+  const keys = single.groups
+    .flat()
+    .flatMap((bytes) => [...decodeGmsolTransaction(bytes, single).compiled.staticAccounts]);
+  // Same layout as the frozen tables: shared accounts in the first, the market only in the second.
+  const tables = {
+    [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: [...new Set(keys)].filter((key) => !excluded.has(key)),
+    [GMSOL_LOOKUP_TABLE_ADDRESSES[1]]: [marketPda],
+  };
+  const action = (kind: "MarketIncrease" | "LimitIncrease") => ({
+    type: "create" as const,
+    atomic: true,
+    orders: [
+      {
+        ...onMarket(kind),
+        payToken: market.longTokenAddress,
+        payWithNativeSol: true,
+        collateralDeltaAmount: 5_000_000n,
+      },
+      onMarket("LimitDecrease"),
+      onMarket("StopLossDecrease"),
+    ],
+  });
+  return { tables, action };
+}
+it("wraps only the wallet WSOL shortfall before an indivisible native increase with TP/SL TRD-72", async () => {
+  const { tables, action } = await nativeAtomicFixture();
+  const isWrap = (ix: Instruction) =>
+    ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID || ix.programAddress === SOLANA_TOKEN_PROGRAM_ID;
+  for (const kind of ["MarketIncrease", "LimitIncrease"] as const)
+    for (const [wrapped, shortfall] of [
+      [0n, 5_000_000n],
+      [2_000_000n, 3_000_000n],
+      [5_000_000n, 0n],
+      [7_000_000n, 0n],
+    ] as const) {
+      const plan = await buildGmsolOrderTransactions({
+        owner,
+        action: action(kind),
+        ...lifetime,
+        lookupTables: tables,
+        wrappedSolBalance: wrapped,
+        sdk,
+      });
+      expect(plan.groups.map((group) => group.length)).toEqual([1, 1]);
+      expect(plan.groups[1][0].length).toBe(kind === "MarketIncrease" ? 1184 : 1200);
+      const [setup, orders] = plan.groups
+        .flat()
+        .map((bytes) => [...decodeGmsolTransaction(bytes, plan).message.instructions]);
+      expect(setup.filter(isWrap)).toHaveLength(shortfall > 0n ? 2 : 0);
+      expect(orders.filter(isWrap)).toEqual([]);
+      expect(
+        orders.filter((ix) => ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && ix.accounts?.[2].address !== owner)
+      ).toHaveLength(6);
+      const validated = await validateGmsolTransactionPlan(plan);
+      expect(validated.orderAddresses).toHaveLength(3);
+      expect(validated.transactionCosts).toEqual([
+        { keeperLamports: 0n, wrapLamports: shortfall },
+        { keeperLamports: 900000n, wrapLamports: 0n },
+      ]);
+      const increase = orders.find((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)!;
+      const decoded = decodeGmsolInstruction(
+        copySolanaBytes(increase.data!),
+        [...increase.accounts!].map((account) => account.address)
+      );
+      decoded.reader.read(32);
+      expect([decoded.name, readCreateOrderParams(decoded.reader).amount]).toEqual(["create_order_v2", 5_000_000n]);
+      // A plan built before an earlier wrap confirmed cannot wrap again.
+      if (shortfall > 0n) {
+        await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: wrapped + shortfall })).rejects.toThrow(
+          "Unexpected SOL transfer amount"
+        );
+      }
+      await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: undefined })).rejects.toThrow(
+        "Invalid wrapped SOL snapshot"
+      );
+    }
+});
+it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72", async () => {
+  const { tables, action } = await nativeAtomicFixture();
+  const wsol = (amount: bigint) => ({ [WRAPPED_SOL_MINT]: amount });
+  transport.tables = tables;
+  transport.balances.mockResolvedValue(wsol(2_000_000n));
+  const plan = await prepareGmsolOrderTransactions({ owner, action: action("MarketIncrease") });
+  expect(plan.wrappedSolBalance).toBe(2_000_000n);
+  for (const failure of ["stale", "changed-after-signing", "unavailable", undefined] as const) {
+    localStorage.removeItem("gmsol-pending-submissions");
+    transport.rpc.sendTransaction.mockClear();
+    transport.balances.mockReset().mockResolvedValue(wsol(2_000_000n));
+    if (failure === "stale") transport.balances.mockResolvedValue(wsol(5_000_000n));
+    if (failure === "changed-after-signing") {
+      transport.balances.mockResolvedValueOnce(wsol(2_000_000n)).mockResolvedValue(wsol(5_000_000n));
+    }
+    if (failure === "unavailable") transport.balances.mockRejectedValue(new Error("RPC unavailable"));
+    const sign = vi.fn(signTransactionBytes);
+    const result = await sendGmsolOrderTransactions({
+      plan,
+      getWalletAddress: () => owner,
+      signTransaction: sign,
+      onConfirmed: async () => undefined,
+    }).catch((error: unknown) => error);
+    expect(result instanceof GmsolTransactionError, String(failure)).toBe(failure !== undefined);
+    expect(sign.mock.calls.length, String(failure)).toBe(
+      failure === undefined ? 2 : failure === "changed-after-signing" ? 1 : 0
+    );
+    expect(transport.rpc.sendTransaction.mock.calls.length, String(failure)).toBe(failure === undefined ? 2 : 0);
+  }
 });
 function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction[]) => Instruction[]) {
   const next = structuredClone(plan);
