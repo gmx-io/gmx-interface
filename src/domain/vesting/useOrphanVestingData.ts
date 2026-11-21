@@ -27,6 +27,11 @@ export function useOrphanVestingData(chainId: ContractsChainId, account: string 
           tranches: { methodName: "getTranches", params: [orphanVesterAddress, account] },
         },
       },
+      orphanVester: {
+        contractAddress: orphanVesterAddress,
+        abiId: "RatioVester",
+        calls: { isFrozen: { methodName: "isFrozen", params: [account] } },
+      },
       rewardRouter: {
         contractAddress: getContract(requestChainId, "RewardRouterV3"),
         abiId: "RewardRouterV3",
@@ -67,7 +72,7 @@ export function useOrphanVestingData(chainId: ContractsChainId, account: string 
 }
 
 function parseOrphanVaultResponse(result: MulticallResult<MulticallRequestConfig<any>>): OrphanVaultData {
-  const { reader, rewardRouter, dataStore, feeGmxTracker, gmxVester } = result.data;
+  const { reader, orphanVester, rewardRouter, dataStore, feeGmxTracker, gmxVester } = result.data;
 
   const vesting = parseOrphanVestingInfo({
     vestingInfo: reader.vestingInfo.returnValues as bigint[],
@@ -79,6 +84,7 @@ function parseOrphanVaultResponse(result: MulticallResult<MulticallRequestConfig
     isOpen: rewardRouter.isOpen.returnValues[0],
     isDepositPaused: dataStore.isDepositPaused.returnValues[0],
     isClaimPaused: dataStore.isClaimPaused.returnValues[0],
+    isFrozen: orphanVester.isFrozen.returnValues[0],
     ...getWalletPairAmounts({
       walletPairAmount: feeGmxTracker.walletAmount.returnValues[0],
       stakedPairAmount: feeGmxTracker.stakedAmount.returnValues[0],

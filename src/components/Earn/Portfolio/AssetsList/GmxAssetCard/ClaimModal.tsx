@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ethers, TransactionReceipt } from "ethers";
+import { ethers, TransactionReceipt, TransactionResponse } from "ethers";
 import noop from "lodash/noop";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
@@ -42,6 +42,7 @@ export function ClaimModal(props: {
   setPendingTxns: SetPendingTransactions;
   totalGmxRewards: bigint | undefined;
   stakingGmxRewards: bigint | undefined;
+  orphanVesterRewards: bigint | undefined;
   gmxVesterRewards: bigint | undefined;
   glpVesterRewards: bigint | undefined;
   totalEsGmxRewards: bigint | undefined;
@@ -60,6 +61,7 @@ export function ClaimModal(props: {
     setPendingTxns,
     totalGmxRewards,
     stakingGmxRewards,
+    orphanVesterRewards,
     gmxVesterRewards,
     glpVesterRewards,
     totalEsGmxRewards,
@@ -208,14 +210,17 @@ export function ClaimModal(props: {
         getIsRewardRouterClaimNeeded({
           shouldClaimGmx: shouldClaimGmxRewards,
           stakingGmxRewards: stakingGmxRewards ?? 0n,
+          orphanVesterRewards: orphanVesterRewards ?? 0n,
           shouldClaimEsGmx: shouldClaimEsGmxRewards,
           esGmxRewards: totalEsGmxRewards ?? 0n,
           shouldClaimNativeToken,
           nativeTokenRewards: totalNativeTokenRewards ?? 0n,
         });
 
+      let rewardRouterTxn: TransactionResponse | undefined;
+
       if (isRewardRouterClaimNeeded) {
-        await callContract(
+        rewardRouterTxn = await callContract(
           chainId,
           rewardRouterContract,
           "handleRewards",
@@ -275,6 +280,8 @@ export function ClaimModal(props: {
       sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId });
       setIsVisible(false);
       onClaimSuccess?.();
+      // the Legacy vault data polls once a minute, so refresh again once the claim is mined
+      rewardRouterTxn?.wait().then(onClaimSuccess, onClaimSuccess);
     } catch (error) {
       showStakingErrorToast({ chainId, error, failMsg });
       sendStakingActionMetric({ action: stakingAction, tokenSymbol: undefined, chainId, error });
@@ -302,6 +309,7 @@ export function ClaimModal(props: {
     onClaimSuccess,
     totalGmxRewards,
     stakingGmxRewards,
+    orphanVesterRewards,
     gmxVesterRewards,
     glpVesterRewards,
     totalEsGmxRewards,

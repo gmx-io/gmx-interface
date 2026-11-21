@@ -6,11 +6,13 @@ type StakingActionData = StakingActionEvent["data"];
 export function sendStakingActionMetric({
   action,
   tokenSymbol,
+  vault,
   chainId,
   error,
 }: {
   action: StakingActionData["action"];
   tokenSymbol: string | undefined;
+  vault?: StakingActionData["vault"];
   chainId: number;
   error?: unknown;
 }) {
@@ -20,6 +22,7 @@ export function sendStakingActionMetric({
     data: {
       action,
       tokenSymbol,
+      vault,
       chainId,
       outcome: error === undefined ? "sent" : getTxnErrorOutcome(error),
     },

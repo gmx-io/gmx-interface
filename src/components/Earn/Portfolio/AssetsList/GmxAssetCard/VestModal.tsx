@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { type ReactNode, useMemo, useState } from "react";
 
+import type { UnstakeRequestsData } from "domain/stake/useUnstakeRequests";
 import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
 import useVestingData from "domain/vesting/useVestingData";
 import { getVisibleVestVaults, type VestVault } from "domain/vesting/vestingVaults";
@@ -19,13 +20,24 @@ type VestModalProps = {
   isVisible: boolean;
   setIsVisible: (value: boolean) => void;
   processedData: StakingProcessedData | undefined;
+  unstakeRequestsData: UnstakeRequestsData | undefined;
+  initialVault: VestVault | undefined;
   onStakeGmx: () => void;
+  onUnstakeEsGmx: () => void;
 };
 
 const VAULT_GROUP_DIVIDER_CLASS =
   "relative before:absolute before:left-0 before:top-9 before:block before:h-22 before:w-[1.5px] before:bg-slate-600";
 
-export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }: VestModalProps) {
+export function VestModal({
+  isVisible,
+  setIsVisible,
+  processedData,
+  unstakeRequestsData,
+  initialVault,
+  onStakeGmx,
+  onUnstakeEsGmx,
+}: VestModalProps) {
   const { chainId } = useChainId();
   const { account } = useWallet();
   const vestingData = useVestingData(account);
@@ -46,8 +58,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }
     [orphanVaultData, vestingData]
   );
 
+  const preferredVault = pickedVault ?? initialVault;
   const selectedVault =
-    pickedVault !== undefined && visibleVaults.includes(pickedVault) ? pickedVault : visibleVaults[0];
+    preferredVault !== undefined && visibleVaults.includes(preferredVault) ? preferredVault : visibleVaults[0];
   const hasVaultTabs = visibleVaults.length > 1;
 
   const vaultTabs = useMemo(() => {
@@ -106,11 +119,18 @@ export function VestModal({ isVisible, setIsVisible, processedData, onStakeGmx }
               data={orphanVaultData}
               walletEsGmxBalance={processedData?.esGmxBalance}
               stakedAmount={processedData?.bonusGmxInFeeGmx}
+              stakedEsGmxAmount={processedData?.esGmxInStakedGmx}
+              unclaimedEsGmxAmount={processedData?.totalEsGmxRewards}
+              unstakeRequestsData={unstakeRequestsData}
               onTxSent={() => handleSetIsVisible(false)}
               onTxMined={() => mutateOrphanVaultData()}
               onStakeGmx={() => {
                 handleSetIsVisible(false);
                 onStakeGmx();
+              }}
+              onUnstakeEsGmx={() => {
+                handleSetIsVisible(false);
+                onUnstakeEsGmx();
               }}
             />
           )

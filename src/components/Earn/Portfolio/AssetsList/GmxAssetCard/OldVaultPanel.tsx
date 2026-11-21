@@ -5,10 +5,13 @@ import { useState } from "react";
 import { getContract } from "config/contracts";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { sendStakingActionMetric } from "domain/stake/sendStakingActionMetric";
 import useVestingData from "domain/vesting/useVestingData";
 import type { OldVestVault } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
+import { parseError } from "lib/errors";
+import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
@@ -17,6 +20,7 @@ import type { ContractName } from "sdk/configs/contracts";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { showStakingErrorToast } from "components/Errors/stakingToasts";
 import { ProgressRow } from "components/ProgressRow/ProgressRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
@@ -68,18 +72,38 @@ export function OldVaultPanel({ vault, onTxSent }: { vault: OldVestVault; onTxSe
     }
 
     const contract = new ethers.Contract(getContract(chainId, VESTER_BY_VAULT[vault]), abis.Vester, signer);
+    const metric = {
+      action: action === "claim" ? "vestClaim" : "vestWithdraw",
+      tokenSymbol: action === "claim" ? "GMX" : "esGMX",
+      vault,
+      chainId,
+    } as const;
+
+    const failMsg = action === "claim" ? t`Claim failed` : t`Withdraw failed`;
 
     setPendingAction(action);
     callContract(chainId, contract, action, [], {
       sentMsg: action === "claim" ? t`Claim submitted` : t`Withdraw submitted`,
-      failMsg: action === "claim" ? t`Claim failed` : t`Withdraw failed`,
+      failMsg,
       successMsg: action === "claim" ? t`Claimed` : t`Withdrawn`,
       setPendingTxns,
+      hideErrorMsg: true,
     })
       .then(() => {
+        sendStakingActionMetric(metric);
         onTxSent();
       })
-      .catch(() => undefined)
+      .catch((error) => {
+        sendStakingActionMetric({ ...metric, error });
+
+        // old vester reverts have no readable mapping, so a failed withdraw gets a plain retry message
+        if (action === "withdraw" && !parseError(error)?.isUserError) {
+          helperToast.error(t`Withdrawing is temporarily unavailable. Try again later.`);
+          return;
+        }
+
+        showStakingErrorToast({ chainId, error, failMsg });
+      })
       .finally(() => {
         setPendingAction(undefined);
       });
@@ -94,7 +118,7 @@ export function OldVaultPanel({ vault, onTxSent }: { vault: OldVestVault; onTxSe
           className="!items-start"
         >
           <span className="text-body-small text-typography-secondary">
-            <Trans>I understand that esGMX withdrawn now can't be vested anywhere</Trans>
+            <Trans>I understand that esGMX withdrawn now doesn't add to my eligible amount in the Legacy vault</Trans>
           </span>
         </Checkbox>
       )}

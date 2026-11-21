@@ -35,6 +35,26 @@ const EARN_FAQ_ITEMS: FaqItem[] = [
     ),
   },
   {
+    title: <Trans>How does esGMX vesting work?</Trans>,
+    content: (
+      <Trans>
+        esGMX vests into GMX in the Legacy vault, up to your eligible amount: the esGMX in your wallet, staked and
+        unclaimed at the snapshot. esGMX already in the GMX, GLP and Affiliate vaults doesn't count. Each vesting esGMX
+        reserves 10 staked GMX or esGMX and vests over 1 year. Stopping vesting returns the unvested esGMX and the
+        reserved tokens, and depositing again restarts the 1-year vesting.
+      </Trans>
+    ),
+  },
+  {
+    title: <Trans>What happens to the GMX, GLP and Affiliate vaults?</Trans>,
+    content: (
+      <Trans>
+        They no longer accept deposits. esGMX already vesting there keeps vesting, and you can claim the vested GMX at
+        any time. esGMX withdrawn from them doesn't add to your eligible amount.
+      </Trans>
+    ),
+  },
+  {
     title: <Trans>What networks are supported?</Trans>,
     content: (
       <Trans>
