@@ -6622,6 +6622,10 @@ msgstr "1단계: 판매"
 msgid "Auto"
 msgstr "자동"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "최대 수령 가능 ≈ {maxReceiveText}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
 msgstr "수량이 Legacy 볼트의 남은 적격 수량을 초과합니다"

@@ -6622,6 +6622,10 @@ msgstr "Étape 1 : Vendre"
 msgid "Auto"
 msgstr "Auto"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "Max. à recevoir ≈ {maxReceiveText}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
 msgstr "Le montant dépasse votre montant éligible restant dans le vault Legacy"
