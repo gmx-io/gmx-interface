@@ -40,7 +40,7 @@ describe("prepareInitialEntries", () => {
     expect(entries?.[0].mode).toBe("keepPercentage");
   });
 
-  it("marks current-position-sized orders as percentage-based full close", () => {
+  it("keeps the fixed order size when a position grows SEC-51", () => {
     const entries = prepareInitialEntries({
       positionOrders: [makeOrder(positionSizeUsd)],
       sort: "desc",
@@ -49,8 +49,8 @@ describe("prepareInitialEntries", () => {
     });
 
     expect(entries).toHaveLength(1);
-    expect(entries?.[0].percentage?.value).toBe(MAX_PERCENTAGE);
-    expect(entries?.[0].mode).toBe("keepPercentage");
+    expect(entries?.[0].sizeUsd.value).toBe(positionSizeUsd);
+    expect(entries?.[0].mode).toBe("keepSize");
   });
 });
 

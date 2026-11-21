@@ -38,6 +38,10 @@ const SOURCE_CHAIN_RPC_HOSTS: [RegExp, number][] = [
 
 function getSourceChainIdByRpcUrl(url: string) {
   const { host, pathname } = new URL(url);
+  if (host === "rpc.gmx.io") {
+    const chainId = Number(pathname.split("/")[1]);
+    return chainId in ALCHEMY_NETWORKS ? chainId : undefined;
+  }
   return SOURCE_CHAIN_RPC_HOSTS.find(([pattern]) => pattern.test(`${host}${pathname}`))?.[1];
 }
 
