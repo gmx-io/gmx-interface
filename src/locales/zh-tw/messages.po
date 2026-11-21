@@ -1068,6 +1068,10 @@ msgstr "我可以建立多個推薦碼嗎？"
 msgid "Unknown error"
 msgstr "未知錯誤"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "在 {formattedPrice} 設定做多止盈"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1543,6 +1547,8 @@ msgid "GMX staked rewards"
 msgstr "GMX 質押獎勵"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "接收金額低於最低值"
 
@@ -2333,6 +2339,10 @@ msgstr "100+ 種加密代幣"
 msgid "Optimal usage factor short"
 msgstr "做空最佳使用因子"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "在 {formattedPrice} 設定做多觸發市價單"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} / {1}"
@@ -2944,10 +2954,6 @@ msgstr "年化率"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "未找到兌換路徑"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "在 {0} 設定做多觸發市價單"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
@@ -4428,10 +4434,6 @@ msgstr "步驟 2：新增保證金"
 msgid "UI fee"
 msgstr "UI 費用"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "在 {0} 設定做多止盈"
-
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
 msgstr "正在上傳..."
@@ -4879,6 +4881,10 @@ msgstr "正在將 USDC 轉換為 USDG..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "在 {formattedPrice} 設定做空觸發市價單"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6236,10 +6242,6 @@ msgstr "開倉中..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi 保證金協議"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "設定做空止損 @ {0}"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -8325,10 +8327,6 @@ msgstr "接受 Builder / 推薦碼歸因"
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "已賺取的費用僅針對您在 {chainName} 錢包中持有的 GM 與 GLV 進行統計。GMX Account 或其他鏈上的 GM 與 GLV 仍會賺取費用，但目前還無法按帳戶歸屬。"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "設定做多限價單 @ {0}"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
 msgstr "接收帳戶之前已質押或歸屬過。請選擇新帳戶。"
@@ -9000,10 +8998,6 @@ msgstr "<0>市場群組</0><1>淨未平倉量</1>"
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "在支援的情況下，可使用簽帳金融卡/信用卡、Apple Pay 或 Google Pay"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "設定做多止損 @ {0}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "較新的市場可能尚未建立歷史記錄索引。請參考圖表上方的「淨費率 / 1h」。"
@@ -9116,6 +9110,10 @@ msgstr "Solv Finance"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Claim submitted"
 msgstr "領取已提交"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "在 {formattedPrice} 設定做空止盈"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -10318,6 +10316,10 @@ msgstr "總績效 APY"
 msgid "No tokens on {0} for deposit"
 msgstr "{0} 上無可存入的代幣"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "設定做多限價單 @ {formattedPrice}"
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "可領取總額"
@@ -10566,10 +10568,6 @@ msgstr "正在載入費用..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "在 {0} 設定做空觸發市價單"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10588,6 +10586,10 @@ msgstr "重置縮放"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "您的部分已質押代幣仍保留在 GMX 金庫中。請先從 GMX 金庫提取或質押更多 GMX。"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "在 {formattedPrice} 設定做空限價單"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -11517,6 +11519,10 @@ msgstr "快速要點"
 msgid "Closed to new stop market orders"
 msgstr "不再接受新的 Stop Market 訂單"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "設定做多止損 @ {formattedPrice}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
@@ -12330,10 +12336,6 @@ msgstr "跳過建立推薦碼？"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "結算網路已變更為 {0}，但 {1} 仍保留在您的 {2} GMX Account 中"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "在 {0} 設定做空限價單"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
@@ -13495,10 +13497,6 @@ msgstr "由於 {chainName} 網路活動增加，網路費用偏高"
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "現有倉位位於 WETH-USDC 池。使用所選池將建立另一個倉位。<0>切換至 WETH-USDC 池</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "在 {0} 設定做空止盈"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "分享 PnL"
@@ -13673,6 +13671,10 @@ msgstr "在兌換分頁 · 單獨到帳"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "透過 Paxos 直接轉換"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "設定做空止損 @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
