@@ -204,6 +204,14 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
       action.order.shortToken,
     ].forEach((mint) => mint && allowedMints.add(mint));
   }
+  const wrapped = plan.wrappedSolBalance;
+  requireGmsol(
+    action.type === "create" && action.atomic && nativePayment > 0n
+      ? typeof wrapped === "bigint" && wrapped >= 0n && wrapped < 2n ** 64n
+      : wrapped === undefined,
+    "Invalid wrapped SOL snapshot"
+  );
+  const expectedWrap = wrapped === undefined ? nativePayment : nativePayment > wrapped ? nativePayment - wrapped : 0n;
 
   const transactionCosts: { keeperLamports: bigint; wrapLamports: bigint }[] = [];
   for (const [transactionIndex, { message }] of transactions.entries()) {
@@ -219,8 +227,11 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
       const reader = new GmsolInstructionReader(data);
       if (preparingAtomicOrder) {
         const name = ix.programAddress === program ? decodeGmsolInstruction(data, accounts).name : undefined;
+        // System and Token instructions are restricted below to wrapping into the wallet's own WSOL account.
         requireGmsol(
           ix.programAddress === COMPUTE_BUDGET_PROGRAM ||
+            ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID ||
+            ix.programAddress === SOLANA_TOKEN_PROGRAM_ID ||
             (ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && accounts[2] === owner) ||
             name === "prepare_user" ||
             name === "prepare_position",
@@ -258,7 +269,7 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
         requireGmsol(accounts[1] === (await getGmsolAta(owner, WRAPPED_SOL_MINT)), "Unexpected SOL receiver");
         const lamports = reader.uint(8);
         wrapLamports += lamports;
-        requireGmsol(wrapLamports <= nativePayment, "Unexpected SOL transfer amount");
+        requireGmsol(wrapLamports <= expectedWrap, "Unexpected SOL transfer amount");
       } else if (ix.programAddress === SOLANA_TOKEN_PROGRAM_ID) {
         const kind = reader.uint(1);
         requireGmsol(
@@ -389,6 +400,6 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
     actionCount === (action.type === "create" ? action.orders.length : 1),
     "Missing or duplicate order instructions"
   );
-  requireGmsol(wrapLamports === nativePayment, "Missing SOL wrapping transfer");
+  requireGmsol(wrapLamports === expectedWrap, "Missing SOL wrapping transfer");
   return { orderAddresses: orders, keeperLamports, wrapLamports, transactionCosts };
 }
