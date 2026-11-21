@@ -40,7 +40,7 @@ The RPC proxy Worker in the separate private repository has a proposed Solana ro
 
 ## Build and inspect
 
-Copy `.env.playground.example` to `.env.playground.local` in this checkout and fill all four `PLAYGROUND_ALCHEMY_*_KEY` values. The local file is gitignored; never commit real keys. `DEVELOPMENT` is used on localhost and Pages previews unless DebugAlchemy / production preview is enabled. `FALLBACK`, `LARGE_ACCOUNT` and `EXPRESS` retain the existing purpose selection. These overrides cover every Alchemy chain used by playground; enable Solana Mainnet and the EVM networks you use on the corresponding Alchemy apps. One authorized key can fill multiple purposes. Other providers and ordinary app builds are unchanged.
+Edit the tracked `.env.playground.local` in this checkout to update the four `PLAYGROUND_ALCHEMY_*_KEY` values. This playground-specific file intentionally contains public browser keys and is committed with the branch so local and CI builds use the same configuration. `.env.playground.example` lists the variable names. `DEVELOPMENT` is used on localhost and Pages previews unless DebugAlchemy / production preview is enabled. `FALLBACK`, `LARGE_ACCOUNT` and `EXPRESS` retain the existing purpose selection. These overrides cover every Alchemy chain used by playground; enable Solana Mainnet and the EVM networks you use on the corresponding Alchemy apps. One authorized key can fill multiple purposes. Other providers and ordinary app builds are unchanged.
 
 For local development:
 
@@ -58,7 +58,7 @@ NODE_OPTIONS=--max-old-space-size=8192 yarn vite preview --host 127.0.0.1 --port
 
 Restart preview after rebuilding. Editing the env file does not change an existing build or the deployed website. To update the deployed playground, supply the same variables to its build process, rebuild and deploy with the normal authorization. Process environment variables take precedence over the local file. Missing/blank or malformed keys stop playground startup/build with the variable name, without printing its value or falling back to a hardcoded key. Vite playground mode also reads standard `.env` files; do not put these values in tracked files.
 
-Both playground entry points apply their RPC override only to `src/config/rpc.ts`, including its separate Web Worker build; a changed source contract fails explicitly. The non-`VITE_` names are consumed by the playground tooling, not exposed wholesale. The selected key values still become browser-visible RPC URLs in the bundle/network panel. Gitignore protects source control, not browser secrecy.
+Both playground entry points apply their RPC override only to `src/config/rpc.ts`, including its separate Web Worker build; a changed source contract fails explicitly. The non-`VITE_` names are consumed by the playground tooling, not exposed wholesale. The selected key values still become browser-visible RPC URLs in the bundle/network panel. This tracked configuration is for browser RPC keys only; do not put server credentials in it.
 
 `build-playground` uses the normal production app environment and SDK build, with the formal frozen LUT configuration and the `solanaNetwork` AB flag at share 1 from `abFlagConfiguration.mjs`. New visitors have Solana enabled immediately; existing disabled settings are enabled on reload through the normal AB initialization. Turning the flag off in Debug settings also reloads the app and re-enables it. Network selection still follows the existing user preference.
 

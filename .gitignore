@@ -29,7 +29,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-.env.playground.local
 
 _gmx-api
 
