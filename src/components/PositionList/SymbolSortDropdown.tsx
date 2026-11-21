@@ -34,7 +34,7 @@ export function SymbolSortDropdown({ direction, onChange }: Props) {
       <Menu.Button
         as="button"
         ref={refs.setReference}
-        className={cx("group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
+        className={cx("Sorter group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
           "text-blue-300": isActive,
         })}
         onClick={(e: React.MouseEvent) => e.stopPropagation()}

@@ -552,17 +552,18 @@ export function PositionItem(p: Props) {
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr hoverable={true} data-qa={qaAttr}>
+      <TableTr hoverable={true} data-qa={qaAttr} className="h-72">
         <TableTd
           data-qa="position-handle"
-          className={cx("flex", {
+          className={cx({
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
         >
           {/* title */}
           <div className={cx("Position-item-info relative")}>
-            <div className="Exchange-list-title">
+            {/* A flex row, so the 20px icon line stays 20px (inline-block added 5px under it) */}
+            <div className="Exchange-list-title !flex items-center">
               <div className="inline-flex items-center gap-4">
                 <TokenIcon className="PositionList-token-icon" symbol={p.position.indexToken.symbol} displaySize={20} />
                 <StandardTooltip

@@ -1,5 +1,6 @@
 import { type ComponentType } from "react";
 
+import { TableChangelog, TableExamples, TableGuidelines, TablePropsReference } from "./pages/TablePage";
 import { TooltipChangelog, TooltipExamples, TooltipGuidelines, TooltipPropsReference } from "./pages/TooltipPage";
 
 export type DesignSystemTab = "examples" | "props" | "guidelines" | "changelog";
@@ -19,6 +20,16 @@ export const DESIGN_SYSTEM_GROUPS: DesignSystemGroup[] = [
   {
     title: "Components",
     pages: [
+      {
+        slug: "table",
+        title: "Table",
+        tabs: {
+          examples: TableExamples,
+          props: TablePropsReference,
+          guidelines: TableGuidelines,
+          changelog: TableChangelog,
+        },
+      },
       {
         slug: "tooltip",
         title: "Tooltip",

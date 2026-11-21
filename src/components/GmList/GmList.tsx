@@ -325,20 +325,20 @@ export function GmList({
             {isLoading && <Loader />}
           </div>
         ) : (
-          <div className="flex grow flex-col p-8 pt-0">
+          <div className="flex grow flex-col pb-8">
             <TableScrollFadeContainer className="flex grow flex-col">
               <table className="w-[max(100%,1000px)]">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="!pl-12">
+                    <TableTh className="w-[28%] min-w-[340px]">
                       <Trans>POOL</Trans>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="w-[12%]">
                       <Sorter {...getSorterProps("totalSupply")}>
                         <Trans>TVL (SUPPLY)</Trans>
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="w-[10%]">
                       <Sorter {...getSorterProps("balance")}>
                         <GmTokensTotalBalanceInfo
                           balance={userTotalGmInfo?.balance}
@@ -353,17 +353,17 @@ export function GmList({
                         />
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="w-[10%]">
                       <Sorter {...getSorterProps("apy")}>
                         <FeeApyLabel upperCase variant="iconStroke" />
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="w-[19%]">
                       <Sorter {...getSorterProps("performance")}>
                         <PerformanceLabel upperCase variant="iconStroke" />
                       </Sorter>
                     </TableTh>
-                    <TableTh>
+                    <TableTh className="w-[12%]">
                       <StandardTooltip
                         handle={t`SNAPSHOT`}
                         className="normal-case"
@@ -372,7 +372,7 @@ export function GmList({
                         variant="iconStroke"
                       />
                     </TableTh>
-                    <TableTh className="pr-16" />
+                    <TableTh className="w-[9%] pr-16" />
                   </TableTheadTr>
                 </thead>
                 <tbody>
