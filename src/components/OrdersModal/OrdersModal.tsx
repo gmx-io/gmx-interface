@@ -95,7 +95,7 @@ export function OrdersModal({
 }: Props) {
   const [activeTab, setActiveTab] = useState<TpSlTabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
+  const [addFormSource, setAddFormSource] = useState<"chart" | "list">();
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -244,7 +244,6 @@ export function OrdersModal({
             batchParams,
             globalExpressParams,
             requireValidations: false,
-            estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
             subaccount,
@@ -299,20 +298,20 @@ export function OrdersModal({
 
   useEffect(() => {
     if (isVisible) {
-      setIsAddFormVisible(initialView === "add" && !hasPendingTpSlOrdersRef.current);
+      setAddFormSource(initialView === "add" && !hasPendingTpSlOrdersRef.current ? "chart" : undefined);
       setActiveTab(initialTab);
     } else {
-      setIsAddFormVisible(false);
+      setAddFormSource(undefined);
     }
   }, [isVisible, initialView, initialTab, hasPendingTpSlOrdersRef]);
 
   const handleAddTPSLOpen = useCallback(() => {
-    if (!hasPendingTpSlOrders) setIsAddFormVisible(true);
+    if (!hasPendingTpSlOrders) setAddFormSource("list");
   }, [hasPendingTpSlOrders]);
 
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
-      setIsAddFormVisible(visible);
+      setAddFormSource((current) => (visible ? current ?? "list" : undefined));
       if (!visible && isVisible) {
         setIsVisible(true);
       }
@@ -321,7 +320,7 @@ export function OrdersModal({
   );
 
   const handleAddTPSLBack = useCallback(() => {
-    setIsAddFormVisible(false);
+    setAddFormSource(undefined);
   }, []);
 
   const isEditingFromOrdersModal = !!editingOrderState?.orderKey && editingOrderState.source === "OrdersModal";
@@ -347,7 +346,7 @@ export function OrdersModal({
   return (
     <>
       <Modal
-        isVisible={isVisible && !isAddFormVisible && !isEditingFromOrdersModal}
+        isVisible={isVisible && !addFormSource && !isEditingFromOrdersModal}
         setIsVisible={setIsVisible}
         label={<Trans>{positionTitle} orders</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
@@ -448,13 +447,13 @@ export function OrdersModal({
 
       {position && (
         <AddTPSLModal
-          isVisible={isVisible && isAddFormVisible}
+          isVisible={isVisible && addFormSource !== undefined}
           isCreationPending={hasPendingTpSlOrders}
           setIsVisible={handleAddFormVisibilityChange}
           position={position}
           onBack={handleAddTPSLBack}
-          initialTpPriceInput={initialTpPriceInput}
-          initialSlPriceInput={initialSlPriceInput}
+          initialTpPriceInput={addFormSource === "chart" ? initialTpPriceInput : undefined}
+          initialSlPriceInput={addFormSource === "chart" ? initialSlPriceInput : undefined}
         />
       )}
     </>

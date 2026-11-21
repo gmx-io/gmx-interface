@@ -91,7 +91,6 @@ export function useCancelOrder(order: OrderInfo) {
               batchParams,
               globalExpressParams,
               requireValidations: false,
-              estimationMethod: "approximate",
               provider,
               isGmxAccount: srcChainId !== undefined,
               subaccount,

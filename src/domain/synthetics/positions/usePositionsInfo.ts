@@ -8,8 +8,9 @@ import { ApiDataSource } from "lib/metrics/types";
 import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
-import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
-import { getIsTokenTrackingPrice } from "sdk/utils/tokens";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { ApiPositionInfo, getLiquidationPrice, getPositionInfo, PositionInfo } from "sdk/utils/positions";
+import { convertToUsd, getIsTokenTrackingPrice } from "sdk/utils/tokens";
 
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsData, MarketsInfoData } from "../markets";
@@ -190,18 +191,35 @@ export function usePositionsInfoRequest(
         original.collateralAmount !== position.collateralAmount ||
         original.sizeInTokens !== position.sizeInTokens;
 
-      if (wasModifiedByEvent || getIsTokenTrackingPrice(position.collateralToken, position.indexToken)) {
-        const marketInfo = getByKey(marketsInfoData, position.marketAddress);
+      const marketInfo = getByKey(marketsInfoData, position.marketAddress);
+      if (
+        marketInfo &&
+        (wasModifiedByEvent || getIsTokenTrackingPrice(position.collateralToken, position.indexToken))
+      ) {
+        result[key] = getPositionInfo({
+          position,
+          marketInfo,
+          minCollateralUsd,
+          userReferralInfo: userReferralInfo ?? undefined,
+          showPnlInLeverage,
+          uiFeeFactor,
+        });
+        hasRecomputed = true;
+        continue;
+      }
 
-        if (marketInfo) {
-          result[key] = getPositionInfo({
-            position,
-            marketInfo,
-            minCollateralUsd,
-            userReferralInfo: userReferralInfo ?? undefined,
-            showPnlInLeverage,
-            uiFeeFactor,
-          });
+      if (marketInfo && isContractsV2_2_1(chainId)) {
+        const { decimals, prices } = position.collateralToken;
+        const liquidationPrice = getLiquidationPrice({
+          ...position,
+          marketInfo,
+          collateralUsd: convertToUsd(position.collateralAmount, decimals, prices.minPrice)!,
+          pendingFundingFeesUsd: convertToUsd(position.fundingFeeAmount, decimals, prices.minPrice)!,
+          minCollateralUsd,
+          userReferralInfo: userReferralInfo ?? undefined,
+        });
+        if (liquidationPrice !== position.liquidationPrice) {
+          result[key] = { ...position, liquidationPrice };
           hasRecomputed = true;
           continue;
         }
@@ -212,6 +230,7 @@ export function usePositionsInfoRequest(
 
     return hasRecomputed ? result : optimisticApiPositionsInfoData;
   }, [
+    chainId,
     optimisticApiPositionsInfoData,
     composedApiPositionsInfoData,
     marketsInfoData,
