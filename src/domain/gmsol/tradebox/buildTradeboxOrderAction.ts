@@ -18,6 +18,7 @@ export type GmsolTradeboxErrorCode =
   | "amounts"
   | "swap"
   | "receive"
+  | "acceptablePrice"
   | "tokenProgram"
   | "tpsl";
 

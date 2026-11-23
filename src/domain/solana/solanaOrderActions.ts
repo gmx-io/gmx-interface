@@ -43,6 +43,8 @@ export type SolanaOrderActions = {
   cancelOrders: (orders: OrderInfo[]) => Promise<boolean>;
   // Why this order cannot be edited or cancelled on Solana, or undefined
   getOrderError: (order: OrderInfo) => string | undefined;
+  // Why these edits cannot be sent on Solana, or undefined; an edit without changes is left to the shared validation
+  getUpdateError: (p: { order: PositionOrderInfo; changes: SolanaOrderChanges }) => string | undefined;
 };
 
 export const SolanaOrderActionsContext = createContext<SolanaOrderActions | undefined>(undefined);

@@ -776,6 +776,14 @@ export function OrderEditor(p: Props) {
     ? solanaOrderActions.getOrderError(p.order) ?? solanaOrderActions.error
     : undefined;
 
+  const solanaUpdateError = useMemo(() => {
+    if (!solanaOrderActions || solanaOrderError || isSwapOrderType(p.order.orderType)) return undefined;
+    return solanaOrderActions.getUpdateError({
+      order: p.order as PositionOrderInfo,
+      changes: { sizeDeltaUsd, triggerPrice, acceptablePrice },
+    });
+  }, [solanaOrderActions, solanaOrderError, p.order, sizeDeltaUsd, triggerPrice, acceptablePrice]);
+
   const submitButtonState = useMemo(() => {
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
       <TooltipAction onClick={detectAndSetAvailableMaxLeverage}>
@@ -880,6 +888,10 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (solanaUpdateError) {
+      return { text: solanaUpdateError, disabled: true };
+    }
+
     const orderTypeName = isMarginDeposit ? t`margin deposit` : getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
@@ -905,6 +917,7 @@ export function OrderEditor(p: Props) {
     isExpressLoading,
     isMultichainSubmitDisabled,
     solanaOrderError,
+    solanaUpdateError,
     solanaOrderActions?.hasPendingSubmission,
     solanaOrderActions?.error,
     isSubmitting,
