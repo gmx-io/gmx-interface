@@ -47,6 +47,11 @@ export type BuySellIconsMode = "off" | "current" | "all";
 
 export type SettingsTab = "trading" | "display" | "notifications" | "debug";
 
+/** Where Settings opened from, when not from a Settings button. */
+export type SettingsTabSource = "walletMenu" | "gmxAccountModal";
+
+export type SettingsTabRequest = { tab: SettingsTab; source?: SettingsTabSource };
+
 const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
 
 function getBuySellIconsMode(savedValue: BuySellIconsMode | boolean | undefined): BuySellIconsMode {
@@ -107,9 +112,9 @@ export type SettingsContextType = {
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
   /** The tab the Settings modal switches to when it opens. */
-  settingsTab: SettingsTab | undefined;
-  setSettingsTab: (tab: SettingsTab | undefined) => void;
-  openSettingsTab: (tab: SettingsTab) => void;
+  settingsTabRequest: SettingsTabRequest | undefined;
+  setSettingsTabRequest: (request: SettingsTabRequest | undefined) => void;
+  openSettingsTab: (tab: SettingsTab, source?: SettingsTabSource) => void;
 
   expressOrdersEnabled: boolean;
   setExpressOrdersEnabled: (val: boolean) => void;
@@ -156,9 +161,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [settingsTab, setSettingsTab] = useState<SettingsTab>();
-  const openSettingsTab = useCallback((tab: SettingsTab) => {
-    setSettingsTab(tab);
+  const [settingsTabRequest, setSettingsTabRequest] = useState<SettingsTabRequest>();
+  const openSettingsTab = useCallback((tab: SettingsTab, source?: SettingsTabSource) => {
+    setSettingsTabRequest({ tab, source });
     setIsSettingsVisible(true);
   }, []);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -422,8 +427,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       isSettingsVisible,
       setIsSettingsVisible,
-      settingsTab,
-      setSettingsTab,
+      settingsTabRequest,
+      setSettingsTabRequest,
       openSettingsTab,
 
       expressOrdersEnabled:
@@ -499,7 +504,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
-    settingsTab,
+    settingsTabRequest,
     openSettingsTab,
     networkId,
     expressSupported,

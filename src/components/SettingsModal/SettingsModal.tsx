@@ -1,11 +1,14 @@
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
 import { getNetworkFeatures } from "config/features";
-import { type SettingsTab, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useNotificationsContext } from "context/NotificationsContext/NotificationsContextProvider";
+import { type SettingsTab, type SettingsTabSource, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { sendNotificationsTabOpenEvent } from "domain/notifications/notificationsAnalytics";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
@@ -267,20 +270,45 @@ export function SettingsModal({
     }
   }, [activeTab, tabOptions]);
 
-  const { settingsTab, setSettingsTab } = settings;
-  const wasSettingsVisibleRef = useRef(isSettingsVisible);
-  useEffect(() => {
-    const isOpening = isSettingsVisible && !wasSettingsVisibleRef.current;
-    wasSettingsVisibleRef.current = isSettingsVisible;
+  const { settingsTabRequest, setSettingsTabRequest } = settings;
+  const [tabSource, setTabSource] = useState<SettingsTabSource>();
 
-    if (isSettingsVisible && settingsTab) {
-      setActiveTab(settingsTab);
-      setSettingsTab(undefined);
-    } else if (isOpening) {
+  // Set during the render, so the tab used last does not show for a moment: the Notifications tab counts its opens.
+  const [wasSettingsVisible, setWasSettingsVisible] = useState(isSettingsVisible);
+  if (isSettingsVisible !== wasSettingsVisible) {
+    setWasSettingsVisible(isSettingsVisible);
+
+    if (isSettingsVisible) {
       // Settings links in toasts mean trading settings, so Settings doesn't reopen on the tab used last.
-      setActiveTab(tabOptions[0].value);
+      setActiveTab(settingsTabRequest?.tab ?? tabOptions[0].value);
+      setTabSource(settingsTabRequest?.source);
     }
-  }, [isSettingsVisible, settingsTab, setSettingsTab, tabOptions]);
+  }
+
+  useEffect(() => {
+    if (isSettingsVisible && settingsTabRequest) {
+      setActiveTab(settingsTabRequest.tab);
+      setTabSource(settingsTabRequest.source);
+      setSettingsTabRequest(undefined);
+    }
+  }, [isSettingsVisible, settingsTabRequest, setSettingsTabRequest]);
+
+  const handleTabChange = useCallback((tab: SettingsTab) => {
+    setActiveTab(tab);
+    setTabSource(undefined);
+  }, []);
+
+  // Counted here, not in the tab: the modal remounts its content when the window crosses the mobile breakpoint.
+  const isNotificationsTabShown = isSettingsVisible && activeTab === "notifications";
+  const { status: notificationsStatus } = useNotificationsContext();
+  // The entry and the state as the tab opens; later changes are not another open.
+  const latestNotificationsOpen = useLatest({ entry: tabSource ?? ("settings" as const), state: notificationsStatus });
+
+  useEffect(() => {
+    if (isNotificationsTabShown) {
+      sendNotificationsTabOpenEvent(latestNotificationsOpen.current.entry, latestNotificationsOpen.current.state);
+    }
+  }, [isNotificationsTabShown, latestNotificationsOpen]);
 
   return (
     <SlideModal
@@ -293,7 +321,7 @@ export function SettingsModal({
       desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="underline" />
+        <Tabs options={tabOptions} selectedValue={activeTab} onChange={handleTabChange} type="underline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           {showTradingSettings && (
             <TabWrapper tab="trading" activeTab={activeTab}>
