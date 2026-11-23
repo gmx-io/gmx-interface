@@ -1,6 +1,7 @@
 import { zeroAddress, zeroHash } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
+import { isContractsV2_2_1 } from "configs/contracts";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
 import { UI_MAX_LEVERAGE_BY_MARKET, type MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
@@ -766,6 +767,7 @@ export function hydrateMarketInfo({
   return {
     ...rawMarketInfo,
     ...(claimableFundingData || {}),
+    useV221LiquidationImpact: chainId !== undefined && isContractsV2_2_1(chainId),
     longToken,
     shortToken,
     indexToken,

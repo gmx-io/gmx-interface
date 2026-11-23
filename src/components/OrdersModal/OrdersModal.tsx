@@ -21,6 +21,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -94,7 +95,7 @@ export function OrdersModal({
 }: Props) {
   const [activeTab, setActiveTab] = useState<TpSlTabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
-  const [isAddFormVisible, setIsAddFormVisible] = useState(false);
+  const [addFormSource, setAddFormSource] = useState<"chart" | "list">();
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -102,6 +103,7 @@ export function OrdersModal({
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
+  const solanaOrderActions = useSolanaOrderActions();
   const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
@@ -208,6 +210,19 @@ export function OrdersModal({
   );
 
   const handleCancelAll = useCallback(async () => {
+    if (solanaOrderActions && displayedOrders.length > 0) {
+      const orderKeys = displayedOrders.map((order) => order.key);
+      setIsCancellingAll(true);
+      setCancellingOrdersKeys((prev) => [...new Set([...prev, ...orderKeys])]);
+      try {
+        await solanaOrderActions.cancelOrders(displayedOrders);
+      } finally {
+        setIsCancellingAll(false);
+        setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
+      }
+      return;
+    }
+
     if (!signer || !provider || displayedOrders.length === 0) return;
 
     setIsCancellingAll(true);
@@ -229,7 +244,6 @@ export function OrdersModal({
             batchParams,
             globalExpressParams,
             requireValidations: false,
-            estimationMethod: "approximate",
             provider,
             isGmxAccount: srcChainId !== undefined,
             subaccount,
@@ -267,6 +281,7 @@ export function OrdersModal({
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
     }
   }, [
+    solanaOrderActions,
     signer,
     provider,
     displayedOrders,
@@ -283,20 +298,20 @@ export function OrdersModal({
 
   useEffect(() => {
     if (isVisible) {
-      setIsAddFormVisible(initialView === "add" && !hasPendingTpSlOrdersRef.current);
+      setAddFormSource(initialView === "add" && !hasPendingTpSlOrdersRef.current ? "chart" : undefined);
       setActiveTab(initialTab);
     } else {
-      setIsAddFormVisible(false);
+      setAddFormSource(undefined);
     }
   }, [isVisible, initialView, initialTab, hasPendingTpSlOrdersRef]);
 
   const handleAddTPSLOpen = useCallback(() => {
-    if (!hasPendingTpSlOrders) setIsAddFormVisible(true);
+    if (!hasPendingTpSlOrders) setAddFormSource("list");
   }, [hasPendingTpSlOrders]);
 
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
-      setIsAddFormVisible(visible);
+      setAddFormSource((current) => (visible ? current ?? "list" : undefined));
       if (!visible && isVisible) {
         setIsVisible(true);
       }
@@ -305,7 +320,7 @@ export function OrdersModal({
   );
 
   const handleAddTPSLBack = useCallback(() => {
-    setIsAddFormVisible(false);
+    setAddFormSource(undefined);
   }, []);
 
   const isEditingFromOrdersModal = !!editingOrderState?.orderKey && editingOrderState.source === "OrdersModal";
@@ -331,7 +346,7 @@ export function OrdersModal({
   return (
     <>
       <Modal
-        isVisible={isVisible && !isAddFormVisible && !isEditingFromOrdersModal}
+        isVisible={isVisible && !addFormSource && !isEditingFromOrdersModal}
         setIsVisible={setIsVisible}
         label={<Trans>{positionTitle} orders</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
@@ -432,13 +447,13 @@ export function OrdersModal({
 
       {position && (
         <AddTPSLModal
-          isVisible={isVisible && isAddFormVisible}
+          isVisible={isVisible && addFormSource !== undefined}
           isCreationPending={hasPendingTpSlOrders}
           setIsVisible={handleAddFormVisibilityChange}
           position={position}
           onBack={handleAddTPSLBack}
-          initialTpPriceInput={initialTpPriceInput}
-          initialSlPriceInput={initialSlPriceInput}
+          initialTpPriceInput={addFormSource === "chart" ? initialTpPriceInput : undefined}
+          initialSlPriceInput={addFormSource === "chart" ? initialSlPriceInput : undefined}
         />
       )}
     </>

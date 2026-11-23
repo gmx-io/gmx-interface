@@ -14,7 +14,7 @@ import CloseIcon from "img/ic_close.svg?react";
 const FLAG_LABELS: Record<RpcDebugFlags, string> = {
   [RpcDebugFlags.LogRpcTracker]: "Log Tracker State",
   [RpcDebugFlags.DebugLargeAccount]: "Debug Large Account",
-  [RpcDebugFlags.DebugAlchemy]: "Debug Alchemy",
+  [RpcDebugFlags.UseProductionRpcRoutes]: "Use production RPC routes",
 };
 
 const PURPOSE_OPTIONS: Array<{ value: string; label: string }> = [
