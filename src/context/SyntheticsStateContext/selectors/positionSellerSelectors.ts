@@ -572,15 +572,6 @@ export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => 
     return EMPTY_ARRAY;
   }
 
-  if (position.marketInfo?.tradeMath === "gmsol") {
-    const collateralToken = getByKey(tokensData, position.collateralTokenAddress);
-    if (!collateralToken) return EMPTY_ARRAY;
-    const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-    return collateralToken.isWrapped && nativeToken?.wrappedAddress === collateralToken.address
-      ? [nativeToken, collateralToken]
-      : [collateralToken];
-  }
-
   let wasNativeTokenInserted = false;
 
   const reachableAddresses = findAllReachableTokens(chainId, position.collateralTokenAddress);
