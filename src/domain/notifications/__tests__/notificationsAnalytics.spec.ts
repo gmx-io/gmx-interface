@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { sendNotificationsDailyStateEvent } from "./notificationsAnalytics";
+import { sendNotificationsDailyStateEvent } from "domain/notifications/notificationsAnalytics";
 
 const { pushEvent } = vi.hoisted(() => ({ pushEvent: vi.fn() }));
 
@@ -13,7 +13,7 @@ describe("sendNotificationsDailyStateEvent", () => {
     localStorage.clear();
     pushEvent.mockReset().mockResolvedValue(undefined);
 
-    // jsdom has no Web Locks: requests for a name run one after another, like across the tabs of one origin.
+    // The test DOM has no Web Locks: requests for one name run one after another, as across the tabs of an origin.
     let lockTail: Promise<unknown> = Promise.resolve();
     Object.defineProperty(navigator, "locks", {
       configurable: true,

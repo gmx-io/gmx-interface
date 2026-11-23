@@ -23,7 +23,7 @@ import { type NotificationTap, parseNotificationRoute } from "./notificationRout
 import { sendNotificationTapEvent } from "./notificationsAnalytics";
 
 /** What the tap event reports; absent once it is sent, or for a URL that only the app wrote. */
-type TapTracking = { notificationType: string | null; isColdStart: boolean };
+type TapTracking = { notificationType: string | undefined; isColdStart: boolean };
 
 function sendTapEvent(tracking: TapTracking | undefined) {
   if (tracking) {
@@ -55,7 +55,7 @@ export function useNotificationTaps() {
       }
 
       const tracking: TapTracking = {
-        notificationType: typeof event.data.notificationType === "string" ? event.data.notificationType : null,
+        notificationType: typeof event.data.notificationType === "string" ? event.data.notificationType : undefined,
         isColdStart: false,
       };
       const nextTap = parseNotificationRoute(event.data.route);
@@ -78,7 +78,7 @@ export function useNotificationTaps() {
     const searchParams = new URLSearchParams(history.location.search);
     const tracking: TapTracking | undefined = searchParams.has(NOTIFICATION_TYPE_SEARCH_PARAM)
       ? {
-          notificationType: searchParams.get(NOTIFICATION_TYPE_SEARCH_PARAM),
+          notificationType: searchParams.get(NOTIFICATION_TYPE_SEARCH_PARAM) ?? undefined,
           isColdStart: !searchParams.has(NOTIFICATION_WARM_TAP_SEARCH_PARAM),
         }
       : undefined;

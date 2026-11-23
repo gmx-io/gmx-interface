@@ -3,6 +3,7 @@ import type { NotificationsStatus } from "context/NotificationsContext/Notificat
 import type { SettingsTabSource } from "context/SettingsContext/SettingsContextProvider";
 import { DAY_MS } from "lib/dates";
 import { readLocalStorageItem, writeLocalStorageItem } from "lib/localStorage";
+import { runExclusiveAcrossTabs } from "lib/runExclusiveAcrossTabs";
 import { sleep } from "lib/sleep";
 import { userAnalytics } from "lib/userAnalytics";
 
@@ -56,18 +57,14 @@ export function sendNotificationsTurnOffEvent() {
 }
 
 /** `type` is the push payload's `data.type`, which anyone opening the app with a crafted URL can set. */
-export function sendNotificationTapEvent(type: string | null | undefined, isColdStart: boolean) {
+export function sendNotificationTapEvent(type: string | undefined, isColdStart: boolean) {
   sendNotificationsEvent({ action: "Tap", notificationType: (type && TAP_TYPES.get(type)) || "other", isColdStart });
 }
 
 /** Sends at the first app open in 24 hours. */
-export async function sendNotificationsDailyStateEvent(state: NotificationsStatus) {
-  // Tabs opened together would each read the old timestamp before any of them sends, so one tab at a time checks.
-  if (navigator.locks) {
-    await navigator.locks.request(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, () => sendDailyStateOnce(state));
-  } else {
-    await sendDailyStateOnce(state);
-  }
+export function sendNotificationsDailyStateEvent(state: NotificationsStatus) {
+  // Tabs opened together would each read the old timestamp before any of them sends.
+  return runExclusiveAcrossTabs(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, () => sendDailyStateOnce(state));
 }
 
 async function sendDailyStateOnce(state: NotificationsStatus) {

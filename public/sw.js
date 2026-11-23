@@ -188,7 +188,7 @@ function getNotificationRoute(url) {
   return NOTIFICATION_FALLBACK_ROUTE;
 }
 
-async function openNotificationRoute(route, notificationType = "") {
+async function openNotificationRoute(route, notificationType) {
   const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
   const appWindow =
     windows.find((client) => client.focused) ??
