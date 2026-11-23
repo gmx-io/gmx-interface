@@ -121,7 +121,7 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
 
   it("updates only the changed fields and ignores EVM unlimited prices", () => {
     const action = buildGmsolUpdateAction({
-      order: order({}),
+      order: { ...order({}), acceptablePrice: 0n } as PositionOrderInfo,
       changes: { sizeDeltaUsd: 40n * usd, triggerPrice: 260n * usd, acceptablePrice: 2n ** 256n - 1n },
     });
     if (action.type !== "update") throw new Error("Expected update");
@@ -141,6 +141,36 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
         changes: { sizeDeltaUsd: undefined, triggerPrice: 250n * usd, acceptablePrice: undefined },
       })
     ).toThrow(new GmsolTradeboxError("amounts"));
+  });
+
+  it.each([
+    ["the trigger moves", { sizeDeltaUsd: 40n * usd, triggerPrice: 300n * usd }],
+    ["nothing else changes", { sizeDeltaUsd: 40n * usd, triggerPrice: 250n * usd }],
+  ])("refuses to drop a bounded acceptable price when %s", (_, changes) => {
+    expect(() => buildGmsolUpdateAction({ order: order({}), changes: { ...changes, acceptablePrice: 0n } })).toThrow(
+      new GmsolTradeboxError("acceptablePrice")
+    );
+  });
+
+  it("keeps a bounded acceptable price on a size-only edit and moves the trigger of an unlimited order", () => {
+    const sizeOnly = buildGmsolUpdateAction({
+      order: order({}),
+      changes: { sizeDeltaUsd: 30n * usd, triggerPrice: 250n * usd, acceptablePrice: 0n },
+    });
+    if (sizeOnly.type !== "update") throw new Error("Expected update");
+    expect(sizeOnly.changes).toMatchObject({
+      sizeDeltaUsd: 30n * usd,
+      triggerPrice: undefined,
+      acceptablePrice: undefined,
+    });
+
+    const unlimited = { ...order({}), acceptablePrice: 0n } as PositionOrderInfo;
+    const moved = buildGmsolUpdateAction({
+      order: unlimited,
+      changes: { sizeDeltaUsd: 40n * usd, triggerPrice: 300n * usd, acceptablePrice: 0n },
+    });
+    if (moved.type !== "update") throw new Error("Expected update");
+    expect(moved.changes).toMatchObject({ triggerPrice: 300n * usd, acceptablePrice: undefined });
   });
 
   it.each([

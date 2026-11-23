@@ -88,8 +88,9 @@ export function buildGmsolUpdateAction({
 }): GmsolOrderAction {
   const context = getGmsolOrderContext(order);
   // 0 and maxUint256 are EVM "unlimited" sentinels; the pinned SDK cannot set an unlimited price, so they leave it as is.
+  const isUnlimited = (price: bigint) => price <= 0n || price === maxUint256;
   const pick = (next: bigint | undefined, current: bigint) =>
-    next === undefined || next === current || next <= 0n || next === maxUint256 ? undefined : next;
+    next === undefined || next === current || isUnlimited(next) ? undefined : next;
   const update: GmsolOrderUpdate = {
     kind: context.kind,
     indexTokenDecimals: order.indexToken.decimals,
@@ -100,8 +101,16 @@ export function buildGmsolUpdateAction({
     minOutput: undefined,
     validFromTs: undefined,
   };
-  if (update.sizeDeltaUsd === undefined && update.triggerPrice === undefined && update.acceptablePrice === undefined)
-    throw new GmsolTradeboxError("amounts");
+  // Keeping a bounded acceptable price while the trigger moves can leave the order unexecutable,
+  // and the order cannot be made unlimited on Solana, so the edit is refused instead.
+  const dropsAcceptablePrice =
+    changes.acceptablePrice !== undefined &&
+    isUnlimited(changes.acceptablePrice) &&
+    !isUnlimited(order.acceptablePrice);
+  const hasOtherChanges = update.sizeDeltaUsd !== undefined || update.triggerPrice !== undefined;
+  if (dropsAcceptablePrice && (update.triggerPrice !== undefined || !hasOtherChanges))
+    throw new GmsolTradeboxError("acceptablePrice");
+  if (!hasOtherChanges && update.acceptablePrice === undefined) throw new GmsolTradeboxError("amounts");
 
   return { type: "update", order: context, changes: update };
 }
