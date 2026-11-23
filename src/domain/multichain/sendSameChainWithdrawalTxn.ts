@@ -13,11 +13,13 @@ export async function sendSameChainWithdrawalTxn({
   signer,
   bridgeOutParams,
   callback,
+  validateBeforeSend,
 }: {
   chainId: SettlementChainId;
   signer: WalletSigner;
   bridgeOutParams: BridgeOutParams;
   callback?: TxnCallback<WalletTxnCtx>;
+  validateBeforeSend?: () => void;
 }) {
   const txn = buildSameChainWithdrawTxn({ chainId, bridgeOutParams });
 
@@ -28,6 +30,7 @@ export async function sendSameChainWithdrawalTxn({
     callData: txn.data,
     value: txn.value,
     callback,
+    validateBeforeSend,
   });
 }
 

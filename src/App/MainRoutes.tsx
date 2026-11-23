@@ -112,6 +112,8 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+// EVM features a user reaches by switching the network. /jobs, /ecosystem, /announcements and /parsetx
+// are not listed on purpose (TRD-142): on Solana they render the 404 like unknown paths.
 const EVM_ONLY_PAGE_PATHS = [
   "/dashboard",
   "/monitor",
@@ -130,12 +132,7 @@ const EVM_ONLY_PAGE_PATHS = [
   "/referrals-tier",
   "/begin_account_transfer",
   "/complete_account_transfer",
-  "/rpc-debug",
   "/oracle-keeper-debug",
-  "/jobs",
-  "/ecosystem",
-  "/announcements",
-  "/parsetx",
 ];
 
 // Loaded only while Solana is selected, which needs the solanaNetwork flag, so the Solana trade state
@@ -177,6 +174,9 @@ function SolanaRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path={GT_POINTS_STAKE_PATH}>
         <GtPointsStakePage />
+      </Route>
+      <Route exact path="/rpc-debug">
+        <RpcDebugPage />
       </Route>
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
