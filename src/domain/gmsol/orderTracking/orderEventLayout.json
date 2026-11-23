@@ -1,0 +1,642 @@
+{
+  "idlCommit": "c6778dc9bf6444f9037c3b0d2dc219c857e1b45d",
+  "idlSha256": "9bc76f2081a1f45334208618aa1b5c1a944e6f1c885c5afb696978210ba81a94",
+  "envelope": {
+    "tagHex": "e445a52e51cb9a1d",
+    "eventDiscriminatorOffset": 8,
+    "payloadOffset": 16,
+    "accountCount": 1,
+    "eventAuthority": "8a4wJ2bMiH6XWDZ7biTnejkss8VG7GMwd9Mg6F5fDfHF",
+    "eventAuthorityBump": 255,
+    "eventAuthoritySeed": "__event_authority"
+  },
+  "events": [
+    {
+      "name": "OrderCreated",
+      "discriminatorHex": "e001e53ffe3cbe9f"
+    },
+    {
+      "name": "OrderUpdated",
+      "discriminatorHex": "ac8cd2f16c757a91"
+    },
+    {
+      "name": "OrderRemoved",
+      "discriminatorHex": "549b798ef0eb9017"
+    },
+    {
+      "name": "TradeEvent",
+      "discriminatorHex": "bddb7fd34ee661ee"
+    }
+  ],
+  "types": {
+    "OrderCreated": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "ts",
+          "type": "i64"
+        },
+        {
+          "name": "store",
+          "type": "pubkey"
+        },
+        {
+          "name": "order",
+          "type": "pubkey"
+        },
+        {
+          "name": "position",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    "OrderUpdated": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "is_create",
+          "type": "bool"
+        },
+        {
+          "name": "id",
+          "type": "u64"
+        },
+        {
+          "name": "ts",
+          "type": "i64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "store",
+          "type": "pubkey"
+        },
+        {
+          "name": "order",
+          "type": "pubkey"
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey"
+        },
+        {
+          "name": "owner",
+          "type": "pubkey"
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "OrderParamsForEvent"
+            }
+          }
+        }
+      ]
+    },
+    "OrderParamsForEvent": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "kind",
+          "type": {
+            "defined": {
+              "name": "OrderKind"
+            }
+          }
+        },
+        {
+          "name": "is_long",
+          "type": "bool"
+        },
+        {
+          "name": "decrease_position_swap_type",
+          "type": {
+            "defined": {
+              "name": "DecreasePositionSwapType"
+            }
+          }
+        },
+        {
+          "name": "position",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "collateral_token",
+          "type": "pubkey"
+        },
+        {
+          "name": "initial_collateral_token",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "initial_collateral_delta_amount",
+          "type": "u64"
+        },
+        {
+          "name": "size_delta_value",
+          "type": "u128"
+        },
+        {
+          "name": "min_output",
+          "type": "u128"
+        },
+        {
+          "name": "trigger_price",
+          "type": "u128"
+        },
+        {
+          "name": "acceptable_price",
+          "type": "u128"
+        },
+        {
+          "name": "valid_from_ts",
+          "type": "i64"
+        }
+      ]
+    },
+    "OrderKind": {
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Liquidation"
+        },
+        {
+          "name": "AutoDeleveraging"
+        },
+        {
+          "name": "MarketSwap"
+        },
+        {
+          "name": "MarketIncrease"
+        },
+        {
+          "name": "MarketDecrease"
+        },
+        {
+          "name": "LimitSwap"
+        },
+        {
+          "name": "LimitIncrease"
+        },
+        {
+          "name": "LimitDecrease"
+        },
+        {
+          "name": "StopLossDecrease"
+        }
+      ]
+    },
+    "DecreasePositionSwapType": {
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "NoSwap"
+        },
+        {
+          "name": "PnlTokenToCollateralToken"
+        },
+        {
+          "name": "CollateralToPnlToken"
+        }
+      ]
+    },
+    "OrderRemoved": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "id",
+          "type": "u64"
+        },
+        {
+          "name": "ts",
+          "type": "i64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "store",
+          "type": "pubkey"
+        },
+        {
+          "name": "order",
+          "type": "pubkey"
+        },
+        {
+          "name": "kind",
+          "type": {
+            "defined": {
+              "name": "OrderKind"
+            }
+          }
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey"
+        },
+        {
+          "name": "owner",
+          "type": "pubkey"
+        },
+        {
+          "name": "state",
+          "type": {
+            "defined": {
+              "name": "ActionState"
+            }
+          }
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    "ActionState": {
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Pending"
+        },
+        {
+          "name": "Completed"
+        },
+        {
+          "name": "Cancelled"
+        }
+      ]
+    },
+    "TradeEvent": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "flags",
+          "type": "u8"
+        },
+        {
+          "name": "padding_0",
+          "type": {
+            "array": ["u8", 7]
+          }
+        },
+        {
+          "name": "trade_id",
+          "type": "u64"
+        },
+        {
+          "name": "authority",
+          "type": "pubkey"
+        },
+        {
+          "name": "store",
+          "type": "pubkey"
+        },
+        {
+          "name": "market_token",
+          "type": "pubkey"
+        },
+        {
+          "name": "user",
+          "type": "pubkey"
+        },
+        {
+          "name": "position",
+          "type": "pubkey"
+        },
+        {
+          "name": "order",
+          "type": "pubkey"
+        },
+        {
+          "name": "final_output_token",
+          "type": "pubkey"
+        },
+        {
+          "name": "ts",
+          "type": "i64"
+        },
+        {
+          "name": "slot",
+          "type": "u64"
+        },
+        {
+          "name": "before",
+          "type": {
+            "defined": {
+              "name": "EventPositionState"
+            }
+          }
+        },
+        {
+          "name": "after",
+          "type": {
+            "defined": {
+              "name": "EventPositionState"
+            }
+          }
+        },
+        {
+          "name": "transfer_out",
+          "type": {
+            "defined": {
+              "name": "EventTransferOut"
+            }
+          }
+        },
+        {
+          "name": "padding_1",
+          "type": {
+            "array": ["u8", 8]
+          }
+        },
+        {
+          "name": "prices",
+          "type": {
+            "defined": {
+              "name": "EventTradePrices"
+            }
+          }
+        },
+        {
+          "name": "execution_price",
+          "type": "u128"
+        },
+        {
+          "name": "price_impact_value",
+          "type": "i128"
+        },
+        {
+          "name": "price_impact_diff",
+          "type": "u128"
+        },
+        {
+          "name": "pnl",
+          "type": {
+            "defined": {
+              "name": "EventTradePnl"
+            }
+          }
+        },
+        {
+          "name": "fees",
+          "type": {
+            "defined": {
+              "name": "EventTradeFees"
+            }
+          }
+        },
+        {
+          "name": "output_amounts",
+          "type": {
+            "defined": {
+              "name": "EventTradeOutputAmounts"
+            }
+          }
+        }
+      ]
+    },
+    "EventPositionState": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "trade_id",
+          "type": "u64"
+        },
+        {
+          "name": "increased_at",
+          "type": "i64"
+        },
+        {
+          "name": "updated_at_slot",
+          "type": "u64"
+        },
+        {
+          "name": "decreased_at",
+          "type": "i64"
+        },
+        {
+          "name": "size_in_tokens",
+          "type": "u128"
+        },
+        {
+          "name": "collateral_amount",
+          "type": "u128"
+        },
+        {
+          "name": "size_in_usd",
+          "type": "u128"
+        },
+        {
+          "name": "borrowing_factor",
+          "type": "u128"
+        },
+        {
+          "name": "funding_fee_amount_per_size",
+          "type": "u128"
+        },
+        {
+          "name": "long_token_claimable_funding_amount_per_size",
+          "type": "u128"
+        },
+        {
+          "name": "short_token_claimable_funding_amount_per_size",
+          "type": "u128"
+        },
+        {
+          "name": "reserved",
+          "type": {
+            "array": ["u8", 128]
+          }
+        }
+      ]
+    },
+    "EventTransferOut": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "executed",
+          "type": "u8"
+        },
+        {
+          "name": "padding_0",
+          "type": {
+            "array": ["u8", 7]
+          }
+        },
+        {
+          "name": "final_output_token",
+          "type": "u64"
+        },
+        {
+          "name": "secondary_output_token",
+          "type": "u64"
+        },
+        {
+          "name": "long_token",
+          "type": "u64"
+        },
+        {
+          "name": "short_token",
+          "type": "u64"
+        },
+        {
+          "name": "long_token_for_claimable_account_of_user",
+          "type": "u64"
+        },
+        {
+          "name": "short_token_for_claimable_account_of_user",
+          "type": "u64"
+        },
+        {
+          "name": "long_token_for_claimable_account_of_holding",
+          "type": "u64"
+        },
+        {
+          "name": "short_token_for_claimable_account_of_holding",
+          "type": "u64"
+        }
+      ]
+    },
+    "EventTradePrices": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "index",
+          "type": {
+            "defined": {
+              "name": "EventTradePrice"
+            }
+          }
+        },
+        {
+          "name": "long",
+          "type": {
+            "defined": {
+              "name": "EventTradePrice"
+            }
+          }
+        },
+        {
+          "name": "short",
+          "type": {
+            "defined": {
+              "name": "EventTradePrice"
+            }
+          }
+        }
+      ]
+    },
+    "EventTradePrice": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "min",
+          "type": "u128"
+        },
+        {
+          "name": "max",
+          "type": "u128"
+        }
+      ]
+    },
+    "EventTradePnl": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "pnl",
+          "type": "i128"
+        },
+        {
+          "name": "uncapped_pnl",
+          "type": "i128"
+        }
+      ]
+    },
+    "EventTradeFees": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "order_fee_for_receiver_amount",
+          "type": "u128"
+        },
+        {
+          "name": "order_fee_for_pool_amount",
+          "type": "u128"
+        },
+        {
+          "name": "liquidation_fee_amount",
+          "type": "u128"
+        },
+        {
+          "name": "liquidation_fee_for_receiver_amount",
+          "type": "u128"
+        },
+        {
+          "name": "total_borrowing_fee_amount",
+          "type": "u128"
+        },
+        {
+          "name": "borrowing_fee_for_receiver_amount",
+          "type": "u128"
+        },
+        {
+          "name": "funding_fee_amount",
+          "type": "u128"
+        },
+        {
+          "name": "claimable_funding_fee_long_token_amount",
+          "type": "u128"
+        },
+        {
+          "name": "claimable_funding_fee_short_token_amount",
+          "type": "u128"
+        }
+      ]
+    },
+    "EventTradeOutputAmounts": {
+      "kind": "struct",
+      "fields": [
+        {
+          "name": "output_amount",
+          "type": "u128"
+        },
+        {
+          "name": "secondary_output_amount",
+          "type": "u128"
+        }
+      ]
+    }
+  },
+  "otherEventDiscriminators": [
+    "5c0c5bce2dd8ed97",
+    "92e1b585c2ad3647",
+    "81806a4dfc2ba529",
+    "3f36e8c922ee7b09",
+    "d0a2f6d9bf0e0e24",
+    "b8420ec92406f2a4",
+    "9657c0f6f3255694",
+    "989553d4dde148cf",
+    "9b9a638aeb38f064",
+    "85c7f20fdaa1f415",
+    "f7970ccb743ba58c",
+    "b00f7da1abd4f71c",
+    "d5cd28f571e63a12",
+    "c03473bd692cfe79",
+    "fb9725cc7f5773e8",
+    "493af7b564edf951",
+    "7e8689d3d68379bc",
+    "96a61ae11c59264f",
+    "2c8630279035f44d",
+    "254ec7c03344ada2",
+    "5798a64310e91b38"
+  ]
+}

@@ -2,13 +2,14 @@ import {
   capPositionImpactUsdByMaxImpactPool,
   capPositionImpactUsdByMaxPriceImpactFactor,
   getPositionFee,
+  getPriceImpactDeltaAmount,
   getPriceImpactForPosition,
 } from "utils/fees";
 import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
-import { getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
+import { applyFactor } from "utils/numbers";
+import { getLiquidationPriceImpact, getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
@@ -91,37 +92,13 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
 
   const collateralUsd = convertToUsd(collateralAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
 
-  const { priceImpactDeltaUsd, balanceWasImproved } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-    fallbackToZero: true,
-    sizeDeltaInTokens: sizeInTokens,
+  const { priceImpactDeltaUsd: totalImpactUsd, balanceWasImproved } = getLiquidationPriceImpact({
+    marketInfo,
+    sizeInUsd,
+    sizeInTokens,
+    pendingImpactAmount,
+    isLong,
   });
-
-  let totalImpactUsd = priceImpactDeltaUsd;
-
-  if (totalImpactUsd > 0) {
-    totalImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, totalImpactUsd);
-  }
-
-  const pendingImpactUsd = convertToUsd(
-    marketInfo.tradeMath === "gmsol" ? 0n : pendingImpactAmount,
-    indexToken.decimals,
-    pendingImpactAmount > 0 ? indexToken.prices.minPrice : indexToken.prices.maxPrice
-  )!;
-
-  totalImpactUsd = totalImpactUsd + pendingImpactUsd;
-
-  if (totalImpactUsd >= 0) {
-    totalImpactUsd = 0n;
-  } else {
-    let maxNegativeImpactUsd = -applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-    if (marketInfo.tradeMath === "gmsol") {
-      maxNegativeImpactUsd = getGmsolUsdAmount(maxNegativeImpactUsd);
-    }
-
-    if (totalImpactUsd < maxNegativeImpactUsd) {
-      totalImpactUsd = maxNegativeImpactUsd;
-    }
-  }
 
   const closingFeeFactor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
@@ -313,13 +290,7 @@ export function getIncreaseResultingPositionState(
     increaseImpactUsd = capPositionImpactUsdByMaxImpactPool(marketInfo, increaseImpactUsd);
   }
 
-  const increasePendingImpactAmount =
-    increaseImpactUsd > 0n
-      ? convertToTokenAmount(increaseImpactUsd, indexToken.decimals, indexToken.prices.maxPrice)!
-      : roundUpMagnitudeDivision(
-          increaseImpactUsd * expandDecimals(1, indexToken.decimals),
-          indexToken.prices.minPrice
-        );
+  const increasePendingImpactAmount = getPriceImpactDeltaAmount(indexToken, increaseImpactUsd);
 
   const executedSizeDeltaInTokens =
     marketInfo.tradeMath === "gmsol"
