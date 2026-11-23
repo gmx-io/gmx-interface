@@ -1,7 +1,7 @@
-import { applySwapImpactWithCap, getPriceImpactForSwap, getSwapFee } from "domain/synthetics/fees";
+import { applySwapImpactWithCap, getPriceImpactForDeposit, getSwapFee } from "domain/synthetics/fees";
 import { GlvInfo, MarketInfo, marketTokenAmountToUsd, usdToMarketTokenAmount } from "domain/synthetics/markets";
 import { TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
-import { applyFactor, roundUpDivision } from "lib/numbers";
+import { applyFactor, expandDecimals, roundUpDivision } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { DepositAmounts, FindSwapPath } from "sdk/utils/trade/types";
@@ -20,6 +20,8 @@ export function getDepositAmounts(p: {
   includeLongToken: boolean;
   includeShortToken: boolean;
   uiFeeFactor: bigint;
+  // Unknown until loaded, then the whole fee counts as staying in the pool, which only lowers the quote
+  swapFeeReceiverFactor?: bigint;
   forShift?: boolean;
   isMarketTokenDeposit: boolean;
   glvInfo?: GlvInfo;
@@ -109,7 +111,7 @@ export function getDepositAmounts(p: {
       return values;
     }
 
-    const priceImpactValues = getPriceImpactForSwap(
+    const priceImpactValues = getPriceImpactForDeposit(
       marketInfo,
       longToken,
       shortToken,
@@ -119,11 +121,13 @@ export function getDepositAmounts(p: {
 
     const { priceImpactDeltaUsd } = priceImpactValues;
     const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
+    let shortLegMarketInfo = marketInfo;
+    let shortLegMarketToken = marketToken;
 
     if (values.longTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.longTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
+        : getSwapFee(marketInfo, values.longTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Deposit);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.longTokenUsd, uiFeeFactor);
@@ -138,29 +142,38 @@ export function getDepositAmounts(p: {
         priceImpactDeltaUsd: bigMath.mulDiv(priceImpactDeltaUsd, values.longTokenUsd, totalDepositUsd),
         swapFeeUsd,
         uiFeeUsd,
+        swapFeeReceiverFactor: p.swapFeeReceiverFactor ?? 0n,
       });
       values.marketTokenAmount += longMint.mintAmount;
       values.swapPriceImpactDeltaUsd += longMint.priceImpactDeltaUsd;
+
+      // The contract mints the short leg against the pool value and supply the long leg leaves,
+      // a same-collateral deposit runs as one leg
+      if (!marketInfo.isSameCollaterals) {
+        shortLegMarketInfo = { ...marketInfo, poolValueMax: marketInfo.poolValueMax + longMint.poolValueDeltaUsd };
+        shortLegMarketToken = { ...marketToken, totalSupply: marketToken.totalSupply! + longMint.mintAmount };
+      }
     }
 
     if (values.shortTokenUsd > 0) {
       const swapFeeUsd = p.forShift
         ? 0n
-        : getSwapFee(marketInfo, values.shortTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
+        : getSwapFee(marketInfo, values.shortTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Deposit);
       values.swapFeeUsd = values.swapFeeUsd + swapFeeUsd;
 
       const uiFeeUsd = applyFactor(values.shortTokenUsd, uiFeeFactor);
       values.uiFeeUsd = values.uiFeeUsd + uiFeeUsd;
 
       const shortMint = getMarketTokenAmountByCollateral({
-        marketInfo,
-        marketToken,
+        marketInfo: shortLegMarketInfo,
+        marketToken: shortLegMarketToken,
         tokenIn: shortToken,
         tokenOut: longToken,
         amount: values.shortTokenAmount,
         priceImpactDeltaUsd: bigMath.mulDiv(priceImpactDeltaUsd, values.shortTokenUsd, totalDepositUsd),
         swapFeeUsd,
         uiFeeUsd,
+        swapFeeReceiverFactor: p.swapFeeReceiverFactor ?? 0n,
       });
       values.marketTokenAmount += shortMint.mintAmount;
       values.swapPriceImpactDeltaUsd += shortMint.priceImpactDeltaUsd;
@@ -183,12 +196,15 @@ export function getDepositAmounts(p: {
     }
 
     if (glvInfo && glvToken) {
-      values.marketTokenUsd = convertToUsd(glvTokenAmount, glvToken.decimals, glvToken.prices.maxPrice)!;
-      values.marketTokenAmount = convertToTokenAmount(
-        values.marketTokenUsd,
-        marketToken.decimals,
+      // Rounded up, so the GM paid for the typed GLV amount mints at least that amount back
+      values.marketTokenUsd = roundUpDivision(
+        (glvTokenAmount ?? 0n) * glvToken.prices.maxPrice,
+        expandDecimals(1, glvToken.decimals)
+      );
+      values.marketTokenAmount = roundUpDivision(
+        values.marketTokenUsd * expandDecimals(1, marketToken.decimals),
         marketToken.prices.minPrice
-      )!;
+      );
       values.glvTokenAmount = glvTokenAmount ?? 0n;
       values.glvTokenUsd = values.marketTokenUsd;
     } else {
@@ -225,7 +241,7 @@ export function getDepositAmounts(p: {
       values.shortTokenUsd = values.marketTokenUsd;
     }
 
-    const priceImpactValues = getPriceImpactForSwap(
+    const priceImpactValues = getPriceImpactForDeposit(
       marketInfo,
       longToken,
       shortToken,
@@ -235,7 +251,7 @@ export function getDepositAmounts(p: {
 
     const swapFeeUsd = p.forShift
       ? 0n
-      : getSwapFee(marketInfo, values.marketTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Swap);
+      : getSwapFee(marketInfo, values.marketTokenUsd, priceImpactValues.balanceWasImproved, SwapPricingType.Deposit);
     const uiFeeUsd = applyFactor(values.marketTokenUsd, uiFeeFactor);
     const totalDepositUsd = values.longTokenUsd + values.shortTokenUsd;
 
@@ -483,8 +499,9 @@ function getMarketTokenAmountByCollateral(p: {
   priceImpactDeltaUsd: bigint;
   swapFeeUsd: bigint;
   uiFeeUsd: bigint;
-}): { mintAmount: bigint; priceImpactDeltaUsd: bigint } {
-  const { marketInfo, marketToken, tokenIn, tokenOut, amount, swapFeeUsd, uiFeeUsd } = p;
+  swapFeeReceiverFactor: bigint;
+}): { mintAmount: bigint; priceImpactDeltaUsd: bigint; poolValueDeltaUsd: bigint } {
+  const { marketInfo, marketToken, tokenIn, tokenOut, amount, swapFeeUsd, uiFeeUsd, swapFeeReceiverFactor } = p;
 
   const swapFeeAmount = convertToTokenAmount(swapFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
   const uiFeeAmount = convertToTokenAmount(uiFeeUsd, tokenIn.decimals, tokenIn.prices.minPrice)!;
@@ -519,5 +536,12 @@ function getMarketTokenAmountByCollateral(p: {
   const usdValue = convertToUsd(amountInAfterFees, tokenIn.decimals, tokenIn.prices.minPrice)!;
   mintAmount = mintAmount + usdToMarketTokenAmount(marketInfo, marketToken, usdValue);
 
-  return { mintAmount, priceImpactDeltaUsd };
+  // The pool keeps the deposit and its share of the fee, plus the positive impact paid from the impact pool,
+  // valued at the max price like the maximized pool value
+  const poolFeeAmount = swapFeeAmount - applyFactor(swapFeeAmount, swapFeeReceiverFactor);
+  const poolValueDeltaUsd =
+    convertToUsd(amountInAfterFees + poolFeeAmount, tokenIn.decimals, tokenIn.prices.maxPrice)! +
+    (priceImpactDeltaUsd > 0 ? priceImpactDeltaUsd : 0n);
+
+  return { mintAmount, priceImpactDeltaUsd, poolValueDeltaUsd };
 }

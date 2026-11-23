@@ -428,6 +428,40 @@ export function getPriceImpactForSwap(
   };
 }
 
+/**
+ * A positive deposit impact is paid out of the swap impact pool into the market pool, which takes back part of the
+ * balance improvement, so the contract prices it again with that rebate included
+ * @see https://github.com/gmx-io/gmx-synthetics/blob/973adf75/contracts/pricing/SwapPricingUtils.sol#L122
+ */
+export function getPriceImpactForDeposit(
+  marketInfo: MarketInfo,
+  tokenA: TokenData,
+  tokenB: TokenData,
+  usdDeltaTokenA: bigint,
+  usdDeltaTokenB: bigint
+) {
+  const priceImpactValues = getPriceImpactForSwap(marketInfo, tokenA, tokenB, usdDeltaTokenA, usdDeltaTokenB);
+  const totalUsdDelta = usdDeltaTokenA + usdDeltaTokenB;
+
+  if (priceImpactValues.priceImpactDeltaUsd <= 0n || totalUsdDelta === 0n) {
+    return priceImpactValues;
+  }
+
+  // Each side's rebate is paid in the other token, so it is the other side's share of the impact
+  const { priceImpactDeltaUsd } = getPriceImpactForSwap(
+    marketInfo,
+    tokenA,
+    tokenB,
+    usdDeltaTokenA + bigMath.mulDiv(priceImpactValues.priceImpactDeltaUsd, usdDeltaTokenB, totalUsdDelta),
+    usdDeltaTokenB + bigMath.mulDiv(priceImpactValues.priceImpactDeltaUsd, usdDeltaTokenA, totalUsdDelta)
+  );
+
+  return {
+    priceImpactDeltaUsd: bigMath.max(priceImpactDeltaUsd, 0n),
+    balanceWasImproved: priceImpactValues.balanceWasImproved,
+  };
+}
+
 function getNextOpenInterestForVirtualInventory(p: { virtualInventory: bigint; usdDelta: bigint; isLong: boolean }) {
   const { virtualInventory, usdDelta, isLong } = p;
 

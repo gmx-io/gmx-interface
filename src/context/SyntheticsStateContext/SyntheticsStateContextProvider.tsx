@@ -30,6 +30,7 @@ import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/f
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { useProDiscountFactorRequest } from "domain/synthetics/fees/useProDiscountFactor";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
+import { useSwapFeeReceiverFactorRequest } from "domain/synthetics/fees/useSwapFeeReceiverFactor";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
 import { JitLiquidityData } from "domain/synthetics/jit/utils";
@@ -129,6 +130,7 @@ export type SyntheticsState = {
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
+    swapFeeReceiverFactor?: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
     feeDiscountFactor?: bigint;
@@ -268,6 +270,7 @@ export function SyntheticsStateContextProvider({
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
+  const swapFeeReceiverFactor = useSwapFeeReceiverFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
   const proDiscountFactor = useProDiscountFactorRequest(chainId, account);
   const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
@@ -444,6 +447,7 @@ export function SyntheticsStateContextProvider({
         },
         tokensDataResult,
         uiFeeFactor,
+        swapFeeReceiverFactor,
         userReferralInfo,
         proDiscountFactor,
         depositMarketTokensData,
@@ -546,6 +550,7 @@ export function SyntheticsStateContextProvider({
     tokenPermitsState,
     tokensDataResult,
     uiFeeFactor,
+    swapFeeReceiverFactor,
     userReferralInfo,
     proDiscountFactor,
     multichainMarketTokensBalancesResult,

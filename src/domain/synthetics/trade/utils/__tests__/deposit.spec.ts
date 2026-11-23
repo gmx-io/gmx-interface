@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import type { GlvInfo, MarketInfo } from "domain/synthetics/markets";
 import { convertToTokenAmount, convertToUsd, type TokenData } from "domain/synthetics/tokens";
+import { applyFactor } from "lib/numbers";
 import { ARBITRUM } from "sdk/configs/chains";
 import { bigMath } from "sdk/utils/bigmath";
 import type { FindSwapPath, SwapPathStats } from "sdk/utils/trade/types";
@@ -12,6 +13,9 @@ import { getGmSwapError } from "../validation";
 import { MARKET_INFO_FIXTURE } from "./fixtures";
 
 const USD = parseUnits("1", 30);
+const UI_FEE_FACTOR = parseUnits("0.0005", 30);
+const DEPOSIT_FEE_FACTOR = parseUnits("0.001", 30);
+const SWAP_FEE_RECEIVER_FACTOR = parseUnits("0.37", 30);
 
 const USDC_TOKEN = {
   symbol: "USDC",
@@ -29,7 +33,13 @@ const USDT_TOKEN = {
   prices: { minPrice: USD, maxPrice: USD },
 } as TokenData;
 
-const ETH_USD_MARKET: MarketInfo = { ...MARKET_INFO_FIXTURE, shortToken: USDC_TOKEN };
+// deposits pay the deposit fee factor, not the fixture's 5/7 bps swap factor
+const ETH_USD_MARKET: MarketInfo = {
+  ...MARKET_INFO_FIXTURE,
+  shortToken: USDC_TOKEN,
+  depositFeeFactorBalanceWasImproved: DEPOSIT_FEE_FACTOR,
+  depositFeeFactorBalanceWasNotImproved: DEPOSIT_FEE_FACTOR,
+};
 const { longToken } = ETH_USD_MARKET;
 
 const GM_SUPPLY = parseUnits("60000000", 18);
@@ -75,13 +85,38 @@ function getParams(p: { marketInfo: MarketInfo; long: boolean; short: boolean; i
     shortToken: p.marketInfo.shortToken,
     includeLongToken: p.long,
     includeShortToken: p.short,
-    uiFeeFactor: parseUnits("0.0005", 30),
+    uiFeeFactor: UI_FEE_FACTOR,
+    swapFeeReceiverFactor: SWAP_FEE_RECEIVER_FACTOR,
     isMarketTokenDeposit: false,
     glvInfo: p.isGlv ? ({ glvToken: GLV_TOKEN } as GlvInfo) : undefined,
     glvToken: p.isGlv ? GLV_TOKEN : undefined,
     initialShortToken: p.isSwap ? USDT_TOKEN : undefined,
     findSwapPath: p.isSwap ? findSwapPath : undefined,
   };
+}
+
+// ExecuteDepositUtils without price impact: each leg mints against the pool value and supply the previous leg left
+function getExecutedMintWithoutImpact(marketInfo: MarketInfo, legs: [TokenData, bigint][]) {
+  let poolValue = marketInfo.poolValueMax;
+  let supply = GM_SUPPLY;
+  let mintAmount = 0n;
+
+  for (const [token, amount] of legs) {
+    const feeAmount = applyFactor(amount, DEPOSIT_FEE_FACTOR);
+    const amountAfterFees = amount - feeAmount - applyFactor(amount, UI_FEE_FACTOR);
+    const poolFeeAmount = feeAmount - applyFactor(feeAmount, SWAP_FEE_RECEIVER_FACTOR);
+    const legMintAmount = bigMath.mulDiv(
+      supply,
+      convertToUsd(amountAfterFees, token.decimals, token.prices.minPrice)!,
+      poolValue
+    );
+
+    mintAmount += legMintAmount;
+    supply += legMintAmount;
+    poolValue += convertToUsd(amountAfterFees + poolFeeAmount, token.decimals, token.prices.maxPrice)!;
+  }
+
+  return mintAmount;
 }
 
 describe("getDepositAmounts byMarketToken", () => {
@@ -110,6 +145,16 @@ describe("getDepositAmounts byMarketToken", () => {
       long: false,
       short: true,
       isSwap: true,
+    },
+    {
+      name: "paired GM without impact",
+      impactSign: 0,
+      receive: "6000000",
+      long: true,
+      short: true,
+      marketInfo: { swapImpactFactorPositive: 0n, swapImpactFactorNegative: 0n },
+      prevLongTokenAmount: parseUnits("1150", longToken.decimals),
+      prevShortTokenAmount: parseUnits("4600000", USDC_TOKEN.decimals),
     },
     {
       name: "skewed paired GM",
@@ -146,10 +191,21 @@ describe("getDepositAmounts byMarketToken", () => {
     });
 
     const displayedReceive = c.isGlv ? quote.glvTokenAmount : quote.marketTokenAmount;
-    // the GLV deposit mints the GM value over the maximized GLV value
-    const forwardReceive = c.isGlv
-      ? convertToTokenAmount(forwardQuote.marketTokenUsd, GLV_TOKEN.decimals, GLV_TOKEN.prices.maxPrice)!
-      : forwardQuote.marketTokenAmount;
+    let forwardReceive = forwardQuote.marketTokenAmount;
+
+    if (c.isGlv) {
+      // the GLV deposit mints the GM value over the maximized GLV value
+      forwardReceive = convertToTokenAmount(
+        forwardQuote.marketTokenUsd,
+        GLV_TOKEN.decimals,
+        GLV_TOKEN.prices.maxPrice
+      )!;
+    } else if (c.impactSign === 0) {
+      forwardReceive = getExecutedMintWithoutImpact(marketInfo, [
+        [longToken, quote.longTokenAmount],
+        [USDC_TOKEN, quote.shortTokenAmount],
+      ]);
+    }
     const impactPoolUsd =
       convertToUsd(marketInfo.swapImpactPoolAmountLong, longToken.decimals, longToken.prices.maxPrice)! +
       convertToUsd(marketInfo.swapImpactPoolAmountShort, USDC_TOKEN.decimals, USDC_TOKEN.prices.maxPrice)!;
@@ -182,6 +238,36 @@ describe("getDepositAmounts byMarketToken", () => {
       ]);
     }
   });
+
+  it.each(["1000", "1234.567", "0.000001", "31337.000000000000000001"])(
+    "quotes GM to GLV from Receive %s with the GM that mints it back TRD-21",
+    (receive) => {
+      const params = getParams({ marketInfo: ETH_USD_MARKET, long: false, short: false, isGlv: true });
+      const receiveAmount = parseUnits(receive, 18);
+      const quote = getDepositAmounts({
+        ...params,
+        isMarketTokenDeposit: true,
+        strategy: "byMarketToken",
+        longTokenAmount: 0n,
+        shortTokenAmount: 0n,
+        marketTokenAmount: 0n,
+        glvTokenAmount: receiveAmount,
+      });
+      const forwardQuote = getDepositAmounts({
+        ...params,
+        isMarketTokenDeposit: true,
+        strategy: "byCollaterals",
+        longTokenAmount: 0n,
+        shortTokenAmount: 0n,
+        marketTokenAmount: quote.marketTokenAmount,
+        glvTokenAmount: 0n,
+      });
+
+      expect(quote.glvTokenAmount).toBe(receiveAmount);
+      expect(forwardQuote.glvTokenAmount).toBeGreaterThanOrEqual(receiveAmount);
+      expect(forwardQuote.glvTokenAmount - receiveAmount).toBeLessThanOrEqual(2n);
+    }
+  );
 
   it.each([
     { name: "just below the peak", receive: "1235000", isReachable: true },

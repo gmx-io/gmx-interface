@@ -17,6 +17,7 @@ import {
   selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { selectPoolsDetailsDepositCollateralSwapAmountOut } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
+import { selectSwapFeeReceiverFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
@@ -68,6 +69,7 @@ export const useBestGmPoolAddressForGlv = ({
   const setSelectedMarketAddressForGlv = useSelector(selectPoolsDetailsSetSelectedMarketAddressForGlv);
   const setIsMarketForGlvSelectedManually = useSelector(selectPoolsDetailsSetIsMarketForGlvSelectedManually);
   const depositableMarketAddresses = useDepositableGlvGmMarketAddresses();
+  const swapFeeReceiverFactor = useSelector(selectSwapFeeReceiverFactor);
 
   const markets = useMemo(() => {
     if (!isEligible || !glvInfo) {
@@ -101,6 +103,7 @@ export const useBestGmPoolAddressForGlv = ({
         includeLongToken: adjustedLongTokenAmount > 0n,
         includeShortToken: adjustedShortTokenAmount > 0n,
         uiFeeFactor,
+        swapFeeReceiverFactor,
         glvTokenAmount: glvTokenAmount ?? 0n,
         strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
         isMarketTokenDeposit: false,
@@ -162,6 +165,7 @@ export const useBestGmPoolAddressForGlv = ({
     depositShortTokenAmount,
     marketTokenAmount,
     uiFeeFactor,
+    swapFeeReceiverFactor,
     glvTokenAmount,
     focusedInput,
     isDeposit,

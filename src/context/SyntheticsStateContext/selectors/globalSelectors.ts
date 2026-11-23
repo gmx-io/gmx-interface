@@ -24,6 +24,7 @@ export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
 export const selectIsWalletBalancesLoaded = (s: SyntheticsState) => s.globals.tokensDataResult.isWalletBalancesLoaded;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
+export const selectSwapFeeReceiverFactor = (s: SyntheticsState) => s.globals.swapFeeReceiverFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;
 export const selectProDiscountFactor = (s: SyntheticsState) => s.globals.proDiscountFactor;
 export const selectFeeDiscountFactor = (s: SyntheticsState) => s.globals.feeDiscountFactor;

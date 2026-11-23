@@ -29,6 +29,10 @@ export function getSwapFee(
     factor = balanceWasImproved
       ? marketInfo.withdrawalFeeFactorBalanceWasImproved ?? marketInfo.swapFeeFactorForBalanceWasImproved
       : marketInfo.withdrawalFeeFactorBalanceWasNotImproved ?? marketInfo.swapFeeFactorForBalanceWasNotImproved;
+  } else if (swapPricingType === SwapPricingType.Deposit) {
+    factor = balanceWasImproved
+      ? marketInfo.depositFeeFactorBalanceWasImproved ?? marketInfo.swapFeeFactorForBalanceWasImproved
+      : marketInfo.depositFeeFactorBalanceWasNotImproved ?? marketInfo.swapFeeFactorForBalanceWasNotImproved;
   } else {
     factor = balanceWasImproved
       ? marketInfo.swapFeeFactorForBalanceWasImproved
