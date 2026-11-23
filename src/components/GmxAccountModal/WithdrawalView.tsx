@@ -62,7 +62,7 @@ import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
-import { useQuoteOft } from "domain/multichain/useQuoteOft";
+import { useQuoteOft, useQuoteOftProbe } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
@@ -743,7 +743,19 @@ export const WithdrawalView = () => {
     toChainId: withdrawalViewChain,
   });
 
-  const isRouteUnavailable = [quoteOftError, baseNativeFeeError].some(getIsStargateRouteUnavailableError);
+  const { data: probeQuoteOft, error: probeQuoteOftError } = useQuoteOftProbe({
+    fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
+    fromChainId: chainId,
+    toChainId: withdrawalViewChain,
+    decimals: selectedTokenSettlementChainTokenId?.decimals,
+  });
+
+  const isRouteUnavailable = useMemo(
+    () =>
+      [quoteOftError, probeQuoteOftError, baseNativeFeeError].some(getIsStargateRouteUnavailableError) ||
+      probeQuoteOft?.limit.maxAmountLD === 0n,
+    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft]
+  );
 
   const {
     networkFeeUsd: bridgeNetworkFeeUsd,
@@ -1000,7 +1012,7 @@ export const WithdrawalView = () => {
     requireValidations: false,
     overrideWnt: !isSameChain,
     gasPaymentTokenAsCollateralAmount,
-    enabled: !isSameChain,
+    enabled: !isSameChain && !isRouteUnavailable,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
@@ -1521,11 +1533,15 @@ export const WithdrawalView = () => {
 
   const isTestnet = isTestnetChain(chainId);
   const tokenSymbol = selectedToken?.symbol;
-  const withdrawalNetworkName = withdrawalViewChain !== undefined ? getChainName(withdrawalViewChain) : undefined;
+  const destinationNetworkName = withdrawalViewChain !== undefined ? getChainName(withdrawalViewChain) : undefined;
 
   const estimatedTimeValue = useMemo(() => {
     if (isSameChain) {
       return <Trans>Instant</Trans>;
+    }
+
+    if (isRouteUnavailable) {
+      return "-";
     }
 
     if (inputAmount === undefined || inputAmount === 0n) {
@@ -1533,7 +1549,7 @@ export const WithdrawalView = () => {
     }
 
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
-  }, [isSameChain, inputAmount, isTestnet]);
+  }, [isSameChain, isRouteUnavailable, inputAmount, isTestnet]);
 
   const networkFeeValue = useMemo(() => {
     if (isSameChain) {
@@ -1553,10 +1569,14 @@ export const WithdrawalView = () => {
       );
     }
 
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     const someExpressFeeAmount = someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount;
 
     if (someExpressFeeAmount === undefined || gasPaymentToken === undefined) {
-      return isRouteUnavailable ? "-" : "...";
+      return "...";
     }
 
     return (
@@ -1580,11 +1600,15 @@ export const WithdrawalView = () => {
   ]);
 
   const bridgeFeeValue = useMemo(() => {
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     const someBridgeNetworkFee = bridgeNetworkFee ?? lastValidNetworkFees.bridgeNetworkFee;
     const someBridgeNetworkFeeUsd = bridgeNetworkFeeUsd ?? lastValidNetworkFees.bridgeNetworkFeeUsd;
 
     if (someBridgeNetworkFee === undefined || someBridgeNetworkFeeUsd === undefined || relayerFeeToken === undefined) {
-      return isRouteUnavailable ? "-" : "...";
+      return "...";
     }
 
     const bridgeFeeTokenSymbol = relayerFeeToken.symbol;
@@ -1613,8 +1637,12 @@ export const WithdrawalView = () => {
       return <Trans>No fee</Trans>;
     }
 
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     if (protocolFeeUsd === undefined || selectedTokenSettlementChainTokenId === undefined) {
-      return isRouteUnavailable ? "-" : "...";
+      return "...";
     }
 
     return (
@@ -1764,7 +1792,7 @@ export const WithdrawalView = () => {
 
       {!isInsufficientBalance && (
         <>
-          {isAboveLimit && (
+          {isAboveLimit && !isRouteUnavailable && (
             <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
@@ -1818,7 +1846,10 @@ export const WithdrawalView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
+                <ValueTransition
+                  from={formatUsdParts(gmxAccountUsd)}
+                  to={isRouteUnavailable ? undefined : formatUsdParts(nextGmxAccountBalanceUsd)}
+                />
               )
             }
           />
@@ -1828,7 +1859,7 @@ export const WithdrawalView = () => {
       {isRouteUnavailable && (
         <AlertInfoCard type="error" className="mb-16" hideClose>
           <Trans>
-            Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset.
+            Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset.
           </Trans>
         </AlertInfoCard>
       )}

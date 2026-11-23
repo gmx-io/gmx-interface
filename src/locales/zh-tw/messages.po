@@ -3579,6 +3579,7 @@ msgid "Expected 365d fees"
 msgstr "預期365天費用"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Route temporarily unavailable"
 msgstr "路由暫時無法使用"
@@ -5401,6 +5402,7 @@ msgstr "輸入推薦碼"
 msgid "Referral link copied to clipboard"
 msgstr "推薦連結已複製到剪貼簿"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "至 {networkName} 的跨鏈橋流動性不足"
@@ -5578,6 +5580,11 @@ msgstr "安全解除質押上限：{0} GMX / esGMX"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "兌換已提交"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
+msgstr "Stargate 目前不接受向 {destinationNetworkName} 轉帳 {tokenSymbol}。請嘗試其他資產。"
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -13885,10 +13892,6 @@ msgstr "最小倉位大小"
 #: src/pages/RpcDebug/parts.tsx
 msgid "SLOT"
 msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
-msgstr "Stargate 目前不接受向 {withdrawalNetworkName} 轉帳 {tokenSymbol}。請嘗試其他資產。"
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"

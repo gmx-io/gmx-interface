@@ -1,6 +1,6 @@
 import type { SWRConfiguration } from "swr";
 import { defaultConfig } from "swr/_internal";
-import { type Hex, decodeErrorResult, isHex } from "viem";
+import { decodeErrorResult, isHex } from "viem";
 
 import { StargateErrorsAbi } from "config/multichain";
 import { type ErrorLike } from "lib/errors";
@@ -8,27 +8,43 @@ import { extractErrorRevertData } from "lib/errors/customErrors";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 const STARGATE_ROUTE_UNAVAILABLE_ERROR_NAMES = ["FeeLib_Paused", "Stargate_Paused", "Messaging_Unavailable"];
+const STARGATE_SLOW_RETRY_ERROR_NAMES = [...STARGATE_ROUTE_UNAVAILABLE_ERROR_NAMES, "Path_InsufficientCredit"];
 
-export function tryDecodeStargateError(data: Hex) {
+export function decodeStargateError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return undefined;
+  }
+
+  const data = extractErrorRevertData(error as ErrorLike);
+
+  if (!isHex(data)) {
+    return undefined;
+  }
+
   try {
-    return decodeErrorResult({ abi: StargateErrorsAbi, data });
+    const decoded = decodeErrorResult({ abi: StargateErrorsAbi, data });
+
+    // viem also matches the generic Error(string) and Panic(uint256); those aren't Stargate's errors
+    return StargateErrorsAbi.includes(decoded.abiItem) ? decoded : undefined;
   } catch {
     return undefined;
   }
 }
 
-export function getIsStargateRouteUnavailableError(error: unknown): boolean {
-  if (!error || typeof error !== "object") {
-    return false;
-  }
+function getIsStargateErrorIn(error: unknown, errorNames: string[]): boolean {
+  const errorName = decodeStargateError(error)?.errorName;
 
-  const data = extractErrorRevertData(error as ErrorLike);
-  const errorName = isHex(data) ? tryDecodeStargateError(data)?.errorName : undefined;
-
-  return errorName !== undefined && STARGATE_ROUTE_UNAVAILABLE_ERROR_NAMES.includes(errorName);
+  return errorName !== undefined && errorNames.includes(errorName);
 }
 
-// A route Stargate switched off stays off for hours: recheck it once a minute instead of on swr's 5s to 20m backoff
+export function getIsStargateRouteUnavailableError(error: unknown): boolean {
+  return getIsStargateErrorIn(error, STARGATE_ROUTE_UNAVAILABLE_ERROR_NAMES);
+}
+
+const slowRetryTimers = new Map<string, ReturnType<typeof setTimeout>>();
+
+// A paused or empty route stays so for hours: recheck it once a minute instead of on swr's 5s to 20m backoff.
+// Every failed focus revalidation calls this too, so keep one timer per key or the chains pile up.
 export const retryStargateQuoteOnError: NonNullable<SWRConfiguration["onErrorRetry"]> = (
   error,
   key,
@@ -36,8 +52,16 @@ export const retryStargateQuoteOnError: NonNullable<SWRConfiguration["onErrorRet
   revalidate,
   opts
 ) => {
-  if (getIsStargateRouteUnavailableError(error)) {
-    setTimeout(() => revalidate(opts), CONFIG_UPDATE_INTERVAL);
+  if (getIsStargateErrorIn(error, STARGATE_SLOW_RETRY_ERROR_NAMES)) {
+    clearTimeout(slowRetryTimers.get(key));
+    slowRetryTimers.set(
+      key,
+      setTimeout(() => {
+        slowRetryTimers.delete(key);
+        // Restart the backoff so a later network error retries in seconds, not at the count these retries built up
+        revalidate({ ...opts, retryCount: 0 });
+      }, CONFIG_UPDATE_INTERVAL)
+    );
     return;
   }
 

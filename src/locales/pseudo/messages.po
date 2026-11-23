@@ -3579,6 +3579,7 @@ msgid "Expected 365d fees"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Route temporarily unavailable"
 msgstr ""
@@ -5401,6 +5402,7 @@ msgstr ""
 msgid "Referral link copied to clipboard"
 msgstr ""
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr ""
@@ -5577,6 +5579,11 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
+msgstr ""
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
 msgstr ""
 
 #: src/components/ChainDataImage.tsx
@@ -13884,10 +13891,6 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "SLOT"
-msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
 msgstr ""
 
 #: src/components/HistoryExport/HistoryExportModal.tsx

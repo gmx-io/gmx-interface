@@ -3579,6 +3579,7 @@ msgid "Expected 365d fees"
 msgstr "Expected 365d fees"
 
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Route temporarily unavailable"
 msgstr "Route temporarily unavailable"
@@ -5401,6 +5402,7 @@ msgstr "Enter referral code"
 msgid "Referral link copied to clipboard"
 msgstr "Referral link copied to clipboard"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "Insufficient bridge liquidity to {networkName}"
@@ -5578,6 +5580,11 @@ msgstr "Safe unstake limit: {0} GMX / esGMX"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "Swap submitted"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
+msgstr "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -13885,10 +13892,6 @@ msgstr "Min position size"
 #: src/pages/RpcDebug/parts.tsx
 msgid "SLOT"
 msgstr "SLOT"
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
-msgstr "Stargate isn't accepting {tokenSymbol} transfers to {withdrawalNetworkName} right now. Try another asset."
 
 #: src/components/HistoryExport/HistoryExportModal.tsx
 msgid "GMX detailed CSV"

@@ -50,13 +50,13 @@ import {
   estimateSameChainDepositGas,
   sendSameChainDepositTxn,
 } from "domain/multichain/sendSameChainDepositTxn";
-import { getIsStargateRouteUnavailableError, tryDecodeStargateError } from "domain/multichain/stargateErrors";
+import { decodeStargateError, getIsStargateRouteUnavailableError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
-import { useQuoteOft } from "domain/multichain/useQuoteOft";
+import { useQuoteOft, useQuoteOftProbe } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useWithdrawBlockedError } from "domain/multichain/useWithdrawBlockedError";
@@ -468,8 +468,21 @@ export const DepositView = () => {
   const quoteSendNativeFee = quoteSendData?.nativeFee;
   const baseQuoteSendNativeFee = baseQuoteSendData?.nativeFee;
 
-  const isRouteUnavailable = [quoteOftError, quoteSendError, baseQuoteSendError].some(
-    getIsStargateRouteUnavailableError
+  const { data: probeQuoteOft, error: probeQuoteOftError } = useQuoteOftProbe({
+    fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
+    fromChainId: depositViewChain,
+    toChainId: settlementChainId,
+    decimals: selectedTokenSourceChainTokenId?.decimals,
+  });
+
+  const isRouteUnavailable = useMemo(
+    () =>
+      [probeQuoteOftError, quoteOftError, quoteSendError, baseQuoteSendError].some(
+        getIsStargateRouteUnavailableError
+      ) ||
+      // A path with no credit left still quotes, with maxAmountLD = 0; only the send reverts
+      [probeQuoteOft, quoteOft].some((quote) => quote?.limit.maxAmountLD === 0n),
+    [probeQuoteOftError, quoteOftError, quoteSendError, baseQuoteSendError, probeQuoteOft, quoteOft]
   );
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
@@ -753,8 +766,7 @@ export const DepositView = () => {
         if (txnEvent.event === TxnEventName.Error) {
           setIsSubmitting(false);
           let prettyError = txnEvent.data.error;
-          const data = txnEvent.data.error.info?.error?.data;
-          const stargateError = isHex(data) ? tryDecodeStargateError(data) : undefined;
+          const stargateError = decodeStargateError(txnEvent.data.error);
 
           if (stargateError) {
             prettyError = new Error(JSON.stringify(stargateError, null, 2));
@@ -929,6 +941,13 @@ export const DepositView = () => {
       return;
     }
 
+    // Otherwise the waiting deposit would open the wallet by itself once Stargate reopens the route
+    if (isRouteUnavailable) {
+      setShouldSendCrossChainDepositWhenLoaded(false);
+      setIsSubmitting(false);
+      return;
+    }
+
     if (!canSendCrossChainDeposit) {
       return;
     }
@@ -938,7 +957,7 @@ export const DepositView = () => {
     handleCrossChainDeposit().finally(() => {
       isCrossChainDepositLoading.current = false;
     });
-  }, [canSendCrossChainDeposit, handleCrossChainDeposit, shouldSendCrossChainDepositWhenLoaded]);
+  }, [canSendCrossChainDeposit, handleCrossChainDeposit, isRouteUnavailable, shouldSendCrossChainDepositWhenLoaded]);
 
   useEffect(
     function fallbackDepositViewChain() {
@@ -1194,7 +1213,7 @@ export const DepositView = () => {
       ),
       disabled: true,
     };
-  } else if (isRouteUnavailable) {
+  } else if (isRouteUnavailable && !isSubmitting) {
     buttonState = {
       text: t`Route temporarily unavailable`,
       disabled: true,
@@ -1219,6 +1238,12 @@ export const DepositView = () => {
   } else if (selectedTokenBalanceForDeposit !== undefined && amountLD > selectedTokenBalanceForDeposit) {
     buttonState = {
       text: t`Insufficient balance`,
+      disabled: true,
+    };
+  } else if (isAboveLimit && quoteOft !== undefined) {
+    const networkName = getChainName(settlementChainId);
+    buttonState = {
+      text: t`Insufficient bridge liquidity to ${networkName}`,
       disabled: true,
     };
   } else if (isInsufficientSourceChainNativeBalance) {
@@ -1272,20 +1297,28 @@ export const DepositView = () => {
       return <Trans>Instant</Trans>;
     }
 
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     if (inputAmount === undefined || inputAmount === 0n) {
       return "...";
     }
 
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>30s</Trans>;
-  }, [depositViewChain, inputAmount, isTestnet, settlementChainId]);
+  }, [depositViewChain, inputAmount, isRouteUnavailable, isTestnet, settlementChainId]);
 
   const depositFeeValue = useMemo(() => {
     if (depositViewChain === settlementChainId) {
       return <Trans>No fee</Trans>;
     }
 
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     if (protocolFeeAmount === undefined || selectedTokenSourceChainDecimals === undefined) {
-      return isRouteUnavailable ? "-" : "...";
+      return "...";
     }
 
     return (
@@ -1329,8 +1362,12 @@ export const DepositView = () => {
       );
     }
 
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     if (networkFee === undefined || depositViewChain === undefined) {
-      return isRouteUnavailable ? "-" : "...";
+      return "...";
     }
 
     return (
@@ -1465,7 +1502,7 @@ export const DepositView = () => {
                 <UsdValue usd={inputAmountUsd ?? 0n} />
               </div>
             )}
-            {isAboveLimit && (
+            {isAboveLimit && !isRouteUnavailable && (
               <AlertInfoCard type="warning" className="mt-8" hideClose>
                 <div>
                   <Trans>
@@ -1534,7 +1571,10 @@ export const DepositView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
+                <ValueTransition
+                  from={formatUsdParts(gmxAccountUsd)}
+                  to={isRouteUnavailable ? undefined : formatUsdParts(nextGmxAccountBalanceUsd)}
+                />
               )
             }
           />
