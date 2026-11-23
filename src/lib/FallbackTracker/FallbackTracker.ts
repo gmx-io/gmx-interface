@@ -17,6 +17,9 @@ import {
 import { NetworkStatusObserver } from "./NetworkStatusObserver";
 
 export type FallbackTrackerConfig = {
+  // Monitor a single endpoint even when there is no alternative to select.
+  trackSingleEndpoint?: boolean;
+
   // Frequency of endpoint probing
   trackInterval: number;
 
@@ -412,6 +415,7 @@ export class FallbackTracker<TCheckStats> {
 
     this.checkEndpoints(abortController)
       .then(() => {
+        if (abortController.signal.aborted || this.state.abortController !== abortController) return;
         emitTrackingFinished({ trackerKey: this.trackerKey, endpointsStats: this.getEndpointsStats() });
         this.selectBestEndpoints();
       })
@@ -577,6 +581,8 @@ export class FallbackTracker<TCheckStats> {
       })
     );
 
+    if (abortController.signal.aborted || this.state.abortController !== abortController) return;
+
     const fulfilledResults = checkResults.filter((result) => result.status === "fulfilled");
 
     if (fulfilledResults.length === 0) {
@@ -625,7 +631,7 @@ export class FallbackTracker<TCheckStats> {
       !this.state.lastUsage ||
       differenceInMilliseconds(Date.now(), this.state.lastUsage) > this.params.disableUnusedTrackingTimeout;
 
-    return hasMultipleEndpoints && (warmUp || !isUnused);
+    return (hasMultipleEndpoints || this.params.trackSingleEndpoint === true) && (warmUp || !isUnused);
   }
 
   selfSubscribe() {

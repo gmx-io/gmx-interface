@@ -7,9 +7,22 @@ import {
 } from "domain/synthetics/fees";
 import { BASIS_POINTS_DIVISOR_BIGINT, PRECISION, applyFactor, getBasisPoints } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { GmsolPriceImpactError } from "sdk/utils/fees/priceImpact";
+import type { MarketInfo } from "sdk/utils/markets/types";
 import { ExternalSwapQuote, SwapStats, TradeFees, TradeFlags } from "sdk/utils/trade/types";
 
 import { OrderOption } from "../usePositionSellerState";
+
+export function getAvailableTradeQuote<T>(tradeMath: MarketInfo["tradeMath"], calculate: () => T): T | undefined {
+  try {
+    return calculate();
+  } catch (error) {
+    if (tradeMath === "gmsol" && error instanceof GmsolPriceImpactError) {
+      return undefined;
+    }
+    throw error;
+  }
+}
 
 export function getTradeFlagsForCollateralEdit(isLong: boolean | undefined, isIncrease: boolean): TradeFlags {
   return {
@@ -60,6 +73,7 @@ export function getTradeFees(p: {
   swapProfitUsdIn: bigint;
   uiFeeFactor: bigint;
   type: "increase" | "decrease" | "swap";
+  tradeMath?: "gmsol";
 }): TradeFees {
   const {
     initialCollateralUsd,
@@ -82,7 +96,9 @@ export function getTradeFees(p: {
     decreasePositionPriceImpactDeltaUsd,
     uiFeeFactor,
     type,
+    tradeMath,
   } = p;
+  const isGmsol = tradeMath === "gmsol";
 
   const swapFees: SwapFeeItem[] | undefined =
     !externalSwapQuote && initialCollateralUsd > 0
@@ -144,7 +160,7 @@ export function getTradeFees(p: {
 
   const positionNetPriceImpact = getTotalFeeItem([
     type === "increase" ? increasePositionPriceImpact : totalPendingImpact,
-    priceImpactDiff,
+    isGmsol ? undefined : priceImpactDiff,
   ]);
 
   let collateralDeltaBasis;
@@ -168,7 +184,10 @@ export function getTradeFees(p: {
   );
 
   const collateralPriceImpactDiff = getFeeItem(priceImpactDiffUsd, collateralDeltaBasis);
-  const collateralNetPriceImpact = getTotalFeeItem([positionCollateralPriceImpact, collateralPriceImpactDiff]);
+  const collateralNetPriceImpact = getTotalFeeItem([
+    positionCollateralPriceImpact,
+    isGmsol ? undefined : collateralPriceImpactDiff,
+  ]);
 
   const totalFees = getTotalFeeItem([
     ...(swapFees || []),
@@ -176,7 +195,7 @@ export function getTradeFees(p: {
     swapProfitFee,
     swapPriceImpact,
     type === "decrease" ? totalPendingImpact : undefined,
-    type === "decrease" ? priceImpactDiff : undefined,
+    type === "decrease" && !isGmsol ? priceImpactDiff : undefined,
     positionFeeAfterDiscount,
     borrowFee,
     fundingFee,
@@ -186,7 +205,10 @@ export function getTradeFees(p: {
 
   return {
     totalFees,
-    payTotalFees: totalFees,
+    payTotalFees:
+      isGmsol && type === "decrease"
+        ? getTotalFeeItem([totalFees, getFeeItem(-priceImpactDiffUsd, sizeDeltaUsd)])
+        : totalFees,
     swapFees,
     swapProfitFee,
     swapPriceImpact,
