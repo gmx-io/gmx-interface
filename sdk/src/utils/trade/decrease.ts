@@ -484,12 +484,23 @@ export function getDecreasePositionAmounts(p: {
       : twapPartsCount !== undefined
         ? payForTwapPartsCollateralCost({
             numberOfParts: twapPartsCount,
-            initialCostUsd: totalFeesUsd,
-            pendingFeesUsd: values.borrowingFeeUsd + values.fundingFeeUsd,
-            collateralToken,
-            collateralPrice: values.collateralPrice,
             outputAmount: profitAmount,
             remainingCollateralAmount: position.collateralAmount,
+            // gmsol costs are native collateral amounts and include the impact withheld beyond the cap
+            ...(gmsolCosts
+              ? {
+                  cost: costAmount,
+                  pendingCost:
+                    position.fundingFeeAmount +
+                    convertToTokenAmount(values.borrowingFeeUsd, collateralToken.decimals, values.collateralPrice)!,
+                  getCostAmount: (amount: bigint) => amount,
+                }
+              : {
+                  cost: totalFeesUsd,
+                  pendingCost: values.borrowingFeeUsd + values.fundingFeeUsd,
+                  getCostAmount: (usd: bigint) =>
+                    convertToTokenAmount(usd, collateralToken.decimals, values.collateralPrice)!,
+                }),
           })
         : payForCollateralCostAmount({
             costAmount,
@@ -1072,38 +1083,25 @@ function payForCollateralCostBeforePnlTokenProfit(p: {
 
 function payForTwapPartsCollateralCost(p: {
   numberOfParts: bigint;
-  initialCostUsd: bigint;
-  pendingFeesUsd: bigint;
-  collateralToken: TokenData;
-  collateralPrice: bigint;
+  cost: bigint;
+  pendingCost: bigint;
+  getCostAmount: (cost: bigint) => bigint;
   outputAmount: bigint;
   remainingCollateralAmount: bigint;
 }) {
-  const {
-    numberOfParts,
-    initialCostUsd,
-    pendingFeesUsd,
-    collateralToken,
-    collateralPrice,
-    outputAmount,
-    remainingCollateralAmount,
-  } = p;
+  const { numberOfParts, cost, pendingCost, getCostAmount, outputAmount, remainingCollateralAmount } = p;
 
-  const partCostUsd = (initialCostUsd - pendingFeesUsd) / numberOfParts;
+  const partCost = (cost - pendingCost) / numberOfParts;
   const partOutputAmount = outputAmount / numberOfParts;
 
-  const firstPart = payForCollateralCost({
-    initialCostUsd: pendingFeesUsd + partCostUsd,
-    collateralToken,
-    collateralPrice,
+  const firstPart = payForCollateralCostAmount({
+    costAmount: getCostAmount(pendingCost + partCost),
     outputAmount: partOutputAmount,
     remainingCollateralAmount,
   });
 
-  const otherParts = payForCollateralCost({
-    initialCostUsd: initialCostUsd - pendingFeesUsd - partCostUsd,
-    collateralToken,
-    collateralPrice,
+  const otherParts = payForCollateralCostAmount({
+    costAmount: getCostAmount(cost - pendingCost - partCost),
     outputAmount: outputAmount - partOutputAmount,
     remainingCollateralAmount: firstPart.remainingCollateralAmount,
   });
