@@ -46,6 +46,7 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
+import { getSolanaReceiveTokens } from "domain/solana/solanaReceiveTokens";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -167,7 +168,7 @@ export function PositionSeller() {
     setClosingPositionKey(undefined);
   }, [setClosingPositionKey]);
   const availableTokensOptions = useSelector(selectTradeboxAvailableTokensOptions);
-  const availableReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
+  const evmReceiveTokens = useSelector(selectPositionSellerAvailableReceiveTokens);
   const tokensData = useTokensData();
   const { chainId, srcChainId, networkId } = useChainId();
   const { signer, account } = useWallet();
@@ -185,6 +186,10 @@ export function PositionSeller() {
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = useSelector(selectPositionSellerPosition);
+  const availableReceiveTokens = useMemo(
+    () => (isSolana ? getSolanaReceiveTokens(position?.collateralToken, tokensData) : evmReceiveTokens),
+    [isSolana, position?.collateralToken, tokensData, evmReceiveTokens]
+  );
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
@@ -401,6 +406,7 @@ export function PositionSeller() {
       handleSetOrderOption(OrderOption.Market);
     }
   }, [handleSetOrderOption, isTwapUnavailable]);
+
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
     receiveToken,
@@ -815,14 +821,15 @@ export function PositionSeller() {
   useEffect(
     function initReceiveToken() {
       if (!receiveTokenAddress && position?.collateralToken?.address) {
-        // the SDK token getters know no Solana mints; the WSOL collateral is received as is unless SOL is picked
+        // the SDK token getters know no Solana mints; like native ETH on EVM, WSOL collateral defaults to native SOL
         const convertedAddress = isSolana
-          ? position.collateralToken.address
+          ? availableReceiveTokens[0]?.address
           : convertTokenAddress(chainId, position.collateralToken.address, "native");
+        if (!convertedAddress) return;
         setReceiveTokenAddress(convertedAddress);
       }
     },
-    [chainId, isSolana, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
+    [availableReceiveTokens, chainId, isSolana, position?.collateralToken, receiveTokenAddress, setReceiveTokenAddress]
   );
 
   useEffect(() => {
