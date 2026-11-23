@@ -4,21 +4,20 @@ This integration uses the formal public Solana API, configured GMX RPC, shared T
 
 ## Integrated formal PRs
 
-The November 22 refresh integrates transaction head `fac83d15bd`, including native SOL/WSOL funding for atomic TP/SL and official release `d1e9e1fc4c`. Order lifecycle and entry retain their composed behavior. The rewritten balance PR #3195 has exactly the same final source tree as the previously integrated version, so it requires no duplicate code transfer. The app uses the merged gmx-api #362/#364/#365 contract; deployment success does not establish capacity or complete financial-reference acceptance. The source table below records the earlier integration, rather than current PR heads.
+Trading submission, lifecycle notifications, shared entry and close/edit/cancel now come from the single consolidated [#3337](https://github.com/gmx-io/gmx-interface/pull/3337) at `19850b6b461d598b5f9205bd14c60a4c9fc44342`, including release `c588a42b4c`. Future trading integration updates follow that shared branch instead of independently merging #3315, #3316, #3317 and #3293. Their historical commits remain ancestors of #3337; no source history is rewritten. TRD-83 / #3335 collateral deposits and withdrawals remain excluded.
 
-The November 20 integration merges these exact PR heads, including open and draft work. Existing source commits are preserved. Conflicts retain the composed behavior: lifecycle tracking and failure reasons, confirmed-slot floors, account retries, order metadata, close actions and Solana page gates.
+The consolidated implementation supplies the close Receive helper and token metadata, so the separate TRD-136 receive-selector override has been removed. Existing chart/account-retry integration, confirmation-slot floors, stale-data guards and playground build configuration remain. The app consumes the merged public API contract; deployment does not establish API capacity or complete financial-reference acceptance.
+
+The table records the consolidated trading source and retained prerequisite versions; the other rows are historical integration pins, not claims about current open PR heads.
 
 | Capability                                      | PR                                                         | Source head  |
 | ----------------------------------------------- | ---------------------------------------------------------- | ------------ |
+| Consolidated trading submission, lifecycle, entry and order actions | [#3337](https://github.com/gmx-io/gmx-interface/pull/3337) | `19850b6b46` |
 | GMX-owned WASM and latest release               | [#3314](https://github.com/gmx-io/gmx-interface/pull/3314) | `161e89e4a4` |
-| Transaction preparation, validation and sending | [#3315](https://github.com/gmx-io/gmx-interface/pull/3315) | `c59c5fc672` |
-| Order lifecycle and notifications               | [#3316](https://github.com/gmx-io/gmx-interface/pull/3316) | `390eba5a6c` |
-| Shared order entry                              | [#3317](https://github.com/gmx-io/gmx-interface/pull/3317) | `a54508119b` |
 | Wallet balances and address keys                | [#3195](https://github.com/gmx-io/gmx-interface/pull/3195) | `58e343bb14` |
 | Fee-discount fields                             | [#3205](https://github.com/gmx-io/gmx-interface/pull/3205) | `31bb690ebe` |
 | Order fields                                    | [#3207](https://github.com/gmx-io/gmx-interface/pull/3207) | `6bb15c691f` |
 | SDK input units                                 | [#3287](https://github.com/gmx-io/gmx-interface/pull/3287) | `24e983c4c4` |
-| Close, edit and cancel actions                  | [#3293](https://github.com/gmx-io/gmx-interface/pull/3293) | `0722cc8701` |
 | Solana pages and TradeBox entries               | [#3294](https://github.com/gmx-io/gmx-interface/pull/3294) | `5e30dbc18f` |
 | Charts and account retry                        | [#3223](https://github.com/gmx-io/gmx-interface/pull/3223) | `c8f9c4a85d` |
 | Ticker response contract                        | [#3273](https://github.com/gmx-io/gmx-interface/pull/3273) | `6995d3a0d5` |
@@ -30,13 +29,9 @@ The historical wallet-scoped API patch, local database/indexer/reader launcher, 
 
 The component workflow uses the normal upstream report steps. It no longer carries fork-specific report conditions; report publication failures remain distinct from test failures.
 
-## Remaining integration-specific support
+## Integration configuration
 
-| Support still retained                                           | Missing formal replacement                                         | Retirement condition                                                                                                                |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Solana close receive-token metadata and available receive tokens | PR #3293 does not yet supply the complete shared selector contract | Have TRD-84 absorb the receive selector/tokenInfo fix, then remove its separate integration ownership without removing the behavior |
-
-The close receive selector remains a product integration fix. The Pay selectors now use the formal #3294 implementation. Frozen tables from merged #3325 replace the experimental empty-table override; their 73/155 entries were verified against the originals in order, with null authorities on mainnet.
+The former close Receive patch is now owned by #3337. Pay selectors use the formal #3294 implementation. Frozen tables from merged #3325 replace the experimental empty-table override; their earlier mainnet verification established 73/155 entries in order and null authorities. No experimental transaction builder or no-LUT override is retained.
 
 The official app now uses GMX RPC proxy routes. Playground maps that shared provider entry to its configured Alchemy endpoints for the app and Web Worker, retaining development and production-purpose selection. Ordinary app builds keep the official proxy routes. No local proxy is required.
 
