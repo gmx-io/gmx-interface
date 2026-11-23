@@ -8985,6 +8985,10 @@ msgstr "Ребейты V1"
 msgid "Sell GLV"
 msgstr "Продать GLV"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr "Переключите сеть на Arbitrum, затем подключите кошелёк"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "из {BLOCKCHAIN_COUNT} блокчейнов"
@@ -13045,10 +13049,6 @@ msgstr "{pools} {verb} из листинга. Выведите ликвидно�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Статус"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
-msgstr "Поделиться ссылкой"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

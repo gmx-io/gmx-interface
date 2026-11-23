@@ -8985,6 +8985,10 @@ msgstr "V1 리베이트"
 msgid "Sell GLV"
 msgstr "GLV 판매"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr "네트워크를 Arbitrum으로 전환한 후 지갑을 연결하세요"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "{BLOCKCHAIN_COUNT}개 블록체인에서"
@@ -13045,10 +13049,6 @@ msgstr "{pools} {verb} 상장 폐지됩니다. 더 이상 입금할 수 없으�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "상태"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
-msgstr "링크 공유"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

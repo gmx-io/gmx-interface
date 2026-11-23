@@ -3,12 +3,14 @@ import cx from "classnames";
 import { useEffect, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { isSolanaNetwork } from "config/chains";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import {
   type NotificationsStatus,
   useNotificationsContext,
 } from "context/NotificationsContext/NotificationsContextProvider";
 import { getBlockedNotificationsPlatform, getIsBrave } from "domain/notifications/notificationsBrowser";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { shortenAddressOrEns } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -40,7 +42,8 @@ const CARD_ICON: Record<NotificationsStatus, CardIcon> = {
 const WALLET_LENGTH = 13;
 
 export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible: boolean }) {
-  const { status, isTurnedOn, receivingAccount, pendingAccount, turnOn, turnOff, retry } = useNotificationsContext();
+  const { status, isTurnedOn, receivingAccount, pendingAccount, testState, turnOn, turnOff, retry } =
+    useNotificationsContext();
 
   // The confirmation line shows from a turn-on in this tab until the Settings modal closes.
   const [isTurningOnHere, setIsTurningOnHere] = useState(false);
@@ -59,7 +62,6 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
         setIsConfirmationSent(status === "on");
       }
     } else if (status !== "on") {
-      // A wallet switch afterwards sends no confirmation, so the line must not come back with it.
       setIsConfirmationSent(false);
     }
   }, [isTurningOnHere, status]);
@@ -75,7 +77,7 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
   };
 
   const handleRetry = () => {
-    // Only a turn-on sends the confirmation; a retried wallet switch does not.
+    // A retried wallet switch sends no confirmation.
     setIsTurningOnHere(status === "turnOnFailed" || status === "limitReached");
     retry();
   };
@@ -87,7 +89,7 @@ export function NotificationsSettings({ isSettingsVisible }: { isSettingsVisible
         isTurnedOn={isTurnedOn}
         receivingAccount={receivingAccount}
         pendingAccount={pendingAccount}
-        isConfirmationSent={isConfirmationSent && status === "on"}
+        isConfirmationSent={isConfirmationSent && status === "on" && testState === "sent"}
         onToggle={handleToggle}
         onRetry={handleRetry}
       />
@@ -115,6 +117,7 @@ function DeviceSwitchCard({
 }) {
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
+  const { networkId } = useChainId();
   const [, copyToClipboard] = useCopyToClipboard();
 
   const hasToggle = ["on", "off", "notAsked", "walletSwitchFailed", "turningOn", "turningOff"].includes(status);
@@ -128,27 +131,11 @@ function DeviceSwitchCard({
   const icon = status === "turningOn" && isTurnedOn ? "on" : CARD_ICON[status];
   // Only a wallet that is connected can sign at the device limit or take over notifications.
   const needsWallet = status === "limitReached" || status === "walletSwitchFailed";
-  // The types are dimmed whenever notifications don't reach this device.
+  const isWalletMissing = status === "noWallet" || (needsWallet && !account);
   const typeClassName = cx({ "opacity-[0.35]": !isToggleOn });
 
-  // The share sheet can hand the page straight to another browser; in-app browsers without it get a copy.
-  const canShareLink = typeof navigator.share === "function";
-
-  const handleShareLink = async () => {
-    const url = window.location.href;
-
-    if (canShareLink) {
-      try {
-        await navigator.share({ url });
-        return;
-      } catch (error) {
-        if (error instanceof DOMException && error.name === "AbortError") {
-          return;
-        }
-      }
-    }
-
-    copyToClipboard(url);
+  const handleCopyLink = () => {
+    copyToClipboard(window.location.href);
     helperToast.success(t`Link copied to clipboard`);
   };
 
@@ -157,7 +144,7 @@ function DeviceSwitchCard({
       <div className="flex items-start gap-12">
         <CardIconBox icon={icon} />
         <div className="flex min-w-0 grow flex-col gap-4">
-          <div className="text-body-medium font-medium text-typography-primary">
+          <div className="text-14 font-medium leading-[1.25] text-typography-primary">
             <Trans>Notifications on this device</Trans>
           </div>
           <div className="flex flex-col gap-4 text-13 leading-[1.3] text-typography-secondary">
@@ -199,15 +186,22 @@ function DeviceSwitchCard({
         </StepsBox>
       )}
 
-      {(status === "noWallet" || (needsWallet && !account)) && openConnectModal && (
+      {/* On Solana the wallet connection offers Solana wallets only, and notifications need an EVM wallet. */}
+      {isWalletMissing && isSolanaNetwork(networkId) && (
+        <StepsBox>
+          <Trans>Switch the network to Arbitrum, then connect a wallet</Trans>
+        </StepsBox>
+      )}
+
+      {isWalletMissing && !isSolanaNetwork(networkId) && openConnectModal && (
         <Button variant="primary" size="medium" className="w-full" onClick={openConnectModal}>
           <Trans>Connect wallet</Trans>
         </Button>
       )}
 
       {status === "unsupported" && (
-        <Button variant="primary" size="medium" className="w-full" onClick={handleShareLink}>
-          {canShareLink ? <Trans>Share link</Trans> : <Trans>Copy link</Trans>}
+        <Button variant="primary" size="medium" className="w-full" onClick={handleCopyLink}>
+          <Trans>Copy link</Trans>
         </Button>
       )}
 
@@ -334,7 +328,7 @@ function NotificationType({
 }) {
   return (
     <div className={cx("flex flex-col gap-4", className)}>
-      <div className="text-body-medium font-medium text-typography-primary">{title}</div>
+      <div className="text-14 font-medium leading-[1.25] text-typography-primary">{title}</div>
       <div className="text-13 leading-[1.3] text-typography-secondary">{description}</div>
     </div>
   );

@@ -8985,6 +8985,10 @@ msgstr "V1リベート"
 msgid "Sell GLV"
 msgstr "GLVを売却"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr "ネットワークを Arbitrum に切り替えてから、ウォレットを接続してください"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "{BLOCKCHAIN_COUNT}つのブロックチェーンから"
@@ -13045,10 +13049,6 @@ msgstr "{pools}は{verb}上場廃止されます。入金ができなくなる�
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "ステータス"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
-msgstr "リンクを共有"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

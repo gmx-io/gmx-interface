@@ -8985,6 +8985,10 @@ msgstr ""
 msgid "Sell GLV"
 msgstr ""
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr ""
@@ -13044,10 +13048,6 @@ msgstr ""
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
-msgstr ""
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx

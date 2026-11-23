@@ -8985,6 +8985,10 @@ msgstr "Reembolsos V1"
 msgid "Sell GLV"
 msgstr "Vender GLV"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr "Cambie la red a Arbitrum y luego conecte un monedero"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "desde {BLOCKCHAIN_COUNT} blockchains"
@@ -13045,10 +13049,6 @@ msgstr "{pools} {verb} en proceso de baja. Retire su liquidez, ya que los depós
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Estado"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
-msgstr "Compartir enlace"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"

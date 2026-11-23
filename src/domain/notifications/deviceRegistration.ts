@@ -51,6 +51,18 @@ export function writeStoredNotificationsDevice(device: StoredNotificationsDevice
   writeLocalStorageItem(NOTIFICATIONS_DEVICE_KEY, device, { serializer: JSON.stringify });
 }
 
+/** Calls `onChange` when another tab stores the device. */
+export function watchStoredNotificationsDevice(onChange: (device: StoredNotificationsDevice) => void) {
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === JSON.stringify(NOTIFICATIONS_DEVICE_KEY)) {
+      onChange(readStoredNotificationsDevice());
+    }
+  };
+
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
+}
+
 export function getIsRegistrationLimitError(error: unknown) {
   return error instanceof NotificationsApiError && error.status === 409 && error.code === REGISTRATION_LIMIT_REACHED;
 }

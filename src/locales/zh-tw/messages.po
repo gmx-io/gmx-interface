@@ -8985,6 +8985,10 @@ msgstr "V1 返佣"
 msgid "Sell GLV"
 msgstr "賣出 GLV"
 
+#: src/components/SettingsModal/NotificationsSettings.tsx
+msgid "Switch the network to Arbitrum, then connect a wallet"
+msgstr "將網路切換到 Arbitrum，然後連接錢包"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "來自 {BLOCKCHAIN_COUNT} 條區塊鏈"
@@ -13045,10 +13049,6 @@ msgstr "{pools} {verb} 正在下架。由於已無法存入，請提取您的流
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "狀態"
-
-#: src/components/SettingsModal/NotificationsSettings.tsx
-msgid "Share link"
-msgstr "分享連結"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"
