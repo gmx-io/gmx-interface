@@ -1,4 +1,4 @@
-import { useStandardWallets, useWallets } from "@privy-io/react-auth/solana";
+import { useSignTransaction, useStandardWallets, useWallets } from "@privy-io/react-auth/solana";
 import { useEffect, useRef } from "react";
 
 import type { SolanaWalletList } from "lib/wallets/solanaWalletSession";
@@ -11,6 +11,10 @@ export default function SolanaWalletSessionSync({
   onChange: (update: SolanaWalletList) => void;
 }) {
   const { wallets, ready } = useWallets();
+  const { signTransaction } = useSignTransaction();
+  // Privy returns a new signing function on every render. Keep it out of the session publication effect.
+  const signTransactionRef = useRef(signTransaction);
+  signTransactionRef.current = signTransaction;
   const { wallets: standardWallets, ready: standardReady } = useStandardWallets();
   const silentConnectAttempted = useRef<string>();
 
@@ -20,6 +24,10 @@ export default function SolanaWalletSessionSync({
       wallets: wallets.map((wallet) => ({
         address: wallet.address,
         walletId: wallet.standardWallet.name,
+        signTransaction: async (transaction) => {
+          const result = await signTransactionRef.current({ transaction, wallet, chain: "solana:mainnet" });
+          return result.signedTransaction;
+        },
         // TokenPocket's Solana provider has no standard:disconnect; calling disconnect() throws and
         // leaves the wallet connected in Privy.
         disconnect: wallet.standardWallet.features["standard:disconnect"]
