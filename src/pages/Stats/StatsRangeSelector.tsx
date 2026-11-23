@@ -1,6 +1,8 @@
 import { t } from "@lingui/macro";
-import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef } from "react";
+import { type KeyboardEvent, type PointerEvent, useEffect, useMemo, useRef, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+
+import { GLIDE } from "./statsMotion";
 
 /*
  * Range selector: a small preview of the whole history with a window over the part shown in the chart above.
@@ -37,6 +39,9 @@ export function StatsRangeSelector({
   const drag = useRef<{ mode: Mode; x0: number; s0: number; e0: number } | null>(null);
   const frame = useRef<number | null>(null);
   const pending = useRef<[number, number] | null>(null);
+  // The last window this selector set itself (drag or keys): while it is shown, the window follows the hand at once.
+  // A window set elsewhere (date picker, interval) glides to its new place.
+  const [ownPair, setOwnPair] = useState<[number, number] | null>(null);
 
   useEffect(
     () => () => {
@@ -85,7 +90,11 @@ export function StatsRangeSelector({
     if (frame.current !== null) return;
     frame.current = requestAnimationFrame(() => {
       frame.current = null;
-      if (pending.current) onChange(pending.current[0], pending.current[1]);
+      if (pending.current) {
+        const [s, e] = pending.current;
+        setOwnPair([s, e]);
+        onChange(s, e);
+      }
       pending.current = null;
     });
   };
@@ -140,13 +149,15 @@ export function StatsRangeSelector({
     else return;
     e.preventDefault();
     next = Math.min(max, Math.max(min, next));
-    if (mode === "start") onChange(next, end);
-    else onChange(start, next);
+    const pair: [number, number] = mode === "start" ? [next, end] : [start, next];
+    setOwnPair(pair);
+    onChange(pair[0], pair[1]);
   };
 
   if (n < 2) return null;
 
   const pointer = { onPointerMove: onMove, onPointerUp: onUp, onPointerCancel: onUp };
+  const glide = ownPair && ownPair[0] === start && ownPair[1] === end ? "" : GLIDE;
 
   return (
     <div className="relative select-none" style={WRAP_STYLE}>
@@ -167,14 +178,17 @@ export function StatsRangeSelector({
           </AreaChart>
         </ResponsiveContainer>
         {/* dim the part outside the window */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 bg-slate-900 opacity-70" style={styles.dimLeft} />
         <div
-          className="pointer-events-none absolute inset-y-0 right-0 bg-slate-900 opacity-70"
+          className={"pointer-events-none absolute inset-y-0 left-0 bg-slate-900 opacity-70" + glide}
+          style={styles.dimLeft}
+        />
+        <div
+          className={"pointer-events-none absolute inset-y-0 right-0 bg-slate-900 opacity-70" + glide}
           style={styles.dimRight}
         />
         {/* the window: drag to move */}
         <div
-          className="absolute inset-y-0 cursor-move rounded-4"
+          className={"absolute inset-y-0 cursor-move rounded-4" + glide}
           style={styles.window}
           onPointerDown={onDown("move")}
           {...pointer}
@@ -195,7 +209,7 @@ export function StatsRangeSelector({
             aria-valuenow={idx}
             aria-valuetext={formatLabel(idx)}
             title={formatLabel(idx)}
-            className="group absolute top-0 z-[1] flex cursor-ew-resize justify-center outline-none"
+            className={"group absolute top-0 z-[1] flex cursor-ew-resize justify-center outline-none" + glide}
             style={styles[mode]}
             onPointerDown={onDown(mode)}
             onKeyDown={onKey(mode)}

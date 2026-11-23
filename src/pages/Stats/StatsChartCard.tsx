@@ -71,6 +71,7 @@ import {
   type StatsSeries,
 } from "./statsData";
 import { StatsStatus, useStatsDataState } from "./statsDataState";
+import { MAX_ANIMATED_BARS, seriesMotion, useChartMotion, useFadeIn } from "./statsMotion";
 import { StatsRangeSelector } from "./StatsRangeSelector";
 
 type Domain = [number | string, number | string];
@@ -120,6 +121,11 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
   const [range, setRange] = useState<DateRange | null>(null);
   const [table, setTable] = useState(false);
   const [variant, setVariant] = useState<string | null>(cfg.variants ? cfg.variants[0].id : null);
+  // Type, legend and variant clicks ease the chart; interval, dates and the table view fade it (see statsMotion.ts).
+  const motion = useChartMotion();
+  const [swap, setSwap] = useState(0);
+  const bump = () => setSwap((n) => n + 1);
+  const fadeRef = useFadeIn<HTMLDivElement>(swap);
 
   const src = cfg.variants ? cfg.variants.find((v) => v.id === variant)! : null;
   const series: StatsSeries[] = src ? src.series : cfg.series!;
@@ -172,13 +178,19 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
     [rows, si, ei, shownKey]
   );
 
-  const toggle = (k: string) =>
+  // Big bar charts fade instead of easing: every bar is redrawn on each animation frame.
+  const heavy = view.length * Math.max(1, shown.length) > MAX_ANIMATED_BARS;
+  const smooth = () => (heavy ? bump() : motion.ease());
+
+  const toggle = (k: string) => {
+    smooth();
     setHidden((h) => {
       const n = new Set(h);
       if (n.has(k)) n.delete(k);
       else if (series.length - n.size > 1) n.add(k);
       return n;
     });
+  };
 
   const pct = type === "pct";
   const pctArea = cfg.types[0] === "area" || cfg.pctStyle === "area";
@@ -225,11 +237,13 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
     ) : null;
 
   const thin = view.length > 60;
+  const barMotion = seriesMotion(motion.animate && !heavy);
+  // marks are keyed by chart type, so switching type (e.g. stacked to % share) remounts them and they ease in
   const barMarks = (keys: StatsSeries[], suffix = "") => {
     const top = keys[keys.length - 1]?.key;
     return keys.map((s) => (
       <Bar
-        key={s.key}
+        key={type + s.key}
         dataKey={s.key + suffix}
         name={s.label}
         stackId="a"
@@ -238,7 +252,7 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
         strokeWidth={keys.length > 1 && !thin ? 1 : 0}
         radius={s.key === top ? (thin ? BAR_RADIUS_TOP_THIN : BAR_RADIUS_TOP) : 0}
         maxBarSize={26}
-        isAnimationActive={false}
+        {...barMotion}
         activeBar={ACTIVE_BAR}
       >
         {view.map((r, i) => (
@@ -250,7 +264,7 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
   const lineMarks = (keys: StatsSeries[]) =>
     keys.map((s) => (
       <Line
-        key={s.key}
+        key={type + s.key}
         dataKey={s.key}
         name={s.label}
         type="monotone"
@@ -258,13 +272,13 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
         strokeWidth={2}
         dot={false}
         activeDot={ACTIVE_DOT}
-        isAnimationActive={false}
+        {...seriesMotion(motion.animate)}
       />
     ));
   const areaMarks = (keys: StatsSeries[], suffix = "") =>
     keys.map((s) => (
       <Area
-        key={s.key}
+        key={type + s.key}
         dataKey={s.key + suffix}
         name={s.label}
         type="monotone"
@@ -274,7 +288,7 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
         fill={s.color}
         fillOpacity={0.16}
         activeDot={ACTIVE_DOT}
-        isAnimationActive={false}
+        {...seriesMotion(motion.animate)}
       />
     ));
 
@@ -301,7 +315,7 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
               strokeWidth={2}
               dot={false}
               activeDot={ACTIVE_DOT}
-              isAnimationActive={false}
+              {...seriesMotion(motion.animate)}
             />
           </ComposedChart>
         </ResponsiveContainer>
@@ -320,13 +334,7 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
                 ) : (
                   <>
                     <ReferenceLine y={0} stroke="var(--color-slate-600)" />
-                    <Bar
-                      dataKey="flow"
-                      maxBarSize={26}
-                      radius={BAR_RADIUS_ALL}
-                      isAnimationActive={false}
-                      activeBar={ACTIVE_BAR}
-                    >
+                    <Bar dataKey="flow" maxBarSize={26} radius={BAR_RADIUS_ALL} {...barMotion} activeBar={ACTIVE_BAR}>
                       {view.map((r, i) => (
                         <Cell
                           key={i}
@@ -412,17 +420,48 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
               options={cfg.variants.map((v) => ({ id: v.id, label: v.shortLabel ?? v.label }))}
               value={variant}
               onChange={(v) => {
+                smooth();
                 setVariant(v);
                 setHidden(new Set());
               }}
             />
           ) : null}
           {cfg.types.length > 1 ? (
-            <Segmented label={t`Chart type`} options={typeOptions} value={type} onChange={setType} />
+            <Segmented
+              label={t`Chart type`}
+              options={typeOptions}
+              value={type}
+              onChange={(v) => {
+                smooth();
+                setType(v);
+              }}
+            />
           ) : null}
-          <Segmented label={t`Granularity`} options={grainOptions(grains)} value={grain} onChange={setGrain} />
-          <RangeButton range={range} onChange={setRange} />
-          <SegToggle icon="table" on={table} onToggle={() => setTable((x) => !x)} label={t`Table view`} />
+          <Segmented
+            label={t`Granularity`}
+            options={grainOptions(grains)}
+            value={grain}
+            onChange={(v) => {
+              bump();
+              setGrain(v);
+            }}
+          />
+          <RangeButton
+            range={range}
+            onChange={(v) => {
+              bump();
+              setRange(v);
+            }}
+          />
+          <SegToggle
+            icon="table"
+            on={table}
+            onToggle={() => {
+              bump();
+              setTable((x) => !x);
+            }}
+            label={t`Table view`}
+          />
         </div>
       </div>
 
@@ -438,79 +477,86 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
             />
           ))}
           {series.length > 2 && hidden.size > 0 ? (
-            <TextButton onClick={() => setHidden(new Set())}>
+            <TextButton
+              onClick={() => {
+                smooth();
+                setHidden(new Set());
+              }}
+            >
               <Trans>Show all</Trans>
             </TextButton>
           ) : null}
         </div>
       ) : null}
 
-      {table && dataState === "ready" ? (
-        <div className="-mx-16 max-h-[300px] overflow-auto md:-mx-20">
-          <Table>
-            <thead className="sticky top-0 bg-slate-900">
-              <TableTheadTr>
-                <TableTh>
-                  <Trans>Period</Trans>
-                </TableTh>
-                {tableKeys.map((s) => (
-                  <TableTh key={s.key} className="!text-right">
-                    {s.label}
+      <div ref={fadeRef} className="flex min-w-0 flex-1 flex-col">
+        {table && dataState === "ready" ? (
+          <div className="-mx-16 max-h-[300px] overflow-auto md:-mx-20">
+            <Table>
+              <thead className="sticky top-0 bg-slate-900">
+                <TableTheadTr>
+                  <TableTh>
+                    <Trans>Period</Trans>
                   </TableTh>
-                ))}
-                {tableKeys.length > 1 && !cfg.composite ? (
-                  <TableTh className="!text-right">
-                    <Trans>Total</Trans>
-                  </TableTh>
-                ) : null}
-                {type === "barCum" ? (
-                  <TableTh className="!text-right">
-                    <Trans>Cumulative</Trans>
-                  </TableTh>
-                ) : null}
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {view
-                .slice()
-                .reverse()
-                .map((r) => (
-                  <TableTr key={r.d}>
-                    <TableTd className="whitespace-nowrap">
-                      {fmtDate(r.d, grain, true)}
-                      {r.p ? (
-                        <span className="text-typography-secondary">
-                          {" "}
-                          <Trans>(partial)</Trans>
-                        </span>
+                  {tableKeys.map((s) => (
+                    <TableTh key={s.key} className="!text-right">
+                      {s.label}
+                    </TableTh>
+                  ))}
+                  {tableKeys.length > 1 && !cfg.composite ? (
+                    <TableTh className="!text-right">
+                      <Trans>Total</Trans>
+                    </TableTh>
+                  ) : null}
+                  {type === "barCum" ? (
+                    <TableTh className="!text-right">
+                      <Trans>Cumulative</Trans>
+                    </TableTh>
+                  ) : null}
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {view
+                  .slice()
+                  .reverse()
+                  .map((r) => (
+                    <TableTr key={r.d}>
+                      <TableTd className="whitespace-nowrap">
+                        {fmtDate(r.d, grain, true)}
+                        {r.p ? (
+                          <span className="text-typography-secondary">
+                            {" "}
+                            <Trans>(partial)</Trans>
+                          </span>
+                        ) : null}
+                      </TableTd>
+                      {tableKeys.map((s) => (
+                        <TableTd key={s.key} className="whitespace-nowrap text-right numbers">
+                          {fmtFull(num(r, s.key), cfg.unit)}
+                        </TableTd>
+                      ))}
+                      {tableKeys.length > 1 && !cfg.composite ? (
+                        <TableTd className="whitespace-nowrap text-right numbers">
+                          {fmtFull(
+                            tableKeys.reduce((a, s) => a + num(r, s.key), 0),
+                            cfg.unit
+                          )}
+                        </TableTd>
                       ) : null}
-                    </TableTd>
-                    {tableKeys.map((s) => (
-                      <TableTd key={s.key} className="whitespace-nowrap text-right numbers">
-                        {fmtFull(num(r, s.key), cfg.unit)}
-                      </TableTd>
-                    ))}
-                    {tableKeys.length > 1 && !cfg.composite ? (
-                      <TableTd className="whitespace-nowrap text-right numbers">
-                        {fmtFull(
-                          tableKeys.reduce((a, s) => a + num(r, s.key), 0),
-                          cfg.unit
-                        )}
-                      </TableTd>
-                    ) : null}
-                    {type === "barCum" ? (
-                      <TableTd className="whitespace-nowrap text-right numbers">
-                        {fmtFull(r.cum ?? 0, cfg.unit)}
-                      </TableTd>
-                    ) : null}
-                  </TableTr>
-                ))}
-            </tbody>
-          </Table>
-        </div>
-      ) : (
-        plot
-      )}
+                      {type === "barCum" ? (
+                        <TableTd className="whitespace-nowrap text-right numbers">
+                          {fmtFull(r.cum ?? 0, cfg.unit)}
+                        </TableTd>
+                      ) : null}
+                    </TableTr>
+                  ))}
+              </tbody>
+            </Table>
+          </div>
+        ) : (
+          plot
+        )}
+      </div>
 
       {dataState === "ready" ? (
         <div className="mt-auto">
@@ -519,12 +565,13 @@ export function StatsChartCard({ cfg }: { cfg: ChartCardConfig }) {
             start={si}
             end={ei}
             formatLabel={(i) => fmtDate(rows[i].d, grain, true)}
-            onChange={(s, e) =>
+            onChange={(s, e) => {
+              motion.hold();
               setRange([
                 toCalendarDateByUtcDay(new Date(rows[s].d * 1000)),
                 toCalendarDateByUtcDay(new Date(Math.min(END, bucketEnd(rows[e].d, grain)) * 1000)),
-              ])
-            }
+              ]);
+            }}
           />
         </div>
       ) : null}

@@ -36,6 +36,7 @@ import {
   TVL_TOTAL,
 } from "./statsData";
 import { NO_VALUE, StatsStatus, useStatsDataState } from "./statsDataState";
+import { useFadeIn } from "./statsMotion";
 import { type StatItem, StatRow, StatSparkCard } from "./StatsOverview";
 
 /* ---------------- shared card head ---------------- */
@@ -101,6 +102,7 @@ function topPeriodOptions(): SegOption<TopPeriod>[] {
 export function TopUsersCard() {
   const dataState = useStatsDataState();
   const [p, setP] = useState<TopPeriod>("30D");
+  const fadeRef = useFadeIn<HTMLDivElement>(p);
   const rows = TOP_USERS.slice()
     .sort((a, b) => b.volume[p] - a.volume[p])
     .slice(0, 20);
@@ -118,44 +120,46 @@ export function TopUsersCard() {
         }
         tools={<Segmented label={t`Period`} options={topPeriodOptions()} value={p} onChange={setP} />}
       />
-      {dataState === "ready" ? (
-        <div className={SCROLL_TABLE}>
-          <Table>
-            <thead className="sticky top-0 z-[1] bg-slate-900">
-              <TableTheadTr>
-                <TableTh>#</TableTh>
-                <TableTh>
-                  <Trans>Address</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Chain</Trans>
-                </TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Volume</Trans>
-                </TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Trades</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {rows.map((r, i) => (
-                <TableTr key={r.address}>
-                  <TableTd className="text-typography-secondary numbers">{i + 1}</TableTd>
-                  <TableTd className="whitespace-nowrap font-medium" title={r.address}>
-                    {fmtAddress(r.address)}
-                  </TableTd>
-                  <TableTd className="text-typography-secondary">{r.chain}</TableTd>
-                  <TableTd className="whitespace-nowrap text-right numbers">{fmtFull(r.volume[p], "usd")}</TableTd>
-                  <TableTd className="text-right numbers">{fmtFull(r.trades[p], "count")}</TableTd>
-                </TableTr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      ) : (
-        <StatsStatus state={dataState} className="min-h-[240px]" />
-      )}
+      <div ref={fadeRef} className="min-w-0">
+        {dataState === "ready" ? (
+          <div className={SCROLL_TABLE}>
+            <Table>
+              <thead className="sticky top-0 z-[1] bg-slate-900">
+                <TableTheadTr>
+                  <TableTh>#</TableTh>
+                  <TableTh>
+                    <Trans>Address</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Chain</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Volume</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Trades</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {rows.map((r, i) => (
+                  <TableTr key={r.address}>
+                    <TableTd className="text-typography-secondary numbers">{i + 1}</TableTd>
+                    <TableTd className="whitespace-nowrap font-medium" title={r.address}>
+                      {fmtAddress(r.address)}
+                    </TableTd>
+                    <TableTd className="text-typography-secondary">{r.chain}</TableTd>
+                    <TableTd className="whitespace-nowrap text-right numbers">{fmtFull(r.volume[p], "usd")}</TableTd>
+                    <TableTd className="text-right numbers">{fmtFull(r.trades[p], "count")}</TableTd>
+                  </TableTr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        ) : (
+          <StatsStatus state={dataState} className="min-h-[240px]" />
+        )}
+      </div>
     </Card>
   );
 }
@@ -165,9 +169,9 @@ type HoldPart = { key: "staked" | "free" | "liq"; label: string; color: string }
 
 function holdPartDefs(): HoldPart[] {
   return [
-    { key: "staked", label: t`Staked`, color: CHART_COLORS.s1 },
-    { key: "free", label: t`Not staked`, color: CHART_COLORS.s3 },
-    { key: "liq", label: t`In liquidity (LP pools)`, color: CHART_COLORS.s2 },
+    { key: "staked", label: t`Staked`, color: CHART_COLORS.staked },
+    { key: "free", label: t`Not staked`, color: CHART_COLORS.notStaked },
+    { key: "liq", label: t`In liquidity (LP pools)`, color: CHART_COLORS.lp },
   ];
 }
 
@@ -265,6 +269,7 @@ export function HoldersCard() {
   const ready = dataState === "ready";
   const [topN, setTopN] = useState<"20" | "50">("20");
   const [view, setView] = useState<"treemap" | "table">("treemap");
+  const fadeRef = useFadeIn<HTMLDivElement>(view + topN);
   const parts = holdPartDefs();
   const supply = GMX_TOKEN.supply;
   const n = +topN;
@@ -288,7 +293,7 @@ export function HoldersCard() {
     <Card>
       <CardHead
         title={t`GMX holders map`}
-        note={t`Each square is one holder, sized by the GMX it holds. The blue part is staked GMX and the yellow part is GMX not staked. LP pools can't stake, so their squares are green. Staked GMX is counted under its owner, so the staking contract is not one giant square. Addresses only.`}
+        note={t`Each square is one holder, sized by the GMX it holds. The darker blue part is staked GMX and the lighter blue part is GMX not staked. LP pools can't stake, so their squares are green. Staked GMX is counted under its owner, so the staking contract is not one giant square. Addresses only.`}
         badge={t`Labels TBD`}
         eyebrow={t`Current snapshot · Arbitrum and Avalanche · ${supplyText}`}
         tools={
@@ -305,87 +310,89 @@ export function HoldersCard() {
           </span>
         ))}
       </div>
-      {!ready ? (
-        <StatsStatus state={dataState} className="h-[330px]" />
-      ) : view === "treemap" ? (
-        <ResponsiveContainer width="100%" height={330}>
-          <Treemap
-            data={data}
-            dataKey="size"
-            nameKey="name"
-            isAnimationActive={false}
-            content={((p: never) => TreeCell(p, parts, supply)) as never}
-          >
-            <Tooltip
+      <div ref={fadeRef} className="min-w-0">
+        {!ready ? (
+          <StatsStatus state={dataState} className="h-[330px]" />
+        ) : view === "treemap" ? (
+          <ResponsiveContainer width="100%" height={330}>
+            <Treemap
+              data={data}
+              dataKey="size"
+              nameKey="name"
               isAnimationActive={false}
-              wrapperStyle={TOOLTIP_WRAPPER_STYLE}
-              content={({ active, payload }) => {
-                if (!active || !payload?.length) return null;
-                const d = payload[0].payload as HolderDatum;
-                return (
-                  <ChartTip head={d.full || d.name}>
-                    <ChartTipRow label={holderTypeLabel(d.type)} value={fmtFull(d.size, "gmx")} />
-                    {holdParts(d, parts).map((q) => (
-                      <ChartTipRow
-                        key={q.p.key}
-                        label={q.p.label}
-                        color={q.p.color}
-                        value={fmtFull(q.v, "gmx") + " (" + fmtPct((q.v / d.size) * 100) + ")"}
-                      />
-                    ))}
-                    <ChartTipRow total label={t`Share of supply`} value={fmtPct((d.size / supply) * 100)} />
-                  </ChartTip>
-                );
-              }}
-            />
-          </Treemap>
-        </ResponsiveContainer>
-      ) : (
-        <div className={SCROLL_TABLE}>
-          <Table>
-            <thead className="sticky top-0 z-[1] bg-slate-900">
-              <TableTheadTr>
-                <TableTh>#</TableTh>
-                <TableTh>
-                  <Trans>Holder</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>Type</Trans>
-                </TableTh>
-                <TableTh className="!text-right">GMX</TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Staked</Trans>
-                </TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Not staked</Trans>
-                </TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Share</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {data.map((d, i) => (
-                <TableTr key={d.name + i}>
-                  <TableTd className="text-typography-secondary numbers">{i < n ? i + 1 : ""}</TableTd>
-                  <TableTd className="whitespace-nowrap font-medium">{d.name}</TableTd>
-                  <TableTd className="text-typography-secondary">
-                    {d.type === "other" ? NO_VALUE : holderTypeLabel(d.type)}
-                  </TableTd>
-                  <TableTd className="text-right numbers">{fmtFull(d.size, "count")}</TableTd>
-                  <TableTd className="text-right numbers">
-                    {d.type === "lp" ? NO_VALUE : fmtFull(d.staked, "count")}
-                  </TableTd>
-                  <TableTd className="whitespace-nowrap text-right numbers">
-                    {d.type === "lp" ? <Trans>In liquidity</Trans> : fmtFull(d.size - d.staked, "count")}
-                  </TableTd>
-                  <TableTd className="text-right numbers">{fmtPct((d.size / supply) * 100)}</TableTd>
-                </TableTr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      )}
+              content={((p: never) => TreeCell(p, parts, supply)) as never}
+            >
+              <Tooltip
+                isAnimationActive={false}
+                wrapperStyle={TOOLTIP_WRAPPER_STYLE}
+                content={({ active, payload }) => {
+                  if (!active || !payload?.length) return null;
+                  const d = payload[0].payload as HolderDatum;
+                  return (
+                    <ChartTip head={d.full || d.name}>
+                      <ChartTipRow label={holderTypeLabel(d.type)} value={fmtFull(d.size, "gmx")} />
+                      {holdParts(d, parts).map((q) => (
+                        <ChartTipRow
+                          key={q.p.key}
+                          label={q.p.label}
+                          color={q.p.color}
+                          value={fmtFull(q.v, "gmx") + " (" + fmtPct((q.v / d.size) * 100) + ")"}
+                        />
+                      ))}
+                      <ChartTipRow total label={t`Share of supply`} value={fmtPct((d.size / supply) * 100)} />
+                    </ChartTip>
+                  );
+                }}
+              />
+            </Treemap>
+          </ResponsiveContainer>
+        ) : (
+          <div className={SCROLL_TABLE}>
+            <Table>
+              <thead className="sticky top-0 z-[1] bg-slate-900">
+                <TableTheadTr>
+                  <TableTh>#</TableTh>
+                  <TableTh>
+                    <Trans>Holder</Trans>
+                  </TableTh>
+                  <TableTh>
+                    <Trans>Type</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">GMX</TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Staked</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Not staked</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Share</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {data.map((d, i) => (
+                  <TableTr key={d.name + i}>
+                    <TableTd className="text-typography-secondary numbers">{i < n ? i + 1 : ""}</TableTd>
+                    <TableTd className="whitespace-nowrap font-medium">{d.name}</TableTd>
+                    <TableTd className="text-typography-secondary">
+                      {d.type === "other" ? NO_VALUE : holderTypeLabel(d.type)}
+                    </TableTd>
+                    <TableTd className="text-right numbers">{fmtFull(d.size, "count")}</TableTd>
+                    <TableTd className="text-right numbers">
+                      {d.type === "lp" ? NO_VALUE : fmtFull(d.staked, "count")}
+                    </TableTd>
+                    <TableTd className="whitespace-nowrap text-right numbers">
+                      {d.type === "lp" ? <Trans>In liquidity</Trans> : fmtFull(d.size - d.staked, "count")}
+                    </TableTd>
+                    <TableTd className="text-right numbers">{fmtPct((d.size / supply) * 100)}</TableTd>
+                  </TableTr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        )}
+      </div>
     </Card>
   );
 }
@@ -429,6 +436,7 @@ function HoldingRow({ label, color, value, share }: { label: string; color: stri
 export function HoldingsCard() {
   const dataState = useStatsDataState();
   const [group, setGroup] = useState("asset");
+  const fadeRef = useFadeIn<HTMLDivElement>(group);
   const groups = getTreasuryGroups();
   const g = groups.find((x) => x.id === group) ?? groups[0];
   const rows = g.series.map((s) => ({ a: s, v: s.arr[N - 1] })).filter((r) => r.v > 0);
@@ -449,7 +457,7 @@ export function HoldingsCard() {
         }
       />
       {dataState === "ready" ? (
-        <div className="flex flex-col gap-16 pt-4">
+        <div ref={fadeRef} className="flex flex-col gap-16 pt-4">
           {rows.map((r) => (
             <HoldingRow key={r.a.key} label={r.a.label} color={r.a.color} value={r.v} share={(r.v / total) * 100} />
           ))}
@@ -485,9 +493,9 @@ export function GmxTokenTop() {
   const stakedPct = (M.gmxStaked[N - 1] / supply) * 100;
   const liqPct = liquidityPct.uniswap + liquidityPct.traderJoe + liquidityPct.gmxV2;
   const segs = [
-    { k: "staked", label: t`Staked`, v: stakedPct, c: CHART_COLORS.s1 },
-    { k: "free", label: t`Not staked`, v: 100 - stakedPct - liqPct, c: CHART_COLORS.s3 },
-    { k: "liq", label: t`In liquidity`, v: liqPct, c: CHART_COLORS.s2 },
+    { k: "staked", label: t`Staked`, v: stakedPct, c: CHART_COLORS.staked },
+    { k: "free", label: t`Not staked`, v: 100 - stakedPct - liqPct, c: CHART_COLORS.notStaked },
+    { k: "liq", label: t`In liquidity`, v: liqPct, c: CHART_COLORS.lp },
   ];
   const pct = (v: number) => (ready ? fmtPct(v) : NO_VALUE);
   const uniswap = pct(liquidityPct.uniswap);
@@ -789,6 +797,7 @@ export function FeeFlowCard() {
   const [sel, setSel] = useState<number | null>(null);
   const b = g === "All" ? null : sel !== null && periods.includes(sel) ? sel : periods[0];
   const flow = useMemo(() => buildFlow(g, b), [g, b]);
+  const fadeRef = useFadeIn<HTMLDivElement>(`${g}-${b}-${table}`);
   const sankeyData = useMemo(() => ({ nodes: flow.nodes, links: flow.links }), [flow]);
   const total = flow.total;
   const pct = (v: number) => (total ? ((v / total) * 100).toFixed(1) + "%" : "–");
@@ -844,108 +853,112 @@ export function FeeFlowCard() {
           </span>
         ))}
       </div>
-      {!ready ? (
-        <StatsStatus state={dataState} className="min-h-[320px]" />
-      ) : table ? (
-        <div className={SCROLL_TABLE}>
-          <Table>
-            <thead className="sticky top-0 z-[1] bg-slate-900">
-              <TableTheadTr>
-                <TableTh>
-                  <Trans>From</Trans>
-                </TableTh>
-                <TableTh>
-                  <Trans>To</Trans>
-                </TableTh>
-                <TableTh className="!text-right">
-                  <Trans>Amount</Trans>
-                </TableTh>
-                {FLOW_CHAINS.map((c) => (
-                  <TableTh key={c.key} className="!text-right">
-                    {c.label}
+      <div ref={fadeRef} className="min-w-0">
+        {!ready ? (
+          <StatsStatus state={dataState} className="min-h-[320px]" />
+        ) : table ? (
+          <div className={SCROLL_TABLE}>
+            <Table>
+              <thead className="sticky top-0 z-[1] bg-slate-900">
+                <TableTheadTr>
+                  <TableTh>
+                    <Trans>From</Trans>
                   </TableTh>
-                ))}
-                <TableTh className="!text-right">
-                  <Trans>Share</Trans>
-                </TableTh>
-              </TableTheadTr>
-            </thead>
-            <tbody>
-              {flow.rows.map((r, i) => (
-                <TableTr key={i}>
-                  <TableTd className="whitespace-nowrap">{r.from}</TableTd>
-                  <TableTd className="whitespace-nowrap">{r.to}</TableTd>
-                  <TableTd className="whitespace-nowrap text-right numbers">{fmtFull(r.v, "usd")}</TableTd>
+                  <TableTh>
+                    <Trans>To</Trans>
+                  </TableTh>
+                  <TableTh className="!text-right">
+                    <Trans>Amount</Trans>
+                  </TableTh>
                   {FLOW_CHAINS.map((c) => (
-                    <TableTd key={c.key} className="whitespace-nowrap text-right numbers">
-                      {r.by[c.key] !== undefined ? fmtFull(r.by[c.key]!, "usd") : "–"}
-                    </TableTd>
+                    <TableTh key={c.key} className="!text-right">
+                      {c.label}
+                    </TableTh>
                   ))}
-                  <TableTd className="text-right numbers">{pct(r.v)}</TableTd>
-                </TableTr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      ) : total > 0 ? (
-        <div className="-mx-16 overflow-x-auto px-16 md:mx-0 md:px-0">
-          <div className="min-w-[760px]">
-            <ResponsiveContainer width="100%" height={540}>
-              <Sankey
-                data={sankeyData}
-                nodeWidth={12}
-                nodePadding={32}
-                iterations={32}
-                sort={false}
-                margin={SANKEY_MARGIN}
-                node={((p: never) => FlowNode(p, total, false)) as never}
-                link={((p: never) => FlowLink(p)) as never}
-              >
-                <Tooltip
-                  isAnimationActive={false}
-                  wrapperStyle={TOOLTIP_WRAPPER_STYLE}
-                  content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const d: SankeyDatum = (payload[0].payload as { payload?: SankeyDatum })?.payload ?? {};
-                    const link = d.source && d.target ? { source: d.source, target: d.target } : null;
-                    const name = link ? link.source.name + " → " + link.target.name : d.name || String(payload[0].name);
-                    const val = d.value ?? Number(payload[0].value);
-                    const node = link ? (link.target.side === "out" ? link.target : null) : d;
-                    const by = node?.by && Object.keys(node.by).length > 1 ? node.by : null;
-                    return (
-                      <ChartTip head={name}>
-                        <ChartTipRow label={t`Amount`} value={fmtFull(val, "usd")} />
-                        {by
-                          ? FLOW_CHAINS.filter((c) => by[c.key] !== undefined).map((c) => {
-                              const chainName = c.label;
-                              return (
-                                <ChartTipRow
-                                  key={c.key}
-                                  label={t`From ${chainName}`}
-                                  color={c.color}
-                                  value={fmtFull(by[c.key]!, "usd")}
-                                />
-                              );
-                            })
-                          : null}
-                        <ChartTipRow
-                          total
-                          label={t`Share of total fees`}
-                          value={total ? ((val / total) * 100).toFixed(1) + "%" : "–"}
-                        />
-                      </ChartTip>
-                    );
-                  }}
-                />
-              </Sankey>
-            </ResponsiveContainer>
+                  <TableTh className="!text-right">
+                    <Trans>Share</Trans>
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {flow.rows.map((r, i) => (
+                  <TableTr key={i}>
+                    <TableTd className="whitespace-nowrap">{r.from}</TableTd>
+                    <TableTd className="whitespace-nowrap">{r.to}</TableTd>
+                    <TableTd className="whitespace-nowrap text-right numbers">{fmtFull(r.v, "usd")}</TableTd>
+                    {FLOW_CHAINS.map((c) => (
+                      <TableTd key={c.key} className="whitespace-nowrap text-right numbers">
+                        {r.by[c.key] !== undefined ? fmtFull(r.by[c.key]!, "usd") : "–"}
+                      </TableTd>
+                    ))}
+                    <TableTd className="text-right numbers">{pct(r.v)}</TableTd>
+                  </TableTr>
+                ))}
+              </tbody>
+            </Table>
           </div>
-        </div>
-      ) : (
-        <div className="text-body-medium py-12 text-typography-secondary">
-          <Trans>No fees in this period.</Trans>
-        </div>
-      )}
+        ) : total > 0 ? (
+          <div className="-mx-16 overflow-x-auto px-16 md:mx-0 md:px-0">
+            <div className="min-w-[760px]">
+              <ResponsiveContainer width="100%" height={540}>
+                <Sankey
+                  data={sankeyData}
+                  nodeWidth={12}
+                  nodePadding={32}
+                  iterations={32}
+                  sort={false}
+                  margin={SANKEY_MARGIN}
+                  node={((p: never) => FlowNode(p, total, false)) as never}
+                  link={((p: never) => FlowLink(p)) as never}
+                >
+                  <Tooltip
+                    isAnimationActive={false}
+                    wrapperStyle={TOOLTIP_WRAPPER_STYLE}
+                    content={({ active, payload }) => {
+                      if (!active || !payload?.length) return null;
+                      const d: SankeyDatum = (payload[0].payload as { payload?: SankeyDatum })?.payload ?? {};
+                      const link = d.source && d.target ? { source: d.source, target: d.target } : null;
+                      const name = link
+                        ? link.source.name + " → " + link.target.name
+                        : d.name || String(payload[0].name);
+                      const val = d.value ?? Number(payload[0].value);
+                      const node = link ? (link.target.side === "out" ? link.target : null) : d;
+                      const by = node?.by && Object.keys(node.by).length > 1 ? node.by : null;
+                      return (
+                        <ChartTip head={name}>
+                          <ChartTipRow label={t`Amount`} value={fmtFull(val, "usd")} />
+                          {by
+                            ? FLOW_CHAINS.filter((c) => by[c.key] !== undefined).map((c) => {
+                                const chainName = c.label;
+                                return (
+                                  <ChartTipRow
+                                    key={c.key}
+                                    label={t`From ${chainName}`}
+                                    color={c.color}
+                                    value={fmtFull(by[c.key]!, "usd")}
+                                  />
+                                );
+                              })
+                            : null}
+                          <ChartTipRow
+                            total
+                            label={t`Share of total fees`}
+                            value={total ? ((val / total) * 100).toFixed(1) + "%" : "–"}
+                          />
+                        </ChartTip>
+                      );
+                    }}
+                  />
+                </Sankey>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        ) : (
+          <div className="text-body-medium py-12 text-typography-secondary">
+            <Trans>No fees in this period.</Trans>
+          </div>
+        )}
+      </div>
     </Card>
   );
 }

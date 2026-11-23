@@ -7,6 +7,8 @@ import { tz } from "@date-fns/tz";
 import { t } from "@lingui/macro";
 import { format } from "date-fns";
 
+import { colors } from "config/colors";
+
 /* ---------------- data contract ---------------- */
 
 export type Grain = "D" | "W" | "M" | "Q" | "Y";
@@ -106,8 +108,20 @@ export type StatsSeries = {
 /** A chart row: d = UTC start of the period; p = partial, the current period that isn't over yet. */
 export type StatsRow = { d: number; p: boolean } & Record<string, number | boolean>;
 
-/* ---------------- chart colours (DS tokens only) ---------------- */
+/* ---------------- chart colours (DS tokens, plus one lighter blue derived from blue-300) ---------------- */
 // The design system has no categorical chart palette yet; these are picked from the existing colour tokens.
+/** A lighter shade of a palette colour (mixed with white), for two shades of one hue. The design system has no blue-200 yet. */
+function tint(hex: string, white: number) {
+  const n = parseInt(hex.slice(1), 16);
+  const ch = (shift: number) => {
+    const c = (n >> shift) & 255;
+    return Math.round(c + (255 - c) * white)
+      .toString(16)
+      .padStart(2, "0");
+  };
+  return "#" + ch(16) + ch(8) + ch(0);
+}
+
 export const CHART_COLORS = {
   s1: "var(--color-blue-300)",
   s2: "var(--color-green-300)",
@@ -120,6 +134,11 @@ export const CHART_COLORS = {
   pos: "var(--color-green-500)",
   neg: "var(--color-red-500)",
   muted: "var(--color-slate-100)",
+  // The parts of a holder's GMX: staked and not staked are two shades of one blue (staked darker), LP pools stay green.
+  // Both blues come from blue-300's value (the same in both themes), so they always stay one hue.
+  staked: colors.blue[300].dark,
+  notStaked: tint(colors.blue[300].dark, 0.3),
+  lp: "var(--color-green-300)",
 };
 
 export const CHAINS: { key: ChainKey; label: string; color: string }[] = [

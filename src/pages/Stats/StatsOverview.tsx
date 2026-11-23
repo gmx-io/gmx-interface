@@ -53,6 +53,7 @@ import {
   type Unit,
 } from "./statsData";
 import { NO_VALUE, StatsStatus, useStatsDataState } from "./statsDataState";
+import { MAX_ANIMATED_BARS, seriesMotion, useChartMotion, useFadeIn } from "./statsMotion";
 
 function intervalOptions(): SegOption<Grain>[] {
   return [
@@ -157,13 +158,16 @@ function OvBarChart({
   type,
   height,
   unit,
+  animate,
 }: {
   view: OvRow[];
   grain: Grain;
   type: HeroChartType;
   height: number;
   unit: Unit;
+  animate: boolean;
 }) {
+  const motion = seriesMotion(animate);
   return (
     <ResponsiveContainer width="100%" height={height}>
       <ComposedChart data={view} margin={OV_MARGIN} barCategoryGap="14%">
@@ -196,7 +200,7 @@ function OvBarChart({
             fill={CHART_COLORS.s1}
             radius={BAR_RADIUS_TOP}
             maxBarSize={48}
-            isAnimationActive={false}
+            {...motion}
             activeBar={ACTIVE_BAR}
           >
             {view.map((r, i) => (
@@ -212,7 +216,7 @@ function OvBarChart({
             strokeWidth={2}
             dot={false}
             activeDot={ACTIVE_DOT}
-            isAnimationActive={false}
+            {...motion}
           />
         ) : null}
         {type === "cum" ? (
@@ -224,7 +228,7 @@ function OvBarChart({
             fill={CHART_COLORS.s1}
             fillOpacity={0.16}
             activeDot={ACTIVE_DOT}
-            isAnimationActive={false}
+            {...motion}
           />
         ) : null}
       </ComposedChart>
@@ -243,10 +247,16 @@ function VolumeHeroCard() {
   const from = range?.[0] ? Math.max(START, toUtcDayStartByCalendarDate(range[0])) : START;
   const to = range?.[1] ? Math.min(END, toUtcDayEndByCalendarDate(range[1])) : END;
   const [si, ei] = sliceRows(rows, iv, from, to);
-  const view = rows.slice(si, ei + 1);
+  // a stable array, so the chart only re-animates when the shown data really changes
+  const view = useMemo(() => rows.slice(si, ei + 1), [rows, si, ei]);
   const ready = dataState === "ready";
   const latestDay = fmtDate(END, "D", true);
   const chartHeight = isMobile ? 260 : 380;
+  // type clicks ease the chart (or fade it when it has many bars); interval and dates fade it
+  const motion = useChartMotion();
+  const [swap, setSwap] = useState(0);
+  const bump = () => setSwap((n) => n + 1);
+  const fadeRef = useFadeIn<HTMLDivElement>(swap);
   return (
     <OvCard className="lg:row-span-2">
       <div className="flex flex-wrap items-start justify-between gap-12">
@@ -257,16 +267,39 @@ function VolumeHeroCard() {
           className="text-body-medium font-medium text-typography-secondary"
         />
         <div className="flex flex-wrap items-center gap-8">
-          <Segmented label={t`Chart type`} options={heroTypeOptions()} value={ct} onChange={setCt} />
-          <Segmented label={t`Interval`} options={intervalOptions()} value={iv} onChange={setIv} />
-          <RangeButton range={range} onChange={setRange} />
+          <Segmented
+            label={t`Chart type`}
+            options={heroTypeOptions()}
+            value={ct}
+            onChange={(v) => {
+              if (view.length > MAX_ANIMATED_BARS) bump();
+              else motion.ease();
+              setCt(v);
+            }}
+          />
+          <Segmented
+            label={t`Interval`}
+            options={intervalOptions()}
+            value={iv}
+            onChange={(v) => {
+              bump();
+              setIv(v);
+            }}
+          />
+          <RangeButton
+            range={range}
+            onChange={(v) => {
+              bump();
+              setRange(v);
+            }}
+          />
         </div>
       </div>
       <div className="text-h1 numbers">{ready ? fmtCompact(TOTAL_VOL[N - 1], "usd", 2) : NO_VALUE}</div>
       {ready ? <Deltas a={TOTAL_VOL} /> : null}
-      <div className="mt-8 grow">
+      <div ref={fadeRef} className="mt-8 grow">
         {ready ? (
-          <OvBarChart view={view} grain={iv} type={ct} height={chartHeight} unit="usd" />
+          <OvBarChart view={view} grain={iv} type={ct} height={chartHeight} unit="usd" animate={motion.animate} />
         ) : (
           <StatsStatus state={dataState} className={isMobile ? "h-[260px]" : "h-[380px]"} />
         )}
@@ -354,6 +387,7 @@ function FeesHeroCard() {
   const dataState = useStatsDataState();
   const ready = dataState === "ready";
   const [iv, setIv] = useState<Grain>("W");
+  const fadeRef = useFadeIn<HTMLDivElement>(iv);
   const rows = useOvRows(M.fees, iv);
   let s30 = 0;
   for (let i = N - 30; i < N; i++) s30 += M.fees[i];
@@ -374,11 +408,13 @@ function FeesHeroCard() {
         <KV k={t`Annualized`} v={fig((s30 / 30) * 365)} />
         <KV k={t`Daily avg`} v={fig(s30 / 30)} />
       </div>
-      {ready ? (
-        <OvBarChart view={rows} grain={iv} type="bar" height={150} unit="usd" />
-      ) : (
-        <StatsStatus state={dataState} className="h-[150px]" />
-      )}
+      <div ref={fadeRef}>
+        {ready ? (
+          <OvBarChart view={rows} grain={iv} type="bar" height={150} unit="usd" animate={false} />
+        ) : (
+          <StatsStatus state={dataState} className="h-[150px]" />
+        )}
+      </div>
     </OvCard>
   );
 }

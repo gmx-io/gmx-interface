@@ -9,6 +9,7 @@ import Tabs from "components/Tabs/Tabs";
 import { StatsChartCard } from "./StatsChartCard";
 import { type CardConfig, END, fmtDate, getStatsTabs, type SectionTop, TAB_IDS, type TabId } from "./statsData";
 import { type StatsDataState, StatsDataStateProvider } from "./statsDataState";
+import { useFadeIn } from "./statsMotion";
 import { OverviewTop, SectionHeading } from "./StatsOverview";
 import {
   BuybackKpis,
@@ -48,6 +49,7 @@ export function StatsPage() {
   const { i18n } = useLingui();
   const tabs = getStatsTabs(i18n.locale);
   const [tab, setTab] = useState<TabId>(readHash);
+  const fadeRef = useFadeIn<HTMLDivElement>(tab);
   const selectTab = (id: TabId) => {
     setTab(id);
     try {
@@ -92,7 +94,7 @@ export function StatsPage() {
             qa="stats-tabs"
           />
 
-          <div key={tab} className="flex flex-col gap-8">
+          <div key={tab} ref={fadeRef} className="flex flex-col gap-8">
             {current.overview ? <OverviewTop /> : null}
             {current.sections.map((sec, si) => {
               const Top = sec.top ? SECTION_TOPS[sec.top] : null;
