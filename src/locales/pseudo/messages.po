@@ -1749,7 +1749,7 @@ msgstr ""
 msgid "Solana trading is unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposited"
 msgstr ""
 
@@ -3072,10 +3072,6 @@ msgstr ""
 
 #: src/components/TVChart/Chart.tsx
 msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
-msgstr ""
-
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -5245,6 +5241,10 @@ msgstr ""
 msgid "Withdrawing from subaccount..."
 msgstr ""
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Turn on \"Set acceptable price impact\" in settings to edit this order on Solana"
+msgstr ""
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -5527,6 +5527,7 @@ msgstr ""
 
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Orders with a callback cannot be changed on Solana yet"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GLP vault"
