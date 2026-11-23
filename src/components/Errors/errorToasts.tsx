@@ -23,6 +23,7 @@ import {
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
+import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
 import { isSourceChainForAnySettlementChain } from "sdk/configs/multichain";
 import { getNativeToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
@@ -685,6 +686,7 @@ export function getInsufficientExecutionFeeToastContent({
   txUrl,
   errorMessage,
   shouldOfferExpress,
+  expressOrdersEnabled,
   setIsSettingsVisible,
 }: {
   minExecutionFee: bigint;
@@ -698,17 +700,20 @@ export function getInsufficientExecutionFeeToastContent({
   txUrl: string | undefined;
   errorMessage: string | undefined;
   shouldOfferExpress: boolean;
+  expressOrdersEnabled: boolean;
   setIsSettingsVisible: (isVisible: boolean) => void;
 }) {
-  const requiredBufferBps = getMinimumExecutionFeeBufferBps({
+  const expressBufferBps = BigInt(expressOrdersEnabled ? EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS : 0);
+  const minimumBufferBps = getMinimumExecutionFeeBufferBps({
     minExecutionFee,
     executionFee,
     estimatedExecutionFee,
     estimatedExecutionGasLimit,
     estimatedOrders,
-    currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps),
+    currentBufferBps: getExecutionFeeBufferBps(chainId, executionFeeBufferBps) + expressBufferBps,
     premium: getExecutionFeeGasPricePremium(chainId, isExpress),
   });
+  const requiredBufferBps = minimumBufferBps !== undefined ? minimumBufferBps - expressBufferBps : undefined;
 
   const bufferText =
     requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : "";
@@ -732,8 +737,7 @@ export function getInsufficientExecutionFeeToastContent({
     </Trans>
   ) : (
     <Trans>
-      Increase the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
-      {settingsLink}
+      Increase the max network fee buffer {bufferText} in {settingsLink}
     </Trans>
   );
 

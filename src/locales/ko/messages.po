@@ -13048,8 +13048,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "아니요. API, SDK, 문서는 누구에게나 열려 있습니다. 프로그램 가입 시 직접 지원과 배포가 추가됩니다."
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {0}(으)로 높이십시오"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {bufferText} 높이십시오"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

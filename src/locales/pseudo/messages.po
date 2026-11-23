@@ -13048,7 +13048,7 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
