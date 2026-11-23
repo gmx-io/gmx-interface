@@ -435,6 +435,50 @@ describe("gmsol trade math", () => {
     }
   });
 
+  it("charges gmsol pending fees to the first TWAP part and withholds the impact beyond the cap", () => {
+    const impactBeyondCap = {
+      longInterestUsd: 2000n * P,
+      shortInterestUsd: 2000n * P,
+      positionImpactFactorNegative: P / 50n,
+      positionImpactExponentFactorNegative: P,
+      maxPositionImpactFactorNegative: P / 100n,
+      shortPoolAmount: 10_000_000n * 10n ** 6n,
+      maxPnlFactorForTradersShort: P,
+    };
+    // a short closes $1,000 of $2,000 in 2 parts; at 90 each part realizes $50 profit, at 100 none.
+    // part 1 pays every pending fee, from its own profit first; the impact beyond the cap is $5 a part
+    for (const [price, borrowingUsd, fundingAmount, overrides, receiveUsd, fromCollateralUsd] of [
+      [90n * P, 80n * P, 0n, {}, 50n * P, 30n * P],
+      [90n * P, 0n, 80_000_000n, {}, 50n * P, 30n * P],
+      [100n * P, 0n, 0n, impactBeyondCap, 0n, 20n * P],
+      [90n * P, 80n * P, 0n, impactBeyondCap, 40n * P, 40n * P],
+    ] as const) {
+      const marketInfo = market({ decimals: 8, minPrice: price, maxPrice: price, tradeMath: "gmsol", overrides });
+      const position = {
+        ...positionInfo(marketInfo, 2000n * P, 20n * 10n ** 8n, false),
+        pendingBorrowingFeesUsd: borrowingUsd,
+        fundingFeeAmount: fundingAmount,
+      };
+      const result = getDecreasePositionAmounts({
+        marketInfo,
+        collateralToken: marketInfo.shortToken,
+        isLong: false,
+        position,
+        closeSizeUsd: 1000n * P,
+        keepLeverage: false,
+        userReferralInfo: undefined,
+        minCollateralUsd: 0n,
+        minPositionSizeUsd: 0n,
+        uiFeeFactor: 0n,
+        isSetAcceptablePriceImpactEnabled: false,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+        isTwap: true,
+        numberOfParts: 2,
+      });
+      expect([result.receiveUsd, result.payedRemainingCollateralUsd]).toEqual([receiveUsd, fromCollateralUsd]);
+    }
+  });
+
   it("rejects gmsol increases that fill no index token atoms FESOL-57", () => {
     const imbalanced = {
       longInterestUsd: 1000n * P,
