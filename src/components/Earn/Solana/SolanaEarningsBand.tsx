@@ -15,6 +15,7 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import {
   TooltipContent,
+  TooltipDivider,
   TooltipFootnote,
   TooltipRow,
   TooltipRows,
@@ -142,6 +143,8 @@ function TotalLifetimeEarnedValue({
           <Group title={<Trans>Lifetime GT rewards</Trans>}>
             <LeafRow label={<Trans>GT buybacks</Trans>} usd={breakdown.gtBuybackUsd} />
           </Group>
+
+          <TooltipDivider />
 
           <Group title={<Trans>Lifetime LP rewards</Trans>}>
             <LeafRow label={<Trans>GM pools</Trans>} usd={breakdown.gmUsd} />
