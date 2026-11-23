@@ -3,17 +3,18 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WALLET_BATCH_CONFIRMED_LATE_ERROR, WALLET_BATCH_PENDING_ERROR } from "lib/errors/customErrors";
 import { getIsWalletBatchingDisabledForSession, getWalletBatchingSessionKey } from "lib/wallets/walletBatchingSession";
 
-import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
+import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "../sendWalletCalls";
 
 const mocks = vi.hoisted(() => ({
   sendCalls: vi.fn(),
   getCallsStatus: vi.fn(),
   pushEvent: vi.fn(),
   now: 0,
+  connectorId: "io.metamask",
 }));
 
 vi.mock("@wagmi/core", () => ({
-  getAccount: () => ({ connector: { uid: "connector", id: "io.metamask" } }),
+  getAccount: () => ({ connector: { uid: "connector", id: mocks.connectorId } }),
   sendCalls: mocks.sendCalls,
   getCallsStatus: mocks.getCallsStatus,
 }));
@@ -67,6 +68,7 @@ describe("sendWalletCalls", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.now = 0;
+    mocks.connectorId = "io.metamask";
     vi.spyOn(Date, "now").mockImplementation(() => mocks.now);
     mocks.sendCalls.mockResolvedValue({ id: "bundle" });
     mocks.getCallsStatus.mockResolvedValue({
@@ -133,9 +135,9 @@ describe("sendWalletCalls", () => {
     expect(getOutcomes()).toEqual(["sent", "confirmed"]);
   });
 
-  it("keeps a batch the wallet didn't report pending, and holds the next transaction until it lands", async () => {
+  it("keeps a batch the wallet didn't report pending, and holds the next send of its flow until it lands", async () => {
     const account = nextAccount();
-    const target = { chainId: CHAIN_ID, account };
+    const target = { chainId: CHAIN_ID, account, flow: "trade" };
     mocks.getCallsStatus.mockResolvedValue({ status: "pending", statusCode: 100 });
 
     await expect(send(account)).rejects.toThrow(WALLET_BATCH_PENDING_ERROR);
@@ -152,5 +154,54 @@ describe("sendWalletCalls", () => {
 
     await expect(assertNoPendingWalletBatch(target)).rejects.toThrow(WALLET_BATCH_CONFIRMED_LATE_ERROR);
     await expect(assertNoPendingWalletBatch(target)).resolves.toBeUndefined();
+    expect(getOutcomes()).toEqual(["sent", "statusUnknown", "confirmedLate"]);
+  });
+
+  it.each([
+    { name: "a send of another flow", flow: "gmBuy", minutes: 4, status: "pending", expected: undefined },
+    { name: "wallet still pending after 30 min", flow: "trade", minutes: 31, status: "pending", expected: "pending" },
+    { name: "landed after 30 min", flow: "trade", minutes: 31, status: "success", expected: "late" },
+    { name: "batch failed", flow: "trade", minutes: 4, status: "failure", expected: undefined },
+    { name: "wallet doesn't know the batch", flow: "trade", minutes: 4, status: "unknown", expected: "pending" },
+    { name: "no answer after 30 min", flow: "trade", minutes: 31, status: "unknown", expected: undefined },
+    { name: "another wallet app", flow: "trade", minutes: 4, connectorId: "io.rabby", expected: "pending" },
+  ])("pending batch: $name -> $expected", async ({ flow, minutes, status, connectorId, expected }) => {
+    const account = nextAccount();
+    mocks.getCallsStatus.mockResolvedValue({ status: "pending", statusCode: 100 });
+    await expect(send(account)).rejects.toThrow(WALLET_BATCH_PENDING_ERROR);
+
+    mocks.now = minutes * 60 * 1000;
+    mocks.connectorId = connectorId ?? mocks.connectorId;
+    mocks.getCallsStatus.mockReset();
+    if (status === "unknown") {
+      mocks.getCallsStatus.mockRejectedValue(rpcError(5730));
+    } else {
+      mocks.getCallsStatus.mockResolvedValue({ status, receipts: [] });
+    }
+
+    const guard = assertNoPendingWalletBatch({ chainId: CHAIN_ID, account, flow });
+    const expectedError = { pending: WALLET_BATCH_PENDING_ERROR, late: WALLET_BATCH_CONFIRMED_LATE_ERROR }[
+      expected ?? ""
+    ];
+
+    await (expectedError ? expect(guard).rejects.toThrow(expectedError) : expect(guard).resolves.toBeUndefined());
+  });
+
+  it("removes only its own batch when another tab's batch is still pending", async () => {
+    const account = nextAccount();
+    mocks.sendCalls.mockResolvedValueOnce({ id: "first" });
+    mocks.getCallsStatus.mockResolvedValue({ status: "pending", statusCode: 100 });
+    await expect(send(account)).rejects.toThrow(WALLET_BATCH_PENDING_ERROR);
+
+    mocks.sendCalls.mockResolvedValueOnce({ id: "second" });
+    mocks.getCallsStatus.mockResolvedValue({ status: "success", receipts: [{ transactionHash: "0xhash" }] });
+    await expect(send(account)).resolves.toEqual({ transactionHash: "0xhash" });
+
+    mocks.getCallsStatus.mockImplementation(async (_config, { id }) => ({
+      status: id === "first" ? "pending" : "success",
+    }));
+    await expect(assertNoPendingWalletBatch({ chainId: CHAIN_ID, account, flow: "trade" })).rejects.toThrow(
+      WALLET_BATCH_PENDING_ERROR
+    );
   });
 });

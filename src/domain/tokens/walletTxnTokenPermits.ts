@@ -2,7 +2,7 @@ import type { ContractsChainId } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
-import { getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
+import { getErrorMessage, getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
 
 import { TokenPermitsCheckError } from "./checkTokenPermits";
 import { getWalletTxnTokenPermits } from "./checkTokenPermitsBeforeSend";
@@ -49,6 +49,9 @@ export async function prepareWalletTxnTokenPermits({
     if (error instanceof TokenPermitsCheckError) {
       walletTxnTokenPermits.handleTokenPermitsError(error, []);
       helperToast.error(getInvalidPermitSignatureToastContent());
+    } else {
+      const { failMsg, autoCloseToast } = getErrorMessage(chainId, error);
+      helperToast.error(failMsg, { autoClose: autoCloseToast });
     }
 
     throw error;

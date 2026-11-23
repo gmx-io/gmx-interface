@@ -133,6 +133,7 @@ export async function createGlvWithdrawalTxn({
     gasPriceData,
     setPendingTxns: setPendingTxns,
     walletCallsBatch: walletCallsBatch,
+    batchFlow: "glvSell",
     pendingTransactionData: {
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,

@@ -1,11 +1,14 @@
+import { withRetry } from "viem";
+
 import type { ContractsChainId } from "config/chains";
 import { extendError } from "lib/errors";
 import { metrics } from "lib/metrics";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { nowInSeconds } from "sdk/utils/time";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { checkTokenPermits, TokenPermitsCheckError, type TokenPermitsCheckResult } from "./checkTokenPermits";
-import { getRelayTokenPermits } from "./permitUtils";
+import { getRelayTokenPermits, WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS } from "./permitUtils";
 
 /** Drops the permits whose spend the allowance already covers and fails the ones it doesn't */
 export async function checkTokenPermitsBeforeSend({
@@ -13,27 +16,36 @@ export async function checkTokenPermitsBeforeSend({
   permits,
   requiredAmounts,
   errorSource,
+  minDeadline,
 }: {
   chainId: ContractsChainId;
   permits: SignedTokenPermit[];
   requiredAmounts: Record<string, bigint>;
   errorSource: string;
+  /** A needed permit that expires before this is outdated */
+  minDeadline?: number;
 }): Promise<Pick<TokenPermitsCheckResult, "validPermits" | "stalePermits">> {
   let result: TokenPermitsCheckResult;
 
   try {
-    result = await checkTokenPermits({ client: getPublicClientWithRpc(chainId), permits, requiredAmounts });
+    result = await withRetry(
+      () => checkTokenPermits({ client: getPublicClientWithRpc(chainId), permits, requiredAmounts }),
+      { retryCount: 1 }
+    );
   } catch (error) {
-    // the relay and the wallet transaction's own simulation still catch a bad permit, so an unreachable rpc
-    // must not block the order
+    // an unchecked unlimited permit can overwrite a newer, smaller approval without reverting
     metrics.pushError(error, errorSource);
-    return { validPermits: permits, stalePermits: [] };
+    throw extendError(error, { errorContext: "simulation" });
   }
 
-  if (result.failedPermits.length > 0) {
-    throw extendError(new TokenPermitsCheckError(result.failedPermits), {
+  const expiringPermits =
+    minDeadline !== undefined ? result.validPermits.filter((permit) => Number(permit.deadline) < minDeadline) : [];
+  const outdatedPermits = [...result.outdatedPermits, ...expiringPermits];
+
+  if (result.failedPermits.length > 0 || outdatedPermits.length > 0) {
+    throw extendError(new TokenPermitsCheckError(result.failedPermits, outdatedPermits), {
       errorContext: "simulation",
-      data: { tokens: result.failedPermits.map((permit) => permit.token) },
+      data: { tokens: [...result.failedPermits, ...outdatedPermits].map((permit) => permit.token) },
     });
   }
 
@@ -66,5 +78,6 @@ export async function getWalletTxnTokenPermits({
     permits: spentTokenPermits,
     requiredAmounts,
     errorSource: "walletTxn.tokenPermitsCheck",
+    minDeadline: nowInSeconds() + WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS,
   });
 }

@@ -58,7 +58,13 @@ function deposit(tokenPermits: SignedTokenPermit[], callback = vi.fn()) {
 }
 
 function mockCheck(result: Partial<TokenPermitsCheckResult>) {
-  mocks.checkTokenPermits.mockResolvedValue({ validPermits: [], stalePermits: [], failedPermits: [], ...result });
+  mocks.checkTokenPermits.mockResolvedValue({
+    validPermits: [],
+    stalePermits: [],
+    failedPermits: [],
+    outdatedPermits: [],
+    ...result,
+  });
 }
 
 describe("sendSameChainDepositTxn", () => {

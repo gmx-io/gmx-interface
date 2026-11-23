@@ -124,6 +124,7 @@ export async function createWithdrawalTxn({
     gasPriceData,
     setPendingTxns: setPendingTxns,
     walletCallsBatch: walletCallsBatch,
+    batchFlow: "gmSell",
     pendingTransactionData: {
       estimatedExecutionFee: params.executionFee,
       estimatedExecutionGasLimit: executionGasLimit,

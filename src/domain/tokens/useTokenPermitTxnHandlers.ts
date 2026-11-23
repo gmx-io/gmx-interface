@@ -75,14 +75,14 @@ export function useTokenPermitTxnHandlers() {
 
       if (error instanceof TokenPermitsCheckError) {
         disableTokenPermits(error.failedPermits.map((permit) => permit.token));
-        removeTokenPermits(error.failedPermits);
-        error.failedPermits.forEach((permit) => {
+        removeTokenPermits([...error.failedPermits, ...error.outdatedPermits]);
+        [...error.failedPermits, ...error.outdatedPermits].forEach((permit) => {
           sendTokenPermitMetric({
             outcome: "failedCheck",
             chainId,
             tokenAddress: permit.token,
             accountType,
-            reason: "preSendCheck",
+            reason: error.failedPermits.includes(permit) ? "preSendCheck" : "outdated",
             permitId: getTokenPermitId(permit),
           });
         });

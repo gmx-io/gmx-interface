@@ -878,7 +878,10 @@ export type WalletBatchOutcome =
   | "upgradeRejected"
   | "unsupported"
   | "failed"
-  | "statusUnknown";
+  | "statusUnknown"
+  // the result of a `statusUnknown` batch, learned when the next send of its flow asks the wallet
+  | "confirmedLate"
+  | "failedLate";
 
 export type WalletBatchEvent = {
   event: "walletBatch";

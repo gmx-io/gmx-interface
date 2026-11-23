@@ -171,6 +171,7 @@ export async function createGlvDepositTxn({
         gasPriceData,
         setPendingTxns,
         walletCallsBatch: walletCallsBatch,
+        batchFlow: "glvBuy",
         pendingTransactionData: {
           estimatedExecutionFee: executionFee,
           estimatedExecutionGasLimit: executionGasLimit,

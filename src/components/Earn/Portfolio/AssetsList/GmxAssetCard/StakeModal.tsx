@@ -284,6 +284,7 @@ export function StakeModal(props: {
         setPendingTxns,
         hideErrorMsg: true,
         walletCallsBatch: approvalBatch,
+        batchFlow: "stake",
       });
       sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
       setIsVisible(false);

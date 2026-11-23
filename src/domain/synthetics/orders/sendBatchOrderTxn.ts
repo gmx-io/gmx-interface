@@ -12,7 +12,7 @@ import { TokensData } from "domain/tokens";
 import { checkTokenPermitsBeforeSend, getWalletTxnTokenPermits } from "domain/tokens/checkTokenPermitsBeforeSend";
 import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
-import type { WalletCall, WalletCallsBatch } from "lib/transactions/sendWalletCalls";
+import { assertNoPendingWalletBatch, type WalletCall, type WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
@@ -64,6 +64,7 @@ export async function sendBatchOrderTxn({
   callback,
   tokenPermits,
   walletCallsBatch,
+  batchFlow,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -76,6 +77,7 @@ export async function sendBatchOrderTxn({
   /** Stored permits a wallet-sent batch may carry; only the ones for tokens it spends go in */
   tokenPermits?: SignedTokenPermit[];
   walletCallsBatch?: WalletCallsBatch;
+  batchFlow?: string;
 }) {
   const encodedBatchParams = encodeJitBatchOrderMetadata(batchParams, simulationParams);
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
@@ -96,6 +98,11 @@ export async function sendBatchOrderTxn({
 
     if (expressParams && walletCallsBatch) {
       throw new Error("A relayed order can't share a wallet batch with approvals");
+    }
+
+    // a wallet transaction checks this itself; turning Express on after a timed-out batch must not skip it
+    if (expressParams && batchFlow !== undefined) {
+      await assertNoPendingWalletBatch({ chainId, account: signer.address, flow: batchFlow });
     }
 
     if (expressParams && expressParams.relayParamsPayload.tokenPermits.length > 0) {
@@ -210,6 +217,7 @@ export async function sendBatchOrderTxn({
       value,
       runSimulation,
       walletCallsBatch,
+      batchFlow,
       callback: (event) => {
         callback?.(eventBuilder.extend(event));
       },

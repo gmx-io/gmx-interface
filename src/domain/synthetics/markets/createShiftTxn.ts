@@ -112,6 +112,7 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
     walletCallsBatch: p.walletCallsBatch,
+    batchFlow: "gmShift",
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,
       estimatedExecutionGasLimit: p.executionGasLimit,

@@ -34,6 +34,7 @@ export async function sendWalletTransaction({
   msg,
   callback,
   walletCallsBatch,
+  batchFlow = walletCallsBatch?.flow,
   validateBeforeSend,
 }: {
   chainId: number;
@@ -52,6 +53,7 @@ export async function sendWalletTransaction({
   callback?: TxnCallback<WalletTxnCtx>;
   /** Sent in the same wallet confirmation, before this call; `runSimulation` has to account for them */
   walletCallsBatch?: WalletCallsBatch;
+  batchFlow?: string;
   validateBeforeSend?: () => void;
 }): Promise<WalletTxnResult> {
   const from = signer.address;
@@ -83,7 +85,9 @@ export async function sendWalletTransaction({
       };
     }
 
-    await assertNoPendingWalletBatch({ chainId, account: from });
+    if (batchFlow !== undefined) {
+      await assertNoPendingWalletBatch({ chainId, account: from, flow: batchFlow });
+    }
 
     if (walletCallsBatch) {
       await runSimulation?.().then(() => callback?.(eventBuilder.Simulated()));

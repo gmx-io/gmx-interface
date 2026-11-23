@@ -82,7 +82,13 @@ function makeBatchParams(payAmount?: bigint): BatchOrderTxnParams {
 }
 
 function mockCheck(result: Partial<TokenPermitsCheckResult>) {
-  mocks.checkTokenPermits.mockResolvedValue({ validPermits: [], stalePermits: [], failedPermits: [], ...result });
+  mocks.checkTokenPermits.mockResolvedValue({
+    validPermits: [],
+    stalePermits: [],
+    failedPermits: [],
+    outdatedPermits: [],
+    ...result,
+  });
 }
 
 function send(expressParams: ExpressTxnParams, batchParams: BatchOrderTxnParams, callback = vi.fn()) {
@@ -153,14 +159,16 @@ describe("sendBatchOrderTxn pre-send permit check", () => {
     );
   });
 
-  it("still sends when the check itself can't reach the rpc", async () => {
+  // an unchecked unlimited permit can overwrite a newer, smaller approval
+  it("stops the send when the check can't reach the rpc after a retry", async () => {
     const usdcPermit = permit(USDC, 110n);
     mocks.checkTokenPermits.mockRejectedValue(new Error("rpc down"));
 
-    await send(makeExpressParams([usdcPermit]), makeBatchParams(100n));
+    await expect(send(makeExpressParams([usdcPermit]), makeBatchParams(100n))).rejects.toThrow("rpc down");
 
+    expect(mocks.checkTokenPermits).toHaveBeenCalledTimes(2);
     expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "expressOrders.tokenPermitsCheck");
-    expect(getSentPermits()).toEqual([usdcPermit]);
+    expect(mocks.buildAndSign).not.toHaveBeenCalled();
   });
 });
 

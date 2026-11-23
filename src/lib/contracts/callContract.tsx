@@ -52,6 +52,7 @@ export async function callContract(
     onPendingTxnSuccess?: () => void;
     metricId?: OrderMetricId;
     walletCallsBatch?: WalletCallsBatch;
+    batchFlow?: string;
   }
 ) {
   try {
@@ -94,7 +95,11 @@ export async function callContract(
       return;
     }
 
-    await assertNoPendingWalletBatch({ chainId, account: wallet.address });
+    const batchFlow = opts.batchFlow ?? opts.walletCallsBatch?.flow;
+
+    if (batchFlow !== undefined) {
+      await assertNoPendingWalletBatch({ chainId, account: wallet.address, flow: batchFlow });
+    }
 
     const txnOpts: Overrides = { chainId };
 

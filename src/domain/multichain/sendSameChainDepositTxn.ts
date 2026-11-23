@@ -84,6 +84,7 @@ export async function sendSameChainDepositTxn({
         gasLimit,
         callback: callback ? (event) => callback(eventBuilder.extend<WalletTxnCtx>(event)) : undefined,
         walletCallsBatch,
+        batchFlow: "gmxAccountDeposit",
       });
 
       if (onPendingTxnSuccess) {

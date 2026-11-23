@@ -118,7 +118,10 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
       allowPermit: isDeposit && isClassicTokenPermitsEnabled,
       allowBatch: true,
       skip: paySource !== "settlementChain",
-      metric: { flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }) },
+      metric: {
+        flow: getPoolApprovalFlow({ chainId, glvOrMarketAddress: marketOrGlvTokenAddress, isDeposit }),
+        isExpress: false,
+      },
     });
 
   const approve = useCallback(() => {

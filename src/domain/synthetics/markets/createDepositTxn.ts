@@ -160,6 +160,7 @@ export async function createDepositTxn({
         gasPriceData,
         setPendingTxns,
         walletCallsBatch: walletCallsBatch,
+        batchFlow: "gmBuy",
         pendingTransactionData: {
           estimatedExecutionFee: executionFee,
           estimatedExecutionGasLimit: executionGasLimit,

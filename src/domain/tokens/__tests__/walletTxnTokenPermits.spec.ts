@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
-import { TokenPermitsCheckError } from "./checkTokenPermits";
-import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "./walletTxnTokenPermits";
+import { TokenPermitsCheckError } from "../checkTokenPermits";
+import { prepareWalletTxnTokenPermits, sendWithWalletTxnTokenPermits } from "../walletTxnTokenPermits";
 
 const mocks = vi.hoisted(() => ({ getWalletTxnTokenPermits: vi.fn(), toastError: vi.fn() }));
 
-vi.mock("./checkTokenPermitsBeforeSend", () => ({ getWalletTxnTokenPermits: mocks.getWalletTxnTokenPermits }));
+vi.mock("../checkTokenPermitsBeforeSend", () => ({ getWalletTxnTokenPermits: mocks.getWalletTxnTokenPermits }));
 vi.mock("lib/helperToast", () => ({ helperToast: { error: mocks.toastError } }));
 vi.mock("components/Errors/errorToasts", () => ({ getInvalidPermitSignatureToastContent: () => "permit failed" }));
 

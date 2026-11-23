@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { sendWalletTransaction } from "./sendWalletTransaction";
+import { sendWalletTransaction } from "../sendWalletTransaction";
 
 const mocks = vi.hoisted(() => ({ sendWalletCalls: vi.fn() }));
 
-vi.mock("./sendWalletCalls", () => ({ sendWalletCalls: mocks.sendWalletCalls, assertNoPendingWalletBatch: vi.fn() }));
+vi.mock("../sendWalletCalls", () => ({ sendWalletCalls: mocks.sendWalletCalls, assertNoPendingWalletBatch: vi.fn() }));
 vi.mock("lib/tenderly", () => ({ getTenderlyConfig: () => undefined }));
 
 const ACCOUNT = "0x0000000000000000000000000000000000000001";

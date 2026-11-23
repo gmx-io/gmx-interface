@@ -31,6 +31,14 @@ function allowanceData(amount: bigint) {
   return encodeFunctionResult({ abi: erc20Abi, functionName: "allowance", result: amount }) as `0x${string}`;
 }
 
+function nonceData(nonce: bigint) {
+  return encodeFunctionResult({
+    abi: abis.ERC20PermitInterface,
+    functionName: "nonces",
+    result: nonce,
+  }) as `0x${string}`;
+}
+
 function mockClient(results: CallResult[]) {
   return {
     call: vi.fn(async (_request: CallParameters) => ({
@@ -45,9 +53,11 @@ describe("checkTokenPermits", () => {
     const wethPermit = permit(WETH, 5n);
     const client = mockClient([
       { success: true, returnData: allowanceData(1000n) },
+      { success: true, returnData: nonceData(0n) },
       { success: false, returnData: "0x" },
       { success: true, returnData: allowanceData(1000n) },
       { success: true, returnData: allowanceData(0n) },
+      { success: true, returnData: nonceData(0n) },
       { success: true, returnData: "0x" },
       { success: true, returnData: allowanceData(5n) },
     ]);
@@ -58,7 +68,12 @@ describe("checkTokenPermits", () => {
         permits: [usdcPermit, wethPermit],
         requiredAmounts: { [USDC]: 100n, [WETH]: 5n },
       })
-    ).resolves.toEqual({ validPermits: [wethPermit], stalePermits: [usdcPermit], failedPermits: [] });
+    ).resolves.toEqual({
+      validPermits: [wethPermit],
+      stalePermits: [usdcPermit],
+      failedPermits: [],
+      outdatedPermits: [],
+    });
 
     expect(client.call).toHaveBeenCalledTimes(1);
 
@@ -68,10 +83,14 @@ describe("checkTokenPermits", () => {
     const { args } = decodeFunctionData({ abi: abis.Multicall, data: data! });
     const calls = args[0] as { target: string; allowFailure: boolean; callData: Hex }[];
 
-    expect(calls.map((call) => call.target)).toEqual([USDC, USDC, USDC, WETH, WETH, WETH]);
+    expect(calls.map((call) => call.target)).toEqual([USDC, USDC, USDC, USDC, WETH, WETH, WETH, WETH]);
     expect(calls.every((call) => call.allowFailure)).toBe(true);
-    expect(decodeFunctionData({ abi: abis.ERC20PermitInterface, data: calls[1].callData }).functionName).toBe("permit");
-    [calls[0], calls[2]].forEach((call) =>
+    expect(
+      [calls[1], calls[2]].map(
+        (call) => decodeFunctionData({ abi: abis.ERC20PermitInterface, data: call.callData }).functionName
+      )
+    ).toEqual(["nonces", "permit"]);
+    [calls[0], calls[3]].forEach((call) =>
       expect(decodeFunctionData({ abi: erc20Abi, data: call.callData })).toEqual({
         functionName: "allowance",
         args: [OWNER, ROUTER],
@@ -82,6 +101,15 @@ describe("checkTokenPermits", () => {
   it.each([
     { name: "executes and covers the spend", before: 0n, permitOk: true, allowance: 100n, expected: "validPermits" },
     { name: "reverts, allowance stays short", before: 0n, permitOk: false, allowance: 0n, expected: "failedPermits" },
+    // another dapp's permit took the nonce: a new permit still works, so the token must keep its permits
+    {
+      name: "reverts, nonce used elsewhere",
+      before: 0n,
+      nonce: 1n,
+      permitOk: false,
+      allowance: 0n,
+      expected: "outdatedPermits",
+    },
     {
       name: "executes, allowance below the spend",
       before: 0n,
@@ -111,16 +139,27 @@ describe("checkTokenPermits", () => {
       allowance: 2n ** 256n - 1n,
       expected: "stalePermits",
     },
-  ])("permit $name -> $expected", async ({ before, permitOk, allowance, expected }) => {
+  ])("permit $name -> $expected", async ({ before, nonce = 0n, permitOk, allowance, expected }) => {
     const usdcPermit = permit(USDC, 100n);
     const read = (amount: bigint | undefined): CallResult =>
       amount === undefined
         ? { success: false, returnData: "0x" }
         : { success: true, returnData: allowanceData(amount) };
-    const client = mockClient([read(before), { success: permitOk, returnData: "0x" }, read(allowance)]);
+    const client = mockClient([
+      read(before),
+      { success: true, returnData: nonceData(nonce) },
+      { success: permitOk, returnData: "0x" },
+      read(allowance),
+    ]);
 
     await expect(
       checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
-    ).resolves.toEqual({ validPermits: [], stalePermits: [], failedPermits: [], [expected]: [usdcPermit] });
+    ).resolves.toEqual({
+      validPermits: [],
+      stalePermits: [],
+      failedPermits: [],
+      outdatedPermits: [],
+      [expected]: [usdcPermit],
+    });
   });
 });

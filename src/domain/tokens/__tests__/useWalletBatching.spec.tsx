@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { IS_WALLET_BATCHING_ENABLED_UI_FLAG } from "domain/synthetics/uiFlags/uiFlags";
 import { disableWalletBatchingForSession, getWalletBatchingSessionKey } from "lib/wallets/walletBatchingSession";
 
-import { useWalletBatching } from "./useWalletBatching";
+import { useWalletBatching } from "../useWalletBatching";
 
 const mocks = vi.hoisted(() => ({
   isFlagEnabled: true,

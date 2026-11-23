@@ -662,6 +662,7 @@ export function usePositionEditorButtonState(
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       tokenPermits: classicTokenPermits,
       walletCallsBatch: approvalBatch,
+      batchFlow: isDeposit ? "editCollateral" : undefined,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined

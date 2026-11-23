@@ -23,6 +23,7 @@ import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { approveTokens } from "./approveTokens";
 import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
+import { getIsPermitExpired, WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS } from "./permitUtils";
 import { sendTokenApprovalMetric } from "./tokenApprovalMetric";
 import type { TokenPermitUnavailableReason } from "./tokenPermitsEligibility";
 import { useWalletBatching } from "./useWalletBatching";
@@ -148,17 +149,33 @@ export function useTokenApproval({
     [allowPermit, spenderAddress, tokenPermits]
   );
 
-  const tokensToApprove = useMemo(
-    () =>
-      skip
-        ? EMPTY_ARRAY
-        : mergedTokens
-            .filter((token) =>
-              getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
-            )
-            .map((token) => token.tokenAddress),
-    [skip, mergedTokens, tokensAllowanceData, permitsOrEmpty]
+  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
+  const getIsPermitApproval = useCallback(
+    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
+    [allowPermit, getIsPermitAvailable]
   );
+
+  const tokensToApprove = useMemo(() => {
+    if (skip) {
+      return EMPTY_ARRAY;
+    }
+
+    // only a wallet-sent action (`allowBatch`) can outlive the deadline; checked here rather than in permitsOrEmpty
+    // so the clock is read again whenever the amount changes
+    const coveringPermits = allowBatch
+      ? permitsOrEmpty.filter((permit) => !getIsPermitExpired(permit, WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS))
+      : permitsOrEmpty;
+
+    const tokenAddresses = mergedTokens
+      .filter((token) => getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, coveringPermits))
+      .map((token) => token.tokenAddress);
+
+    // permits first: they cost a signature, not a transaction, and the tokens left can then share one batch
+    return [
+      ...tokenAddresses.filter(getIsPermitApproval),
+      ...tokenAddresses.filter((tokenAddress) => !getIsPermitApproval(tokenAddress)),
+    ];
+  }, [skip, allowBatch, mergedTokens, tokensAllowanceData, permitsOrEmpty, getIsPermitApproval]);
 
   const needsApproval = tokensToApprove.length > 0;
 
@@ -167,8 +184,19 @@ export function useTokenApproval({
     enabled: allowBatch && needsApproval,
   });
 
+  // a smart account approves in the action's own confirmation; any other account would first get the upgrade
+  // prompt, so a free permit signature goes first there
+  const isPermitFirst = atomicStatus !== "supported" && tokensToApprove.some(getIsPermitApproval);
+
   const approvalBatch = useMemo((): WalletCallsBatch | undefined => {
-    if (!isBatchAvailable || !isAllowanceLoaded || !needsApproval || !spenderAddress || chainId === undefined) {
+    if (
+      !isBatchAvailable ||
+      isPermitFirst ||
+      !isAllowanceLoaded ||
+      !needsApproval ||
+      !spenderAddress ||
+      chainId === undefined
+    ) {
       return undefined;
     }
 
@@ -184,7 +212,8 @@ export function useTokenApproval({
       flow: metricParams.flow,
       atomicStatus,
       onOutcome: (outcome, error) => {
-        if (outcome === "sent") {
+        // a batch with an unknown status can still land, so it's no failed approval
+        if (outcome === "sent" || outcome === "statusUnknown") {
           return;
         }
 
@@ -219,6 +248,7 @@ export function useTokenApproval({
     chainId,
     isAllowanceLoaded,
     isBatchAvailable,
+    isPermitFirst,
     latestMetric,
     needsApproval,
     spenderAddress,
@@ -280,12 +310,6 @@ export function useTokenApproval({
       setMinedApproval({ tokenAddress, allowance });
     },
     []
-  );
-
-  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
-  const getIsPermitApproval = useCallback(
-    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
-    [allowPermit, getIsPermitAvailable]
   );
 
   const handleApprove = useCallback(

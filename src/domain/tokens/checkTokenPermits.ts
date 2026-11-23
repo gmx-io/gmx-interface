@@ -19,10 +19,18 @@ export type TokenPermitsCheckResult = {
   stalePermits: SignedTokenPermit[];
   /** The allowance would stay below the spend, so the relay call would fail */
   failedPermits: SignedTokenPermit[];
+  /**
+   * Needed, but can't be used: another call took its nonce, or a wallet transaction may outlive its deadline. A new
+   * permit works, so the token keeps its permits
+   */
+  outdatedPermits: SignedTokenPermit[];
 };
 
 export class TokenPermitsCheckError extends Error {
-  constructor(public failedPermits: SignedTokenPermit[]) {
+  constructor(
+    public failedPermits: SignedTokenPermit[],
+    public outdatedPermits: SignedTokenPermit[] = []
+  ) {
     super("Token permits failed the pre-send check");
   }
 }
@@ -59,6 +67,15 @@ export async function checkTokenPermits({
         allowFailure: true,
         callData: encodeFunctionData({
           abi: abis.ERC20PermitInterface,
+          functionName: "nonces",
+          args: [permit.owner as Address],
+        }),
+      },
+      {
+        target: permit.token as Address,
+        allowFailure: true,
+        callData: encodeFunctionData({
+          abi: abis.ERC20PermitInterface,
           functionName: "permit",
           args: [
             permit.owner as Address,
@@ -86,7 +103,12 @@ export async function checkTokenPermits({
 
   const results = decodeFunctionResult({ abi: abis.Multicall, functionName: "aggregate3", data });
 
-  const checkResult: TokenPermitsCheckResult = { validPermits: [], stalePermits: [], failedPermits: [] };
+  const checkResult: TokenPermitsCheckResult = {
+    validPermits: [],
+    stalePermits: [],
+    failedPermits: [],
+    outdatedPermits: [],
+  };
 
   const decodeAllowance = ({ success, returnData }: (typeof results)[number]) =>
     success
@@ -94,9 +116,13 @@ export async function checkTokenPermits({
       : undefined;
 
   permits.forEach((permit, index) => {
-    const allowanceBefore = decodeAllowance(results[index * 3]);
-    const permitResult = results[index * 3 + 1];
-    const allowance = decodeAllowance(results[index * 3 + 2]);
+    const allowanceBefore = decodeAllowance(results[index * 4]);
+    const nonceResult = results[index * 4 + 1];
+    const permitResult = results[index * 4 + 2];
+    const allowance = decodeAllowance(results[index * 4 + 3]);
+    const nonce = nonceResult.success
+      ? decodeFunctionResult({ abi: abis.ERC20PermitInterface, functionName: "nonces", data: nonceResult.returnData })
+      : undefined;
 
     const requiredAmount =
       Object.entries(requiredAmounts).find(([tokenAddress]) =>
@@ -105,6 +131,8 @@ export async function checkTokenPermits({
 
     if (allowanceBefore !== undefined && allowanceBefore >= requiredAmount) {
       checkResult.stalePermits.push(permit);
+    } else if (!permitResult.success && nonce !== undefined && nonce > BigInt(permit.onchainParams.nonce)) {
+      checkResult.outdatedPermits.push(permit);
     } else if (allowance === undefined || allowance < requiredAmount) {
       checkResult.failedPermits.push(permit);
     } else if (permitResult.success) {

@@ -374,6 +374,7 @@ export function useTradeboxTransactions({ setPendingTxns, canSwitchGasPaymentTok
         expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
         tokenPermits: classicTokenPermits,
         walletCallsBatch,
+        batchFlow: isSwap || isIncrease ? "trade" : undefined,
         simulationParams: shouldDisableValidationForTesting
           ? undefined
           : {

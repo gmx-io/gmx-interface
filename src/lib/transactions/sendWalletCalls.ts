@@ -7,7 +7,6 @@ import {
   MethodNotSupportedRpcError,
   UnsupportedChainIdError,
   UnsupportedNonOptionalCapabilityError,
-  UnknownBundleIdError,
   UnsupportedProviderMethodError,
   UserRejectedRequestError,
   type Address,
@@ -17,6 +16,7 @@ import {
 import { getPendingWalletBatchKey } from "config/localStorage";
 import { extendError } from "lib/errors";
 import { WALLET_BATCH_CONFIRMED_LATE_ERROR, WALLET_BATCH_PENDING_ERROR } from "lib/errors/customErrors";
+import { readLocalStorageItem, removeLocalStorageItem, writeLocalStorageItem } from "lib/localStorage";
 import { metrics, type WalletBatchEvent, type WalletBatchOutcome } from "lib/metrics";
 import { sleep } from "lib/sleep";
 import { disableWalletBatchingForSession, getWalletBatchingSessionKey } from "lib/wallets/walletBatchingSession";
@@ -40,11 +40,18 @@ export type WalletCallsBatch = {
 // long enough for a slow bundler, short enough to free a stuck submit button
 const CALLS_STATUS_TIMEOUT_MS = 180_000;
 const CALLS_STATUS_POLL_INTERVAL_MS = 1_000;
-// a batch the wallet still hasn't reported after this long is no longer worth blocking new transactions for
+// a batch no wallet can report on after this long is no longer worth holding its flow for
 const PENDING_BATCH_MAX_AGE_MS = 30 * 60 * 1000;
 const PENDING_BATCH_STATUS_TIMEOUT_MS = 10_000;
 
-type PendingWalletBatch = { id: string; connectorId: string | undefined; sentAt: number };
+type PendingWalletBatch = {
+  id: string;
+  flow: string;
+  connectorId: string | undefined;
+  sentAt: number;
+  callsCount: number;
+  atomicStatus: string | undefined;
+};
 
 const UNSUPPORTED_ERROR_CODES: number[] = [
   AtomicityNotSupportedError.code,
@@ -74,18 +81,11 @@ export async function sendWalletCalls({
     : undefined;
 
   const report = (outcome: WalletBatchOutcome, error?: unknown) => {
-    metrics.pushEvent<WalletBatchEvent>({
-      event: "walletBatch",
-      isError: false,
-      data: {
-        outcome,
-        flow: batch.flow,
-        chainId,
-        callsCount: calls.length,
-        atomicStatus: batch.atomicStatus,
-        errorCode: error !== undefined ? getErrorCode(error) : undefined,
-      },
-    });
+    reportWalletBatch(
+      { chainId, flow: batch.flow, callsCount: calls.length, atomicStatus: batch.atomicStatus },
+      outcome,
+      error
+    );
     batch.onOutcome?.(outcome, error);
   };
 
@@ -110,7 +110,17 @@ export async function sendWalletCalls({
     throw extendError(error, { errorContext: "sending" });
   }
 
-  setPendingWalletBatch({ chainId, account }, { id, connectorId: connector?.id, sentAt: Date.now() });
+  addPendingWalletBatch(
+    { chainId, account },
+    {
+      id,
+      flow: batch.flow,
+      connectorId: connector?.id,
+      sentAt: Date.now(),
+      callsCount: calls.length,
+      atomicStatus: batch.atomicStatus,
+    }
+  );
   report("sent");
 
   let status: Awaited<ReturnType<typeof getCallsStatus>> | undefined;
@@ -143,7 +153,7 @@ export async function sendWalletCalls({
     throw extendError(error, { errorContext: "sending" });
   }
 
-  setPendingWalletBatch({ chainId, account }, undefined);
+  removePendingWalletBatch({ chainId, account }, id);
 
   const transactionHash = status.receipts?.at(-1)?.transactionHash;
 
@@ -159,72 +169,123 @@ export async function sendWalletCalls({
 }
 
 /**
- * Stops a wallet transaction while a batch the wallet accepted may still land, so a retry after a status timeout
- * doesn't send the action twice. Once the batch is known to have gone through, the next attempt is stopped once
- * to say so.
+ * Stops a send of `flow` while a batch of that flow the wallet accepted may still land, so a retry after a status
+ * timeout doesn't spend twice. Every send that spends what the flow's batch spent passes it as `batchFlow`, batched or
+ * not; closes and cancels can't repeat that spend and pass none.
  */
-export async function assertNoPendingWalletBatch(target: { chainId: number; account: string }) {
-  const pending = getPendingWalletBatch(target);
+export async function assertNoPendingWalletBatch({
+  chainId,
+  account,
+  flow,
+}: {
+  chainId: number;
+  account: string;
+  flow: string;
+}) {
+  const target = { chainId, account };
 
-  if (!pending) {
-    return;
+  for (const pending of getPendingWalletBatches(target).filter((batch) => batch.flow === flow)) {
+    const status = await getPendingWalletBatchStatus(pending);
+
+    if (status === "success") {
+      removePendingWalletBatch(target, pending.id);
+      reportWalletBatch({ chainId, ...pending }, "confirmedLate");
+      // this send is most likely the retry, so it stops once to say the first one went through
+      throw extendError(new Error(WALLET_BATCH_CONFIRMED_LATE_ERROR), { errorContext: "pendingWalletBatch" });
+    }
+
+    if (status === "failure") {
+      removePendingWalletBatch(target, pending.id);
+      reportWalletBatch({ chainId, ...pending }, "failedLate");
+      continue;
+    }
+
+    if (status === undefined && Date.now() - pending.sentAt > PENDING_BATCH_MAX_AGE_MS) {
+      removePendingWalletBatch(target, pending.id);
+      continue;
+    }
+
+    throw extendError(new Error(WALLET_BATCH_PENDING_ERROR), { errorContext: "pendingWalletBatch" });
   }
+}
 
-  if (Date.now() - pending.sentAt > PENDING_BATCH_MAX_AGE_MS) {
-    setPendingWalletBatch(target, undefined);
-    return;
-  }
-
+async function getPendingWalletBatchStatus(pending: PendingWalletBatch) {
   const config = getWagmiConfig();
   const { connector } = getAccount(config);
-  // another wallet app can't report the batch, so it keeps blocking until it is too old to land
-  const result =
-    connector !== undefined && connector.id === pending.connectorId
-      ? await withFallback(
-          getCallsStatus(config, { id: pending.id, connector }).catch((error) =>
-            getErrorCode(error) === UnknownBundleIdError.code ? ("unknownBatch" as const) : undefined
-          ),
-          undefined,
-          PENDING_BATCH_STATUS_TIMEOUT_MS
-        )
-      : undefined;
 
-  if (result === "unknownBatch" || result?.status === "failure") {
-    setPendingWalletBatch(target, undefined);
-    return;
-  }
-
-  if (result?.status === "success") {
-    setPendingWalletBatch(target, undefined);
-    throw extendError(new Error(WALLET_BATCH_CONFIRMED_LATE_ERROR), { errorContext: "sending" });
-  }
-
-  throw extendError(new Error(WALLET_BATCH_PENDING_ERROR), { errorContext: "sending" });
-}
-
-function getPendingWalletBatch({ chainId, account }: { chainId: number; account: string }) {
-  try {
-    const stored = localStorage.getItem(JSON.stringify(getPendingWalletBatchKey(chainId, account)));
-    return stored ? (JSON.parse(stored) as PendingWalletBatch) : undefined;
-  } catch {
+  // another wallet app can't report the batch; WalletConnect apps share one connector id and answer "unknown bundle"
+  if (connector === undefined || connector.id !== pending.connectorId) {
     return undefined;
   }
+
+  const result = await withFallback(
+    getCallsStatus(config, { id: pending.id, connector }).catch(() => undefined),
+    undefined,
+    PENDING_BATCH_STATUS_TIMEOUT_MS
+  );
+
+  return result?.status;
 }
 
-function setPendingWalletBatch(
-  { chainId, account }: { chainId: number; account: string },
-  batch: PendingWalletBatch | undefined
+function reportWalletBatch(
+  {
+    chainId,
+    flow,
+    callsCount,
+    atomicStatus,
+  }: Pick<PendingWalletBatch, "flow" | "callsCount" | "atomicStatus"> & {
+    chainId: number;
+  },
+  outcome: WalletBatchOutcome,
+  error?: unknown
 ) {
-  const key = JSON.stringify(getPendingWalletBatchKey(chainId, account));
+  metrics.pushEvent<WalletBatchEvent>({
+    event: "walletBatch",
+    isError: false,
+    data: {
+      outcome,
+      flow,
+      chainId,
+      callsCount,
+      atomicStatus,
+      errorCode: error !== undefined ? getErrorCode(error) : undefined,
+    },
+  });
+}
 
-  try {
-    if (batch) {
-      localStorage.setItem(key, JSON.stringify(batch));
-    } else {
-      localStorage.removeItem(key);
-    }
-  } catch {
-    // storage can be full or blocked; the batch is then only guarded while this wait lasts
+function getPendingWalletBatches({ chainId, account }: { chainId: number; account: string }) {
+  return (
+    readLocalStorageItem(getPendingWalletBatchKey(chainId, account), {
+      deserializer: (value) => {
+        const batches: unknown = JSON.parse(value);
+        return Array.isArray(batches) ? (batches as PendingWalletBatch[]) : undefined;
+      },
+    }) ?? []
+  );
+}
+
+// several tabs can each wait for their own batch, so a record is added and removed by its id
+function addPendingWalletBatch(target: { chainId: number; account: string }, batch: PendingWalletBatch) {
+  writePendingWalletBatches(target, [...getPendingWalletBatches(target).filter(({ id }) => id !== batch.id), batch]);
+}
+
+function removePendingWalletBatch(target: { chainId: number; account: string }, id: string) {
+  writePendingWalletBatches(
+    target,
+    getPendingWalletBatches(target).filter((batch) => batch.id !== id)
+  );
+}
+
+function writePendingWalletBatches(
+  { chainId, account }: { chainId: number; account: string },
+  batches: PendingWalletBatch[]
+) {
+  const key = getPendingWalletBatchKey(chainId, account);
+
+  if (batches.length > 0) {
+    writeLocalStorageItem(key, batches, { serializer: JSON.stringify });
+  } else {
+    removeLocalStorageItem(key);
   }
 }
 

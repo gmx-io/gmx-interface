@@ -1,7 +1,14 @@
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 
-import { fetchWalletChainCapabilities } from "./walletCapabilities";
+import { fetchWalletChainCapabilities, type WalletChainCapabilities } from "./walletCapabilities";
+
+// SWR asks again on every mount while the cached value is undefined, so a wallet without capabilities gets a value too
+const NO_CAPABILITIES: WalletChainCapabilities = {
+  atomicStatus: undefined,
+  hasAlternateGasFees: undefined,
+  hasPaymasterService: undefined,
+};
 
 /** One `wallet_getCapabilities` per connected wallet and chain, asked only once a flow needs it */
 export function useWalletChainCapabilities({ chainId, enabled }: { chainId: number | undefined; enabled: boolean }) {
@@ -14,7 +21,7 @@ export function useWalletChainCapabilities({ chainId, enabled }: { chainId: numb
     {
       fetcher: () =>
         fetchWalletChainCapabilities({ account: address!, connector: connector!, chainId: chainId! }).then(
-          (result) => result.capabilities
+          (result) => result.capabilities ?? NO_CAPABILITIES
         ),
       refreshInterval: 0,
       revalidateOnFocus: false,
