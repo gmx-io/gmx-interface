@@ -29,6 +29,7 @@ import { WalletSigner } from "lib/wallets";
 import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
 import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { withFallback } from "lib/withFallback";
 import { getAbi } from "sdk/abis/getAbi";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
@@ -56,6 +57,8 @@ import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
+
+const GAS_SIMULATION_TIMEOUT_MS = 3_000;
 
 export async function estimateBatchExpressParams({
   signer,
@@ -122,6 +125,19 @@ export async function estimateBatchExpressParams({
   });
 
   return expressParams;
+}
+
+/**
+ * The approximate relay gas limit can be below the real relay cost, and the relay rejects an underpaid fee
+ * with InsufficientRelayFee, so the approximate fee is only a fallback. The timeout keeps a stalled RPC from
+ * holding a cancel while the order can still execute
+ */
+export async function estimateWithApproximateFallback(
+  estimate: (estimationMethod: ExpressParamsEstimationMethod) => Promise<ExpressTxnParams | undefined>
+): Promise<ExpressTxnParams | undefined> {
+  const simulated = await withFallback(estimate("estimateGas"), undefined, GAS_SIMULATION_TIMEOUT_MS);
+
+  return simulated ?? estimate("approximate");
 }
 
 function getBatchExpressEstimatorParams({
