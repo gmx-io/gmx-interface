@@ -62,6 +62,15 @@ export function sendNotificationTapEvent(type: string | null | undefined, isCold
 
 /** Sends at the first app open in 24 hours. */
 export async function sendNotificationsDailyStateEvent(state: NotificationsStatus) {
+  // Tabs opened together would each read the old timestamp before any of them sends, so one tab at a time checks.
+  if (navigator.locks) {
+    await navigator.locks.request(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, () => sendDailyStateOnce(state));
+  } else {
+    await sendDailyStateOnce(state);
+  }
+}
+
+async function sendDailyStateOnce(state: NotificationsStatus) {
   const sentAt = readLocalStorageItem(NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY, { deserializer: Number });
   if (sentAt !== undefined && Date.now() - sentAt < DAY_MS) {
     return;
