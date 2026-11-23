@@ -40,12 +40,14 @@ function mockClient(results: CallResult[]) {
 }
 
 describe("checkTokenPermits", () => {
-  it("runs every permit and its allowance read in a single Multicall3 call", async () => {
+  it("runs every permit between its allowance reads in a single Multicall3 call", async () => {
     const usdcPermit = permit(USDC, 100n);
     const wethPermit = permit(WETH, 5n);
     const client = mockClient([
+      { success: true, returnData: allowanceData(1000n) },
       { success: false, returnData: "0x" },
       { success: true, returnData: allowanceData(1000n) },
+      { success: true, returnData: allowanceData(0n) },
       { success: true, returnData: "0x" },
       { success: true, returnData: allowanceData(5n) },
     ]);
@@ -66,34 +68,56 @@ describe("checkTokenPermits", () => {
     const { args } = decodeFunctionData({ abi: abis.Multicall, data: data! });
     const calls = args[0] as { target: string; allowFailure: boolean; callData: Hex }[];
 
-    expect(calls.map((call) => call.target)).toEqual([USDC, USDC, WETH, WETH]);
+    expect(calls.map((call) => call.target)).toEqual([USDC, USDC, USDC, WETH, WETH, WETH]);
     expect(calls.every((call) => call.allowFailure)).toBe(true);
-    expect(decodeFunctionData({ abi: abis.ERC20PermitInterface, data: calls[0].callData }).functionName).toBe("permit");
-    expect(decodeFunctionData({ abi: erc20Abi, data: calls[1].callData })).toEqual({
-      functionName: "allowance",
-      args: [OWNER, ROUTER],
-    });
+    expect(decodeFunctionData({ abi: abis.ERC20PermitInterface, data: calls[1].callData }).functionName).toBe("permit");
+    [calls[0], calls[2]].forEach((call) =>
+      expect(decodeFunctionData({ abi: erc20Abi, data: call.callData })).toEqual({
+        functionName: "allowance",
+        args: [OWNER, ROUTER],
+      })
+    );
   });
 
   it.each([
-    { name: "executes and covers the spend", permitOk: true, allowance: 100n, expected: "validPermits" },
-    { name: "reverts, allowance stays short", permitOk: false, allowance: 0n, expected: "failedPermits" },
-    { name: "executes, allowance below the spend", permitOk: true, allowance: 50n, expected: "failedPermits" },
-    { name: "allowance can't be read", permitOk: true, allowance: undefined, expected: "failedPermits" },
+    { name: "executes and covers the spend", before: 0n, permitOk: true, allowance: 100n, expected: "validPermits" },
+    { name: "reverts, allowance stays short", before: 0n, permitOk: false, allowance: 0n, expected: "failedPermits" },
+    {
+      name: "executes, allowance below the spend",
+      before: 0n,
+      permitOk: true,
+      allowance: 50n,
+      expected: "failedPermits",
+    },
+    {
+      name: "allowance can't be read",
+      before: undefined,
+      permitOk: true,
+      allowance: undefined,
+      expected: "failedPermits",
+    },
     {
       name: "reverts, existing allowance covers the spend",
+      before: 1000n,
       permitOk: false,
       allowance: 1000n,
       expected: "stalePermits",
     },
-  ])("permit $name -> $expected", async ({ permitOk, allowance, expected }) => {
+    // an unlimited permit must not overwrite a newer, smaller approval that already covers the spend
+    {
+      name: "executes, but the allowance already covers the spend",
+      before: 1000n,
+      permitOk: true,
+      allowance: 2n ** 256n - 1n,
+      expected: "stalePermits",
+    },
+  ])("permit $name -> $expected", async ({ before, permitOk, allowance, expected }) => {
     const usdcPermit = permit(USDC, 100n);
-    const client = mockClient([
-      { success: permitOk, returnData: "0x" },
-      allowance === undefined
+    const read = (amount: bigint | undefined): CallResult =>
+      amount === undefined
         ? { success: false, returnData: "0x" }
-        : { success: true, returnData: allowanceData(allowance) },
-    ]);
+        : { success: true, returnData: allowanceData(amount) };
+    const client = mockClient([read(before), { success: permitOk, returnData: "0x" }, read(allowance)]);
 
     await expect(
       checkTokenPermits({ client, permits: [usdcPermit], requiredAmounts: { [USDC]: 100n } })
