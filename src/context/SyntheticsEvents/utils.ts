@@ -1,8 +1,10 @@
 import { type Abi, encodeErrorResult } from "viem";
 
+import type { TokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { extendError } from "lib/errors";
 import { abis } from "sdk/abis";
 import { DecreasePositionSwapType } from "sdk/utils/orders/types";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
@@ -13,7 +15,9 @@ import type {
   RelayTaskStatus,
   OrderStatus,
   PendingDepositData,
+  PendingExpressTxnParams,
   PendingOrderData,
+  PendingPositionsUpdates,
   PendingShiftData,
   PendingWithdrawalData,
   ShiftCreatedEventData,
@@ -195,6 +199,49 @@ export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
   return extendError(new Error(`Relay task cancelled, unknown reason`), {
     data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
   });
+}
+
+export function removePendingExpressTxnDebits(
+  updates: TokensBalancesUpdates,
+  pendingExpressTxn: Partial<PendingExpressTxnParams>
+): TokensBalancesUpdates {
+  const balanceType = pendingExpressTxn.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
+  const newUpdates = { ...updates };
+
+  Object.entries(pendingExpressTxn.payAmounts ?? {}).forEach(([tokenAddress, amount]) => {
+    const update = newUpdates[tokenAddress];
+
+    if (update?.balanceType !== balanceType) {
+      return;
+    }
+
+    // pending debits of a token are summed, and a balance refresh can drop them, so give back at most what is left
+    const diff = (update.diff ?? 0n) + amount;
+
+    if (diff < 0n) {
+      newUpdates[tokenAddress] = { ...update, diff };
+    } else {
+      delete newUpdates[tokenAddress];
+    }
+  });
+
+  return newUpdates;
+}
+
+export function removePendingExpressTxnPositionsUpdates(
+  updates: PendingPositionsUpdates,
+  pendingExpressTxn: Partial<PendingExpressTxnParams>
+): PendingPositionsUpdates {
+  const newUpdates = { ...updates };
+
+  pendingExpressTxn.pendingPositionsKeys?.forEach((positionKey) => {
+    // a later order on the same position replaces the update, and then it isn't this txn's to remove
+    if (newUpdates[positionKey]?.updatedAt === pendingExpressTxn.createdAt) {
+      delete newUpdates[positionKey];
+    }
+  });
+
+  return newUpdates;
 }
 
 export function parseOrderCreatedEventData(eventData: EventLogData): OrderCreatedEventData {

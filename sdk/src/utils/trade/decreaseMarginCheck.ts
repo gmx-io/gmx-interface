@@ -85,6 +85,7 @@ export function getDecreaseResultingPositionMarginState(
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: p.indexPriceForEvaluation,
+    isLong,
   });
 
   const { indexToken } = marketInfo;
@@ -310,6 +311,7 @@ export function getStoredTriggerDecreaseQuote(
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: p.triggerPrice,
+    isLong: p.isLong,
   });
   const params = { ...p, marketInfo, collateralToken, keepLeverage: false, validatedCollateralWithdrawalAmount: 0n };
   const decreaseAmounts = getDecreasePositionAmounts(params);

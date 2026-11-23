@@ -43,6 +43,7 @@ import {
   selectOrderEditorIsRemainingPositionAboveMaxLeverage,
   selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
+  selectOrderEditorMarkRatioInputValue,
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
@@ -60,6 +61,7 @@ import {
   selectOrderEditorSetDefaultAllowedSwapSlippageBps,
   selectOrderEditorSetSelectedAllowedSwapSlippageBps,
   selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorSwapTriggerPrice,
   selectOrderEditorTotalSwapImpactBps,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
@@ -209,8 +211,10 @@ export function OrderEditor(p: Props) {
   const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
+  const markRatioInputValue = useSelector(selectOrderEditorMarkRatioInputValue);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
+  const swapTriggerPrice = useSelector(selectOrderEditorSwapTriggerPrice);
   const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
 
   const market = useMarketInfo(p.order.marketAddress);
@@ -486,7 +490,7 @@ export function OrderEditor(p: Props) {
             orderKey: p.order.key,
             orderType: p.order.orderType,
             sizeDeltaUsd: 0n,
-            triggerPrice: triggerRatio?.ratio ?? p.order.triggerPrice,
+            triggerPrice: swapTriggerPrice ?? p.order.triggerPrice,
             acceptablePrice: 0n,
             minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
             autoCancel: p.order.autoCancel,
@@ -545,7 +549,7 @@ export function OrderEditor(p: Props) {
     existingPosition,
     isMarginDeposit,
     isTriggerDecrease,
-    triggerRatio?.ratio,
+    swapTriggerPrice,
     triggerPrice,
     chainId,
     sizeDeltaUsd,
@@ -557,7 +561,12 @@ export function OrderEditor(p: Props) {
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -811,7 +820,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    if (isMultichainSubmitDisabled) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -852,6 +861,7 @@ export function OrderEditor(p: Props) {
     hasAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
+    isExpressLoading,
     isMultichainSubmitDisabled,
   ]);
 
@@ -875,7 +885,7 @@ export function OrderEditor(p: Props) {
         const ratio = (p.order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
         if (ratio) {
-          setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
+          setTriggerRatioInputValue(formatAmountFree(ratio.ratio, USD_DECIMALS));
         }
 
         if (isLimitSwapOrderType(p.order.orderType)) {
@@ -1105,13 +1115,15 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
-              {triggerRatio && (
+              {markRatio && (
                 <BuyInputSection
                   topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
-                  topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+                  topRightValue={formatAmount(markRatio.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
-                    setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
+                    if (markRatioInputValue !== undefined) {
+                      setTriggerRatioInputValue(markRatioInputValue);
+                    }
                   }}
                   inputValue={triggerRatioInputValue}
                   onInputValueChange={(e) => {
@@ -1120,7 +1132,7 @@ export function OrderEditor(p: Props) {
                   maxDecimals={USD_DECIMALS}
                 >
                   <Trans>
-                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
+                    {markRatio.smallestToken.symbol} per {markRatio.largestToken.symbol}
                   </Trans>
                 </BuyInputSection>
               )}

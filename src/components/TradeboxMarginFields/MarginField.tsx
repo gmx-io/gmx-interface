@@ -2,7 +2,6 @@ import { t } from "@lingui/macro";
 import { ChangeEvent, useCallback, useRef } from "react";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
-import { isSettlementChain } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -12,6 +11,7 @@ import {
   selectTradeboxState,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useShowGmxAccountPayTokens } from "domain/multichain/useShowGmxAccountPayTokens";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { DEFAULT_MAX_ACTIONS_STATE, MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
@@ -55,6 +55,7 @@ export function MarginField({
 
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
+  const showGmxAccountPayTokens = useShowGmxAccountPayTokens(chainId);
   const tokensData = useTokensData();
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -136,11 +137,12 @@ export function MarginField({
       rightContent={
         <div data-token-selector>
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) ? (
+            (!showGmxAccountPayTokens ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
+                tokenInfo={infoTokens[fromTokenAddress]}
                 onSelectToken={(token) => {
                   onSelectFromTokenAddress(token.address, false);
                 }}
