@@ -549,7 +549,7 @@ msgstr "포지션 규모"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market orders."
-msgstr ""
+msgstr "\"종료\" 버튼을 사용하여 시장가 주문으로 포지션을 줄이세요."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
@@ -1271,7 +1271,7 @@ msgstr "Solana의 GMX"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not refresh open positions. This list may be out of date."
-msgstr ""
+msgstr "오픈 포지션을 새로고침하지 못했습니다. 이 목록은 최신 상태가 아닐 수 있습니다."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1398,7 +1398,7 @@ msgstr "익절매 수정: {suffix}"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not load open positions"
-msgstr ""
+msgstr "오픈 포지션을 불러오지 못했습니다"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1954,6 +1954,10 @@ msgstr "주식"
 msgid "Staking power share"
 msgstr "스테이킹 파워 지분율"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr "이 주문이 체결될 때 별도로 수령하며, 포지션 증거금에 추가되지 않습니다."
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "저는 제휴사입니다"
@@ -2155,6 +2159,7 @@ msgstr "마켓"
 msgid "Whitelist only"
 msgstr "화이트리스트 전용"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "재시도"
@@ -3057,6 +3062,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "전송이 시작되었습니다"
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr "포지션 진입 시 가격 영향을 포함한 Solana 유동성의 모의 주문장입니다."
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "금액이 출금 한도 미만입니다. <0>{lowerLimitFormatted}</0>보다 큰 금액을 입력하십시오."
@@ -3154,6 +3163,10 @@ msgstr "네트워크 수수료를 불러오는 중..."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} 롱 스톱 마켓"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr "가격 영향은 진입가에 포함되어 있습니다."
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3294,7 +3307,7 @@ msgstr "다음 중 선택하십시오:"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Could not refresh your fee discount. Fees are estimated without it."
-msgstr ""
+msgstr "수수료 할인을 새로고침하지 못했습니다. 할인을 적용하지 않고 수수료를 추정합니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
@@ -3348,7 +3361,7 @@ msgstr "{txnTypeText} {0} 주문"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not refresh open orders. This list may be out of date."
-msgstr ""
+msgstr "미체결 주문을 새로고침하지 못했습니다. 이 목록은 최신 상태가 아닐 수 있습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3685,6 +3698,13 @@ msgstr "주소 검색"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "데이터 최신성"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr "이 주문을 계산할 수 없습니다"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4690,6 +4710,10 @@ msgstr "실현 가격 영향"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "기타 실현 수수료"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr "추가로 보류되는 담보: <0/>. 이 금액은 체결 후 청구할 수 있으며 수수료 합계에서 제외됩니다. 즉시 발생하는 비용: <1/>."
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -7899,6 +7923,10 @@ msgstr "청산 수수료"
 #: src/lib/wallets/signing.ts
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "이 지갑은 아직 {0}에 배포되지 않았습니다. 이 작업과 함께 배포하려면 재서명하십시오"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr "수령할 펀딩 수수료"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -11357,7 +11385,7 @@ msgstr "시프트 수수료"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimed automatically with the next order on this position."
-msgstr ""
+msgstr "양의 펀딩 수수료는 이 포지션의 다음 주문 시 자동으로 청구됩니다."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -11900,6 +11928,10 @@ msgstr "토큰을 별도로 받기"
 msgid "USD estimate"
 msgstr "USD 추정치"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr "수수료 할인"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "풀 잔액"
@@ -12042,7 +12074,7 @@ msgstr "GM은 단일 시장에서 수수료를 획득합니다. GLV는 여러 GM
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
-msgstr ""
+msgstr "미체결 주문을 불러오지 못했습니다"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12645,6 +12677,10 @@ msgstr "지갑"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "조건가 입력"
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr "시장 깊이를 계산할 수 없습니다"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"

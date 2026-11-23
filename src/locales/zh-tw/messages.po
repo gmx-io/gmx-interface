@@ -549,7 +549,7 @@ msgstr "倉位規模"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market orders."
-msgstr ""
+msgstr "使用「平倉」按鈕透過市價單減少倉位。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Confirm withdraw"
@@ -1271,7 +1271,7 @@ msgstr "Solana 上的 GMX"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not refresh open positions. This list may be out of date."
-msgstr ""
+msgstr "無法重新整理未平倉位。此清單可能已過時。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1398,7 +1398,7 @@ msgstr "編輯止盈：{suffix}"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not load open positions"
-msgstr ""
+msgstr "無法載入未平倉位"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1954,6 +1954,10 @@ msgstr "股票"
 msgid "Staking power share"
 msgstr "質押權重占比"
 
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Received separately when this order executes, not added to position margin."
+msgstr "在此訂單執行時單獨收取，不計入倉位保證金。"
+
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
 msgstr "我是推廣夥伴"
@@ -2155,6 +2159,7 @@ msgstr "市場"
 msgid "Whitelist only"
 msgstr "僅限白名單"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "重試"
@@ -3057,6 +3062,10 @@ msgstr "GMX"
 msgid "Transfer initiated"
 msgstr "轉帳已發起"
 
+#: src/components/TVChart/Chart.tsx
+msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
+msgstr "Solana 流動性的模擬訂單簿檢視，包含開倉時的價格影響。"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
 msgstr "金額低於提取下限。請嘗試大於 <0>{lowerLimitFormatted}</0> 的金額。"
@@ -3154,6 +3163,10 @@ msgstr "正在載入網路費用..."
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Stop Market"
 msgstr "{typeString} 做多觸發市價單"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact is included in the entry price."
+msgstr "價格影響已計入入場價格。"
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3294,7 +3307,7 @@ msgstr "請選擇："
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Could not refresh your fee discount. Fees are estimated without it."
-msgstr ""
+msgstr "無法更新您的手續費折扣。費用估算未計入該折扣。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
@@ -3348,7 +3361,7 @@ msgstr "{txnTypeText} {0} 訂單於"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not refresh open orders. This list may be out of date."
-msgstr ""
+msgstr "無法重新整理未結訂單。此清單可能已過時。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3685,6 +3698,13 @@ msgstr "搜尋地址"
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "Data freshness"
 msgstr "資料新鮮度"
+
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/orderEditorSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
+#: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
+msgid "Unable to calculate this order"
+msgstr "無法計算此訂單"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4690,6 +4710,10 @@ msgstr "已實現價格影響"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Other realized fees"
 msgstr "其他已實現費用"
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
+msgstr "額外暫扣的抵押品：<0/>。此金額在執行後可領取，且不計入費用總額。即時成本：<1/>。"
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -7899,6 +7923,10 @@ msgstr "清算費用"
 #: src/lib/wallets/signing.ts
 msgid "This wallet is not deployed on {0} yet. Sign once more to deploy it with this action"
 msgstr "此錢包尚未在 {0} 上部署。請再次簽名，以便隨此操作一併部署"
+
+#: src/components/TradeFeesRow/FundingPayoutRow.tsx
+msgid "Funding received"
+msgstr "收到的資金費用"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -11357,7 +11385,7 @@ msgstr "轉換費用"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimed automatically with the next order on this position."
-msgstr ""
+msgstr "此倉位的下一筆訂單將自動領取正向資金費用。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -11900,6 +11928,10 @@ msgstr "分開接收代幣"
 msgid "USD estimate"
 msgstr "USD 估算"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "Fee discount"
+msgstr "手續費折扣"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "池餘額"
@@ -12042,7 +12074,7 @@ msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在�
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
-msgstr ""
+msgstr "無法載入未結訂單"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12645,6 +12677,10 @@ msgstr "錢包"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"
 msgstr "輸入觸發價格"
+
+#: src/components/DepthChart/DepthChart.tsx
+msgid "Unable to calculate market depth"
+msgstr "無法計算市場深度"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
