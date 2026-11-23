@@ -18,7 +18,6 @@ import {
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsLongTokenAddress,
   selectPoolsDetailsLongTokenAmount,
-  selectPoolsDetailsMarketOrGlvTokenAmount,
   selectPoolsDetailsPaySource,
   selectPoolsDetailsSecondTokenAddress,
   selectPoolsDetailsSelectedMarketAddressForGlv,
@@ -39,6 +38,7 @@ import {
   MultichainActionType,
 } from "domain/multichain/codecs/CodecUiHelper";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
+import { getLpDepositSlippageAmount, getPoolTokenMinOutput } from "domain/synthetics/markets/lpMinOutput";
 import {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
@@ -91,8 +91,6 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   const { isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
   const isMarketTokenDeposit = q(selectPoolsDetailsIsMarketTokenDeposit);
 
-  const marketOrGlvTokenAmount = q(selectPoolsDetailsMarketOrGlvTokenAmount);
-
   const amounts = q(selectDepositWithdrawalAmounts);
   const depositSwapPathStats = isDeposit ? amounts?.shortTokenSwapPathStats : undefined;
   const depositSwapTokenInAddress = depositSwapPathStats?.tokenInAddress as ERC20Address | undefined;
@@ -123,12 +121,11 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
   //#region GM Deposit
   if (isDeposit && !isGlv) {
     // Raw GM Deposit Params
-    if (!marketOrGlvTokenAddress || marketOrGlvTokenAmount === undefined) {
+    if (!marketOrGlvTokenAddress || !amounts) {
       return undefined;
     }
 
-    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
-    const minMarketTokens = applySlippageToMinOut(slippage, marketOrGlvTokenAmount);
+    const minMarketTokens = getPoolTokenMinOutput(getLpDepositSlippageAmount(paySource), amounts.marketTokenAmount);
 
     let dataList: string[] = EMPTY_ARRAY;
 
@@ -194,13 +191,12 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
       !glvTokenAddress ||
       !depositMarketAddress ||
       !glvInfo!.markets.some((market) => market.address === depositMarketAddress) ||
-      marketOrGlvTokenAmount === undefined
+      !amounts
     ) {
       return undefined;
     }
 
-    const slippage = paySource === "sourceChain" ? CROSS_CHAIN_SLIPPAGE_AMOUNT : DEFAULT_SLIPPAGE_AMOUNT;
-    const minGlvTokens = applySlippageToMinOut(slippage, marketOrGlvTokenAmount);
+    const minGlvTokens = getPoolTokenMinOutput(getLpDepositSlippageAmount(paySource), amounts.glvTokenAmount);
 
     let dataList: string[] = EMPTY_ARRAY;
     if (paySource === "sourceChain") {
