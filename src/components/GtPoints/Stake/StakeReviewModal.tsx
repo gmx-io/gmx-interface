@@ -2,6 +2,7 @@ import { plural, Plural, t, Trans } from "@lingui/macro";
 
 import { helperToast } from "lib/helperToast";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -60,7 +61,8 @@ export function StakeReviewModal({ action, onClose }: { action: StakeAction | un
           value={<span className="font-medium text-typography-primary numbers">{formatGt(totalGt)}</span>}
         />
 
-        <span className="text-body-small text-typography-secondary">
+        {/* Pop-up note in the info box, as in EVM Earn's Claim pop-up */}
+        <AlertInfoCard type="info" hideClose>
           {isClaim ? (
             <Trans>Claiming early may reduce your total GT rewards. For maximum rewards, claim when you unstake.</Trans>
           ) : (
@@ -68,7 +70,7 @@ export function StakeReviewModal({ action, onClose }: { action: StakeAction | un
               The tokens go back to your wallet. If you stake them again, the new position starts at 0% APR.
             </Trans>
           )}
-        </span>
+        </AlertInfoCard>
 
         <Button variant="primary-action" className="w-full" onClick={confirm}>
           {isClaim ? (

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { helperToast } from "lib/helperToast";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Modal from "components/Modal/Modal";
@@ -84,11 +85,12 @@ export function SellGtModal({ isVisible, setIsVisible, availableToSell, pool }: 
           <SyntheticsInfoRow label={<Trans>Paid out</Trans>} value={<Trans>Within 24h after the buyback</Trans>} />
         </div>
 
-        <span className="text-body-small text-typography-secondary">
+        {/* Pop-up note in the info box, as in EVM Earn's Claim pop-up */}
+        <AlertInfoCard type="info" hideClose>
           <Trans>
             The final price is set at the buyback. If more GT is submitted before then, you get less per GT.
           </Trans>
-        </span>
+        </AlertInfoCard>
 
         <Button variant="primary-action" className="w-full" disabled={amountError !== undefined} onClick={sell}>
           {amountError ?? <Trans>Sell {formatGt(amount)}</Trans>}
