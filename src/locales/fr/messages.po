@@ -5124,10 +5124,6 @@ msgstr "Définir le niveau acceptable d'impact sur le prix"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "La position de ce dépôt de marge a été clôturée, mais le dépôt est toujours actif. Annulez-le pour récupérer ses fonds."
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11818,6 +11814,10 @@ msgstr "Les frais de réseau sont très élevés en raison de l'activité accrue
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 msgstr "Le solde du pool de certains marchés est insuffisant pour récupérer les frais de financement. Ces marchés sont exclus de cette récupération."
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"

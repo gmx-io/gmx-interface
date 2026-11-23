@@ -5124,10 +5124,6 @@ msgstr "设置可接受的价格影响"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "该保证金存入对应的仓位已平仓，但该存入订单仍然有效。请取消该订单以取回其资金。"
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11818,6 +11814,10 @@ msgstr "由于 {chainName} 网络活动增加，网络费用非常高"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 msgstr "部分市场的池余额不足，无法领取资金费用。这些市场已从本次领取中排除。"
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"

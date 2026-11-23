@@ -34,7 +34,7 @@ function DiscountPromos() {
         <Trans>Trade smarter with 10% trading fee savings</Trans>
       </h2>
       <p className="text-body-medium text-typography-secondary [text-wrap:balance]">
-        <Trans>Enter a referral code to receive a permanent 10% fee discount on opening and closing fees.</Trans>
+        <Trans>Enter a referral code to receive a permanent 10% fee discount on opening and closing fees</Trans>
       </p>
     </>
   );

@@ -5124,10 +5124,6 @@ msgstr "許容可能な価格への影響を設定する"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "この証拠金入金のポジションは決済されましたが、入金は引き続き有効です。キャンセルして資金を回収してください。"
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11818,6 +11814,10 @@ msgstr "{chainName}ネットワークの活動増加により、ネットワー�
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 msgstr "一部の市場では、資金調達料を受け取るためのプール残高が不足しています。これらの市場は今回の受け取り対象から除外されます。"
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"

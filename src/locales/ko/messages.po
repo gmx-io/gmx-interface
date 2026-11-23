@@ -5124,10 +5124,6 @@ msgstr "허용 가격 영향 설정"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "이 증거금 입금 주문의 포지션이 종료되었지만 입금 주문은 여전히 활성 상태입니다. 주문을 취소하여 자금을 회수하십시오."
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11818,6 +11814,10 @@ msgstr "{chainName} 네트워크 활동 증가로 인해 네트워크 수수료�
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 msgstr "일부 시장은 펀딩 수수료를 수령하기 위한 풀 잔액이 부족합니다. 해당 시장은 이번 수령에서 제외됩니다."
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"

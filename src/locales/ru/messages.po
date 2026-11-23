@@ -5124,10 +5124,6 @@ msgstr "Установить допустимое влияние на цену"
 msgid "This margin deposit's position was closed, but the deposit is still active. Cancel it to reclaim its funds."
 msgstr "Позиция этого депозита маржи была закрыта, но депозит всё ещё активен. Отмените его, чтобы вернуть средства."
 
-#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
-msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees."
-msgstr ""
-
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
@@ -11818,6 +11814,10 @@ msgstr "Комиссии сети очень высоки из-за повыше
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 msgstr "На некоторых рынках недостаточный баланс пула для получения комиссии за финансирование. Эти рынки исключены из текущей выплаты."
+
+#: src/components/Referrals/Solana/SolanaJoinReferralWizard.tsx
+msgid "Enter a referral code to receive a permanent 10% fee discount on opening and closing fees"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "Share and receive rebates"
