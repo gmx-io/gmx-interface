@@ -902,7 +902,7 @@ export function OrderEditor(p: Props) {
             existingPosition && displaySizeDeltaUsd > existingPosition.sizeInUsd
               ? existingPosition.sizeInUsd
               : displaySizeDeltaUsd;
-          closeSize.setFromUsdString(formatAmountFree(clampedSizeDeltaUsd, USD_DECIMALS));
+          closeSize.setFromUsd(clampedSizeDeltaUsd);
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         }
