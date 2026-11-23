@@ -101,6 +101,14 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+// The new Stats page (design with mock data). Local and preview links only, until it replaces /stats.
+const LazyStatsPreview = lazy(() => import("pages/Stats/StatsPage").then((module) => ({ default: module.StatsPage })));
+const StatsPreviewPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyStatsPreview />
+  </Suspense>
+);
+
 // EVM features a user reaches by switching the network. /jobs, /ecosystem, /announcements and /parsetx
 // are not listed on purpose (TRD-142): on Solana they render the 404 like unknown paths.
 const EVM_ONLY_PAGE_PATHS = [
@@ -335,6 +343,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
+        </Route>,
+        <Route exact path="/stats-new" key="stats-new">
+          <StatsPreviewPage />
         </Route>,
       ]}
       <Route path="*">
