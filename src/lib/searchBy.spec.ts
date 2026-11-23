@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, it, expect } from "vitest";
 
 import { searchBy } from "./searchBy";
