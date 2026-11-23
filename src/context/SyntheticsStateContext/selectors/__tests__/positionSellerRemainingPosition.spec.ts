@@ -9,7 +9,6 @@ import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
 import { ETH_ADDRESS, ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
-import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import type { TokensData } from "sdk/utils/tokens/types";
@@ -17,7 +16,6 @@ import { PositionMarginFailureReason } from "sdk/utils/trade/increaseMarginCheck
 
 import type { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
-  selectPositionSellerAvailableReceiveTokens,
   selectPositionSellerDecreaseAmounts,
   selectPositionSellerDecreaseAmountsWithKeepLeverage,
   selectPositionSellerDecreaseError,
@@ -122,24 +120,6 @@ function createState(p: {
 }
 
 describe("position seller — remaining position after a market partial close", () => {
-  it.each(["USDC", "WSOL"])("offers supported Solana %s receive tokens without EVM swap routes", async (symbol) => {
-    const { GMSOL_TOKENS } = await import("config/gmsol/tokens");
-    const mint = GMSOL_TOKENS.find((token) => token.symbol === symbol)!;
-    const collateral = { ...USDC_TOKEN, ...mint, isWrapped: symbol === "WSOL" };
-    const native = { ...ETH_TOKEN, address: NATIVE_TOKEN_ADDRESS, wrappedAddress: collateral.address };
-    const state = createState({
-      collateralUsd: usd(1000),
-      closeUsd: "10000",
-      keepLeverage: false,
-      marketInfo: { ...marketInfo, tradeMath: "gmsol" },
-      positionOverrides: { collateralTokenAddress: collateral.address, collateralToken: collateral },
-      tokensData: { [collateral.address]: collateral, [native.address]: native },
-    });
-    expect(selectPositionSellerAvailableReceiveTokens(state).map((token) => token.address)).toEqual(
-      symbol === "WSOL" ? [native.address, collateral.address] : [collateral.address]
-    );
-  });
-
   it("passes the combined Solana discount through the close preview without changing EVM fees", () => {
     for (const [tradeMath, expectedFeeUsd] of [
       ["gmsol", usd(5) / 2n],

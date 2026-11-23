@@ -1749,7 +1749,7 @@ msgstr "{reopenTime}まで一時停止中"
 msgid "Solana trading is unavailable"
 msgstr ""
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposited"
 msgstr "入金完了"
 
@@ -5240,6 +5240,10 @@ msgstr "このページ内ですぐに回答"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "サブアカウントから出金中…"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Turn on \"Set acceptable price impact\" in settings to edit this order on Solana"
+msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx

@@ -69,7 +69,8 @@ import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdraw
 export const useWithdrawalTransactions = ({
   technicalFees,
   shouldDisableValidation,
-}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">): {
+  onSent,
+}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation" | "onSent">): {
   onCreateWithdrawal: () => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
@@ -110,10 +111,11 @@ export const useWithdrawalTransactions = ({
         direction: "usdgToUsdc",
         glvOrMarketAddress,
         withdrawalTxnHash: txnHash,
+        withdrawalEstimatedUsdgAmount: longTokenAmount + shortTokenAmount,
         conversion: undefined,
       });
     },
-    [account, chainId, glvOrMarketAddress, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketAddress, isTransitRoute, longTokenAmount, shortTokenAmount, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
@@ -387,6 +389,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -414,6 +417,7 @@ export const useWithdrawalTransactions = ({
       setPendingTxns,
       blockTimestampData,
       shouldDisableValidation,
+      onSent,
     ]
   );
 
@@ -549,6 +553,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
           if (paySource === "settlementChain") {
@@ -587,6 +592,7 @@ export const useWithdrawalTransactions = ({
       shouldDisableValidation,
       setPendingTxns,
       blockTimestampData,
+      onSent,
     ]
   );
 
