@@ -37,6 +37,7 @@ export function useShiftSubmitState({
   toToken,
   glvOrMarketInfoData,
   toMarketDirectDepositAccess,
+  onSent,
 }: {
   amounts: ShiftAmounts | undefined;
   executionFee: ExecutionFee | undefined;
@@ -51,6 +52,7 @@ export function useShiftSubmitState({
   toToken: TokenData | undefined;
   glvOrMarketInfoData: { [key: string]: GlvOrMarketInfo } | undefined;
   toMarketDirectDepositAccess: DirectDepositAccess | undefined;
+  onSent: () => void;
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
@@ -70,6 +72,7 @@ export function useShiftSubmitState({
     tokensData,
     executionFee,
     marketTokenUsd,
+    onSent,
   });
 
   const tokens = useMemo(

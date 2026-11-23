@@ -233,7 +233,6 @@ export function useOrderTxnCallbacks() {
             createdAt,
             taskId: undefined,
             isViewed: false,
-            isRelayerMetricSent: false,
             successMessage,
             errorMessage,
             isGmxAccount: expressParams.isGmxAccount,

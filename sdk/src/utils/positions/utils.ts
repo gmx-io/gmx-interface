@@ -388,27 +388,33 @@ export function getLiquidationPrice(p: {
       : sizeInUsd - liquidationCollateralUsd - surchargeUsd;
     liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
   } else if (getIsEquivalentTokens(collateralToken, indexToken)) {
-    if (isLong) {
-      const denominator = sizeInTokens + collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
-    } else {
-      const denominator = sizeInTokens - collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
+    const fundingFeeAmount =
+      p.fundingFeeAmount ??
+      (pendingFundingFeesUsd === 0n
+        ? 0n
+        : convertToTokenAmount(pendingFundingFeesUsd, collateralToken.decimals, collateralToken.prices.minPrice));
+    if (fundingFeeAmount === undefined) {
+      return undefined;
     }
+    // the contract charges funding in collateral tokens, so it moves with the index price like the collateral
+    const netCollateralAmount = getCollateralAmountInIndexTokens({
+      collateralToken,
+      indexToken,
+      collateralAmount: collateralAmount - fundingFeeAmount,
+      isLong,
+    })!;
+    const denominator = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
+
+    if (denominator === 0n) {
+      return undefined;
+    }
+
+    const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
+    const numerator = isLong
+      ? sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd
+      : sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd;
+
+    liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
   } else if (getIsTokenTrackingPrice(collateralToken, indexToken)) {
     const indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
     const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, indexPrice)!;

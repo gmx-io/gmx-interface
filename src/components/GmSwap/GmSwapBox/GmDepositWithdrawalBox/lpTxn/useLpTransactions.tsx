@@ -12,6 +12,7 @@ import { useWithdrawalTransactions } from "./useWithdrawalTransactions";
 export interface UseLpTransactionProps {
   shouldDisableValidation?: boolean;
   technicalFees: TechnicalGmFees | undefined;
+  onSent: () => void;
 }
 
 export const useLpTransactions = (
@@ -33,6 +34,7 @@ export const useLpTransactions = (
   } = useDepositTransactions({
     shouldDisableValidation: props.shouldDisableValidation,
     technicalFees: props.technicalFees,
+    onSent: props.onSent,
   });
 
   const {
@@ -42,6 +44,7 @@ export const useLpTransactions = (
   } = useWithdrawalTransactions({
     shouldDisableValidation: props.shouldDisableValidation,
     technicalFees: props.technicalFees,
+    onSent: props.onSent,
   });
 
   const onSubmit = useCallback(
