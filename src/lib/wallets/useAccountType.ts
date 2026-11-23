@@ -3,6 +3,7 @@ import useSWR from "swr";
 import { PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
+import { isSolanaNetwork } from "config/chains";
 import { useChainId } from "lib/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
@@ -78,10 +79,11 @@ export async function getAccountType(address: string, client: PublicClient): Pro
 
 export function useAccountType(): { accountType: AccountType | undefined; isLoading: boolean } {
   const { address, connector } = useAccount();
-  const { chainId } = useChainId();
+  const { chainId, networkId } = useChainId();
+  const isEvm = !isSolanaNetwork(networkId);
 
   const { data: accountType, isLoading } = useSWR<AccountType | undefined>(
-    address && [address, chainId, connector?.uid, "accountType"],
+    isEvm && address ? [address, chainId, connector?.uid, "accountType"] : null,
     {
       fetcher: async () => {
         const publicClient = getPublicClientWithRpc(chainId);
@@ -99,5 +101,5 @@ export function useAccountType(): { accountType: AccountType | undefined; isLoad
     }
   );
 
-  return { accountType, isLoading };
+  return { accountType: isEvm ? accountType : undefined, isLoading: isEvm && isLoading };
 }
