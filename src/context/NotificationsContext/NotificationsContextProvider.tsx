@@ -52,8 +52,10 @@ export type NotificationsTestState = "sending" | "sent" | "cooldown" | "notRegis
 
 type Operation = "turningOn" | "turningOff";
 
-// `retry` is a wallet switch the user tries again from the tab, so it shows no toast.
-type RegistrationKind = "turnOn" | "open" | "walletSwitch" | "retry";
+// `retry` is a wallet switch the user tries again from the tab, so it shows no toast. `resubscribe` replaces the
+// subscription the browser dropped on blocking, so when it fails no wallet gets notifications and it shows as a failed
+// turn-on.
+type RegistrationKind = "turnOn" | "open" | "walletSwitch" | "retry" | "resubscribe";
 
 type Issue =
   | { type: "turnOnFailed"; error: string }
@@ -514,7 +516,7 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       const current = storedRef.current;
       const targetAccount = accountRef.current ?? current.account;
       if (current.enabled && targetAccount) {
-        enqueue(() => register(targetAccount, targetAccount === current.account ? "open" : "walletSwitch"));
+        enqueue(() => register(targetAccount, "resubscribe"));
       }
     },
     [enqueue, permission, register]

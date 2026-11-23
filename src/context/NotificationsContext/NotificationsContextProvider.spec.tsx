@@ -286,6 +286,31 @@ describe("NotificationsContextProvider", () => {
     expect(mocks.sendTestNotification).not.toHaveBeenCalled();
   });
 
+  it("shows a failed turn-on when subscribing again fails, also after a wallet switch while blocked", async () => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    const { result, rerender } = renderNotifications();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+
+    mocks.permission = "denied";
+    fireEvent(document, new Event("visibilitychange"));
+    mocks.account = OTHER_ACCOUNT;
+    rerender();
+    mocks.registerThisDevice.mockRejectedValueOnce(new NotificationsApiError("unavailable", 503));
+    mocks.permission = "granted";
+    fireEvent(document, new Event("visibilitychange"));
+
+    await waitFor(() => expect(result.current.status).toBe("turnOnFailed"));
+    expect(result.current.error).toBe("unavailable");
+    expect(mocks.toastError).not.toHaveBeenCalled();
+
+    act(() => result.current.retry());
+
+    await waitFor(() => expect(result.current.status).toBe("on"));
+    expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT);
+    expect(mocks.registerThisDevice).toHaveBeenCalledTimes(3);
+  });
+
   it("drops a failed wallet switch once the receiving wallet is connected again", async () => {
     mocks.permission = "granted";
     storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
