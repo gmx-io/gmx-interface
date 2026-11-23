@@ -1,12 +1,17 @@
 import { t } from "@lingui/macro";
 import { useCallback, useMemo, useRef, type ReactNode } from "react";
 
-import { SolanaOrderActionsContext, type SolanaOrderActions } from "domain/solana/solanaOrderActions";
+import {
+  SolanaOrderActionsContext,
+  type SolanaOrderActions,
+  type SolanaOrderChanges,
+} from "domain/solana/solanaOrderActions";
 import { useSolanaOrderNotifications } from "domain/solanaOrderTracking/useSolanaOrderNotifications";
 import { helperToast } from "lib/helperToast";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
-import type { OrderInfo } from "sdk/utils/orders/types";
+import { isSwapOrderType } from "sdk/utils/orders";
+import type { OrderInfo, PositionOrderInfo } from "sdk/utils/orders/types";
 import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 
 import {
@@ -24,11 +29,24 @@ import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 
 function getOrderError(order: OrderInfo) {
   const metadata = order.solana;
-  if (order.isTwap || !metadata) return t`This order cannot be changed on Solana`;
+  // getGmsolOrderContext maps position order kinds only
+  if (order.isTwap || isSwapOrderType(order.orderType) || !metadata) return t`This order cannot be changed on Solana`;
   if (metadata.actionState !== "pending") return t`This order is no longer open`;
   // TODO(FESOL-56): the pinned validator has no callback account rules yet, so these orders cannot be updated or closed.
   if (metadata.callback) return t`Orders with a callback cannot be changed on Solana yet`;
   return undefined;
+}
+
+function getUpdateError({ order, changes }: { order: PositionOrderInfo; changes: SolanaOrderChanges }) {
+  try {
+    buildGmsolUpdateAction({ order, changes });
+    return undefined;
+  } catch (error) {
+    // "amounts" is an edit without changes, which the shared order validation already reports
+    if (error instanceof GmsolTradeboxError && error.code !== "amounts")
+      return getGmsolTradeboxErrorMessage(error.code);
+    return undefined;
+  }
 }
 
 /** Sends the shared position and order list actions on Solana. Mounted only inside the Solana trade state. */
@@ -150,6 +168,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       error,
       hasPendingSubmission,
       getOrderError,
+      getUpdateError,
       checkPendingSubmission,
       closePosition: ({ position, decreaseAmounts, receiveToken, allowedSlippage }) =>
         runFlow([
