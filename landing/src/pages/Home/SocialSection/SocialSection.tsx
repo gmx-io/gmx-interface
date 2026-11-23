@@ -20,11 +20,6 @@ export function SocialSection() {
         value: shortFormat(230_000),
       },
       {
-        ...SOCIAL_MAP.Telegram,
-        value: shortFormat(10_000),
-      },
-
-      {
         ...SOCIAL_MAP.Substack,
         value: shortFormat(1_500),
       },

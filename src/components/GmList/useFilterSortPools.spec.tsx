@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { ARBITRUM } from "config/chains";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { ETH_TOKEN } from "domain/testUtils/mockTokens";
+import { expandDecimals } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import type { TokenData } from "sdk/utils/tokens/types";
@@ -175,5 +176,27 @@ describe("useFilterSortPools search", () => {
 
   it("keeps the normal pool list for whitespace-only queries", () => {
     expect(search("   ")).toEqual(search(""));
+  });
+
+  it("sorts search results by the selected column TRD-143", () => {
+    const markets = [
+      pool("BTC", "BTC", "USDC"),
+      pool("BTC", "BTC", "BTC"),
+      pool("BTC", "TBTC", "TBTC"),
+      pool("ETH", "WETH", "USDC"),
+    ];
+    const supplyByPool = { "BTC-BTC-USDC": 2, "BTC-BTC-BTC": 3, "BTC-TBTC-TBTC": 1, "ETH-WETH-USDC": 4 };
+    const marketTokensData = Object.fromEntries(
+      Object.entries(supplyByPool).map(([address, supply]) => [
+        address,
+        { ...ETH_TOKEN, address, totalSupply: expandDecimals(supply, 18) },
+      ])
+    );
+
+    expect(search("btc", { orderBy: "totalSupply", direction: "desc", marketTokensData }, markets)).toEqual([
+      "BTC-BTC-BTC",
+      "BTC-BTC-USDC",
+      "BTC-TBTC-TBTC",
+    ]);
   });
 });

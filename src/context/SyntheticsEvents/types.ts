@@ -101,8 +101,6 @@ export type PendingExpressTxnParams = {
   successMessage?: ReactNode;
   errorMessage?: ReactNode;
   isViewed?: boolean;
-  isRelayerMetricSent?: boolean;
-  isSubaccountApprovalErrorChecked?: boolean;
   sendFailed?: boolean;
 };
 

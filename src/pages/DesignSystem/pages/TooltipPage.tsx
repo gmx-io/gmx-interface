@@ -5,10 +5,12 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import StandardTooltip, { type StandardTooltipPosition } from "components/Tooltip/StandardTooltip";
 import {
+  TooltipAction,
   TooltipContent,
   TooltipDivider,
   TooltipFootnote,
   TooltipLink,
+  TooltipReadMore,
   TooltipRow,
   TooltipRows,
   TooltipTable,
@@ -25,7 +27,6 @@ import CalendarIcon from "img/ic_calendar.svg?react";
 import CardIcon from "img/ic_card.svg?react";
 import ClockIcon from "img/ic_clock.svg?react";
 import CopyIcon from "img/ic_copy_stroke.svg?react";
-import EarnIcon from "img/ic_earn.svg?react";
 import ExpressIcon from "img/ic_express.svg?react";
 import InfoCircleStrokeIcon from "img/ic_info_circle_stroke.svg?react";
 import MessageIcon from "img/ic_message.svg?react";
@@ -83,7 +84,22 @@ const PLAIN_TEXT = "Tooltip text explains one thing in plain words. It stays sho
 const PRICE_IMPACT = (
   <TooltipContent>
     <TooltipText>No price impact on increases — orders execute at mark price.</TooltipText>
-    <TooltipLink href={DOCS_URL}>Read more</TooltipLink>
+    <TooltipReadMore href={DOCS_URL} />
+  </TooltipContent>
+);
+
+const MAX_LEVERAGE = (
+  <TooltipContent>
+    <TooltipText>Decrease leverage to match the max allowed leverage.</TooltipText>
+    <TooltipAction onClick={() => undefined}>Set max leverage</TooltipAction>
+    <TooltipReadMore href={DOCS_URL} />
+  </TooltipContent>
+);
+
+const FEE_APY = (
+  <TooltipContent>
+    <TooltipText>Projected yearly return from trading fees only.</TooltipText>
+    <TooltipLink href={DOCS_URL}>View detailed stats</TooltipLink>
   </TooltipContent>
 );
 
@@ -109,7 +125,7 @@ const WALLET_INFO = (
     {WALLET_PARAGRAPHS.map((paragraph) => (
       <TooltipText key={paragraph}>{paragraph}</TooltipText>
     ))}
-    <TooltipLink href={DOCS_URL}>Read more</TooltipLink>
+    <TooltipReadMore href={DOCS_URL} />
   </TooltipContent>
 );
 
@@ -318,6 +334,10 @@ const SPECS: DocsRule[] = [
   ["Type", "14/18 for text, 14/18 medium for titles, 12/16 for footnotes and table headers."],
   ["Shadow", "0 4 14: 25% black in the dark theme, 8% slate-950 in the light theme."],
   ["Pointer", "14 × 7px, the panel color."],
+  [
+    "Scroll bar",
+    "Tall tooltips scroll inside: a 4px bar with no track, 4px from the right edge, muted text at 50%. The text keeps its padding. Desktop Chrome, Edge and Safari 18.2+; Firefox shows its own thin bar in the same color; touch screens keep their own.",
+  ],
 ];
 
 const PLACEMENT_RULES: DocsRule[] = [
@@ -334,7 +354,7 @@ const PLACEMENT_RULES: DocsRule[] = [
 const CONTENT_RULES: DocsRule[] = [
   [
     "Block order",
-    "Title → Text → Rows → Table → Link or footnote. With two topics that have their own links, each link goes under its own paragraph.",
+    "Title → Text → Rows → Table → Action → Link or footnote. With two topics that have their own links, each link goes under its own paragraph.",
   ],
   ["Short text", "Plain text that fits in one or two lines is centered. Longer text and blocks align left."],
   ["Rows", "No colons. Muted label on the left, value on the right with tabular numbers. A divider above the total."],
@@ -342,8 +362,13 @@ const CONTENT_RULES: DocsRule[] = [
   ["Colors", "Green and red only for values, yellow only for warnings."],
   [
     "Links",
-    'One style: underlined, blue on hover. "Read more" goes on its own line, right under the text it explains: last when there is one link, under each paragraph when two topics have their own links.',
+    'A link on its own line (TooltipLink, TooltipReadMore) has no underline and ends with ↗, which never wraps onto a line alone. A link inside a sentence stays underlined, with no ↗. Blue on hover. "Read more" goes on its own line, right under the text it explains (below its action, if any): last when there is one link, under each paragraph when two topics have their own links.',
   ],
+  [
+    "Actions",
+    "A button that does something in place (Set max leverage): muted and underlined, TextIcon/Primary on hover, no ↗.",
+  ],
+  ["Dividers", "A 1px line between separate blocks: other topics, groups or markets. Not between a text and its link."],
   ["Not a tooltip", "Menus and buttons go in dropdowns. No bullets: use Title + Text pairs."],
 ];
 
@@ -417,11 +442,7 @@ export function TooltipExamples() {
               />
             </DocsCard>
             <DocsCard label="Pools · fee APY header">
-              <StandardTooltip
-                handle="FEE APY"
-                variant="iconStroke"
-                content="Projected yearly return from trading fees only."
-              />
+              <StandardTooltip handle="FEE APY" variant="iconStroke" content={FEE_APY} />
             </DocsCard>
             <DocsCard label="Wallet · disconnect button">
               <StandardTooltip variant="none" type="label" content="Disconnect" position="bottom">
@@ -434,17 +455,16 @@ export function TooltipExamples() {
                 </button>
               </StandardTooltip>
             </DocsCard>
-            <DocsCard label="Claims · disabled button">
+            <DocsCard label="Trade box · disabled button">
               <StandardTooltip
                 variant="none"
-                content="Nothing is claimable on Arbitrum right now."
+                content={MAX_LEVERAGE}
                 position="bottom"
                 isHandlerDisabled
                 shouldPreventDefault={false}
               >
                 <Button variant="primary" disabled>
-                  <EarnIcon className="size-16" />
-                  Claim rewards
+                  Max leverage exceeded
                 </Button>
               </StandardTooltip>
             </DocsCard>
@@ -551,16 +571,27 @@ const BLOCK_PROPS: DocsProp[] = [
     description: "Label + value, no colon. Use valueClassName only for green, red or yellow values.",
   },
   { name: "TooltipTotal", type: "label, value, valueClassName?", description: "A divider and the total row." },
-  { name: "TooltipDivider", type: "—", description: "A 1px line between sections." },
+  { name: "TooltipDivider", type: "—", description: "A 1px line between separate blocks." },
   {
     name: "TooltipTable",
     type: "columns, rows",
     description: 'A multi-column table with headers. Use with size="wide".',
   },
   {
+    name: "TooltipReadMore",
+    type: "href",
+    description:
+      "Read more ↗ on its own line, right under the text it explains (below its action, if any). Last when the tooltip has one link.",
+  },
+  {
     name: "TooltipLink",
     type: "href, children",
-    description: "A link on its own line, right under the text it explains. Last when the tooltip has one link.",
+    description: "A link with its own name that opens a page (e.g. View detailed stats). No underline, ends with ↗.",
+  },
+  {
+    name: "TooltipAction",
+    type: "onClick, children",
+    description: "A button that does something in place (e.g. Set max leverage). Muted and underlined, no ↗.",
   },
   {
     name: "TooltipFootnote",
@@ -609,6 +640,18 @@ export function TooltipGuidelines() {
 
 const CHANGELOG: DocsChangelogEntry[] = [
   {
+    id: "tooltip-v1-1",
+    title: "v1.1 · Links, actions, dividers, scroll bar",
+    icon: CalendarIcon,
+    date: "Nov 17, 2026",
+    changes: [
+      "Links on their own line lose the underline and end with ↗, which never wraps onto a line alone. Read more uses TooltipReadMore.",
+      "Actions (Set max leverage, Switch to a market order) are muted and underlined, TextIcon/Primary on hover.",
+      "Dividers between separate blocks: network fee notes, lifetime earnings groups, markets in claims.",
+      "Tall tooltips get a 4px scroll bar with no track, 4px from the edge, and the text no longer moves (Chrome, Edge, Safari 18.2+).",
+    ],
+  },
+  {
     id: "tooltip-v1-0",
     title: "v1.0 · Proposal",
     icon: CalendarIcon,
@@ -643,7 +686,7 @@ export function TooltipChangelog() {
           />
           <BeforeAfter
             label="Wallet & GMX Account"
-            change="Main text color instead of muted. The standard link instead of a blue one with an arrow. 350px instead of 320px."
+            change="Main text color instead of muted. The standard Read more ↗ instead of a blue link. 350px instead of 320px."
             before={
               <LegacyTooltipPreview
                 handle="Wallet & GMX Account"

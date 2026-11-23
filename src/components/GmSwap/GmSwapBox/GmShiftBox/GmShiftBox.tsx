@@ -154,6 +154,11 @@ export function GmShiftBox({
 
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
+  const handleClearValues = useCallback(() => {
+    setSelectedMarketText("");
+    setToMarketText("");
+  }, []);
+
   const submitState = useShiftSubmitState({
     selectedMarketInfo,
     selectedToken,
@@ -168,6 +173,7 @@ export function GmShiftBox({
     routerAddress,
     glvOrMarketInfoData: glvAndMarketsInfoData,
     toMarketDirectDepositAccess,
+    onSent: handleClearValues,
   });
 
   useUpdateMarkets({
@@ -194,11 +200,6 @@ export function GmShiftBox({
     },
     [submitState]
   );
-
-  const handleClearValues = useCallback(() => {
-    setSelectedMarketText("");
-    setToMarketText("");
-  }, []);
 
   const handleSelectedTokenClickMax = useCallback(() => {
     if (!selectedToken || selectedToken.balance === undefined) return;
