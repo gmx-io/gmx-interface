@@ -759,6 +759,9 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const nextPositionValuesForIncrease = q(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
   const maxAllowedLeverage = q(selectOrderEditorMaxAllowedLeverage);
   const marginDepositProjections = q(selectOrderEditorMarginDepositProjections);
+  const decreaseMarginState = q(
+    makeSelectOrderDecreaseRemainingPositionMarginState(order.key, triggerPrice, sizeDeltaUsd)
+  );
 
   return getPositionOrderError({
     positionOrder,
@@ -772,6 +775,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
     isResultingPositionCheckBlocking: q(selectOrderEditorIsIncreaseExecutableNow),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+    isCostUnpayable: (decreaseMarginState?.unpaidCostUsd ?? 0n) > 0n,
   });
 });
 
@@ -879,6 +883,9 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       const resultingPositionMarginState = isIncrease
         ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderKey, triggerPrice, order.sizeDeltaUsd))
         : undefined;
+      const decreaseMarginState = q(
+        makeSelectOrderDecreaseRemainingPositionMarginState(orderKey, triggerPrice, sizeDeltaUsd)
+      );
       const isIncreaseExecutableNow =
         isIncrease && indexToken
           ? getIsIncreaseOrderExecutableNow({
@@ -901,6 +908,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         resultingPositionMarginState,
         isResultingPositionCheckBlocking: isIncreaseExecutableNow,
         marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+        isCostUnpayable: (decreaseMarginState?.unpaidCostUsd ?? 0n) > 0n,
       });
     });
   }

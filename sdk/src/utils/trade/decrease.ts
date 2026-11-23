@@ -1,6 +1,6 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee } from "utils/fees";
+import { getPositionFee, getProportionalPendingImpactValues } from "utils/fees";
 import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
@@ -22,6 +22,7 @@ import {
   getMinCollateralUsdForLiquidationPrice,
   getNetPriceImpactDeltaUsdForDecrease,
   getPositionPnlUsd,
+  getTokenAtIndexPrice,
 } from "utils/positions";
 import { PositionInfo, PositionInfoLoaded } from "utils/positions/types";
 import {
@@ -643,7 +644,12 @@ export function getDecreasePositionAmounts(p: {
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
   // SwapCollateralTokenToPnlToken → primaryOutput (pnl token), otherwise → secondaryOutput (collateral token)
-  const pnlTokenPrice = pnlToken.prices.minPrice;
+  // an EVM trigger pays out the pnl token at its execution price, gmsol already prices its tokens there
+  const executionPnlToken =
+    isTrigger && marketInfo.tradeMath !== "gmsol"
+      ? getTokenAtIndexPrice({ token: pnlToken, collateralToken, indexToken, indexPrice: values.indexPrice, isLong })
+      : pnlToken;
+  const pnlTokenPrice = executionPnlToken.prices.minPrice;
   const remainingPnlOutputUsd = gmsolPayment
     ? convertToUsd(gmsolPayment.pnlOutputAmount, pnlToken.decimals, pnlTokenPrice)!
     : convertToUsd(payedInfo.outputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
@@ -696,7 +702,7 @@ export function getDecreasePositionAmounts(p: {
       amount:
         (gmsolPayment?.pnlOutputAmount ??
           convertToTokenAmount(remainingPnlOutputUsd, pnlToken.decimals, pnlTokenPrice) ??
-          0n) + (convertToTokenAmount(swappedOutputUsd, pnlToken.decimals, pnlToken.prices.maxPrice) ?? 0n),
+          0n) + (convertToTokenAmount(swappedOutputUsd, pnlToken.decimals, executionPnlToken.prices.maxPrice) ?? 0n),
       usd: values.receiveUsd,
     };
     values.secondaryOutput = { tokenAddress: collateralToken.address, amount: 0n, usd: 0n };
@@ -1251,8 +1257,20 @@ function applyAcceptablePrice(p: {
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
   values.balanceWasImproved = acceptablePriceInfo.balanceWasImproved;
 
+  // an EVM trigger realizes the pending impact at its execution price, gmsol already prices its index token there
+  const impactMarketInfo =
+    isTrigger && marketInfo.tradeMath !== "gmsol"
+      ? {
+          ...marketInfo,
+          indexToken: {
+            ...marketInfo.indexToken,
+            prices: { minPrice: values.indexPrice, maxPrice: values.indexPrice },
+          },
+        }
+      : marketInfo;
+
   const totalImpactValues = getNetPriceImpactDeltaUsdForDecrease({
-    marketInfo,
+    marketInfo: impactMarketInfo,
     sizeInUsd: position?.sizeInUsd ?? 0n,
     pendingImpactAmount: position?.pendingImpactAmount ?? 0n,
     sizeDeltaUsd: values.sizeDeltaUsd,
@@ -1420,8 +1438,15 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   const nextSizeUsd = existingPosition ? existingPosition.sizeInUsd - sizeDeltaUsd : 0n;
   const nextSizeInTokens = existingPosition ? existingPosition.sizeInTokens - sizeDeltaInTokens : 0n;
 
+  // the deltas are valued at the execution price, so the existing collateral must be too (index or tracking collateral)
+  const existingCollateralUsd = !existingPosition
+    ? 0n
+    : p.collateralPrice === undefined || p.collateralPrice <= 0n
+      ? existingPosition.collateralUsd
+      : convertToUsd(existingPosition.collateralAmount, collateralToken.decimals, p.collateralPrice)!;
+
   let nextCollateralUsd = existingPosition
-    ? existingPosition.collateralUsd - executedCollateralDeltaUsd - payedRemainingCollateralUsd
+    ? existingCollateralUsd - executedCollateralDeltaUsd - payedRemainingCollateralUsd
     : 0n;
 
   if (nextCollateralUsd < 0) {
@@ -1464,12 +1489,30 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     isLong: isLong,
   });
 
-  const nextPendingImpactDeltaUsd =
-    marketInfo.tradeMath === "gmsol"
-      ? 0n
-      : existingPosition?.pendingImpactUsd !== undefined && proportionalPendingImpactDeltaUsd !== undefined
+  let nextPendingImpactDeltaUsd = 0n;
+
+  if (
+    marketInfo.tradeMath !== "gmsol" &&
+    existingPosition?.pendingImpactUsd !== undefined &&
+    proportionalPendingImpactDeltaUsd !== undefined
+  ) {
+    const { proportionalPendingImpactDeltaAmount } = getProportionalPendingImpactValues({
+      sizeInUsd: existingPosition.sizeInUsd,
+      pendingImpactAmount: existingPosition.pendingImpactAmount,
+      sizeDeltaUsd,
+      indexToken: marketInfo.indexToken,
+    });
+
+    // what stays stored is valued at the price of the closed share, the execution price for a trigger
+    nextPendingImpactDeltaUsd =
+      proportionalPendingImpactDeltaAmount === 0n
         ? existingPosition.pendingImpactUsd - proportionalPendingImpactDeltaUsd
-        : 0n;
+        : bigMath.mulDiv(
+            proportionalPendingImpactDeltaUsd,
+            existingPosition.pendingImpactAmount - proportionalPendingImpactDeltaAmount,
+            proportionalPendingImpactDeltaAmount
+          );
+  }
 
   return {
     nextSizeUsd,

@@ -905,7 +905,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
   proDiscountFactor?: bigint;
   feeDiscountFactor?: bigint;
   isSetAcceptablePriceImpactEnabled: boolean;
-}): DecreasePositionMarginState | undefined {
+}): (DecreasePositionMarginState & { unpaidCostUsd: bigint }) | undefined {
   if (
     !position ||
     !isTriggerDecreaseOrderType(order.orderType) ||
@@ -940,7 +940,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
 
   if (!decreaseAmounts) return undefined;
 
-  return getTriggerDecreaseRemainingPositionMarginState({
+  const marginState = getTriggerDecreaseRemainingPositionMarginState({
     marketInfo: position.marketInfo,
     collateralToken: position.collateralToken,
     isLong: position.isLong,
@@ -953,6 +953,8 @@ export function getOrderDecreaseRemainingPositionMarginState({
     proDiscountFactor,
     feeDiscountFactor,
   });
+
+  return marginState && { ...marginState, unpaidCostUsd: decreaseAmounts.unpaidCostUsd };
 }
 
 export function getTwapIncreaseOrderSequentialMarginState({
