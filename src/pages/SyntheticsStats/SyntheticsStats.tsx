@@ -1,6 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns";
+import { ReactNode } from "react";
 import { zeroAddress, zeroHash } from "viem";
 
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
@@ -31,7 +32,15 @@ import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { CHART_PERIODS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatFactor, formatUsd, getPlusOrMinusSymbol, PRECISION } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmount,
+  formatFactor,
+  formatUsd,
+  getPlusOrMinusSymbol,
+  PRECISION,
+  USD_SYMBOL,
+} from "lib/numbers";
 import { formatAmountHuman } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
@@ -39,10 +48,26 @@ import { bigMath } from "sdk/utils/bigmath";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { DownloadAsCsv } from "components/DownloadAsCsv/DownloadAsCsv";
 import { ShareBar } from "components/ShareBar/ShareBar";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import {
+  TooltipContent,
+  TooltipDivider,
+  TooltipRow,
+  TooltipRows,
+  TooltipText,
+  TooltipTitle,
+} from "components/Tooltip/TooltipBlocks";
 
 import "./SyntheticsStats.scss";
+
+function Usd({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <span className="numeric-affix">{USD_SYMBOL}</span>
+      {children}
+    </>
+  );
+}
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation
@@ -102,30 +127,38 @@ export function SyntheticsStats() {
                   <Trans>POOL CAP SHORT</Trans>
                 </th>
                 <th>
-                  <TooltipWithPortal handle={t`PNL`} renderContent={() => t`Pending PnL from all open positions`} />
+                  <StandardTooltip
+                    handle={t`PNL`}
+                    variant="iconStroke"
+                    renderContent={() => t`Pending PnL from all open positions`}
+                  />
                 </th>
                 <th>
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={t`BORROWING FEES`}
+                    variant="iconStroke"
                     renderContent={() => t`Pending borrowing fees from all open positions`}
                   />
                 </th>
                 <th>
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={t`FUNDING APR`}
+                    variant="iconStroke"
                     renderContent={() => (
-                      <div>
-                        <Trans>Longs / shorts</Trans>
-                        <br />
-                        <br />
-                        <Trans>Per 1h</Trans>
-                        <br />
-                        <br />
-                        <Trans>Negative value: traders pay funding</Trans>
-                        <br />
-                        <br />
-                        <Trans>Positive value: traders receive funding</Trans>
-                      </div>
+                      <TooltipContent>
+                        <TooltipText>
+                          <Trans>Longs / shorts</Trans>
+                        </TooltipText>
+                        <TooltipText>
+                          <Trans>Per 1h</Trans>
+                        </TooltipText>
+                        <TooltipText>
+                          <Trans>Negative value: traders pay funding</Trans>
+                        </TooltipText>
+                        <TooltipText>
+                          <Trans>Positive value: traders receive funding</Trans>
+                        </TooltipText>
+                      </TooltipContent>
                     )}
                   />
                 </th>
@@ -139,40 +172,42 @@ export function SyntheticsStats() {
                   <Trans>LIQUIDITY SHORT</Trans>
                 </th>
                 <th>
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={t`VI POSITIONS`}
+                    variant="iconStroke"
                     position="bottom-end"
                     renderContent={() => (
-                      <>
-                        <p>
+                      <TooltipContent>
+                        <TooltipText>
                           <Trans>Virtual inventory for positions</Trans>
-                        </p>
-                        <p>
+                        </TooltipText>
+                        <TooltipText>
                           <Trans>
                             Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
                             ETH/USDT.
                           </Trans>
-                        </p>
-                      </>
+                        </TooltipText>
+                      </TooltipContent>
                     )}
                   />
                 </th>
                 <th>
-                  <TooltipWithPortal
+                  <StandardTooltip
                     handle={t`VI SWAPS`}
+                    variant="iconStroke"
                     position="bottom-end"
                     renderContent={() => (
-                      <>
-                        <p>
+                      <TooltipContent>
+                        <TooltipText>
                           <Trans>Virtual inventory for swaps (long / short)</Trans>
-                        </p>
-                        <p>
+                        </TooltipText>
+                        <TooltipText>
                           <Trans>
                             Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
                             ETH/USDT.
                           </Trans>
-                        </p>
-                      </>
+                        </TooltipText>
+                      </TooltipContent>
                     )}
                   />
                 </th>
@@ -240,43 +275,43 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <div>
-                        <TooltipWithPortal
-                          tooltipClassName="SyntheticsStats-tooltip"
+                        <StandardTooltip
                           handle={getMarketIndexName(market)}
                           renderContent={() => (
-                            <>
-                              <StatsTooltipRow label={t`Key`} value={market.marketTokenAddress} showDollar={false} />
-                              <br />
-                              <StatsTooltipRow
+                            <TooltipRows>
+                              <TooltipRow
+                                label={t`Key`}
+                                value={<div className="debug-key">{market.marketTokenAddress}</div>}
+                                valueClassName="min-w-0 !shrink !whitespace-normal"
+                              />
+                              <TooltipRow
                                 label={t`Virtual market ID`}
                                 value={
                                   <div className="debug-key">
                                     {market.virtualMarketId !== zeroHash ? market.virtualMarketId : "-"}
                                   </div>
                                 }
-                                showDollar={false}
+                                valueClassName="min-w-0 !shrink !whitespace-normal"
                               />
-                              <br />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Virtual long token ID`}
                                 value={
                                   <div className="debug-key">
                                     {market.virtualLongTokenId !== zeroHash ? market.virtualLongTokenId : "-"}
                                   </div>
                                 }
-                                showDollar={false}
+                                valueClassName="min-w-0 !shrink !whitespace-normal"
                               />
-                              <br />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Virtual short token ID`}
                                 value={
                                   <div className="debug-key">
                                     {market.virtualShortTokenId !== zeroHash ? market.virtualShortTokenId : "-"}
                                   </div>
                                 }
-                                showDollar={false}
+                                valueClassName="min-w-0 !shrink !whitespace-normal"
                               />
-                            </>
+                            </TooltipRows>
                           )}
                         />
                       </div>
@@ -288,62 +323,59 @@ export function SyntheticsStats() {
                 function renderPoolCell() {
                   return (
                     <div className="cell">
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={formatAmountHuman(market.poolValueMax, 30, true)}
                         renderContent={() => (
-                          <>
-                            <StatsTooltipRow label={t`Pool USD long`} value={formatAmount(longPoolUsd, 30, 2, true)} />
-                            <StatsTooltipRow
+                          <TooltipRows>
+                            <TooltipRow
+                              label={t`Pool USD long`}
+                              value={<Usd>{formatAmount(longPoolUsd, 30, 2, true)}</Usd>}
+                            />
+                            <TooltipRow
                               label={t`Pool USD short`}
-                              value={formatAmount(shortPoolUsd, 30, 2, true)}
+                              value={<Usd>{formatAmount(shortPoolUsd, 30, 2, true)}</Usd>}
                             />
 
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool long amount`}
                               value={formatAmount(market.longPoolAmount, market.longToken.decimals, 0, true)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool short amount`}
                               value={formatAmount(market.shortPoolAmount, market.shortToken.decimals, 0, true)}
-                              showDollar={false}
                             />
 
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool max long amount`}
                               value={formatAmount(market.maxLongPoolAmount, market.longToken.decimals, 0, true)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool max short amount`}
                               value={formatAmount(market.maxShortPoolAmount, market.shortToken.decimals, 0, true)}
-                              showDollar={false}
                             />
 
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool max long USD for deposit`}
                               value={formatUsd(market.maxLongPoolUsdForDeposit)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Pool max short USD for deposit`}
                               value={formatUsd(market.maxShortPoolUsdForDeposit)}
-                              showDollar={false}
                             />
 
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Swap impact amount ${market.longToken.symbol}`}
-                              value={formatAmount(swapImpactUsdLong, 30, 0, true)}
+                              value={<Usd>{formatAmount(swapImpactUsdLong, 30, 0, true)}</Usd>}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Swap impact amount ${market.shortToken.symbol}`}
-                              value={formatAmount(swapImpactUsdShort, 30, 0, true)}
+                              value={<Usd>{formatAmount(swapImpactUsdShort, 30, 0, true)}</Usd>}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Position impact amount`}
-                              value={formatAmount(positionImpactUsd, 30, 0, true)}
+                              value={<Usd>{formatAmount(positionImpactUsd, 30, 0, true)}</Usd>}
                             />
-                          </>
+                          </TooltipRows>
                         )}
                       />
                     </div>
@@ -354,31 +386,29 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <div>
-                        <TooltipWithPortal
+                        <StandardTooltip
                           handle={`${formatAmountHuman(longPoolUsd, 30, true)} / ${formatAmountHuman(shortPoolUsd, 30, true)}`}
                           renderContent={() => {
                             return (
-                              <>
-                                <StatsTooltipRow
+                              <TooltipRows>
+                                <TooltipRow
                                   label={t`Pool USD long`}
-                                  value={formatAmount(longPoolUsd, 30, 2, true)}
+                                  value={<Usd>{formatAmount(longPoolUsd, 30, 2, true)}</Usd>}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Pool USD short`}
-                                  value={formatAmount(shortPoolUsd, 30, 2, true)}
+                                  value={<Usd>{formatAmount(shortPoolUsd, 30, 2, true)}</Usd>}
                                 />
 
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Pool long amount`}
                                   value={formatAmount(market.longPoolAmount, market.longToken.decimals, 0, true)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Pool short amount`}
                                   value={formatAmount(market.shortPoolAmount, market.shortToken.decimals, 0, true)}
-                                  showDollar={false}
                                 />
-                              </>
+                              </TooltipRows>
                             );
                           }}
                         />
@@ -400,7 +430,7 @@ export function SyntheticsStats() {
                   const poolUsd = convertToUsd(poolAmount, token.decimals, getMidPrice(token.prices));
 
                   return (
-                    <TooltipWithPortal
+                    <StandardTooltip
                       handle={
                         <div className="cell">
                           {formatAmountHuman(poolAmount, token.decimals)} {token.symbol} / {formatUsd(maxPoolUsd)}{" "}
@@ -408,28 +438,24 @@ export function SyntheticsStats() {
                         </div>
                       }
                       renderContent={() => (
-                        <>
-                          <StatsTooltipRow
+                        <TooltipRows>
+                          <TooltipRow
                             label={t`Pool amount capacity`}
-                            showDollar={false}
                             value={`${formatAmountHuman(poolAmount, token.decimals)} ${token.symbol} / ${formatAmountHuman(maxPoolAmount, token.decimals)} ${token.symbol}`}
                           />
-                          <StatsTooltipRow
+                          <TooltipRow
                             label={t`Pool USD capacity (swap)`}
-                            showDollar={false}
                             value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForSwap)}`}
                           />
-                          <StatsTooltipRow
+                          <TooltipRow
                             label={t`Deposit USD capacity`}
-                            showDollar={false}
                             value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsdForDeposit)}`}
                           />
-                          <StatsTooltipRow
+                          <TooltipRow
                             label={t`Strictest deposit USD capacity`}
-                            showDollar={false}
                             value={`${formatUsd(poolUsd)} / ${formatUsd(maxPoolUsd)}`}
                           />
-                        </>
+                        </TooltipRows>
                       )}
                     />
                   );
@@ -460,7 +486,7 @@ export function SyntheticsStats() {
                       {market.isSpotOnly ? (
                         "..."
                       ) : (
-                        <TooltipWithPortal
+                        <StandardTooltip
                           handle={
                             <>
                               <span className={getPositiveOrNegativeClass(-borrowingRateLong + 1n)}>
@@ -472,101 +498,85 @@ export function SyntheticsStats() {
                               </span>
                             </>
                           }
-                          renderContent={() => (
-                            <>
-                              {marketKinkModelBorrowingData ? (
-                                <>
-                                  <StatsTooltipRow
-                                    label={t`Pending borrowing fee`}
-                                    value={formatAmountHuman(market.totalBorrowingFees, 30)}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Optimal usage factor long`}
-                                    value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Optimal usage factor short`}
-                                    value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Base borrowing factor long`}
-                                    value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorLong, 30, 11)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Base borrowing factor short`}
-                                    value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorShort, 30, 11)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max rate long`}
-                                    value={
-                                      marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong
-                                        ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong * 3600n * 100n, 30, 5)}% / 1h`
-                                        : "N/A"
-                                    }
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max rate short`}
-                                    value={
-                                      marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort
-                                        ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort * 3600n * 100n, 30, 5)}% / 1h`
-                                        : "N/A"
-                                    }
-                                    showDollar={false}
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <StatsTooltipRow
-                                    label={t`Pending borrowing fee`}
-                                    value={formatAmountHuman(market.totalBorrowingFees, 30)}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Borrowing factor long`}
-                                    value={formatFactor(market.borrowingFactorLong)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Borrowing factor short`}
-                                    value={formatFactor(market.borrowingFactorShort)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Borrowing exponent long`}
-                                    value={formatFactor(market.borrowingExponentFactorLong)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Borrowing exponent short`}
-                                    value={formatFactor(market.borrowingExponentFactorShort)}
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max rate long`}
-                                    value={
-                                      maxBorrowingRateLong
-                                        ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h`
-                                        : "N/A"
-                                    }
-                                    showDollar={false}
-                                  />
-                                  <StatsTooltipRow
-                                    label={t`Max rate short`}
-                                    value={
-                                      maxBorrowingRateShort
-                                        ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`
-                                        : "N/A"
-                                    }
-                                    showDollar={false}
-                                  />
-                                </>
-                              )}
-                            </>
-                          )}
+                          renderContent={() =>
+                            marketKinkModelBorrowingData ? (
+                              <TooltipRows>
+                                <TooltipRow
+                                  label={t`Pending borrowing fee`}
+                                  value={<Usd>{formatAmountHuman(market.totalBorrowingFees, 30)}</Usd>}
+                                />
+                                <TooltipRow
+                                  label={t`Optimal usage factor long`}
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorLong * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                />
+                                <TooltipRow
+                                  label={t`Optimal usage factor short`}
+                                  value={`${formatFactor(marketKinkModelBorrowingData.optimalUsageFactorShort * FACTOR_TO_PERCENT_MULTIPLIER_BIGINT)}%`}
+                                />
+                                <TooltipRow
+                                  label={t`Base borrowing factor long`}
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorLong, 30, 11)}
+                                />
+                                <TooltipRow
+                                  label={t`Base borrowing factor short`}
+                                  value={formatAmount(marketKinkModelBorrowingData.baseBorrowingFactorShort, 30, 11)}
+                                />
+                                <TooltipRow
+                                  label={t`Max rate long`}
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorLong * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                />
+                                <TooltipRow
+                                  label={t`Max rate short`}
+                                  value={
+                                    marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort
+                                      ? `-${formatAmount(marketKinkModelBorrowingData.aboveOptimalUsageBorrowingFactorShort * 3600n * 100n, 30, 5)}% / 1h`
+                                      : "N/A"
+                                  }
+                                />
+                              </TooltipRows>
+                            ) : (
+                              <TooltipRows>
+                                <TooltipRow
+                                  label={t`Pending borrowing fee`}
+                                  value={<Usd>{formatAmountHuman(market.totalBorrowingFees, 30)}</Usd>}
+                                />
+                                <TooltipRow
+                                  label={t`Borrowing factor long`}
+                                  value={formatFactor(market.borrowingFactorLong)}
+                                />
+                                <TooltipRow
+                                  label={t`Borrowing factor short`}
+                                  value={formatFactor(market.borrowingFactorShort)}
+                                />
+                                <TooltipRow
+                                  label={t`Borrowing exponent long`}
+                                  value={formatFactor(market.borrowingExponentFactorLong)}
+                                />
+                                <TooltipRow
+                                  label={t`Borrowing exponent short`}
+                                  value={formatFactor(market.borrowingExponentFactorShort)}
+                                />
+                                <TooltipRow
+                                  label={t`Max rate long`}
+                                  value={
+                                    maxBorrowingRateLong ? `-${formatAmount(maxBorrowingRateLong, 30, 4)}% / 1h` : "N/A"
+                                  }
+                                />
+                                <TooltipRow
+                                  label={t`Max rate short`}
+                                  value={
+                                    maxBorrowingRateShort
+                                      ? `-${formatAmount(maxBorrowingRateShort, 30, 4)}% / 1h`
+                                      : "N/A"
+                                  }
+                                />
+                              </TooltipRows>
+                            )
+                          }
                         />
                       )}
                     </div>
@@ -579,7 +589,7 @@ export function SyntheticsStats() {
                       {market.isSpotOnly ? (
                         "..."
                       ) : (
-                        <TooltipWithPortal
+                        <StandardTooltip
                           handle={
                             <>
                               <span className={getPositiveOrNegativeClass(fundingAprLong)}>
@@ -596,61 +606,51 @@ export function SyntheticsStats() {
                           renderContent={() =>
                             market.fundingIncreaseFactorPerSecond !== undefined &&
                             market.fundingIncreaseFactorPerSecond > 0 ? (
-                              <>
-                                <StatsTooltipRow
+                              <TooltipRows>
+                                <TooltipRow
                                   label={t`Funding increase factor`}
                                   value={formatFactor(market.fundingIncreaseFactorPerSecond)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Funding decrease factor`}
                                   value={formatFactor(market.fundingDecreaseFactorPerSecond)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Max funding factor (long)`}
                                   value={formatFactor(market.maxFundingFactorPerSecondLong)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Max funding factor (short)`}
                                   value={formatFactor(market.maxFundingFactorPerSecondShort)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Min funding factor (long)`}
                                   value={formatFactor(market.minFundingFactorPerSecondLong)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Min funding factor (short)`}
                                   value={formatFactor(market.minFundingFactorPerSecondShort)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Threshold for stable funding`}
                                   value={formatFactor(market.thresholdForStableFunding)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Threshold for decrease funding`}
                                   value={formatFactor(market.thresholdForDecreaseFunding)}
-                                  showDollar={false}
                                 />
-                              </>
+                              </TooltipRows>
                             ) : (
-                              <>
-                                <StatsTooltipRow
+                              <TooltipRows>
+                                <TooltipRow
                                   label={t`Funding factor`}
                                   value={formatAmount(market.fundingFactor, 30, 2)}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Funding exponent factor`}
                                   value={formatAmount(market.fundingExponentFactor, 30, 14)}
-                                  showDollar={false}
                                 />
-                              </>
+                              </TooltipRows>
                             )
                           }
                         />
@@ -669,15 +669,14 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <div>
-                        <TooltipWithPortal
+                        <StandardTooltip
                           handle={`${formatAmountHuman(longOIUsd, 30, true)} / ${formatAmountHuman(shortOIUsd, 30, true)}`}
                           renderContent={() => (
-                            <>
-                              <StatsTooltipRow label={t`Total`} value={formatAmount(totalOIUsd, 30, 0, true)} />
-                              <StatsTooltipRow label={t`Long`} value={formatAmount(longOIUsd, 30, 0, true)} />
-                              <StatsTooltipRow label={t`Short`} value={formatAmount(shortOIUsd, 30, 0, true)} />
-                              <StatsTooltipRow
-                                showDollar={false}
+                            <TooltipRows>
+                              <TooltipRow label={t`Total`} value={<Usd>{formatAmount(totalOIUsd, 30, 0, true)}</Usd>} />
+                              <TooltipRow label={t`Long`} value={<Usd>{formatAmount(longOIUsd, 30, 0, true)}</Usd>} />
+                              <TooltipRow label={t`Short`} value={<Usd>{formatAmount(shortOIUsd, 30, 0, true)}</Usd>} />
+                              <TooltipRow
                                 label={t`Percentage`}
                                 value={(() => {
                                   let longInterestPercent = "0";
@@ -701,11 +700,11 @@ export function SyntheticsStats() {
                                   );
                                 })()}
                               />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Difference`}
-                                value={formatAmount(bigMath.abs(shortOIUsd - longOIUsd), 30, 0, true)}
+                                value={<Usd>{formatAmount(bigMath.abs(shortOIUsd - longOIUsd), 30, 0, true)}</Usd>}
                               />
-                            </>
+                            </TooltipRows>
                           )}
                         />
                       </div>
@@ -760,7 +759,7 @@ export function SyntheticsStats() {
                   return (
                     <div className="cell">
                       <div>
-                        <TooltipWithPortal
+                        <StandardTooltip
                           handle={
                             market.isSpotOnly ? (
                               formatAmountHuman(collateralLiquidityUsd, 30, true)
@@ -771,38 +770,38 @@ export function SyntheticsStats() {
                             )
                           }
                           renderContent={() => (
-                            <>
-                              <StatsTooltipRow
+                            <TooltipRows>
+                              <TooltipRow
                                 label={t`Reserved ${directionLabel}`}
-                                value={formatAmount(reservedUsd, 30, 0, true)}
+                                value={<Usd>{formatAmount(reservedUsd, 30, 0, true)}</Usd>}
                               />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Max reserved ${directionLabel}`}
-                                value={formatAmount(maxReservedUsd, 30, 0, true)}
+                                value={<Usd>{formatAmount(maxReservedUsd, 30, 0, true)}</Usd>}
                               />
                               {maxReservedWithJit !== undefined && (
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Max reserved + JIT ${directionLabel}`}
-                                  value={formatAmount(maxReservedWithJit, 30, 0, true)}
+                                  value={<Usd>{formatAmount(maxReservedWithJit, 30, 0, true)}</Usd>}
                                 />
                               )}
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Open interest ${directionLabel}`}
-                                value={formatAmount(interestUsd, 30, 0, true)}
+                                value={<Usd>{formatAmount(interestUsd, 30, 0, true)}</Usd>}
                               />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Max open interest ${directionLabel}`}
-                                value={formatAmount(maxOpenInterest, 30, 0, true)}
+                                value={<Usd>{formatAmount(maxOpenInterest, 30, 0, true)}</Usd>}
                               />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Max ${token.symbol} out`}
-                                value={formatAmount(collateralLiquidityUsd, 30, 0, true)}
+                                value={<Usd>{formatAmount(collateralLiquidityUsd, 30, 0, true)}</Usd>}
                               />
-                              <StatsTooltipRow
+                              <TooltipRow
                                 label={t`Available liquidity ${directionLabel}`}
-                                value={formatAmount(availableLiquidity, 30, 0, true)}
+                                value={<Usd>{formatAmount(availableLiquidity, 30, 0, true)}</Usd>}
                               />
-                            </>
+                            </TooltipRows>
                           )}
                         />
                       </div>
@@ -842,22 +841,20 @@ export function SyntheticsStats() {
 
                   return (
                     <div className="cell">
-                      <TooltipWithPortal
+                      <StandardTooltip
                         handle={`$\u200a${formatAmount(positionImpactUsd, 30, 2, true)}`}
                         position="bottom-end"
                         renderContent={() => (
-                          <>
-                            <StatsTooltipRow
+                          <TooltipRows>
+                            <TooltipRow
                               label={t`Impact pool amount`}
                               value={formatAmount(market.positionImpactPoolAmount, market.indexToken.decimals, 2, true)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Min impact pool amount`}
                               value={formatAmount(market.minPositionImpactPoolAmount, market.indexToken.decimals, 4)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Impact pool after reserved positive impact`}
                               value={formatAmount(
                                 market.positionImpactPoolAmount - reservedPositivePriceImpact,
@@ -865,62 +862,57 @@ export function SyntheticsStats() {
                                 2,
                                 true
                               )}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Distribution rate, ${market.indexToken.symbol}`}
                               value={formatAmount(
                                 market.positionImpactPoolDistributionRate,
                                 market.indexToken.decimals + 30,
                                 10
                               )}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Distribution rate per day, USD`}
-                              value={formatAmount(
-                                bigMath.mulDiv(
-                                  market.positionImpactPoolDistributionRate * 86400n,
-                                  market.indexToken.prices.minPrice,
-                                  expandDecimals(1, 60)
-                                ),
-                                market.indexToken.decimals,
-                                2,
-                                true
-                              )}
+                              value={
+                                <Usd>
+                                  {formatAmount(
+                                    bigMath.mulDiv(
+                                      market.positionImpactPoolDistributionRate * 86400n,
+                                      market.indexToken.prices.minPrice,
+                                      expandDecimals(1, 60)
+                                    ),
+                                    market.indexToken.decimals,
+                                    2,
+                                    true
+                                  )}
+                                </Usd>
+                              }
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Bonus APR`}
-                              value={formatAmount(bonusApr, market.indexToken.decimals + 30, 2, true)}
-                              showDollar={false}
-                              unit="%"
+                              value={`${formatAmount(bonusApr, market.indexToken.decimals + 30, 2, true)}%`}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Negative impact factor`}
                               value={formatFactor(market.positionImpactFactorNegative)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Positive impact factor`}
                               value={formatFactor(market.positionImpactFactorPositive)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Impact exponent (positive)`}
                               value={formatFactor(market.positionImpactExponentFactorPositive)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Impact exponent (negative)`}
                               value={formatFactor(market.positionImpactExponentFactorNegative)}
-                              showDollar={false}
                             />
-                            <StatsTooltipRow
+                            <TooltipRow
                               label={t`Reserved positive impact`}
                               value={formatAmount(reservedPositivePriceImpact, market.indexToken.decimals, 4, true)}
-                              showDollar={false}
                             />
-                          </>
+                          </TooltipRows>
                         )}
                       />
                     </div>
@@ -957,35 +949,33 @@ export function SyntheticsStats() {
                         {market.isSpotOnly ? (
                           "..."
                         ) : (
-                          <TooltipWithPortal
+                          <StandardTooltip
                             handle={
                               <span className={cx({ positive: netPnlMax > 0, negative: netPnlMax < 0 })}>
                                 {getPlusOrMinusSymbol(netPnlMax)}${formatAmountHuman(bigMath.abs(netPnlMax), 30)}
                               </span>
                             }
                             renderContent={() => (
-                              <>
-                                <StatsTooltipRow
-                                  showDollar={false}
+                              <TooltipRows>
+                                <TooltipRow
                                   label={t`PnL long`}
-                                  textClassName={getPositiveOrNegativeClass(cappedLongPnlMax)}
+                                  valueClassName={getPositiveOrNegativeClass(cappedLongPnlMax)}
                                   value={`${getPlusOrMinusSymbol(cappedLongPnlMax)}${formatAmountHuman(
                                     bigMath.abs(cappedLongPnlMax),
                                     30,
                                     true
                                   )}`}
                                 />
-                                <StatsTooltipRow
-                                  showDollar={false}
+                                <TooltipRow
                                   label={t`PnL short`}
-                                  textClassName={getPositiveOrNegativeClass(shortPnlMax)}
+                                  valueClassName={getPositiveOrNegativeClass(shortPnlMax)}
                                   value={`${getPlusOrMinusSymbol(cappedShortPnlMax)}${formatAmountHuman(
                                     bigMath.abs(cappedShortPnlMax),
                                     30,
                                     true
                                   )}`}
                                 />
-                              </>
+                              </TooltipRows>
                             )}
                           />
                         )}
@@ -1001,7 +991,7 @@ export function SyntheticsStats() {
                         {market.isSpotOnly ? (
                           "..."
                         ) : (
-                          <TooltipWithPortal
+                          <StandardTooltip
                             position="bottom-end"
                             handle={
                               <>
@@ -1013,11 +1003,12 @@ export function SyntheticsStats() {
                             }
                             renderContent={() => {
                               return (
-                                <StatsTooltipRow
-                                  label={virtualInventoryPositions > 0 ? t`Short` : t`Long`}
-                                  value={formatUsd(bigMath.abs(virtualInventoryPositions)) || "$0.00"}
-                                  showDollar={false}
-                                />
+                                <TooltipRows>
+                                  <TooltipRow
+                                    label={virtualInventoryPositions > 0 ? t`Short` : t`Long`}
+                                    value={formatUsd(bigMath.abs(virtualInventoryPositions)) || "$0.00"}
+                                  />
+                                </TooltipRows>
                               );
                             }}
                           />
@@ -1026,7 +1017,7 @@ export function SyntheticsStats() {
                     </td>
                     <td>
                       <div className="cell">
-                        <TooltipWithPortal
+                        <StandardTooltip
                           position="bottom-end"
                           handle={
                             <div>
@@ -1043,22 +1034,20 @@ export function SyntheticsStats() {
                           }
                           renderContent={() => {
                             return (
-                              <>
-                                <StatsTooltipRow
+                              <TooltipRows>
+                                <TooltipRow
                                   label={t`Long`}
                                   value={formatUsd(
                                     convertToUsd(virtualInventorySwapsLong, market.longToken.decimals, midLongPrice)
                                   )}
-                                  showDollar={false}
                                 />
-                                <StatsTooltipRow
+                                <TooltipRow
                                   label={t`Short`}
                                   value={formatUsd(
                                     convertToUsd(virtualInventorySwapsShort, market.shortToken.decimals, midShortPrice)
                                   )}
-                                  showDollar={false}
                                 />
-                              </>
+                              </TooltipRows>
                             );
                           }}
                         />
@@ -1067,12 +1056,12 @@ export function SyntheticsStats() {
                     <td>{renderPositionImpactCell()}</td>
                     <td>
                       <div className="cell">
-                        <TooltipWithPortal
+                        <StandardTooltip
                           position="bottom-end"
                           handle="..."
-                          tooltipClassName="MarketCard-config-tooltip"
                           renderContent={() => (
                             <div
+                              className="max-h-[min(80vh,calc(var(--tooltip-available-height,80vh)-28px))] overflow-y-auto overscroll-contain"
                               onWheel={(e) => {
                                 e.stopPropagation();
                               }}
@@ -1080,227 +1069,184 @@ export function SyntheticsStats() {
                                 e.stopPropagation();
                               }}
                             >
-                              <div>
-                                <Trans>Position impact</Trans>
-                              </div>
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Exponent (positive)`}
-                                value={formatFactor(market.positionImpactExponentFactorPositive)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Exponent (negative)`}
-                                value={formatFactor(market.positionImpactExponentFactorNegative)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Positive factor`}
-                                value={formatFactor(market.positionImpactFactorPositive)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Negative factor`}
-                                value={formatFactor(market.positionImpactFactorNegative)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max positive factor`}
-                                value={formatFactor(market.maxPositionImpactFactorPositive)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max negative factor`}
-                                value={formatFactor(market.maxPositionImpactFactorNegative)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max factor for liquidations`}
-                                value={formatFactor(market.maxPositionImpactFactorForLiquidations)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max lendable impact factor`}
-                                value={formatFactor(market.maxLendableImpactFactor)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max lendable impact factor for withdrawals`}
-                                value={formatFactor(market.maxLendableImpactFactorForWithdrawals)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max lendable impact USD`}
-                                value={formatUsd(market.maxLendableImpactUsd)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Lent position impact pool amount`}
-                                value={formatUsd(market.lentPositionImpactPoolAmount)}
-                                showDollar={false}
-                              />
-                              <br />
-                              <div className="Tooltip-divider" />
-                              <br />
-                              <div>
-                                <Trans>Swap impact</Trans>
-                              </div>
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Swap impact exponent`}
-                                value={formatFactor(market.swapImpactExponentFactor)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Positive factor`}
-                                value={formatFactor(market.swapImpactFactorPositive)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Negative factor`}
-                                value={formatFactor(market.swapImpactFactorNegative)}
-                                showDollar={false}
-                              />
-                              <br />
-                              <div className="Tooltip-divider" />
-                              <br />
-                              <div>
-                                <Trans>Fee factors</Trans>
-                              </div>
-                              <br />
-
-                              <StatsTooltipRow
-                                label={t`Swap fee factor (positive PI)`}
-                                value={formatFactor(market.swapFeeFactorForBalanceWasImproved)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Swap fee factor (negative PI)`}
-                                value={formatFactor(market.swapFeeFactorForBalanceWasNotImproved)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Position fee factor (positive PI)`}
-                                value={formatFactor(market.positionFeeFactorForBalanceWasImproved)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Position fee factor (negative PI)`}
-                                value={formatFactor(market.positionFeeFactorForBalanceWasNotImproved)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Borrowing factor long`}
-                                value={formatFactor(market.borrowingFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Borrowing factor short`}
-                                value={formatFactor(market.borrowingFactorShort)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Borrowing exponent long`}
-                                value={formatFactor(market.borrowingExponentFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Borrowing exponent short`}
-                                value={formatFactor(market.borrowingExponentFactorShort)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Funding factor`}
-                                value={formatFactor(market.fundingFactor)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Funding exponent`}
-                                value={formatFactor(market.fundingExponentFactor)}
-                                showDollar={false}
-                              />
-                              <br />
-                              <div className="Tooltip-divider" />
-                              <br />
-                              <div>
-                                <Trans>Other</Trans>
-                              </div>
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Min collateral`}
-                                value={formatUsd(minCollateralUsd)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Min position size`}
-                                value={formatUsd(minPositionSizeUsd) || "..."}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Min collateral factor`}
-                                value={formatFactor(market.minCollateralFactor)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Min collateral factor for liquidation`}
-                                value={formatFactor(market.minCollateralFactorForLiquidation)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Min collateral factor OI long`}
-                                value={formatFactor(market.minCollateralFactorForOpenInterestLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Min collateral factor OI short`}
-                                value={formatFactor(market.minCollateralFactorForOpenInterestShort)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Max leverage`}
-                                value={
-                                  market.minCollateralFactor > 0
-                                    ? formatAmount((PRECISION / market.minCollateralFactor) * 100n, 2, 2)
-                                    : "..."
-                                }
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Reserve factor longs`}
-                                value={formatFactor(market.reserveFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Reserve factor shorts`}
-                                value={formatFactor(market.reserveFactorShort)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Open interest reserve factor longs`}
-                                value={formatFactor(market.openInterestReserveFactorLong)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Open interest reserve factor shorts`}
-                                value={formatFactor(market.openInterestReserveFactorShort)}
-                                showDollar={false}
-                              />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Claimable collateral delay`}
-                                value={claimableCollateralDelay?.toString() || "..."}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Claimable collateral reduction factor`}
-                                value={formatFactor(claimableCollateralReductionFactor ?? 0n)}
-                                showDollar={false}
-                              />
-                              <StatsTooltipRow
-                                label={t`Use open interest in tokens for balance`}
-                                value={market.useOpenInterestInTokensForBalance ? t`True` : t`False`}
-                                showDollar={false}
-                              />
+                              <TooltipContent>
+                                <TooltipRows>
+                                  <TooltipTitle>
+                                    <Trans>Position impact</Trans>
+                                  </TooltipTitle>
+                                  <TooltipRow
+                                    label={t`Exponent (positive)`}
+                                    value={formatFactor(market.positionImpactExponentFactorPositive)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Exponent (negative)`}
+                                    value={formatFactor(market.positionImpactExponentFactorNegative)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Positive factor`}
+                                    value={formatFactor(market.positionImpactFactorPositive)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Negative factor`}
+                                    value={formatFactor(market.positionImpactFactorNegative)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max positive factor`}
+                                    value={formatFactor(market.maxPositionImpactFactorPositive)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max negative factor`}
+                                    value={formatFactor(market.maxPositionImpactFactorNegative)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max factor for liquidations`}
+                                    value={formatFactor(market.maxPositionImpactFactorForLiquidations)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max lendable impact factor`}
+                                    value={formatFactor(market.maxLendableImpactFactor)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max lendable impact factor for withdrawals`}
+                                    value={formatFactor(market.maxLendableImpactFactorForWithdrawals)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max lendable impact USD`}
+                                    value={formatUsd(market.maxLendableImpactUsd)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Lent position impact pool amount`}
+                                    value={formatUsd(market.lentPositionImpactPoolAmount)}
+                                  />
+                                </TooltipRows>
+                                <TooltipDivider />
+                                <TooltipRows>
+                                  <TooltipTitle>
+                                    <Trans>Swap impact</Trans>
+                                  </TooltipTitle>
+                                  <TooltipRow
+                                    label={t`Swap impact exponent`}
+                                    value={formatFactor(market.swapImpactExponentFactor)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Positive factor`}
+                                    value={formatFactor(market.swapImpactFactorPositive)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Negative factor`}
+                                    value={formatFactor(market.swapImpactFactorNegative)}
+                                  />
+                                </TooltipRows>
+                                <TooltipDivider />
+                                <TooltipRows>
+                                  <TooltipTitle>
+                                    <Trans>Fee factors</Trans>
+                                  </TooltipTitle>
+                                  <TooltipRow
+                                    label={t`Swap fee factor (positive PI)`}
+                                    value={formatFactor(market.swapFeeFactorForBalanceWasImproved)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Swap fee factor (negative PI)`}
+                                    value={formatFactor(market.swapFeeFactorForBalanceWasNotImproved)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Position fee factor (positive PI)`}
+                                    value={formatFactor(market.positionFeeFactorForBalanceWasImproved)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Position fee factor (negative PI)`}
+                                    value={formatFactor(market.positionFeeFactorForBalanceWasNotImproved)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Borrowing factor long`}
+                                    value={formatFactor(market.borrowingFactorLong)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Borrowing factor short`}
+                                    value={formatFactor(market.borrowingFactorShort)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Borrowing exponent long`}
+                                    value={formatFactor(market.borrowingExponentFactorLong)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Borrowing exponent short`}
+                                    value={formatFactor(market.borrowingExponentFactorShort)}
+                                  />
+                                  <TooltipRow label={t`Funding factor`} value={formatFactor(market.fundingFactor)} />
+                                  <TooltipRow
+                                    label={t`Funding exponent`}
+                                    value={formatFactor(market.fundingExponentFactor)}
+                                  />
+                                </TooltipRows>
+                                <TooltipDivider />
+                                <TooltipRows>
+                                  <TooltipTitle>
+                                    <Trans>Other</Trans>
+                                  </TooltipTitle>
+                                  <TooltipRow label={t`Min collateral`} value={formatUsd(minCollateralUsd)} />
+                                  <TooltipRow
+                                    label={t`Min position size`}
+                                    value={formatUsd(minPositionSizeUsd) || "..."}
+                                  />
+                                  <TooltipRow
+                                    label={t`Min collateral factor`}
+                                    value={formatFactor(market.minCollateralFactor)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Min collateral factor for liquidation`}
+                                    value={formatFactor(market.minCollateralFactorForLiquidation)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Min collateral factor OI long`}
+                                    value={formatFactor(market.minCollateralFactorForOpenInterestLong)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Min collateral factor OI short`}
+                                    value={formatFactor(market.minCollateralFactorForOpenInterestShort)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Max leverage`}
+                                    value={
+                                      market.minCollateralFactor > 0
+                                        ? formatAmount((PRECISION / market.minCollateralFactor) * 100n, 2, 2)
+                                        : "..."
+                                    }
+                                  />
+                                  <TooltipRow
+                                    label={t`Reserve factor longs`}
+                                    value={formatFactor(market.reserveFactorLong)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Reserve factor shorts`}
+                                    value={formatFactor(market.reserveFactorShort)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Open interest reserve factor longs`}
+                                    value={formatFactor(market.openInterestReserveFactorLong)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Open interest reserve factor shorts`}
+                                    value={formatFactor(market.openInterestReserveFactorShort)}
+                                  />
+                                </TooltipRows>
+                                <TooltipDivider />
+                                <TooltipRows>
+                                  <TooltipRow
+                                    label={t`Claimable collateral delay`}
+                                    value={claimableCollateralDelay?.toString() || "..."}
+                                  />
+                                  <TooltipRow
+                                    label={t`Claimable collateral reduction factor`}
+                                    value={formatFactor(claimableCollateralReductionFactor ?? 0n)}
+                                  />
+                                  <TooltipRow
+                                    label={t`Use open interest in tokens for balance`}
+                                    value={market.useOpenInterestInTokensForBalance ? t`True` : t`False`}
+                                  />
+                                </TooltipRows>
+                              </TooltipContent>
                             </div>
                           )}
                         />

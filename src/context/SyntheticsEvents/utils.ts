@@ -1,15 +1,27 @@
 import { type Abi, encodeErrorResult } from "viem";
 
+import type { TokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { extendError } from "lib/errors";
 import { abis } from "sdk/abis";
+import { DecreasePositionSwapType } from "sdk/utils/orders/types";
+import { TokenBalanceType } from "sdk/utils/tokens/types";
+import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
+  DepositCreatedEventData,
+  EventLogData,
+  GLVDepositCreatedEventData,
+  OrderCreatedEventData,
   RelayTaskStatus,
   OrderStatus,
   PendingDepositData,
+  PendingExpressTxnParams,
   PendingOrderData,
+  PendingPositionsUpdates,
   PendingShiftData,
   PendingWithdrawalData,
+  ShiftCreatedEventData,
+  WithdrawalCreatedEventData,
 } from "./types";
 
 export function getPendingOrderKey(
@@ -187,4 +199,174 @@ export function extractRelayTaskError(relayTaskStatus: RelayTaskStatus) {
   return extendError(new Error(`Relay task cancelled, unknown reason`), {
     data: { taskId: relayTaskStatus.taskId, message: relayTaskStatus.message },
   });
+}
+
+export function removePendingExpressTxnDebits(
+  updates: TokensBalancesUpdates,
+  pendingExpressTxn: Partial<PendingExpressTxnParams>
+): TokensBalancesUpdates {
+  const balanceType = pendingExpressTxn.isGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
+  const newUpdates = { ...updates };
+
+  Object.entries(pendingExpressTxn.payAmounts ?? {}).forEach(([tokenAddress, amount]) => {
+    const update = newUpdates[tokenAddress];
+
+    if (update?.balanceType !== balanceType) {
+      return;
+    }
+
+    // pending debits of a token are summed, and a balance refresh can drop them, so give back at most what is left
+    const diff = (update.diff ?? 0n) + amount;
+
+    if (diff < 0n) {
+      newUpdates[tokenAddress] = { ...update, diff };
+    } else {
+      delete newUpdates[tokenAddress];
+    }
+  });
+
+  return newUpdates;
+}
+
+export function removePendingExpressTxnPositionsUpdates(
+  updates: PendingPositionsUpdates,
+  pendingExpressTxn: Partial<PendingExpressTxnParams>
+): PendingPositionsUpdates {
+  const newUpdates = { ...updates };
+
+  pendingExpressTxn.pendingPositionsKeys?.forEach((positionKey) => {
+    // a later order on the same position replaces the update, and then it isn't this txn's to remove
+    if (newUpdates[positionKey]?.updatedAt === pendingExpressTxn.createdAt) {
+      delete newUpdates[positionKey];
+    }
+  });
+
+  return newUpdates;
+}
+
+export function parseOrderCreatedEventData(eventData: EventLogData): OrderCreatedEventData {
+  const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
+
+  return {
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    marketAddress: eventData.addressItems.items.market,
+    initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
+    swapPath: eventData.addressItems.arrayItems.swapPath,
+    sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
+    initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
+    contractTriggerPrice: eventData.uintItems.items.triggerPrice,
+    contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
+    executionFee: eventData.uintItems.items.executionFee,
+    callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+    minOutputAmount: eventData.uintItems.items.minOutputAmount,
+    updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+    orderType: Number(eventData.uintItems.items.orderType),
+    decreasePositionSwapType: Number(
+      eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
+    ) as DecreasePositionSwapType,
+    isLong: eventData.boolItems.items.isLong,
+    shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+    isFrozen: eventData.boolItems.items.isFrozen,
+    uiFeeReceiver: uiFeeReceiver,
+    externalSwapQuote: undefined,
+    key: eventData.bytes32Items.items.key,
+    isTwap: decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver) !== undefined,
+  };
+}
+
+export function parseGlvDepositCreatedEventData(eventData: EventLogData): GLVDepositCreatedEventData {
+  return {
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    glvAddress: eventData.addressItems.items.glv,
+    marketAddress: eventData.addressItems.items.market,
+    initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
+    initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
+    longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
+    shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
+    initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
+    initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+    initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+    minMarketTokens: eventData.uintItems.items.minGlvTokens,
+    updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+    executionFee: eventData.uintItems.items.executionFee,
+    callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+    shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+    key: eventData.bytes32Items.items.key,
+    isGlvDeposit: true,
+  };
+}
+
+export function parseDepositCreatedEventData(eventData: EventLogData): DepositCreatedEventData {
+  return {
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    marketAddress: eventData.addressItems.items.market,
+    initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
+    initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
+    longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
+    shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
+    initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
+    initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
+    minMarketTokens: eventData.uintItems.items.minMarketTokens,
+    updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+    executionFee: eventData.uintItems.items.executionFee,
+    callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+    shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+    key: eventData.bytes32Items.items.key,
+    isGlvDeposit: false,
+  };
+}
+
+export function parseWithdrawalCreatedEventData(eventData: EventLogData): WithdrawalCreatedEventData {
+  return {
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    marketAddress: eventData.addressItems.items.market,
+    marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+    minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
+    minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
+    updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+    executionFee: eventData.uintItems.items.executionFee,
+    callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+    shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+    key: eventData.bytes32Items.items.key,
+  };
+}
+
+export function parseGlvWithdrawalCreatedEventData(eventData: EventLogData): WithdrawalCreatedEventData {
+  return {
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    marketAddress: eventData.addressItems.items.glv,
+    marketTokenAmount: eventData.uintItems.items.glvTokenAmount,
+    minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
+    minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
+    updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
+    executionFee: eventData.uintItems.items.executionFee,
+    callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
+    shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
+    key: eventData.bytes32Items.items.key,
+  };
+}
+
+export function parseShiftCreatedEventData(eventData: EventLogData): ShiftCreatedEventData {
+  return {
+    key: eventData.bytes32Items.items.key,
+    account: eventData.addressItems.items.account,
+    receiver: eventData.addressItems.items.receiver,
+    callbackContract: eventData.addressItems.items.callbackContract,
+    fromMarket: eventData.addressItems.items.fromMarket,
+    toMarket: eventData.addressItems.items.toMarket,
+    marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
+    minMarketTokens: eventData.uintItems.items.minMarketTokens,
+    updatedAtTime: eventData.uintItems.items.updatedAtTime,
+    executionFee: eventData.uintItems.items.executionFee,
+  };
 }

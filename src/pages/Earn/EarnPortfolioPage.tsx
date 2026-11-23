@@ -6,12 +6,15 @@ import {
   selectMultichainMarketTokensBalancesIsLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useGtAirdrop } from "domain/gtAirdrop/useGtAirdrop";
 import { getPlatformTokenBalanceAfterThreshold } from "domain/multichain/getPlatformTokenBalanceAfterThreshold";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { useMarketTokensData } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerformanceAnnualized";
+import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
 import useVestingData from "domain/vesting/useVestingData";
+import { getHasOrphanVaultEntry } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
@@ -63,6 +66,8 @@ export default function EarnPortfolioPage() {
   }, [marketTokensData, marketsInfoData, multichainMarketTokensBalances]);
 
   const vestingData = useVestingData(account);
+  const { orphanVaultData } = useOrphanVestingData(chainId, account);
+  const gtAirdrop = useGtAirdrop({ chainId, account });
 
   const hasGmxAssets = processedData
     ? (processedData.gmxBalance ?? 0n) > 0n || (processedData.gmxInStakedGmx ?? 0n) > 0n
@@ -71,12 +76,14 @@ export default function EarnPortfolioPage() {
     ? (processedData.esGmxBalance ?? 0n) > 0n ||
       (processedData.esGmxInStakedGmx ?? 0n) > 0n ||
       (vestingData?.gmxVesterVestedAmount ?? 0n) > 0n ||
-      (vestingData?.affiliateVesterVestedAmount ?? 0n) > 0n
+      (vestingData?.glpVesterVestedAmount ?? 0n) > 0n ||
+      (vestingData?.affiliateVesterVestedAmount ?? 0n) > 0n ||
+      getHasOrphanVaultEntry(orphanVaultData)
     : false;
 
   const hasGmGlvAssets = gmGlvAssets.length > 0;
 
-  const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets;
+  const hasAnyAssets = hasGmxAssets || hasEsGmxAssets || hasGmGlvAssets || gtAirdrop !== undefined;
 
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
   const areAssetsLoading =
@@ -102,6 +109,7 @@ export default function EarnPortfolioPage() {
             hasGmx={hasGmxAssets}
             hasEsGmx={hasEsGmxAssets}
             gmGlvAssets={gmGlvAssets}
+            gtAirdrop={gtAirdrop}
             performanceTotal={performanceTotal}
             performance30d={performance30d}
             isPerformanceLoading={isPerformanceTotalLoading || isPerformance30dLoading}

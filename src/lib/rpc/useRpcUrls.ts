@@ -15,13 +15,14 @@ import {
   RPC_TRACKER_CONFIG_FOR_CONTRACTS_CHAINS,
   RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS,
 } from "config/rpc";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
-import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
-import { _debugRpcTracker } from "./_debug";
+import { getRegisteredRpcTracker, registerRpcTracker } from "./registry";
+import type { RpcTrackerObserver } from "./types";
 
 class RpcTrackersRegistry {
   private static instance: RpcTrackersRegistry | null = null;
@@ -29,6 +30,7 @@ class RpcTrackersRegistry {
   trackersByKey: Record<string, RpcTracker> = {};
   trackerKeysByChainId: Record<number, string> = {};
   isInitialized = false;
+  private trackingEnabled = false;
 
   static getInstance(): RpcTrackersRegistry {
     if (!RpcTrackersRegistry.instance) {
@@ -62,13 +64,31 @@ class RpcTrackersRegistry {
       this.trackersByKey[tracker.trackerKey] = tracker;
       this.trackerKeysByChainId[chainId] = tracker.trackerKey;
 
-      subscribeForRpcTrackerMetrics(tracker);
-      _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
-
-      tracker.fallbackTracker.startTracking();
+      registerRpcTracker(tracker);
     }
 
     this.isInitialized = true;
+    this.syncTracking();
+  }
+
+  // Health checks hit every EVM RPC, including Arbitrum and Ethereum public nodes.
+  // Solana keeps chainId on Arbitrum, so the selection has to stop them explicitly.
+  syncTracking() {
+    const enabled = !getIsSolanaNetworkSelected();
+
+    if (this.trackingEnabled === enabled) {
+      return;
+    }
+
+    this.trackingEnabled = enabled;
+
+    for (const tracker of Object.values(this.trackersByKey)) {
+      if (enabled) {
+        tracker.fallbackTracker.startTracking();
+      } else {
+        tracker.fallbackTracker.stopTracking();
+      }
+    }
   }
 
   getRpcTracker(trackerKey: string): RpcTracker | undefined {
@@ -91,6 +111,11 @@ class RpcTrackersRegistry {
       return tracker.pickCurrentRpcUrls();
     }
 
+    const registered = getRegisteredRpcTracker(chainId);
+    if (registered) {
+      return registered.fallbackTracker.getCurrentEndpoints();
+    }
+
     // Check rpc providers existence to throw an error if no providers are configured for chainId
     const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
     const privateRpcProviders = getIsLargeAccountChain(chainId)
@@ -111,16 +136,22 @@ class RpcTrackersRegistry {
   }
 }
 
-export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
-  return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
+export function syncEvmRpcTracking() {
+  RpcTrackersRegistry.getInstance().syncTracking();
+}
+
+export function getRpcTrackerByChainId(chainId: number): RpcTrackerObserver | undefined {
+  return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId) ?? getRegisteredRpcTracker(chainId);
 }
 
 export function getCurrentRpcUrls(chainId: number) {
-  return RpcTrackersRegistry.getInstance().getCurrentRpcUrls(chainId);
+  const registry = RpcTrackersRegistry.getInstance();
+  registry.syncTracking();
+  return registry.getCurrentRpcUrls(chainId);
 }
 
 export function getCurrentExpressRpcUrl(chainId: number) {
-  const tracker = getRpcTrackerByChainId(chainId);
+  const tracker = RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
   if (tracker) {
     return tracker.getExpressRpcUrl();
   }

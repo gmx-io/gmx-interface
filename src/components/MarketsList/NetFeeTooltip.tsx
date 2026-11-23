@@ -1,105 +1,36 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
-import { useMedia } from "react-use";
+import { useMemo } from "react";
 
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
 import type { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { formatRatePercentage } from "lib/numbers";
+import { getPositiveOrNegativeClass } from "lib/utils";
+
+import { TooltipTable, TooltipTableColumn } from "components/Tooltip/TooltipBlocks";
+
+const NET_RATE_COLUMNS: TooltipTableColumn[] = [
+  { label: <Trans>Pool</Trans> },
+  { label: <Trans>Longs / 1h</Trans>, align: "right" },
+  { label: <Trans>Shorts / 1h</Trans>, align: "right" },
+];
 
 export function NetFeeTooltip({ marketStats }: { marketStats: MarketStat[] }) {
-  const isMobile = useMedia("(max-width: 800px)");
-
-  if (isMobile) {
-    return (
-      <div className="flex flex-col gap-16">
-        {marketStats.map((stat) => {
-          const { marketInfo: market, netFeeLong, netFeeShort } = stat;
-          return (
-            <div key={market.marketTokenAddress} className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-start text-typography-primary">
-                <span>{getMarketIndexName(market)}</span>
-                <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-typography-secondary">
-                  <Trans>Longs net rate / 1h</Trans>
-                </span>
-                <span
-                  className={cx("numbers", {
-                    "text-green-500": netFeeLong > 0,
-                    "text-red-500": netFeeLong < 0,
-                  })}
-                >
-                  {formatRatePercentage(netFeeLong)}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-typography-secondary">
-                  <Trans>Shorts net rate / 1h</Trans>
-                </span>
-                <span
-                  className={cx("numbers", {
-                    "text-green-500": netFeeShort > 0,
-                    "text-red-500": netFeeShort < 0,
-                  })}
-                >
-                  {formatRatePercentage(netFeeShort)}
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    );
-  }
-
-  return (
-    <table className="w-full">
-      <thead>
-        <tr>
-          <th className="pb-10 font-normal uppercase text-typography-secondary">
-            <Trans>POOL</Trans>
-          </th>
-          <th className="pb-10 pr-10 text-right font-normal uppercase text-typography-secondary">
-            <Trans>LONGS NET RATE / 1H</Trans>
-          </th>
-          <th className="pb-10  text-right font-normal uppercase text-typography-secondary">
-            <Trans>SHORTS NET RATE / 1H</Trans>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {marketStats.map((stat) => {
-          const { marketInfo: market, netFeeLong, netFeeShort } = stat;
-
-          return (
-            <tr key={market.marketTokenAddress}>
-              <td>
-                <div className="inline-flex flex-wrap items-start text-typography-primary">
-                  <span>{getMarketIndexName(market)}</span>
-                  <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
-                </div>
-              </td>
-              <td
-                className={cx("pr-10 text-right numbers", {
-                  "text-green-500": netFeeLong > 0,
-                  "text-red-500": netFeeLong < 0,
-                })}
-              >
-                {formatRatePercentage(netFeeLong)}
-              </td>
-              <td
-                className={cx("text-right numbers", {
-                  "text-green-500": netFeeShort > 0,
-                  "text-red-500": netFeeShort < 0,
-                })}
-              >
-                {formatRatePercentage(netFeeShort)}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+  const rows = useMemo(
+    () =>
+      marketStats.map(({ marketInfo: market, netFeeLong, netFeeShort }) => [
+        <div key="market" className="inline-flex flex-wrap items-start">
+          <span>{getMarketIndexName(market)}</span>
+          <span className="subtext leading-1">[{getMarketPoolName(market)}]</span>
+        </div>,
+        <span key="long" className={getPositiveOrNegativeClass(netFeeLong)}>
+          {formatRatePercentage(netFeeLong)}
+        </span>,
+        <span key="short" className={getPositiveOrNegativeClass(netFeeShort)}>
+          {formatRatePercentage(netFeeShort)}
+        </span>,
+      ]),
+    [marketStats]
   );
+
+  return <TooltipTable columns={NET_RATE_COLUMNS} rows={rows} />;
 }

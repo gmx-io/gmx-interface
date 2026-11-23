@@ -2,12 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import { mockPositionInfo } from "domain/synthetics/testUtils/mocks";
 import { getEditCollateralError } from "domain/synthetics/trade/utils/validation";
-import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { createMockMarketInfo, SECOND_ETH_MARKET_ADDRESS } from "domain/testUtils/mockMarketInfo";
 import { createMockSyntheticsState, MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
 import { ETH_TOKEN, USDC_ADDRESS, USDC_TOKEN } from "domain/testUtils/mockTokens";
 import { expandDecimals } from "lib/numbers";
 
 import type { SyntheticsState } from "../../SyntheticsStateContextProvider";
+import { makeSelectPositionConstants } from "../globalSelectors";
 import {
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorPosition,
@@ -54,6 +55,43 @@ function createState(pnlUsd: bigint): SyntheticsState {
 }
 
 describe("selectPositionEditorMaxWithdrawAmount", () => {
+  it("uses the edited position's market limits and preserves EVM defaults and missing values", () => {
+    const otherMarket = createMockMarketInfo(ETH_TOKEN, {
+      marketTokenAddress: SECOND_ETH_MARKET_ADDRESS,
+      minCollateralUsd: usd(900),
+      minPositionSizeUsd: usd(900),
+    });
+    for (const [minimum, fallback, withdrawal] of [
+      [usd(500), usd(200), 500],
+      [0n, usd(200), 900],
+      [undefined, usd(200), 800],
+      [undefined, undefined, undefined],
+    ] as const) {
+      const state = createState(0n);
+      const editedMarket = { ...marketInfo, minCollateralUsd: minimum, minPositionSizeUsd: minimum };
+      state.globals.positionsConstants = {
+        ...state.globals.positionsConstants!,
+        minCollateralUsd: fallback,
+        minPositionSizeUsd: fallback,
+      };
+      state.globals.marketsInfo.marketsInfoData = {
+        [editedMarket.marketTokenAddress]: editedMarket,
+        [otherMarket.marketTokenAddress]: otherMarket,
+      };
+      state.tradebox.marketInfo = otherMarket;
+      state.tradebox.marketAddress = otherMarket.marketTokenAddress;
+
+      expect(makeSelectPositionConstants(editedMarket.marketTokenAddress)(state)).toEqual({
+        minCollateralUsd: minimum ?? fallback,
+        minPositionSizeUsd: minimum ?? fallback,
+      });
+      expect(makeSelectPositionConstants(otherMarket.marketTokenAddress)(state).minCollateralUsd).toBe(usd(900));
+      if (withdrawal !== undefined) {
+        expect(selectPositionEditorRawMaxWithdrawAmount(state)).toBe(expandDecimals(withdrawal, 6));
+      }
+    }
+  });
+
   it("keeps 1 % of the contract limit in reserve for a losing position", () => {
     // a 700 loss leaves 300 of margin against a 100 minimum: the contract accepts up to 200 USDC
     expect(selectPositionEditorMaxWithdrawAmount(createState(-usd(700)))).toBe(expandDecimals(198, 6));

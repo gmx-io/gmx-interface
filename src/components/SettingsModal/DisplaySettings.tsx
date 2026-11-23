@@ -1,14 +1,16 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
+import { getNetworkFeatures } from "config/features";
 import { DOCS_LINKS } from "config/links";
 import { BuySellIconsMode, useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useChainId } from "lib/chains";
 
 import Button from "components/Button/Button";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SelectorBase, useSelectorClose } from "components/SelectorBase/SelectorBase";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import CheckIcon from "img/ic_checked.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
@@ -49,6 +51,8 @@ function BuySellIconsOption({
 
 export function DisplaySettings() {
   const settings = useSettings();
+  const { networkId } = useChainId();
+  const features = getNetworkFeatures(networkId);
 
   const buySellIconsOptions: { value: BuySellIconsMode; label: string }[] = [
     { value: "all", label: t`All trades` },
@@ -63,15 +67,8 @@ export function DisplaySettings() {
           <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
             <LabelWithTooltip
               label={t`Manual leverage`}
-              position="top"
-              tooltip={
-                <div>
-                  <Trans>
-                    When on, leverage is set manually and determines margin and position size. When off, margin and size
-                    are set freely, and leverage is derived.
-                  </Trans>
-                </div>
-              }
+              position="bottom"
+              tooltip={t`When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived.`}
             />
           </ToggleSwitch>
         </div>
@@ -80,12 +77,8 @@ export function DisplaySettings() {
           <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
             <LabelWithTooltip
               label={t`Display net value and PnL after all fees`}
-              position="top"
-              tooltip={
-                <div>
-                  <Trans>Include all fees, including close fees, in net value and PnL display</Trans>
-                </div>
-              }
+              position="bottom"
+              tooltip={t`Include all fees, including close fees, in net value and PnL display`}
             />
           </ToggleSwitch>
         </div>
@@ -101,15 +94,8 @@ export function DisplaySettings() {
         <div className="flex items-center justify-between gap-8">
           <LabelWithTooltip
             label={t`Show buy/sell icons on chart`}
-            position="top"
-            tooltip={
-              <div>
-                <Trans>
-                  Choose which buy/sell marks appear on the chart: all your past trades, only your current open
-                  position, or none
-                </Trans>
-              </div>
-            }
+            position="bottom"
+            tooltip={t`Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none`}
           />
           <SelectorBase
             modalLabel={t`Show buy/sell icons on chart`}
@@ -135,29 +121,30 @@ export function DisplaySettings() {
           </SelectorBase>
         </div>
 
-        <div className="flex items-center gap-8">
-          <ToggleSwitch
-            isChecked={settings.breakdownNetPriceImpactEnabled}
-            setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
-          >
-            <LabelWithTooltip
-              label={t`Break down net price impact`}
-              position="top"
-              tooltip={
-                <div>
-                  <Trans>
-                    Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
-                    orders) in execution details.{" "}
-                    <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
-                      Read more
-                    </ExternalLink>
-                    .
-                  </Trans>
-                </div>
-              }
-            />
-          </ToggleSwitch>
-        </div>
+        {features.pendingPriceImpact && (
+          <div className="flex items-center gap-8">
+            <ToggleSwitch
+              isChecked={settings.breakdownNetPriceImpactEnabled}
+              setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
+            >
+              <LabelWithTooltip
+                label={t`Break down net price impact`}
+                position="bottom"
+                tooltip={
+                  <TooltipContent>
+                    <TooltipText>
+                      <Trans>
+                        Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
+                        orders) in execution details.
+                      </Trans>
+                    </TooltipText>
+                    <TooltipReadMore href={DOCS_LINKS.priceImpact} />
+                  </TooltipContent>
+                }
+              />
+            </ToggleSwitch>
+          </div>
+        )}
       </SettingsSection>
       <SettingsSection>
         <ThemeSelector />

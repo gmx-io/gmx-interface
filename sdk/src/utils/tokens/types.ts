@@ -27,6 +27,7 @@ export type Token = {
   symbol: string;
   assetSymbol?: string;
   baseSymbol?: string;
+  tracksPriceOf?: string;
   decimals: number;
   address: string;
   visualMultiplier?: number;

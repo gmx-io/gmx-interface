@@ -15,6 +15,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { ISigner } from "lib/transactions/iSigner";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
+import { getEip6492SignatureWrapperHash, hashRelayParams, type RelayParamsPayload } from "sdk/utils/express";
 import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
@@ -49,6 +50,8 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  relayParams?: RelayParamsPayload;
+  validateBeforeSign?: () => void;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -87,9 +90,22 @@ function isChainSwapFailure(error: ErrorLike): boolean {
   return error?.message === SMART_WALLET_WRONG_CHAIN_ERROR || error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR;
 }
 
-function providerSendSign(signer: AnySigner, from: string, eip712: object) {
+function providerSendSign({
+  signer,
+  from,
+  eip712,
+  validateBeforeSign,
+}: {
+  signer: AnySigner;
+  from: string;
+  eip712: object;
+  validateBeforeSign?: () => void;
+}) {
   return withRetry<string>(
-    () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
+    () => {
+      validateBeforeSign?.();
+      return (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+    },
     {
       retryCount: 1,
       delay: 100,
@@ -129,12 +145,14 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     targetChainId,
     forceVerificationChain = false,
     shouldUseLearnedChainBinding = true,
+    validateBeforeSign,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
     forceVerificationChain?: boolean;
     shouldUseLearnedChainBinding?: boolean;
+    validateBeforeSign?: () => void;
   },
   action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
 ): Promise<T> {
@@ -177,7 +195,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     }
 
     const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId });
-    const swappedSigner = clientToSigner(swappedWalletClient, account);
+    const swappedSigner = clientToSigner(swappedWalletClient, account, validateBeforeSign);
     try {
       return await action(swappedSigner, targetChainId);
     } catch (error) {
@@ -281,7 +299,29 @@ export async function signMessage({
   );
 }
 
-export async function signTypedData({
+export async function signTypedData(params: SignTypedDataParams) {
+  const { typedData, verificationChainId, relayParams } = params;
+  const signature = await signTypedDataOnce(params);
+
+  if (!isContractsV2_2_1(verificationChainId) || getSignatureKind(signature) !== "erc6492") {
+    return signature;
+  }
+
+  if (!relayParams) {
+    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { verificationChainId } });
+  }
+
+  relayParams.eip6492SignatureWrapperHash = getEip6492SignatureWrapperHash(signature);
+  typedData.relayParams = hashRelayParams(relayParams);
+
+  helperToast.info(
+    t`This wallet is not deployed on ${getChainName(verificationChainId)} yet. Sign once more to deploy it with this action`
+  );
+
+  return signTypedDataOnce(params);
+}
+
+async function signTypedDataOnce({
   signer,
   domain,
   types,
@@ -289,6 +329,7 @@ export async function signTypedData({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  validateBeforeSign,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -318,6 +359,7 @@ export async function signTypedData({
 
   if (!("provider" in signer) || !("getAddress" in signer)) {
     if (signer.signTypedData) {
+      validateBeforeSign?.();
       return signer.signTypedData(domain, typesToSign, messageToSign);
     }
     throw new Error("Signer does not support provider-based signing or signTypedData");
@@ -342,19 +384,20 @@ export async function signTypedData({
 
   const requestSignature = (signWith: AnySigner) => {
     if (shouldUseSignerMethod && signWith.signTypedData) {
+      validateBeforeSign?.();
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;
-        return providerSendSign(signWith, from, eip712);
+        return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
       });
     }
-    return providerSendSign(signWith, from, eip712);
+    return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
   };
 
   const signaturePurpose = Object.keys(types).find((type) => type !== "EIP712Domain") ?? "unknown";
   const startingChainId = getChainId(getWagmiConfig());
 
   const firstResult = await withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId },
+    { signer, address: from, targetChainId: verificationChainId, validateBeforeSign },
     async (signWith, signingChainId) => {
       const signature = await requestSignature(signWith);
 
@@ -370,11 +413,6 @@ export async function signTypedData({
       return { signature, signingChainId };
     }
   );
-
-  // 2.2.1 contracts accept an EIP-6492 signature only with its wrapper hash in the signed data, which we do not send yet
-  if (isContractsV2_2_1(verificationChainId) && getSignatureKind(firstResult.signature) === "erc6492") {
-    throw extendError(new Error(SMART_WALLET_NOT_DEPLOYED_ERROR), { data: { address: from, verificationChainId } });
-  }
 
   if (firstResult.signingChainId === verificationChainId) {
     return firstResult.signature;
@@ -419,6 +457,7 @@ export async function signTypedData({
         address: from,
         targetChainId: verificationChainId,
         forceVerificationChain: true,
+        validateBeforeSign,
       },
       async (signWith, signingChainId) => {
         const signature = await requestSignature(signWith);

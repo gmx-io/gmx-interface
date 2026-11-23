@@ -54,6 +54,7 @@ import {
   initGMSwapMetricData,
   makeTxnErrorMetricsHandler,
   makeTxnSentMetricsHandler,
+  sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
 import useWallet from "lib/wallets/useWallet";
@@ -68,7 +69,8 @@ import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdraw
 export const useWithdrawalTransactions = ({
   technicalFees,
   shouldDisableValidation,
-}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">): {
+  onSent,
+}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation" | "onSent">): {
   onCreateWithdrawal: () => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
@@ -109,10 +111,11 @@ export const useWithdrawalTransactions = ({
         direction: "usdgToUsdc",
         glvOrMarketAddress,
         withdrawalTxnHash: txnHash,
+        withdrawalEstimatedUsdgAmount: longTokenAmount + shortTokenAmount,
         conversion: undefined,
       });
     },
-    [account, chainId, glvOrMarketAddress, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketAddress, isTransitRoute, longTokenAmount, shortTokenAmount, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
@@ -184,6 +187,7 @@ export const useWithdrawalTransactions = ({
             marketName: selectedMarketInfoForGlv?.name,
             glvTokenUsd,
             isFirstBuy,
+            rawParams,
           })
         : initGMSwapMetricData({
             chainId,
@@ -204,6 +208,7 @@ export const useWithdrawalTransactions = ({
             marketTokenAmount,
             marketTokenUsd,
             isFirstBuy,
+            rawParams,
           });
 
     return metricData;
@@ -227,6 +232,7 @@ export const useWithdrawalTransactions = ({
     marketToken,
     marketInfo,
     marketTokenUsd,
+    rawParams,
   ]);
 
   const { setMultichainTransferProgress } = useSyntheticsEvents();
@@ -238,6 +244,8 @@ export const useWithdrawalTransactions = ({
       }
 
       const metricData = getWithdrawalMetricData();
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {
@@ -381,6 +389,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -408,6 +417,7 @@ export const useWithdrawalTransactions = ({
       setPendingTxns,
       blockTimestampData,
       shouldDisableValidation,
+      onSent,
     ]
   );
 
@@ -418,6 +428,8 @@ export const useWithdrawalTransactions = ({
       }
 
       const metricData = getWithdrawalMetricData();
+
+      sendOrderSubmittedMetric(metricData.metricId);
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {
@@ -541,6 +553,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
           if (paySource === "settlementChain") {
@@ -579,6 +592,7 @@ export const useWithdrawalTransactions = ({
       shouldDisableValidation,
       setPendingTxns,
       blockTimestampData,
+      onSent,
     ]
   );
 

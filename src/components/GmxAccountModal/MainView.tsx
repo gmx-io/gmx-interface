@@ -19,10 +19,16 @@ import {
   useGmxAccountSelectedTransferGuid,
 } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import {
+  getMultichainFundingToken,
+  getMultichainFundingTokenLabel,
+  MultichainFundingToken,
+} from "domain/multichain/getMultichainFundingToken";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useSolanaWalletAssets } from "domain/solana/SolanaWalletAssetsContext";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
@@ -36,8 +42,6 @@ import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
-import { getToken } from "sdk/configs/tokens";
-import { Token } from "sdk/utils/tokens/types";
 
 import { Amount } from "components/Amount/Amount";
 import Button from "components/Button/Button";
@@ -47,7 +51,7 @@ import { UsdValue } from "components/NumericValue/UsdValue";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import BellIcon from "img/ic_bell.svg?react";
@@ -173,36 +177,21 @@ function WalletBlock({ account }: { account: string }) {
         <div className="flex items-center gap-8">
           {!isSolanaSelected && (
             <>
-              <TooltipWithPortal
-                content={t`Receive to wallet`}
-                position="bottom"
-                tooltipClassName="!min-w-max"
-                variant="none"
-              >
+              <StandardTooltip content={t`Receive to wallet`} position="bottom" variant="none">
                 <button className={WALLET_ICON_BUTTON_BLUE} onClick={handleOpenWalletReceive}>
                   <ReceiveIcon className="size-16" />
                 </button>
-              </TooltipWithPortal>
-              <TooltipWithPortal
-                content={t`Send from wallet`}
-                position="bottom"
-                tooltipClassName="!min-w-max"
-                variant="none"
-              >
+              </StandardTooltip>
+              <StandardTooltip content={t`Send from wallet`} position="bottom" variant="none">
                 <button className={WALLET_ICON_BUTTON_BLUE} onClick={() => setIsVisibleOrView("walletSend")}>
                   <SendIcon className="size-16" />
                 </button>
-              </TooltipWithPortal>
+              </StandardTooltip>
               <div className="h-16 border-l-1/2 border-slate-600" />
             </>
           )}
           {canExport && (
-            <TooltipWithPortal
-              content={t`Export wallet`}
-              position="bottom"
-              tooltipClassName="!min-w-max"
-              variant="none"
-            >
+            <StandardTooltip content={t`Export wallet`} position="bottom" variant="none">
               <button
                 className={WALLET_ICON_BUTTON_GRAY}
                 onClick={() => {
@@ -213,29 +202,40 @@ function WalletBlock({ account }: { account: string }) {
               >
                 <KeyIcon className="size-16" />
               </button>
-            </TooltipWithPortal>
+            </StandardTooltip>
           )}
-          <TooltipWithPortal
-            shouldPreventDefault={false}
-            content={t`View in explorer`}
-            position="bottom"
-            tooltipClassName="!min-w-max"
-            variant="none"
-          >
+          <StandardTooltip shouldPreventDefault={false} content={t`View in explorer`} position="bottom" variant="none">
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className={WALLET_ICON_BUTTON_GRAY}>
               <ExplorerIcon className="size-16" />
             </a>
-          </TooltipWithPortal>
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          </StandardTooltip>
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
             <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         </div>
       </div>
-      {!isSolanaSelected && <EvmWalletBalance />}
+      {isSolanaSelected ? <SolanaWalletBalance /> : <EvmWalletBalance />}
     </div>
   );
+}
+
+function SolanaWalletBalance() {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const { totalUsd, isLoading } = useSolanaWalletAssets();
+  const openAssets = () => setIsVisibleOrView("availableToTradeAssets");
+
+  if (totalUsd === undefined && !isLoading) {
+    return (
+      <button className="flex min-h-32 items-center gap-4" onClick={openAssets}>
+        <span className="text-h2 leading-[30px] text-typography-secondary">—</span>
+        <ChevronLeftIcon className="size-16 rotate-180 text-typography-secondary" />
+      </button>
+    );
+  }
+
+  return <BalanceAmount usd={totalUsd} onClick={openAssets} />;
 }
 
 // The wallet balance reads EVM chains, so WalletBlock mounts it only off Solana.
@@ -351,11 +351,11 @@ function GmxAccountBlock({ showDisconnectButton }: { showDisconnectButton: boole
           />
         </div>
         {showDisconnectButton && (
-          <TooltipWithPortal content={t`Disconnect`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+          <StandardTooltip content={t`Disconnect`} position="bottom" variant="none" type="label">
             <button aria-label={t`Disconnect`} className={WALLET_ICON_BUTTON_GRAY} onClick={handleDisconnect}>
               <DisconnectIcon className="size-16" />
             </button>
-          </TooltipWithPortal>
+          </StandardTooltip>
         )}
       </div>
 
@@ -519,7 +519,7 @@ function FundingHistoryItemLabel({
 }
 
 type DisplayFundingHistoryItem = Omit<MultichainFundingHistoryItem, "token"> & {
-  token: Token;
+  token: MultichainFundingToken;
 };
 
 export function TransferHistoryView() {
@@ -531,7 +531,7 @@ export function TransferHistoryView() {
 
   const filteredFundingHistory: DisplayFundingHistoryItem[] | undefined = fundingHistory
     ?.map((transfer): DisplayFundingHistoryItem | undefined => {
-      const token = getToken(transfer.settlementChainId, transfer.token);
+      const token = getMultichainFundingToken(transfer.settlementChainId, transfer.token);
 
       if (!token) {
         return undefined;
@@ -544,7 +544,9 @@ export function TransferHistoryView() {
         return false;
       }
 
-      const matchesSearch = transfer.token.symbol.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = getMultichainFundingTokenLabel(transfer.token)
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
 
@@ -571,12 +573,15 @@ export function TransferHistoryView() {
           >
             <div className="flex items-center gap-16">
               <TokenIcon
-                symbol={transfer.token.symbol}
+                symbol={transfer.token.iconSymbol}
                 displaySize={40}
                 chainIdBadge={transfer.sourceChainId === 0 ? transfer.settlementChainId : transfer.sourceChainId}
               />
               <div>
-                <div className="text-body-large">{transfer.token.symbol}</div>
+                <div className="text-body-large">
+                  {transfer.token.name}
+                  {transfer.token.poolName && <span className="subtext">[{transfer.token.poolName}]</span>}
+                </div>
                 <FundingHistoryItemLabel
                   step={transfer.step}
                   operation={transfer.operation}
