@@ -1,4 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
+import isEqual from "lodash/isEqual";
 import { encodeFunctionData, isHex, size } from "viem";
 
 import { getContract } from "config/contracts";
@@ -19,6 +20,7 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
 import { getRelayTokenPermits } from "domain/tokens/permitUtils";
 import { extendError } from "lib/errors";
+import { EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
@@ -270,6 +272,10 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
+  if (!isEqual(relayParamsPayload.externalCalls, getBatchExternalCalls(batchParams))) {
+    throw new Error(EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR);
+  }
+
   const messageSigner = subaccount ? subaccount!.signer : signer;
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
   const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
@@ -392,6 +398,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature = false,
   relayerFeeTokenAddress,
   relayerFeeAmount,
+  validateBeforeSign,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
@@ -402,6 +409,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
+  validateBeforeSign?: () => void;
 }): Promise<ExpressTxnData> {
   let signature: string;
 
@@ -423,6 +431,7 @@ export async function buildAndSignBridgeOutTxn({
       signer,
       chainId,
       srcChainId,
+      validateBeforeSign,
     });
   }
 
@@ -454,12 +463,14 @@ async function signBridgeOutPayload({
   params,
   chainId,
   srcChainId,
+  validateBeforeSign,
 }: {
   signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
+  validateBeforeSign?: () => void;
 }): Promise<string> {
   const { domain, types, message } = getBridgeOutTypedData({
     chainId,
@@ -469,7 +480,15 @@ async function signBridgeOutPayload({
     account: signer.address,
   });
 
-  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId, relayParams });
+  return signTypedData({
+    signer,
+    domain,
+    types,
+    typedData: message,
+    verificationChainId: chainId,
+    relayParams,
+    validateBeforeSign,
+  });
 }
 
 export async function signSetTraderReferralCode({

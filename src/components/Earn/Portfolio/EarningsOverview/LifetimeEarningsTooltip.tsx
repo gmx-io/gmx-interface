@@ -11,6 +11,7 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import {
   TooltipContent,
+  TooltipDivider,
   TooltipFootnote,
   TooltipRow,
   TooltipRows,
@@ -71,6 +72,8 @@ export function LifetimeEarningsTooltipContent({
         <LeafRow label={<Trans>esGMX rewards</Trans>} usd={breakdown.stakingEsGmxUsd} />
         <LeafRow label={<Trans>{nativeTokenSymbol} rewards</Trans>} usd={breakdown.stakingNativeUsd} />
       </Group>
+
+      <TooltipDivider />
 
       <Group title={<Trans>Lifetime LP rewards</Trans>}>
         <LeafRow label={<Trans>GM pools</Trans>} usd={breakdown.gmUsd} />
