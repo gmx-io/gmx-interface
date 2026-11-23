@@ -1,8 +1,15 @@
 import type { SignTypedDataParams } from "@privy-io/react-auth";
+import { getAccount } from "@wagmi/core";
 import { isAddressEqual } from "viem";
+
+import { CONFIRM_ORDER_SIGNATURES_KEY } from "config/localStorage";
+import { readLocalStorageItem } from "lib/localStorage";
+
+import { getWagmiConfig } from "./walletConfig";
 
 type SilentTypedDataSigner = {
   address: string;
+  connectorId: string;
   signTypedData: (typedData: SignTypedDataParams) => Promise<string>;
 };
 
@@ -24,7 +31,19 @@ class SilentEmbeddedWalletSigner {
   }
 
   get(address: string): SilentTypedDataSigner | undefined {
-    return this.signer && isAddressEqual(this.signer.address, address) ? this.signer : undefined;
+    const { signer } = this;
+
+    if (
+      !signer ||
+      !isAddressEqual(signer.address, address) ||
+      getAccount(getWagmiConfig()).connector?.id !== signer.connectorId ||
+      // the setting doesn't sync across tabs, so another tab may have turned confirmations on
+      readLocalStorageItem(CONFIRM_ORDER_SIGNATURES_KEY, { deserializer: JSON.parse }) === true
+    ) {
+      return undefined;
+    }
+
+    return signer;
   }
 }
 

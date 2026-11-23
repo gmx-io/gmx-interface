@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, isAddressEqual, withRetry, type Hex } from "viem";
+import { hashTypedData, isAddressEqual, UserRejectedRequestError, withRetry, type Hex } from "viem";
 
 import { getChainName } from "config/chains";
 import { extendError, parseError, type ErrorLike } from "lib/errors";
@@ -83,6 +83,15 @@ async function probeChainBoundSigning({
   const accountTypes = await probeAccountTypes(address, [currentChainId, targetChainId], "signing.accountTypeProbe");
 
   return accountTypes.some(mustSignOnVerificationChain);
+}
+
+// Privy rejects with these when the user closes its MFA or password recovery screen
+const PRIVY_USER_CANCEL_MESSAGES = ["MFA canceled", "User exited before their wallet could be recovered"];
+
+function isSilentSigningCancelledByUser(error: ErrorLike): boolean {
+  const errorData = parseError(error);
+
+  return errorData?.isUserRejectedError === true || PRIVY_USER_CANCEL_MESSAGES.includes(errorData?.errorMessage ?? "");
 }
 
 function isUnsupportedChainError(error: ErrorLike): boolean {
@@ -396,6 +405,11 @@ async function signTypedDataOnce({
       try {
         return await silentSigner.signTypedData(eip712);
       } catch (error) {
+        // the user already answered Privy's MFA or recovery screen, the prompted flow would only ask again
+        if (isSilentSigningCancelledByUser(error)) {
+          throw new UserRejectedRequestError(error);
+        }
+
         // the prompted flow can still succeed, so a failure here must not fail the order
         metrics.pushError(error, "signing.silentEmbeddedWallet");
       }

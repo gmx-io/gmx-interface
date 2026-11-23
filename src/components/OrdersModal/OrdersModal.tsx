@@ -48,6 +48,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { getOrderKeys } from "sdk/utils/orders";
+import { getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import Badge from "components/Badge/Badge";
 import Button from "components/Button/Button";
@@ -218,7 +219,7 @@ export function OrdersModal({
     const batchParams = {
       createOrderParams: [],
       updateOrderParams: [],
-      cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+      cancelOrderParams: displayedOrders.flatMap(getCancelOrderParams),
     };
 
     try {
