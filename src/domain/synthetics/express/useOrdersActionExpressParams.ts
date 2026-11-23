@@ -54,6 +54,7 @@ export function useEstimateOrdersActionExpressParams() {
     }): Promise<FeeBalanceExpressParams & { unavailableGasPaymentToken: TokenData | undefined }> => {
       const chainId = calcSelector(selectChainId);
       const feeBalance = getOrdersActionFeeBalance({
+        chainId,
         srcChainId: calcSelector(selectSrcChainId),
         isExpressEnabled: calcSelector(selectExpressOrdersEnabled),
         orders,
@@ -126,10 +127,11 @@ export function useOrdersActionExpressParams({
   label: string;
   canSwitchGasPaymentToken: boolean;
 }): ExpressOrdersParamsResult & { isGmxAccount: boolean } {
+  const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const isExpressEnabled = useSelector(selectExpressOrdersEnabled);
   const tokensData = useSelector(selectTokensData);
-  const feeBalance = getOrdersActionFeeBalance({ srcChainId, isExpressEnabled, orders });
+  const feeBalance = getOrdersActionFeeBalance({ chainId, srcChainId, isExpressEnabled, orders });
   const { isGmxAccount } = feeBalance;
 
   const ownBalanceResult = useExpressOrdersParams({

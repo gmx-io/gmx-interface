@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
 import type { TokensData } from "domain/tokens";
-import { ARBITRUM, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
+import { ARBITRUM, MEGAETH, SOURCE_BASE_MAINNET } from "sdk/configs/chainIds";
 
 import {
   estimateWithOtherFeeBalanceFallback,
@@ -98,12 +98,20 @@ describe("fee balance of position and order actions TRD-44", () => {
       isGmxAccount: true,
       canUseOtherBalance: false,
     },
+    {
+      chainId: MEGAETH,
+      srcChainId: undefined,
+      isExpressEnabled: true,
+      orderSrcChainIds: [0n],
+      isGmxAccount: false,
+      canUseOtherBalance: false,
+    },
   ])(
-    "an edit or a cancel of orders from $orderSrcChainIds tries the GMX Account first: $isGmxAccount, may use the other balance: $canUseOtherBalance (wallet chain $srcChainId, Express $isExpressEnabled)",
-    ({ srcChainId, isExpressEnabled, orderSrcChainIds, isGmxAccount, canUseOtherBalance }) => {
+    "an edit or a cancel of orders from $orderSrcChainIds tries the GMX Account first: $isGmxAccount, may use the other balance: $canUseOtherBalance (chain $chainId, wallet chain $srcChainId, Express $isExpressEnabled)",
+    ({ chainId = ARBITRUM, srcChainId, isExpressEnabled, orderSrcChainIds, isGmxAccount, canUseOtherBalance }) => {
       const orders = orderSrcChainIds.map((orderSrcChainId) => ({ srcChainId: orderSrcChainId }));
 
-      expect(getOrdersActionFeeBalance({ srcChainId, isExpressEnabled, orders })).toEqual({
+      expect(getOrdersActionFeeBalance({ chainId, srcChainId, isExpressEnabled, orders })).toEqual({
         isGmxAccount,
         canUseOtherBalance,
       });

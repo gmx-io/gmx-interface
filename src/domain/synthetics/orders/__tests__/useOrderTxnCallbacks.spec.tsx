@@ -100,6 +100,7 @@ const batchParams = buildTpSlBatchPayloads({
   isLong: true,
   isGmxAccount: false,
   isGmxAccountPosition: false,
+  isOrdersLoading: false,
   autoCancelOrdersLimit: 2,
   entries: [OrderType.LimitDecrease, OrderType.StopLossDecrease].map((triggerOrderType) => ({
     amounts: {

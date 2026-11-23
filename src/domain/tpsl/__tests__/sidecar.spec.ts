@@ -54,6 +54,7 @@ const baseParams = {
   isLong: true,
   isGmxAccount: false,
   isGmxAccountPosition: false,
+  isOrdersLoading: false,
   userReferralCode: undefined,
 };
 
@@ -208,6 +209,34 @@ describe("buildTpSlBatchPayloads", () => {
       expect(result.cancelOrderParams.map((cancel) => cancel.orderKey)).toEqual(recreates ? ["0xtpkey"] : []);
       expect(result.updateOrderParams).toHaveLength(recreates ? 0 : 1);
       expect(result.createOrderParams).toHaveLength(recreates ? 1 : 0);
+    }
+  );
+
+  it.each([
+    {
+      isGmxAccountPosition: undefined,
+      isOrdersLoading: false,
+      existingFullCloseOrder: makeExistingOrder({ key: "0xtpkey", srcChainId: GMX_ACCOUNT_ORDER }),
+    },
+    { isGmxAccountPosition: true, isOrdersLoading: true, existingFullCloseOrder: undefined },
+  ])(
+    "builds no orders until the position balance and the orders are loaded: GMX Account position $isGmxAccountPosition, orders loading $isOrdersLoading TRD-44",
+    ({ isGmxAccountPosition, isOrdersLoading, existingFullCloseOrder }) => {
+      const result = buildTpSlBatchPayloads({
+        ...baseParams,
+        isGmxAccountPosition,
+        isOrdersLoading,
+        entries: [
+          {
+            amounts: makeAmounts({ isFullClose: true }),
+            executionFeeAmount: 0n,
+            executionGasLimit: 0n,
+            existingFullCloseOrder,
+          },
+        ],
+      });
+
+      expect(result).toEqual({ createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] });
     }
   );
 

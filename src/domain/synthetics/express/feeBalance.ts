@@ -1,5 +1,6 @@
 import { zeroAddress } from "viem";
 
+import { isSettlementChain } from "config/multichain";
 import type { TokensData } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import { getIsValidExpressParams } from "sdk/utils/express";
@@ -49,10 +50,12 @@ export function getIsPositionActionGmxAccount({
 }
 
 export function getOrdersActionFeeBalance({
+  chainId,
   srcChainId,
   isExpressEnabled,
   orders,
 }: {
+  chainId: number;
   srcChainId: number | undefined;
   isExpressEnabled: boolean;
   orders: Pick<Order, "srcChainId">[];
@@ -63,7 +66,7 @@ export function getOrdersActionFeeBalance({
 
   return {
     isGmxAccount: isExpressEnabled && orders.some(getIsGmxAccountOrder),
-    canUseOtherBalance: isExpressEnabled,
+    canUseOtherBalance: isExpressEnabled && isSettlementChain(chainId),
   };
 }
 

@@ -310,7 +310,8 @@ export function buildTpSlBatchPayloads(p: {
   collateralTokenAddress: string | undefined;
   isLong: boolean | undefined;
   isGmxAccount: boolean;
-  isGmxAccountPosition: boolean;
+  isGmxAccountPosition: boolean | undefined;
+  isOrdersLoading: boolean;
   entries: TpSlPayloadEntry[];
   userReferralCode: string | undefined;
 }): {
@@ -318,6 +319,10 @@ export function buildTpSlBatchPayloads(p: {
   updateOrderParams: UpdateOrderTxnParams[];
   cancelOrderParams: CancelOrderTxnParams[];
 } {
+  if (p.isGmxAccountPosition === undefined || p.isOrdersLoading) {
+    return { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
+  }
+
   const updateOrderParams: UpdateOrderTxnParams[] = [];
   const cancelOrderParams: CancelOrderTxnParams[] = [];
   const createEntries: TpSlCreatePayloadEntry[] = [];

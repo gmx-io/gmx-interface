@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
@@ -19,6 +20,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsOrdersLoading,
   selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -71,7 +73,10 @@ import {
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import {
+  MaxAutoCancelOrdersWarning,
+  useMaxAutoCancelOrdersState,
+} from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { getExpressError, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
@@ -175,7 +180,9 @@ export function AddTPSLModal({
   const feeDiscountFactor = useFeeDiscountFactor();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(position.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
+  const { autoCancelOrdersLimit, allowedAutoCancelOrdersNumber } = useMaxAutoCancelOrdersState({
+    positionKey: position.key,
+  });
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasLimits = useSelector(selectGasLimits);
@@ -769,6 +776,7 @@ export function AddTPSLModal({
   );
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
+  const isOrdersLoading = useSelector(selectIsOrdersLoading);
 
   const existingFullCloseTp = useMemo(() => {
     return positionOrders.find(
@@ -793,9 +801,8 @@ export function AddTPSLModal({
     isExpressEnabled: expressOrdersEnabled,
     positionLastSrcChainId: position.lastSrcChainId,
   });
-  const isGmxAccountPosition = getIsGmxAccountPosition(position.lastSrcChainId);
-  const isPositionFeeBalanceLoading =
-    srcChainId === undefined && expressOrdersEnabled && position.lastSrcChainId === undefined;
+  const isPositionBalanceLoading = isSettlementChain(chainId) && position.lastSrcChainId === undefined;
+  const isGmxAccountPosition = isPositionBalanceLoading ? undefined : getIsGmxAccountPosition(position.lastSrcChainId);
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
   const isGmxAccountExpressUnavailable = isGmxAccount && !isExpressAvailable;
 
@@ -831,6 +838,7 @@ export function AddTPSLModal({
       isLong,
       isGmxAccount,
       isGmxAccountPosition,
+      isOrdersLoading,
       entries: [
         {
           amounts: tpCreateAmounts,
@@ -867,7 +875,11 @@ export function AddTPSLModal({
     existingFullCloseSl,
     isGmxAccount,
     isGmxAccountPosition,
+    isOrdersLoading,
   ]);
+
+  const isAutoCancelOrdersLimitExceeded =
+    allowedAutoCancelOrdersNumber !== undefined && orderPayloads.createOrderParams.length > autoCancelOrdersLimit;
 
   const batchParams = useMemo(() => {
     if (
@@ -897,7 +909,7 @@ export function AddTPSLModal({
     isLoading: isExpressLoading,
     isMultichainSubmitDisabled,
   } = useExpressOrdersParams({
-    orderParams: isPositionFeeBalanceLoading ? undefined : batchParams,
+    orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount,
     canSwitchGasPaymentToken: isActiveForm,
@@ -1044,7 +1056,13 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isExpressLoading || isMultichainSubmitDisabled || isPositionFeeBalanceLoading || isGmxAccountBalanceLoading) {
+    if (
+      isExpressLoading ||
+      isMultichainSubmitDisabled ||
+      isPositionBalanceLoading ||
+      isOrdersLoading ||
+      isGmxAccountBalanceLoading
+    ) {
       return {
         text: (
           <>
@@ -1094,7 +1112,8 @@ export function AddTPSLModal({
     expressError.buttonErrorMessage,
     isExpressLoading,
     isMultichainSubmitDisabled,
-    isPositionFeeBalanceLoading,
+    isPositionBalanceLoading,
+    isOrdersLoading,
     isGmxAccountBalanceLoading,
     isGmxAccountExpressUnavailable,
     isSubmitting,
@@ -1300,6 +1319,10 @@ export function AddTPSLModal({
 
         {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
 
+        {isAutoCancelOrdersLimitExceeded && (
+          <MaxAutoCancelOrdersWarning allowedAutoCancelOrdersNumber={allowedAutoCancelOrdersNumber} />
+        )}
+
         <Button
           variant="primary-action"
           className="w-full"
@@ -1400,7 +1423,7 @@ export function AddTPSLModal({
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
           <NetworkFeeRow
-            executionFee={isPositionFeeBalanceLoading || isGmxAccountExpressUnavailable ? undefined : totalExecutionFee}
+            executionFee={isGmxAccountExpressUnavailable ? undefined : totalExecutionFee}
             gasPaymentParams={getNetworkFeeGasPaymentParams({
               expressParams,
               tokensData,
