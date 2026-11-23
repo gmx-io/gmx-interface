@@ -16,6 +16,8 @@ export function getGmsolTradeboxErrorMessage(code: GmsolTradeboxErrorCode) {
       return t`Pay with the selected collateral token`;
     case "receive":
       return t`Receive the position's collateral token on Solana`;
+    case "acceptablePrice":
+      return t`Turn on "Set acceptable price impact" in settings to edit this order on Solana`;
     case "tokenProgram":
       return t`This collateral token is not supported for trading yet`;
     case "tpsl":
