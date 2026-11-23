@@ -1,9 +1,17 @@
 import { zeroAddress } from "viem";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 
 /** Tokens pinned at the top of market dropdowns on default sort. Order matters. */
 export const PROMOTED_TOKENS_ORDER: Partial<Record<number, string[]>> = {
+  [SOLANA_NETWORK_ID]: [
+    // BTC index mint
+    "BtcTQYRj7HRRk7MwnWiTFj8rWqN2ALt2QYig4cSWqTbv",
+    // ETH index mint
+    "EthK4kKnQQUd1Ae1w7sdiMAUaJwq2RMwr7AtscXEdEsF",
+    // SOL index mint
+    "So1Zu7vPQQxrguzUehKAyVLpjcc769zxgBuDAsxTUMH",
+  ],
   [ARBITRUM]: [
     // BTC
     "0x47904963fc8b2340414262125aF798B9655E58Cd",

@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import type { ReactNode } from "react";
 
@@ -116,17 +117,35 @@ export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[];
 export function TooltipAction({ onClick, children }: { onClick: () => void; children: ReactNode }) {
   return (
     <div>
-      <button type="button" className="link-underline text-left hover:text-blue-300" onClick={onClick}>
+      <button
+        type="button"
+        className="link-underline text-left text-typography-secondary hover:text-typography-primary"
+        onClick={onClick}
+      >
         {children}
       </button>
     </div>
   );
 }
 
+/**
+ * "Read more" right under the text it explains.
+ */
+export function TooltipReadMore({ href }: { href: string }) {
+  return <TooltipLink href={href}>{t`Read more`}</TooltipLink>;
+}
+
+/**
+ * A link that opens another page: no underline and an arrow that never wraps onto a line alone.
+ */
 export function TooltipLink({ href, children }: { href: string; children: ReactNode }) {
   return (
     <div>
-      <ExternalLink href={href}>{children}</ExternalLink>
+      <ExternalLink href={href} className="!no-underline">
+        {children}
+        {/* The arrow is decoration (text style, never an emoji): screen readers read only the link text */}
+        <span aria-hidden="true">{"\u00a0\u2197\uFE0E"}</span>
+      </ExternalLink>
     </div>
   );
 }

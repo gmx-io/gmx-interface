@@ -6,6 +6,7 @@ import { useChainId } from "lib/chains";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
+import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 
@@ -18,14 +19,15 @@ export function useL1ExpressOrderGasReference() {
 
   const hasL1Gas = chainId === ARBITRUM || chainId === ARBITRUM_SEPOLIA;
 
-  const { data } = useSWR(hasL1Gas && provider ? [chainId, provider, "l1ExpressOrderGasReference"] : null, {
+  const { data } = useSWR(hasL1Gas && provider ? [chainId, "l1ExpressOrderGasReference"] : null, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    onErrorRetry: retryAtRefreshCadence,
 
-    fetcher: async ([chainId, provider]) => {
+    fetcher: async ([chainId]) => {
       try {
         const referenceData = `0x${referenceDataPart}`;
 
-        const referenceResult = await provider.call({
+        const referenceResult = await provider!.call({
           to: getContract(chainId, "ArbitrumNodeInterface"),
           data: encodeFunctionData({
             abi: abis.ArbitrumNodeInterface,
@@ -51,7 +53,7 @@ export function useL1ExpressOrderGasReference() {
         };
       } catch (error) {
         metrics.pushError(error, "l1ExpressOrderGasReference");
-        return undefined;
+        throw error;
       }
     },
   });
