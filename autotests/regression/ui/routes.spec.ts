@@ -97,12 +97,6 @@ const routes: Route[] = [
   { path: "/oracle-keeper-debug", text: /^Oracle endpoints$/i },
 ];
 
-const MULTICALL_FALLBACK_LOGS = [
-  /^Error: Multicall failed/,
-  /^Error: multicall timeout/,
-  /^\[executeMulticallWorker\] Worker (?:execution failed|did not respond in time)\. Falling back/,
-];
-
 function messageUrl(message: ConsoleMessage) {
   const text = message.text();
   return (
@@ -122,8 +116,8 @@ function ignoredConsoleReason(message: ConsoleMessage) {
   if (host && /(^|\.)gmxinfra2?\.io$/.test(host) && new URL(url).pathname.startsWith("/report/ui/"))
     return "UI telemetry report was rejected; no page data";
   if (text.startsWith("Warning: ")) return "React development-build warning; production builds omit it";
-  if (MULTICALL_FALLBACK_LOGS.some((pattern) => pattern.test(text)))
-    return "multicall logs a failed RPC attempt or a slow worker before its fallback";
+  if (/^\[executeMulticallWorker\] Worker did not respond in time\. Falling back/.test(text))
+    return "multicall logs a slow worker before its main-thread fallback";
   if (/^TypeError: Failed to fetch\s+at _FetchRequest\.getUrl/.test(text)) return "ethers RPC transport failure";
 }
 

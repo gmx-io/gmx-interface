@@ -19,10 +19,10 @@ import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { getIsLargeAccountChain } from "domain/stats/isLargeAccount";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { NetworkStatusObserver } from "lib/FallbackTracker/NetworkStatusObserver";
-import { subscribeForRpcTrackerMetrics } from "lib/metrics/rpcTrackerMetrics";
 import { RpcTracker } from "lib/rpc/RpcTracker";
 
-import { _debugRpcTracker } from "./_debug";
+import { getRegisteredRpcTracker, registerRpcTracker } from "./registry";
+import type { RpcTrackerObserver } from "./types";
 
 class RpcTrackersRegistry {
   private static instance: RpcTrackersRegistry | null = null;
@@ -64,8 +64,7 @@ class RpcTrackersRegistry {
       this.trackersByKey[tracker.trackerKey] = tracker;
       this.trackerKeysByChainId[chainId] = tracker.trackerKey;
 
-      subscribeForRpcTrackerMetrics(tracker);
-      _debugRpcTracker?.subscribeForRpcTrackerDebugging(tracker);
+      registerRpcTracker(tracker);
     }
 
     this.isInitialized = true;
@@ -112,6 +111,11 @@ class RpcTrackersRegistry {
       return tracker.pickCurrentRpcUrls();
     }
 
+    const registered = getRegisteredRpcTracker(chainId);
+    if (registered) {
+      return registered.fallbackTracker.getCurrentEndpoints();
+    }
+
     // Check rpc providers existence to throw an error if no providers are configured for chainId
     const defaultRpcProviders = getRpcProviders(chainId, "default")?.map((p) => p.url);
     const privateRpcProviders = getIsLargeAccountChain(chainId)
@@ -136,8 +140,8 @@ export function syncEvmRpcTracking() {
   RpcTrackersRegistry.getInstance().syncTracking();
 }
 
-export function getRpcTrackerByChainId(chainId: number): RpcTracker | undefined {
-  return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
+export function getRpcTrackerByChainId(chainId: number): RpcTrackerObserver | undefined {
+  return RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId) ?? getRegisteredRpcTracker(chainId);
 }
 
 export function getCurrentRpcUrls(chainId: number) {
@@ -147,7 +151,7 @@ export function getCurrentRpcUrls(chainId: number) {
 }
 
 export function getCurrentExpressRpcUrl(chainId: number) {
-  const tracker = getRpcTrackerByChainId(chainId);
+  const tracker = RpcTrackersRegistry.getInstance().getRpcTrackerByChainId(chainId);
   if (tracker) {
     return tracker.getExpressRpcUrl();
   }

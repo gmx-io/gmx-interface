@@ -1,5 +1,7 @@
 import { toast, ToastContent, ToastOptions } from "react-toastify";
 
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
+
 import { ErrorToastWithSupport } from "components/Errors/ErrorToastWithSupport";
 
 import { tradingErrorTracker, TradingErrorInfo } from "./tradingErrorTracker";
@@ -28,8 +30,12 @@ export const helperToast = {
       tradingErrorTracker.reportError(tradingErrorInfo);
     }
 
+    // The support chat is not booted on Solana, so "Contact support" would open nothing there.
     const finalContent =
-      tradingErrorInfo && tradingErrorTracker.shouldSuggestSupport() && typeof content !== "function" ? (
+      tradingErrorInfo &&
+      !getIsSolanaNetworkSelected() &&
+      tradingErrorTracker.shouldSuggestSupport() &&
+      typeof content !== "function" ? (
         <ErrorToastWithSupport>{content}</ErrorToastWithSupport>
       ) : (
         content
