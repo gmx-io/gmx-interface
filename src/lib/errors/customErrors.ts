@@ -19,6 +19,8 @@ import {
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 export const PERMIT_WALLET_CHANGED_ERROR = "Account or network changed while signing a permit";
+export const WALLET_BATCH_PENDING_ERROR = "The wallet hasn't reported the result of a sent batch yet";
+export const WALLET_BATCH_CONFIRMED_LATE_ERROR = "A batch the wallet hadn't reported went through";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR = "Express relay external calls differ from the batch";

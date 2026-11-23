@@ -4877,6 +4877,10 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "펀딩 수수료"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "이전 트랜잭션이 처리되었습니다. 다시 보내기 전에 포지션, 주문, 잔액을 확인하세요."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "부분 TP"
@@ -11614,6 +11618,10 @@ msgstr "시장 검색"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "음의 펀딩 수수료"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "지갑에서 아직 트랜잭션을 확인하지 않았습니다. 중복 전송을 막으려면 다시 시도하기 전에 지갑에서 상태를 확인하세요."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

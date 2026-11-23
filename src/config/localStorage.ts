@@ -127,6 +127,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
 const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
+const PENDING_WALLET_BATCH_KEY = "pending-wallet-batch";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -152,6 +153,10 @@ export function getTokenPermitsKey(chainId: number, account: string | undefined)
 export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
+}
+
+export function getPendingWalletBatchKey(chainId: number, account: string) {
+  return [chainId, account, PENDING_WALLET_BATCH_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {

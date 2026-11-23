@@ -4877,6 +4877,10 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "資金費用"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "您先前的交易已完成。再次送出前，請檢查您的倉位、訂單和餘額。"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "部分停利 (TP)"
@@ -11614,6 +11618,10 @@ msgstr "搜尋市場"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "負資金費用"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "您的錢包尚未確認該交易。請在重試前於錢包中查看其狀態，以免重複送出。"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

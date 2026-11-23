@@ -19,6 +19,8 @@ import {
   SMART_WALLET_CHAIN_UNAVAILABLE_ERROR,
   SMART_WALLET_NOT_DEPLOYED_ERROR,
   SMART_WALLET_WRONG_CHAIN_ERROR,
+  WALLET_BATCH_CONFIRMED_LATE_ERROR,
+  WALLET_BATCH_PENDING_ERROR,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
@@ -237,6 +239,15 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
+  const walletBatchContent = getWalletBatchToastContent(errorData.errorMessage);
+
+  if (walletBatchContent) {
+    toastParams.errorContent = walletBatchContent;
+    toastParams.autoCloseToast = false;
+
+    return toastParams;
+  }
+
   if (errorData.errorMessage === signerAddressError) {
     toastParams.errorContent = (
       <Trans>
@@ -445,6 +456,12 @@ export function getErrorMessage(
 ) {
   const [message, type, errorData] = extractTxnError(ex);
 
+  const walletBatchContent = getWalletBatchToastContent(message);
+
+  if (walletBatchContent) {
+    return { failMsg: walletBatchContent, autoCloseToast: false };
+  }
+
   let failMsg;
   let autoCloseToast: any = 5000;
 
@@ -484,6 +501,19 @@ export function getErrorMessage(
   }
 
   return { failMsg, autoCloseToast };
+}
+
+// a batch the wallet accepted can still land, so these say what happened instead of inviting a retry
+function getWalletBatchToastContent(errorMessage: string | undefined) {
+  if (errorMessage === WALLET_BATCH_PENDING_ERROR) {
+    return t`Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice.`;
+  }
+
+  if (errorMessage === WALLET_BATCH_CONFIRMED_LATE_ERROR) {
+    return t`Your previous transaction went through. Check your positions, orders and balances before sending it again.`;
+  }
+
+  return undefined;
 }
 
 function getRelayUnavailableToastContent({

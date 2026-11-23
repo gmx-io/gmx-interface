@@ -16,7 +16,7 @@ import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { toAddress } from "lib/transactions/iSigner";
-import { sendWalletCalls, type WalletCallsBatch } from "lib/transactions/sendWalletCalls";
+import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -93,6 +93,8 @@ export async function callContract(
       });
       return;
     }
+
+    await assertNoPendingWalletBatch({ chainId, account: wallet.address });
 
     const txnOpts: Overrides = { chainId };
 

@@ -4877,6 +4877,10 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "Finanzierungsgebühr"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "Ihre vorherige Transaktion wurde ausgeführt. Prüfen Sie Ihre Positionen, Orders und Guthaben, bevor Sie sie erneut senden."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "Teilweiser TP"
@@ -11614,6 +11618,10 @@ msgstr "Markt suchen"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "Negative Finanzierungsgebühr"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "Ihre Wallet hat die Transaktion noch nicht bestätigt. Prüfen Sie ihren Status in Ihrer Wallet, bevor Sie es erneut versuchen, damit sie nicht doppelt gesendet wird."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

@@ -4877,6 +4877,10 @@ msgstr "Copin"
 msgid "Funding fee"
 msgstr "Комиссия за финансирование"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "Предыдущая транзакция прошла. Проверьте позиции, ордера и балансы, прежде чем отправлять её снова."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "Частичный TP"
@@ -11614,6 +11618,10 @@ msgstr "Поиск"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "Отрицательная комиссия за финансирование"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "Кошелёк ещё не подтвердил транзакцию. Проверьте её статус в кошельке, прежде чем повторять, чтобы она не ушла дважды."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

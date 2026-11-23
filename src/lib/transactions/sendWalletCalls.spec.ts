@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { WALLET_BATCH_CONFIRMED_LATE_ERROR, WALLET_BATCH_PENDING_ERROR } from "lib/errors/customErrors";
 import { getIsWalletBatchingDisabledForSession, getWalletBatchingSessionKey } from "lib/wallets/walletBatchingSession";
 
-import { sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
+import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
 
 const mocks = vi.hoisted(() => ({
   sendCalls: vi.fn(),
@@ -12,7 +13,7 @@ const mocks = vi.hoisted(() => ({
 }));
 
 vi.mock("@wagmi/core", () => ({
-  getAccount: () => ({ connector: { uid: "connector" } }),
+  getAccount: () => ({ connector: { uid: "connector", id: "io.metamask" } }),
   sendCalls: mocks.sendCalls,
   getCallsStatus: mocks.getCallsStatus,
 }));
@@ -132,11 +133,24 @@ describe("sendWalletCalls", () => {
     expect(getOutcomes()).toEqual(["sent", "confirmed"]);
   });
 
-  it("reports an unknown result when the wallet never reports the batch status", async () => {
+  it("keeps a batch the wallet didn't report pending, and holds the next transaction until it lands", async () => {
+    const account = nextAccount();
+    const target = { chainId: CHAIN_ID, account };
     mocks.getCallsStatus.mockResolvedValue({ status: "pending", statusCode: 100 });
 
-    await expect(send(nextAccount())).rejects.toThrow("didn't report its result");
-
+    await expect(send(account)).rejects.toThrow(WALLET_BATCH_PENDING_ERROR);
     expect(getOutcomes()).toEqual(["sent", "statusUnknown"]);
+
+    // a retry would send the action a second time while the first batch can still land
+    await expect(assertNoPendingWalletBatch(target)).rejects.toThrow(WALLET_BATCH_PENDING_ERROR);
+
+    mocks.getCallsStatus.mockResolvedValue({
+      status: "success",
+      statusCode: 200,
+      receipts: [{ transactionHash: "0xhash" }],
+    });
+
+    await expect(assertNoPendingWalletBatch(target)).rejects.toThrow(WALLET_BATCH_CONFIRMED_LATE_ERROR);
+    await expect(assertNoPendingWalletBatch(target)).resolves.toBeUndefined();
   });
 });

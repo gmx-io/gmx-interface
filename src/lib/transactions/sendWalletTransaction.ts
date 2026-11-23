@@ -11,7 +11,7 @@ import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { ISigner, ISignerSendTransactionParams } from "./iSigner";
-import { sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
+import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -82,6 +82,8 @@ export async function sendWalletTransaction({
         }),
       };
     }
+
+    await assertNoPendingWalletBatch({ chainId, account: from });
 
     if (walletCallsBatch) {
       await runSimulation?.().then(() => callback?.(eventBuilder.Simulated()));
