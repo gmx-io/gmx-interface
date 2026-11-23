@@ -896,6 +896,7 @@ export function PositionSeller() {
               showBalances={false}
               infoTokens={availableTokensOptions?.infoTokens}
               tokenAddress={receiveToken.address}
+              tokenInfo={isSolana ? receiveToken : undefined}
               onSelectToken={setReceiveTokenManually}
               tokens={availableReceiveTokens}
               showTokenImgInDropdown={true}
