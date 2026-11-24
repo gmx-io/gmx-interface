@@ -112,6 +112,15 @@ export function ExpressTradingWarningCard({
     });
   }, [updateSubaccountSettings, isGmxAccount, onAfterAction]);
 
+  const handleResignSubaccountApproval = useCallback(() => {
+    updateSubaccountSettings({ nextIsGmxAccount: isGmxAccount }).then((success) => {
+      if (success) {
+        onAfterAction?.();
+        setIsVisible(false);
+      }
+    });
+  }, [updateSubaccountSettings, isGmxAccount, onAfterAction]);
+
   const handleDisableSubaccount = useCallback(async () => {
     const ok = await subaccountContext.tryDisableSubaccount();
     if (ok) onAfterAction?.();
@@ -163,6 +172,7 @@ export function ExpressTradingWarningCard({
     shouldShowExternalSwapTwapNotSupportedWarning,
     dismissExpiredSubaccountWarning,
     dismissAllowedActionsWarning,
+    dismissNonceExpiredWarning,
   } = useExpressTradingWarnings({
     expressParams,
     payTokenAddress,
@@ -299,10 +309,11 @@ export function ExpressTradingWarningCard({
     content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
-    onClick = handleUpdateSubaccountSettings;
+    onClick = handleResignSubaccountApproval;
+    onCloseClick = dismissNonceExpiredWarning;
     icon = OneClickIcon;
     color = "blue";
-    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
+    content = <Trans>One-Click Trading was approved again in another browser or app. Re-sign to use it here.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
@@ -399,7 +410,7 @@ export function ExpressTradingWarningCard({
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;
-    onClick = handleUpdateSubaccountSettings;
+    onClick = handleResignSubaccountApproval;
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
     color = "blue";
@@ -410,7 +421,7 @@ export function ExpressTradingWarningCard({
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;
-    onClick = handleUpdateSubaccountSettings;
+    onClick = handleResignSubaccountApproval;
   } else if (shouldShowExternalSwapGasConflictOptionalWarning) {
     if (!gasTokenCandidate) {
       return null;

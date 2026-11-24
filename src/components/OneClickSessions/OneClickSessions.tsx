@@ -23,31 +23,58 @@ import { Chip } from "components/SettingsModal/shared";
 const NO_EXPIRY_TIMESTAMP = 4102444800n;
 const UNLIMITED_ACTIONS = 1_000_000n;
 
+function getUsableSessionStatusText(session: SubaccountSession): string {
+  const remainingActions = getSubaccountSessionRemainingActions(session);
+  const isUnlimited = remainingActions >= UNLIMITED_ACTIONS;
+  const count = Number(remainingActions);
+
+  if (session.isPending) {
+    return isUnlimited
+      ? t`Pending first trade, unlimited actions`
+      : plural(count, { one: "Pending first trade, # action left", other: "Pending first trade, # actions left" });
+  }
+
+  if (session.expiresAt >= NO_EXPIRY_TIMESTAMP) {
+    if (session.hasPendingChanges) {
+      return isUnlimited
+        ? t`Active, no expiry, unlimited actions, pending next trade`
+        : plural(count, {
+            one: "Active, no expiry, # action left, pending next trade",
+            other: "Active, no expiry, # actions left, pending next trade",
+          });
+    }
+
+    return isUnlimited
+      ? t`Active, no expiry, unlimited actions`
+      : plural(count, { one: "Active, no expiry, # action left", other: "Active, no expiry, # actions left" });
+  }
+
+  const expiryDate = formatDate(Number(session.expiresAt));
+
+  if (session.hasPendingChanges) {
+    return isUnlimited
+      ? t`Active until ${expiryDate}, unlimited actions, pending next trade`
+      : plural(count, {
+          one: `Active until ${expiryDate}, # action left, pending next trade`,
+          other: `Active until ${expiryDate}, # actions left, pending next trade`,
+        });
+  }
+
+  return isUnlimited
+    ? t`Active until ${expiryDate}, unlimited actions`
+    : plural(count, {
+        one: `Active until ${expiryDate}, # action left`,
+        other: `Active until ${expiryDate}, # actions left`,
+      });
+}
+
 function getSessionStatusText(session: SubaccountSession): string {
   if (session.isResignNeeded) {
     return t`Re-sign needed`;
   }
 
   if (getIsSubaccountSessionUsable(session)) {
-    const remainingActions = getSubaccountSessionRemainingActions(session);
-    const actionsText =
-      remainingActions >= UNLIMITED_ACTIONS
-        ? t`unlimited actions`
-        : plural(Number(remainingActions), { one: "# action left", other: "# actions left" });
-
-    if (session.isPending) {
-      return t`Pending first trade, ${actionsText}`;
-    }
-
-    let activeText = t`Active, no expiry, ${actionsText}`;
-
-    if (session.expiresAt < NO_EXPIRY_TIMESTAMP) {
-      const expiryDate = formatDate(Number(session.expiresAt));
-
-      activeText = t`Active until ${expiryDate}, ${actionsText}`;
-    }
-
-    return session.hasPendingChanges ? t`${activeText}, pending next trade` : activeText;
+    return getUsableSessionStatusText(session);
   }
 
   if (session.expiresAt === 0n) {
@@ -64,7 +91,7 @@ function getSessionStatusText(session: SubaccountSession): string {
 }
 
 export function OneClickSessions() {
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
   const { subaccount, subaccountConfig, legacySubaccountConfig, removeSubaccountSessions } = useSubaccountContext();
   const { sessions, refreshSessions } = useSubaccountSessions(chainId, account);
@@ -198,6 +225,15 @@ export function OneClickSessions() {
                   This also removes sessions of bots and apps that trade for you. They stop working until you approve
                   them again.
                 </Trans>
+                {srcChainId !== undefined && (
+                  <div className="mt-4">
+                    {plural(otherSessionAddresses.length, {
+                      one: "Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.",
+                      other:
+                        "Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.",
+                    })}
+                  </div>
+                )}
               </AlertInfoCard>
               <div className="grid grid-cols-2 gap-8">
                 <Button

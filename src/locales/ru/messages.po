@@ -185,6 +185,10 @@ msgstr "Вы можете открывать изолированные пози
 msgid "Do I need to create codes on each network?"
 msgstr "Нужно ли создавать коды в каждой сети?"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.} other {Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.}}"
+msgstr "{0, plural, one {Кошелёк запросит # подпись. За удаление спишется комиссия сети с вашего GMX Account.} few {Кошелёк запросит # подписи, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.} many {Кошелёк запросит # подписей, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.} other {Кошелёк запросит # подписи, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.}}"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
 msgstr "Ваш лонг по {token} находится в пуле {poolName}, который закрыт для нового размера. Этот ордер откроет отдельную позицию."
@@ -444,6 +448,10 @@ msgstr "Ожидание (осталось {0, plural, one {# день} few {# �
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "Дорожная карта"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions"
+msgstr "Активна до {expiryDate}, без ограничения действий"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -797,6 +805,10 @@ msgstr "Значение:"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "Проекты, разработанные сообществом GMX. <0/>Проявляйте осторожность при использовании любого приложения, так как все приложения полностью поддерживаются разработчиками сообщества."
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions, pending next trade"
+msgstr "Активна, без срока, без ограничения действий, ожидает следующей сделки"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2819,10 +2831,6 @@ msgstr "Отсутствуют параметры. Обновите страни
 msgid "Instant via {instantLabel}"
 msgstr "Мгновенно через {instantLabel}"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {expiryDate}, {actionsText}"
-msgstr "Активна до {expiryDate}, {actionsText}"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "Существующая позиция находится в пуле WETH-USDC, но в этом пуле недостаточно ликвидности для данного ордера"
@@ -4083,6 +4091,10 @@ msgstr "Лояльность"
 msgid "Up to 25% earnings"
 msgstr "Доход до 25%"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left, pending next trade} other {Active until {expiryDate}, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Активна до {expiryDate}, осталось # действие, ожидает следующей сделки} few {Активна до {expiryDate}, осталось # действия, ожидает следующей сделки} many {Активна до {expiryDate}, осталось # действий, ожидает следующей сделки} other {Активна до {expiryDate}, осталось # действия, ожидает следующей сделки}}"
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "Пока нет активов"
@@ -4926,6 +4938,10 @@ msgstr "Накопительно"
 msgid "Enter amount"
 msgstr "Введите сумму"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
+msgstr "{count, plural, one {Активна до {expiryDate}, осталось # действие} few {Активна до {expiryDate}, осталось # действия} many {Активна до {expiryDate}, осталось # действий} other {Активна до {expiryDate}, осталось # действия}}"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "Добавьте {0} в кошелёк"
@@ -4933,6 +4949,10 @@ msgstr "Добавьте {0} в кошелёк"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Неверный аккаунт"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still listed. Remove it in One-Click sessions"
+msgstr "Старая сессия ещё в списке. Удалите её в разделе «Сессии One-Click»"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
@@ -5615,10 +5635,6 @@ msgstr "Удаление..."
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "Для этого рынка нет истории чистой ставки"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Old session is still active. Remove it in One-Click sessions"
-msgstr "Старая сессия ещё активна. Удалите её в разделе «Сессии One-Click»"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6338,10 +6354,6 @@ msgstr "bps"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP"
 msgstr "Создание TWAP"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active, no expiry, {actionsText}"
-msgstr "Активна, без срока, {actionsText}"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In other tokens"
@@ -7199,6 +7211,10 @@ msgstr "Вакансии"
 msgid "Failed Stop Market"
 msgstr "Неудачный Стоп-Маркет"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Pending first trade, # action left} other {Pending first trade, # actions left}}"
+msgstr "{count, plural, one {Ожидает первой сделки, осталось # действие} few {Ожидает первой сделки, осталось # действия} many {Ожидает первой сделки, осталось # действий} other {Ожидает первой сделки, осталось # действия}}"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -7512,6 +7528,10 @@ msgstr "Выберите позиции"
 msgid "GMX on Solana (GMTrade) is served from a separate domain"
 msgstr "GMX на Solana (GMTrade) доступен на отдельном домене"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions"
+msgstr "Активна, без срока, без ограничения действий"
+
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
@@ -7668,6 +7688,10 @@ msgstr "Обновление части TWAP Swap"
 msgid "Good fit"
 msgstr "Подходит"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was approved again in another browser or app. Re-sign to use it here."
+msgstr "One-Click Trading снова подтвердили в другом браузере или приложении. Подпишите повторно, чтобы использовать его здесь."
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
 msgstr "Нет сделок, соответствующих выбранным фильтрам"
@@ -7745,10 +7769,6 @@ msgstr "Завершившие"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "Установите стоп-цену ниже расчётной цены"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "unlimited actions"
-msgstr "без ограничения действий"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total received"
@@ -9264,10 +9284,6 @@ msgstr "Скидка до 25% на комиссии для крупных тре
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr "Баллы рассчитываются на основе средневзвешенной по времени стоимости вашей доли в хранилище GLV [USDM-USDM] за эпоху"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "{activeText}, pending next trade"
-msgstr "{activeText}, ожидает следующей сделки"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -10024,10 +10040,6 @@ msgstr "Обменяйте или переведите через мост {toke
 msgid "{0} a short position in evenly distributed parts over a specified time."
 msgstr "{0} шорт-позицию равномерно распределёнными частями в течение заданного периода."
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Pending first trade, {actionsText}"
-msgstr "Ожидает первой сделки, {actionsText}"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
@@ -10554,10 +10566,6 @@ msgstr "Открывает GMTrade в новой вкладке"
 msgid "Top addresses"
 msgstr "Лучшие адреса"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "Срок действия nonce подтверждения One-Click Trading истёк. Подпишите повторно, чтобы продолжить использовать One-Click Trading."
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10686,6 +10694,10 @@ msgstr "Показать позиции на графике"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
 msgstr "Больше всего после комиссий или мгновенно, если Paxos экономит меньше {minSaving}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "{0, plural, one {{removedCount} of # session removed} other {{removedCount} of # sessions removed}}"
+msgstr "{0, plural, one {Удалено {removedCount} из # сессии} few {Удалено {removedCount} из # сессий} many {Удалено {removedCount} из # сессий} other {Удалено {removedCount} из # сессий}}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11745,6 +11757,10 @@ msgstr "Поиск типа"
 msgid "Converted to {marginTokenSymbol} in the same order"
 msgstr "Конвертируется в {marginTokenSymbol} в том же ордере"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session wasn't removed"
+msgstr "Старая сессия не удалена"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "Комиссия за вывод"
@@ -11817,6 +11833,10 @@ msgstr "Получите {tokensList} на ваш кошелёк в сети {ne
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, unlimited actions"
+msgstr "Ожидает первой сделки, без ограничения действий"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networkName}, or choose another network"
@@ -12110,10 +12130,6 @@ msgstr "Загрузка котировки…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "тейк-профит"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "{0, plural, one {# action left} other {# actions left}}"
-msgstr "{0, plural, one {осталось # действие} few {осталось # действия} many {осталось # действий} other {осталось # действия}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12442,6 +12458,10 @@ msgstr "Ошибка деактивации"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr "Поделитесь своей сделкой GMX на X"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions, pending next trade"
+msgstr "Активна до {expiryDate}, без ограничения действий, ожидает следующей сделки"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -13685,6 +13705,10 @@ msgstr "Начать зарабатывать"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText}: не удалось отменить"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left, pending next trade} other {Active, no expiry, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Активна, без срока, осталось # действие, ожидает следующей сделки} few {Активна, без срока, осталось # действия, ожидает следующей сделки} many {Активна, без срока, осталось # действий, ожидает следующей сделки} other {Активна, без срока, осталось # действия, ожидает следующей сделки}}"
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "Как и когда я получу выплату или начисление?"
@@ -13749,6 +13773,10 @@ msgstr "Во вкладке обмена · поступит отдельно"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Напрямую с Paxos"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left} other {Active, no expiry, # actions left}}"
+msgstr "{count, plural, one {Активна, без срока, осталось # действие} few {Активна, без срока, осталось # действия} many {Активна, без срока, осталось # действий} other {Активна, без срока, осталось # действия}}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx

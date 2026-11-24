@@ -198,6 +198,41 @@ export function getIsSubaccountNonceExpired({
   return signedNonce !== onChainNonce;
 }
 
+export function getIsLegacySubaccountRemovalRequired({
+  chainId,
+  subaccountAddress,
+  isListed,
+  onchainData,
+  pendingApprovals,
+}: {
+  chainId: ContractsChainId;
+  subaccountAddress: string;
+  isListed: boolean | undefined;
+  onchainData: SubaccountOnchainData | undefined;
+  pendingApprovals: SignedSubaccountApproval[];
+}): boolean {
+  if (isListed !== false) {
+    return true;
+  }
+
+  if (!isContractsV2_2_1(chainId)) {
+    return false;
+  }
+
+  const now = BigInt(nowInSeconds());
+
+  return pendingApprovals.some(
+    (signedApproval) =>
+      signedApproval.subaccount === subaccountAddress &&
+      (signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
+        signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) &&
+      signedApproval.deadline > now &&
+      (!onchainData ||
+        (!isSubaccountApprovalRevoked(signedApproval, onchainData.revocationCounter) &&
+          !getIsSubaccountNonceExpired({ chainId, onchainData, signedApproval })))
+  );
+}
+
 /**
  * Returns false for empty subaccount approval
  */

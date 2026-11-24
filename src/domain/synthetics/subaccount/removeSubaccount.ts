@@ -1,5 +1,5 @@
 import { ethers, Signer } from "ethers";
-import { encodeFunctionData } from "viem";
+import { encodeFunctionData, type Hex } from "viem";
 
 import type { ContractsChainId, SourceChainId } from "config/chains";
 import {
@@ -55,6 +55,8 @@ export async function removeSubaccountWalletTxn(
   subaccountAddress: string
 ): Promise<void> {
   const subaccountRouter = new ethers.Contract(getContract(chainId, "SubaccountRouter"), SubaccountRouterAbi, signer);
+  const account = await signer.getAddress();
+  const isListedPromise = getIsSubaccountActiveOnchain({ chainId, account, subaccountAddress });
 
   const res = await callContract(chainId, subaccountRouter, "removeSubaccount", [subaccountAddress], {
     value: 0n,
@@ -67,7 +69,22 @@ export async function removeSubaccountWalletTxn(
     return;
   }
 
-  const account = await signer.getAddress();
+  if ((await isListedPromise) !== true) {
+    let isReplaced = false;
+    const receipt = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({
+      hash: res.hash as Hex,
+      onReplaced: ({ reason }) => {
+        isReplaced = reason !== "repriced";
+      },
+    });
+
+    if (receipt.status !== "success" || isReplaced) {
+      throw new Error(`Subaccount removal failed: ${res.hash}`);
+    }
+
+    return;
+  }
+
   const abortController = new AbortController();
 
   try {

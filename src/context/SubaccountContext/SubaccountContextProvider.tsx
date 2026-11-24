@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { plural, t } from "@lingui/macro";
 import type { ethers } from "ethers";
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -15,6 +15,7 @@ import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateCont
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import type { ExpressTxnParams } from "domain/synthetics/express";
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   GMX_ACCOUNT_NETWORK_FEE_SOURCE,
   WALLET_NETWORK_FEE_SOURCE,
@@ -47,6 +48,7 @@ import { generateSubaccount } from "domain/synthetics/subaccount/generateSubacco
 import type { SubaccountRemovalTarget } from "domain/synthetics/subaccount/removeSubaccount";
 import {
   findFallbackSubaccountApproval,
+  findStoredSubaccountApprovals,
   migrateLegacySubaccountApprovalSlot,
   readStoredSubaccountApproval,
   removeAllStoredSubaccountApprovals,
@@ -75,12 +77,14 @@ import {
   getActualApproval,
   getCanReuseSubaccount,
   getInitialSubaccountApproval,
+  getIsLegacySubaccountRemovalRequired,
   getIsSubaccountActionsExceeded,
   getIsSubaccountActive,
   getIsSubaccountExpired,
   getSubaccountApprovalContextSrcChainId,
   getSubaccountOnchainData,
   getSubaccountSigner,
+  getSubaccountValidations,
   signUpdatedSubaccountSettings,
   type SubaccountLimits,
 } from "domain/synthetics/subaccount/utils";
@@ -115,6 +119,7 @@ export enum SubaccountLegacyRemovalState {
   Removing = "removing",
   Removed = "removed",
   Failed = "failed",
+  ApprovalRevocationFailed = "approvalRevocationFailed",
 }
 
 export type SubaccountActivationParams = {
@@ -421,19 +426,19 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
   const walletTxnSessionRemovalAddressesRef = useRef<Set<string>>(new Set());
 
   const removeSubaccountAddresses = useCallback(
-    async (subaccountAddresses: string[]) => {
+    async (subaccountAddresses: string[], onRemoved?: () => void) => {
       if (!signer || !account) {
         throw new Error("No signer for subaccount removal");
       }
 
       if (srcChainId !== undefined) {
-        const globalExpressParams = calcSelector(selectExpressGlobalParams);
-
-        if (!globalExpressParams) {
-          throw new Error("Missing globalExpressParams for subaccount removal");
-        }
-
         for (const address of subaccountAddresses) {
+          const globalExpressParams = calcSelector(selectExpressGlobalParams);
+
+          if (!globalExpressParams) {
+            throw new Error("Missing globalExpressParams for subaccount removal");
+          }
+
           await removeSubaccountExpressTxn({
             chainId,
             account,
@@ -442,6 +447,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             subaccount: { address },
             globalExpressParams,
           });
+          onRemoved?.();
         }
 
         return;
@@ -487,8 +493,14 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     [account, calcSelector, chainId, signer, srcChainId]
   );
 
-  const removeListedLegacySubaccount = useCallback(
-    async (removedSubaccountAddress?: string) => {
+  const removeLegacySubaccount = useCallback(
+    async ({
+      removedSubaccountAddress,
+      pendingApprovals = [],
+    }: {
+      removedSubaccountAddress?: string;
+      pendingApprovals?: SignedSubaccountApproval[];
+    } = {}) => {
       if (!account) {
         return;
       }
@@ -505,7 +517,30 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         subaccountAddress: legacyConfig.address,
       });
 
-      if (isListed === false) {
+      let onchainData: SubaccountOnchainData | undefined;
+
+      if (isListed === false && pendingApprovals.length > 0 && signer && provider) {
+        try {
+          onchainData = await getSubaccountOnchainData({
+            chainId,
+            signer,
+            provider,
+            subaccountAddress: legacyConfig.address,
+          });
+        } catch (error) {
+          metrics.pushError(error, "subaccount.removeLegacySubaccount");
+        }
+      }
+
+      if (
+        !getIsLegacySubaccountRemovalRequired({
+          chainId,
+          subaccountAddress: legacyConfig.address,
+          isListed,
+          onchainData,
+          pendingApprovals,
+        })
+      ) {
         return;
       }
 
@@ -518,10 +553,14 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         // eslint-disable-next-line no-console
         console.error(error);
         metrics.pushError(error, "subaccount.removeLegacySubaccount");
-        setSubaccountLegacyRemovalState(SubaccountLegacyRemovalState.Failed);
+        setSubaccountLegacyRemovalState(
+          isListed === false
+            ? SubaccountLegacyRemovalState.ApprovalRevocationFailed
+            : SubaccountLegacyRemovalState.Failed
+        );
       }
     },
-    [account, chainId, removeSubaccountAddresses]
+    [account, chainId, provider, removeSubaccountAddresses, signer]
   );
 
   const getCurrentSubaccount = useCallback(async (): Promise<Subaccount | undefined> => {
@@ -569,6 +608,82 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     subaccountData,
   ]);
 
+  const signSubaccountSettingsUpdate = useCallback(
+    async ({
+      subaccount: updatedSubaccount,
+      nextRemainigActions,
+      nextRemainingSeconds,
+      isGmxAccount,
+    }: {
+      subaccount: Subaccount;
+      nextRemainigActions?: bigint;
+      nextRemainingSeconds?: bigint;
+      isGmxAccount: boolean;
+    }): Promise<boolean> => {
+      if (!signer || !provider || !account) {
+        return false;
+      }
+
+      helperToast.info(
+        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT settings`}>
+          <TransactionStatus status="loading" text={t`Updating settings...`} />
+        </StatusNotification>
+      );
+
+      const settingsUpdateMetricParams = {
+        wasExpired: getIsSubaccountExpired(updatedSubaccount),
+        wasActionsExceeded: getIsSubaccountActionsExceeded(updatedSubaccount, 1),
+        isGmxAccount,
+        chainId,
+      };
+
+      try {
+        const signedSubaccountApproval = await signUpdatedSubaccountSettings({
+          chainId,
+          signer,
+          provider,
+          subaccount: updatedSubaccount,
+          nextRemainigActions,
+          nextRemainingSeconds,
+          isGmxAccount,
+        });
+
+        const isUpdated = await withSubaccountTabLock(chainId, account, async () => {
+          if (readStoredSubaccountConfig(chainId, account)?.address !== updatedSubaccount.address) {
+            return false;
+          }
+
+          setSignedApproval(signedSubaccountApproval);
+          return true;
+        });
+
+        if (isUpdated) {
+          sendSubaccountSettingsUpdateMetric(settingsUpdateMetricParams);
+          helperToast.success(
+            <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT settings`}>
+              <TransactionStatus status="success" text={t`Settings updated`} />
+            </StatusNotification>
+          );
+          return true;
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        metrics.pushError(error, "subaccount.updateSubaccountSettings");
+        sendSubaccountSettingsUpdateMetric({ ...settingsUpdateMetricParams, error });
+      }
+
+      toast.dismiss();
+      helperToast.error(
+        <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT settings`}>
+          <TransactionStatus status="error" text={t`Settings update failed`} />
+        </StatusNotification>
+      );
+      return false;
+    },
+    [account, chainId, provider, setSignedApproval, signer]
+  );
+
   const tryEnableSubaccount = useCallback(
     async ({
       remainingActions,
@@ -586,9 +701,25 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       }
 
       const currentSubaccount = await getCurrentSubaccount();
+      const isGmxAccount = isGmxAccountParam ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
 
-      if (getCanReuseSubaccount(currentSubaccount, subaccountConfig)) {
-        return true;
+      if (currentSubaccount && getCanReuseSubaccount(currentSubaccount, subaccountConfig)) {
+        const { isNonceExpired, isApprovalInvalid } = getSubaccountValidations({
+          requiredActions: 1,
+          subaccount: currentSubaccount,
+          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
+        });
+
+        if (!isNonceExpired && !isApprovalInvalid) {
+          return true;
+        }
+
+        return signSubaccountSettingsUpdate({
+          subaccount: currentSubaccount,
+          nextRemainigActions: remainingActions,
+          nextRemainingSeconds: remainingSeconds,
+          isGmxAccount,
+        });
       }
 
       setSubaccountActivationError(undefined);
@@ -603,23 +734,22 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       setSubaccountActivationState(SubaccountActivationState.Generating);
 
-      const isGmxAccount = isGmxAccountParam ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
-      const addressBeforeLock = subaccountConfig?.address;
+      const addressBeforeSigning = subaccountConfig?.address;
+      const getIsCreatedInAnotherTab = () => {
+        const storedConfig = readStoredSubaccountConfig(chainId, account);
+
+        return Boolean(
+          storedConfig &&
+            !getIsLegacySubaccountConfig(storedConfig) &&
+            storedConfig.address !== addressBeforeSigning &&
+            findFallbackSubaccountApproval(chainId, account, storedConfig.address)
+        );
+      };
       let isCreatedInThisTab = false;
+      let pendingLegacyApprovals: SignedSubaccountApproval[] = [];
 
       try {
-        await withSubaccountTabLock(chainId, account, async () => {
-          const storedConfig = readStoredSubaccountConfig(chainId, account);
-
-          if (
-            storedConfig &&
-            !getIsLegacySubaccountConfig(storedConfig) &&
-            storedConfig.address !== addressBeforeLock &&
-            findFallbackSubaccountApproval(chainId, account, storedConfig.address)
-          ) {
-            return;
-          }
-
+        if (!getIsCreatedInAnotherTab()) {
           const config = generateSubaccount(account);
 
           setSubaccountActivationState(SubaccountActivationState.ApprovalSigning);
@@ -634,15 +764,24 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
             remainingActions,
           });
 
-          if (storedConfig && getIsLegacySubaccountConfig(storedConfig)) {
-            keepLegacySubaccountConfig(chainId, account, storedConfig);
-          }
+          await withSubaccountTabLock(chainId, account, async () => {
+            if (getIsCreatedInAnotherTab()) {
+              return;
+            }
 
-          writeStoredSubaccountConfig(chainId, account, config);
-          removeAllStoredSubaccountApprovals(chainId, account);
-          writeStoredSubaccountApproval(chainId, account, approval);
-          isCreatedInThisTab = true;
-        });
+            const storedConfig = readStoredSubaccountConfig(chainId, account);
+
+            if (storedConfig && getIsLegacySubaccountConfig(storedConfig)) {
+              pendingLegacyApprovals = findStoredSubaccountApprovals(chainId, account, storedConfig.address);
+              keepLegacySubaccountConfig(chainId, account, storedConfig);
+            }
+
+            writeStoredSubaccountConfig(chainId, account, config);
+            removeAllStoredSubaccountApprovals(chainId, account);
+            writeStoredSubaccountApproval(chainId, account, approval);
+            isCreatedInThisTab = true;
+          });
+        }
       } catch (error) {
         setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
         setSubaccountActivationError({ message: error?.message, walletName: error?.data?.walletName });
@@ -664,7 +803,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       refreshSubaccountData();
 
       if (isCreatedInThisTab) {
-        await removeListedLegacySubaccount();
+        await removeLegacySubaccount({ pendingApprovals: pendingLegacyApprovals });
       }
 
       // only wallet-funded orders on the settlement chain spend through the Router; not awaited, so a wallet
@@ -713,7 +852,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       getIsPermitAvailable,
       provider,
       refreshSubaccountData,
-      removeListedLegacySubaccount,
+      removeLegacySubaccount,
+      signSubaccountSettingsUpdate,
       signer,
       srcChainId,
       subaccountConfig,
@@ -745,63 +885,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         });
       }
 
-      helperToast.info(
-        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT settings`}>
-          <TransactionStatus status="loading" text={t`Updating settings...`} />
-        </StatusNotification>
-      );
-
-      const isGmxAccount = nextIsGmxAccount ?? calcSelector(selectTradeboxIsFromTokenGmxAccount);
-      const settingsUpdateMetricParams = {
-        wasExpired: getIsSubaccountExpired(subaccount),
-        wasActionsExceeded: getIsSubaccountActionsExceeded(subaccount, 1),
-        isGmxAccount,
-        chainId,
-      };
-
-      try {
-        const isUpdated = await withSubaccountTabLock(chainId, account, async () => {
-          if (readStoredSubaccountConfig(chainId, account)?.address !== subaccount.address) {
-            return false;
-          }
-
-          const signedSubaccountApproval = await signUpdatedSubaccountSettings({
-            chainId,
-            signer,
-            provider,
-            subaccount,
-            nextRemainigActions,
-            nextRemainingSeconds,
-            isGmxAccount,
-          });
-
-          setSignedApproval(signedSubaccountApproval);
-          return true;
-        });
-
-        if (isUpdated) {
-          sendSubaccountSettingsUpdateMetric(settingsUpdateMetricParams);
-          helperToast.success(
-            <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT settings`}>
-              <TransactionStatus status="success" text={t`Settings updated`} />
-            </StatusNotification>
-          );
-          return true;
-        }
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
-        metrics.pushError(error, "subaccount.updateSubaccountSettings");
-        sendSubaccountSettingsUpdateMetric({ ...settingsUpdateMetricParams, error });
-      }
-
-      toast.dismiss();
-      helperToast.error(
-        <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT settings`}>
-          <TransactionStatus status="error" text={t`Settings update failed`} />
-        </StatusNotification>
-      );
-      return false;
+      return signSubaccountSettingsUpdate({
+        subaccount,
+        nextRemainigActions,
+        nextRemainingSeconds,
+        isGmxAccount: nextIsGmxAccount ?? calcSelector(selectTradeboxIsFromTokenGmxAccount),
+      });
     },
     [
       signer,
@@ -810,8 +899,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       account,
       subaccountConfig,
       calcSelector,
-      chainId,
-      setSignedApproval,
+      signSubaccountSettingsUpdate,
       tryEnableSubaccount,
     ]
   );
@@ -873,7 +961,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
       refreshSubaccountData();
 
-      await removeListedLegacySubaccount(subaccount.address);
+      await removeLegacySubaccount({ removedSubaccountAddress: subaccount.address });
     };
 
     try {
@@ -982,7 +1070,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     resetStoredApproval,
     resetStoredConfig,
     refreshSubaccountData,
-    removeListedLegacySubaccount,
+    removeLegacySubaccount,
   ]);
 
   const removeSubaccountSessions = useCallback(
@@ -997,8 +1085,12 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         </StatusNotification>
       );
 
+      let removedCount = 0;
+
       try {
-        await removeSubaccountAddresses(subaccountAddresses);
+        await removeSubaccountAddresses(subaccountAddresses, () => {
+          removedCount += 1;
+        });
 
         toast.dismiss();
         helperToast.success(
@@ -1017,6 +1109,15 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
         helperToast.error(
           <StatusNotification key="removeSubaccountSessionsError" title={t`Remove 1CT sessions`}>
+            {removedCount > 0 && (
+              <TransactionStatus
+                status="success"
+                text={plural(subaccountAddresses.length, {
+                  one: `${removedCount} of # session removed`,
+                  other: `${removedCount} of # sessions removed`,
+                })}
+              />
+            )}
             <TransactionStatus status="error" text={isRejected ? t`Removal cancelled` : t`Removal failed`} />
           </StatusNotification>
         );
@@ -1120,7 +1221,11 @@ function SubaccountLegacyRemovalStatus({ state }: { state: SubaccountLegacyRemov
     return <TransactionStatus status="success" text={t`Old session removed`} />;
   }
 
-  return <TransactionStatus status="error" text={t`Old session is still active. Remove it in One-Click sessions`} />;
+  if (state === SubaccountLegacyRemovalState.ApprovalRevocationFailed) {
+    return <TransactionStatus status="error" text={t`Old session wasn't removed`} />;
+  }
+
+  return <TransactionStatus status="error" text={t`Old session is still listed. Remove it in One-Click sessions`} />;
 }
 
 function SubaccountActivateNotification({ toastId }: { toastId: number }) {
@@ -1180,7 +1285,12 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   useEffect(
     function cleanup() {
       // Actionable errors stay until dismissed — they carry a link to follow.
-      if (isCompleted && !errorContent && !dismissTimerId.current) {
+      if (
+        isCompleted &&
+        !errorContent &&
+        subaccountLegacyRemovalState !== SubaccountLegacyRemovalState.Failed &&
+        !dismissTimerId.current
+      ) {
         dismissTimerId.current = setTimeout(() => {
           toast.dismiss(toastId);
           dismissTimerId.current = undefined;
@@ -1194,7 +1304,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
         }
       };
     },
-    [isCompleted, subaccountActivationState, errorContent, toastId]
+    [isCompleted, subaccountActivationState, errorContent, subaccountLegacyRemovalState, toastId]
   );
 
   useEffect(() => {
@@ -1296,7 +1406,11 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
 
   useEffect(
     function cleanup() {
-      if (isCompleted && !dismissTimerId.current) {
+      if (
+        isCompleted &&
+        subaccountLegacyRemovalState !== SubaccountLegacyRemovalState.Failed &&
+        !dismissTimerId.current
+      ) {
         dismissTimerId.current = setTimeout(
           () => {
             toast.dismiss(toastId);
@@ -1313,7 +1427,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
         }
       };
     },
-    [hasError, isCompleted, subaccountDeactivationState, toastId]
+    [hasError, isCompleted, subaccountDeactivationState, subaccountLegacyRemovalState, toastId]
   );
 
   return (

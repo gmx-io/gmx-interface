@@ -185,6 +185,10 @@ msgstr "GMX Account를 사용하여 GMX에서 격리 포지션을 개설할 수 
 msgid "Do I need to create codes on each network?"
 msgstr "각 네트워크에서 코드를 생성해야 합니까?"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.} other {Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.}}"
+msgstr "{0, plural, one {지갑에서 서명 #개를 요청합니다. 제거 시 GMX Account에서 네트워크 수수료가 지불됩니다.} other {지갑에서 세션당 1개씩 서명 #개를 요청합니다. 제거할 때마다 GMX Account에서 네트워크 수수료가 지불됩니다.}}"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
 msgstr "{token} 롱 포지션은 {poolName} 풀에 있으며, 이 풀은 새로운 크기를 받지 않습니다. 이 주문은 별도의 포지션을 엽니다."
@@ -444,6 +448,10 @@ msgstr "대기 중 ({0, plural, other {#일 남음}})"
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 msgid "Roadmap"
 msgstr "로드맵"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions"
+msgstr "{expiryDate}까지 활성, 작업 무제한"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
@@ -797,6 +805,10 @@ msgstr "값:"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "GMX 커뮤니티에서 개발한 프로젝트입니다. <0/>모든 앱은 커뮤니티 개발자가 전적으로 관리하므로 상호작용 시 주의하시기 바랍니다."
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions, pending next trade"
+msgstr "활성, 만료 없음, 작업 무제한, 다음 거래 대기 중"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -2819,10 +2831,6 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Instant via {instantLabel}"
 msgstr "{instantLabel} 경유 즉시"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active until {expiryDate}, {actionsText}"
-msgstr "{expiryDate}까지 활성, {actionsText}"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
 msgstr "기존 포지션은 WETH-USDC 풀에 있지만 해당 풀에는 이 주문에 필요한 유동성이 부족합니다"
@@ -4083,6 +4091,10 @@ msgstr "충성도"
 msgid "Up to 25% earnings"
 msgstr "최대 25% 수익"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left, pending next trade} other {Active until {expiryDate}, # actions left, pending next trade}}"
+msgstr "{count, plural, one {{expiryDate}까지 활성, 남은 작업 #개, 다음 거래 대기 중} other {{expiryDate}까지 활성, 남은 작업 #개, 다음 거래 대기 중}}"
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "아직 자산이 없습니다"
@@ -4926,6 +4938,10 @@ msgstr "누적"
 msgid "Enter amount"
 msgstr "금액 입력"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
+msgstr "{count, plural, one {{expiryDate}까지 활성, 남은 작업 #개} other {{expiryDate}까지 활성, 남은 작업 #개}}"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "{0}을(를) 지갑에 추가"
@@ -4933,6 +4949,10 @@ msgstr "{0}을(를) 지갑에 추가"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "잘못된 계정"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still listed. Remove it in One-Click sessions"
+msgstr "이전 세션이 아직 목록에 있습니다. One-Click 세션에서 제거하세요"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
@@ -5615,10 +5635,6 @@ msgstr "제거 중..."
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
 msgstr "이 시장의 순이율 내역이 없습니다"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Old session is still active. Remove it in One-Click sessions"
-msgstr "이전 세션이 아직 활성 상태입니다. One-Click 세션에서 제거하세요"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -6338,10 +6354,6 @@ msgstr "bps"
 #: src/components/TradeHistory/keys.ts
 msgid "Create TWAP"
 msgstr "TWAP 생성"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Active, no expiry, {actionsText}"
-msgstr "활성, 만료 없음, {actionsText}"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In other tokens"
@@ -7199,6 +7211,10 @@ msgstr "구인"
 msgid "Failed Stop Market"
 msgstr "스탑 마켓 실패"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Pending first trade, # action left} other {Pending first trade, # actions left}}"
+msgstr "{count, plural, one {첫 거래 대기 중, 남은 작업 #개} other {첫 거래 대기 중, 남은 작업 #개}}"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -7512,6 +7528,10 @@ msgstr "포지션 선택"
 msgid "GMX on Solana (GMTrade) is served from a separate domain"
 msgstr "Solana의 GMX(GMTrade)는 별도의 도메인에서 제공됩니다"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions"
+msgstr "활성, 만료 없음, 작업 무제한"
+
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
@@ -7668,6 +7688,10 @@ msgstr "TWAP 스왑 파트 업데이트"
 msgid "Good fit"
 msgstr "적합함"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was approved again in another browser or app. Re-sign to use it here."
+msgstr "다른 브라우저 또는 앱에서 One-Click Trading이 다시 승인되었습니다. 여기에서 사용하려면 다시 서명하세요."
+
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
 msgstr "선택한 필터와 일치하는 거래가 없습니다"
@@ -7745,10 +7769,6 @@ msgstr "졸업"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set stop price below mark price"
 msgstr "스톱 가격은 기준가보다 낮게 설정해야 합니다"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "unlimited actions"
-msgstr "작업 무제한"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 msgid "Total received"
@@ -9264,10 +9284,6 @@ msgstr "대량 거래자는 수수료 최대 25% 할인.<0/>제휴자는 최대 
 msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch"
 msgstr "포인트는 에폭 동안 GLV [USDM-USDM] 볼트에서 귀하가 보유한 지분의 시간 가중 평균 가치를 기준으로 산정됩니다"
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "{activeText}, pending next trade"
-msgstr "{activeText}, 다음 거래 대기 중"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -10024,10 +10040,6 @@ msgstr "{tokenSymbol}을(를) 스왑하거나 브릿지하십시오."
 msgid "{0} a short position in evenly distributed parts over a specified time."
 msgstr "지정된 시간 동안 숏 포지션을 균등하게 분할하여 {0}합니다."
 
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "Pending first trade, {actionsText}"
-msgstr "첫 거래 대기 중, {actionsText}"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/EarningsOverview/EarningsBand.tsx
@@ -10554,10 +10566,6 @@ msgstr "새 탭에서 GMTrade를 엽니다"
 msgid "Top addresses"
 msgstr "상위 주소"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr "One-Click Trading 승인 nonce가 만료되었습니다. One-Click Trading을 계속 사용하려면 다시 서명하십시오."
-
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -10686,6 +10694,10 @@ msgstr "차트에 포지션 표시"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
 msgstr "수수료 차감 후 최대 수령액, Paxos 절약액이 {minSaving} 미만이면 즉시"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "{0, plural, one {{removedCount} of # session removed} other {{removedCount} of # sessions removed}}"
+msgstr "{0, plural, one {세션 #개 중 {removedCount}개 제거됨} other {세션 #개 중 {removedCount}개 제거됨}}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11745,6 +11757,10 @@ msgstr "유형 검색"
 msgid "Converted to {marginTokenSymbol} in the same order"
 msgstr "같은 주문에서 {marginTokenSymbol}(으)로 변환"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session wasn't removed"
+msgstr "이전 세션이 제거되지 않았습니다"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "출금 수수료"
@@ -11817,6 +11833,10 @@ msgstr "{networkName}의 지갑으로 {tokensList}을(를) 받거나 다른 네�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, unlimited actions"
+msgstr "첫 거래 대기 중, 작업 무제한"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networkName}, or choose another network"
@@ -12110,10 +12130,6 @@ msgstr "견적 로딩 중…"
 #: src/domain/synthetics/positions/utils.ts
 msgid "take-profit"
 msgstr "익절매"
-
-#: src/components/OneClickSessions/OneClickSessions.tsx
-msgid "{0, plural, one {# action left} other {# actions left}}"
-msgstr "{0, plural, one {남은 작업 #개} other {남은 작업 #개}}"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
@@ -12442,6 +12458,10 @@ msgstr "비활성화 실패"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr "GMX 거래를 X에 공유하기"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions, pending next trade"
+msgstr "{expiryDate}까지 활성, 작업 무제한, 다음 거래 대기 중"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -13685,6 +13705,10 @@ msgstr "수익 창출 시작"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 취소에 실패했습니다"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left, pending next trade} other {Active, no expiry, # actions left, pending next trade}}"
+msgstr "{count, plural, one {활성, 만료 없음, 남은 작업 #개, 다음 거래 대기 중} other {활성, 만료 없음, 남은 작업 #개, 다음 거래 대기 중}}"
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "언제, 어떻게 지급받거나 적립받습니까?"
@@ -13749,6 +13773,10 @@ msgstr "스왑 탭에서 · 별도로 도착"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Paxos 직접 변환"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left} other {Active, no expiry, # actions left}}"
+msgstr "{count, plural, one {활성, 만료 없음, 남은 작업 #개} other {활성, 만료 없음, 남은 작업 #개}}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
