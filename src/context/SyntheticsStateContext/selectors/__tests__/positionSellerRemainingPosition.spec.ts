@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";

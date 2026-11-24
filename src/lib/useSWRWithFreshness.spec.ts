@@ -1,8 +1,8 @@
 import { act, cleanup, render } from "@testing-library/react";
-import { createElement } from "react";
-import { SWRConfig } from "swr";
+import { createElement } from "react"; 
+import { SWRConfig } from "swr"; 
 import { afterEach, describe, expect, it, vi } from "vitest";
-
+ 
 import { mergeFreshness, useSWRWithFreshness } from "./useSWRWithFreshness";
 
 describe("mergeFreshness", () => {
