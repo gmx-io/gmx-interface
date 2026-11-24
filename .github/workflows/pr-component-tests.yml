@@ -8,6 +8,10 @@ on:
       - "release-*"
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   component-tests:
     name: Playwright Component Tests

@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { ethers } from "ethers";
 import { encodeErrorResult, zeroAddress, type Hex } from "viem";
 import { describe, expect, it } from "vitest";
