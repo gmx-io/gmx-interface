@@ -518,6 +518,7 @@ export function SyntheticsPage(p: Props) {
               {listSection === ListSection.Positions && (
                 <ErrorBoundary id="SyntheticsPage-PositionList" variant="block">
                   <PositionList
+                    showOtherNetworkNotificationsNote
                     onOrdersClick={handlePositionListOrdersClick}
                     onViewPositionHistory={handleViewPositionHistory}
                     onSelectPositionClick={onSelectPositionClick}
@@ -614,6 +615,7 @@ export function SyntheticsPage(p: Props) {
             {listSection === ListSection.Positions && (
               <ErrorBoundary id="SyntheticsPage-PositionList-Mobile" variant="block" wrapperClassName="rounded-t-8">
                 <PositionList
+                  showOtherNetworkNotificationsNote
                   onOrdersClick={handlePositionListOrdersClick}
                   onViewPositionHistory={handleViewPositionHistory}
                   onSelectPositionClick={onSelectPositionClick}

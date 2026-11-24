@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { ReactNode, useCallback, useState } from "react";
+import { ReactNode, Ref, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
 import { getNetworkFeatures } from "config/features";
@@ -113,6 +113,8 @@ export interface NavItemProps {
   onClick?: () => void;
   to?: string;
   external?: boolean;
+  /** Lets a popup anchor to the item, e.g. the "Install app" popup on computers. */
+  buttonRef?: Ref<HTMLButtonElement>;
 }
 
 export function NavItem({
@@ -124,9 +126,11 @@ export function NavItem({
   onClick,
   to,
   external,
+  buttonRef,
 }: NavItemProps) {
   const button = (
     <button
+      ref={buttonRef}
       aria-label={ariaLabel}
       className={cx("group cursor-pointer select-none py-1 text-left", { "w-full": !isCollapsed })}
       onClick={onClick}

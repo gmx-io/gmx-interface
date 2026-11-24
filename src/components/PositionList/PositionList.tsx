@@ -22,6 +22,7 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
 import PositionShare from "components/PositionShare/PositionShare";
+import { OtherNetworkNotificationsNote } from "components/PwaInstall/OtherNetworkNotificationsNote";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -30,6 +31,8 @@ import { type PositionSortField, sortPositionsByField } from "./sortPositionsByF
 import { SymbolSortDropdown } from "./SymbolSortDropdown";
 
 type Props = {
+  /** The trade page shows a note when notifications are on and the network is not Arbitrum. */
+  showOtherNetworkNotificationsNote?: boolean;
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
   onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
@@ -94,6 +97,9 @@ export function PositionList(p: Props) {
           <Trans>Could not refresh open positions. This list may be out of date.</Trans>
         </AlertInfo>
       )}
+      {p.showOtherNetworkNotificationsNote ? (
+        <OtherNetworkNotificationsNote chainId={chainId} hasPositions={positions.length > 0} isMobile={isMobile} />
+      ) : null}
       {isMobile && (
         <>
           <EmptyTableContent isLoading={isLoading} isEmpty={positions.length === 0} emptyText={positionsEmptyText} />

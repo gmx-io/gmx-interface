@@ -3,6 +3,7 @@ import { useState } from "react";
 import Button from "components/Button/Button";
 import Footer from "components/Footer/Footer";
 import Portal from "components/Portal/Portal";
+import { InstallAppNavItem } from "components/PwaInstall/InstallAppNavItem";
 
 import BurgerMenuIcon from "img/ic_burger_menu.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -46,6 +47,7 @@ export function MobileSideNav() {
               <div className="border-b-1/2 border-slate-600 p-8">
                 <ul className="flex list-none flex-col px-0">
                   <SupportChatNavItem isCollapsed={false} onClick={handleToggle} />
+                  <InstallAppNavItem isCollapsed={false} onClick={handleToggle} />
                   <SettingsNavItem isCollapsed={false} onClick={handleToggle} />
                   <LanguageNavItem isCollapsed={false} />
                   <DocsNavItem isCollapsed={false} />
