@@ -159,7 +159,6 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   const share = page
     .locator(".Modal-content")
     .filter({ has: page.getByText("Share your referral card", { exact: true }) });
-  test.fail(tier.discount === "0", "PRO-4494: a share that rounds to zero reads as 0.000% until #3108 lands");
   await expect(share).toContainText(`Save up to ${tier.discount}% on every`);
   const discounts = share.getByText(/^So far, my referrals have saved/);
   if (BigInt(top.discountUsd) >= 100n * 10n ** 30n)
