@@ -58,3 +58,6 @@ claude.md
 
 # Independently built Solana SDK assets
 /public/gmsol-sdk/
+
+# Local playground diagnostics and API process reports
+/.local/trd-136/

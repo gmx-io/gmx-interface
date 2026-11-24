@@ -444,7 +444,7 @@ export function createViteConfig(
       solanaBuildIsolation({ requireAppBootstrap }),
       optionalSolanaSystemStub(),
       sdkDedupe(),
-      tsconfigPaths(),
+      tsconfigPaths({ projects: ["./tsconfig.json", "./landing/tsconfig.json", "./sdk/tsconfig.json"] }),
       react({
         babel: {
           plugins: ["macros"],
@@ -490,7 +490,14 @@ export function createViteConfig(
       exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
       projects: [
-        { extends: true, test: { name: "isolated", exclude: sharedWorkerTestFiles } },
+        {
+          extends: true,
+          test: {
+            name: "isolated",
+            include: ["{src,landing}/**/*.{test,spec}.{js,jsx,ts,tsx}"],
+            exclude: sharedWorkerTestFiles,
+          },
+        },
         { extends: true, test: { name: "shared", include: sharedWorkerTestFiles, isolate: false } },
       ],
     },

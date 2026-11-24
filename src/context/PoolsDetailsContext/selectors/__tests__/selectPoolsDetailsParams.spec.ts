@@ -9,8 +9,9 @@ import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import { selectPoolsDetailsParams } from "../selectPoolsDetailsParams";
 
-// the swap quote needs full markets and tokens data, a GM-paid GLV buy has no swap
-vi.mock("../selectDepositWithdrawalAmounts", () => ({ selectDepositWithdrawalAmounts: () => undefined }));
+vi.mock("../selectDepositWithdrawalAmounts", () => ({
+  selectDepositWithdrawalAmounts: () => ({ glvTokenAmount: 100n, marketTokenAmount: 200n }),
+}));
 
 const GLV_WETH_USDC = "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9";
 const GM_ETH_USD = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
@@ -73,6 +74,7 @@ describe("selectPoolsDetailsParams", () => {
       makeState({ firstTokenAddress: USDC, selectedMarketAddressForGlv: GM_DOGE_USD })
     ) as RawCreateGlvDepositParams;
 
+    expect(params.minGlvTokens).toBe(99n);
     expect(params.isMarketTokenDeposit).toBe(false);
     expect(params.addresses.market).toBe(GM_DOGE_USD);
     expect(params.addresses.initialShortToken).toBe(USDC);

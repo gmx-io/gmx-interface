@@ -12,6 +12,8 @@
     "build-home": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts",
     "build-home:analyze": "VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-home vite build --config vite.landing.config.ts --mode analyze",
     "build-app": "yarn build:gmsol-sdk && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app vite build",
+    "build-playground": "yarn build:gmsol-sdk && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e production-app node tools/local-solana-trades/build-playground.mjs",
+    "start-playground": "yarn build:gmsol-sdk && VITE_APP_VERSION=$(git rev-parse HEAD) env-cmd -e development-app node tools/local-solana-trades/start-playground.mjs",
     "build-sdk": "cd ./sdk && yarn build",
     "test": "vitest",
     "test:ci": "vitest run",
