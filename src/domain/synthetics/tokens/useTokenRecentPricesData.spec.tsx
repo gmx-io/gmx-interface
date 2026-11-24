@@ -87,8 +87,8 @@ function ticker(address: string) {
   };
 }
 
-function keeperPrice() {
-  const price = parseContractPrice(keeperContractPrice, WETH.decimals);
+function keeperPrice(decimals = WETH.decimals) {
+  const price = parseContractPrice(keeperContractPrice, decimals);
   return { minPrice: price, maxPrice: price };
 }
 
@@ -265,6 +265,21 @@ describe("useTokenRecentPricesRequest", () => {
 
     await advance(1_000);
     expect(price(NATIVE_TOKEN_ADDRESS)).toEqual(keeperPrice());
+  });
+
+  it("fills a token gmx-api stops serving from the keeper", async () => {
+    fetchTickers.mockResolvedValue([ticker(WETH.address), ticker(USDC.address)]);
+    fetchTokenPrices.mockResolvedValueOnce(
+      gmxApiResponse({ [WETH.address]: GMX_API_PRICE, [USDC.address]: GMX_API_PRICE })
+    );
+
+    const { price, wethPrice } = renderPrices();
+    await advance(0);
+    expect(price(USDC.address)).toEqual(GMX_API_PRICE);
+
+    await advance(1_000);
+    expect(wethPrice()).toEqual(GMX_API_PRICE);
+    expect(price(USDC.address)).toEqual(keeperPrice(USDC.decimals));
   });
 });
 

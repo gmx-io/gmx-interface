@@ -48,7 +48,7 @@ const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
 const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
 const IS_IN_KEEPER_FALLBACK: { [chainId: number]: boolean } = {};
 
-type KeeperFallbackReason = "error" | "timeout" | "stale" | "empty";
+type KeeperFallbackReason = "error" | "timeout" | "stale" | "empty" | "partial";
 
 export function useTokenRecentPricesRequest(
   chainId: ContractsChainId,
@@ -150,11 +150,8 @@ export function useTokenRecentPricesRequest(
         PRICES_CACHE_UPDATED[chainId][address] = Date.now();
       });
 
-      Object.keys(PRICES_CACHE_UPDATED[chainId]).forEach((address) => {
-        const cacheUpdatedAt = PRICES_CACHE_UPDATED[chainId][address];
-        const canUseCache = cacheUpdatedAt && Date.now() - cacheUpdatedAt < PRICES_CACHE_TTL;
-
-        if (!result[address] && canUseCache) {
+      getCachedPriceAddresses(chainId).forEach((address) => {
+        if (!result[address]) {
           result[address] = PRICES_CACHE[chainId][address];
         }
       });
@@ -216,7 +213,17 @@ async function fetchRestPrices(
     return fetchKeeperPrices(chainId, oracleKeeperFetcher);
   }
 
+  if (fallbackReason === "partial") {
+    return { ...(await fetchKeeperPrices(chainId, oracleKeeperFetcher)), ...prices };
+  }
+
   return prices;
+}
+
+function getCachedPriceAddresses(chainId: ContractsChainId): string[] {
+  return Object.keys(PRICES_CACHE_UPDATED[chainId]).filter(
+    (address) => Date.now() - PRICES_CACHE_UPDATED[chainId][address] < PRICES_CACHE_TTL
+  );
 }
 
 function trackKeeperFallback(chainId: ContractsChainId, fallbackReason: KeeperFallbackReason | undefined) {
@@ -257,6 +264,10 @@ async function fetchGmxApiPrices(
 
   if (Object.keys(prices).length === 0) {
     return { fallbackReason: "empty" };
+  }
+
+  if (getCachedPriceAddresses(chainId).some((address) => !prices[address])) {
+    return { prices, fallbackReason: "partial" };
   }
 
   return { prices };
