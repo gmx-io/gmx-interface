@@ -7,7 +7,7 @@ import { getProviderNameFromUrl } from "config/rpc";
 import { addFallbackTrackerListener } from "lib/FallbackTracker/events";
 import { Storage } from "lib/storage/Storage";
 
-import { RpcTracker } from "./RpcTracker";
+import type { RpcTrackerObserver } from "./types";
 
 export enum RpcDebugFlags {
   LogRpcTracker = "logRpcTracker",
@@ -52,7 +52,7 @@ class RpcTrackerDebug {
     this.storage.set(flag, value);
   }
 
-  debugRpcTrackerState(rpcTracker: RpcTracker) {
+  debugRpcTrackerState(rpcTracker: RpcTrackerObserver) {
     if (!this.getFlag(RpcDebugFlags.LogRpcTracker)) {
       return;
     }
@@ -75,6 +75,7 @@ class RpcTrackerDebug {
         success: checkResult?.success ? "✅" : "❌",
         responseTime: checkResult?.stats?.responseTime ?? "—",
         blockNumber: checkResult?.stats?.blockNumber ?? "—",
+        slot: checkResult?.stats?.slot?.toString() ?? "—",
         bannedTimestamp: endpointStats?.banned?.timestamp ?? "",
         failureCount: endpointStats?.failureTimestamps?.length ?? 0,
       };
@@ -134,14 +135,19 @@ class RpcTrackerDebug {
     return this.getEndpointsState();
   }
 
-  subscribeForRpcTrackerDebugging(tracker: RpcTracker) {
-    addFallbackTrackerListener("endpointsUpdated", tracker.trackerKey, () => {
+  subscribeForRpcTrackerDebugging(tracker: RpcTrackerObserver) {
+    const cleanupUpdated = addFallbackTrackerListener("endpointsUpdated", tracker.trackerKey, () => {
       this.debugRpcTrackerState(tracker);
     });
 
-    addFallbackTrackerListener("trackingFinished", tracker.trackerKey, () => {
+    const cleanupFinished = addFallbackTrackerListener("trackingFinished", tracker.trackerKey, () => {
       this.debugRpcTrackerState(tracker);
     });
+
+    return () => {
+      cleanupUpdated();
+      cleanupFinished();
+    };
   }
 }
 

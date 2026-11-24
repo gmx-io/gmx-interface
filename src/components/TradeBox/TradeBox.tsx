@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
-import { isSettlementChain } from "config/multichain";
+import { getNetworkFeatures } from "config/features";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -72,6 +72,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { useShowGmxAccountPayTokens } from "domain/multichain/useShowGmxAccountPayTokens";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   getNetworkFeeSource,
@@ -91,6 +92,7 @@ import { getConvertFirstPayAmount, getIsOrderStepGasCovered } from "domain/synth
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { Token } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -215,6 +217,9 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
+  const { networkId } = useChainId();
+  const networkFeatures = getNetworkFeatures(networkId);
+  const showGmxAccountPayTokens = useShowGmxAccountPayTokens(chainId);
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
   const feeDiscountError = useSelector(selectFeeDiscountError);
@@ -877,7 +882,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   );
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
-      if (isGmxAccount && !expressOrdersEnabled) {
+      if (isGmxAccount && networkFeatures.express && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
 
         toastEnableExpress(() => setIsSettingsVisible(true));
@@ -888,6 +893,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     },
     [
       expressOrdersEnabled,
+      networkFeatures.express,
       onSelectFromTokenAddress,
       setExpressOrdersEnabled,
       setIsFromTokenGmxAccount,
@@ -988,11 +994,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
-            (!isSettlementChain(chainId) ? (
+            (!showGmxAccountPayTokens ? (
               <TokenSelector
                 label={t`Pay`}
                 chainId={chainId}
                 tokenAddress={fromTokenAddress}
+                tokenInfo={infoTokens[fromTokenAddress]}
                 onSelectToken={(token) => {
                   handleSelectFromTokenAddress(token.address, false);
                 }}

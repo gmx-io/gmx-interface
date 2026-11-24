@@ -1,5 +1,5 @@
 import type { IHttp } from "utils/http/types";
-import { readApiString, readApiUnsignedBigInt } from "utils/http/validation";
+import { readApiString, readApiUnsignedBigInt, readApiUnsignedInteger } from "utils/http/validation";
 import { isRecord } from "utils/objects";
 
 import type { FeeDiscount } from "./types";
@@ -18,10 +18,6 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
     throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected boolean field "attachedOnChain"`);
   }
 
-  if (typeof record.tierId !== "number" || !Number.isSafeInteger(record.tierId) || record.tierId < 0) {
-    throw new Error(`${FEE_DISCOUNT_ENDPOINT}: expected number field "tierId"`);
-  }
-
   return {
     userReferralInfo: {
       userReferralCode: readApiString({ record, name: "userReferralCode", endpoint }),
@@ -29,13 +25,17 @@ export function parseFeeDiscount(raw: unknown): FeeDiscount {
       referralCodeForTxn: readApiString({ record, name: "referralCodeForTxn", endpoint }),
       attachedOnChain: record.attachedOnChain,
       affiliate: readApiString({ record, name: "affiliate", endpoint }),
-      tierId: record.tierId,
+      tierId: readApiUnsignedInteger({ record, name: "tierId", endpoint }),
       totalRebate: readApiUnsignedBigInt({ record, name: "totalRebate", endpoint }),
       totalRebateFactor: readApiUnsignedBigInt({ record, name: "totalRebateFactor", endpoint }),
       discountShare: readApiUnsignedBigInt({ record, name: "discountShare", endpoint }),
       discountFactor: readApiUnsignedBigInt({ record, name: "discountFactor", endpoint }),
     },
     orderFeeDiscountFactor: readApiUnsignedBigInt({ record, name: "orderFeeDiscountFactor", endpoint }),
+    gtRank: readApiUnsignedInteger({ record, name: "gtRank", endpoint }),
+    rankDiscountFactor: readApiUnsignedBigInt({ record, name: "rankDiscountFactor", endpoint }),
+    referrer: record.referrer === null ? undefined : readApiString({ record, name: "referrer", endpoint }),
+    referredUserDiscountFactor: readApiUnsignedBigInt({ record, name: "referredUserDiscountFactor", endpoint }),
     updatedAt: typeof record.updatedAt === "number" ? record.updatedAt : undefined,
   };
 }

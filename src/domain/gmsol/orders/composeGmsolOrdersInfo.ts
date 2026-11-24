@@ -9,14 +9,7 @@ import type { TokensData } from "sdk/utils/tokens/types";
 
 import { resolveGmsolAccountSnapshot } from "../resolveGmsolAccountSnapshot";
 
-type GmsolApiOrder = ApiOrderInfo & {
-  actionState?: string;
-  orderAccount?: string;
-  positionAccount?: string;
-  rentReceiver?: string;
-};
-
-function toApiOrder(apiOrder: GmsolApiOrder): ApiOrderInfo {
+function toApiOrder(apiOrder: ApiOrderInfo): ApiOrderInfo {
   const order = { ...apiOrder };
   delete order.actionState;
   delete order.orderAccount;
@@ -37,7 +30,7 @@ export function composeGmsolOrdersInfo(
   const ordersInfoData: OrdersInfoData = {};
   const keys: string[] = [];
 
-  for (const apiOrder of apiOrders as GmsolApiOrder[]) {
+  for (const apiOrder of apiOrders) {
     if (apiOrder.actionState === "completed" || apiOrder.actionState === "cancelled") {
       continue;
     }

@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { MOCK_POSITIONS_CONSTANTS } from "domain/testUtils/mockChainData";

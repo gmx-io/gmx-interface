@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { type Abi, encodeErrorResult } from "viem";
 import { describe, expect, it } from "vitest";
 
