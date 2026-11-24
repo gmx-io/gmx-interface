@@ -354,11 +354,11 @@ function getProxyProvider(
 ): RpcConfig {
   const routePurpose =
     isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.UseProductionRpcRoutes) ? "dev" : purpose;
+  const routeChain = chainId === SOLANA_NETWORK_ID ? "solana" : chainId;
   const protocol = type === "ws" ? "wss" : "https";
-  const network = chainId === SOLANA_NETWORK_ID ? "solana" : chainId;
 
   return {
-    url: `${protocol}://rpc.gmx.io/${network}/${routePurpose}`,
+    url: `${protocol}://rpc.gmx.io/${routeChain}/${routePurpose}`,
     purpose,
     isPublic: false,
   };
