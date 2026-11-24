@@ -81,9 +81,9 @@ function ticker(address: string) {
     tokenAddress: address,
     minPrice: keeperContractPrice.toString(),
     maxPrice: keeperContractPrice.toString(),
-    oracleDecimals: 0,
     tokenSymbol: "",
     updatedAt: 0,
+    timestamp: 0,
   };
 }
 
