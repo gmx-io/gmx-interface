@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, AVALANCHE, SOURCE_ETHEREUM_MAINNET } from "config/chains";

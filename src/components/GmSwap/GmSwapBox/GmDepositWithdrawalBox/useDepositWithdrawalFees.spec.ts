@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import type { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
