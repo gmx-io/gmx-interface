@@ -23,7 +23,7 @@ import { Market, MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
 import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getIsTokenTrackingPrice } from "utils/tokens";
 import { Token, TokenData } from "utils/tokens/types";
 
 import { Position, PositionInfo, PositionInfoLoaded } from "./types";
@@ -177,7 +177,13 @@ export function getLeverage(p: {
   return bigMath.mulDiv(sizeInUsd, BASIS_POINTS_DIVISOR_BIGINT, remainingCollateralUsd);
 }
 
-export function getLiquidationPriceImpactDeltaUsd(p: {
+function getNegativeImpactCapUsd(marketInfo: MarketInfo, sizeInUsd: bigint, factor: bigint) {
+  const capUsd = -1n * applyFactor(sizeInUsd, factor);
+
+  return marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(capUsd) : capUsd;
+}
+
+export function getLiquidationPriceImpact(p: {
   marketInfo: MarketInfo;
   sizeInUsd: bigint;
   sizeInTokens: bigint;
@@ -185,24 +191,34 @@ export function getLiquidationPriceImpactDeltaUsd(p: {
   isLong: boolean;
   useMaxPriceImpact?: boolean;
 }) {
-  const { marketInfo, sizeInUsd, sizeInTokens, pendingImpactAmount, isLong, useMaxPriceImpact } = p;
+  const { marketInfo, sizeInUsd, sizeInTokens, pendingImpactAmount, isLong } = p;
 
-  let maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
-  if (marketInfo.tradeMath === "gmsol") {
-    maxNegativePriceImpactUsd = getGmsolUsdAmount(maxNegativePriceImpactUsd);
+  const liquidationCapUsd = getNegativeImpactCapUsd(
+    marketInfo,
+    sizeInUsd,
+    marketInfo.maxPositionImpactFactorForLiquidations
+  );
+  const capExitBeforePending = marketInfo.tradeMath !== "gmsol" && marketInfo.useV221LiquidationImpact;
+  if (p.useMaxPriceImpact && !capExitBeforePending) {
+    return { priceImpactDeltaUsd: liquidationCapUsd, balanceWasImproved: false };
   }
+  const maxNegativeImpactUsd = capExitBeforePending
+    ? getNegativeImpactCapUsd(marketInfo, sizeInUsd, marketInfo.maxPositionImpactFactorNegative)
+    : liquidationCapUsd;
 
-  if (useMaxPriceImpact) {
-    return maxNegativePriceImpactUsd;
-  }
+  const closeImpact = p.useMaxPriceImpact
+    ? { priceImpactDeltaUsd: liquidationCapUsd, balanceWasImproved: false }
+    : getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+        fallbackToZero: true,
+        sizeDeltaInTokens: sizeInTokens,
+      });
 
-  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-    fallbackToZero: true,
-    sizeDeltaInTokens: sizeInTokens,
-  }).priceImpactDeltaUsd;
+  let exitImpactUsd = closeImpact.priceImpactDeltaUsd;
 
-  if (priceImpactDeltaUsd > 0) {
-    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
+  if (exitImpactUsd > 0) {
+    exitImpactUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, exitImpactUsd);
+  } else if (capExitBeforePending && exitImpactUsd < liquidationCapUsd) {
+    exitImpactUsd = liquidationCapUsd;
   }
 
   const pendingImpactUsd = convertToUsd(
@@ -211,17 +227,93 @@ export function getLiquidationPriceImpactDeltaUsd(p: {
     pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
   )!;
 
-  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+  let priceImpactDeltaUsd = exitImpactUsd + pendingImpactUsd;
 
   if (priceImpactDeltaUsd > 0) {
-    return 0n;
+    priceImpactDeltaUsd = 0n;
+  } else if (priceImpactDeltaUsd < maxNegativeImpactUsd) {
+    priceImpactDeltaUsd = maxNegativeImpactUsd;
   }
 
-  if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
-    return maxNegativePriceImpactUsd;
+  return { priceImpactDeltaUsd, balanceWasImproved: closeImpact.balanceWasImproved };
+}
+
+export function getLiquidationPriceImpactDeltaUsd(p: {
+  marketInfo: MarketInfo;
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  pendingImpactAmount: bigint;
+  isLong: boolean;
+  useMaxPriceImpact?: boolean;
+}) {
+  return getLiquidationPriceImpact(p).priceImpactDeltaUsd;
+}
+
+export function getCollateralAmountInIndexTokens(p: {
+  collateralToken: TokenData;
+  indexToken: TokenData;
+  collateralAmount: bigint;
+  isLong: boolean;
+}): bigint | undefined {
+  const { collateralToken, indexToken, collateralAmount, isLong } = p;
+
+  if (getIsEquivalentTokens(collateralToken, indexToken)) {
+    return bigMath.mulDiv(
+      collateralAmount,
+      expandDecimals(1, indexToken.decimals),
+      expandDecimals(1, collateralToken.decimals)
+    );
   }
 
-  return priceImpactDeltaUsd;
+  if (!getIsTokenTrackingPrice(collateralToken, indexToken)) {
+    return undefined;
+  }
+
+  const collateralUsd = convertToUsd(collateralAmount, collateralToken.decimals, collateralToken.prices.minPrice);
+  const indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
+
+  return convertToTokenAmount(collateralUsd, indexToken.decimals, indexPrice);
+}
+
+export function getTokenAtIndexPrice<T extends TokenData>(p: {
+  token: T;
+  collateralToken: TokenData;
+  indexToken: TokenData;
+  indexPrice: bigint;
+  isLong: boolean;
+}): T {
+  const { token, collateralToken, indexToken, indexPrice, isLong } = p;
+
+  if (getIsEquivalentTokens(token, indexToken)) {
+    return { ...token, prices: { minPrice: indexPrice, maxPrice: indexPrice } };
+  }
+
+  if (token.address !== collateralToken.address || !getIsTokenTrackingPrice(token, indexToken)) {
+    return token;
+  }
+
+  const currentIndexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
+
+  if (currentIndexPrice <= 0n) {
+    return token;
+  }
+
+  return {
+    ...token,
+    prices: {
+      minPrice: bigMath.mulDiv(token.prices.minPrice, indexPrice, currentIndexPrice),
+      maxPrice: bigMath.mulDiv(token.prices.maxPrice, indexPrice, currentIndexPrice),
+    },
+  };
+}
+
+export function getCollateralPriceAtIndexPrice(p: {
+  collateralToken: TokenData;
+  indexToken: TokenData;
+  indexPrice: bigint;
+  isLong: boolean;
+}): bigint {
+  return getTokenAtIndexPrice({ ...p, token: p.collateralToken }).prices.minPrice;
 }
 
 export function getLiquidationPrice(p: {
@@ -263,23 +355,7 @@ export function getLiquidationPrice(p: {
 
   const { indexToken } = marketInfo;
 
-  const closingFeeUsd = getPositionFee(
-    marketInfo,
-    sizeInUsd,
-    marketInfo.tradeMath === "gmsol" &&
-      getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
-        fallbackToZero: true,
-        sizeDeltaInTokens: sizeInTokens,
-      }).balanceWasImproved,
-    userReferralInfo,
-    undefined,
-    undefined,
-    p.feeDiscountFactor
-  ).positionFeeUsd;
-  const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
-  const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
-
-  const priceImpactDeltaUsd = getLiquidationPriceImpactDeltaUsd({
+  const { priceImpactDeltaUsd, balanceWasImproved } = getLiquidationPriceImpact({
     marketInfo,
     sizeInUsd,
     sizeInTokens,
@@ -287,6 +363,24 @@ export function getLiquidationPrice(p: {
     isLong,
     useMaxPriceImpact,
   });
+  const useImprovedFee =
+    marketInfo.tradeMath === "gmsol" && useMaxPriceImpact
+      ? getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+          fallbackToZero: true,
+          sizeDeltaInTokens: sizeInTokens,
+        }).balanceWasImproved
+      : (marketInfo.tradeMath === "gmsol" || marketInfo.useV221LiquidationImpact === true) && balanceWasImproved;
+  const closingFeeUsd = getPositionFee(
+    marketInfo,
+    sizeInUsd,
+    useImprovedFee,
+    userReferralInfo,
+    undefined,
+    undefined,
+    p.feeDiscountFactor
+  ).positionFeeUsd;
+  const totalPendingFeesUsd = getPositionPendingFeesUsd({ pendingFundingFeesUsd, pendingBorrowingFeesUsd });
+  const totalFeesUsd = totalPendingFeesUsd + closingFeeUsd;
 
   const effectiveMinCollateralUsd =
     marketInfo.tradeMath === "gmsol" ? marketInfo.minCollateralUsd ?? minCollateralUsd : minCollateralUsd;
@@ -321,27 +415,52 @@ export function getLiquidationPrice(p: {
       : sizeInUsd - liquidationCollateralUsd - surchargeUsd;
     liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
   } else if (getIsEquivalentTokens(collateralToken, indexToken)) {
-    if (isLong) {
-      const denominator = sizeInTokens + collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
-    } else {
-      const denominator = sizeInTokens - collateralAmount;
-
-      if (denominator == 0n) {
-        return undefined;
-      }
-
-      liquidationPrice =
-        ((sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - totalFeesUsd) / denominator) *
-        expandDecimals(1, indexToken.decimals);
+    const fundingFeeAmount =
+      p.fundingFeeAmount ??
+      (pendingFundingFeesUsd === 0n
+        ? 0n
+        : convertToTokenAmount(pendingFundingFeesUsd, collateralToken.decimals, collateralToken.prices.minPrice));
+    if (fundingFeeAmount === undefined) {
+      return undefined;
     }
+    // the contract charges funding in collateral tokens, so it moves with the index price like the collateral
+    const netCollateralAmount = getCollateralAmountInIndexTokens({
+      collateralToken,
+      indexToken,
+      collateralAmount: collateralAmount - fundingFeeAmount,
+      isLong,
+    })!;
+    const denominator = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
+
+    if (denominator === 0n) {
+      return undefined;
+    }
+
+    const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
+    const numerator = isLong
+      ? sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd
+      : sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd;
+
+    liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
+  } else if (getIsTokenTrackingPrice(collateralToken, indexToken)) {
+    const indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
+    const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, indexPrice)!;
+    const collateralValueUsd =
+      convertToUsd(collateralAmount, collateralToken.decimals, collateralToken.prices.minPrice)! -
+      pendingFundingFeesUsd;
+    const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
+
+    const denominator = isLong ? positionValueUsd + collateralValueUsd : positionValueUsd - collateralValueUsd;
+
+    if (denominator == 0n) {
+      return undefined;
+    }
+
+    const numerator = isLong
+      ? sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd
+      : sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd;
+
+    liquidationPrice = bigMath.mulDiv(indexPrice, numerator, denominator);
   } else {
     if (sizeInTokens == 0n) {
       return undefined;

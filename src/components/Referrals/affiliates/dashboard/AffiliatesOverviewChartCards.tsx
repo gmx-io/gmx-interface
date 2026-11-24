@@ -13,7 +13,7 @@ import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOv
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
 import sparkleIcon from "img/sparkle.svg";
@@ -139,9 +139,7 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
               discount but no longer generate affiliate rewards.
             </Trans>
           </TooltipText>
-          <TooltipLink href={REFERRALS_DOCS_URL}>
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href={REFERRALS_DOCS_URL} />
         </TooltipContent>
       }
       value={stats?.summary.tradersNet ?? 0}

@@ -8,6 +8,7 @@ import { selectBlockTimestampData, selectChainId } from "context/SyntheticsState
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import { createShiftTxn } from "domain/synthetics/markets/createShiftTxn";
+import { getPoolTokenMinOutput } from "domain/synthetics/markets/lpMinOutput";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import { helperToast } from "lib/helperToast";
 import {
@@ -29,6 +30,7 @@ interface Props {
   executionFee: ExecutionFee | undefined;
   shouldDisableValidation: boolean;
   tokensData: TokensData | undefined;
+  onSent: () => void;
 }
 
 export function useShiftTransactions({
@@ -39,6 +41,7 @@ export function useShiftTransactions({
   executionFee,
   shouldDisableValidation,
   tokensData,
+  onSent,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainId = useSelector(selectChainId);
@@ -71,6 +74,7 @@ export function useShiftTransactions({
         !marketToken ||
         fromMarketTokenAmount === undefined ||
         marketTokenAmount === undefined ||
+        getPoolTokenMinOutput(DEFAULT_SLIPPAGE_AMOUNT, marketTokenAmount) <= 0n ||
         !tokensData
       ) {
         sendTxnValidationErrorMetric(metricData.metricId);
@@ -94,6 +98,7 @@ export function useShiftTransactions({
         setPendingShift,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -110,6 +115,7 @@ export function useShiftTransactions({
       blockTimestampData,
       setPendingTxns,
       setPendingShift,
+      onSent,
     ]
   );
 

@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import type { ConnectedWallet, User } from "@privy-io/react-auth";
 import { describe, expect, it } from "vitest";
 

@@ -17,6 +17,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import type { CreateDepositParams } from "./types";
 
 export async function createDepositTxn({
@@ -48,6 +49,8 @@ export async function createDepositTxn({
   setPendingDeposit?: SetPendingDeposit;
   params: CreateDepositParams;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
+  assertPositiveMinOutputAmount(params.minMarketTokens);
+
   const contract = new Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const depositVaultAddress = getContract(chainId, "DepositVault");
 

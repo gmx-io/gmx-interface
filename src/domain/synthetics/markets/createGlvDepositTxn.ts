@@ -17,6 +17,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokenData, TokensData } from "../tokens";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import type { CreateGlvDepositParams } from "./types";
 
 export async function createGlvDepositTxn({
@@ -56,6 +57,8 @@ export async function createGlvDepositTxn({
   params: CreateGlvDepositParams;
   marketTokenAmount: bigint;
 }): Promise<Pick<WalletTxnResult, "transactionHash">> {
+  assertPositiveMinOutputAmount(params.minGlvTokens);
+
   const contract = new ethers.Contract(getContract(chainId, "GlvRouter"), abis.GlvRouter, signer);
   const depositVaultAddress = getContract(chainId, "GlvVault");
 

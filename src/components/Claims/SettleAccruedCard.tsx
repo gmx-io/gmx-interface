@@ -9,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
-import { TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import { ClaimableCardUI } from "./ClaimableCardUI";
 
@@ -54,9 +54,7 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
               <TooltipText>
                 <Trans>Price impact rebates accrued. Claimable after 5 days.</Trans>
               </TooltipText>
-              <TooltipLink href={DOCS_LINKS.priceImpact}>
-                <Trans>Read more</Trans>
-              </TooltipLink>
+              <TooltipReadMore href={DOCS_LINKS.priceImpact} />
             </TooltipContent>
           ),
           onButtonClick: onAccruedPositionPriceImpactRebateClick,

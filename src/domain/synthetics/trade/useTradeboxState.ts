@@ -5,7 +5,7 @@ import keyBy from "lodash/keyBy";
 import mapValues from "lodash/mapValues";
 import set from "lodash/set";
 import values from "lodash/values";
-import { SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useLatest } from "react-use";
 
@@ -45,6 +45,7 @@ import { TokensData, useTokensAllowanceData } from "../tokens";
 import {
   buildResetTradeOptions,
   INITIAL_SYNTHETICS_TRADE_OPTIONS_STATE,
+  normalizeTradeOptions,
   readStoredTradeOptions,
   resolveStoredTradeOptionsSync,
   type StoredTradeOptions,
@@ -58,6 +59,14 @@ import { getAvailableTradeModes } from "./utils/availableTradeModes";
 export type { StoredTradeOptions } from "./tradeboxStorage";
 
 export type TradeStage = "trade" | "processing";
+
+type ChartTriggerPrice = {
+  networkId: NetworkId;
+  toTokenAddress: string;
+  tradeType: TradeType;
+  tradeMode: TradeMode;
+  value: string;
+};
 
 type TradeOptions = {
   tradeType?: TradeType;
@@ -143,7 +152,7 @@ export function useTradeboxState(
   const setStoredOptionsOnChain = useCallback(
     (args: SetStateAction<StoredTradeOptions>) => {
       setStoredOptionsWithoutFallbacks((oldState) => {
-        const newState = typeof args === "function" ? args(oldState) : args;
+        const newState = normalizeTradeOptions(networkId, typeof args === "function" ? args(oldState) : args, oldState);
 
         if (isEqual(oldState, newState)) {
           return oldState;
@@ -213,6 +222,11 @@ export function useTradeboxState(
       setStoredOptionsOnChain((oldState) => {
         let newState = typeof args === "function" ? args(oldState) : args;
 
+        // Ignore unsupported Swap requests, but let identity updates initialize position tokens and collateral.
+        if (newState.tradeType === TradeType.Swap && !getNetworkFeatures(networkId).swap) {
+          return oldState;
+        }
+
         if (newState && (newState.tradeType === TradeType.Long || newState.tradeType === TradeType.Short)) {
           newState = fallbackPositionTokens({
             chainId,
@@ -253,6 +267,7 @@ export function useTradeboxState(
   const [defaultAllowedSwapSlippageBps, setDefaultAllowedSwapSlippageBps] = useState<bigint>();
   const [selectedAllowedSwapSlippageBps, setSelectedAllowedSwapSlippageBps] = useState<bigint>();
   const [closeSizeInputValue, setCloseSizeInputValue] = useState("");
+  const [chartTriggerPrice, setChartTriggerPrice] = useState<ChartTriggerPrice>();
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState<string>("");
   const [triggerRatioInputValue, setTriggerRatioInputValue] = useState<string>("");
   const [numberOfParts, setNumberOfParts] = useState<number>(savedTwapNumberOfParts);
@@ -299,6 +314,26 @@ export function useTradeboxState(
     : storedOptions?.tokens.indexTokenAddress;
 
   const longOrShort = tradeFlags.isLong ? "long" : "short";
+  const triggerPriceKey = `${networkId}:${toTokenAddress}:${tradeMode}`;
+  const lastTriggerPriceKey = useRef(triggerPriceKey);
+  useEffect(() => {
+    const keyChanged = lastTriggerPriceKey.current !== triggerPriceKey;
+    lastTriggerPriceKey.current = triggerPriceKey;
+    if (chartTriggerPrice) {
+      setChartTriggerPrice(undefined);
+      if (
+        chartTriggerPrice.networkId === networkId &&
+        chartTriggerPrice.toTokenAddress === toTokenAddress &&
+        chartTriggerPrice.tradeType === tradeType &&
+        chartTriggerPrice.tradeMode === tradeMode
+      ) {
+        setTriggerPriceInputValue(chartTriggerPrice.value);
+        return;
+      }
+    }
+    if (keyChanged) setTriggerPriceInputValue("");
+  }, [chartTriggerPrice, networkId, toTokenAddress, tradeMode, tradeType, triggerPriceKey]);
+
   const marketAddress = toTokenAddress ? storedOptions?.markets[toTokenAddress]?.[longOrShort] : undefined;
   const marketInfo = getByKey(marketsInfoData, marketAddress);
 
@@ -767,6 +802,7 @@ export function useTradeboxState(
     setCloseSizeInputValue,
     triggerPriceInputValue,
     setTriggerPriceInputValue,
+    setChartTriggerPrice,
     triggerRatioInputValue,
     setTriggerRatioInputValue,
     leverageOption,
