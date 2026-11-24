@@ -8067,6 +8067,10 @@ msgstr "承認中..."
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "このポジションは未払いの借入手数料とファンディング手数料を差し引くと証拠金がマイナスのため、決済は失敗する可能性が高いです。プラスのファンディングは決済が成功した後にのみ請求可能になります。証拠金を追加するか、実現利益が不足分を補えるようにポジションを十分にクローズしてください。"
 
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+msgid "TP/SL can't be added to this order. Set them after the new position opens."
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "利用率"

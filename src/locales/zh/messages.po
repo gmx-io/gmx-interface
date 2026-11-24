@@ -8067,6 +8067,10 @@ msgstr "授权中..."
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "该仓位在扣除待结借贷费用和资金费用后保证金为负，因此结算很可能失败：正资金费用只有在结算成功后才可领取。请增加保证金，或平掉足够部分的仓位，使已实现利润足以弥补缺口。"
 
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+msgid "TP/SL can't be added to this order. Set them after the new position opens."
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "利用率"

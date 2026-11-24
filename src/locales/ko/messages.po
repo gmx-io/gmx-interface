@@ -8067,6 +8067,10 @@ msgstr "승인 중..."
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "이 포지션은 미지급 차입 수수료와 펀딩 수수료를 차감하면 증거금이 음수이므로 정산이 실패할 가능성이 높습니다. 양(+)의 펀딩은 정산이 성공한 후에만 수령할 수 있습니다. 증거금을 추가하거나, 실현 이익으로 부족분을 충당할 수 있을 만큼 포지션을 종료하십시오."
 
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+msgid "TP/SL can't be added to this order. Set them after the new position opens."
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "이용률"

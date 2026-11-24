@@ -736,7 +736,8 @@ export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
   const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
-  return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
+  // TP/SL created with the order sit on the current position's key, and its liquidation cancels them
+  return limitOrTPSL && !isSwap && !isTrigger && !isTwap && !q(selectTradeboxIsPositionLiquidatedBeforeTrigger);
 });
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
