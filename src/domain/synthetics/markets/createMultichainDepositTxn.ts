@@ -11,6 +11,7 @@ import { nowInSeconds } from "sdk/utils/time";
 
 import { CreateDepositParams } from ".";
 import { ExpressTxnParams, RelayParamsPayload } from "../express";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import { signCreateDeposit } from "./signCreateDeposit";
 
 type TxnParams = {
@@ -101,6 +102,8 @@ export async function createMultichainDepositTxn({
   expressTxnParams: ExpressTxnParams;
   params: CreateDepositParams;
 }) {
+  assertPositiveMinOutputAmount(params.minMarketTokens);
+
   const txnData = await buildAndSignMultichainDepositTxn({
     chainId,
     srcChainId,

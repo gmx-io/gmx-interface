@@ -6,7 +6,7 @@ import { expandDecimals } from "utils/numbers";
 import { DecreasePositionSwapType } from "utils/orders/types";
 import { PositionInfoLoaded } from "utils/positions/types";
 import { convertToTokenAmount } from "utils/tokens";
-import { getDecreasePositionAmounts } from "utils/trade/decrease";
+import { getDecreasePositionAmounts, getNextPositionValuesForDecreaseTrade } from "utils/trade/decrease";
 import { getDecreaseReceiveOutputs, getIsSplitReceiveAvailable } from "utils/trade/decreaseOutputs";
 
 const tokensData = mockTokensData();
@@ -36,6 +36,49 @@ function shortPosition({ pnl, borrowing, funding }: { pnl: number; borrowing: nu
     pendingImpactAmount: 0n,
   } as PositionInfoLoaded;
 }
+
+it("values a partial close using remaining pending impact and market balance after the close", () => {
+  const existingPosition = {
+    ...shortPosition({ pnl: 0, borrowing: 0, funding: 0 }),
+    collateralUsd: usd(10_000),
+    collateralAmount: expandDecimals(10_000, usdc.decimals),
+    pendingImpactAmount: -10_000_000n,
+  };
+
+  for (const [longInterest, expectedPrice] of [
+    [0, 23_480],
+    [40_000, 23_300],
+  ]) {
+    const marketInfo = mockMarginCheckMarketInfo(tokensData, {
+      useV221LiquidationImpact: true,
+      useOpenInterestInTokensForBalance: false,
+      shortInterestUsd: usd(100_000),
+      longInterestUsd: usd(longInterest),
+      maxPositionImpactFactorNegative: usd(0.1),
+      positionFeeFactorForBalanceWasImproved: expandDecimals(1, 27),
+      positionFeeFactorForBalanceWasNotImproved: expandDecimals(1, 28),
+    });
+    const preview = getNextPositionValuesForDecreaseTrade({
+      existingPosition,
+      marketInfo,
+      collateralToken: usdc,
+      sizeDeltaUsd: usd(50_000),
+      sizeDeltaInTokens: existingPosition.sizeInTokens / 2n,
+      estimatedPnl: 0n,
+      realizedPnl: 0n,
+      collateralDeltaUsd: 0n,
+      collateralDeltaAmount: 0n,
+      payedRemainingCollateralUsd: 0n,
+      payedRemainingCollateralAmount: 0n,
+      proportionalPendingImpactDeltaUsd: -usd(1_000),
+      showPnlInLeverage: false,
+      isLong: false,
+      minCollateralUsd: usd(1),
+      userReferralInfo: undefined,
+    });
+    expect(preview.nextLiqPrice).toBe(usd(expectedPrice));
+  }
+});
 
 describe("getDecreasePositionAmounts, TWAP close", () => {
   // closing 50 000 realizes half of the PnL, an equal share per part; the contract charges every pending
