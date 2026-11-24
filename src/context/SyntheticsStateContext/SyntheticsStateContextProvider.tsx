@@ -295,7 +295,7 @@ export function SyntheticsStateContextProvider({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags } = useUiFlagsRequest(chainId);
   const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
   const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 

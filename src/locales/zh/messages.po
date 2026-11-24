@@ -5884,8 +5884,8 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr "超出最大未平仓量。当前：{openInterestText}，上限：{maxOpenInterestText}"
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "以 {receiveTokenSymbol} 接收将兑换您的利润，并产生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的费用。分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳过兑换。<1>了解更多</1>。"
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "以 {receiveTokenSymbol} 接收将产生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的费用。分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳过兑换。<1>了解更多</1>。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."

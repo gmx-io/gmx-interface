@@ -5,7 +5,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BN_ZERO, getBasisPoints, MaxUint256, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
-import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
+import {
+  isIncreaseOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
 import { EditingOrderState, OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
@@ -188,6 +194,13 @@ function useAcceptablePrice(
   if (order) {
     if (isSwapOrder) {
       acceptablePrice = BN_ZERO;
+    } else if (
+      isTriggerDecreaseOrderType(order.orderType) &&
+      triggerPrice === order.triggerPrice &&
+      acceptablePriceImpactBps === initialAcceptablePriceImpactBps
+    ) {
+      // Editing the receive mode must preserve the exact stored price, including protection set on another device.
+      acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
     } else if (isStopLossOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)) {
       // For Stop Loss and Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
       acceptablePrice = (order as PositionOrderInfo).acceptablePrice;

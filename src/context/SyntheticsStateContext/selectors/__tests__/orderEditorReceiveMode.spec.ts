@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM_SEPOLIA, AVALANCHE_FUJI } from "config/chains";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
 import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE } from "domain/testUtils/mockChainData";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
@@ -21,7 +22,7 @@ import { convertToTokenAmount } from "sdk/utils/tokens";
 import type { TokenData } from "sdk/utils/tokens/types";
 
 import {
-  selectOrderEditorCanChangeReceiveMode,
+  selectOrderEditorReceiveTokens,
   selectOrderEditorDecreasePositionSwapType,
   selectOrderEditorExecutionFee,
   selectOrderEditorIsReceiveSeparated,
@@ -48,6 +49,9 @@ const noChange = expect.stringMatching(/^Enter a new/);
 
 // 1 ETH long opened at $2000 with $1000 of USDC collateral; ETH trades at $2000; a take-profit at $2400 by default
 type Case = {
+  noPosition?: boolean;
+  isLong?: boolean;
+  keeperFlag?: "absent" | boolean;
   mode: DecreasePositionSwapType; // stored on the order
   separated?: boolean; // the switch; undefined = untouched
   type?: OrderType;
@@ -86,7 +90,7 @@ function makeState(p: Case): SyntheticsState {
     initialCollateralToken: collateral,
     targetCollateralToken: collateral,
     swapPath: p.swapPath ?? [],
-    isLong: true,
+    isLong: p.isLong ?? true,
     isTwap: false,
     shouldUnwrapNativeToken: p.unwrap ?? false,
     srcChainId: p.srcChainId ?? 0n,
@@ -101,7 +105,7 @@ function makeState(p: Case): SyntheticsState {
     uiFeeFactor: 0n,
   } as unknown as PositionOrderInfo;
   const position = {
-    ...createMockPositionInfo({ account: MOCK_ACCOUNT, marketInfo, collateralToken: collateral }),
+    ...createMockPositionInfo({ account: MOCK_ACCOUNT, marketInfo, collateralToken: collateral, isLong: p.isLong }),
     pendingBorrowingFeesUsd: p.borrowingFeeUsd ?? 0n,
   };
 
@@ -109,7 +113,7 @@ function makeState(p: Case): SyntheticsState {
     account: MOCK_ACCOUNT,
     marketInfo,
     tokensData: { [USDC_ADDRESS]: USDC_TOKEN, [ETH_ADDRESS]: ETH_TOKEN, [NATIVE_ETH_ADDRESS]: NATIVE_ETH_TOKEN },
-    positionsInfoData: { [position.key]: position },
+    positionsInfoData: p.noPosition ? {} : { [position.key]: position },
     ordersInfoData: { [order.key]: order },
     orderEditor: {
       editingOrderState: { orderKey: order.key, source: "PositionsList" },
@@ -128,6 +132,12 @@ function makeState(p: Case): SyntheticsState {
     keepLeverage: p.keepLeverage,
   });
 
+  state.uiFlags =
+    p.keeperFlag === "absent"
+      ? undefined
+      : {
+          [ORDER_EDITOR_RECEIVE_MODE_FLAG]: { enabled: p.keeperFlag ?? true, createdAt: "", updatedAt: "" },
+        };
   return state;
 }
 
@@ -142,6 +152,33 @@ describe("order editor receive mode PRO-4070", () => {
     ["PnL token, switched on", { mode: ToPnl, separated: true }, true, NoSwap, false, -1n],
     ["PnL token, switched back off", { mode: ToPnl, separated: false }, true, ToPnl, true, 0n],
     ["SL, switched off", { mode: NoSwap, ...SL, separated: false }, true, ToCollateral, false, 1n],
+    ["keeper flag missing", { mode: NoSwap, keeperFlag: "absent", separated: false }, false, NoSwap, true, 0n],
+    ["keeper flag off", { mode: ToPnl, keeperFlag: false, separated: true }, false, ToPnl, true, 0n],
+    [
+      "pending 100% TP below mark, mode only",
+      { mode: NoSwap, noPosition: true, orderSize: FULL, size: 0, trigger: 1900, separated: false },
+      true,
+      ToCollateral,
+      false,
+      1n,
+    ],
+    ["pending long TP", { mode: NoSwap, noPosition: true, separated: false }, true, ToCollateral, false, 1n],
+    [
+      "pending short SL",
+      { mode: ToPnl, noPosition: true, isLong: false, collateral: ETH_TOKEN, separated: true, type: StopLossDecrease },
+      true,
+      NoSwap,
+      false,
+      -1n,
+    ],
+    [
+      "pending short, same collateral",
+      { mode: NoSwap, noPosition: true, isLong: false, trigger: 1800, separated: false },
+      false,
+      NoSwap,
+      true,
+      0n,
+    ],
     ["same collateral token", { mode: NoSwap, collateral: ETH_TOKEN, separated: false }, false, NoSwap, true, 0n],
     ["swap path", { mode: ToCollateral, swapPath: [SWAP_MARKET], separated: true }, false, ToCollateral, true, 0n],
     ["2.2c chain", { mode: NoSwap, chainId: AVALANCHE_FUJI, separated: false }, false, NoSwap, true, 0n],
@@ -150,11 +187,22 @@ describe("order editor receive mode PRO-4070", () => {
     const state = makeState(p);
     const gas = (s: SyntheticsState) => selectOrderEditorExecutionFee(s)?.gasLimit ?? 0n;
 
-    expect(selectOrderEditorCanChangeReceiveMode(state)).toBe(isShown);
+    expect(Boolean(selectOrderEditorReceiveTokens(state))).toBe(isShown);
+    if (p.noPosition) expect(selectOrderEditorReceiveOutputs(state)).toEqual([]);
     expect(selectOrderEditorIsReceiveSeparated(state)).toBe(p.separated ?? p.mode === NoSwap);
     expect(selectOrderEditorDecreasePositionSwapType(state)).toBe(sentMode);
     expect(selectOrderEditorPositionOrderError(state)).toEqual(isNoChange ? noChange : undefined);
     expect(gas(state) - gas(makeState({ ...p, separated: undefined }))).toBe(extraSwaps * MOCK_GAS_LIMITS.singleSwap);
+  });
+
+  it("still checks a new trigger or size against the mark for a pending take-profit", () => {
+    const order = { mode: NoSwap, noPosition: true, trigger: 1900, separated: false };
+    const editedPrice = makeState(order);
+    editedPrice.orderEditor.triggerPriceInputValue = "1950";
+    expect(selectOrderEditorPositionOrderError(editedPrice)).toMatch(/above mark price/);
+    expect(selectOrderEditorPositionOrderError(makeState({ ...order, orderSize: USD_200, size: 100 }))).toMatch(
+      /above mark price/
+    );
   });
 
   it.each<[string, Case, string, bigint, bigint]>([

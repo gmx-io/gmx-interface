@@ -95,13 +95,15 @@ export function getPositionOrderError({
       existingPosition?.sizeInUsd
     );
 
-    if (
+    const isSizeAndPriceUnchanged =
       sizeDeltaUsd === orderSizeDeltaUsdForCompare &&
-      triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
-      acceptablePrice === positionOrder.acceptablePrice &&
-      isReceiveModeUnchanged
-    ) {
-      return t`Enter a new size or price`;
+      triggerPrice === positionOrder.triggerPrice &&
+      acceptablePrice === positionOrder.acceptablePrice;
+
+    if (isSizeAndPriceUnchanged) {
+      if (isReceiveModeUnchanged) return t`Enter a new size or price`;
+      // A pending entry can have a valid attached TP/SL on the other side of today's mark.
+      if (!existingPosition) return;
     }
 
     if (existingPosition && sizeDeltaUsd > existingPosition.sizeInUsd) {

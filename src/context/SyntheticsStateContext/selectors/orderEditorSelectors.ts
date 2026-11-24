@@ -16,6 +16,7 @@ import {
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isPositionOrder,
   isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
@@ -42,6 +43,7 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
+import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
 import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
@@ -52,6 +54,7 @@ import { getByKey } from "sdk/utils/objects";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import {
+  getIsEquivalentTokens,
   getTokensRatioByMinOutputAmountAndTriggerPrice,
   getTokensRatioByPriceInDirection,
 } from "sdk/utils/tokens/utils";
@@ -59,7 +62,6 @@ import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 import { getStoredTriggerDecreaseQuote } from "sdk/utils/trade/decreaseMarginCheck";
 import {
   type DecreaseReceiveOutput,
-  getCanSplitReceive,
   getDecreaseReceiveOutputs,
   getSplitReceiveDecreaseSwapType,
 } from "sdk/utils/trade/decreaseOutputs";
@@ -79,6 +81,7 @@ import {
   selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
+  selectUiFlags,
   selectUserReferralInfo,
 } from "./globalSelectors";
 import {
@@ -241,18 +244,21 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
   return positionInfo;
 });
 
-export const selectOrderEditorCanChangeReceiveMode = createSelector((q) => {
+export const selectOrderEditorReceiveTokens = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-
-  if (!order || !isTriggerDecreaseOrderType(order.orderType) || order.swapPath.length > 0) {
-    return false;
+  if (!order || !isPositionOrder(order) || !isTriggerDecreaseOrderType(order.orderType) || order.swapPath.length > 0) {
+    return;
   }
 
-  if (!isContractsV2_2_1(q(selectChainId))) {
-    return false;
+  if (!isContractsV2_2_1(q(selectChainId)) || q(selectUiFlags)?.[ORDER_EDITOR_RECEIVE_MODE_FLAG]?.enabled !== true) {
+    return;
   }
 
-  return getCanSplitReceive(q(selectOrderEditorExistingPosition));
+  const pnlToken = order.isLong ? order.marketInfo.longToken : order.marketInfo.shortToken;
+  const collateralToken = order.targetCollateralToken;
+  if (getIsEquivalentTokens(pnlToken, collateralToken)) return;
+
+  return { pnlToken, collateralToken };
 });
 
 export const selectOrderEditorIsReceiveSeparated = createSelector((q) => {
@@ -268,7 +274,7 @@ export const selectOrderEditorDecreasePositionSwapType = createSelector((q) => {
 
   if (!order) return undefined;
 
-  if (!q(selectOrderEditorCanChangeReceiveMode)) {
+  if (!q(selectOrderEditorReceiveTokens)) {
     return order.decreasePositionSwapType;
   }
 
@@ -382,7 +388,7 @@ const selectOrderEditorDecreaseProjection = createSelector((q) => {
     isSetAcceptablePriceImpactEnabled,
     forceDecreaseSwapType: q(selectOrderEditorDecreasePositionSwapType),
   };
-  if (existingPosition && market.tradeMath !== "gmsol" && q(selectOrderEditorCanChangeReceiveMode)) {
+  if (existingPosition && market.tradeMath !== "gmsol" && q(selectOrderEditorReceiveTokens)) {
     return getStoredTriggerDecreaseQuote({
       ...params,
       collateralToken: existingPosition.collateralToken,
@@ -869,7 +875,7 @@ export const selectOrderEditorIsRemainingPositionAboveMaxLeverage = createSelect
     return false;
   }
 
-  const marginState = q(selectOrderEditorCanChangeReceiveMode)
+  const marginState = q(selectOrderEditorReceiveTokens)
     ? q(selectOrderEditorDecreaseProjection)?.marginState
     : q(
         makeSelectOrderDecreaseRemainingPositionMarginState(
@@ -884,7 +890,7 @@ export const selectOrderEditorIsRemainingPositionAboveMaxLeverage = createSelect
 
 export const selectOrderEditorReceiveOutputs = createSelector((q): DecreaseReceiveOutput[] => {
   const order = q(selectOrderEditorOrder);
-  if (!order || !q(selectOrderEditorCanChangeReceiveMode)) return EMPTY_ARRAY;
+  if (!order || !q(selectOrderEditorReceiveTokens) || !q(selectOrderEditorExistingPosition)) return EMPTY_ARRAY;
 
   return getDecreaseReceiveOutputs({
     decreaseAmounts: q(selectOrderEditorDecreaseAmounts),
