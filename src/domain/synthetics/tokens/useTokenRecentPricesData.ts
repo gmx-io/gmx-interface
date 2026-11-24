@@ -48,7 +48,7 @@ const PRICES_CACHE: { [chainId: number]: TokenPricesData } = {};
 const PRICES_CACHE_UPDATED: { [chainId: number]: { [address: string]: number } } = {};
 const IS_IN_KEEPER_FALLBACK: { [chainId: number]: boolean } = {};
 
-type KeeperFallbackReason = "error" | "timeout" | "empty";
+type KeeperFallbackReason = "error" | "timeout" | "stale" | "empty";
 
 export function useTokenRecentPricesRequest(
   chainId: ContractsChainId,
@@ -240,6 +240,10 @@ async function fetchGmxApiPrices(
 
   if (!response) {
     return { fallbackReason: signal.aborted ? "timeout" : "error" };
+  }
+
+  if (Date.now() - response.originTs > WS_PRICES_STALE_MS) {
+    return { fallbackReason: "stale" };
   }
 
   const prices: TokenPricesData = {};

@@ -217,6 +217,13 @@ describe("useTokenRecentPricesRequest", () => {
       nextPollSource: "gmx-api",
     },
     {
+      name: "gmx-api serves a snapshot older than 10 s",
+      gmxApiReply: () => Promise.resolve({ prices: { [WETH.address]: GMX_API_PRICE }, originTs: Date.now() - 10_001 }),
+      firstPollAt: 0,
+      firstPollSource: "keeper",
+      nextPollSource: "gmx-api",
+    },
+    {
       name: "gmx-api knows no token",
       gmxApiReply: () => Promise.resolve(gmxApiResponse({ [UNKNOWN_TOKEN_ADDRESS]: GMX_API_PRICE })),
       firstPollAt: 0,
