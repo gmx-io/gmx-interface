@@ -23,8 +23,8 @@ msgid "Closed"
 msgstr "已休市"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Trading is paused because this market's price feed has stopped updating. The market reopens automatically when prices resume. Until then, you can't open or increase a position."
-msgstr "该市场的价格馈送已停止更新，交易暂停。价格恢复更新后，市场将自动重新开放。在此之前，您无法开仓或加仓。"
+msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
+msgstr "该市场暂时休市，例如在其价格馈送不可用期间。在重新开放之前，您无法开仓或加仓。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"

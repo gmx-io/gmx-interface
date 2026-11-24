@@ -23,7 +23,7 @@ msgid "Closed"
 msgstr ""
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Trading is paused because this market's price feed has stopped updating. The market reopens automatically when prices resume. Until then, you can't open or increase a position."
+msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts

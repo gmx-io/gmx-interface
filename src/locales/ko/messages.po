@@ -23,8 +23,8 @@ msgid "Closed"
 msgstr "마감"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Trading is paused because this market's price feed has stopped updating. The market reopens automatically when prices resume. Until then, you can't open or increase a position."
-msgstr "이 마켓의 가격 피드 업데이트가 멈춰 거래가 일시 중지되었습니다. 가격 업데이트가 재개되면 마켓은 자동으로 다시 열립니다. 그때까지 포지션을 열거나 늘릴 수 없습니다."
+msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
+msgstr "이 마켓은 일시적으로 마감되었습니다(예: 가격 피드를 사용할 수 없는 동안). 다시 열릴 때까지 포지션을 열거나 늘릴 수 없습니다."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"

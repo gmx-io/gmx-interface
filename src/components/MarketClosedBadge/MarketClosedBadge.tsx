@@ -30,8 +30,8 @@ export function MarketClosedBadge({ poolName, variant = "badge", className }: Pr
           </TooltipTitle>
           <TooltipText>
             <Trans>
-              Trading is paused because this market's price feed has stopped updating. The market reopens automatically
-              when prices resume. Until then, you can't open or increase a position.
+              This market is temporarily closed, for example while its price feed is unavailable. You can't open or
+              increase a position until it reopens.
             </Trans>
           </TooltipText>
           {poolName && <TooltipRow label={t`Pool`} value={poolName} />}
