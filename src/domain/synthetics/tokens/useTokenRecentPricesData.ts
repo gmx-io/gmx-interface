@@ -138,6 +138,12 @@ export function useTokenRecentPricesRequest(
     fetcher: async ([chainId]) => {
       const result = await fetchRestPrices(chainId, pricesSdk, oracleKeeperFetcher);
 
+      const wrappedToken = getWrappedToken(chainId);
+
+      if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
+        result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
+      }
+
       Object.entries(result).forEach(([address, tokenPrices]) => {
         // Update cache of new received tokens
         PRICES_CACHE[chainId][address] = tokenPrices;
@@ -152,12 +158,6 @@ export function useTokenRecentPricesRequest(
           result[address] = PRICES_CACHE[chainId][address];
         }
       });
-
-      const wrappedToken = getWrappedToken(chainId);
-
-      if (result[wrappedToken.address] && !result[NATIVE_TOKEN_ADDRESS]) {
-        result[NATIVE_TOKEN_ADDRESS] = result[wrappedToken.address];
-      }
 
       if (isRestCoveredByStreamRef.current) {
         // the stream serves prices meanwhile, so the slower REST cadence is not a ticker freshness gap

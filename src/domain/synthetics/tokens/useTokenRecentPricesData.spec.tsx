@@ -110,7 +110,8 @@ function renderPrices(params?: { keeperOnly?: boolean }) {
     </SWRConfig>
   );
 
-  return { wethPrice: () => result?.pricesData?.[WETH.address] };
+  const price = (address: string) => result?.pricesData?.[address];
+  return { price, wethPrice: () => price(WETH.address) };
 }
 
 async function advance(ms: number) {
@@ -243,6 +244,20 @@ describe("useTokenRecentPricesRequest", () => {
 
     await advance(1_000);
     expect(wethPrice()).toEqual(sourcePrice(row.nextPollSource));
+  });
+
+  it("prices the native token from the keeper's wrapped token once gmx-api fails", async () => {
+    fetchTokenPrices.mockResolvedValueOnce(
+      gmxApiResponse({ [WETH.address]: GMX_API_PRICE, [NATIVE_TOKEN_ADDRESS]: GMX_API_PRICE })
+    );
+    fetchTokenPrices.mockRejectedValueOnce(new Error("502"));
+
+    const { price } = renderPrices();
+    await advance(0);
+    expect(price(NATIVE_TOKEN_ADDRESS)).toEqual(GMX_API_PRICE);
+
+    await advance(1_000);
+    expect(price(NATIVE_TOKEN_ADDRESS)).toEqual(keeperPrice());
   });
 });
 
