@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { keccak256, stringToHex } from "viem";
 import { describe, expect, it } from "vitest";
 

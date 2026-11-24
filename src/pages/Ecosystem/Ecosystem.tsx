@@ -9,7 +9,7 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import PageTitle from "components/PageTitle/PageTitle";
 
-import { communityProjects, dashboardProjects, gmxPages, integrations, telegramGroups } from "./ecosystemConstants";
+import { communityProjects, dashboardProjects, gmxPages, integrations } from "./ecosystemConstants";
 
 import "./Ecosystem.css";
 
@@ -205,34 +205,6 @@ export default function Ecosystem() {
               <ExternalLink href="https://www.tradingview.com/symbols/BTCUSD/">BTCUSD</ExternalLink> and other pairs
               with interactive charting tools.
             </Trans>
-          </div>
-          <PageTitle title={t`Telegram groups`} subtitle={t`Community-led Telegram groups`} />
-          <div className="Ecosystem-projects">
-            {telegramGroups.map((item) => {
-              const linkLabel = item.linkLabel ? item.linkLabel : item.link;
-              return (
-                <div className="App-card" key={item.title.id}>
-                  <div className="App-card-title">{_(item.title)}</div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>Link</Trans>
-                      </div>
-                      <div>
-                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">
-                        <Trans>About</Trans>
-                      </div>
-                      <div>{_(item.about)}</div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>

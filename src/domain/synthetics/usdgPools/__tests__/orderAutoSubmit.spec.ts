@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
