@@ -14,6 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
+import type { TypedSizeUsd } from "domain/synthetics/trade/useTradeboxState";
 import { MaxActionsState } from "domain/tokens/useMaxAvailableAmount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
@@ -65,12 +66,19 @@ export function TradeboxMarginFields({
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
-  const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
+  const { toTokenAddress, marketAddress, typedSizeUsd, setTypedSizeUsd } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
   const prevSizeTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
-  const tokensInputValueFromUsdRef = useRef<string | undefined>(toTokenInputValue === "" ? "" : undefined);
+  // Mirrors the trade box copy for reads within a render; a remount restores it while the token input still matches
+  const typedSizeUsdRef = useRef<TypedSizeUsd | undefined>(
+    typedSizeUsd?.toTokenInputValue === toTokenInputValue
+      ? typedSizeUsd
+      : toTokenInputValue === ""
+        ? { sizeInputValue: "", toTokenInputValue: "" }
+        : undefined
+  );
   const previousToTokenInputValue = usePrevious(toTokenInputValue);
 
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -80,7 +88,9 @@ export function TradeboxMarginFields({
     "usd"
   );
   const sizeDisplayMode: SizeDisplayMode = sizeDisplayModeRaw ?? "usd";
-  const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
+  const [sizeInputValue, setSizeInputValue] = useState<string>(
+    typedSizeUsdRef.current?.sizeInputValue ?? toTokenInputValue
+  );
 
   const { isLimit } = tradeFlags;
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
@@ -90,10 +100,23 @@ export function TradeboxMarginFields({
   // position size reflects the limit fill price.
   const sizeTriggerPrice = isLimit ? triggerPrice : undefined;
   const sizeConversionPrice = sizeTriggerPrice ?? markPrice;
+  const previousSizeConversionPrice = usePrevious(sizeConversionPrice);
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
     markPrice: sizeConversionPrice,
   });
+
+  const keepTypedSizeUsd = useCallback(
+    (next: TypedSizeUsd | undefined) => {
+      typedSizeUsdRef.current = next;
+      setTypedSizeUsd((prev) =>
+        prev?.sizeInputValue === next?.sizeInputValue && prev?.toTokenInputValue === next?.toTokenInputValue
+          ? prev
+          : next
+      );
+    },
+    [setTypedSizeUsd]
+  );
 
   const marginPercentage = useMemo(
     () => calcMarginPercentage(fromTokenInputValue, maxAvailableAmount, fromToken?.decimals),
@@ -151,13 +174,13 @@ export function TradeboxMarginFields({
   useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
-    const isTokensInputValueFromUsd = toTokenInputValue === tokensInputValueFromUsdRef.current;
+    const isTokensInputValueFromUsd = toTokenInputValue === typedSizeUsdRef.current?.toTokenInputValue;
 
     // A typed USD size stays the order size: its token amount follows every move of the conversion price.
     if (shouldForceSizeUsdSyncRef.current || (focusedInput === "to" && isTokensInputValueFromUsd)) {
       shouldForceSizeUsdSyncRef.current = false;
       const tokensValue = usdToTokens(sizeInputValue);
-      tokensInputValueFromUsdRef.current = tokensValue;
+      keepTypedSizeUsd({ sizeInputValue, toTokenInputValue: tokensValue });
       if (tokensValue !== toTokenInputValue) {
         setToTokenInputValue(tokensValue, false);
       }
@@ -169,10 +192,14 @@ export function TradeboxMarginFields({
 
     // A token amount set elsewhere ends the USD size's lead, so a later chance match (an empty input) can't restore it.
     if (isTokensInputValueSetElsewhere) {
-      tokensInputValueFromUsdRef.current = undefined;
+      keepTypedSizeUsd(undefined);
     }
 
-    if (focusedInput === "to" && !isTokensInputValueSetElsewhere) return;
+    // Size focus only guards the text being typed; a size led by its token amount shows it at the new price.
+    const isSizeConversionPriceMoved =
+      previousSizeConversionPrice !== undefined && sizeConversionPrice !== previousSizeConversionPrice;
+
+    if (focusedInput === "to" && !isTokensInputValueSetElsewhere && !isSizeConversionPriceMoved) return;
 
     const usdValue = tokensToUsd(toTokenInputValue);
     if (usdValue !== sizeInputValue) {
@@ -180,6 +207,8 @@ export function TradeboxMarginFields({
     }
   }, [
     sizeTriggerPrice,
+    sizeConversionPrice,
+    previousSizeConversionPrice,
     focusedInput,
     sizeDisplayMode,
     sizeInputValue,
@@ -189,6 +218,7 @@ export function TradeboxMarginFields({
     tokensToUsd,
     usdToTokens,
     setToTokenInputValue,
+    keepTypedSizeUsd,
   ]);
 
   const handleFromInputChange = useCallback(
@@ -248,7 +278,7 @@ export function TradeboxMarginFields({
         setSizeInputValue(nextValue);
         if (canConvert) {
           const tokensValue = usdToTokens(nextValue);
-          tokensInputValueFromUsdRef.current = tokensValue;
+          keepTypedSizeUsd({ sizeInputValue: nextValue, toTokenInputValue: tokensValue });
           if (tokensValue !== toTokenInputValue) {
             setToTokenInputValue(tokensValue, false);
           }
@@ -257,6 +287,7 @@ export function TradeboxMarginFields({
     },
     [
       canConvert,
+      keepTypedSizeUsd,
       markFieldInteraction,
       sizeDisplayMode,
       setFocusedInput,
@@ -269,6 +300,9 @@ export function TradeboxMarginFields({
   const handleSizeDisplayModeChange = useCallback(
     (newMode: SizeDisplayMode) => {
       if (newMode === sizeDisplayMode) return;
+
+      // The token amount leads after a switch: Token → USD keeps the typed tokens and shows them at the current price.
+      keepTypedSizeUsd(undefined);
 
       const currentValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
       if (!currentValue) {
@@ -292,6 +326,7 @@ export function TradeboxMarginFields({
     [
       sizeDisplayMode,
       canConvert,
+      keepTypedSizeUsd,
       sizeInputValue,
       toTokenInputValue,
       tokensToUsd,

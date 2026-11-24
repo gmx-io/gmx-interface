@@ -658,7 +658,7 @@ test.describe("TradeboxMarginFields Integration", () => {
     });
   });
 
-  test.describe("Limit to Market switch", () => {
+  test.describe("Size intent", () => {
     test("keeps the typed USD size priced at the mark TRD-17", async ({ mount, page }) => {
       // a $20000 size is 12.5 ETH at a $1600 long limit, 6.25 ETH at a $3200 short limit, 10 ETH at a $2000 mark
       // and 8 ETH at a $2500 mark; a blank limit price leaves the size priced at the mark
@@ -696,6 +696,46 @@ test.describe("TradeboxMarginFields Integration", () => {
           await component.unmount();
         });
       }
+    });
+
+    test("keeps the typed USD size priced at the mark after the fields remount TRD-17", async ({ mount, page }) => {
+      const sizeInput = page.locator(getDataQALocator("position-size-input"));
+      const component = await mount(<IntegrationStory initialToValue="" remountKey={0} />);
+      await sizeInput.fill("20000");
+
+      // remountKey 1 is a desktop ↔ mobile layout switch; $20000 is 8 ETH at a $2500 mark and 10 ETH at $2000
+      for (const [ethPrice, remountKey, toValue] of [
+        [2500, 0, "8"],
+        [2500, 1, "8"],
+        [2000, 1, "10"],
+      ] as const) {
+        await component.update(<IntegrationStory initialToValue="" ethPrice={ethPrice} remountKey={remountKey} />);
+
+        await expect(page.getByTestId("to-value")).toHaveText(toValue);
+        await expect(sizeInput).toHaveValue("20000");
+      }
+    });
+
+    test("keeps the token amount after a Token to USD switch and shows it at the mark TRD-17", async ({
+      mount,
+      page,
+    }) => {
+      const sizeInput = page.locator(getDataQALocator("position-size-input"));
+      const toggle = page.locator(getDataQALocator("position-size-display-mode-button"));
+      const component = await mount(<IntegrationStory initialToValue="" />);
+
+      await toggle.click();
+      await page.locator("td").filter({ hasText: /^ETH$/ }).click();
+      await sizeInput.fill("15");
+      await toggle.click();
+      await page.locator("td").filter({ hasText: /^USD$/ }).click();
+      await expect(sizeInput).toHaveValue("30000.00");
+
+      await component.update(<IntegrationStory initialToValue="" ethPrice={2500} />);
+
+      await expect(sizeInput).toHaveValue("37500.00");
+      await expect(page.getByTestId("to-value")).toHaveText("15");
+      await expect(page.getByTestId("focused-input")).toHaveText("to");
     });
   });
 
