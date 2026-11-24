@@ -1,9 +1,6 @@
 import cryptoJs from "crypto-js";
-import { keccak256, type Hash } from "viem";
 import { generatePrivateKey } from "viem/accounts";
 
-import { SUBACCOUNT_MESSAGE } from "configs/express";
-import type { IAbstractSigner } from "utils/signer";
 import { PrivateKeySigner } from "utils/signer";
 
 export type GeneratedSubaccount = {
@@ -20,19 +17,6 @@ export function getSubaccountFromPrivateKey(privateKey: `0x${string}`): Generate
 
 export function generateSubaccount(): GeneratedSubaccount {
   return getSubaccountFromPrivateKey(generatePrivateKey() as `0x${string}`);
-}
-
-/**
- * Rebuilds a key that came from a signature of `SUBACCOUNT_MESSAGE` or `OLD_SUBACCOUNT_MESSAGE`,
- * to withdraw native tokens left on its address. Never approve this key again.
- */
-export async function deriveLegacySubaccount(
-  mainSigner: IAbstractSigner,
-  message: string = SUBACCOUNT_MESSAGE
-): Promise<GeneratedSubaccount> {
-  const signature = await mainSigner.signMessage(message);
-
-  return getSubaccountFromPrivateKey(keccak256(signature as Hash) as `0x${string}`);
 }
 
 /**

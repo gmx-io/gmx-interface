@@ -700,10 +700,12 @@ export class GmxApiSdk {
   }
 
   /**
-   * Generate a random subaccount key. Nothing is signed.
+   * Generate a random subaccount key. Nothing is signed. Throws if a key is already set:
+   * call `clearSubaccount` first.
    *
-   * The key lives only in this instance. Store the `exportSubaccount` result and pass it to
-   * `importSubaccount` on the next start, otherwise every start needs a new approval.
+   * The key lives only in this instance. Store the `exportSubaccount` result after
+   * `activateSubaccount` and pass it to `importSubaccount` on the next start, otherwise every
+   * start needs a new approval.
    *
    * Returns the subaccount address. Use `activateSubaccount` to sign the
    * approval and start using it for orders.
@@ -713,19 +715,21 @@ export class GmxApiSdk {
   }
 
   /**
-   * Returns the current subaccount key to store. Treat `privateKey` as a secret.
+   * Returns the current subaccount key and, once known, the main account it trades for.
+   * Treat `privateKey` as a secret.
    */
   exportSubaccount(): ExportedSubaccount | undefined {
     return exportSdkSubaccount(this.subaccountClient);
   }
 
   /**
-   * Resume a subaccount from a stored key. `account` is the main account it trades for.
+   * Resume a subaccount from an `exportSubaccount` result. A stored `account` binds the key to
+   * that main account: other signers are rejected.
    *
    * Returns the subaccount address.
    */
-  importSubaccount(privateKey: `0x${string}`, account: string): string {
-    return importSdkSubaccount(this.subaccountClient, privateKey, account);
+  importSubaccount(subaccount: ExportedSubaccount): string {
+    return importSdkSubaccount(this.subaccountClient, subaccount);
   }
 
   /**
@@ -733,6 +737,8 @@ export class GmxApiSdk {
    * 1. Generates the subaccount if not already set
    * 2. Prepares and signs a SubaccountApproval with the main signer
    * 3. Stores the approval so subsequent orders use 1CT mode automatically
+   *
+   * Throws for a key the main account removed on-chain: call `clearSubaccount` to use a new key.
    */
   async activateSubaccount(
     mainSigner: IAbstractSigner,

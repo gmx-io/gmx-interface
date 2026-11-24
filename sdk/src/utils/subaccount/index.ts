@@ -1,7 +1,6 @@
 export * from "./types";
 export {
   generateSubaccount,
-  deriveLegacySubaccount,
   decryptSubaccountPrivateKey,
   createSubaccountSignerFromConfig,
   type GeneratedSubaccount,

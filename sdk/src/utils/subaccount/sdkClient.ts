@@ -54,7 +54,7 @@ export type PrepareWithContext<TRequest extends SubaccountPrepareRequest> = (
   request: TRequest
 ) => Promise<PrepareOrderResponse>;
 
-export type ExportedSubaccount = Pick<GeneratedSubaccount, "address" | "privateKey">;
+export type ExportedSubaccount = Pick<GeneratedSubaccount, "address" | "privateKey"> & { account?: string };
 
 const sdkSubaccountKeys = new WeakMap<object, GeneratedSubaccount>();
 const MAX_PREPARED_SUBACCOUNT_APPROVALS = 100;
@@ -93,6 +93,14 @@ function throwSubaccountAccountMismatch(subaccount: SubaccountState, account: st
 
 function throwSubaccountAddressMismatch(source: string, provided: string, expected: string): never {
   throw new Error(`${source} ${provided} does not match generated subaccount ${expected}.`);
+}
+
+function assertNoOtherSdkSubaccountKey(client: SdkSubaccountClientContext, address?: string): void {
+  const heldAddress = sdkSubaccountKeys.get(client.owner)?.address;
+
+  if (heldAddress && !isSameAddress(heldAddress, address)) {
+    throw new Error(`Subaccount ${heldAddress} is already set. Call clearSubaccount() before setting another key.`);
+  }
 }
 
 function resetSdkSubaccount(client: SdkSubaccountClientContext): void {
@@ -237,21 +245,28 @@ function setSdkSubaccount(
 }
 
 export function generateSdkSubaccount(client: SdkSubaccountClientContext, account?: string): string {
+  assertNoOtherSdkSubaccountKey(client);
+
   return setSdkSubaccount(client, generateSubaccount(), account);
 }
 
-export function importSdkSubaccount(
-  client: SdkSubaccountClientContext,
-  privateKey: `0x${string}`,
-  account: string
-): string {
-  return setSdkSubaccount(client, getSubaccountFromPrivateKey(privateKey), account);
+export function importSdkSubaccount(client: SdkSubaccountClientContext, exported: ExportedSubaccount): string {
+  const subaccount = getSubaccountFromPrivateKey(exported.privateKey);
+
+  if (!isSameAddress(subaccount.address, exported.address)) {
+    throwSubaccountAddressMismatch("address", exported.address, subaccount.address);
+  }
+
+  assertNoOtherSdkSubaccountKey(client, subaccount.address);
+
+  return setSdkSubaccount(client, subaccount, exported.account);
 }
 
 export function exportSdkSubaccount(client: SdkSubaccountClientContext): ExportedSubaccount | undefined {
   const subaccount = sdkSubaccountKeys.get(client.owner);
+  const account = client.getSubaccount()?.account;
 
-  return subaccount && { address: subaccount.address, privateKey: subaccount.privateKey };
+  return subaccount && { address: subaccount.address, privateKey: subaccount.privateKey, ...(account && { account }) };
 }
 
 export function reconcileSdkSubaccountApproval(subaccount: SubaccountState | undefined): void {
@@ -342,6 +357,14 @@ export async function activateSdkSubaccount(
 
   const status = knownStatus ?? (await getSdkSubaccountStatus(client, mainSigner.address, { force: true }));
   const subaccount = client.getSubaccount()!;
+
+  if (status && !status.active && status.revocationCounter > 0n) {
+    throw new Error(
+      `Subaccount ${subaccount.address} was removed from account ${mainSigner.address} and is not approved again. ` +
+        "Call clearSubaccount() before activateSubaccount() to use a new key."
+    );
+  }
+
   const requestedExpiresAt = BigInt(nowInSeconds() + (options?.expiresInSeconds ?? DEFAULT_SUBACCOUNT_EXPIRY_DURATION));
   const expiresAt = status && status.expiresAt > requestedExpiresAt ? status.expiresAt : requestedExpiresAt;
   const requestedMaxAllowedCount =
