@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { hashTypedData } from "viem";
 import { describe, expect, it } from "vitest";
 

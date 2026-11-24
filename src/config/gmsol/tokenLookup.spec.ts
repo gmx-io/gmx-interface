@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";

@@ -3,6 +3,7 @@
 import { lingui } from "@lingui/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { execFileSync } from "node:child_process";
+import { readdirSync, readFileSync } from "node:fs";
 import path from "path";
 import type { ModuleInfo, OutputBundle, OutputChunk } from "rollup";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -376,6 +377,25 @@ function optionalSolanaSystemStub(): PluginOption {
   };
 }
 
+const TEST_FILE_REGEX = /\.(spec|test)\.tsx?$/;
+// A shared worker keeps the module cache, vi.mock registrations and library state (like lingui's active
+// locale) between files, so a spec adds a `// @vitest-shared-worker` line only when it changes none of them.
+const SHARED_WORKER_MARKER_REGEX = /^\/\/ @vitest-shared-worker$/m;
+
+function getSharedWorkerTestFiles(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const file = `${dir}/${entry.name}`;
+
+    if (entry.isDirectory()) {
+      return getSharedWorkerTestFiles(file);
+    }
+
+    const canShareWorker = TEST_FILE_REGEX.test(file) && SHARED_WORKER_MARKER_REGEX.test(readFileSync(file, "utf8"));
+
+    return canShareWorker ? [file] : [];
+  });
+}
+
 export function createViteConfig(
   { mode }: ConfigEnv,
   {
@@ -384,6 +404,8 @@ export function createViteConfig(
   }: { emitAppRedirects?: boolean; requireAppBootstrap?: boolean } = {}
 ): UserConfig {
   const env = loadEnv(mode, process.cwd(), "");
+  const sharedWorkerTestFiles =
+    mode === "test" ? ["src", "landing"].flatMap((dir) => getSharedWorkerTestFiles(dir)) : [];
   const pwaBuildId = getPwaBuildId(env.VITE_APP_PWA_GENERATION);
 
   const pwaGeneration = Number(pwaBuildId);
@@ -465,9 +487,19 @@ export function createViteConfig(
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
-      include: ["{src,landing}/**/*.{test,spec}.{js,jsx,ts,tsx}"],
       exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
+      projects: [
+        {
+          extends: true,
+          test: {
+            name: "isolated",
+            include: ["{src,landing}/**/*.{test,spec}.{js,jsx,ts,tsx}"],
+            exclude: sharedWorkerTestFiles,
+          },
+        },
+        { extends: true, test: { name: "shared", include: sharedWorkerTestFiles, isolate: false } },
+      ],
     },
   };
 }
