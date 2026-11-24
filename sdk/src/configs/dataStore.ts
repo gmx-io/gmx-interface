@@ -117,6 +117,7 @@ export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED
 export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
 export const INCENTIVE_VESTER_DEPOSIT_FEATURE_DISABLED_KEY = hashString("INCENTIVE_VESTER_DEPOSIT_FEATURE_DISABLED");
 export const INCENTIVE_VESTER_CLAIM_FEATURE_DISABLED_KEY = hashString("INCENTIVE_VESTER_CLAIM_FEATURE_DISABLED");
+export const INCENTIVE_VESTER_TRANSFER_FEATURE_DISABLED_KEY = hashString("INCENTIVE_VESTER_TRANSFER_FEATURE_DISABLED");
 export const GELATO_RELAY_FEE_MULTIPLIER_FACTOR_KEY = hashString("GELATO_RELAY_FEE_MULTIPLIER_FACTOR");
 export const REQUEST_EXPIRATION_TIME_KEY = hashString("REQUEST_EXPIRATION_TIME");
 
@@ -465,6 +466,10 @@ export function incentiveVesterDepositFeatureDisabledKey(vester: string) {
 
 export function incentiveVesterClaimFeatureDisabledKey(vester: string) {
   return hashData(["bytes32", "address"], [INCENTIVE_VESTER_CLAIM_FEATURE_DISABLED_KEY, vester]);
+}
+
+export function incentiveVesterTransferFeatureDisabledKey(vester: string) {
+  return hashData(["bytes32", "address"], [INCENTIVE_VESTER_TRANSFER_FEATURE_DISABLED_KEY, vester]);
 }
 
 export function claimTermsKey(distributionId: bigint) {

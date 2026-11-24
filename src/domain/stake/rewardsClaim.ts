@@ -16,6 +16,7 @@ export function getVesterClaims(vesterClaims: VesterClaim[]) {
 export function getIsRewardRouterClaimNeeded({
   shouldClaimGmx,
   stakingGmxRewards,
+  orphanVesterRewards,
   shouldClaimEsGmx,
   esGmxRewards,
   shouldClaimNativeToken,
@@ -23,13 +24,15 @@ export function getIsRewardRouterClaimNeeded({
 }: {
   shouldClaimGmx: boolean;
   stakingGmxRewards: bigint;
+  orphanVesterRewards: bigint;
   shouldClaimEsGmx: boolean;
   esGmxRewards: bigint;
   shouldClaimNativeToken: boolean;
   nativeTokenRewards: bigint;
 }) {
+  // handleRewards pays the Legacy vault GMX too, the old vaults are claimed separately
   return (
-    (shouldClaimGmx && stakingGmxRewards > 0n) ||
+    (shouldClaimGmx && stakingGmxRewards + orphanVesterRewards > 0n) ||
     (shouldClaimEsGmx && esGmxRewards > 0n) ||
     (shouldClaimNativeToken && nativeTokenRewards > 0n)
   );

@@ -17,6 +17,9 @@ import { useSbfGmxBalance } from "domain/stake/useSbfGmxBalance";
 import { getUserEstimatedApr, isLoyaltyTrackingActive } from "domain/stake/useStakingPowerData";
 import { useTreasuryProjection } from "domain/stake/useTreasuryProjection";
 import { useUnstakeRequests } from "domain/stake/useUnstakeRequests";
+import { useOrphanVestingData } from "domain/vesting/useOrphanVestingData";
+import useVestingData from "domain/vesting/useVestingData";
+import type { VestVault } from "domain/vesting/vestingVaults";
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
@@ -43,7 +46,7 @@ import ShareIcon from "img/ic_share.svg?react";
 import gmxIcon from "img/tokens/ic_gmx.svg";
 
 import { GMX_DAO_LINKS } from "./constants";
-import { StakeModal, StakeModalTabConfig } from "./StakeModal";
+import { StakeModal, type StakeModalTab, StakeModalTabConfig } from "./StakeModal";
 
 export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
   const { chainId } = useChainId();
@@ -63,10 +66,12 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const [gmxUnstakeValue, setGmxUnstakeValue] = useState("");
 
   const [isEsGmxStakeModalVisible, setIsEsGmxStakeModalVisible] = useState(false);
+  const [esGmxStakeModalTab, setEsGmxStakeModalTab] = useState<StakeModalTab>("stake");
   const [esGmxStakeValue, setEsGmxStakeValue] = useState("");
   const [esGmxUnstakeValue, setEsGmxUnstakeValue] = useState("");
 
   const [isVestModalVisible, setIsVestModalVisible] = useState(false);
+  const [vestModalVault, setVestModalVault] = useState<VestVault>();
   const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
 
   const { unstakeRequestsData } = useUnstakeRequests(chainId, account);
@@ -75,6 +80,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const esGmxAddress = getContract(chainId, "ES_GMX");
 
   const sbfGmxBalance = useSbfGmxBalance(chainId, account);
+  const { orphanVaultData } = useOrphanVestingData(chainId, account);
+  const vestingData = useVestingData(account);
 
   const reservedAmount = useMemo(
     () =>
@@ -133,12 +140,31 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   const handleOpenEsGmxStakeModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "esGMX", type: "stake" });
+    setEsGmxStakeModalTab("stake");
     setIsEsGmxStakeModalVisible(true);
     setEsGmxStakeValue("");
   };
 
+  const handleUnstakeEsGmx = () => {
+    setEsGmxStakeModalTab("unstake");
+    setIsEsGmxStakeModalVisible(true);
+  };
+
   const handleOpenVestModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "esGMX", type: "vest" });
+    setVestModalVault(undefined);
+    setIsVestModalVisible(true);
+  };
+
+  // only the GMX vault and the Legacy vault reserve staked tokens; the GMX vault goes first because
+  // stopping the Legacy vault restarts its 1-year vesting
+  const handleWithdrawVesting = () => {
+    const hasGmxVaultReserve = (vestingData?.gmxVesterPairAmount ?? 0n) > 0n;
+    const hasOrphanReserve = (orphanVaultData?.reservedAmount ?? 0n) > 0n;
+
+    setIsGmxStakeModalVisible(false);
+    setIsEsGmxStakeModalVisible(false);
+    setVestModalVault(hasOrphanReserve && !hasGmxVaultReserve ? "orphan" : "gmx");
     setIsVestModalVisible(true);
   };
 
@@ -363,6 +389,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         stakeTokenAddress={gmxAddress}
         stakeFarmAddress={stakedGmxTrackerAddress}
         reservedAmount={reservedAmount}
+        initialTab="stake"
+        onWithdrawVesting={hasEsGmx ? handleWithdrawVesting : undefined}
         stake={gmxStakeConfig}
         unstake={gmxUnstakeConfig}
         setPendingTxns={setPendingTxns}
@@ -383,6 +411,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             stakeTokenAddress={esGmxAddress}
             stakeFarmAddress={zeroAddress}
             reservedAmount={reservedAmount}
+            initialTab={esGmxStakeModalTab}
+            onWithdrawVesting={handleWithdrawVesting}
             stake={esGmxStakeConfig}
             unstake={esGmxUnstakeConfig}
             setPendingTxns={setPendingTxns}
@@ -394,7 +424,10 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             isVisible={isVestModalVisible}
             setIsVisible={setIsVestModalVisible}
             processedData={processedData}
+            unstakeRequestsData={unstakeRequestsData}
+            initialVault={vestModalVault}
             onStakeGmx={handleOpenGmxStakeModal}
+            onUnstakeEsGmx={handleUnstakeEsGmx}
           />
         </>
       )}
