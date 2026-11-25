@@ -1,6 +1,8 @@
 import { encodeFunctionData, numberToHex, zeroAddress } from "viem";
 
+import { getCreateWithdrawalMulticallPayload } from "domain/synthetics/markets/createWithdrawalTxn";
 import { Mode, Operation } from "domain/synthetics/markets/types";
+import { getSimulationPrices } from "domain/synthetics/orders/simulation";
 import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
 import {
   chainId,
@@ -14,13 +16,12 @@ import { parity, ParityInput, usd } from "domain/testUtils/parity/parity";
 import { getErc20Overrides, getTransfersTo, traceCall } from "domain/testUtils/parity/simulation";
 import { isSwapMarket } from "domain/testUtils/parity/swapPricing";
 import { abis } from "sdk/abis";
-import ExchangeRouterV2_2_1 from "sdk/abis/ExchangeRouterV2_2_1";
 import { getContract } from "sdk/configs/contracts";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
-import { convertToContractTokenPrices, convertToUsd } from "sdk/utils/tokens/utils";
+import { convertToUsd } from "sdk/utils/tokens/utils";
 
 import { selectPoolsDetailsWithdrawalFindSwapPath } from "../poolsDetailsDerivedSelectors";
 
@@ -101,22 +102,18 @@ function getAppSwapPathStats(input: WithdrawalSwapInput) {
   return findSwapPath(usdIn)!;
 }
 
-// The withdrawal as the app creates it, executed by SimulationRouter at the oracle prices the app quotes with
+// The withdrawal as createWithdrawalTxn creates and simulates it, executed by SimulationRouter
 async function simulateWithdrawal(input: WithdrawalSwapInput) {
   const { ctx, market, testCase } = input;
   const { swapPath } = getAppSwapPathStats(input);
-  const withdrawalVault = getContract(chainId, "WithdrawalVault");
-  const tokens = [market, ...swapPath.map((address) => ctx.marketsInfoData[address])]
-    .flatMap(({ indexToken, longToken, shortToken }) => [indexToken, longToken, shortToken])
-    .filter((token, i, all) => all.findIndex((other) => other.address === token.address) === i);
+  // the price timestamp simulateExecuteTxn uses
   const priceTimestamp = ctx.blockTimestamp + 120n;
   const simulateExecuteData = encodeFunctionData({
     abi: abis.SimulationRouter,
     functionName: "simulateExecuteLatestWithdrawal",
     args: [
       {
-        primaryTokens: tokens.map((token) => token.address),
-        primaryPrices: tokens.map((token) => convertToContractTokenPrices(token.prices, token.decimals)),
+        ...getSimulationPrices(chainId, ctx.tokensData, []),
         minTimestamp: priceTimestamp,
         maxTimestamp: priceTimestamp,
       },
@@ -125,33 +122,24 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
     ],
   });
   const payload = [
-    encodeFunctionData({ abi: ExchangeRouterV2_2_1, functionName: "sendWnt", args: [withdrawalVault, EXECUTION_FEE] }),
-    encodeFunctionData({
-      abi: ExchangeRouterV2_2_1,
-      functionName: "sendTokens",
-      args: [market.marketTokenAddress, withdrawalVault, testCase.marketTokenAmount],
-    }),
-    encodeFunctionData({
-      abi: ExchangeRouterV2_2_1,
-      functionName: "createWithdrawal",
-      args: [
-        {
-          addresses: {
-            receiver: ACCOUNT,
-            callbackContract: zeroAddress,
-            uiFeeReceiver: zeroAddress,
-            market: market.marketTokenAddress,
-            longTokenSwapPath: testCase.isReceiveLong ? [] : swapPath,
-            shortTokenSwapPath: testCase.isReceiveLong ? swapPath : [],
-          },
-          minLongTokenAmount: 0n,
-          minShortTokenAmount: 0n,
-          shouldUnwrapNativeToken: false,
-          executionFee: EXECUTION_FEE,
-          callbackGasLimit: 0n,
-          dataList: [],
+    ...getCreateWithdrawalMulticallPayload(chainId, {
+      marketTokenAmount: testCase.marketTokenAmount,
+      params: {
+        addresses: {
+          receiver: ACCOUNT,
+          callbackContract: zeroAddress,
+          uiFeeReceiver: zeroAddress,
+          market: market.marketTokenAddress,
+          longTokenSwapPath: testCase.isReceiveLong ? [] : swapPath,
+          shortTokenSwapPath: testCase.isReceiveLong ? swapPath : [],
         },
-      ],
+        minLongTokenAmount: 0n,
+        minShortTokenAmount: 0n,
+        shouldUnwrapNativeToken: false,
+        executionFee: EXECUTION_FEE,
+        callbackGasLimit: 0n,
+        dataList: [],
+      },
     }),
     encodeSimulationRouterExternalCall(getContract(chainId, "SimulationRouter"), simulateExecuteData),
   ];
@@ -166,7 +154,7 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
     {
       from: ACCOUNT,
       to: getContract(chainId, "ExchangeRouter"),
-      data: encodeFunctionData({ abi: ExchangeRouterV2_2_1, functionName: "multicall", args: [payload] }),
+      data: encodeFunctionData({ abi: abis.ExchangeRouter, functionName: "multicall", args: [payload] }),
       value: EXECUTION_FEE,
     },
     { ...marketTokenOverrides, [ACCOUNT]: { balance: numberToHex(10n ** 18n) } }
