@@ -136,6 +136,10 @@ parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   },
   requiredCases: [
     { name: "a deposit with positive impact", when: hasPositiveImpact },
-    { name: "the ui fee scenario applies", when: ({ testCase }) => testCase.uiFeeFactor > 0n },
+    {
+      name: "the ui fee scenario applies",
+      when: ({ testCase }) => testCase.uiFeeFactor > 0n,
+      scenario: UI_FEE_SCENARIO,
+    },
   ],
 });

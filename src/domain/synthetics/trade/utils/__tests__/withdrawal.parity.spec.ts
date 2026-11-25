@@ -97,5 +97,11 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
     },
     shortTokenAmount: { toleranceBps: 0.001, knownIssues },
   },
-  requiredCases: [{ name: "the ui fee scenario applies", when: ({ testCase }) => testCase.uiFeeFactor > 0n }],
+  requiredCases: [
+    {
+      name: "the ui fee scenario applies",
+      when: ({ testCase }) => testCase.uiFeeFactor > 0n,
+      scenario: UI_FEE_SCENARIO,
+    },
+  ],
 });

@@ -82,10 +82,11 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
     netValueAfterAllFees: { ...bpsOfSize, knownIssues },
   },
   requiredCases: [
-    { name: "the pro tier scenario applies", when: isProDiscountLarger },
+    { name: "the pro tier scenario applies", when: isProDiscountLarger, scenario: PRO_TIER_SCENARIO },
     {
       name: "a position with capped pnl",
       when: ({ testCase: { info } }) => info.basePnlUsd !== info.uncappedBasePnlUsd,
+      scenario: TRADER_PNL_CAP_SCENARIO,
     },
   ],
 });
