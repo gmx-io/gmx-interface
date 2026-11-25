@@ -19,7 +19,12 @@ import { expandDecimals } from "sdk/utils/numbers";
 import { getPositionInfo } from "sdk/utils/positions/utils";
 import { getMarkPrice } from "sdk/utils/prices";
 import type { TokenData } from "sdk/utils/tokens/types";
-import { convertToContractTokenPrices, getIsEquivalentTokens, getIsTokenTrackingPrice } from "sdk/utils/tokens/utils";
+import {
+  convertToContractTokenPrices,
+  convertToUsd,
+  getIsEquivalentTokens,
+  getIsTokenTrackingPrice,
+} from "sdk/utils/tokens/utils";
 
 type LiquidationCase = ParityPosition & { liquidationPrice: bigint };
 
@@ -196,6 +201,14 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
     {
       name: "a short with index token collateral",
       when: (input) => !input.testCase.position.isLong && isIndexCollateral(input),
+    },
+    {
+      name: "a position in profit at the liquidation price",
+      when: ({ market, testCase: { position, liquidationPrice } }) => {
+        const valueUsd = convertToUsd(position.sizeInTokens, market.indexToken.decimals, liquidationPrice)!;
+
+        return position.isLong ? valueUsd > position.sizeInUsd : valueUsd < position.sizeInUsd;
+      },
     },
     { name: "the pro tier scenario applies", when: isProDiscountLarger, scenario: PRO_TIER_SCENARIO },
   ],
