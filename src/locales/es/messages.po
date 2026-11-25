@@ -23,8 +23,32 @@ msgid "Closed"
 msgstr "Cerrado"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
-msgstr "Este mercado está cerrado temporalmente, por ejemplo mientras su feed de precios no está disponible. No puede abrir ni incrementar una posición hasta que vuelva a abrir."
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Las órdenes Límite, Stop de mercado y TP/SL aún se pueden crear, pero solo se ejecutan cuando el mercado vuelve a abrir."
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close and Edit margin are unavailable until then."
+msgstr "Las órdenes de mercado, TWAP, Cerrar y Editar margen no están disponibles hasta entonces."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Las órdenes de mercado y TWAP no están disponibles mientras el mercado está cerrado. Las órdenes Límite, Stop de mercado y TP/SL aún se pueden crear, pero solo se ejecutan cuando el mercado vuelve a abrir."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "Cambiar a una orden límite"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "Mercado cerrado. Esta orden solo se ejecuta cuando el mercado vuelve a abrir. El precio de reapertura puede diferir del último precio."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "Mercado cerrado. Esta orden solo se ejecuta cuando el mercado vuelve a abrir. Un salto de precio en la reapertura puede ejecutar un Stop de mercado o un Stop-Loss a un precio peor."
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "Esta posición está por encima del riesgo de liquidación, pero podría acercarse a la liquidación cuando el mercado cambie a los parámetros de riesgo fuera de horario."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
@@ -3123,10 +3147,6 @@ msgstr "Salida máx. de {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "No hay activos disponibles para depositar"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Market closed. Close and TP/SL orders may execute late."
-msgstr "Mercado cerrado. Las órdenes de cierre y TP/SL pueden ejecutarse con retraso."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
@@ -9266,6 +9286,10 @@ msgid "FX"
 msgstr "Divisas"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Market closed"
 msgstr "Mercado cerrado"
@@ -12841,6 +12865,10 @@ msgstr "Impacto actual: {0}. Utilice -0.30% o más para una mejor ejecución de 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Este mercado está deshabilitado. Póngase en contacto con el servicio de asistencia para reclamar las comisiones de financiación restantes."
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "Este mercado está cerrado. Liquide cuando el mercado vuelva a abrir."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

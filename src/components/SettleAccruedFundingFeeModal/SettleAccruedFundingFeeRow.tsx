@@ -17,6 +17,7 @@ import { SettlementBlockReason } from "./utils";
 type Props = {
   position: PositionInfo;
   isMarketDisabled: boolean;
+  isMarketClosed: boolean;
   blockReason: SettlementBlockReason | undefined;
   isSelected: boolean;
   onCheckboxChange: (value: boolean, positionKey: string) => void;
@@ -24,10 +25,15 @@ type Props = {
 
 function getBlockedTooltipContent(
   isMarketDisabled: boolean,
+  isMarketClosed: boolean,
   blockReason: SettlementBlockReason | undefined
 ): string | undefined {
   if (isMarketDisabled) {
     return t`This market is disabled. Contact support to claim your remaining funding fees.`;
+  }
+
+  if (isMarketClosed) {
+    return t`This market is closed. Settle after the market reopens.`;
   }
 
   if (blockReason === "negativeMargin") {
@@ -44,6 +50,7 @@ function getBlockedTooltipContent(
 export const SettleAccruedFundingFeeRow = ({
   position,
   isMarketDisabled,
+  isMarketClosed,
   blockReason,
   isSelected,
   onCheckboxChange,
@@ -78,7 +85,7 @@ export const SettleAccruedFundingFeeRow = ({
     [longToken, position.claimableLongTokenAmount, position.claimableShortTokenAmount, shortToken]
   );
 
-  const blockedTooltipContent = getBlockedTooltipContent(isMarketDisabled, blockReason);
+  const blockedTooltipContent = getBlockedTooltipContent(isMarketDisabled, isMarketClosed, blockReason);
 
   const checkbox = (
     <Checkbox

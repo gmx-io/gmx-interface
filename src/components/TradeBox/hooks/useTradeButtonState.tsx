@@ -19,7 +19,7 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectTradeboxIsMarketClosed } from "context/SyntheticsStateContext/selectors/closedMarketsSelectors";
+import { selectTradeboxClosedMarketOrderState } from "context/SyntheticsStateContext/selectors/closedMarketsSelectors";
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
@@ -189,7 +189,7 @@ export function useTradeboxButtonState({
   const gasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
-  const isMarketClosed = useSelector(selectTradeboxIsMarketClosed);
+  const isBlockedByClosedMarket = useSelector(selectTradeboxClosedMarketOrderState) === "blocked";
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
@@ -722,7 +722,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isMarketClosed && isIncrease) {
+    if (isBlockedByClosedMarket) {
       return {
         ...commonState,
         tooltipContent: null,
@@ -909,7 +909,7 @@ export function useTradeboxButtonState({
     isWaitingForExternalSwapQuote,
     account,
     isWalletInitializing,
-    isMarketClosed,
+    isBlockedByClosedMarket,
     buttonErrorText,
     shouldShowDepositButton,
     stopLoss.error?.percentage,

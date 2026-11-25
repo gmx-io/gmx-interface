@@ -23,8 +23,32 @@ msgid "Closed"
 msgstr "Закрыт"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
-msgstr "Рынок временно закрыт, например пока недоступен его ценовой поток. До открытия нельзя открыть или увеличить позицию."
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Лимитные, стоп-маркет и TP/SL ордера по-прежнему можно создать, но они исполнятся только после открытия рынка."
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close and Edit margin are unavailable until then."
+msgstr "Рыночные ордера, TWAP, закрытие позиции и изменение маржи до тех пор недоступны."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Рыночные ордера и TWAP недоступны, пока рынок закрыт. Лимитные, стоп-маркет и TP/SL ордера по-прежнему можно создать, но они исполнятся только после открытия рынка."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "Переключиться на лимитный ордер"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "Рынок закрыт. Этот ордер исполнится только после открытия рынка. Цена при открытии может отличаться от последней цены."
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "Рынок закрыт. Этот ордер исполнится только после открытия рынка. Из-за ценового разрыва при открытии стоп-маркет или стоп-лосс может исполниться по худшей цене."
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "Эта позиция вне зоны риска ликвидации, но она может приблизиться к ликвидации, когда рынок переключится на параметры риска нерабочих часов."
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
@@ -3123,10 +3147,6 @@ msgstr "Макс. выплата {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "Нет доступных активов для депозита"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Market closed. Close and TP/SL orders may execute late."
-msgstr "Рынок закрыт. Ордера на закрытие и TP/SL могут исполниться с задержкой."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
@@ -9266,6 +9286,10 @@ msgid "FX"
 msgstr "FX"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Market closed"
 msgstr "Рынок закрыт"
@@ -12841,6 +12865,10 @@ msgstr "Текущее влияние: {0}. Используйте -0.30% или
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Этот рынок отключён. Обратитесь в службу поддержки, чтобы получить оставшиеся комиссии за финансирование."
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "Этот рынок закрыт. Проведите расчёт после открытия рынка."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

@@ -6,6 +6,9 @@ import {
   usePositionEditorOpenAtPrice,
   usePositionEditorOpenDepositNow,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectClosedMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { parsePositionKey } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -37,8 +40,12 @@ export function DepositMarginNowAction({
   const { networkId } = useChainId();
   const openDepositNow = usePositionEditorOpenDepositNow();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed =
+    remediablePositionKey !== undefined &&
+    getIsMarketClosed(closedMarkets, parsePositionKey(remediablePositionKey).marketAddress);
 
-  if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined) {
+  if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined || isMarketClosed) {
     return isTooltipLine ? null : <>{children}</>;
   }
 

@@ -37,10 +37,10 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
@@ -467,10 +467,17 @@ export function PositionItem(p: Props) {
           <>
             {(liqPriceWarning || estimatedLiquidationHours) && <TooltipDivider />}
             <TooltipText>
-              <Trans>
-                This position is above liquidation risk, but it may become close to liquidation when the market switches
-                to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
-              </Trans>
+              {isMarketClosed ? (
+                <Trans>
+                  This position is above liquidation risk, but it may become close to liquidation when the market
+                  switches to off-hours risk parameters.
+                </Trans>
+              ) : (
+                <Trans>
+                  This position is above liquidation risk, but it may become close to liquidation when the market
+                  switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+                </Trans>
+              )}
             </TooltipText>
             <TooltipText>
               <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
@@ -531,21 +538,15 @@ export function PositionItem(p: Props) {
     );
   }
 
-  const marketClosedNote = isMarketClosed ? (
-    <AlertInfo type="warning" textColor="text-yellow-300" noMargin>
-      <Trans>Market closed. Close and TP/SL orders may execute late.</Trans>
-    </AlertInfo>
-  ) : null;
-
   function renderLarge() {
     const { indexName, poolName } = p.position;
     const qaAttr = `position-item-${indexName}-${poolName}-${p.position.isLong ? "Long" : "Short"}`;
 
     return (
-      <TableTr hoverable={true} data-qa={qaAttr} className={cx({ "[&>td]:pb-36": marketClosedNote })}>
+      <TableTr hoverable={true} data-qa={qaAttr}>
         <TableTd
           data-qa="position-handle"
-          className={cx("relative flex", {
+          className={cx("flex", {
             "shadow-[inset_2px_0_0] shadow-cold-blue-500": isCurrentMarket,
           })}
           onClick={() => p.onSelectPositionClick?.()}
@@ -608,10 +609,12 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
+            {isMarketClosed && (
+              <div className="mt-4 flex">
+                <MarketClosedBadge label="marketClosed" />
+              </div>
+            )}
           </div>
-          {marketClosedNote && (
-            <div className="absolute bottom-12 left-20 z-[11] whitespace-nowrap">{marketClosedNote}</div>
-          )}
         </TableTd>
         <TableTd>
           <div className="flex flex-col gap-2">
@@ -739,7 +742,7 @@ export function PositionItem(p: Props) {
     return (
       <AppCard dataQa="position-item">
         <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
-          <div className="text-body-medium flex items-center gap-8">
+          <div className="text-body-medium flex flex-wrap items-center gap-x-8 gap-y-4">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
                 "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
@@ -760,10 +763,10 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
+            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
             {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>
-        {marketClosedNote && <AppCardSection>{marketClosedNote}</AppCardSection>}
         <div ref={topSentinelRef} />
         <AppCardSection>
           {showDebugValues && (

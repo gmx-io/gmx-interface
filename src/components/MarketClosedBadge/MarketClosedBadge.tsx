@@ -7,10 +7,11 @@ import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "component
 type Props = {
   poolName?: string;
   variant?: "badge" | "text";
+  label?: "closed" | "marketClosed";
   className?: string;
 };
 
-export function MarketClosedBadge({ poolName, variant = "badge", className }: Props) {
+export function MarketClosedBadge({ poolName, variant = "badge", label = "closed", className }: Props) {
   return (
     <StandardTooltip
       className={cx("shrink-0", { flex: variant === "text" }, className)}
@@ -30,15 +31,17 @@ export function MarketClosedBadge({ poolName, variant = "badge", className }: Pr
           </TooltipTitle>
           <TooltipText>
             <Trans>
-              This market is temporarily closed, for example while its price feed is unavailable. You can't open or
-              increase a position until it reopens.
+              Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens.
             </Trans>
+          </TooltipText>
+          <TooltipText>
+            <Trans>Market orders, TWAP, Close and Edit margin are unavailable until then.</Trans>
           </TooltipText>
           {poolName && <TooltipRow label={t`Pool`} value={poolName} />}
         </TooltipContent>
       }
     >
-      <Trans context="Market state">Closed</Trans>
+      {label === "marketClosed" ? <Trans>Market closed</Trans> : <Trans context="Market state">Closed</Trans>}
     </StandardTooltip>
   );
 }

@@ -11,6 +11,7 @@ import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import { selectTradeboxClosedMarketOrderState } from "context/SyntheticsStateContext/selectors/closedMarketsSelectors";
 import {
   selectGmxAccountGasPaymentToken,
   selectSettlementChainGasPaymentToken,
@@ -131,6 +132,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
@@ -314,6 +316,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const offHoursLiqRisk = useSelector(selectTradeboxOffHoursLiqRisk);
   const showOffHoursWarning = offHoursLiqRisk.shouldWarn;
+  const closedMarketOrderState = useSelector(selectTradeboxClosedMarketOrderState);
   const fees = useSelector(selectTradeboxFees);
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
@@ -1504,7 +1507,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
               showExternalSwapWarnings={(tradeFlags.isSwap || tradeFlags.isIncrease) && !isUsdgConversionTooLarge}
             />
           )}
-          {twapRecommendation && !twapRecommendationDismissed && (
+          {twapRecommendation && !twapRecommendationDismissed && closedMarketOrderState !== "blocked" && (
             <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
                 <span
@@ -1530,7 +1533,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             </AlertInfoCard>
           )}
           {increaseMaxLeverageAlert && <ResultingMarginAlertCard level={increaseMaxLeverageAlert} isTwap={isTwap} />}
-          {!marginDepositSuggestionHidden && (
+          {!marginDepositSuggestionHidden && !closedMarketOrderState && (
             <MarginDepositSuggestionCard onClose={() => setMarginDepositSuggestionHidden(true)} />
           )}
           {showIncreaseLiquidationRiskWarning && (
@@ -1572,6 +1575,12 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             <AlertInfoCard hideClose type="info">
               {usdgConversion.convertFirstNote}
             </AlertInfoCard>
+          )}
+          {closedMarketOrderState && (
+            <MarketClosedBanner
+              state={closedMarketOrderState}
+              onSwitchToLimit={() => onSelectTradeMode(TradeMode.Limit)}
+            />
           )}
 
           <div>{button}</div>

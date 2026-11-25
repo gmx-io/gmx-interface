@@ -8,6 +8,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import {
   selectChainId,
+  selectClosedMarkets,
   selectMarketsInfoData,
   selectOracleSettings,
   selectPositionsInfoData,
@@ -18,6 +19,7 @@ import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/s
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -56,6 +58,7 @@ import { getWrappedToken } from "sdk/configs/tokens";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -651,6 +654,8 @@ function OrderItemLarge({
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isSwapOrderType(order.orderType);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = !isSwap && getIsMarketClosed(closedMarkets, order.marketAddress);
   const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
@@ -732,20 +737,25 @@ function OrderItemLarge({
             }
           />
         ) : (
-          <StandardTooltip
-            handle={<MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />}
-            content={
-              <TooltipRow
-                label={t`Market`}
-                value={
-                  <div className="flex items-center">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                  </div>
-                }
-              />
-            }
-          />
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <StandardTooltip
+              handle={
+                <MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />
+              }
+              content={
+                <TooltipRow
+                  label={t`Market`}
+                  value={
+                    <div className="flex items-center">
+                      <span>{indexName && indexName}</span>
+                      <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    </div>
+                  }
+                />
+              }
+            />
+            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
+          </div>
         )}
       </TableTd>
       <TableTd>
@@ -823,6 +833,8 @@ function OrderItemSmall({
   onSelectOrderClick: undefined | (() => void);
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = !isSwapOrderType(order.orderType) && getIsMarketClosed(closedMarkets, order.marketAddress);
 
   const title = useMemo(() => {
     if (isSwapOrderType(order.orderType)) {
@@ -878,7 +890,7 @@ function OrderItemSmall({
             isCurrentMarket,
         })}
       >
-        <div className="flex cursor-pointer items-center gap-8" onClick={onSelectOrderClick}>
+        <div className="flex cursor-pointer flex-wrap items-center gap-x-8 gap-y-4" onClick={onSelectOrderClick}>
           {hideActions ? (
             title
           ) : (
@@ -887,6 +899,7 @@ function OrderItemSmall({
               {title}
             </>
           )}
+          {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
         </div>
       </AppCardSection>
       <AppCardSection>

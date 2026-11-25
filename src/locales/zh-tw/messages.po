@@ -23,8 +23,32 @@ msgid "Closed"
 msgstr "已休市"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "This market is temporarily closed, for example while its price feed is unavailable. You can't open or increase a position until it reopens."
-msgstr "此市場暫時休市，例如在其價格饋送不可用期間。在重新開放之前，您無法開倉或加倉。"
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close and Edit margin are unavailable until then."
+msgstr "在此之前，市價單、TWAP、平倉和編輯保證金均無法使用。"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "市場休市期間，市價單和 TWAP 無法使用。限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "切換為限價單"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格可能與最後價格不同。"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格跳空可能使 Stop Market 或止損訂單以更差的價格成交。"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "此倉位處於清算風險範圍之外，但當市場切換至非交易時段風險參數時，可能會接近清算。"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
@@ -3123,10 +3147,6 @@ msgstr "最多可兌出 {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "無可存入的資產"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "Market closed. Close and TP/SL orders may execute late."
-msgstr "市場已休市。平倉和止盈/止損訂單可能延遲執行。"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute at the {priceText} price: the acceptable price impact ({formattedOrderAcceptablePriceImpact}) is below the current market impact ({formattedCurrentAcceptablePriceImpact}). Edit the acceptable price impact."
@@ -9266,6 +9286,10 @@ msgid "FX"
 msgstr "外匯"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Market closed"
 msgstr "市場已休市"
@@ -12841,6 +12865,10 @@ msgstr "目前影響：{0}。使用 -0.30% 或更高以獲得更好的訂單執�
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "此市場已停用。請聯絡支援團隊以領取剩餘的資金費用。"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "此市場已休市。請在市場重新開放後結算。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
