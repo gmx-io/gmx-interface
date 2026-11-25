@@ -8,6 +8,7 @@ import {
   PublicClient,
 } from "viem";
 
+import { buildMarketTokensDataRequest, parseMarketTokenData } from "domain/synthetics/markets/marketTokensDataRequest";
 import { abis } from "sdk/abis";
 import { getAbi } from "sdk/abis/getAbi";
 import { GmxSdk } from "sdk/clients/v1";
@@ -17,7 +18,7 @@ import { ARBITRUM, getViemChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { hashData } from "sdk/utils/hash";
 import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
-import type { TokensData } from "sdk/utils/tokens/types";
+import type { TokenData, TokensData } from "sdk/utils/tokens/types";
 
 // eslint-disable-next-line no-restricted-globals -- test-only helper, never bundled into the client
 const { PARITY_RPC_URL = "", PARITY_BLOCK } = process.env;
@@ -173,6 +174,39 @@ export function readDataStoreUint(ctx: ParityContext, key: string) {
 
 export function readReader<T>(ctx: ParityContext, functionName: string, args: readonly unknown[]): Promise<T> {
   return ctx.client.readContract({ address: readerAddress, abi: readerAbi, functionName, args } as never) as Promise<T>;
+}
+
+async function readMarketTokensData(ctx: ParityContext, isDeposit: boolean) {
+  const marketsAddresses = Object.keys(ctx.marketsInfoData);
+  const request = buildMarketTokensDataRequest(chainId, {
+    marketsAddresses,
+    marketsData: ctx.marketsInfoData,
+    tokensData: ctx.tokensData,
+    isDeposit,
+    account: undefined,
+  });
+  const res = await ctx.sdk.executeMulticall(request);
+  const entries = marketsAddresses.map((marketAddress): [string, TokenData | undefined] => [
+    marketAddress,
+    parseMarketTokenData(res, { chainId, srcChainId: undefined, account: undefined, marketAddress }),
+  ]);
+
+  return Object.fromEntries(entries);
+}
+
+const marketTokensRequests = new Map<string, ReturnType<typeof readMarketTokensData>>();
+
+/** The GM token as useMarketTokensData({ isDeposit }) loads it, undefined where the app drops the market */
+export async function loadMarketToken(ctx: ParityContext, market: MarketInfo, isDeposit: boolean) {
+  const requestKey = `${ctx.scenario} ${isDeposit}`;
+
+  if (!marketTokensRequests.has(requestKey)) {
+    marketTokensRequests.set(requestKey, readMarketTokensData(ctx, isDeposit));
+  }
+
+  const marketTokens = await marketTokensRequests.get(requestKey)!;
+
+  return marketTokens[market.marketTokenAddress];
 }
 
 // Only a decoded revert: viem also wraps node errors without revert data (-32603) as ContractFunctionRevertedError
