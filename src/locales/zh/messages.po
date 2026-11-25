@@ -8069,7 +8069,7 @@ msgstr "该仓位在扣除待结借贷费用和资金费用后保证金为负，
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "无法为此订单添加止盈/止损。请在新仓位开立后再设置。"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

@@ -8069,7 +8069,7 @@ msgstr "此倉位在扣除待付借貸費和資金費後保證金為負，因此
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "無法為此訂單新增 TP/SL。請在新倉位開立後再設定。"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

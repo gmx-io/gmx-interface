@@ -9,6 +9,7 @@ import { getDataQALocator } from "lib/__tests__/testUtils";
 import { getAbi } from "sdk/abis/getAbi";
 import { ARBITRUM } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
+import { isSameAddress } from "sdk/utils/address";
 import { OrderType } from "sdk/utils/orders/types";
 
 import { TradeBoxStory } from "./TradeBox.ct.stories";
@@ -43,7 +44,7 @@ function selectShortDirection(page: PageLike) {
 
 const liqRow = (page: PageLike) => page.getByText("Liquidation price").locator("..");
 
-const EXCHANGE_ROUTER_ADDRESS = getContract(ARBITRUM, "ExchangeRouter").toLowerCase();
+const EXCHANGE_ROUTER_ADDRESS = getContract(ARBITRUM, "ExchangeRouter");
 const MULTICALL_SELECTOR = toFunctionSelector("multicall(bytes[])");
 
 /** The app sends an order only after its simulation reverts with EndOfOracleSimulation. */
@@ -51,7 +52,7 @@ class SimulatingChain extends MockChain {
   async handle(chainId: number, request: RpcRequest): Promise<unknown> {
     const call = request.method === "eth_call" ? (request.params as { to?: string; data?: string }[])[0] : undefined;
 
-    if (call?.to?.toLowerCase() === EXCHANGE_ROUTER_ADDRESS && call.data?.startsWith(MULTICALL_SELECTOR)) {
+    if (isSameAddress(call?.to, EXCHANGE_ROUTER_ADDRESS) && call?.data?.startsWith(MULTICALL_SELECTOR)) {
       throw Object.assign(new Error("execution reverted"), {
         rpcCode: 3,
         rpcData: toFunctionSelector("EndOfOracleSimulation()"),
