@@ -101,8 +101,6 @@ $tabs-threshold: 990px;
 
 .TopPositionsDirection {
   margin-left: 0.5rem;
-  text-align: left;
-  width: 4.4rem;
 }
 
 .LeaderboardSearch.disabled {
@@ -132,16 +130,16 @@ $tabs-threshold: 990px;
 .LeaderboardRank-3::after,
 .LeaderboardRank-4::after {
   content: "";
-  width: 2.5rem;
+  width: 2.4rem;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   margin-left: 0.5rem;
   position: absolute;
   left: 31px;
-  top: 10px;
+  top: calc(50% - 1.2rem);
   z-index: 111;
-  height: 2.5rem;
+  height: 2.4rem;
 }
 
 .LeaderboardRank-1::after {

@@ -24,6 +24,7 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   itemDisabled,
   itemDisabledMessage,
   buttonRef,
+  disabled = false,
 }: {
   value: Id | undefined;
   onChange: (value: Id) => void;
@@ -36,9 +37,10 @@ export const DropdownSelector = <Id extends Primitive, Option>({
   itemDisabled?: (option: Option) => boolean;
   itemDisabledMessage?: (option: Option) => string;
   buttonRef?: React.Ref<HTMLButtonElement>;
+  disabled?: boolean;
 } & WithConditionalItemKey<Id, Option>) => {
   return (
-    <Listbox value={value ?? null} onChange={onChange}>
+    <Listbox value={value ?? null} onChange={onChange} disabled={disabled}>
       <div className="relative">
         <Listbox.Button
           ref={buttonRef}

@@ -29,6 +29,7 @@ import {
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
+  isLimitSwapOrderType,
   isMarketOrderType,
   isStopIncreaseOrderType,
   isStopLossOrderType,
@@ -54,6 +55,8 @@ import {
 import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
+import type { TokensRatio } from "sdk/utils/tokens/types";
+import { getTokensRatioByPriceInDirection } from "sdk/utils/tokens/utils";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
@@ -62,7 +65,7 @@ import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadg
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
-import { SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
+import { SwapMarketIcons, SwapMarketLabel } from "components/SwapMarketLabel/SwapMarketLabel";
 import { TableTd, TableTr } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
@@ -717,30 +720,45 @@ function OrderItemLarge({
         </TableTd>
       )}
       <TableTd onClick={onSelectOrderClick} className="cursor-pointer">
-        {isSwap ? (
-          <StandardTooltip
-            handle={
-              <span className="font-medium">
-                <SwapMarketLabel fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
-              </span>
-            }
-            content={
-              <>
-                {swapPathMarketFullNames?.map((market, index) => (
-                  <span key={market.indexName}>
-                    {index > 0 && " → "}
-                    <span>{market.indexName}</span>
-                    <span className="subtext leading-1">[{market.poolName}]</span>
-                  </span>
-                ))}
-              </>
-            }
-          />
-        ) : (
-          <>
+        {/* The icons sit before the tooltip handle, so the dotted line starts at the market name */}
+        <div className="flex items-center gap-4">
+          {isSwap ? (
+            <SwapMarketIcons fromSymbol={swapPathTokenSymbols?.at(0)} toSymbol={swapPathTokenSymbols?.at(-1)} />
+          ) : (
+            <TokenIcon className="size-20" displaySize={20} symbol={tokenSymbol} />
+          )}
+          {isSwap ? (
             <StandardTooltip
               handle={
-                <MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />
+                <span className="font-medium">
+                  <SwapMarketLabel
+                    fromSymbol={swapPathTokenSymbols?.at(0)}
+                    toSymbol={swapPathTokenSymbols?.at(-1)}
+                    withIcons={false}
+                  />
+                </span>
+              }
+              content={
+                <>
+                  {swapPathMarketFullNames?.map((market, index) => (
+                    <span key={market.indexName}>
+                      {index > 0 && " → "}
+                      <span>{market.indexName}</span>
+                      <span className="subtext leading-1">[{market.poolName}]</span>
+                    </span>
+                  ))}
+                </>
+              }
+            />
+          ) : (
+            <StandardTooltip
+              handle={
+                <MarketWithDirectionLabel
+                  indexName={indexName}
+                  isLong={order.isLong}
+                  tokenSymbol={tokenSymbol}
+                  withIcon={false}
+                />
               }
               content={
                 <TooltipRow
@@ -754,12 +772,12 @@ function OrderItemLarge({
                 />
               }
             />
-            {isMarketClosed && (
-              <div className="mt-4 flex">
-                <MarketClosedBadge label="marketClosed" isTruncatable />
-              </div>
-            )}
-          </>
+          )}
+        </div>
+        {isMarketClosed && (
+          <div className="mt-4 flex">
+            <MarketClosedBadge label="marketClosed" isTruncatable />
+          </div>
         )}
       </TableTd>
       <TableTd>
@@ -987,16 +1005,24 @@ function getSwapRatioText(order: OrderInfo) {
   const toToken = order.targetCollateralToken;
 
   const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
+  const isLimitSwap = isLimitSwapOrderType(order.orderType) && !order.isTwap && triggerRatio !== undefined;
 
-  const markRatio =
-    fromToken && toToken
-      ? getTokensRatioByPrice({
+  let markRatio: TokensRatio | undefined;
+
+  if (fromToken && toToken) {
+    markRatio = isLimitSwap
+      ? getTokensRatioByPriceInDirection({
+          fromToken,
+          toToken,
+          largestTokenAddress: triggerRatio.largestToken.address,
+        })
+      : getTokensRatioByPrice({
           fromToken,
           toToken,
           fromPrice: fromToken.prices.minPrice,
           toPrice: toToken.prices.minPrice,
-        })
-      : undefined;
+        });
+  }
 
   const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
 

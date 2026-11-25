@@ -63,7 +63,7 @@ import "./SyntheticsStats.scss";
 function Usd({ children }: { children: ReactNode }) {
   return (
     <>
-      <span className="numeric-affix">{USD_SYMBOL}</span>
+      {USD_SYMBOL}
       {children}
     </>
   );

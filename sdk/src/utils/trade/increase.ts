@@ -16,11 +16,13 @@ import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { applyFactor, expandDecimals, roundUpMagnitudeDivision } from "utils/numbers";
 import { OrderType, SwapPricingType } from "utils/orders/types";
 import {
+  getCollateralPriceAtIndexPrice,
   getEntryPrice,
   getLeverage,
   getLiquidationPrice,
   getPositionPnlUsd,
   getPriceImpactDiffUsd,
+  getTokenAtIndexPrice,
 } from "utils/positions";
 import { PositionInfo } from "utils/positions/types";
 import {
@@ -122,6 +124,8 @@ function getSwapRouteAtEvaluationPrice({
   marketsInfoData,
   indexToken,
   initialCollateralToken,
+  collateralToken,
+  isLong,
   evaluationPrice,
   chainId,
 }: {
@@ -129,6 +133,8 @@ function getSwapRouteAtEvaluationPrice({
   marketsInfoData: MarketsInfoData | undefined;
   indexToken: TokenData;
   initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  isLong: boolean;
   evaluationPrice: bigint | undefined;
   chainId: number;
 }): SwapRouteAtEvaluationPrice | undefined {
@@ -140,13 +146,19 @@ function getSwapRouteAtEvaluationPrice({
   let hasRepricedToken = false;
 
   const withEvaluationPrice = <T extends TokenData>(token: T): T => {
-    if (!getIsEquivalentTokens(token, indexToken)) {
-      return token;
+    const repricedToken = getTokenAtIndexPrice({
+      token,
+      collateralToken,
+      indexToken,
+      indexPrice: evaluationPrice,
+      isLong,
+    });
+
+    if (repricedToken !== token) {
+      hasRepricedToken = true;
     }
 
-    hasRepricedToken = true;
-
-    return { ...token, prices: { minPrice: evaluationPrice, maxPrice: evaluationPrice } };
+    return repricedToken;
   };
 
   const repricedMarketsInfoData: MarketsInfoData = { ...marketsInfoData };
@@ -201,6 +213,8 @@ function getSwapPathStatsAtEvaluationPrice(p: {
   marketsInfoData: MarketsInfoData | undefined;
   indexToken: TokenData;
   initialCollateralToken: TokenData;
+  collateralToken: TokenData;
+  isLong: boolean;
   evaluationPrice: bigint | undefined;
   chainId: number;
 }): SwapPathStats | undefined {
@@ -224,6 +238,7 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
   indexToken,
   initialCollateralToken,
   collateralToken,
+  isLong,
   collateralPrice,
   evaluationPrice,
   chainId,
@@ -235,6 +250,7 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
   indexToken: TokenData;
   initialCollateralToken: TokenData;
   collateralToken: TokenData;
+  isLong: boolean;
   collateralPrice: bigint;
   evaluationPrice: bigint | undefined;
   chainId: number;
@@ -250,6 +266,8 @@ function getSwapAmountInForCollateralAtEvaluationPrice({
     marketsInfoData,
     indexToken,
     initialCollateralToken,
+    collateralToken,
+    isLong,
     evaluationPrice,
     chainId,
   });
@@ -507,6 +525,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       marketsInfoData,
       indexToken,
       initialCollateralToken,
+      collateralToken,
+      isLong,
       evaluationPrice,
       chainId,
     });
@@ -684,6 +704,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           indexToken,
           initialCollateralToken,
           collateralToken,
+          isLong,
           collateralPrice: values.collateralPrice,
           evaluationPrice,
           chainId,
@@ -723,6 +744,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
       marketsInfoData,
       indexToken,
       initialCollateralToken,
+      collateralToken,
+      isLong,
       evaluationPrice,
       chainId,
     });
@@ -824,6 +847,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         marketsInfoData,
         indexToken,
         initialCollateralToken,
+        collateralToken,
+        isLong,
         evaluationPrice,
         chainId,
       });
@@ -1069,9 +1094,7 @@ export function getIncreasePositionPrices({
     indexPrice = triggerPrice;
     evaluationPrice = triggerPrice;
     initialCollateralPrice = initialCollateralToken.prices.minPrice;
-    collateralPrice = getIsEquivalentTokens(collateralToken, indexToken)
-      ? triggerPrice
-      : collateralToken.prices.minPrice;
+    collateralPrice = getCollateralPriceAtIndexPrice({ collateralToken, indexToken, indexPrice: triggerPrice, isLong });
 
     triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
   } else {

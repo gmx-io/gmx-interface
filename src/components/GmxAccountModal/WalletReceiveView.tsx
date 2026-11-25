@@ -74,7 +74,8 @@ export function WalletReceiveView() {
           <img src={chainIcon} alt={chainName} className="size-20 shrink-0" />
           <span>
             <Trans>
-              Only send <span className="font-medium">{chainName}-compatible assets</span> to this address!
+              Choose the <span className="font-medium">{chainName} network</span> when you send from an exchange or
+              wallet. Funds sent on another network may get stuck.
             </Trans>
           </span>
         </div>

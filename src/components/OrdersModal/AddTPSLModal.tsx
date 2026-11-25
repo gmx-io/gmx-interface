@@ -100,7 +100,6 @@ import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -194,10 +193,6 @@ export function AddTPSLModal({
   const collateralToken = position.collateralToken;
   const indexToken = position.indexToken;
   const isLong = position.isLong;
-  const isCollateralTokenEquivalentToIndex = useMemo(
-    () => getIsEquivalentTokens(position.collateralToken, position.indexToken),
-    [position.collateralToken, position.indexToken]
-  );
 
   const visualMultiplier = indexToken?.visualMultiplier ?? 1;
   const priceDecimals = calculateDisplayDecimals(position.markPrice, USD_DECIMALS, visualMultiplier);
@@ -211,20 +206,13 @@ export function AddTPSLModal({
       buildTpSlInputPositionData({
         position,
         collateralUsd: position.collateralUsd,
+        collateralToken,
+        indexToken,
         indexTokenDecimals: indexToken?.decimals ?? 18,
-        collateralTokenDecimals: collateralToken.decimals,
-        isCollateralTokenEquivalentToIndex,
         visualMultiplier,
         referencePrice: markPrice,
       })!,
-    [
-      position,
-      indexToken?.decimals,
-      collateralToken.decimals,
-      isCollateralTokenEquivalentToIndex,
-      visualMultiplier,
-      markPrice,
-    ]
+    [position, collateralToken, indexToken, visualMultiplier, markPrice]
   );
 
   const tpPriceEntry = useMemo(
@@ -891,7 +879,12 @@ export function AddTPSLModal({
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+  } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
@@ -1036,7 +1029,7 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isMultichainSubmitDisabled) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -1077,6 +1070,7 @@ export function AddTPSLModal({
     actionLabel,
     directionLabel,
     expressError.buttonErrorMessage,
+    isExpressLoading,
     isMultichainSubmitDisabled,
     isSubmitting,
     isCreationPending,

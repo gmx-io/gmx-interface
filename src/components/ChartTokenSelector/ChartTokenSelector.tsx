@@ -4,7 +4,9 @@ import partition from "lodash/partition";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
+import { isSolanaNetwork, type NetworkId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getNetworkFeatures } from "config/features";
 import { PROMOTED_TOKENS_ORDER } from "config/promotedTokens";
 import type { SortDirection } from "context/SorterContext/types";
 import {
@@ -45,6 +47,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -214,6 +217,9 @@ type SortField =
   | "unspecified";
 
 function MarketsList() {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
+  const swapEnabled = getNetworkFeatures(networkId).swap;
   const chainId = useSelector(selectChainId);
   const perpTokens = useSelector(selectAvailablePerpChartTokens);
   const swapTokens = useSelector(selectAvailableSwapChartTokens);
@@ -224,13 +230,14 @@ function MarketsList() {
   const {
     topLevelTab: storedTopLevelTab,
     subCategoryTab: storedSubCategoryTab,
-    mode,
+    mode: storedMode,
     setMode,
     setModeAndResetFilters,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
   } = useTokensFavorites("chart-token-selector");
+  const mode = swapEnabled ? storedMode : "perp";
 
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
@@ -247,27 +254,32 @@ function MarketsList() {
   useEffect(() => {
     if (initialModeSyncRef.current) return;
     initialModeSyncRef.current = true;
-    setMode(tradeFlags.isSwap ? "swap" : "perp");
+    setMode(swapEnabled && tradeFlags.isSwap ? "swap" : "perp");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isSwap = mode === "swap";
   const availableTokens = isSwap ? swapTokens : perpTokens;
-  const otherModeAvailableTokens = isSwap ? perpTokens : swapTokens;
+  const otherModeAvailableTokens = swapEnabled ? (isSwap ? perpTokens : swapTokens) : undefined;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
-    const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
+    const availableChartTokens = isSolana
+      ? availableTokens
+      : availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
     const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address as Address);
 
     return {
       availableChartTokens,
       availableChartTokenAddresses,
     };
-  }, [availableTokens, chainId]);
+  }, [availableTokens, chainId, isSolana]);
 
   const otherModeOptions = useMemo(
-    () => otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
-    [chainId, otherModeAvailableTokens]
+    () =>
+      isSolana
+        ? otherModeAvailableTokens
+        : otherModeAvailableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol)),
+    [chainId, isSolana, otherModeAvailableTokens]
   );
 
   const recentlyListedCount = useMemo(() => {
@@ -280,8 +292,14 @@ function MarketsList() {
     return options.some((t) => favoriteTokens.includes(t.address));
   }, [options, favoriteTokens]);
 
+  const hasTradfiMarkets = options?.some((token) => token.categories?.includes("tradfi")) ?? false;
+  const excludedTabs = useMemo<TopLevelTab[]>(
+    () => (isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : hasTradfiMarkets ? [] : ["tradfi"]),
+    [isSwap, hasTradfiMarkets]
+  );
+
   const shouldFallbackToAll =
-    (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
+    excludedTabs.includes(storedTopLevelTab) ||
     (storedTopLevelTab === "favorites" && !hasAvailableFavorites) ||
     (storedTopLevelTab === "recently-listed" && recentlyListedCount === 0);
   const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
@@ -375,7 +393,7 @@ function MarketsList() {
     }
 
     return sortedTokens.map((token) => {
-      const wrappedAddress = convertTokenAddress(chainId, token.address, "wrapped") as Address;
+      const wrappedAddress = getWrappedTokenAddress(chainId, networkId, token.address);
       return {
         token,
         tokenData: tokensData?.[wrappedAddress],
@@ -387,7 +405,7 @@ function MarketsList() {
         isClosed: closedIndexTokens[wrappedAddress] === true,
       };
     });
-  }, [sortedTokens, chainId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap, closedIndexTokens]);
+  }, [sortedTokens, chainId, networkId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap, closedIndexTokens]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -465,7 +483,7 @@ function MarketsList() {
       <div className="flex flex-col">
         <ArbitrumRecommendation />
         <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
-          <ModeTabs mode={mode} setMode={setMode} />
+          {swapEnabled && <ModeTabs mode={mode} setMode={setMode} />}
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -482,7 +500,7 @@ function MarketsList() {
             recentlyListedCount={recentlyListedCount}
             hasAvailableFavorites={hasAvailableFavorites}
             className="px-16"
-            excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
+            excludedTabs={excludedTabs}
             selectedValue={topLevelTab}
           />
         </ButtonRowScrollFadeContainer>
@@ -705,12 +723,14 @@ function useFilterSortTokens({
   }, [textMatchedTokens, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
+  const { networkId } = useChainId();
 
   const sortedTokens = useMemo(() => {
     const [favorites, nonFavorites] = partition(filteredTokens, (token) => favoriteTokens.includes(token.address));
 
     const sorter = tokenSortingComparatorBuilder({
       chainId,
+      networkId,
       orderBy,
       direction,
       tokensData,
@@ -728,6 +748,7 @@ function useFilterSortTokens({
   }, [
     filteredTokens,
     chainId,
+    networkId,
     orderBy,
     direction,
     tokensData,
@@ -955,8 +976,14 @@ function MarketListItem({
   );
 }
 
+function getWrappedTokenAddress(chainId: number, networkId: NetworkId, address: string): Address {
+  // Solana perp options already use index mints; native SOL is not a market option.
+  return isSolanaNetwork(networkId) ? (address as Address) : convertTokenAddress(chainId, address, "wrapped");
+}
+
 function tokenSortingComparatorBuilder({
   chainId,
+  networkId,
   orderBy,
   direction,
   tokensData,
@@ -966,6 +993,7 @@ function tokenSortingComparatorBuilder({
   getMaxLongShortLiquidityPool,
 }: {
   chainId: number;
+  networkId: NetworkId;
   orderBy: SortField;
   direction: SortDirection;
   tokensData: TokensData | undefined;
@@ -980,11 +1008,11 @@ function tokenSortingComparatorBuilder({
   const directionMultiplier = direction === "asc" ? 1 : -1;
 
   return (a: Token, b: Token) => {
-    const aAddress = convertTokenAddress(chainId, a.address, "wrapped");
-    const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
+    const aAddress = getWrappedTokenAddress(chainId, networkId, a.address);
+    const bAddress = getWrappedTokenAddress(chainId, networkId, b.address);
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      const promoted = PROMOTED_TOKENS_ORDER[chainId];
+      const promoted = PROMOTED_TOKENS_ORDER[networkId];
       if (promoted) {
         const aIdx = promoted.indexOf(a.address);
         const bIdx = promoted.indexOf(b.address);
