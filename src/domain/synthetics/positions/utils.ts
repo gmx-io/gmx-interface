@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 
+import { hashedPositionKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { CHART_PERIODS } from "lib/legacy";
@@ -16,13 +17,44 @@ import {
   numberParts,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { getLiquidationPriceImpactDeltaUsd } from "sdk/utils/positions";
+import { getLiquidationPriceImpactDeltaUsd, getPositionKey } from "sdk/utils/positions";
 
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "../fees";
-import { PositionInfo, PositionInfoLoaded } from "./types";
+import { ContractPositionInfo, Position, PositionInfo, PositionInfoLoaded } from "./types";
 import { OrderType } from "../orders/types";
 
 export * from "sdk/utils/positions";
+
+export function parseContractPositionInfo(positionInfo: ContractPositionInfo): Position {
+  const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
+  const { addresses, numbers, flags } = position;
+  const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
+
+  return {
+    key: getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong),
+    contractKey: hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong),
+    account,
+    marketAddress,
+    collateralTokenAddress,
+    sizeInUsd: numbers.sizeInUsd,
+    sizeInTokens: numbers.sizeInTokens,
+    collateralAmount: numbers.collateralAmount,
+    increasedAtTime: numbers.increasedAtTime,
+    decreasedAtTime: numbers.decreasedAtTime,
+    isLong: flags.isLong,
+    pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
+    fundingFeeAmount: fees.funding.fundingFeeAmount,
+    claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
+    claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
+    pendingImpactAmount: numbers.pendingImpactAmount,
+    pnl: basePnlUsd,
+    positionFeeAmount: fees.positionFeeAmount,
+    traderDiscountAmount: fees.referral.traderDiscountAmount,
+    uiFeeAmount: fees.ui.uiFeeAmount,
+    positionValueInUsd,
+    data: "",
+  };
+}
 
 export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pendingBorrowingFeesUsd: bigint }) {
   const { pendingFundingFeesUsd, pendingBorrowingFeesUsd } = p;
