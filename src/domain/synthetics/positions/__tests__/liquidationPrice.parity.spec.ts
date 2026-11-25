@@ -2,7 +2,7 @@ import { dataStoreAddress, getMarketProps, ParityContext, readReader } from "dom
 import { parity, ParityInput, toBps } from "domain/testUtils/parity/parity";
 import {
   getCollateralToken,
-  hasProDiscount,
+  isProDiscountLarger,
   loadMinCollateralUsd,
   loadPositions,
   loadProTierScenario,
@@ -204,6 +204,6 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
       name: "a short with index token collateral",
       when: (input) => !input.testCase.position.isLong && isIndexCollateral(input),
     },
-    { name: "the pro tier scenario applies", when: hasProDiscount },
+    { name: "the pro tier scenario applies", when: isProDiscountLarger },
   ],
 });
