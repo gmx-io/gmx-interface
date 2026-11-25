@@ -213,7 +213,7 @@ const marketTokensRequests = new Map<string, ReturnType<typeof readMarketTokensD
 
 /** The GM token as useMarketTokensData({ isDeposit }) loads it, undefined where the app drops the market */
 export async function loadMarketToken(ctx: ParityContext, market: MarketInfo, isDeposit: boolean) {
-  const requestKey = `${ctx.scenario} ${isDeposit}`;
+  const requestKey = `${ctx.state} ${isDeposit}`;
 
   if (!marketTokensRequests.has(requestKey)) {
     marketTokensRequests.set(requestKey, readMarketTokensData(ctx, isDeposit));

@@ -84,7 +84,7 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
   cases: swapAmountsCases,
   scenarios: [UI_FEE_SCENARIO, EMPTY_LONG_TOKEN_SWAP_IMPACT_POOLS_SCENARIO],
   ours: (input) => ({ amountOut: getOurSwapAmounts(input).amountOut }),
-  reader: async (input) => {
+  contract: async (input) => {
     const { ctx, market, testCase } = input;
     const [tokenIn] = getSwapTokens(input);
     const marketProps = getMarketProps(market);

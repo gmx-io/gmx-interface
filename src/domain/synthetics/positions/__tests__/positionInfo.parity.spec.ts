@@ -49,7 +49,7 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
       netValueAfterAllFees: info.netValueAfterAllFees,
     };
   },
-  reader: async ({ market, testCase: { info } }) => {
+  contract: async ({ market, testCase: { info } }) => {
     const { funding, totalCostAmount, collateralTokenPrice, positionFeeAmount, totalDiscountAmount } = info.fees;
     const { longToken, shortToken } = market;
     const claimableLongUsd = convertToUsd(

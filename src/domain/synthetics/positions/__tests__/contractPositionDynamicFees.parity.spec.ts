@@ -27,7 +27,7 @@ parity("getContractPositionDynamicFees <-> Reader.getPositionInfo, pending fees 
 
     return { pendingBorrowingFeesUsd, fundingFeeAmount };
   },
-  reader: async ({ testCase: { info } }) => ({
+  contract: async ({ testCase: { info } }) => ({
     pendingBorrowingFeesUsd: info.fees.borrowing.borrowingFeeUsd,
     fundingFeeAmount: info.fees.funding.fundingFeeAmount,
   }),

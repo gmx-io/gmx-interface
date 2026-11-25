@@ -83,7 +83,7 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
       balanceWasImproved: acceptablePriceInfo.balanceWasImproved,
     };
   },
-  reader: async ({ ctx, market, testCase: { position, sizeDeltaUsd } }) => {
+  contract: async ({ ctx, market, testCase: { position, sizeDeltaUsd } }) => {
     const result = await readExecutionPrice(ctx, market, {
       positionSizeInUsd: position.sizeInUsd,
       positionSizeInTokens: position.sizeInTokens,

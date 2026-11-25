@@ -72,7 +72,7 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   cases: withdrawalCases,
   scenarios: [UI_FEE_SCENARIO],
   ours: getOurWithdrawalAmounts,
-  reader: async ({ ctx, market, testCase }) => {
+  contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;
     const [longTokenAmount, shortTokenAmount] = await readReader<readonly [bigint, bigint]>(
