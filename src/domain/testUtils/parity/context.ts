@@ -18,6 +18,8 @@ import { ARBITRUM, getViemChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { hashData } from "sdk/utils/hash";
 import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
+import { getContractMarketPrices } from "sdk/utils/markets/utils";
+import { expandDecimals } from "sdk/utils/numbers";
 import type { TokenData, TokensData } from "sdk/utils/tokens/types";
 
 // eslint-disable-next-line no-restricted-globals -- test-only helper, never bundled into the client
@@ -207,6 +209,40 @@ export async function loadMarketToken(ctx: ParityContext, market: MarketInfo, is
   const marketTokens = await marketTokensRequests.get(requestKey)!;
 
   return marketTokens[market.marketTokenAddress];
+}
+
+export async function readExecutionPrice(
+  ctx: ParityContext,
+  market: MarketInfo,
+  p: {
+    positionSizeInUsd: bigint;
+    positionSizeInTokens: bigint;
+    sizeDeltaUsd: bigint;
+    pendingImpactAmount: bigint;
+    isLong: boolean;
+  }
+) {
+  const prices = getContractMarketPrices(ctx.tokensData, market)!;
+  const result = await readReader<{
+    priceImpactUsd: bigint;
+    executionPrice: bigint;
+    balanceWasImproved: boolean;
+    totalImpactUsd: bigint;
+    priceImpactDiffUsd: bigint;
+  }>(ctx, "getExecutionPrice", [
+    dataStoreAddress,
+    market.marketTokenAddress,
+    prices,
+    p.positionSizeInUsd,
+    p.positionSizeInTokens,
+    p.sizeDeltaUsd,
+    p.pendingImpactAmount,
+    p.isLong,
+  ]);
+  const pricePerTokenUnit = expandDecimals(1, market.indexToken.decimals);
+
+  // the Reader gives the price per index token unit, the app per whole token
+  return { ...result, executionPrice: result.executionPrice * pricePerTokenUnit };
 }
 
 // Only a decoded revert: viem also wraps node errors without revert data (-32603) as ContractFunctionRevertedError
