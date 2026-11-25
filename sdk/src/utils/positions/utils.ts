@@ -23,7 +23,13 @@ import { Market, MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
 import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getIsTokenTrackingPrice } from "utils/tokens";
+import {
+  convertToTokenAmount,
+  convertToTokenAmountForIncrease,
+  convertToUsd,
+  getIsEquivalentTokens,
+  getIsTokenTrackingPrice,
+} from "utils/tokens";
 import { Token, TokenData } from "utils/tokens/types";
 
 import { Position, PositionInfo, PositionInfoLoaded } from "./types";
@@ -640,6 +646,35 @@ export function getNetPriceImpactDeltaUsdForDecrease({
     proportionalPendingImpactDeltaUsd,
     priceImpactDiffUsd,
   };
+}
+
+export function getExecutionPriceForIncrease(p: {
+  marketInfo: MarketInfo;
+  isLimit: boolean;
+  isLong: boolean;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+}) {
+  const { marketInfo, isLimit, isLong, indexPrice, sizeDeltaUsd } = p;
+
+  const sizeDeltaInTokens = convertToTokenAmountForIncrease(
+    sizeDeltaUsd,
+    marketInfo.indexToken.decimals,
+    indexPrice,
+    isLong
+  )!;
+
+  const acceptablePriceInfo = getAcceptablePriceInfo({
+    marketInfo,
+    isIncrease: true,
+    isLimit,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+  });
+
+  return { sizeDeltaInTokens, acceptablePriceInfo };
 }
 
 export function getPriceImpactDiffUsd({
