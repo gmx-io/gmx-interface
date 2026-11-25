@@ -458,7 +458,7 @@ export function getLiquidationPrice(p: {
       isLong,
       sizeInUsd,
       sizeInTokens,
-      liquidationPrice: liquidationPriceWithFullProfit,
+      liquidationPriceWithFullProfit,
       exposureInTokens,
     });
   } else if (getIsTokenTrackingPrice(collateralToken, indexToken)) {
@@ -487,7 +487,7 @@ export function getLiquidationPrice(p: {
       isLong,
       sizeInUsd,
       sizeInTokens,
-      liquidationPrice: liquidationPriceWithFullProfit,
+      liquidationPriceWithFullProfit,
       exposureInTokens,
     });
   } else {
@@ -508,7 +508,7 @@ export function getLiquidationPrice(p: {
       isLong,
       sizeInUsd,
       sizeInTokens,
-      liquidationPrice: liquidationPriceWithFullProfit,
+      liquidationPriceWithFullProfit,
       exposureInTokens: sizeInTokens,
     });
   }
@@ -544,17 +544,17 @@ function getLiquidationPriceWithProfitInPnlToken(p: {
   isLong: boolean;
   sizeInUsd: bigint;
   sizeInTokens: bigint;
-  liquidationPrice: bigint;
-  /** Index tokens whose value moves with the price: the position, plus collateral in the index token */
+  liquidationPriceWithFullProfit: bigint;
+  /** The size in index tokens, plus for a long or minus for a short the collateral that moves with the index price */
   exposureInTokens: bigint;
 }): bigint {
-  const { marketInfo, isLong, sizeInUsd, sizeInTokens, liquidationPrice, exposureInTokens } = p;
+  const { marketInfo, isLong, sizeInUsd, sizeInTokens, liquidationPriceWithFullProfit, exposureInTokens } = p;
   const { indexToken } = marketInfo;
-  const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, liquidationPrice)!;
+  const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, liquidationPriceWithFullProfit)!;
   const profitUsd = isLong ? positionValueUsd - sizeInUsd : sizeInUsd - positionValueUsd;
 
   if (marketInfo.tradeMath === "gmsol" || profitUsd <= 0n) {
-    return liquidationPrice;
+    return liquidationPriceWithFullProfit;
   }
 
   const { minPrice, maxPrice } = (isLong ? marketInfo.longToken : marketInfo.shortToken).prices;
@@ -563,7 +563,7 @@ function getLiquidationPriceWithProfitInPnlToken(p: {
   const countedExposureInTokens = exposureInTokens - sizeInTokens + bigMath.mulDiv(sizeInTokens, minPrice, maxPrice);
 
   if (countedExposureInTokens <= 0n) {
-    return liquidationPrice;
+    return liquidationPriceWithFullProfit;
   }
 
   const priceShift = bigMath.mulDiv(
@@ -573,7 +573,7 @@ function getLiquidationPriceWithProfitInPnlToken(p: {
   );
 
   // a long is liquidated as the price falls, a short as it rises
-  return isLong ? liquidationPrice + priceShift : liquidationPrice - priceShift;
+  return isLong ? liquidationPriceWithFullProfit + priceShift : liquidationPriceWithFullProfit - priceShift;
 }
 
 export function getMinCollateralUsdForLiquidationPrice(p: {
