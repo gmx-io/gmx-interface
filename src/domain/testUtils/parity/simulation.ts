@@ -43,8 +43,8 @@ export function traceCall(
 }
 
 /** The token amount a call tree sends to the receiver through ERC20 transfer calls */
-export function getTransfersTo(call: TraceCall, token: string, receiver: string): bigint {
-  const nested = (call.calls ?? []).reduce((sum, child) => sum + getTransfersTo(child, token, receiver), 0n);
+export function getTransferredAmountTo(call: TraceCall, token: string, receiver: string): bigint {
+  const nested = (call.calls ?? []).reduce((sum, child) => sum + getTransferredAmountTo(child, token, receiver), 0n);
 
   if (call.to?.toLowerCase() !== token.toLowerCase() || !call.input?.startsWith("0xa9059cbb")) {
     return nested;

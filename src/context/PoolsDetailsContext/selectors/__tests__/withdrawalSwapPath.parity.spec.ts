@@ -6,7 +6,7 @@ import { getSimulationPrices } from "domain/synthetics/orders/simulation";
 import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
 import { chainId, loadMarketToken, ParityContext } from "domain/testUtils/parity/context";
 import { parity, ParityInput, usd } from "domain/testUtils/parity/parity";
-import { getErc20Overrides, getTransfersTo, traceCall } from "domain/testUtils/parity/simulation";
+import { getErc20Overrides, getTransferredAmountTo, traceCall } from "domain/testUtils/parity/simulation";
 import { isSwapMarket } from "domain/testUtils/parity/swapPricing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
@@ -139,7 +139,7 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
     );
   }
 
-  return getTransfersTo(trace, getReceiveToken(input).address, ACCOUNT);
+  return getTransferredAmountTo(trace, getReceiveToken(input).address, ACCOUNT);
 }
 
 parity("withdrawal with a swap path (selectDepositWithdrawalAmounts) <-> a simulated withdrawal", {
