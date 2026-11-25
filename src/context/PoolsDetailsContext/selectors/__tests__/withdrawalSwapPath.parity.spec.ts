@@ -17,6 +17,7 @@ import { getErc20Overrides, getTransfersTo, traceCall } from "domain/testUtils/p
 import { isSwapMarket } from "domain/testUtils/parity/swapPricing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
+import { tryDecodeCustomError } from "sdk/utils/errors/parseError";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { SwapPricingType } from "sdk/utils/orders/types";
@@ -159,13 +160,16 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
     },
     { ...marketTokenOverrides, [ACCOUNT]: { balance: numberToHex(10n ** 18n) } }
   );
-  const receivedAmount = getTransfersTo(trace, getReceiveToken(input).address, ACCOUNT);
+  // the trace keeps the transfers of reverted calls, so a withdrawal that reverts midway still sends something
+  const endError = trace.output ? tryDecodeCustomError(trace.output)?.name : undefined;
 
-  if (receivedAmount === 0n) {
-    throw new Error(`The simulated withdrawal sent nothing: ${trace.error} ${trace.output?.slice(0, 74)}`);
+  if (endError !== "EndOfOracleSimulation") {
+    throw new Error(
+      `The simulated withdrawal did not finish: ${endError ?? trace.error} ${trace.output?.slice(0, 74)}`
+    );
   }
 
-  return receivedAmount;
+  return getTransfersTo(trace, getReceiveToken(input).address, ACCOUNT);
 }
 
 parity("withdrawal swap path (selectPoolsDetailsWithdrawalFindSwapPath) <-> a simulated withdrawal", {
