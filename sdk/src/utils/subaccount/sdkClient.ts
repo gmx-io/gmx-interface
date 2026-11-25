@@ -358,7 +358,7 @@ export async function activateSdkSubaccount(
   const status = knownStatus ?? (await getSdkSubaccountStatus(client, mainSigner.address, { force: true }));
   const subaccount = client.getSubaccount()!;
 
-  if (status && !status.active && status.revocationCounter > 0n) {
+  if (status && !status.active && (status.revocationCounter > 0n || status.maxAllowedCount > 0n)) {
     throw new Error(
       `Subaccount ${subaccount.address} was removed from account ${mainSigner.address} and is not approved again. ` +
         "Call clearSubaccount() before activateSubaccount() to use a new key."

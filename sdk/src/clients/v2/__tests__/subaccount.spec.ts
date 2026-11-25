@@ -296,13 +296,17 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(sdk.exportSubaccount()).toEqual({ ...exported, account: signer.address });
   });
 
-  it("activateSubaccount refuses to approve a key removed on-chain", async () => {
-    const status = buildSubaccountStatusResponse({ active: false, revocationCounter: "1" });
+  it.each([
+    { key: "removed on 2.2.1", fields: { revocationCounter: "1" }, error: "was removed" },
+    { key: "removed before 2.2.1", fields: { maxAllowedCount: "21" }, error: "was removed" },
+    { key: "still listed", fields: { active: true, maxAllowedCount: "90" }, error: "/v2/subaccounts/approval/prepare" },
+  ])("activateSubaccount with a key $key", async ({ fields, error }) => {
+    const status = buildSubaccountStatusResponse({ active: false, maxAllowedCount: "0", expiresAt: "0", ...fields });
     const api = new ScriptedOrderApi(buildPreparedOrderResponse("request-1"), [], [status]);
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     sdk.generateSubaccount();
 
-    await expect(sdk.activateSubaccount(signer)).rejects.toThrow("was removed");
+    await expect(sdk.activateSubaccount(signer)).rejects.toThrow(error);
   });
 
   it("subaccountAddress getter works after generate", async () => {
