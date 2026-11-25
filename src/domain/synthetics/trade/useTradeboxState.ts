@@ -60,6 +60,9 @@ export type { StoredTradeOptions } from "./tradeboxStorage";
 
 export type TradeStage = "trade" | "processing";
 
+/** A USD size typed in the Size field and the size token input derived from it */
+export type TypedSizeUsd = { sizeInputValue: string; toTokenInputValue: string };
+
 type ChartTriggerPrice = {
   networkId: NetworkId;
   toTokenAddress: string;
@@ -260,6 +263,8 @@ export function useTradeboxState(
   const [toTokenInputValue, setToTokenInputValue] = useSafeState("");
   const [stage, setStage] = useState<TradeStage>("trade");
   const [focusedInput, setFocusedInput] = useState<"from" | "to">();
+  // lives here, not in TradeboxMarginFields, so a desktop ↔ mobile layout switch (a remount) keeps the typed USD size
+  const [typedSizeUsd, setTypedSizeUsd] = useState<TypedSizeUsd>();
   const [expressFeeUsdByToken, setExpressFeeUsdByToken] = useState<Record<string, bigint>>(EMPTY_OBJECT);
   const [defaultTriggerAcceptablePriceImpactBps, setDefaultTriggerAcceptablePriceImpactBps] = useState<bigint>();
   const [selectedTriggerAcceptablePriceImpactBps, setSelectedTriggerAcceptablePriceImpactBps] = useState<bigint>();
@@ -785,6 +790,8 @@ export function useTradeboxState(
     setStage,
     focusedInput,
     setFocusedInput,
+    typedSizeUsd,
+    setTypedSizeUsd,
     expressFeeUsdByToken,
     setExpressFeeUsdByToken,
     defaultTriggerAcceptablePriceImpactBps,

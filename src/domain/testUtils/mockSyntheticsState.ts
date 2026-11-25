@@ -8,6 +8,7 @@ import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import type { EditingOrderState } from "domain/synthetics/orders/types";
 import type { PositionsConstants } from "domain/synthetics/positions/usePositionsConstants";
+import type { TradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import type { DeepPartial } from "lib/types";
 import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import type { MarketInfo } from "sdk/utils/markets/types";
@@ -29,6 +30,8 @@ export type MockSyntheticsStateOverrides = {
   fromTokenInputValue?: string;
   toTokenInputValue?: string;
   focusedInput?: "from" | "to";
+  typedSizeUsd?: TradeboxState["typedSizeUsd"];
+  setTypedSizeUsd?: TradeboxState["setTypedSizeUsd"];
   triggerPriceInputValue?: string;
   isLeverageSliderEnabled?: boolean;
   leverageOption?: number;
@@ -67,6 +70,8 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
     fromTokenInputValue = "1000",
     toTokenInputValue = "0.5",
     focusedInput = "from",
+    typedSizeUsd,
+    setTypedSizeUsd = noop,
     triggerPriceInputValue = "",
     isLeverageSliderEnabled = true,
     leverageOption = 20000,
@@ -138,6 +143,8 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       isFromTokenGmxAccount: false,
       leverageOption,
       setFocusedInput: noop,
+      typedSizeUsd,
+      setTypedSizeUsd,
       allowedSlippage: DEFAULT_SLIPPAGE_AMOUNT,
       numberOfParts: twapNumberOfParts,
       duration: twapDuration,
