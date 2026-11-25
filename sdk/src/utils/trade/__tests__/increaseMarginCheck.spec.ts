@@ -184,6 +184,23 @@ describe("getResultingPositionMarginState", () => {
     });
     expect(referralWins.remainingCollateralUsd).toBe(expandDecimals(55, USD_DECIMALS));
   });
+  it("counts a profit at the pnl token's min over max price, as the contract does", () => {
+    const btcPrices = { minPrice: expandDecimals(19_980, 30), maxPrice: expandDecimals(20_020, 30) };
+    const marketInfo = mockMarginCheckMarketInfo(mockTokensData({ BTC: { prices: btcPrices } }));
+    // 1 BTC is worth 19 980 at the min price: 20.02 of profit, which the contract counts as 20.02 / 20 020 * 19 980 = 19.98
+    const params = baseParams({
+      marketInfo,
+      sizeInUsd: usd10(19_959.98),
+      sizeInTokens: expandDecimals(1, 8),
+      collateralAmount: usdcAmount(179.6),
+    });
+
+    const state = getResultingPositionMarginState(params);
+
+    // 179.60 + 19.98 is short of 1% of the size, 199.5998; 179.60 + 20.02 would pass
+    expect(state.remainingCollateralUsd).toBe(usd10(199.58));
+    expect(state.reason).toBe(PositionMarginFailureReason.MinCollateralForLeverage);
+  });
 });
 
 describe("getIncreaseResultingPositionMarginState", () => {
@@ -710,9 +727,13 @@ describe("getIncreaseResultingPositionMarginState — evaluation at the trigger 
     // at the trigger the new tokens are flat and the existing position is in profit
     const atTrigger = increaseAt(triggerPrice, triggerPrice);
     expect(atTrigger?.isLiquidatable).toBe(false);
-    // 70 of margin + 100 of existing profit, minus the token-conversion dust of the new tokens
+    // 70 of margin + 100 of existing profit, minus the token-conversion dust of the new tokens,
+    // and the profit is paid in whole BTC units at the trigger
+    const profitUsd =
+      expandDecimals(100, USD_DECIMALS) - tokenConversionDust(expandDecimals(4_000, USD_DECIMALS), triggerPrice);
+    const profitInBtc = convertToTokenAmount(profitUsd, tokensData.BTC.decimals, triggerPrice)!;
     expect(atTrigger?.remainingCollateralUsd).toBe(
-      expandDecimals(170, USD_DECIMALS) - tokenConversionDust(expandDecimals(4_000, USD_DECIMALS), triggerPrice)
+      expandDecimals(70, USD_DECIMALS) + convertToUsd(profitInBtc, tokensData.BTC.decimals, triggerPrice)!
     );
   });
 
@@ -859,6 +880,8 @@ describe("pool pnl cap — profitable position while the cap binds, min < max", 
       cappedPnlUsd: expandDecimals(1_250, USD_DECIMALS),
       // 2 500 × 20 000 / 38 000 — the cap ratio at the minimising price
       cappedAtMinimisingPriceUsd: (expandDecimals(2_500, USD_DECIMALS) * 20_000n) / 38_000n,
+      // 1 250 paid as 0.0612745 BTC at the 20 400 max price, valued at the 20 000 min price
+      countedPnlUsd: expandDecimals(122_549, USD_DECIMALS - 2),
     },
     {
       side: "short",
@@ -882,10 +905,12 @@ describe("pool pnl cap — profitable position while the cap binds, min < max", 
       cappedPnlUsd: expandDecimals(920, USD_DECIMALS),
       // 1 840 × 19 800 / 37 600
       cappedAtMinimisingPriceUsd: (expandDecimals(1_840, USD_DECIMALS) * 19_800n) / 37_600n,
+      // 920 paid as 910.891089 USDC at the 1.01 max price, valued at the 0.99 min price
+      countedPnlUsd: expandDecimals(90_178_217_811n, USD_DECIMALS - 8),
     },
   ])(
     "scales a $side's profit by the pool cap taken at the price that maximises the pool's pnl",
-    ({ isLong, marketInfo, sizeInTokens, rawPnlUsd, cappedPnlUsd, cappedAtMinimisingPriceUsd }) => {
+    ({ isLong, marketInfo, sizeInTokens, rawPnlUsd, cappedPnlUsd, cappedAtMinimisingPriceUsd, countedPnlUsd }) => {
       const state = getResultingPositionMarginState({
         marketInfo,
         collateralToken: spreadUsdc,
@@ -901,7 +926,8 @@ describe("pool pnl cap — profitable position while the cap binds, min < max", 
 
       const collateralUsd = expandDecimals(990, USD_DECIMALS);
 
-      expect(state.remainingCollateralUsd).toBe(collateralUsd + cappedPnlUsd);
+      expect(state.remainingCollateralUsd).toBe(collateralUsd + countedPnlUsd);
+      expect(state.remainingCollateralUsd).not.toBe(collateralUsd + cappedPnlUsd);
       expect(state.remainingCollateralUsd).not.toBe(collateralUsd + cappedAtMinimisingPriceUsd);
       expect(state.remainingCollateralUsd).not.toBe(collateralUsd + rawPnlUsd);
       expect(state.isLiquidatable).toBe(false);

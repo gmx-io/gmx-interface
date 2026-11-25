@@ -524,7 +524,7 @@ export function getLiquidationPrice(p: {
  * The contract pays a profit in the pnl token, so it counts only profit * min price / max price of that token
  * (PositionUtils.isPositionLiquidatable)
  */
-function getCountedPnlUsd(marketInfo: MarketInfo, isLong: boolean, pnl: bigint): bigint {
+export function getCountedPnlUsd(marketInfo: MarketInfo, isLong: boolean, pnl: bigint): bigint {
   if (marketInfo.tradeMath === "gmsol" || pnl <= 0n) {
     return pnl;
   }

@@ -9,7 +9,7 @@ import { getGmsolIncreaseSizeDeltaInTokens, getGmsolUsdAmount } from "utils/gmso
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
-import { getLiquidationPriceImpact, getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
+import { getCountedPnlUsd, getLiquidationPriceImpact, getPositionPnlUsd, getTokenAtIndexPrice } from "utils/positions";
 import { UserReferralInfo } from "utils/referrals/types";
 import { convertToTokenAmount, convertToTokenAmountForIncrease, convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
@@ -55,10 +55,8 @@ export type PositionMarginStateParams = {
 };
 
 /**
- * Port of `PositionUtils.isPositionLiquidatable` from the gmx-synthetics build deployed on Arbitrum
- * (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl in the per-position pnl cap)
- * for a position whose pending fees have just been settled — the state the contract validates right
- * after an increase or a decrease.
+ * Port of `PositionUtils.isPositionLiquidatable` for a position whose pending fees have just been settled — the
+ * state the contract validates right after an increase or a decrease.
  */
 export function getResultingPositionMarginState(p: PositionMarginStateParams): PositionMarginState {
   const {
@@ -144,7 +142,8 @@ export function getResultingPositionMarginState(p: PositionMarginStateParams): P
 
   const closingCostUsd = convertToUsd(closingFeeAmount, collateralToken.decimals, collateralToken.prices.minPrice)!;
 
-  const remainingCollateralUsd = collateralUsd + positionPnlUsd + totalImpactUsd - closingCostUsd;
+  const countedPnlUsd = getCountedPnlUsd(marketInfo, isLong, positionPnlUsd);
+  const remainingCollateralUsd = collateralUsd + countedPnlUsd + totalImpactUsd - closingCostUsd;
 
   let minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (marketInfo.tradeMath === "gmsol") {
@@ -228,10 +227,8 @@ export type IncreaseResultingPositionState = {
 };
 
 /**
- * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition` from the gmx-synthetics
- * build deployed on Arbitrum (release_2.2.1 @ 23c9d160: release-v2.2c plus MarketUtils.getPositivePnl
- * in the per-position pnl cap): `willPositionCollateralBeSufficient` on the updated open interest,
- * then `validatePosition` on the resulting position.
+ * Mirrors the post-increase gates of `IncreasePositionUtils.increasePosition`: `willPositionCollateralBeSufficient`
+ * on the updated open interest, then `validatePosition` on the resulting position.
  */
 export function getIncreaseResultingPositionMarginState(
   p: IncreaseResultingPositionMarginStateParams

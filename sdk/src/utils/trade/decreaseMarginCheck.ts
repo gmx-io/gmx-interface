@@ -46,9 +46,8 @@ export type DecreaseResultingPositionMarginStateParams = {
 };
 
 /**
- * Mirrors the gates of `DecreasePositionUtils.decreasePosition` from the gmx-synthetics build deployed on
- * Arbitrum (release_2.2.1 @ 23c9d160) for a market decrease, a trigger decrease at `indexPriceForEvaluation`
- * or a collateral withdrawal that leaves a position open.
+ * Mirrors the gates of `DecreasePositionUtils.decreasePosition` for a market decrease, a trigger decrease at
+ * `indexPriceForEvaluation` or a collateral withdrawal that leaves a position open.
  */
 export function getDecreaseResultingPositionMarginState(
   p: DecreaseResultingPositionMarginStateParams
