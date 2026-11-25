@@ -882,6 +882,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // PALLADIUM/USD [WETH-USDC]
+    "0x5e356C86B5A649312933C54077009D301912734B": {
+      marketTokenAddress: "0x5e356C86B5A649312933C54077009D301912734B",
+      indexTokenAddress: "0x2DA32e7a977f3d24D6D492321f5E9536362c3D53",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
     // DRAM/USD [WETH-USDC]
     "0x058cCD6618211AA4AE566013c044beB8FfF446B6": {
       marketTokenAddress: "0x058cCD6618211AA4AE566013c044beB8FfF446B6",
