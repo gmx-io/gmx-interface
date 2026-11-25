@@ -19,7 +19,7 @@ type KnownIssue = {
 };
 
 type Field<Case> = {
-  /** What a bigint difference is measured against, the reader value by default */
+  /** What a bigint difference is measured against, the contract value by default */
   bpsOf?: (input: ParityInput<Case>) => bigint;
   /** The bigint difference allowed, 0.001 bps by default */
   toleranceBps?: number | ((input: ParityInput<Case>) => number);
@@ -31,7 +31,7 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
   markets: (market: MarketInfo) => boolean;
   cases: (market: MarketInfo, ctx: ParityContext) => Case[] | Promise<Case[]>;
   ours: (input: ParityInput<Case>) => Out | Promise<Out>;
-  reader: (input: ParityInput<Case>) => Promise<Out>;
+  contract: (input: ParityInput<Case>) => Promise<Out>;
   /** Two bigints compare by their difference in bps, anything else must be equal */
   fields: { [K in keyof Out]: Field<Case> };
   /**
@@ -46,7 +46,7 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
 // The code a run measures, "-dirty" when it has uncommitted changes
 const codeVersion = execFileSync("git", ["describe", "--always", "--dirty"], { encoding: "utf8" }).trim();
 
-type Row = { scenario: string; market: string; case: string; field: string; diffBps: number; failure?: string };
+type Row = { state: string; market: string; case: string; field: string; diffBps: number; failure?: string };
 
 const DEFAULT_TOLERANCE_BPS = 0.001;
 
@@ -64,10 +64,10 @@ const formatValue = (value: Value) => (value === undefined ? "none" : String(val
 
 const formatRow = (row: Row) => `${row.market} / ${row.case}: ${row.failure}`;
 
-function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: Value, reader: Value) {
-  if (typeof ours === "bigint" && typeof reader === "bigint") {
-    const base = field.bpsOf ? field.bpsOf(input) : reader;
-    const diffBps = toBps(ours - reader, base);
+function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: Value, contract: Value) {
+  if (typeof ours === "bigint" && typeof contract === "bigint") {
+    const base = field.bpsOf ? field.bpsOf(input) : contract;
+    const diffBps = toBps(ours - contract, base);
     const toleranceBps =
       typeof field.toleranceBps === "function"
         ? field.toleranceBps(input)
@@ -76,25 +76,25 @@ function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: 
     return Math.abs(diffBps) <= toleranceBps ? { diffBps } : { diffBps, failure: `${diffBps} bps` };
   }
 
-  if (ours === reader) {
+  if (ours === contract) {
     return { diffBps: 0 };
   }
 
-  return { diffBps: Infinity, failure: `we say ${formatValue(ours)}, the contract says ${formatValue(reader)}` };
+  return { diffBps: Infinity, failure: `we say ${formatValue(ours)}, the contract says ${formatValue(contract)}` };
 }
 
 async function compareCase<Case extends { label: string }, Out extends Record<string, Value>>(
   spec: ParitySpec<Case, Out>,
   input: ParityInput<Case>
 ): Promise<{ ours: Out; rows: Row[]; revert?: string }> {
-  const row = { scenario: input.ctx.scenario, market: input.market.name, case: input.testCase.label };
+  const row = { state: input.ctx.state, market: input.market.name, case: input.testCase.label };
   const fieldNames = Object.keys(spec.fields);
   const ours = await spec.ours(input);
 
   try {
-    const reader = await spec.reader(input);
+    const contract = await spec.contract(input);
     const rows = fieldNames.map((field) => {
-      const comparison = compareField(spec.fields[field], input, ours[field], reader[field]);
+      const comparison = compareField(spec.fields[field], input, ours[field], contract[field]);
 
       return { ...row, field, ...comparison };
     });
@@ -108,7 +108,7 @@ async function compareCase<Case extends { label: string }, Out extends Record<st
     }
 
     // no rows: a revert is never a known difference
-    return { ours, rows: [], revert: `${row.scenario} / ${row.market} / ${row.case}: contract reverts with ${revert}` };
+    return { ours, rows: [], revert: `${row.state} / ${row.market} / ${row.case}: contract reverts with ${revert}` };
   }
 }
 
@@ -151,16 +151,16 @@ async function runPair<Case extends { label: string }, Out extends Record<string
     name: requiredCase.name,
     count: inputs.filter((input, i) => requiredCase.when(input, results[i].ours)).length,
   }));
-  const casesByState = Object.fromEntries(runs.map((run) => [run.ctx.scenario, run.inputs.length]));
+  const casesByState = Object.fromEntries(runs.map((run) => [run.ctx.state, run.inputs.length]));
 
   runs.forEach(({ ctx, markets, inputs }) =>
     console.log(
-      `${name}, ${ctx.scenario}: code ${codeVersion}, block ${ctx.blockNumber}, ${markets.length} markets, ${inputs.length} cases`
+      `${name}, ${ctx.state}: code ${codeVersion}, block ${ctx.blockNumber}, ${markets.length} markets, ${inputs.length} cases`
     )
   );
   states.forEach((state) =>
     Object.entries(spec.fields).forEach(([field, config]) => {
-      const failures = rows.filter((row) => row.scenario === state && row.field === field && row.failure);
+      const failures = rows.filter((row) => row.state === state && row.field === field && row.failure);
       const maxBps = Math.max(0, ...failures.map((row) => Math.abs(row.diffBps)));
 
       if (failures.length > 0) {
@@ -198,7 +198,7 @@ export function parity<Case extends { label: string }, Out extends Record<string
     states.forEach((state) =>
       Object.entries(spec.fields).forEach(([field, config]) => {
         const getFailures = () =>
-          result.rows.filter((row) => row.scenario === state && row.field === field && row.failure).map(formatRow);
+          result.rows.filter((row) => row.state === state && row.field === field && row.failure).map(formatRow);
 
         if (getKnownIssues(config, state).length > 0) {
           it.fails(`${state} / ${field} differs: known issues`, () => expect(getFailures()).toEqual([]));
