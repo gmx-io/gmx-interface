@@ -85,7 +85,6 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   },
   fields: {
     longTokenAmount: {
-      toleranceBps: 0.001,
       knownIssues: [
         ...knownIssues,
         {
@@ -95,7 +94,7 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
         },
       ],
     },
-    shortTokenAmount: { toleranceBps: 0.001, knownIssues },
+    shortTokenAmount: { knownIssues },
   },
   requiredCases: [
     {

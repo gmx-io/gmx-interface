@@ -35,7 +35,7 @@ parity("getPriceImpactForSwap <-> Reader.getSwapPriceImpact, impact before caps"
 
     return { priceImpactUsd };
   },
-  fields: { priceImpactUsd: { bpsOf: getSwapMidUsdIn, toleranceBps: 0.001 } },
+  fields: { priceImpactUsd: { bpsOf: getSwapMidUsdIn } },
   requiredCases: [
     {
       name: "a swap where the virtual inventory impact wins",

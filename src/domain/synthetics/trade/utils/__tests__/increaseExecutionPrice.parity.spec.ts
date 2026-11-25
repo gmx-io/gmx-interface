@@ -69,9 +69,8 @@ parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
     return { priceImpactUsd, executionPrice };
   },
   fields: {
-    priceImpactUsd: { bpsOf: ({ testCase }) => testCase.sizeDeltaUsd, toleranceBps: 0.001 },
+    priceImpactUsd: { bpsOf: ({ testCase }) => testCase.sizeDeltaUsd },
     executionPrice: {
-      toleranceBps: 0.001,
       knownIssues: [
         {
           reason:
