@@ -18,7 +18,7 @@ parity("getPriceImpactForSwap <-> Reader.getSwapPriceImpact, impact before caps"
 
     return { priceImpactUsd: getSwapPriceImpact(input, midUsdIn).priceImpactDeltaUsd };
   },
-  reader: async (input) => {
+  contract: async (input) => {
     const { ctx, market, testCase } = input;
     const [tokenIn, tokenOut] = getSwapTokens(input);
     const tokenInPrices = convertToContractTokenPrices(tokenIn.prices, tokenIn.decimals);

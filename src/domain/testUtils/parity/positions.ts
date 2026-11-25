@@ -100,7 +100,7 @@ const marketFeeStateRequests = new Map<string, ReturnType<typeof readMarketFeeSt
 
 /** getContractPositionDynamicFees over the stored market fee state, the state Reader.isPositionLiquidatable charges */
 export async function loadStoredStateFees(ctx: ParityContext, market: MarketInfo, p: ParityPosition) {
-  const requestKey = `${ctx.scenario} ${market.marketTokenAddress}`;
+  const requestKey = `${ctx.state} ${market.marketTokenAddress}`;
 
   if (!marketFeeStateRequests.has(requestKey)) {
     marketFeeStateRequests.set(requestKey, readMarketFeeState(ctx, market));

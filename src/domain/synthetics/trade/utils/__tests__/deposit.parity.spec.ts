@@ -99,7 +99,7 @@ parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   cases: loadDepositCases,
   scenarios: [UI_FEE_SCENARIO],
   ours: (input) => ({ marketTokenAmount: getOurDepositAmounts(input).marketTokenAmount }),
-  reader: async ({ ctx, market, testCase }) => {
+  contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;
     const marketTokenAmount = await readReader<bigint>(ctx, "getDepositAmountOut", [

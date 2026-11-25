@@ -154,7 +154,7 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
   cases: liquidationCases,
   scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO],
   ours: ({ testCase }) => ({ liquidationPrice: testCase.liquidationPrice }),
-  reader: async (input) => ({ liquidationPrice: await findReaderLiquidationPrice(input) }),
+  contract: async (input) => ({ liquidationPrice: await findReaderLiquidationPrice(input) }),
   fields: {
     liquidationPrice: {
       // the Reader takes whole price units per token unit, and the bisection resolves 0.001 bps
