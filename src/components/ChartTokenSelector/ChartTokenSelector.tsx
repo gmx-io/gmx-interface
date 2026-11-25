@@ -154,13 +154,17 @@ export default function ChartTokenSelector(props: Props) {
                       "flex-row items-center": oneRowLabels,
                     })}
                   >
-                    <span className="text-start text-[13px] font-medium text-typography-primary">
-                      {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                      {selectedToken.symbol}
-                      {t`/USD`}
+                    {/* On phones the arrow stays next to the market name, even when the line under it is wider */}
+                    <span className="flex items-center gap-2">
+                      <span className="text-start text-[13px] font-medium text-typography-primary">
+                        {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                        {selectedToken.symbol}
+                        {t`/USD`}
+                      </span>
+                      {!oneRowLabels && <ChevronDownIcon className="inline-block size-16 shrink-0" />}
                     </span>
                     {isMarketClosed && !oneRowLabels ? (
-                      <MarketClosedBadge variant="text" poolName={poolName ?? undefined} />
+                      <MarketClosedBadge poolName={poolName ?? undefined} />
                     ) : (
                       poolName && (
                         <span
@@ -182,7 +186,7 @@ export default function ChartTokenSelector(props: Props) {
 
                   {isMarketClosed && oneRowLabels && <MarketClosedBadge poolName={poolName ?? undefined} />}
 
-                  <ChevronDownIcon className="inline-block size-16" />
+                  {oneRowLabels && <ChevronDownIcon className="inline-block size-16" />}
                 </div>
               </div>
             </span>
@@ -880,17 +884,21 @@ function MarketListItem({
         </Button>
       </td>
       <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
-        <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
-          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
-          <span className={cx("flex flex-wrap items-center gap-6")}>
+        {/* Pills that wrap to a second line start under the icon, the same as in the position and order cards */}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+          <span className="flex items-center">
+            <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
+          </span>
+          {/* On phones a closed market shows the pill in place of its max leverage, which can't be used until it reopens */}
+          {!(isMobile && isClosed) && (
             <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
-            {isClosed && <MarketClosedBadge />}
-          </span>
+          )}
+          {isClosed && <MarketClosedBadge />}
         </div>
       </td>
 

@@ -611,7 +611,7 @@ export function PositionItem(p: Props) {
             </div>
             {isMarketClosed && (
               <div className="mt-4 flex">
-                <MarketClosedBadge label="marketClosed" />
+                <MarketClosedBadge label="marketClosed" isTruncatable />
               </div>
             )}
           </div>

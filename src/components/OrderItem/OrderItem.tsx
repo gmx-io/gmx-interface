@@ -737,7 +737,7 @@ function OrderItemLarge({
             }
           />
         ) : (
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <>
             <StandardTooltip
               handle={
                 <MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />
@@ -754,8 +754,12 @@ function OrderItemLarge({
                 />
               }
             />
-            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
-          </div>
+            {isMarketClosed && (
+              <div className="mt-4 flex">
+                <MarketClosedBadge label="marketClosed" isTruncatable />
+              </div>
+            )}
+          </>
         )}
       </TableTd>
       <TableTd>
@@ -886,20 +890,21 @@ function OrderItemSmall({
     <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
-          "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+          "after:absolute after:left-10 after:top-[23px] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
             isCurrentMarket,
         })}
       >
-        <div className="flex cursor-pointer flex-wrap items-center gap-x-8 gap-y-4" onClick={onSelectOrderClick}>
-          {hideActions ? (
-            title
-          ) : (
-            <>
+        <div className="flex cursor-pointer items-start gap-8" onClick={onSelectOrderClick}>
+          {!hideActions && (
+            <span className="flex h-20 items-center">
               <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
-              {title}
-            </>
+            </span>
           )}
-          {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
+          {/* The market block wraps on its own, so a wrapped pill starts under the token icon, like the position card */}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            {title}
+            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
+          </div>
         </div>
       </AppCardSection>
       <AppCardSection>

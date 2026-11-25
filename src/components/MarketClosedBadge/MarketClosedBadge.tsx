@@ -6,21 +6,22 @@ import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "component
 
 type Props = {
   poolName?: string;
-  variant?: "badge" | "text";
+  /** "closed" next to a market (header, market list); "marketClosed" on position and order rows */
   label?: "closed" | "marketClosed";
+  /** In narrow table columns (long languages) the label ends with "…" instead of running into the next column */
+  isTruncatable?: boolean;
   className?: string;
 };
 
-export function MarketClosedBadge({ poolName, variant = "badge", label = "closed", className }: Props) {
+export function MarketClosedBadge({ poolName, label = "closed", isTruncatable = false, className }: Props) {
   return (
     <StandardTooltip
-      className={cx("shrink-0", { flex: variant === "text" }, className)}
-      handleClassName={cx("whitespace-nowrap text-12 font-medium text-yellow-300", {
-        "rounded-4 bg-yellow-300/20 px-5 py-1 leading-[15px]": variant === "badge",
-        "leading-base after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:border-b after:border-dotted after:border-yellow-300/50 after:content-['']":
-          variant === "text",
-      })}
-      contentClassName="gap-4"
+      className={cx(isTruncatable ? "min-w-0 max-w-full" : "shrink-0", className)}
+      handleClassName={cx(
+        "whitespace-nowrap rounded-full bg-yellow-300/20 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-yellow-300",
+        { "max-w-full": isTruncatable }
+      )}
+      contentClassName={cx("gap-4", { "min-w-0": isTruncatable })}
       variant="iconStroke"
       iconClassName="!size-12"
       shouldStopPropagation
@@ -41,7 +42,9 @@ export function MarketClosedBadge({ poolName, variant = "badge", label = "closed
         </TooltipContent>
       }
     >
-      {label === "marketClosed" ? <Trans>Market closed</Trans> : <Trans context="Market state">Closed</Trans>}
+      <span className={cx({ truncate: isTruncatable })}>
+        {label === "marketClosed" ? <Trans>Market closed</Trans> : <Trans context="Market state">Closed</Trans>}
+      </span>
     </StandardTooltip>
   );
 }
