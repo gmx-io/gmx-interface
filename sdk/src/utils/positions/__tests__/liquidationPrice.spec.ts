@@ -5,7 +5,12 @@ import { mockMarginCheckMarketInfo, mockMarketsInfoData, mockTokensData } from "
 import { bigMath } from "utils/bigmath";
 import type { MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
-import { getLiquidationPrice } from "utils/positions";
+import {
+  getIsPositionBelowMinCollateralForLeverage,
+  getLiquidationPrice,
+  getMinCollateralUsdForLiquidationPrice,
+} from "utils/positions";
+import type { PositionInfoLoaded } from "utils/positions/types";
 import { convertToUsd, getTokenData } from "utils/tokens";
 
 const usd = (value: string) => parseUnits(value, 30);
@@ -297,5 +302,58 @@ describe("EVM liquidation price in profit", () => {
 
     expect(getRemainingCollateralUsd((liquidationPrice * 1_000_001n) / 1_000_000n) > thresholdUsd).toBe(true);
     expect(getRemainingCollateralUsd((liquidationPrice * 999_999n) / 1_000_000n) < thresholdUsd).toBe(true);
+  });
+});
+
+describe("EVM min collateral in profit", () => {
+  it("counts a positive pnl at the pnl token's min over max price in the min collateral checks", () => {
+    const tokensData = mockTokensData({ ETH: { prices: { minPrice: usd("1998"), maxPrice: usd("2002") } } });
+    const marketInfo = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": {
+        minCollateralFactor: usd("0.01"),
+        minCollateralFactorForOpenInterestLong: 0n,
+        positionFeeFactorForBalanceWasNotImproved: 0n,
+        maxPositionImpactFactorForLiquidations: 0n,
+      },
+    })["ETH-ETH-USDC"];
+    const collateralToken = getTokenData(tokensData, "USDC")!;
+    const sizeInUsd = usd("100000");
+    const sizeInTokens = eth("50");
+    // the contract counts $100.1 of profit as 100.1 / 2002 * 1998 = $99.9
+    const profitUsd = usd("100.1");
+
+    const getMinCollateralUsd = (pnl: bigint) =>
+      getMinCollateralUsdForLiquidationPrice({
+        sizeInUsd,
+        sizeInTokens,
+        marketInfo,
+        pendingImpactAmount: 0n,
+        minCollateralUsd: usd("1"),
+        pnl,
+        isLong: true,
+        userReferralInfo: undefined,
+      });
+    expect(getMinCollateralUsd(profitUsd) - getMinCollateralUsd(0n)).toBe(-usd("99.9"));
+    expect(getMinCollateralUsd(-usd("100")) - getMinCollateralUsd(0n)).toBe(usd("100"));
+
+    // 1% of the size is $1,000: $900.1 of collateral plus $99.9 of counted profit is just short of it
+    for (const [remainingCollateralUsd, isBelow] of [
+      [usd("900.1") - 1n, true],
+      [usd("900.1"), false],
+    ] as const) {
+      const position = {
+        marketInfo,
+        sizeInUsd,
+        sizeInTokens,
+        isLong: true,
+        pendingImpactAmount: 0n,
+        pnl: profitUsd,
+        closingFeeUsd: 0n,
+        remainingCollateralUsd,
+        collateralAmount: expandDecimals(1000, collateralToken.decimals),
+        collateralToken,
+      } as PositionInfoLoaded;
+      expect(getIsPositionBelowMinCollateralForLeverage(position), String(remainingCollateralUsd)).toBe(isBelow);
+    }
   });
 });
