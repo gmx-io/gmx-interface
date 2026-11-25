@@ -3,10 +3,10 @@ import { describe, expect, it } from "vitest";
 import { USD_DECIMALS } from "configs/factors";
 import { NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { mockMarketsInfoData as createMockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
-import type { MarketsInfoData } from "utils/markets/types";
+import type { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import { expandDecimals } from "utils/numbers";
 import { SwapPricingType } from "utils/orders/types";
-import { getIsMaxPnlFactorExceededAfterSwap, getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
+import { getIsMaxPnlFactorExceededForSwap, getSwapPathOutputAddresses, getSwapPathStats } from "utils/swap/swapStats";
 
 const someWrappedToken = "0x0000000000000000000000000000000000000001";
 const someNativeToken = "0x0000000000000000000000000000000000000000";
@@ -463,7 +463,7 @@ describe("getSwapPathStats", () => {
   });
 });
 
-describe("getIsMaxPnlFactorExceededAfterSwap", () => {
+describe("getIsMaxPnlFactorExceededForSwap", () => {
   const dollar = 10n ** BigInt(USD_DECIMALS);
   const tokensData = mockTokensData();
   const marketKey = "BTC-BTC-USDC";
@@ -474,7 +474,8 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
       depositsShort: bigint;
       withdrawalsLong: bigint;
       withdrawalsShort: bigint;
-    }> = {}
+    }> = {},
+    marketOverrides: Partial<MarketInfo> = {}
   ) => {
     const marketsInfoData = createMockMarketsInfoData(tokensData, [marketKey], {
       [marketKey]: {
@@ -488,6 +489,7 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
         maxPnlFactorForDepositsShort: overrides.depositsShort ?? expandDecimals(5, 29),
         maxPnlFactorForWithdrawalsLong: overrides.withdrawalsLong ?? expandDecimals(5, 29),
         maxPnlFactorForWithdrawalsShort: overrides.withdrawalsShort ?? expandDecimals(5, 29),
+        ...marketOverrides,
       },
     });
     return marketsInfoData[marketKey]!;
@@ -497,7 +499,7 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
     const marketInfo = buildMarketInfo({ withdrawalsShort: expandDecimals(1, 29) });
 
     expect(
-      getIsMaxPnlFactorExceededAfterSwap({
+      getIsMaxPnlFactorExceededForSwap({
         marketInfo,
         isLong: true,
         usdIn: 500n * dollar,
@@ -509,7 +511,7 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
     const marketInfo = buildMarketInfo({ withdrawalsShort: expandDecimals(5, 29) });
 
     expect(
-      getIsMaxPnlFactorExceededAfterSwap({
+      getIsMaxPnlFactorExceededForSwap({
         marketInfo,
         isLong: true,
         usdIn: 500n * dollar,
@@ -517,23 +519,23 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
     ).toBe(false);
   });
 
-  it("returns true when the growing side is already over the deposits cap pre-swap", () => {
+  it("ignores the deposits cap", () => {
     const marketInfo = buildMarketInfo({ depositsShort: expandDecimals(5, 28) });
 
     expect(
-      getIsMaxPnlFactorExceededAfterSwap({
+      getIsMaxPnlFactorExceededForSwap({
         marketInfo,
         isLong: false,
         usdIn: 100n * dollar,
       })
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("returns false when the shrinking side PnL is zero", () => {
     const marketInfo = buildMarketInfo({ withdrawalsLong: expandDecimals(1, 29) });
 
     expect(
-      getIsMaxPnlFactorExceededAfterSwap({
+      getIsMaxPnlFactorExceededForSwap({
         marketInfo,
         isLong: false,
         usdIn: 500n * dollar,
@@ -541,15 +543,48 @@ describe("getIsMaxPnlFactorExceededAfterSwap", () => {
     ).toBe(false);
   });
 
-  it("returns true when the swap drains the shrinking side's pool", () => {
+  // SwapUtils._validateMaxPnl: positive pnl, both sides at the withdrawals cap, before and after
+  it("checks the growing side against the withdrawals cap, not the deposits cap", () => {
+    // shorts are 100 in profit: 9% of the short pool after 100 flows in
+    const marketInfo = buildMarketInfo({
+      depositsShort: expandDecimals(5, 29),
+      withdrawalsShort: expandDecimals(5, 28),
+    });
+
+    expect(getIsMaxPnlFactorExceededForSwap({ marketInfo, isLong: false, usdIn: 100n * dollar })).toBe(true);
+  });
+
+  it("checks the pool before the swap too", () => {
+    // 10% of the short pool before the swap, 6.7% after 500 flows in
+    const marketInfo = buildMarketInfo({ withdrawalsShort: expandDecimals(8, 28) });
+
+    expect(getIsMaxPnlFactorExceededForSwap({ marketInfo, isLong: false, usdIn: 500n * dollar })).toBe(true);
+  });
+
+  it("uses the positive pnl of each collateral bucket", () => {
+    // longs with BTC collateral are 100 up, longs with USDC collateral 100 down: net 0, positive 100
+    const marketInfo = buildMarketInfo(
+      { withdrawalsLong: expandDecimals(5, 28) },
+      {
+        longInterestUsdUsingLongToken: expandDecimals(250, USD_DECIMALS),
+        longInterestInTokensUsingLongToken: usdToToken(350, tokensData.BTC),
+        longInterestUsdUsingShortToken: expandDecimals(250, USD_DECIMALS),
+        longInterestInTokensUsingShortToken: usdToToken(150, tokensData.BTC),
+      }
+    );
+
+    expect(getIsMaxPnlFactorExceededForSwap({ marketInfo, isLong: true, usdIn: 100n * dollar })).toBe(true);
+  });
+
+  it("treats a drained pool as a zero factor, as the contract does", () => {
     const marketInfo = buildMarketInfo({ withdrawalsShort: expandDecimals(1, 30) });
 
     expect(
-      getIsMaxPnlFactorExceededAfterSwap({
+      getIsMaxPnlFactorExceededForSwap({
         marketInfo,
         isLong: true,
         usdIn: 1000n * dollar,
       })
-    ).toBe(true);
+    ).toBe(false);
   });
 });
