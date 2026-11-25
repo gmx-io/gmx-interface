@@ -41,6 +41,7 @@ const commonParams: MarginDepositBatchParams = {
   indexTokenAddress: WETH.address,
   allowedSlippage: ALLOWED_SLIPPAGE,
   replacingOrderKey: undefined,
+  replacingOrder: undefined,
 };
 
 function getCreateOrder(batchParams: BatchOrderTxnParams) {

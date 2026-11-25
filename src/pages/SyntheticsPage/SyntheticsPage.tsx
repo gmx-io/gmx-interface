@@ -78,6 +78,7 @@ import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
+import { getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -732,7 +733,7 @@ function useOrdersControl() {
       const batchParams = {
         createOrderParams: [],
         updateOrderParams: [],
-        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+        cancelOrderParams: orders.flatMap(getCancelOrderParams),
       };
 
       try {
@@ -811,7 +812,7 @@ function useOrdersControl() {
       const batchParams = {
         createOrderParams: [],
         updateOrderParams: [],
-        cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+        cancelOrderParams: getCancelOrderParams(order),
       };
 
       try {

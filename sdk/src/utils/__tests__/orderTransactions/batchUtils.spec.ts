@@ -5,17 +5,21 @@ import { ARBITRUM } from "configs/chains";
 import { getTokenBySymbol, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { mockExternalSwap } from "test/mock";
 import { expandDecimals, parseValue, USD_DECIMALS } from "utils/numbers";
-import { OrderType } from "utils/orders/types";
+import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
 import {
   buildIncreaseOrderPayload,
+  buildUpdateOrderPayload,
+  CancelOrderTxnParams,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchIsNativePayment,
   getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
+  getIsBatchPayoutOnlyToAccount,
   getIsEmptyBatch,
   getIsInvalidBatchReceiver,
   IncreasePositionOrderParams,
+  OrderPayoutAddresses,
 } from "utils/orderTransactions";
 import { ERC20Address } from "utils/tokens/types";
 import { ExternalSwapQuote } from "utils/trade/types";
@@ -124,6 +128,79 @@ describe("Batch Utils", () => {
     it("returns false if all orders have the same receiver", () => {
       const batch = buildMultiIncreaseBatch([commonMarketIncreaseParams, commonMarketIncreaseParams]);
       expect(getIsInvalidBatchReceiver(batch, ACCOUNT)).toBe(false);
+    });
+  });
+
+  describe("getIsBatchPayoutOnlyToAccount", () => {
+    const OTHER = "0x9999999999999999999999999999999999999999";
+    const ORDER_KEY = `0x${"ab".repeat(32)}`;
+    const OWN_ORDER = { receiver: ACCOUNT, cancellationReceiver: zeroAddress, callbackContract: zeroAddress };
+
+    const update = (payout: OrderPayoutAddresses) =>
+      buildUpdateOrderPayload({
+        chainId: CHAIN_ID,
+        indexTokenAddress: WETH.address,
+        orderKey: ORDER_KEY,
+        orderType: OrderType.LimitDecrease,
+        sizeDeltaUsd: parseValue("2000", USD_DECIMALS)!,
+        triggerPrice: parseValue("3000", USD_DECIMALS)!,
+        acceptablePrice: parseValue("2990", USD_DECIMALS)!,
+        minOutputAmount: 0n,
+        autoCancel: false,
+        validFromTime: 0n,
+        decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+        executionFeeTopUp: 0n,
+        ...payout,
+      });
+    const cancel = (payout: OrderPayoutAddresses): CancelOrderTxnParams => ({ orderKey: ORDER_KEY, ...payout });
+
+    it.each([
+      { case: "own create", creates: [ACCOUNT], expected: true },
+      { case: "create for another receiver", creates: [OTHER], expected: false },
+      { case: "edit of an own order", updates: [OWN_ORDER], expected: true },
+      { case: "cancel of an own order", cancels: [OWN_ORDER], expected: true },
+      {
+        case: "cancel refunding the account",
+        cancels: [{ ...OWN_ORDER, cancellationReceiver: ACCOUNT }],
+        expected: true,
+      },
+      {
+        case: "edit of an order paying another receiver",
+        updates: [{ ...OWN_ORDER, receiver: OTHER }],
+        expected: false,
+      },
+      {
+        case: "cancel refunding another account",
+        cancels: [{ ...OWN_ORDER, cancellationReceiver: OTHER }],
+        expected: false,
+      },
+      {
+        case: "cancel refunding a callback contract",
+        cancels: [{ ...OWN_ORDER, callbackContract: OTHER }],
+        expected: false,
+      },
+      { case: "cancel of an order with unknown payout", cancels: [{}], expected: false },
+      {
+        case: "edit with an unknown cancellation receiver",
+        updates: [{ ...OWN_ORDER, cancellationReceiver: undefined }],
+        expected: false,
+      },
+      {
+        case: "own create with a foreign cancel",
+        creates: [ACCOUNT],
+        cancels: [{ ...OWN_ORDER, receiver: OTHER }],
+        expected: false,
+      },
+    ])("$case -> $expected", ({ creates = [], updates = [], cancels = [], expected }) => {
+      const batch = {
+        createOrderParams: creates.map((receiver) =>
+          buildIncreaseOrderPayload({ ...commonMarketIncreaseParams, receiver })
+        ),
+        updateOrderParams: updates.map(update),
+        cancelOrderParams: cancels.map(cancel),
+      };
+
+      expect(getIsBatchPayoutOnlyToAccount(batch, ACCOUNT)).toBe(expected);
     });
   });
 
