@@ -34,6 +34,7 @@ import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrde
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 
+import { getGmsolCreateOrderTitles } from "../orderTracking/orderStatusTitles";
 import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
 import { getPendingGmsolSubmission } from "../transactions/pendingSubmission";
 import { useGmsolOrderTransactions } from "../transactions/useGmsolOrderTransactions";
@@ -87,25 +88,31 @@ export default function GmsolTradeboxAdapter({
     try {
       if (isTrigger) {
         if (!selectedPosition || selectedPosition.account !== wallet.address) return { error: t`Select a position` };
-        return {
-          action: buildGmsolTradeboxTriggerAction({ marketInfo, collateralToken, amounts: decreaseAmounts, isLong }),
-        };
+        const action = buildGmsolTradeboxTriggerAction({
+          marketInfo,
+          collateralToken,
+          amounts: decreaseAmounts,
+          isLong,
+        });
+        return { action, orders: getGmsolCreateOrderTitles(action, { marketInfo, collateralToken }) };
       }
       if (!isIncrease) return { error: t`This order type is not supported on Solana` };
       if (isTpSlEnabled && (sidecars.takeProfit.error || sidecars.stopLoss.error))
         return { error: t`Review your TP/SL orders` };
+      const action = buildGmsolTradeboxOrderAction({
+        marketInfo,
+        fromToken,
+        collateralToken,
+        amounts,
+        tradeMode,
+        allowedSlippage,
+        isLong,
+        sidecarEntries: isTpSlEnabled ? entries : [],
+        existingPositionSizeUsd: existingPosition?.sizeInUsd,
+      });
       return {
-        action: buildGmsolTradeboxOrderAction({
-          marketInfo,
-          fromToken,
-          collateralToken,
-          amounts,
-          tradeMode,
-          allowedSlippage,
-          isLong,
-          sidecarEntries: isTpSlEnabled ? entries : [],
-          existingPositionSizeUsd: existingPosition?.sizeInUsd,
-        }),
+        action,
+        orders: getGmsolCreateOrderTitles(action, { marketInfo, collateralToken, payToken: fromToken }),
       };
     } catch (error) {
       return {
@@ -166,7 +173,8 @@ export default function GmsolTradeboxAdapter({
     try {
       const notification = begin({
         owner,
-        title: pending ? t`Previous order request` : t`Order request`,
+        operation: pending ? pending.operation : "create",
+        orders: pending ? [] : intent.orders ?? [],
         trackExecution: pending?.trackExecution ?? isMarket,
       });
       try {

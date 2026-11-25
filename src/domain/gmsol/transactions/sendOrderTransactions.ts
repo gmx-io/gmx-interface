@@ -95,6 +95,13 @@ export async function prepareGmsolOrderTransactions({ owner, action }: { owner: 
 const messageOf = (bytes: Uint8Array) =>
   getBase64Decoder().decode(getTransactionDecoder().decode(bytes).messageBytes) as TransactionMessageBytesBase64;
 
+export class GmsolInsufficientSolError extends Error {
+  constructor() {
+    super("Insufficient SOL for network and keeper fees, rent and wrapping");
+    this.name = "GmsolInsufficientSolError";
+  }
+}
+
 /** Real RPC simulation, including the wallet's post-creation SOL balance; never prompts a wallet. */
 export async function checkGmsolTransactionBeforeSignature({
   plan,
@@ -147,7 +154,7 @@ export async function checkGmsolTransactionBeforeSignature({
     later.map((_, offset) => ({ ...transactionCosts[index + 1 + offset], networkFee: fees[offset + 1] })),
     rent
   );
-  requireGmsol(postWallet.lamports >= reserve, "Insufficient SOL for network and keeper fees, rent and wrapping");
+  if (postWallet.lamports < reserve) throw new GmsolInsufficientSolError();
   return {
     slot: simulation.context.slot,
     networkFee: fees[0],

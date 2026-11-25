@@ -13,12 +13,15 @@ import { isSwapOrderType } from "sdk/utils/orders";
 import type { OrderInfo, PositionOrderInfo } from "sdk/utils/orders/types";
 import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 
+import type { OrderStatusTitleData } from "components/StatusNotification/getOrderStatusTitle";
+
 import {
   buildGmsolCancelAction,
   buildGmsolCloseAction,
   buildGmsolTriggerAction,
   buildGmsolUpdateAction,
 } from "./buildOrderActions";
+import { getGmsolCreateOrderTitles, getGmsolOrderTitle } from "../orderTracking/orderStatusTitles";
 import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
 import { GmsolTradeboxError } from "../tradebox/buildTradeboxOrderAction";
 import { getGmsolTradeboxErrorMessage } from "../tradebox/tradeboxErrorMessages";
@@ -53,6 +56,13 @@ function getUpdateError({ order, changes }: { order: PositionOrderInfo; changes:
   }
 }
 
+type FlowStep = {
+  trackExecution: boolean;
+  build: () => GmsolOrderAction;
+  titles: (action: GmsolOrderAction) => OrderStatusTitleData[];
+  order?: OrderInfo;
+};
+
 /** Sends the shared position and order list actions on Solana. Mounted only inside the Solana trade state. */
 export function GmsolOrderActionsProvider({ children }: { children: ReactNode }) {
   const wallet = useSolanaWalletSession();
@@ -81,7 +91,8 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
     async (submission: GmsolOrderSubmission, pending: PendingGmsolSubmission): Promise<boolean> => {
       const notification = begin({
         owner: submission.owner,
-        title: t`Previous order request`,
+        operation: pending.operation,
+        orders: [],
         trackExecution: pending.trackExecution ?? false,
       });
       try {
@@ -130,9 +141,9 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   const sendSequentially = useCallback(
     async (
       submission: GmsolOrderSubmission,
-      steps: { title: string; trackExecution: boolean; action: GmsolOrderAction }[]
+      steps: { trackExecution: boolean; action: GmsolOrderAction; orders: OrderStatusTitleData[] }[]
     ): Promise<boolean> => {
-      for (const { title, trackExecution, action } of steps) {
+      for (const { trackExecution, action, orders } of steps) {
         const sendError = getSendError();
         if (sendError) {
           helperToast.error(sendError);
@@ -142,7 +153,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
         const pending = getPendingGmsolSubmission(submission.owner);
         if (pending) return check(submission, pending);
 
-        const notification = begin({ owner: submission.owner, title, trackExecution });
+        const notification = begin({ owner: submission.owner, operation: action.type, orders, trackExecution });
         try {
           notification.submitted(await submission.submit(action, { onSubmitted: notification.submitted }));
         } catch (error) {
@@ -157,9 +168,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
   // Each call is one transaction flow. An unresolved earlier submission is checked first and nothing new is sent.
   const runFlow = useCallback(
-    async (
-      steps: { title: string; trackExecution: boolean; build: () => GmsolOrderAction; order?: OrderInfo }[]
-    ): Promise<boolean> => {
+    async (steps: FlowStep[]): Promise<boolean> => {
       if (getIsGmsolOrderSubmitting()) return false;
       const sendError = getSendError();
       if (sendError) {
@@ -185,7 +194,11 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       try {
         return await sendSequentially(
           submission,
-          steps.map(({ title, trackExecution }, index) => ({ title, trackExecution, action: actions[index] }))
+          steps.map(({ trackExecution, titles }, index) => ({
+            trackExecution,
+            action: actions[index],
+            orders: titles(actions[index]),
+          }))
         );
       } finally {
         submission.release();
@@ -205,14 +218,13 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       closePosition: ({ position, decreaseAmounts, receiveToken, allowedSlippage }) =>
         runFlow([
           {
-            title: t`Close position`,
             trackExecution: true,
             build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
+            titles: (action) => getGmsolCreateOrderTitles(action, position),
           },
         ]),
       setTriggerOrders: ({ position, entries }) => {
-        const steps: { title: string; trackExecution: boolean; build: () => GmsolOrderAction; order?: OrderInfo }[] =
-          [];
+        const steps: FlowStep[] = [];
         for (const { amounts, existingFullCloseOrder } of entries) {
           if (!amounts) continue;
           const replaces = amounts.isFullClose && existingFullCloseOrder;
@@ -222,7 +234,6 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
               existingFullCloseOrder.decreasePositionSwapType;
           if (replaces && sameSwapType) {
             steps.push({
-              title: t`Update order`,
               trackExecution: false,
               order: existingFullCloseOrder,
               build: () =>
@@ -234,22 +245,23 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
                     acceptablePrice: amounts.acceptablePrice,
                   },
                 }),
+              titles: () => [getGmsolOrderTitle(existingFullCloseOrder, "update")],
             });
             continue;
           }
           // The new order is created before the replaced one is cancelled: a failure in between leaves an extra
           // order instead of a position without its TP/SL. EVM batches both atomically in buildTpSlBatchPayloads.
           steps.push({
-            title: t`Create TP/SL order`,
             trackExecution: false,
             build: () => buildGmsolTriggerAction(position, amounts),
+            titles: (action) => getGmsolCreateOrderTitles(action, position),
           });
           if (replaces) {
             steps.push({
-              title: t`Cancel order`,
               trackExecution: false,
               order: existingFullCloseOrder,
               build: () => buildGmsolCancelAction(existingFullCloseOrder),
+              titles: () => [getGmsolOrderTitle(existingFullCloseOrder, "cancel")],
             });
           }
         }
@@ -258,19 +270,19 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       updateOrder: ({ order, changes }) =>
         runFlow([
           {
-            title: t`Update order`,
             trackExecution: false,
             order,
             build: () => buildGmsolUpdateAction({ order, changes }),
+            titles: () => [getGmsolOrderTitle(order, "update")],
           },
         ]),
       cancelOrders: (orders) =>
         runFlow(
           orders.map((order) => ({
-            title: t`Cancel order`,
             trackExecution: false,
             order,
             build: () => buildGmsolCancelAction(order),
+            titles: () => [getGmsolOrderTitle(order, "cancel")],
           }))
         ),
     }),

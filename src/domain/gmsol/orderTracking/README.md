@@ -54,11 +54,18 @@ HTTP 403 from the RPC is not retried: it ends tracking at once and is reported
 to metrics once per tracked order with the refused method.
 
 Shared order-entry consumers use
-`useSolanaOrderNotifications().begin({ owner, title, trackExecution })`, call
-`submitted({ signatures, orders, trackingRequests })` at confirmation, and pass
-caught submission errors to `failed(error)`. Known chain failures, wallet
-rejections and ambiguous broadcasts are distinct. Notifications reuse the GMX
-status and transaction-row components with explicit Solana explorer links.
+`useSolanaOrderNotifications().begin({ owner, operation, orders, trackExecution })`,
+call `submitted({ signatures, orders, trackingRequests })` at confirmation, and
+pass caught submission errors to `failed(error)`. Each order gets its own row,
+titled by `getOrderStatusTitle` as EVM order toasts are, and a confirmed edit or
+cancel reads as updated or canceled. `failed` reports every error to metrics.
+Known chain failures, wallet rejections and ambiguous broadcasts are distinct;
+a rejection, an expired transaction, insufficient SOL and a confirmed preparation
+whose order transaction did not land get localized messages, and the raw error
+text is shown only on request. The keeper closes an order with the label
+`executed` whatever happened, so a keeper cancel reads as an order that could not
+be executed and an owner cancel as canceled by the user. Notifications reuse the
+GMX status and transaction-row components with explicit Solana explorer links.
 The TradeBox and the order actions share one module store of notifications and
 tracking, keyed by the owner's session, so a remount or a route change keeps
 both. A toast opens through `helperToast` and replaces the open toast as EVM

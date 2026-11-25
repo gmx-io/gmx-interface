@@ -1,21 +1,25 @@
-import { useCallback, useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { helperToast } from "lib/helperToast";
+import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import {
   getActiveSolanaSession,
   subscribeActiveSolanaSession,
   type ActiveSolanaSession,
 } from "lib/solana/activeSession";
 import type { GmxApiSdk } from "sdk/clients/v2";
+import { parseError, type ErrorLike } from "sdk/utils/errors";
 
 import {
   SolanaOrderStatusNotification,
   type SolanaOrderNotificationState,
 } from "components/StatusNotification/SolanaOrderStatusNotification";
 
+import { GmsolPendingSubmissionError, GmsolSubmissionExpiredError } from "../transactions/pendingSubmission";
+import { GmsolInsufficientSolError, GmsolTransactionError } from "../transactions/sendOrderTransactions";
 import { refreshGmsolAccountDataAfterTransaction } from "../useGmsolAccountData";
 import type { TrackedOrderAction } from "./reduceOrderLifecycle";
 import { watchSubmittedOrders, type OrderTrackingRequest } from "./watchSubmittedOrders";
@@ -24,6 +28,10 @@ export type SolanaSubmittedOrders = {
   signatures: readonly string[];
   orders?: readonly TrackedOrderAction[];
   trackingRequests?: readonly OrderTrackingRequest[];
+};
+
+type SolanaOrderNotificationRequest = Pick<SolanaOrderNotificationState, "operation" | "orders" | "trackExecution"> & {
+  owner: string;
 };
 
 type Notification = { session: ActiveSolanaSession; state: SolanaOrderNotificationState };
@@ -78,28 +86,27 @@ function SolanaOrderNotificationToast({ toastId }: { toastId: number }) {
 function beginNotification({
   session,
   sdk,
-  title,
+  operation,
+  orders,
   trackExecution,
-}: {
-  session: ActiveSolanaSession;
-  sdk: GmxApiSdk;
-  title: ReactNode;
-  trackExecution: boolean;
-}) {
+}: Omit<SolanaOrderNotificationRequest, "owner"> & { session: ActiveSolanaSession; sdk: GmxApiSdk }) {
   if (!isWatchingSession) {
     isWatchingSession = true;
     subscribeActiveSolanaSession(endInactiveSessions);
   }
   const toastId = (lastToastId = Math.max(Date.now(), lastToastId + 1));
   let state: SolanaOrderNotificationState = {
-    title,
+    operation,
+    orders,
     trackExecution,
     isTracking: false,
     submission: "sending",
     signatures: [],
     execution: "unresolved",
+    cancelledBy: undefined,
     executionSignature: undefined,
-    reason: undefined,
+    failure: undefined,
+    debug: undefined,
   };
   notifications.set(toastId, { session, state });
   helperToast.info(<SolanaOrderNotificationToast toastId={toastId} />, {
@@ -152,11 +159,12 @@ function beginNotification({
         const evidence = outcome.trade ?? outcome.removed;
         const slot = evidence?.event.fields.slot;
         const execution = outcome.execution === "cancelled" ? "cancelled" : "executed";
+        // outcome.reason is the close_order_v2 label, which the keeper always sets to "executed", not a failure cause.
         update({
           submission: "submitted",
           execution,
+          cancelledBy: outcome.cancelledBy,
           executionSignature: evidence?.signature,
-          reason: outcome.execution === "cancelled" ? outcome.reason : undefined,
         });
         if (typeof slot === "bigint" && slot <= BigInt(Number.MAX_SAFE_INTEGER)) {
           refreshGmsolAccountDataAfterTransaction(sdk, owner, Number(slot)).catch(() => undefined);
@@ -172,34 +180,37 @@ function beginNotification({
   return {
     submitted: onSubmitted,
     failed: (error: unknown) => {
+      reportHandledRejection("solana.order")(error);
       if (!isActive()) return;
-      const detail =
-        error && typeof error === "object"
-          ? (error as {
-              message?: unknown;
-              submittedSignatures?: unknown;
-              confirmedSignatures?: readonly string[];
-              pendingSignature?: unknown;
-              failedSignature?: unknown;
-              orders?: readonly TrackedOrderAction[];
-              trackingRequests?: readonly OrderTrackingRequest[];
-            })
-          : undefined;
-      const signatures = Array.isArray(detail?.submittedSignatures)
-        ? detail.submittedSignatures.filter((value): value is string => typeof value === "string")
-        : [];
-      const pending = typeof detail?.pendingSignature === "string" ? detail.pendingSignature : undefined;
-      const failed = typeof detail?.failedSignature === "string" ? detail.failedSignature : undefined;
-      const confirmed = detail?.confirmedSignatures ?? [];
+      const sendError = error instanceof GmsolTransactionError ? error : undefined;
+      const cause = sendError ? sendError.originalError : error;
+      const signatures = sendError?.submittedSignatures ?? [];
+      const pending =
+        error instanceof GmsolPendingSubmissionError ? error.pendingSignature : sendError?.pendingSignature;
+      const failed = sendError?.failedSignature;
+      const confirmed = sendError?.confirmedSignatures ?? [];
       const ambiguous =
         failed === undefined && (pending !== undefined || signatures.some((value) => !confirmed.includes(value)));
-      if (signatures.length && (detail?.orders?.length || detail?.trackingRequests?.length)) {
-        onSubmitted({ signatures, orders: detail.orders, trackingRequests: detail.trackingRequests });
+      if (sendError && signatures.length && (sendError.orders.length || sendError.trackingRequests.length)) {
+        onSubmitted({ signatures, orders: sendError.orders, trackingRequests: sendError.trackingRequests });
       }
+      const parsed = parseError(cause as ErrorLike);
       update({
         submission: ambiguous ? "unknown" : "failed",
         signatures: failed ? [failed] : pending ? [...signatures, pending] : signatures,
-        reason: typeof error === "string" ? error : typeof detail?.message === "string" ? detail.message : undefined,
+        // Only the last transaction of a plan places orders, so an earlier confirmed one prepared the accounts.
+        failure: ambiguous
+          ? undefined
+          : confirmed.length && !sendError?.trackingRequests.length
+            ? "prepared"
+            : cause instanceof GmsolSubmissionExpiredError
+              ? "expired"
+              : cause instanceof GmsolInsufficientSolError
+                ? "insufficientSol"
+                : parsed?.isUserRejectedError
+                  ? "rejected"
+                  : undefined,
+        debug: parsed?.errorMessage,
       });
     },
   };
@@ -210,10 +221,10 @@ export function useSolanaOrderNotifications() {
   const sdk = useGmxSdk(SOLANA_NETWORK_ID);
 
   const begin = useCallback(
-    ({ owner, title, trackExecution }: { owner: string; title: ReactNode; trackExecution: boolean }) => {
+    ({ owner, ...request }: SolanaOrderNotificationRequest) => {
       const session = getActiveSolanaSession();
       if (!sdk || session?.owner !== owner) throw new Error("Connect a Solana wallet before submitting an order");
-      return beginNotification({ session, sdk, title, trackExecution });
+      return beginNotification({ ...request, session, sdk });
     },
     [sdk]
   );

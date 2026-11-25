@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { act, cleanup, render, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, within } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -13,6 +13,8 @@ import { publishSolanaWalletSession } from "lib/solana/activeSession";
 
 import type { OrderLifecycleResult, TrackedOrderAction } from "./reduceOrderLifecycle";
 import { useSolanaOrderNotifications } from "./useSolanaOrderNotifications";
+import { GmsolPendingSubmissionError, GmsolSubmissionExpiredError } from "../transactions/pendingSubmission";
+import { GmsolInsufficientSolError, GmsolTransactionError } from "../transactions/sendOrderTransactions";
 
 const fakes = vi.hoisted(() => ({
   refresh: vi.fn<(...args: unknown[]) => Promise<void>>(async () => undefined),
@@ -75,7 +77,8 @@ function mount() {
     get sdk() {
       return sdk;
     },
-    begin: (title: string, trackExecution: boolean) => value.begin({ owner: "wallet-A", title, trackExecution }),
+    begin: (trackExecution: boolean) =>
+      value.begin({ owner: "wallet-A", operation: "create", orders: [], trackExecution }),
     unmount: view.unmount,
   };
 }
@@ -92,6 +95,13 @@ function selectSolana(isSelected: boolean) {
   );
 }
 const UNKNOWN = "Order submission status unknown. Check the transaction before retrying.";
+const PREPARED =
+  "Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order.";
+const sent = (
+  cause: unknown,
+  signatures: string[] = [],
+  p: { pending?: string; failed?: string; confirmed?: string[] } = {}
+) => new GmsolTransactionError(cause, signatures, p.pending, [], [], p.failed, p.confirmed);
 const order: TrackedOrderAction = {
   network: "solana-mainnet",
   program: "program",
@@ -113,19 +123,40 @@ const executed = {
 describe("Solana order notification lifecycle", () => {
   it("separates rejection, known chain failure, confirmed submission and ambiguous broadcast", () => {
     const view = mount();
-    for (const [error, text] of [
-      [new Error("User rejected"), "Order request failed"],
-      [{ submittedSignatures: ["preparation"], confirmedSignatures: ["preparation"] }, "Order request failed"],
-      [{ submittedSignatures: ["failed"], failedSignature: "failed" }, "Order request failed"],
-      [{ submittedSignatures: ["broadcast"], pendingSignature: "broadcast" }, UNKNOWN],
+    const rejection = Object.assign(new Error("Signature declined"), { code: 4001 });
+    const failure = new Error("Solana transaction failed");
+    const expired = "The transaction expired before it landed. Nothing was executed.";
+    const FAILED = "Order request failed";
+    for (const [error, text, detail] of [
+      [sent(rejection), FAILED, "Transaction canceled"],
+      [sent(rejection, ["preparation"], { confirmed: ["preparation"] }), FAILED, PREPARED],
+      [sent(failure, ["preparation", "orders"], { failed: "orders", confirmed: ["preparation"] }), FAILED, PREPARED],
+      [sent(failure, ["orders"], { failed: "orders" }), FAILED, undefined],
+      [
+        sent(new GmsolSubmissionExpiredError("orders"), ["preparation"], { confirmed: ["preparation"] }),
+        FAILED,
+        PREPARED,
+      ],
+      [sent(new GmsolSubmissionExpiredError("orders")), FAILED, expired],
+      [new GmsolSubmissionExpiredError("orders"), FAILED, expired],
+      [sent(new GmsolInsufficientSolError()), FAILED, "Not enough SOL for network fees, keeper fees and account rent"],
+      [
+        sent(new Error("timed out"), ["preparation", "orders"], { pending: "orders", confirmed: ["preparation"] }),
+        UNKNOWN,
+        undefined,
+      ],
+      [new GmsolPendingSubmissionError("orders"), UNKNOWN, undefined],
     ] as const) {
-      const notification = view.begin("Order", true);
+      const notification = view.begin(true);
       const { toast } = showToast();
       act(() => notification.failed(error));
       expect(toast.getByText(text)).toBeTruthy();
+      if (detail) expect(toast.getByText(detail)).toBeTruthy();
+      expect(Boolean(toast.queryByText(PREPARED))).toBe(detail === PREPARED);
+      expect(toast.getByText("Show error")).toBeTruthy();
       expect(toast.queryByText("Fulfilling order request...")).toBeNull();
     }
-    const notification = view.begin("Limit order", false);
+    const notification = view.begin(false);
     const { toast } = showToast();
     act(() => notification.submitted({ signatures: ["confirmed"] }));
     expect(toast.getByText("Order request sent")).toBeTruthy();
@@ -135,22 +166,24 @@ describe("Solana order notification lifecycle", () => {
 
   it("renders sending, uncertain submission and confirmed execution as distinct stages", () => {
     const view = mount();
-    const notification = view.begin("Order", true);
+    const notification = view.begin(true);
     const { toast, container } = showToast();
     expect(toast.getByText("Sending order request...")).toBeTruthy();
     expect(toast.queryByText("Fulfilling order request...")).toBeNull();
     const reason = "Trading requires frozen or reviewed GMX-owned lookup tables";
     act(() => notification.failed(new Error(reason)));
     expect(toast.getByText("Order request failed")).toBeTruthy();
+    expect(toast.queryByText(reason)).toBeNull();
+    fireEvent.click(toast.getByText("Show error"));
     expect(toast.getByText(reason)).toBeTruthy();
-    act(() => notification.failed({ pendingSignature: "broadcast", message: "Confirmation timed out" }));
+    act(() => notification.failed(sent(new Error("Confirmation timed out"), [], { pending: "broadcast" })));
     expect(toast.getByText("Confirmation timed out")).toBeTruthy();
     expect(toast.queryByText(reason)).toBeNull();
     expect(toast.getByText(UNKNOWN)).toBeTruthy();
     expect(toast.queryByText("Fulfilling order request...")).toBeNull();
     expect(container.querySelector(".spin")).toBeNull();
     expect(toast.getByRole("link").getAttribute("href")).toContain("tx/broadcast");
-    const confirmed = view.begin("Order", true);
+    const confirmed = view.begin(true);
     const { toast: confirmedToast } = showToast();
     act(() => confirmed.submitted({ signatures: ["creation"], orders: [order] }));
     expect(confirmedToast.getByText("Order request sent")).toBeTruthy();
@@ -158,10 +191,10 @@ describe("Solana order notification lifecycle", () => {
     expect(confirmedToast.queryByText("Order filled")).toBeNull();
   });
 
-  it("requires outcome evidence, preserves cancellation reason and closes only a settled toast", () => {
+  it("requires outcome evidence, explains a failed execution and closes only a settled toast", () => {
     vi.useFakeTimers();
     const view = mount();
-    const notification = view.begin("Order", true);
+    const notification = view.begin(true);
     const { toastId, toast } = showToast();
     act(() => notification.submitted({ signatures: ["creation"], orders: [order] }));
     act(() =>
@@ -181,11 +214,12 @@ describe("Solana order notification lifecycle", () => {
         submission: "submitted",
         execution: "cancelled",
         closure: "closed",
-        reason: "Insufficient collateral",
+        reason: "executed",
       } satisfies OrderLifecycleResult)
     );
     expect(toast.getByText("Order canceled")).toBeTruthy();
-    expect(toast.getByText("Insufficient collateral")).toBeTruthy();
+    expect(toast.getByText("The order could not be executed")).toBeTruthy();
+    expect(toast.queryByText("executed")).toBeNull();
     expect(fakes.update).toHaveBeenCalledWith(toastId, { type: "error" });
     act(() => vi.advanceTimersByTime(TOAST_AUTO_CLOSE_TIME));
     expect(fakes.dismiss).toHaveBeenCalledWith(toastId);
@@ -193,7 +227,7 @@ describe("Solana order notification lifecycle", () => {
 
   it("refreshes execution evidence with the shared Solana SDK and submitted owner", () => {
     const view = mount();
-    const notification = view.begin("Order", true);
+    const notification = view.begin(true);
     act(() => notification.submitted({ signatures: ["creation"], orders: [order] }));
     act(() => fakes.watching!.onUpdate(executed));
     expect(fakes.refresh).toHaveBeenCalledWith(view.sdk, "wallet-A", 42);
@@ -202,7 +236,7 @@ describe("Solana order notification lifecycle", () => {
   it("ends tracking on a wallet or network change, even one switched back, and never reopens a toast", async () => {
     for (const close of ["wallet", "network", "dismiss", "unmount"] as const) {
       const view = mount();
-      const notification = view.begin("Order", true);
+      const notification = view.begin(true);
       const { toastId, onClose, toast } = showToast();
       act(() => notification.submitted({ signatures: ["creation"], orders: [order] }));
       const tracking = fakes.watching!;
@@ -224,7 +258,7 @@ describe("Solana order notification lifecycle", () => {
       const count = fakes.toasts.length;
       act(() => notification.failed(new Error("late failure")));
       expect(fakes.toasts.length).toBe(count);
-      expect(Boolean(toast.queryByText("late failure"))).toBe(close === "unmount");
+      expect(Boolean(toast.queryByText("Order request failed"))).toBe(close === "unmount");
       await act(async () => tracking.finish());
       cleanup();
       fakes.refresh.mockClear();

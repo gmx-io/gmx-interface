@@ -23,6 +23,7 @@ import {
   setPendingGmsolSubmission,
 } from "./pendingSubmission";
 import {
+  GmsolTransactionError,
   prepareGmsolOrderTransactions,
   sendGmsolOrderTransactions,
   type GmsolSendResult,
@@ -105,7 +106,12 @@ async function submitGmsolOrder(
   }
   if (previous.failed || previous.operation === "prepare") setPendingGmsolSubmission(owner, undefined);
   requireGmsol(!previous.failed, "The previous transaction failed. Review the order before submitting again.");
-  requireGmsol(previous.operation !== "prepare", "Previous account preparation confirmed. Submit the order again.");
+  if (previous.operation === "prepare") {
+    // Shaped like the sender's error when a preparation lands but its orders do not: the toast says accounts are ready.
+    const prepared = [previous.signature];
+    const error = new Error("Previous account preparation confirmed. Submit the order again.");
+    throw new GmsolTransactionError(error, prepared, undefined, [], [], undefined, prepared);
+  }
   requireGmsol(previous.slot <= BigInt(Number.MAX_SAFE_INTEGER), "Confirmation slot exceeds API precision");
   const refreshErrors: unknown[] = [];
   await Promise.all([

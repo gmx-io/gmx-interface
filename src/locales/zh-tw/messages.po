@@ -457,6 +457,10 @@ msgstr "目標"
 msgid "FAQ"
 msgstr "常見問題"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order updated"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
 msgstr "授權 {depositTokenSymbol}"
@@ -2381,7 +2385,7 @@ msgstr "不支援"
 msgid "Acceptable price for the order"
 msgstr "訂單的可接受價格"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "TWAP Swap"
 msgstr "TWAP 兌換"
 
@@ -3002,7 +3006,7 @@ msgstr "Avalanche 上的收益優化器"
 msgid "Withdrew {0} from {positionText}"
 msgstr "已從 {positionText} 提取 {0}"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {0} for {1}"
 msgstr "{orderTypeText} {0} 換取 {1}"
 
@@ -3142,6 +3146,10 @@ msgstr "僅已用資本超過 {0} 的倉位會列入排名。<0/><1/>已用資�
 #: src/domain/tokens/approveTokens.tsx
 msgid "A standard approval transaction is required to continue"
 msgstr "需要標準授權交易才能繼續"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Not enough SOL for network fees, keeper fees and account rent"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -3362,7 +3370,7 @@ msgstr "正在產生分享圖片..."
 msgid "RANK"
 msgstr "排名"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
 
@@ -3693,7 +3701,7 @@ msgstr "自動再平衡的 GM 代幣金庫，從槓桿交易和兌換中累積�
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>沒有固定門檻 — 團隊會根據您近期及預期的月交易量設定您的等級。大多數交易者符合基礎等級；聯絡我們，我們將確認您的費率。</0>"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr "正在減少 {indexTokenText} 做空倉位：-{sizeDeltaUsdText}"
 
@@ -3926,8 +3934,8 @@ msgid "Converting {offerAmount} to {0}"
 msgstr "正在將 {offerAmount} 轉換為 {0}"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3949,8 +3957,7 @@ msgstr "GMX 代幣是 GMX 協議的治理代幣。平台收入的 27% 會累積�
 msgid "Max lendable impact USD"
 msgstr "最大可借出影響 USD"
 
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Previous order request"
 msgstr ""
 
@@ -4631,7 +4638,7 @@ msgstr "您的轉帳已完成"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
 msgstr "27% 的協議費用正在資金庫中累積，並將在 GMX 達到 $90 時依質押權重按比例分配。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "正在將 {amountText} 存入 {indexTokenText} 做多倉位..."
 
@@ -4642,6 +4649,10 @@ msgstr "停止歸屬並提取"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "找不到倉位。可能已平倉。"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Canceled by you"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
@@ -4781,6 +4792,10 @@ msgstr "TWAP 兌換部分失敗"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "過去 {DAYS_BACK} 天內沒有事件"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The transaction expired before it landed. Nothing was executed."
+msgstr ""
+
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Ready to withdraw"
 msgstr "可提取"
@@ -4812,6 +4827,7 @@ msgid "Net price impact / fees"
 msgstr "淨價格影響 / 費用"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "訂單已取消"
@@ -5398,7 +5414,7 @@ msgstr "為歸屬期保留的已質押代幣"
 msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "最多允許 5 個自動取消 TP/SL 訂單。額外的訂單需要手動取消。現有訂單仍會隨倉位一併關閉。<0>閱讀更多</0>。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "正在從 {indexTokenText} 做空倉位提領 {amountText}..."
 
@@ -5672,7 +5688,7 @@ msgstr "正向因子"
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "完全平倉"
@@ -6747,8 +6763,8 @@ msgstr "找不到提款請求。可能已執行或取消。"
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6840,6 +6856,10 @@ msgstr "提領時的最大可借出影響因子"
 msgid "Claim completed"
 msgstr "領取完成"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order."
+msgstr ""
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "在瀏覽器中查看"
@@ -6895,7 +6915,7 @@ msgstr "扣除所有費用後的 PnL"
 msgid "Build on GMX. Get paid on every trade."
 msgstr "在 GMX 上開發。每筆交易都有收益。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
 msgstr "正在增加 {indexTokenText} 做多倉位：+{sizeDeltaUsdText}"
 
@@ -8182,7 +8202,7 @@ msgstr "{0} 已領取"
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr "若執行，將至少收到 {toAmountText}。價格會根據費用和價格影響更新。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "正在增加 {indexTokenText} 做空部位：+{sizeDeltaUsdText}"
 
@@ -8513,7 +8533,7 @@ msgstr "錢包已斷開連接。請重新連接並重試"
 msgid "Connect wallet or add an address to the URL"
 msgstr "連接錢包或在 URL 中新增地址"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Long..."
 msgstr "正在從 {indexTokenText} 做多部位提取 {amountText}..."
 
@@ -8593,7 +8613,6 @@ msgstr "編輯保證金"
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL 訂單超過倉位"
 
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Create TP/SL order"
 msgstr ""
@@ -8776,11 +8795,6 @@ msgstr "切換至帳戶 {receiver} 以完成此轉帳。"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "停用驗證以進行測試"
-
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-msgid "Update order"
-msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -9269,8 +9283,8 @@ msgstr "每筆交易，留住更多"
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "取消"
@@ -10231,8 +10245,8 @@ msgstr "更多資訊"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "建立"
@@ -10432,7 +10446,7 @@ msgstr "<0>全倉保證金</0><1>交叉抵押品</1>"
 msgid "Fetching swap route ({0}/{1})..."
 msgstr "正在取得兌換路徑（{0}/{1}）..."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "正在將 {amountText} 存入 {indexTokenText} 做空倉位..."
 
@@ -10944,7 +10958,6 @@ msgid "You"
 msgstr "您"
 
 #: src/components/TVChartContainer/StaticLine.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Close position"
 msgstr "平倉"
 
@@ -11893,8 +11906,8 @@ msgstr "無法更新訂單，此類型不支援修改"
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -12080,10 +12093,6 @@ msgstr "質押 {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "連結已複製到剪貼簿"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-msgid "Order request"
-msgstr ""
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -12172,7 +12181,7 @@ msgstr "已在 {0} 接收"
 msgid "Allow all tokens to transfer to the new account"
 msgstr "允許將所有代幣轉帳至新帳戶"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}：{sizeText}"
 
@@ -12547,7 +12556,7 @@ msgstr "接收地址無效"
 msgid "Nonce:"
 msgstr "Nonce："
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText}保證金存入：{amountText} 至 {indexTokenText} {longShortText}"
 
@@ -12987,8 +12996,6 @@ msgid "Transfer history"
 msgstr "轉帳歷史記錄"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Cancel order"
 msgstr "取消訂單"
 
@@ -13197,7 +13204,7 @@ msgstr "可接受價格影響"
 msgid "Default sorting"
 msgstr "預設排序"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr "減少 {indexTokenText} 做多倉位：-{sizeDeltaUsdText}"
 
@@ -13284,7 +13291,7 @@ msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -13408,7 +13415,7 @@ msgstr "輸入新的數量或價格"
 msgid "Copy your wallet address or scan a QR code"
 msgstr "複製您的錢包地址或掃描 QR Code"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "未知訂單"
@@ -13656,7 +13663,7 @@ msgstr "交易者與推廣夥伴計畫"
 msgid "Explore the VIP Desk"
 msgstr "了解 VIP Desk"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr "Limit Swap"
@@ -13786,6 +13793,7 @@ msgstr "設定做空止損 @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "交易已取消"
@@ -14084,6 +14092,10 @@ msgstr "分享至"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "衍生品投資組合追蹤器"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The order could not be executed"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."
