@@ -1,8 +1,12 @@
 import fetch from "cross-fetch";
+import { getAddress } from "viem";
 
 import type { GmxSdk } from "clients/v1";
 import { buildUrl } from "utils/buildUrl";
+import { HttpClient } from "utils/http/http";
 import { MarketSdkConfig } from "utils/markets/types";
+
+const MARKET_STATE_TIMEOUT_MS = 1_500;
 
 export type TickersResponse = {
   /** Contract price format: USD * 10^(30 - token decimals) */
@@ -45,6 +49,20 @@ export class Oracle {
 
         return res.markets;
       });
+  }
+
+  async getClosedMarketAddresses(): Promise<string[]> {
+    try {
+      const client = new HttpClient(this.url, MARKET_STATE_TIMEOUT_MS);
+      const { markets } = await client.fetchJson<{ markets?: { marketToken: string; isMarketClosed: boolean }[] }>(
+        "/markets/state"
+      );
+      if (!Array.isArray(markets)) return [];
+
+      return markets.filter((market) => market.isMarketClosed).map((market) => getAddress(market.marketToken));
+    } catch {
+      return [];
+    }
   }
 
   getTokens(): Promise<TokensResponse> {
