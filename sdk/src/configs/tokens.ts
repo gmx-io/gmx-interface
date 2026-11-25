@@ -1171,6 +1171,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       explorerUrl: "https://arbiscan.io/token/0x928760f117B0b741568f4B59153561076374a35c",
     },
     {
+      name: "Roundhill Memory ETF",
+      symbol: "DRAM",
+      address: "0xde4A2957Bc56508B702685d41d98356235B62da6",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["tradfi", "indices"],
+      explorerUrl: "https://arbiscan.io/token/0xde4A2957Bc56508B702685d41d98356235B62da6",
+    },
+    {
       name: "Invesco QQQ Trust",
       symbol: "QQQ",
       address: "0xfe71D55D0080b6995Ec2C3f48b7702c86e200766",
@@ -1922,6 +1931,7 @@ export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, strin
   SPCX: "#1A1E21",
   COPPER: "#C36A42",
   PLATINUM: "#C2B8AB",
+  DRAM: "#FDD300",
   QQQ: "#000AD2",
   SPY: "#273F33",
   XPT: "#C2B8AB",
