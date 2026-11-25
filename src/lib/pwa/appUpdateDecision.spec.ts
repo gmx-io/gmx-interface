@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { AppUpdateStatus, FRESH_SESSION_MS, getAppUpdateAction, HIDDEN_IDLE_MS, SNOOZE_MS } from "./appUpdateDecision";

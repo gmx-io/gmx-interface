@@ -91,7 +91,6 @@ export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
 export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
-export const MORPHO_LOOP_ANNOUNCEMENT_DISMISSED_KEY = "morpho-loop-announcement-dismissed";
 export const CLOSING_POOLS_NOTICE_SEEN_KEY_PREFIX = "closing-pools-notice-seen";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
@@ -116,11 +115,12 @@ export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
 
 export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
+export const CONFIRM_ORDER_SIGNATURES_KEY = "confirm-order-signatures";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";
 const COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY = "collateral-close-destination-dialog-hidden";
-const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
@@ -245,10 +245,6 @@ export function getCollateralCloseDestinationKey(chainId: number, account: strin
 
 export function getCollateralCloseDestinationDialogHiddenKey(chainId: number, account: string | undefined) {
   return [chainId, account, COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY];
-}
-
-export function getHadGmxAccountBalanceKey(chainId: number, account: string | undefined) {
-  return [chainId, account, HAD_GMX_ACCOUNT_BALANCE_KEY];
 }
 
 export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {

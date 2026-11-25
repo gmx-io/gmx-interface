@@ -5,15 +5,18 @@ import { USD_DECIMALS } from "config/factors";
 import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
+  selectTradeboxAvailableTokensOptions,
+  selectTradeboxChooseSuitableMarket,
   selectTradeboxMarkPrice,
   selectTradeboxSelectedPosition,
   selectTradeboxSetTradeConfig,
-  selectTradeboxSetTriggerPriceInputValue,
+  selectTradeboxToToken,
   selectTradeboxTradeType,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
-import { bigintToNumber, numberToBigint } from "lib/numbers";
+import { bigintToNumber, formatAmountFree, numberToBigint, parseValue } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import { formatUsdPrice } from "sdk/utils/numbers";
 import { TradeMode, TradeType } from "sdk/utils/trade/types";
 
@@ -42,15 +45,36 @@ const INITIAL_MENU_STATE: ChartContextMenuState = {
   items: [],
 };
 
+export function getChartOrderPriceInputValue(
+  clickPrice: number,
+  chartVisualMultiplier: number | undefined,
+  inputVisualMultiplier: number | undefined
+): string {
+  const chartPrice = parseValue(
+    clickPrice.toLocaleString("en-US", { useGrouping: false, maximumSignificantDigits: 17 }),
+    USD_DECIMALS
+  );
+
+  if (chartPrice === undefined) {
+    return "";
+  }
+
+  const chartMultiplier = BigInt(chartVisualMultiplier || 1);
+  const inputMultiplier = BigInt(inputVisualMultiplier || 1);
+  const inputPrice = bigMath.mulDiv(chartPrice, inputMultiplier, chartMultiplier);
+
+  return formatAmountFree(inputPrice, USD_DECIMALS);
+}
+
 function buildMenuItems(p: {
   clickPrice: number;
   markPrice: number;
   isLong: boolean;
   showTpSlActions: boolean;
   showStopMarket: boolean;
-  formattedPrice: string | undefined;
   onAction: (action: ChartOrderAction, direction: ChartDirection, price: number) => void;
 }): ContextMenuItem[] {
+  const formattedPrice = formatUsdPrice(numberToBigint(p.clickPrice, USD_DECIMALS));
   const direction = p.isLong ? "long" : "short";
   const isAboveMarkPrice = p.clickPrice > p.markPrice;
   const items: ContextMenuItem[] = [];
@@ -60,14 +84,14 @@ function buildMenuItems(p: {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set long Take-Profit @ ${p.formattedPrice}`,
+          text: t`Set long Take-Profit @ ${formattedPrice}`,
           click: () => p.onAction("takeProfit", direction, p.clickPrice),
         });
       }
       if (p.showStopMarket) {
         items.push({
           position: "top",
-          text: t`Set long Stop Market @ ${p.formattedPrice}`,
+          text: t`Set long Stop Market @ ${formattedPrice}`,
           click: () => p.onAction("stopMarket", direction, p.clickPrice),
         });
       }
@@ -75,13 +99,13 @@ function buildMenuItems(p: {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set long Stop-Loss @ ${p.formattedPrice}`,
+          text: t`Set long Stop-Loss @ ${formattedPrice}`,
           click: () => p.onAction("stopLoss", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set long Limit @ ${p.formattedPrice}`,
+        text: t`Set long Limit @ ${formattedPrice}`,
         click: () => p.onAction("limit", direction, p.clickPrice),
       });
     }
@@ -90,27 +114,27 @@ function buildMenuItems(p: {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set short Stop-Loss @ ${p.formattedPrice}`,
+          text: t`Set short Stop-Loss @ ${formattedPrice}`,
           click: () => p.onAction("stopLoss", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set short Limit @ ${p.formattedPrice}`,
+        text: t`Set short Limit @ ${formattedPrice}`,
         click: () => p.onAction("limit", direction, p.clickPrice),
       });
     } else {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set short Take-Profit @ ${p.formattedPrice}`,
+          text: t`Set short Take-Profit @ ${formattedPrice}`,
           click: () => p.onAction("takeProfit", direction, p.clickPrice),
         });
       }
       if (p.showStopMarket) {
         items.push({
           position: "top",
-          text: t`Set short Stop Market @ ${p.formattedPrice}`,
+          text: t`Set short Stop Market @ ${formattedPrice}`,
           click: () => p.onAction("stopMarket", direction, p.clickPrice),
         });
       }
@@ -130,13 +154,24 @@ export function useChartContextMenu(
 ) {
   const onOpenTPSLModal = options?.onOpenTPSLModal;
   const tradeType = useSelector(selectTradeboxTradeType);
+  const chartToken = useSelector(selectTradeboxToToken);
+  const marketIndexAddress = chartToken?.isNative ? chartToken.wrappedAddress : chartToken?.address;
+  const availableTokens = useSelector(selectTradeboxAvailableTokensOptions);
+  const swapTargetMarket =
+    tradeType === TradeType.Swap
+      ? availableTokens.sortedAllMarkets.find((market) => market.indexTokenAddress === marketIndexAddress)
+      : undefined;
+  const orderTokenAddress = swapTargetMarket?.indexToken.address ?? chartToken?.address;
+  const canPlaceOrderFromSwap = Boolean(swapTargetMarket);
+  const orderInputMultiplier = swapTargetMarket?.indexToken?.visualMultiplier ?? chartToken?.visualMultiplier;
   const markPriceBn = useSelector(selectTradeboxMarkPrice);
   const position = useSelector(selectTradeboxSelectedPosition);
   const setTradeConfig = useSelector(selectTradeboxSetTradeConfig);
-  const setTriggerPriceInputValue = useSelector(selectTradeboxSetTriggerPriceInputValue);
+  const setChartTriggerPrice = useSelector((s) => s.tradebox.setChartTriggerPrice);
   const { chartLinesSizeInTokens, setChartLinesSizeInTokens } = useSettings();
   const { networkId } = useChainId();
   const showStopMarket = getNetworkFeatures(networkId).stopMarket;
+  const calcSelector = useCalcSelector();
 
   const [menuState, setMenuState] = useState<ChartContextMenuState>(INITIAL_MENU_STATE);
 
@@ -148,54 +183,58 @@ export function useChartContextMenu(
 
   const handleOrderAction = useCallback(
     (action: ChartOrderAction, direction: ChartDirection, clickPrice: number) => {
-      const actualPrice = visualMultiplier ? clickPrice / visualMultiplier : clickPrice;
-      const priceStr = actualPrice.toString();
-
       const isLong = direction === "long";
       const newTradeType = isLong ? TradeType.Long : TradeType.Short;
 
-      switch (action) {
-        case "limit":
-          setTradeConfig({ tradeType: newTradeType, tradeMode: TradeMode.Limit });
-          break;
+      setMenuState(INITIAL_MENU_STATE);
 
-        case "stopMarket":
-          setTradeConfig({ tradeType: newTradeType, tradeMode: TradeMode.StopMarket });
-          break;
+      if (action === "takeProfit" || action === "stopLoss") {
+        if (!position || position.isLong !== isLong) return;
 
-        case "takeProfit":
-        case "stopLoss":
-          if (!position || position.isLong !== isLong) {
-            setMenuState(INITIAL_MENU_STATE);
-            return;
-          }
-
-          onOpenTPSLModal?.({
-            positionKey: position.key,
-            triggerPrice: priceStr,
-            action,
-          });
-          setMenuState(INITIAL_MENU_STATE);
-          return;
+        onOpenTPSLModal?.({
+          positionKey: position.key,
+          triggerPrice: getChartOrderPriceInputValue(
+            clickPrice,
+            visualMultiplier,
+            position.indexToken?.visualMultiplier
+          ),
+          action,
+        });
+        return;
       }
 
-      setTimeout(() => {
-        setTriggerPriceInputValue(priceStr);
-      }, 0);
-
-      setMenuState(INITIAL_MENU_STATE);
+      if (!orderTokenAddress) return;
+      if (tradeType === TradeType.Swap) {
+        const chooseMarket = calcSelector(selectTradeboxChooseSuitableMarket);
+        if (!chooseMarket(orderTokenAddress, newTradeType, newTradeType)) return;
+      }
+      const tradeMode = action === "limit" ? TradeMode.Limit : TradeMode.StopMarket;
+      setTradeConfig({ tradeType: newTradeType, tradeMode });
+      setChartTriggerPrice({
+        networkId,
+        toTokenAddress: orderTokenAddress,
+        tradeType: newTradeType,
+        tradeMode,
+        value: getChartOrderPriceInputValue(clickPrice, visualMultiplier, orderInputMultiplier),
+      });
     },
-    [visualMultiplier, position, setTradeConfig, setTriggerPriceInputValue, onOpenTPSLModal]
+    [
+      visualMultiplier,
+      position,
+      setTradeConfig,
+      setChartTriggerPrice,
+      networkId,
+      orderInputMultiplier,
+      onOpenTPSLModal,
+      calcSelector,
+      orderTokenAddress,
+      tradeType,
+    ]
   );
 
   const closeMenu = useCallback(() => {
     setMenuState(INITIAL_MENU_STATE);
   }, []);
-
-  const formatClickPrice = useCallback(
-    (clickPrice: number) => formatUsdPrice(numberToBigint(clickPrice / (visualMultiplier || 1), USD_DECIMALS)),
-    [visualMultiplier]
-  );
 
   const handlePlusClick = useCallback(
     (params: PlusClickParams) => {
@@ -213,8 +252,6 @@ export function useChartContextMenu(
       const iframeOffsetX = iframeRect?.left ?? 0;
       const iframeOffsetY = iframeRect?.top ?? 0;
 
-      const formattedPrice = formatClickPrice(params.price);
-
       const items =
         tradeType === TradeType.Long || tradeType === TradeType.Short
           ? buildMenuItems({
@@ -226,10 +263,9 @@ export function useChartContextMenu(
                 position.isLong === (tradeType === TradeType.Long) &&
                 (position.sizeInUsd ?? 0n) > 0n,
               showStopMarket,
-              formattedPrice,
               onAction: handleOrderAction,
             })
-          : tradeType === TradeType.Swap
+          : canPlaceOrderFromSwap
             ? [
                 ...buildMenuItems({
                   clickPrice: params.price,
@@ -237,7 +273,6 @@ export function useChartContextMenu(
                   isLong: true,
                   showTpSlActions: false,
                   showStopMarket,
-                  formattedPrice,
                   onAction: handleOrderAction,
                 }),
                 ...buildMenuItems({
@@ -246,7 +281,6 @@ export function useChartContextMenu(
                   isLong: false,
                   showTpSlActions: false,
                   showStopMarket,
-                  formattedPrice,
                   onAction: handleOrderAction,
                 }),
               ]
@@ -266,9 +300,9 @@ export function useChartContextMenu(
     [
       markPrice,
       tradeType,
+      canPlaceOrderFromSwap,
       menuState.isOpen,
       chartContainerRef,
-      formatClickPrice,
       handleOrderAction,
       position,
       showStopMarket,
@@ -280,8 +314,6 @@ export function useChartContextMenu(
       if (markPrice === undefined) {
         return [];
       }
-
-      const formattedPrice = formatClickPrice(clickPrice);
 
       let orderItems: ContextMenuItem[] = [];
 
@@ -295,10 +327,9 @@ export function useChartContextMenu(
             position.isLong === (tradeType === TradeType.Long) &&
             (position.sizeInUsd ?? 0n) > 0n,
           showStopMarket,
-          formattedPrice,
           onAction: handleOrderAction,
         });
-      } else if (tradeType === TradeType.Swap) {
+      } else if (canPlaceOrderFromSwap) {
         orderItems = [
           ...buildMenuItems({
             clickPrice,
@@ -306,7 +337,6 @@ export function useChartContextMenu(
             isLong: true,
             showTpSlActions: false,
             showStopMarket,
-            formattedPrice,
             onAction: handleOrderAction,
           }),
           ...buildMenuItems({
@@ -315,7 +345,6 @@ export function useChartContextMenu(
             isLong: false,
             showTpSlActions: false,
             showStopMarket,
-            formattedPrice,
             onAction: handleOrderAction,
           }),
         ];
@@ -342,7 +371,7 @@ export function useChartContextMenu(
     [
       markPrice,
       tradeType,
-      formatClickPrice,
+      canPlaceOrderFromSwap,
       handleOrderAction,
       position,
       showStopMarket,

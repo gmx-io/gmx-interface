@@ -80,6 +80,7 @@ export function useTreasuryGlv({
 
   const { data: glvBalancesResponse } = useMulticall(chainId, "useTreasuryGlv", {
     key: glvBalancesConfig && glvAssetsCount ? [chainId, "glv", glvAssetsCount] : null,
+    disableBatching: true,
     request: glvBalancesConfig ?? {},
     parseResponse: (res) => res.data,
   });

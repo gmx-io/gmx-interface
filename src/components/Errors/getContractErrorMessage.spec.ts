@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { ethers } from "ethers";
 import {
   ContractFunctionExecutionError,

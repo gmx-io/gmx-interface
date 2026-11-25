@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { getBigIntContractErrorArg, getContractErrorArg, getStringContractErrorArg } from "lib/errors";

@@ -30,7 +30,6 @@ import {
   convertToUsd,
   getAmountByRatio,
   getTokenData,
-  getTokensRatioByPrice,
   TokensRatio,
 } from "domain/synthetics/tokens";
 import {
@@ -43,12 +42,16 @@ import {
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
-import { BN_ZERO, parseValue } from "lib/numbers";
+import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
+import {
+  getTokensRatioByMinOutputAmountAndTriggerPrice,
+  getTokensRatioByPriceInDirection,
+} from "sdk/utils/tokens/utils";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
@@ -80,6 +83,8 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "./settingsSelectors";
 import { makeSelectDecreasePositionAmounts, makeSelectFindSwapPath } from "./tradeSelectors";
+
+const RATIO_INPUT_DECIMALS = 10;
 
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
@@ -382,17 +387,16 @@ export const selectOrderEditorIndexToken = createSelector((q) => {
 
 export const selectOrderEditorMarkRatio = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-  if (!order) return undefined;
+  if (!order || !isSwapOrder(order) || !order.triggerRatio) return undefined;
   const fromToken = q(selectOrderEditorFromToken);
   if (!fromToken) return undefined;
   const toToken = q(selectOrderEditorToToken);
   if (!toToken) return undefined;
 
-  return getTokensRatioByPrice({
+  return getTokensRatioByPriceInDirection({
     fromToken,
     toToken,
-    fromPrice: fromToken.prices.minPrice,
-    toPrice: toToken.prices.minPrice,
+    largestTokenAddress: order.triggerRatio.largestToken.address,
   });
 });
 
@@ -404,8 +408,10 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
   if (!markRatio || !isSwapOrderType(order.orderType)) return undefined;
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
+  if (ratio === undefined || ratio <= 0) return undefined;
+
   const tokensRatio: TokensRatio = {
-    ratio: ratio != undefined && ratio > 0 ? ratio : markRatio.ratio,
+    ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -417,6 +423,18 @@ export const selectOrderEditorIsRatioInverted = createSelector((q) => {
   const markRatio = q(selectOrderEditorMarkRatio);
   const fromToken = q(selectOrderEditorFromToken);
   return markRatio?.largestToken.address === fromToken?.address;
+});
+
+export const selectOrderEditorMarkRatioInputValue = createSelector((q) => {
+  const markRatio = q(selectOrderEditorMarkRatio);
+  if (!markRatio) return undefined;
+
+  const step = expandDecimals(1, USD_DECIMALS - RATIO_INPUT_DECIMALS);
+  const ratio = q(selectOrderEditorIsRatioInverted)
+    ? roundUpDivision(markRatio.ratio, step) * step
+    : (markRatio.ratio / step) * step;
+
+  return formatAmountFree(ratio, USD_DECIMALS);
 });
 
 export const selectOrderEditorMinOutputAmount = createSelector((q) => {
@@ -475,6 +493,32 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   }
 
   return minOutputAmount;
+});
+
+export const selectOrderEditorSwapTriggerPrice = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+  const triggerRatio = q(selectOrderEditorTriggerRatio);
+  const fromToken = q(selectOrderEditorFromToken);
+  const toToken = q(selectOrderEditorToToken);
+
+  if (!order || !isSwapOrder(order) || !triggerRatio || !fromToken || !toToken) return undefined;
+
+  const minOutputAmount = q(selectOrderEditorMinOutputAmount);
+  const readBack = getTokensRatioByMinOutputAmountAndTriggerPrice({
+    fromToken,
+    toToken,
+    fromTokenAmount: order.initialCollateralDeltaAmount,
+    toTokenAmount: minOutputAmount,
+    triggerPrice: triggerRatio.ratio,
+    minOutputAmount,
+  });
+
+  if (readBack.largestToken.address === triggerRatio.largestToken.address) {
+    return triggerRatio.ratio;
+  }
+
+  const step = expandDecimals(1, USD_DECIMALS - RATIO_INPUT_DECIMALS);
+  return ((PRECISION * PRECISION) / triggerRatio.ratio / step) * step;
 });
 
 export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {

@@ -1,4 +1,5 @@
 import { AbstractSigner, Provider, Signer } from "ethers";
+import isEqual from "lodash/isEqual";
 import { encodeFunctionData, isHex, size } from "viem";
 
 import { getContract } from "config/contracts";
@@ -19,6 +20,7 @@ import { getSubaccountValidations } from "domain/synthetics/subaccount/utils";
 import { TokenData, TokensData } from "domain/tokens";
 import { getRelayTokenPermits } from "domain/tokens/permitUtils";
 import { extendError } from "lib/errors";
+import { EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR } from "lib/errors/customErrors";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
 import { createProviderRpc } from "lib/rpc/createProviderRpc";
@@ -27,6 +29,7 @@ import { WalletSigner } from "lib/wallets";
 import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
 import { hashSignedTypedData, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { withFallback } from "lib/withFallback";
 import { getAbi } from "sdk/abis/getAbi";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
@@ -47,6 +50,7 @@ import {
   getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
   getExpressBatchOrderParams,
+  getIsBatchPayoutOnlyToAccount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
@@ -54,6 +58,8 @@ import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
+
+const GAS_SIMULATION_TIMEOUT_MS = 3_000;
 
 export async function estimateBatchExpressParams({
   signer,
@@ -120,6 +126,19 @@ export async function estimateBatchExpressParams({
   });
 
   return expressParams;
+}
+
+/**
+ * The approximate relay gas limit can be below the real relay cost, and the relay rejects an underpaid fee
+ * with InsufficientRelayFee, so the approximate fee is only a fallback. The timeout keeps a stalled RPC from
+ * holding a cancel while the order can still execute
+ */
+export async function estimateWithApproximateFallback(
+  estimate: (estimationMethod: ExpressParamsEstimationMethod) => Promise<ExpressTxnParams | undefined>
+): Promise<ExpressTxnParams | undefined> {
+  const simulated = await withFallback(estimate("estimateGas"), undefined, GAS_SIMULATION_TIMEOUT_MS);
+
+  return simulated ?? estimate("approximate");
 }
 
 function getBatchExpressEstimatorParams({
@@ -270,6 +289,10 @@ export async function buildAndSignExpressBatchOrderTxn({
   subaccount: Subaccount | undefined;
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
+  if (!isEqual(relayParamsPayload.externalCalls, getBatchExternalCalls(batchParams))) {
+    throw new Error(EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR);
+  }
+
   const messageSigner = subaccount ? subaccount!.signer : signer;
   const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
   const effectiveSrcChainId = isGmxAccount ? crossChainId ?? chainId : undefined;
@@ -305,6 +328,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
       verificationChainId: chainId,
+      canSkipEmbeddedWalletConfirmation: getIsBatchPayoutOnlyToAccount(expressBatchParams, signer.address),
       relayParams: relayPayload,
     };
 
@@ -392,6 +416,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature = false,
   relayerFeeTokenAddress,
   relayerFeeAmount,
+  validateBeforeSign,
 }: {
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
@@ -402,6 +427,7 @@ export async function buildAndSignBridgeOutTxn({
   emptySignature?: boolean;
   relayerFeeTokenAddress: string;
   relayerFeeAmount: bigint;
+  validateBeforeSign?: () => void;
 }): Promise<ExpressTxnData> {
   let signature: string;
 
@@ -423,6 +449,7 @@ export async function buildAndSignBridgeOutTxn({
       signer,
       chainId,
       srcChainId,
+      validateBeforeSign,
     });
   }
 
@@ -454,12 +481,14 @@ async function signBridgeOutPayload({
   params,
   chainId,
   srcChainId,
+  validateBeforeSign,
 }: {
   signer: WalletSigner | ISigner;
   relayParams: RelayParamsPayload;
   params: BridgeOutParams;
   chainId: SettlementChainId;
   srcChainId: SourceChainId;
+  validateBeforeSign?: () => void;
 }): Promise<string> {
   const { domain, types, message } = getBridgeOutTypedData({
     chainId,
@@ -469,7 +498,15 @@ async function signBridgeOutPayload({
     account: signer.address,
   });
 
-  return signTypedData({ signer, domain, types, typedData: message, verificationChainId: chainId, relayParams });
+  return signTypedData({
+    signer,
+    domain,
+    types,
+    typedData: message,
+    verificationChainId: chainId,
+    relayParams,
+    validateBeforeSign,
+  });
 }
 
 export async function signSetTraderReferralCode({

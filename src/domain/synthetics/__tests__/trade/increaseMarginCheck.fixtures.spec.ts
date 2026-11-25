@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 /**
  * Replays contract verdicts captured on an Arbitrum fork (rig: .claude/tasks/increase-margin-check-fedev-4131/rig,
  * `dump-fixture.ts`) through the same helpers the trade box uses: `getIncreasePositionAmounts` builds the

@@ -51,6 +51,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
+import { getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
@@ -181,7 +182,7 @@ export function OrderList({
     const batchParams = {
       createOrderParams: [],
       updateOrderParams: [],
-      cancelOrderParams: orderKeys.map((key) => ({ orderKey: key })),
+      cancelOrderParams: getCancelOrderParams(order),
     };
 
     try {
@@ -191,7 +192,6 @@ export function OrderList({
         batchParams,
         requireValidations: false,
         globalExpressParams,
-        estimationMethod: "approximate",
         provider,
         isGmxAccount: srcChainId !== undefined,
         subaccount,
