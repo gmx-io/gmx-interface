@@ -1,7 +1,7 @@
 import { parity } from "domain/testUtils/parity/parity";
 import {
   bpsOfSize,
-  hasProDiscount,
+  isProDiscountLarger,
   loadMinCollateralUsd,
   loadPositions,
   loadProTierScenario,
@@ -84,7 +84,7 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
     netValueAfterAllFees: { ...bpsOfSize, knownIssues },
   },
   requiredCases: [
-    { name: "the pro tier scenario applies", when: hasProDiscount },
+    { name: "the pro tier scenario applies", when: isProDiscountLarger },
     {
       name: "a position with capped pnl",
       when: ({ testCase: { info } }) => info.basePnlUsd !== info.uncappedBasePnlUsd,

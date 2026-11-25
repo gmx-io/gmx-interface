@@ -72,7 +72,7 @@ export const bpsOfSize = {
   toleranceBps: 0.001,
 };
 
-export const hasProDiscount = ({ testCase: { info } }: ParityInput<ParityPosition>) =>
+export const isProDiscountLarger = ({ testCase: { info } }: ParityInput<ParityPosition>) =>
   info.fees.pro.traderDiscountFactor > info.fees.referral.traderDiscountFactor;
 
 // The stored market fee state getContractPositionDynamicFees takes: the raw DataStore values
