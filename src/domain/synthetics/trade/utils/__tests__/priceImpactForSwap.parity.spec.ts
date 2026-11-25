@@ -3,7 +3,7 @@ import { parity } from "domain/testUtils/parity/parity";
 import {
   getMarketWithoutVirtualInventory,
   getSwapMidUsdIn,
-  getSwapPriceImpact,
+  getOurSwapPriceImpact,
   getSwapTokens,
   isSwapMarket,
   swapCases,
@@ -16,7 +16,7 @@ parity("getPriceImpactForSwap <-> Reader.getSwapPriceImpact, impact before caps"
   ours: (input) => {
     const midUsdIn = getSwapMidUsdIn(input);
 
-    return { priceImpactUsd: getSwapPriceImpact(input, midUsdIn).priceImpactDeltaUsd };
+    return { priceImpactUsd: getOurSwapPriceImpact(input, midUsdIn).priceImpactDeltaUsd };
   },
   contract: async (input) => {
     const { ctx, market, testCase } = input;
@@ -42,7 +42,7 @@ parity("getPriceImpactForSwap <-> Reader.getSwapPriceImpact, impact before caps"
       when: (input, ours) => {
         const poolMarket = getMarketWithoutVirtualInventory(input.market);
         const midUsdIn = getSwapMidUsdIn(input);
-        const poolImpact = getSwapPriceImpact({ ...input, market: poolMarket }, midUsdIn);
+        const poolImpact = getOurSwapPriceImpact({ ...input, market: poolMarket }, midUsdIn);
 
         return ours.priceImpactUsd !== poolImpact.priceImpactDeltaUsd;
       },

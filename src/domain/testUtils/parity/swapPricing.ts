@@ -34,7 +34,7 @@ export function getSwapMidUsdIn(input: ParityInput<SwapCase>) {
   return convertToUsd(input.testCase.amountIn, tokenIn.decimals, midPrice)!;
 }
 
-export function getSwapPriceImpact(input: ParityInput<SwapCase>, usdIn: bigint) {
+export function getOurSwapPriceImpact(input: ParityInput<SwapCase>, usdIn: bigint) {
   const [tokenIn, tokenOut] = getSwapTokens(input);
 
   return getPriceImpactForSwap(input.market, tokenIn, tokenOut, usdIn, -usdIn);
