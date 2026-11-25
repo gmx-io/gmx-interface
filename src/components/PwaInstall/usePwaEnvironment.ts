@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import useWallet from "lib/wallets/useWallet";
 
+import { usePwaTesterEnvironment } from "./tester/pwaTester"; // rewards-tester
 import { detectIosVersion, detectPwaPlatform, getIsInstalledApp, PwaPlatform } from "./pwaPlatform";
 
 export type PwaEnvironment = {
@@ -28,7 +29,7 @@ export function usePwaEnvironment(): PwaEnvironment {
   const iosVersion = useMemo(detectIosVersion, []);
   const isInstalled = useMemo(getIsInstalledApp, []);
 
-  const env: PwaEnvironment = {
+  let env: PwaEnvironment = {
     platform,
     iosVersion,
     isInstalled,
@@ -37,6 +38,7 @@ export function usePwaEnvironment(): PwaEnvironment {
     isFunded: false,
     isOneClickOn: false,
   };
+  env = usePwaTesterEnvironment(env); // rewards-tester
 
   return env;
 }
