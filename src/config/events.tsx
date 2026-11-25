@@ -49,6 +49,46 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "tradfi-batch-1-arbitrum-listing",
+    type: "listing",
+    variant: "info",
+    flagId: "showTradfiBatch1ArbitrumListing",
+    chains: [ARBITRUM],
+    endDate: "10 Dec 2026, 23:59",
+    title: "COPPER, PLATINUM and DRAM markets added on Arbitrum",
+    description: (
+      <>
+        Trade <Link to="/trade/long?to=COPPER&pool=WETH-USDC&chainId=42161">COPPER</Link>,{" "}
+        <Link to="/trade/long?to=PLATINUM&pool=WETH-USDC&chainId=42161">PLATINUM</Link> and{" "}
+        <Link to="/trade/long?to=DRAM&pool=WETH-USDC&chainId=42161">DRAM</Link> perpetuals 24/7, or{" "}
+        <Link to="/pools/details?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&chainId=42161">
+          provide liquidity
+        </Link>{" "}
+        via GLV [WETH-USDC]. Find them under TradFi in the market dropdown.
+      </>
+    ),
+  },
+  {
+    id: "tradfi-batch-2-arbitrum-listing",
+    type: "listing",
+    variant: "info",
+    flagId: "showTradfiBatch2ArbitrumListing",
+    chains: [ARBITRUM],
+    endDate: "17 Dec 2026, 23:59",
+    title: "PALLADIUM, EWY and US100 markets added on Arbitrum",
+    description: (
+      <>
+        Trade <Link to="/trade/long?to=PALLADIUM&pool=WETH-USDC&chainId=42161">PALLADIUM</Link>,{" "}
+        <Link to="/trade/long?to=EWY&pool=WETH-USDC&chainId=42161">EWY</Link> and{" "}
+        <Link to="/trade/long?to=US100&pool=WETH-USDC&chainId=42161">US100</Link> perpetuals 24/7, or{" "}
+        <Link to="/pools/details?market=0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9&chainId=42161">
+          provide liquidity
+        </Link>{" "}
+        via GLV [WETH-USDC]. Find them under TradFi in the market dropdown.
+      </>
+    ),
+  },
+  {
     id: "gt-airdrop-allocation",
     type: "update",
     isActive: true,
