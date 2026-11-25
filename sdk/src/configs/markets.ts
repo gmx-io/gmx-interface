@@ -22,6 +22,7 @@ export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
 export const UI_MAX_LEVERAGE_BY_MARKET: Record<string, number> = {
   "0xAE75DCecd9b17c5cB5Fb4198487bc3469D8eDa64": 15,
+  "0xFd4a6992662E7D2c2920F2eE89dccd3672FB07B5": 15,
   "0x470128853D74dab7423904a20eA5AA230e9e561B": 10,
 };
 
@@ -870,6 +871,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
     "0xAE75DCecd9b17c5cB5Fb4198487bc3469D8eDa64": {
       marketTokenAddress: "0xAE75DCecd9b17c5cB5Fb4198487bc3469D8eDa64",
       indexTokenAddress: "0xdC7331555ec6d5c8Bc1513B8A0127b9e9a44924D",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // PLATINUM/USD [WETH-USDC]
+    "0xFd4a6992662E7D2c2920F2eE89dccd3672FB07B5": {
+      marketTokenAddress: "0xFd4a6992662E7D2c2920F2eE89dccd3672FB07B5",
+      indexTokenAddress: "0x928760f117B0b741568f4B59153561076374a35c",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
