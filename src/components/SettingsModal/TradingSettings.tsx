@@ -21,6 +21,7 @@ import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
+import { useConnectedEmbeddedWallet } from "lib/wallets/useConnectedEmbeddedWallet";
 import { useIsContractAccount, useWalletCanSignTypedData } from "lib/wallets/useWalletSessionChains";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
@@ -73,6 +74,7 @@ export function TradingSettings({
   const { isWalletOutOfGasPaymentBalance, isGmxAccountOutOfGasPaymentBalance } = useIsOutOfGasPaymentBalance();
   const { canSignTypedData } = useWalletCanSignTypedData();
   const { isContractAccount } = useIsContractAccount();
+  const isEmbeddedWallet = useConnectedEmbeddedWallet() !== undefined;
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
@@ -231,6 +233,25 @@ export function TradingSettings({
               (isConnected && !isExpressTradingDisabled && !isContractAccount)) && <OneClickAdvancedSettings />}
 
             <OneClickSessions />
+
+            {isEmbeddedWallet && settings.expressOrdersEnabled && (
+              <ToggleSwitch
+                isChecked={settings.confirmOrderSignatures}
+                setIsChecked={settings.setConfirmOrderSignatures}
+              >
+                <LabelWithTooltip
+                  className="font-medium"
+                  label={t`Confirm order signatures`}
+                  tooltip={
+                    <Trans>
+                      Show the confirmation window when signing Express orders, including edits, cancellations and
+                      collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation,
+                      always ask for confirmation.
+                    </Trans>
+                  }
+                />
+              </ToggleSwitch>
+            )}
 
             {settings.expressOrdersEnabled && (
               <div className="flex flex-col gap-8">

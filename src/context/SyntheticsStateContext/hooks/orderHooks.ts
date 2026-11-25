@@ -12,8 +12,8 @@ import { helperToast } from "lib/helperToast";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getOrderKeys } from "sdk/utils/orders";
 import { OrderInfo } from "sdk/utils/orders/types";
+import { getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 import { selectExpressGlobalParams, selectUnavailableExpressFeeToken } from "../selectors/expressSelectors";
@@ -62,12 +62,10 @@ export function useCancelOrder(order: OrderInfo) {
 
       setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
 
-      const orderKeys = getOrderKeys(order);
-
       const batchParams = {
         createOrderParams: [],
         updateOrderParams: [],
-        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+        cancelOrderParams: getCancelOrderParams(order),
       };
 
       try {
@@ -78,7 +76,6 @@ export function useCancelOrder(order: OrderInfo) {
               batchParams,
               globalExpressParams,
               requireValidations: false,
-              estimationMethod: "approximate",
               provider,
               isGmxAccount: srcChainId !== undefined,
               subaccount,

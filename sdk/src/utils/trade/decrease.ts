@@ -1,6 +1,6 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
-import { getPositionFee } from "utils/fees";
+import { getPositionFee, getProportionalPendingImpactValues } from "utils/fees";
 import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getMaxAllowedLeverage } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
@@ -484,12 +484,23 @@ export function getDecreasePositionAmounts(p: {
       : twapPartsCount !== undefined
         ? payForTwapPartsCollateralCost({
             numberOfParts: twapPartsCount,
-            initialCostUsd: totalFeesUsd,
-            pendingFeesUsd: values.borrowingFeeUsd + values.fundingFeeUsd,
-            collateralToken,
-            collateralPrice: values.collateralPrice,
             outputAmount: profitAmount,
             remainingCollateralAmount: position.collateralAmount,
+            // gmsol costs are native collateral amounts and include the impact withheld beyond the cap
+            ...(gmsolCosts
+              ? {
+                  cost: costAmount,
+                  pendingCost:
+                    position.fundingFeeAmount +
+                    convertToTokenAmount(values.borrowingFeeUsd, collateralToken.decimals, values.collateralPrice)!,
+                  getCostAmount: (amount: bigint) => amount,
+                }
+              : {
+                  cost: totalFeesUsd,
+                  pendingCost: values.borrowingFeeUsd + values.fundingFeeUsd,
+                  getCostAmount: (usd: bigint) =>
+                    convertToTokenAmount(usd, collateralToken.decimals, values.collateralPrice)!,
+                }),
           })
         : payForCollateralCostAmount({
             costAmount,
@@ -1072,38 +1083,25 @@ function payForCollateralCostBeforePnlTokenProfit(p: {
 
 function payForTwapPartsCollateralCost(p: {
   numberOfParts: bigint;
-  initialCostUsd: bigint;
-  pendingFeesUsd: bigint;
-  collateralToken: TokenData;
-  collateralPrice: bigint;
+  cost: bigint;
+  pendingCost: bigint;
+  getCostAmount: (cost: bigint) => bigint;
   outputAmount: bigint;
   remainingCollateralAmount: bigint;
 }) {
-  const {
-    numberOfParts,
-    initialCostUsd,
-    pendingFeesUsd,
-    collateralToken,
-    collateralPrice,
-    outputAmount,
-    remainingCollateralAmount,
-  } = p;
+  const { numberOfParts, cost, pendingCost, getCostAmount, outputAmount, remainingCollateralAmount } = p;
 
-  const partCostUsd = (initialCostUsd - pendingFeesUsd) / numberOfParts;
+  const partCost = (cost - pendingCost) / numberOfParts;
   const partOutputAmount = outputAmount / numberOfParts;
 
-  const firstPart = payForCollateralCost({
-    initialCostUsd: pendingFeesUsd + partCostUsd,
-    collateralToken,
-    collateralPrice,
+  const firstPart = payForCollateralCostAmount({
+    costAmount: getCostAmount(pendingCost + partCost),
     outputAmount: partOutputAmount,
     remainingCollateralAmount,
   });
 
-  const otherParts = payForCollateralCost({
-    initialCostUsd: initialCostUsd - pendingFeesUsd - partCostUsd,
-    collateralToken,
-    collateralPrice,
+  const otherParts = payForCollateralCostAmount({
+    costAmount: getCostAmount(cost - pendingCost - partCost),
     outputAmount: outputAmount - partOutputAmount,
     remainingCollateralAmount: firstPart.remainingCollateralAmount,
   });
@@ -1358,7 +1356,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     priceImpactDiffUsd,
   } = p;
   const marketInfo =
-    suppliedMarketInfo.tradeMath === "gmsol"
+    suppliedMarketInfo.tradeMath === "gmsol" || suppliedMarketInfo.useV221LiquidationImpact
       ? getMarketInfoWithOpenInterestDelta({
           marketInfo: suppliedMarketInfo,
           collateralToken,
@@ -1414,6 +1412,17 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     pendingFundingFeesUsd: 0n, // deducted on order
   });
 
+  let nextPendingImpactAmount = existingPosition?.pendingImpactAmount ?? 0n;
+  if (existingPosition && marketInfo.useV221LiquidationImpact && marketInfo.tradeMath !== "gmsol") {
+    const { proportionalPendingImpactDeltaAmount } = getProportionalPendingImpactValues({
+      sizeInUsd: existingPosition.sizeInUsd,
+      sizeDeltaUsd,
+      pendingImpactAmount: nextPendingImpactAmount,
+      indexToken: marketInfo.indexToken,
+    });
+    nextPendingImpactAmount -= proportionalPendingImpactDeltaAmount;
+  }
+
   const nextLiqPrice = getLiquidationPrice({
     marketInfo,
     collateralToken,
@@ -1424,7 +1433,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
     minCollateralUsd,
     userReferralInfo,
     feeDiscountFactor: p.feeDiscountFactor,
-    pendingImpactAmount: existingPosition?.pendingImpactAmount ?? 0n,
+    pendingImpactAmount: nextPendingImpactAmount,
     pendingBorrowingFeesUsd: 0n, // deducted on order
     pendingFundingFeesUsd: 0n, // deducted on order
     isLong: isLong,
