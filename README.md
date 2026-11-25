@@ -41,7 +41,7 @@ The trading app dev server runs at [http://localhost:3010](http://localhost:3010
 
 `yarn test:parity` reads these env vars:
 
-- `PARITY_RPC_URL`: the Arbitrum RPC, the public one by default
+- `PARITY_RPC_URL`: required, an Alchemy Arbitrum RPC URL
 - `PARITY_BLOCK`: the block to read, the latest by default
 
 ## Documentation
