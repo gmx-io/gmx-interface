@@ -105,7 +105,7 @@ export async function createSourceChainGlvDepositTxn({
     amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
-    isManualGas: params.isMarketTokenDeposit ? true : false,
+    isManualGas: true,
     action,
     nativeDropAmount: relayParams.fee.feeAmount,
   });
