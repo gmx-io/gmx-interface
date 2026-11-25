@@ -1,11 +1,13 @@
 import { Trans } from "@lingui/macro";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { toast } from "react-toastify";
 
 import { getExplorerUrl, SOLANA_NETWORK_ID } from "config/chains";
 
 import { TransactionStatus, type TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
 import { StatusNotification } from "./StatusNotification";
+import { useToastAutoClose } from "./useToastAutoClose";
 
 export type SolanaOrderNotificationState = {
   title: ReactNode;
@@ -18,7 +20,25 @@ export type SolanaOrderNotificationState = {
   reason: string | undefined;
 };
 
-export function SolanaOrderStatusNotification({ state }: { state: SolanaOrderNotificationState }) {
+export function SolanaOrderStatusNotification({
+  state,
+  toastId,
+}: {
+  state: SolanaOrderNotificationState;
+  toastId: number;
+}) {
+  const hasError = state.submission === "failed" || state.execution === "cancelled";
+  const isCompleted =
+    state.submission === "failed" ||
+    (state.submission === "submitted" && (!state.trackExecution || state.execution !== "unresolved"));
+
+  useToastAutoClose(isCompleted, toastId);
+
+  useEffect(() => {
+    // An update during the exit animation would show a closed toast again.
+    if (hasError && toast.isActive(toastId)) toast.update(toastId, { type: "error" });
+  }, [hasError, toastId]);
+
   const sendingText =
     state.submission === "submitted" ? (
       <Trans>Order request sent</Trans>

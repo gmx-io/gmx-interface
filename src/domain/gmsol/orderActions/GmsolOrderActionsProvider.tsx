@@ -6,7 +6,6 @@ import {
   type SolanaOrderActions,
   type SolanaOrderChanges,
 } from "domain/solana/solanaOrderActions";
-import { useSolanaOrderNotifications } from "domain/solanaOrderTracking/useSolanaOrderNotifications";
 import { helperToast } from "lib/helperToast";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
@@ -20,11 +19,16 @@ import {
   buildGmsolTriggerAction,
   buildGmsolUpdateAction,
 } from "./buildOrderActions";
+import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
 import { GmsolTradeboxError } from "../tradebox/buildTradeboxOrderAction";
 import { getGmsolTradeboxErrorMessage } from "../tradebox/tradeboxErrorMessages";
-import { getPendingGmsolSubmission } from "../transactions/pendingSubmission";
+import { getPendingGmsolSubmission, type PendingGmsolSubmission } from "../transactions/pendingSubmission";
 import type { GmsolOrderAction } from "../transactions/types";
-import { useGmsolOrderTransactions } from "../transactions/useGmsolOrderTransactions";
+import {
+  getIsGmsolOrderSubmitting,
+  useGmsolOrderTransactions,
+  type GmsolOrderSubmission,
+} from "../transactions/useGmsolOrderTransactions";
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 
 function getOrderError(order: OrderInfo) {
@@ -52,7 +56,7 @@ function getUpdateError({ order, changes }: { order: PositionOrderInfo; changes:
 /** Sends the shared position and order list actions on Solana. Mounted only inside the Solana trade state. */
 export function GmsolOrderActionsProvider({ children }: { children: ReactNode }) {
   const wallet = useSolanaWalletSession();
-  const { submit, isSubmitting, hasPendingSubmission } = useGmsolOrderTransactions();
+  const { acquire, isSubmitting, hasPendingSubmission } = useGmsolOrderTransactions();
   const { begin } = useSolanaOrderNotifications();
   const trading = useSolanaTradingEnabled({ enabled: Boolean(wallet.address) });
   const hasOutdatedUi = useHasOutdatedUi();
@@ -73,7 +77,26 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   }, []);
 
   // Resolves an unresolved earlier submission without sending anything new; always resolves to false.
+  const check = useCallback(
+    async (submission: GmsolOrderSubmission, pending: PendingGmsolSubmission): Promise<boolean> => {
+      const notification = begin({
+        owner: submission.owner,
+        title: t`Previous order request`,
+        trackExecution: pending.trackExecution ?? false,
+      });
+      try {
+        notification.submitted(await submission.submit(undefined, { onSubmitted: notification.submitted }));
+      } catch (error) {
+        notification.failed(error);
+      }
+      return false;
+    },
+    [begin]
+  );
+
+  // A call made while another flow holds the wallet returns before any toast, so that flow's toast stays open.
   const checkPendingSubmission = useCallback(async (): Promise<boolean> => {
+    if (getIsGmsolOrderSubmitting()) return false;
     const sendError = getSendError();
     if (sendError) {
       helperToast.error(sendError);
@@ -82,18 +105,14 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
     const pending = getPendingGmsolSubmission(current.current.owner!);
     if (!pending) return false;
-
-    const notification = begin({
-      title: t`Previous order request`,
-      trackExecution: pending.trackExecution ?? false,
-    });
+    const submission = acquire(current.current.owner);
+    if (!submission) return false;
     try {
-      notification.submitted(await submit(undefined, { onSubmitted: notification.submitted }));
-    } catch (error) {
-      notification.failed(error);
+      return await check(submission, pending);
+    } finally {
+      submission.release();
     }
-    return false;
-  }, [begin, getSendError, submit]);
+  }, [acquire, check, getSendError]);
 
   // Every action is built before the first transaction is sent, so a build error never leaves a flow half-sent.
   const prepare = useCallback((builds: (() => GmsolOrderAction)[]): GmsolOrderAction[] | undefined => {
@@ -109,18 +128,23 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
   // One order account per transaction: the sender allows a single unresolved submission at a time.
   const sendSequentially = useCallback(
-    async (steps: { title: string; trackExecution: boolean; action: GmsolOrderAction }[]): Promise<boolean> => {
+    async (
+      submission: GmsolOrderSubmission,
+      steps: { title: string; trackExecution: boolean; action: GmsolOrderAction }[]
+    ): Promise<boolean> => {
       for (const { title, trackExecution, action } of steps) {
         const sendError = getSendError();
         if (sendError) {
           helperToast.error(sendError);
           return false;
         }
-        if (getPendingGmsolSubmission(current.current.owner!)) return checkPendingSubmission();
+        if (!submission.isActive()) return false;
+        const pending = getPendingGmsolSubmission(submission.owner);
+        if (pending) return check(submission, pending);
 
-        const notification = begin({ title, trackExecution });
+        const notification = begin({ owner: submission.owner, title, trackExecution });
         try {
-          notification.submitted(await submit(action, { onSubmitted: notification.submitted }));
+          notification.submitted(await submission.submit(action, { onSubmitted: notification.submitted }));
         } catch (error) {
           notification.failed(error);
           return false;
@@ -128,7 +152,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       }
       return true;
     },
-    [begin, checkPendingSubmission, getSendError, submit]
+    [begin, check, getSendError]
   );
 
   // Each call is one transaction flow. An unresolved earlier submission is checked first and nothing new is sent.
@@ -136,6 +160,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
     async (
       steps: { title: string; trackExecution: boolean; build: () => GmsolOrderAction; order?: OrderInfo }[]
     ): Promise<boolean> => {
+      if (getIsGmsolOrderSubmitting()) return false;
       const sendError = getSendError();
       if (sendError) {
         helperToast.error(sendError);
@@ -155,11 +180,18 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       const actions = prepare(steps.map((step) => step.build));
       if (!actions) return false;
 
-      return sendSequentially(
-        steps.map(({ title, trackExecution }, index) => ({ title, trackExecution, action: actions[index] }))
-      );
+      const submission = acquire(current.current.owner);
+      if (!submission) return false;
+      try {
+        return await sendSequentially(
+          submission,
+          steps.map(({ title, trackExecution }, index) => ({ title, trackExecution, action: actions[index] }))
+        );
+      } finally {
+        submission.release();
+      }
     },
-    [checkPendingSubmission, getSendError, prepare, sendSequentially]
+    [acquire, checkPendingSubmission, getSendError, prepare, sendSequentially]
   );
 
   const value = useMemo(

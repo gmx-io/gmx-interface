@@ -3950,6 +3950,7 @@ msgid "Max lendable impact USD"
 msgstr "最大貸出可能インパクトUSD"
 
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Previous order request"
 msgstr ""
 

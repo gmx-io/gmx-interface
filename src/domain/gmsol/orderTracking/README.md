@@ -54,15 +54,22 @@ HTTP 403 from the RPC is not retried: it ends tracking at once and is reported
 to metrics once per tracked order with the refused method.
 
 Shared order-entry consumers use
-`useSolanaOrderNotifications().begin({ title, trackExecution })`, call
+`useSolanaOrderNotifications().begin({ owner, title, trackExecution })`, call
 `submitted({ signatures, orders, trackingRequests })` at confirmation, and pass
 caught submission errors to `failed(error)`. Known chain failures, wallet
 rejections and ambiguous broadcasts are distinct. Notifications reuse the GMX
 status and transaction-row components with explicit Solana explorer links.
-Dismissing a toast, switching owner/network or unmounting the consumer cancels
-its tracking. A tracking deadline leaves a visible unconfirmed outcome, never a
-fabricated fill or failure. Live browser acceptance of newly submitted orders
-remains separate from historical RPC replay and offline fixture verification.
+The TradeBox and the order actions share one module store of notifications and
+tracking, keyed by the owner's session, so a remount or a route change keeps
+both. A toast opens through `helperToast` and replaces the open toast as EVM
+order toasts do; it renders from the store, because react-toastify drops
+updates to a queued toast, and closes with `useToastAutoClose`. A toast closed
+by the user or by another toast is not shown again, while its tracking and the
+account refresh continue. Only an owner or network change cancels tracking and
+closes the toasts of the previous session. A tracking deadline leaves a visible
+unconfirmed outcome, never a fabricated fill or failure. Live browser
+acceptance of newly submitted orders remains separate from historical RPC
+replay and offline fixture verification.
 
 ## Shared entry integration
 

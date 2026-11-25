@@ -29,12 +29,13 @@ import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/sel
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmsolWalletBalances } from "domain/gmsol/useGmsolWalletBalances";
 import type { SolanaTradeboxState } from "domain/solana/solanaTradebox";
-import { useSolanaOrderNotifications } from "domain/solanaOrderTracking/useSolanaOrderNotifications";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 
+import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
+import { getPendingGmsolSubmission } from "../transactions/pendingSubmission";
 import { useGmsolOrderTransactions } from "../transactions/useGmsolOrderTransactions";
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 import {
@@ -53,7 +54,7 @@ export default function GmsolTradeboxAdapter({
   sessionId: object;
 }) {
   const wallet = useSolanaWalletSession();
-  const { submit, isSubmitting, hasPendingSubmission, pendingTrackExecution } = useGmsolOrderTransactions();
+  const { acquire, isSubmitting, hasPendingSubmission } = useGmsolOrderTransactions();
   const { begin } = useSolanaOrderNotifications();
   const { isSolanaTradingEnabled, isLoading: isTradingLoading } = useSolanaTradingEnabled({ enabled: true });
   const balances = useGmsolWalletBalances(wallet.address);
@@ -156,17 +157,32 @@ export default function GmsolTradeboxAdapter({
   current.current = { error, intent, owner: wallet.address, hasPendingSubmission };
   const onSubmit = useCallback(async () => {
     const { error, intent, owner, hasPendingSubmission } = current.current;
-    if (!owner || (!hasPendingSubmission && (error || !intent.action))) return false;
-    const notification = begin({ title: t`Order request`, trackExecution: pendingTrackExecution ?? isMarket });
+    if (!owner) return false;
+    // Read at click time: the last render can trail another tab or a send that has just ended.
+    const pending = getPendingGmsolSubmission(owner);
+    if (!pending && (hasPendingSubmission || error || !intent.action)) return false;
+    const submission = acquire(owner);
+    if (!submission) return false;
     try {
-      const result = await submit(intent.action, { onSubmitted: notification.submitted });
-      notification.submitted(result);
-      return true;
-    } catch (error) {
-      notification.failed(error);
-      return false;
+      const notification = begin({
+        owner,
+        title: pending ? t`Previous order request` : t`Order request`,
+        trackExecution: pending?.trackExecution ?? isMarket,
+      });
+      try {
+        const result = await submission.submit(pending ? undefined : intent.action, {
+          onSubmitted: notification.submitted,
+        });
+        notification.submitted(result);
+        return true;
+      } catch (error) {
+        notification.failed(error);
+        return false;
+      }
+    } finally {
+      submission.release();
     }
-  }, [begin, isMarket, pendingTrackExecution, submit]);
+  }, [acquire, begin, isMarket]);
 
   const text = isSubmitting
     ? hasPendingSubmission
