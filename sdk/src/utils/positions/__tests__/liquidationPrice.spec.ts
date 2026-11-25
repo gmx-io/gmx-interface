@@ -252,3 +252,50 @@ describe("EVM liquidation price", () => {
     }
   });
 });
+
+describe("EVM liquidation price in profit", () => {
+  it("counts a positive pnl at the pnl token's min over max price, as the contract pays it in that token", () => {
+    const tokensData = mockTokensData({ ETH: { prices: { minPrice: usd("1998"), maxPrice: usd("2002") } } });
+    const marketInfo = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
+      "ETH-ETH-USDC": {
+        minCollateralFactorForLiquidation: usd("0.005"),
+        positionFeeFactorForBalanceWasNotImproved: 0n,
+        maxPositionImpactFactorForLiquidations: 0n,
+      },
+    })["ETH-ETH-USDC"];
+    const collateralToken = getTokenData(tokensData, "USDC")!;
+    const sizeInUsd = usd("10000");
+    const sizeInTokens = eth("5");
+    const collateralUsd = usd("10");
+    // the borrowing fee is over the collateral, so only a profit keeps the position open
+    const borrowingUsd = usd("100");
+    const thresholdUsd = applyFactor(sizeInUsd, usd("0.005"));
+    const { minPrice, maxPrice } = marketInfo.longToken.prices;
+
+    const getRemainingCollateralUsd = (price: bigint) => {
+      const pnlUsd = (sizeInTokens * price) / expandDecimals(1, 18) - sizeInUsd;
+      const countedPnlUsd = pnlUsd > 0n ? (pnlUsd * minPrice) / maxPrice : pnlUsd;
+
+      return collateralUsd - borrowingUsd + countedPnlUsd;
+    };
+
+    const liquidationPrice = getLiquidationPrice({
+      marketInfo,
+      collateralToken,
+      sizeInUsd,
+      sizeInTokens,
+      collateralAmount: expandDecimals(10, collateralToken.decimals),
+      collateralUsd,
+      pendingFundingFeesUsd: 0n,
+      pendingBorrowingFeesUsd: borrowingUsd,
+      pendingImpactAmount: 0n,
+      minCollateralUsd: usd("1"),
+      isLong: true,
+      useMaxPriceImpact: true,
+      userReferralInfo: undefined,
+    })!;
+
+    expect(getRemainingCollateralUsd((liquidationPrice * 1_000_001n) / 1_000_000n) > thresholdUsd).toBe(true);
+    expect(getRemainingCollateralUsd((liquidationPrice * 999_999n) / 1_000_000n) < thresholdUsd).toBe(true);
+  });
+});

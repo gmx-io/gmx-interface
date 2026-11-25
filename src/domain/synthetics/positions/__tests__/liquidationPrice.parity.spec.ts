@@ -171,10 +171,6 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
         },
         {
           reason:
-            "getLiquidationPrice counts a positive pnl in full, the contract pays it in the pnl token: pnl / max price * min price",
-        },
-        {
-          reason:
             "getLiquidationPrice values the index token collateral of a short at the same price as the position, the contract at the min price while the short closes at the max price",
         },
         {

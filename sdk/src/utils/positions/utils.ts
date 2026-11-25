@@ -436,18 +436,31 @@ export function getLiquidationPrice(p: {
       collateralAmount: collateralAmount - fundingFeeAmount,
       isLong,
     })!;
-    const denominator = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
+    const exposureInTokens = isLong ? sizeInTokens + netCollateralAmount : sizeInTokens - netCollateralAmount;
 
-    if (denominator === 0n) {
+    if (exposureInTokens === 0n) {
       return undefined;
     }
 
     const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
-    const numerator = isLong
+    const valueAtLiquidationUsd = isLong
       ? sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd
       : sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd;
 
-    liquidationPrice = bigMath.mulDiv(numerator, expandDecimals(1, indexToken.decimals), denominator);
+    const liquidationPriceWithFullProfit = bigMath.mulDiv(
+      valueAtLiquidationUsd,
+      expandDecimals(1, indexToken.decimals),
+      exposureInTokens
+    );
+
+    liquidationPrice = getLiquidationPriceWithProfitInPnlToken({
+      marketInfo,
+      isLong,
+      sizeInUsd,
+      sizeInTokens,
+      liquidationPrice: liquidationPriceWithFullProfit,
+      exposureInTokens,
+    });
   } else if (getIsTokenTrackingPrice(collateralToken, indexToken)) {
     const indexPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
     const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, indexPrice)!;
@@ -456,17 +469,27 @@ export function getLiquidationPrice(p: {
       pendingFundingFeesUsd;
     const fixedFeesUsd = pendingBorrowingFeesUsd + closingFeeUsd;
 
-    const denominator = isLong ? positionValueUsd + collateralValueUsd : positionValueUsd - collateralValueUsd;
+    const exposureUsd = isLong ? positionValueUsd + collateralValueUsd : positionValueUsd - collateralValueUsd;
 
-    if (denominator == 0n) {
+    if (exposureUsd == 0n) {
       return undefined;
     }
 
-    const numerator = isLong
+    const valueAtLiquidationUsd = isLong
       ? sizeInUsd + liquidationCollateralUsd - priceImpactDeltaUsd + fixedFeesUsd
       : sizeInUsd - liquidationCollateralUsd + priceImpactDeltaUsd - fixedFeesUsd;
 
-    liquidationPrice = bigMath.mulDiv(indexPrice, numerator, denominator);
+    const liquidationPriceWithFullProfit = bigMath.mulDiv(indexPrice, valueAtLiquidationUsd, exposureUsd);
+    const exposureInTokens = convertToTokenAmount(exposureUsd, indexToken.decimals, indexPrice)!;
+
+    liquidationPrice = getLiquidationPriceWithProfitInPnlToken({
+      marketInfo,
+      isLong,
+      sizeInUsd,
+      sizeInTokens,
+      liquidationPrice: liquidationPriceWithFullProfit,
+      exposureInTokens,
+    });
   } else {
     if (sizeInTokens == 0n) {
       return undefined;
@@ -474,15 +497,20 @@ export function getLiquidationPrice(p: {
 
     const remainingCollateralUsd = collateralUsd + priceImpactDeltaUsd - totalPendingFeesUsd - closingFeeUsd;
 
-    if (isLong) {
-      liquidationPrice =
-        ((liquidationCollateralUsd - remainingCollateralUsd + sizeInUsd) / sizeInTokens) *
+    const liquidationPriceWithFullProfit = isLong
+      ? ((liquidationCollateralUsd - remainingCollateralUsd + sizeInUsd) / sizeInTokens) *
+        expandDecimals(1, indexToken.decimals)
+      : ((liquidationCollateralUsd - remainingCollateralUsd - sizeInUsd) / -sizeInTokens) *
         expandDecimals(1, indexToken.decimals);
-    } else {
-      liquidationPrice =
-        ((liquidationCollateralUsd - remainingCollateralUsd - sizeInUsd) / -sizeInTokens) *
-        expandDecimals(1, indexToken.decimals);
-    }
+
+    liquidationPrice = getLiquidationPriceWithProfitInPnlToken({
+      marketInfo,
+      isLong,
+      sizeInUsd,
+      sizeInTokens,
+      liquidationPrice: liquidationPriceWithFullProfit,
+      exposureInTokens: sizeInTokens,
+    });
   }
 
   if (liquidationPrice <= 0) {
@@ -490,6 +518,51 @@ export function getLiquidationPrice(p: {
   }
 
   return liquidationPrice;
+}
+
+/**
+ * The contract pays a profit in the pnl token, so it counts only profit * min price / max price of that token
+ * (PositionUtils.isPositionLiquidatable). A position still in profit at the liquidation price is liquidated a bit
+ * earlier: the price moves on until the position makes up the profit the contract does not count.
+ */
+function getLiquidationPriceWithProfitInPnlToken(p: {
+  marketInfo: MarketInfo;
+  isLong: boolean;
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  liquidationPrice: bigint;
+  /** Index tokens whose value moves with the price: the position, plus collateral in the index token */
+  exposureInTokens: bigint;
+}): bigint {
+  const { marketInfo, isLong, sizeInUsd, sizeInTokens, liquidationPrice, exposureInTokens } = p;
+  const { indexToken } = marketInfo;
+  const positionValueUsd = convertToUsd(sizeInTokens, indexToken.decimals, liquidationPrice)!;
+  const profitUsd = isLong ? positionValueUsd - sizeInUsd : sizeInUsd - positionValueUsd;
+
+  if (marketInfo.tradeMath === "gmsol" || profitUsd <= 0n) {
+    return liquidationPrice;
+  }
+
+  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const { minPrice, maxPrice } = pnlToken.prices;
+  // positionPnlUsd / pnlTokenPrice.max * pnlTokenPrice.min, as in the contract
+  const profitInPnlToken = convertToTokenAmount(profitUsd, pnlToken.decimals, maxPrice)!;
+  const countedProfitUsd = convertToUsd(profitInPnlToken, pnlToken.decimals, minPrice)!;
+  // past this price the position's own gain is a profit too, counted the same way
+  const countedExposureInTokens = exposureInTokens - sizeInTokens + bigMath.mulDiv(sizeInTokens, minPrice, maxPrice);
+
+  if (countedExposureInTokens <= 0n) {
+    return liquidationPrice;
+  }
+
+  const priceShift = bigMath.mulDiv(
+    profitUsd - countedProfitUsd,
+    expandDecimals(1, indexToken.decimals),
+    countedExposureInTokens
+  );
+
+  // a long is liquidated as the price falls, a short as it rises
+  return isLong ? liquidationPrice + priceShift : liquidationPrice - priceShift;
 }
 
 export function getMinCollateralUsdForLiquidationPrice(p: {
