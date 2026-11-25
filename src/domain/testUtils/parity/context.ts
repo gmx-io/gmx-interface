@@ -32,7 +32,8 @@ export type DataStoreOverrides = { uint: [key: string, value: bigint][] };
 export type Scenario = { name: string; overrides: DataStoreOverrides };
 
 export type ParityContext = {
-  scenario: string;
+  /** LIVE_STATE or the scenario name */
+  state: string;
   blockNumber: bigint;
   blockTimestamp: bigint;
   client: PublicClient;
@@ -136,7 +137,7 @@ async function createParityContext(scenario: Scenario | undefined): Promise<Pari
   }
 
   return {
-    scenario: scenario?.name ?? LIVE_STATE,
+    state: scenario?.name ?? LIVE_STATE,
     blockNumber,
     blockTimestamp,
     client,
