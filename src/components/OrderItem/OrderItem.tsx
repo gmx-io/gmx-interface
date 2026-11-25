@@ -900,7 +900,6 @@ function OrderItemSmall({
               <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
             </span>
           )}
-          {/* The market block wraps on its own, so a wrapped pill starts under the token icon, like the position card */}
           <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
             {title}
             {isMarketClosed && <MarketClosedBadge label="marketClosed" />}

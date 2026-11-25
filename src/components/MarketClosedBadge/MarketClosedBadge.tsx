@@ -6,9 +6,7 @@ import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "component
 
 type Props = {
   poolName?: string;
-  /** "closed" next to a market (header, market list); "marketClosed" on position and order rows */
   label?: "closed" | "marketClosed";
-  /** In narrow table columns (long languages) the label ends with "…" instead of running into the next column */
   isTruncatable?: boolean;
   className?: string;
 };
