@@ -20,7 +20,9 @@ import type { PositionsData } from "sdk/utils/positions/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
 import { trackMissedMarketPrices } from "./missedMarketPrices";
+import type { ContractPositionInfo } from "./types";
 import { useOptimisticPositions } from "./useOptimisticPositions";
+import { parseContractPositionInfo } from "./utils";
 
 export { getPendingMockPosition } from "./useOptimisticPositions";
 
@@ -37,34 +39,6 @@ type PositionsResult = {
 type RawPositionResult = {
   addresses: { account: string; market: string; collateralToken: string };
   flags: { isLong: boolean };
-};
-
-type PositionInfoResult = {
-  position: {
-    addresses: { account: string; market: string; collateralToken: string };
-    numbers: {
-      sizeInUsd: bigint;
-      sizeInTokens: bigint;
-      collateralAmount: bigint;
-      increasedAtTime: bigint;
-      decreasedAtTime: bigint;
-      pendingImpactAmount: bigint;
-    };
-    flags: { isLong: boolean };
-  };
-  fees: {
-    borrowing: { borrowingFeeUsd: bigint };
-    funding: {
-      fundingFeeAmount: bigint;
-      claimableLongTokenAmount: bigint;
-      claimableShortTokenAmount: bigint;
-    };
-    referral: { traderDiscountAmount: bigint };
-    ui: { uiFeeAmount: bigint };
-    positionFeeAmount: bigint;
-  };
-  basePnlUsd: bigint;
-  positionValueInUsd: bigint;
 };
 
 type PositionsInfoRequestConfig = MulticallRequestConfig<{
@@ -201,47 +175,18 @@ export function usePositions(
       };
     },
     parseResponse: (res, chainId): { account: string; chainId: number; positionsData: PositionsData } => {
-      const positions = Object.values(res.data.reader).flatMap((call) => call.returnValues as PositionInfoResult[]);
+      const positions = Object.values(res.data.reader).flatMap((call) => call.returnValues as ContractPositionInfo[]);
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
-      const positionsData = positions.reduce((positionsMap: PositionsData, positionInfo: PositionInfoResult) => {
-        const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
-        const { addresses, numbers, flags } = position;
-        const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;
-
+      const positionsData = positions.reduce((positionsMap: PositionsData, positionInfo: ContractPositionInfo) => {
         // Empty position
-        if (numbers.increasedAtTime == 0n) {
+        if (positionInfo.position.numbers.increasedAtTime == 0n) {
           return positionsMap;
         }
 
-        const positionKey = getPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-        const contractPositionKey = hashedPositionKey(account, marketAddress, collateralTokenAddress, flags.isLong);
-
-        positionsMap[positionKey] = {
-          key: positionKey,
-          contractKey: contractPositionKey,
-          account,
-          marketAddress,
-          collateralTokenAddress,
-          sizeInUsd: numbers.sizeInUsd,
-          sizeInTokens: numbers.sizeInTokens,
-          collateralAmount: numbers.collateralAmount,
-          increasedAtTime: numbers.increasedAtTime,
-          decreasedAtTime: numbers.decreasedAtTime,
-          isLong: flags.isLong,
-          pendingBorrowingFeesUsd: fees.borrowing.borrowingFeeUsd,
-          fundingFeeAmount: fees.funding.fundingFeeAmount,
-          claimableLongTokenAmount: fees.funding.claimableLongTokenAmount,
-          claimableShortTokenAmount: fees.funding.claimableShortTokenAmount,
-          pendingImpactAmount: numbers.pendingImpactAmount,
-          pnl: basePnlUsd,
-          positionFeeAmount: fees.positionFeeAmount,
-          traderDiscountAmount: fees.referral.traderDiscountAmount,
-          uiFeeAmount: fees.ui.uiFeeAmount,
-          positionValueInUsd,
-          data: "",
-        };
+        const position = parseContractPositionInfo(positionInfo);
+        positionsMap[position.key] = position;
 
         return positionsMap;
       }, {} as PositionsData);
