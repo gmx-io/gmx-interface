@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
 import {
@@ -47,7 +48,7 @@ export function TPSLGroup() {
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
   const isPositionLiquidatedBeforeTrigger = useSelector(selectTradeboxIsPositionLiquidatedBeforeTrigger);
 
-  const showTPSL = !isTrigger && !isSwap && !isPositionLiquidatedBeforeTrigger;
+  const showTPSL = !isTrigger && !isSwap;
 
   const entries = useSidecarEntries();
   const orders = useSidecarOrders();
@@ -83,6 +84,7 @@ export function TPSLGroup() {
 
   return (
     <ExpandableRow
+      className={cx({ hidden: isPositionLiquidatedBeforeTrigger })}
       open={isTpSlVisible}
       title={
         <StandardTooltip

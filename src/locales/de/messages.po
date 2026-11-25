@@ -8069,7 +8069,7 @@ msgstr "Diese Position hat nach ausstehenden Leih- und Finanzierungsgebühren ei
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "TP/SL können dieser Order nicht hinzugefügt werden. Legen Sie sie nach der Eröffnung der neuen Position fest."
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

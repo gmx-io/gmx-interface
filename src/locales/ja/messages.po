@@ -8069,7 +8069,7 @@ msgstr "このポジションは未払いの借入手数料とファンディン
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "この注文にはTP/SLを追加できません。新しいポジションが開かれた後に設定してください。"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

@@ -8069,7 +8069,7 @@ msgstr "Esta posición tiene un margen negativo después de las comisiones pendi
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "No se pueden añadir TP/SL a esta orden. Configúrelos después de que se abra la nueva posición."
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

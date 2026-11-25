@@ -8069,7 +8069,7 @@ msgstr "После вычета ожидающих комиссий за заи�
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "К этому ордеру нельзя добавить TP/SL. Установите их после открытия новой позиции."
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"

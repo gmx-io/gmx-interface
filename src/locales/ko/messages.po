@@ -8069,7 +8069,7 @@ msgstr "이 포지션은 미지급 차입 수수료와 펀딩 수수료를 차�
 
 #: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
 msgid "TP/SL can't be added to this order. Set them after the new position opens."
-msgstr ""
+msgstr "이 주문에는 TP/SL을 추가할 수 없습니다. 새 포지션이 열린 후에 설정하십시오."
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
