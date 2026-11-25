@@ -92,6 +92,10 @@ import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress } from "sdk/configs/tokens";
 
 import { useMultichainMarketTokensBalancesRequest } from "components/GmxAccountModal/hooks";
+import {
+  useClosedMarketsTesterAccount,
+  useClosedMarketsWithTester,
+} from "components/MarketClosedBadge/tester/closedMarketsTester"; // rewards-tester (DES-96 closed markets)
 
 import { useCollectSyntheticsMetrics } from "./useCollectSyntheticsMetrics";
 import { LeaderboardState, useLeaderboardState } from "./useLeaderboardState";
@@ -225,7 +229,8 @@ export function SyntheticsStateContextProvider({
   const isTradePage = pageType === "trade";
   const isAccountPage = pageType === "accounts";
 
-  const account = isAccountPage ? checkSummedAccount : walletAccount;
+  const testerAccount = useClosedMarketsTesterAccount(walletAccount, isTradePage); // rewards-tester (DES-96 closed markets)
+  const account = isAccountPage ? checkSummedAccount : testerAccount; // rewards-tester (DES-96 closed markets)
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
   const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
@@ -293,9 +298,11 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
-  const closedMarkets = useClosedMarketsRequest(chainId, {
+  const realClosedMarkets = useClosedMarketsRequest(chainId, {
+    // rewards-tester (DES-96 closed markets)
     enabled: !isSolanaNetwork(networkId),
   });
+  const closedMarkets = useClosedMarketsWithTester(realClosedMarkets, marketsInfo.marketsInfoData); // rewards-tester (DES-96 closed markets)
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 

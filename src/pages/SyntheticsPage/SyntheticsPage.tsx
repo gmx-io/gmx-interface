@@ -85,6 +85,7 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { ClosedMarketsTesterPanel } from "components/MarketClosedBadge/tester/ClosedMarketsTesterPanel"; // rewards-tester (DES-96 closed markets)
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
@@ -688,6 +689,7 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
+      <ClosedMarketsTesterPanel /> {/* rewards-tester (DES-96 closed markets) */}
     </AppPageLayout>
   );
 }
