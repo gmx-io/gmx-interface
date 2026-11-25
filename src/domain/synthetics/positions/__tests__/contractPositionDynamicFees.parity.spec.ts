@@ -35,7 +35,6 @@ parity("getContractPositionDynamicFees <-> Reader.getPositionInfo, pending fees 
     pendingBorrowingFeesUsd: { ...bpsOfSize, knownIssues: [missedAccrual] },
     fundingFeeAmount: {
       bpsOf: getSizeInCollateralTokens,
-      toleranceBps: 0.001,
       knownIssues: [
         missedAccrual,
         { reason: "getFundingAmount floors the funding fee amount, the contract rounds it up" },

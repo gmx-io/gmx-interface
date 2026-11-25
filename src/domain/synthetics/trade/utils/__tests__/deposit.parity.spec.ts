@@ -117,7 +117,6 @@ parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   },
   fields: {
     marketTokenAmount: {
-      toleranceBps: 0.001,
       knownIssues: [
         {
           reason: "2.2.1 recomputes a positive deposit impact with the rebate (getPriceImpactUsdForDeposit), we don't",

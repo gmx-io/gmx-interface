@@ -102,7 +102,6 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
   },
   fields: {
     amountOut: {
-      toleranceBps: 0.001,
       knownIssues: [
         {
           reason:

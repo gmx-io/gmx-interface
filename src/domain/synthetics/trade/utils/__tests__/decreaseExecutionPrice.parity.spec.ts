@@ -60,7 +60,7 @@ function getAppDecrease({ market, testCase: { position, sizeDeltaUsd } }: Decrea
   });
 }
 
-const bpsOfSizeDelta = { bpsOf: ({ testCase }: DecreaseInput) => testCase.sizeDeltaUsd, toleranceBps: 0.001 };
+const bpsOfSizeDelta = { bpsOf: ({ testCase }: DecreaseInput) => testCase.sizeDeltaUsd };
 
 // (x * y) % z is negative for a negative x, so the round up never applies
 const mulDivRoundingIssue = {
@@ -107,7 +107,6 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
       knownIssues: [{ ...mulDivRoundingIssue, scenario: SMALL_NEGATIVE_IMPACT_CAP_SCENARIO }],
     },
     executionPrice: {
-      toleranceBps: 0.001,
       knownIssues: [
         {
           reason:

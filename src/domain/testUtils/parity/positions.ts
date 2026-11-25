@@ -69,7 +69,6 @@ export function getCollateralToken(market: MarketInfo, position: Position) {
 
 export const bpsOfSize = {
   bpsOf: ({ testCase }: ParityInput<ParityPosition>) => testCase.position.sizeInUsd,
-  toleranceBps: 0.001,
 };
 
 export const isProDiscountLarger = ({ testCase: { info } }: ParityInput<ParityPosition>) =>
