@@ -5,7 +5,6 @@ import {
   custom,
   http,
   numberToHex,
-  pad,
   PublicClient,
 } from "viem";
 
@@ -28,12 +27,7 @@ export const dataStoreAddress = getContract(chainId, "DataStore");
 const readerAddress = getContract(chainId, "SyntheticsReader");
 const readerAbi = [...getAbi(chainId, "SyntheticsReader"), ...abis.CustomErrors];
 
-export type DataStoreOverrides = {
-  uint?: [key: string, value: bigint][];
-  int?: [key: string, value: bigint][];
-  address?: [key: string, value: string][];
-  bool?: [key: string, value: boolean][];
-};
+export type DataStoreOverrides = { uint: [key: string, value: bigint][] };
 
 export type Scenario = { name: string; overrides: DataStoreOverrides };
 
@@ -49,15 +43,11 @@ export type ParityContext = {
 
 export const LIVE_STATE = "live state";
 
-// DataStore keeps each value type in its own mapping: uintValues at slot 0, intValues 1, addressValues 2, boolValues 3
-function getDataStoreStateOverride({ uint = [], int = [], address = [], bool = [] }: DataStoreOverrides) {
-  const toSlot = (key: string, mappingSlot: bigint) => hashData(["bytes32", "uint256"], [key, mappingSlot]);
-  const stateDiff = Object.fromEntries([
-    ...uint.map(([key, value]) => [toSlot(key, 0n), numberToHex(value, { size: 32 })]),
-    ...int.map(([key, value]) => [toSlot(key, 1n), numberToHex(value, { size: 32, signed: true })]),
-    ...address.map(([key, value]) => [toSlot(key, 2n), pad(value, { size: 32 })]),
-    ...bool.map(([key, value]) => [toSlot(key, 3n), numberToHex(value ? 1n : 0n, { size: 32 })]),
-  ]);
+// DataStore keeps uintValues in the mapping at slot 0
+function getDataStoreStateOverride({ uint }: DataStoreOverrides) {
+  const stateDiff = Object.fromEntries(
+    uint.map(([key, value]) => [hashData(["bytes32", "uint256"], [key, 0n]), numberToHex(value, { size: 32 })])
+  );
 
   return { [dataStoreAddress]: { stateDiff } };
 }
