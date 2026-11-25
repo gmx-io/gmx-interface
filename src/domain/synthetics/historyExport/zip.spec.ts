@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { strFromU8, unzipSync } from "fflate";
 import { describe, expect, it } from "vitest";
 

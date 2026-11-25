@@ -77,7 +77,11 @@ export default function DesignSystemPage() {
             <DesignSystemNav activeSlug={page.slug} />
           </div>
 
-          <div className="grow overflow-y-auto px-8 py-16 scrollbar-gutter-stable max-lg:px-16" onScroll={handleScroll}>
+          <div
+            className="grow overflow-y-auto px-8 py-16 scrollbar-gutter-stable max-lg:px-16"
+            onScroll={handleScroll}
+            data-page-scroller
+          >
             <ErrorBoundary id="Page" variant="page">
               <div className="mx-auto flex w-full max-w-[1512px] items-start gap-24 pb-64">
                 <div className="flex min-w-0 flex-1 flex-col gap-16">

@@ -37,6 +37,7 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getOrderKeys } from "sdk/utils/orders";
 import { PositionOrderInfo } from "sdk/utils/orders/types";
+import { getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import { DynamicLine } from "./DynamicLine";
 import type { DynamicChartLine } from "./types";
@@ -89,7 +90,7 @@ export function DynamicLines({
       const batchParams = {
         createOrderParams: [],
         updateOrderParams: [],
-        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
+        cancelOrderParams: getCancelOrderParams(order),
       };
 
       try {
@@ -99,7 +100,6 @@ export function DynamicLines({
           batchParams,
           globalExpressParams,
           requireValidations: false,
-          estimationMethod: "approximate",
           provider,
           isGmxAccount: srcChainId !== undefined,
           subaccount,

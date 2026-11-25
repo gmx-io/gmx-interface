@@ -160,7 +160,6 @@ export function useOrders(
 export function convertApiOrderToOrder({
   triggerPrice,
   acceptablePrice,
-  cancellationReceiver: _cancellationReceiver,
   srcChainId: _srcChainId,
   dataList,
   ...rest
@@ -233,7 +232,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         key,
         account: orderData.addresses.account,
         receiver: orderData.addresses.receiver,
-        // cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
+        cancellationReceiver: orderData.addresses.cancellationReceiver,
         callbackContract: orderData.addresses.callbackContract,
         uiFeeReceiver: orderData.addresses.uiFeeReceiver,
         marketAddress: orderData.addresses.market,
