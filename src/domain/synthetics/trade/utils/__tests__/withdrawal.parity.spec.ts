@@ -44,7 +44,7 @@ async function withdrawalCases(market: MarketInfo, ctx: ParityContext): Promise<
     }));
 }
 
-function getOurWithdrawalAmounts({ market, testCase }: WithdrawalInput) {
+function getAppWithdrawalAmounts({ market, testCase }: WithdrawalInput) {
   const { longTokenAmount, shortTokenAmount } = getWithdrawalAmounts({
     marketInfo: market,
     marketToken: testCase.marketToken,
@@ -71,7 +71,7 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: withdrawalCases,
   scenarios: [UI_FEE_SCENARIO],
-  ours: getOurWithdrawalAmounts,
+  ours: getAppWithdrawalAmounts,
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;

@@ -75,7 +75,7 @@ async function loadDepositCases(market: MarketInfo, ctx: ParityContext) {
   return marketToken ? depositCases(market, { marketToken, uiFeeFactor }) : [];
 }
 
-function getOurDepositAmounts({ market, testCase }: DepositInput) {
+function getAppDepositAmounts({ market, testCase }: DepositInput) {
   return getDepositAmounts({
     marketInfo: market,
     marketToken: testCase.marketToken,
@@ -92,13 +92,13 @@ function getOurDepositAmounts({ market, testCase }: DepositInput) {
   });
 }
 
-const hasPositiveImpact = (input: DepositInput) => getOurDepositAmounts(input).swapPriceImpactDeltaUsd > 0n;
+const hasPositiveImpact = (input: DepositInput) => getAppDepositAmounts(input).swapPriceImpactDeltaUsd > 0n;
 
 parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: loadDepositCases,
   scenarios: [UI_FEE_SCENARIO],
-  ours: (input) => ({ marketTokenAmount: getOurDepositAmounts(input).marketTokenAmount }),
+  ours: (input) => ({ marketTokenAmount: getAppDepositAmounts(input).marketTokenAmount }),
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;

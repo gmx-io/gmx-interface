@@ -9,14 +9,14 @@ type IncreaseCase = { label: string; sizeDeltaUsd: bigint; isLong: boolean };
 const getIndexPrice = (market: MarketInfo, isLong: boolean) =>
   getMarkPrice({ prices: market.indexToken.prices, isIncrease: true, isLong });
 
-function getOurIncrease(market: MarketInfo, { sizeDeltaUsd, isLong }: IncreaseCase) {
+function getAppIncrease(market: MarketInfo, { sizeDeltaUsd, isLong }: IncreaseCase) {
   const indexPrice = getIndexPrice(market, isLong);
 
   return getExecutionPriceForIncrease({ marketInfo: market, isLimit: false, isLong, indexPrice, sizeDeltaUsd });
 }
 
-const getOurImpactUsd = (market: MarketInfo, testCase: IncreaseCase) =>
-  getOurIncrease(market, testCase).acceptablePriceInfo.priceImpactDeltaUsd;
+const getAppImpactUsd = (market: MarketInfo, testCase: IncreaseCase) =>
+  getAppIncrease(market, testCase).acceptablePriceInfo.priceImpactDeltaUsd;
 
 // Shorts far over max open interest, as long as the impact stays well under the size so the contract does not revert
 function getLargeShortCases(market: MarketInfo): IncreaseCase[] {
@@ -27,7 +27,7 @@ function getLargeShortCases(market: MarketInfo): IncreaseCase[] {
       isLong: false,
     }))
     .filter((testCase) => {
-      const impactUsd = getOurImpactUsd(market, testCase);
+      const impactUsd = getAppImpactUsd(market, testCase);
 
       return testCase.sizeDeltaUsd > 0n && -impactUsd * 2n < testCase.sizeDeltaUsd;
     });
@@ -53,7 +53,7 @@ parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
   markets: (market) => !market.isDisabled && !market.isSpotOnly && market.poolValueMax > usd(100_000),
   cases: increaseCases,
   ours: ({ market, testCase }) => {
-    const { priceImpactDeltaUsd, acceptablePrice } = getOurIncrease(market, testCase).acceptablePriceInfo;
+    const { priceImpactDeltaUsd, acceptablePrice } = getAppIncrease(market, testCase).acceptablePriceInfo;
 
     return { priceImpactUsd: priceImpactDeltaUsd, executionPrice: acceptablePrice };
   },
@@ -81,7 +81,7 @@ parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
     },
   },
   requiredCases: [
-    { name: "a balance improving increase", when: (_, ours) => ours.priceImpactUsd > 0n },
+    { name: "a balance improving increase", when: (_, app) => app.priceImpactUsd > 0n },
     {
       name: "a short over max open interest",
       when: ({ market, testCase }) => !testCase.isLong && testCase.sizeDeltaUsd > market.maxOpenInterestShort,

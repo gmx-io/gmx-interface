@@ -43,7 +43,7 @@ const isPartialCloseWithNegativePendingImpact = (input: DecreaseInput) =>
 const getIndexPrice = (market: MarketInfo, isLong: boolean) =>
   getMarkPrice({ prices: market.indexToken.prices, isIncrease: false, isLong });
 
-function getOurDecrease({ market, testCase: { position, sizeDeltaUsd } }: DecreaseInput) {
+function getAppDecrease({ market, testCase: { position, sizeDeltaUsd } }: DecreaseInput) {
   const indexPrice = getIndexPrice(market, position.isLong);
   const sizeDeltaInTokens = getDecreasePositionSizeDeltaInTokens({ ...position, sizeDeltaUsd });
 
@@ -73,7 +73,7 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
   cases: decreaseCases,
   scenarios: [SMALL_NEGATIVE_IMPACT_CAP_SCENARIO],
   ours: (input) => {
-    const { acceptablePriceInfo, netPriceImpactValues } = getOurDecrease(input);
+    const { acceptablePriceInfo, netPriceImpactValues } = getAppDecrease(input);
 
     return {
       priceImpactUsd: acceptablePriceInfo.priceImpactDeltaUsd,
@@ -126,9 +126,9 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
     },
     {
       name: "a close where the negative impact cap binds",
-      when: (_, ours) => ours.priceImpactDiffUsd > 0n,
+      when: (_, app) => app.priceImpactDiffUsd > 0n,
       scenario: SMALL_NEGATIVE_IMPACT_CAP_SCENARIO,
     },
-    { name: "a balance improving close", when: (_, ours) => ours.balanceWasImproved },
+    { name: "a balance improving close", when: (_, app) => app.balanceWasImproved },
   ],
 });
