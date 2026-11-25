@@ -29,7 +29,8 @@ const readerAbi = [...getAbi(chainId, "SyntheticsReader"), ...abis.CustomErrors]
 
 export type DataStoreOverrides = { uint: [key: string, value: bigint][] };
 
-export type Scenario = { name: string; overrides: DataStoreOverrides };
+/** The overrides can load on demand, from the live state, when the context for the scenario is made */
+export type Scenario = { name: string; overrides: DataStoreOverrides | (() => Promise<DataStoreOverrides>) };
 
 export type ParityContext = {
   /** LIVE_STATE or the scenario name */
@@ -61,13 +62,13 @@ const isRetryableRpcError = (error: unknown) =>
   error instanceof BaseError && /layer stale|execution aborted/.test(error.details);
 
 // Every eth_call goes to one block, so the SDK's market reads and the Reader quotes see the same state
-function createPinnedClient(blockNumber: bigint, scenario: Scenario | undefined): PublicClient {
+function createPinnedClient(blockNumber: bigint, overrides: DataStoreOverrides | undefined): PublicClient {
   const upstream = createPublicClient({
     chain: getViemChain(chainId),
     transport: http(PARITY_RPC_URL, { retryCount: 5, retryDelay: 1000, timeout: 60_000 }),
   });
   const blockTag = numberToHex(blockNumber);
-  const stateOverride = scenario && getDataStoreStateOverride(scenario.overrides);
+  const stateOverride = overrides && getDataStoreStateOverride(overrides);
   const toCallParams = (params: unknown[]) =>
     stateOverride ? [params[0], blockTag, stateOverride] : [params[0], blockTag, ...params.slice(2)];
 
@@ -123,7 +124,8 @@ export function loadParityContext(scenario?: Scenario): Promise<ParityContext> {
 
 async function createParityContext(scenario: Scenario | undefined): Promise<ParityContext> {
   const blockNumber = await loadBlockNumber();
-  const client = createPinnedClient(blockNumber, scenario);
+  const overrides = typeof scenario?.overrides === "function" ? await scenario.overrides() : scenario?.overrides;
+  const client = createPinnedClient(blockNumber, overrides);
   const { timestamp: blockTimestamp } = await client.getBlock({ blockNumber });
   const sdk = new GmxSdk({ ...arbitrumSdkConfig, account: undefined, rpcUrl: PARITY_RPC_URL, publicClient: client });
 
