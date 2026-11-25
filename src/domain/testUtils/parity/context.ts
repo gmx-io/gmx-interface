@@ -20,7 +20,11 @@ import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
 // eslint-disable-next-line no-restricted-globals -- test-only helper, never bundled into the client
-const { PARITY_RPC_URL = "https://arb1.arbitrum.io/rpc", PARITY_BLOCK } = process.env;
+const { PARITY_RPC_URL = "", PARITY_BLOCK } = process.env;
+
+if (!PARITY_RPC_URL) {
+  throw new Error("PARITY_RPC_URL is required: an Alchemy Arbitrum RPC URL");
+}
 
 export const chainId = ARBITRUM;
 export const dataStoreAddress = getContract(chainId, "DataStore");
