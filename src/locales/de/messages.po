@@ -1225,6 +1225,10 @@ msgstr "Market Decrease abgelaufen"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "Preise sind volatil. <0>Erlaubte Slippage erhöhen</0>"
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "{chartHeight} pixels"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -9974,6 +9978,10 @@ msgstr "Chains"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
 msgstr "Open Interest Reservefaktor Shorts"
+
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Resize chart"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { type ReactNode, Suspense, lazy, useState } from "react";
+import { type ReactNode, Suspense, lazy, useRef, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DOCS_LINKS } from "config/links";
@@ -21,6 +21,7 @@ import { NetRateChart } from "components/NetRateChart/NetRateChart";
 import Tabs from "components/Tabs/Tabs";
 import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
+import { ChartResizeHandle } from "./ChartResizeHandle";
 import { TVChart } from "./TVChart";
 
 import "./TVChart.scss";
@@ -59,9 +60,12 @@ const TABS_OPTIONS = TABS.map((tab) => ({
 
 type Props = {
   onOpenChartTPSLModal?: (params: OpenChartTPSLModalParams) => void;
+  /** Shows a drag handle under the chart that changes its height (desktop only). */
+  isResizable?: boolean;
 };
 
-export function Chart({ onOpenChartTPSLModal }: Props) {
+export function Chart({ onOpenChartTPSLModal, isResizable = false }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useLocalStorageSerializeKey("chart-tab", "PRICE");
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const activeTab = tab || "PRICE";
@@ -97,7 +101,7 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
     priceTabContent;
 
   return (
-    <div className="ExchangeChart tv Synthetics-chart flex flex-col">
+    <div ref={containerRef} className="ExchangeChart tv Synthetics-chart flex flex-col">
       <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900">
         {isSwap ? (
           activeTab === "MARKET_GRAPH" ? (
@@ -113,6 +117,8 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
           </>
         )}
       </div>
+
+      {isResizable && <ChartResizeHandle containerRef={containerRef} />}
     </div>
   );
 }
