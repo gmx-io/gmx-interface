@@ -5,15 +5,18 @@ import { parseContractPositionInfo } from "domain/synthetics/positions/utils";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {
+  cumulativeBorrowingFactorKey,
   MIN_COLLATERAL_USD_KEY,
   POSITION_LIST_KEY,
   proDiscountFactorKey,
   proTraderTierKey,
 } from "sdk/configs/dataStore";
+import { hashData, hashString } from "sdk/utils/hash";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { PRECISION } from "sdk/utils/numbers";
 import type { Position } from "sdk/utils/positions/types";
+import { getContractPositionDynamicFees } from "sdk/utils/positions/utils";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens/utils";
 
@@ -34,6 +37,21 @@ const { PARITY_MAX_POSITIONS = "300" } = process.env;
 // Token-unit rounding of fees on dust positions reads as whole bps of their size
 const MIN_POSITION_SIZE_USD = usd(100);
 const KEYS_PAGE = 1000n;
+
+const FUNDING_FEE_AMOUNT_PER_SIZE_KEY = hashString("FUNDING_FEE_AMOUNT_PER_SIZE");
+const CLAIMABLE_FUNDING_AMOUNT_PER_SIZE_KEY = hashString("CLAIMABLE_FUNDING_AMOUNT_PER_SIZE");
+
+const fundingFeeAmountPerSizeKey = (market: string, collateralToken: string, isLong: boolean) =>
+  hashData(
+    ["bytes32", "address", "address", "bool"],
+    [FUNDING_FEE_AMOUNT_PER_SIZE_KEY, market, collateralToken, isLong]
+  );
+
+const claimableFundingAmountPerSizeKey = (market: string, collateralToken: string, isLong: boolean) =>
+  hashData(
+    ["bytes32", "address", "address", "bool"],
+    [CLAIMABLE_FUNDING_AMOUNT_PER_SIZE_KEY, market, collateralToken, isLong]
+  );
 
 export const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
@@ -56,6 +74,48 @@ export const bpsOfSize = {
 
 export const hasProDiscount = ({ testCase: { info } }: ParityInput<ParityPosition>) =>
   info.fees.pro.traderDiscountFactor > info.fees.referral.traderDiscountFactor;
+
+// The stored market fee state getContractPositionDynamicFees takes: the raw DataStore values
+async function readMarketFeeState(ctx: ParityContext, market: MarketInfo) {
+  const { marketTokenAddress: m, longTokenAddress: long, shortTokenAddress: short } = market;
+  const keys = {
+    cumulativeBorrowingFactorLong: cumulativeBorrowingFactorKey(m, true),
+    cumulativeBorrowingFactorShort: cumulativeBorrowingFactorKey(m, false),
+    fundingFeeAmountPerSizeLongLong: fundingFeeAmountPerSizeKey(m, long, true),
+    fundingFeeAmountPerSizeLongShort: fundingFeeAmountPerSizeKey(m, short, true),
+    fundingFeeAmountPerSizeShortLong: fundingFeeAmountPerSizeKey(m, long, false),
+    fundingFeeAmountPerSizeShortShort: fundingFeeAmountPerSizeKey(m, short, false),
+    claimableFundingAmountPerSizeLongLong: claimableFundingAmountPerSizeKey(m, long, true),
+    claimableFundingAmountPerSizeLongShort: claimableFundingAmountPerSizeKey(m, short, true),
+    claimableFundingAmountPerSizeShortLong: claimableFundingAmountPerSizeKey(m, long, false),
+    claimableFundingAmountPerSizeShortShort: claimableFundingAmountPerSizeKey(m, short, false),
+  };
+  const values = await Promise.all(Object.values(keys).map((key) => readDataStoreUint(ctx, key)));
+  const entries = Object.keys(keys).map((name, i): [string, bigint] => [name, values[i]]);
+
+  return Object.fromEntries(entries) as Record<keyof typeof keys, bigint>;
+}
+
+const marketFeeStateRequests = new Map<string, ReturnType<typeof readMarketFeeState>>();
+
+/** getContractPositionDynamicFees over the stored market fee state, the state Reader.isPositionLiquidatable charges */
+export async function loadStoredStateFees(ctx: ParityContext, market: MarketInfo, p: ParityPosition) {
+  const requestKey = `${ctx.scenario} ${market.marketTokenAddress}`;
+
+  if (!marketFeeStateRequests.has(requestKey)) {
+    marketFeeStateRequests.set(requestKey, readMarketFeeState(ctx, market));
+  }
+
+  const marketFeeState = await marketFeeStateRequests.get(requestKey)!;
+  const { collateralTokenAddress, isLong } = p.position;
+
+  return getContractPositionDynamicFees({
+    position: { ...p.info.position.numbers, collateralTokenAddress, isLong },
+    marketInfo: market,
+    marketFeeState,
+    referralInfo: p.referralInfo,
+  });
+}
 
 async function readPositionKeys(ctx: ParityContext) {
   const count = await ctx.client.readContract({
