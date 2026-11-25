@@ -195,7 +195,6 @@ parity("withdrawal swap path (selectPoolsDetailsWithdrawalFindSwapPath) <-> a si
     swapAmountOut: {
       toleranceBps: 0.001,
       knownIssues: [
-        { reason: "we price the swap path after a withdrawal as a withdrawal, 2.2.1 prices it as a swap" },
         {
           reason:
             "getWithdrawalAmounts gives the swap its input in USD at the max price, getSwapStats turns it back into tokens at the min price: the swap input is too large by the token's spread",
