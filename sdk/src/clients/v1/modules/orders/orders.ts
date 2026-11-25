@@ -9,6 +9,7 @@ import { getByKey } from "utils/objects";
 import { getOrderInfo, isOrderForPositionByData, isVisibleOrder } from "utils/orders";
 import { OrdersData, OrdersInfoData, OrderType, PositionOrderInfo } from "utils/orders/types";
 import { SidecarLimitOrderEntryValid, SidecarSlTpOrderEntryValid } from "utils/sidecarOrders/types";
+import { getIsEquivalentTokens } from "utils/tokens";
 import { TokenData, TokensData } from "utils/tokens/types";
 import { DecreasePositionAmounts, IncreasePositionAmounts, SwapAmounts } from "utils/trade/types";
 
@@ -208,6 +209,10 @@ export class Orders extends Module {
         : `long ${marketInfo.longToken.symbol} and short ${marketInfo.shortToken.symbol}`;
 
       throw new Error(`Invalid collateral token. Only ${availableTokens} tokens are available.`);
+    }
+
+    if (!getIsEquivalentTokens(fromToken, collateralToken) && increaseAmounts.swapStrategy.type === "noSwap") {
+      throw new Error("No swap path available for the requested collateral token");
     }
 
     const { autoCancelOrdersLimit } = await this.sdk.positions.getMaxAutoCancelOrders({

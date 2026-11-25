@@ -12,6 +12,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
 import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
+import { useSilentEmbeddedWalletOrderSigning } from "domain/synthetics/express/useSilentEmbeddedWalletOrderSigning";
 import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
@@ -53,6 +54,7 @@ function EvmGlobalEffects() {
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
   useSmartWalletSubaccountWarning();
+  useSilentEmbeddedWalletOrderSigning();
 
   return <SupportChatEvmAttributes />;
 }

@@ -55,6 +55,8 @@ export type Order = {
   marketAddress: string;
   decreasePositionSwapType: DecreasePositionSwapType;
   receiver: string;
+  // undefined when the data source doesn't provide it
+  cancellationReceiver?: string;
   swapPath: string[];
   contractAcceptablePrice: bigint;
   contractTriggerPrice: bigint;
@@ -74,6 +76,7 @@ export type Order = {
   // snapshotted at order creation since v2.2c (0n for pre-upgrade orders); undefined when the data source doesn't provide it
   uiFeeFactor: bigint | undefined;
   validFromTime: bigint;
+  srcChainId: bigint;
   title?: string;
 };
 
@@ -164,4 +167,31 @@ export type ApiOrderInfo = {
   isFrozen: boolean;
   autoCancel: boolean;
   dataList: string[];
+} & Partial<SolanaApiOrderFields>;
+
+export type SolanaOrderActionState = "pending" | "completed" | "cancelled";
+
+export type SolanaOrderCallback = {
+  version: number;
+  program: string;
+  sharedData: string;
+  partitionedData: string;
+};
+
+export type SolanaOrderEscrowTokens = {
+  initialCollateralToken: string | undefined;
+  finalOutputToken: string | undefined;
+  longToken: string | undefined;
+  shortToken: string | undefined;
+};
+
+export type SolanaApiOrderFields = {
+  orderAccount: string;
+  actionState: SolanaOrderActionState;
+  positionAccount: string | undefined;
+  rentReceiver: string;
+  // sent only while one of the wallet's orders holds a GT reward, the one case close_order_v2 needs it
+  referrer: string | undefined;
+  callback: SolanaOrderCallback | undefined;
+  escrowTokens: SolanaOrderEscrowTokens;
 };

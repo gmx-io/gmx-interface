@@ -542,6 +542,30 @@ const MARKETS_UI_CONFIGS: Record<NetworkId, Record<string, MarketUiConfig>> = {
     "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
       enabled: true,
     },
+    // LINK/USD [USDG-USDG]
+    "0x71Dd0524F8e0aab8FE59E6B3888145A8ac117Aa3": {
+      enabled: true,
+    },
+    // PEPE/USD [USDG-USDG]
+    "0x1e5bf5390a75a6ab085bd4e7E63A00074C43B858": {
+      enabled: true,
+    },
+    // DOGE/USD [USDG-USDG]
+    "0x2bDCC67868abA103406dCeb4F853B6BF2227AB14": {
+      enabled: true,
+    },
+    // BNB/USD [USDG-USDG]
+    "0x55556D4734DFA693F554985818dBcA07a0225986": {
+      enabled: true,
+    },
+    // SUI/USD [USDG-USDG]
+    "0x460E90d682920E0Fe500aa180a45326d2089f18f": {
+      enabled: true,
+    },
+    // XMR/USD [USDG-USDG]
+    "0x51C4C72263D705Ab2F78531Bd3c8a43D362CCB53": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

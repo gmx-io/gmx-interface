@@ -178,8 +178,8 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders" | "wsPrices";
-    reason: "stale" | "error" | "initial";
+    domain: "markets" | "positions" | "orders" | "wsPrices" | "restPrices";
+    reason: "stale" | "error" | "initial" | "timeout" | "empty" | "partial";
     chainId: number;
   };
 };
@@ -319,6 +319,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
+    progressUnit?: "slot";
   } & Partial<EndpointsPairRepeats>;
 };
 
@@ -330,11 +331,23 @@ export type RpcTrackerEndpointTiming = {
   };
 };
 
+export type RpcTrackerEndpointHealthEvent = {
+  event: "rpcTracker.endpoint.health";
+  isError: boolean;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    isHealthy: boolean;
+  };
+};
+
 export type RpcTrackerEndpointBlockGapTiming = {
   event: "rpcTracker.endpoint.blockGap";
   data: {
     endpoint: string;
     chainId: number;
+    progressUnit?: "slot";
   };
 };
 
@@ -410,6 +423,7 @@ export type ExpressOrderMetricData = {
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
+  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;

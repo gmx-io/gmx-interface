@@ -1,29 +1,17 @@
 import { AES } from "crypto-js";
-import { Signer } from "ethers";
-import { keccak256, type Hash } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 
-import { getSignatureKind } from "lib/wallets/signatureDiagnostics";
-import { signMessage } from "lib/wallets/signing";
-import { SUBACCOUNT_MESSAGE } from "sdk/configs/express";
+import type { SubaccountSerializedConfig } from "sdk/utils/subaccount";
 
-export const EMPTY_SUBACCOUNT_SIGNATURE_ERROR = "Wallet returned an empty signature";
+import { SUBACCOUNT_CONFIG_VERSION } from "./subaccountConfigStorage";
 
-export async function generateSubaccount(signer: Signer, verificationChainId: number) {
-  const signature = await signMessage({ signer, message: SUBACCOUNT_MESSAGE, verificationChainId });
-
-  if (getSignatureKind(signature) === "malformed") {
-    throw new Error(EMPTY_SUBACCOUNT_SIGNATURE_ERROR);
-  }
-
-  const pk = keccak256(signature as Hash);
-  const subaccount = privateKeyToAccount(pk);
-
-  const encrypted = AES.encrypt(pk, await signer.getAddress());
+export function generateSubaccount(account: string): SubaccountSerializedConfig {
+  const privateKey = generatePrivateKey();
 
   return {
-    privateKey: encrypted.toString(),
-    address: subaccount.address,
+    version: SUBACCOUNT_CONFIG_VERSION,
+    address: privateKeyToAccount(privateKey).address,
+    privateKey: AES.encrypt(privateKey, account).toString(),
     isNew: true,
   };
 }

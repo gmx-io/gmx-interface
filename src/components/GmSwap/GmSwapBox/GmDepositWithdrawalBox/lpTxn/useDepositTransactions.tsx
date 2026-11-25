@@ -56,6 +56,7 @@ import { createMultichainDepositTxn } from "domain/synthetics/markets/createMult
 import { createMultichainGlvDepositTxn } from "domain/synthetics/markets/createMultichainGlvDepositTxn";
 import { createSourceChainDepositTxn } from "domain/synthetics/markets/createSourceChainDepositTxn";
 import { createSourceChainGlvDepositTxn } from "domain/synthetics/markets/createSourceChainGlvDepositTxn";
+import { getIsLpDepositMinOutputPositive, getLpDepositSlippageAmount } from "domain/synthetics/markets/lpMinOutput";
 import { TechnicalGmFees } from "domain/synthetics/markets/technicalFees/technical-fees-types";
 import { getTransitRouteProgressForMarket } from "domain/synthetics/paxosTransit/transitRouteProgress";
 import { ERC20Address, TokenBalanceType } from "domain/tokens";
@@ -80,7 +81,8 @@ import { useMultichainDepositExpressTxnParams } from "./useMultichainDepositExpr
 export const useDepositTransactions = ({
   shouldDisableValidation,
   technicalFees,
-}: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees">): {
+  onSent,
+}: Pick<UseLpTransactionProps, "shouldDisableValidation" | "technicalFees" | "onSent">): {
   onCreateDeposit: () => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
@@ -283,7 +285,16 @@ export const useDepositTransactions = ({
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (!signer || !rawParams) {
+      if (
+        !signer ||
+        !rawParams ||
+        !("minMarketTokens" in rawParams) ||
+        !getIsLpDepositMinOutputPositive({
+          params: rawParams,
+          gmLegAmount: marketTokenAmount,
+          slippage: getLpDepositSlippageAmount(paySource),
+        })
+      ) {
         helperToast.error(t`Order submission failed`, {
           tradingErrorInfo: {
             actionName: "GM Deposit",
@@ -463,6 +474,7 @@ export const useDepositTransactions = ({
 
       return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
@@ -493,6 +505,7 @@ export const useDepositTransactions = ({
       blockTimestampData,
       shouldDisableValidation,
       setPendingTxns,
+      onSent,
     ]
   );
 
@@ -506,7 +519,16 @@ export const useDepositTransactions = ({
 
       sendOrderSubmittedMetric(metricData.metricId);
 
-      if (!signer || !rawParams) {
+      if (
+        !signer ||
+        !rawParams ||
+        !("minGlvTokens" in rawParams) ||
+        !getIsLpDepositMinOutputPositive({
+          params: rawParams,
+          gmLegAmount: marketTokenAmount,
+          slippage: getLpDepositSlippageAmount(paySource),
+        })
+      ) {
         helperToast.error(t`Order submission failed`, {
           tradingErrorInfo: {
             actionName: "GM Deposit",
@@ -714,6 +736,7 @@ export const useDepositTransactions = ({
 
       return await promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch(makeUserAnalyticsOrderFailResultHandler(chainId, metricData.metricId));
     },
@@ -748,6 +771,7 @@ export const useDepositTransactions = ({
       shouldDisableValidation,
       blockTimestampData,
       setPendingTxns,
+      onSent,
     ]
   );
 
