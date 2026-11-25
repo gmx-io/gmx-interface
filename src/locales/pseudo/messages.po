@@ -9285,6 +9285,8 @@ msgstr ""
 msgid "FX"
 msgstr "[!! FX !!]"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -9693,6 +9695,10 @@ msgstr ""
 
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
+msgstr ""
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Buys, sells and shifts through this pool are unavailable until the market reopens."
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx

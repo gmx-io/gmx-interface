@@ -7,6 +7,7 @@ import { Mode, Operation } from "domain/synthetics/markets/types";
 import type { RawCreateGlvDepositParams } from "domain/synthetics/markets/types";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
+import { selectPoolsDetailsIsMarketClosed } from "../poolsDetailsDerivedSelectors";
 import { selectPoolsDetailsParams } from "../selectPoolsDetailsParams";
 
 // the swap quote needs full markets and tokens data, a GM-paid GLV buy has no swap
@@ -15,18 +16,24 @@ vi.mock("../selectDepositWithdrawalAmounts", () => ({ selectDepositWithdrawalAmo
 const GLV_WETH_USDC = "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9";
 const GM_ETH_USD = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
 const GM_DOGE_USD = "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4";
+const GM_GOLD_USD = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
 const USDC = getTokenBySymbol(ARBITRUM, "USDC").address;
 
 function makeState({
   firstTokenAddress,
   selectedMarketAddressForGlv,
+  operation = Operation.Deposit,
+  closedMarketAddress,
 }: {
   firstTokenAddress: string;
   selectedMarketAddressForGlv: string;
+  operation?: Operation;
+  closedMarketAddress?: string;
 }): SyntheticsState {
   return {
     globals: {
       chainId: ARBITRUM,
+      closedMarkets: closedMarketAddress ? { [closedMarketAddress]: true } : {},
       srcChainId: undefined,
       account: "0x1111111111111111111111111111111111111111",
       marketsInfo: { marketsInfoData: {} },
@@ -38,14 +45,14 @@ function makeState({
             longTokenAddress: getTokenBySymbol(ARBITRUM, "WETH").address,
             shortTokenAddress: USDC,
             glvToken: { address: GLV_WETH_USDC, decimals: 18, totalSupply: 10n ** 24n },
-            markets: [{ address: GM_ETH_USD }, { address: GM_DOGE_USD }],
+            markets: [{ address: GM_ETH_USD }, { address: GM_DOGE_USD }, { address: GM_GOLD_USD }],
           },
         },
       },
     },
     poolsDetails: {
       glvOrMarketAddress: GLV_WETH_USDC,
-      operation: Operation.Deposit,
+      operation,
       mode: Mode.Single,
       paySource: "gmxAccount",
       firstTokenAddress,
@@ -77,4 +84,26 @@ describe("selectPoolsDetailsParams", () => {
     expect(params.addresses.market).toBe(GM_DOGE_USD);
     expect(params.addresses.initialShortToken).toBe(USDC);
   });
+});
+
+describe("selectPoolsDetailsIsMarketClosed", () => {
+  it.each([
+    [Operation.Deposit, GM_GOLD_USD, GM_ETH_USD, true],
+    [Operation.Deposit, GM_ETH_USD, GM_GOLD_USD, false],
+    [Operation.Deposit, USDC, GM_GOLD_USD, true],
+    [Operation.Deposit, USDC, GM_ETH_USD, false],
+    [Operation.Withdrawal, GM_GOLD_USD, GM_ETH_USD, false],
+    [Operation.Withdrawal, GM_ETH_USD, GM_GOLD_USD, true],
+  ] as const)(
+    "checks the execution market for %s with first token %s and selected GM %s",
+    (operation, firstTokenAddress, selectedMarketAddressForGlv, expected) => {
+      const state = makeState({
+        operation,
+        firstTokenAddress,
+        selectedMarketAddressForGlv,
+        closedMarketAddress: GM_GOLD_USD,
+      });
+      expect(selectPoolsDetailsIsMarketClosed(state)).toBe(expected);
+    }
+  );
 });

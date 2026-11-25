@@ -2,10 +2,15 @@ import { t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
-import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccount,
+  selectChainId,
+  selectClosedMarkets,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
@@ -54,6 +59,10 @@ export function useShiftSubmitState({
 }) {
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed =
+    getIsMarketClosed(closedMarkets, selectedMarketInfo?.marketTokenAddress) ||
+    getIsMarketClosed(closedMarkets, toMarketInfo?.marketTokenAddress);
   const isWalletInitializing = useIsWalletInitializing();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
@@ -90,6 +99,10 @@ export function useShiftSubmitState({
         text: t`Submitting...`,
         disabled: true,
       };
+    }
+
+    if (isMarketClosed) {
+      return { text: t`Market closed`, disabled: true };
     }
 
     if (multipleWalletExtensionsChainError.buttonErrorMessage) {
@@ -200,6 +213,7 @@ export function useShiftSubmitState({
     };
   }, [
     isSubmitting,
+    isMarketClosed,
     isAllowanceLoading,
     account,
     isWalletInitializing,

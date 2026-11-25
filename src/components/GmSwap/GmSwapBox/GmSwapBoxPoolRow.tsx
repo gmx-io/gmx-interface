@@ -9,6 +9,7 @@ import { TokensData } from "domain/synthetics/tokens";
 
 import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import { ExchangeInfo } from "components/GmSwap/GmSwapBox/ExchangeInfo";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { GmPoolsSelectorForGlvMarket } from "components/MarketSelector/GmPoolsSelectorForGlvMarket";
 import { PoolSelector } from "components/MarketSelector/PoolSelector";
 import { useDepositableGlvGmMarketAddresses } from "components/MarketStats/hooks/useMarketGlvGmMarketsCompositions";
@@ -18,6 +19,7 @@ export function GmSwapBoxPoolRow({
   marketAddress,
   marketTokensData,
   isDeposit,
+  isMarketClosed,
   glvInfo,
   selectedMarketForGlv,
   disablePoolSelector,
@@ -27,6 +29,7 @@ export function GmSwapBoxPoolRow({
   marketAddress: string | undefined;
   marketTokensData: TokensData | undefined;
   isDeposit: boolean;
+  isMarketClosed: boolean;
   glvInfo: GlvInfo | undefined;
   selectedMarketForGlv?: string;
   disablePoolSelector?: boolean;
@@ -54,7 +57,12 @@ export function GmSwapBoxPoolRow({
     <ExchangeInfo.Group>
       <ExchangeInfoRow
         className="SwapBox-info-row"
-        label={t`Pool`}
+        label={
+          <span className="inline-flex items-center gap-6">
+            {t`Pool`}
+            {isMarketClosed && <MarketClosedBadge isPool />}
+          </span>
+        }
         value={
           glvInfo ? (
             <GmPoolsSelectorForGlvMarket

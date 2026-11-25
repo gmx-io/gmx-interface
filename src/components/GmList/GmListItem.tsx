@@ -12,6 +12,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectAccountWhitelistsResult,
   selectChainId,
+  selectClosedMarkets,
   selectGlvAndMarketsInfoData,
   selectMultichainMarketTokensBalancesIsLoading,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -30,7 +31,7 @@ import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useDaysConsideredInMarketsApr } from "domain/synthetics/markets/useDaysConsideredInMarketsApr";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshot, PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
-import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
+import { getIsMarketClosed, getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd, getTokenData } from "domain/synthetics/tokens";
 import { useUsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/useUsdgLaunchBoost";
 import { getDirectDepositAccess } from "domain/synthetics/whitelists/utils";
@@ -46,6 +47,7 @@ import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
 import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { TableTdActionable, TableTrActionable } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -100,6 +102,7 @@ export function GmListItem({
   isEstimated365dFeesUnavailable?: boolean;
 }) {
   const chainId = useSelector(selectChainId);
+  const isMarketClosed = useSelector((state) => getIsMarketClosed(selectClosedMarkets(state), token.address));
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
   const daysConsidered = useDaysConsideredInMarketsApr();
@@ -192,6 +195,7 @@ export function GmListItem({
                     ? getGlvDisplayName(marketOrGlv)
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
+                {isMarketClosed && <MarketClosedBadge isPool />}
                 {showRecentlyListedBadge && <RecentlyListedBadge />}
                 {isUsdgGlv && <LaunchBoostBadge />}
                 {isWhitelistOnly && <WhitelistOnlyBadge isGlv={isGlv} isSpotOnly={marketOrGlv.isSpotOnly} />}
@@ -335,6 +339,7 @@ export function GmListItem({
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
 
+              {isMarketClosed && <MarketClosedBadge isPool className="ml-6" />}
               {isUsdgGlv && <LaunchBoostBadge className="ml-6" />}
               {isWhitelistOnly && (
                 <WhitelistOnlyBadge className="ml-6" isGlv={isGlv} isSpotOnly={marketOrGlv?.isSpotOnly} />

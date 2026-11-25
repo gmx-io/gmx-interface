@@ -33,6 +33,7 @@ import {
   selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsIsDirectDepositBlocked,
+  selectPoolsDetailsIsMarketClosed,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
@@ -125,7 +126,7 @@ import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
 import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmNetworkFeeDetails } from "./useGmNetworkFeeDetails";
-import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
+import { type SubmitButtonState, useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { usePaxosTransitState } from "./usePaxosTransitState";
 import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
@@ -162,6 +163,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
+  const isMarketClosed = useSelector(selectPoolsDetailsIsMarketClosed);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
@@ -295,7 +297,13 @@ export function GmSwapBoxDepositWithdrawal() {
     glvAndMarketsInfoData,
   });
 
-  const submitState = transitState.submitState ?? gmSwapSubmitState;
+  const submitState = useMemo<SubmitButtonState>(
+    () =>
+      isMarketClosed && !transitState.isWithdrawalUsdgPendingConversion
+        ? { text: t`Market closed`, disabled: true }
+        : transitState.submitState ?? gmSwapSubmitState,
+    [gmSwapSubmitState, isMarketClosed, transitState.isWithdrawalUsdgPendingConversion, transitState.submitState]
+  );
 
   const transitUsdgStepUsd =
     transitState.usdgStepAmount !== undefined && transitState.usdgToken
@@ -914,6 +922,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
             <div className="flex flex-col gap-14">
               <GmSwapBoxPoolRow
+                isMarketClosed={isMarketClosed}
                 indexName={indexName}
                 marketAddress={selectedGlvOrMarketAddress}
                 marketTokensData={marketTokensData}

@@ -510,6 +510,7 @@ export function usePaxosTransitState({
 
   return {
     submitState,
+    isWithdrawalUsdgPendingConversion,
     isTransitRoute,
     shouldShowRouteSelector,
     isRouteSelectable,

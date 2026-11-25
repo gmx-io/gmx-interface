@@ -6,12 +6,13 @@ import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "component
 
 type Props = {
   poolName?: string;
+  isPool?: boolean;
   label?: "closed" | "marketClosed";
   isTruncatable?: boolean;
   className?: string;
 };
 
-export function MarketClosedBadge({ poolName, label = "closed", isTruncatable = false, className }: Props) {
+export function MarketClosedBadge({ poolName, isPool, label = "closed", isTruncatable = false, className }: Props) {
   return (
     <StandardTooltip
       className={cx(isTruncatable ? "min-w-0 max-w-full" : "shrink-0", className)}
@@ -28,14 +29,22 @@ export function MarketClosedBadge({ poolName, label = "closed", isTruncatable = 
           <TooltipTitle>
             <Trans>Market closed</Trans>
           </TooltipTitle>
-          <TooltipText>
-            <Trans>
-              Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens.
-            </Trans>
-          </TooltipText>
-          <TooltipText>
-            <Trans>Market orders, TWAP, Close and Edit margin are unavailable until then.</Trans>
-          </TooltipText>
+          {isPool ? (
+            <TooltipText>
+              <Trans>Buys, sells and shifts through this pool are unavailable until the market reopens.</Trans>
+            </TooltipText>
+          ) : (
+            <>
+              <TooltipText>
+                <Trans>
+                  Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens.
+                </Trans>
+              </TooltipText>
+              <TooltipText>
+                <Trans>Market orders, TWAP, Close and Edit margin are unavailable until then.</Trans>
+              </TooltipText>
+            </>
+          )}
           {poolName && <TooltipRow label={t`Pool`} value={poolName} />}
         </TooltipContent>
       }
