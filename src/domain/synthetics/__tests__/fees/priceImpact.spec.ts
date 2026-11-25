@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 

@@ -16,6 +16,8 @@ import {
   CancelOrderTxnParams,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
+  getCancelOrderParams,
+  getOrderPayoutAddresses,
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
 import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
@@ -353,11 +355,12 @@ export function buildTpSlBatchPayloads(p: {
             decreasePositionSwapType: order.decreasePositionSwapType,
             executionFeeTopUp: bigMath.max(0n, (entry.executionFeeAmount ?? 0n) - order.executionFee),
             executionGasLimit: entry.executionGasLimit,
+            ...getOrderPayoutAddresses(order),
           })
         );
         createEntries.push({ ...entry, amounts: undefined });
       } else {
-        cancelOrderParams.push({ orderKey: order.key });
+        cancelOrderParams.push(...getCancelOrderParams(order));
         createEntries.push(entry);
       }
     } else {

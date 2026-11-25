@@ -79,7 +79,6 @@ export function useEstimateOrdersActionExpressParams() {
               batchParams,
               globalExpressParams: nextGlobalExpressParams,
               requireValidations: false,
-              estimationMethod: "approximate",
               provider,
               isGmxAccount,
               subaccount: calcSelector(

@@ -9,9 +9,8 @@ import {
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getOrderKeys } from "sdk/utils/orders";
 import type { OrderInfo } from "sdk/utils/orders/types";
-import type { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
+import { type BatchOrderTxnParams, getCancelOrderParams } from "sdk/utils/orderTransactions";
 
 import { sendBatchOrderTxn } from "./sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "./useOrderTxnCallbacks";
@@ -32,7 +31,7 @@ export function useSendCancelOrdersTxn() {
       const batchParams: BatchOrderTxnParams = {
         createOrderParams: [],
         updateOrderParams: [],
-        cancelOrderParams: orders.flatMap(getOrderKeys).map((orderKey) => ({ orderKey })),
+        cancelOrderParams: orders.flatMap(getCancelOrderParams),
       };
 
       const { isGmxAccount, expressParams, unavailableGasPaymentToken } = await estimateOrdersActionExpressParams({

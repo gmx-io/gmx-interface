@@ -128,7 +128,7 @@ import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { OrderType } from "sdk/utils/orders/types";
-import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, buildUpdateOrderPayload, getOrderPayoutAddresses } from "sdk/utils/orderTransactions";
 import { getIsMaxLeverageMarginReason } from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -484,6 +484,7 @@ export function OrderEditor(p: Props) {
             decreasePositionSwapType: p.order.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
+            ...getOrderPayoutAddresses(p.order),
           }),
         ],
         cancelOrderParams: [],
@@ -520,6 +521,7 @@ export function OrderEditor(p: Props) {
             decreasePositionSwapType: positionOrder.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
+            ...getOrderPayoutAddresses(p.order),
           }),
         ],
         cancelOrderParams: [],

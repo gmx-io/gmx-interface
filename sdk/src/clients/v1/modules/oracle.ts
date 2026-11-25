@@ -5,12 +5,16 @@ import { buildUrl } from "utils/buildUrl";
 import { MarketSdkConfig } from "utils/markets/types";
 
 export type TickersResponse = {
+  /** Contract price format: USD * 10^(30 - token decimals) */
   minPrice: string;
+  /** Contract price format: USD * 10^(30 - token decimals) */
   maxPrice: string;
-  oracleDecimals: number;
   tokenSymbol: string;
   tokenAddress: string;
+  /** Update time in milliseconds */
   updatedAt: number;
+  /** Price time in seconds */
+  timestamp: number;
 }[];
 
 type RawTokenResponse = {
