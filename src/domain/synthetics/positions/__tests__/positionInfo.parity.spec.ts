@@ -4,14 +4,11 @@ import {
   isProDiscountLarger,
   loadMinCollateralUsd,
   loadPositions,
-  loadProTierScenario,
+  PRO_TIER_SCENARIO,
 } from "domain/testUtils/parity/positions";
 import { TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
 import { getPositionInfo } from "sdk/utils/positions/utils";
 import { convertToUsd } from "sdk/utils/tokens/utils";
-
-// eslint-disable-next-line es-x/no-top-level-await -- test-only file, run by vitest in node
-const PRO_TIER_SCENARIO = await loadProTierScenario();
 
 const knownIssues = [
   {

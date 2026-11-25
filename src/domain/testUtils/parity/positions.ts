@@ -268,23 +268,14 @@ export function loadMinCollateralUsd(ctx: ParityContext): Promise<bigint> {
 const PRO_TIER = 1n;
 const PRO_DISCOUNT_FACTOR = PRECISION / 2n;
 
-let proTierScenario: Promise<Scenario> | undefined;
-
 /** Every sampled account gets a pro tier with a 50% closing fee discount */
-export function loadProTierScenario(): Promise<Scenario> {
-  if (!proTierScenario) {
-    proTierScenario = loadParityContext()
-      .then(loadAllPositions)
-      .then((positions) => {
-        const accounts = new Set(positions.map((p) => p.position.account));
-        const tiers = [...accounts].map((account): [string, bigint] => [proTraderTierKey(account), PRO_TIER]);
+export const PRO_TIER_SCENARIO: Scenario = {
+  name: "pro tier for every account",
+  overrides: async () => {
+    const positions = await loadParityContext().then(loadAllPositions);
+    const accounts = new Set(positions.map((p) => p.position.account));
+    const tiers = [...accounts].map((account): [string, bigint] => [proTraderTierKey(account), PRO_TIER]);
 
-        return {
-          name: "pro tier for every account",
-          overrides: { uint: [[proDiscountFactorKey(PRO_TIER), PRO_DISCOUNT_FACTOR], ...tiers] },
-        };
-      });
-  }
-
-  return proTierScenario;
-}
+    return { uint: [[proDiscountFactorKey(PRO_TIER), PRO_DISCOUNT_FACTOR], ...tiers] };
+  },
+};
