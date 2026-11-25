@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
@@ -21,6 +21,7 @@ export type GmsolRawMarketsInfoResult = {
   // Solana has no RPC fallback: an error, stale or incomplete response makes the markets unavailable.
   isUnavailable: boolean;
   error: Error | undefined;
+  refetch: () => Promise<unknown>;
 };
 
 export function getGmsolMarketsConfigKey(apiCacheKey: string) {
@@ -83,8 +84,12 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     isSnapshotPastGrace(config.freshness.asOf, CONFIG_UPDATE_INTERVAL) ||
     isSnapshotPastGrace(values.freshness.asOf, FREQUENT_UPDATE_INTERVAL);
 
+  const refetchConfig = config.refetch;
+  const refetchValues = values.refetch;
+  const refetch = useCallback(() => Promise.all([refetchConfig(), refetchValues()]), [refetchConfig, refetchValues]);
+
   if (!enabled) {
-    return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined };
+    return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined, refetch };
   }
 
   const isUnavailable = !sdk || Boolean(error) || isStale || isIncomplete || isExpired;
@@ -96,5 +101,6 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     isLoading: !error && !rawMarketsInfoData,
     isUnavailable,
     error,
+    refetch,
   };
 }

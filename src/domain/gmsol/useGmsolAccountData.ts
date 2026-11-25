@@ -31,6 +31,7 @@ export type GmsolAccountDataResult<T> = {
   data: T | undefined;
   isLoading: boolean;
   error: Error | undefined;
+  refetch: () => Promise<T | undefined>;
 };
 
 function useGmsolAccountRequest<T>(
@@ -42,7 +43,7 @@ function useGmsolAccountRequest<T>(
   const sdk = useGmxSdk(SOLANA_NETWORK_ID);
   const key = owner && sdk ? getGmsolAccountDataKey(request, getUiApiCacheKey(SOLANA_NETWORK_ID), owner) : null;
 
-  const { data, error, isLoading, freshness } = useSWRWithFreshness<T>(
+  const { data, error, isLoading, freshness, refetch } = useSWRWithFreshness<T>(
     key,
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) =>
       fetcher({ sdk: sdk!, owner: keyOwner, apiCacheKey: keyApiCacheKey }),
@@ -58,6 +59,7 @@ function useGmsolAccountRequest<T>(
     data: key ? data : undefined,
     isLoading: key ? isLoading : false,
     error: key ? error ?? overdueError : undefined,
+    refetch,
   };
 }
 

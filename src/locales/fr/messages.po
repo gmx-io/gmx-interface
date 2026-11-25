@@ -549,7 +549,7 @@ msgstr "taille de la position"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market orders."
-msgstr ""
+msgstr "Utilisez le bouton « Fermer » pour réduire votre position au moyen d’ordres au marché."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -1272,7 +1272,7 @@ msgstr "GMX sur Solana"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not refresh open positions. This list may be out of date."
-msgstr ""
+msgstr "Impossible d’actualiser les positions ouvertes. Cette liste n’est peut-être pas à jour."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1399,7 +1399,7 @@ msgstr "Modifier le Take-Profit : {suffix}"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not load open positions"
-msgstr ""
+msgstr "Impossible de charger les positions ouvertes"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1966,7 +1966,7 @@ msgstr "Part de la puissance de staking"
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Received separately when this order executes, not added to position margin."
-msgstr ""
+msgstr "Ce montant est reçu séparément lors de l’exécution de cet ordre et n’est pas ajouté à la marge de la position."
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Disconnecting the wallet doesn't stop notifications"
@@ -2174,6 +2174,7 @@ msgid "Whitelist only"
 msgstr "Liste blanche uniquement"
 
 #: src/components/NotificationsDebugSettings/NotificationsDebugSettings.tsx
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Réessayer"
@@ -3073,7 +3074,7 @@ msgstr "Transfert initié"
 
 #: src/components/TVChart/Chart.tsx
 msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
-msgstr ""
+msgstr "Vue simulée du carnet d’ordres de la liquidité Solana, incluant l’impact sur le prix à l’ouverture de positions."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
@@ -3171,7 +3172,7 @@ msgstr "{typeString} Long Stop Market"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact is included in the entry price."
-msgstr ""
+msgstr "L’impact sur le prix est inclus dans le prix d’entrée."
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3316,7 +3317,7 @@ msgstr "Choisissez :"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Could not refresh your fee discount. Fees are estimated without it."
-msgstr ""
+msgstr "Impossible d’actualiser votre réduction sur les frais. Les frais sont estimés sans cette réduction."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
@@ -3370,7 +3371,7 @@ msgstr "{txnTypeText} l'ordre {0} pour"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not refresh open orders. This list may be out of date."
-msgstr ""
+msgstr "Impossible d’actualiser les ordres ouverts. Cette liste n’est peut-être pas à jour."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3721,7 +3722,7 @@ msgstr "Fraîcheur des données"
 #: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
 msgid "Unable to calculate this order"
-msgstr ""
+msgstr "Impossible de calculer cet ordre"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -4759,7 +4760,7 @@ msgstr "Autres frais réalisés"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
-msgstr ""
+msgstr "Garantie supplémentaire retenue : <0/>. Ce montant peut être réclamé après l’exécution et est exclu du total des frais. Coût immédiat : <1/>."
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -8032,7 +8033,7 @@ msgstr "Ce portefeuille n'est pas encore déployé sur {0}. Signez à nouveau po
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Funding received"
-msgstr ""
+msgstr "Financement reçu"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -11493,7 +11494,7 @@ msgstr "Frais de réallocation"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimed automatically with the next order on this position."
-msgstr ""
+msgstr "Les frais de financement positifs sont automatiquement récupérés lors du prochain ordre sur cette position."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -12058,7 +12059,7 @@ msgstr "Estimation en USD"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fee discount"
-msgstr ""
+msgstr "Réduction sur les frais"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12207,7 +12208,7 @@ msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens G
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
-msgstr ""
+msgstr "Impossible de charger les ordres ouverts"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12810,7 +12811,7 @@ msgstr "Saisir un prix de déclenchement"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Unable to calculate market depth"
-msgstr ""
+msgstr "Impossible de calculer la profondeur du marché"
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Do Not Disturb can silence or delay notifications"
