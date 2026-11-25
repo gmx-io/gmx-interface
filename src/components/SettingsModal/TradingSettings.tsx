@@ -34,6 +34,7 @@ import { MarginDestinationSelector } from "components/MarginDestinationSelector/
 import { MarginDestinationTooltipContent } from "components/MarginDestinationSelector/MarginDestinationTooltipContent";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
+import { OneClickSessions } from "components/OneClickSessions/OneClickSessions";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import { LabelWithTooltip } from "components/Tooltip/LabelWithTooltip";
 import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
@@ -230,6 +231,8 @@ export function TradingSettings({
             {/* An active session keeps its limits visible even when express trading is unavailable. */}
             {(Boolean(subaccountState.subaccount && getIsSubaccountActive(subaccountState.subaccount)) ||
               (isConnected && !isExpressTradingDisabled && !isContractAccount)) && <OneClickAdvancedSettings />}
+
+            <OneClickSessions />
 
             {isEmbeddedWallet && settings.expressOrdersEnabled && (
               <ToggleSwitch

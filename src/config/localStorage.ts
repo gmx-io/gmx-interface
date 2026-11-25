@@ -71,6 +71,7 @@ export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-nat
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+export const EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY = "express-trading-nonce-expired-warn-hidden";
 
 export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
@@ -214,6 +215,11 @@ export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: nu
 export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, "one-click-trading-config"];
+}
+
+export function getLegacySubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-legacy-config"];
 }
 
 export function getSyntheticsReceiveMoneyTokenKey(

@@ -4,6 +4,7 @@ import {
   EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY,
+  EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY,
   EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY,
 } from "config/localStorage";
 import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -32,6 +33,7 @@ import {
   getIsSubaccountActionsExceeded,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountExpired,
+  getIsSubaccountNonceExpired,
   getMaxSubaccountActions,
   getSubaccountExpiresAt,
 } from "domain/synthetics/subaccount";
@@ -81,6 +83,10 @@ export function useExpressTradingWarnings({
     EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY,
     ""
   );
+  const [nonceExpiredWarningDismissedKey, setNonceExpiredWarningDismissedKey] = useLocalStorageSerializeKey<string>(
+    EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY,
+    ""
+  );
 
   const expiredSubaccountWarningKey = useMemo(
     () =>
@@ -104,6 +110,19 @@ export function useExpressTradingWarnings({
             isGmxAccount,
             rawSubaccount.address,
             getMaxSubaccountActions(rawSubaccount),
+          ])
+        : undefined,
+    [account, chainId, isGmxAccount, rawSubaccount]
+  );
+  const nonceExpiredWarningKey = useMemo(
+    () =>
+      rawSubaccount
+        ? getOneClickWarningDismissalKey([
+            account,
+            chainId,
+            isGmxAccount,
+            rawSubaccount.address,
+            rawSubaccount.signedApproval.nonce,
           ])
         : undefined,
     [account, chainId, isGmxAccount, rawSubaccount]
@@ -136,6 +155,11 @@ export function useExpressTradingWarnings({
       rawSubaccount &&
       (subaccountValidations?.isExpired ?? getIsSubaccountExpired(rawSubaccount)) &&
       expiredSubaccountWarningDismissedKey !== expiredSubaccountWarningKey,
+    shouldShowNonceExpiredWarning:
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isNonceExpired ?? getIsSubaccountNonceExpired(rawSubaccount)) &&
+      nonceExpiredWarningDismissedKey !== nonceExpiredWarningKey,
     shouldShowAllowedActionsWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&
@@ -188,11 +212,18 @@ export function useExpressTradingWarnings({
     }
   }, [allowedActionsWarningKey, setAllowedActionsWarningDismissedKey]);
 
+  const dismissNonceExpiredWarning = useCallback(() => {
+    if (nonceExpiredWarningKey) {
+      setNonceExpiredWarningDismissedKey(nonceExpiredWarningKey);
+    }
+  }, [nonceExpiredWarningKey, setNonceExpiredWarningDismissedKey]);
+
   return {
     ...conditions,
     shouldShowWarning,
     dismissExpiredSubaccountWarning,
     dismissAllowedActionsWarning,
+    dismissNonceExpiredWarning,
   };
 }
 

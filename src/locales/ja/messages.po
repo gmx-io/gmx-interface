@@ -44,6 +44,10 @@ msgstr "価格への影響リベートを受け取りました"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新してください"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "このブラウザ"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "月次"
@@ -180,6 +184,10 @@ msgstr "GMX Accountを使用して、GMXで個別ポジションを開くこと�
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "ネットワークごとにコードを作成する必要がありますか？"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.} other {Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.}}"
+msgstr "{0, plural, one {ウォレットで#件の署名を求められます。削除にはGMX Accountからネットワーク手数料が支払われます。} other {ウォレットでセッションごとに1件、合計#件の署名を求められます。削除ごとにGMX Accountからネットワーク手数料が支払われます。}}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
@@ -441,6 +449,10 @@ msgstr "待機中（残り{0, plural, other {#日}}）"
 msgid "Roadmap"
 msgstr "ロードマップ"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions"
+msgstr "{expiryDate}まで有効、アクション無制限"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "宛先"
@@ -672,6 +684,10 @@ msgstr "未実現手数料の寄与"
 msgid "{0} a short position when the price is above the trigger price."
 msgstr "価格がトリガー価格を上回ったときに、ショートポジションを{0}します。"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "古いセッションを削除しました"
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -789,6 +805,10 @@ msgstr "値："
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "GMXコミュニティによって開発されたプロジェクトです。<0/>各アプリはコミュニティの開発者によって完全に管理されていますので、ご利用の際はご注意ください。"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions, pending next trade"
+msgstr "有効、期限なし、アクション無制限、次の取引待ち"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1484,6 +1504,10 @@ msgstr "紹介コード{activatedReferralCodeLabel}が有効になりました�
 msgid "Swap fee factor (negative PI)"
 msgstr "スワップ手数料係数（マイナスPI）"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "残りアクションなし"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "請求可能な残高"
@@ -1543,6 +1567,10 @@ msgstr "GMXステーキング報酬"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "受取額が最小額を下回っています"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "他のセッションをすべて削除"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -2046,10 +2074,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "手数料割引はどのように適用されますか？"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "セッションの生成に失敗しました"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -3335,6 +3359,10 @@ msgstr "{0, plural, one {注文をキャンセル} other {# 件の注文をキ�
 msgid "GM:"
 msgstr "GM:"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "One-Clickセッション（{0}）"
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
 msgstr "精算を確認"
@@ -3964,6 +3992,10 @@ msgstr "注文タイプ"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "このトランザクションに必要な{symbol}がGMX Accountに不足しています。<0>{symbol}を入金</0>"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "古いセッションを削除中..."
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "二重エクスポージャー：ポジションによる{indexSymbol}のロング + 担保による{collateralSymbol}のロング。清算価格は{collateralSymbol}の価格に応じて変動します。"
@@ -4069,6 +4101,10 @@ msgstr "ロイヤルティ"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Up to 25% earnings"
 msgstr "最大25%の収益"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left, pending next trade} other {Active until {expiryDate}, # actions left, pending next trade}}"
+msgstr "{count, plural, one {{expiryDate}まで有効、残り#アクション、次の取引待ち} other {{expiryDate}まで有効、残り#アクション、次の取引待ち}}"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
@@ -4416,6 +4452,10 @@ msgstr "どのネットワークに対応していますか？"
 #: src/components/SideNav/BottomMenuSection.tsx
 msgid "Dark theme"
 msgstr "ダークテーマ"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "ブラウザごとに個別のセッションがあります。別のブラウザのセッションは、最初の取引の後にここに表示されます。あなたの代わりに取引するボットやアプリも表示されます。"
 
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
@@ -4909,6 +4949,10 @@ msgstr "累計"
 msgid "Enter amount"
 msgstr "金額を入力"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
+msgstr "{count, plural, one {{expiryDate}まで有効、残り#アクション} other {{expiryDate}まで有効、残り#アクション}}"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "{0}をウォレットに追加"
@@ -4916,6 +4960,10 @@ msgstr "{0}をウォレットに追加"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "アカウントが一致しません"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still listed. Remove it in One-Click sessions"
+msgstr "古いセッションはまだ一覧にあります。One-Clickセッションで削除してください"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
@@ -5581,10 +5629,19 @@ msgstr "安全にアンステークできる上限：{0} GMX / esGMX"
 msgid "Swap submitted"
 msgstr "スワップを送信しました"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "期限切れ"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} データ"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "削除中..."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
@@ -6128,6 +6185,10 @@ msgstr "出金"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | 暗号資産・貴金属・株式・エネルギーのパーペチュアルDEX"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "削除をキャンセルしました"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "ストップマーケットを更新"
@@ -6280,6 +6341,10 @@ msgstr "建玉 {directionLabel}"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr "承認に失敗しました"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "古いセッション"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
@@ -7154,6 +7219,10 @@ msgstr "求人"
 msgid "Failed Stop Market"
 msgstr "ストップマーケット失敗"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Pending first trade, # action left} other {Pending first trade, # actions left}}"
+msgstr "{count, plural, one {最初の取引待ち、残り#アクション} other {最初の取引待ち、残り#アクション}}"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -7467,6 +7536,10 @@ msgstr "ポジションを選択"
 msgid "GMX on Solana (GMTrade) is served from a separate domain"
 msgstr "GMX on Solana（GMTrade）は別のドメインで提供されています"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions"
+msgstr "有効、期限なし、アクション無制限"
+
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
@@ -7560,6 +7633,10 @@ msgstr "「Close」ボタンを使用して、成行注文またはTWAP注文で
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "すべて削除"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "詳細を折りたたむ"
@@ -7618,6 +7695,10 @@ msgstr "TWAPスワップパートを更新"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
 msgstr "適している"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was approved again in another browser or app. Re-sign to use it here."
+msgstr "One-Click Trading が別のブラウザまたはアプリで再承認されました。ここで使用するには再署名してください。"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -9185,6 +9266,7 @@ msgstr "すべての取引で、より多くを手元に残す"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9586,6 +9668,10 @@ msgstr "GMの購入は成功しましたが、Baseへのブリッジに失敗し
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Disable One-Click Trading"
 msgstr "One-Click Tradingを無効にする"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "削除しました"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -10192,6 +10278,10 @@ msgstr "ウォレットに手数料分の{walletGasTokenSymbol}が不足して�
 msgid "Copy"
 msgstr "コピー"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "あなたの代わりに取引するボットやアプリのセッションも削除されます。再度承認するまで動作しなくなります。"
+
 #: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10612,6 +10702,10 @@ msgstr "チャートにポジションを表示"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
 msgstr "手数料差し引き後の受取額が最大、Paxosの節約額が{minSaving}未満なら即時"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "{0, plural, one {{removedCount} of # session removed} other {{removedCount} of # sessions removed}}"
+msgstr "{0, plural, one {#件中{removedCount}件のセッションを削除しました} other {#件中{removedCount}件のセッションを削除しました}}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11679,6 +11773,10 @@ msgstr "タイプを検索"
 msgid "Converted to {marginTokenSymbol} in the same order"
 msgstr "同じ注文内で{marginTokenSymbol}に変換"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session wasn't removed"
+msgstr "古いセッションは削除されませんでした"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "出金手数料"
@@ -11751,6 +11849,10 @@ msgstr "{networkName}のウォレットに{tokensList}を受け取るか、別�
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, unlimited actions"
+msgstr "最初の取引待ち、アクション無制限"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networkName}, or choose another network"
@@ -11879,6 +11981,10 @@ msgstr "GMXとは？"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposit submitted"
 msgstr "入金が送信されました"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "削除に失敗しました"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -12369,6 +12475,10 @@ msgstr "無効化に失敗しました"
 msgid "Share your GMX trade on X"
 msgstr "GMXの取引をXでシェア"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions, pending next trade"
+msgstr "{expiryDate}まで有効、アクション無制限、次の取引待ち"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool short amount"
@@ -12649,6 +12759,10 @@ msgstr "このプログラムはあなたに合っていますか？"
 msgid "Gained"
 msgstr "獲得"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "{expiryDate}に期限切れ"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "注文を更新中…"
@@ -12760,6 +12874,10 @@ msgstr "PnLショート"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "専任のアカウントマネージャー"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "削除"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -13018,6 +13136,7 @@ msgstr "節約額シミュレーション"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "再署名"
 
@@ -13028,6 +13147,10 @@ msgstr "GMX Account に入金中..."
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied"
 msgstr "アドレスがコピーされました"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "再署名が必要です"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
@@ -13594,6 +13717,10 @@ msgstr "収益獲得を始める"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} のキャンセルに失敗しました"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left, pending next trade} other {Active, no expiry, # actions left, pending next trade}}"
+msgstr "{count, plural, one {有効、期限なし、残り#アクション、次の取引待ち} other {有効、期限なし、残り#アクション、次の取引待ち}}"
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "支払いや割引の適用は、いつ、どのように行われますか？"
@@ -13658,6 +13785,10 @@ msgstr "スワップタブで · 別途着金"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Paxosで直接変換"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left} other {Active, no expiry, # actions left}}"
+msgstr "{count, plural, one {有効、期限なし、残り#アクション} other {有効、期限なし、残り#アクション}}"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Stop-Loss @ {formattedPrice}"
@@ -14149,6 +14280,12 @@ msgstr "信頼性を向上させるには設定で<0>Express Trading</0>を有�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "比率を入力"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "1CTセッションを削除"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

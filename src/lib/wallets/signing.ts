@@ -156,14 +156,12 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     address,
     targetChainId,
     forceVerificationChain = false,
-    shouldUseLearnedChainBinding = true,
     validateBeforeSign,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
     forceVerificationChain?: boolean;
-    shouldUseLearnedChainBinding?: boolean;
     validateBeforeSign?: () => void;
   },
   action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
@@ -175,8 +173,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     return action(signer, startingChainId);
   }
 
-  const hasLearnedChainBinding =
-    shouldUseLearnedChainBinding && getChainBindingState(address, targetChainId) === "needsVerificationChain";
+  const hasLearnedChainBinding = getChainBindingState(address, targetChainId) === "needsVerificationChain";
 
   const needsSwap =
     forceVerificationChain ||
@@ -276,39 +273,6 @@ export function hashSignedTypedData({
   const toSign = minified ? minifyTypedData({ domain, types, message: typedData }) : { types, message: typedData };
 
   return hashTypedDataWithViem({ domain, ...toSign });
-}
-
-export async function signMessage({
-  signer,
-  message,
-  verificationChainId,
-}: {
-  signer: WalletSigner | Wallet | AbstractSigner;
-  message: string;
-  verificationChainId: number;
-}): Promise<string> {
-  const from = await signer.getAddress();
-  const startingChainId = getChainId(getWagmiConfig());
-
-  // `generateSubaccount` derives a private key from this signature, so it has to stay stable for a given
-  // wallet — it is never checked on chain, and learning chain binding later would change the subaccount.
-  return withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId, shouldUseLearnedChainBinding: false },
-    async (signWith, signingChainId) => {
-      const signature = await signWith.signMessage(message);
-
-      reportSignatureProduced({
-        address: from,
-        signature,
-        signaturePurpose: "message",
-        signingChainId,
-        startingChainId,
-        verificationChainId,
-      });
-
-      return signature;
-    }
-  );
 }
 
 export async function signTypedData(params: SignTypedDataParams) {
