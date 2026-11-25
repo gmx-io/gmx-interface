@@ -904,6 +904,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // US100/USD [WETH-USDC]
+    "0x5A88bBD49F6705b40BBc7D8FBE318b00FE9556EC": {
+      marketTokenAddress: "0x5A88bBD49F6705b40BBc7D8FBE318b00FE9556EC",
+      indexTokenAddress: "0x8826eDF9c608F35782A61b5C76B09f39433a7904",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
     // QQQ/USD [WETH-USDC]
     "0x1C132E43029efCd57435eE79ceA98006C6227A6f": {
       marketTokenAddress: "0x1C132E43029efCd57435eE79ceA98006C6227A6f",
