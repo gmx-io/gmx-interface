@@ -154,9 +154,9 @@ export function WhatsNewToastContainer() {
     const onScroll = (e: Event) => {
       const target = e.target;
       if (target instanceof HTMLElement) {
-        // the capture-phase listener catches every scrollable element; only the AppPageLayout
-        // page wrapper (scrollbar-gutter-stable) should move the toast, not inner widgets
-        if (!target.classList.contains("scrollbar-gutter-stable")) return;
+        // the capture-phase listener catches every scrollable element; only the page wrapper
+        // (data-page-scroller) should move the toast, not inner widgets
+        if (!target.hasAttribute("data-page-scroller")) return;
         setIsScrolled(target.scrollTop > 60);
       } else {
         setIsScrolled(window.scrollY > 60);
