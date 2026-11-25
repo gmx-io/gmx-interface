@@ -411,21 +411,29 @@ describe("getMinCollateralUsdForLiquidationPrice", () => {
   // Tiny factor magnitudes here round to 0n under PRECISION=1e30 — keeping them this way
   // lets us assert exact integer results. One test below uses realistic factors to lock in
   // that the priceImpact cap also works at scale.
+  // A $1 pnl token with 30 decimals keeps the tiny pnl values exact when the profit is counted in it
+  const pnlToken = {
+    decimals: 30,
+    prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
+  };
   const marketInfo = {
     indexToken: {
       decimals: 8,
       prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
     },
+    longToken: pnlToken,
+    shortToken: pnlToken,
     minCollateralFactorForLiquidation: 1000n,
     maxPositionImpactFactorForLiquidations: 500n,
     maxPositionImpactFactorPositive: 1000n,
     maxPositionImpactFactorNegative: 1000n,
   } as unknown as MarketInfo;
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const tokens = await vi.importActual<typeof import("../tokens")>("../tokens");
     (getPositionFee as Mock).mockReturnValue({ positionFeeUsd: 50n });
     (getPriceImpactForPosition as Mock).mockReturnValue({ priceImpactDeltaUsd: -100n, balanceWasImproved: false });
-    (convertToUsd as Mock).mockReturnValue(0n);
+    (convertToUsd as Mock).mockImplementation(tokens.convertToUsd);
   });
 
   it("returns 0 when sizeInUsd <= 0", () => {
@@ -531,6 +539,8 @@ describe("getMinCollateralUsdForLiquidationPrice", () => {
         decimals: 8,
         prices: { minPrice: expandDecimals(1, USD_DECIMALS), maxPrice: expandDecimals(1, USD_DECIMALS) },
       },
+      longToken: pnlToken,
+      shortToken: pnlToken,
       minCollateralFactorForLiquidation: 1000n,
       maxPositionImpactFactorForLiquidations: expandDecimals(1, 28),
       maxPositionImpactFactorPositive: 1000n,

@@ -522,8 +522,22 @@ export function getLiquidationPrice(p: {
 
 /**
  * The contract pays a profit in the pnl token, so it counts only profit * min price / max price of that token
- * (PositionUtils.isPositionLiquidatable). A position still in profit at the liquidation price is liquidated a bit
- * earlier: the price moves on until the position makes up the profit the contract does not count.
+ * (PositionUtils.isPositionLiquidatable)
+ */
+function getCountedPnlUsd(marketInfo: MarketInfo, isLong: boolean, pnl: bigint): bigint {
+  if (marketInfo.tradeMath === "gmsol" || pnl <= 0n) {
+    return pnl;
+  }
+
+  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const pnlInPnlToken = convertToTokenAmount(pnl, pnlToken.decimals, pnlToken.prices.maxPrice)!;
+
+  return convertToUsd(pnlInPnlToken, pnlToken.decimals, pnlToken.prices.minPrice)!;
+}
+
+/**
+ * A position still in profit at the liquidation price is liquidated a bit earlier: the price moves on until the
+ * position makes up the profit the contract does not count (getCountedPnlUsd).
  */
 function getLiquidationPriceWithProfitInPnlToken(p: {
   marketInfo: MarketInfo;
@@ -543,11 +557,8 @@ function getLiquidationPriceWithProfitInPnlToken(p: {
     return liquidationPrice;
   }
 
-  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
-  const { minPrice, maxPrice } = pnlToken.prices;
-  // positionPnlUsd / pnlTokenPrice.max * pnlTokenPrice.min, as in the contract
-  const profitInPnlToken = convertToTokenAmount(profitUsd, pnlToken.decimals, maxPrice)!;
-  const countedProfitUsd = convertToUsd(profitInPnlToken, pnlToken.decimals, minPrice)!;
+  const { minPrice, maxPrice } = (isLong ? marketInfo.longToken : marketInfo.shortToken).prices;
+  const countedProfitUsd = getCountedPnlUsd(marketInfo, isLong, profitUsd);
   // past this price the position's own gain is a profit too, counted the same way
   const countedExposureInTokens = exposureInTokens - sizeInTokens + bigMath.mulDiv(sizeInTokens, minPrice, maxPrice);
 
@@ -615,7 +626,9 @@ export function getMinCollateralUsdForLiquidationPrice(p: {
     liquidationCollateralUsd = effectiveMinCollateralUsd;
   }
 
-  return liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd;
+  const countedPnlUsd = getCountedPnlUsd(marketInfo, isLong, pnl);
+
+  return liquidationCollateralUsd - countedPnlUsd - priceImpactDeltaUsd + closingFeeUsd;
 }
 
 export function getIsPositionBelowMinCollateralForLeverage(position: PositionInfoLoaded, collateralDeltaAmount = 0n) {
@@ -668,7 +681,8 @@ export function getIsPositionBelowMinCollateralForLeverage(position: PositionInf
     isLong,
   });
 
-  const marginUsd = remainingCollateralUsd - collateralDeltaUsd + pnl + priceImpactDeltaUsd - closingFeeUsd;
+  const countedPnlUsd = getCountedPnlUsd(marketInfo, isLong, pnl);
+  const marginUsd = remainingCollateralUsd - collateralDeltaUsd + countedPnlUsd + priceImpactDeltaUsd - closingFeeUsd;
 
   let minCollateralUsdForLeverage = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
   if (marketInfo.tradeMath === "gmsol") {
