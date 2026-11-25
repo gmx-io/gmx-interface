@@ -30,7 +30,7 @@ type Field<Case> = {
 type ParitySpec<Case extends { label: string }, Out extends Record<string, Value>> = {
   markets: (market: MarketInfo) => boolean;
   cases: (market: MarketInfo, ctx: ParityContext) => Case[] | Promise<Case[]>;
-  ours: (input: ParityInput<Case>) => Out | Promise<Out>;
+  app: (input: ParityInput<Case>) => Out | Promise<Out>;
   contract: (input: ParityInput<Case>) => Promise<Out>;
   /** Two bigints compare by their difference in bps, anything else must be equal */
   fields: { [K in keyof Out]: Field<Case> };
@@ -40,7 +40,7 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
    */
   requiredCases?: {
     name: string;
-    when: (input: ParityInput<Case>, ours: Out) => boolean;
+    when: (input: ParityInput<Case>, app: Out) => boolean;
     /** Only cases in this scenario count, so live rows cannot stand in for a scenario that did not apply */
     scenario?: Scenario;
   }[];
@@ -69,10 +69,10 @@ const formatValue = (value: Value) => (value === undefined ? "none" : String(val
 
 const formatRow = (row: Row) => `${row.market} / ${row.case}: ${row.failure}`;
 
-function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: Value, contract: Value) {
-  if (typeof ours === "bigint" && typeof contract === "bigint") {
+function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, app: Value, contract: Value) {
+  if (typeof app === "bigint" && typeof contract === "bigint") {
     const base = field.bpsOf ? field.bpsOf(input) : contract;
-    const diffBps = toBps(ours - contract, base);
+    const diffBps = toBps(app - contract, base);
     const toleranceBps =
       typeof field.toleranceBps === "function"
         ? field.toleranceBps(input)
@@ -81,30 +81,30 @@ function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: 
     return Math.abs(diffBps) <= toleranceBps ? { diffBps } : { diffBps, failure: `${diffBps} bps` };
   }
 
-  if (ours === contract) {
+  if (app === contract) {
     return { diffBps: 0 };
   }
 
-  return { diffBps: Infinity, failure: `we say ${formatValue(ours)}, the contract says ${formatValue(contract)}` };
+  return { diffBps: Infinity, failure: `the app says ${formatValue(app)}, the contract says ${formatValue(contract)}` };
 }
 
 async function compareCase<Case extends { label: string }, Out extends Record<string, Value>>(
   spec: ParitySpec<Case, Out>,
   input: ParityInput<Case>
-): Promise<{ ours: Out; rows: Row[]; revert?: string }> {
+): Promise<{ app: Out; rows: Row[]; revert?: string }> {
   const row = { state: input.ctx.state, market: input.market.name, case: input.testCase.label };
   const fieldNames = Object.keys(spec.fields);
-  const ours = await spec.ours(input);
+  const app = await spec.app(input);
 
   try {
     const contract = await spec.contract(input);
     const rows = fieldNames.map((field) => {
-      const comparison = compareField(spec.fields[field], input, ours[field], contract[field]);
+      const comparison = compareField(spec.fields[field], input, app[field], contract[field]);
 
       return { ...row, field, ...comparison };
     });
 
-    return { ours, rows };
+    return { app, rows };
   } catch (error) {
     const revert = getRevertName(error);
 
@@ -113,7 +113,7 @@ async function compareCase<Case extends { label: string }, Out extends Record<st
     }
 
     // no rows: a revert is never a known difference
-    return { ours, rows: [], revert: `${row.state} / ${row.market} / ${row.case}: contract reverts with ${revert}` };
+    return { app, rows: [], revert: `${row.state} / ${row.market} / ${row.case}: contract reverts with ${revert}` };
   }
 }
 
@@ -157,7 +157,7 @@ async function runPair<Case extends { label: string }, Out extends Record<string
     count: inputs.filter(
       (input, i) =>
         (requiredCase.scenario === undefined || input.ctx.state === requiredCase.scenario.name) &&
-        requiredCase.when(input, results[i].ours)
+        requiredCase.when(input, results[i].app)
     ).length,
   }));
   const casesByState = Object.fromEntries(runs.map((run) => [run.ctx.state, run.inputs.length]));
