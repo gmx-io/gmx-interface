@@ -245,6 +245,13 @@ export async function readExecutionPrice(
   return { ...result, executionPrice: result.executionPrice * pricePerTokenUnit };
 }
 
+/**
+ * The contract caps a negative total impact and moves the rest to priceImpactDiffUsd, the app keeps the whole impact
+ * in the total and shows the diff apart: the amount the trader gets is the same
+ */
+export const getUncappedTotalImpactUsd = (result: { totalImpactUsd: bigint; priceImpactDiffUsd: bigint }) =>
+  result.totalImpactUsd - result.priceImpactDiffUsd;
+
 // Only a decoded revert: viem also wraps node errors without revert data (-32603) as ContractFunctionRevertedError
 export function getRevertName(error: unknown): string | undefined {
   const revert = error instanceof BaseError ? error.walk((e) => e instanceof ContractFunctionRevertedError) : undefined;

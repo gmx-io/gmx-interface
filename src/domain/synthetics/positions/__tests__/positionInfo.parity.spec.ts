@@ -1,3 +1,4 @@
+import { getUncappedTotalImpactUsd } from "domain/testUtils/parity/context";
 import { parity } from "domain/testUtils/parity/parity";
 import {
   bpsOfSize,
@@ -63,7 +64,7 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
     return {
       pnl: info.basePnlUsd,
       closePriceImpactUsd: info.executionPriceResult.priceImpactUsd,
-      closeTotalImpactUsd: info.executionPriceResult.totalImpactUsd,
+      closeTotalImpactUsd: getUncappedTotalImpactUsd(info.executionPriceResult),
       closingFeeUsd: (positionFeeAmount - totalDiscountAmount) * collateralTokenPrice.min,
       // the Reader adds claimable funding, which the app shows separately, and prices costs at the max collateral price
       netValueAfterAllFees:
