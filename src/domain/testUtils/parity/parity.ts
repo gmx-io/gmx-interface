@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { execFileSync } from "child_process";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { bigMath } from "sdk/utils/bigmath";
@@ -42,6 +43,9 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
   /** The pair runs on the live state and once more inside each scenario */
   scenarios?: Scenario[];
 };
+
+// The code a run measures, "-dirty" when it has uncommitted changes
+const codeVersion = execFileSync("git", ["describe", "--always", "--dirty"], { encoding: "utf8" }).trim();
 
 type Row = { scenario: string; market: string; case: string; field: string; diffBps: number; failure?: string };
 
@@ -152,7 +156,9 @@ async function runPair<Case extends { label: string }, Out extends Record<string
   const casesByState = Object.fromEntries(runs.map((run) => [run.ctx.scenario, run.inputs.length]));
 
   runs.forEach(({ ctx, markets, inputs }) =>
-    console.log(`${name}, ${ctx.scenario}: block ${ctx.blockNumber}, ${markets.length} markets, ${inputs.length} cases`)
+    console.log(
+      `${name}, ${ctx.scenario}: code ${codeVersion}, block ${ctx.blockNumber}, ${markets.length} markets, ${inputs.length} cases`
+    )
   );
   states.forEach((state) =>
     Object.entries(spec.fields).forEach(([field, config]) => {
