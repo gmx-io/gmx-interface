@@ -11,7 +11,7 @@ import type { PositionsConstants } from "domain/synthetics/positions/usePosition
 import type { TradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import type { DeepPartial } from "lib/types";
 import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
-import type { MarketInfo } from "sdk/utils/markets/types";
+import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import type { OrdersInfoData } from "sdk/utils/orders/types";
 import type { PositionsInfoData } from "sdk/utils/positions/types";
 import type { TokenData } from "sdk/utils/tokens/types";
@@ -40,6 +40,9 @@ export type MockSyntheticsStateOverrides = {
   marketAddress?: string;
   tokensData?: Record<string, TokenData>;
   marketInfo?: MarketInfo;
+  /** Every market, for selectors that route swaps; the single marketInfo by default */
+  marketsInfoData?: MarketsInfoData;
+  poolsDetails?: DeepPartial<SyntheticsState["poolsDetails"]>;
   collateralAddress?: string;
   uiFeeFactor?: bigint;
   positionsConstants?: PositionsConstants;
@@ -102,8 +105,10 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       srcChainId: undefined,
       tokensDataResult: { tokensData },
       marketsInfo: {
-        marketsInfoData: marketInfo ? { [marketInfo.marketTokenAddress]: marketInfo } : {},
+        marketsInfoData:
+          overrides.marketsInfoData ?? (marketInfo ? { [marketInfo.marketTokenAddress]: marketInfo } : {}),
       },
+      glvInfo: { glvData: {} },
       positionsInfo: { positionsInfoData, isLoading: isPositionsLoading },
       ordersInfo: { ordersInfoData },
       uiFeeFactor,
@@ -123,6 +128,7 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       shouldForceExternalSwap: false,
       setShouldForceExternalSwap: () => undefined,
     },
+    poolsDetails: overrides.poolsDetails,
     claims: {
       accruedPositionPriceImpactFees: [],
       claimablePositionPriceImpactFees: [],
