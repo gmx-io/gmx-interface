@@ -1,5 +1,7 @@
 import { decodeFunctionData, EIP1193RequestFn, erc20Abi, numberToHex, pad } from "viem";
 
+import { tryDecodeCustomError } from "sdk/utils/errors/parseError";
+
 import { getMappingEntrySlot, LIVE_STATE, ParityContext } from "./context";
 
 export type TraceCall = { to?: string; input?: string; output?: string; error?: string; calls?: TraceCall[] };
@@ -40,6 +42,13 @@ export function traceCall(
   const request = ctx.client.request as EIP1193RequestFn<[TraceCallRequest]>;
 
   return request({ method: "debug_traceCall", params: [call, numberToHex(ctx.blockNumber), config] });
+}
+
+/** The revert a simulateExecute call ends in: makeExternalCalls wraps it in ExternalCallFailed */
+export function getSimulationRevert(trace: TraceCall) {
+  const outer = trace.output ? tryDecodeCustomError(trace.output) : undefined;
+
+  return outer?.name === "ExternalCallFailed" && outer.args?.data ? tryDecodeCustomError(outer.args.data) : outer;
 }
 
 /** The token amount a call tree sends to the receiver through ERC20 transfer calls */
