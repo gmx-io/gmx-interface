@@ -13,7 +13,7 @@ import { convertToContractTokenPrices } from "sdk/utils/tokens/utils";
 parity("getPriceImpactForSwap <-> Reader.getSwapPriceImpact, impact before caps", {
   markets: isSwapMarket,
   cases: swapCases,
-  ours: (input) => {
+  app: (input) => {
     const midUsdIn = getSwapMidUsdIn(input);
 
     return { priceImpactUsd: getAppSwapPriceImpact(input, midUsdIn).priceImpactDeltaUsd };

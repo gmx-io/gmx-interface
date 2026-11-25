@@ -52,7 +52,7 @@ function increaseCases(market: MarketInfo): IncreaseCase[] {
 parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
   markets: (market) => !market.isDisabled && !market.isSpotOnly && market.poolValueMax > usd(100_000),
   cases: increaseCases,
-  ours: ({ market, testCase }) => {
+  app: ({ market, testCase }) => {
     const { priceImpactDeltaUsd, acceptablePrice } = getAppIncrease(market, testCase).acceptablePriceInfo;
 
     return { priceImpactUsd: priceImpactDeltaUsd, executionPrice: acceptablePrice };

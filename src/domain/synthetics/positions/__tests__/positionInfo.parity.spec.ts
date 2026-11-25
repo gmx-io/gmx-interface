@@ -28,7 +28,7 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
   markets: (market) => !market.isSpotOnly,
   cases: loadPositions,
   scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO],
-  ours: async ({ ctx, market, testCase }) => {
+  app: async ({ ctx, market, testCase }) => {
     const minCollateralUsd = await loadMinCollateralUsd(ctx);
     const info = getPositionInfo({
       position: testCase.position,
