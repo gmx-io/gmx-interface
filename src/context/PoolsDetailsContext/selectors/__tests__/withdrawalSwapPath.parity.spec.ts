@@ -6,11 +6,15 @@ import { getSimulationPrices } from "domain/synthetics/orders/simulation";
 import { createMockSyntheticsState } from "domain/testUtils/mockSyntheticsState";
 import { chainId, loadMarketToken, ParityContext } from "domain/testUtils/parity/context";
 import { parity, ParityInput, usd } from "domain/testUtils/parity/parity";
-import { getErc20Overrides, getTransferredAmountTo, traceCall } from "domain/testUtils/parity/simulation";
+import {
+  getErc20Overrides,
+  getSimulationRevert,
+  getTransferredAmountTo,
+  traceCall,
+} from "domain/testUtils/parity/simulation";
 import { isSwapMarket } from "domain/testUtils/parity/swapPricing";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
-import { tryDecodeCustomError } from "sdk/utils/errors/parseError";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { encodeSimulationRouterExternalCall } from "sdk/utils/orderTransactions/simulation";
@@ -131,7 +135,7 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
     { ...marketTokenOverrides, [ACCOUNT]: { balance: numberToHex(10n ** 18n) } }
   );
   // the trace keeps the transfers of reverted calls, so a withdrawal that reverts midway still sends something
-  const endError = trace.output ? tryDecodeCustomError(trace.output)?.name : undefined;
+  const endError = getSimulationRevert(trace)?.name;
 
   if (endError !== "EndOfOracleSimulation") {
     throw new Error(
