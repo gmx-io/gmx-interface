@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
+import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   usePositionsConstants,
@@ -12,12 +13,14 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectBlockTimestampData,
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectIsOrdersLoading,
   selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -28,6 +31,7 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsGmxAccountPosition, getIsPositionActionGmxAccount } from "domain/synthetics/express/feeBalance";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
   getExpressParamsForSubmit,
@@ -69,8 +73,11 @@ import {
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
-import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { getExpressError } from "domain/synthetics/trade/utils/validation";
+import {
+  MaxAutoCancelOrdersWarning,
+  useMaxAutoCancelOrdersState,
+} from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { getExpressError, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
@@ -106,7 +113,7 @@ import {
   DecreaseReceiveOutputDisplay,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
-import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { InsufficientGmxAccountTokenBalanceMessage, ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -173,7 +180,9 @@ export function AddTPSLModal({
   const feeDiscountFactor = useFeeDiscountFactor();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants(position.marketAddress);
   const uiFeeFactor = useUiFeeFactor();
-  const { autoCancelOrdersLimit } = useMaxAutoCancelOrdersState({ positionKey: position.key });
+  const { autoCancelOrdersLimit, allowedAutoCancelOrdersNumber } = useMaxAutoCancelOrdersState({
+    positionKey: position.key,
+  });
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasLimits = useSelector(selectGasLimits);
@@ -182,7 +191,7 @@ export function AddTPSLModal({
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const isPnlInLeverage = useSelector(selectIsPnlInLeverage);
   const breakdownNetPriceImpactEnabled = useSelector(selectBreakdownNetPriceImpactEnabled);
-  const { shouldDisableValidationForTesting } = useSettings();
+  const { shouldDisableValidationForTesting, expressOrdersEnabled } = useSettings();
 
   const marketInfo = position.marketInfo;
   const collateralToken = position.collateralToken;
@@ -767,6 +776,7 @@ export function AddTPSLModal({
   );
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
+  const isOrdersLoading = useSelector(selectIsOrdersLoading);
 
   const existingFullCloseTp = useMemo(() => {
     return positionOrders.find(
@@ -786,6 +796,16 @@ export function AddTPSLModal({
     );
   }, [positionOrders, position.sizeInUsd]);
 
+  const isGmxAccount = getIsPositionActionGmxAccount({
+    srcChainId,
+    isExpressEnabled: expressOrdersEnabled,
+    positionLastSrcChainId: position.lastSrcChainId,
+  });
+  const isPositionBalanceLoading = isSettlementChain(chainId) && position.lastSrcChainId === undefined;
+  const isGmxAccountPosition = isPositionBalanceLoading ? undefined : getIsGmxAccountPosition(position.lastSrcChainId);
+  const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
+  const isGmxAccountExpressUnavailable = isGmxAccount && !isExpressAvailable;
+
   const orderPayloads = useMemo(() => {
     const empty = { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
 
@@ -804,7 +824,7 @@ export function AddTPSLModal({
       return empty;
     }
 
-    const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+    const autoCancelOrdersLimitForModal = Math.min(2, autoCancelOrdersLimit);
     const tpSizeDeltaUsd = tpCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
     const slSizeDeltaUsd = slCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
@@ -816,6 +836,9 @@ export function AddTPSLModal({
       indexTokenAddress: marketInfo.indexTokenAddress,
       collateralTokenAddress: collateralToken.address,
       isLong,
+      isGmxAccount,
+      isGmxAccountPosition,
+      isOrdersLoading,
       entries: [
         {
           amounts: tpCreateAmounts,
@@ -850,7 +873,13 @@ export function AddTPSLModal({
     slExecutionFee,
     existingFullCloseTp,
     existingFullCloseSl,
+    isGmxAccount,
+    isGmxAccountPosition,
+    isOrdersLoading,
   ]);
+
+  const isAutoCancelOrdersLimitExceeded =
+    allowedAutoCancelOrdersNumber !== undefined && orderPayloads.createOrderParams.length > autoCancelOrdersLimit;
 
   const batchParams = useMemo(() => {
     if (
@@ -882,13 +911,18 @@ export function AddTPSLModal({
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount,
     canSwitchGasPaymentToken: isActiveForm,
     gasPaymentTokenFallback: "approvedToken",
   });
 
-  const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
-  const feeSource = getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined });
+  const isGmxAccountBalanceLoading =
+    isGmxAccount && expressParams !== undefined && !expressParams.gasPaymentValidations.isGasPaymentTokenBalanceLoaded;
+  const expressError = useMemo(
+    () => (isGmxAccountBalanceLoading ? {} : getExpressError({ expressParams, tokensData })),
+    [expressParams, isGmxAccountBalanceLoading, tokensData]
+  );
+  const feeSource = getNetworkFeeSource({ isGmxAccount });
 
   const submitError = useMemo(() => {
     if (!tpPriceInput && !slPriceInput) {
@@ -935,8 +969,6 @@ export function AddTPSLModal({
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
-      const isGmxAccount = srcChainId !== undefined;
-
       if (
         reportMultichainExpressSubmitError({
           isGmxAccount,
@@ -965,7 +997,7 @@ export function AddTPSLModal({
           collateralSymbol: position.collateralToken.symbol,
         }),
         provider,
-        isGmxAccount: srcChainId !== undefined,
+        isGmxAccount,
       }).then(() => {
         setIsVisible(false);
         onSuccess?.();
@@ -987,7 +1019,7 @@ export function AddTPSLModal({
     blockTimestampData,
     makeOrderTxnCallback,
     position.collateralToken.symbol,
-    srcChainId,
+    isGmxAccount,
     setIsVisible,
     onSuccess,
   ]);
@@ -1024,7 +1056,13 @@ export function AddTPSLModal({
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const submitButtonState = useMemo(() => {
-    if (isExpressLoading || isMultichainSubmitDisabled) {
+    if (
+      isExpressLoading ||
+      isMultichainSubmitDisabled ||
+      isPositionBalanceLoading ||
+      isOrdersLoading ||
+      isGmxAccountBalanceLoading
+    ) {
       return {
         text: (
           <>
@@ -1050,6 +1088,13 @@ export function AddTPSLModal({
       };
     }
 
+    if (isGmxAccountExpressUnavailable) {
+      return {
+        text: t`Network fee unavailable`,
+        disabled: true,
+      };
+    }
+
     if (expressError.buttonErrorMessage) {
       return {
         text: expressError.buttonErrorMessage,
@@ -1067,6 +1112,10 @@ export function AddTPSLModal({
     expressError.buttonErrorMessage,
     isExpressLoading,
     isMultichainSubmitDisabled,
+    isPositionBalanceLoading,
+    isOrdersLoading,
+    isGmxAccountBalanceLoading,
+    isGmxAccountExpressUnavailable,
     isSubmitting,
     isCreationPending,
     marketPairLabel,
@@ -1233,15 +1282,30 @@ export function AddTPSLModal({
           </div>
         )}
 
+        {isGmxAccountExpressUnavailable && (
+          <AlertInfoCard type="error" hideClose>
+            {t`Express is unavailable right now, so this GMX Account action can't be sent`}
+          </AlertInfoCard>
+        )}
+
         {expressError.bannerErrorName && (
           <AlertInfoCard type="error" hideClose>
-            <ValidationBannerErrorContent
-              validationBannerErrorName={expressError.bannerErrorName}
-              chainId={chainId}
-              srcChainId={srcChainId}
-              gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
-              onBeforeNavigation={() => setIsVisible(false)}
-            />
+            {expressError.bannerErrorName === ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance &&
+            expressParams ? (
+              <InsufficientGmxAccountTokenBalanceMessage
+                chainId={chainId}
+                tokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={() => setIsVisible(false)}
+              />
+            ) : (
+              <ValidationBannerErrorContent
+                validationBannerErrorName={expressError.bannerErrorName}
+                chainId={chainId}
+                srcChainId={srcChainId}
+                gasPaymentTokenAddress={expressParams?.gasPaymentParams.gasPaymentTokenAddress}
+                onBeforeNavigation={() => setIsVisible(false)}
+              />
+            )}
           </AlertInfoCard>
         )}
 
@@ -1249,11 +1313,15 @@ export function AddTPSLModal({
           expressParams={expressParams}
           payTokenAddress={undefined}
           isWrapOrUnwrap={false}
-          isGmxAccount={srcChainId !== undefined}
+          isGmxAccount={isGmxAccount}
           onAfterAction={() => setIsVisible(false)}
         />
 
         {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
+
+        {isAutoCancelOrdersLimitExceeded && (
+          <MaxAutoCancelOrdersWarning allowedAutoCancelOrdersNumber={allowedAutoCancelOrdersNumber} />
+        )}
 
         <Button
           variant="primary-action"
@@ -1355,7 +1423,7 @@ export function AddTPSLModal({
           <ExitPriceRow price={activeTriggerPrice} isLong={isLong} isSwap={false} fees={activeFees} />
           <TradeFeesRow {...(activeFees || {})} feesType="decrease" />
           <NetworkFeeRow
-            executionFee={totalExecutionFee}
+            executionFee={isGmxAccountExpressUnavailable ? undefined : totalExecutionFee}
             gasPaymentParams={getNetworkFeeGasPaymentParams({
               expressParams,
               tokensData,

@@ -311,6 +311,7 @@ function createLimitIncreaseOrder({
     uiFeeReceiver: zeroAddress,
     uiFeeFactor: 0n,
     validFromTime: 0n,
+    srcChainId: 0n,
   };
 
   const orderInfo = getOrderInfo({ marketsInfoData, tokensData, wrappedNativeToken: getWrappedToken(ARBITRUM), order });
@@ -354,6 +355,7 @@ function createFixtures(balances: BalanceShape): Fixtures {
     ...basePosition,
     // above the Settle modal's preselection threshold, so the position is checked on open
     pendingClaimableFundingFeesUsd: expandDecimals(50, 30),
+    lastSrcChainId: 0n,
   };
   const positionsInfoData: PositionsInfoData = { [position.key]: position };
 
