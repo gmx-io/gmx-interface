@@ -425,20 +425,30 @@ describe("position seller — closing costs of a profitable market partial close
     },
     {
       // the profit is paid out of the 2 000 000 ETH pool before the swap returns it, so the pool stays at 2 000 000
-      pool: "the long pnl of 800 004 is over the 40 % deposit cap",
+      pool: "the long pnl of 800 004 is over the 40 % withdrawal cap",
       overrides: {
         longInterestUsd: usd(1_199_996),
         longInterestInTokens: expandDecimals(1000, 18),
-        maxPnlFactorForDepositsLong: expandDecimals(4, 29),
+        maxPnlFactorForWithdrawalsLong: expandDecimals(4, 29),
       },
       isReverted: true,
     },
     {
-      pool: "the long pnl of 799 996 is under the 40 % deposit cap",
+      // the swap checks the cap before it returns the profit too, on the 1 999 980 left in the ETH pool
+      pool: "the long pnl of 799 996 is over the 40 % withdrawal cap once the profit left the pool",
       overrides: {
         longInterestUsd: usd(1_200_004),
         longInterestInTokens: expandDecimals(1000, 18),
-        maxPnlFactorForDepositsLong: expandDecimals(4, 29),
+        maxPnlFactorForWithdrawalsLong: expandDecimals(4, 29),
+      },
+      isReverted: true,
+    },
+    {
+      pool: "the long pnl of 799 988 is under the 40 % withdrawal cap",
+      overrides: {
+        longInterestUsd: usd(1_200_012),
+        longInterestInTokens: expandDecimals(1000, 18),
+        maxPnlFactorForWithdrawalsLong: expandDecimals(4, 29),
       },
       isReverted: false,
     },

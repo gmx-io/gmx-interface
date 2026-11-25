@@ -14,6 +14,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
   getMarketPnl,
   getOppositeCollateral,
+  getPositiveMarketPnl,
   getTokenPoolType,
 } from "utils/markets";
 import { MarketInfo, MarketsInfoData } from "utils/markets/types";
@@ -374,12 +375,11 @@ export function getSwapStats(p: {
 }
 
 /**
- * Mirrors the on-chain `SwapUtils.validateMaxPnl` check: after the swap is
- * applied, BOTH the long and short PnL-to-pool factors must be within their
- * limit. The shrinking (token-out) side is capped at MAX_PNL_FACTOR_FOR_WITHDRAWALS,
- * the growing (token-in) side at MAX_PNL_FACTOR_FOR_DEPOSITS.
+ * Mirrors SwapUtils._validateMaxPnl: before and after the swap, the positive pnl of each side (summed over its
+ * collateral buckets) must stay within MAX_PNL_FACTOR_FOR_WITHDRAWALS of the side's pool at the min price.
+ * GMTrade markets keep their own check.
  */
-export function getIsMaxPnlFactorExceededAfterSwap(p: {
+export function getIsMaxPnlFactorExceededForSwap(p: {
   marketInfo: MarketInfo;
   /**
    * Money in long side and out from short side
@@ -387,6 +387,38 @@ export function getIsMaxPnlFactorExceededAfterSwap(p: {
   isLong: boolean;
   usdIn: bigint;
 }): boolean {
+  const { marketInfo, isLong, usdIn } = p;
+
+  if (marketInfo.tradeMath === "gmsol") {
+    return getIsMaxPnlFactorExceededAfterGmsolSwap(p);
+  }
+
+  const { longToken, shortToken } = marketInfo;
+  const longPoolUsd = convertToUsd(marketInfo.longPoolAmount, longToken.decimals, longToken.prices.minPrice)!;
+  const shortPoolUsd = convertToUsd(marketInfo.shortPoolAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+  const longDeltaUsd = isLong ? usdIn : -usdIn;
+  const longPnl = getPositiveMarketPnl(marketInfo, true, false);
+  const shortPnl = getPositiveMarketPnl(marketInfo, false, false);
+  const isExceeded = (nextLongPoolUsd: bigint, nextShortPoolUsd: bigint) =>
+    isPositivePnlFactorExceeded(longPnl, nextLongPoolUsd, marketInfo.maxPnlFactorForWithdrawalsLong) ||
+    isPositivePnlFactorExceeded(shortPnl, nextShortPoolUsd, marketInfo.maxPnlFactorForWithdrawalsShort);
+
+  return isExceeded(longPoolUsd, shortPoolUsd) || isExceeded(longPoolUsd + longDeltaUsd, shortPoolUsd - longDeltaUsd);
+}
+
+// MarketUtils.isPositivePnlFactorExceeded, where an empty pool has a zero factor
+function isPositivePnlFactorExceeded(pnl: bigint, poolUsd: bigint, maxFactor: bigint | undefined): boolean {
+  // Cap not known yet (fast path before multicall refresh) — skip this side.
+  if (maxFactor === undefined || pnl <= 0n || poolUsd <= 0n) {
+    return false;
+  }
+
+  return bigMath.mulDiv(pnl, PRECISION, poolUsd, false) > maxFactor;
+}
+
+// After the swap only: the shrinking side at MAX_PNL_FACTOR_FOR_WITHDRAWALS, the growing side at
+// MAX_PNL_FACTOR_FOR_DEPOSITS, net pnl
+function getIsMaxPnlFactorExceededAfterGmsolSwap(p: { marketInfo: MarketInfo; isLong: boolean; usdIn: bigint }) {
   const { marketInfo, isLong, usdIn } = p;
 
   const { nextLongPoolUsd, nextShortPoolUsd } = getNextPoolAmountsParams({
@@ -398,8 +430,6 @@ export function getIsMaxPnlFactorExceededAfterSwap(p: {
     shortDeltaUsd: isLong ? usdIn * -1n : usdIn,
   });
 
-  // Long side is growing when isLong=true (tokenIn is long), so compare against
-  // the deposits cap in that case, and the withdrawals cap when it's shrinking.
   const longPnl = getMarketPnl(marketInfo, true, false);
   const maxLongFactor = isLong ? marketInfo.maxPnlFactorForDepositsLong : marketInfo.maxPnlFactorForWithdrawalsLong;
 
@@ -445,7 +475,7 @@ function getMaxPnlFactorExceededSwapStats(p: {
 }): SwapStats | undefined {
   const { marketInfo, isLong, usdIn, amountIn, tokenInAddress, tokenOutAddress, isWrap, isUnwrap, swapPricingType } = p;
 
-  if (!getIsMaxPnlFactorExceededAfterSwap({ marketInfo, isLong, usdIn })) {
+  if (!getIsMaxPnlFactorExceededForSwap({ marketInfo, isLong, usdIn })) {
     return undefined;
   }
 
