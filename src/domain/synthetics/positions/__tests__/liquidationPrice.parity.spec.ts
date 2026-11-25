@@ -150,7 +150,7 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
   markets: (market) => !market.isSpotOnly,
   cases: liquidationCases,
   scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO],
-  ours: ({ testCase }) => ({ liquidationPrice: testCase.liquidationPrice }),
+  app: ({ testCase }) => ({ liquidationPrice: testCase.liquidationPrice }),
   contract: async (input) => ({ liquidationPrice: await findReaderLiquidationPrice(input) }),
   fields: {
     liquidationPrice: {

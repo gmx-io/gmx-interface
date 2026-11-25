@@ -71,7 +71,7 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: withdrawalCases,
   scenarios: [UI_FEE_SCENARIO],
-  ours: getAppWithdrawalAmounts,
+  app: getAppWithdrawalAmounts,
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;

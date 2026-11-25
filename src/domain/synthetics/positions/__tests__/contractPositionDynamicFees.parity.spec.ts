@@ -22,7 +22,7 @@ const getSizeInCollateralTokens = ({ market, testCase: { position } }: ParityInp
 parity("getContractPositionDynamicFees <-> Reader.getPositionInfo, pending fees from stored market state", {
   markets: (market) => !market.isSpotOnly,
   cases: loadPositions,
-  ours: async ({ ctx, market, testCase }) => {
+  app: async ({ ctx, market, testCase }) => {
     const { pendingBorrowingFeesUsd, fundingFeeAmount } = await loadStoredStateFees(ctx, market, testCase);
 
     return { pendingBorrowingFeesUsd, fundingFeeAmount };

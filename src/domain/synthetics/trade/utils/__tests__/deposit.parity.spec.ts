@@ -98,7 +98,7 @@ parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: loadDepositCases,
   scenarios: [UI_FEE_SCENARIO],
-  ours: (input) => ({ marketTokenAmount: getAppDepositAmounts(input).marketTokenAmount }),
+  app: (input) => ({ marketTokenAmount: getAppDepositAmounts(input).marketTokenAmount }),
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
     const prices = getContractMarketPrices(ctx.tokensData, market)!;

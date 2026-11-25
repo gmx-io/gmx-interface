@@ -72,7 +72,7 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
   markets: (market) => !market.isSpotOnly,
   cases: decreaseCases,
   scenarios: [SMALL_NEGATIVE_IMPACT_CAP_SCENARIO],
-  ours: (input) => {
+  app: (input) => {
     const { acceptablePriceInfo, netPriceImpactValues } = getAppDecrease(input);
 
     return {
