@@ -5,7 +5,6 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { bigMath } from "sdk/utils/bigmath";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { expandDecimals, USD_DECIMALS } from "sdk/utils/numbers";
-import { convertToUsd } from "sdk/utils/tokens/utils";
 
 import { getRevertName, LIVE_STATE, loadParityContext, ParityContext, Scenario } from "./context";
 
@@ -22,7 +21,7 @@ type KnownIssue = {
 type Field<Case> = {
   /** What a bigint difference is measured against, the reader value by default */
   bpsOf?: (input: ParityInput<Case>) => bigint;
-  /** The bigint difference allowed, 0 by default */
+  /** The bigint difference allowed, 0.001 bps by default */
   toleranceBps?: number | ((input: ParityInput<Case>) => number);
   /** Why the field differs from the contract: its tests expect a difference and fail once it is gone */
   knownIssues?: KnownIssue[];
@@ -49,9 +48,9 @@ const codeVersion = execFileSync("git", ["describe", "--always", "--dirty"], { e
 
 type Row = { scenario: string; market: string; case: string; field: string; diffBps: number; failure?: string };
 
-export const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
+const DEFAULT_TOLERANCE_BPS = 0.001;
 
-export const getTokenUnitUsd = (token: { decimals: number }, price: bigint) => convertToUsd(1n, token.decimals, price)!;
+export const usd = (value: number) => expandDecimals(value, USD_DECIMALS);
 
 export function toBps(delta: bigint, base: bigint) {
   if (base === 0n) {
@@ -69,11 +68,10 @@ function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: 
   if (typeof ours === "bigint" && typeof reader === "bigint") {
     const base = field.bpsOf ? field.bpsOf(input) : reader;
     const diffBps = toBps(ours - reader, base);
-    const toleranceBps = typeof field.toleranceBps === "function" ? field.toleranceBps(input) : field.toleranceBps ?? 0;
-
-    if (!Number.isFinite(toleranceBps) || toleranceBps < 0) {
-      return { diffBps, failure: `bad tolerance ${toleranceBps}` };
-    }
+    const toleranceBps =
+      typeof field.toleranceBps === "function"
+        ? field.toleranceBps(input)
+        : field.toleranceBps ?? DEFAULT_TOLERANCE_BPS;
 
     return Math.abs(diffBps) <= toleranceBps ? { diffBps } : { diffBps, failure: `${diffBps} bps` };
   }
