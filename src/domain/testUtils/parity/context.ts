@@ -168,8 +168,9 @@ export function readReader<T>(ctx: ParityContext, functionName: string, args: re
   return ctx.client.readContract({ address: readerAddress, abi: readerAbi, functionName, args } as never) as Promise<T>;
 }
 
+// Only a decoded revert: viem also wraps node errors without revert data (-32603) as ContractFunctionRevertedError
 export function getRevertName(error: unknown): string | undefined {
   const revert = error instanceof BaseError ? error.walk((e) => e instanceof ContractFunctionRevertedError) : undefined;
 
-  return revert instanceof ContractFunctionRevertedError ? revert.data?.errorName ?? revert.shortMessage : undefined;
+  return revert instanceof ContractFunctionRevertedError ? revert.data?.errorName : undefined;
 }
