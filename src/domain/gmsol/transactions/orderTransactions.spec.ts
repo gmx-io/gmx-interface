@@ -1,6 +1,7 @@
 import type * as Sdk from "@gmsol-labs/gmsol-sdk";
 import * as wasm from "@gmsol-labs/gmsol-sdk/index_bg.js";
 import {
+  AccountRole,
   address,
   blockhash,
   compileTransaction,
@@ -29,12 +30,14 @@ import {
   SOLANA_TOKEN_PROGRAM_ID,
 } from "config/gmsol/program";
 import { GMSOL_SDK_WASM_SHA256 } from "config/gmsol/sdk";
+import { GMSOL_TOKENS } from "config/gmsol/tokens";
 import { copySolanaBytes } from "lib/solana/bytes";
 import { mockMarginCheckMarketInfo, mockTokensData } from "sdk/test/mock";
 import { getAcceptablePriceInfo } from "sdk/utils/prices";
 
 import {
   ASSOCIATED_TOKEN_PROGRAM,
+  COMPUTE_BUDGET_PROGRAM,
   WRAPPED_SOL_MINT,
   getGmsolAta,
   getGmsolPositionAddress,
@@ -69,16 +72,17 @@ vi.mock("../fetchSolanaTradingEnabled", () => ({ fetchSolanaTradingEnabled: () =
 
 const sdk = wasm as unknown as typeof Sdk;
 const market = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "Dqq58gS1TgRMDouUbdvhhzc51XXTNHG921WLxH9X2eB8")!;
+const solMarket = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg")!;
 let owner: string;
 let signingKey: CryptoKeyPair;
 let other: string;
 const lifetime = { recentBlockhash: "11111111111111111111111111111111", lastValidBlockHeight: 1n };
-function order(kind: GmsolCreateOrder["kind"] = "LimitIncrease", isLong = true): GmsolCreateOrder {
+function order(kind: GmsolCreateOrder["kind"] = "LimitIncrease", isLong = true, selected = market): GmsolCreateOrder {
   return {
     kind,
-    market,
-    collateralToken: market.longTokenAddress,
-    indexTokenDecimals: 8,
+    market: selected,
+    collateralToken: selected.longTokenAddress,
+    indexTokenDecimals: GMSOL_TOKENS.find((token) => token.address === selected.indexTokenAddress)!.decimals,
     isLong,
     sizeDeltaUsd: 10n ** 31n,
     collateralDeltaAmount: kind.includes("Increase") ? 1000000n : 0n,
@@ -103,6 +107,68 @@ async function build(orders: GmsolCreateOrder[], atomic = false, lookupTables: R
     sdk,
   });
 }
+// Same layout as the frozen tables: shared accounts in the first, the market only in the second.
+async function frozenTables(selected = market) {
+  const marketPda = await gmsolPda("market", [GMSOL_STORE_ADDRESS, selected.marketTokenAddress]);
+  const excluded = new Set([
+    owner,
+    marketPda,
+    await gmsolPda("user", [GMSOL_STORE_ADDRESS, owner]),
+    await getGmsolPositionAddress({
+      owner,
+      marketToken: selected.marketTokenAddress,
+      collateralToken: selected.longTokenAddress,
+      isLong: true,
+    }),
+    await getGmsolAta(owner, selected.longTokenAddress),
+    await getGmsolAta(owner, selected.shortTokenAddress),
+  ]);
+  const single = await build([order("LimitIncrease", true, selected)]);
+  const keys = single.groups
+    .flat()
+    .flatMap((bytes) => [...decodeGmsolTransaction(bytes, single).compiled.staticAccounts]);
+  return {
+    [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: [...new Set(keys)].filter((key) => !excluded.has(key)),
+    [GMSOL_LOOKUP_TABLE_ADDRESSES[1]]: [marketPda],
+  };
+}
+const instructionsOf = (plan: GmsolTransactionPlan) =>
+  plan.groups.flat().map((bytes) => [...decodeGmsolTransaction(bytes, plan).message.instructions]);
+const gmsolName = (ix: Instruction) =>
+  ix.programAddress === GMSOL_STORE_PROGRAM_ID
+    ? decodeGmsolInstruction(
+        copySolanaBytes(ix.data!),
+        (ix.accounts ?? []).map((account) => account.address)
+      ).name
+    : undefined;
+function orderContext(kind: GmsolCreateOrder["kind"], isLong: boolean, orderAddress: string) {
+  return {
+    kind,
+    isLong,
+    address: orderAddress,
+    marketToken: market.marketTokenAddress,
+    owner,
+    receiver: owner,
+    rentReceiver: owner,
+    referrer: undefined,
+    initialCollateralToken: kind.includes("Increase") ? market.longTokenAddress : undefined,
+    finalOutputToken: kind.includes("Increase") ? undefined : market.longTokenAddress,
+    longToken: market.longTokenAddress,
+    shortToken: market.shortTokenAddress,
+    unwrapNative: false,
+    callback: undefined,
+  };
+}
+const orderUpdate = (kind: GmsolCreateOrder["kind"], isLong: boolean) => ({
+  kind,
+  indexTokenDecimals: 8,
+  isLong,
+  sizeDeltaUsd: 20n * 10n ** 30n,
+  acceptablePrice: 100001n * 10n ** 30n,
+  triggerPrice: 90001n * 10n ** 30n,
+  minOutput: undefined,
+  validFromTs: undefined,
+});
 beforeAll(async () => {
   const bytes = readFileSync("node_modules/@gmsol-labs/gmsol-sdk/index_bg.wasm");
   expect(createHash("sha256").update(bytes).digest("hex")).toBe(GMSOL_SDK_WASM_SHA256);
@@ -118,6 +184,7 @@ beforeAll(async () => {
   other = new sdk.Keypair().pubkey().toString();
 });
 it("validates pinned WASM create, update and cancel transactions for both sides FESOL-56", async () => {
+  const lookupTables = await frozenTables();
   for (const kind of [
     "MarketIncrease",
     "LimitIncrease",
@@ -126,66 +193,36 @@ it("validates pinned WASM create, update and cancel transactions for both sides 
     "StopLossDecrease",
   ] as const)
     for (const isLong of [true, false]) {
-      const plan = await build([order(kind, isLong)]);
+      const plan = await build([order(kind, isLong)], false, lookupTables);
       const result = await validateGmsolTransactionPlan(plan);
       expect(result.orderAddresses).toHaveLength(1);
       expect(result.keeperLamports).toBe(300000n);
-      const context = {
-        kind,
-        isLong,
-        address: result.orderAddresses[0],
-        marketToken: market.marketTokenAddress,
-        owner,
-        receiver: owner,
-        rentReceiver: owner,
-        referrer: undefined,
-        initialCollateralToken: kind.includes("Increase") ? market.longTokenAddress : undefined,
-        finalOutputToken: kind.includes("Increase") ? undefined : market.longTokenAddress,
-        longToken: market.longTokenAddress,
-        shortToken: market.shortTokenAddress,
-        unwrapNative: false,
-        callback: undefined,
-      };
+      const prepared = instructionsOf(plan)
+        .flat()
+        .filter((ix) => gmsolName(ix) === "prepare_position");
+      expect(prepared, kind).toHaveLength(kind.includes("Increase") ? 1 : 0);
+      const context = orderContext(kind, isLong, result.orderAddresses[0]);
       for (const action of [
-        {
-          type: "update" as const,
-          order: context,
-          changes: {
-            kind,
-            indexTokenDecimals: 8,
-            isLong,
-            sizeDeltaUsd: 20n * 10n ** 30n,
-            acceptablePrice: 100001n * 10n ** 30n,
-            triggerPrice: 90001n * 10n ** 30n,
-            minOutput: undefined,
-            validFromTs: undefined,
-          },
-        },
+        { type: "update" as const, order: context, changes: orderUpdate(kind, isLong) },
         { type: "cancel" as const, order: context },
       ]) {
-        const edited = await buildGmsolOrderTransactions({ owner, action, ...lifetime, lookupTables: {}, sdk });
+        const edited = await buildGmsolOrderTransactions({ owner, action, ...lifetime, lookupTables, sdk });
         await expect(validateGmsolTransactionPlan(edited)).resolves.toBeDefined();
       }
     }
 });
 it("validates native SOL wrapping without allowing arbitrary token operations FESOL-56", async () => {
-  const solMarket = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg")!;
   const native = {
-    ...order("MarketIncrease"),
-    market: solMarket,
-    collateralToken: solMarket.longTokenAddress,
+    ...order("MarketIncrease", true, solMarket),
     payToken: solMarket.longTokenAddress,
     payWithNativeSol: true,
     collateralDeltaAmount: 10000000n,
-    indexTokenDecimals: 5,
   };
   const plan = await build([native]);
   expect((await validateGmsolTransactionPlan(plan)).wrapLamports).toBe(10000000n);
 });
 it("keeps increase and TP/SL in one size-bounded v0 transaction with lookup tables FESOL-56", async () => {
-  const first = await build([order()]);
-  const keys = decodeGmsolTransaction(first.groups[0][0], first).compiled.staticAccounts.filter((k) => k !== owner);
-  const tables = { [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: keys };
+  const tables = await frozenTables();
   const plan = await build([order("MarketIncrease"), order("LimitDecrease"), order("StopLossDecrease")], true, tables);
   expect(plan.groups).toHaveLength(1);
   expect(plan.groups[0]).toHaveLength(1);
@@ -204,75 +241,31 @@ it("keeps increase and TP/SL in one size-bounded v0 transaction with lookup tabl
   }
 });
 it("prepares wallet accounts before an indivisible increase with TP/SL", async () => {
-  const market = GMSOL_MARKETS.find(
-    (item) => item.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg"
-  )!;
-  const createOrder = (kind: GmsolCreateOrder["kind"]) => ({
-    ...order(kind),
-    market,
-    collateralToken: market.longTokenAddress,
-    indexTokenDecimals: 5,
-  });
-  const first = await build([createOrder("LimitIncrease")]);
-  const walletAccounts = new Set([
-    owner,
-    await gmsolPda("user", [GMSOL_STORE_ADDRESS, owner]),
-    await getGmsolPositionAddress({
-      owner,
-      marketToken: market.marketTokenAddress,
-      collateralToken: market.longTokenAddress,
-      isLong: true,
-    }),
-    await getGmsolAta(owner, market.longTokenAddress),
-    await getGmsolAta(owner, market.shortTokenAddress),
-  ]);
-  const keys = first.groups
-    .flat()
-    .flatMap((bytes) => [...decodeGmsolTransaction(bytes, first).compiled.staticAccounts]);
-  const tables = {
-    [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: [...new Set(keys)].filter((key) => !walletAccounts.has(key)),
-    [GMSOL_LOOKUP_TABLE_ADDRESSES[1]]: [],
-  };
+  const tables = await frozenTables(solMarket);
   const plan = await build(
-    [createOrder("LimitIncrease"), createOrder("LimitDecrease"), createOrder("StopLossDecrease")],
+    [
+      order("MarketIncrease", true, solMarket),
+      order("LimitDecrease", true, solMarket),
+      order("StopLossDecrease", true, solMarket),
+    ],
     true,
     tables
   );
   expect(plan.groups.map((group) => group.length)).toEqual([1, 1]);
-  const instructions = plan.groups.flat().map((bytes) => [...decodeGmsolTransaction(bytes, plan).message.instructions]);
-  const isOrder = (ix: Instruction) =>
-    ix.programAddress === GMSOL_STORE_PROGRAM_ID &&
-    decodeGmsolInstruction(
-      copySolanaBytes(ix.data!),
-      (ix.accounts ?? []).map((account) => account.address)
-    ).name === "create_order_v2";
+  const instructions = instructionsOf(plan);
+  const isOrder = (ix: Instruction) => gmsolName(ix) === "create_order_v2";
   expect(instructions.map((group) => group.filter(isOrder).length)).toEqual([0, 3]);
   const validated = await validateGmsolTransactionPlan(plan);
   expect(validated.transactionCosts.map((cost) => cost.keeperLamports)).toEqual([0n, 900000n]);
   expect(plan.groups.flat().every((bytes) => bytes.length <= 1232)).toBe(true);
-  const encode = (instructions: Instruction[]) =>
-    copySolanaBytes(
-      getTransactionEncoder().encode(
-        compileTransaction(
-          compressTransactionMessageUsingAddressLookupTables(
-            {
-              version: 0,
-              feePayer: { address: address(owner) },
-              lifetimeConstraint: { blockhash: blockhash(lifetime.recentBlockhash), lastValidBlockHeight: 1n },
-              instructions,
-            },
-            Object.fromEntries(Object.entries(tables).map(([key, values]) => [key, values.map(address)]))
-          )
-        )
-      )
-    );
   for (const unsafe of [
     instructions[1].find(isOrder)!,
     instructions[1].find((ix) => ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && ix.accounts?.[2].address !== owner)!,
   ]) {
     expect(unsafe).toBeDefined();
     const changed = structuredClone(plan);
-    changed.groups = [[encode([...instructions[0], unsafe])], [encode(instructions[1].filter((ix) => ix !== unsafe))]];
+    const kept = instructions[1].filter((ix) => ix !== unsafe);
+    changed.groups = [[encode(plan, [...instructions[0], unsafe])], [encode(plan, kept)]];
     await expect(validateGmsolTransactionPlan(changed)).rejects.toThrow("must stay in the final transaction");
   }
   transport.tables = tables;
@@ -298,111 +291,79 @@ it("prepares wallet accounts before an indivisible increase with TP/SL", async (
   expect(signedOrderCounts).toEqual([0]);
 });
 async function nativeAtomicFixture() {
-  const market = GMSOL_MARKETS.find((m) => m.marketTokenAddress === "BvC73rarCMrhEnk3JmqaLntpnrwfUCR5eTrf7HQu6ieg")!;
-  const onMarket = (kind: GmsolCreateOrder["kind"]) => ({
-    ...order(kind),
-    market,
-    collateralToken: market.longTokenAddress,
-    indexTokenDecimals: 5,
-  });
-  const marketPda = await gmsolPda("market", [GMSOL_STORE_ADDRESS, market.marketTokenAddress]);
-  const excluded = new Set([
-    owner,
-    marketPda,
-    await gmsolPda("user", [GMSOL_STORE_ADDRESS, owner]),
-    await getGmsolPositionAddress({
-      owner,
-      marketToken: market.marketTokenAddress,
-      collateralToken: market.longTokenAddress,
-      isLong: true,
-    }),
-    await getGmsolAta(owner, market.longTokenAddress),
-    await getGmsolAta(owner, market.shortTokenAddress),
-  ]);
-  const single = await build([onMarket("LimitIncrease")]);
-  const keys = single.groups
-    .flat()
-    .flatMap((bytes) => [...decodeGmsolTransaction(bytes, single).compiled.staticAccounts]);
-  // Same layout as the frozen tables: shared accounts in the first, the market only in the second.
-  const tables = {
-    [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: [...new Set(keys)].filter((key) => !excluded.has(key)),
-    [GMSOL_LOOKUP_TABLE_ADDRESSES[1]]: [marketPda],
-  };
-  const action = (kind: "MarketIncrease" | "LimitIncrease") => ({
+  const tables = await frozenTables(solMarket);
+  const action = {
     type: "create" as const,
     atomic: true,
     orders: [
       {
-        ...onMarket(kind),
-        payToken: market.longTokenAddress,
+        ...order("MarketIncrease", true, solMarket),
+        payToken: solMarket.longTokenAddress,
         payWithNativeSol: true,
         collateralDeltaAmount: 5_000_000n,
       },
-      onMarket("LimitDecrease"),
-      onMarket("StopLossDecrease"),
+      order("LimitDecrease", true, solMarket),
+      order("StopLossDecrease", true, solMarket),
     ],
-  });
+  };
   return { tables, action };
 }
 it("wraps only the wallet WSOL shortfall before an indivisible native increase with TP/SL TRD-72", async () => {
   const { tables, action } = await nativeAtomicFixture();
   const isWrap = (ix: Instruction) =>
     ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID || ix.programAddress === SOLANA_TOKEN_PROGRAM_ID;
-  for (const kind of ["MarketIncrease", "LimitIncrease"] as const)
-    for (const [wrapped, shortfall] of [
-      [0n, 5_000_000n],
-      [2_000_000n, 3_000_000n],
-      [5_000_000n, 0n],
-      [7_000_000n, 0n],
-    ] as const) {
-      const plan = await buildGmsolOrderTransactions({
-        owner,
-        action: action(kind),
-        ...lifetime,
-        lookupTables: tables,
-        wrappedSolBalance: wrapped,
-        sdk,
-      });
-      expect(plan.groups.map((group) => group.length)).toEqual([1, 1]);
-      expect(plan.groups[1][0].length).toBe(kind === "MarketIncrease" ? 1184 : 1200);
-      const [setup, orders] = plan.groups
-        .flat()
-        .map((bytes) => [...decodeGmsolTransaction(bytes, plan).message.instructions]);
-      expect(setup.filter(isWrap)).toHaveLength(shortfall > 0n ? 2 : 0);
-      expect(orders.filter(isWrap)).toEqual([]);
-      expect(
-        orders.filter((ix) => ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && ix.accounts?.[2].address !== owner)
-      ).toHaveLength(6);
-      const validated = await validateGmsolTransactionPlan(plan);
-      expect(validated.orderAddresses).toHaveLength(3);
-      expect(validated.transactionCosts).toEqual([
-        { keeperLamports: 0n, wrapLamports: shortfall },
-        { keeperLamports: 900000n, wrapLamports: 0n },
-      ]);
-      const increase = orders.find((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)!;
-      const decoded = decodeGmsolInstruction(
-        copySolanaBytes(increase.data!),
-        [...increase.accounts!].map((account) => account.address)
-      );
-      decoded.reader.read(32);
-      expect([decoded.name, readCreateOrderParams(decoded.reader).amount]).toEqual(["create_order_v2", 5_000_000n]);
-      // A plan built before an earlier wrap confirmed cannot wrap again.
-      if (shortfall > 0n) {
-        await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: wrapped + shortfall })).rejects.toThrow(
-          "Unexpected SOL transfer amount"
-        );
-      }
-      await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: undefined })).rejects.toThrow(
-        "Invalid wrapped SOL snapshot"
+  for (const [wrapped, shortfall] of [
+    [0n, 5_000_000n],
+    [2_000_000n, 3_000_000n],
+    [5_000_000n, 0n],
+    [7_000_000n, 0n],
+  ] as const) {
+    const plan = await buildGmsolOrderTransactions({
+      owner,
+      action,
+      ...lifetime,
+      lookupTables: tables,
+      wrappedSolBalance: wrapped,
+      sdk,
+    });
+    expect(plan.groups.map((group) => group.length)).toEqual([1, 1]);
+    expect(plan.groups[1][0].length).toBe(1184);
+    const [setup, orders] = instructionsOf(plan);
+    expect(setup.filter(isWrap)).toHaveLength(shortfall > 0n ? 2 : 0);
+    expect(orders.filter(isWrap)).toEqual([]);
+    expect(
+      orders.filter((ix) => ix.programAddress === ASSOCIATED_TOKEN_PROGRAM && ix.accounts?.[2].address !== owner)
+    ).toHaveLength(6);
+    const validated = await validateGmsolTransactionPlan(plan);
+    expect(validated.orderAddresses).toHaveLength(3);
+    expect(validated.transactionCosts).toEqual([
+      { keeperLamports: 0n, wrapLamports: shortfall },
+      { keeperLamports: 900000n, wrapLamports: 0n },
+    ]);
+    const increase = orders.find((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)!;
+    const decoded = decodeGmsolInstruction(
+      copySolanaBytes(increase.data!),
+      [...increase.accounts!].map((account) => account.address)
+    );
+    decoded.reader.read(32);
+    expect([decoded.name, readCreateOrderParams(decoded.reader).amount]).toEqual(["create_order_v2", 5_000_000n]);
+    // A plan built before an earlier wrap confirmed cannot wrap again.
+    if (shortfall > 0n) {
+      await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: wrapped + shortfall })).rejects.toThrow(
+        "Unexpected SOL transfer amount"
       );
     }
+    await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: undefined })).rejects.toThrow(
+      "Invalid wrapped SOL snapshot"
+    );
+  }
 });
 it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72", async () => {
   const { tables, action } = await nativeAtomicFixture();
   const wsol = (amount: bigint) => ({ [WRAPPED_SOL_MINT]: amount });
   transport.tables = tables;
   transport.balances.mockResolvedValue(wsol(2_000_000n));
-  const plan = await prepareGmsolOrderTransactions({ owner, action: action("MarketIncrease") });
+  const plan = await prepareGmsolOrderTransactions({ owner, action });
   expect(plan.wrappedSolBalance).toBe(2_000_000n);
   for (const failure of ["stale", "changed-after-signing", "unavailable", undefined] as const) {
     localStorage.removeItem("gmsol-pending-submissions");
@@ -427,24 +388,27 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     expect(transport.rpc.sendTransaction.mock.calls.length, String(failure)).toBe(failure === undefined ? 2 : 0);
   }
 });
+function compile(plan: GmsolTransactionPlan, instructions: Instruction[]) {
+  return compileTransaction(
+    compressTransactionMessageUsingAddressLookupTables(
+      {
+        version: 0,
+        feePayer: { address: address(plan.owner) },
+        lifetimeConstraint: {
+          blockhash: blockhash(plan.recentBlockhash),
+          lastValidBlockHeight: plan.lastValidBlockHeight,
+        },
+        instructions,
+      },
+      Object.fromEntries(Object.entries(plan.lookupTables).map(([key, values]) => [key, values.map(address)]))
+    )
+  );
+}
+const encode = (plan: GmsolTransactionPlan, instructions: Instruction[]) =>
+  copySolanaBytes(getTransactionEncoder().encode(compile(plan, instructions)));
 function mutateInstructions(plan: GmsolTransactionPlan, change: (ix: Instruction[]) => Instruction[]) {
   const next = structuredClone(plan);
-  const decoded = decodeGmsolTransaction(next.groups[0][0], next);
-  const instructions = change([...decoded.message.instructions]);
-  next.groups = [
-    [
-      copySolanaBytes(
-        getTransactionEncoder().encode(
-          compileTransaction({
-            version: 0,
-            feePayer: { address: address(owner) },
-            lifetimeConstraint: { blockhash: blockhash(lifetime.recentBlockhash), lastValidBlockHeight: 1n },
-            instructions,
-          })
-        )
-      ),
-    ],
-  ];
+  next.groups = [[encode(next, change([...decodeGmsolTransaction(next.groups[0][0], next).message.instructions]))]];
   return next;
 }
 it("compacts only zero output bounds while preserving finite prices and strict validation FESOL-56", async () => {
@@ -482,30 +446,91 @@ it("compacts only zero output bounds while preserving finite prices and strict v
         }
       }
 });
-it("rejects unexpected programs, gmsol instructions, receivers, amounts and truncated input FESOL-56", async () => {
-  const plan = await build([order()]);
-  for (const mutation of ["program", "gmsol", "receiver", "amount", "truncated"] as const) {
-    const malicious = mutateInstructions(plan, (ixs) =>
-      ixs.map((ix) => {
-        if (ix.programAddress !== GMSOL_STORE_PROGRAM_ID || ix.data?.[0] !== 200) return ix;
-        const data = copySolanaBytes(ix.data!);
-        const accounts = [...ix.accounts!];
-        if (mutation === "program") return { ...ix, programAddress: address(other) };
-        if (mutation === "gmsol") data[0] = 0;
-        if (mutation === "receiver") accounts[1] = { ...accounts[1], address: address(other) };
-        if (mutation === "amount") data[51] ^= 1;
-        return { ...ix, accounts, data: mutation === "truncated" ? data.slice(0, 45) : data };
-      })
-    );
-    await expect(validateGmsolTransactionPlan(malicious), mutation).rejects.toThrow();
-  }
-  const unresolved = await build([order()], false, {
-    [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: decodeGmsolTransaction(plan.groups[0][0], plan).compiled.staticAccounts.filter(
-      (k) => k !== owner
-    ),
-  });
-  unresolved.lookupTables = {};
-  await expect(validateGmsolTransactionPlan(unresolved)).rejects.toThrow(/lookup/i);
+type Mutation = (ixs: Instruction[]) => Instruction[];
+const foreignProgram: Mutation = (ixs) => [
+  ...ixs,
+  { ...ixs.find((ix) => gmsolName(ix) !== undefined)!, programAddress: address(other) },
+];
+const where =
+  (match: (ix: Instruction) => boolean, change: (ix: Instruction) => Instruction): Mutation =>
+  (ixs) =>
+    ixs.map((ix) => (match(ix) ? change(ix) : ix));
+const named = (name: string) => (ix: Instruction) => gmsolName(ix) === name;
+const isComputePrice = (ix: Instruction) => ix.programAddress === COMPUTE_BUDGET_PROGRAM && ix.data?.[0] === 3;
+const isAta = (ix: Instruction) => ix.programAddress === ASSOCIATED_TOKEN_PROGRAM;
+const otherAccount = (index: number) => (ix: Instruction) => ({
+  ...ix,
+  accounts: ix.accounts!.map((account, i) =>
+    i === index ? { address: address(other), role: AccountRole.READONLY } : account
+  ),
+});
+const flipByte = (offset: number) => (ix: Instruction) => {
+  const data = copySolanaBytes(ix.data!);
+  data[offset] ^= 1;
+  return { ...ix, data };
+};
+const truncate = (length: number) => (ix: Instruction) => ({ ...ix, data: copySolanaBytes(ix.data!).slice(0, length) });
+async function expectRejections(plan: GmsolTransactionPlan, rows: [string, Mutation][]) {
+  for (const [message, change] of rows)
+    await expect(validateGmsolTransactionPlan(mutateInstructions(plan, change)), message).rejects.toThrow(message);
+}
+it("rejects each create rule at its own check on the frozen tables FESOL-56", async () => {
+  const tables = await frozenTables();
+  const plan = await build([order()], false, tables);
+  const transfer: Instruction = {
+    programAddress: address(SOLANA_SYSTEM_PROGRAM_ID),
+    accounts: [
+      { address: address(owner), role: AccountRole.WRITABLE_SIGNER },
+      { address: address(other), role: AccountRole.WRITABLE },
+    ],
+    data: Uint8Array.of(2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0),
+  };
+  await expectRejections(plan, [
+    ["Unexpected instruction program", foreignProgram],
+    ["Unexpected gmsol instruction", where(named("create_order_v2"), flipByte(0))],
+    ["Unexpected receiver account", where(named("create_order_v2"), otherAccount(1))],
+    ["Unexpected order executionLamports", where(named("create_order_v2"), flipByte(42))],
+    ["Unexpected order amount", where(named("create_order_v2"), flipByte(51))],
+    ["Truncated instruction data", where(named("create_order_v2"), truncate(45))],
+    ["Invalid compute price", where(isComputePrice, flipByte(4))],
+    ["Unexpected ATA owner or mint", where(isAta, otherAccount(2))],
+    ["Unexpected SOL receiver", (ixs) => [...ixs, transfer]],
+  ]);
+  await expect(validateGmsolTransactionPlan({ ...plan, lookupTables: {} })).rejects.toThrow("Unresolved lookup table");
+  await expect(build([order(), order("LimitDecrease")], true, tables)).rejects.toThrow(
+    "TP/SL on a limit increase is not supported"
+  );
+});
+it("rejects each update rule at its own check on the frozen tables FESOL-56", async () => {
+  const lookupTables = await frozenTables();
+  const orderAddress = await gmsolPda("order", [GMSOL_STORE_ADDRESS, owner], [new Uint8Array(32)]);
+  const action = {
+    type: "update" as const,
+    order: orderContext("LimitIncrease", true, orderAddress),
+    changes: orderUpdate("LimitIncrease", true),
+  };
+  const plan = await buildGmsolOrderTransactions({ owner, action, ...lifetime, lookupTables, sdk });
+  await expectRejections(plan, [
+    ["Unexpected instruction program", foreignProgram],
+    ["Unexpected updated size_delta_value", where(named("update_order_v2"), flipByte(9))],
+    ["Unexpected order account", where(named("update_order_v2"), otherAccount(3))],
+  ]);
+});
+it("rejects each cancel rule at its own check on the frozen tables FESOL-56", async () => {
+  const lookupTables = await frozenTables();
+  const orderAddress = await gmsolPda("order", [GMSOL_STORE_ADDRESS, owner], [new Uint8Array(32)]);
+  const action = { type: "cancel" as const, order: orderContext("LimitIncrease", true, orderAddress) };
+  const plan = await buildGmsolOrderTransactions({ owner, action, ...lifetime, lookupTables, sdk });
+  await expectRejections(plan, [
+    ["Unexpected instruction program", foreignProgram],
+    ["Unexpected receiver account", where(named("close_order_v2"), otherAccount(4))],
+    ["Unexpected rent_receiver account", where(named("close_order_v2"), otherAccount(5))],
+    ["Unexpected initial_collateral_token_ata account", where(named("close_order_v2"), otherAccount(17))],
+    ["Unexpected close reason", where(named("close_order_v2"), flipByte(9))],
+  ]);
+  await expect(
+    validateGmsolTransactionPlan({ ...plan, action: { ...action, order: { ...action.order, receiver: other } } })
+  ).rejects.toThrow("Order owner and receivers must be the wallet");
 });
 
 beforeEach(() => {
@@ -918,28 +943,12 @@ function walletMessage(plan: GmsolTransactionPlan, change: (ix: Instruction[]) =
     accounts: [{ address: address(owner), role: 3 }],
     data: accountAssertion,
   };
-  return compileTransaction(
-    compressTransactionMessageUsingAddressLookupTables(
-      {
-        version: 0,
-        feePayer: { address: address(owner) },
-        lifetimeConstraint: {
-          blockhash: blockhash(plan.recentBlockhash),
-          lastValidBlockHeight: plan.lastValidBlockHeight,
-        },
-        instructions: change([assertion, ...message.instructions, { ...assertion, data: tokenAssertion }]),
-      },
-      Object.fromEntries(Object.entries(plan.lookupTables).map(([key, values]) => [key, values.map(address)]))
-    )
-  );
+  return compile(plan, change([assertion, ...message.instructions, { ...assertion, data: tokenAssertion }]));
 }
 
 it("accepts Phantom protection assertions with real signatures and preserved LUTs TRD-72", async () => {
-  const fixture = await sendFixture();
-  const keys = decodeGmsolTransaction(fixture.plan.groups[0][0], fixture.plan).compiled.staticAccounts.filter(
-    (k) => k !== owner
-  );
-  for (const tables of [{}, { [GMSOL_LOOKUP_TABLE_ADDRESSES[0]]: keys }]) {
+  await sendFixture();
+  for (const tables of [{}, await frozenTables()]) {
     const plan = await build([order()], false, tables);
     const lookupTables = { ...transport.tables, ...tables };
     plan.lookupTables = lookupTables;

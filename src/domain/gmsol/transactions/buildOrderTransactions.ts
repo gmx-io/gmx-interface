@@ -91,6 +91,11 @@ export async function buildGmsolOrderTransactions({
         increase.kind === "MarketIncrease" || increase.kind === "LimitIncrease",
         "Atomic order must start with an increase"
       );
+      // A trigger that fires before the limit fills closes the shared empty position the limit order needs.
+      requireGmsol(
+        increase.kind === "MarketIncrease" || triggers.length === 0,
+        "TP/SL on a limit increase is not supported"
+      );
       requireGmsol(
         triggers.every(
           (order) =>
@@ -98,7 +103,7 @@ export async function buildGmsolOrderTransactions({
             order.market.marketTokenAddress === increase.market.marketTokenAddress &&
             order.collateralToken === increase.collateralToken &&
             order.isLong === increase.isLong &&
-            order.sizeDeltaUsd <= increase.sizeDeltaUsd
+            order.sizeDeltaUsd <= (action.existingPositionSizeUsd ?? 0n) + increase.sizeDeltaUsd
         ),
         "Invalid atomic TP/SL intent"
       );
@@ -151,8 +156,8 @@ export async function buildGmsolOrderTransactions({
           receive_token: order.receiveToken,
           skip_wrap_native_on_pay: !order.payWithNativeSol,
           skip_unwrap_native_on_receive: !order.unwrapNative,
-          // Idempotently prepares a missing position ahead of the order, including for an atomic TP/SL batch.
-          force_create_positions: true,
+          // A decrease must fail simulation when its position is gone, so only an increase prepares one.
+          force_create_positions: order.kind === "MarketIncrease" || order.kind === "LimitIncrease",
         };
         const next = wasm.create_orders_builder(order.kind, [toGmsolOrderParams(order)], options);
         if (builder) {

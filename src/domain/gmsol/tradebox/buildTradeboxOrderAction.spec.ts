@@ -47,6 +47,8 @@ const entry = {
   sizeUsd: { error: null },
   percentage: { error: null },
 } as SidecarOrderEntry;
+const sized = (sizeDeltaUsd: bigint) =>
+  ({ ...entry, decreaseAmounts: { ...decrease, sizeDeltaUsd } }) as SidecarOrderEntry;
 const input = {
   marketInfo,
   fromToken: collateralToken,
@@ -56,30 +58,35 @@ const input = {
   isLong: true,
   sidecarEntries: [] as SidecarOrderEntry[],
   allowedSlippage: 50,
+  existingPositionSizeUsd: undefined as bigint | undefined,
 };
 
 describe("shared Solana order intent", () => {
   it("preserves payment, directional slippage and partial TP/SL collateral across market and limit requests", () => {
     for (const isLong of [true, false]) {
       for (const tradeMode of [TradeMode.Market, TradeMode.Limit]) {
-        const result = buildGmsolTradeboxOrderAction({ ...input, isLong, tradeMode, sidecarEntries: [entry] });
+        const isMarket = tradeMode === TradeMode.Market;
+        const sidecarEntries = isMarket ? [entry] : [];
+        const result = buildGmsolTradeboxOrderAction({ ...input, isLong, tradeMode, sidecarEntries });
         if (result.type !== "create") throw new Error("Expected create");
-        expect(result.atomic).toBe(true);
+        expect(result.atomic).toBe(isMarket);
         expect(result.orders[0]).toMatchObject({
-          kind: tradeMode === TradeMode.Market ? "MarketIncrease" : "LimitIncrease",
+          kind: isMarket ? "MarketIncrease" : "LimitIncrease",
           collateralDeltaAmount: 10_000_000n,
-          acceptablePrice: tradeMode === TradeMode.Limit ? 2_000n * usd : (isLong ? 2_010n : 1_990n) * usd,
-          triggerPrice: tradeMode === TradeMode.Limit ? 1_950n * usd : undefined,
+          acceptablePrice: isMarket ? (isLong ? 2_010n : 1_990n) * usd : 2_000n * usd,
+          triggerPrice: isMarket ? undefined : 1_950n * usd,
         });
-        expect(result.orders[1]).toMatchObject({
-          kind: "LimitDecrease",
-          collateralDeltaAmount: 4_900_000n,
-          sizeDeltaUsd: 50n * usd,
-          acceptablePrice: 2_090n * usd,
-          triggerPrice: 2_100n * usd,
-          decreaseSwapType: "NoSwap",
-          payWithNativeSol: false,
-        });
+        expect(result.orders.slice(1)).toMatchObject(
+          sidecarEntries.map(() => ({
+            kind: "LimitDecrease",
+            collateralDeltaAmount: 4_900_000n,
+            sizeDeltaUsd: 50n * usd,
+            acceptablePrice: 2_090n * usd,
+            triggerPrice: 2_100n * usd,
+            decreaseSwapType: "NoSwap",
+            payWithNativeSol: false,
+          }))
+        );
       }
     }
     for (const triggerOrderType of [OrderType.LimitDecrease, OrderType.StopLossDecrease] as const) {
@@ -105,9 +112,16 @@ describe("shared Solana order intent", () => {
       { amounts: { ...amounts, swapStrategy: { type: "internalSwap" } } },
       { sidecarEntries: [{ ...entry, txnType: "update" }] },
       { sidecarEntries: [entry, entry] },
-      { sidecarEntries: [{ ...entry, decreaseAmounts: { ...decrease, sizeDeltaUsd: 101n * usd } }] },
+      { sidecarEntries: [sized(101n * usd)] },
+      { existingPositionSizeUsd: 1_000n * usd, sidecarEntries: [sized(1_101n * usd)] },
+      { tradeMode: TradeMode.Limit, sidecarEntries: [entry] },
     ])
       expect(() => buildGmsolTradeboxOrderAction({ ...input, ...patch } as typeof input)).toThrow(GmsolTradeboxError);
+    const increased = { ...input, existingPositionSizeUsd: 1_000n * usd, sidecarEntries: [sized(1_100n * usd)] };
+    expect(buildGmsolTradeboxOrderAction(increased)).toMatchObject({
+      atomic: true,
+      existingPositionSizeUsd: 1_000n * usd,
+    });
     const solMarket = GMSOL_MARKETS.find(
       (item) => item.longTokenAddress === "So11111111111111111111111111111111111111112"
     )!;

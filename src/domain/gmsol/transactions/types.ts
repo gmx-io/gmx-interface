@@ -55,7 +55,7 @@ export type GmsolOrderUpdate = {
 };
 
 export type GmsolOrderAction =
-  | { type: "create"; orders: GmsolCreateOrder[]; atomic: boolean }
+  | { type: "create"; orders: GmsolCreateOrder[]; atomic: boolean; existingPositionSizeUsd?: bigint }
   | { type: "update"; order: GmsolOrderContext; changes: GmsolOrderUpdate }
   | { type: "cancel"; order: GmsolOrderContext };
 

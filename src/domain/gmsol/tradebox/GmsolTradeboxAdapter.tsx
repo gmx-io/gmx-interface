@@ -16,6 +16,7 @@ import {
   selectTradeboxCollateralToken,
   selectTradeboxFromToken,
   selectTradeboxDecreasePositionAmounts,
+  selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPosition,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
@@ -62,9 +63,10 @@ export default function GmsolTradeboxAdapter({
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const amounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const tradeMode = useSelector(selectTradeboxTradeMode);
-  const { isLong, isIncrease, isMarket, isTrigger } = useSelector(selectTradeboxTradeFlags);
+  const { isLong, isIncrease, isLimit, isMarket, isTrigger } = useSelector(selectTradeboxTradeFlags);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+  const existingPosition = useSelector(selectTradeboxExistingPositionForPreview);
   const tradeError = useSelector(selectTradeboxTradeTypeError);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
   const feeDiscountError = useSelector(selectFeeDiscountError);
@@ -75,7 +77,7 @@ export default function GmsolTradeboxAdapter({
   const ordersError = useSelector(selectOrdersInfoError);
   const positionsLoading = useSelector(selectIsPositionsLoading);
   const ordersLoading = useSelector(selectIsOrdersLoading);
-  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled) && !isLimit;
   const entries = useSidecarEntries();
   const sidecars = useSidecarOrders();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -101,6 +103,7 @@ export default function GmsolTradeboxAdapter({
           allowedSlippage,
           isLong,
           sidecarEntries: isTpSlEnabled ? entries : [],
+          existingPositionSizeUsd: existingPosition?.sizeInUsd,
         }),
       };
     } catch (error) {
@@ -113,6 +116,7 @@ export default function GmsolTradeboxAdapter({
     amounts,
     allowedSlippage,
     decreaseAmounts,
+    existingPosition?.sizeInUsd,
     selectedPosition,
     wallet.address,
     isTrigger,

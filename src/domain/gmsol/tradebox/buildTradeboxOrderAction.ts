@@ -39,6 +39,7 @@ export function buildGmsolTradeboxOrderAction({
   isLong,
   sidecarEntries,
   allowedSlippage,
+  existingPositionSizeUsd,
 }: {
   marketInfo: MarketInfo | undefined;
   fromToken: TokenData | undefined;
@@ -48,6 +49,7 @@ export function buildGmsolTradeboxOrderAction({
   isLong: boolean;
   sidecarEntries: readonly SidecarOrderEntry[];
   allowedSlippage: number;
+  existingPositionSizeUsd: bigint | undefined;
 }): GmsolOrderAction {
   const market = GMSOL_MARKETS.find((item) => item.marketTokenAddress === marketInfo?.marketTokenAddress);
   if (!market || !marketInfo || marketInfo.isDisabled) throw new GmsolTradeboxError("market");
@@ -107,7 +109,7 @@ export function buildGmsolTradeboxOrderAction({
         (decrease.triggerOrderType !== OrderType.LimitDecrease &&
           decrease.triggerOrderType !== OrderType.StopLossDecrease) ||
         decrease.sizeDeltaUsd <= 0n ||
-        decrease.sizeDeltaUsd > primary.sizeDeltaUsd
+        decrease.sizeDeltaUsd > (existingPositionSizeUsd ?? 0n) + primary.sizeDeltaUsd
       )
         throw new GmsolTradeboxError("tpsl");
       return {
@@ -123,9 +125,13 @@ export function buildGmsolTradeboxOrderAction({
         payWithNativeSol: false,
       };
     });
-  if (triggers.length > 2 || new Set(triggers.map((order) => order.kind)).size !== triggers.length)
+  if (
+    triggers.length > 2 ||
+    new Set(triggers.map((order) => order.kind)).size !== triggers.length ||
+    (triggers.length > 0 && primary.kind === "LimitIncrease")
+  )
     throw new GmsolTradeboxError("tpsl");
-  return { type: "create", orders: [primary, ...triggers], atomic: triggers.length > 0 };
+  return { type: "create", orders: [primary, ...triggers], atomic: triggers.length > 0, existingPositionSizeUsd };
 }
 
 /** The shared TP/SL tab creates a trigger against the selected existing position. */

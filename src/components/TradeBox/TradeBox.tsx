@@ -1500,7 +1500,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
             </ToggleSwitch>
           )}
 
-          {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
+          {!isTrigger && !isSwap && !isTwap && !(isSolana && isLimit) && <TPSLGroup />}
           {!isSolana && maxAutoCancelOrdersWarning}
 
           {isSwap && fromToken && toToken && (

@@ -288,7 +288,10 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
           requireGmsol(action.type === "create", "Unexpected position preparation");
           const params = readCreateOrderParams(r);
           const order = action.orders.find(
-            (order) => kindIds[order.kind] === params.kind && order.isLong === params.isLong
+            (order) =>
+              (order.kind === "MarketIncrease" || order.kind === "LimitIncrease") &&
+              kindIds[order.kind] === params.kind &&
+              order.isLong === params.isLong
           );
           requireGmsol(order, "Unexpected prepared position");
           assertCreateParams(params, order, true);
