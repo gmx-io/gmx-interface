@@ -133,9 +133,10 @@ async function handleAsset(request, url) {
   return (await getLegacyAsset(request, url)) ?? response;
 }
 
-// Both mirror src/config/notifications.ts.
+// All mirror src/config/notifications.ts.
 const NOTIFICATION_CLICK_MESSAGE_TYPE = "gmx-notification-click";
 const NOTIFICATION_ROUTE_SEARCH_PARAM = "notification";
+const NOTIFICATION_TYPE_SEARCH_PARAM = "notificationType";
 const NOTIFICATION_FALLBACK_ROUTE = "/trade";
 
 function readPushPayload(data) {
@@ -187,7 +188,7 @@ function getNotificationRoute(url) {
   return NOTIFICATION_FALLBACK_ROUTE;
 }
 
-async function openNotificationRoute(route) {
+async function openNotificationRoute(route, notificationType) {
   const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
   const appWindow =
     windows.find((client) => client.focused) ??
@@ -197,17 +198,21 @@ async function openNotificationRoute(route) {
   if (appWindow) {
     // The app switches chains and navigates itself, so an open window keeps its state.
     await appWindow.focus().catch(() => undefined);
-    appWindow.postMessage({ type: NOTIFICATION_CLICK_MESSAGE_TYPE, route });
+    appWindow.postMessage({ type: NOTIFICATION_CLICK_MESSAGE_TYPE, route, notificationType });
     return;
   }
 
-  const searchParams = new URLSearchParams({ [NOTIFICATION_ROUTE_SEARCH_PARAM]: route });
+  const searchParams = new URLSearchParams({
+    [NOTIFICATION_ROUTE_SEARCH_PARAM]: route,
+    [NOTIFICATION_TYPE_SEARCH_PARAM]: notificationType,
+  });
   await self.clients.openWindow(`${NOTIFICATION_FALLBACK_ROUTE}?${searchParams}`);
 }
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  event.waitUntil(openNotificationRoute(getNotificationRoute(event.notification.data?.url)));
+  const { url, type } = event.notification.data ?? {};
+  event.waitUntil(openNotificationRoute(getNotificationRoute(url), typeof type === "string" ? type : ""));
 });
 
 self.addEventListener("fetch", (event) => {

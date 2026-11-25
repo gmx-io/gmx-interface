@@ -12,9 +12,10 @@ const SERVICE_WORKER_READY_TIMEOUT_MS = 10_000;
 export type NotificationsSupport = "supported" | "iosNotInstalled" | "unsupported";
 
 export function getNotificationsSupport(): NotificationsSupport {
-  // iOS and iPadOS give web push only to an app opened from the Home Screen.
+  // iOS and iPadOS give web push only to an app opened from the Home Screen. Wallets' in-app browsers can't add one
+  // and have no service workers.
   if (isIOS() && !getIsInstalledApp()) {
-    return "iosNotInstalled";
+    return "serviceWorker" in navigator ? "iosNotInstalled" : "unsupported";
   }
 
   return "serviceWorker" in navigator && "PushManager" in window && "Notification" in window

@@ -15,7 +15,6 @@ import "./App.scss";
 import { isSolanaNetwork } from "config/chains";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { NotificationsContextProvider } from "context/NotificationsContext/NotificationsContextProvider";
@@ -99,7 +98,6 @@ function App() {
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <NotificationsContextProvider>{app}</NotificationsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;
