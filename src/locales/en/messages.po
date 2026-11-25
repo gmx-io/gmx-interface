@@ -2157,6 +2157,7 @@ msgstr "Markets"
 msgid "Whitelist only"
 msgstr "Whitelist only"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Retry"
