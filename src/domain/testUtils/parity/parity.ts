@@ -86,7 +86,7 @@ function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, ours: 
 async function compareCase<Case extends { label: string }, Out extends Record<string, Value>>(
   spec: ParitySpec<Case, Out>,
   input: ParityInput<Case>
-): Promise<{ ours: Out; rows: Row[] }> {
+): Promise<{ ours: Out; rows: Row[]; revert?: string }> {
   const row = { scenario: input.ctx.scenario, market: input.market.name, case: input.testCase.label };
   const fieldNames = Object.keys(spec.fields);
   const ours = await spec.ours(input);
@@ -107,9 +107,8 @@ async function compareCase<Case extends { label: string }, Out extends Record<st
       throw error;
     }
 
-    const failure = `contract reverts with ${revert}`;
-
-    return { ours, rows: fieldNames.map((field) => ({ ...row, field, diffBps: Infinity, failure })) };
+    // no rows: a revert is never a known difference
+    return { ours, rows: [], revert: `${row.scenario} / ${row.market} / ${row.case}: contract reverts with ${revert}` };
   }
 }
 
@@ -147,6 +146,7 @@ async function runPair<Case extends { label: string }, Out extends Record<string
   const inputs = runs.flatMap((run) => run.inputs);
   const results = await Promise.all(inputs.map((input) => compareCase(spec, input)));
   const rows = results.flatMap((result) => result.rows);
+  const reverts = results.flatMap((result) => (result.revert ? [result.revert] : []));
   const requiredCases = (spec.requiredCases ?? []).map((requiredCase) => ({
     name: requiredCase.name,
     count: inputs.filter((input, i) => requiredCase.when(input, results[i].ours)).length,
@@ -174,10 +174,11 @@ async function runPair<Case extends { label: string }, Out extends Record<string
       );
     })
   );
+  reverts.forEach((revert) => console.log(revert));
   requiredCases.forEach((requiredCase) => console.log(`cases matching ${requiredCase.name}: ${requiredCase.count}`));
   console.table([...rows].sort((a, b) => Math.abs(b.diffBps) - Math.abs(a.diffBps)).slice(0, 20));
 
-  return { rows, requiredCases, casesByState };
+  return { rows, reverts, requiredCases, casesByState };
 }
 
 export function parity<Case extends { label: string }, Out extends Record<string, Value>>(
@@ -189,7 +190,7 @@ export function parity<Case extends { label: string }, Out extends Record<string
   describe(name, () => {
     let result: Awaited<ReturnType<typeof runPair>>;
 
-    // a load error fails the whole pair, so an expected failure below can only come from a difference
+    // a load or RPC error fails the whole pair, so an expected failure below can only come from a difference
     beforeAll(async () => {
       result = await runPair(name, spec, states);
     });
@@ -206,6 +207,8 @@ export function parity<Case extends { label: string }, Out extends Record<string
         }
       })
     );
+
+    it("the contract reverts on no case", () => expect(result.reverts).toEqual([]));
 
     it("reaches every required case", () => {
       const emptyStates = states.filter((state) => !result.casesByState[state]).map((state) => `no cases: ${state}`);
