@@ -152,7 +152,6 @@ export function parseMarketTokenData(
     totalSupply: BigInt(tokenData?.totalSupply.returnValues[0]),
     walletBalance,
     gmxAccountBalance,
-    // Source chain balance is injected later in useMemo for both GM and GLV tokens
     balanceType: getBalanceTypeFromSrcChainId(srcChainId),
     balance,
     explorerUrl: `${getExplorerUrl(chainId)}/token/${marketAddress}`,
