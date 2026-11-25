@@ -3,12 +3,18 @@ import type { MarketInfo } from "sdk/utils/markets/types";
 import { getAvailableUsdLiquidityForCollateral } from "sdk/utils/markets/utils";
 import { SwapPricingType } from "sdk/utils/orders/types";
 import { getSwapStats } from "sdk/utils/swap/swapStats";
-import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens/utils";
+import { convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens/utils";
 
 import type { ParityContext } from "./context";
 import { ParityInput, usd } from "./parity";
 
 export type SwapCase = { label: string; isLongIn: boolean; amountIn: bigint };
+
+/** getPriceImpactForSwap skips the virtual inventory when either virtual pool is empty */
+export const getMarketWithoutVirtualInventory = (market: MarketInfo): MarketInfo => ({
+  ...market,
+  virtualPoolAmountForLongToken: 0n,
+});
 
 export const getSwapTokens = ({ market, testCase }: ParityInput<SwapCase>) =>
   testCase.isLongIn ? [market.longToken, market.shortToken] : [market.shortToken, market.longToken];
@@ -18,6 +24,14 @@ export function getSwapUsdIn(input: ParityInput<SwapCase>) {
   const [tokenIn] = getSwapTokens(input);
 
   return convertToUsd(input.testCase.amountIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
+}
+
+/** The contract measures the swap at the mid price */
+export function getSwapMidUsdIn(input: ParityInput<SwapCase>) {
+  const [tokenIn] = getSwapTokens(input);
+  const midPrice = getMidPrice(tokenIn.prices);
+
+  return convertToUsd(input.testCase.amountIn, tokenIn.decimals, midPrice)!;
 }
 
 export function getSwapPriceImpact(input: ParityInput<SwapCase>, usdIn: bigint) {
