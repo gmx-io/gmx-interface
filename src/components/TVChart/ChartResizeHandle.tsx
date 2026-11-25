@@ -11,6 +11,8 @@ import {
   useState,
 } from "react";
 
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+
 import { CHART_DRAG_THRESHOLD, CHART_HEIGHT_KEYBOARD_STEP, CHART_MIN_HEIGHT, clampChartHeight } from "./chartHeight";
 import { useChartHeight } from "./useChartHeight";
 
@@ -40,6 +42,7 @@ function setContainerHeight(container: HTMLElement | null, height: number | unde
  * Drag handle under the chart on the desktop trade page (TRD-212), built as a WAI-ARIA window splitter.
  * It owns the inline height of the chart container. During a drag it writes the height straight to the DOM,
  * so the page does not re-render on each pointer move, and it saves the height on release.
+ * A standard tooltip tells the trader about the drag and the double-click reset. It closes during a drag.
  */
 export function ChartResizeHandle({ containerRef }: { containerRef: RefObject<HTMLDivElement> }) {
   const { chartHeight, maxHeight, getMaxHeight, saveChartHeight, resetChartHeight } = useChartHeight(containerRef);
@@ -158,35 +161,42 @@ export function ChartResizeHandle({ containerRef }: { containerRef: RefObject<HT
   };
 
   return (
-    <div
-      role="separator"
-      aria-orientation="horizontal"
-      aria-label={t`Resize chart`}
-      aria-valuemin={CHART_MIN_HEIGHT}
-      aria-valuemax={maxHeight}
-      aria-valuenow={chartHeight}
-      aria-valuetext={t`${chartHeight} pixels`}
-      tabIndex={0}
-      className={cx(
-        // Centered on the 8 px gap under the chart: 12 px tall, 24 px on touch screens
-        "group absolute inset-x-0 top-[calc(100%+4px)] z-10 flex h-12 -translate-y-1/2 cursor-row-resize touch-none",
-        "items-center justify-center rounded-4 [@media(pointer:coarse)]:h-24",
-        "focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300"
-      )}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onLostPointerCapture={endDrag}
-      onDoubleClick={resetChartHeight}
-      onKeyDown={handleKeyDown}
-    >
-      <div
+    // Centered on the 12 px gap under the chart (CHART_HANDLE_GAP): 12 px tall, 24 px on touch screens
+    <div className="absolute inset-x-0 top-[calc(100%+6px)] z-10 h-12 -translate-y-1/2 [@media(pointer:coarse)]:h-24">
+      <StandardTooltip
+        as="div"
+        position="bottom"
+        content={t`Drag to resize. Double-click to reset.`}
+        disabled={isPressed}
+        role="separator"
+        aria-orientation="horizontal"
+        aria-label={t`Resize chart`}
+        aria-valuemin={CHART_MIN_HEIGHT}
+        aria-valuemax={maxHeight}
+        aria-valuenow={chartHeight}
+        aria-valuetext={t`${chartHeight} pixels`}
+        tabIndex={0}
         className={cx(
-          "h-4 rounded-full transition-[width,background-color] duration-150",
-          isPressed ? "w-64 bg-slate-100" : "w-44 bg-slate-500 group-hover:w-64 group-hover:bg-slate-100"
+          // The important cursor wins over the default cursor of the tooltip trigger
+          "group flex h-full w-full !cursor-row-resize touch-none items-center justify-center rounded-4",
+          "focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-300"
         )}
-      />
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onLostPointerCapture={endDrag}
+        onDoubleClick={resetChartHeight}
+        // The tooltip sets its own onKeyDown on the trigger (Escape), which replaces an onKeyDown prop
+        onKeyDownCapture={handleKeyDown}
+      >
+        <div
+          className={cx(
+            "h-4 rounded-full transition-[width,background-color] duration-150",
+            isPressed ? "w-64 bg-slate-100" : "w-44 bg-slate-500 group-hover:w-64 group-hover:bg-slate-100"
+          )}
+        />
+      </StandardTooltip>
     </div>
   );
 }

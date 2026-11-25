@@ -22,7 +22,7 @@ describe("chartHeight", () => {
   });
 
   it.each([
-    ["fills the window under the page header", 860, 780],
+    ["fills the window under the page header", 860, 776],
     ["never goes below the default height in a short window", 600, 536],
   ])("%s", (_, windowHeight, expected) => {
     expect(getChartMaxHeight({ windowHeight, chartTop: 72, defaultHeight: 536 })).toBe(expected);

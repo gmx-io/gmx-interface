@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { type ReactNode, Suspense, lazy, useRef, useState } from "react";
 
 import { isDevelopment } from "config/env";
@@ -101,7 +102,8 @@ export function Chart({ onOpenChartTPSLModal, isResizable = false }: Props) {
     priceTabContent;
 
   return (
-    <div ref={containerRef} className="ExchangeChart tv Synthetics-chart flex flex-col">
+    // With the resize handle, the 4 px margin makes the gap under the chart 12 px (CHART_HANDLE_GAP)
+    <div ref={containerRef} className={cx("ExchangeChart tv Synthetics-chart flex flex-col", { "mb-4": isResizable })}>
       <div className="flex grow flex-col overflow-hidden rounded-8 bg-slate-900">
         {isSwap ? (
           activeTab === "MARKET_GRAPH" ? (

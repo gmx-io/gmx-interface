@@ -4865,6 +4865,10 @@ msgstr "연락 요청하기"
 msgid "Sending..."
 msgstr "전송 중..."
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Drag to resize. Double-click to reset."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
 msgstr "수수료 무료 변환을 더 이상 사용할 수 없습니다. 변환 내용을 검토한 후 다시 확인하십시오."

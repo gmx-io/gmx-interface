@@ -4865,6 +4865,10 @@ msgstr "申請專人聯絡"
 msgid "Sending..."
 msgstr "傳送中..."
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Drag to resize. Double-click to reset."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
 msgstr "零費用轉換已無法使用。請查看轉換詳情並再次確認。"

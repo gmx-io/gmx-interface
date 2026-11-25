@@ -2,8 +2,8 @@ export const CHART_MIN_HEIGHT = 300;
 export const CHART_HEIGHT_KEYBOARD_STEP = 24;
 export const CHART_HEIGHT_SNAP_DISTANCE = 8;
 export const CHART_DRAG_THRESHOLD = 3;
-/** The gap between the chart and the account panel, where the resize handle sits. */
-export const CHART_HANDLE_GAP = 8;
+/** The gap between the chart and the account panel, where the resize handle sits: the 8 px column gap and the chart's 4 px margin. */
+export const CHART_HANDLE_GAP = 12;
 
 const CHART_HEIGHT_STORAGE_VERSION = 1;
 

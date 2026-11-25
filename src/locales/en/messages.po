@@ -4865,6 +4865,10 @@ msgstr "Request to be contacted"
 msgid "Sending..."
 msgstr "Sending..."
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Drag to resize. Double-click to reset."
+msgstr "Drag to resize. Double-click to reset."
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
 msgstr "Zero-fee conversion is no longer available. Review the conversion and confirm again."

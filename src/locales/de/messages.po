@@ -4865,6 +4865,10 @@ msgstr "Kontaktaufnahme anfordern"
 msgid "Sending..."
 msgstr "Wird gesendet..."
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Drag to resize. Double-click to reset."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
 msgstr "Die gebührenfreie Umwandlung ist nicht mehr verfügbar. Prüfen Sie die Umwandlung und bestätigen Sie erneut."
