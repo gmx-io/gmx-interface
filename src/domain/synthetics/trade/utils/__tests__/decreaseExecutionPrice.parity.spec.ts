@@ -124,7 +124,11 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
       name: "a partial close with positive pending impact",
       when: (input) => isPartialClose(input) && input.testCase.position.pendingImpactAmount > 0n,
     },
-    { name: "a close where the negative impact cap binds", when: (_, ours) => ours.priceImpactDiffUsd > 0n },
+    {
+      name: "a close where the negative impact cap binds",
+      when: (_, ours) => ours.priceImpactDiffUsd > 0n,
+      scenario: SMALL_NEGATIVE_IMPACT_CAP_SCENARIO,
+    },
     { name: "a balance improving close", when: (_, ours) => ours.balanceWasImproved },
   ],
 });

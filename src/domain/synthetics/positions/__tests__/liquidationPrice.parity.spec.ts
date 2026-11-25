@@ -201,6 +201,6 @@ parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
       name: "a short with index token collateral",
       when: (input) => !input.testCase.position.isLong && isIndexCollateral(input),
     },
-    { name: "the pro tier scenario applies", when: isProDiscountLarger },
+    { name: "the pro tier scenario applies", when: isProDiscountLarger, scenario: PRO_TIER_SCENARIO },
   ],
 });

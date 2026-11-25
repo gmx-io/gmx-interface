@@ -120,7 +120,15 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
     },
   },
   requiredCases: [
-    { name: "the ui fee scenario applies", when: ({ testCase }) => testCase.uiFeeFactor > 0n },
-    { name: "a swap with positive impact capped by the impact pool", when: isPositiveImpactCapped },
+    {
+      name: "the ui fee scenario applies",
+      when: ({ testCase }) => testCase.uiFeeFactor > 0n,
+      scenario: UI_FEE_SCENARIO,
+    },
+    {
+      name: "a swap with positive impact capped by the impact pool",
+      when: isPositiveImpactCapped,
+      scenario: EMPTY_LONG_TOKEN_SWAP_IMPACT_POOLS_SCENARIO,
+    },
   ],
 });
