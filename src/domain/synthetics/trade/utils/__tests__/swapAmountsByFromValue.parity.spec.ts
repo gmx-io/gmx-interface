@@ -2,7 +2,7 @@ import { chainId, dataStoreAddress, getMarketProps, ParityContext, readReader } 
 import { parity, ParityInput } from "domain/testUtils/parity/parity";
 import { loadUiFeeFactor, marketConfigs, UI_FEE_RECEIVER, UI_FEE_SCENARIO } from "domain/testUtils/parity/scenarios";
 import {
-  getSwapPriceImpact,
+  getOurSwapPriceImpact,
   getSwapTokens,
   getSwapUsdIn,
   isSwapMarket,
@@ -72,7 +72,7 @@ function getOurSwapAmounts(input: SwapAmountsInput) {
 function isPositiveImpactCapped(input: SwapAmountsInput) {
   const [, tokenOut] = getSwapTokens(input);
   const usdIn = getSwapUsdIn(input);
-  const { priceImpactDeltaUsd } = getSwapPriceImpact(input, usdIn);
+  const { priceImpactDeltaUsd } = getOurSwapPriceImpact(input, usdIn);
 
   return (
     priceImpactDeltaUsd > 0n && applySwapImpactWithCap(input.market, tokenOut, priceImpactDeltaUsd).cappedDiffUsd > 0n
