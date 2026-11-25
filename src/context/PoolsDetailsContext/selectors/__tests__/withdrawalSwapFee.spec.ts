@@ -14,7 +14,7 @@ const SWAP_FEE_FACTOR = expandDecimals(5, 26);
 const WITHDRAWAL_FEE_FACTOR = expandDecimals(3, 27);
 
 describe("pool withdrawal to one token", () => {
-  it("charges the swap fee, not the withdrawal fee, on the swap after the withdrawal, as contracts 2.2.1 do", () => {
+  it("charges the swap fee, not the withdrawal fee, on the swap after the withdrawal, as the contract does", () => {
     const marketInfo = createMockMarketInfo(ETH_TOKEN, {
       swapFeeFactorForBalanceWasImproved: SWAP_FEE_FACTOR,
       swapFeeFactorForBalanceWasNotImproved: SWAP_FEE_FACTOR,
