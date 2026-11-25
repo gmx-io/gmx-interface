@@ -1,4 +1,4 @@
-import { ParityContext, readExecutionPrice } from "domain/testUtils/parity/context";
+import { getUncappedTotalImpactUsd, ParityContext, readExecutionPrice } from "domain/testUtils/parity/context";
 import { parity, ParityInput } from "domain/testUtils/parity/parity";
 import { loadPositions, ParityPosition } from "domain/testUtils/parity/positions";
 import { marketConfigs } from "domain/testUtils/parity/scenarios";
@@ -94,9 +94,7 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
 
     return {
       priceImpactUsd: result.priceImpactUsd,
-      // the contract caps a negative total impact and moves the rest to priceImpactDiffUsd, the app keeps the whole
-      // impact in the total and shows the diff apart: the amount the trader gets is the same
-      totalImpactUsd: result.totalImpactUsd - result.priceImpactDiffUsd,
+      totalImpactUsd: getUncappedTotalImpactUsd(result),
       priceImpactDiffUsd: result.priceImpactDiffUsd,
       executionPrice: result.executionPrice,
       balanceWasImproved: result.balanceWasImproved,
