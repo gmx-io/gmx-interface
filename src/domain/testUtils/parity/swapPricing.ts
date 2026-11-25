@@ -34,7 +34,7 @@ export function getSwapMidUsdIn(input: ParityInput<SwapCase>) {
   return convertToUsd(input.testCase.amountIn, tokenIn.decimals, midPrice)!;
 }
 
-export function getOurSwapPriceImpact(input: ParityInput<SwapCase>, usdIn: bigint) {
+export function getAppSwapPriceImpact(input: ParityInput<SwapCase>, usdIn: bigint) {
   const [tokenIn, tokenOut] = getSwapTokens(input);
 
   return getPriceImpactForSwap(input.market, tokenIn, tokenOut, usdIn, -usdIn);
@@ -44,7 +44,7 @@ export const isSwapMarket = (market: MarketInfo) =>
   !market.isDisabled && !market.isSameCollaterals && market.poolValueMax > usd(10_000);
 
 // Liquidity and capacity are checked when the swap executes, Reader.getSwapAmountOut quotes past them. Max pnl is
-// not filtered out: a case our max pnl check rejects by mistake shows up as a difference instead of going missing
+// not filtered out: a case the app max pnl check rejects by mistake shows up as a difference instead of going missing
 export function swapCases(market: MarketInfo, ctx: ParityContext): SwapCase[] {
   const cases = [true, false].flatMap((isLongIn) => {
     const tokenIn = isLongIn ? market.longToken : market.shortToken;

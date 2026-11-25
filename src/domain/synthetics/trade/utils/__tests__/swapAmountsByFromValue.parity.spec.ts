@@ -2,7 +2,7 @@ import { chainId, dataStoreAddress, getMarketProps, ParityContext, readReader } 
 import { parity, ParityInput } from "domain/testUtils/parity/parity";
 import { loadUiFeeFactor, marketConfigs, UI_FEE_RECEIVER, UI_FEE_SCENARIO } from "domain/testUtils/parity/scenarios";
 import {
-  getOurSwapPriceImpact,
+  getAppSwapPriceImpact,
   getSwapTokens,
   getSwapUsdIn,
   isSwapMarket,
@@ -39,7 +39,7 @@ async function swapAmountsCases(market: MarketInfo, ctx: ParityContext): Promise
 }
 
 // A one market swap path, as findSwapPath gives it for this market
-function getOurSwapAmounts(input: SwapAmountsInput) {
+function getAppSwapAmounts(input: SwapAmountsInput) {
   const { ctx, market, testCase } = input;
   const [tokenIn, tokenOut] = getSwapTokens(input);
   const wrappedNativeTokenAddress = getWrappedToken(chainId).address;
@@ -72,7 +72,7 @@ function getOurSwapAmounts(input: SwapAmountsInput) {
 function isPositiveImpactCapped(input: SwapAmountsInput) {
   const [, tokenOut] = getSwapTokens(input);
   const usdIn = getSwapUsdIn(input);
-  const { priceImpactDeltaUsd } = getOurSwapPriceImpact(input, usdIn);
+  const { priceImpactDeltaUsd } = getAppSwapPriceImpact(input, usdIn);
 
   return (
     priceImpactDeltaUsd > 0n && applySwapImpactWithCap(input.market, tokenOut, priceImpactDeltaUsd).cappedDiffUsd > 0n
@@ -83,7 +83,7 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
   markets: isSwapMarket,
   cases: swapAmountsCases,
   scenarios: [UI_FEE_SCENARIO, EMPTY_LONG_TOKEN_SWAP_IMPACT_POOLS_SCENARIO],
-  ours: (input) => ({ amountOut: getOurSwapAmounts(input).amountOut }),
+  ours: (input) => ({ amountOut: getAppSwapAmounts(input).amountOut }),
   contract: async (input) => {
     const { ctx, market, testCase } = input;
     const [tokenIn] = getSwapTokens(input);

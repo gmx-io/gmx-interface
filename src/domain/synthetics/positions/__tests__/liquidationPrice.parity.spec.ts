@@ -117,7 +117,7 @@ async function isLiquidatable(ctx: ParityContext, market: MarketInfo, testCase: 
   return liquidatable;
 }
 
-// The index price where the Reader flips to liquidatable, bisected within +/-5% of ours; none outside that bracket
+// The index price where the Reader flips to liquidatable, bisected within +/-5% of the app price; none outside that bracket
 async function findReaderLiquidationPrice({ ctx, market, testCase }: LiquidationInput) {
   const { liquidationPrice, position } = testCase;
   const towardsSafety = position.isLong ? BRACKET_BPS : -BRACKET_BPS;
