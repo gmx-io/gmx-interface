@@ -2,7 +2,7 @@ import { address, signature as solanaSignature } from "@solana/kit";
 
 import { GMSOL_STORE_ADDRESS, GMSOL_STORE_PROGRAM_ID } from "config/gmsol/program";
 import { createAnySignal } from "lib/abortSignalHelpers";
-import { getSolanaRpc } from "lib/solana/rpc";
+import { getSolanaRpc, rethrowSolanaRpcForbidden, SolanaRpcForbiddenError } from "lib/solana/rpc";
 
 import { decodeOrderEvents } from "./decodeOrderEvents";
 import { reduceOrderLifecycle, type OrderLifecycleInput, type TrackedOrderAction } from "./reduceOrderLifecycle";
@@ -29,7 +29,8 @@ const rpcReader: OrderLifecycleReader = {
         commitment: "confirmed",
         limit: PAGE_SIZE,
       })
-      .send({ abortSignal: signal }),
+      .send({ abortSignal: signal })
+      .catch(rethrowSolanaRpcForbidden("getSignaturesForAddress")),
   getTransaction: (signature, signal) =>
     getSolanaRpc()
       .getTransaction(solanaSignature(signature), {
@@ -37,7 +38,8 @@ const rpcReader: OrderLifecycleReader = {
         commitment: "confirmed",
         maxSupportedTransactionVersion: 0,
       })
-      .send({ abortSignal: signal }),
+      .send({ abortSignal: signal })
+      .catch(rethrowSolanaRpcForbidden("getTransaction")),
   getBlockSignatures: async (slot, signal) => {
     const block = await getSolanaRpc()
       .getBlock(slot, {
@@ -46,7 +48,8 @@ const rpcReader: OrderLifecycleReader = {
         rewards: false,
         maxSupportedTransactionVersion: 0,
       })
-      .send({ abortSignal: signal });
+      .send({ abortSignal: signal })
+      .catch(rethrowSolanaRpcForbidden("getBlock"));
     return block?.signatures;
   },
 };
@@ -132,7 +135,7 @@ export async function readOrderLifecycle({
     }
     return unresolved();
   } catch (error) {
-    if (signal.aborted) throw error;
+    if (signal.aborted || error instanceof SolanaRpcForbiddenError) throw error;
     // A read failure cannot turn an incomplete lifecycle into a fill or cancellation.
     historyComplete = false;
     return unresolved();

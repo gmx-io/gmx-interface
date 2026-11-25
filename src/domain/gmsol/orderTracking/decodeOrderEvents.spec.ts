@@ -82,7 +82,7 @@ describe("pinned order event decoding", () => {
     }
   });
 
-  it("rejects corrupted target data without exposing partial valid events", () => {
+  it("rejects corrupted target data without exposing partial valid events and skips unknown events", () => {
     const mutations: ((bytes: Uint8Array) => Uint8Array)[] = [
       (b) => b.subarray(0, 7),
       (b) => b.subarray(0, 15),
@@ -92,13 +92,21 @@ describe("pinned order event decoding", () => {
         b[0] ^= 1;
         return b;
       },
-      (b) => {
-        b.fill(255, 8, 16);
-        return b;
-      },
     ];
     for (const mutation of mutations)
       expect(decodeOrderEvents(mutateEvent(mutation))).toMatchObject({ status: "invalid", events: [] });
+    expect(
+      decodeOrderEvents(
+        mutateEvent((b) => {
+          b.fill(255, 8, 16);
+          return b;
+        })
+      )
+    ).toMatchObject({
+      status: "decoded",
+      events: [{ name: "OrderRemoved" }],
+      otherEventDiscriminators: expect.arrayContaining(["ffffffffffffffff"]),
+    });
     for (const [offset, value] of [
       [16 + 88, 255],
       [16 + 153, 255],

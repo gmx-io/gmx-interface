@@ -8,8 +8,9 @@ are structurally identical after excluding IDL documentation. The latter IDL
 SHA-256 is `fece132b79a631793ff86d9b2fd7ea29e31094a3afdcea9d72028f85b1838383`.
 This source comparison does not establish the deployed program identity or
 change the historical fixture provenance. The envelope, discriminator and Borsh layouts are
-stored in `orderEventLayout.json`. Unknown/truncated events and failed
-transaction metadata cannot supply successful execution evidence.
+stored in `orderEventLayout.json`. Store events with other discriminators are
+skipped, and truncated events and failed transaction metadata cannot supply
+successful execution evidence.
 
 `getCreatedOrderActions` binds creation receipts to order addresses obtained
 from the validated transaction, then takes the action id and context from the
@@ -30,6 +31,8 @@ one completed member. Limit/trigger creation does not wait for execution.
 
 A matching trade may precede account closure. Conversely, account closure or a
 `Completed` removal without the position trade is insufficient proof of a fill.
+Keepers close only completed or cancelled orders, so a `Pending` removal without
+a trade is a cancel by the owner (`cancelledBy: "owner"`).
 Cancellation states and reasons are independent from submission confirmation.
 The lifecycle semantics follow protocol PR
 https://github.com/gmsol-labs/gmx-solana/pull/492; unlike that Rust reader's
@@ -46,7 +49,9 @@ behavior before release; offline tests do not authorize signing or broadcasting.
 The sender reports confirmed `trackingRequests` without waiting for transaction
 indexing. `watchSubmittedOrders` retries the creation receipt for up to one
 minute to recover typed identities, then starts lifecycle tracking. This keeps
-confirmation feedback independent from indexing and API refresh latency.
+confirmation feedback independent from indexing and API refresh latency. An
+HTTP 403 from the RPC is not retried: it ends tracking at once and is reported
+to metrics once per tracked order with the refused method.
 
 Shared order-entry consumers use
 `useSolanaOrderNotifications().begin({ title, trackExecution })`, call

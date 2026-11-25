@@ -2,7 +2,8 @@ import { signature as solanaSignature } from "@solana/kit";
 
 import { getIsSolanaNetworkEnabled } from "config/ab";
 import { createAnySignal } from "lib/abortSignalHelpers";
-import { getSolanaRpc } from "lib/solana/rpc";
+import { metrics } from "lib/metrics";
+import { getSolanaRpc, rethrowSolanaRpcForbidden, SolanaRpcForbiddenError } from "lib/solana/rpc";
 
 import { getCreatedOrderActions } from "./getCreatedOrderActions";
 import type { OrderLifecycleResult, TrackedOrderAction } from "./reduceOrderLifecycle";
@@ -28,6 +29,10 @@ export async function watchSubmittedOrders({
   signal: AbortSignal;
   onUpdate: (result: OrderLifecycleResult) => void;
 }) {
+  const endOnForbidden = (error: unknown) => {
+    if (signal.aborted || !(error instanceof SolanaRpcForbiddenError)) throw error;
+    metrics.pushError(error, "solana.orderTracking");
+  };
   const known = new Set(orders.map((order) => `${order.creationSignature}:${order.order}`));
   const unresolvedRequests = requests.filter((request) =>
     request.orderAddresses.some((order) => !known.has(`${request.signature}:${order}`))
@@ -43,10 +48,11 @@ export async function watchSubmittedOrders({
               commitment: "confirmed",
               maxSupportedTransactionVersion: 0,
             })
-            .send({ abortSignal: createAnySignal([signal, AbortSignal.timeout(20_000)]) });
+            .send({ abortSignal: createAnySignal([signal, AbortSignal.timeout(20_000)]) })
+            .catch(rethrowSolanaRpcForbidden("getTransaction"));
           return getCreatedOrderActions({ ...request, receipt });
         } catch (error) {
-          if (signal.aborted) throw error;
+          if (signal.aborted || error instanceof SolanaRpcForbiddenError) throw error;
           // A confirmed send remains confirmed while its creation receipt is indexing.
         }
         await new Promise<void>((resolve) => {
@@ -62,8 +68,8 @@ export async function watchSubmittedOrders({
       }
       return undefined;
     })
-  );
-  if (signal.aborted || recovered.some((value) => value === undefined)) return;
+  ).catch(endOnForbidden);
+  if (signal.aborted || !recovered || recovered.some((value) => value === undefined)) return;
   const actions = new Map(
     [...orders, ...recovered.flatMap((value) => value ?? [])].map((action) => [
       `${action.creationSignature}:${action.order}`,
@@ -76,5 +82,5 @@ export async function watchSubmittedOrders({
   // The entry flow creates one primary order with optional triggers. Never report an entire batch
   // filled from one member when a future consumer submits multiple primary market orders.
   if (markets.length !== 1) return;
-  await watchOrderLifecycle({ action: markets[0], signal, onUpdate });
+  await watchOrderLifecycle({ action: markets[0], signal, onUpdate }).catch(endOnForbidden);
 }

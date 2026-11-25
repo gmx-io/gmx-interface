@@ -1,4 +1,4 @@
-import { Address, createSolanaRpc } from "@solana/kit";
+import { Address, createSolanaRpc, isSolanaError, SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR } from "@solana/kit";
 
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { getRpcProviders, getSolanaRpcUrl } from "config/rpc";
@@ -12,6 +12,21 @@ const RPC_TIMEOUT = 15_000;
 const MAINNET_GENESIS_HASH = "5eykt4UsFv8P8NJdTREpY1vzqKqZKvdpKuc147dw2N9d";
 
 type SolanaRpcCheckResult = { responseTime: number; slot: bigint };
+
+export class SolanaRpcForbiddenError extends Error {
+  constructor(readonly method: string) {
+    super(`Solana RPC ${method} returned 403`);
+    this.name = "SolanaRpcForbiddenError";
+  }
+}
+
+export function rethrowSolanaRpcForbidden(method: string) {
+  return (error: unknown): never => {
+    throw isSolanaError(error, SOLANA_ERROR__RPC__TRANSPORT_HTTP_ERROR) && error.context.statusCode === 403
+      ? new SolanaRpcForbiddenError(method)
+      : error;
+  };
+}
 
 export class SolanaRpcTracker {
   readonly params = { chainId: SOLANA_NETWORK_ID };

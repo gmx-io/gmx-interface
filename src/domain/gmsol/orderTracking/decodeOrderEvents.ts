@@ -183,7 +183,6 @@ export function decodeOrderEvents(input: {
         const discriminator = hex(data.subarray(8, 16));
         const definition = layout.events.find((event) => event.discriminatorHex === discriminator);
         if (!definition) {
-          requireValue(layout.otherEventDiscriminators.includes(discriminator), "Unsupported event discriminator");
           otherEventDiscriminators.push(discriminator);
           continue;
         }

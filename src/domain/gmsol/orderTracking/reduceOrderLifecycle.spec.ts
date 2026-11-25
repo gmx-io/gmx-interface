@@ -63,6 +63,14 @@ describe("offline order lifecycle evidence", () => {
       closure: "closed",
       reason: "executed",
     });
+    expect(reduceOrderLifecycle(input(true)).cancelledBy).toBeUndefined();
+    const ownerCancel = input(true);
+    mutateEvent(ownerCancel, "OrderRemoved", { state: "Pending", reason: "cancel" });
+    expect(reduceOrderLifecycle(ownerCancel)).toMatchObject({
+      execution: "cancelled",
+      closure: "closed",
+      cancelledBy: "owner",
+    });
     for (const kind of ["MarketSwap", "LimitSwap"]) {
       const swap = input(true);
       swap.action.kind = kind;

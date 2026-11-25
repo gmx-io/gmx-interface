@@ -27,6 +27,7 @@ export type OrderLifecycleResult = {
   submission: OrderLifecycleInput["submission"];
   execution: "unresolved" | "executed" | "cancelled" | "closed-without-position-trade";
   closure: "unresolved" | "pending" | "closed";
+  cancelledBy?: "owner";
   reason?: string;
   trade?: Evidence;
   removed?: Evidence;
@@ -161,6 +162,18 @@ export function reduceOrderLifecycle(input: OrderLifecycleInput): OrderLifecycle
     const { state, reason } = removed.event.fields;
     if (state === "Cancelled" && !trade) {
       return { action, submission, execution: "cancelled", closure: "closed", removed, reason: reason as string };
+    }
+    // Keepers close only completed or cancelled orders, so a pending removal is the owner's cancel.
+    if (state === "Pending" && !trade) {
+      return {
+        action,
+        submission,
+        execution: "cancelled",
+        closure: "closed",
+        cancelledBy: "owner",
+        removed,
+        reason: reason as string,
+      };
     }
     if (state !== "Completed") return unresolved("Conflicting removal state");
     if (trade)
