@@ -1,10 +1,13 @@
 import {
   BaseError,
+  concat,
   ContractFunctionRevertedError,
   createPublicClient,
   custom,
   http,
+  keccak256,
   numberToHex,
+  pad,
   PublicClient,
 } from "viem";
 
@@ -16,7 +19,6 @@ import { MAX_TIMEOUT, Multicall } from "sdk/clients/v1/multicall";
 import { arbitrumSdkConfig } from "sdk/clients/v1/testUtil";
 import { ARBITRUM, getViemChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
-import { hashData } from "sdk/utils/hash";
 import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { expandDecimals } from "sdk/utils/numbers";
@@ -52,10 +54,14 @@ export type ParityContext = {
 
 export const LIVE_STATE = "live state";
 
+/** The storage slot of mapping[key] for a Solidity mapping at mappingSlot */
+export const getMappingEntrySlot = (key: string, mappingSlot: bigint | string) =>
+  keccak256(concat([pad(key), typeof mappingSlot === "bigint" ? numberToHex(mappingSlot, { size: 32 }) : mappingSlot]));
+
 // DataStore keeps uintValues in the mapping at slot 0
 function getDataStoreStateOverride({ uint }: DataStoreOverrides) {
   const stateDiff = Object.fromEntries(
-    uint.map(([key, value]) => [hashData(["bytes32", "uint256"], [key, 0n]), numberToHex(value, { size: 32 })])
+    uint.map(([key, value]) => [getMappingEntrySlot(key, 0n), numberToHex(value, { size: 32 })])
   );
 
   return { [dataStoreAddress]: { stateDiff } };
