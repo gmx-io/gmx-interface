@@ -183,8 +183,8 @@ async function simulateWithdrawal(input: WithdrawalSwapInput) {
 parity("withdrawal swap path (selectPoolsDetailsWithdrawalFindSwapPath) <-> a simulated withdrawal", {
   markets: (market) => isSwapMarket(market) && market.poolValueMax > usd(1_000_000),
   cases: withdrawalSwapCases,
-  ours: (input) => ({ swapAmountOut: getAppSwapPathStats(input).amountOut }),
-  reader: async (input) => {
+  app: (input) => ({ swapAmountOut: getAppSwapPathStats(input).amountOut }),
+  contract: async (input) => {
     const { testCase } = input;
     const receivedAmount = await simulateWithdrawal(input);
     const keptAmount = testCase.isReceiveLong ? testCase.longTokenAmount : testCase.shortTokenAmount;
@@ -193,7 +193,6 @@ parity("withdrawal swap path (selectPoolsDetailsWithdrawalFindSwapPath) <-> a si
   },
   fields: {
     swapAmountOut: {
-      toleranceBps: 0.001,
       knownIssues: [
         {
           reason:
