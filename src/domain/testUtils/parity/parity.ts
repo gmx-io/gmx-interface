@@ -38,7 +38,12 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
    * Situations the chain state or a scenario must produce at least once. The cases only aim at them, so without this
    * a pair would pass silently when, say, no deposit on this block has positive impact or a scenario didn't apply
    */
-  requiredCases?: { name: string; when: (input: ParityInput<Case>, ours: Out) => boolean }[];
+  requiredCases?: {
+    name: string;
+    when: (input: ParityInput<Case>, ours: Out) => boolean;
+    /** Only cases in this scenario count, so live rows cannot stand in for a scenario that did not apply */
+    scenario?: Scenario;
+  }[];
   /** The pair runs on the live state and once more inside each scenario */
   scenarios?: Scenario[];
 };
@@ -149,7 +154,11 @@ async function runPair<Case extends { label: string }, Out extends Record<string
   const reverts = results.flatMap((result) => (result.revert ? [result.revert] : []));
   const requiredCases = (spec.requiredCases ?? []).map((requiredCase) => ({
     name: requiredCase.name,
-    count: inputs.filter((input, i) => requiredCase.when(input, results[i].ours)).length,
+    count: inputs.filter(
+      (input, i) =>
+        (requiredCase.scenario === undefined || input.ctx.state === requiredCase.scenario.name) &&
+        requiredCase.when(input, results[i].ours)
+    ).length,
   }));
   const casesByState = Object.fromEntries(runs.map((run) => [run.ctx.state, run.inputs.length]));
 
