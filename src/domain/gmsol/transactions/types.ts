@@ -61,14 +61,16 @@ export type GmsolOrderAction =
 
 export type GmsolLookupTables = Record<string, readonly string[]>;
 
-export type GmsolTransactionPlan = {
+export type GmsolTransactionLifetime = { recentBlockhash: string; lastValidBlockHeight: bigint };
+
+export type GmsolTransactionPlan = GmsolTransactionLifetime & {
   owner: string;
   action: GmsolOrderAction;
-  recentBlockhash: string;
-  lastValidBlockHeight: bigint;
   lookupTables: GmsolLookupTables;
   // Raw lamports in the wallet's WSOL account before building an atomic native-SOL increase.
   wrappedSolBalance: bigint | undefined;
   // Outer groups execute serially; transactions within a group may be independent.
   groups: Uint8Array[][];
+  // Fresh blockhashes the sender fetched for groups signed after an earlier group confirmed, by group index.
+  groupLifetimes?: Record<number, GmsolTransactionLifetime>;
 };

@@ -1,6 +1,6 @@
 import { address, getCompiledTransactionMessageEncoder, type Instruction } from "@solana/kit";
 
-import { copySolanaBytes } from "lib/solana/bytes";
+import { copySolanaBytes, isSameSolanaBytes } from "lib/solana/bytes";
 
 import { GmsolInstructionReader } from "./decodeInstruction";
 import type { GmsolTransactionPlan } from "./types";
@@ -8,7 +8,6 @@ import { decodeGmsolTransaction, requireGmsol } from "./validateTransaction";
 
 const LIGHTHOUSE_PROGRAM = address("L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95");
 const MESSAGE_ERROR = "Wallet returned a different transaction message";
-const sameBytes = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((byte, i) => byte === b[i]);
 
 const lookupAccounts = (message: ReturnType<typeof decodeGmsolTransaction>["compiled"]) =>
   (message.addressTableLookups ?? [])
@@ -89,7 +88,7 @@ export function validateGmsolWalletTransaction({
 }) {
   const original = decodeGmsolTransaction(originalBytes, plan);
   const signed = decodeGmsolTransaction(signedBytes, plan);
-  if (sameBytes(copySolanaBytes(original.tx.messageBytes), copySolanaBytes(signed.tx.messageBytes)))
+  if (isSameSolanaBytes(copySolanaBytes(original.tx.messageBytes), copySolanaBytes(signed.tx.messageBytes)))
     return { transaction: signed.tx, hasAssertions: false };
 
   const before = original.compiled;
@@ -110,7 +109,7 @@ export function validateGmsolWalletTransaction({
       after.staticAccounts.indexOf(LIGHTHOUSE_PROGRAM) >=
         after.staticAccounts.length - after.header.numReadonlyNonSignerAccounts &&
       JSON.stringify(lookupAccounts(before)) === JSON.stringify(lookupAccounts(after)) &&
-      sameBytes(
+      isSameSolanaBytes(
         copySolanaBytes(getCompiledTransactionMessageEncoder().encode(after)),
         copySolanaBytes(signed.tx.messageBytes)
       ),
@@ -133,7 +132,7 @@ export function validateGmsolWalletTransaction({
       expected &&
         ix.programAddress === expected.programAddress &&
         JSON.stringify(ix.accounts ?? []) === JSON.stringify(expected.accounts ?? []) &&
-        sameBytes(
+        isSameSolanaBytes(
           ix.data ? copySolanaBytes(ix.data) : new Uint8Array(),
           expected.data ? copySolanaBytes(expected.data) : new Uint8Array()
         ),

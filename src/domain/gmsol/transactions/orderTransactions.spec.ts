@@ -46,7 +46,12 @@ import {
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { compactCreateOrderData, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
-import { getPendingGmsolSubmission, reconcileGmsolSubmission, setPendingGmsolSubmission } from "./pendingSubmission";
+import {
+  getPendingGmsolSubmission,
+  GmsolSubmissionExpiredError,
+  reconcileGmsolSubmission,
+  setPendingGmsolSubmission,
+} from "./pendingSubmission";
 import {
   GmsolTransactionError,
   prepareGmsolOrderTransactions,
@@ -65,7 +70,10 @@ const transport = vi.hoisted(() => ({
   balances: vi.fn(),
 }));
 vi.mock("../loadGmsolSdk", () => ({ loadGmsolSdk: () => transport.loadSdk() }));
-vi.mock("lib/solana/balances", () => ({ fetchSolanaBalances: () => transport.balances() }));
+vi.mock("lib/solana/balances", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  fetchSolanaBalances: () => transport.balances(),
+}));
 vi.mock("lib/solana/rpc", () => ({ getSolanaRpc: () => transport.rpc }));
 vi.mock("lib/solana/lookupTables", () => ({ fetchGmsolLookupTables: async () => transport.tables }));
 vi.mock("../fetchSolanaTradingEnabled", () => ({ fetchSolanaTradingEnabled: () => transport.flags() }));
@@ -77,6 +85,8 @@ let owner: string;
 let signingKey: CryptoKeyPair;
 let other: string;
 const lifetime = { recentBlockhash: "11111111111111111111111111111111", lastValidBlockHeight: 1n };
+// Mainnet's current rate rather than the long-standing default, so a hardcoded rent cannot pass.
+const rentFor = (size: bigint) => (size + 128n) * 5_080n;
 function order(kind: GmsolCreateOrder["kind"] = "LimitIncrease", isLong = true, selected = market): GmsolCreateOrder {
   return {
     kind,
@@ -196,7 +206,8 @@ it("validates pinned WASM create, update and cancel transactions for both sides 
       const plan = await build([order(kind, isLong)], false, lookupTables);
       const result = await validateGmsolTransactionPlan(plan);
       expect(result.orderAddresses).toHaveLength(1);
-      expect(result.keeperLamports).toBe(300000n);
+      // A new position also prefunds its position-cut order's keeper fee.
+      expect(result.keeperLamports).toBe(kind.includes("Increase") ? 600000n : 300000n);
       const prepared = instructionsOf(plan)
         .flat()
         .filter((ix) => gmsolName(ix) === "prepare_position");
@@ -256,7 +267,8 @@ it("prepares wallet accounts before an indivisible increase with TP/SL", async (
   const isOrder = (ix: Instruction) => gmsolName(ix) === "create_order_v2";
   expect(instructions.map((group) => group.filter(isOrder).length)).toEqual([0, 3]);
   const validated = await validateGmsolTransactionPlan(plan);
-  expect(validated.transactionCosts.map((cost) => cost.keeperLamports)).toEqual([0n, 900000n]);
+  expect(validated.transactionCosts.map((cost) => cost.keeperLamports)).toEqual([300000n, 900000n]);
+  expect(validated.transactionCosts[1].createdAccounts).toEqual({ tokenAccount: 6, user: 0, position: 0, order: 3 });
   expect(plan.groups.flat().every((bytes) => bytes.length <= 1232)).toBe(true);
   for (const unsafe of [
     instructions[1].find(isOrder)!,
@@ -274,21 +286,27 @@ it("prepares wallet accounts before an indivisible increase with TP/SL", async (
       value: [{ err: { InstructionError: [0, "Custom"] }, confirmationStatus: "confirmed", slot: 2n }],
     }),
   });
-  const signedOrderCounts: number[] = [];
-  await expect(
-    sendGmsolOrderTransactions({
-      plan,
-      getWalletAddress: () => owner,
-      signTransaction: async (bytes) => {
-        signedOrderCounts.push(decodeGmsolTransaction(bytes, plan).message.instructions.filter(isOrder).length);
-        return copySolanaBytes(
-          getTransactionEncoder().encode(await signTransaction([signingKey], getTransactionDecoder().decode(bytes)))
-        );
-      },
-      onConfirmed: async () => undefined,
-    })
-  ).rejects.toThrow();
-  expect(signedOrderCounts).toEqual([0]);
+  const ordersReserve = 5000n + 900000n + 3n * rentFor(2472n) + 6n * rentFor(165n) + rentFor(0n);
+  for (const postBalance of [ordersReserve - 1n, ordersReserve]) {
+    transport.rpc.simulateTransaction.mockReturnValue({
+      send: async () => ({ context: { slot: 1n }, value: { err: null, accounts: [{ lamports: postBalance }] } }),
+    });
+    const signedOrderCounts: number[] = [];
+    await expect(
+      sendGmsolOrderTransactions({
+        plan,
+        getWalletAddress: () => owner,
+        signTransaction: async (bytes) => {
+          signedOrderCounts.push(decodeGmsolTransaction(bytes, plan).message.instructions.filter(isOrder).length);
+          return copySolanaBytes(
+            getTransactionEncoder().encode(await signTransaction([signingKey], getTransactionDecoder().decode(bytes)))
+          );
+        },
+        onConfirmed: async () => undefined,
+      })
+    ).rejects.toThrow(postBalance < ordersReserve ? "Insufficient SOL" : "Solana transaction failed");
+    expect(signedOrderCounts).toEqual(postBalance < ordersReserve ? [] : [0]);
+  }
 });
 async function nativeAtomicFixture() {
   const tables = await frozenTables(solMarket);
@@ -336,8 +354,10 @@ it("wraps only the wallet WSOL shortfall before an indivisible native increase w
     ).toHaveLength(6);
     const validated = await validateGmsolTransactionPlan(plan);
     expect(validated.orderAddresses).toHaveLength(3);
-    expect(validated.transactionCosts).toEqual([
-      { keeperLamports: 0n, wrapLamports: shortfall },
+    expect(
+      validated.transactionCosts.map(({ keeperLamports, wrapLamports }) => ({ keeperLamports, wrapLamports }))
+    ).toEqual([
+      { keeperLamports: 300000n, wrapLamports: shortfall },
       { keeperLamports: 900000n, wrapLamports: 0n },
     ]);
     const increase = orders.find((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)!;
@@ -365,27 +385,63 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
   transport.balances.mockResolvedValue(wsol(2_000_000n));
   const plan = await prepareGmsolOrderTransactions({ owner, action });
   expect(plan.wrappedSolBalance).toBe(2_000_000n);
+  // The original blockhash has expired by the second prompt; only one the sender fetched after the setup is valid.
+  const fresh = { recentBlockhash: other, lastValidBlockHeight: 3n };
+  transport.rpc.getLatestBlockhash.mockReturnValue({
+    send: async () => ({
+      value: { blockhash: fresh.recentBlockhash, lastValidBlockHeight: fresh.lastValidBlockHeight },
+    }),
+  });
+  transport.rpc.getEpochInfo.mockReturnValue({ send: async () => ({ blockHeight: 2n, absoluteSlot: 2n }) });
   for (const failure of ["stale", "changed-after-signing", "unavailable", undefined] as const) {
     localStorage.removeItem("gmsol-pending-submissions");
     transport.rpc.sendTransaction.mockClear();
+    transport.rpc.getBlockHeight
+      .mockReset()
+      .mockReturnValueOnce({ send: async () => 1n })
+      .mockReturnValueOnce({ send: async () => 1n })
+      .mockReturnValue({ send: async () => 2n });
     transport.balances.mockReset().mockResolvedValue(wsol(2_000_000n));
     if (failure === "stale") transport.balances.mockResolvedValue(wsol(5_000_000n));
     if (failure === "changed-after-signing") {
       transport.balances.mockResolvedValueOnce(wsol(2_000_000n)).mockResolvedValue(wsol(5_000_000n));
     }
     if (failure === "unavailable") transport.balances.mockRejectedValue(new Error("RPC unavailable"));
-    const sign = vi.fn(signTransactionBytes);
+    const storedHeights: (string | undefined)[] = [];
+    transport.rpc.getSignatureStatuses.mockImplementation(() => ({
+      send: async () => {
+        storedHeights.push(getPendingGmsolSubmission(owner)?.lastValidBlockHeight);
+        const status = storedHeights.length === 2 ? null : { err: null, confirmationStatus: "confirmed", slot: 2n };
+        return { context: { slot: 2n }, value: [status] };
+      },
+    }));
+    let prompts = 0;
+    let secondPrompt!: () => void;
+    const prompted = new Promise<void>((resolve) => (secondPrompt = resolve));
+    const sign = vi.fn(async (bytes: Uint8Array) => {
+      if (++prompts === 2) secondPrompt();
+      return signTransactionBytes(bytes);
+    });
     const result = await sendGmsolOrderTransactions({
       plan,
       getWalletAddress: () => owner,
       signTransaction: sign,
-      onConfirmed: async () => undefined,
+      // Settles only at the second prompt, so a send that waits for the setup's refresh first never gets there.
+      onConfirmed: () => prompted,
     }).catch((error: unknown) => error);
     expect(result instanceof GmsolTransactionError, String(failure)).toBe(failure !== undefined);
     expect(sign.mock.calls.length, String(failure)).toBe(
       failure === undefined ? 2 : failure === "changed-after-signing" ? 1 : 0
     );
     expect(transport.rpc.sendTransaction.mock.calls.length, String(failure)).toBe(failure === undefined ? 2 : 0);
+    if (failure === undefined) {
+      expect(storedHeights).toEqual(["1", "3", "3"]);
+      const signedOrders = decodeGmsolTransaction(sign.mock.calls[1][0], { ...plan, ...fresh });
+      expect(signedOrders.compiled.lifetimeToken).toBe(fresh.recentBlockhash);
+      expect([...signedOrders.message.instructions]).toEqual([
+        ...decodeGmsolTransaction(plan.groups[1][0], plan).message.instructions,
+      ]);
+    }
   }
 });
 function compile(plan: GmsolTransactionPlan, instructions: Instruction[]) {
@@ -539,12 +595,16 @@ beforeEach(() => {
   transport.flags.mockReset().mockResolvedValue(true);
   const respond = (result: unknown) => vi.fn(() => ({ send: async () => result }));
   transport.rpc = {
-    getBalance: respond({ value: 1000000000n }),
     getFeeForMessage: respond({ value: 5000n }),
+    getMinimumBalanceForRentExemption: vi.fn((size: bigint) => ({ send: async () => rentFor(size) })),
     simulateTransaction: respond({ context: { slot: 1n }, value: { err: null, accounts: [{ lamports: 990000000n }] } }),
     getBlockHeight: respond(1n),
+    getEpochInfo: respond({ blockHeight: 1n, absoluteSlot: 2n }),
     getLatestBlockhash: respond({ value: { blockhash: lifetime.recentBlockhash, lastValidBlockHeight: 1n } }),
-    getSignatureStatuses: respond({ value: [{ err: null, confirmationStatus: "confirmed", slot: 2n }] }),
+    getSignatureStatuses: respond({
+      context: { slot: 2n },
+      value: [{ err: null, confirmationStatus: "confirmed", slot: 2n }],
+    }),
     sendTransaction: vi.fn((encoded: string) => ({
       send: async () =>
         getSignatureFromTransaction(
@@ -589,11 +649,10 @@ it("blocks signing on preflight failure and blocks sending after the trading fla
         context: { slot: 1n },
         value: {
           err: failure === "simulation" ? { InstructionError: [0, "Custom"] } : null,
-          accounts: [{ lamports: 990000000n }],
+          accounts: [{ lamports: failure === "funds" ? rentFor(0n) - 1n : 990000000n }],
         },
       }),
     });
-    transport.rpc.getBalance.mockReturnValue({ send: async () => ({ value: failure === "funds" ? 0n : 1000000000n }) });
     if (failure === "flag-before") transport.flags.mockResolvedValue(false);
     if (failure === "flag-after") transport.flags.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
     if (failure === "wallet-message")
@@ -825,24 +884,72 @@ async function signTransactionBytes(bytes: Uint8Array) {
   );
 }
 
-it("retains the accepted signature when confirmation times out FESOL-56", async () => {
-  const { plan, sign } = await sendFixture();
-  transport.rpc.getSignatureStatuses.mockReturnValue({ send: async () => ({ value: [null] }) });
-  const clock = vi.spyOn(Date, "now").mockReturnValueOnce(0).mockReturnValue(90_001);
+it("keeps polling for 90 s through failed polls and drops a send only once its blockhash provably expired TRD-72", async () => {
+  const confirmed = { err: null, confirmationStatus: "confirmed", slot: 2n };
+  const rows = [
+    ["confirmed", [null, { ...confirmed, confirmationStatus: "processed" }, confirmed]],
+    ["confirmed", ["error", confirmed]],
+    ["timeout", []],
+    ["expired", []],
+  ] as const;
+  // Signing awaits real WebCrypto, so only the polling clock is faked.
+  vi.useFakeTimers({ toFake: ["setTimeout", "Date"] });
   try {
-    const error = await sendGmsolOrderTransactions({
-      plan,
-      getWalletAddress: () => owner,
-      signTransaction: sign,
-      onConfirmed: async () => undefined,
-    }).catch((error: unknown) => error);
-    expect(error).toBeInstanceOf(GmsolTransactionError);
-    const failure = error as GmsolTransactionError;
-    expect(failure.submittedSignatures).toHaveLength(1);
-    expect(failure.pendingSignature).toBe(failure.submittedSignatures[0]);
-    expect(failure.message).toContain("before retrying");
+    for (const [outcome, polls] of rows) {
+      localStorage.removeItem("gmsol-pending-submissions");
+      const { plan, sign } = await sendFixture();
+      const queue: unknown[] = [...polls];
+      let polled!: () => void;
+      const firstPoll = new Promise<void>((resolve) => (polled = resolve));
+      transport.rpc.getSignatureStatuses.mockImplementation(() => ({
+        send: async () => {
+          polled();
+          const status = queue.shift() ?? null;
+          if (status === "error") throw new Error("429 Too Many Requests");
+          return { context: { slot: 3n }, value: [status] };
+        },
+      }));
+      transport.rpc.getEpochInfo.mockReturnValue({
+        send: async () => ({ blockHeight: outcome === "expired" ? 2n : 1n, absoluteSlot: 3n }),
+      });
+      let settled = false;
+      const sending = sendGmsolOrderTransactions({
+        plan,
+        getWalletAddress: () => owner,
+        signTransaction: sign,
+        onConfirmed: async () => undefined,
+      }).then(
+        (result) => ({ result, error: undefined }),
+        (error: GmsolTransactionError) => ({ result: undefined, error })
+      );
+      void sending.finally(() => {
+        settled = true;
+      });
+      await firstPoll;
+      if (outcome === "timeout") {
+        await vi.advanceTimersByTimeAsync(89_000);
+        expect(settled).toBe(false);
+      }
+      await vi.advanceTimersByTimeAsync(outcome === "confirmed" ? polls.length * 1_000 : 2_000);
+      const { result, error } = await sending;
+      if (outcome === "confirmed") {
+        expect(result?.signatures).toHaveLength(1);
+        expect(transport.rpc.getSignatureStatuses).toHaveBeenCalledTimes(polls.length);
+      } else if (outcome === "timeout") {
+        expect(error?.message).toContain("before retrying");
+        expect(getPendingGmsolSubmission(owner)).toMatchObject({
+          signature: error?.pendingSignature,
+          lastValidBlockHeight: "1",
+        });
+      } else {
+        expect(error?.originalError).toBeInstanceOf(GmsolSubmissionExpiredError);
+        expect([error?.pendingSignature, error?.submittedSignatures]).toEqual([undefined, []]);
+        expect(getPendingGmsolSubmission(owner)).toBeUndefined();
+      }
+      transport.rpc.getSignatureStatuses.mockClear();
+    }
   } finally {
-    clock.mockRestore();
+    vi.useRealTimers();
   }
 });
 
@@ -893,14 +1000,19 @@ it("reconciles a retained broadcast before another signature and never guesses f
   await expect(send()).rejects.toThrow("before retrying");
   expect(sign.mock.calls.length).toBe(signatures);
   for (const status of [null, { err: null, confirmationStatus: "processed", slot: 2n }]) {
-    transport.rpc.getSignatureStatuses.mockReturnValue({ send: async () => ({ value: [status] }) });
+    transport.rpc.getSignatureStatuses.mockReturnValue({
+      send: async () => ({ context: { slot: 2n }, value: [status] }),
+    });
     await expect(reconcileGmsolSubmission(owner)).rejects.toThrow("not yet confirmed");
     expect(getPendingGmsolSubmission(owner)).toEqual(retained);
   }
+  transport.rpc.getEpochInfo.mockReturnValue({ send: async () => ({ blockHeight: 2n, absoluteSlot: 2n }) });
+  transport.rpc.getSignatureStatuses.mockReturnValue({ send: async () => ({ context: { slot: 2n }, value: [null] }) });
+  expect(await reconcileGmsolSubmission(owner)).toEqual({ ...retained, expired: true });
   transport.rpc.getSignatureStatuses.mockReturnValue({
-    send: async () => ({ value: [{ err: null, confirmationStatus: "confirmed", slot: 3n }] }),
+    send: async () => ({ context: { slot: 2n }, value: [{ err: null, confirmationStatus: "confirmed", slot: 3n }] }),
   });
-  expect(await reconcileGmsolSubmission(owner)).toEqual({ ...retained, failed: false, slot: 3n });
+  expect(await reconcileGmsolSubmission(owner)).toEqual({ ...retained, expired: false, failed: false, slot: 3n });
   expect(getPendingGmsolSubmission(owner)).toEqual(retained);
 });
 

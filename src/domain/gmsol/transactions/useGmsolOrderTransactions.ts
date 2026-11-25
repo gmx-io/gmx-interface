@@ -8,7 +8,13 @@ import { useChainId } from "lib/chains";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 
 import { refreshGmsolAccountDataAfterTransaction } from "../useGmsolAccountData";
-import { getPendingGmsolSubmission, reconcileGmsolSubmission, setPendingGmsolSubmission } from "./pendingSubmission";
+import {
+  clearPendingGmsolSubmission,
+  getPendingGmsolSubmission,
+  GmsolSubmissionExpiredError,
+  reconcileGmsolSubmission,
+  setPendingGmsolSubmission,
+} from "./pendingSubmission";
 import {
   prepareGmsolOrderTransactions,
   sendGmsolOrderTransactions,
@@ -54,6 +60,10 @@ export function useGmsolOrderTransactions() {
           "Solana order session changed"
         );
         if (previous) {
+          if (previous.expired) {
+            clearPendingGmsolSubmission(owner, previous.signature);
+            throw new GmsolSubmissionExpiredError(previous.signature);
+          }
           if (previous.failed || previous.operation === "prepare") setPendingGmsolSubmission(owner, undefined);
           requireGmsol(!previous.failed, "The previous transaction failed. Review the order before submitting again.");
           requireGmsol(

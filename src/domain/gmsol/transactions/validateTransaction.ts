@@ -25,13 +25,28 @@ import {
 } from "./addresses";
 import { GmsolInstructionReader, decodeGmsolInstruction, readCreateOrderParams } from "./decodeInstruction";
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
-import type { GmsolCreateOrder, GmsolTransactionPlan } from "./types";
+import {
+  GMSOL_EXECUTION_LAMPORTS,
+  getGmsolPositionPreparationCost,
+  getNoGmsolCreatedAccounts,
+  type GmsolCreatedAccounts,
+} from "./solReserve";
+import type { GmsolCreateOrder, GmsolTransactionLifetime, GmsolTransactionPlan } from "./types";
 
 const kindIds = { MarketIncrease: 3n, MarketDecrease: 4n, LimitIncrease: 6n, LimitDecrease: 7n, StopLossDecrease: 8n };
 const swapIds = { NoSwap: 0n, PnlTokenToCollateralToken: 1n, CollateralToPnlToken: 2n };
 
 export function requireGmsol(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(message);
+}
+
+export function getGmsolGroupLifetime(plan: GmsolTransactionPlan, groupIndex: number): GmsolTransactionLifetime {
+  return (
+    plan.groupLifetimes?.[groupIndex] ?? {
+      recentBlockhash: plan.recentBlockhash,
+      lastValidBlockHeight: plan.lastValidBlockHeight,
+    }
+  );
 }
 
 export function decodeGmsolTransaction(
@@ -124,7 +139,7 @@ function assertCreateParams(
   const fields: typeof actual = {
     kind: kindIds[order.kind],
     decreaseSwapType: order.decreaseSwapType === undefined ? undefined : swapIds[order.decreaseSwapType],
-    executionLamports: preparing ? 0n : 300_000n,
+    executionLamports: preparing ? 0n : GMSOL_EXECUTION_LAMPORTS,
     swapPathLength: 0n,
     amount: expected.amount ?? 0n,
     size: expected.size,
@@ -159,7 +174,9 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
   let keeperLamports = 0n;
   let wrapLamports = 0n;
   let nativePayment = 0n;
-  const transactions = plan.groups.flat().map((bytes) => decodeGmsolTransaction(bytes, plan));
+  const transactions = plan.groups.flatMap((group, groupIndex) =>
+    group.map((bytes) => decodeGmsolTransaction(bytes, { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) }))
+  );
 
   // Resolve order PDAs first so ATA setup preceding create_order can be checked independently.
   for (const { message } of transactions)
@@ -213,12 +230,14 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
   );
   const expectedWrap = wrapped === undefined ? nativePayment : nativePayment > wrapped ? nativePayment - wrapped : 0n;
 
-  const transactionCosts: { keeperLamports: bigint; wrapLamports: bigint }[] = [];
+  const transactionCosts: { keeperLamports: bigint; wrapLamports: bigint; createdAccounts: GmsolCreatedAccounts }[] =
+    [];
   for (const [transactionIndex, { message }] of transactions.entries()) {
     const preparingAtomicOrder =
       action.type === "create" && action.atomic && transactionIndex < transactions.length - 1;
     const startingKeeper = keeperLamports;
     const startingWrap = wrapLamports;
+    const createdAccounts = getNoGmsolCreatedAccounts();
     let computeLimitSeen = false;
     let computePriceSeen = false;
     for (const ix of message.instructions) {
@@ -261,6 +280,7 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
             accounts[5] === SOLANA_TOKEN_PROGRAM_ID,
           "Invalid ATA setup"
         );
+        createdAccounts.tokenAccount++;
       } else if (ix.programAddress === SOLANA_SYSTEM_PROGRAM_ID) {
         requireGmsol(
           reader.uint(4) === 2n && accounts.length === 2 && accounts[0] === owner,
@@ -284,6 +304,7 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
         if (decoded.name === "prepare_user") {
           requireGmsol(action.type === "create", "Unexpected user preparation");
           assertAccounts(a, { owner, store: GMSOL_STORE_ADDRESS, user, system_program: SOLANA_SYSTEM_PROGRAM_ID });
+          createdAccounts.user++;
         } else if (decoded.name === "prepare_position") {
           requireGmsol(action.type === "create", "Unexpected position preparation");
           const params = readCreateOrderParams(r);
@@ -307,6 +328,13 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
             }),
             system_program: SOLANA_SYSTEM_PROGRAM_ID,
           });
+          const preparation = getGmsolPositionPreparationCost(
+            order.market.longTokenAddress === order.market.shortTokenAddress
+          );
+          keeperLamports += preparation.keeperLamports;
+          for (const account of Object.keys(createdAccounts) as (keyof GmsolCreatedAccounts)[]) {
+            createdAccounts[account] += preparation.createdAccounts[account];
+          }
         } else if (decoded.name === "create_order_v2") {
           requireGmsol(action.type === "create" && actionCount < action.orders.length, "Unexpected created order");
           const order = action.orders[actionCount++];
@@ -316,7 +344,8 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
           assertAccounts(a, await expectedCreateAccounts(order, owner, nonce));
           requireGmsol(!orders.includes(a.order), "Duplicate order account");
           orders.push(a.order);
-          keeperLamports += 300_000n;
+          keeperLamports += GMSOL_EXECUTION_LAMPORTS;
+          createdAccounts.order++;
         } else if (decoded.name === "update_order_v2") {
           requireGmsol(action.type === "update", "Unexpected order update");
           const expected = toGmsolUpdateParams(action.changes);
@@ -397,6 +426,7 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
     transactionCosts.push({
       keeperLamports: keeperLamports - startingKeeper,
       wrapLamports: wrapLamports - startingWrap,
+      createdAccounts,
     });
   }
   requireGmsol(

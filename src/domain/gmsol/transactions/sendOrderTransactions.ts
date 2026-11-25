@@ -2,12 +2,15 @@ import {
   address,
   getBase64Decoder,
   getBase64EncodedWireTransaction,
+  getCompiledTransactionMessageEncoder,
   getPublicKeyFromAddress,
   getSignatureFromTransaction,
   getTransactionDecoder,
+  getTransactionEncoder,
   isSolanaError,
   SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
   verifySignature,
+  type TransactionMessageBytes,
   type TransactionMessageBytesBase64,
 } from "@solana/kit";
 
@@ -16,17 +19,31 @@ import { GMSOL_LOOKUP_TABLE_ADDRESSES } from "config/gmsol/lookupTables";
 import { GMSOL_STORE_PROGRAM_ID } from "config/gmsol/program";
 import { GMSOL_TOKENS } from "config/gmsol/tokens";
 import { fetchSolanaBalances } from "lib/solana/balances";
-import { copySolanaBytes } from "lib/solana/bytes";
+import { copySolanaBytes, isSameSolanaBytes } from "lib/solana/bytes";
 import { fetchGmsolLookupTables } from "lib/solana/lookupTables";
+import { fetchSolanaMessageFee, fetchSolanaRentExemptMinimums } from "lib/solana/networkCosts";
 import { getSolanaRpc } from "lib/solana/rpc";
+import { isSolanaTransactionExpired } from "lib/solana/transactionExpiry";
 
 import { fetchSolanaTradingEnabled } from "../fetchSolanaTradingEnabled";
 import { WRAPPED_SOL_MINT } from "./addresses";
 import { buildGmsolOrderTransactions } from "./buildOrderTransactions";
 import { decodeGmsolInstruction } from "./decodeInstruction";
-import { getPendingGmsolSubmission, setPendingGmsolSubmission, GmsolPendingSubmissionError } from "./pendingSubmission";
+import {
+  clearPendingGmsolSubmission,
+  getPendingGmsolSubmission,
+  setPendingGmsolSubmission,
+  GmsolPendingSubmissionError,
+  GmsolSubmissionExpiredError,
+} from "./pendingSubmission";
+import { GMSOL_RENT_ACCOUNT_SIZES, getGmsolSolReserve } from "./solReserve";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
-import { decodeGmsolTransaction, requireGmsol, validateGmsolTransactionPlan } from "./validateTransaction";
+import {
+  decodeGmsolTransaction,
+  getGmsolGroupLifetime,
+  requireGmsol,
+  validateGmsolTransactionPlan,
+} from "./validateTransaction";
 import { validateGmsolWalletTransaction } from "./validateWalletTransaction";
 import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 
@@ -75,6 +92,9 @@ export async function prepareGmsolOrderTransactions({ owner, action }: { owner: 
   });
 }
 
+const messageOf = (bytes: Uint8Array) =>
+  getBase64Decoder().decode(getTransactionDecoder().decode(bytes).messageBytes) as TransactionMessageBytesBase64;
+
 /** Real RPC simulation, including the wallet's post-creation SOL balance; never prompts a wallet. */
 export async function checkGmsolTransactionBeforeSignature({
   plan,
@@ -84,30 +104,21 @@ export async function checkGmsolTransactionBeforeSignature({
   bytes: Uint8Array;
 }) {
   requireGmsol(getIsSolanaNetworkEnabled(), "Solana network is disabled");
-  requireGmsol(
-    plan.groups
-      .flat()
-      .some(
-        (candidate) => candidate.length === bytes.length && candidate.every((value, index) => value === bytes[index])
-      ),
-    "Transaction is not part of the validated plan"
+  const transactions = plan.groups.flatMap((group, groupIndex) =>
+    group.map((candidate) => ({ candidate, groupIndex }))
   );
+  const index = transactions.findIndex(({ candidate }) => isSameSolanaBytes(candidate, bytes));
+  requireGmsol(index >= 0, "Transaction is not part of the validated plan");
   const { transactionCosts } = await validateGmsolTransactionPlan(plan);
-  const index = plan.groups
-    .flat()
-    .findIndex(
-      (candidate) => candidate.length === bytes.length && candidate.every((value, offset) => value === bytes[offset])
-    );
   const { wrapLamports } = transactionCosts[index];
-  // Earlier transactions may already have spent their costs; this and every later one still must be funded.
-  let reserved = 0n;
-  for (const cost of transactionCosts.slice(index)) reserved += cost.keeperLamports + cost.wrapLamports;
+  const later = transactions.slice(index + 1);
   const rpc = getSolanaRpc();
   const transaction = getTransactionDecoder().decode(bytes);
-  const message = getBase64Decoder().decode(transaction.messageBytes) as TransactionMessageBytesBase64;
-  const [balance, fee, simulation, blockHeight] = await Promise.all([
-    rpc.getBalance(address(plan.owner), { commitment: "confirmed" }).send(rpcOptions()),
-    rpc.getFeeForMessage(message, { commitment: "confirmed" }).send(rpcOptions()),
+  const [fees, rent, simulation, blockHeight] = await Promise.all([
+    Promise.all(
+      [bytes, ...later.map(({ candidate }) => candidate)].map((item) => fetchSolanaMessageFee(messageOf(item)))
+    ),
+    fetchSolanaRentExemptMinimums(GMSOL_RENT_ACCOUNT_SIZES),
     rpc
       .simulateTransaction(getBase64EncodedWireTransaction(transaction), {
         encoding: "base64",
@@ -120,19 +131,56 @@ export async function checkGmsolTransactionBeforeSignature({
     rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions()),
     wrapLamports > 0n && plan.wrappedSolBalance !== undefined ? assertWrappedSolUnchanged(plan) : undefined,
   ]);
-  requireGmsol(blockHeight <= plan.lastValidBlockHeight, "Transaction blockhash has expired; rebuild before signing");
-  requireGmsol(fee.value !== null, "Cannot estimate network fees for this blockhash");
-  // The simulation checks rent for every actual account setup, not a guessed fixed rent reserve.
+  requireGmsol(
+    blockHeight <= getGmsolGroupLifetime(plan, transactions[index].groupIndex).lastValidBlockHeight,
+    "Transaction blockhash has expired; rebuild before signing"
+  );
+  requireGmsol(
+    fees.every((fee): fee is bigint => fee !== null),
+    "Cannot estimate network fees for this blockhash"
+  );
+  // The simulated balance is after this transaction's fee, rent and transfers; later ones can only be estimated.
   requireGmsol(simulation.value.err === null, `Solana simulation failed: ${JSON.stringify(simulation.value.err)}`);
   const postWallet = simulation.value.accounts?.[0];
-  requireGmsol(postWallet && postWallet.lamports >= 0n, "Simulation did not return the wallet balance");
-  requireGmsol(balance.value >= fee.value + reserved, "Insufficient SOL for network and keeper fees and wrapping");
+  requireGmsol(postWallet, "Simulation did not return the wallet balance");
+  const reserve = getGmsolSolReserve(
+    later.map((_, offset) => ({ ...transactionCosts[index + 1 + offset], networkFee: fees[offset + 1] })),
+    rent
+  );
+  requireGmsol(postWallet.lamports >= reserve, "Insufficient SOL for network and keeper fees, rent and wrapping");
   return {
     slot: simulation.context.slot,
-    networkFee: fee.value,
+    networkFee: fees[0],
     simulatedWalletBalance: postWallet.lamports,
     wrapLamports,
   };
+}
+
+// Only the blockhash changes, so order nonces, accounts and amounts stay exactly as validated and signed for.
+async function refreshGmsolGroupLifetimes(plan: GmsolTransactionPlan, fromGroup: number) {
+  const { value } = await getSolanaRpc().getLatestBlockhash({ commitment: "confirmed" }).send(rpcOptions());
+  const lifetime = { recentBlockhash: value.blockhash, lastValidBlockHeight: value.lastValidBlockHeight };
+  for (let groupIndex = fromGroup; groupIndex < plan.groups.length; groupIndex++) {
+    const current = { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) };
+    plan.groups[groupIndex] = plan.groups[groupIndex].map((bytes) => {
+      const { tx, compiled } = decodeGmsolTransaction(bytes, current);
+      const messageBytes = getCompiledTransactionMessageEncoder().encode({
+        ...compiled,
+        lifetimeToken: lifetime.recentBlockhash,
+      }) as TransactionMessageBytes;
+      const refreshed = copySolanaBytes(getTransactionEncoder().encode({ ...tx, messageBytes }));
+      const restored = getCompiledTransactionMessageEncoder().encode({
+        ...decodeGmsolTransaction(refreshed, { ...plan, ...lifetime }).compiled,
+        lifetimeToken: compiled.lifetimeToken,
+      });
+      requireGmsol(
+        refreshed.length === bytes.length && isSameSolanaBytes(restored, tx.messageBytes),
+        "Refreshing the blockhash changed the transaction"
+      );
+      return refreshed;
+    });
+    plan.groupLifetimes = { ...plan.groupLifetimes, [groupIndex]: lifetime };
+  }
 }
 
 /** A broadcast timeout is ambiguous. Reconcile these signatures before constructing a new order. */
@@ -210,7 +258,13 @@ export async function sendGmsolOrderTransactions({
         "Lookup table contents changed; rebuild the transaction"
       );
     }
-    for (const bytes of plan.groups.flat()) {
+    const positions = plan.groups.flatMap((group, groupIndex) => group.map((_, index) => ({ groupIndex, index })));
+    const refreshes: Promise<void>[] = [];
+    for (const { groupIndex, index } of positions) {
+      // A later group's prompt starts after an earlier prompt and confirmation, so it gets a blockhash of its own.
+      if (groupIndex > 0 && index === 0) await refreshGmsolGroupLifetimes(plan, groupIndex);
+      const bytes = plan.groups[groupIndex][index];
+      const groupPlan = { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) };
       requireGmsol(getWalletAddress() === plan.owner, "Connected Solana wallet changed");
       const { wrapLamports } = await checkGmsolTransactionBeforeSignature({ plan, bytes });
       requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
@@ -222,7 +276,7 @@ export async function sendGmsolOrderTransactions({
       const { transaction: signed, hasAssertions } = validateGmsolWalletTransaction({
         originalBytes: bytes,
         signedBytes,
-        plan,
+        plan: groupPlan,
       });
       const signature = signed.signatures[address(plan.owner)];
       requireGmsol(
@@ -232,7 +286,7 @@ export async function sendGmsolOrderTransactions({
       );
       const rpc = getSolanaRpc();
       requireGmsol(
-        (await rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions())) <= plan.lastValidBlockHeight,
+        (await rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions())) <= groupPlan.lastValidBlockHeight,
         "Signed transaction expired; rebuild and sign again"
       );
       if (wrapLamports > 0n && plan.wrappedSolBalance !== undefined) await assertWrappedSolUnchanged(plan);
@@ -263,7 +317,7 @@ export async function sendGmsolOrderTransactions({
         throw new GmsolPendingSubmissionError(existing.signature);
       }
       pendingSignature = expectedSignature;
-      const { message } = decodeGmsolTransaction(bytes, plan);
+      const { message } = decodeGmsolTransaction(bytes, groupPlan);
       const orderAddresses = [...message.instructions].flatMap((instruction) => {
         if (instruction.programAddress !== GMSOL_STORE_PROGRAM_ID) return [];
         const decoded = decodeGmsolInstruction(
@@ -279,6 +333,7 @@ export async function sendGmsolOrderTransactions({
           plan.action.type === "create" &&
           plan.action.orders.some((order) => order.kind === "MarketIncrease" || order.kind === "MarketDecrease"),
         operation: plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type,
+        lastValidBlockHeight: groupPlan.lastValidBlockHeight.toString(),
       });
       requireGmsol(
         getPendingGmsolSubmission(plan.owner)?.signature === expectedSignature,
@@ -294,9 +349,7 @@ export async function sendGmsolOrderTransactions({
         .send(rpcOptions())
         .catch((error: unknown) => {
           if (isSolanaError(error, SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE)) {
-            if (getPendingGmsolSubmission(plan.owner)?.signature === expectedSignature) {
-              setPendingGmsolSubmission(plan.owner, undefined);
-            }
+            clearPendingGmsolSubmission(plan.owner, expectedSignature);
             pendingSignature = undefined;
           }
           throw error;
@@ -305,9 +358,14 @@ export async function sendGmsolOrderTransactions({
       signatures.push(sent);
       const deadline = Date.now() + CONFIRM_TIMEOUT_MS;
       for (;;) {
-        const {
-          value: [status],
-        } = await rpc.getSignatureStatuses([sent], { searchTransactionHistory: true }).send(rpcOptions());
+        // A failed poll proves nothing about the transaction, so it counts as no status until the deadline.
+        const status = await rpc
+          .getSignatureStatuses([sent], { searchTransactionHistory: true })
+          .send(rpcOptions())
+          .then(
+            ({ value }) => value[0],
+            () => null
+          );
         if (status) {
           if (
             status.err !== null &&
@@ -325,7 +383,7 @@ export async function sendGmsolOrderTransactions({
             setPendingGmsolSubmission(plan.owner, undefined);
             if (plan.action.type === "create") {
               // Only track accounts from this confirmed transaction, never another group in the plan.
-              const { message } = decodeGmsolTransaction(bytes, plan);
+              const { message } = decodeGmsolTransaction(bytes, groupPlan);
               const orderAddresses: string[] = [];
               for (const instruction of message.instructions) {
                 if (instruction.programAddress !== GMSOL_STORE_PROGRAM_ID) continue;
@@ -341,7 +399,7 @@ export async function sendGmsolOrderTransactions({
                 // Receipt indexing belongs to the asynchronous tracker, not submission confirmation.
               }
             }
-            if (confirmedSignatures.length === plan.groups.flat().length) {
+            if (confirmedSignatures.length === positions.length) {
               try {
                 onSubmitted?.({
                   signatures: [...signatures],
@@ -355,19 +413,28 @@ export async function sendGmsolOrderTransactions({
                 refreshErrors.push(error);
               }
             }
-            try {
-              await onConfirmed({ signature: sent, slot, owner: plan.owner });
-            } catch (error) {
-              refreshErrors.push(error);
-            }
+            // Not awaited here: the next wallet prompt must not wait for the account refresh.
+            refreshes.push(
+              Promise.resolve({ signature: sent, slot, owner: plan.owner })
+                .then(onConfirmed)
+                .catch((error: unknown) => {
+                  refreshErrors.push(error);
+                })
+            );
             break;
           }
         }
+        if (!status && (await isSolanaTransactionExpired(sent, groupPlan.lastValidBlockHeight).catch(() => false))) {
+          clearPendingGmsolSubmission(plan.owner, sent);
+          pendingSignature = undefined;
+          signatures.pop();
+          throw new GmsolSubmissionExpiredError(sent);
+        }
         requireGmsol(Date.now() < deadline, `Solana confirmation timed out; check signature ${sent} before retrying`);
-        // Once sent, blockhash expiry does not prove the transaction failed: retain its signature for reconciliation.
         await new Promise((resolve) => setTimeout(resolve, 1_000));
       }
     }
+    await Promise.all(refreshes);
     return { signatures, slot, refreshErrors, orders, trackingErrors, trackingRequests };
   } catch (error) {
     throw new GmsolTransactionError(
