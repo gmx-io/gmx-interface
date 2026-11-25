@@ -34,9 +34,15 @@ The trading app dev server runs at [http://localhost:3010](http://localhost:3010
 | `yarn build-sdk`                     | Build the `@gmx-io/sdk` package                                                  |
 | `yarn test` / `yarn test:ci`         | Vitest in watch / single-run mode                                                |
 | `yarn test:ct`                       | Playwright component tests                                                       |
+| `yarn test:parity`                   | Compare the app math with the contracts on live Arbitrum state (needs network)   |
 | `yarn tscheck`                       | Typecheck the app and the landing                                                |
 | `yarn lint`                          | ESLint with autofix; `yarn lint:ci` checks only                                  |
 | `yarn lingui:prepare`                | Extract and compile translation catalogs                                         |
+
+`yarn test:parity` reads these env vars:
+
+- `PARITY_RPC_URL`: the Arbitrum RPC, the public one by default
+- `PARITY_BLOCK`: the block to read, the latest by default
 
 ## Documentation
 
