@@ -5,9 +5,9 @@ import {
   isProDiscountLarger,
   loadMinCollateralUsd,
   loadPositions,
-  loadProTierScenario,
   loadStoredStateFees,
   ParityPosition,
+  PRO_TIER_SCENARIO,
   referralStorageAddress,
 } from "domain/testUtils/parity/positions";
 import { TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
@@ -145,9 +145,6 @@ async function findReaderLiquidationPrice({ ctx, market, testCase }: Liquidation
 
   return (safe + unsafe) / 2n;
 }
-
-// eslint-disable-next-line es-x/no-top-level-await -- test-only file, run by vitest in node
-const PRO_TIER_SCENARIO = await loadProTierScenario();
 
 parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
   markets: (market) => !market.isSpotOnly,
