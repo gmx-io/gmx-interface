@@ -14,6 +14,7 @@ import {
   getAvailableUsdLiquidityForCollateral,
   getMarketPnl,
   getOppositeCollateral,
+  getPoolUsdWithoutPnl,
   getPositiveMarketPnl,
   getTokenPoolType,
 } from "utils/markets";
@@ -377,7 +378,7 @@ export function getSwapStats(p: {
 /**
  * Mirrors SwapUtils._validateMaxPnl: before and after the swap, the positive pnl of each side (summed over its
  * collateral buckets) must stay within MAX_PNL_FACTOR_FOR_WITHDRAWALS of the side's pool at the min price.
- * GMTrade markets keep their own check.
+ * Solana markets keep their own check.
  */
 export function getIsMaxPnlFactorExceededForSwap(p: {
   marketInfo: MarketInfo;
@@ -393,27 +394,21 @@ export function getIsMaxPnlFactorExceededForSwap(p: {
     return getIsMaxPnlFactorExceededAfterGmsolSwap(p);
   }
 
-  const { longToken, shortToken } = marketInfo;
-  const longPoolUsd = convertToUsd(marketInfo.longPoolAmount, longToken.decimals, longToken.prices.minPrice)!;
-  const shortPoolUsd = convertToUsd(marketInfo.shortPoolAmount, shortToken.decimals, shortToken.prices.minPrice)!;
+  const longPoolUsd = getPoolUsdWithoutPnl(marketInfo, true, "minPrice");
+  const shortPoolUsd = getPoolUsdWithoutPnl(marketInfo, false, "minPrice");
   const longDeltaUsd = isLong ? usdIn : -usdIn;
-  const longPnl = getPositiveMarketPnl(marketInfo, true, false);
-  const shortPnl = getPositiveMarketPnl(marketInfo, false, false);
+  const longPoolPnl = getPositiveMarketPnl(marketInfo, true, false);
+  const shortPoolPnl = getPositiveMarketPnl(marketInfo, false, false);
   const isExceeded = (nextLongPoolUsd: bigint, nextShortPoolUsd: bigint) =>
-    isPositivePnlFactorExceeded(longPnl, nextLongPoolUsd, marketInfo.maxPnlFactorForWithdrawalsLong) ||
-    isPositivePnlFactorExceeded(shortPnl, nextShortPoolUsd, marketInfo.maxPnlFactorForWithdrawalsShort);
+    isPositivePnlFactorExceeded(longPoolPnl, nextLongPoolUsd, marketInfo.maxPnlFactorForWithdrawalsLong) ||
+    isPositivePnlFactorExceeded(shortPoolPnl, nextShortPoolUsd, marketInfo.maxPnlFactorForWithdrawalsShort);
 
   return isExceeded(longPoolUsd, shortPoolUsd) || isExceeded(longPoolUsd + longDeltaUsd, shortPoolUsd - longDeltaUsd);
 }
 
 // MarketUtils.isPositivePnlFactorExceeded, where an empty pool has a zero factor
 function isPositivePnlFactorExceeded(pnl: bigint, poolUsd: bigint, maxFactor: bigint | undefined): boolean {
-  // Cap not known yet (fast path before multicall refresh) — skip this side.
-  if (maxFactor === undefined || pnl <= 0n || poolUsd <= 0n) {
-    return false;
-  }
-
-  return bigMath.mulDiv(pnl, PRECISION, poolUsd, false) > maxFactor;
+  return poolUsd > 0n && isSideExceeded(pnl, poolUsd, maxFactor);
 }
 
 // After the swap only: the shrinking side at MAX_PNL_FACTOR_FOR_WITHDRAWALS, the growing side at
