@@ -8558,6 +8558,10 @@ msgstr "심볼(A~Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "차트에 표시할 구매/판매 마크를 선택하십시오: 모든 과거 거래, 현재 보유 중인 포지션만, 또는 표시 안 함"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "요율 기록을 새로 고칠 수 없습니다. 이전에 불러온 데이터를 표시합니다."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "이 트리거 가격에서는 남은 포지션이 최대 레버리지를 초과하여 주문이 체결되지 않을 수 있습니다."
@@ -8695,6 +8699,10 @@ msgstr "최근 1년"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "끄기"
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "{historyStartDate}부터 요율 기록을 확인할 수 있습니다."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"

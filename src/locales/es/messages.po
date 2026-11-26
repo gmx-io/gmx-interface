@@ -8558,6 +8558,10 @@ msgstr "Símbolo (de A a Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Elija qué marcas de compra/venta aparecen en el gráfico: todas sus operaciones pasadas, solo su posición abierta actual o ninguna"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "No se puede actualizar el historial de tasas. Se muestran los datos cargados anteriormente."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "A este precio de activación, la posición restante excedería el apalancamiento máximo y es posible que la orden no se ejecute."
@@ -8695,6 +8699,10 @@ msgstr "Último año"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "Desactivado"
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "El historial de tasas está disponible desde {historyStartDate}."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"

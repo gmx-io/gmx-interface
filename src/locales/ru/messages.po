@@ -8558,6 +8558,10 @@ msgstr "Символ (от A до Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Выберите, какие отметки покупки/продажи показывать на графике: для всех ваших прошлых сделок, только для текущей открытой позиции или не показывать вовсе"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "Не удалось обновить историю ставок. Отображаются ранее загруженные данные."
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "По этой цене срабатывания оставшаяся позиция превысит максимальное плечо, и ордер может не исполниться."
@@ -8695,6 +8699,10 @@ msgstr "Последний год"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "Выкл."
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "История ставок доступна с {historyStartDate}."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"

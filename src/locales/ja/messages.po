@@ -8558,6 +8558,10 @@ msgstr "シンボル（AからZ）"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "チャートに表示する購入/売却マークを選択します：過去のすべての取引、現在保有中のポジションのみ、または表示しない"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "レート履歴を更新できません。以前に読み込んだデータを表示しています。"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "At this trigger price, the remaining position would exceed max leverage and the order may not execute."
 msgstr "このトリガー価格では残りのポジションが最大レバレッジを超えるため、注文が約定しない可能性があります。"
@@ -8695,6 +8699,10 @@ msgstr "過去1年"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "オフ"
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "レート履歴は {historyStartDate} 以降で利用可能です。"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
