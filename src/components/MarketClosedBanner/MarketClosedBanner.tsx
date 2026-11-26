@@ -46,3 +46,55 @@ export function MarketClosedBanner({ state, onSwitchToLimit }: Props) {
     </AlertInfoCard>
   );
 }
+
+export type MarketClosedPositionAction = "close" | "depositNow" | "withdraw";
+
+/**
+ * Red banner for position windows whose action is blocked while the market is closed (Close, "Now" deposit,
+ * withdraw): why, what still works, and a way there when one exists.
+ */
+export function MarketClosedPositionBanner({
+  action,
+  onAction,
+}: {
+  action: MarketClosedPositionAction;
+  onAction?: () => void;
+}) {
+  return (
+    <AlertInfoCard type="error" hideClose>
+      {action === "close" && (
+        <>
+          <Trans>
+            Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after
+            the market reopens.
+          </Trans>
+          {onAction && (
+            <>
+              {" "}
+              <EmbeddedActionButton onClick={onAction}>
+                <Trans>Set TP/SL</Trans>
+              </EmbeddedActionButton>
+            </>
+          )}
+        </>
+      )}
+      {action === "depositNow" && (
+        <>
+          <Trans>
+            "Now" deposits are unavailable while the market is closed. "At price" deposits can still be created, but
+            execute only after the market reopens.
+          </Trans>
+          {onAction && (
+            <>
+              {" "}
+              <EmbeddedActionButton onClick={onAction}>
+                <Trans>Switch to At price</Trans>
+              </EmbeddedActionButton>
+            </>
+          )}
+        </>
+      )}
+      {action === "withdraw" && <Trans>This market is closed. Withdraw after the market reopens.</Trans>}
+    </AlertInfoCard>
+  );
+}

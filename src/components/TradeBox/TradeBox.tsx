@@ -1431,6 +1431,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
                 marketInfo={marketInfo}
                 type={isSwap ? "swap" : "increase"}
                 isLong={isLong}
+                isSummaryHidden={closedMarketOrderState === "blocked"}
               />
             )}
           </div>

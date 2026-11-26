@@ -25,7 +25,11 @@ import {
   usePositionEditorOpenAtPrice,
   usePositionEditorPosition,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectClosedMarkets,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
@@ -75,6 +79,7 @@ import {
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   EditingOrderSource,
   OrderInfo,
@@ -145,6 +150,7 @@ import {
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
+import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeValue } from "components/NetworkFeeRow/NetworkFeeValue";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
@@ -192,6 +198,9 @@ export function OrderEditor(p: Props) {
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  // the order waits for the reopen; the note matches the one shown when the order is created
+  const isMarketClosed = !isSwapOrderType(p.order.orderType) && getIsMarketClosed(closedMarkets, p.order.marketAddress);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
 
@@ -1368,6 +1377,16 @@ export function OrderEditor(p: Props) {
                 </div>
               </div>
             </AlertInfoCard>
+          )}
+
+          {isMarketClosed && (
+            <MarketClosedBanner
+              state={
+                isTriggerDecreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)
+                  ? "stopWaits"
+                  : "limitWaits"
+              }
+            />
           )}
 
           {button}

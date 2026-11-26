@@ -29,6 +29,8 @@ type Props = {
   marketInfo: MarketInfo | undefined;
   type: "swap" | "increase" | "decrease";
   isLong: boolean;
+  /** Hides the "Executes N orders…" summary, e.g. while the market is closed and TWAP is blocked */
+  isSummaryHidden?: boolean;
 };
 
 export const getTwapDurationText = (duration: TwapDuration, locale: DateLocale) => {
@@ -61,6 +63,7 @@ const TwapRows = ({
   marketInfo,
   type,
   isLong,
+  isSummaryHidden = false,
 }: Props) => {
   const { _, i18n } = useLingui();
   const localeStr = i18n.locale as Locale;
@@ -105,7 +108,7 @@ const TwapRows = ({
         valueClassName="numbers"
       />
 
-      {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
+      {!isSummaryHidden && !isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>
           <Trans>
             Executes {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}

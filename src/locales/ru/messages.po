@@ -4314,6 +4314,10 @@ msgstr "Неоплаченные комиссии за заимствовани�
 msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
 msgstr "Рынок закрыт. Этот ордер исполнится только после открытия рынка. Цена при открытии может отличаться от последней цены."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Закрытие позиции недоступно, пока рынок закрыт. TP/SL ордера по-прежнему можно создать, но они исполнятся только после открытия рынка."
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "Удалить конечную точку"
@@ -6789,6 +6793,7 @@ msgstr "Комиссии превышают сумму оплаты"
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you"
 msgstr "Реальный ончейн-доход в стейблкоинах каждый раз, когда кто-то торгует через вас"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Установить TP/SL"
@@ -10849,6 +10854,10 @@ msgstr "{addressLabel} в сети {networkLabel}"
 msgid "Loading fees..."
 msgstr "Загрузка комиссий..."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "This market is closed. Withdraw after the market reopens."
+msgstr "Этот рынок закрыт. Выведите средства после открытия рынка."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -13509,6 +13518,10 @@ msgstr "Установлено высокое допустимое влияни�
 msgid "Swap"
 msgstr "Обмен"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to At price"
+msgstr "Переключиться на «По цене»"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "Откуда берутся вознаграждения за стейкинг GMX?"
@@ -13564,6 +13577,10 @@ msgstr "<0>Каждые</0> {minutes} мин{0}"
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "Язык"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "\"Now\" deposits are unavailable while the market is closed. \"At price\" deposits can still be created, but execute only after the market reopens."
+msgstr "Пополнение «Сейчас» недоступно, пока рынок закрыт. Пополнение «По цене» по-прежнему можно создать, но оно исполнится только после открытия рынка."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"
