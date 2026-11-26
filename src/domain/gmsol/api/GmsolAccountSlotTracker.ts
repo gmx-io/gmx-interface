@@ -82,7 +82,6 @@ export class GmsolAccountSlotTracker {
     return reading.finally(() => reads.delete(reading));
   }
 
-  // A read the floor overtook in flight keeps the last accepted data, unless it answered below its own requested slot.
   async commitRead<T>(key: string, read: (minContextSlot: number | undefined) => Promise<GmsolSlotted<T>>): Promise<T> {
     const requestedSlot = this.getMinContextSlot(key);
     const settled = await read(requestedSlot).then(

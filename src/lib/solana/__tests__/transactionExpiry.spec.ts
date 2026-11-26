@@ -9,7 +9,6 @@ vi.mock("../rpc", () => ({ getSolanaRpc: () => rpc }));
 const signature = getBase58Decoder().decode(new Uint8Array(64).fill(7));
 const seen = { err: null, confirmationStatus: "processed", slot: 15n };
 
-// The finalized block is at height 11 and slot 20.
 it.each([
   ["not expired inside its lifetime", 11n, null, 20n, false],
   ["expired when missing after its lifetime ended at a finalized block", 10n, null, 20n, true],

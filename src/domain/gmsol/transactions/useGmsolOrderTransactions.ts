@@ -35,9 +35,7 @@ type SubmitOptions = { onSubmitted: (result: GmsolSendResult) => void };
 
 export type GmsolOrderSubmission = {
   owner: string;
-  // False once the owner or the network changed, even if it changed back.
   isActive: () => boolean;
-  // An action is signed and sent; undefined only checks the unresolved earlier submission.
   submit: (action: GmsolOrderAction | undefined, options?: SubmitOptions) => Promise<GmsolSendResult>;
   release: () => void;
 };

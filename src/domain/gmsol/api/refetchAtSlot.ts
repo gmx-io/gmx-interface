@@ -4,7 +4,6 @@ import type { ApiPositionInfo } from "sdk/utils/positions/types";
 
 export type GmsolSlotted<T> = { data: T; slot: number | undefined };
 
-// Returns undefined for an answer below `floor`, the tracker's slot when the read settles: outdated, not wrong.
 export function commitGmsolSnapshot<T>({
   requestedSlot,
   floor,

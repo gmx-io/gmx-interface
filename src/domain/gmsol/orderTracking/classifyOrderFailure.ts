@@ -29,7 +29,6 @@ export function classifyOrderFailure(error: unknown, isPaySetToWsol = false): Or
   };
 }
 
-/** Lamports a confirmed preparation wrapped while its orders provably did not land, so they stay WSOL. */
 export function getPreparedWrappedLamports(error: unknown) {
   return error instanceof GmsolTransactionError && classifyOrderFailure(error).failure === "prepared"
     ? error.wrappedLamports

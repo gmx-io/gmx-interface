@@ -28,7 +28,6 @@ export type SolanaOrderActions = {
   isSubmitting: boolean;
   // Why nothing can be sent right now (loading, trading off, outdated page), or undefined
   error: string | undefined;
-  // Why Close, TP/SL and edit wait while a flow these actions did not start holds the wallet, or undefined
   busyReason: string | undefined;
   // An earlier submission is unresolved: the next action only checks it and reports nothing sent
   hasPendingSubmission: boolean;
@@ -42,7 +41,6 @@ export type SolanaOrderActions = {
   }) => Promise<boolean>;
   setTriggerOrders: (p: { position: PositionInfo; entries: SolanaTriggerEntry[] }) => Promise<SolanaTriggerEntry[]>;
   updateOrder: (p: { order: PositionOrderInfo; changes: SolanaOrderChanges }) => Promise<boolean>;
-  // Orders Solana cannot cancel are skipped and named; resolves to true only if every order was cancelled
   cancelOrders: (orders: OrderInfo[]) => Promise<boolean>;
   // Why this order cannot be edited on Solana, or undefined
   getOrderError: (order: OrderInfo) => string | undefined;

@@ -77,7 +77,6 @@ export type GmsolTransactionPlan = GmsolTransactionLifetime & {
   wrappedSolBalance: bigint | undefined;
   // Outer groups execute serially; transactions within a group may be independent.
   groups: Uint8Array[][];
-  // Fresh blockhashes the sender fetched for groups signed after an earlier group confirmed, by group index.
   groupLifetimes?: Record<number, GmsolTransactionLifetime>;
   confirmedSlot?: bigint;
 };

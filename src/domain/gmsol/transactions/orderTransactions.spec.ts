@@ -460,7 +460,6 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     );
     expect(transport.rpc.sendTransaction.mock.calls.length, String(failure)).toBe(failure === undefined ? 2 : 0);
     if (failure === undefined) {
-      // The orders transaction's record keeps the confirmed setup and the shortfall it wrapped.
       const setup = [(result as { signatures: string[] }).signatures[0]];
       expect(stored).toEqual([
         ["1", undefined, undefined],
@@ -1084,7 +1083,6 @@ it("resends the same signed bytes every 2 s without preflight until a confirmed 
       await firstPoll;
       await vi.advanceTimersByTimeAsync((polls.length - 1) * 1_000);
       const { signatures } = await sending;
-      // Nothing more goes out once the flow has ended.
       await vi.advanceTimersByTimeAsync(10_000);
       expect(
         sends.map(({ at }) => at - sends[0].at),
@@ -1140,7 +1138,6 @@ it("asks the wallet once more with a fresh blockhash when the signature expires 
       signTransaction: sign,
       onConfirmed: async () => undefined,
     }).catch((error: unknown) => error);
-    // The second prompt follows a second pre-signature simulation, and nothing was broadcast or recorded before it.
     expect(atPrompts, String(secondExpired)).toEqual([
       [1, 0, undefined],
       [2, 0, undefined],

@@ -3,6 +3,5 @@ export const GMSOL_LOOKUP_TABLE_ADDRESSES: readonly string[] = [
   "TackgvLbopMf7HwUdDEvJZvMCJufJo1nHTaYP6TGJdM",
 ];
 
-// TODO(FESOL-71): register each reviewed GMX-owned copy and its independently verified authority here.
-// An empty map deliberately leaves the provisional third-party mutable tables untrusted.
+// The configured tables are frozen; a table with an authority fails closed unless that authority is registered here.
 export const GMSOL_LOOKUP_TABLE_AUTHORITIES: Readonly<Record<string, string | undefined>> = {};

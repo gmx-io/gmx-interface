@@ -13,7 +13,6 @@ import type { ApiPositionInfo } from "sdk/utils/positions/types";
 import { GmsolAccountSlotTracker } from "./api/GmsolAccountSlotTracker";
 import { fetchGmsolOrders, fetchGmsolPositions } from "./api/refetchAtSlot";
 
-// gmx-api serves positions from its Solana index, not from the RPC.
 const POSITIONS_REFRESH_INTERVAL = 15_000;
 // Rank and referrer discounts move slowly. At 5 s the host answers 429 around 120 wallets.
 const FEE_DISCOUNT_REFRESH_INTERVAL = 60_000;

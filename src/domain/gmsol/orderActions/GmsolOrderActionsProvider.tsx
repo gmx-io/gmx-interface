@@ -91,7 +91,6 @@ type FlowStep = {
   trackExecution: boolean;
   build: () => GmsolOrderAction;
   titles: (action: GmsolOrderAction) => OrderStatusTitleData[];
-  // Why the existing order this step changes cannot be changed on Solana
   orderError?: string;
 };
 
@@ -223,7 +222,6 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   );
 
   // Each call is one transaction flow. An unresolved earlier submission is checked first and nothing new is sent.
-  // Resolves to how many steps confirmed, counted from the first.
   const runFlow = useCallback(
     async (steps: FlowStep[], skipped: SkippedOrder[] = []): Promise<number> => {
       if (getIsGmsolOrderSubmitting()) return 0;

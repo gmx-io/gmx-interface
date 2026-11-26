@@ -207,7 +207,6 @@ it("reports an order transaction that expired or failed after a confirmed setup 
     [{}, null, ["failed", "expired", [], 0n]],
     [prepared, null, ["failed", "prepared", [setup], 5n]],
     [prepared, failed, ["failed", "prepared", [orders], 5n]],
-    // A malformed record is never trusted and stays unresolved.
     [{ ...prepared, confirmedSignatures: ["setup"] }, null, ["unknown", undefined, [orders], 0n]],
     [{ ...prepared, wrappedLamports: "5.0" }, null, ["unknown", undefined, [orders], 0n]],
     [{ confirmedSignatures: [setup] }, null, ["unknown", undefined, [orders], 0n]],
@@ -261,7 +260,6 @@ it("reports only the TP/SL entries whose own order confirmed TRD-72", async () =
     } as DecreasePositionAmounts,
     existingFullCloseOrder: replaces ? existingFullCloseOrder : undefined,
   });
-  // Whether each send in turn confirms, and the indexes of the entries reported as sent.
   const rows: { entries: SolanaTriggerEntry[]; confirms: boolean[]; sent: number[] }[] = [
     { entries: [entry(), entry()], confirms: [true, false], sent: [0] },
     { entries: [entry(), entry()], confirms: [false], sent: [] },

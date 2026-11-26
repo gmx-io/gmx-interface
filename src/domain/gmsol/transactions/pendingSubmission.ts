@@ -13,7 +13,6 @@ export type PendingGmsolSubmission = {
   operation: "create" | "update" | "cancel" | "prepare";
   // A decimal string, because the record is JSON; records written before it was stored lack it.
   lastValidBlockHeight?: string;
-  // Only after the plan's earlier transactions prepared accounts: their signatures and the lamports they wrapped.
   confirmedSignatures?: string[];
   wrappedLamports?: string;
 };
@@ -58,7 +57,7 @@ function parsePreparation({ confirmedSignatures, wrappedLamports }: PendingGmsol
   };
 }
 
-/** An RPC failure or a missing status proves nothing until the blockhash has expired at a finalized block. */
+/** A missing status proves nothing until the blockhash has expired at a finalized block; an RPC failure never proves anything. */
 export async function reconcileGmsolSubmission(owner: string) {
   const pending = getPendingGmsolSubmission(owner);
   if (!pending) return undefined;

@@ -277,10 +277,8 @@ export default function GmsolTradeboxAdapter({
   useEffect(() => {
     onChange({
       sessionId,
-      owner: wallet.address,
       text,
       disabled: isSubmitting || Boolean(wallet.address && error && !hasPendingSubmission) || wallet.isRestoring,
-      isSubmitting,
       onSubmit,
       solHoldback,
       isSolHoldbackUnavailable,

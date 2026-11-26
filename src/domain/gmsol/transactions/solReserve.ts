@@ -40,7 +40,6 @@ export function getGmsolPositionPreparationCost(isPureMarket: boolean) {
   };
 }
 
-/** Before a plan exists: every account an increase with TP/SL can create, at the highest fee the validator allows. */
 export function getGmsolIncreaseSolCosts({
   orderCount,
   isPureMarket,

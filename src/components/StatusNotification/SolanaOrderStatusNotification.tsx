@@ -14,7 +14,6 @@ import { useToastAutoClose } from "./useToastAutoClose";
 
 export type SolanaOrderNotificationState = {
   operation: OrderTxnType | "prepare";
-  // Empty when the toast only checks an earlier submission.
   orders: readonly OrderStatusTitleData[];
   submission: "sending" | "submitted" | "failed" | "unknown";
   signatures: readonly string[];
