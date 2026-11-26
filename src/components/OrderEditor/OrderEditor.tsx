@@ -1157,16 +1157,18 @@ export function OrderEditor(p: Props) {
         <div className="flex flex-col gap-14 px-20 pb-16">
           {receiveTokens && (
             <>
-              <ToggleSwitch
-                textClassName="text-typography-secondary"
-                isChecked={isReceiveSeparated}
-                setIsChecked={setIsReceiveSeparated}
-              >
-                <SplitReceiveTokensLabel
-                  profitToken={receiveTokens.pnlToken}
-                  collateralToken={receiveTokens.collateralToken}
-                />
-              </ToggleSwitch>
+              {receiveTokens.canSwitchMode && (
+                <ToggleSwitch
+                  textClassName="text-typography-secondary"
+                  isChecked={isReceiveSeparated}
+                  setIsChecked={setIsReceiveSeparated}
+                >
+                  <SplitReceiveTokensLabel
+                    profitToken={receiveTokens.pnlToken}
+                    collateralToken={receiveTokens.collateralToken}
+                  />
+                </ToggleSwitch>
+              )}
               {existingPosition && (
                 <SyntheticsInfoRow
                   label={t`Receive`}

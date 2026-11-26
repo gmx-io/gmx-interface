@@ -44,7 +44,7 @@ import {
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
-import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
+import { getTpSlLiqPriceWarning, isFullClosePositionOrder } from "domain/tpsl/utils";
 import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
@@ -258,7 +258,12 @@ export const selectOrderEditorReceiveTokens = createSelector((q) => {
   const collateralToken = order.targetCollateralToken;
   if (getIsEquivalentTokens(pnlToken, collateralToken)) return;
 
-  return { pnlToken, collateralToken };
+  // a partial close's stored withdrawal was sized for the stored mode, and 2.2.1 updateOrder can't change it
+  const canSwitchMode =
+    order.initialCollateralDeltaAmount === 0n ||
+    isFullClosePositionOrder(order, q(selectOrderEditorExistingPosition)?.sizeInUsd);
+
+  return { pnlToken, collateralToken, canSwitchMode };
 });
 
 export const selectOrderEditorIsReceiveSeparated = createSelector((q) => {
@@ -274,7 +279,7 @@ export const selectOrderEditorDecreasePositionSwapType = createSelector((q) => {
 
   if (!order) return undefined;
 
-  if (!q(selectOrderEditorReceiveTokens)) {
+  if (!q(selectOrderEditorReceiveTokens)?.canSwitchMode) {
     return order.decreasePositionSwapType;
   }
 
