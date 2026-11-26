@@ -219,7 +219,7 @@ it("reconciles each stored record shape into the setup, expiry or unresolved sta
     [{ operation: "prepare", orderAddresses: [] }, confirmed, ["failed", "prepared", [orders], 0n]],
     [{ ...preparing, ownWrapLamports: "7.0" }, confirmed, ["unknown", undefined, [orders], 0n]],
     [{ origin: "close" }, null, ["failed", "expired", [], 0n]],
-    [{ origin: "swap" as never }, null, ["unknown", undefined, [orders], 0n]],
+    [{ origin: "swap" as never }, null, ["failed", "expired", [], 0n]],
   ];
   for (const [fields, status, expected] of rows) {
     const record = { signature: orders, orderAddresses: ["order"], lastValidBlockHeight: "1", ...fields };

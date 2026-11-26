@@ -6,16 +6,15 @@ import { getSolanaRpc } from "lib/solana/rpc";
 import { isSolanaTransactionExpired } from "lib/solana/transactionExpiry";
 import { Storage } from "lib/storage/Storage";
 
-const GMSOL_SUBMISSION_ORIGINS = ["tradebox", "close", "triggers", "update", "cancel"] as const;
-
 // The order flow that sent a submission: a status check closes a modal only for a submission of its own origin.
-export type GmsolSubmissionOrigin = (typeof GMSOL_SUBMISSION_ORIGINS)[number];
+export type GmsolSubmissionOrigin = "tradebox" | "close" | "triggers" | "update" | "cancel";
 
 export type PendingGmsolSubmission = {
   signature: string;
   orderAddresses: string[];
   trackExecution?: boolean;
   operation: "create" | "update" | "cancel" | "prepare";
+  // A value written by another build counts as another flow, never as a malformed record.
   origin?: GmsolSubmissionOrigin;
   // A decimal string, because the record is JSON; records written before it was stored lack it.
   lastValidBlockHeight?: string;
@@ -71,12 +70,6 @@ function parseOwnWrapLamports({ ownWrapLamports }: PendingGmsolSubmission) {
   return BigInt(ownWrapLamports);
 }
 
-function requireKnownOrigin({ origin }: PendingGmsolSubmission) {
-  if (origin !== undefined && !GMSOL_SUBMISSION_ORIGINS.includes(origin)) {
-    throw new Error("Malformed pending submission");
-  }
-}
-
 /** A missing status proves nothing until the blockhash has expired at a finalized block; an RPC failure never proves anything. */
 export async function reconcileGmsolSubmission(owner: string) {
   const pending = getPendingGmsolSubmission(owner);
@@ -94,7 +87,6 @@ export async function reconcileGmsolSubmission(owner: string) {
       pending.lastValidBlockHeight === undefined ? undefined : BigInt(pending.lastValidBlockHeight);
     preparation = parsePreparation(pending);
     ownWrapLamports = parseOwnWrapLamports(pending);
-    requireKnownOrigin(pending);
     if (!status && (await isSolanaTransactionExpired(pending.signature, lastValidBlockHeight))) {
       return { ...pending, preparation, ownWrapLamports, expired: true as const };
     }
