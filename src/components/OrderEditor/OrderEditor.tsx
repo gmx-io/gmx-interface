@@ -366,7 +366,7 @@ export function OrderEditor(p: Props) {
     decreaseAmounts && getFeeItem(-decreaseAmounts.swapProfitFeeUsd, decreaseAmounts.swapProfitUsdIn);
   const swapFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: Boolean(
-      existingPosition && receiveTokens && !isReceiveSeparated && getIsHighSwapProfitFee(swapProfitFee)
+      existingPosition && receiveTokens?.canSwitchMode && !isReceiveSeparated && getIsHighSwapProfitFee(swapProfitFee)
     ),
     receiveTokenSymbol: receiveOutputs[0]?.token.symbol,
     profitToken: receiveTokens?.pnlToken,

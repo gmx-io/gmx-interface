@@ -44,7 +44,11 @@ import {
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
-import { getTpSlLiqPriceWarning, isFullClosePositionOrder } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getPositionCloseSizeDeltaUsdForDisplay,
+  getTpSlLiqPriceWarning,
+} from "domain/tpsl/utils";
 import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
@@ -258,10 +262,13 @@ export const selectOrderEditorReceiveTokens = createSelector((q) => {
   const collateralToken = order.targetCollateralToken;
   if (getIsEquivalentTokens(pnlToken, collateralToken)) return;
 
-  // a partial close's stored withdrawal was sized for the stored mode, and 2.2.1 updateOrder can't change it
+  // a stored withdrawal was sized for the stored mode and 2.2.1 updateOrder can't change it. Only a MaxUint256 close
+  // that this edit keeps whole is a full close at execution, which returns all collateral whatever the withdrawal
   const canSwitchMode =
     order.initialCollateralDeltaAmount === 0n ||
-    isFullClosePositionOrder(order, q(selectOrderEditorExistingPosition)?.sizeInUsd);
+    (order.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD &&
+      q(selectOrderEditorSizeDeltaUsd) ===
+        getPositionCloseSizeDeltaUsdForDisplay(order.sizeDeltaUsd, q(selectOrderEditorExistingPosition)?.sizeInUsd));
 
   return { pnlToken, collateralToken, canSwitchMode };
 });
