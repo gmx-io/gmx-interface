@@ -333,7 +333,7 @@ function SizeWithIcon({
   const { sizeDeltaUsd } = order;
   if (isFullClosePositionOrder(order, positionSizeUsd)) {
     return (
-      <span className={className}>
+      <span className={cx(className, "hyphens-auto [overflow-wrap:anywhere]")}>
         <Trans>Full position close</Trans>
       </span>
     );
@@ -759,7 +759,7 @@ function OrderItemLarge({
             />
             {isMarketClosed && (
               <div className="mt-4 flex">
-                <MarketClosedBadge label="marketClosed" isTruncatable />
+                <MarketClosedBadge label="marketClosed" />
               </div>
             )}
           </>
@@ -1088,7 +1088,7 @@ function OrderItemTypeLabel({ order, className }: { order: OrderInfo; className?
       <StandardTooltip
         as="span"
         variant="none"
-        className="min-w-0 truncate rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
+        className="whitespace-nowrap rounded-4 bg-yellow-300/20 px-4 py-2 text-12 font-medium text-yellow-300"
         handle={<Trans>Frozen</Trans>}
         content={<span className={cx({ "text-red-500": frozenError.level === "error" })}>{frozenError.msg}</span>}
       />

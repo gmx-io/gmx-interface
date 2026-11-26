@@ -39,7 +39,7 @@ export const colors = {
     950: { light: "rgba(0, 0, 0, 0.05)", dark: "rgba(255, 255, 255, 0.05)", type: "rgba" },
   },
   yellow: {
-    300: { light: "#FF9400", dark: "#ffe166" },
+    300: { light: "#CB7601", dark: "#ffe166" },
     500: { light: "#f3b50c", dark: "#f3b50c" },
     900: { light: "#FFF9D0", dark: "#2E2D29" },
   },
