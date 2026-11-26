@@ -2,7 +2,7 @@ import type { Provider } from "ethers";
 import { zeroHash } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET } from "config/chains";
+import { ARBITRUM, AVALANCHE_FUJI, SOURCE_BASE_MAINNET, SOURCE_BSC_MAINNET } from "config/chains";
 import { DEFAULT_ONE_CLICK_SESSION_DURATION, DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS } from "config/oneClickTrading";
 import { createMockSubaccount } from "domain/testUtils/mockSubaccount";
 import {
@@ -21,6 +21,7 @@ import { periodToSeconds } from "sdk/utils/time";
 import {
   getActualApproval,
   getInitialSubaccountApproval,
+  getIsLegacySubaccountRemovalRequired,
   getIsSubaccountApprovalInvalid,
   getIsSubaccountNonceExpired,
   getSubaccountApprovalContextSrcChainId,
@@ -278,6 +279,115 @@ describe("getIsSubaccountNonceExpired", () => {
   });
 });
 
+describe("getIsLegacySubaccountRemovalRequired", () => {
+  it("removes a listed old session, or an unlisted one only while the current routers accept its pending approval", () => {
+    const priorGelatoRouterAddress = "0xfD0596f708d9D950E0eF7b5d191e5F8e55b8a67f";
+
+    const cases: {
+      name: string;
+      chainId?: typeof ARBITRUM | typeof AVALANCHE_FUJI;
+      isListed: boolean | undefined;
+      onchainData: SubaccountOnchainData | undefined;
+      pendingApprovals: SignedSubaccountApproval[];
+      expected: boolean;
+    }[] = [
+      { name: "listed", isListed: true, onchainData: undefined, pendingApprovals: [], expected: true },
+      { name: "list unknown", isListed: undefined, onchainData: undefined, pendingApprovals: [], expected: true },
+      {
+        name: "unlisted, no approval",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [],
+        expected: false,
+      },
+      {
+        name: "settlement router approval",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [createSettlementContextApproval()],
+        expected: true,
+      },
+      {
+        name: "multichain router approval",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [createSourceContextApproval(SOURCE_BASE_MAINNET)],
+        expected: true,
+      },
+      {
+        name: "prior router approval",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [createSettlementContextApproval({ subaccountRouterAddress: priorGelatoRouterAddress })],
+        expected: false,
+      },
+      {
+        name: "deadline passed",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [createSettlementContextApproval({ deadline: 1n })],
+        expected: false,
+      },
+      {
+        name: "nonce used",
+        isListed: false,
+        onchainData: createOnchainData({ approvalNonce: APPROVAL_NONCE + 1n }),
+        pendingApprovals: [createSettlementContextApproval()],
+        expected: false,
+      },
+      {
+        name: "already revoked",
+        isListed: false,
+        onchainData: createOnchainData({ revocationCounter: 1n }),
+        pendingApprovals: [createSettlementContextApproval()],
+        expected: false,
+      },
+      {
+        name: "on-chain data unavailable",
+        isListed: false,
+        onchainData: undefined,
+        pendingApprovals: [createSettlementContextApproval()],
+        expected: true,
+      },
+      {
+        name: "on-chain data unavailable, prior router approval",
+        isListed: false,
+        onchainData: undefined,
+        pendingApprovals: [createSettlementContextApproval({ subaccountRouterAddress: priorGelatoRouterAddress })],
+        expected: false,
+      },
+      {
+        name: "approval of another address",
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [
+          createSettlementContextApproval({ subaccount: "0x0000000000000000000000000000000000000002" }),
+        ],
+        expected: false,
+      },
+      {
+        name: "contracts without the revocation counter",
+        chainId: AVALANCHE_FUJI,
+        isListed: false,
+        onchainData: createOnchainData(),
+        pendingApprovals: [
+          createSettlementContextApproval({
+            subaccountRouterAddress: getContract(AVALANCHE_FUJI, "SubaccountGelatoRelayRouter"),
+          }),
+        ],
+        expected: false,
+      },
+    ];
+
+    for (const { name, chainId = ARBITRUM, expected, ...params } of cases) {
+      expect(
+        getIsLegacySubaccountRemovalRequired({ chainId, subaccountAddress: SUBACCOUNT_ADDRESS, ...params }),
+        name
+      ).toBe(expected);
+    }
+  });
+});
+
 describe("getSubaccountApprovalContextSrcChainId", () => {
   it("returns undefined for an approval signed on the settlement chain", () => {
     expect(getSubaccountApprovalContextSrcChainId(ARBITRUM, createSettlementContextApproval())).toBe(undefined);
@@ -335,6 +445,33 @@ describe("getActualApproval", () => {
     });
 
     expect(actual.signature).toBe(ZERO_DATA);
+  });
+
+  it("keeps an approval with a consumed nonce only while the contract has never seen the address PRO-4458", () => {
+    const signedApproval = createSettlementContextApproval({ nonce: APPROVAL_NONCE - 1n });
+
+    const neverOnchain = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ maxAllowedCount: 0n, expiresAt: 0n }),
+    });
+    const removedInAnotherBrowser = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ currentActionsCount: 1n }),
+    });
+    const revokedOnV2_2_1 = getActualApproval({
+      chainId: ARBITRUM,
+      address: SUBACCOUNT_ADDRESS,
+      signedApproval,
+      onchainData: createOnchainData({ maxAllowedCount: 0n, expiresAt: 0n, revocationCounter: 1n }),
+    });
+
+    expect(neverOnchain).toBe(signedApproval);
+    expect(removedInAnotherBrowser.signature).toBe(ZERO_DATA);
+    expect(revokedOnV2_2_1.signature).toBe(ZERO_DATA);
   });
 
   it("returns an empty approval when the settlement-context approval nonce is consumed", () => {

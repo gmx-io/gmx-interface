@@ -44,6 +44,10 @@ msgstr "Remises d'impact sur le prix récupérées"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Ou mettez à jour le RPC de votre portefeuille via <0>chainlist.org</0>"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "Ce navigateur"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "Mensuel"
@@ -181,6 +185,10 @@ msgstr "Vous pouvez ouvrir des positions isolées sur GMX en utilisant votre GMX
 msgid "Do I need to create codes on each network?"
 msgstr "Dois-je créer des codes sur chaque réseau ?"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.} other {Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.}}"
+msgstr "{0, plural, one {Votre wallet demandera # signature, et la suppression paie des frais de réseau depuis votre GMX Account.} other {Votre wallet demandera # signatures, une par session. Chaque suppression paie des frais de réseau depuis votre GMX Account.}}"
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
 msgstr "Votre position longue {token} se trouve dans le pool {poolName}, qui est fermé à toute nouvelle taille. Cet ordre ouvre une position distincte."
@@ -239,6 +247,8 @@ msgstr "Découvrez les niveaux et l'intégration en direct"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "Frais de réseau indisponibles"
@@ -441,6 +451,10 @@ msgstr "En attente ({0, plural, one {# jour restant} other {# jours restants}})"
 msgid "Roadmap"
 msgstr "Feuille de route"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions"
+msgstr "Active jusqu'au {expiryDate}, actions illimitées"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "Vers"
@@ -549,7 +563,7 @@ msgstr "taille de la position"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market orders."
-msgstr ""
+msgstr "Utilisez le bouton « Fermer » pour réduire votre position au moyen d’ordres au marché."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -672,6 +686,10 @@ msgstr "Contribution des frais non réalisés"
 msgid "{0} a short position when the price is above the trigger price."
 msgstr "{0} une position short lorsque le prix est supérieur au prix de déclenchement."
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "Ancienne session supprimée"
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -789,6 +807,10 @@ msgstr "Valeur :"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "Projets développés par la communauté GMX. <0/>Faites preuve de prudence lorsque vous interagissez avec une application, car les applications sont entièrement maintenues par des développeurs de la communauté."
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions, pending next trade"
+msgstr "Active, sans expiration, actions illimitées, en attente du prochain trade"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1064,6 +1086,10 @@ msgstr "Puis-je créer plusieurs codes de parrainage ?"
 msgid "Unknown error"
 msgstr "Erreur inconnue"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "Définir le Take-Profit long à {formattedPrice}"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1260,7 +1286,7 @@ msgstr "GMX sur Solana"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not refresh open positions. This list may be out of date."
-msgstr ""
+msgstr "Impossible d’actualiser les positions ouvertes. Cette liste n’est peut-être pas à jour."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1387,7 +1413,7 @@ msgstr "Modifier le Take-Profit : {suffix}"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not load open positions"
-msgstr ""
+msgstr "Impossible de charger les positions ouvertes"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1480,6 +1506,10 @@ msgstr "Vous avez activé le code de parrainage {activatedReferralCodeLabel}. Vo
 msgid "Swap fee factor (negative PI)"
 msgstr "Facteur de frais d'échange (PI négatif)"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "Plus aucune action restante"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "Solde réclamable"
@@ -1535,8 +1565,14 @@ msgid "GMX staked rewards"
 msgstr "Récompenses de staking GMX"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "Montant à recevoir inférieur au minimum"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "Supprimer toutes les autres sessions"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -1948,7 +1984,7 @@ msgstr "Part de la puissance de staking"
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Received separately when this order executes, not added to position margin."
-msgstr ""
+msgstr "Ce montant est reçu séparément lors de l’exécution de cet ordre et n’est pas ajouté à la marge de la position."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -2040,10 +2076,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "Comment ma réduction de frais est-elle appliquée ?"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "Échec de la génération de la session"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2151,6 +2183,7 @@ msgstr "Marchés"
 msgid "Whitelist only"
 msgstr "Liste blanche uniquement"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Réessayer"
@@ -2324,6 +2357,10 @@ msgstr "plus de 100 jetons crypto"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Optimal usage factor short"
 msgstr "Facteur d'utilisation optimal short"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "Définir un ordre Stop Market long @ {formattedPrice}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
@@ -2937,10 +2974,6 @@ msgstr "Taux annualisé"
 msgid "No swap path found"
 msgstr "Aucun chemin d'échange trouvé"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "Définir un ordre Stop Market long @ {0}"
-
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
 msgstr "Vos réductions"
@@ -3050,7 +3083,7 @@ msgstr "Transfert initié"
 
 #: src/components/TVChart/Chart.tsx
 msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
-msgstr ""
+msgstr "Vue simulée du carnet d’ordres de la liquidité Solana, incluant l’impact sur le prix à l’ouverture de positions."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
@@ -3148,7 +3181,7 @@ msgstr "{typeString} Long Stop Market"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact is included in the entry price."
-msgstr ""
+msgstr "L’impact sur le prix est inclus dans le prix d’entrée."
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3293,7 +3326,7 @@ msgstr "Choisissez :"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Could not refresh your fee discount. Fees are estimated without it."
-msgstr ""
+msgstr "Impossible d’actualiser votre réduction sur les frais. Les frais sont estimés sans cette réduction."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
@@ -3328,6 +3361,10 @@ msgstr "{0, plural, one {Annuler l'ordre} other {Annuler # ordres}}"
 msgid "GM:"
 msgstr "GM :"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "Sessions One-Click ({0})"
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
 msgstr "Confirmer le règlement"
@@ -3347,7 +3384,7 @@ msgstr "{txnTypeText} l'ordre {0} pour"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not refresh open orders. This list may be out of date."
-msgstr ""
+msgstr "Impossible d’actualiser les ordres ouverts. Cette liste n’est peut-être pas à jour."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3631,6 +3668,10 @@ msgstr "Prix actuel"
 msgid "Mark:"
 msgstr "Prix de marque :"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "Confirmer les signatures d'ordres"
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "CURRENT"
@@ -3696,7 +3737,7 @@ msgstr "Fraîcheur des données"
 #: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
 msgid "Unable to calculate this order"
-msgstr ""
+msgstr "Impossible de calculer cet ordre"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -3959,6 +4000,10 @@ msgstr "Type d'ordre"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "{symbol} insuffisant dans votre GMX Account pour cette transaction. <0>Déposer {symbol}</0>"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "Suppression de l'ancienne session..."
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "Double exposition : long sur {indexSymbol} via la position + long sur {collateralSymbol} via la garantie. Le prix de liquidation varie selon le prix de {collateralSymbol}."
@@ -4064,6 +4109,10 @@ msgstr "Fidélité"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Up to 25% earnings"
 msgstr "Jusqu'à 25 % de gains"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left, pending next trade} other {Active until {expiryDate}, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Active jusqu'au {expiryDate}, # action restante, en attente du prochain trade} other {Active jusqu'au {expiryDate}, # actions restantes, en attente du prochain trade}}"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
@@ -4412,6 +4461,10 @@ msgstr "Quels réseaux sont pris en charge ?"
 msgid "Dark theme"
 msgstr "Thème sombre"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "Chaque navigateur a sa propre session. Une session d'un autre navigateur apparaît ici après son premier trade. Les bots et les applications qui tradent pour vous sont également listés."
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
 msgstr "Le programme"
@@ -4425,10 +4478,6 @@ msgstr "Étape 2 : Ajouter de la marge"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI fee"
 msgstr "Frais d'interface"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "Définir le Take-Profit long à {0}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
@@ -4722,7 +4771,7 @@ msgstr "Autres frais réalisés"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
-msgstr ""
+msgstr "Garantie supplémentaire retenue : <0/>. Ce montant peut être réclamé après l’exécution et est exclu du total des frais. Coût immédiat : <1/>."
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -4877,6 +4926,10 @@ msgstr "Conversion de l'USDC en USDG..."
 msgid "Copin"
 msgstr "Copin"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "Définir un ordre stop au marché short à {formattedPrice}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4904,6 +4957,10 @@ msgstr "Cumul"
 msgid "Enter amount"
 msgstr "Entrez un montant"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
+msgstr "{count, plural, one {Active jusqu'au {expiryDate}, # action restante} other {Active jusqu'au {expiryDate}, # actions restantes}}"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "Ajoutez {0} à votre portefeuille"
@@ -4911,6 +4968,10 @@ msgstr "Ajoutez {0} à votre portefeuille"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Compte incorrect"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still listed. Remove it in One-Click sessions"
+msgstr "L'ancienne session est toujours listée. Supprimez-la dans Sessions One-Click"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
@@ -5586,10 +5647,19 @@ msgstr "Échange soumis"
 msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
 msgstr "Stargate n'accepte pas les transferts de {tokenSymbol} vers {destinationNetworkName} pour le moment. Essayez un autre actif."
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "Expirée"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "Données {chainName}"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "Suppression..."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
@@ -6133,6 +6203,10 @@ msgstr "Retirer"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | DEX de perpétuels pour crypto, métaux, actions et énergie"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "Suppression annulée"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Actualiser Stop Market"
@@ -6243,10 +6317,6 @@ msgstr "Ouverture..."
 msgid "DeFi margin protocol"
 msgstr "Protocole de marge DeFi"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "Définir le Stop-Loss du short @ {0}"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "Frais"
@@ -6289,6 +6359,10 @@ msgstr "Positions ouvertes {directionLabel}"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr "Approbation échouée"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "Ancienne session"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
@@ -7163,6 +7237,10 @@ msgstr "Emplois"
 msgid "Failed Stop Market"
 msgstr "Stop Market échoué"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Pending first trade, # action left} other {Pending first trade, # actions left}}"
+msgstr "{count, plural, one {En attente du premier trade, # action restante} other {En attente du premier trade, # actions restantes}}"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -7476,6 +7554,10 @@ msgstr "Sélectionner les positions"
 msgid "GMX on Solana (GMTrade) is served from a separate domain"
 msgstr "GMX sur Solana (GMTrade) est hébergé sur un domaine distinct"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions"
+msgstr "Active, sans expiration, actions illimitées"
+
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
@@ -7569,6 +7651,10 @@ msgstr "Utilisez le bouton « Fermer » pour réduire votre position via des ord
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "Tout supprimer"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "Moins de détails"
@@ -7627,6 +7713,10 @@ msgstr "Mise à jour d'une partie de l'échange TWAP"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
 msgstr "Bon profil"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was approved again in another browser or app. Re-sign to use it here."
+msgstr "One-Click Trading a été approuvé à nouveau dans un autre navigateur ou une autre application. Signez à nouveau pour l'utiliser ici."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -7939,7 +8029,7 @@ msgstr "Ce portefeuille n'est pas encore déployé sur {0}. Signez à nouveau po
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Funding received"
-msgstr ""
+msgstr "Financement reçu"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8330,10 +8420,6 @@ msgstr "À l'aise avec l'attribution par code Builder / code de parrainage"
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "Les frais gagnés ne sont suivis que pour les GM et GLV détenus dans votre portefeuille sur {chainName}. Les GM et GLV dans un GMX Account ou sur une autre chaîne continuent de générer des frais, mais ils ne peuvent pas encore être attribués par compte."
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "Définir un ordre limite long @ {0}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
@@ -9005,10 +9091,6 @@ msgstr "<0>Groupes de marchés</0><1>Positions ouvertes nettes</1>"
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "Utilisez une carte de débit/crédit, Apple Pay ou Google Pay là où c'est pris en charge"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "Définir le Stop-Loss long à {0}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "Pour les marchés récents, l’historique n’est peut-être pas encore indexé. Consultez le taux net / 1 h au-dessus du graphique."
@@ -9122,6 +9204,10 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Récupération soumise"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "Définir le Take-Profit du short @ {formattedPrice}"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "Créé"
@@ -9198,6 +9284,7 @@ msgstr "Gardez plus à chaque trade"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9409,6 +9496,7 @@ msgstr "Total du financement payé"
 msgid "Cancel Stop-Loss"
 msgstr "Annulation du Stop-Loss"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 msgid "Express is unavailable right now, so this GMX Account action can't be sent"
 msgstr "Express est indisponible pour le moment, cette action GMX Account ne peut donc pas être envoyée"
@@ -9599,6 +9687,10 @@ msgstr "Achat de GM réussi, mais le bridge vers Base a échoué. Vos fonds sont
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Disable One-Click Trading"
 msgstr "Désactiver One-Click Trading"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "Supprimé"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -10205,6 +10297,10 @@ msgstr "Payé depuis votre GMX Account, car votre Portefeuille n'a pas assez de 
 msgid "Copy"
 msgstr "Copier"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "Cela supprime aussi les sessions des bots et des applications qui tradent pour vous. Ils cessent de fonctionner jusqu'à ce que vous les approuviez à nouveau."
+
 #: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10317,6 +10413,10 @@ msgstr "APY de performance totale"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "Aucun jeton sur {0} pour le dépôt"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "Définir un ordre limite long @ {formattedPrice}"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
@@ -10566,10 +10666,6 @@ msgstr "Chargement des frais..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "Définir un ordre stop au marché short à {0}"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10588,6 +10684,10 @@ msgstr "Réinitialiser le zoom"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "Une partie de vos tokens stakés est encore réservée dans le vault GMX. Retirez d'abord du vault GMX ou stakez plus de GMX."
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "Définir un ordre limite short @ {formattedPrice}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -10621,6 +10721,10 @@ msgstr "Afficher les positions sur le graphique"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
 msgstr "Meilleur résultat après frais, ou instantané quand Paxos fait économiser moins de {minSaving}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "{0, plural, one {{removedCount} of # session removed} other {{removedCount} of # sessions removed}}"
+msgstr "{0, plural, one {{removedCount} sur # session supprimée} other {{removedCount} sur # sessions supprimées}}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11358,6 +11462,10 @@ msgstr "Plafonne le pool USDC-USDG dans les deux sens. Les montants affichés so
 msgid "Wallet trading only on these networks"
 msgstr "Trading via portefeuille uniquement sur ces réseaux"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Afficher la fenêtre de confirmation lors de la signature des ordres Express, y compris les modifications, annulations et changements de garantie. Les autres signatures, comme les approbations, les dépôts dans les pools et l'activation de One-Click, demandent toujours une confirmation."
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Staker GMX et acheter GLV ou GM pour gagner des récompenses"
@@ -11388,7 +11496,7 @@ msgstr "Frais de réallocation"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimed automatically with the next order on this position."
-msgstr ""
+msgstr "Les frais de financement positifs sont automatiquement récupérés lors du prochain ordre sur cette position."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -11514,6 +11622,10 @@ msgstr "En bref"
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
 msgid "Closed to new stop market orders"
 msgstr "Fermé aux nouveaux ordres Stop Marché"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "Définir le Stop-Loss long à {formattedPrice}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11680,6 +11792,10 @@ msgstr "Rechercher un type"
 msgid "Converted to {marginTokenSymbol} in the same order"
 msgstr "Converti en {marginTokenSymbol} dans le même ordre"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session wasn't removed"
+msgstr "L'ancienne session n'a pas été supprimée"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "Frais de retrait"
@@ -11752,6 +11868,10 @@ msgstr "Recevez {tokensList} dans votre portefeuille sur {networkName} ou choisi
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, unlimited actions"
+msgstr "En attente du premier trade, actions illimitées"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networkName}, or choose another network"
@@ -11881,6 +12001,10 @@ msgstr "Qu’est-ce que GMX ?"
 msgid "Deposit submitted"
 msgstr "Dépôt soumis"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "Échec de la suppression"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11941,7 +12065,7 @@ msgstr "Estimation en USD"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fee discount"
-msgstr ""
+msgstr "Réduction sur les frais"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12089,7 +12213,7 @@ msgstr "GM perçoit des frais d'un seul marché. GLV détient plusieurs tokens G
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
-msgstr ""
+msgstr "Impossible de charger les ordres ouverts"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12329,10 +12453,6 @@ msgstr "Passer la création d'un code de parrainage ?"
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "Réseau de règlement changé pour {0}, mais {1} reste dans votre GMX Account sur {2}"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "Définir un ordre limite short @ {0}"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
 msgstr "Déposer ETH"
@@ -12373,6 +12493,10 @@ msgstr "Échec de la désactivation"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr "Partagez votre transaction GMX sur X"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions, pending next trade"
+msgstr "Active jusqu'au {expiryDate}, actions illimitées, en attente du prochain trade"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12654,6 +12778,10 @@ msgstr "Ce programme vous correspond-il ?"
 msgid "Gained"
 msgstr "Gagnés"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "Expirée le {expiryDate}"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "Mise à jour de l'ordre…"
@@ -12699,7 +12827,7 @@ msgstr "Saisir un prix de déclenchement"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Unable to calculate market depth"
-msgstr ""
+msgstr "Impossible de calculer la profondeur du marché"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
@@ -12765,6 +12893,10 @@ msgstr "PnL short"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "Un gestionnaire de compte dédié"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "Supprimer"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -13023,6 +13155,7 @@ msgstr "Estimez vos économies"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Re-signer"
 
@@ -13033,6 +13166,10 @@ msgstr "Dépôt vers GMX Account en cours..."
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied"
 msgstr "Adresse copiée"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "Re-signature requise"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
@@ -13493,10 +13630,6 @@ msgstr "Les frais de réseau sont élevés en raison d'une activité accrue sur 
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "La position existante se trouve dans le pool WETH-USDC. L’utilisation du pool sélectionné créera une position distincte. <0>Passer au pool WETH-USDC</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "Définir le Take-Profit du short @ {0}"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "Partager le PnL"
@@ -13603,6 +13736,10 @@ msgstr "Commencer à gagner"
 msgid "{orderText} cancellation failed"
 msgstr "Échec de l'annulation de {orderText}"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left, pending next trade} other {Active, no expiry, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Active, sans expiration, # action restante, en attente du prochain trade} other {Active, sans expiration, # actions restantes, en attente du prochain trade}}"
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "Comment et quand suis-je payé ou crédité ?"
@@ -13667,6 +13804,14 @@ msgstr "Dans l'onglet Swap · arrive séparément"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Direct avec Paxos"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left} other {Active, no expiry, # actions left}}"
+msgstr "{count, plural, one {Active, sans expiration, # action restante} other {Active, sans expiration, # actions restantes}}"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "Définir le Stop-Loss du short @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -14154,6 +14299,12 @@ msgstr "Activez <0>Express Trading</0> dans les paramètres pour une meilleure f
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "Saisir un ratio"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "Supprimer les sessions 1CT"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
