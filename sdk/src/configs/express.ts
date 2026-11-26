@@ -4,8 +4,6 @@ import { Token } from "utils/tokens/types";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, MEGAETH, ContractsChainId } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
-export const SUBACCOUNT_MESSAGE =
-  "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
 export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/overview/#express-trading-and-one-click-trading";
 
 export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d"); // 1 week

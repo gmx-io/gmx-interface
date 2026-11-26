@@ -71,6 +71,7 @@ export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-nat
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+export const EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY = "express-trading-nonce-expired-warn-hidden";
 
 export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
@@ -100,6 +101,7 @@ const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 // older builds set it on any permit error and never cleared it
 export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
 export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
+export const DEBUG_WALLET_BATCHING_ENABLED_KEY = "debug-wallet-batching-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
@@ -129,6 +131,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
 const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
+const PENDING_WALLET_BATCH_KEY = "pending-wallet-batch";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -154,6 +157,10 @@ export function getTokenPermitsKey(chainId: number, account: string | undefined)
 export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
+}
+
+export function getPendingWalletBatchKey(chainId: number, account: string) {
+  return [chainId, account, PENDING_WALLET_BATCH_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {
@@ -216,6 +223,11 @@ export function getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(chainId: nu
 export function getSubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, "one-click-trading-config"];
+}
+
+export function getLegacySubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-legacy-config"];
 }
 
 export function getSyntheticsReceiveMoneyTokenKey(

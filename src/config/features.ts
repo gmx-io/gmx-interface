@@ -8,6 +8,11 @@ export function getIsExpressSupported(chainId: number) {
   return [AVALANCHE, ARBITRUM, ARBITRUM_SEPOLIA, MEGAETH].includes(chainId);
 }
 
+// a wallet batch is simulated with eth_simulateV1, which the Avalanche and default MegaETH RPCs reject
+export function getIsWalletBatchingSupported(chainId: number) {
+  return [ARBITRUM, ARBITRUM_SEPOLIA].includes(chainId);
+}
+
 export type NetworkFeature =
   | "gmxAccount"
   | "express"

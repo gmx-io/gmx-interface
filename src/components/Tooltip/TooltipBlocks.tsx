@@ -151,5 +151,5 @@ export function TooltipLink({ href, children }: { href: string; children: ReactN
 }
 
 export function TooltipFootnote({ children }: { children: ReactNode }) {
-  return <div className="text-body-small text-typography-secondary">{children}</div>;
+  return <div className="text-typography-secondary">{children}</div>;
 }

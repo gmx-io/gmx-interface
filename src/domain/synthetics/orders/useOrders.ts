@@ -160,7 +160,6 @@ export function useOrders(
 export function convertApiOrderToOrder({
   triggerPrice,
   acceptablePrice,
-  srcChainId: _srcChainId,
   dataList,
   ...rest
 }: ApiOrderInfo): Order {
@@ -248,6 +247,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         uiFeeFactor: BigInt(orderData.numbers.uiFeeFactor),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
+        srcChainId: orderData.numbers.srcChainId,
         isLong: orderData.flags.isLong,
         shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken,
         isFrozen: orderData.flags.isFrozen,

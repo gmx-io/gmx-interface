@@ -3,7 +3,7 @@ import { convertToTokenAmount, type SignedTokenPermit, type TokenData, type Toke
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
-import { getIsValidExpressParams } from "sdk/utils/express";
+import { getIsConfirmedOutOfGasPaymentTokenBalance, getIsValidExpressParams } from "sdk/utils/express";
 
 import type { ExpressTxnParams, GlobalExpressParams } from "./types";
 import { findNextGasPaymentToken } from "./useSwitchGasPaymentTokenIfRequired";
@@ -178,6 +178,54 @@ export async function estimateWithApprovedGasPaymentToken({
     isGmxAccount: false,
     excludeTokenAddresses: unavailableTokenAddresses,
     tokensAllowanceData: globalExpressParams.gasPaymentAllowanceData,
+  });
+
+  const nextGlobalExpressParams = nextGasPaymentTokenAddress
+    ? getGlobalExpressParamsForGasPaymentToken(nextGasPaymentTokenAddress)
+    : undefined;
+
+  if (!nextGlobalExpressParams) {
+    return expressParams;
+  }
+
+  const nextExpressParams = await estimate(nextGlobalExpressParams);
+
+  return nextExpressParams && getIsValidExpressParams(nextExpressParams) ? nextExpressParams : expressParams;
+}
+
+export async function estimateWithGmxAccountGasPaymentTokenFallback({
+  chainId,
+  globalExpressParams,
+  payAmounts,
+  estimate,
+  getGlobalExpressParamsForGasPaymentToken,
+  unavailableTokenAddresses,
+}: {
+  chainId: number;
+  globalExpressParams: GlobalExpressParams | undefined;
+  payAmounts: Record<string, bigint>;
+  estimate: (globalExpressParams: GlobalExpressParams | undefined) => Promise<ExpressTxnParams | undefined>;
+  getGlobalExpressParamsForGasPaymentToken: (gasPaymentTokenAddress: string) => GlobalExpressParams | undefined;
+  unavailableTokenAddresses: string[];
+}): Promise<ExpressTxnParams | undefined> {
+  const expressParams = await estimate(globalExpressParams);
+
+  if (
+    !globalExpressParams ||
+    !expressParams ||
+    !getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)
+  ) {
+    return expressParams;
+  }
+
+  const nextGasPaymentTokenAddress = findNextGasPaymentToken({
+    chainId,
+    tokensData: globalExpressParams.tokensData,
+    gasPaymentToken: expressParams.gasPaymentParams.gasPaymentToken,
+    gasPaymentTokenAmount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+    payAmounts,
+    isGmxAccount: true,
+    excludeTokenAddresses: unavailableTokenAddresses,
   });
 
   const nextGlobalExpressParams = nextGasPaymentTokenAddress

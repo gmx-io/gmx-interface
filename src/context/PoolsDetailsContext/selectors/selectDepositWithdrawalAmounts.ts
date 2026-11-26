@@ -22,7 +22,11 @@ import {
   selectPoolsDetailsWithdrawalFindSwapPath,
   selectPoolsDetailsWithdrawalReceiveTokenAddress,
 } from "context/PoolsDetailsContext/selectors";
-import { selectChainId, selectUiFeeFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectSwapFeeReceiverFactor,
+  selectUiFeeFactor,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectFindSwapPath } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -36,6 +40,7 @@ import { DepositAmounts, FindSwapPath, WithdrawalAmounts } from "sdk/utils/trade
 export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts | WithdrawalAmounts | undefined => {
   const chainId = q(selectChainId);
   const uiFeeFactor = q(selectUiFeeFactor);
+  const swapFeeReceiverFactor = q(selectSwapFeeReceiverFactor);
 
   const { isDeposit, isWithdrawal } = q(selectPoolsDetailsFlags);
   const glvInfo = q(selectPoolsDetailsGlvInfo);
@@ -124,6 +129,7 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       includeLongToken,
       includeShortToken,
       uiFeeFactor,
+      swapFeeReceiverFactor,
       strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
       isMarketTokenDeposit,
       glvInfo,

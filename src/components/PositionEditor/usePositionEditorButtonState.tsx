@@ -17,6 +17,7 @@ import {
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
@@ -40,6 +41,7 @@ import {
   selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -149,6 +151,8 @@ export function usePositionEditorButtonState(
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { isClassicEnabled: isClassicTokenPermitsEnabled, classicTokenPermits } = useTokenPermitsContext();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const depositMode = useSelector(selectPositionEditorDepositMode);
   const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
@@ -363,11 +367,13 @@ export function usePositionEditorButtonState(
     isAllowanceLoaded: isAllowanceLoadedRaw,
     isApproving,
     handleApprove,
+    approvalBatch,
   } = useTokenApproval({
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: permitBlockReason === undefined,
+    allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
+    allowBatch: !isExpressTransactionAvailable,
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -381,6 +387,7 @@ export function usePositionEditorButtonState(
 
   const isAllowanceLoaded =
     Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
+  const isApprovalStepRequired = isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -575,7 +582,7 @@ export function usePositionEditorButtonState(
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+    if (isApprovalStepRequired && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
@@ -657,6 +664,9 @@ export function usePositionEditorButtonState(
       provider,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      tokenPermits: classicTokenPermits,
+      walletCallsBatch: approvalBatch,
+      batchFlow: isDeposit ? "editCollateral" : undefined,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -775,7 +785,7 @@ export function usePositionEditorButtonState(
     };
   }
 
-  if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+  if (isApprovalStepRequired && selectedCollateralToken) {
     const { text, tooltipContent } = getApproveButtonState();
     return {
       text,

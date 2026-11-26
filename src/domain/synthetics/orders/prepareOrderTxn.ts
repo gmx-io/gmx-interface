@@ -18,7 +18,9 @@ export async function prepareOrderTxn(
   value: bigint,
   simulationPromise?: Promise<any>,
   metricId?: OrderMetricId,
-  additinalErrorContent?: React.ReactNode
+  additinalErrorContent?: React.ReactNode,
+  /** The approvals go in the same wallet batch, so the call alone can't be estimated and the wallet estimates it */
+  isWalletCallsBatch = false
 ) {
   if (!contract.runner?.provider) {
     helperToast.error(t`Transaction failed: provider unavailable`);
@@ -28,9 +30,11 @@ export async function prepareOrderTxn(
   const provider = getProvider(undefined, chainId);
   const account = await (contract.runner as ethers.Signer).getAddress();
   const [gasLimit, gasPriceData] = await Promise.all([
-    getGasLimit({ chainId, contract, method, params, value, from: account }).catch(
-      makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
-    ),
+    isWalletCallsBatch
+      ? undefined
+      : getGasLimit({ chainId, contract, method, params, value, from: account }).catch(
+          makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
+        ),
     getGasPrice(provider, chainId).catch(
       makeCatchTransactionError(chainId, metricId, "gasPrice", additinalErrorContent)
     ),

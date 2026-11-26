@@ -14,6 +14,7 @@ import {
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DEBUG_TOKEN_PERMITS_ENABLED_KEY,
+  DEBUG_WALLET_BATCHING_ENABLED_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
@@ -89,6 +90,8 @@ export type SettingsContextType = {
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   isTokenPermitsQaOverrideEnabled: boolean;
   setIsTokenPermitsQaOverrideEnabled: (val: boolean) => void;
+  isWalletBatchingQaOverrideEnabled: boolean;
+  setIsWalletBatchingQaOverrideEnabled: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
   buySellIconsMode: BuySellIconsMode;
@@ -303,6 +306,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedIsTokenPermitsQaOverrideEnabled = noop;
   }
 
+  let [savedIsWalletBatchingQaOverrideEnabled, setSavedIsWalletBatchingQaOverrideEnabled] = useLocalStorageSerializeKey(
+    [chainId, DEBUG_WALLET_BATCHING_ENABLED_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedIsWalletBatchingQaOverrideEnabled = false;
+    setSavedIsWalletBatchingQaOverrideEnabled = noop;
+  }
+
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
     true
@@ -410,6 +422,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       isTokenPermitsQaOverrideEnabled: savedIsTokenPermitsQaOverrideEnabled!,
       setIsTokenPermitsQaOverrideEnabled: setSavedIsTokenPermitsQaOverrideEnabled,
+      isWalletBatchingQaOverrideEnabled: savedIsWalletBatchingQaOverrideEnabled!,
+      setIsWalletBatchingQaOverrideEnabled: setSavedIsWalletBatchingQaOverrideEnabled,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       buySellIconsMode: savedBuySellIconsMode!,
@@ -494,6 +508,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableShareModalPnlCheck,
     savedIsTokenPermitsQaOverrideEnabled,
     setSavedIsTokenPermitsQaOverrideEnabled,
+    savedIsWalletBatchingQaOverrideEnabled,
+    setSavedIsWalletBatchingQaOverrideEnabled,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     savedBuySellIconsMode,

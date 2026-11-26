@@ -1,5 +1,5 @@
 import { t } from "@lingui/macro";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -80,12 +80,15 @@ export function useShiftSubmitState({
     [selectedToken, amounts?.fromTokenAmount]
   );
 
-  const { tokensToApprove, isApproving, isAllowanceLoading, isAllowanceLoaded, handleApprove } = useTokenApproval({
-    chainId,
-    spenderAddress: routerAddress,
-    tokens,
-    metric: { flow: "gmShift" },
-  });
+  const { tokensToApprove, isApproving, isAllowanceLoading, isAllowanceLoaded, handleApprove, approvalBatch } =
+    useTokenApproval({
+      chainId,
+      spenderAddress: routerAddress,
+      tokens,
+      allowBatch: true,
+      metric: { flow: "gmShift" },
+    });
+  const submit = useCallback(() => onSubmit(approvalBatch), [approvalBatch, onSubmit]);
 
   return useMemo(() => {
     if (isSubmitting) {
@@ -101,7 +104,7 @@ export function useShiftSubmitState({
         error: multipleWalletExtensionsChainError.buttonErrorMessage,
         errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
         disabled: true,
-        onSubmit,
+        onSubmit: submit,
       };
     }
 
@@ -156,7 +159,7 @@ export function useShiftSubmitState({
         error: error.buttonErrorMessage,
         errorDescription: error.buttonTooltipMessage,
         disabled: !shouldDisableValidationForTesting,
-        onSubmit,
+        onSubmit: submit,
       };
     }
 
@@ -174,7 +177,7 @@ export function useShiftSubmitState({
       };
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length > 0) {
+    if (isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined) {
       const address = tokensToApprove[0];
       const tokenSymbol = getGmSwapBoxApproveTokenSymbol(address, tokensData, glvOrMarketInfoData);
 
@@ -198,7 +201,7 @@ export function useShiftSubmitState({
 
     return {
       text: t`Shift GM`,
-      onSubmit,
+      onSubmit: submit,
       tokensToApprove,
     };
   }, [
@@ -224,7 +227,8 @@ export function useShiftSubmitState({
     isApproving,
     tokensToApprove,
     isAllowanceLoaded,
-    onSubmit,
+    approvalBatch,
+    submit,
     openConnectModal,
     shouldDisableValidationForTesting,
     tokensData,

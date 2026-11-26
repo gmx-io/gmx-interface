@@ -4,6 +4,7 @@ import { getAddress, isAddress } from "viem";
 
 import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
+import { isSolanaNetwork } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -30,6 +31,7 @@ import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/f
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { useProDiscountFactorRequest } from "domain/synthetics/fees/useProDiscountFactor";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
+import { useSwapFeeReceiverFactorRequest } from "domain/synthetics/fees/useSwapFeeReceiverFactor";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
 import { JitLiquidityData } from "domain/synthetics/jit/utils";
@@ -41,6 +43,8 @@ import {
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import type { ClosedMarkets } from "domain/synthetics/markets/types";
+import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
@@ -131,6 +135,7 @@ export type SyntheticsState = {
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
+    swapFeeReceiverFactor?: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
     feeDiscountFactor?: bigint;
@@ -166,6 +171,7 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+    closedMarkets: ClosedMarkets | undefined;
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
@@ -270,6 +276,7 @@ export function SyntheticsStateContextProvider({
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
+  const swapFeeReceiverFactor = useSwapFeeReceiverFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
   const proDiscountFactor = useProDiscountFactorRequest(chainId, account);
   const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
@@ -291,13 +298,16 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
+  const closedMarkets = useClosedMarketsRequest(chainId, {
+    enabled: !isSolanaNetwork(networkId),
+  });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags } = useUiFlagsRequest(chainId);
   const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
   const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 
@@ -446,6 +456,7 @@ export function SyntheticsStateContextProvider({
         },
         tokensDataResult,
         uiFeeFactor,
+        swapFeeReceiverFactor,
         userReferralInfo,
         proDiscountFactor,
         depositMarketTokensData,
@@ -477,6 +488,7 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+        closedMarkets,
 
         accountWhitelistsResult,
         usdgBoostAprResult,
@@ -523,6 +535,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    closedMarkets,
     accountWhitelistsResult,
     usdgBoostAprResult,
     isLargeAccount,
@@ -548,6 +561,7 @@ export function SyntheticsStateContextProvider({
     tokenPermitsState,
     tokensDataResult,
     uiFeeFactor,
+    swapFeeReceiverFactor,
     userReferralInfo,
     proDiscountFactor,
     multichainMarketTokensBalancesResult,

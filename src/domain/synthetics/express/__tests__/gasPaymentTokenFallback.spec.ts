@@ -4,7 +4,11 @@ import type { TokenData, TokensData } from "domain/tokens";
 import { ARBITRUM } from "sdk/configs/chainIds";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { estimateWithApprovedGasPaymentToken, resolveGasPaymentTokenAddress } from "../gasPaymentTokenFallback";
+import {
+  estimateWithApprovedGasPaymentToken,
+  estimateWithGmxAccountGasPaymentTokenFallback,
+  resolveGasPaymentTokenAddress,
+} from "../gasPaymentTokenFallback";
 import type { ExpressTxnParams, GlobalExpressParams } from "../types";
 
 const USDC = getTokenBySymbol(ARBITRUM, "USDC");
@@ -345,4 +349,81 @@ describe("estimateWithApprovedGasPaymentToken", () => {
 
     expect(estimate).toHaveBeenCalledTimes(1);
   });
+});
+
+describe("estimateWithGmxAccountGasPaymentTokenFallback", () => {
+  function makeGmxAccountTokensData(wethBalance: bigint): TokensData {
+    return {
+      [USDC.address]: { ...makeTokenData(USDC, STABLE_PRICE, 0n), gmxAccountBalance: 0n },
+      [USDT.address]: { ...makeTokenData(USDT, STABLE_PRICE, 0n), gmxAccountBalance: 0n },
+      [WETH.address]: { ...makeTokenData(WETH, ETH_PRICE, 0n), gmxAccountBalance: wethBalance },
+    };
+  }
+
+  function makeGlobalExpressParams(tokensData: TokensData, gasPaymentToken: TokenData) {
+    return {
+      tokensData,
+      gasPaymentToken,
+      gasPaymentTokenAddress: gasPaymentToken.address,
+    } as unknown as GlobalExpressParams;
+  }
+
+  it.each([
+    { wethBalance: ONE_WETH, isUsdcBalanceLoaded: true, expectedToken: WETH.address, estimates: 2 },
+    { wethBalance: 0n, isUsdcBalanceLoaded: true, expectedToken: USDC.address, estimates: 1 },
+    { wethBalance: ONE_WETH, isUsdcBalanceLoaded: false, expectedToken: USDC.address, estimates: 1 },
+    {
+      wethBalance: ONE_WETH,
+      isUsdcBalanceLoaded: true,
+      isWethEstimateValid: false,
+      expectedToken: USDC.address,
+      estimates: 2,
+    },
+    { wethBalance: ONE_WETH, isUsdcBalanceLoaded: true, hasEstimate: false, expectedToken: undefined, estimates: 1 },
+  ])(
+    "a GMX Account without USDC pays in $expectedToken (WETH balance $wethBalance, USDC balance loaded $isUsdcBalanceLoaded, WETH estimate valid $isWethEstimateValid, estimated $hasEstimate) TRD-44",
+    async ({
+      wethBalance,
+      isUsdcBalanceLoaded,
+      isWethEstimateValid = true,
+      hasEstimate = true,
+      expectedToken,
+      estimates,
+    }) => {
+      const tokensData = makeGmxAccountTokensData(wethBalance);
+      const estimate = vi.fn(async (p: GlobalExpressParams | undefined) => {
+        if (!hasEstimate) return undefined;
+
+        const gasPaymentToken = p!.gasPaymentToken;
+        const isWeth = gasPaymentToken.address === WETH.address;
+        const isValid = isWeth && isWethEstimateValid;
+
+        return {
+          gasPaymentParams: {
+            gasPaymentToken,
+            gasPaymentTokenAddress: gasPaymentToken.address,
+            gasPaymentTokenAmount: isWeth ? ONE_WETH / 3000n : ONE_USDC,
+          },
+          gasPaymentValidations: {
+            isValid,
+            isOutGasTokenBalance: !isValid,
+            needGasPaymentTokenApproval: false,
+            isGasPaymentTokenBalanceLoaded: isWeth || isUsdcBalanceLoaded,
+          },
+        } as unknown as ExpressTxnParams;
+      });
+
+      const result = await estimateWithGmxAccountGasPaymentTokenFallback({
+        chainId: ARBITRUM,
+        globalExpressParams: makeGlobalExpressParams(tokensData, tokensData[USDC.address]),
+        payAmounts: {},
+        estimate,
+        getGlobalExpressParamsForGasPaymentToken: (address) => makeGlobalExpressParams(tokensData, tokensData[address]),
+        unavailableTokenAddresses: [],
+      });
+
+      expect(result?.gasPaymentParams.gasPaymentTokenAddress).toBe(expectedToken);
+      expect(estimate).toHaveBeenCalledTimes(estimates);
+    }
+  );
 });
