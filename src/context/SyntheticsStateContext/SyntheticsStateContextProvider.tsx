@@ -305,6 +305,7 @@ export function SyntheticsStateContextProvider({
     isLoading,
     positionsInfoData,
     error: positionsInfoError,
+    failedDataSource: positionsInfoFailedDataSource,
     dataSource: positionsInfoDataSource,
   } = usePositionsInfoRequest(chainId, {
     account,
@@ -396,6 +397,7 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     positionsInfoDataSource,
     positionsInfoError,
+    positionsInfoFailedDataSource,
     isCandlesLoaded,
     pageType,
   });

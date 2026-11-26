@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useSWRConfig } from "swr";
 
+import { getUiApiUrl } from "config/api";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { ApiHealthTracker } from "domain/api/apiHealthTracker";
 import { useApiDataRequest } from "domain/synthetics/common/useApiDataRequest";
 import { FreshnessMetricId } from "lib/metrics";
+import type { FailedDataSource, LoadDataSourceId } from "lib/metrics/types";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
+import { getUrlHost } from "lib/url";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { mergeMarketsConfigValues } from "sdk/utils/markets";
 import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
@@ -218,10 +221,23 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, isMarketsDataStale);
   }
 
+  const errorSourceId: LoadDataSourceId | undefined = valuesError
+    ? "apiMarketsValues"
+    : configError
+      ? "apiMarketsConfig"
+      : undefined;
+
+  const failedDataSource = useMemo(
+    (): FailedDataSource | undefined =>
+      errorSourceId ? { id: errorSourceId, host: getUrlHost(getUiApiUrl(chainId)) } : undefined,
+    [chainId, errorSourceId]
+  );
+
   return {
     marketsInfoData,
     isStale: isValuesStale || isConfigStale || isMarketsDataStale,
     isIncomplete: isMarketsDataIncomplete,
     error: valuesError ?? configError,
+    failedDataSource,
   };
 }

@@ -164,6 +164,21 @@ export type LoadingTimeoutEvent = {
   };
 };
 
+export type LoadDataSourceId = "apiMarketsConfig" | "apiMarketsValues" | "rpcPositions" | "oracleCandles";
+
+export type FailedDataSource = {
+  id: LoadDataSourceId;
+  host: string | undefined;
+};
+
+export type FallbackWaitEnd = "loaded" | "timeout" | "pageHidden" | "pageLeft";
+
+export type LoadFallbackOutcome = {
+  fallbackLoaded: boolean;
+  fallbackTime: number;
+  fallbackWaitEnd: FallbackWaitEnd;
+};
+
 export type LoadingFailedEvent = {
   event: `${MeasureMetricType}.${LoadingStage.Failed}`;
   isError: true;
@@ -172,7 +187,10 @@ export type LoadingFailedEvent = {
     requestId: string;
     isFirstTimeLoad?: boolean;
     dataSource?: ApiDataSource;
-  } & ErrorData;
+    failedSource?: LoadDataSourceId;
+    failedHost?: string;
+  } & Partial<LoadFallbackOutcome> &
+    ErrorData;
 };
 
 export type ApiDataFallbackCounter = {

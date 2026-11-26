@@ -208,7 +208,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   };
 
-  post = (path: `/${string}`, body: any) => {
+  post = ({ path, body, keepalive }: { path: `/${string}`; body: any; keepalive?: boolean }) => {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
     const baseUrl = endpoints.primary;
     return fetch(buildUrl(baseUrl, path), {
@@ -217,6 +217,7 @@ export class OracleKeeperFetcher implements OracleFetcher {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
+      keepalive,
     });
   };
 
@@ -262,8 +263,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
     });
   }
 
-  fetchPostBatchReport(body: BatchReportBody): Promise<Response> {
-    return this.post("/report/ui/batch_report", body);
+  fetchPostBatchReport(body: BatchReportBody, opts?: { keepalive?: boolean }): Promise<Response> {
+    return this.post({ path: "/report/ui/batch_report", body, keepalive: opts?.keepalive });
   }
 
   fetchApys(period: ApyPeriod): Promise<ApyInfo> {

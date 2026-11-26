@@ -5,7 +5,8 @@ import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
-import { ApiDataSource } from "lib/metrics/types";
+import { ApiDataSource, FailedDataSource } from "lib/metrics/types";
+import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
 import useWallet from "lib/wallets/useWallet";
 
 export function useCollectSyntheticsMetrics({
@@ -15,6 +16,7 @@ export function useCollectSyntheticsMetrics({
   positionsInfoData,
   positionsInfoDataSource,
   positionsInfoError,
+  positionsInfoFailedDataSource,
   isPositionsInfoLoading,
   pageType,
 }: {
@@ -25,11 +27,20 @@ export function useCollectSyntheticsMetrics({
   isPositionsInfoLoading: boolean;
   isCandlesLoaded: boolean;
   positionsInfoError: Error | undefined;
+  positionsInfoFailedDataSource: FailedDataSource | undefined;
   pageType: string;
 }) {
   const { account } = useWallet();
+  const isWalletInitializing = useIsWalletInitializing();
   const { connectModalOpen } = useConnectModal();
   const [shouldSkipAccountMetrics, setShouldSkipAccountMetrics] = useState(false);
+
+  const isMarketDataLoaded = Boolean(
+    marketsInfo.marketsInfoData && tokensDataResult.pricesUpdatedAt && tokensDataResult.tokensData && isCandlesLoaded
+  );
+  const isTradingDataLoaded = Boolean(isMarketDataLoaded && account && tokensDataResult.isBalancesLoaded);
+  const isPositionsListLoaded = Boolean(positionsInfoData && !isPositionsInfoLoading);
+  const hasWallet = Boolean(account) || isWalletInitializing;
 
   useMeasureLoadTime({
     isLoaded: Boolean(account),
@@ -41,28 +52,26 @@ export function useCollectSyntheticsMetrics({
   useMeasureLoadTime({
     isLoaded: Boolean(marketsInfo.marketsInfoData),
     error: marketsInfo.error,
+    failedDataSource: marketsInfo.failedDataSource,
     skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "marketsInfoLoad",
     data: { dataSource: marketsInfo.dataSource },
   });
 
   useMeasureLoadTime({
-    isLoaded: Boolean(
-      marketsInfo.marketsInfoData &&
-        account &&
-        tokensDataResult.pricesUpdatedAt &&
-        tokensDataResult.tokensData &&
-        tokensDataResult.isBalancesLoaded &&
-        isCandlesLoaded
-    ),
+    isLoaded: isTradingDataLoaded,
+    isPageLoaded: hasWallet ? isTradingDataLoaded : isMarketDataLoaded,
     error: marketsInfo.error,
+    failedDataSource: marketsInfo.failedDataSource,
     skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "tradingDataLoad",
   });
 
   useMeasureLoadTime({
-    isLoaded: Boolean(positionsInfoData && !isPositionsInfoLoading),
+    isLoaded: isPositionsListLoaded,
+    isPageLoaded: hasWallet ? isPositionsListLoaded : Boolean(marketsInfo.marketsInfoData),
     error: positionsInfoError || marketsInfo.error,
+    failedDataSource: positionsInfoError ? positionsInfoFailedDataSource : marketsInfo.failedDataSource,
     skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "positionsListLoad",
     data: { dataSource: positionsInfoDataSource },

@@ -4,9 +4,11 @@ import { useIsApiHealthy } from "domain/api/apiHealthTracker";
 import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
-import { ApiDataSource } from "lib/metrics/types";
+import { ApiDataSource, FailedDataSource } from "lib/metrics/types";
 import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { getByKey } from "lib/objects";
+import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
+import { getUrlHost } from "lib/url";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import { ApiPositionInfo, getLiquidationPrice, getPositionInfo, PositionInfo } from "sdk/utils/positions";
@@ -52,10 +54,19 @@ export function composeApiPositionInfo(
   };
 }
 
+function getPrimaryRpcHost(chainId: ContractsChainId) {
+  try {
+    return getUrlHost(getCurrentRpcUrls(chainId).primary);
+  } catch {
+    return undefined;
+  }
+}
+
 export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
   error?: Error;
+  failedDataSource?: FailedDataSource;
   dataSource?: ApiDataSource;
   refetch?: () => Promise<unknown>;
 };
@@ -277,6 +288,13 @@ export function usePositionsInfoRequest(
       : "rpc"
     : undefined;
   const error = shouldFallbackToRpc ? (fallbackPositionsInfoData ? undefined : rpcError) : apiError;
+  const isRpcError = shouldFallbackToRpc && Boolean(error);
+
+  const failedDataSource = useMemo(
+    (): FailedDataSource | undefined =>
+      isRpcError ? { id: "rpcPositions", host: getPrimaryRpcHost(chainId) } : undefined,
+    [chainId, isRpcError]
+  );
 
   useApiDataFallbackCounter({
     domain: "positions",
@@ -293,6 +311,7 @@ export function usePositionsInfoRequest(
     positionsInfoData,
     isLoading,
     error,
+    failedDataSource,
     dataSource,
   };
 }
