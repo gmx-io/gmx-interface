@@ -247,6 +247,8 @@ msgstr "Repase en directo los niveles y el proceso de incorporación"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "Comisión de red no disponible"
@@ -3630,6 +3632,12 @@ msgstr "Aprobando USDC..."
 msgid "Expected 365d fees"
 msgstr "Comisiones previstas a 365 días"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr "Ruta temporalmente no disponible"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "Listados"
@@ -5310,6 +5318,10 @@ msgstr "Respuestas instantáneas, justo en la página"
 msgid "Withdrawing from subaccount..."
 msgstr "Retirando de la subcuenta..."
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
+msgstr "Stargate no acepta transferencias de {tokenSymbol} desde {networkName} en este momento. Pruebe con otro activo."
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -5512,6 +5524,7 @@ msgstr "Introducir código de referido"
 msgid "Referral link copied to clipboard"
 msgstr "Enlace de referido copiado al portapapeles"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "Liquidez del puente insuficiente hacia {networkName}"
@@ -5689,6 +5702,11 @@ msgstr "Límite seguro para unstakear: {0} GMX / esGMX"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "Intercambio enviado"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
+msgstr "Stargate no acepta transferencias de {tokenSymbol} hacia {destinationNetworkName} en este momento. Pruebe con otro activo."
 
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "Expired"
@@ -9605,6 +9623,7 @@ msgstr "Financiación pagada total"
 msgid "Cancel Stop-Loss"
 msgstr "Cancelar Stop-Loss"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 msgid "Express is unavailable right now, so this GMX Account action can't be sent"
 msgstr "Express no está disponible en este momento, por lo que no se puede enviar esta acción de GMX Account"

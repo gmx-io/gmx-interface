@@ -247,6 +247,8 @@ msgstr "등급 및 온보딩 절차를 실시간으로 안내"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "네트워크 수수료를 불러올 수 없습니다"
@@ -3630,6 +3632,12 @@ msgstr "USDC 승인 중..."
 msgid "Expected 365d fees"
 msgstr "365일 예상 수수료"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr "경로 일시적으로 사용 불가"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "상장"
@@ -5310,6 +5318,10 @@ msgstr "페이지에서 바로 받는 즉각적인 답변"
 msgid "Withdrawing from subaccount..."
 msgstr "서브계정에서 출금하는 중..."
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
+msgstr "Stargate가 현재 {networkName}에서의 {tokenSymbol} 전송을 받지 않고 있습니다. 다른 자산으로 시도하십시오."
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -5512,6 +5524,7 @@ msgstr "추천 코드 입력"
 msgid "Referral link copied to clipboard"
 msgstr "추천 링크가 클립보드에 복사되었습니다"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "{networkName}(으)로의 브릿지 유동성이 부족합니다"
@@ -5689,6 +5702,11 @@ msgstr "안전한 언스테이킹 한도: {0} GMX / esGMX"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "스왑 제출 완료"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
+msgstr "Stargate가 현재 {destinationNetworkName}(으)로의 {tokenSymbol} 전송을 받지 않고 있습니다. 다른 자산으로 시도하십시오."
 
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "Expired"
@@ -9605,6 +9623,7 @@ msgstr "총 지급 펀딩"
 msgid "Cancel Stop-Loss"
 msgstr "손절매 취소"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 msgid "Express is unavailable right now, so this GMX Account action can't be sent"
 msgstr "현재 Express를 사용할 수 없어 이 GMX Account 작업을 전송할 수 없습니다"

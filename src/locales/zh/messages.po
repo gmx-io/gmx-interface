@@ -247,6 +247,8 @@ msgstr "实时讲解等级与入驻流程"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 #: src/domain/tokens/useMaxAvailableAmount.ts
 msgid "Network fee unavailable"
 msgstr "网络费用不可用"
@@ -3630,6 +3632,12 @@ msgstr "正在批准 USDC..."
 msgid "Expected 365d fees"
 msgstr "预期365天费用"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Route temporarily unavailable"
+msgstr "路由暂时不可用"
+
 #: src/pages/Announcements/Announcements.tsx
 msgid "Listings"
 msgstr "上架"
@@ -5310,6 +5318,10 @@ msgstr "即时解答，就在页面上"
 msgid "Withdrawing from subaccount..."
 msgstr "正在从子账户提取…"
 
+#: src/components/GmxAccountModal/DepositView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
+msgstr "Stargate 目前不接受从 {networkName} 转账 {tokenSymbol}。请尝试其他资产。"
+
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances."
@@ -5512,6 +5524,7 @@ msgstr "输入推荐码"
 msgid "Referral link copied to clipboard"
 msgstr "推荐链接已复制到剪贴板"
 
+#: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient bridge liquidity to {networkName}"
 msgstr "到 {networkName} 的跨链桥流动性不足"
@@ -5689,6 +5702,11 @@ msgstr "安全解除质押限额：{0} GMX / esGMX"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
 msgstr "兑换已提交"
+
+#: src/components/GmxAccountModal/WalletSendView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+msgid "Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset."
+msgstr "Stargate 目前不接受向 {destinationNetworkName} 转账 {tokenSymbol}。请尝试其他资产。"
 
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "Expired"
@@ -9605,6 +9623,7 @@ msgstr "已付资金费总计"
 msgid "Cancel Stop-Loss"
 msgstr "取消止损"
 
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/domain/synthetics/express/validateMultichainExpressSubmit.tsx
 msgid "Express is unavailable right now, so this GMX Account action can't be sent"
 msgstr "Express 当前不可用，因此无法发送此 GMX Account 操作"
