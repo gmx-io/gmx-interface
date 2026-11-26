@@ -756,7 +756,7 @@ export const WithdrawalView = () => {
     stargateAddress: isSameChain ? undefined : selectedTokenSettlementChainTokenId?.stargate,
   });
 
-  const { isPaused: isDestinationPoolPaused } = useIsStargatePoolPaused({
+  const { isPaused: isDestinationPoolPaused, isLoading: isDestinationPoolStatusLoading } = useIsStargatePoolPaused({
     chainId: withdrawalViewChain,
     stargateAddress:
       isSameChain || withdrawalViewChain === undefined || unwrappedSelectedTokenAddress === undefined
@@ -1321,7 +1321,9 @@ export const WithdrawalView = () => {
     (isSameChain
       ? sameChainNetworkFeeAsyncResult.isLoading
       : !isRouteUnavailable &&
-        (areMultichainFeesLoading || (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error)));
+        (areMultichainFeesLoading ||
+          isDestinationPoolStatusLoading ||
+          (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error)));
 
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
