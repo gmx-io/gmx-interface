@@ -40,10 +40,10 @@ function isBlocked(
 }
 
 describe("selectPositionEditorIsBlockedByClosedMarket", () => {
-  it("blocks new deposits and withdrawals on a closed market but lets a waiting margin deposit be replaced TRD-45", () => {
+  it("blocks deposits now and withdrawals on a closed market but keeps At price deposits TRD-45", () => {
     const cases: [Operation, "now" | "atPrice", string | undefined, boolean, boolean][] = [
       [Operation.Deposit, "now", undefined, true, true],
-      [Operation.Deposit, "atPrice", undefined, true, true],
+      [Operation.Deposit, "atPrice", undefined, true, false],
       [Operation.Deposit, "atPrice", "0xorder", true, false],
       [Operation.Withdraw, "now", undefined, true, true],
       [Operation.Withdraw, "atPrice", "0xorder", true, true],
