@@ -5336,6 +5336,10 @@ msgstr "Es posible que la orden no se ejecute: liquidez insuficiente para comple
 msgid "Leverage"
 msgstr "Apalancamiento"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "Reembolsos acumulados por impacto en el precio"

@@ -60,9 +60,10 @@ pass caught submission errors to `failed(error)`. Each order gets its own row,
 titled by `getOrderStatusTitle` as EVM order toasts are, and a confirmed edit or
 cancel reads as updated or canceled. `failed` reports every error to metrics.
 Known chain failures, wallet rejections and ambiguous broadcasts are distinct;
-a rejection, an expired transaction, insufficient SOL and a confirmed preparation
-whose order transaction did not land get localized messages, and the raw error
-text is shown only on request. The keeper closes an order with the label
+a rejection, an expired transaction, a timed-out wallet prompt, insufficient SOL
+and a confirmed preparation whose order transaction did not land get localized
+messages, and the raw error text is shown only on request.
+The keeper closes an order with the label
 `executed` whatever happened, so a keeper cancel reads as an order that could not
 be executed and an owner cancel as canceled by the user. Notifications reuse the
 GMX status and transaction-row components with explicit Solana explorer links.

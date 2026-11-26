@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { classifyOrderFailure } from "./classifyOrderFailure";
 import { GmsolPendingSubmissionError, GmsolSubmissionExpiredError } from "../transactions/pendingSubmission";
-import { GmsolInsufficientSolError, GmsolTransactionError } from "../transactions/sendOrderTransactions";
+import {
+  GmsolInsufficientSolError,
+  GmsolTransactionError,
+  GmsolWalletPromptTimeoutError,
+} from "../transactions/sendOrderTransactions";
 
 const placed = [{ signature: "orders", slot: 1n, owner: "owner", orderAddresses: ["order"] }];
 const sent = (
@@ -12,6 +16,7 @@ const sent = (
 ) => new GmsolTransactionError(cause, signatures, p.pending, [], p.requests, p.failed, p.confirmed);
 const rejection = Object.assign(new Error("Signature declined"), { code: 4001 });
 const expired = new GmsolSubmissionExpiredError("orders");
+const timeout = new GmsolWalletPromptTimeoutError();
 const chainFailure = new Error("Solana transaction failed: orders");
 const setup = { confirmed: ["setup"] };
 
@@ -30,6 +35,14 @@ describe("Solana order failure classification", () => {
     ["an expired earlier submission", expired, "failed", "expired", []],
     ["an expiry after the setup confirmed", sent(expired, ["setup"], setup), "failed", "prepared", ["setup"]],
     ["an expiry with a pending signature", sent(expired, [], { pending: "orders" }), "unknown", undefined, ["orders"]],
+    ["a wallet prompt timeout", sent(timeout), "failed", "walletTimeout", []],
+    [
+      "a wallet prompt timeout after the setup confirmed",
+      sent(timeout, ["setup"], setup),
+      "failed",
+      "prepared",
+      ["setup"],
+    ],
     ["insufficient SOL", sent(new GmsolInsufficientSolError()), "failed", "insufficientSol", []],
     ["an on-chain failure", sent(chainFailure, ["orders"], { failed: "orders" }), "failed", undefined, ["orders"]],
     [

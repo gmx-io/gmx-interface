@@ -63,7 +63,11 @@ export type GmsolOrderAction =
 
 export type GmsolLookupTables = Record<string, readonly string[]>;
 
-export type GmsolTransactionLifetime = { recentBlockhash: string; lastValidBlockHeight: bigint };
+export type GmsolTransactionLifetime = {
+  recentBlockhash: string;
+  lastValidBlockHeight: bigint;
+  blockhashSlot?: bigint;
+};
 
 export type GmsolTransactionPlan = GmsolTransactionLifetime & {
   owner: string;
@@ -75,4 +79,5 @@ export type GmsolTransactionPlan = GmsolTransactionLifetime & {
   groups: Uint8Array[][];
   // Fresh blockhashes the sender fetched for groups signed after an earlier group confirmed, by group index.
   groupLifetimes?: Record<number, GmsolTransactionLifetime>;
+  confirmedSlot?: bigint;
 };

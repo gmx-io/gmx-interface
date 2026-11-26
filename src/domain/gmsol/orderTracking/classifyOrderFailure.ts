@@ -3,7 +3,11 @@ import { parseError, type ErrorLike } from "sdk/utils/errors";
 import type { SolanaOrderNotificationState } from "components/StatusNotification/SolanaOrderStatusNotification";
 
 import { GmsolPendingSubmissionError, GmsolSubmissionExpiredError } from "../transactions/pendingSubmission";
-import { GmsolInsufficientSolError, GmsolTransactionError } from "../transactions/sendOrderTransactions";
+import {
+  GmsolInsufficientSolError,
+  GmsolTransactionError,
+  GmsolWalletPromptTimeoutError,
+} from "../transactions/sendOrderTransactions";
 
 type OrderFailureState = Pick<SolanaOrderNotificationState, "submission" | "signatures" | "failure" | "debug">;
 
@@ -33,6 +37,7 @@ function getFailure(
   // Only the last transaction of a plan places orders, so an earlier confirmed one prepared the accounts.
   if (sendError?.confirmedSignatures.length && !sendError.trackingRequests.length) return "prepared";
   if (cause instanceof GmsolSubmissionExpiredError) return "expired";
+  if (cause instanceof GmsolWalletPromptTimeoutError) return "walletTimeout";
   if (cause instanceof GmsolInsufficientSolError) return "insufficientSol";
   if (isUserRejected) return "rejected";
   return undefined;

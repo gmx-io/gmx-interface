@@ -5336,6 +5336,10 @@ msgstr "Order may not execute: insufficient liquidity to fill the swap at the mi
 msgid "Leverage"
 msgstr "Leverage"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr "The wallet request timed out. Nothing was sent."
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "Accrued price impact rebates"

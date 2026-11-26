@@ -47,6 +47,7 @@ export function getGmsolGroupLifetime(plan: GmsolTransactionPlan, groupIndex: nu
     plan.groupLifetimes?.[groupIndex] ?? {
       recentBlockhash: plan.recentBlockhash,
       lastValidBlockHeight: plan.lastValidBlockHeight,
+      blockhashSlot: plan.blockhashSlot,
     }
   );
 }

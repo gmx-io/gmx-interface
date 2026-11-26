@@ -1,5 +1,6 @@
 import type { TransactionMessageBytesBase64 } from "@solana/kit";
 
+import { retryUntilSolanaSlotReached } from "./minContextSlot";
 import { getSolanaRpc } from "./rpc";
 
 const RPC_TIMEOUT_MS = 20_000;
@@ -38,15 +39,17 @@ export async function fetchSolanaRentExemptMinimums<K extends string>(sizes: Rec
 }
 
 /** Null while the RPC does not know the message's blockhash, which is not cached. */
-export function fetchSolanaMessageFee(message: TransactionMessageBytesBase64) {
+export function fetchSolanaMessageFee(message: TransactionMessageBytesBase64, minContextSlot?: bigint) {
   return cached(
     messageFees,
     message,
     async () =>
       (
-        await getSolanaRpc()
-          .getFeeForMessage(message, { commitment: "confirmed" })
-          .send({ abortSignal: AbortSignal.timeout(RPC_TIMEOUT_MS) })
+        await retryUntilSolanaSlotReached(() =>
+          getSolanaRpc()
+            .getFeeForMessage(message, { commitment: "confirmed", minContextSlot })
+            .send({ abortSignal: AbortSignal.timeout(RPC_TIMEOUT_MS) })
+        )
       ).value,
     (fee) => fee !== null
   );

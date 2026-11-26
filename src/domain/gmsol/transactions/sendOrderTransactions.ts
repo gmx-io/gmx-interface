@@ -21,6 +21,7 @@ import { GMSOL_TOKENS } from "config/gmsol/tokens";
 import { fetchSolanaBalances } from "lib/solana/balances";
 import { copySolanaBytes, isSameSolanaBytes } from "lib/solana/bytes";
 import { fetchGmsolLookupTables } from "lib/solana/lookupTables";
+import { retryUntilSolanaSlotReached } from "lib/solana/minContextSlot";
 import { fetchSolanaMessageFee, fetchSolanaRentExemptMinimums } from "lib/solana/networkCosts";
 import { getSolanaRpc } from "lib/solana/rpc";
 import { isSolanaTransactionExpired } from "lib/solana/transactionExpiry";
@@ -77,12 +78,12 @@ export async function prepareGmsolOrderTransactions({ owner, action }: { owner: 
         (order.kind === "MarketIncrease" || order.kind === "LimitIncrease") &&
         order.collateralDeltaAmount > 0n
     );
-  const [lookupTables, { value: lifetime }, wrappedSolBalance] = await Promise.all([
+  const [lookupTables, { context, value: lifetime }, wrappedSolBalance] = await Promise.all([
     fetchGmsolLookupTables(),
     getSolanaRpc().getLatestBlockhash({ commitment: "confirmed" }).send(rpcOptions()),
     reusesWrappedSol ? fetchWrappedSolBalance(owner) : undefined,
   ]);
-  return buildGmsolOrderTransactions({
+  const plan = await buildGmsolOrderTransactions({
     owner,
     action: intent,
     recentBlockhash: lifetime.blockhash,
@@ -90,6 +91,7 @@ export async function prepareGmsolOrderTransactions({ owner, action }: { owner: 
     lookupTables,
     wrappedSolBalance,
   });
+  return { ...plan, blockhashSlot: context.slot };
 }
 
 const messageOf = (bytes: Uint8Array) =>
@@ -100,6 +102,26 @@ export class GmsolInsufficientSolError extends Error {
     super("Insufficient SOL for network and keeper fees, rent and wrapping");
     this.name = "GmsolInsufficientSolError";
   }
+}
+
+// A blockhash lives 150 blocks, so a signature given after this could no longer land.
+const WALLET_PROMPT_TIMEOUT_MS = 120_000;
+
+export class GmsolWalletPromptTimeoutError extends Error {
+  constructor() {
+    super("Wallet signature request timed out");
+    this.name = "GmsolWalletPromptTimeoutError";
+  }
+}
+
+function withWalletPromptTimeout(prompt: Promise<Uint8Array>) {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  return Promise.race([
+    prompt,
+    new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new GmsolWalletPromptTimeoutError()), WALLET_PROMPT_TIMEOUT_MS);
+    }),
+  ]).finally(() => clearTimeout(timer));
 }
 
 /** Real RPC simulation, including the wallet's post-creation SOL balance; never prompts a wallet. */
@@ -119,29 +141,39 @@ export async function checkGmsolTransactionBeforeSignature({
   const { transactionCosts } = await validateGmsolTransactionPlan(plan);
   const { wrapLamports } = transactionCosts[index];
   const later = transactions.slice(index + 1);
+  const { lastValidBlockHeight, blockhashSlot } = getGmsolGroupLifetime(plan, transactions[index].groupIndex);
+  // A read can reach a node behind this blockhash or the plan's last confirmation, so it requires the later slot.
+  const minContextSlot =
+    blockhashSlot === undefined || (plan.confirmedSlot !== undefined && plan.confirmedSlot > blockhashSlot)
+      ? plan.confirmedSlot
+      : blockhashSlot;
   const rpc = getSolanaRpc();
   const transaction = getTransactionDecoder().decode(bytes);
   const [fees, rent, simulation, blockHeight] = await Promise.all([
     Promise.all(
-      [bytes, ...later.map(({ candidate }) => candidate)].map((item) => fetchSolanaMessageFee(messageOf(item)))
+      [bytes, ...later.map(({ candidate }) => candidate)].map((item) =>
+        fetchSolanaMessageFee(messageOf(item), minContextSlot)
+      )
     ),
     fetchSolanaRentExemptMinimums(GMSOL_RENT_ACCOUNT_SIZES),
-    rpc
-      .simulateTransaction(getBase64EncodedWireTransaction(transaction), {
-        encoding: "base64",
-        commitment: "confirmed",
-        sigVerify: false,
-        replaceRecentBlockhash: false,
-        accounts: { addresses: [address(plan.owner)], encoding: "base64" },
-      })
-      .send(rpcOptions()),
-    rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions()),
+    retryUntilSolanaSlotReached(() =>
+      rpc
+        .simulateTransaction(getBase64EncodedWireTransaction(transaction), {
+          encoding: "base64",
+          commitment: "confirmed",
+          minContextSlot,
+          sigVerify: false,
+          replaceRecentBlockhash: false,
+          accounts: { addresses: [address(plan.owner)], encoding: "base64" },
+        })
+        .send(rpcOptions())
+    ),
+    retryUntilSolanaSlotReached(() =>
+      rpc.getBlockHeight({ commitment: "confirmed", minContextSlot }).send(rpcOptions())
+    ),
     wrapLamports > 0n && plan.wrappedSolBalance !== undefined ? assertWrappedSolUnchanged(plan) : undefined,
   ]);
-  requireGmsol(
-    blockHeight <= getGmsolGroupLifetime(plan, transactions[index].groupIndex).lastValidBlockHeight,
-    "Transaction blockhash has expired; rebuild before signing"
-  );
+  requireGmsol(blockHeight <= lastValidBlockHeight, "Transaction blockhash has expired; rebuild before signing");
   requireGmsol(
     fees.every((fee): fee is bigint => fee !== null),
     "Cannot estimate network fees for this blockhash"
@@ -165,8 +197,16 @@ export async function checkGmsolTransactionBeforeSignature({
 
 // Only the blockhash changes, so order nonces, accounts and amounts stay exactly as validated and signed for.
 async function refreshGmsolGroupLifetimes(plan: GmsolTransactionPlan, fromGroup: number) {
-  const { value } = await getSolanaRpc().getLatestBlockhash({ commitment: "confirmed" }).send(rpcOptions());
-  const lifetime = { recentBlockhash: value.blockhash, lastValidBlockHeight: value.lastValidBlockHeight };
+  const { context, value } = await retryUntilSolanaSlotReached(() =>
+    getSolanaRpc()
+      .getLatestBlockhash({ commitment: "confirmed", minContextSlot: plan.confirmedSlot })
+      .send(rpcOptions())
+  );
+  const lifetime = {
+    recentBlockhash: value.blockhash,
+    lastValidBlockHeight: value.lastValidBlockHeight,
+    blockhashSlot: context.slot,
+  };
   for (let groupIndex = fromGroup; groupIndex < plan.groups.length; groupIndex++) {
     const current = { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) };
     plan.groups[groupIndex] = plan.groups[groupIndex].map((bytes) => {
@@ -279,7 +319,7 @@ export async function sendGmsolOrderTransactions({
         getIsSolanaNetworkEnabled() && getWalletAddress() === plan.owner,
         "Solana session changed before signing"
       );
-      const signedBytes = await signTransaction(bytes.slice());
+      const signedBytes = await withWalletPromptTimeout(signTransaction(bytes.slice()));
       const { transaction: signed, hasAssertions } = validateGmsolWalletTransaction({
         originalBytes: bytes,
         signedBytes,
@@ -385,6 +425,7 @@ export async function sendGmsolOrderTransactions({
           }
           if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
             slot = status.slot;
+            plan.confirmedSlot = slot;
             confirmedSignatures.push(sent);
             pendingSignature = undefined;
             setPendingGmsolSubmission(plan.owner, undefined);

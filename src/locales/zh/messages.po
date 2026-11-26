@@ -5336,6 +5336,10 @@ msgstr "订单可能无法执行：按最小接收金额完成兑换的流动性
 msgid "Leverage"
 msgstr "杠杆"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "累计价格影响返利"

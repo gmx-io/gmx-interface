@@ -5336,6 +5336,10 @@ msgstr "注文は約定しない可能性があります：最小受取額でス
 msgid "Leverage"
 msgstr "レバレッジ"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "価格への影響に係る発生済みリベート"

@@ -5336,6 +5336,10 @@ msgstr "訂單可能無法執行：按最小接收金額完成兌換的流動性
 msgid "Leverage"
 msgstr "槓桿"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "累計價格影響返還"
