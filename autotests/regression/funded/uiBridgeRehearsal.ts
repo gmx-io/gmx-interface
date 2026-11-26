@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { decodeFunctionData, encodeFunctionResult, getAddress, type Hex } from "viem";
+import { decodeFunctionData, encodeFunctionResult, getAddress, parseAbi, toFunctionSelector, type Hex } from "viem";
 import IStargate from "../../../sdk/src/abis/IStargate";
 import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
@@ -8,12 +8,17 @@ import { basePool, baseUsdc, arbitrumPool, bridgeAmount } from "./uiBridgeGuard"
 import type { UiTransaction } from "./uiOrderGuard";
 import type { UiRelayPayload } from "./uiRelay";
 
+const poolStatusAbi = parseAbi(["function status() view returns (uint8)"]);
+
 export function uiBridgeRehearsal(state: AccountState, usdc: string) {
   state.balances.set(baseUsdc, bridgeAmount);
   state.allowances.set(baseUsdc, new Map([[basePool, 0n]]));
   return {
     contractRead(target: string, data: Hex): Hex | undefined {
       if (![basePool, arbitrumPool].includes(target)) return;
+      // Live pools answer 1; 3 means paused.
+      if (data === toFunctionSelector(poolStatusAbi[0]))
+        return encodeFunctionResult({ abi: poolStatusAbi, functionName: "status", result: 1 });
       const call = decodeFunctionData({ abi: IStargate, data });
       if (call.functionName === "quoteSend")
         return encodeFunctionResult({
