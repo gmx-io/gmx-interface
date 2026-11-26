@@ -133,6 +133,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
 
   const rawMarketsReason = rawMarkets.unavailableReason;
   const tokensReason = tokensDataResult.unavailableReason;
+  const missingMarketAddresses = rawMarkets.missingMarketAddresses;
   const unpricedMarketAddresses = tokensDataResult.unpricedMarketAddresses;
   const marketsUnavailableCause = rawMarkets.error ?? tokensDataResult.error;
   const marketsUnavailable = useMemo(() => {
@@ -141,10 +142,12 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return new GmsolMarketsUnavailableError(reason, [], marketsUnavailableCause);
     }
 
-    return tokensReason === "coverage"
-      ? new GmsolMarketsUnavailableError("coverage", unpricedMarketAddresses)
+    const uncoveredMarketAddresses = [...missingMarketAddresses, ...unpricedMarketAddresses];
+
+    return uncoveredMarketAddresses.length > 0
+      ? new GmsolMarketsUnavailableError("coverage", uncoveredMarketAddresses)
       : undefined;
-  }, [marketsUnavailableCause, rawMarketsReason, tokensReason, unpricedMarketAddresses]);
+  }, [marketsUnavailableCause, missingMarketAddresses, rawMarketsReason, tokensReason, unpricedMarketAddresses]);
   const isMarketsBlocked = marketsUnavailable !== undefined && marketsUnavailable.reason !== "coverage";
 
   const marketsInfo = useMemo((): MarketsInfoResult => {
@@ -158,12 +161,13 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       };
     }
 
-    if (marketsUnavailable) {
+    // A values gap can arrive before prices do; only a block ends loading without markets.
+    if (isMarketsBlocked) {
       return { isLoading: false, error: marketsUnavailable };
     }
 
     return { isLoading: true };
-  }, [composedMarkets, marketsUnavailable]);
+  }, [composedMarkets, isMarketsBlocked, marketsUnavailable]);
 
   const markets = useMemo(
     (): MarketsResult =>
