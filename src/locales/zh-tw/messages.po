@@ -22,34 +22,6 @@ msgctxt "Market state"
 msgid "Closed"
 msgstr "已休市"
 
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
-
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
-msgstr "在此之前，市價單、TWAP、平倉、提取和「立即」存入均無法使用。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "市場休市期間，市價單和 TWAP 無法使用。限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Switch to a limit order"
-msgstr "切換為限價單"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
-msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格可能與最後價格不同。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
-msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格跳空可能使 Stop Market 或止損訂單以更差的價格成交。"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
-msgstr "此倉位處於清算風險範圍之外，但當市場切換至非交易時段風險參數時，可能會接近清算。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "滑點超出限制"
@@ -185,14 +157,6 @@ msgstr "訂單無法更新"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "See <0>Tenderly docs</0>"
 msgstr "請參閱 <0>Tenderly 文件</0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Force markets closed"
-msgstr "強制休市"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Index token symbols, comma-separated. These markets show as closed."
-msgstr "指數代幣符號，以逗號分隔。這些市場將顯示為已休市。"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
@@ -2817,6 +2781,10 @@ msgstr "接收代幣流動性不足"
 msgid "Size percentage required"
 msgstr "需要輸入倉位百分比"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格跳空可能使 Stop Market 或止損訂單以更差的價格成交。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -4342,6 +4310,10 @@ msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。請存�
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格可能與最後價格不同。"
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "移除端點"
@@ -4955,6 +4927,10 @@ msgstr "{fromText} 至"
 msgid "{poolName} pool is closing and isn't taking new stop market orders."
 msgstr "{poolName} 池即將關閉，不再接受新的 Stop Market 訂單。"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Index token symbols, comma-separated. These markets show as closed."
+msgstr "指數代幣符號，以逗號分隔。這些市場將顯示為已休市。"
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
 msgstr "前端"
@@ -5046,6 +5022,10 @@ msgstr "請輸入金額"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
 msgstr "{count, plural, one {使用中至 {expiryDate}，剩餘 # 次操作} other {使用中至 {expiryDate}，剩餘 # 次操作}}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Force markets closed"
+msgstr "強制休市"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
@@ -5667,6 +5647,10 @@ msgstr "做多借貸指數"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "此市場已休市。請在市場重新開放後結算。"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long funding rate"
 msgstr "做多資金費率"
@@ -6078,10 +6062,6 @@ msgstr "無法載入公告。請稍後再試。"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "超過最大未平倉量。目前：{openInterestText}，上限：{maxOpenInterestText}"
-
-#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "以 {receiveTokenSymbol} 接收會產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過兌換。<1>了解更多</1>。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6853,6 +6833,10 @@ msgstr "無縫交易"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
 msgstr "平倉"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
+msgstr "在此之前，市價單、TWAP、平倉、提取和「立即」存入均無法使用。"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
@@ -7823,6 +7807,10 @@ msgstr "在上方輸入十六進位錯誤資料以進行解碼"
 msgid "Allowed actions"
 msgstr "允許的操作"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "切換為限價單"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "您的折扣現已生效！"
@@ -8215,6 +8203,10 @@ msgstr "PnL 相對於所用資本的比率（資本回報率）"
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "訂單錯誤。此市場價格波動劇烈。請嘗試<0>提高允許的滑點</0>"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "市場休市期間，市價單和 TWAP 無法使用。限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr "沒有符合搜尋條件的轉帳歷史記錄"
@@ -8441,6 +8433,10 @@ msgstr "TP 價格"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ParaSwap"
 msgstr "ParaSwap"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "限價、Stop Market 和止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
 
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Ensures available liquidity."
@@ -9043,6 +9039,10 @@ msgstr "GM 與 GLV 包含您已不再持有的市場"
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
 msgstr "剩餘倉位將超過允許的最大槓桿。請平掉更大部分、減少提取金額，或先增加保證金。"
 
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "以 {receiveTokenSymbol} 接收會產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過兌換。<1>了解更多</1>。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 交易統計"
@@ -9164,6 +9164,10 @@ msgstr "保證流動性"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 返佣"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "在 {settingsLink} 中將最大網路費用緩衝增加{bufferText}"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
@@ -10021,6 +10025,8 @@ msgstr "請輸入存入金額"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -11274,6 +11280,7 @@ msgstr "深度流動性市場"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -13212,10 +13219,6 @@ msgstr "目前影響：{0}。使用 -0.30% 或更高以獲得更好的訂單執�
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "此市場已停用。請聯絡支援團隊以領取剩餘的資金費用。"
 
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This market is closed. Settle after the market reopens."
-msgstr "此市場已休市。請在市場重新開放後結算。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close"
@@ -13396,10 +13399,6 @@ msgstr "標記價格"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "No — the API, SDK, and docs are open to everyone. Joining the program adds direct support and distribution on top."
 msgstr "不需要——API、SDK 和文件對所有人開放。加入計畫將額外獲得直接支援和分發資源。"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
-msgstr "在 {settingsLink} 中將最大網路費用緩衝增加{bufferText}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
@@ -14311,6 +14310,10 @@ msgstr "淨費率 / 1H"
 msgid "30d performance APY"
 msgstr "30 日績效 APY"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "此倉位處於清算風險範圍之外，但當市場切換至非交易時段風險參數時，可能會接近清算。"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14337,6 +14340,7 @@ msgid "multiple asset classes"
 msgstr "多種資產類別"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

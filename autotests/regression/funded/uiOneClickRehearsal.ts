@@ -4,14 +4,12 @@ import {
   encodeFunctionData,
   encodeFunctionResult,
   getAddress,
-  keccak256,
   parseAbi,
   zeroAddress,
   zeroHash,
   type Abi,
   type Hex,
 } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
 import DataStore from "../../../sdk/src/abis/DataStore";
 import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
@@ -58,8 +56,8 @@ export function uiOneClickRehearsal(state: AccountState) {
   }
   return {
     read,
-    generated(signature: Hex) {
-      subaccount = privateKeyToAccount(keccak256(signature) as `0x${string}`).address;
+    generated(address: string) {
+      subaccount = getAddress(address);
     },
     contractRead(target: string, data: Hex): Hex | undefined {
       let abi: Abi;

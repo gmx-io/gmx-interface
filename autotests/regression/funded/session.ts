@@ -682,9 +682,8 @@ export class FundedSession {
     );
   }
 
-  signUiMessage(message: Hex) {
-    return this.account.signMessage({ message: { raw: message as `0x${string}` } });
-  }
+  // Only the rehearsal needs the generated 1CT key, to simulate its on-chain state.
+  followUiSubaccount(_subaccount: string) {}
 
   signUiTypedData(data: Parameters<typeof this.account.signTypedData>[0]) {
     return this.account.signTypedData(data);

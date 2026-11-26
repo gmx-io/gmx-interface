@@ -93,11 +93,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
     rpcUrl: "https://arb1.arbitrum.io/rpc",
     journal,
     save: async () => undefined,
-    signUiMessage: async (message: Hex) => {
-      const signature = await state.rehearsalSigner!.signMessage({ message: { raw: message as `0x${string}` } });
-      oneClick.generated(signature);
-      return signature;
-    },
+    followUiSubaccount: (subaccount: string) => oneClick.generated(subaccount),
     signUiTypedData: (data: never) => state.rehearsalSigner!.signTypedData(data),
     relayUiTransaction: async (
       url: string,
