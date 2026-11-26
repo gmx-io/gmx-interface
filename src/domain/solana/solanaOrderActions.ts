@@ -28,9 +28,11 @@ export type SolanaOrderActions = {
   isSubmitting: boolean;
   // Why nothing can be sent right now (loading, trading off, outdated page), or undefined
   error: string | undefined;
-  // An earlier submission is unresolved: the next action only checks it and resolves to false
+  // Why Close, TP/SL and edit wait while a flow these actions did not start holds the wallet, or undefined
+  busyReason: string | undefined;
+  // An earlier submission is unresolved: the next action only checks it and reports nothing sent
   hasPendingSubmission: boolean;
-  // Checks the unresolved earlier submission without sending anything new; resolves to false
+  // Checks the unresolved earlier submission and sends nothing new; true only if its order transaction confirmed
   checkPendingSubmission: () => Promise<boolean>;
   closePosition: (p: {
     position: PositionInfo;

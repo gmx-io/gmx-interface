@@ -4534,6 +4534,10 @@ msgstr "收合"
 msgid "Launch boost (target)"
 msgstr "上線加成（目標）"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "橫幅"
@@ -6512,6 +6516,7 @@ msgstr "池做多 USD 存入上限"
 msgid "Net value"
 msgstr "淨值"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
@@ -13786,6 +13791,7 @@ msgstr "提取 {glvOrGm}: {0}"
 msgid "Save tier"
 msgstr "儲存等級"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
@@ -14010,6 +14016,7 @@ msgstr "淨平倉費用 / 價格影響"
 msgid "Lifetime"
 msgstr "累計"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 已取消"

@@ -4534,6 +4534,10 @@ msgstr "Réduire"
 msgid "Launch boost (target)"
 msgstr "Boost de lancement (cible)"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "Bannières"
@@ -6512,6 +6516,7 @@ msgstr "Plafond USD long du pool pour les dépôts"
 msgid "Net value"
 msgstr "Valeur nette"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
@@ -13786,6 +13791,7 @@ msgstr "Retirer {glvOrGm} : {0}"
 msgid "Save tier"
 msgstr "Enregistrer le palier"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Ordre} other {# Ordres}}"
@@ -14010,6 +14016,7 @@ msgstr "Frais nets de clôture / impact sur le prix"
 msgid "Lifetime"
 msgstr "Cumulé"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} annulé(s)"

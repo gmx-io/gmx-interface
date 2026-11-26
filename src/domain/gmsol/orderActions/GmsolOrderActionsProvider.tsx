@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { plural, t } from "@lingui/macro";
 import { useCallback, useMemo, useRef, type ReactNode } from "react";
 
 import {
@@ -51,11 +51,22 @@ function getOrderError(order: OrderInfo) {
   return getCancelError(order);
 }
 
+// Built before sending, so an order whose accounts cannot be derived is skipped and the other cancels are still sent.
+function tryBuildCancelAction(order: OrderInfo): GmsolOrderAction | undefined {
+  try {
+    return buildGmsolCancelAction(order);
+  } catch {
+    return undefined;
+  }
+}
+
 type SkippedOrder = { order: OrderInfo; reason: string };
 
-function getSkippedOrdersMessage(skipped: SkippedOrder[]) {
+function getSkippedOrdersMessage(skipped: SkippedOrder[], count: number) {
+  const ordersText = plural(count, { one: "Order", other: "# Orders" });
   return (
     <>
+      {count > 0 && <div>{t`${ordersText} canceled`}</div>}
       {skipped.map(({ order, reason }) => {
         const title = getOrderStatusTitle(getGmsolOrderTitle(order, "cancel"));
         return <div key={order.key}>{t`Not sent: ${title}. ${reason}`}</div>;
@@ -102,12 +113,32 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   const current = useRef({ error, owner: wallet.address });
   current.current = { error, owner: wallet.address };
 
+  // A flow whose owner or network changed has lost the submitter, which another flow may hold by now.
+  const ownSubmission = useRef<GmsolOrderSubmission | undefined>(undefined);
+  const busyReason =
+    isSubmitting && !ownSubmission.current?.isActive()
+      ? t`Another order request is in progress. Check your wallet`
+      : undefined;
+
+  const acquireOwn = useCallback((): GmsolOrderSubmission | undefined => {
+    const submission = acquire(current.current.owner);
+    if (!submission) return undefined;
+    ownSubmission.current = submission;
+    return {
+      ...submission,
+      release: () => {
+        if (ownSubmission.current === submission) ownSubmission.current = undefined;
+        submission.release();
+      },
+    };
+  }, [acquire]);
+
   const getSendError = useCallback(() => {
     const { error, owner } = current.current;
     return error || !owner ? error ?? t`Connect wallet` : undefined;
   }, []);
 
-  // Resolves an unresolved earlier submission without sending anything new; always resolves to false.
+  // Resolves an earlier submission without sending anything new; true only if its order transaction confirmed.
   const check = useCallback(
     async (submission: GmsolOrderSubmission, pending: PendingGmsolSubmission): Promise<boolean> => {
       const notification = begin({
@@ -118,10 +149,11 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       });
       try {
         notification.submitted(await submission.submit(undefined, { onSubmitted: notification.submitted }));
+        return true;
       } catch (error) {
         notification.failed(error);
+        return false;
       }
-      return false;
     },
     [begin]
   );
@@ -137,14 +169,14 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
     const pending = getPendingGmsolSubmission(current.current.owner!);
     if (!pending) return false;
-    const submission = acquire(current.current.owner);
+    const submission = acquireOwn();
     if (!submission) return false;
     try {
       return await check(submission, pending);
     } finally {
       submission.release();
     }
-  }, [acquire, check, getSendError]);
+  }, [acquireOwn, check, getSendError]);
 
   // Every action is built before the first transaction is sent, so a build error never leaves a flow half-sent.
   const prepare = useCallback((builds: (() => GmsolOrderAction)[]): GmsolOrderAction[] | undefined => {
@@ -217,7 +249,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
       let confirmed = 0;
       if (steps.length > 0) {
-        const submission = acquire(current.current.owner);
+        const submission = acquireOwn();
         if (!submission) return 0;
         try {
           confirmed = await sendSequentially(
@@ -232,17 +264,20 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
           submission.release();
         }
       }
-      // Every toast replaces the previous one, so the skipped orders are named after the last order toast.
-      if (skipped.length > 0 && confirmed === steps.length) helperToast.error(getSkippedOrdersMessage(skipped));
+      // Every toast replaces the previous one, so the skipped orders are named last, with the cancelled count.
+      if (skipped.length > 0 && confirmed === steps.length) {
+        helperToast.error(getSkippedOrdersMessage(skipped, confirmed));
+      }
       return confirmed;
     },
-    [acquire, checkPendingSubmission, getSendError, prepare, sendSequentially]
+    [acquireOwn, checkPendingSubmission, getSendError, prepare, sendSequentially]
   );
 
   const value = useMemo(
     (): SolanaOrderActions => ({
       isSubmitting,
       error,
+      busyReason,
       hasPendingSubmission,
       getOrderError,
       getUpdateError,
@@ -318,11 +353,12 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
         const skipped: SkippedOrder[] = [];
         for (const order of orders) {
           const reason = getCancelError(order);
-          if (reason) skipped.push({ order, reason });
+          const action = reason ? undefined : tryBuildCancelAction(order);
+          if (!action) skipped.push({ order, reason: reason ?? t`Unable to prepare order` });
           else
             steps.push({
               trackExecution: false,
-              build: () => buildGmsolCancelAction(order),
+              build: () => action,
               titles: () => [getGmsolOrderTitle(order, "cancel")],
             });
         }
@@ -330,7 +366,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
         return orders.length > 0 && confirmed === orders.length;
       },
     }),
-    [checkPendingSubmission, error, hasPendingSubmission, isSubmitting, runFlow]
+    [busyReason, checkPendingSubmission, error, hasPendingSubmission, isSubmitting, runFlow]
   );
 
   return <SolanaOrderActionsContext.Provider value={value}>{children}</SolanaOrderActionsContext.Provider>;

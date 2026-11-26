@@ -4534,6 +4534,10 @@ msgstr "折りたたむ"
 msgid "Launch boost (target)"
 msgstr "ローンチブースト（目標）"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "バナー"
@@ -6512,6 +6516,7 @@ msgstr "プールの入金用最大ロングUSD"
 msgid "Net value"
 msgstr "純価値"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
@@ -13786,6 +13791,7 @@ msgstr "{glvOrGm}を出金: {0}"
 msgid "Save tier"
 msgstr "ティアを保存"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {注文} other {# 件の注文}}"
@@ -14010,6 +14016,7 @@ msgstr "正味の決済手数料 / 価格への影響"
 msgid "Lifetime"
 msgstr "累計"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText}がキャンセルされました"

@@ -668,7 +668,7 @@ export function OrderEditor(p: Props) {
       if (solanaOrderActions.hasPendingSubmission) {
         setIsSubmitting(true);
         try {
-          await solanaOrderActions.checkPendingSubmission();
+          if (await solanaOrderActions.checkPendingSubmission()) p.onClose();
         } finally {
           setIsSubmitting(false);
         }
@@ -798,6 +798,10 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (solanaOrderActions?.busyReason && !isSubmitting) {
+      return { text: solanaOrderActions.busyReason, disabled: true };
+    }
+
     // The pending check does not depend on this order, so a closed or callback order does not block it
     if (solanaOrderActions?.hasPendingSubmission && !solanaOrderActions.error) {
       return {
@@ -918,6 +922,7 @@ export function OrderEditor(p: Props) {
     isMultichainSubmitDisabled,
     solanaOrderError,
     solanaUpdateError,
+    solanaOrderActions?.busyReason,
     solanaOrderActions?.hasPendingSubmission,
     solanaOrderActions?.error,
     isSubmitting,

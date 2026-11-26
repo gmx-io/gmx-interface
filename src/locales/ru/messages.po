@@ -4534,6 +4534,10 @@ msgstr "Свернуть"
 msgid "Launch boost (target)"
 msgstr "Бонус запуска (цель)"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "Баннеры"
@@ -6512,6 +6516,7 @@ msgstr "Макс. лонг USD пула для депозита"
 msgid "Net value"
 msgstr "Чистая стоимость"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Unable to prepare order"
@@ -13786,6 +13791,7 @@ msgstr "Вывод {glvOrGm}: {0}"
 msgid "Save tier"
 msgstr "Сохранить уровень"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Ордер} other {Ордера (#)}}"
@@ -14010,6 +14016,7 @@ msgstr "Чистые комиссии при закрытии / влияние �
 msgid "Lifetime"
 msgstr "За всё время"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "Отменено: {ordersText}"

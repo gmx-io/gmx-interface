@@ -962,7 +962,7 @@ export function AddTPSLModal({
       setIsSubmitting(true);
       try {
         if (solanaOrderActions.hasPendingSubmission) {
-          await solanaOrderActions.checkPendingSubmission();
+          if (await solanaOrderActions.checkPendingSubmission()) setIsVisible(false);
         } else {
           const [tpEntry, slEntry] = solanaTriggerEntries;
           const sent = await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries });
@@ -1105,6 +1105,10 @@ export function AddTPSLModal({
       };
     }
 
+    if (solanaOrderActions?.busyReason) {
+      return { text: solanaOrderActions.busyReason, disabled: true };
+    }
+
     if (solanaOrderActions?.hasPendingSubmission) {
       return { text: t`Check transaction status`, disabled: false };
     }
@@ -1138,6 +1142,7 @@ export function AddTPSLModal({
     marketPairLabel,
     modePrefix,
     submitError,
+    solanaOrderActions?.busyReason,
     solanaOrderActions?.hasPendingSubmission,
   ]);
 

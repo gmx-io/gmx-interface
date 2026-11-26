@@ -5,12 +5,20 @@ import { useContext } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 
 import { setAbFlagEnabled } from "config/ab";
+import { GMSOL_MARKETS } from "config/gmsol/markets";
 import { setIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
-import { SolanaOrderActionsContext, type SolanaOrderActions } from "domain/solana/solanaOrderActions";
+import {
+  SolanaOrderActionsContext,
+  type SolanaOrderActions,
+  type SolanaTriggerEntry,
+} from "domain/solana/solanaOrderActions";
 import { publishSolanaWalletSession } from "lib/solana/activeSession";
-import type { OrderInfo } from "sdk/utils/orders/types";
+import { DecreasePositionSwapType, OrderType, type OrderInfo, type PositionOrderInfo } from "sdk/utils/orders/types";
+import type { PositionInfo } from "sdk/utils/positions/types";
+import type { DecreasePositionAmounts } from "sdk/utils/trade/types";
 
+import { WRAPPED_SOL_MINT } from "./addresses";
 import { setPendingGmsolSubmission, type PendingGmsolSubmission } from "./pendingSubmission";
 import { GmsolTransactionError, GmsolWalletPromptTimeoutError, type GmsolSendResult } from "./sendOrderTransactions";
 import type { GmsolOrderAction } from "./types";
@@ -215,4 +223,66 @@ it("reports an order transaction that expired or failed after a confirmed setup 
     expect([outcome, failure, signatures, getPreparedWrappedLamports(error)], JSON.stringify(fields)).toEqual(expected);
   }
   setPendingGmsolSubmission("owner", undefined);
+});
+
+it("reports only the TP/SL entries whose own order confirmed TRD-72", async () => {
+  render(
+    <GmxSdkProvider>
+      <GmsolOrderActionsProvider>
+        <Probe />
+      </GmsolOrderActionsProvider>
+    </GmxSdkProvider>
+  );
+  const market = GMSOL_MARKETS.find((item) => item.longTokenAddress === WRAPPED_SOL_MINT)!;
+  const position = {
+    isLong: true,
+    marketInfo: { ...market, tradeMath: "gmsol", isDisabled: false, indexToken: { decimals: 9 } },
+    collateralToken: { address: WRAPPED_SOL_MINT },
+  } as unknown as PositionInfo;
+  const existingFullCloseOrder = {
+    orderType: OrderType.LimitDecrease,
+    indexToken: { decimals: 9 },
+    decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
+    solana: { actionState: "pending", orderAccount: "old", rentReceiver: "owner", escrowTokens: {} },
+  } as unknown as PositionOrderInfo;
+  // "edit" updates the full-close order it replaces; "replace" creates a new order, then cancels the old one.
+  const entry = (replaces?: "edit" | "replace"): SolanaTriggerEntry => ({
+    amounts: {
+      sizeDeltaUsd: 1n,
+      collateralDeltaAmount: 0n,
+      triggerPrice: 2n,
+      acceptablePrice: 2n,
+      triggerOrderType: OrderType.LimitDecrease,
+      isFullClose: replaces !== undefined,
+      decreaseSwapType:
+        replaces === "replace"
+          ? DecreasePositionSwapType.SwapPnlTokenToCollateralToken
+          : DecreasePositionSwapType.NoSwap,
+    } as DecreasePositionAmounts,
+    existingFullCloseOrder: replaces ? existingFullCloseOrder : undefined,
+  });
+  // Whether each send in turn confirms, and the indexes of the entries reported as sent.
+  const rows: { entries: SolanaTriggerEntry[]; confirms: boolean[]; sent: number[] }[] = [
+    { entries: [entry(), entry()], confirms: [true, false], sent: [0] },
+    { entries: [entry(), entry()], confirms: [false], sent: [] },
+    { entries: [entry("edit"), entry()], confirms: [true, true], sent: [0, 1] },
+    { entries: [entry("replace"), entry()], confirms: [true, false], sent: [0] },
+    { entries: [entry("replace"), entry()], confirms: [true, true, false], sent: [0] },
+    { entries: [entry(), entry("replace")], confirms: [true, true, false], sent: [0, 1] },
+    { entries: [{ amounts: undefined, existingFullCloseOrder: undefined }, entry()], confirms: [true], sent: [1] },
+  ];
+  mocks.prepare.mockResolvedValue({});
+  for (const { entries, confirms, sent: expected } of rows) {
+    const queue = [...confirms];
+    mocks.send.mockReset().mockImplementation(async () => {
+      if (!queue.shift()) throw new Error("rejected");
+      return sent;
+    });
+    let reported: SolanaTriggerEntry[] = [];
+    await act(async () => {
+      reported = await actions!.setTriggerOrders({ position, entries });
+    });
+    expect(mocks.send).toHaveBeenCalledTimes(confirms.length);
+    expect(reported.map((item) => entries.indexOf(item))).toEqual(expected);
+  }
 });

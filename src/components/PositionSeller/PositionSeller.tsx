@@ -637,10 +637,12 @@ export function PositionSeller() {
       return;
     }
 
+    if (actions.busyReason) return;
+
     if (actions.hasPendingSubmission) {
       setIsSubmitting(true);
       try {
-        await actions.checkPendingSubmission();
+        if (await actions.checkPendingSubmission()) onClose();
       } finally {
         setIsSubmitting(false);
       }
@@ -1047,6 +1049,10 @@ export function PositionSeller() {
   );
 
   const buttonState = useMemo(() => {
+    if (isSolana && solanaOrderActions?.busyReason && !isSubmitting) {
+      return { text: solanaOrderActions.busyReason, disabled: true };
+    }
+
     if (isSolana && solanaOrderActions?.hasPendingSubmission) {
       return {
         text: isSubmitting ? t`Checking transaction status...` : t`Check transaction status`,
@@ -1132,6 +1138,7 @@ export function PositionSeller() {
     isExpressLoading,
     isSolana,
     isSubmitting,
+    solanaOrderActions?.busyReason,
     solanaOrderActions?.hasPendingSubmission,
     isMultichainSubmitDisabled,
     localizedTradeModeLabels,
