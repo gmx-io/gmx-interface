@@ -111,25 +111,28 @@ export function reportMultichainExpressSubmitError({
   }
 
   const expressError = getExpressError({ expressParams, tokensData });
+  const isGasPaymentTokenBalanceUnknown =
+    expressParams !== undefined && !expressParams.gasPaymentValidations.isGasPaymentTokenBalanceLoaded;
 
-  const content =
-    expressParams && expressError.bannerErrorName ? (
-      <InsufficientGmxAccountGasTokenBalanceMessage
-        chainId={expressParams.chainId as ContractsChainId}
-        gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
-      />
-    ) : unavailableGasPaymentToken ? (
-      getGasPaymentTokenUnavailableMessage({
-        fromSymbol: unavailableGasPaymentToken.symbol,
-        toSymbol: undefined,
-        isGmxAccount: true,
-      })
-    ) : (
-      t`Express is unavailable right now, so this GMX Account action can't be sent`
-    );
+  const content = isGasPaymentTokenBalanceUnknown ? (
+    t`Network fee unavailable`
+  ) : expressParams && expressError.bannerErrorName ? (
+    <InsufficientGmxAccountGasTokenBalanceMessage
+      chainId={expressParams.chainId as ContractsChainId}
+      gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
+    />
+  ) : unavailableGasPaymentToken ? (
+    getGasPaymentTokenUnavailableMessage({
+      fromSymbol: unavailableGasPaymentToken.symbol,
+      toSymbol: undefined,
+      isGmxAccount: true,
+    })
+  ) : (
+    t`Express is unavailable right now, so this GMX Account action can't be sent`
+  );
 
   helperToast.error(content, {
-    autoClose: expressError.bannerErrorName ? false : undefined,
+    autoClose: expressError.bannerErrorName && !isGasPaymentTokenBalanceUnknown ? false : undefined,
     tradingErrorInfo: {
       actionName,
       collateral,

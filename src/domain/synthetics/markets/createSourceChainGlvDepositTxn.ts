@@ -19,6 +19,7 @@ import {
   estimateSourceChainGlvDepositFees,
   SourceChainGlvDepositFees,
 } from "./feeEstimation/estimateSourceChainGlvDepositFees";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import { signCreateGlvDeposit } from "./signCreateGlvDeposit";
 
 export async function createSourceChainGlvDepositTxn({
@@ -52,6 +53,8 @@ export async function createSourceChainGlvDepositTxn({
       globalExpressParams: GlobalExpressParams;
     }
 )): Promise<WalletTxnResult> {
+  assertPositiveMinOutputAmount(params.minGlvTokens);
+
   const ensuredFees = fees
     ? fees
     : await estimateSourceChainGlvDepositFees({
@@ -102,7 +105,7 @@ export async function createSourceChainGlvDepositTxn({
     amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
-    isManualGas: params.isMarketTokenDeposit ? true : false,
+    isManualGas: true,
     action,
     nativeDropAmount: relayParams.fee.feeAmount,
   });

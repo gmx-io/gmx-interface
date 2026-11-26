@@ -1,10 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import { getEmbeddedConnectedWallet, useExportWallet, useWallets } from "@privy-io/react-auth";
+import { useExportWallet } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { isAddressEqual } from "viem";
 
 import { getChainName, isSolanaNetwork } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
@@ -28,17 +27,18 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useSolanaWalletAssets } from "domain/solana/SolanaWalletAssetsContext";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { useLocalizedMap } from "lib/i18n";
 import { getAccountUrl, useENS } from "lib/legacy";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { metrics } from "lib/metrics";
-import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
+import { useConnectedEmbeddedWallet } from "lib/wallets/useConnectedEmbeddedWallet";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -115,7 +115,7 @@ function WalletBlock({ account }: { account: string }) {
   const copyTimeoutRef = useRef<number | undefined>(undefined);
   const disconnectEvm = useDisconnectAndClose();
   const solanaWallet = useSolanaWalletSession();
-  const { wallets } = useWallets();
+  const embeddedWallet = useConnectedEmbeddedWallet();
   const { exportWallet } = useExportWallet();
   const openWalletReceive = useOpenWalletReceive();
 
@@ -123,9 +123,7 @@ function WalletBlock({ account }: { account: string }) {
     openWalletReceive();
   };
 
-  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-  const canExport =
-    !isSolanaSelected && Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
+  const canExport = !isSolanaSelected && embeddedWallet !== undefined;
 
   const accountUrl = getAccountUrl(isSolanaSelected ? networkId : chainId, account);
 
@@ -215,9 +213,26 @@ function WalletBlock({ account }: { account: string }) {
           </StandardTooltip>
         </div>
       </div>
-      {!isSolanaSelected && <EvmWalletBalance />}
+      {isSolanaSelected ? <SolanaWalletBalance /> : <EvmWalletBalance />}
     </div>
   );
+}
+
+function SolanaWalletBalance() {
+  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const { totalUsd, isLoading } = useSolanaWalletAssets();
+  const openAssets = () => setIsVisibleOrView("availableToTradeAssets");
+
+  if (totalUsd === undefined && !isLoading) {
+    return (
+      <button className="flex min-h-32 items-center gap-4" onClick={openAssets}>
+        <span className="text-h2 leading-[30px] text-typography-secondary">—</span>
+        <ChevronLeftIcon className="size-16 rotate-180 text-typography-secondary" />
+      </button>
+    );
+  }
+
+  return <BalanceAmount usd={totalUsd} onClick={openAssets} />;
 }
 
 // The wallet balance reads EVM chains, so WalletBlock mounts it only off Solana.
@@ -412,11 +427,10 @@ function MenuList({ account }: { account: string }) {
   const chainId = srcChainId ?? settlementChainId;
   const isSolanaSelected = isSolanaNetwork(networkId);
   const history = useHistory();
-  const { openNotifyModal } = useNotifyModalState();
-  const { setIsSettingsVisible } = useSettings();
+  const { setIsSettingsVisible, openSettingsTab } = useSettings();
 
   const handleNotificationsClick = () => {
-    openNotifyModal();
+    openSettingsTab("notifications", "gmxAccountModal");
     setTimeout(() => {
       setIsVisible(false);
     }, MODAL_ANIMATION_DURATION_MS);

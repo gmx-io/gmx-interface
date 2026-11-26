@@ -54,7 +54,13 @@ import {
   SwapMetricData,
 } from "./types";
 
-const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = ["simulation", "gasLimit", "gasPrice", "minting"];
+const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = [
+  "simulation",
+  "gasLimit",
+  "gasPrice",
+  "minting",
+  "pendingWalletBatch",
+];
 
 export function initSwapMetricData({
   fromToken,
@@ -626,6 +632,7 @@ function getExpressMetricData({
     isSubaccountValid: expressParams.subaccountValidations?.isValid,
     isSubbaccountExpired: expressParams.subaccountValidations?.isExpired,
     isSubaccountActionsExceeded: expressParams.subaccountValidations?.isActionsExceeded,
+    isSubaccountNonceExpired: expressParams.subaccountValidations?.isNonceExpired,
     approximateGasLimit: fastExpressParams ? Number(fastExpressParams.gasLimit) : 0,
     approximateL1GasLimit: fastExpressParams ? Number(fastExpressParams.l1GasLimit) : 0,
     gasPrice: fastExpressParams ? Number(fastExpressParams.gasPrice) : 0,

@@ -1,10 +1,14 @@
 import { Trans } from "@lingui/macro";
 import { memo, useCallback, useMemo, useState } from "react";
-import { useMedia } from "react-use";
+import { useAsyncFn, useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { usePositionEditorPositionState } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectChainId, selectPositionsInfoError } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectPositionsInfoError,
+  selectRefetchPositions,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectPositionsInfoDataSortedByMarket } from "context/SyntheticsStateContext/selectors/positionsSelectors";
 import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -18,6 +22,7 @@ import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
@@ -78,10 +83,22 @@ export function PositionList(p: Props) {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const isLoading = useIsPositionsLoading();
   const positionsInfoError = useSelector(selectPositionsInfoError);
+  const refetchPositions = useSelector(selectRefetchPositions);
+  const [{ loading: isRetrying }, retryPositions] = useAsyncFn(async () => {
+    await refetchPositions?.();
+  }, [refetchPositions]);
+  const retryButton = refetchPositions && (
+    <Button variant="link" onClick={retryPositions} disabled={isRetrying}>
+      <Trans>Retry</Trans>
+    </Button>
+  );
   const hasCachedPositions = Object.keys(positionsInfoData ?? {}).length > 0;
   const positionsEmptyText =
     positionsInfoError && !hasCachedPositions ? (
-      <Trans>Could not load open positions</Trans>
+      <>
+        <Trans>Could not load open positions</Trans>
+        {retryButton}
+      </>
     ) : (
       <Trans>No open positions</Trans>
     );
@@ -92,6 +109,7 @@ export function PositionList(p: Props) {
       {positionsInfoError && hasCachedPositions && (
         <AlertInfo type="warning" compact textColor="text-yellow-300">
           <Trans>Could not refresh open positions. This list may be out of date.</Trans>
+          {retryButton}
         </AlertInfo>
       )}
       {isMobile && (

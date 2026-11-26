@@ -140,13 +140,16 @@ import {
   activateSdkSubaccount,
   clearSdkSubaccount,
   executeExpressOrderWithSubaccount,
+  exportSdkSubaccount,
   generateSdkSubaccount,
   getSdkSubaccountApprovalMessage,
   hasActiveSdkSubaccount,
+  importSdkSubaccount,
   prepareWithSubaccount,
   refreshSdkSubaccountState,
   signOrderWithSubaccount,
   submitOrderWithSubaccount,
+  type ExportedSubaccount,
   type SdkSubaccountClientContext,
 } from "utils/subaccount/sdkClient";
 import type { SdkSubaccountApproval, SdkSubaccountStatus, SubaccountState } from "utils/subaccount/types";
@@ -318,6 +321,7 @@ export type {
   SubaccountApprovalPrepareResponse,
 };
 export type { SdkSubaccountStatus } from "utils/subaccount/types";
+export type { ExportedSubaccount } from "utils/subaccount/sdkClient";
 
 type GmxApiSdkOptions = {
   chainId: NetworkId;
@@ -433,8 +437,8 @@ export class GmxApiSdk {
     return this._streamClient;
   }
 
-  fetchTokenPrices(): Promise<{ prices: TokenPricesData; originTs: number }> {
-    return fetchApiTokenPrices(this.ctx);
+  fetchTokenPrices(opts?: { signal?: AbortSignal }): Promise<{ prices: TokenPricesData; originTs: number }> {
+    return fetchApiTokenPrices(this.ctx, opts);
   }
 
   watchTokenPrices(): Subscription<TokenPricesData> {
@@ -696,15 +700,36 @@ export class GmxApiSdk {
   }
 
   /**
-   * Generate a subaccount deterministically from the main signer's signature.
-   * The main signer signs a predefined message, and the subaccount private key
-   * is derived via keccak256(signature).
+   * Generate a random subaccount key. Nothing is signed. Throws if a key is already set:
+   * call `clearSubaccount` first.
+   *
+   * The key lives only in this instance. Store the `exportSubaccount` result after
+   * `activateSubaccount` and pass it to `importSubaccount` on the next start, otherwise every
+   * start needs a new approval.
    *
    * Returns the subaccount address. Use `activateSubaccount` to sign the
    * approval and start using it for orders.
    */
-  async generateSubaccount(mainSigner: IAbstractSigner): Promise<string> {
-    return generateSdkSubaccount(this.subaccountClient, mainSigner);
+  generateSubaccount(): string {
+    return generateSdkSubaccount(this.subaccountClient);
+  }
+
+  /**
+   * Returns the current subaccount key and, once known, the main account it trades for.
+   * Treat `privateKey` as a secret.
+   */
+  exportSubaccount(): ExportedSubaccount | undefined {
+    return exportSdkSubaccount(this.subaccountClient);
+  }
+
+  /**
+   * Resume a subaccount from an `exportSubaccount` result. A stored `account` binds the key to
+   * that main account: other signers are rejected.
+   *
+   * Returns the subaccount address.
+   */
+  importSubaccount(subaccount: ExportedSubaccount): string {
+    return importSdkSubaccount(this.subaccountClient, subaccount);
   }
 
   /**
@@ -712,6 +737,8 @@ export class GmxApiSdk {
    * 1. Generates the subaccount if not already set
    * 2. Prepares and signs a SubaccountApproval with the main signer
    * 3. Stores the approval so subsequent orders use 1CT mode automatically
+   *
+   * Throws for a key the main account removed on-chain: call `clearSubaccount` to use a new key.
    */
   async activateSubaccount(
     mainSigner: IAbstractSigner,

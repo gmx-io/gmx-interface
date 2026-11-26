@@ -13,7 +13,7 @@ import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoC
 import { buildTpSlCreatePayloads } from "domain/tpsl/sidecar";
 import { getPositionCloseSizeDeltaUsdForPayload } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
-import { buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";
+import { buildUpdateOrderPayload, getCancelOrderParams, getOrderPayoutAddresses } from "sdk/utils/orderTransactions";
 
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
@@ -82,16 +82,11 @@ export function useSidecarOrderPayloads() {
         autoCancel: order.autoCancel,
         executionFeeTopUp: getExecutionFeeAmountForEntry(entry) ?? 0n,
         executionGasLimit: getOrderExecutionFee(0, entry.decreaseAmounts?.decreaseSwapType)?.gasLimit,
+        ...getOrderPayoutAddresses(order),
       });
     });
 
-    const cancelPayloads = cancelSltpEntries.map((entry): CancelOrderTxnParams => {
-      const order = entry.order!;
-
-      return {
-        orderKey: order.key,
-      };
-    });
+    const cancelPayloads = cancelSltpEntries.flatMap((entry) => getCancelOrderParams(entry.order!));
 
     const secondaryOrderPayloads = { createPayloads, cancelPayloads, updatePayloads };
 

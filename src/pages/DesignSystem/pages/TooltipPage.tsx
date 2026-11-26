@@ -331,7 +331,7 @@ const SPECS: DocsRule[] = [
     "Text",
     "Main text is TextIcon/Primary in the light theme and gray-100 in the dark theme, slightly softer than white. Muted text for row labels and footnotes.",
   ],
-  ["Type", "14/18 for text, 14/18 medium for titles, 12/16 for footnotes and table headers."],
+  ["Type", "14/18 for text and footnotes, 14/18 medium for titles, 12/16 for table headers."],
   ["Shadow", "0 4 14: 25% black in the dark theme, 8% slate-950 in the light theme."],
   ["Pointer", "14 × 7px, the panel color."],
   [
@@ -596,7 +596,7 @@ const BLOCK_PROPS: DocsProp[] = [
   {
     name: "TooltipFootnote",
     type: "children",
-    description: "A small note at the end of the tooltip. Its own link, if any, goes right under it.",
+    description: "A muted note at the end of the tooltip. Its own link, if any, goes right under it.",
   },
 ];
 
@@ -639,6 +639,13 @@ export function TooltipGuidelines() {
 }
 
 const CHANGELOG: DocsChangelogEntry[] = [
+  {
+    id: "tooltip-v1-2",
+    title: "v1.2 · Footnote size",
+    icon: CalendarIcon,
+    date: "Nov 25, 2026",
+    changes: ["Footnotes are 14/18, the same as text, instead of 12/16."],
+  },
   {
     id: "tooltip-v1-1",
     title: "v1.1 · Links, actions, dividers, scroll bar",

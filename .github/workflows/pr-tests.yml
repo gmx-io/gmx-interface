@@ -9,9 +9,16 @@ on:
     types: [opened, edited, synchronize, reopened]
   workflow_dispatch:
 
+# `edited` is here for base branch changes. A title or description edit skips the jobs and gets
+# its own concurrency group, so it doesn't cancel a run that is still checking the code.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.event.action == 'edited' && !github.event.changes.base && github.run_id || 'checks' }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: Linting, Type Checking, and Tests
+    if: github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,11 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build SDK
-        run: |
-          cd sdk
-          yarn build
 
       - name: Run linting
         run: yarn lint:ci
@@ -70,6 +72,7 @@ jobs:
 
   sdk-standalone:
     name: SDK standalone build (publish parity)
+    if: github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

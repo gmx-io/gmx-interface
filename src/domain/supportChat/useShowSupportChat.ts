@@ -2,7 +2,9 @@ import { useEffect, useRef } from "react";
 import { useSessionStorage } from "react-use";
 import { useAccount } from "wagmi";
 
+import { isSolanaNetwork } from "config/chains";
 import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useSearchParams from "lib/useSearchParams";
 import { useIsWalletInitializing } from "lib/wallets/useIsWalletInitializing";
@@ -26,7 +28,12 @@ export function useShowSupportChat() {
 
   const showWhileConnecting = isWalletInitializing && lastConnectedState;
 
-  const shouldShowSupportChat = isConnected || showWhileConnecting || wasOpenedWithoutWallet;
+  // Hidden on Solana until the chat supports Solana wallets and the SOLANA environment (TRD-151).
+  const { networkId } = useChainId();
+  const isSupportChatAvailable = !isSolanaNetwork(networkId);
+
+  const shouldShowSupportChat =
+    isSupportChatAvailable && (isConnected || showWhileConnecting || wasOpenedWithoutWallet);
 
   useEffect(() => {
     if (shouldOpenChatOnBoot) {

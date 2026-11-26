@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { suppressConsole } from "lib/__testUtils__/_utils";
 
+import { addFallbackTrackerListener } from "../events";
 import { FallbackTracker } from "../FallbackTracker";
 import { createMockConfig, testEndpoints } from "./_utils";
 
@@ -446,16 +447,34 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
 
       await checkPromise;
 
-      // Should handle abort gracefully - all endpoints should be marked as failed
-      const lastResults = tracker.getLastCheckResults();
-      expect(lastResults).toBeDefined();
-      config.endpoints.forEach((endpoint) => {
-        expect(lastResults?.[endpoint]?.success).toBe(false);
-      });
+      expect(tracker.getLastCheckResults()).toBeUndefined();
+      expect(config.networkStatusObserver?.getTrackingFailed(tracker.trackerKey)).toBe(false);
     });
   });
 
   describe("shouldTrack", () => {
+    it.each([undefined, false, true])(
+      "only monitors a single endpoint with explicit opt-in: %s",
+      async (trackSingleEndpoint) => {
+        const config = createMockConfig({ endpoints: [testEndpoints.primary], trackSingleEndpoint, delay: 0 });
+        const tracker = new FallbackTracker(config);
+        trackers.push(tracker);
+        tracker.startTracking();
+        await vi.advanceTimersByTimeAsync(0);
+        expect(tracker.getLastCheckResults()?.[testEndpoints.primary]?.success).toBe(
+          trackSingleEndpoint ? true : undefined
+        );
+        tracker.getCurrentEndpoints();
+        expect(tracker.shouldTrack()).toBe(trackSingleEndpoint === true);
+        Object.defineProperty(document, "visibilityState", { writable: true, value: "hidden" });
+        expect(tracker.shouldTrack({ warmUp: true })).toBe(false);
+        Object.defineProperty(document, "visibilityState", { writable: true, value: "visible" });
+        await vi.advanceTimersByTimeAsync(config.disableUnusedTrackingTimeout + config.trackInterval);
+        expect(tracker.shouldTrack()).toBe(false);
+        tracker.getCurrentEndpoints();
+        expect(tracker.shouldTrack()).toBe(trackSingleEndpoint === true);
+      }
+    );
     it("should return false when only one endpoint exists", () => {
       const config = createMockConfig({
         endpoints: [testEndpoints.primary],
@@ -663,29 +682,41 @@ describe("FallbackTracker - endpoint tracking and monitoring", () => {
       expect(config.checkEndpoint).toHaveBeenCalledTimes(config.endpoints.length);
     });
 
-    it("should handle stopTracking during checkEndpoints execution", async () => {
-      const config = createMockConfig({
-        checkEndpoint: vi.fn().mockImplementation(
-          () =>
-            new Promise(() => {
-              // Never resolves
-            })
-        ),
-      });
+    it("preserves healthy results when stopping an in-flight probe", async () => {
+      const config = createMockConfig();
       const tracker = new FallbackTracker(config);
       trackers.push(tracker);
-      tracker.state.lastUsage = Date.now();
+      await tracker.checkEndpoints(new AbortController());
+      const healthyResults = tracker.getLastCheckResults();
+      const finished = vi.fn();
+      const unsubscribe = addFallbackTrackerListener("trackingFinished", tracker.trackerKey, finished);
+      vi.mocked(config.checkEndpoint).mockImplementation(
+        (_endpoint, signal) =>
+          new Promise((_resolve, reject) => {
+            signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+          })
+      );
+      tracker.getCurrentEndpoints();
+      try {
+        tracker.track();
+        await vi.advanceTimersByTimeAsync(10);
+        tracker.stopTracking();
+        await vi.advanceTimersByTimeAsync(10);
 
-      tracker.track();
-      await vi.advanceTimersByTimeAsync(10); // Start checkEndpoints and let abortController be set
+        expect(tracker.getLastCheckResults()).toBe(healthyResults);
+        expect(config.networkStatusObserver?.getTrackingFailed(tracker.trackerKey)).toBe(false);
+        expect(config.networkStatusObserver?.getIsActive(tracker.trackerKey)).toBe(false);
+        expect(finished).not.toHaveBeenCalled();
+        expect(tracker.state.trackerTimeoutId).toBeUndefined();
 
-      // Stop tracking while checkEndpoints is running
-      const abortController = tracker.state.abortController;
-      tracker.cleanup();
-
-      expect(abortController?.signal.aborted).toBe(true);
-      expect(tracker.state.trackerTimeoutId).toBeUndefined();
-      expect(tracker.state.abortController).toBeUndefined();
+        vi.mocked(config.checkEndpoint).mockResolvedValue({ responseTime: 50, isValid: true });
+        tracker.startTracking();
+        await vi.advanceTimersByTimeAsync(config.delay ?? 0);
+        expect(tracker.getLastCheckResults()?.[testEndpoints.primary]?.success).toBe(true);
+        expect(finished).toHaveBeenCalledTimes(1);
+      } finally {
+        unsubscribe();
+      }
     });
 
     it("should handle rapid track/stopTracking calls", async () => {

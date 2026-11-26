@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { zeroHash } from "viem";
 import { describe, expect, it } from "vitest";
 
